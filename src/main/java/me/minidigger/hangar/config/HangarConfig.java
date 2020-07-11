@@ -25,6 +25,9 @@ public class HangarConfig {
     @Value("${session.expiration:1209600}") // 14 days
     private long sessionExpiration;
 
+    @Value("${pluginUploadDir:/work/uploads}")
+    private String pluginUploadDir;
+
     public boolean isFakeUserEnabled() {
         return fakeUserEnabled;
     }
@@ -47,6 +50,10 @@ public class HangarConfig {
 
     public long getSessionExpiration() {
         return sessionExpiration;
+    }
+
+    public String getPluginUploadDir() {
+        return pluginUploadDir;
     }
 
     public void checkDebug() {
