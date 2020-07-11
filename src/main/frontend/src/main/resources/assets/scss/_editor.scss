@@ -1,0 +1,179 @@
+@import 'utils';
+
+.page-rendered, .page-edit textarea {
+  min-height: 350px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.page-edit textarea {
+  resize: vertical;
+}
+
+.page-rendered {
+  @include basic-border();
+  @include box-shadow4(0, 1px, 1px, rgba(0, 0, 0, 0.05));
+
+  padding: 10px 20px 20px 20px;
+  overflow: hidden;
+  background-color: white;
+  max-width: 100%;
+
+  table tr > th { padding: 5px; }
+  table tr:nth-child(2n) { background-color: #F5F5F5; }
+  h1, h2, h3, h4, h5, h6 { font-weight: bold; }
+  img { max-width: 100%; }
+
+  table tr > td, .page-rendered table tr > th {
+    padding: 10px;
+    @include basic-border();
+  }
+
+  code {
+    background-color: #f5f5f5;
+    color: black;
+  }
+
+  a code {
+    color: #337ab7;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  h1, h2 {
+    border-bottom: 1px solid $lighter;
+    padding-bottom: 5px;
+  }
+
+  .headeranchor {
+    display: none;
+    text-decoration: none;
+  }
+
+  h1:hover, h2:hover, h3:hover {
+    .headeranchor {
+      display: inline-block;
+      font-size: 16px;
+      margin-left: -18px;
+      width: 18px;
+    }
+  }
+
+  h4:hover, h5:hover, h6:hover {
+    .headeranchor {
+      display: inline-block;
+      font-size: 12px;
+      margin-left: -12px;
+      width: 12px;
+    }
+  }
+
+}
+
+button.open:hover {
+  background-color: white;
+  cursor: default;
+  border-color: $light;
+}
+
+.btn-page {
+  @include transition6(border-color, ease-in-out, .15s, box-shadow, ease-in-out, .15s);
+  border-radius: 4px 0 0 4px;
+  padding: 6px;
+  z-index: 1000;
+}
+
+.btn-page:focus {
+  outline: none;
+}
+
+.btn-edit {
+  @include towardsBottomRight(-49px, 20px);
+  position: absolute;
+}
+
+.btn-edit-container {
+  position: absolute;
+  overflow: hidden;
+  z-index: -1000;
+}
+
+.btn-edit-container .btn {
+  width: 35px;
+}
+
+.btn-preview-container { margin-top: 58px;  }
+.btn-save-container    { margin-top: 96px;  }
+.btn-cancel-container  { margin-top: 135px; }
+.btn-delete-container  { margin-top: 175px; }
+
+.btn-page-delete {
+  color: #c12e2a;
+}
+
+.page-editor-tabs {
+  margin-bottom: 15px;
+  border: none;
+}
+
+.page-editor-tabs > li > a:hover {
+  border-bottom: 1px solid $lighter;
+}
+
+.page-editor-tabs > li > a:hover,
+.page-editor-tabs > li.active > a,
+.page-editor-tabs > li.active > a:hover,
+.page-editor-tabs > li > a:focus,
+.page-editor-tabs > li.active > a:focus {
+  background-color: transparent;
+  outline: none;
+}
+
+.page-editor-tabs > li.active > a, .page-editor-tabs > li.active > a:hover,
+.page-editor-tabs > li.active > a, .page-editor-tabs > li.active > a,
+.page-editor-tabs > li.active > a, .page-editor-tabs > li.active > a:focus {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid black;
+}
+
+.btn-panel {
+  background-color: #337ab7;
+  border: 1px solid #1A619E;
+  color: white;
+}
+
+.btn-panel:hover {
+  background-color: #22527b;
+  color: white;
+  border-color: #093962;
+}
+
+.btn-panel:active, .btn-panel:focus {
+  background-color: #22527b;
+  color: white;
+}
+
+.panel {
+  margin-bottom: 10px;
+}
+
+.stats {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  p { margin: 0; }
+}
+
+.channel-reset {
+  margin-top: -15px;
+}
+
+.version-edit-tabs {
+  position: absolute;
+  margin-left: -45px;
+  margin-top: 20px;
+  border-bottom: none;
+}
