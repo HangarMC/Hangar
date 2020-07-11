@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import controllers.sugar.Requests.OreRequest
 @import models.querymodels.ShownFlag
 @import ore.OreConfig
@@ -12,8 +15,8 @@
 @projectRoutes = @{controllers.project.routes.Projects}
 
 @scripts = {
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/flags.js")"></script>
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/hideProject.js")"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/flags.js" />"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/hideProject.js" />"></script>
 }
 
 @layout.base("Flags", scripts) {

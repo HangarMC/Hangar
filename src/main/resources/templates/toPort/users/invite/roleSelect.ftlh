@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import ore.permission.role.{Role, RoleCategory}
 @(roleCategory: RoleCategory, form: String = "form-continue", id: String = "", classes: String = "",
         hidden: Boolean = false)

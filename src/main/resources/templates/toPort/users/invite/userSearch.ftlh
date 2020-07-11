@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @()(implicit messages: Messages)
 
 <div class="input-group input-group-sm user-search">

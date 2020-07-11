@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import ore.models.project.Channel.Colors
 @()
 

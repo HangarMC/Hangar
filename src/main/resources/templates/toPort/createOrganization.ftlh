@@ -4,10 +4,13 @@
 @import views.html.helper.{CSRF, form}
 @()(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
 
+<#import "/spring.ftl" as spring />
+<#import "../utils/hangar.ftlh" as hangar />
+
 @scripts = {
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/orgCreate.js")"></script>
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/userSearch.js")"></script>
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/membersConfig.js")"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/orgCreate.js" />"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/userSearch.js" />"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/membersConfig.js" />"></script>
 }
 
 @layout.base(messages("org.create"), scripts) {

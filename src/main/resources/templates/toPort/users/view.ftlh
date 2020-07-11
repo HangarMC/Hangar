@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import controllers.sugar.Requests.OreRequest
 @import models.viewhelper.{OrganizationData, ScopedOrganizationData, UserData}
 @import ore.OreConfig
@@ -18,15 +21,15 @@
 }
 
 @scripts = {
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/userPage.js")"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/userPage.js" />"></script>
     <script @CSPNonce.attr>
             window.USERNAME ='@u.user.name';
             @for(category <- Category.values) {
                 CATEGORY_TITLE['@category.apiName'] = '@category.title';
                 CATEGORY_ICON['@category.apiName'] = '@category.icon';
             }
-            NO_ACTION_MESSAGE.starred = '@messages("user.noStars", u.user.name)';
-            NO_ACTION_MESSAGE.watching = '@messages("user.noWatching", u.user.name)';
+            NO_ACTION_MESSAGE.starred = '<@spring.messageArgs "user.noStars" u.user.name />';
+            NO_ACTION_MESSAGE.watching = '<@spring.messageArgs "user.noWatching" u.user.name />';
     </script>
     @additionalScripts
 }

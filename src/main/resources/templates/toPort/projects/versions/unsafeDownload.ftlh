@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import controllers.sugar.Requests.OreRequest
 @import ore.OreConfig
 @import ore.data.DownloadType
@@ -20,7 +23,7 @@
                         <h4 class="panel-title"><i class="fas fa-exclamation-triangle"></i>&ensp;<@spring.message "general.warning" /></h4>
                     </div>
                     <div class="col-xs-12 col-sm-8 no-padding">
-                        <span class="pull-right">@messages("version.download.confirm.header", project.ownerName, project.name, target.name)</span>
+                        <span class="pull-right"><@spring.messageArgs "version.download.confirm.header" project.ownerName project.name target.name /></span>
                     </div>
                 </div>
                 <div class="panel-body">

@@ -25,7 +25,7 @@
     <ul>
         @for(i <- 0 until num.toInt; msg <- flash.get(s"$alertType-$i").toSeq) {
         <li>
-            @messages(msg)
+            <@spring.message msg />
         </li>
         }
     </ul>

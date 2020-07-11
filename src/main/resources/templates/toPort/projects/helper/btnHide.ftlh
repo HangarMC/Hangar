@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import ore.data.project.ProjectNamespace
 @import ore.models.project.Visibility
 @(namespace: ProjectNamespace, projectVisibility: Visibility)(implicit messages: Messages)
@@ -11,7 +14,7 @@
     @for(visibility <- Visibility.values.sortBy(_.value)) {
         <li>
             <a href="#" class="btn-visibility-change" data-project="@namespace" data-level="@visibility.value" @if(visibility.showModal){ data-modal="true" }>
-                @messages("visibility.name." + visibility.nameKey) @if(projectVisibility == visibility) { <i class="fa fa-check" style="color: black" aria-hidden="true"></i> }
+                <@spring.message "visibility.name." + visibility.nameKey) @if(projectVisibility == visibility /> { <i class="fa fa-check" style="color: black" aria-hidden="true"></i> }
             </a>
         </li>
     }

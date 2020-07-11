@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import controllers.sugar.Requests.OreRequest
 @import models.querymodels.UnhealtyProject
 @import ore.OreConfig
@@ -79,7 +82,7 @@
                 @notPublicProjects.map { project =>
                     <div class="list-group-item">
                         <a href="@projectRoutes.show(project.namespace.ownerName, project.namespace.slug)">
-                            <strong>@project.namespace</strong> <small>@messages("visibility.name." + project.visibility.nameKey)</small>
+                            <strong>@project.namespace</strong> <small><@spring.message "visibility.name." + project.visibility.nameKey /></small>
                         </a>
                     </div>
                 }

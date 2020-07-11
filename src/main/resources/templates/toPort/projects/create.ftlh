@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @*
 Page used for uploading and creating new projects.
 *@
@@ -15,8 +18,8 @@ Page used for uploading and creating new projects.
 @projectRoutes = @{controllers.project.routes.Projects}
 
 @scripts = {
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/projectCreateValidate.js")"></script>
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/pluginUpload.js")"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/projectCreateValidate.js" />"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/pluginUpload.js" />"></script>
 }
 
 @layout.base(messages("project.create"), scripts) {

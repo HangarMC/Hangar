@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import controllers.project.{routes => projectRoutes}
 @import controllers.sugar.Requests.OreRequest
 @import models.querymodels.ViewTag
@@ -15,10 +18,10 @@
 }
 
 @scripts = {
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/channelManage.js")"></script>
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/pluginUpload.js")"></script>
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/projectDetail.js")"></script>
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/versionCreateChannelNew.js")"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/channelManage.js" />"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/pluginUpload.js" />"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/projectDetail.js" />"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/versionCreateChannelNew.js" />"></script>
     <script @CSPNonce.attr>
             DEFAULT_COLOR = '@config.defaultChannelColor.hex';
     </script>

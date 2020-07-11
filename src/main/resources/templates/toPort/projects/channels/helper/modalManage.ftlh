@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import ore.OreConfig
 @import views.html.helper.{CSRF, form}
 @()(implicit messages: Messages, config: OreConfig, request: Request[_])

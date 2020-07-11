@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import java.time.{Instant, OffsetDateTime, ZoneOffset}
 
 @import controllers.sugar.Requests.OreRequest
@@ -13,7 +16,7 @@
 
 @projectRoutes = @{controllers.project.routes.Projects}
 @scripts = {
-    <script @CSPNonce.attr type="text/javascript" src="@assetsFinder.path("javascripts/notes.js")"></script>
+    <script @CSPNonce.attr type="text/javascript" src="<@spring.url "javascripts/notes.js" />"></script>
     <script @CSPNonce.attr>resourcePath = '@project.ownerName/@project.slug'</script>
 }
 

@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import controllers.sugar.Requests.OreRequest
 @import models.viewhelper.{OrganizationData, UserData}
 @import ore.OreConfig
@@ -54,7 +57,7 @@
 }
 
 @scripts = {
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/userAdmin.js")"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/userAdmin.js" />"></script>
 }
 
 @layout.base(prefix + user.user.name, scripts) {

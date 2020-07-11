@@ -6,6 +6,10 @@
 @*
 Mostly copied from swagger-ui's index file
 *@
+
+<#import "/spring.ftl" as spring />
+<#import "../utils/hangar.ftlh" as hangar />
+
 <!DOCTYPE html>
 <html lang="@messages.lang.language">
     <head>
@@ -14,8 +18,8 @@ Mostly copied from swagger-ui's index file
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link rel="icon" href="@assetsFinder.path("images/favicon.ico")">
-        <link rel="stylesheet" type="text/css" href="@assetsFinder.path("lib/swagger-ui/swagger-ui.css")">
+        <link rel="icon" href="<@spring.url "images/favicon.ico" />">
+        <link rel="stylesheet" type="text/css" href="<@spring.url "lib/swagger-ui/swagger-ui.css" />">
 
         <style>
             html {
@@ -53,14 +57,14 @@ Mostly copied from swagger-ui's index file
     <body>
         <div id="swagger-ui"></div>
 
-        <script type="text/javascript" src="@assetsFinder.path("lib/jquery/dist/jquery.min.js")"></script>
-        <script src="@assetsFinder.path("lib/swagger-ui/swagger-ui-bundle.js")"></script>
-        <script src="@assetsFinder.path("lib/swagger-ui/swagger-ui-standalone-preset.js")"></script>
-        <script src="@assetsFinder.path("javascripts/apiRequests.js")"></script>
+        <script type="text/javascript" src="<@spring.url "lib/jquery/dist/jquery.min.js" />"></script>
+        <script src="<@spring.url "lib/swagger-ui/swagger-ui-bundle.js" />"></script>
+        <script src="<@spring.url "lib/swagger-ui/swagger-ui-standalone-preset.js" />"></script>
+        <script src="<@spring.url "javascripts/apiRequests.js" />"></script>
         <script @CSPNonce.attr>
                 window.onload = () => {
                     window.ui = SwaggerUIBundle({
-                        url: "@assetsFinder.path("swagger.json")",
+                        url: "<@spring.url "swagger.json" />",
                         dom_id: '#swagger-ui',
                         deepLinking: true,
                         presets: [

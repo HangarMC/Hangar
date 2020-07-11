@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @*
 Base template for Project overview.
 *@
@@ -18,8 +21,8 @@ Base template for Project overview.
 @appRoutes = @{controllers.routes.Application}
 
 @scripts = {
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/projectDetail.js")"></script>
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/pageEdit.js")"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/projectDetail.js" />"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/pageEdit.js" />"></script>
     @additionalScripts
     <script @CSPNonce.attr>
             var projectOwner = "@p.project.ownerName";
@@ -51,18 +54,18 @@ Base template for Project overview.
                         @if(sp.perms(Permission.EditPage)) {
                             <a class="btn btn-success pull-right" href="@p.fullSlug/manage/sendforapproval">Send for approval</a>
                         }
-                        <strong>@messages("visibility.notice." + p.visibility.nameKey)</strong>
+                        <strong><@spring.message "visibility.notice." + p.visibility.nameKey /></strong>
                         <br>
                             @p.renderVisibilityChange.getOrElse("Unknown")
 
                         } else {
                             @if(p.visibility == Visibility.SoftDelete) {
 
-                            @messages("visibility.notice." + p.visibility.nameKey, p.lastVisibilityChangeUser)
+                            <@spring.message "visibility.notice." + p.visibility.nameKey, p.lastVisibilityChangeUser />
                             @p.renderVisibilityChange.getOrElse("")
 
                             } else {
-                                @messages("visibility.notice." + p.visibility.nameKey)
+                                <@spring.message "visibility.notice." + p.visibility.nameKey />
                             }
                         }
                     </div>

@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import controllers.sugar.Requests.OreRequest
 @import models.querymodels.{NotStartedQueueEntry, ReviewedQueueEntry}
 @import ore.OreConfig
@@ -11,7 +14,7 @@
 @versionRoutes = @{controllers.project.routes.Versions}
 
 @scripts = {
-    <script @CSPNonce.attr type="text/javascript" src="@assetsFinder.path("javascripts/queue.js")"></script>
+    <script @CSPNonce.attr type="text/javascript" src="<@spring.url "javascripts/queue.js" />"></script>
     <script @CSPNonce.attr>
             $(function(){
                 var momentNow = moment();

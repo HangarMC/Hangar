@@ -8,6 +8,9 @@ sorted according to different criteria.
 @import ore.OreConfig
 @()(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
 
+<#import "/spring.ftl" as spring />
+<#import "../utils/hangar.ftlh" as hangar />
+
 @randomSponsor = @{
     val logos = config.sponge.sponsors
 
@@ -16,7 +19,7 @@ sorted according to different criteria.
 }
 
 @scripts = {
-    <script src="@assetsFinder.path("build/home.js")"></script>
+    <script src="<@spring.url "build/home.js" />"></script>
 }
 
 @stylesheets = {
@@ -27,7 +30,7 @@ sorted according to different criteria.
     <meta property="og:title" content="<@spring.message "general.appName" />">
     <meta property="og:type" content="website" />
     <meta property="og:url" content="@config.app.baseUrl">
-    <meta property="og:image" content="@assetsFinder.path("images/ore-dark.png")" />
+    <meta property="og:image" content="<@spring.url "images/ore-dark.png" />" />
     <meta property="og:description" content="<@spring.message "general.description" />" />
 }
 
@@ -39,7 +42,7 @@ sorted according to different criteria.
             <div class="col-md-9 ore-banner">
                 <div class="row aligned-row">
                     <div class="col-xs-2 ore-logo">
-                        <img src="@assetsFinder.path("images/ore-colored.svg")" alt="Ore logo" />
+                        <img src="<@spring.url "images/ore-colored.svg" />" alt="Ore logo" />
                     </div>
                     <div class="col-xs-10 text">
                         <div class="headline">Hangar</div>
@@ -53,7 +56,7 @@ sorted according to different criteria.
                     <div class="panel-body">
                     @defining(randomSponsor) { sponsor =>
                         <a href="@sponsor.link">
-                            <img class="logo" src="@assetsFinder.path(sponsor.image)" alt="Sponsor" />
+                            <img class="logo" src="<@spring.urls sponsor.image />" alt="Sponsor" />
                         </a>
                     }
                     </div>

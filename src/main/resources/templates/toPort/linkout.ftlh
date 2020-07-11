@@ -2,6 +2,9 @@
 @import ore.OreConfig
 @(remoteUrl: String)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 
+<#import "/spring.ftl" as spring />
+<#import "../utils/hangar.ftlh" as hangar />
+
 @layout.base(messages("general.linkout.title")) {
 
     <div class="row">
@@ -13,7 +16,7 @@
                     </h3>
                 </div>
                 <div class="panel-body">
-                    <p>@messages("general.linkout.warning", remoteUrl)</p>
+                    <p><@spring.messageArgs "general.linkout.warning" remoteUrl /></p>
                     <a class="pull-left link-go-back">
                         <i class="fas fa-arrow-left"></i> <@spring.message "project.back" />
                     </a>

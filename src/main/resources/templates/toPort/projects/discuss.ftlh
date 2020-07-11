@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @*
 Discussion page within Project overview.
 *@
@@ -20,7 +23,7 @@ Discussion page within Project overview.
                 topicId: @p.project.topicId
             };
     </script>
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/projectDiscuss.js")"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/projectDiscuss.js" />"></script>
     <script @CSPNonce.attr>$(function() { $('.btn-edit').click(); });</script>
 }
 

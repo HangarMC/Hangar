@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import controllers.sugar.Requests.OreRequest
 @import ore.OreConfig
 @import ore.db.Model
@@ -15,7 +18,7 @@
 @versionRoutes = @{controllers.project.routes.Versions}
 
 @scripts = {
-    <script @CSPNonce.attr type="text/javascript" src="@assetsFinder.path("javascripts/review.js")"></script>
+    <script @CSPNonce.attr type="text/javascript" src="<@spring.url "javascripts/review.js" />"></script>
     <script @CSPNonce.attr>versionPath = '@helper.urlEncode(project.ownerName)/@helper.urlEncode(project.slug)/versions/@helper.urlEncode(version.name)'</script>
 }
 

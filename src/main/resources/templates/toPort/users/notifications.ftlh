@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import controllers.sugar.Requests.OreRequest
 @import ore.OreConfig
 @import ore.db.Model
@@ -32,7 +35,7 @@
 }
 
 @scripts = {
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/notifications.js")"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/notifications.js" />"></script>
 }
 
 @layout.base(messages("notification.plural"), scripts) {
@@ -48,13 +51,13 @@
                     <div class="pull-right form-inline notification-controls">
                         <select class="form-control select-notifications">
                             <option @notificationFilterOption(NotificationFilter.Unread)>
-                            @messages(NotificationFilter.Unread.title)
+                            <@spring.message NotificationFilter.Unread.title />
                             </option>
                             <option @notificationFilterOption(NotificationFilter.Read)>
-                            @messages(NotificationFilter.Read.title)
+                            <@spring.message NotificationFilter.Read.title />
                             </option>
                             <option @notificationFilterOption(NotificationFilter.All)>
-                            @messages(NotificationFilter.All.title)
+                            <@spring.message NotificationFilter.All.title />
                             </option>
                         </select>
 
@@ -73,7 +76,7 @@
                     <div class="list-group-item no-notifications" @if(notifications.nonEmpty) {
                         style="display: none; }">
                         <h3 class="minor">
-                            <i class="far fa-thumbs-up"></i> @messages(notificationFilter.emptyMessage)
+                            <i class="far fa-thumbs-up"></i> <@spring.message notificationFilter.emptyMessage />
                         </h3>
                     </div>
 
@@ -104,13 +107,13 @@
                     <h2 class="pull-left"><@spring.message "notification.invites" /></h2>
                     <select class="pull-right form-control notification-controls select-invites">
                         <option @inviteFilterOption(InviteFilter.All)>
-                        @messages(InviteFilter.All.title)
+                        <@spring.message InviteFilter.All.title />
                         </option>
                         <option @inviteFilterOption(InviteFilter.Projects)>
-                        @messages(InviteFilter.Projects.title)
+                        <@spring.message InviteFilter.Projects.title />
                         </option>
                         <option @inviteFilterOption(InviteFilter.Organizations)>
-                        @messages(InviteFilter.Organizations.title)
+                        <@spring.message InviteFilter.Organizations.title />
                         </option>
                     </select>
                 </div>
@@ -135,7 +138,7 @@
 
                             <div class="invite-message invite-choice" style="display: auto;">
                                 <p>
-                                    @messages("notification.invite", subject.getClass.getSimpleName.toLowerCase)
+                                    <@spring.message "notification.invite", subject.getClass.getSimpleName.toLowerCase />
                                 <a href="@subject.url">@subject.name</a>.
                                 </p>
                                 <button class="btn btn-invite btn-accept btn-sm btn-success">

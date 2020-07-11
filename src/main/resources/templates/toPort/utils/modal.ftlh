@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @(id: String = "",
   label: String = "",
   titleId: String)(content: Html)(implicit messages: Messages)
@@ -10,7 +13,7 @@
                         aria-label="<@spring.message "general.close" />">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title">@messages(titleId)</h4>
+                <h4 class="modal-title"><@spring.message titleId /></h4>
             </div>
             @content
         </div>

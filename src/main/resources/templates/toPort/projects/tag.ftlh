@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import models.querymodels.ViewTag
 
 @(tag: ViewTag, tagCount: Int = 0)

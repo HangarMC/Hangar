@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import ore.data.project.Category
 @(form: String,
   homepage: Option[String] = None,
@@ -94,7 +97,7 @@
 
 <div class="setting">
     <div class="setting-description">
-        <h4><@spring.message "project.settings.license") <i>(@messages("general.optional" />)</i></h4>
+        <h4><@spring.message "project.settings.license") <i>(<@spring.message "general.optional" /> /></i></h4>
         <p><@spring.message "project.settings.license.info" /></p>
     </div>
     <div class="input-group pull-left">

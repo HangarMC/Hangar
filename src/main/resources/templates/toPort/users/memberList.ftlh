@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import ore.OreConfig
 @import ore.models.user.role.UserRoleModel
 @import util.syntax._

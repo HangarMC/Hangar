@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import controllers.project.{routes => projectRoutes}
 @import controllers.routes.{Users => userRoutes}
 @import controllers.sugar.Requests.OreRequest
@@ -18,12 +21,12 @@
 }
 
 @scripts = {
-  <script type="text/javascript" src="@assetsFinder.path("build/user-profile.js")"></script>
+  <script type="text/javascript" src="<@spring.url "build/user-profile.js" />"></script>
   @if(u.isOrga && o.isDefined && canEditOrgMembers) {
-      <script type="text/javascript" src="@assetsFinder.path("javascripts/orgInvites.js")"></script>
+      <script type="text/javascript" src="<@spring.url "javascripts/orgInvites.js" />"></script>
   }
-  <script type="text/javascript" src="@assetsFinder.path("javascripts/userSearch.js")"></script>
-  <script type="text/javascript" src="@assetsFinder.path("javascripts/memberList.js")"></script>
+  <script type="text/javascript" src="<@spring.url "javascripts/userSearch.js" />"></script>
+  <script type="text/javascript" src="<@spring.url "javascripts/memberList.js" />"></script>
 }
 
 @users.view(u, o, additionalScripts = scripts) {
@@ -69,7 +72,7 @@
                     <table class="table panel-body">
                         <tbody>
                         @if(u.orgas.isEmpty) {
-                            <tr><td><i class="minor"><i class="fas fa-star"></i> @messages("user.noOrganizations", u.user.name)</i></td></tr>
+                            <tr><td><i class="minor"><i class="fas fa-star"></i> <@spring.message "user.noOrganizations", u.user.name /></i></td></tr>
                         } else {
                             @u.orgas.map { case (organization, user, role, _) =>
                             <tr>

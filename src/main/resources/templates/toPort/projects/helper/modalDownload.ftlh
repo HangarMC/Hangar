@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @(call: Call, message: String, id: String = "modal-download")(implicit messages: Messages)
 
 <div class="modal fade" id="@id" tabindex="-1" role="dialog"
@@ -11,7 +14,7 @@
                 </button>
                 <h4 class="modal-title" id="label-download"><@spring.message "general.notice" /></h4>
             </div>
-            <div class="modal-body">@messages(message)</div>
+            <div class="modal-body"><@spring.message message /></div>
             <div class="modal-footer">
                 <button class="btn btn-default" data-dismiss="modal"><@spring.message "general.cancel" /></button>
                 <a href="@call" class="btn btn-primary"><@spring.message "general.continue" /></a>

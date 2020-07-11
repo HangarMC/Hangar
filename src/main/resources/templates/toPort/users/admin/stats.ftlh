@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import java.time.LocalDate
 @import java.time.temporal.ChronoUnit
 
@@ -12,7 +15,7 @@
         request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 
 @scripts = {
-    <script @CSPNonce.attr type="text/javascript" src="@assetsFinder.path("lib/chart.js/dist/Chart.min.js")"></script>
+    <script @CSPNonce.attr type="text/javascript" src="<@spring.url "lib/chart.js/dist/Chart.min.js" />"></script>
     <script @CSPNonce.attr>
             $(function(){
                 var domChartReview = document.getElementById("chart-reviews");
@@ -97,7 +100,7 @@
                 });
             });
     </script>
-    <script @CSPNonce.attr type="text/javascript" src="@assetsFinder.path("javascripts/stats.js")"></script>
+    <script @CSPNonce.attr type="text/javascript" src="<@spring.url "javascripts/stats.js" />"></script>
 }
 
 @layout.base("Stats", scripts) {

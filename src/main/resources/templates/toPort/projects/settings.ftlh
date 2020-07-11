@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import controllers.sugar.Requests.OreRequest
 @import models.viewhelper.{ProjectData, ScopedProjectData}
 @import ore.OreConfig
@@ -15,12 +18,12 @@
 @projectRoutes = @{controllers.project.routes.Projects}
 
 @scripts = {
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/projectManage.js")"></script>
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/hideProject.js")"></script>
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/iconUpload.js")"></script>
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/keyGen.js")"></script>
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/userSearch.js")"></script>
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/memberList.js")"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/projectManage.js" />"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/hideProject.js" />"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/iconUpload.js" />"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/keyGen.js" />"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/userSearch.js" />"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/memberList.js" />"></script>
     <script @CSPNonce.attr>
             projectName = "@p.project.name";
             PROJECT_OWNER = "@p.project.ownerName";
@@ -277,7 +280,7 @@
                         <textarea name="comment" class="textarea-delete-comment form-control" rows="3"></textarea>
                         <br>
                         <div class="alert alert-warning">
-                        @messages("project.delete.info.uniqueid", p.project.name)
+                        <@spring.message "project.delete.info.uniqueid", p.project.name />
                         </div>
                     </div>
                     <div class="modal-footer">

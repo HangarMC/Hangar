@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @*
 Documentation page within Project overview.
 *@
@@ -29,9 +32,9 @@ Documentation page within Project overview.
 }
 
 @scripts = {
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/pageCollapse.js")"></script>
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/userSearch.js")"></script>
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/memberList.js")"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/pageCollapse.js" />"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/userSearch.js" />"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/memberList.js" />"></script>
     <script @CSPNonce.attr>
             pluginId = '@p.project.pluginId';
             namespace = '@p.project.namespace';
@@ -61,8 +64,8 @@ Documentation page within Project overview.
         <div class="col-md-3">
 
             <div class="stats minor">
-                <p>@messages("project.category.info", p.project.category.title)</p>
-                <p>@messages("project.publishDate", prettifyDate(p.project.createdAt))</p>
+                <p><@spring.message "project.category.info", p.project.category.title /></p>
+                <p><@spring.message "project.publishDate", prettifyDate(p.project.createdAt) /></p>
                 <p><span id="view-count"></span> views</p>
                 <p><span id="star-count"></span> <a href="@routes.Projects.showStargazers(p.project.ownerName, p.project.slug, None)">stars</a></p>
                 <p><span id="watcher-count"></span> <a href="@routes.Projects.showWatchers(p.project.ownerName, p.project.slug, None)">watchers</a></p>

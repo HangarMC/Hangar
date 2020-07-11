@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import java.time.OffsetDateTime
 
 @import controllers.sugar.Requests.OreRequest
@@ -21,7 +24,7 @@
 }
 
 @scripts = {
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/userList.js")"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/userList.js" />"></script>
     <script @CSPNonce.attr>CURRENT_PAGE = @page;</script>
 }
 

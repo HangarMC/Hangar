@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @*
 Versions page within Project overview.
 *@
@@ -16,8 +19,8 @@ Versions page within Project overview.
 @channelRoutes = @{ controllers.project.routes.Channels }
 
 @scripts = {
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/userSearch.js")"></script>
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/memberList.js")"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/userSearch.js" />"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/memberList.js" />"></script>
     <script @CSPNonce.attr>
             window.PLUGIN_ID = '@p.project.pluginId';
             window.PROJECT_OWNER = '@p.project.ownerName';

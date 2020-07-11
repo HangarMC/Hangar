@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import controllers.project.{routes => projectRoutes}
 @import controllers.routes.{Application => appRoutes, Users => userRoutes}
 @import controllers.sugar.Requests.OreRequest
@@ -13,8 +16,8 @@
         actionFilter: Option[String], subjectFilter: Option[String], canViewIP: Boolean)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 
 @scripts = {
-    <script type="text/javascript" src="@assetsFinder.path("diff-match-patch/javascript/diff_match_patch.js")"></script>
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/actionLog.js")"></script>
+    <script type="text/javascript" src="<@spring.url "diff-match-patch/javascript/diff_match_patch.js" />"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/actionLog.js" />"></script>
 }
 
 @layout.base(messages("admin.log.title"), scripts) {

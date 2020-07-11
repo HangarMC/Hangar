@@ -1,3 +1,6 @@
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
+
 @import controllers.sugar.Requests.OreRequest
 @import models.viewhelper.{OrganizationData, ScopedOrganizationData, UserData}
 @import ore.OreConfig
@@ -8,7 +11,7 @@
 @(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)], keys: Seq[ApiKey], perms: Seq[NamedPermission])(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
 
 @scripts = {
-    <script type="text/javascript" src="@assetsFinder.path("javascripts/apiKeysManagement.js")"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/apiKeysManagement.js" />"></script>
     <script @CSPNonce.attr>
             NO_PERMS_SET = '<@spring.message "user.apiKeys.error.noPermsSet" />';
             NO_NAME_SET = '<@spring.message "user.apiKeys.error.noNameSet" />';
