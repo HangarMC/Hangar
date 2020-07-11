@@ -20,9 +20,17 @@ public class Dependency {
     @JsonProperty("version")
     private String version = null;
 
-    public Dependency pluginId(String pluginId) {
+    @JsonProperty("version")
+    private boolean required = false;
+
+    public Dependency(String pluginId, String version) {
+        this(pluginId, version, true);
+    }
+
+    public Dependency(String pluginId, String version, boolean required) {
         this.pluginId = pluginId;
-        return this;
+        this.version = version;
+        this.required = required;
     }
 
     /**
@@ -41,11 +49,6 @@ public class Dependency {
         this.pluginId = pluginId;
     }
 
-    public Dependency version(String version) {
-        this.version = version;
-        return this;
-    }
-
     /**
      * Get version
      *
@@ -61,6 +64,13 @@ public class Dependency {
         this.version = version;
     }
 
+    public boolean isRequired() {
+        return required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
+    }
 
     @Override
     public boolean equals(Object o) {

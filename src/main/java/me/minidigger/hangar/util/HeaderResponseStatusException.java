@@ -1,4 +1,4 @@
-package me.minidigger.hangar.service;
+package me.minidigger.hangar.util;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

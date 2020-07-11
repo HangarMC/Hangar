@@ -3,8 +3,6 @@ package me.minidigger.hangar.util;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
-import me.minidigger.hangar.service.HeaderResponseStatusException;
-
 public class AuthUtils {
 
     public static RuntimeException unAuth() {

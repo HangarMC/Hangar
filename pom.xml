@@ -71,6 +71,14 @@
             <artifactId>validation-api</artifactId>
         </dependency>
 
+        <!-- config stuff -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.26</version>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- runtime -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
