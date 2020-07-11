@@ -1,0 +1,83 @@
+@import controllers.sugar.Requests.OreRequest
+@import models.viewhelper.{OrganizationData, ScopedOrganizationData, UserData}
+@import ore.OreConfig
+@import ore.models.api.ApiKey
+@import ore.permission.NamedPermission
+@import views.html.helper.CSPNonce
+
+@(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)], keys: Seq[ApiKey], perms: Seq[NamedPermission])(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
+
+@scripts = {
+    <script type="text/javascript" src="@assetsFinder.path("javascripts/apiKeysManagement.js")"></script>
+    <script @CSPNonce.attr>
+            NO_PERMS_SET = '@messages("user.apiKeys.error.noPermsSet")';
+            NO_NAME_SET = '@messages("user.apiKeys.error.noNameSet")';
+            TOO_LONG_NAME = '@messages("user.apiKeys.error.tooLongName")';
+            NAMED_USED = '@messages("user.apiKeys.error.nameAlreadyUsed")';
+            DELETE_KEY = '@messages("user.apiKeys.keyDeleteButton")';
+    </script>
+}
+
+@users.view(u, o, additionalScripts = scripts) {
+    <div id="keyAlert" class="alert alert-danger" role="alert" style="display: none;"></div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h2>@messages("user.apiKeys.createNew")</h2>
+            <div id="api-create-key-form">
+                <div class="row">
+                    <div class="col-md-6">
+                    @for(perm <- perms.take(NamedPermission.values.length / 2)) {
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="perm.@perm.entryName"> @perm.entryName
+                            </label>
+                        </div>
+                    }
+                    </div>
+                    <div class="col-md-6">
+                    @for(perm <- perms.drop(NamedPermission.values.length / 2)) {
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="perm.@perm.entryName"> @perm.entryName
+                            </label>
+                        </div>
+                    }
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="keyName">@messages("user.apiKeys.keyName"):</label>
+                    <input type="text" class="form-control" id="keyName">
+                </div>
+                <button id="button-create-new-key" class="btn btn-default">@messages("user.apiKeys.createKeyBtn")</button>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <h2>@messages("user.apiKeys.existingKeys")</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>@messages("user.apiKeys.keyName")</th>
+                        <th>@messages("user.apiKeys.keyToken")</th>
+                        <th>@messages("user.apiKeys.keyIdentifier")</th>
+                        <th>@messages("user.apiKeys.keyPermissions")</th>
+                        <th>@messages("user.apiKeys.keyDeleteColumn")</th>
+                    </tr>
+                </thead>
+                <tbody id="api-key-rows">
+                @for(key <- keys) {
+                    <tr class="api-key-row">
+                        <th class="api-key-name">@key.name</th>
+                        <th></th>
+                        <th>@key.tokenIdentifier</th>
+                        <th>@key.namedRawPermissions.map(_.entryName).mkString(", ")</th>
+                        <th><button class="btn btn-danger api-key-row-delete-button">@messages("user.apiKeys.keyDeleteButton")</button></th>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

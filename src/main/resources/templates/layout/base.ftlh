@@ -4,25 +4,27 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
 
 (implicit request: OreRequest[_], messages: Messages, config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 -->
+<#import "/spring.ftl" as spring />
+<#import "../utils/hangar.ftlh" as hangar />
 
 <#macro base title additionalScripts="" scriptsEnabled=true authEnabled=true showHeader=true showFooter=true noContainer=false additionalMeta="" additionalStyling="">
     <!DOCTYPE html>
-    <html lang="${@messages.lang.language}">
+    <html lang="<@spring.message "general.language" />">
     <head>
-        <link href="${@config.security.api.url}" rel="preconnect" crossorigin>
-        <link href="${@config.app.discourseCdnUrl}" rel="preconnect" crossorigin>
-        <link href="${@config.security.api.url}" rel="dns-prefetch">
-        <link href="${@config.app.discourseCdnUrl}" rel="dns-prefetch">
+        <link href="<@hangar.config "security.api.url" />" rel="preconnect" crossorigin>
+        <link href="<@hangar.config "app.discourseCdnUrl" />" rel="preconnect" crossorigin>
+        <link href="<@hangar.config "security.api.url" />" rel="dns-prefetch">
+        <link href="<@hangar.config "app.discourseCdnUrl" />" rel="dns-prefetch">
 
-        <link rel="prefetch" href="${@assetsFinder.path("images/favicon.ico")}">
+        <link rel="prefetch" href="<@spring.url "images/favicon.ico" />">
         <link rel="prefetch" href="https://fonts.googleapis.com/css?family=Montserrat:400,700">
-        <link rel="prefetch" href="${@assetsFinder.path("highlight/styles/default.css")}">
-        <link rel="prefetch" href="${@assetsFinder.path("bootstrap/css/bootstrap.min.css")}">
-        <link rel="prefetch" href="${@assetsFinder.path("build/commons.css")}">
-        <link rel="prefetch" href="${@routes.Assets.versioned("build/main.css")}">
-        <link rel="prefetch" href="${@assetsFinder.path("build/font-awesome.css")}">
-        <link rel="prefetch" href="${@assetsFinder.path("manifest/manifest.json")}">
-        <link rel="prefetch" href="${@routes.Assets.versioned("lib/jquery/dist/jquery.min.js")}">
+        <link rel="prefetch" href="<@spring.url "highlight/styles/default.css" />">
+        <link rel="prefetch" href="<@spring.url "bootstrap/css/bootstrap.min.css" />">
+        <link rel="prefetch" href="<@spring.url "build/commons.css" />">
+        <link rel="prefetch" href="<@spring.url "build/main.css" />">
+        <link rel="prefetch" href="<@spring.url "build/font-awesome.css" />">
+        <link rel="prefetch" href="<@spring.url "manifest/manifest.json" />">
+        <link rel="prefetch" href="<@spring.url "lib/jquery/dist/jquery.min.js" />">
 
         <title>${title}</title>
 
@@ -38,18 +40,18 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <link rel="icon" type="image/png" sizes="16x16"
               href="https://papermc.io/favicons/favicon-16x16.png?v=BG70oBaPzN">
         <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="${@assetsFinder.path("highlight/styles/default.css")}"/>
-        <link rel="stylesheet" type="text/css" href="${@assetsFinder.path("bootstrap/css/bootstrap.min.css")}"/>
-        <link rel="stylesheet" type="text/css" href="${@assetsFinder.path("build/font-awesome.css")}"/>
-        <link rel="stylesheet" type="text/css" href="${@assetsFinder.path("build/commons.css")}"/>
-        <link rel="stylesheet" type="text/css" href="${@routes.Assets.versioned("build/main.css")}"/>
+        <link rel="stylesheet" type="text/css" href="<@spring.url "highlight/styles/default.css" />"/>
+        <link rel="stylesheet" type="text/css" href="<@spring.url "bootstrap/css/bootstrap.min.css" />"/>
+        <link rel="stylesheet" type="text/css" href="<@spring.url "build/font-awesome.css" />"/>
+        <link rel="stylesheet" type="text/css" href="<@spring.url "build/commons.css" />"/>
+        <link rel="stylesheet" type="text/css" href="<@spring.url "build/main.css" />"/>
         ${additionalStyling}
 
         <#-- See https://goo.gl/OOhYW5 and https://goo.gl/qRE0vM -->
-        <link rel="manifest" href="${@assetsFinder.path("manifest/manifest.json")}">
+        <link rel="manifest" href="<@spring.url "manifest/manifest.json" />">
         <meta name="theme-color" content="#333">
 
-        <script type="text/javascript" src="${@routes.Assets.versioned("lib/jquery/dist/jquery.min.js")}"></script>
+        <script type="text/javascript" src="<@spring.url "lib/jquery/dist/jquery.min.js" />"></script>
     </head>
     <body class="site">
     <#if showHeader>
@@ -65,7 +67,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
                 <#if config.ore.staging>
                     <div class="row">
                         <div class="col-xs-12">
-                            <div class="staging-warning"> ${@messages("general.stagingWarning")}</div>
+                            <div class="staging-warning"><@spring.message "general.stagingWarning" /></div>
                         </div>
                     </div>
                 </#if>
@@ -90,25 +92,26 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
     </#if>
 
     <#if scriptsEnabled>
-        @if(request != null && play.filters.csrf.CSRF.getToken.isDefined) {
-        <script @CSPNonce.attr>
-            window.csrf = '@play.filters.csrf.CSRF.getToken.get.value';
-            window.isLoggedIn = @request.hasUser;
-            $.ajaxSetup({headers: {'Csrf-Token': csrf}});
-        </script>
-        }
+<#--    <#if request?? && play.filters.csrf.CSRF.getToken.isDefined>-->
+<#--        &lt;#&ndash; TODO FIX CSRF &ndash;&gt;-->
+<#--        <script @CSPNonce.attr>-->
+<#--            window.csrf = '@play.filters.csrf.CSRF.getToken.get.value';-->
+<#--            window.isLoggedIn = @request.hasUser;-->
+<#--            $.ajaxSetup({headers: {'Csrf-Token': csrf}});-->
+<#--        </script>-->
+<#--    </#if>-->
 
         <script type="text/javascript" src="${@routes.Application.javascriptRoutes}"></script>
-        <script type="text/javascript" src="${@assetsFinder.path("build/vendors.js")}"></script>
-        <script type="text/javascript" src="${@assetsFinder.path("build/font-awesome.js")}"></script>
-        <script type="text/javascript" src="${@assetsFinder.path("build/commons.js")}"></script>
-        <script type="text/javascript" src="${@assetsFinder.path("lib/moment/min/moment.min.js")}"></script>
-        <script type="text/javascript" src="${@assetsFinder.path("bootstrap/js/bootstrap.min.js")}"></script>
-        <script type="text/javascript" src="${@assetsFinder.path("lib/filesize/lib/filesize.js")}"></script>
-        <script type="text/javascript" src="${@assetsFinder.path("lib/clipboard/dist/clipboard.min.js")}"></script>
-        <script type="text/javascript" src="${@assetsFinder.path("highlight/highlight.pack.js")}"></script>
-        <script type="text/javascript" src="${@assetsFinder.path("javascripts/main.js")}"></script>
-        <script type="text/javascript" src="${@assetsFinder.path("javascripts/apiRequests.js")}"></script>
+        <script type="text/javascript" src="<@spring.url "build/vendors.js" />"></script>
+        <script type="text/javascript" src="<@spring.url "build/font-awesome.js" />"></script>
+        <script type="text/javascript" src="<@spring.url "build/commons.js" />"></script>
+        <script type="text/javascript" src="<@spring.url "lib/moment/min/moment.min.js" />"></script>
+        <script type="text/javascript" src="<@spring.url "bootstrap/js/bootstrap.min.js" />"></script>
+        <script type="text/javascript" src="<@spring.url "lib/filesize/lib/filesize.js" />"></script>
+        <script type="text/javascript" src="<@spring.url "lib/clipboard/dist/clipboard.min.js" />"></script>
+        <script type="text/javascript" src="<@spring.url "highlight/highlight.pack.js" />"></script>
+        <script type="text/javascript" src="<@spring.url "javascripts/main.js" />"></script>
+        <script type="text/javascript" src="<@spring.url "javascripts/apiRequests.js" />"></script>
 
         ${additionalScripts}
     </#if>

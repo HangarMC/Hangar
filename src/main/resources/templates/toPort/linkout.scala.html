@@ -1,0 +1,30 @@
+@import controllers.sugar.Requests.OreRequest
+@import ore.OreConfig
+@(remoteUrl: String)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
+
+@layout.base(messages("general.linkout.title")) {
+
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                    @messages("general.linkout.title")
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <p>@messages("general.linkout.warning", remoteUrl)</p>
+                    <a class="pull-left link-go-back">
+                        <i class="fas fa-arrow-left"></i> @messages("project.back")
+                    </a>
+                    <a href="@remoteUrl">
+                        <button class="pull-right btn btn-primary">
+                        @messages("general.continue")
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

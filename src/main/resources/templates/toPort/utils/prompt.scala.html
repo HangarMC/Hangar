@@ -1,0 +1,13 @@
+@import ore.data.Prompt
+@(prompt: Prompt, id: String = "", position: String = "right")(implicit messages: Messages)
+
+<div class="prompt popover @id @position" data-prompt-id="@prompt.value">
+    <div class="arrow"></div>
+    <h3 class="popover-title">@messages(prompt.titleId)</h3>
+    <div class="popover-content">
+        <p>@messages(prompt.messageId)</p>
+        <button class="btn-got-it btn btn-success btn-sm">
+            @messages("prompt.confirm")
+        </button>
+    </div>
+</div>

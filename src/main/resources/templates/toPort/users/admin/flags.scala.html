@@ -1,0 +1,94 @@
+@import controllers.sugar.Requests.OreRequest
+@import models.querymodels.ShownFlag
+@import ore.OreConfig
+@import ore.models.user.User
+@import util.StringFormatterUtils._
+@import util.syntax._
+@import views.html.utils.userAvatar
+
+@* project perms for all visibilities *@
+@(flags: Seq[ShownFlag])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
+
+@projectRoutes = @{controllers.project.routes.Projects}
+
+@scripts = {
+    <script type="text/javascript" src="@assetsFinder.path("javascripts/flags.js")"></script>
+    <script type="text/javascript" src="@assetsFinder.path("javascripts/hideProject.js")"></script>
+}
+
+@layout.base("Flags", scripts) {
+
+    <div class="row">
+        <div class="col-md-12 header-flags">
+            <h2>Flags</h2>
+            <h3 class="minor no-flags" @if(flags.nonEmpty) { style="display: none;" }>
+                <i class="far fa-thumbs-up"></i> @messages("user.flags.none")
+            </h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="list-group list-flags-admin">
+            @flags.map { flag =>
+            <li data-flag-id="@flag.flagId" class="list-group-item">
+                <div class="row">
+                    <div class="col-xs-12 col-md-1" style="width: 40px;">
+                        <a href="@routes.Users.showProjects(flag.reporter)">
+                        @userAvatar(Some(flag.reporter), User.avatarUrl(flag.reporter), clazz = "user-avatar-xs")
+                        </a>
+                    </div>
+                    <div class="col-xs-12 col-md-11">
+                        <span class="description">
+                            <strong>@flag.reporter</strong>
+                            <span class="minor"> reported </span>
+                            <a href="@projectRoutes.show(flag.projectOwnerName, flag.projectSlug)">
+                                @flag.projectNamespace
+                            </a>
+                            <span class="minor"> for </span>
+                            <strong>@flag.flagReason.title</strong>
+                            <span class="minor"> at </span>
+                            <strong>@prettifyDateAndTime(flag.flagCreationDate)</strong>
+                            <br><i class="minor">@flag.flagComment</i>
+                        </span>
+                    </div>
+                    <div class="col-xs-12">
+                        <span class="pull-right btn-group-sm">
+                            <a target="_blank" rel="noopener" href="https://papermc.io/forums/users/@flag.reporter" class="btn btn-default">
+                                <i class="fas fa-reply"></i> @messages("user.flags.messageUser")
+                            </a>
+                            <a target="_blank" rel="noopener" href="https://papermc.io/forums/users/@flag.projectOwnerName" class="btn btn-default">
+                                <i class="fas fa-reply"></i> @messages("user.flags.messageOwner")
+                            </a>
+                            @projects.helper.btnHide(flag.projectNamespace, flag.projectVisibility)
+                            <button type="submit" class="btn btn-primary btn-resolve">
+                                <i class="fas fa-check"></i> <strong>@messages("user.flags.markResolved")</strong>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </li>
+            }
+            </ul>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-visibility-needschanges" tabindex="-1" role="dialog" aria-labelledby="modal-visibility-needschanges">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="@messages("general.close")">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Needs Changes</h4>
+                </div>
+                <div class="modal-body">
+                    <textarea class="textarea-needschanges form-control" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-dismiss="modal">@messages("general.close")</button>
+                    <button class="btn btn-visibility-needschanges-submit btn-primary"><i class="fa fa-pencil-alt"></i> Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

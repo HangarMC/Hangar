@@ -1,0 +1,52 @@
+@import ore.OreConfig
+@import views.html.helper.{CSRF, form}
+@()(implicit messages: Messages, config: OreConfig, request: Request[_])
+
+<div class="modal fade" id="channel-settings" tabindex="-1" role="dialog" aria-labelledBy="settings-label">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="@messages("general.cancel")">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title"></h4>
+            </div>
+            @form(action = routes.Application.showHome()) {
+                @CSRF.formField
+                <div class="modal-body">
+                    <div class="form-inline">
+                        <label for="channel-input">@messages("channel.name")</label>
+                        <input class="form-control channel-input" name="channel-input" type="text" value=""
+                               maxlength="@config.ore.channels.maxNameLen"/>
+                        <input type="hidden" name="channel-color-input" class="channel-color-input" value="" />
+                        <a href="#">
+                            <span class="color-picker" data-toggle="popover" data-placement="right" data-trigger="hover">
+                                <i class="fas fa-circle channel-id" style=""></i>
+                            </span>
+                        </a>
+                        @projects.channels.helper.popoverColorPicker()
+                        <span class="pull-right channel preview" style="display: none;"></span>
+                        <p class="help-block">@messages("channel.nameRequirements")</p>
+                        <br/>
+                        <span class="minor">@messages("channel.nonReviewed")</span>
+                        <input class="form-control non-reviewed"
+                               name="non-reviewed"
+                               type="checkbox"
+                               value="true" />
+                        <a href="#">
+                            <i class="fas fa-question-circle"
+                            title="@messages("channel.nonReviewed.info")"
+                            data-toggle="tooltip"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        @messages("channel.edit.close")
+                    </button>
+                    <input type="submit" value="" class="btn btn-primary" disabled />
+                </div>
+            }
+        </div>
+    </div>
+</div>

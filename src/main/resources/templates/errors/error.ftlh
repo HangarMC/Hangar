@@ -1,11 +1,9 @@
-<#--
-@()(implicit messages: Messages, request: OreRequest[_] = null, config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
--->
-
+<#import "/spring.ftl" as spring />
 <#import "../layout/base.ftlh" as base>
+
 <@base.base title="Error" authEnabled=false noContainer=true>
     <div class="container-error container">
-    <img src="${@assetsFinder.path("images/ore-dark.png")}" alt="Ore logo" />
+    <img src="<@spring.url "images/ore-dark.png" />" alt="Hangar logo" />
     <h1 class="minor">Hangar is experiencing difficulties.</h1>
     <p class="minor">
         If you suspect this is a bug, please take a minute to report it to

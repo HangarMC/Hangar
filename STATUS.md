@@ -8,6 +8,7 @@
 * figure out building of frontend
 * figure out internal api
 * implement external api
+* csrf stuff
 
 ### stuff that is done
 

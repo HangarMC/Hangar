@@ -1,0 +1,273 @@
+@*
+Base template for Project overview.
+*@
+
+@import controllers.project.routes._
+@import controllers.sugar.Requests.OreRequest
+@import models.viewhelper.{ProjectData, ScopedProjectData}
+@import ore.OreConfig
+@import ore.data.project.FlagReason
+@import ore.markdown.MarkdownRenderer
+@import ore.models.project.Visibility
+@import ore.permission.Permission
+@import views.html.helper.{CSPNonce, CSRF, form}
+
+@(p: ProjectData, sp: ScopedProjectData, active: String, noButtons: Boolean = false, additionalScripts: Html = Html(""), additionalStyling: Html = Html(""))(content: Html)(implicit messages: Messages,
+        request: OreRequest[_], flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
+
+@appRoutes = @{controllers.routes.Application}
+
+@scripts = {
+    <script type="text/javascript" src="@assetsFinder.path("javascripts/projectDetail.js")"></script>
+    <script type="text/javascript" src="@assetsFinder.path("javascripts/pageEdit.js")"></script>
+    @additionalScripts
+    <script @CSPNonce.attr>
+            var projectOwner = "@p.project.ownerName";
+            var projectSlug = "@p.project.slug";
+            var projectId = "@p.project.pluginId";
+            var alreadyStarred = @sp.starred;
+            $(function() { $(".nav").find("@active").addClass("active"); });
+    </script>
+}
+
+@meta = {
+    <meta property="og:title" content="@p.project.ownerName / @p.project.name" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="@config.app.baseUrl@Projects.show(p.project.ownerName, p.project.slug)" />
+    <meta property="og:image" content="@p.iconUrl" />
+    <meta property="og:site_name" content="@messages("general.appName")" />
+    @defining(p.project.description.getOrElse("")) { description =>
+        <meta property="og:description" content="@description" />
+    }
+}
+
+@layout.base(p.project.ownerName + " / " + p.project.name, scripts, additionalStyling = additionalStyling, additionalMeta = meta) {
+    <div class="project-header-container">
+        @if(p.visibility != Visibility.Public) {
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="alert alert-danger" role="alert" style="margin: 0.2em 0 0 0">
+                    @if(p.visibility == Visibility.NeedsChanges) {
+                        @if(sp.perms(Permission.EditPage)) {
+                            <a class="btn btn-success pull-right" href="@p.fullSlug/manage/sendforapproval">Send for approval</a>
+                        }
+                        <strong>@messages("visibility.notice." + p.visibility.nameKey)</strong>
+                        <br>
+                            @p.renderVisibilityChange.getOrElse("Unknown")
+
+                        } else {
+                            @if(p.visibility == Visibility.SoftDelete) {
+
+                            @messages("visibility.notice." + p.visibility.nameKey, p.lastVisibilityChangeUser)
+                            @p.renderVisibilityChange.getOrElse("")
+
+                            } else {
+                                @messages("visibility.notice." + p.visibility.nameKey)
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+            <!-- Header -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="project-header">
+                    <div class="project-path">
+                        <a href="@routes.Users.showProjects(p.project.ownerName)">@p.project.ownerName</a>
+                        /
+                        <a class="project-name" href="@Projects.show(p.project.ownerName, p.project.slug)">@p.project.name</a>
+                    </div>
+                    <div>
+                    @defining(p.project.description.getOrElse("")) { description =>
+                        <i class="minor" title="@description">@description</i>
+                    }
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                @if(!noButtons) {
+                    <div class="pull-right project-controls">
+
+                        @flash.get("reported").map { _ =>
+                            <span class="flag-msg">
+                                <i class="fas fa-thumbs-up"></i> Flag submitted for review
+                            </span>
+                        }
+
+                    @if(p.project.visibility != Visibility.SoftDelete) {
+                        @if(request.currentUser.exists(u => !p.project.isOwner(u))) {
+                                                <button class="btn btn-default btn-star">
+                                                    <i id="icon-star" @if(sp.starred) {
+                                                        class="fas fa-star"
+                                                    } else {
+                                                        class="far fa-star" }></i>
+                            <span class="starred"> @p.starCount</span>
+                            </button>
+
+                            <button class="btn btn-watch btn-default @if(sp.watching) { watching }">
+                            <i class="fas @if(sp.watching) { fa-eye-slash } else { fa-eye }"></i>
+                            <span class="watch-status">@if(sp.watching) { Unwatch } else { Watch }</span>
+                            </button>
+                        } else {
+                            <span class="minor stars-static">
+                                <i class="fas fa-star"></i> @p.starCount
+                            </span>
+                        }
+                    }
+
+                        <!-- Flag button -->
+                    @if(request.hasUser && !request.currentUser.get.name.equals(p.project.ownerName)
+                            && !sp.uProjectFlags
+                            && p.project.visibility != Visibility.SoftDelete) {
+                        <button data-toggle="modal" data-target="#modal-flag" class="btn btn-default">
+                            <i class="fas fa-flag"></i> @messages("project.flag")
+                        </button>
+                        <div class="modal fade" id="modal-flag" tabindex="-1" role="dialog"
+                        aria-labelledby="label-flag">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"
+                                        aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        <h4 class="modal-title" id="label-flag">Flag project</h4>
+                                    </div>
+                                    @form(action = Projects.flag(
+                                        p.project.ownerName, p.project.slug)) {
+                                        @CSRF.formField
+                                        <div class="modal-body">
+                                            <ul class="list-group list-flags">
+                                            @for(i <- FlagReason.values.indices) {
+                                                <li class="list-group-item">
+                                                    <span>@FlagReason.withValue(i).title</span>
+                                                    <span class="pull-right">
+                                                        <input required type="radio"
+                                                        value="@FlagReason.withValue(i).value" name="flag-reason"/>
+                                                    </span>
+                                                </li>
+                                            }
+                                            </ul>
+                                            <input class="form-control" name="comment" type="text"
+                                            maxlength="255" required="required"
+                                            placeholder="@messages("ph.comment")&hellip;" />
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                Close
+                                            </button>
+                                            <button type="submit" class="btn btn-primary">Flag</button>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @if(request.hasUser && (request.headerData.globalPerm(Permission.ModNotesAndFlags) || request.headerData.globalPerm(Permission.ViewLogs))) {
+                        <button class="btn btn-alert dropdown-toggle" type="button" id="admin-actions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            Admin actions
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="admin-actions">
+                            @if(request.headerData.globalPerm(Permission.ModNotesAndFlags)) {
+                                <li><a href="@Projects.showFlags(p.project.ownerName, p.project.slug)">
+                                    Flag history (@p.flagCount) </a></li>
+                            }
+                            @if(request.headerData.globalPerm(Permission.ModNotesAndFlags)) {
+                                <li><a href="@Projects.showNotes(p.project.ownerName, p.project.slug)">
+                                    Staff notes (@p.noteCount) </a></li>
+                            }
+                            @if(request.headerData.globalPerm(Permission.ViewLogs)) {
+                                <li><a href="@appRoutes.showLog(None, None, Some(p.project.pluginId), None, None, None, None)">
+                                    User Action Logs</a></li>
+                            }
+                            <li><a href="https://papermc.io/forums/@p.project.ownerName">Owner on forum <i class="fas fa-external-link-alt" aria-hidden="true"></i></a></li>
+                        </ul>
+                    }
+                    </div>
+                }
+            </div>
+        </div>
+
+            <!-- Nav -->
+        <div class="row row-nav">
+            <div class="col-md-12">
+                <div class="navbar navbar-default project-navbar pull-left">
+                    <div class="navbar-inner">
+                        <ul class="nav navbar-nav">
+                                <!-- Tabs -->
+                            <li id="docs" class="">
+                                <a href="@Projects.show(p.project.ownerName, p.project.slug)">
+                                    <i class="fas fa-book"></i> @messages("project.docs")</a>
+                            </li>
+
+                            <li id="versions" class="">
+                                <a href="@Versions.showList(
+                                    p.project.ownerName, p.project.slug)">
+                                    <i class="fas fa-download"></i> @messages("project.versions")
+                                </a>
+                            </li>
+
+                            @if(p.project.topicId.isDefined) {
+                                <li id="discussion" class="">
+                                    <a href="@Projects.showDiscussion(
+                                        p.project.ownerName, p.project.slug)">
+                                        <i class="fas fa-users"></i> @messages("project.discuss")
+                                    </a>
+                                </li>
+                            }
+
+                            @if(sp.perms(Permission.EditProjectSettings)) {
+                                @* Show manager if permitted *@
+                                <li id="settings" class="">
+                                    <a href="@Projects.showSettings(p.project.ownerName, p.project.slug)">
+                                        <i class="fas fa-cog"></i> @messages("project.settings")
+                                    </a>
+                                </li>
+                            }
+
+                            @p.project.settings.homepage.map { homepage =>
+                                <li id="homepage">
+                                    <a title="@homepage" target="_blank" rel="noopener"
+                                    href="@routes.Application.linkOut(homepage)">
+                                        <i class="fas fa-home"></i> Homepage <i class="fas fa-external-link-alt"></i></a>
+                                </li>
+                            }
+
+                            @p.project.settings.issues.map { issues =>
+                                <li id="issues">
+                                    <a title="@issues" target="_blank" rel="noopener"
+                                    href="@routes.Application.linkOut(issues)">
+                                        <i class="fas fa-bug"></i> Issues <i class="fas fa-external-link-alt"></i></a>
+                                </li>
+                            }
+
+                            @p.project.settings.source.map { source =>
+                                <li id="source">
+                                    <a title="@source" target="_blank" rel="noopener"
+                                    href="@routes.Application.linkOut(source)">
+                                        <i class="fas fa-code"></i> Source <i class="fas fa-external-link-alt"></i>
+                                    </a>
+                                </li>
+                            }
+
+                            @p.project.settings.support.map { support =>
+                                <li id="support">
+                                    <a title="@support" target="_blank" rel="noopener"
+                                    href="@routes.Application.linkOut(support)">
+                                        <i class="fas fa-question-circle"></i> Support <i class="fas fa-external-link-alt"></i>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @content
+
+}

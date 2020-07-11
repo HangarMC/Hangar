@@ -1,0 +1,180 @@
+@import controllers.sugar.Requests.OreRequest
+@import models.querymodels.{NotStartedQueueEntry, ReviewedQueueEntry}
+@import ore.OreConfig
+@import ore.models.user.User
+@import util.StringFormatterUtils._
+@import util.syntax._
+@import views.html.helper.CSPNonce
+@import views.html.utils.userAvatar
+@(underReview: Seq[ReviewedQueueEntry], versions: Seq[NotStartedQueueEntry])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
+
+@versionRoutes = @{controllers.project.routes.Versions}
+
+@scripts = {
+    <script @CSPNonce.attr type="text/javascript" src="@assetsFinder.path("javascripts/queue.js")"></script>
+    <script @CSPNonce.attr>
+            $(function(){
+                var momentNow = moment();
+                var maxDifference = @config.ore.queue.maxReviewTime.toMillis;
+                $('span[data-ago]').each(function() {
+                    var momentAgo = moment($(this).data('ago'))
+                    $(this).text($(this).data('title') + momentAgo.fromNow());
+                    if (momentNow.diff(momentAgo) >= maxDifference) {
+                        $(this).text('pastdue ' + momentAgo.fromNow()).css('color', 'darkred');
+                        $(this).parent().parent().find('.status').removeClass().addClass('status far fa-fw fa-clock fa-2x').css('color', 'darkred');
+                    }
+                });
+            });
+    </script>
+}
+
+@layout.base(messages("user.queue"), scripts) {
+
+    <div class="row">
+        <div class="col-md-12 header-flags">
+            <h2>@messages("user.queue.progress")</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title pull-left">@messages("user.queue.progress")</h4>
+                    <div class="clearfix"></div>
+                </div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Project version</th>
+                            <th>Queued by</th>
+                            <th style="text-align: right; max-width: 40px"></th>
+                            <th>Status</th>
+                            <th ></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if(underReview.isEmpty) {
+                            <tr>
+                                <th rowspan="5">
+                                    <h3>@messages("queue.review.none")</h3>
+                                </th>
+                            </tr>
+                        }
+                        @underReview.map { entry =>
+                        <tr @if(entry.isUnfinished && request.headerData.isCurrentUser(entry.reviewerId)){ class="warning" }>
+                        <td>
+                            <a href="@versionRoutes.show(entry.namespace.ownerName, entry.namespace.slug, entry.versionString)">
+                                @entry.namespace
+                            </a>
+                            <br>
+                            @entry.versionString
+                            <span class="channel" style="background-color: @entry.channelColor.hex">@entry.channelName</span>
+                        </td>
+                        <td>
+                            @if(entry.versionAuthor.isDefined) {
+                                <a href="https://papermc.io/forums/users/@entry.versionAuthor.get">
+                                @entry.versionAuthor.get
+                                </a>
+                            } else {
+                                Unknown
+                            }
+                        <br>
+                        @prettifyDateAndTime(entry.versionCreatedAt)
+                        </td>
+                        <td style="text-align: right; max-width: 40px">
+                        @if(entry.isUnfinished) {
+                            @if(request.headerData.isCurrentUser(entry.reviewerId)) {
+                                <i class="status fas fa-fw fa-play-circle fa-2x" style="color: green"></i>
+                            } else {
+                                <i class="status fas fa-fw fa-cog fa-2x" style="color: black"></i>
+                            }
+                        } else {
+                            <i class="status fas fa-fw fa-pause-circle fa-2x" style="color: orange"></i>
+                        }
+                        </td>
+                        <td @if(!entry.isUnfinished){ style="color: darkred" }>
+                        @if(entry.isUnfinished) {
+                            @entry.reviewerName
+                            <br>
+                            <span data-ago="@entry.reviewStarted.toInstant.toEpochMilli" data-title="started "></span>
+                        } else {
+                            <strike>@entry.reviewerName</strike>
+                            <br>
+                            <span data-ago="@entry.reviewStarted.toInstant.toEpochMilli" data-title="abandoned "></span>
+                        }
+                        </td>
+                        <td style="vertical-align: middle; text-align: right; padding-right: 15px;">
+                            <a href="/@helper.urlEncode(entry.namespace.ownerName)/@helper.urlEncode(entry.namespace.slug)/versions/@helper.urlEncode(entry.versionString)/reviews"><i class="fas fa-2x fa-fw fa-info"></i></a>
+                        </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 header-flags">
+            <h2>@messages("user.queue.open")</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title pull-left">@messages("user.queue.open")</h4>
+                    <div class="clearfix"></div>
+                </div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Project</th>
+                            <th>Version</th>
+                            <th>Queued by</th>
+                            <th style="text-align: right">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if(versions.isEmpty) {
+                            <tr>
+                                <th rowspan="5">
+                                    <h3><i class="fas fa-thumbs-o-up"></i> @messages("user.queue.none")</h3>
+                                </th>
+                            </tr>
+                        }
+                        @versions.sortWith((a, b) => a.versionCreatedAt.compareTo(b.versionCreatedAt) < 0).map { entry =>
+                        <tr data-version="@helper.urlEncode(entry.namespace.ownerName)/@helper.urlEncode(entry.namespace.slug)/versions/@helper.urlEncode(entry.versionString)">
+                            <td>
+                            @userAvatar(Some(entry.namespace.ownerName), User.avatarUrl(entry.namespace.ownerName), clazz = "user-avatar-xs")
+                            </td>
+                            <td>
+                                <a href="@versionRoutes.show(entry.namespace.ownerName, entry.namespace.slug, entry.versionString)">
+                                    @entry.namespace
+                                </a>
+                            </td>
+                            <td>
+                                <span class="faint">@prettifyDate(entry.versionCreatedAt)</span>
+                                <span class="minor">@entry.versionString</span>
+                                <span class="channel" style="background-color: @entry.channelColor.hex;">@entry.channelName</span>
+                            </td>
+                            <td>
+                                @if(entry.versionAuthor.isDefined) {
+                                    <a href="https://papermc.io/forums/users/@entry.versionAuthor.get">
+                                    @entry.versionAuthor.get
+                                    </a>
+                                }
+                            <br>
+                        <td style="vertical-align: middle; text-align: right">
+                            <a class="btn btn-success" href="/@helper.urlEncode(entry.namespace.ownerName)/@helper.urlEncode(entry.namespace.slug)/versions/@helper.urlEncode(entry.versionString)/reviews">Start review</a>
+                        </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+}

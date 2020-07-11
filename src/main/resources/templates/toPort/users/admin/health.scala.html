@@ -1,0 +1,119 @@
+@import controllers.sugar.Requests.OreRequest
+@import models.querymodels.UnhealtyProject
+@import ore.OreConfig
+@import ore.models.project.{Project, Version}
+@import ore.models.Job
+@(noTopicProjects: Seq[UnhealtyProject],
+  staleProjects: Seq[UnhealtyProject],
+  notPublicProjects: Seq[UnhealtyProject],
+  missingFileProjects: Seq[(Version, Project)],
+  erroredJobs: Seq[Job])(implicit request: OreRequest[_], messages: Messages, config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
+
+@projectRoutes = @{controllers.project.routes.Projects}
+@versionRoutes = @{controllers.project.routes.Versions}
+
+@layout.base(messages("admin.health.title")) {
+
+    <div class="row">
+        <div class="col-md-12">
+            <h1>@messages("admin.health.title")</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">@messages("admin.health.discuss")</h4>
+                </div>
+                <div class="panel-body list-group list-group-health">
+                @noTopicProjects.map { project =>
+                    <div class="list-group-item">
+                        <a class="pull-left" href="@projectRoutes.show(project.namespace.ownerName, project.namespace.slug)">
+                            <strong>@project.namespace</strong>
+                        </a>
+                        <div class="clearfix"></div>
+                    </div>
+                }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">@messages("admin.health.jobs")</h4>
+                </div>
+                <div class="panel-body">
+                @erroredJobs.map { job =>
+                    <div class="list-group-item">
+                        Jobtype: @job.info.jobType Error type: @job.info.lastErrorDescriptor.get Happened: @job.info.lastUpdated.get
+                        <div class="clearfix"></div>
+                    </div>
+                }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">@messages("admin.health.stale")</h4>
+                </div>
+                <div class="panel-body list-group list-group-health">
+                @staleProjects.map { project =>
+                    <div class="list-group-item">
+                        <a href="@projectRoutes.show(project.namespace.ownerName, project.namespace.slug)">
+                            <strong>@project.namespace</strong>
+                        </a>
+                    </div>
+                }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">@messages("admin.health.hidden")</h4>
+                </div>
+                <div class="panel-body list-group list-group-health">
+                @notPublicProjects.map { project =>
+                    <div class="list-group-item">
+                        <a href="@projectRoutes.show(project.namespace.ownerName, project.namespace.slug)">
+                            <strong>@project.namespace</strong> <small>@messages("visibility.name." + project.visibility.nameKey)</small>
+                        </a>
+                    </div>
+                }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">@messages("admin.health.platform")</h4>
+                </div>
+                <div class="panel-body list-group list-group-health">
+                    <div>TODO: Filters?</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">@messages("admin.health.missingFile")</h4>
+                </div>
+                <div class="panel-body list-group list-group-health">
+                @missingFileProjects.map { case (version, project) =>
+                <div class="list-group-item">
+                    <a href="@versionRoutes.show(project.ownerName, project.slug, version.name)">
+                        <strong>@project.namespace/@version.name</strong>
+                </a>
+                </div>
+                }
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

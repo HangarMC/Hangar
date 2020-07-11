@@ -1,11 +1,17 @@
 package me.minidigger.hangar.config;
 
+import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.http.CacheControl;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.resource.VersionResourceResolver;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
@@ -35,6 +41,29 @@ public class MvcConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/assets/**")
                 .addResourceLocations("classpath:/public/")
-                .setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS));
+                .setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
+                .resourceChain(true)
+                .addResolver(new VersionResourceResolver());
+    }
+
+    @Bean
+    public ErrorViewResolver errorViewResolver() {
+        return (request, status, model) -> {
+            if (status == HttpStatus.GATEWAY_TIMEOUT || status == HttpStatus.REQUEST_TIMEOUT) {
+                return new ModelAndView("errors/timeout");
+            } else if (status == HttpStatus.NOT_FOUND) {
+                return new ModelAndView("errors/notFound");
+            } else {
+                return new ModelAndView("errors/error");
+            }
+        };
+    }
+
+    @Bean
+    public MessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasename("classpath:messages");
+        messageSource.setCacheSeconds(10); //reload messages every 10 seconds
+        return messageSource;
     }
 }

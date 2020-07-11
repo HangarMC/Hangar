@@ -1,6 +1,4 @@
-<#--
-@()(implicit messages: Messages, assetsFinder: AssetsFinder)
--->
+<#import "/spring.ftl" as spring />
 
 <#macro footer>
     <footer class="footer">
@@ -8,8 +6,9 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        By using this site you're accepting our <a class="tos"
-                                                                   href="https://docs.spongepowered.org/stable/en/about/tos.html">@messages("general.terms")</a>
+                        By using this site you're accepting our
+                        <a class="tos"
+                           href="https://docs.spongepowered.org/stable/en/about/tos.html"><@spring.message "general.terms" /></a>
                     </div>
                 </div>
             </div>
@@ -19,11 +18,12 @@
                 <div class="row">
                     <div class="col-sm-2 col-xs-12">
                         <h5>Hangar API</h5>
-                        <a class="btn dark" href="${@routes.Application.swagger()}">${@messages("general.api")}</a>
+                        <a class="btn dark"
+                           href="${@routes.Application.swagger()}"><@spring.message "general.api" /></a>
                     </div>
                     <div class="col-sm-2 col-xs-12">
                         <h5>Help Needed?</h5>
-                        <a class="btn dark" href="https://papermc.io/forums/">${@messages("general.contact")}</a>
+                        <a class="btn dark" href="https://papermc.io/forums/"><@spring.message "general.contact" /></a>
                     </div>
                     <div class="col-sm-4 col-xs-12">
                         <a href="https://www.papermc.io">
@@ -35,11 +35,12 @@
                     <div class="col-sm-2 col-xs-12">
                         <h5>Found an Issue?</h5>
                         <a class="btn dark" target="_blank" rel="noopener"
-                           href="https://github.com/MiniDigger/Hangar/issues">${@messages("general.issues")}</a>
+                           href="https://github.com/MiniDigger/Hangar/issues"><@spring.message "general.issues" /></a>
                     </div>
                     <div class="col-sm-2 col-xs-12">
                         <h5>Our Sponsors</h5>
-                        <a class="btn dark" href="https://www.papermc.io/sponsors">${@messages("general.sponsors")}</a>
+                        <a class="btn dark"
+                           href="https://www.papermc.io/sponsors"><@spring.message "general.sponsors" /></a>
                     </div>
                 </div>
             </div>
@@ -48,7 +49,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <p>Copyright &copy; ${@messages("general.organization")}
+                        <p>Copyright &copy; <@spring.message "general.organization" />
                             2016-${Calendar.getInstance().get(Calendar.YEAR)}</p>
                     </div>
                 </div>

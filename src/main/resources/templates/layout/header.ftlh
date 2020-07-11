@@ -1,13 +1,11 @@
-<#--
-@(authEnabled: Boolean = true)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
--->
+<#import "/spring.ftl" as spring />
 
 <#macro header authEnabled=true>
     <nav id="topbar" class="navbar-main navbar-inverse">
         <div class="container">
             <#-- Left navbar -->
             <div id="sp-logo-container">
-                <a class="logo" href="${@routes.Application.showHome()}">
+                <a class="logo" href="<@spring.message "routes.showHome" />">
                     <img src="https://papermc.io/images/logo-marker.svg" alt="Paper logo">
                     <i class="fas fa-fw fa-chevron-down"></i>
                 </a>
@@ -15,30 +13,30 @@
                 <div id="sp-logo-menu">
                     <ul id="sp-logo-dropdown">
                         <li><a href="https://www.papermc.io">
-                                <i class="fa-fw fas fa-home"></i>${@messages("general.home")}
+                                <i class="fa-fw fas fa-home"></i><@spring.message "general.home" />
                             </a></li>
                         <li><a href="https://papermc.io/forums">
-                                <i class="fa-fw fas fa-comments"></i>${@messages("general.forums")}
+                                <i class="fa-fw fas fa-comments"></i><@spring.message "general.forums" />
                             </a></li>
                         <li><a href="https://github.com/PaperMC">
-                                <i class="fa-fw fas fa-code"></i>${@messages("general.code")}
+                                <i class="fa-fw fas fa-code"></i><@spring.message "general.code" />
                             </a></li>
                         <li><a href="https://paper.readthedocs.io">
-                                <i class="fa-fw fas fa-book"></i>${@messages("general.docs")}
+                                <i class="fa-fw fas fa-book"></i><@spring.message "general.docs" />
                             </a></li>
                         <li><a href="https://papermc.io/javadocs">
-                                <i class="fa-fw fas fa-graduation-cap"></i>${@messages("general.javadocs")}
+                                <i class="fa-fw fas fa-graduation-cap"></i><@spring.message "general.javadocs" />
                             </a></li>
-                        <li class="active"><a href="${@routes.Application.showHome()}">
-                                <img src="${@assetsFinder.path("images/ore-nav.svg")}" alt=""
-                                     class="fa-fw ore-nav">${@messages("general.plugins")}
-                                (${@messages("general.appName")})
+                        <li class="active"><a href="<@spring.message "routes.showHome" />">
+                                <img src="<@spring.url "images/ore-nav.svg" />" alt=""
+                                     class="fa-fw ore-nav"><@spring.message "general.plugins" />
+                                (<@spring.message "general.appName" />)
                             </a></li>
                         <li><a href="https://papermc.io/downloads">
-                                <i class="fa-fw fas fa-download"></i>${@messages("general.getsponge")}
+                                <i class="fa-fw fas fa-download"></i><@spring.message "general.getsponge" />
                             </a></li>
                         <li><a href="https://papermc.io/community">
-                                <i class="fa-fw fas fa-comment"></i>${@messages("general.irc")}
+                                <i class="fa-fw fas fa-comment"></i><@spring.message "general.irc" />
                             </a></li>
                     </ul>
                 </div>
@@ -56,27 +54,29 @@
                             </a>
                             <ul class="user-dropdown dropdown-menu" aria-label="Create new&hellip;">
                                 <li>
-                                    <a href="${@projectRoutes.Projects.showCreator()}">
+                                    <a href="<@spring.message "routes.projects.showCreator" />">
                                         <i class="fas fa-book fa-fw mr-1"></i>
-                                        <span>${}@messages("project.create")}</span>
+                                        <span><@spring.message "project.create"/></span>
                                     </a>
-                                    <a href="${@routes.Organizations.showCreator()}">
+                                    <a href="<@spring.message "routes.org.showCreator" />">
                                         <i class="fas fa-users fa-fw mr-1"></i>
-                                        <span>${@messages("org.create")}</span>
+                                        <span><@spring.message "org.create" /></span>
                                     </a>
                                 </li>
                             </ul>
                         </li>
 
-                        <li class="nav-icon authors-icon" <@tooltip title=@messages("project.viewAuthors")/>>
-                            <a href="${@routes.Users.showAuthors(None, None)}">
+                        <#assign title><@spring.message "project.viewAuthors"/></#assign>
+                        <li class="nav-icon authors-icon" <@tooltip title=title />>
+                            <a href="<@spring.message "routes.users.showAuthors" />">
                                 <i class="icon fas fa-users"></i>
                             </a>
                         </li>
 
                         <#if request.headerData.globalPerm(Permission.IsStaff)>
-                            <li class="nav-icon staff-icon" <@tooltip title=@messages("project.viewStaff")/>>
-                                <a href="${@routes.Users.showStaff(None, None)}">
+                            <#assign title><@spring.message "project.viewStaff"/></#assign>
+                            <li class="nav-icon staff-icon" <@tooltip title=title />>
+                                <a href="<@spring.message "routes.users.showStaff" />">
                                     <i class="icon fas fa-user-tie"></i>
                                 </a>
                             </li>
@@ -91,18 +91,18 @@
                                 <img height="32" width="32" class="user-avatar" src="${cu.avatarUrl}" alt="@cu.name"/>
                                 <span class="caret"></span>
                             </a>
-                            <ul class="user-dropdown dropdown-menu" aria-label="${@messages("aria.dropdown.menu", 1)}">
+                            <ul class="user-dropdown dropdown-menu" aria-label="<@spring.messageArgs "aria.dropdown.menu", 1 />">
                                 <li>
-                                    <a href="${@routes.Users.showProjects(cu.name)}">
+                                    <a href="<@spring.message "routes.users.showProjects" />${cu.name}">
                                         <i class="fas fa-user mr-1"></i>
                                         <span>${cu.name}</span>
                                     </a>
                                 </li>
 
                                 <li>
-                                    <a href="${@routes.Users.showNotifications(None, None)}">
+                                    <a href="<@spring.message "routes.users.showNotifications" />">
                                         <i class="fas fa-bell mr-1"></i>
-                                        <span>${@messages("notification.plural")}
+                                        <span><@spring.message "notification.plural" />
                                             <#if request.headerData.hasUnreadNotifications>
                                                 <span class="unread"></span>
                                             </#if>
@@ -112,9 +112,9 @@
 
                                 <#if request.headerData.globalPerm(Permission.ModNotesAndFlags)>
                                     <li>
-                                        <a href="${@routes.Application.showFlags()}">
+                                        <a href="<@spring.message "routes.showFlags" />">
                                             <i class="fas fa-flag mr-1"></i>
-                                            <span>${@messages("project.flag.plural")}
+                                            <span><@spring.message "project.flag.plural" />
                                                 <#if request.headerData.unresolvedFlags>
                                                     <span class="unread"></span>
                                                 </#if>
@@ -141,7 +141,7 @@
                                     <li>
                                         <a href="${@routes.Application.showQueue()}">
                                             <i class="far fa-thumbs-up mr-1"></i>
-                                            <span>${@messages("user.queue")}
+                                            <span><@spring.message "user.queue" />
                                                 <#if request.headerData.hasReviewQueue>
                                                     <span class="unread"></span>
                                                 </#if>
@@ -154,7 +154,7 @@
                                     <li>
                                         <a href="${@routes.Application.showStats(None, None)}">
                                             <i class="fas fa-chart-area mr-1"></i>
-                                            <span>${@messages("user.stats")}
+                                            <span><@spring.message "user.stats" />
                                     </span>
                                         </a>
                                     </li>
@@ -164,7 +164,7 @@
                                     <li>
                                         <a href="${@routes.Application.showHealth()}">
                                             <i class="fas fa-heartbeat mr-1"></i>
-                                            <span>${@messages("admin.health.title")}
+                                            <span><@spring.message "admin.health.title" />
                                     </span>
                                         </a>
                                     </li>
@@ -174,7 +174,7 @@
                                     <li>
                                         <a href="${@routes.Application.showLog(None, None, None, None, None, None, None)}">
                                             <i class="fas fa-list mr-1"></i>
-                                            <span>${@messages("admin.log.title")}
+                                            <span><@spring.message "admin.log.title" />
                                     </span>
                                         </a>
                                     </li>
@@ -184,7 +184,7 @@
                                 <li>
                                     <a href="${@routes.Users.logOut()}">
                                         <i class="fas fa-sign-out-alt mr-1"></i>
-                                        <span>${@messages("general.signout")}</span>
+                                        <span><@spring.message "general.signout" /></span>
                                     </a>
                                 </li>
                             </ul>
@@ -193,9 +193,9 @@
                         <li>
                             <div class="btn-group-login">
                                 <a href="${@routes.Users.signUp()}"
-                                   class="btn btn-primary navbar-btn">${@messages("general.signup")}</a>
+                                   class="btn btn-primary navbar-btn"><@spring.message "general.signup" /></a>
                                 <a href="@routes.Users.logIn(None, None, Some(request.path))"
-                                   class="btn btn-primary navbar-btn">${@messages("general.login")}</a>
+                                   class="btn btn-primary navbar-btn"><@spring.message "general.login" /></a>
                             </div>
                         </li>
                     </#if>
