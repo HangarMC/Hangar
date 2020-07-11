@@ -1,6 +1,6 @@
 package me.minidigger.hangar.model;
 
-import org.threeten.bp.OffsetDateTime;
+import java.time.OffsetDateTime;
 
 public class ApiSession {
 

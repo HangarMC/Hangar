@@ -3,8 +3,8 @@ package me.minidigger.hangar.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.springframework.validation.annotation.Validated;
-import org.threeten.bp.OffsetDateTime;
 
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;

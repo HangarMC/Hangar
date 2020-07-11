@@ -2,9 +2,9 @@ package me.minidigger.hangar.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.OffsetDateTime;
 
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.Date;
 
 import springfox.documentation.builders.ApiInfoBuilder;
