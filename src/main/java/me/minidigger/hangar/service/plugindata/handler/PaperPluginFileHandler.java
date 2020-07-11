@@ -28,41 +28,49 @@ public class PaperPluginFileHandler extends FileTypeHandler {
 
         Yaml yaml = new Yaml();
         Map<String, Object> data = yaml.load(reader);
-        if (data == null || data.size() == 0) {
+        if (data == null || data.isEmpty()) {
             return result;
         }
 
-        if (data.containsKey("version")) {
-            result.add(new StringDataValue("version", (String) data.get("version")));
+        String version = (String) data.get("version");
+        if (version != null) {
+            result.add(new StringDataValue("version", version));
         }
-        if (data.containsKey("name")) {
-            result.add(new StringDataValue("name", (String) data.get("name")));
+        String name = (String) data.get("name");
+        if (name != null) {
+            result.add(new StringDataValue("name", name));
         }
-        if (data.containsKey("description")) {
-            result.add(new StringDataValue("description", (String) data.get("description")));
+        String description = (String) data.get("description");
+        if (description != null) {
+            result.add(new StringDataValue("description", description));
         }
-        if (data.containsKey("website")) {
-            result.add(new StringDataValue("url", (String) data.get("website")));
+        String website = (String) data.get("website");
+        if (website != null) {
+            result.add(new StringDataValue("url", website));
         }
-        if (data.containsKey("author")) {
-            result.add(new DataValue.StringListDataValue("authors", List.of((String) data.get("author"))));
+        String author = (String) data.get("author");
+        if (author != null) {
+            result.add(new DataValue.StringListDataValue("authors", List.of(author)));
         }
-        if (data.containsKey("authors")) {
-            //noinspection unchecked
-            result.add(new StringListDataValue("authors", (List<String>) data.get("authors")));
+        List<String> authors = (List<String>) data.get("authors");
+        if (authors != null) {
+            result.add(new StringListDataValue("authors", authors));
         }
+
         List<Dependency> dependencies = new ArrayList<>();
-        if (data.containsKey("softdepend")) {
-            //noinspection unchecked
-            dependencies.addAll(((List<String>) data.get("softdepend")).stream().map(p -> new Dependency(p, null, false)).collect(Collectors.toList()));
+        //noinspection unchecked
+        List<String> softdepend = (List<String>) data.get("softdepend");
+        if (softdepend != null) {
+            dependencies.addAll(softdepend.stream().map(p -> new Dependency(p, null, false)).collect(Collectors.toList()));
         }
-        if (data.containsKey("depend")) {
-            //noinspection unchecked
-            dependencies.addAll(((List<String>) data.get("depend")).stream().map(p -> new Dependency(p, null)).collect(Collectors.toList()));
+        //noinspection unchecked
+        List<String> depend = (List<String>) data.get("depend");
+        if (depend != null) {
+            dependencies.addAll(depend.stream().map(p -> new Dependency(p, null)).collect(Collectors.toList()));
         }
 
         String paperVersion = data.getOrDefault("api-version", "").toString();
-        Dependency paperDependency = new Dependency("paperapi", paperVersion.length() > 0 ? paperVersion : null);
+        Dependency paperDependency = new Dependency("paperapi", !paperVersion.isEmpty() ? paperVersion : null);
         dependencies.add(paperDependency);
         result.add(new DependencyDataValue("dependencies", dependencies));
 

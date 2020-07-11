@@ -25,33 +25,39 @@ public class VelocityFileHandler extends FileTypeHandler {
 
         Yaml yaml = new Yaml();
         Map<String, Object> data = yaml.load(reader);
-        if (data == null || data.size() == 0) {
+        if (data == null || data.isEmpty()) {
             return result;
         }
 
-        if (data.containsKey("version")) {
-            result.add(new DataValue.StringDataValue("version", (String) data.get("version")));
+        String version = (String) data.get("version");
+        if (version != null) {
+            result.add(new DataValue.StringDataValue("version", version));
         }
-        if (data.containsKey("name")) {
-            result.add(new DataValue.StringDataValue("name", (String) data.get("name")));
+        String name = (String) data.get("name");
+        if (name != null) {
+            result.add(new DataValue.StringDataValue("name", name));
         }
-        if (data.containsKey("description")) {
-            result.add(new DataValue.StringDataValue("description", (String) data.get("description")));
+        String description = (String) data.get("description");
+        if (description != null) {
+            result.add(new DataValue.StringDataValue("description", description));
         }
-        if (data.containsKey("url")) {
-            result.add(new DataValue.StringDataValue("url", (String) data.get("url")));
+        String url = (String) data.get("url");
+        if (url != null) {
+            result.add(new DataValue.StringDataValue("url", url));
         }
-        if (data.containsKey("author")) {
-            result.add(new DataValue.StringListDataValue("authors", List.of((String) data.get("author"))));
+        String author = (String) data.get("author");
+        if (author != null) {
+            result.add(new DataValue.StringListDataValue("authors", List.of(author)));
         }
-        if (data.containsKey("authors")) {
-            //noinspection unchecked
-            result.add(new DataValue.StringListDataValue("authors", (List<String>) data.get("authors")));
+        //noinspection unchecked
+        List<String> authors = (List<String>) data.get("authors");
+        if (authors != null) {
+            result.add(new DataValue.StringListDataValue("authors", authors));
         }
         List<Dependency> dependencies;
-        if (data.containsKey("dependencies")) {
-            //noinspection unchecked
-            List<Map<String, Object>> deps = (List<Map<String, Object>>) data.get("dependencies");
+        //noinspection unchecked
+        List<Map<String, Object>> deps = (List<Map<String, Object>>) data.get("dependencies");
+        if (deps != null) {
             dependencies = deps.stream().map(p -> new Dependency((String) p.get("id"), null, !(boolean) p.getOrDefault("optional", false))).collect(Collectors.toList());
         } else {
             dependencies = new ArrayList<>();
