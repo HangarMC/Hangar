@@ -9,12 +9,12 @@
                         aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="label-download">@messages("general.notice")</h4>
+                <h4 class="modal-title" id="label-download"><@spring.message "general.notice" /></h4>
             </div>
             <div class="modal-body">@messages(message)</div>
             <div class="modal-footer">
-                <button class="btn btn-default" data-dismiss="modal">@messages("general.cancel")</button>
-                <a href="@call" class="btn btn-primary">@messages("general.continue")</a>
+                <button class="btn btn-default" data-dismiss="modal"><@spring.message "general.cancel" /></button>
+                <a href="@call" class="btn btn-primary"><@spring.message "general.continue" /></a>
             </div>
         </div>
     </div>

@@ -16,14 +16,14 @@
 
     <div class="row">
         <div class="col-md-12">
-            <h1>@messages("admin.health.title")</h1>
+            <h1><@spring.message "admin.health.title" /></h1>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title">@messages("admin.health.discuss")</h4>
+                    <h4 class="panel-title"><@spring.message "admin.health.discuss" /></h4>
                 </div>
                 <div class="panel-body list-group list-group-health">
                 @noTopicProjects.map { project =>
@@ -40,7 +40,7 @@
         <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title">@messages("admin.health.jobs")</h4>
+                    <h4 class="panel-title"><@spring.message "admin.health.jobs" /></h4>
                 </div>
                 <div class="panel-body">
                 @erroredJobs.map { job =>
@@ -57,7 +57,7 @@
         <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title">@messages("admin.health.stale")</h4>
+                    <h4 class="panel-title"><@spring.message "admin.health.stale" /></h4>
                 </div>
                 <div class="panel-body list-group list-group-health">
                 @staleProjects.map { project =>
@@ -73,7 +73,7 @@
         <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title">@messages("admin.health.hidden")</h4>
+                    <h4 class="panel-title"><@spring.message "admin.health.hidden" /></h4>
                 </div>
                 <div class="panel-body list-group list-group-health">
                 @notPublicProjects.map { project =>
@@ -91,7 +91,7 @@
         <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title">@messages("admin.health.platform")</h4>
+                    <h4 class="panel-title"><@spring.message "admin.health.platform" /></h4>
                 </div>
                 <div class="panel-body list-group list-group-health">
                     <div>TODO: Filters?</div>
@@ -101,7 +101,7 @@
         <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title">@messages("admin.health.missingFile")</h4>
+                    <h4 class="panel-title"><@spring.message "admin.health.missingFile" /></h4>
                 </div>
                 <div class="panel-body list-group list-group-health">
                 @missingFileProjects.map { case (version, project) =>

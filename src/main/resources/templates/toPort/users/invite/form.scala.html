@@ -27,7 +27,7 @@
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
-    @messages("user.notFound") "<span class="error-username"></span>"
+    <@spring.message "user.notFound" /> "<span class="error-username"></span>"
 </div>
 
 <div class="member-table-container">
@@ -38,7 +38,7 @@
                 <td>
                     @userAvatar(Some(owner.name), owner.avatarUrl, clazz = "user-avatar-xs")
                     <strong>@owner.name</strong>
-                    <span><i class="minor">@messages("project.owner")</i></span>
+                    <span><i class="minor"><@spring.message "project.owner" /></i></span>
                 </td>
             </tr>
 

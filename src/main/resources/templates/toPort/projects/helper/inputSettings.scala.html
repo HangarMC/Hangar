@@ -94,8 +94,8 @@
 
 <div class="setting">
     <div class="setting-description">
-        <h4>@messages("project.settings.license") <i>(@messages("general.optional"))</i></h4>
-        <p>@messages("project.settings.license.info")</p>
+        <h4><@spring.message "project.settings.license") <i>(@messages("general.optional" />)</i></h4>
+        <p><@spring.message "project.settings.license.info" /></p>
     </div>
     <div class="input-group pull-left">
         <div class="input-group-btn">
@@ -107,12 +107,12 @@
             <input type="text" class="form-control" style="display: none;" name="license-name" form="@form"
                    value="@licenseName.getOrElse(messages("licenses.mit"))" />
             <ul class="dropdown-menu dropdown-license">
-                <li><a>@messages("licenses.mit")</a></li>
-                <li><a>@messages("licenses.apache2.0")</a></li>
-                <li><a>@messages("licenses.gpl")</a></li>
-                <li><a>@messages("licenses.lgpl")</a></li>
+                <li><a><@spring.message "licenses.mit" /></a></li>
+                <li><a><@spring.message "licenses.apache2.0" /></a></li>
+                <li><a><@spring.message "licenses.gpl" /></a></li>
+                <li><a><@spring.message "licenses.lgpl" /></a></li>
                 <li role="separator" class="divider"></li>
-                <li><a class="license-custom">@messages("licenses.custom")&hellip;</a></li>
+                <li><a class="license-custom"><@spring.message "licenses.custom" />&hellip;</a></li>
             </ul>
         </div>
         <input type="text" name="license-url" class="form-control" form="@form"
@@ -123,8 +123,8 @@
 
 <div class="setting">
     <div class="setting-description">
-        <h4>@messages("project.settings.forumSync")</h4>
-        <p>@messages("project.settings.forumSync.info")</p>
+        <h4><@spring.message "project.settings.forumSync" /></h4>
+        <p><@spring.message "project.settings.forumSync.info" /></p>
     </div>
     <div class="setting-content">
         <label>

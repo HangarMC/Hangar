@@ -26,8 +26,8 @@
             PROJECT_OWNER = "@p.project.ownerName";
             PROJECT_SLUG = "@p.project.slug";
             pluginId = "@p.project.pluginId";
-            keyGenText = "@messages("project.settings.genKey")";
-            keyRevokeText = "@messages("project.settings.revokeKey")";
+            keyGenText = "<@spring.message "project.settings.genKey" />";
+            keyRevokeText = "<@spring.message "project.settings.revokeKey" />";
     </script>
 }
 
@@ -39,7 +39,7 @@
             <!-- Main settings -->
             <div class="panel panel-default panel-settings">
                 <div class="panel-heading">
-                    <h3 class="panel-title pull-left">@messages("project.settings")</h3>
+                    <h3 class="panel-title pull-left"><@spring.message "project.settings" /></h3>
                     @if(request.headerData.globalPerm(Permission.SeeHidden)) {
                         @projects.helper.btnHide(p.project.namespace, p.project.visibility)
 
@@ -47,7 +47,7 @@
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="@messages("general.close")">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="<@spring.message "general.close" />">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                         <h4 class="modal-title" style="color:black;">Comment</h4>
@@ -56,7 +56,7 @@
                                         <textarea class="textarea-visibility-comment form-control" rows="3"></textarea>
                                     </div>
                                     <div class="modal-footer">
-                                        <button class="btn btn-default" data-dismiss="modal">@messages("general.close")</button>
+                                        <button class="btn btn-default" data-dismiss="modal"><@spring.message "general.close" /></button>
                                         <button class="btn btn-visibility-comment-submit btn-primary"><i class="fas fa-pencil-alt"></i> Submit</button>
                                     </div>
                                 </div>
@@ -91,7 +91,7 @@
                                 @p.project.description.map { description =>
                                 value="@description"
                                 }.getOrElse {
-                                    placeholder="@messages("version.create.noDescription")"
+                                    placeholder="<@spring.message "version.create.noDescription" />"
                             }
                             />
                             <div class="clearfix"></div>
@@ -131,9 +131,9 @@
                     @if(sp.perms(Permission.EditApiKeys)) {
                         <div class="setting">
                             <div class="setting-description">
-                                <h4>@messages("project.settings.deployKey")</h4>
+                                <h4><@spring.message "project.settings.deployKey" /></h4>
                                 <p>
-                                    @messages("project.settings.deployKey.info")
+                                    <@spring.message "project.settings.deployKey.info" />
                                     <a href="#"><i class="fas fa-question-circle"></i></a>
                                 </p>
                                 @deploymentKey.map { key =>
@@ -146,12 +146,12 @@
                             @deploymentKey.map { key =>
                             <button class="btn btn-danger btn-block btn-key-revoke" data-key-id="@key.id">
                                 <span class="spinner" style="display: none;"><i class="fas fa-spinner fa-spin"></i></span>
-                                <span class="text">@messages("project.settings.revokeKey")</span>
+                                <span class="text"><@spring.message "project.settings.revokeKey" /></span>
                             </button>
                             }.getOrElse {
                                 <button class="btn btn-info btn-block btn-key-gen">
                                     <span class="spinner" style="display: none;"><i class="fas fa-spinner fa-spin"></i></span>
-                                    <span class="text">@messages("project.settings.genKey")</span>
+                                    <span class="text"><@spring.message "project.settings.genKey" /></span>
                                 </button>
                             }
                             </div>
@@ -162,8 +162,8 @@
                         <!-- Rename -->
                     <div class="setting">
                         <div class="setting-description">
-                            <h4 class="danger">@messages("project.rename")</h4>
-                            <p>@messages("project.rename.info")</p>
+                            <h4 class="danger"><@spring.message "project.rename" /></h4>
+                            <p><@spring.message "project.rename.info" /></p>
                         </div>
                         <div class="setting-content">
                             <input form="rename" id="name" name="name" class="form-control" type="text"
@@ -171,7 +171,7 @@
                             maxlength="@config.ore.projects.maxNameLen">
                             <button id="btn-rename" data-toggle="modal" data-target="#modal-rename"
                             class="btn btn-warning" disabled>
-                            @messages("project.rename")
+                            <@spring.message "project.rename" />
                             </button>
                         </div>
                         <div class="clearfix"></div>
@@ -238,22 +238,22 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"
-                    aria-label="@messages("general.cancel")">
+                    aria-label="<@spring.message "general.cancel" />">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="label-rename">@messages("project.rename.title")</h4>
+                    <h4 class="modal-title" id="label-rename"><@spring.message "project.rename.title" /></h4>
                 </div>
                 <div class="modal-body">
-                @messages("project.rename.info")
+                <@spring.message "project.rename.info" />
                 </div>
                 <div class="modal-footer">
                     <div class="form-inline">
                     @form(action = projectRoutes.rename(p.project.ownerName, p.project.slug), Symbol("id") -> "rename") {
                         @CSRF.formField
                         <button type="button" class="btn btn-default" data-dismiss="modal">
-                        @messages("channel.edit.close")
+                        <@spring.message "channel.edit.close" />
                         </button>
-                        <input type="submit" name="rename" value="@messages("project.rename")" class="btn btn-warning">
+                        <input type="submit" name="rename" value="<@spring.message "project.rename" />" class="btn btn-warning">
                         }
                     </div>
                 </div>
@@ -268,11 +268,11 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="label-delete">@messages("project.delete.title")</h4>
+                    <h4 class="modal-title" id="label-delete"><@spring.message "project.delete.title" /></h4>
                 </div>
                 @form(action = projectRoutes.softDelete(p.project.ownerName, p.project.slug)) {
                     <div class="modal-body">
-                        @messages("project.delete.info")
+                        <@spring.message "project.delete.info" />
                         <br>
                         <textarea name="comment" class="textarea-delete-comment form-control" rows="3"></textarea>
                         <br>
@@ -284,10 +284,10 @@
                         <div class="form-inline">
                             @CSRF.formField
                             <button type="button" class="btn btn-default" data-dismiss="modal">
-                            @messages("channel.edit.close")
+                            <@spring.message "channel.edit.close" />
                             </button>
                             <input type="submit" name="delete"
-                            value="@messages("general.delete")" class="btn btn-danger">
+                            value="<@spring.message "general.delete" />" class="btn btn-danger">
                         </div>
                     </div>
                 }

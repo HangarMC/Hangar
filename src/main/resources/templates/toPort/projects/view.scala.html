@@ -35,7 +35,7 @@ Base template for Project overview.
     <meta property="og:type" content="website" />
     <meta property="og:url" content="@config.app.baseUrl@Projects.show(p.project.ownerName, p.project.slug)" />
     <meta property="og:image" content="@p.iconUrl" />
-    <meta property="og:site_name" content="@messages("general.appName")" />
+    <meta property="og:site_name" content="<@spring.message "general.appName" />" />
     @defining(p.project.description.getOrElse("")) { description =>
         <meta property="og:description" content="@description" />
     }
@@ -121,7 +121,7 @@ Base template for Project overview.
                             && !sp.uProjectFlags
                             && p.project.visibility != Visibility.SoftDelete) {
                         <button data-toggle="modal" data-target="#modal-flag" class="btn btn-default">
-                            <i class="fas fa-flag"></i> @messages("project.flag")
+                            <i class="fas fa-flag"></i> <@spring.message "project.flag" />
                         </button>
                         <div class="modal fade" id="modal-flag" tabindex="-1" role="dialog"
                         aria-labelledby="label-flag">
@@ -151,7 +151,7 @@ Base template for Project overview.
                                             </ul>
                                             <input class="form-control" name="comment" type="text"
                                             maxlength="255" required="required"
-                                            placeholder="@messages("ph.comment")&hellip;" />
+                                            placeholder="<@spring.message "ph.comment" />&hellip;" />
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -200,13 +200,13 @@ Base template for Project overview.
                                 <!-- Tabs -->
                             <li id="docs" class="">
                                 <a href="@Projects.show(p.project.ownerName, p.project.slug)">
-                                    <i class="fas fa-book"></i> @messages("project.docs")</a>
+                                    <i class="fas fa-book"></i> <@spring.message "project.docs" /></a>
                             </li>
 
                             <li id="versions" class="">
                                 <a href="@Versions.showList(
                                     p.project.ownerName, p.project.slug)">
-                                    <i class="fas fa-download"></i> @messages("project.versions")
+                                    <i class="fas fa-download"></i> <@spring.message "project.versions" />
                                 </a>
                             </li>
 
@@ -214,7 +214,7 @@ Base template for Project overview.
                                 <li id="discussion" class="">
                                     <a href="@Projects.showDiscussion(
                                         p.project.ownerName, p.project.slug)">
-                                        <i class="fas fa-users"></i> @messages("project.discuss")
+                                        <i class="fas fa-users"></i> <@spring.message "project.discuss" />
                                     </a>
                                 </li>
                             }
@@ -223,7 +223,7 @@ Base template for Project overview.
                                 @* Show manager if permitted *@
                                 <li id="settings" class="">
                                     <a href="@Projects.showSettings(p.project.ownerName, p.project.slug)">
-                                        <i class="fas fa-cog"></i> @messages("project.settings")
+                                        <i class="fas fa-cog"></i> <@spring.message "project.settings" />
                                     </a>
                                 </li>
                             }

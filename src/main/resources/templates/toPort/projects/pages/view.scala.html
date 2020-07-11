@@ -77,7 +77,7 @@ Documentation page within Project overview.
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">@messages("project.promotedVersions")</h3>
+                    <h3 class="panel-title"><@spring.message "project.promotedVersions" /></h3>
                 </div>
                 <ul class="list-group promoted-list">
 
@@ -86,7 +86,7 @@ Documentation page within Project overview.
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="pull-left panel-title">@messages("page.plural")</h3>
+                    <h3 class="pull-left panel-title"><@spring.message "page.plural" /></h3>
                     @if(canEditPages && pageCount < config.ore.projects.maxPages) {
                         <button data-toggle="modal" data-target="#new-page" title="New"
                         class="new-page btn yellow btn-xs pull-right">

@@ -33,7 +33,7 @@ Discussion page within Project overview.
             <div class="reply-box">
                 @if(sp.canPostAsOwnerOrga) {
                 <div class="pull-right push-down">
-                    <i class="minor">@messages("project.discuss.postAs")</i>
+                    <i class="minor"><@spring.message "project.discuss.postAs" /></i>
                     <select name="poster" form="form-editor-save">
                         <option selected>@request.headerData.currentUser.get.name</option>
                         <option>@p.projectOwner.name</option>
@@ -53,14 +53,14 @@ Discussion page within Project overview.
             <div class="reply-controls">
                 <a class="forums" target="_blank" rel="noopener"
                 href="@config.app.discourseUrl/t/@p.project.topicId">
-                @messages("general.viewOnForums")
+                <@spring.message "general.viewOnForums" />
                 </a>
             </div>
         </div>
     } else {
         <div class="pull-right">
-            <a href="@routes.Users.logIn(None, None, Some(request.path))">@messages("general.login")</a>
-            <span class="minor"> @messages("general.toReply")</span>
+            <a href="@routes.Users.logIn(None, None, Some(request.path))"><@spring.message "general.login" /></a>
+            <span class="minor"> <@spring.message "general.toReply" /></span>
         </div>
     }
     </div>

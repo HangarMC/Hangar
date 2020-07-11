@@ -30,11 +30,11 @@
             <div class="col-md-6 col-md-offset-3">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">@messages("channel.list.title")</h3>
+                        <h3 class="panel-title"><@spring.message "channel.list.title" /></h3>
                     </div>
                     <div class="panel-body">
                         <p class="minor create-blurb">
-                            @messages("channel.list.description")
+                            <@spring.message "channel.list.description" />
                         </p>
 
                         <table class="table no-border centered">
@@ -90,7 +90,7 @@
                         <a href="#" id="channel-new" class="pull-right btn btn-primary"
                            @if(channels.size >= config.ore.projects.maxChannels) {
                                disabled data-toggle="tooltip" data-placement="left"
-                               title="@messages("channel.edit.maxReached")"
+                               title="<@spring.message "channel.edit.maxReached" />"
                            } else {
                                data-toggle="modal" data-target="#channel-settings"
                            }
@@ -108,24 +108,24 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="@messages("general.close")">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="<@spring.message "general.close" />">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="label-delete">@messages("channel.delete")</h4>
+                    <h4 class="modal-title" id="label-delete"><@spring.message "channel.delete" /></h4>
                 </div>
                 <div class="modal-body">
-                    <p>@messages("channel.delete.info")</p>
+                    <p><@spring.message "channel.delete.info" /></p>
                     <p class="minor">
-                        <strong class="version-count"></strong> <i>@messages("channel.delete.info.versions")</i>
+                        <strong class="version-count"></strong> <i><@spring.message "channel.delete.info.versions" /></i>
                     </p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">
-                        @messages("general.cancel")
+                        <@spring.message "general.cancel" />
                     </button>
                     <form method="post" action="#" class="form-channel-delete">
                         @CSRF.formField
-                        <button type="submit" class="btn btn-danger">@messages("channel.delete")</button>
+                        <button type="submit" class="btn btn-danger"><@spring.message "channel.delete" /></button>
                     </form>
                 </div>
             </div>

@@ -21,7 +21,7 @@
     <div class="row">
         <div class="col-md-12  header-flags">
             <div class="clearfix">
-                <h1 class="pull-left">@messages("notes") for <a href="@projectRoutes.show(project.ownerName, project.slug)">@project.ownerName/@project.slug</a></h1>
+                <h1 class="pull-left"><@spring.message "notes" /> for <a href="@projectRoutes.show(project.ownerName, project.slug)">@project.ownerName/@project.slug</a></h1>
             </div>
         </div>
     </div>
@@ -30,13 +30,13 @@
             <div class="input-group" style="width: 100%;
                 margin-top: 1em;">
                 <textarea type="text" class="form-control textarea-addmessage" placeholder="Message"></textarea>
-                <div class="input-group-addon btn btn-note-addmessage-submit btn-primary"><i class="fas fa-clipboard"></i> @messages("notes.addmessage")</div>
+                <div class="input-group-addon btn btn-note-addmessage-submit btn-primary"><i class="fas fa-clipboard"></i> <@spring.message "notes.addmessage" /></div>
             </div>
         </div>
     </div>
     <div class="row version-description">
         <div class="col-md-12">
-            <h2>@messages("notes")</h2>
+            <h2><@spring.message "notes" /></h2>
         </div>
         @if(notes.isEmpty) {
             <div class="col-md-12">

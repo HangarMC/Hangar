@@ -17,7 +17,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="col-xs-12 col-sm-4 no-padding">
-                        <h4 class="panel-title"><i class="fas fa-exclamation-triangle"></i>&ensp;@messages("general.warning")</h4>
+                        <h4 class="panel-title"><i class="fas fa-exclamation-triangle"></i>&ensp;<@spring.message "general.warning" /></h4>
                     </div>
                     <div class="col-xs-12 col-sm-8 no-padding">
                         <span class="pull-right">@messages("version.download.confirm.header", project.ownerName, project.name, target.name)</span>
@@ -26,24 +26,24 @@
                 <div class="panel-body">
                     <div class="alert alert-danger" style="margin-bottom: 10px">
                     @if(isTargetChannelNonReviewed || target.reviewState == ReviewState.Backlog) {
-                        @messages("version.download.confirm.nonReviewedChannel")
+                        <@spring.message "version.download.confirm.nonReviewedChannel" />
                     } else {
                         @if(target.reviewState != ReviewState.PartiallyReviewed) {
-                            @messages("version.download.confirm.reviewedChannel")
+                            <@spring.message "version.download.confirm.reviewedChannel" />
                         } else {
-                            @messages("version.download.confirmPartial.reviewedChannel")
+                            <@spring.message "version.download.confirmPartial.reviewedChannel" />
                         }
                     }
                     </div>
                     <p>
-                        @messages("general.disclaimer"):
-                        <span class="text-italic">@messages("version.download.confirm.disclaimer")</span>
+                        <@spring.message "general.disclaimer" />:
+                        <span class="text-italic"><@spring.message "version.download.confirm.disclaimer" /></span>
                     </p>
 
                     <div class="row">
                         <div class="col-xs-12 col-sm-6 mb-3-sm">
                             <button class="btn btn-success link-go-back">
-                            @messages("project.back")
+                            <@spring.message "project.back" />
                             </button>
                         </div>
 
@@ -52,7 +52,7 @@
                                 @CSRF.formField
 
                                 <button type="submit" form="form-download" class="btn btn-danger pull-right-sm">
-                                @messages("version.download.confirm.download")
+                                <@spring.message "version.download.confirm.download" />
                                 </button>
                             </form>
                         </div>

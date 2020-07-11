@@ -36,7 +36,7 @@
             @if(u.isOrga && o.isDefined && canEditOrgMembers) {
                 <div class="panel-user-info panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">@messages("project.manager")</h3>
+                        <h3 class="panel-title"><@spring.message "project.manager" /></h3>
                     </div>
                     <table class="table panel-body">
                         <tbody>
@@ -64,7 +64,7 @@
             @if(!u.isOrga) {
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title"> @messages("org.plural")</h3>
+                        <h3 class="panel-title"> <@spring.message "org.plural" /></h3>
                     </div>
                     <table class="table panel-body">
                         <tbody>
@@ -95,7 +95,7 @@
 
                 <div class="panel-user-info panel panel-default" data-action="starred">
                     <div class="panel-heading">
-                        <h3 class="panel-title"><i class="fas fa-star"></i> @messages("project.starred")</h3>
+                        <h3 class="panel-title"><i class="fas fa-star"></i> <@spring.message "project.starred" /></h3>
                     </div>
                     <table class="table panel-body">
                         <tbody>
@@ -113,7 +113,7 @@
 
                 <div class="panel-user-info panel panel-default" data-action="watching">
                     <div class="panel-heading">
-                        <h3 class="panel-title"><i class="fas fa-eye"></i> @messages("project.watching")</h3>
+                        <h3 class="panel-title"><i class="fas fa-eye"></i> <@spring.message "project.watching" /></h3>
                     </div>
                     <table class="table panel-body">
                         <tbody>

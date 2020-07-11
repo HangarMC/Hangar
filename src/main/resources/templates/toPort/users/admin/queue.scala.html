@@ -32,14 +32,14 @@
 
     <div class="row">
         <div class="col-md-12 header-flags">
-            <h2>@messages("user.queue.progress")</h2>
+            <h2><@spring.message "user.queue.progress" /></h2>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title pull-left">@messages("user.queue.progress")</h4>
+                    <h4 class="panel-title pull-left"><@spring.message "user.queue.progress" /></h4>
                     <div class="clearfix"></div>
                 </div>
                 <table class="table table-hover">
@@ -56,7 +56,7 @@
                         @if(underReview.isEmpty) {
                             <tr>
                                 <th rowspan="5">
-                                    <h3>@messages("queue.review.none")</h3>
+                                    <h3><@spring.message "queue.review.none" /></h3>
                                 </th>
                             </tr>
                         }
@@ -116,14 +116,14 @@
     </div>
     <div class="row">
         <div class="col-md-12 header-flags">
-            <h2>@messages("user.queue.open")</h2>
+            <h2><@spring.message "user.queue.open" /></h2>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title pull-left">@messages("user.queue.open")</h4>
+                    <h4 class="panel-title pull-left"><@spring.message "user.queue.open" /></h4>
                     <div class="clearfix"></div>
                 </div>
                 <table class="table table-hover">
@@ -140,7 +140,7 @@
                         @if(versions.isEmpty) {
                             <tr>
                                 <th rowspan="5">
-                                    <h3><i class="fas fa-thumbs-o-up"></i> @messages("user.queue.none")</h3>
+                                    <h3><i class="fas fa-thumbs-o-up"></i> <@spring.message "user.queue.none" /></h3>
                                 </th>
                             </tr>
                         }

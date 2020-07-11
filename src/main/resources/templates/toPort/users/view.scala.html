@@ -35,7 +35,7 @@
 
         <!-- Updated by JS -->
     <div class="alert alert-success alert-dismissable" role="alert" style="display: none;">
-        <button type="button" class="close" data-dismiss="alert" aria-label="@messages("general.close")">
+        <button type="button" class="close" data-dismiss="alert" aria-label="<@spring.message "general.close" />">
             <span aria-hidden="true">&times;</span>
         </button>
         <strong>Success!</strong> <span class="success"></span>
@@ -53,7 +53,7 @@
 
                 @if(canEditOrgSettings) {
                     <div class="edit-avatar" style="display: none;">
-                        <a href="@routes.Organizations.updateAvatar(u.user.name)"><i class="fas fa-edit"></i> @messages("user.editAvatar")</a>
+                        <a href="@routes.Organizations.updateAvatar(u.user.name)"><i class="fas fa-edit"></i> <@spring.message "user.editAvatar" /></a>
                     </div>
 
                     @if(!u.currentUser.get.readPrompts.contains(Prompt.ChangeAvatar)) {
@@ -73,7 +73,7 @@
 
                             <span data-toggle="modal" data-target="#modal-lock">
                                 <i class="fas @{if (u.user.isLocked) "fa-lock" else "fa-unlock-alt"} action-lock-account" data-toggle="tooltip"
-                                data-placement="top" title="@messages("user.lock")"></i>
+                                data-placement="top" title="<@spring.message "user.lock" />"></i>
                             </span>
 
                             <a class="action-api" href="@routes.Users.editApiKeys(u.user.name)">
@@ -133,7 +133,7 @@
                     u.user.joinDate.map(prettifyDate).getOrElse(prettifyDate(u.user.createdAt)))
                 </i><br/>
                 <a href="https://papermc.io/forums/users/@u.user.name">
-                    @messages("user.viewOnForums") <i class="fas fa-external-link-alt"></i>
+                    <@spring.message "user.viewOnForums" /> <i class="fas fa-external-link-alt"></i>
                 </a>
             </div>
         </div>
@@ -145,15 +145,15 @@
         <div class="modal-body">
             <p class="minor">
                 @if(u.user.isLocked) {
-                    @messages("user.unlock.confirm")
+                    <@spring.message "user.unlock.confirm" />
                 } else {
-                    @messages("user.lock.confirm")
+                    <@spring.message "user.lock.confirm" />
                 }
             </p>
         </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">@messages("general.close")</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal"><@spring.message "general.close" /></button>
             @form(action = routes.Users.verify(Some(routes.Users.setLocked(
                 user = u.user.name,
                 locked = !u.user.isLocked,
@@ -161,7 +161,7 @@
                 sig = None
             ).path())), Symbol("class") -> "form-inline") {
                 @CSRF.formField
-                <button type="submit" class="btn btn-primary">@messages("general.continue")</button>
+                <button type="submit" class="btn btn-primary"><@spring.message "general.continue" /></button>
             }
         </div>
     }
@@ -172,8 +172,8 @@
             <div class="modal-body">
                 <div class="setting setting-no-border">
                     <div class="setting-description">
-                        <h4>@messages("user.tagline")</h4>
-                        <p>@messages("user.tagline.info")</p>
+                        <h4><@spring.message "user.tagline" /></h4>
+                        <p><@spring.message "user.tagline.info" /></p>
                     </div>
                     <input class="form-control" type="text" value="@u.user.tagline.getOrElse("")" id="tagline"
                            name="tagline" maxlength="@config.ore.users.maxTaglineLen" />
@@ -182,9 +182,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">
-                    @messages("general.close")
+                    <@spring.message "general.close" />
                 </button>
-                <input type="submit" value="@messages("general.save")" class="btn btn-primary" />
+                <input type="submit" value="<@spring.message "general.save" />" class="btn btn-primary" />
             </div>
         }
     }

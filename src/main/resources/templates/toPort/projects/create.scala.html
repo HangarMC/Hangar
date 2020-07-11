@@ -26,7 +26,7 @@ Page used for uploading and creating new projects.
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                    @messages("project.create.title")
+                    <@spring.message "project.create.title" />
                     </h3>
                 </div>
 
@@ -40,17 +40,17 @@ Page used for uploading and creating new projects.
                         @form(action = projectRoutes.createProject()) {
                             @CSRF.formField
                             <div class="form-group">
-                                <label for="projectName">@messages("project.create.input.name")</label>
+                                <label for="projectName"><@spring.message "project.create.input.name" /></label>
                                 <input type="text" id="projectName" name="name" class="form-control">
                             </div>
 
                             <div class="form-group">
-                                <label for="projectPluginId">@messages("project.create.input.pluginId")</label>
+                                <label for="projectPluginId"><@spring.message "project.create.input.pluginId" /></label>
                                 <input type="text" id="projectPluginId" name="pluginId" class="form-control">
                             </div>
 
                             <div class="form-group">
-                                <label for="projectCategory">@messages("project.create.input.category")</label>
+                                <label for="projectCategory"><@spring.message "project.create.input.category" /></label>
                                 <select id="projectCategory" name="category" class="form-control">
                                 @for(cat <- Category.visible) {
                                     <option>@cat.title</option>
@@ -59,12 +59,12 @@ Page used for uploading and creating new projects.
                             </div>
 
                             <div class="form-group">
-                                <label for="projectDescription">@messages("project.create.input.description")</label>
+                                <label for="projectDescription"><@spring.message "project.create.input.description" /></label>
                                 <input type="text" id="projectDescription" name="description" class="form-control">
                             </div>
 
                             <div class="form-group">
-                                <label for="projectCategory">@messages("project.owner")</label>
+                                <label for="projectCategory"><@spring.message "project.owner" /></label>
                                 <select id="projectCategory" name="owner" class="form-control">
                                     <option value="@user.id.value">@user.name</option>
                                     @for(orga <- createProjectOrgas) {

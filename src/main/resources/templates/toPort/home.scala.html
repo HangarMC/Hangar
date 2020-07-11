@@ -24,11 +24,11 @@ sorted according to different criteria.
 }
 
 @meta = {
-    <meta property="og:title" content="@messages("general.appName")">
+    <meta property="og:title" content="<@spring.message "general.appName" />">
     <meta property="og:type" content="website" />
     <meta property="og:url" content="@config.app.baseUrl">
     <meta property="og:image" content="@assetsFinder.path("images/ore-dark.png")" />
-    <meta property="og:description" content="@messages("general.description")" />
+    <meta property="og:description" content="<@spring.message "general.description" />" />
 }
 
 @layout.base(messages("general.title"), scripts, additionalMeta = meta, additionalStyling = stylesheets) {

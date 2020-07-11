@@ -17,18 +17,18 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                    @messages("org.create.title")
+                    <@spring.message "org.create.title" />
                     </h3>
                 </div>
 
                 <div class="project-body panel-body">
-                    <p class="minor"> @messages("org.info")</p>
+                    <p class="minor"> <@spring.message "org.info" /></p>
 
                     @form(action = routes.Organizations.create(), Symbol("id") -> "form-continue") {
                         @CSRF.formField
                         <div class="setting">
                             <div class="setting-description">
-                                <h4>@messages("org.name")</h4>
+                                <h4><@spring.message "org.name" /></h4>
                             </div>
                             <input name="name" type="text" class="input-name form-control"
                             placeholder="PaperMC" maxlength="20" />
@@ -40,9 +40,9 @@
                     @users.invite.form(owner = request.headerData.currentUser.get, roleCategory = RoleCategory.Organization)
 
                     <button title="Continue" type="submit" name="create" form="form-continue"
-                    value="@messages("general.continue")"
+                    value="<@spring.message "general.continue" />"
                     class="push-down pull-right continue-btn btn btn-primary" disabled>
-                    @messages("general.create")
+                    <@spring.message "general.create" />
                     </button>
                 </div>
             </div>

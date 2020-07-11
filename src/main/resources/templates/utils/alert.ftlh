@@ -2,7 +2,7 @@
     <#if flash.get(alertType).isDefined || flash.get(s"$alertType-num").isDefined>
         <div class="alert alert-fade <@bootstrapNames type=alertType/> alert-dismissable"
              role="alert" style="display: none;">
-            <button type="button" class="close" data-dismiss="alert" aria-label="${@messages("general.close")}">
+            <button type="button" class="close" data-dismiss="alert" aria-label="<@spring.message "general.close" />">
                 <span aria-hidden="true">&times;</span>
             </button>
 

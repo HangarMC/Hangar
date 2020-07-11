@@ -43,7 +43,7 @@
             <div class="row">
                 <div class="col-xs-12 header-flags">
                     <div class="pull-left">
-                        <h2>@messages("notification.plural")</h2>
+                        <h2><@spring.message "notification.plural" /></h2>
                     </div>
                     <div class="pull-right form-inline notification-controls">
                         <select class="form-control select-notifications">
@@ -60,7 +60,7 @@
 
                         @if(notifications.nonEmpty && notificationFilter.equals(NotificationFilter.Unread)) {
                             <button class="btn-mark-all-read btn btn-primary">
-                                <i class="fas fa-check"></i> <strong>@messages("notification.markAllRead")</strong>
+                                <i class="fas fa-check"></i> <strong><@spring.message "notification.markAllRead" /></strong>
                             </button>
                         }
                     </div>
@@ -101,7 +101,7 @@
                 <!-- Invites header -->
             <div class="row">
                 <div class="col-xs-12 form-inline">
-                    <h2 class="pull-left">@messages("notification.invites")</h2>
+                    <h2 class="pull-left"><@spring.message "notification.invites" /></h2>
                     <select class="pull-right form-control notification-controls select-invites">
                         <option @inviteFilterOption(InviteFilter.All)>
                         @messages(InviteFilter.All.title)
@@ -139,7 +139,7 @@
                                 <a href="@subject.url">@subject.name</a>.
                                 </p>
                                 <button class="btn btn-invite btn-accept btn-sm btn-success">
-                                @messages("notification.invite.accept")
+                                <@spring.message "notification.invite.accept" />
                                 </button>
                                 <button class="btn btn-invite btn-decline btn-sm btn-danger">
                                 @Html(messages("notification.invite.decline"))
@@ -150,10 +150,10 @@
                                 <i class="minor fas fa-3x fa-birthday-cake"></i><br/>
                                 @Html(messages("notification.invite.joined", subject.name))<br/>
                                 <a href="@subject.url" class="btn btn-sm btn-primary">
-                                @messages("notification.invite.visit")
+                                <@spring.message "notification.invite.visit" />
                                 </a>
                                 <button class="btn btn-undo btn-sm btn-info">
-                                @messages("notification.invite.undo")
+                                <@spring.message "notification.invite.undo" />
                                 </button>
                             </div>
 

@@ -10,11 +10,11 @@
 @scripts = {
     <script type="text/javascript" src="@assetsFinder.path("javascripts/apiKeysManagement.js")"></script>
     <script @CSPNonce.attr>
-            NO_PERMS_SET = '@messages("user.apiKeys.error.noPermsSet")';
-            NO_NAME_SET = '@messages("user.apiKeys.error.noNameSet")';
-            TOO_LONG_NAME = '@messages("user.apiKeys.error.tooLongName")';
-            NAMED_USED = '@messages("user.apiKeys.error.nameAlreadyUsed")';
-            DELETE_KEY = '@messages("user.apiKeys.keyDeleteButton")';
+            NO_PERMS_SET = '<@spring.message "user.apiKeys.error.noPermsSet" />';
+            NO_NAME_SET = '<@spring.message "user.apiKeys.error.noNameSet" />';
+            TOO_LONG_NAME = '<@spring.message "user.apiKeys.error.tooLongName" />';
+            NAMED_USED = '<@spring.message "user.apiKeys.error.nameAlreadyUsed" />';
+            DELETE_KEY = '<@spring.message "user.apiKeys.keyDeleteButton" />';
     </script>
 }
 
@@ -23,7 +23,7 @@
 
     <div class="row">
         <div class="col-md-6">
-            <h2>@messages("user.apiKeys.createNew")</h2>
+            <h2><@spring.message "user.apiKeys.createNew" /></h2>
             <div id="api-create-key-form">
                 <div class="row">
                     <div class="col-md-6">
@@ -47,23 +47,23 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="keyName">@messages("user.apiKeys.keyName"):</label>
+                    <label for="keyName"><@spring.message "user.apiKeys.keyName" />:</label>
                     <input type="text" class="form-control" id="keyName">
                 </div>
-                <button id="button-create-new-key" class="btn btn-default">@messages("user.apiKeys.createKeyBtn")</button>
+                <button id="button-create-new-key" class="btn btn-default"><@spring.message "user.apiKeys.createKeyBtn" /></button>
             </div>
         </div>
 
         <div class="col-md-6">
-            <h2>@messages("user.apiKeys.existingKeys")</h2>
+            <h2><@spring.message "user.apiKeys.existingKeys" /></h2>
             <table class="table">
                 <thead>
                     <tr>
-                        <th>@messages("user.apiKeys.keyName")</th>
-                        <th>@messages("user.apiKeys.keyToken")</th>
-                        <th>@messages("user.apiKeys.keyIdentifier")</th>
-                        <th>@messages("user.apiKeys.keyPermissions")</th>
-                        <th>@messages("user.apiKeys.keyDeleteColumn")</th>
+                        <th><@spring.message "user.apiKeys.keyName" /></th>
+                        <th><@spring.message "user.apiKeys.keyToken" /></th>
+                        <th><@spring.message "user.apiKeys.keyIdentifier" /></th>
+                        <th><@spring.message "user.apiKeys.keyPermissions" /></th>
+                        <th><@spring.message "user.apiKeys.keyDeleteColumn" /></th>
                     </tr>
                 </thead>
                 <tbody id="api-key-rows">
@@ -73,7 +73,7 @@
                         <th></th>
                         <th>@key.tokenIdentifier</th>
                         <th>@key.namedRawPermissions.map(_.entryName).mkString(", ")</th>
-                        <th><button class="btn btn-danger api-key-row-delete-button">@messages("user.apiKeys.keyDeleteButton")</button></th>
+                        <th><button class="btn btn-danger api-key-row-delete-button"><@spring.message "user.apiKeys.keyDeleteButton" /></button></th>
                     </tr>
                 }
                 </tbody>

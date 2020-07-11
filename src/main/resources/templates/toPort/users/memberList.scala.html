@@ -39,20 +39,20 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"
-                                aria-label="@messages("general.close")">
+                                aria-label="<@spring.message "general.close" />">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h4 class="modal-title" id="label-user-delete">@messages("project.removeMember")</h4>
+                        <h4 class="modal-title" id="label-user-delete"><@spring.message "project.removeMember" /></h4>
                     </div>
-                    <div class="modal-body">@messages("project.removeMember.confirm")</div>
+                    <div class="modal-body"><@spring.message "project.removeMember.confirm" /></div>
                     <div class="modal-footer">
                         @form(action = removeCall, Symbol("class") -> "form-inline") {
                             @CSRF.formField
                             <input type="hidden" name="username" />
                             <button type="button" class="btn btn-default" data-dismiss="modal">
-                                @messages("general.close")
+                                <@spring.message "general.close" />
                             </button>
-                            <button type="submit" class="btn btn-danger">@messages("general.remove")</button>
+                            <button type="submit" class="btn btn-danger"><@spring.message "general.remove" /></button>
                         }
                     </div>
                 </div>
@@ -66,7 +66,7 @@
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="pull-left panel-title">@messages("project.settings.members")</h3>
+            <h3 class="pull-left panel-title"><@spring.message "project.settings.members" /></h3>
 
             @if(perms.has(Permission.ManageSubjectMembers)) {
                 <div class="pull-right">
@@ -81,7 +81,7 @@
                         @form(action = saveCall, Symbol("id") -> "save") {
                             @CSRF.formField
                             <button class="btn-members-save btn btn-default btn-panel btn-xs" data-toggle="tooltip"
-                                    data-placement="top" data-title="@messages("org.users.save")" style="display: none;">
+                                    data-placement="top" data-title="<@spring.message "org.users.save" />" style="display: none;">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                         }

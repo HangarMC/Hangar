@@ -42,7 +42,7 @@
                     <div>
                     @if(v.isRecommended) {
                             <i data-toggle="tooltip" data-placement="left"
-                            title="@messages("version.recommended")"
+                            title="<@spring.message "version.recommended" />"
                             class="recommended far fa-lg fa-gem pull-right"></i>
                     }
 
@@ -55,10 +55,10 @@
                                 }
                             }
                             @if(v.v.reviewState == ReviewState.PartiallyReviewed) {
-                                <i data-toggle="tooltip" data-placement="left" title="@messages("version.approvedPartial")"
+                                <i data-toggle="tooltip" data-placement="left" title="<@spring.message "version.approvedPartial" />"
                                 class="far fa-lg fa-check-circle"></i>
                             } else {
-                                <i data-toggle="tooltip" data-placement="left" title="@messages("version.approved")"
+                                <i data-toggle="tooltip" data-placement="left" title="<@spring.message "version.approved" />"
                                 class="far fa-lg fa-check-circle"></i>
                             }
                     }
@@ -82,29 +82,29 @@
 
                         @if(request.headerData.globalPerm(Permission.Reviewer)) {
                             @if(v.v.reviewState.isChecked) {
-                                <a href="@reviewRoutes.showReviews(v.p.project.ownerName, v.p.project.slug, v.v.versionString)" class="btn btn-info">@messages("review.log")</a>
+                                <a href="@reviewRoutes.showReviews(v.p.project.ownerName, v.p.project.slug, v.v.versionString)" class="btn btn-info"><@spring.message "review.log" /></a>
                             } else {
                                 <a href="@reviewRoutes.showReviews(v.p.project.ownerName, v.p.project.slug, v.v.versionString)" class="btn btn-success">
-                                    <i class="fas fa-play"></i> @messages("review.start")
+                                    <i class="fas fa-play"></i> <@spring.message "review.start" />
                                 </a>
                             }
                         }
 
                         @if(v.v.visibility == Visibility.SoftDelete) {
                             <a class="btn btn-danger" disabled data-toggle="tooltip" data-placement="top"
-                            title="@messages("version.delete.alreadyDeleted")">
-                                <i class="fas fa-trash"></i> @messages("general.delete")
+                            title="<@spring.message "version.delete.alreadyDeleted" />">
+                                <i class="fas fa-trash"></i> <@spring.message "general.delete" />
                             </a>
                         } else {
                             @if(sp.perms(Permission.DeleteVersion)) {
                                 @if(v.p.publicVersions == 1) {
                                     <a class="btn btn-danger" disabled data-toggle="tooltip" data-placement="top"
-                                    title="@messages("version.delete.cannotLast")">
-                                        <i class="fas fa-trash"></i> @messages("general.delete")
+                                    title="<@spring.message "version.delete.cannotLast" />">
+                                        <i class="fas fa-trash"></i> <@spring.message "general.delete" />
                                     </a>
                                 } else {
                                     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal-delete">
-                                        <i class="fas fa-trash"></i> @messages("general.delete")
+                                        <i class="fas fa-trash"></i> <@spring.message "general.delete" />
                                     </button>
                                 }
                             }
@@ -112,16 +112,16 @@
 
                         <div class="btn-group btn-download">
                             <a href="@versionRoutes.download(v.p.project.ownerName, v.p.project.slug, v.v.versionString, None)"
-                            title="@messages("project.download.recommend")" data-toggle="tooltip"
+                            title="<@spring.message "project.download.recommend" />" data-toggle="tooltip"
                             data-placement="bottom" class="btn btn-primary">
-                                <i class="fas fa-download"></i> @messages("general.download")
+                                <i class="fas fa-download"></i> <@spring.message "general.download" />
                             </a>
                             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="caret"></span>
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right">
-                                <li><a href="@versionRoutes.download(v.p.project.ownerName, v.p.project.slug, v.v.versionString, None)">@messages("general.download")</a></li>
+                                <li><a href="@versionRoutes.download(v.p.project.ownerName, v.p.project.slug, v.v.versionString, None)"><@spring.message "general.download" /></a></li>
                                 <li><a href="#" class="copy-url" data-clipboard-text="@config.app.baseUrl@versionRoutes.download(v.p.project.ownerName, v.p.project.slug, v.v.versionString, None)">Copy URL</a></li>
                             </ul>
                         </div>
@@ -161,7 +161,7 @@
                     <div class="col-md-12">
                         <div class="alert-review alert alert-info" role="alert">
                             <i class="fas fa-info-circle"></i>
-                            @messages("project.download.warn")
+                            <@spring.message "project.download.warn" />
                         </div>
                     </div>
                 }
@@ -211,7 +211,7 @@
                                 <div class="minor">
                                     @depend.pluginId
                                     <i class="fas fa-question-circle"
-                                    title="@messages("version.dependency.notOnOre")"
+                                    title="<@spring.message "version.dependency.notOnOre" />"
                                     data-toggle="tooltip" data-placement="right"></i>
                                 </div>
                             }
@@ -222,7 +222,7 @@
                 </div>
             </div>
         } else {
-            <p class="minor text-center"><i>@messages("version.dependency.no")</i></p>
+            <p class="minor text-center"><i><@spring.message "version.dependency.no" /></i></p>
         }
     </div>
 
@@ -234,20 +234,20 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h4 class="modal-title" id="label-delete">@messages("version.delete.title")</h4>
+                        <h4 class="modal-title" id="label-delete"><@spring.message "version.delete.title" /></h4>
                     </div>
                     @form(action = versionRoutes.softDelete(v.p.project.ownerName, v.p.project.slug, v.v.versionString)) {
                         <div class="modal-body">
-                            @messages("version.delete.info")
+                            <@spring.message "version.delete.info" />
                             <textarea name="comment" class="textarea-delete-comment form-control" rows="3"></textarea>
                         </div>
                         <div class="modal-footer">
                             <div class="form-inline">
                                 @CSRF.formField
                                 <button type="button" class="btn btn-default" data-dismiss="modal">
-                                @messages("channel.edit.close")
+                                <@spring.message "channel.edit.close" />
                                 </button>
-                                <input type="submit" name="delete" value="@messages("general.delete")" class="btn btn-danger">
+                                <input type="submit" name="delete" value="<@spring.message "general.delete" />" class="btn btn-danger">
                             </div>
                         </div>
                     }
@@ -265,7 +265,7 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title" id="label-delete">@messages("general.restore")</h4>
+                            <h4 class="modal-title" id="label-delete"><@spring.message "general.restore" /></h4>
                         </div>
                         @form(action = versionRoutes.restore(v.p.project.ownerName, v.p.project.slug, v.v.versionString)) {
                             <div class="modal-body">
@@ -275,9 +275,9 @@
                                 <div class="form-inline">
                                     @CSRF.formField
                                     <button type="button" class="btn btn-default" data-dismiss="modal">
-                                    @messages("channel.edit.close")
+                                    <@spring.message "channel.edit.close" />
                                     </button>
-                                    <input type="submit" name="delete" value="@messages("general.restore")" class="btn btn-success">
+                                    <input type="submit" name="delete" value="<@spring.message "general.restore" />" class="btn btn-success">
                                 </div>
                             </div>
                         }
@@ -293,7 +293,7 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title" id="label-delete">@messages("general.harddelete")</h4>
+                            <h4 class="modal-title" id="label-delete"><@spring.message "general.harddelete" /></h4>
                         </div>
                         @form(action = versionRoutes.delete(v.p.project.ownerName, v.p.project.slug, v.v.versionString)) {
                             <div class="modal-body">
@@ -303,9 +303,9 @@
                                 <div class="form-inline">
                                     @CSRF.formField
                                     <button type="button" class="btn btn-default" data-dismiss="modal">
-                                    @messages("channel.edit.close")
+                                    <@spring.message "channel.edit.close" />
                                     </button>
-                                    <input type="submit" name="delete" value="@messages("general.harddelete")" class="btn btn-danger">
+                                    <input type="submit" name="delete" value="<@spring.message "general.harddelete" />" class="btn btn-danger">
                                 </div>
                             </div>
                         }

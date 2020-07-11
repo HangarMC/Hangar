@@ -13,12 +13,12 @@
 
 @if(enabled) {
     <!-- Edit -->
-    <button type="button" class="btn btn-sm btn-edit btn-page btn-default" title="@messages("general.edit")">
-        <i class="fas fa-edit"></i> @messages("general.edit")
+    <button type="button" class="btn btn-sm btn-edit btn-page btn-default" title="<@spring.message "general.edit" />">
+        <i class="fas fa-edit"></i> <@spring.message "general.edit" />
     </button>
 
     <!-- Preview -->
-    <div class="btn-edit-container btn-preview-container" title="@messages("general.preview")">
+    <div class="btn-edit-container btn-preview-container" title="<@spring.message "general.preview" />">
         <button type="button" class="btn btn-sm btn-preview btn-page btn-default">
             <i class="fas fa-eye"></i>
         </button>
@@ -26,7 +26,7 @@
 
     <!-- Save -->
     @if(savable) {
-        <div class="btn-edit-container btn-save-container" title="@messages("general.save")">
+        <div class="btn-edit-container btn-save-container" title="<@spring.message "general.save" />">
             <button form="form-editor-save" type="submit" class="btn btn-sm btn-save btn-page btn-default">
                 <i class="fas fa-save"></i>
             </button>
@@ -35,7 +35,7 @@
 
     <!-- Cancel -->
     @if(cancellable) {
-        <div class="btn-edit-container btn-cancel-container" title="@messages("general.cancel")">
+        <div class="btn-edit-container btn-cancel-container" title="<@spring.message "general.cancel" />">
             <button type="button" class="btn btn-sm btn-cancel btn-page btn-default">
                 <i class="fas fa-times"></i>
             </button>
@@ -44,7 +44,7 @@
 
     <!-- Delete -->
     @if(deletable) {
-        <div class="btn-edit-container btn-delete-container" title="@messages("general.delete")">
+        <div class="btn-edit-container btn-delete-container" title="<@spring.message "general.delete" />">
             <button type="button" class="btn btn-sm btn-page-delete btn-page btn-default"
             data-toggle="modal" data-target="#modal-page-delete">
                 <i class="fas fa-trash"></i>

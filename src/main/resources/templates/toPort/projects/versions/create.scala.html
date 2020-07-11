@@ -31,7 +31,7 @@
             <div class="panel panel-default panel-create">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                    @messages("version.create.title")
+                    <@spring.message "version.create.title" />
                     </h3>
                 </div>
 
@@ -46,11 +46,11 @@
                             <div class="plugin-meta">
                                 <table class="plugin-meta-table">
                                     <tr>
-                                        <td><strong>@messages("version")</strong></td>
+                                        <td><strong><@spring.message "version" /></strong></td>
                                         <td>@version.versionString</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>@messages("version.description")</strong></td>
+                                        <td><strong><@spring.message "version.description" /></strong></td>
                                         <td>
                                         @version.description.map { description =>
                                             @description
@@ -60,11 +60,11 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><strong>@messages("version.filename")</strong></td>
+                                        <td><strong><@spring.message "version.filename" /></strong></td>
                                         <td>@version.fileName</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>@messages("version.fileSize")</strong></td>
+                                        <td><strong><@spring.message "version.fileSize" /></strong></td>
                                         <td>@FileUtils.formatFileSize(version.fileSize)</td>
                                     </tr>
                                     <tr>
@@ -95,7 +95,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><strong>@messages("version.create.unstable")</strong></td>
+                                        <td><strong><@spring.message "version.create.unstable" /></strong></td>
                                         <td class="rv">
                                             <div class="checkbox-inline">
                                                 <input form="form-publish" name="unstable" type="checkbox" value="true"/>
@@ -130,8 +130,8 @@
 
                             <div class="release-bulletin">
                                 <div>
-                                    <h3>@messages("version.releaseBulletin")</h3>
-                                    <p>@messages("version.releaseBulletin.info")</p>
+                                    <h3><@spring.message "version.releaseBulletin" /></h3>
+                                    <p><@spring.message "version.releaseBulletin.info" /></p>
 
                                     @editor(
                                         savable = false,
@@ -151,7 +151,7 @@
                         @CSRF.formField
                             <label class="btn btn-default pull-left" for="pluginFile">
                                 <input id="pluginFile" name="pluginFile" type="file" style="display: none;">
-                                @messages("version.create.selectFile")
+                                <@spring.message "version.create.selectFile" />
                             </label>
 
                             @projects.helper.alertFile()
@@ -168,7 +168,7 @@
                                 value="@config.defaultChannelColor.hex" />
 
                                 <div>
-                                    <input type="submit" name="create" value="@messages("version.create.publish")"
+                                    <input type="submit" name="create" value="<@spring.message "version.create.publish" />"
                                     class="btn btn-primary" />
                                 </div>
                             }
