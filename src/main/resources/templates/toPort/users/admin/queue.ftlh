@@ -15,7 +15,7 @@
 @versionRoutes = @{controllers.project.routes.Versions}
 
 <#assign scriptsVar>
-    <script @CSPNonce.attr type="text/javascript" src="<@spring.url "javascripts/queue.js" />"></script>
+    <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "javascripts/queue.js" />"></script>
     <script @CSPNonce.attr>
         $(function(){
             var momentNow = moment();

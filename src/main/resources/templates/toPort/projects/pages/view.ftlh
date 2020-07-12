@@ -32,9 +32,9 @@ Documentation page within Project overview.
 }
 
 @scripts = {
-    <script type="text/javascript" src="<@spring.url "javascripts/pageCollapse.js" />"></script>
-    <script type="text/javascript" src="<@spring.url "javascripts/userSearch.js" />"></script>
-    <script type="text/javascript" src="<@spring.url "javascripts/memberList.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/pageCollapse.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/memberList.js" />"></script>
     <script @CSPNonce.attr>
             pluginId = '@p.project.pluginId';
             namespace = '@p.project.namespace';

@@ -19,18 +19,18 @@ Versions page within Project overview.
 @channelRoutes = @{ controllers.project.routes.Channels }
 
 @scripts = {
-    <script type="text/javascript" src="<@spring.url "javascripts/userSearch.js" />"></script>
-    <script type="text/javascript" src="<@spring.url "javascripts/memberList.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/memberList.js" />"></script>
     <script @CSPNonce.attr>
             window.PLUGIN_ID = '@p.project.pluginId';
             window.PROJECT_OWNER = '@p.project.ownerName';
             window.PROJECT_SLUG = '@p.project.slug';
     </script>
-    <script type="text/javascript" src="<@spring.url "build/version-list.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/version-list.js" />"></script>
 }
 
 @stylesheets = {
-    <link rel="stylesheet" type="text/css" href="<@spring.url "build/version-list.css" />" />
+    <link rel="stylesheet" type="text/css" href="<@hangar.url "build/version-list.css" />" />
 }
 
 @projects.view(p, sp, "#versions", additionalScripts = scripts, additionalStyling = stylesheets) {

@@ -17,8 +17,8 @@
         actionFilter: Option[String], subjectFilter: Option[String], canViewIP: Boolean)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@spring.url "diff-match-patch/javascript/diff_match_patch.js" />"></script>
-    <script type="text/javascript" src="<@spring.url "javascripts/actionLog.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "diff-match-patch/javascript/diff_match_patch.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/actionLog.js" />"></script>
 </#assign>
 
 <#assign message><@spring.message "admin.log.title" /></#assign>

@@ -58,7 +58,7 @@
 }
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@spring.url "javascripts/userAdmin.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/userAdmin.js" />"></script>
 </#assign>
 
 <@base.base title=(prefix + user.user.name) additionalScripts=scriptsVar>

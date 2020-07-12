@@ -21,12 +21,12 @@
 }
 
 <#macro scripts>
-    <script type="text/javascript" src="<@spring.url "build/user-profile.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/user-profile.js" />"></script>
     <#if u.isOrga && o.isDefined && canEditOrgMembers>
-    <script type="text/javascript" src="<@spring.url "javascripts/orgInvites.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/orgInvites.js" />"></script>
     </#if>
-    <script type="text/javascript" src="<@spring.url "javascripts/userSearch.js" />"></script>
-    <script type="text/javascript" src="<@spring.url "javascripts/memberList.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/memberList.js" />"></script>
 </#macro>
 
 @users.view(u, o, additionalScripts = scripts) {

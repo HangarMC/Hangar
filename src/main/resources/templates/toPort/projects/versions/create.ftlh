@@ -18,10 +18,10 @@
 }
 
 @scripts = {
-    <script type="text/javascript" src="<@spring.url "javascripts/channelManage.js" />"></script>
-    <script type="text/javascript" src="<@spring.url "javascripts/pluginUpload.js" />"></script>
-    <script type="text/javascript" src="<@spring.url "javascripts/projectDetail.js" />"></script>
-    <script type="text/javascript" src="<@spring.url "javascripts/versionCreateChannelNew.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/channelManage.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/pluginUpload.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/projectDetail.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/versionCreateChannelNew.js" />"></script>
     <script @CSPNonce.attr>
             DEFAULT_COLOR = '@config.defaultChannelColor.hex';
     </script>

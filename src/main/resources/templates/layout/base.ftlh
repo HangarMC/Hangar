@@ -16,15 +16,15 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <link href="<@hangar.config "security.api.url" />" rel="dns-prefetch">
         <link href="<@hangar.config "app.discourseCdnUrl" />" rel="dns-prefetch">
 
-        <link rel="prefetch" href="<@spring.url "images/favicon.ico" />">
+        <link rel="prefetch" href="<@hangar.url "images/favicon.ico" />">
         <link rel="prefetch" href="https://fonts.googleapis.com/css?family=Montserrat:400,700">
-        <link rel="prefetch" href="<@spring.url "highlight/styles/default.css" />">
-        <link rel="prefetch" href="<@spring.url "bootstrap/css/bootstrap.min.css" />">
-        <link rel="prefetch" href="<@spring.url "build/commons.css" />">
-        <link rel="prefetch" href="<@spring.url "build/main.css" />">
-        <link rel="prefetch" href="<@spring.url "build/font-awesome.css" />">
-        <link rel="prefetch" href="<@spring.url "manifest/manifest.json" />">
-        <link rel="prefetch" href="<@spring.url "lib/jquery/dist/jquery.min.js" />">
+        <link rel="prefetch" href="<@hangar.url "highlight/styles/default.css" />">
+        <link rel="prefetch" href="<@hangar.url "bootstrap/css/bootstrap.min.css" />">
+        <link rel="prefetch" href="<@hangar.url "build/commons.css" />">
+        <link rel="prefetch" href="<@hangar.url "build/main.css" />">
+        <link rel="prefetch" href="<@hangar.url "build/font-awesome.css" />">
+        <link rel="prefetch" href="<@hangar.url "manifest/manifest.json" />">
+        <link rel="prefetch" href="<@hangar.url "lib/jquery/dist/jquery.min.js" />">
 
         <title>${title}</title>
 
@@ -40,18 +40,18 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <link rel="icon" type="image/png" sizes="16x16"
               href="https://papermc.io/favicons/favicon-16x16.png?v=BG70oBaPzN">
         <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="<@spring.url "highlight/styles/default.css" />"/>
-        <link rel="stylesheet" type="text/css" href="<@spring.url "bootstrap/css/bootstrap.min.css" />"/>
-        <link rel="stylesheet" type="text/css" href="<@spring.url "build/font-awesome.css" />"/>
-        <link rel="stylesheet" type="text/css" href="<@spring.url "build/commons.css" />"/>
-        <link rel="stylesheet" type="text/css" href="<@spring.url "build/main.css" />"/>
+        <link rel="stylesheet" type="text/css" href="<@hangar.url "highlight/styles/default.css" />"/>
+        <link rel="stylesheet" type="text/css" href="<@hangar.url "bootstrap/css/bootstrap.min.css" />"/>
+        <link rel="stylesheet" type="text/css" href="<@hangar.url "build/font-awesome.css" />"/>
+        <link rel="stylesheet" type="text/css" href="<@hangar.url "build/commons.css" />"/>
+        <link rel="stylesheet" type="text/css" href="<@hangar.url "build/main.css" />"/>
         ${additionalStyling}
 
         <#-- See https://goo.gl/OOhYW5 and https://goo.gl/qRE0vM -->
-        <link rel="manifest" href="<@spring.url "manifest/manifest.json" />">
+        <link rel="manifest" href="<@hangar.url "manifest/manifest.json" />">
         <meta name="theme-color" content="#333">
 
-        <script type="text/javascript" src="<@spring.url "lib/jquery/dist/jquery.min.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "lib/jquery/dist/jquery.min.js" />"></script>
     </head>
     <body class="site">
     <#if showHeader>
@@ -103,16 +103,16 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
 <#--    </#if>-->
 
         <script type="text/javascript" src="${routes.getRouteUrl("javaScriptRoutes")}"></script>
-        <script type="text/javascript" src="<@spring.url "build/vendors.js" />"></script>
-        <script type="text/javascript" src="<@spring.url "build/font-awesome.js" />"></script>
-        <script type="text/javascript" src="<@spring.url "build/commons.js" />"></script>
-        <script type="text/javascript" src="<@spring.url "lib/moment/min/moment.min.js" />"></script>
-        <script type="text/javascript" src="<@spring.url "bootstrap/js/bootstrap.min.js" />"></script>
-        <script type="text/javascript" src="<@spring.url "lib/filesize/lib/filesize.js" />"></script>
-        <script type="text/javascript" src="<@spring.url "lib/clipboard/dist/clipboard.min.js" />"></script>
-        <script type="text/javascript" src="<@spring.url "highlight/highlight.pack.js" />"></script>
-        <script type="text/javascript" src="<@spring.url "javascripts/main.js" />"></script>
-        <script type="text/javascript" src="<@spring.url "javascripts/apiRequests.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "build/vendors.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "build/font-awesome.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "build/commons.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "lib/moment/min/moment.min.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "bootstrap/js/bootstrap.min.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "lib/filesize/lib/filesize.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "lib/clipboard/dist/clipboard.min.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "highlight/highlight.pack.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "javascripts/main.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "javascripts/apiRequests.js" />"></script>
 
         ${additionalScripts}
     </#if>

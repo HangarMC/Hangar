@@ -14,7 +14,7 @@ scopedData.permissions.has(Permission.EditOrganizationSettings)
 }
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@spring.url "javascripts/userPage.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/userPage.js" />"></script>
     <script <#-- @CSPNonce.attr -->>
             window.USERNAME ='${u.user.name}';
             @for(category <- Category.values) {

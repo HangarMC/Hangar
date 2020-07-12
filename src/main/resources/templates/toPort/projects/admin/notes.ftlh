@@ -16,7 +16,7 @@
 
 @projectRoutes = @{controllers.project.routes.Projects}
 @scripts = {
-    <script @CSPNonce.attr type="text/javascript" src="<@spring.url "javascripts/notes.js" />"></script>
+    <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "javascripts/notes.js" />"></script>
     <script @CSPNonce.attr>resourcePath = '@project.ownerName/@project.slug'</script>
 }
 

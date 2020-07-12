@@ -17,18 +17,18 @@ sorted according to different criteria.
 </#function>
 
 <#macro scripts>
-    <script src="<@spring.url "build/home.js" />"></script>
+    <script src="<@hangar.url "build/home.js" />"></script>
 </#macro>
 
 <#macro stylesheets>
-    <link rel="stylesheet" type="text/css" href="<@spring.url "build/home.css" />" />
+    <link rel="stylesheet" type="text/css" href="<@hangar.url "build/home.css" />" />
 </#macro>
 
 <#macro meta>
     <meta property="og:title" content="<@spring.message "general.appName" />">
     <meta property="og:type" content="website" />
     <meta property="og:url" content="@config.app.baseUrl">
-    <meta property="og:image" content="<@spring.url "images/ore-dark.png" />" />
+    <meta property="og:image" content="<@hangar.url "images/ore-dark.png" />" />
     <meta property="og:description" content="<@spring.message "general.description" />" />
 </#macro>
 
@@ -43,7 +43,7 @@ sorted according to different criteria.
             <div class="col-md-9 ore-banner">
                 <div class="row aligned-row">
                     <div class="col-xs-2 ore-logo">
-                        <img src="<@spring.url "images/ore-colored.svg" />" alt="Ore logo" />
+                        <img src="<@hangar.url "images/ore-colored.svg" />" alt="Ore logo" />
                     </div>
                     <div class="col-xs-10 text">
                         <div class="headline">Hangar</div>
@@ -57,7 +57,7 @@ sorted according to different criteria.
                     <div class="panel-body">
                         <#assign sponsor=randomSponsor() />
                         <a href="${sponsor.link}">
-                            <img class="logo" src="<@spring.url sponsor.image />" alt="Sponsor" />
+                            <img class="logo" src="<@hangar.url sponsor.image />" alt="Sponsor" />
                         </a>
                     </div>
                 </div>

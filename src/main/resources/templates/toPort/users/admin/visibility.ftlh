@@ -46,7 +46,7 @@
 }
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@spring.url "javascripts/hideProject.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/hideProject.js" />"></script>
 </#assign>
 
 <@base.base title="Project Visibility" additionalScripts=scriptsVar>

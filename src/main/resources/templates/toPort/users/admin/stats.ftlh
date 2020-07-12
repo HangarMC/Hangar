@@ -16,7 +16,7 @@
         request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 
 <#assign scriptsVar>
-    <script @CSPNonce.attr type="text/javascript" src="<@spring.url "lib/chart.js/dist/Chart.min.js" />"></script>
+    <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "lib/chart.js/dist/Chart.min.js" />"></script>
     <script @CSPNonce.attr>
             $(function(){
                 var domChartReview = document.getElementById("chart-reviews");
@@ -101,7 +101,7 @@
                 });
             });
     </script>
-    <script @CSPNonce.attr type="text/javascript" src="<@spring.url "javascripts/stats.js" />"></script>
+    <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "javascripts/stats.js" />"></script>
 </#assign>
 
 <@base.base title="Stats" additionalScripts=scriptsVar>

@@ -24,8 +24,8 @@ Base template for Project overview.
 <#assign appRoutes>${controllers.routes.Application}</#assign>
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@spring.url "javascripts/projectDetail.js" />"></script>
-    <script type="text/javascript" src="<@spring.url "javascripts/pageEdit.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/projectDetail.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/pageEdit.js" />"></script>
     <script <#-- @CSPNonce.attr -->>
             var projectOwner = "${p.project.ownerName}";
             var projectSlug = "${p.project.slug}";

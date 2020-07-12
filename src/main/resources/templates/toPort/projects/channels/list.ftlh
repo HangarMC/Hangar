@@ -13,7 +13,7 @@
 @versionRoutes = @{controllers.project.routes.Versions}
 
 @scripts = {
-    <script type="text/javascript" src="<@spring.url "javascripts/channelManage.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/channelManage.js" />"></script>
     <script @CSPNonce.attr>
             PROJECT_OWNER = '@p.project.ownerName';
             PROJECT_SLUG = '@p.project.slug';

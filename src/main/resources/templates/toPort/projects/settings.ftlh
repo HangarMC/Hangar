@@ -18,12 +18,12 @@
 @projectRoutes = @{controllers.project.routes.Projects}
 
 @scripts = {
-    <script type="text/javascript" src="<@spring.url "javascripts/projectManage.js" />"></script>
-    <script type="text/javascript" src="<@spring.url "javascripts/hideProject.js" />"></script>
-    <script type="text/javascript" src="<@spring.url "javascripts/iconUpload.js" />"></script>
-    <script type="text/javascript" src="<@spring.url "javascripts/keyGen.js" />"></script>
-    <script type="text/javascript" src="<@spring.url "javascripts/userSearch.js" />"></script>
-    <script type="text/javascript" src="<@spring.url "javascripts/memberList.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/projectManage.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/hideProject.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/iconUpload.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/keyGen.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/memberList.js" />"></script>
     <script @CSPNonce.attr>
             projectName = "@p.project.name";
             PROJECT_OWNER = "@p.project.ownerName";

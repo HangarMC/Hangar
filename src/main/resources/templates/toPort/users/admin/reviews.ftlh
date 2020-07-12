@@ -18,7 +18,7 @@
 @versionRoutes = @{controllers.project.routes.Versions}
 
 <#macro scripts>
-    <script @CSPNonce.attr type="text/javascript" src="<@spring.url "javascripts/review.js" />"></script>
+    <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "javascripts/review.js" />"></script>
     <script @CSPNonce.attr>versionPath = '@helper.urlEncode(project.ownerName)/@helper.urlEncode(project.slug)/versions/@helper.urlEncode(version.name)'</script>
 </#macro>
 

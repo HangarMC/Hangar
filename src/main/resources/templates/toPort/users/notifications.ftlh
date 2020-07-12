@@ -36,7 +36,7 @@
 }
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@spring.url "javascripts/notifications.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/notifications.js" />"></script>
 </#assign>
 
 <#assign message><@spring.message "notification.plural" /></#assign>

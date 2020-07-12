@@ -18,8 +18,8 @@ Page used for uploading and creating new projects.
 @projectRoutes = @{controllers.project.routes.Projects}
 
 @scripts = {
-    <script type="text/javascript" src="<@spring.url "javascripts/projectCreateValidate.js" />"></script>
-    <script type="text/javascript" src="<@spring.url "javascripts/pluginUpload.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/projectCreateValidate.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/pluginUpload.js" />"></script>
 }
 
 @layout.base(messages("project.create"), scripts) {

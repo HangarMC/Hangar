@@ -8,9 +8,9 @@
 <#import "../utils/hangar.ftlh" as hangar />
 
 @scripts = {
-    <script type="text/javascript" src="<@spring.url "javascripts/orgCreate.js" />"></script>
-    <script type="text/javascript" src="<@spring.url "javascripts/userSearch.js" />"></script>
-    <script type="text/javascript" src="<@spring.url "javascripts/membersConfig.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/orgCreate.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/membersConfig.js" />"></script>
 }
 
 @layout.base(messages("org.create"), scripts) {
