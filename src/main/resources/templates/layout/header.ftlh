@@ -43,7 +43,7 @@
             </div>
 
             <#-- Right navbar -->
-            <#if authEnabled>
+            <#if authEnabled && false> <#-- todo enable user header thingy -->
                 <ul class="nav navbar-nav navbar-collapse collapse navbar-right">
                     <#if request.headerData.currentUser??>
                         <#assign cu=request.headerData.currentUser>

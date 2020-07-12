@@ -6,6 +6,6 @@
     <div class="container-error container">
         <img src="<@spring.url "images/ore-dark.png" />" alt="Hangar logo"/>
         <h1 class="minor"><@spring.message "error.notFound.title" /></h1>
-        <h3 class="minor"><@spring.messageArgs "error.notFound.message" requestHeader.uri /></h3>
+        <h3 class="minor"><@spring.messageArgs "error.notFound.message" springMacroRequestContext.requestUri /></h3>
     </div>
 </@base.base>

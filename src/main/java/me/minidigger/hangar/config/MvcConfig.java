@@ -39,7 +39,8 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/assets/**")
+        // TODO we kinda want this to be /assets, fix the spring.url macro maybe?
+        registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/public/")
                 .setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
                 .resourceChain(true)

@@ -19,7 +19,7 @@
                     <div class="col-sm-2 col-xs-12">
                         <h5>Hangar API</h5>
                         <a class="btn dark"
-                           href="${@routes.Application.swagger()}"><@spring.message "general.api" /></a>
+                           href="<@spring.message "routes.swagger" />"><@spring.message "general.api" /></a>
                     </div>
                     <div class="col-sm-2 col-xs-12">
                         <h5>Help Needed?</h5>
@@ -49,8 +49,10 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
+                        <#assign date = .now>
                         <p>Copyright &copy; <@spring.message "general.organization" />
-                            2016-${Calendar.getInstance().get(Calendar.YEAR)}</p>
+                            <#--noinspection FtlReferencesInspection-->
+                            2016-${date?string.yyyy}</p>
                     </div>
                 </div>
             </div>

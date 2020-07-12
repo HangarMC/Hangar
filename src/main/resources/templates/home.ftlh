@@ -1,41 +1,42 @@
-@*
+<#--
 The main entry point of Ore. This page displays a list of Projects that can be
 sorted according to different criteria.
-*@
-@import scala.util.Random
-
-@import controllers.sugar.Requests.OreRequest
-@import ore.OreConfig
-@()(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
+-->
 
 <#import "/spring.ftl" as spring />
-<#import "../utils/hangar.ftlh" as hangar />
+<#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base>
 
-@randomSponsor = @{
+<#function randomSponsor>
     val logos = config.sponge.sponsors
 
     val index = new Random().nextInt(logos.size)
     logos(index)
-}
+    <#-- todo implement random sponsor stuff -->
+    <#return { "link": "https://minidigger.me", "image": "https://avatars2.githubusercontent.com/u/2185527?s=400&v=4"}>
+</#function>
 
-@scripts = {
+<#macro scripts>
     <script src="<@spring.url "build/home.js" />"></script>
-}
+</#macro>
 
-@stylesheets = {
+<#macro stylesheets>
     <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("build/home.css")" />
-}
+</#macro>
 
-@meta = {
+<#macro meta>
     <meta property="og:title" content="<@spring.message "general.appName" />">
     <meta property="og:type" content="website" />
     <meta property="og:url" content="@config.app.baseUrl">
     <meta property="og:image" content="<@spring.url "images/ore-dark.png" />" />
     <meta property="og:description" content="<@spring.message "general.description" />" />
-}
+</#macro>
 
-@layout.base(messages("general.title"), scripts, additionalMeta = meta, additionalStyling = stylesheets) {
-
+<#assign message><@spring.message "general.title" /></#assign>
+<#assign scriptsVar><@scripts /></#assign>
+<#assign stylesheetsVar><@stylesheets /></#assign>
+<#assign metaVar><@meta /></#assign>
+<@base.base title="${message}" additionalScripts=scriptsVar additionalMeta=metaVar additionalStyling=stylesheetsVar>
     <!-- Header -->
     <div class="index-header">
         <div class="row centered-content-row">
@@ -54,11 +55,10 @@ sorted according to different criteria.
                 <div class="panel sponsor-panel">
                     <span>Sponsored by</span>
                     <div class="panel-body">
-                    @defining(randomSponsor) { sponsor =>
-                        <a href="@sponsor.link">
-                            <img class="logo" src="<@spring.urls sponsor.image />" alt="Sponsor" />
+                        <#assign sponsor=randomSponsor() />
+                        <a href="${sponsor.link}">
+                            <img class="logo" src="<@spring.url sponsor.image />" alt="Sponsor" />
                         </a>
-                    }
                     </div>
                 </div>
             </div>
@@ -66,4 +66,4 @@ sorted according to different criteria.
     </div>
 
     <div id="home"></div>
-}
+</@base.base>

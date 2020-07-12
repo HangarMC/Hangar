@@ -1,15 +1,18 @@
-<#macro alert alertType>
-    <#if flash.get(alertType).isDefined || flash.get(s"$alertType-num").isDefined>
-        <div class="alert alert-fade <@bootstrapNames type=alertType/> alert-dismissable"
-             role="alert" style="display: none;">
-            <button type="button" class="close" data-dismiss="alert" aria-label="<@spring.message "general.close" />">
-                <span aria-hidden="true">&times;</span>
-            </button>
+<#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
 
-            <@normalAlert />
-            <@numAlert />
-        </div>
-    </#if>
+<#macro alert alertType>
+<#--    <#if flash.get(alertType).isDefined || flash.get(s"$alertType-num").isDefined>-->
+<#--        <div class="alert alert-fade <@bootstrapNames type=alertType/> alert-dismissable"-->
+<#--             role="alert" style="display: none;">-->
+<#--            <button type="button" class="close" data-dismiss="alert" aria-label="<@spring.message "general.close" />">-->
+<#--                <span aria-hidden="true">&times;</span>-->
+<#--            </button>-->
+
+<#--            <@normalAlert />-->
+<#--            <@numAlert />-->
+<#--        </div>-->
+<#--    </#if>-->
 </#macro>
 
 <#macro normalAlert>
