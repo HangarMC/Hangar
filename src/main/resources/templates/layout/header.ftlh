@@ -69,7 +69,7 @@
 
                         <#assign title><@spring.message "project.viewAuthors"/></#assign>
                         <li class="nav-icon authors-icon" <@tooltip title=title />>
-                            <a href="${routes.getRouteUrl("users.showAuthors")}">
+                            <a href="${routes.getRouteUrl("users.showAuthors", "", "")}">
                                 <i class="icon fas fa-users"></i>
                             </a>
                         </li>
@@ -77,13 +77,13 @@
                         <@hangar.hasPerm "IsStaff">
                             <#assign title><@spring.message "project.viewStaff"/></#assign>
                             <li class="nav-icon staff-icon" <@tooltip title=title />>
-                                <a href="${routes.getRouteUrl("users.showStaff")}">
+                                <a href="${routes.getRouteUrl("users.showStaff", "", "")}">
                                     <i class="icon fas fa-user-tie"></i>
                                 </a>
                             </li>
                         </@hangar.hasPerm>
 
-                        <#-- Show user controls -->
+                    <#-- Show user controls -->
                         <li class="dropdown user-controls nav-icon">
                             <a href="#" class="drop-down-toggle user-toggle" data-toggle="dropdown">
                                 <#if modelData.hasNotice()>
@@ -92,7 +92,8 @@
                                 <img height="32" width="32" class="user-avatar" src="${cu.avatarUrl}" alt="${cu.name}"/>
                                 <span class="caret"></span>
                             </a>
-                            <ul class="user-dropdown dropdown-menu" aria-label="<@spring.messageArgs code="aria.dropdown.menu" args=[1] />">
+                            <ul class="user-dropdown dropdown-menu"
+                                aria-label="<@spring.messageArgs code="aria.dropdown.menu" args=[1] />">
                                 <li>
                                     <a href="${routes.getRouteUrl("users.showProjects")}${cu.name}">
                                         <i class="fas fa-user mr-1"></i>
@@ -101,7 +102,7 @@
                                 </li>
 
                                 <li>
-                                    <a href="${routes.getRouteUrl("users.showNotifications")}">
+                                    <a href="${routes.getRouteUrl("users.showNotifications", "", "")}">
                                         <i class="fas fa-bell mr-1"></i>
                                         <span><@spring.message "notification.plural" />
                                             <#if modelData.hasUnreadNotifications()>
@@ -153,7 +154,7 @@
 
                                 <@hangar.hasPerm "ViewStats">
                                     <li>
-                                        <a href="${routes.getRouteUrl("showStats")}">
+                                        <a href="${routes.getRouteUrl("showStats", "", "")}">
                                             <i class="fas fa-chart-area mr-1"></i>
                                             <span><@spring.message "user.stats" />
                                     </span>
@@ -173,10 +174,9 @@
 
                                 <@hangar.hasPerm "ViewLogs">
                                     <li>
-                                        <a href="${routes.getRouteUrl("showLog")}">
+                                        <a href="${routes.getRouteUrl("showLog", "", "", "", "", "", "", "")}">
                                             <i class="fas fa-list mr-1"></i>
-                                            <span><@spring.message "admin.log.title" />
-                                    </span>
+                                            <span><@spring.message "admin.log.title" /></span>
                                         </a>
                                     </li>
                                 </@hangar.hasPerm>
