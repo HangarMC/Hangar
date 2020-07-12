@@ -1,12 +1,9 @@
-@import controllers.sugar.Requests.OreRequest
-@import ore.OreConfig
-@(remoteUrl: String)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
-
 <#import "/spring.ftl" as spring />
-<#import "../utils/hangar.ftlh" as hangar />
+<#import "utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
-@layout.base(messages("general.linkout.title")) {
-
+<#assign message><@spring.message "general.linkout.title" /></#assign>
+<@base.base title="${message}">
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <div class="panel panel-default">
@@ -16,11 +13,11 @@
                     </h3>
                 </div>
                 <div class="panel-body">
-                    <p><@spring.messageArgs "general.linkout.warning" remoteUrl /></p>
+                    <p><@spring.messageArgs "general.linkout.warning", [remoteUrl] /></p>
                     <a class="pull-left link-go-back">
                         <i class="fas fa-arrow-left"></i> <@spring.message "project.back" />
                     </a>
-                    <a href="@remoteUrl">
+                    <a href="${remoteUrl}">
                         <button class="pull-right btn btn-primary">
                         <@spring.message "general.continue" />
                         </button>
@@ -29,5 +26,4 @@
             </div>
         </div>
     </div>
-
-}
+</@base.base>
