@@ -3,15 +3,29 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
 
-@src = @{
-    if (imgSrc == null) {
-        if (userName.nonEmpty)
-            avatarUrl
-        else
-            ""
-    } else
-        imgSrc
-}
+<#-- TODO: all the userName.nonEmpty/isEmpty stuff - how do you do this? -->
+
+<#assign src>
+    <#if imgSrc??>
+        ${imgSrc}
+    <#else>
+        <#if userName.nonEmpty>
+            ${avatarUrl}
+        </#if>
+    </#if>
+</#assign>
+
+<#--
+
+<#assign url>
+    <#if href??>
+        ${href}
+    <#elseif userName.isEmpty>
+        #
+    <#else>
+        ${routes.getRouteUrl("users.showProjects")} -- ????????
+    </#if>
+</#assign>
 
 @url = @{
     if (href != null)
@@ -22,6 +36,13 @@
         routes.Users.showProjects(userName.get).url
 }
 
+-->
+
+<#assign name>
+    <#if !userName.isEmpty>
+        ${userName}
+    </#if>
+</#assign>
 @name = @{
     if (userName.isEmpty)
         ""
@@ -29,6 +50,7 @@
         userName
 }
 
-<a href="@url" @for((k, v) <- attr) { @(s"$k=$v") }>
-    <img class="user-avatar @clazz" title="@name" src="@src" alt="@name" />
+<#-- TODO: attrs here -->
+<a href="${url}" @for((k, v) <- attr) { @(s"$k=$v") }>
+    <img class="user-avatar ${clazz}" title="${name}" src="${src}" alt="${name}" />
 </a>

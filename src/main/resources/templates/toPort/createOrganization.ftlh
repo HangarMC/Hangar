@@ -1,20 +1,23 @@
+<#--
 @import controllers.sugar.Requests.OreRequest
 @import ore.OreConfig
 @import ore.permission.role.RoleCategory
 @import views.html.helper.{CSRF, form}
 @()(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
+-->
 
 <#import "/spring.ftl" as spring />
-<#import "../utils/hangar.ftlh" as hangar />
+<#import "*/../utils/hangar.ftlh" as hangar />
+<#import "*/../layout/base.ftlh" as base />
 
-@scripts = {
+<#assign scripts>
     <script type="text/javascript" src="<@hangar.url "javascripts/orgCreate.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/membersConfig.js" />"></script>
-}
+</#assign>
 
-@layout.base(messages("org.create"), scripts) {
-
+<#assign message><@spring.message "org.create.title" /></#assign>
+<@base.base title="${message}" additionalScripts=scripts>
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
@@ -51,5 +54,4 @@
             </div>
         </div>
     </div>
-
-}
+</@base.base>

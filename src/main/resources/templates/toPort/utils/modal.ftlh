@@ -5,7 +5,7 @@
   label: String = "",
   titleId: String)(content: Html)(implicit messages: Messages)
 
-<div class="modal fade" id="@id" tabindex="-1" role="dialog" aria-labelledby="@label">
+<div class="modal fade" id="${id}" tabindex="-1" role="dialog" aria-labelledby="${label}">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -15,7 +15,7 @@
                 </button>
                 <h4 class="modal-title"><@spring.message titleId /></h4>
             </div>
-            @content
+            ${content}
         </div>
     </div>
 </div>

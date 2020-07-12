@@ -4,7 +4,7 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
 
-<div class="prompt popover @id @position" data-prompt-id="@prompt.value">
+<div class="prompt popover ${id} ${position}" data-prompt-id="${prompt.value}">
     <div class="arrow"></div>
     <h3 class="popover-title"><@spring.message prompt.titleId /></h3>
     <div class="popover-content">
