@@ -34,14 +34,14 @@
         @roles.map { case (t, role, owner) =>
         <tr data-role-type="@tableType" data-role-id="@role.id">
             <td>@showKey(t, role)</td>
-            @if(withOwner) {
+            <#if withOwner>
                 <td><a href="@routes.Application.userAdmin(owner)">@{owner}</a></td>
-            }
-            @if(!role.role.isAssignable) {
+            </#if>
+            <#if !role.role.isAssignable>
                 <td colspan="3">
                 @role.role.title
                 </td>
-            } else {
+            <#else>
                 <td><select class="select-role">
                 @for(roleType <- roleTypes) {
                     <option value="@roleType.value" @if(role.role == roleType) {selected}
@@ -50,15 +50,15 @@
                 </select></td>
                 <td><input type="checkbox" class="role-accepted" @if(role.isAccepted) {checked}></td>
                 <td><a href="#" class="delete-role"><i class="fas fa-trash"></i></a></td>
-            }
+            </#if>
         </tr>
         }
     </table>
 }
 
-@scripts = {
+<#macro scripts>
     <script type="text/javascript" src="<@spring.url "javascripts/userAdmin.js" />"></script>
-}
+</#macro>
 
 @layout.base(prefix + user.user.name, scripts) {
 
@@ -72,7 +72,7 @@
         <div class="col-md-9">
 
             <div class="row">
-            @if(!user.isOrga) {
+            <#if !user.isOrga>
                 @panel("Organizations") {
                     @roleTable[Model[Organization], OrganizationUserRole]("Organization", "orgRole", withOwner = true, user.orgas.map(t => (t._1, t._3, t._4.name)).toSet, orgRoles) { (org, _) =>
                         <a href="@routes.Application.userAdmin(org.name)">
@@ -80,7 +80,7 @@
                         </a>
                     }
                 }
-            } else {
+            <#else>
                 @panel("Members") {
                     @roleTable[Model[User], OrganizationUserRole]("User", "memberRole", withOwner = false, orga.get.members.map(t => (t._2, t._1, null)).toSet, orgRoles) { (user, _) =>
                         <a href="@routes.Application.userAdmin(user.name)">
@@ -88,9 +88,9 @@
                         </a>
                     }
                 }
-            }
+            </#if>
             </div>
-            @if(!user.isOrga) {
+            <#if !user.isOrga>
                 <div class="row">
                 @panel("Projects") {
                     @roleTable[Project, ProjectUserRole]("Project", "projectRole", withOwner = true, userProjectRoles.map(t => (t._1, t._2, t._1.ownerName)).toSet, projectRoles) { (project, _) =>
@@ -100,7 +100,7 @@
                     }
                 }
                 </div>
-            }
+            </#if>
         </div>
 
         @panel("Other Administration", size=3) {

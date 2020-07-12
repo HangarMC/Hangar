@@ -14,13 +14,13 @@
 @(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)], additionalScripts: Html = Html(""))(content: Html)(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
 
 @canEditOrgSettings = @{
-    u.isOrga &&
-    o.exists { case (_, scopedData) =>
-        scopedData.permissions.has(Permission.EditOrganizationSettings)
-    }
+u.isOrga &&
+o.exists { case (_, scopedData) =>
+scopedData.permissions.has(Permission.EditOrganizationSettings)
+}
 }
 
-@scripts = {
+<#macro scripts>
     <script type="text/javascript" src="<@spring.url "javascripts/userPage.js" />"></script>
     <script @CSPNonce.attr>
             window.USERNAME ='@u.user.name';
@@ -32,11 +32,12 @@
             NO_ACTION_MESSAGE.watching = '<@spring.messageArgs "user.noWatching" u.user.name />';
     </script>
     @additionalScripts
-}
+</#macro>
 
-@layout.base(u.user.name, scripts) {
-
-        <!-- Updated by JS -->
+<#assign nameVar><@u.user.name /></#assign>
+<#assign scriptsVar><@scripts /></#assign>
+<@base.base u.user.name=nameVar scripts=scriptsVar>
+    <!-- Updated by JS -->
     <div class="alert alert-success alert-dismissable" role="alert" style="display: none;">
         <button type="button" class="close" data-dismiss="alert" aria-label="<@spring.message "general.close" />">
             <span aria-hidden="true">&times;</span>
@@ -191,4 +192,4 @@
             </div>
         }
     }
-}
+</@base.base>

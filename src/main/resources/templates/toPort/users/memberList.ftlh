@@ -15,9 +15,9 @@
 
 <!-- TODO: Pagination -->
 
-@if(j.members.nonEmpty) {
+<#if j.members.nonEmpty>
 
-    @if(editable && perms.has(Permission.ManageSubjectMembers)) {
+    <#if editable && perms.has(Permission.ManageSubjectMembers)>
         @users.invite.roleSelect(
             roleCategory = j.roleCategory,
             id = "select-role",
@@ -61,7 +61,7 @@
                 </div>
             </div>
         </div>
-    }
+    </#if>
 
     <div class="alert alert-danger member-error" style="display: none">
         <span>error</span>
@@ -71,16 +71,16 @@
         <div class="panel-heading">
             <h3 class="pull-left panel-title"><@spring.message "project.settings.members" /></h3>
 
-            @if(perms.has(Permission.ManageSubjectMembers)) {
+            <#if perms.has(Permission.ManageSubjectMembers)>
                 <div class="pull-right">
-                    @if(!editable && settingsCall != null) {
+                    <#if !editable && settingsCall??>
                         <a href="@settingsCall"
                            class="btn yellow btn-xs">
                             <i class="fas fa-pencil-alt"></i>
                         </a>
-                    }
+                    </#if>
 
-                    @if(saveCall != null) {
+                    <#if saveCall??>
                         @form(action = saveCall, Symbol("id") -> "save") {
                             @CSRF.formField
                             <button class="btn-members-save btn btn-default btn-panel btn-xs" data-toggle="tooltip"
@@ -88,9 +88,9 @@
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                         }
-                    }
+                    </#if>
                 </div>
-            }
+            </#if>
         </div>
 
         <ul class="list-members list-group">
@@ -102,32 +102,32 @@
                 @user.name
                 </a>
                     <p style="display: none;" class="role-id">@role.id</p>
-                    @if(editable && perms.has(Permission.ManageSubjectMembers) && !role.role.permissions.has(Permission.IsOrganizationOwner)) {
+                    <#if editable && perms.has(Permission.ManageSubjectMembers) && !role.role.permissions.has(Permission.IsOrganizationOwner)>
                         <a href="#">
                             <i style="padding-left:5px" class="fas fa-trash" data-toggle="modal" data-target="#modal-user-delete"></i>
                         </a>
                         <a href="#"><i style="padding-left:5px" class="fas fa-edit"></i></a>
-                    }
+                    </#if>
 
                 <span class="minor pull-right">
-                @if(!role.isAccepted) {
+                <#if !role.isAccepted>
                     <span class="minor">(Invited as @role.role.title)</span>
-                } else {
+                <#else>
                     @role.role.title
-                }
+                </#if>
                 </span>
 
                 </li>
             }
 
             <!-- User search -->
-            @if(perms.has(Permission.ManageSubjectMembers) && editable) {
+            <#if perms.has(Permission.ManageSubjectMembers) && editable>
                 <li class="list-group-item">
                     @users.invite.userSearch()
                 </li>
-            }
+            </#if>
 
         </ul>
     </div>
 
-}
+</#if>

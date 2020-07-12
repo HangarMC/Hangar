@@ -14,7 +14,7 @@
 @(stats: List[Stats], fromTime: LocalDate, toTime: LocalDate)(implicit messages: Messages,
         request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 
-@scripts = {
+<#macro scripts>
     <script @CSPNonce.attr type="text/javascript" src="<@spring.url "lib/chart.js/dist/Chart.min.js" />"></script>
     <script @CSPNonce.attr>
             $(function(){
@@ -101,7 +101,7 @@
             });
     </script>
     <script @CSPNonce.attr type="text/javascript" src="<@spring.url "javascripts/stats.js" />"></script>
-}
+</#macro>
 
 @layout.base("Stats", scripts) {
     <div class="row">

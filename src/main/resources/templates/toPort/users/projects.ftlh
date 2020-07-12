@@ -16,18 +16,18 @@
 @canEditOrgMembers = @{
     u.isOrga &&
     o.exists { case (_, scopedData) =>
-        scopedData.permissions.has(Permission.ManageOrganizationMembers)
+        scopedData.permissions.has(Permission.sManageOrganizationMembers)
     }
 }
 
-@scripts = {
-  <script type="text/javascript" src="<@spring.url "build/user-profile.js" />"></script>
-  @if(u.isOrga && o.isDefined && canEditOrgMembers) {
-      <script type="text/javascript" src="<@spring.url "javascripts/orgInvites.js" />"></script>
-  }
-  <script type="text/javascript" src="<@spring.url "javascripts/userSearch.js" />"></script>
-  <script type="text/javascript" src="<@spring.url "javascripts/memberList.js" />"></script>
-}
+<#macro scripts>
+    <script type="text/javascript" src="<@spring.url "build/user-profile.js" />"></script>
+    <#if u.isOrga && o.isDefined && canEditOrgMembers>
+    <script type="text/javascript" src="<@spring.url "javascripts/orgInvites.js" />"></script>
+    </#if>
+    <script type="text/javascript" src="<@spring.url "javascripts/userSearch.js" />"></script>
+    <script type="text/javascript" src="<@spring.url "javascripts/memberList.js" />"></script>
+</#macro>
 
 @users.view(u, o, additionalScripts = scripts) {
 
@@ -36,7 +36,7 @@
             <div id="user-profile"></div>
         </div>
         <div class="col-md-4">
-            @if(u.isOrga && o.isDefined && canEditOrgMembers) {
+            <#if u.isOrga && o.isDefined && canEditOrgMembers>
                 <div class="panel-user-info panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title"><@spring.message "project.manager" /></h3>
@@ -50,21 +50,21 @@
                                     <span class="minor">@role.role.title</span>
                                 </td>
                                 <td>
-                                    @if(role.role != Role.ProjectOwner) {
-                                        @if(role.isAccepted) {
+                                    <#if role.role != Role.ProjectOwner>
+                                        <#if role.isAccepted>
                                             <button class="btn btn-sm btn-danger pull-right btn-invite" data-invite-id="@role.id" data-invite-behalf="@u.user.name" data-invite-accepted="decline">Leave</button>
-                                        } else {
+                                        <#else>
                                             <button class="btn btn-sm btn-info pull-right btn-invite" data-invite-id="@role.id" data-invite-behalf="@u.user.name" data-invite-accepted="accept">Join</button>
-                                        }
-                                    }
+                                        </#if>
+                                    </#if>
                                 </td>
                             </tr>
                             }
                         </tbody>
                     </table>
                 </div>
-            }
-            @if(!u.isOrga) {
+            </#if>
+            <#if !u.isOrga>
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title"> <@spring.message "org.plural" /></h3>
@@ -131,7 +131,7 @@
                         <div class="clearfix"></div>
                     </div>
                 </div>
-            } else {
+            <#else>
                 @o.map { case (orgData, scopedData) =>
                     @users.memberList(orgData,
                         editable = true,
@@ -140,7 +140,7 @@
                         removeCall = routes.Organizations.removeMember(orgData.orga.name),
                     )
                 }
-            }
+            </#if>
         </div>
     </div>
 

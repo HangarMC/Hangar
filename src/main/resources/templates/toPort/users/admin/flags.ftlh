@@ -14,10 +14,10 @@
 
 @projectRoutes = @{controllers.project.routes.Projects}
 
-@scripts = {
+<#macro scripts>
     <script type="text/javascript" src="<@spring.url "javascripts/flags.js" />"></script>
     <script type="text/javascript" src="<@spring.url "javascripts/hideProject.js" />"></script>
-}
+</#macro>
 
 @layout.base("Flags", scripts) {
 

@@ -12,11 +12,11 @@
 
 @renderApprovalList(projectSeq: Seq[ProjectNeedsApproval]) = {
     <ul class="list-group list-flags-admin">
-        @if(projectSeq.isEmpty) {
+        <#if projectSeq.isEmpty>
             <li class="list-group-item">
                 <p>No projects found.</p>
             </li>
-        }
+        </#if>
         @projectSeq.map { project =>
             <li class="list-group-item">
                 <div class="row">
@@ -44,10 +44,9 @@
     </ul>
 }
 
-@scripts = {
+<#macro scripts>
     <script type="text/javascript" src="<@spring.url "javascripts/hideProject.js" />"></script>
-}
-
+</#macro>
 @layout.base("Project Visibility", scripts) {
 
     <div class="row">

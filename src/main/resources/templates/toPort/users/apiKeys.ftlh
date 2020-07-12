@@ -10,16 +10,16 @@
 
 @(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)], keys: Seq[ApiKey], perms: Seq[NamedPermission])(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
 
-@scripts = {
+<#macro scripts>
     <script type="text/javascript" src="<@spring.url "javascripts/apiKeysManagement.js" />"></script>
     <script @CSPNonce.attr>
-            NO_PERMS_SET = '<@spring.message "user.apiKeys.error.noPermsSet" />';
-            NO_NAME_SET = '<@spring.message "user.apiKeys.error.noNameSet" />';
-            TOO_LONG_NAME = '<@spring.message "user.apiKeys.error.tooLongName" />';
-            NAMED_USED = '<@spring.message "user.apiKeys.error.nameAlreadyUsed" />';
-            DELETE_KEY = '<@spring.message "user.apiKeys.keyDeleteButton" />';
+        NO_PERMS_SET = '<@spring.message "user.apiKeys.error.noPermsSet" />';
+        NO_NAME_SET = '<@spring.message "user.apiKeys.error.noNameSet" />';
+        TOO_LONG_NAME = '<@spring.message "user.apiKeys.error.tooLongName" />';
+        NAMED_USED = '<@spring.message "user.apiKeys.error.nameAlreadyUsed" />';
+        DELETE_KEY = '<@spring.message "user.apiKeys.keyDeleteButton" />';
     </script>
-}
+</#macro>
 
 @users.view(u, o, additionalScripts = scripts) {
     <div id="keyAlert" class="alert alert-danger" role="alert" style="display: none;"></div>
@@ -30,22 +30,22 @@
             <div id="api-create-key-form">
                 <div class="row">
                     <div class="col-md-6">
-                    @for(perm <- perms.take(NamedPermission.values.length / 2)) {
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" id="perm.@perm.entryName"> @perm.entryName
-                            </label>
-                        </div>
-                    }
+                        <#list perms.take(NamedPermission.values.length / 2) as perm>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" id="perm.@perm.entryName"> @perm.entryName
+                                </label>
+                            </div>
+                        </#list>
                     </div>
                     <div class="col-md-6">
-                    @for(perm <- perms.drop(NamedPermission.values.length / 2)) {
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" id="perm.@perm.entryName"> @perm.entryName
-                            </label>
-                        </div>
-                    }
+                        <#list perms.drop(NamedPermission.values.length / 2) as perm>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" id="perm.@perm.entryName"> @perm.entryName
+                                </label>
+                            </div>
+                        </#list>
                     </div>
                 </div>
 
@@ -70,7 +70,7 @@
                     </tr>
                 </thead>
                 <tbody id="api-key-rows">
-                @for(key <- keys) {
+                <#list keys as key>
                     <tr class="api-key-row">
                         <th class="api-key-name">@key.name</th>
                         <th></th>
@@ -78,7 +78,7 @@
                         <th>@key.namedRawPermissions.map(_.entryName).mkString(", ")</th>
                         <th><button class="btn btn-danger api-key-row-delete-button"><@spring.message "user.apiKeys.keyDeleteButton" /></button></th>
                     </tr>
-                }
+                </#list>
                 </tbody>
             </table>
         </div>

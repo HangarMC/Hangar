@@ -17,10 +17,10 @@
 @projectRoutes = @{controllers.project.routes.Projects}
 @versionRoutes = @{controllers.project.routes.Versions}
 
-@scripts = {
+<#macro scripts>
     <script @CSPNonce.attr type="text/javascript" src="<@spring.url "javascripts/review.js" />"></script>
     <script @CSPNonce.attr>versionPath = '@helper.urlEncode(project.ownerName)/@helper.urlEncode(project.slug)/versions/@helper.urlEncode(version.name)'</script>
-}
+</#macro>
 
 @layout.base(messages("review.title", project.name, version.name), scripts) {
 
@@ -35,7 +35,7 @@
                 </a>
                 released this version on @prettifyDate(version.createdAt)
             </p>
-            @if(!version.reviewState.isChecked) {
+            <#if !version.reviewState.isChecked>
                 <div class="pull-right">
                     <span class="btn-group-sm">
                         <a href="#" class="btn btn-info btn-skip-review">@if(version.reviewState != ReviewState.Backlog) { Remove from queue } else { Add to queue }</a>
@@ -43,30 +43,30 @@
                         <a href="@versionRoutes.downloadJar(project.ownerName, project.slug, version.versionString, None)" class="btn btn-info">Download File</a>
                     </span>
                     <span class="btn-group-sm">
-                    @if(mostRecentUnfinishedReview.isDefined) {
-                        @if(request.headerData.isCurrentUser(mostRecentUnfinishedReview.get.userId)) {
+                    <#if mostRecentUnfinishedReview.isDefined>
+                        <#if request.headerData.isCurrentUser(mostRecentUnfinishedReview.get.userId)>
                             <button class="btn btn-review-stop btn-danger"><i class="fas fa-stop-circle"></i> <@spring.message "review.stop" /></button>
                             <button class="btn btn-review-approve btn-success"><i class="fas fa-thumbs-up"></i> <@spring.message "user.queue.approve" /></button>
                             <button class="btn btn-review-approve-partial btn-success"><i class="fas fa-thumbs-up"></i> <@spring.message "user.queue.approvePartial" /></button>
-                        } else {
+                        <#else>
                             <button class="btn btn-review-takeover btn-danger"><i class="fas fa-clipboard"></i> <@spring.message "review.takeover" /></button>
-                        }
-                    } else {
+                        </#if>
+                    <#else>
                         <button class="btn btn-review-start btn-success"><i class="fas fa-terminal"></i> <@spring.message "review.start" /></button>
-                    }
+                    </#if>
                     </span>
                 </div>
-            } else {
+            <#else>
                 <div class="pull-right">
                     <span class="btn-group-sm">
                         <a href="" class="btn btn-danger btn-review-reopen">Undo approval</a>
                     </span>
                 </div>
-            }
+            </#if>
         </div>
     </div>
-    @if(mostRecentUnfinishedReview.isDefined) {
-        @if(request.headerData.isCurrentUser(mostRecentUnfinishedReview.get.userId)) {
+    <#if mostRecentUnfinishedReview.isDefined>
+        <#if request.headerData.isCurrentUser(mostRecentUnfinishedReview.get.userId)>
             <div class="row">
                 <div class="col-md-12">
                     <div class="input-group" style="width: 100%;
@@ -76,72 +76,71 @@
                     </div>
                 </div>
             </div>
-        }
-    }
+        </#if>
+    </#if>
     <div class="row version-description">
         <div class="col-md-12">
             <h2><@spring.message "review.log" /></h2>
         </div>
-        @if(reviews.isEmpty) {
+        <#if reviews.isEmpty>
             <div class="col-md-12">
                 <div class="alert-review alert alert-info" role="alert">
                     <i class="fas fa-info-circle"></i>
                     This version is not under review
                 </div>
             </div>
-        }
+        </#if>
 
         <div class="col-md-12">
             <table class="table table-condensed setting-no-border table-review-log">
                 <tbody>
                 @reviews.reverse.zipWithIndex.map { case (t, index) =>
                     @defining((t._1, t._2)) { case (item, name) =>
-                        @if(item.endedAt.isDefined) {
-                            @if(reviews.size > (reviews.size - index)) {
-                                @if(prettifyDateAndTime(item.endedAt.get).equalsIgnoreCase(prettifyDateAndTime(reviews.reverse(reviews.size - index - 1)._1.createdAt))) {
+                        <#if item.endedAt.isDefined>
+                            <#if reviews.size > (reviews.size - index)>
+                                <#if prettifyDateAndTime(item.endedAt.get).equalsIgnoreCase(prettifyDateAndTime(reviews.reverse(reviews.size - index - 1)._1.createdAt))>
                                     <tr>
                                         <td>@prettifyDateAndTime(item.endedAt.get)</td>
                                         <td>
-
                                             <strong>@name.getOrElse("Unknown")</strong>
                                             took over from
                                             <strong>@name.getOrElse("Unknown")</strong>
-                                            @if(!item.decodeMessages.exists(_.isTakeover)) {
+                                            <#if !item.decodeMessages.exists(_.isTakeover)>
                                                 <i>- no message provided -</i>
-                                            } else {
+                                            <#else>
                                                 <i>@item.decodeMessages.filter(_.isTakeover).head.render</i>
-                                            }
+                                            </#if>
                                         </td>
                                     </tr>
-                                } else {
+                                <#else>
                                     <tr>
                                         <td>@prettifyDateAndTime(item.endedAt.get)</td>
                                         <td><strong>@name.getOrElse("Unknown")</strong> stopped</td>
                                     </tr>
-                                }
-                            } else {
-                                @if(version.approvedAt.isDefined) {
+                                </#if>
+                            <#else>
+                                <#if version.approvedAt.isDefined>
                                     <tr>
                                         <td>@prettifyDateAndTime(item.endedAt.get)</td>
                                         <td><strong>@name.getOrElse("Unknown")</strong> approved</td>
                                     </tr>
-                                } else {
+                                <#else>
                                     <tr>
                                         <td>@prettifyDateAndTime(item.endedAt.get)</td>
                                         <td>
                                             <strong>@name.getOrElse("Unknown")</strong>
                                             stopped
                                             <br>
-                                            @if(!item.decodeMessages.exists(_.isStop)) {
+                                            <#if !item.decodeMessages.exists(_.isStop)>
                                                 <i>- no message provided -</i>
-                                            } else {
+                                            <#else>
                                                 <i>@item.decodeMessages.filter(_.isStop).head.render</i>
-                                            }
+                                            </#if>
                                         </td>
                                     </tr>
-                                }
-                            }
-                        }
+                                </#if>
+                            </#if>
+                        </#if>
                         @item.decodeMessages.filterNot(_.isTakeover).filterNot(_.isStop).reverse.map { message =>
                             <tr>
                                 <td>@message.getTime(messages.lang.locale)</td>

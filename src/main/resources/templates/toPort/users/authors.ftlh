@@ -17,16 +17,16 @@
 @pageSize = @{ config.ore.users.authorPageSize }
 @direction = @{ if (ordering.startsWith("-")) "chevron-down" else "chevron-up" }
 
-@isActiveSort(td: String) = @{
+<#function isActiveSort td>
     var sort = ordering
     if (sort.startsWith("-")) sort = sort.substring(1)
-    sort.equalsIgnoreCase(td)
-}
+    <#return sort.equalsIgnoreCase(td)>
+</#function>
 
-@scripts = {
+<#macro scripts>
     <script type="text/javascript" src="<@spring.url "javascripts/userList.js" />"></script>
     <script @CSPNonce.attr>CURRENT_PAGE = @page;</script>
-}
+</#macro>
 
 @layout.base("Authors - Hangar", scripts) {
 
@@ -35,21 +35,21 @@
             <thead>
                 <tr>
                     <td></td>
-                    <td @if(isActiveSort(UserOrdering.UserName)) { class="user-sort" } data-list="authors" >
+                    <td <#if isActiveSort(UserOrdering.UserName)>class="user-sort"</#if> data-list="authors" >
                         Username
-                        @if(isActiveSort(UserOrdering.UserName)) { <i class="o fas fa-@direction"></i> }
+                        <#if isActiveSort(UserOrdering.UserName)><i class="o fas fa-@direction"></i></#if>
                     </td>
-                    <td @if(isActiveSort(UserOrdering.Role)) { class="user-sort" } data-list="authors" >
+                    <td <#if isActiveSort(UserOrdering.Role)>class="user-sort"</#if> data-list="authors" >
                         Roles
-                        @if(isActiveSort(UserOrdering.Role)) { <i class="o fas fa-@direction"></i> }
+                        <#if isActiveSort(UserOrdering.Role)><i class="o fas fa-@direction"></i></#if>
                     </td>
-                    <td @if(isActiveSort(UserOrdering.JoinDate)) { class="user-sort" } data-list="authors" >
+                    <td <#if isActiveSort(UserOrdering.JoinDate)>class="user-sort"</#if> data-list="authors" >
                         Joined
-                        @if(isActiveSort(UserOrdering.JoinDate)) { <i class="o fas fa-@direction"></i> }
+                        <#if isActiveSort(UserOrdering.JoinDate)><i class="o fas fa-@direction"></i></#if>
                     </td>
-                    <td @if(isActiveSort(UserOrdering.Projects)) { class="user-sort" } data-list="authors" >
+                    <td <#if isActiveSort(UserOrdering.Projects)>class="user-sort"</#if> data-list="authors" >
                         Projects
-                        @if(isActiveSort(UserOrdering.Projects)) { <i class="o fas fa-@direction"></i> }
+                        <#if isActiveSort(UserOrdering.Projects)><i class="o fas fa-@direction"></i></#if>
                     </td>
                 </tr>
             </thead>
@@ -78,27 +78,27 @@
                 </tr>
                 }
 
-                @if(page > 1 || authors.size >= pageSize) {
+                <#if page gt 1 || authors.size gte pageSize>
                     <tr class="authors-footer">
                         <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
                         <td>
-                            @if(authors.size >= pageSize) {
+                            <#if authors.size gte pageSize>
                                 <a href="@routes.Users.showAuthors(Some(ordering), Some(page + 1))" class="btn btn-default">
                                     <i class="fas fa-arrow-right"></i>
                                 </a>
-                            }
+                            </#if>
 
-                            @if(page > 1) {
+                            <#if page gt 1>
                                 <a href="@routes.Users.showAuthors(Some(ordering), Some(page - 1))" class="btn btn-default">
                                     <i class="fas fa-arrow-left"></i>
                                 </a>
-                            }
+                            </#if>
                         </td>
                     </tr>
-                }
+                </#if>
 
             </tbody>
         </table>

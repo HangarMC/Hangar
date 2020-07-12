@@ -27,9 +27,9 @@
                 </div>
                 <table class="table table-condensed setting-no-border table-review-log">
                     <tbody>
-                        @if(activities.isEmpty) {
+                        <#if activities.isEmpty>
                             <tr><td>No activities founds</td></tr>
-                        }
+                        </#if>
                         @activities.map {
                             case Right(review) => {
                                 <tr>

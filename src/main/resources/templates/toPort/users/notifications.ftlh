@@ -34,9 +34,9 @@
     }
 }
 
-@scripts = {
+<#macro scripts>
     <script type="text/javascript" src="<@spring.url "javascripts/notifications.js" />"></script>
-}
+</#macro>
 
 @layout.base(messages("notification.plural"), scripts) {
 
@@ -61,11 +61,11 @@
                             </option>
                         </select>
 
-                        @if(notifications.nonEmpty && notificationFilter.equals(NotificationFilter.Unread)) {
+                        <#if notifications.nonEmpty && notificationFilter.equals(NotificationFilter.Unread)>
                             <button class="btn-mark-all-read btn btn-primary">
                                 <i class="fas fa-check"></i> <strong><@spring.message "notification.markAllRead" /></strong>
                             </button>
-                        }
+                        </#if>
                     </div>
                 </div>
             </div>
@@ -89,11 +89,11 @@
                         }
                         @formatNotification(notification)
 
-                        @if(!notification.isRead) {
+                        <#if !notification.isRead>
                             <span class="btn-mark-read">
                                 <i class="minor pull-right fas fa- sm fa-check"></i>
                             </span>
-                        }
+                        </#if>
                     </li>
                     }
                     </ul>
@@ -122,10 +122,12 @@
                 <!-- Invites content -->
                 <div class="col-xs-12">
 
-                @for(((invite, subject), i) <- invites.zipWithIndex) {
-                    @if(i % 2 == 0) {
+                <#assign i = 0>
+                <#list invites.zipWithIndex as invite, subject>
+                    <#if i % 2 == 0>
                         <div class="row">
-                        }
+                    </#if>
+                    <#assign i = i + 1>
 
                     <div class="invite col-xs-12 col-md-6">
                         <div class="invite-content" data-id="@invite.id"
@@ -169,10 +171,10 @@
                         </div>
                     </div>
 
-                    @if((i + 1) % 2 == 0) {
+                    <#if (i + 1) % 2 == 0>
                     </div>
-                    }
-                }
+                    </#if>
+                </#list>
                 </div>
             </div>
         </div>

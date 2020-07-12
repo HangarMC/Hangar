@@ -13,23 +13,23 @@
 
 @versionRoutes = @{controllers.project.routes.Versions}
 
-@scripts = {
+<#macro scripts>
     <script @CSPNonce.attr type="text/javascript" src="<@spring.url "javascripts/queue.js" />"></script>
     <script @CSPNonce.attr>
-            $(function(){
-                var momentNow = moment();
-                var maxDifference = @config.ore.queue.maxReviewTime.toMillis;
-                $('span[data-ago]').each(function() {
-                    var momentAgo = moment($(this).data('ago'))
-                    $(this).text($(this).data('title') + momentAgo.fromNow());
-                    if (momentNow.diff(momentAgo) >= maxDifference) {
-                        $(this).text('pastdue ' + momentAgo.fromNow()).css('color', 'darkred');
-                        $(this).parent().parent().find('.status').removeClass().addClass('status far fa-fw fa-clock fa-2x').css('color', 'darkred');
-                    }
-                });
+        $(function(){
+            var momentNow = moment();
+            var maxDifference = @config.ore.queue.maxReviewTime.toMillis;
+            $('span[data-ago]').each(function() {
+                var momentAgo = moment($(this).data('ago'))
+                $(this).text($(this).data('title') + momentAgo.fromNow());
+                if (momentNow.diff(momentAgo) >= maxDifference) {
+                    $(this).text('pastdue ' + momentAgo.fromNow()).css('color', 'darkred');
+                    $(this).parent().parent().find('.status').removeClass().addClass('status far fa-fw fa-clock fa-2x').css('color', 'darkred');
+                }
             });
+        });
     </script>
-}
+</#macro>
 
 @layout.base(messages("user.queue"), scripts) {
 
@@ -56,15 +56,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if(underReview.isEmpty) {
+                        <#if underReview.isEmpty>
                             <tr>
                                 <th rowspan="5">
                                     <h3><@spring.message "queue.review.none" /></h3>
                                 </th>
                             </tr>
-                        }
+                        </#if>
                         @underReview.map { entry =>
-                        <tr @if(entry.isUnfinished && request.headerData.isCurrentUser(entry.reviewerId)){ class="warning" }>
+                        <tr <#if entry.isUnfinished && request.headerData.isCurrentUser(entry.reviewerId)>class="warning"</#if>>
                         <td>
                             <a href="@versionRoutes.show(entry.namespace.ownerName, entry.namespace.slug, entry.versionString)">
                                 @entry.namespace
@@ -74,37 +74,37 @@
                             <span class="channel" style="background-color: @entry.channelColor.hex">@entry.channelName</span>
                         </td>
                         <td>
-                            @if(entry.versionAuthor.isDefined) {
+                            <#if entry.versionAuthor.isDefined>
                                 <a href="https://papermc.io/forums/users/@entry.versionAuthor.get">
                                 @entry.versionAuthor.get
                                 </a>
-                            } else {
+                            <#else>
                                 Unknown
-                            }
+                            </#if>
                         <br>
                         @prettifyDateAndTime(entry.versionCreatedAt)
                         </td>
                         <td style="text-align: right; max-width: 40px">
-                        @if(entry.isUnfinished) {
-                            @if(request.headerData.isCurrentUser(entry.reviewerId)) {
+                        <#if entry.isUnfinished>
+                            <#if request.headerData.isCurrentUser(entry.reviewerId)>
                                 <i class="status fas fa-fw fa-play-circle fa-2x" style="color: green"></i>
-                            } else {
+                            <#else>
                                 <i class="status fas fa-fw fa-cog fa-2x" style="color: black"></i>
-                            }
-                        } else {
+                            </#if>
+                        <#else>
                             <i class="status fas fa-fw fa-pause-circle fa-2x" style="color: orange"></i>
-                        }
+                        </#if>
                         </td>
-                        <td @if(!entry.isUnfinished){ style="color: darkred" }>
-                        @if(entry.isUnfinished) {
+                        <td <#if try.isUnfinished>style="color: darkred"</#if> >
+                        <#if entry.isUnfinished>
                             @entry.reviewerName
                             <br>
                             <span data-ago="@entry.reviewStarted.toInstant.toEpochMilli" data-title="started "></span>
-                        } else {
+                        <#else>
                             <strike>@entry.reviewerName</strike>
                             <br>
                             <span data-ago="@entry.reviewStarted.toInstant.toEpochMilli" data-title="abandoned "></span>
-                        }
+                        </#if>
                         </td>
                         <td style="vertical-align: middle; text-align: right; padding-right: 15px;">
                             <a href="/@helper.urlEncode(entry.namespace.ownerName)/@helper.urlEncode(entry.namespace.slug)/versions/@helper.urlEncode(entry.versionString)/reviews"><i class="fas fa-2x fa-fw fa-info"></i></a>
@@ -140,13 +140,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if(versions.isEmpty) {
+                        <#if versions.isEmpty>
                             <tr>
                                 <th rowspan="5">
                                     <h3><i class="fas fa-thumbs-o-up"></i> <@spring.message "user.queue.none" /></h3>
                                 </th>
                             </tr>
-                        }
+                        </#if>
                         @versions.sortWith((a, b) => a.versionCreatedAt.compareTo(b.versionCreatedAt) < 0).map { entry =>
                         <tr data-version="@helper.urlEncode(entry.namespace.ownerName)/@helper.urlEncode(entry.namespace.slug)/versions/@helper.urlEncode(entry.versionString)">
                             <td>
@@ -163,11 +163,11 @@
                                 <span class="channel" style="background-color: @entry.channelColor.hex;">@entry.channelName</span>
                             </td>
                             <td>
-                                @if(entry.versionAuthor.isDefined) {
+                                <#if entry.versionAuthor.isDefined>
                                     <a href="https://papermc.io/forums/users/@entry.versionAuthor.get">
                                     @entry.versionAuthor.get
                                     </a>
-                                }
+                                </#if>
                             <br>
                         <td style="vertical-align: middle; text-align: right">
                             <a class="btn btn-success" href="/@helper.urlEncode(entry.namespace.ownerName)/@helper.urlEncode(entry.namespace.slug)/versions/@helper.urlEncode(entry.versionString)/reviews">Start review</a>
