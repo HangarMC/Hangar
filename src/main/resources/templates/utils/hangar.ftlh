@@ -9,3 +9,7 @@
         <#nested>
     </#if>
 </#macro>
+
+<#macro linkout url>
+    /linkout?remoteUrl=${url}
+</#macro>
