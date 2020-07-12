@@ -1,13 +1,17 @@
 version: '3.7'
 
 services:
-#  app:
-#    build: ./hangar
-#    depends_on:
-#      - 'db'
+  app:
+    build:
+      context: ..
+      dockerfile: docker/hangar/Dockerfile
+    depends_on:
+      - 'db'
 #      - 'auth'
-#      - 'mail'
-#    stdin_open: true
+      - 'mail'
+    stdin_open: true
+    ports:
+      - "8080:8080"
 #    labels:
 #      - "traefik.enable=true"
 #      - "traefik.http.services.hangar.loadbalancer.server.port=8080"
@@ -18,8 +22,8 @@ services:
 #      - "traefik.http.routers.hangar.tls.certresolver=default"
 #      - "traefik.http.routers.hangar.tls.domains[0].main=minidigger.me"
 #      - "traefik.http.routers.hangar.tls.domains[0].sans=*.minidigger.me"
-#    networks:
-#      - web
+    networks:
+      - web
   db:
     build: ./db
     environment:
@@ -30,8 +34,8 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
-#    networks:
-#      - web
+    networks:
+      - web
   mail:
     image: mailhog/mailhog:latest
     labels:
@@ -45,8 +49,8 @@ services:
       - "traefik.http.routers.hangar-mail.tls.certresolver=default"
       - "traefik.http.routers.hangar-mail.tls.domains[0].main=minidigger.me"
       - "traefik.http.routers.hangar-mail.tls.domains[0].sans=*.minidigger.me"
-#    networks:
-#      - web
+    networks:
+      - web
 #  auth:
 #    image: registry.gitlab.com/minidigger/hangarauth
 #    depends_on:
@@ -79,10 +83,10 @@ services:
 #    networks:
 #      - web
 
-#networks:
-#  web:
-#    name: traefik-overlay
-#    external: true
+networks:
+  web:
+    name: traefik-overlay
+    external: true
 
 volumes:
   db_data:
