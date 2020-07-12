@@ -1,4 +1,5 @@
 <#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
 
 <#macro footer>
     <footer class="footer">

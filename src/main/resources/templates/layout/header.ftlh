@@ -1,4 +1,5 @@
 <#import "/spring.ftl" as spring />
+<#import "*/utils/hangar.ftlh" as hangar />
 
 <#macro header authEnabled=true>
     <nav id="topbar" class="navbar-main navbar-inverse">
@@ -43,10 +44,10 @@
             </div>
 
             <#-- Right navbar -->
-            <#if authEnabled && false> <#-- todo enable user header thingy -->
+            <#if authEnabled>
                 <ul class="nav navbar-nav navbar-collapse collapse navbar-right">
-                    <#if request.headerData.currentUser??>
-                        <#assign cu=request.headerData.currentUser>
+                     <#assign cu={ "name": "DumDum", "avatarUrl": "https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png"}>  <#-- todo login status  -->
+                    <#if cu??>
                         <li class="dropdown nav-icon new-controls">
                             <a href="#" class="drop-down-toggle" data-toggle="dropdown">
                                 <i class="icon fas fa-plus"></i>
@@ -73,25 +74,25 @@
                             </a>
                         </li>
 
-                        <#if request.headerData.globalPerm(Permission.IsStaff)>
+                        <@hangar.hasPerm "IsStaff">
                             <#assign title><@spring.message "project.viewStaff"/></#assign>
                             <li class="nav-icon staff-icon" <@tooltip title=title />>
                                 <a href="<@spring.message "routes.users.showStaff" />">
                                     <i class="icon fas fa-user-tie"></i>
                                 </a>
                             </li>
-                        </#if>
+                        </@hangar.hasPerm>
 
-                    <#-- Show user controls -->
+                        <#-- Show user controls -->
                         <li class="dropdown user-controls nav-icon">
                             <a href="#" class="drop-down-toggle user-toggle" data-toggle="dropdown">
-                                <#if request.headerData.hasNotice>
+                                <#if modelData.hasNotice()>
                                     <span class="unread"></span>
                                 </#if>
                                 <img height="32" width="32" class="user-avatar" src="${cu.avatarUrl}" alt="@cu.name"/>
                                 <span class="caret"></span>
                             </a>
-                            <ul class="user-dropdown dropdown-menu" aria-label="<@spring.messageArgs "aria.dropdown.menu", 1 />">
+                            <ul class="user-dropdown dropdown-menu" aria-label="<@spring.messageArgs "aria.dropdown.menu" 1 />">
                                 <li>
                                     <a href="<@spring.message "routes.users.showProjects" />${cu.name}">
                                         <i class="fas fa-user mr-1"></i>
@@ -103,86 +104,86 @@
                                     <a href="<@spring.message "routes.users.showNotifications" />">
                                         <i class="fas fa-bell mr-1"></i>
                                         <span><@spring.message "notification.plural" />
-                                            <#if request.headerData.hasUnreadNotifications>
+                                            <#if modelData.hasUnreadNotifications()>
                                                 <span class="unread"></span>
                                             </#if>
                                 </span>
                                     </a>
                                 </li>
 
-                                <#if request.headerData.globalPerm(Permission.ModNotesAndFlags)>
+                                <@hangar.hasPerm "ModNotesAndFlags">
                                     <li>
                                         <a href="<@spring.message "routes.showFlags" />">
                                             <i class="fas fa-flag mr-1"></i>
                                             <span><@spring.message "project.flag.plural" />
-                                                <#if request.headerData.unresolvedFlags>
+                                                <#if modelData.unresolvedFlags()>
                                                     <span class="unread"></span>
                                                 </#if>
                                     </span>
                                         </a>
                                     </li>
-                                </#if>
+                                </@hangar.hasPerm>
 
-                                <#if request.headerData.globalPerm(Permission.ModNotesAndFlags)>
+                                <@hangar.hasPerm "ModNotesAndFlags">
                                     <li>
-                                        <a href="${@routes.Application.showProjectVisibility()}">
+                                        <a href="<@spring.message "routes.showProjectVisibility" />">
                                             <i class="fas fa-thumbs-up mr-1"></i>
                                             <span>
                                         Project approvals
-                                       <#if request.headerData.hasProjectApprovals>
+                                       <#if modelData.hasProjectApprovals()>
                                            <span class="unread"></span>
                                        </#if>
                                     </span>
                                         </a>
                                     </li>
-                                </#if>
+                                </@hangar.hasPerm>
 
-                                <#if request.headerData.globalPerm(Permission.Reviewer)>
+                                <@hangar.hasPerm "Reviewer">
                                     <li>
-                                        <a href="${@routes.Application.showQueue()}">
+                                        <a href="<@spring.message "routes.showQueue" />">
                                             <i class="far fa-thumbs-up mr-1"></i>
                                             <span><@spring.message "user.queue" />
-                                                <#if request.headerData.hasReviewQueue>
+                                                <#if modelData.hasReviewQueue()>
                                                     <span class="unread"></span>
                                                 </#if>
                                     </span>
                                         </a>
                                     </li>
-                                </#if>
+                                </@hangar.hasPerm>
 
-                                <#if request.headerData.globalPerm(Permission.ViewStats)>
+                                <@hangar.hasPerm "ViewStats">
                                     <li>
-                                        <a href="${@routes.Application.showStats(None, None)}">
+                                        <a href="<@spring.message "routes.showStats" />">
                                             <i class="fas fa-chart-area mr-1"></i>
                                             <span><@spring.message "user.stats" />
                                     </span>
                                         </a>
                                     </li>
-                                </#if>
+                                </@hangar.hasPerm>
 
-                                <#if request.headerData.globalPerm(Permission.ViewHealth)>
+                                <@hangar.hasPerm "ViewHealth">
                                     <li>
-                                        <a href="${@routes.Application.showHealth()}">
+                                        <a href="<@spring.message "routes.showHealth" />">
                                             <i class="fas fa-heartbeat mr-1"></i>
                                             <span><@spring.message "admin.health.title" />
                                     </span>
                                         </a>
                                     </li>
-                                </#if>
+                                </@hangar.hasPerm>
 
-                                <#if request.headerData.globalPerm(Permission.ViewLogs)>
+                                <@hangar.hasPerm "ViewLogs">
                                     <li>
-                                        <a href="${@routes.Application.showLog(None, None, None, None, None, None, None)}">
+                                        <a href="<@spring.message "routes.showLog" />">
                                             <i class="fas fa-list mr-1"></i>
                                             <span><@spring.message "admin.log.title" />
                                     </span>
                                         </a>
                                     </li>
-                                </#if>
+                                </@hangar.hasPerm>
 
                                 <li role="separator" class="divider"></li>
                                 <li>
-                                    <a href="${@routes.Users.logOut()}">
+                                    <a href="<@spring.message "routes.users.logout" />">
                                         <i class="fas fa-sign-out-alt mr-1"></i>
                                         <span><@spring.message "general.signout" /></span>
                                     </a>
@@ -192,14 +193,13 @@
                     <#else>
                         <li>
                             <div class="btn-group-login">
-                                <a href="${@routes.Users.signUp()}"
+                                <a href="<@spring.message "routes.users.signUp" />"
                                    class="btn btn-primary navbar-btn"><@spring.message "general.signup" /></a>
-                                <a href="@routes.Users.logIn(None, None, Some(request.path))"
+                                <a href="<@spring.messageArgs "routes.users.login" rc.requestUri?url />"
                                    class="btn btn-primary navbar-btn"><@spring.message "general.login" /></a>
                             </div>
                         </li>
                     </#if>
-
                 </ul>
             </#if>
         </div>
