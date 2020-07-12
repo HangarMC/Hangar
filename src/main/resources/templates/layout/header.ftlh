@@ -46,7 +46,7 @@
             <#-- Right navbar -->
             <#if authEnabled>
                 <ul class="nav navbar-nav navbar-collapse collapse navbar-right">
-                     <#assign cu={ "name": "DumDum", "avatarUrl": "https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png"}>  <#-- todo login status  -->
+                    <#assign cu={ "name": "DumDum", "avatarUrl": "https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png"}>  <#-- todo login status  -->
                     <#if cu??>
                         <li class="dropdown nav-icon new-controls">
                             <a href="#" class="drop-down-toggle" data-toggle="dropdown">
@@ -92,7 +92,7 @@
                                 <img height="32" width="32" class="user-avatar" src="${cu.avatarUrl}" alt="@cu.name"/>
                                 <span class="caret"></span>
                             </a>
-                            <ul class="user-dropdown dropdown-menu" aria-label="<@spring.messageArgs "aria.dropdown.menu" 1 />">
+                            <ul class="user-dropdown dropdown-menu" aria-label="<@spring.messageArgs code="aria.dropdown.menu" args=[1] />">
                                 <li>
                                     <a href="<@spring.message "routes.users.showProjects" />${cu.name}">
                                         <i class="fas fa-user mr-1"></i>
