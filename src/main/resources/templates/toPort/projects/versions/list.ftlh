@@ -26,11 +26,11 @@ Versions page within Project overview.
             window.PROJECT_OWNER = '@p.project.ownerName';
             window.PROJECT_SLUG = '@p.project.slug';
     </script>
-    <script type="text/javascript" src="@routes.Assets.versioned("build/version-list.js")"></script>
+    <script type="text/javascript" src="<@spring.url "build/version-list.js" />"></script>
 }
 
 @stylesheets = {
-    <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("build/version-list.css")" />
+    <link rel="stylesheet" type="text/css" href="<@spring.url "build/version-list.css" />" />
 }
 
 @projects.view(p, sp, "#versions", additionalScripts = scripts, additionalStyling = stylesheets) {

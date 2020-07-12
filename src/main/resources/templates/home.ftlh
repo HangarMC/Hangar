@@ -21,7 +21,7 @@ sorted according to different criteria.
 </#macro>
 
 <#macro stylesheets>
-    <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("build/home.css")" />
+    <link rel="stylesheet" type="text/css" href="<@spring.url "build/home.css" />" />
 </#macro>
 
 <#macro meta>

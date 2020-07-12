@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-public class HomeController extends HangarController{
+public class UserController extends HangarController {
 
-    @GetMapping("/")
+    @GetMapping("/staff")
     public ModelAndView home() {
-        return fillModel( new ModelAndView("home"));
+        return fillModel( new ModelAndView("users/staff"));
     }
 }

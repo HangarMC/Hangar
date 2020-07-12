@@ -1,18 +1,10 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base>
 
-@import java.time.OffsetDateTime
-
-@import controllers.sugar.Requests.OreRequest
-@import db.impl.access.UserBase.UserOrdering
-@import ore.OreConfig
-@import ore.models.user.User
-@import ore.permission.role.Role
-@import util.StringFormatterUtils._
-@import util.syntax._
-@import views.html.helper.CSPNonce
-@import views.html.utils.userAvatar
+<#--
 @(staff: Seq[(String, Role, Option[OffsetDateTime], OffsetDateTime)], ordering: String, page: Int)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
+-->
 
 @pageSize = @{ config.ore.users.authorPageSize }
 @direction = @{ if (ordering.startsWith("-")) "chevron-down" else "chevron-up" }
@@ -22,12 +14,13 @@
 	sort.equalsIgnoreCase(td)
 }
 
-@scripts = {
+<#macro scripts>
 	<script type="text/javascript" src="<@spring.url "javascripts/userList.js" />"></script>
 	<script @CSPNonce.attr>CURRENT_PAGE = @page;</script>
-}
+</#macro>
 
-@layout.base("Staff - Hangar", scripts) {
+<#assign scriptsVar><@scripts /></#assign>
+<@base.base title="Staff - Hangar" additionalScripts=scriptsVar>
 
 	<div class="panel panel-default">
 		<table class="table table-users">
@@ -49,44 +42,44 @@
 				</tr>
 			</thead>
 			<tbody>
-				@staff.map { case (name, role, joinDate, createdAt) =>
+				<#list staff as user>
 				<tr>
-					<td>@userAvatar(Some(name), User.avatarUrl(name), clazz = "user-avatar-xs")</td>
+					<td>@userAvatar(user.name, User.avatarUrl(name), clazz = "user-avatar-xs")</td>
 					<td>
-						<a href="@routes.Application.showActivities(name)">@name</a>
+						<a href="@routes.Application.showActivities(name)">${user.name}</a>
 					</td>
 					<td>
-						<span class="user-role channel" style="background-color: @role.color.hex">
-						@role.title
+						<span class="user-role channel" style="background-color: ${user.role.color.hex}">
+						${user.role.title}
 						</span>
 					</td>
 					<td>@prettifyDate(joinDate.getOrElse(createdAt))</td>
 				</tr>
-				}
+				</#list>
 
-				@if(page > 1 || staff.size >= pageSize) {
+				<#if page gt 1 || staff.size gte pageSize>
 					<tr class="authors-footer">
 						<td></td>
 						<td></td>
 						<td></td>
 						<td>
-							@if(staff.size >= pageSize) {
+							<#if staff.size gte pageSize>
 								<a href="@routes.Users.showStaff(Some(ordering), Some(page + 1))" class="btn btn-default">
 									<i class="fas fa-arrow-right"></i>
 								</a>
-							}
+							</#if>
 
-							@if(page > 1) {
+							<#if page gt 1>
 								<a href="@routes.Users.showStaff(Some(ordering), Some(page - 1))" class="btn btn-default">
 									<i class="fas fa-arrow-left"></i>
 								</a>
-							}
+							</#if>
 						</td>
 					</tr>
-				}
+				</#if>
 
 			</tbody>
 		</table>
 	</div>
 
-}
+</@base.base>
