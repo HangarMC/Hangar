@@ -6,7 +6,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-      "build": "webpack --config webpack.config.prod.js"
+    "serve": "webpack --config webpack.config.dev.js",
+    "build": "webpack --config webpack.config.prod.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.29",
