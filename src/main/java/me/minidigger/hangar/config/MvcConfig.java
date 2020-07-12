@@ -1,5 +1,7 @@
 package me.minidigger.hangar.config;
 
+import freemarker.template.TemplateException;
+
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +17,7 @@ import org.springframework.web.servlet.resource.VersionResourceResolver;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 @EnableWebMvc
@@ -34,6 +37,14 @@ public class MvcConfig implements WebMvcConfigurer {
     public FreeMarkerConfigurer freemarkerConfig() {
         FreeMarkerConfigurer freeMarkerConfigurer = new FreeMarkerConfigurer();
         freeMarkerConfigurer.setTemplateLoaderPath("classpath:templates");
+        try {
+            freeMarkerConfigurer.afterPropertiesSet();
+        } catch (IOException | TemplateException e) {
+            e.printStackTrace();
+        }
+        freeMarkerConfigurer.getConfiguration().setOutputEncoding("UTF-8");
+        freeMarkerConfigurer.getConfiguration().setLogTemplateExceptions(false);
+        freeMarkerConfigurer.getConfiguration().setTemplateExceptionHandler((te, env, out) -> System.out.println("[Template Error] " + te.getMessage()));
         return freeMarkerConfigurer;
     }
 
