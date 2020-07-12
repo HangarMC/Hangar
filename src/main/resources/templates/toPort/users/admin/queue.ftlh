@@ -1,5 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
 @import controllers.sugar.Requests.OreRequest
 @import models.querymodels.{NotStartedQueueEntry, ReviewedQueueEntry}
@@ -13,7 +14,7 @@
 
 @versionRoutes = @{controllers.project.routes.Versions}
 
-<#macro scripts>
+<#assign scriptsVar>
     <script @CSPNonce.attr type="text/javascript" src="<@spring.url "javascripts/queue.js" />"></script>
     <script @CSPNonce.attr>
         $(function(){
@@ -29,9 +30,10 @@
             });
         });
     </script>
-</#macro>
+</#assign>
 
-@layout.base(messages("user.queue"), scripts) {
+<#assign message><@spring.message "user.queue" /></#assign>
+<@base.base title="${message}" additionalScripts=scriptsVar>
 
     <div class="row">
         <div class="col-md-12 header-flags">
@@ -180,4 +182,4 @@
 
         </div>
     </div>
-}
+</@base.base>

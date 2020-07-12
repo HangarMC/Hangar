@@ -1,5 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
 @import java.time.OffsetDateTime
 
@@ -23,13 +24,12 @@
     <#return sort.equalsIgnoreCase(td)>
 </#function>
 
-<#macro scripts>
+<#assign scriptsVar>
     <script type="text/javascript" src="<@spring.url "javascripts/userList.js" />"></script>
-    <script @CSPNonce.attr>CURRENT_PAGE = @page;</script>
-</#macro>
+    <script @CSPNonce.attr>CURRENT_PAGE = ${page};</script>
+</#assign>
 
-@layout.base("Authors - Hangar", scripts) {
-
+<@base.base title="Authors - Hangar" additionalScripts=scriptsVar>
     <div class="panel panel-default">
         <table class="table table-users">
             <thead>
@@ -103,5 +103,4 @@
             </tbody>
         </table>
     </div>
-
-}
+</@base.base>

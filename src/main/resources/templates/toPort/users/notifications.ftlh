@@ -1,5 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
 @import controllers.sugar.Requests.OreRequest
 @import ore.OreConfig
@@ -34,11 +35,12 @@
     }
 }
 
-<#macro scripts>
+<#assign scriptsVar>
     <script type="text/javascript" src="<@spring.url "javascripts/notifications.js" />"></script>
-</#macro>
+</#assign>
 
-@layout.base(messages("notification.plural"), scripts) {
+<#assign message><@spring.message "notification.plural" /></#assign>
+<@base.base title="${message}" additionalScripts=scriptsVar>
 
     <div class="row">
         <div class="col-xs-12 col-md-8 header-flags">
@@ -180,4 +182,4 @@
         </div>
     </div>
 
-}
+</@base.base>

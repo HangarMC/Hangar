@@ -1,5 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
 @import controllers.project.{routes => projectRoutes}
 @import controllers.routes.{Application => appRoutes, Users => userRoutes}
@@ -15,12 +16,13 @@
         projectFilter: Option[String], versionFilter: Option[String], pageFilter: Option[DbRef[Page]],
         actionFilter: Option[String], subjectFilter: Option[String], canViewIP: Boolean)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 
-<#macro scripts>
+<#assign scriptsVar>
     <script type="text/javascript" src="<@spring.url "diff-match-patch/javascript/diff_match_patch.js" />"></script>
     <script type="text/javascript" src="<@spring.url "javascripts/actionLog.js" />"></script>
-</#macro>
+</#assign>
 
-@layout.base(messages("admin.log.title"), scripts) {
+<#assign message><@spring.message "admin.log.title" /></#assign>
+<@base.base title="${message}" additionalScripts=scriptsVar>
 
     <div class="row">
         <div class="col-md-12  header-flags">
@@ -160,4 +162,4 @@
             </div>
         </div>
     </div>
-}
+</@base.base>

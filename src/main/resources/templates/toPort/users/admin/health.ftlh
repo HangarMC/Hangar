@@ -1,5 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
 @import controllers.sugar.Requests.OreRequest
 @import models.querymodels.UnhealtyProject
@@ -15,7 +16,8 @@
 @projectRoutes = @{controllers.project.routes.Projects}
 @versionRoutes = @{controllers.project.routes.Versions}
 
-@layout.base(messages("admin.health.title")) {
+<#assign message><@spring.message "admin.health.title" /></#assign>
+<@base.base title="${message}">
 
     <div class="row">
         <div class="col-md-12">
@@ -119,4 +121,4 @@
         </div>
     </div>
 
-}
+</@base.base>

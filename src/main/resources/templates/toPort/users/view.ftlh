@@ -1,17 +1,10 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
-@import controllers.sugar.Requests.OreRequest
-@import models.viewhelper.{OrganizationData, ScopedOrganizationData, UserData}
-@import ore.OreConfig
-@import ore.data.Prompt
-@import ore.data.project.Category
-@import ore.permission.Permission
-@import util.StringFormatterUtils._
-@import util.syntax._
-@import views.html.helper.{CSPNonce, CSRF, form}
-@import views.html.utils.{modal, prompt, userAvatar}
+<#--
 @(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)], additionalScripts: Html = Html(""))(content: Html)(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
+-->
 
 @canEditOrgSettings = @{
 u.isOrga &&
@@ -20,23 +13,20 @@ scopedData.permissions.has(Permission.EditOrganizationSettings)
 }
 }
 
-<#macro scripts>
+<#assign scriptsVar>
     <script type="text/javascript" src="<@spring.url "javascripts/userPage.js" />"></script>
-    <script @CSPNonce.attr>
-            window.USERNAME ='@u.user.name';
+    <script <#-- @CSPNonce.attr -->>
+            window.USERNAME ='${u.user.name}';
             @for(category <- Category.values) {
-                CATEGORY_TITLE['@category.apiName'] = '@category.title';
-                CATEGORY_ICON['@category.apiName'] = '@category.icon';
+                CATEGORY_TITLE['${category.apiName}'] = '${category.title}';
+                CATEGORY_ICON['${category.apiName}'] = '${category.icon}';
             }
             NO_ACTION_MESSAGE.starred = '<@spring.messageArgs "user.noStars" u.user.name />';
             NO_ACTION_MESSAGE.watching = '<@spring.messageArgs "user.noWatching" u.user.name />';
     </script>
-    @additionalScripts
-</#macro>
+</#assign>
 
-<#assign nameVar><@u.user.name /></#assign>
-<#assign scriptsVar><@scripts /></#assign>
-<@base.base u.user.name=nameVar scripts=scriptsVar>
+<@base.base title=u.user.name additionalScripts=scriptsVar>
     <!-- Updated by JS -->
     <div class="alert alert-success alert-dismissable" role="alert" style="display: none;">
         <button type="button" class="close" data-dismiss="alert" aria-label="<@spring.message "general.close" />">
@@ -51,25 +41,25 @@ scopedData.permissions.has(Permission.EditOrganizationSettings)
                 <!-- Title -->
             <span class="user-badge">
                 @userAvatar(
-                    userName = Some(u.user.name),
+                    userName = u.user.name,
                     avatarUrl = u.user.avatarUrl,
                     clazz = "user-avatar-md" + (if (canEditOrgSettings) " organization-avatar" else ""))
 
-                @if(canEditOrgSettings) {
+                <#if canEditOrgSettings>
                     <div class="edit-avatar" style="display: none;">
-                        <a href="@routes.Organizations.updateAvatar(u.user.name)"><i class="fas fa-edit"></i> <@spring.message "user.editAvatar" /></a>
+                        <a href="${routes.Organizations.updateAvatar(u.user.name)}"><i class="fas fa-edit"></i> <@spring.message "user.editAvatar" /></a>
                     </div>
 
-                    @if(!u.currentUser.get.readPrompts.contains(Prompt.ChangeAvatar)) {
+                    <#if !u.currentUser.get.readPrompts.contains(Prompt.ChangeAvatar)>
                         @prompt(Prompt.ChangeAvatar, "popover-avatar")
-                    }
-                }
+                    </#if>
+                </#if>
 
                 <span class="user-title">
                     <h1 class="username">
                         @u.user.name
 
-                        @if(u.isCurrent && !u.isOrga) {
+                        <#if u.isCurrent && !u.isOrga>
                             <a class="user-settings" href="@config.security.api.url/accounts/settings">
                                 <i class="fas fa-cog" data-toggle="tooltip"
                                 data-placement="top" title="Settings"></i>
@@ -83,39 +73,39 @@ scopedData.permissions.has(Permission.EditOrganizationSettings)
                             <a class="action-api" href="@routes.Users.editApiKeys(u.user.name)">
                                 <i class="fas fa-key" data-toggle="tooltip" data-placement="top" title="API Keys"></i>
                             </a>
-                        }
+                        </#if>
 
-                        @if(u.hasUser) {
-                            @if(u.userPerm.has(Permission.ModNotesAndFlags) || u.userPerm.has(Permission.Reviewer)) {
+                        <#if u.hasUser>
+                            <#if u.userPerm.has(Permission.ModNotesAndFlags) || u.userPerm.has(Permission.Reviewer)>
                                 <a class="user-settings" href="@routes.Application.showActivities(u.user.name)">
                                     <i class="fas fa-calendar" data-toggle="tooltip"
                                     data-placement="top" title="Activity"></i>
                                 </a>
-                            }
-                        }
+                            </#if>
+                        </#if>
 
-                        @if(request.headerData.globalPerm(Permission.EditAllUserSettings)) {
+                        <#if request.headerData.globalPerm(Permission.EditAllUserSettings)>
                             <a class="user-settings" href="@routes.Application.userAdmin(u.user.name)">
                                 <i class="fas fa-wrench" data-toggle="tooltip"
                                 data-placement="top" title="User Admin"></i>
                             </a>
-                        }
+                        </#if>
                     </h1>
 
                     <div class="user-tag">
                         <i class="minor">
-                        @if(u.user.tagline.isDefined) {
+                        <#if u.user.tagline.isDefined>
                             @u.user.tagline.get
-                        } else { @if(u.isCurrent || canEditOrgSettings) {
+                        <#elseif u.isCurrent || canEditOrgSettings>
                             Add a tagline
-                        }}
+                        </#if>
                         </i>
 
-                        @if(u.isCurrent || canEditOrgSettings) {
+                        <#if u.isCurrent || canEditOrgSettings>
                             <a href="#" data-toggle="modal" data-target="#modal-tagline">
                                 <i class="fas fa-edit"></i>
                             </a>
-                        }
+                        </#if>
                     </div>
                 </span>
             </span>
@@ -136,7 +126,7 @@ scopedData.permissions.has(Permission.EditOrganizationSettings)
                     "user.memberSince",
                     u.user.joinDate.map(prettifyDate).getOrElse(prettifyDate(u.user.createdAt)))
                 </i><br/>
-                <a href="https://papermc.io/forums/users/@u.user.name">
+                <a href="https://papermc.io/forums/users/${u.user.name}">
                     <@spring.message "user.viewOnForums" /> <i class="fas fa-external-link-alt"></i>
                 </a>
             </div>
@@ -148,11 +138,11 @@ scopedData.permissions.has(Permission.EditOrganizationSettings)
     @modal("modal-lock", "label-lock", if (u.user.isLocked) "user.unlock" else "user.lock") {
         <div class="modal-body">
             <p class="minor">
-                @if(u.user.isLocked) {
+                <#if u.user.isLocked>
                     <@spring.message "user.unlock.confirm" />
-                } else {
+                <#else>
                     <@spring.message "user.lock.confirm" />
-                }
+                </#if>
             </p>
         </div>
 

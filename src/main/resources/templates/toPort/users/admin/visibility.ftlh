@@ -1,5 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
 @import controllers.sugar.Requests.OreRequest
 @import models.querymodels.ProjectNeedsApproval
@@ -44,10 +45,11 @@
     </ul>
 }
 
-<#macro scripts>
+<#assign scriptsVar>
     <script type="text/javascript" src="<@spring.url "javascripts/hideProject.js" />"></script>
-</#macro>
-@layout.base("Project Visibility", scripts) {
+</#assign>
+
+<@base.base title="Project Visibility" additionalScripts=scriptsVar>
 
     <div class="row">
         <div class="col-md-12 header-flags">
@@ -101,4 +103,4 @@
             </div>
         </div>
     </div>
-}
+</@base.base>

@@ -1,5 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
 @import java.time.LocalDate
 @import java.time.temporal.ChronoUnit
@@ -14,7 +15,7 @@
 @(stats: List[Stats], fromTime: LocalDate, toTime: LocalDate)(implicit messages: Messages,
         request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 
-<#macro scripts>
+<#assign scriptsVar>
     <script @CSPNonce.attr type="text/javascript" src="<@spring.url "lib/chart.js/dist/Chart.min.js" />"></script>
     <script @CSPNonce.attr>
             $(function(){
@@ -101,9 +102,9 @@
             });
     </script>
     <script @CSPNonce.attr type="text/javascript" src="<@spring.url "javascripts/stats.js" />"></script>
-</#macro>
+</#assign>
 
-@layout.base("Stats", scripts) {
+<@base.base title="Stats" additionalScripts=scriptsVar>
     <div class="row">
         <div class="col-md-12">
             <div class="form-inline">
@@ -147,4 +148,4 @@
             </div>
         </div>
     </div>
-}
+</@base.base>

@@ -27,17 +27,17 @@
 			<thead>
 				<tr>
 					<td></td>
-					<td @if(isActiveSort(UserOrdering.UserName)) { class="user-sort" } data-list="staff" >
+					<td <#if isActiveSort(UserOrdering.UserName)>class="user-sort"</#if> data-list="staff" >
 						Username
-						@if(isActiveSort(UserOrdering.UserName)) { <i class="fas o fa-@direction"></i> }
+						<#if isActiveSort(UserOrdering.UserName)><i class="fas o fa-@direction"></i></#if>
 					</td>
-					<td @if(isActiveSort(UserOrdering.Role)) { class="user-sort" } data-list="staff" >
+					<td <#if isActiveSort(UserOrdering.Role)>class="user-sort"</#if> data-list="staff" >
 						Roles
-						@if(isActiveSort(UserOrdering.Role)) { <i class="fas o fa-@direction"></i> }
+						<#if isActiveSort(UserOrdering.Role)><i class="fas o fa-@direction"></i></#if>
 					</td>
-					<td @if(isActiveSort(UserOrdering.JoinDate)) { class="user-sort" } data-list="staff" >
+					<td <#if isActiveSort(UserOrdering.JoinDate)>class="user-sort"</#if> data-list="staff" >
 						Joined
-						@if(isActiveSort(UserOrdering.JoinDate)) { <i class="fas o fa-@direction"></i> }
+						<#if isActiveSort(UserOrdering.JoinDate)><i class="fas o fa-@direction"></i></#if>
 					</td>
 				</tr>
 			</thead>
@@ -64,13 +64,13 @@
 						<td></td>
 						<td>
 							<#if staff.size gte pageSize>
-								<a href="@routes.Users.showStaff(Some(ordering), Some(page + 1))" class="btn btn-default">
+								<a href="${routes.getRouteUrl("users.showStaff", ordering, page + 1)}" class="btn btn-default">
 									<i class="fas fa-arrow-right"></i>
 								</a>
 							</#if>
 
 							<#if page gt 1>
-								<a href="@routes.Users.showStaff(Some(ordering), Some(page - 1))" class="btn btn-default">
+								<a href="${routes.getRouteUrl("users.showStaff", ordering, page - 1)}" class="btn btn-default">
 									<i class="fas fa-arrow-left"></i>
 								</a>
 							</#if>

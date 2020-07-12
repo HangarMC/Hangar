@@ -1,5 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
 @import controllers.sugar.Requests.OreRequest
 @import models.viewhelper.{OrganizationData, UserData}
@@ -56,11 +57,11 @@
     </table>
 }
 
-<#macro scripts>
+<#assign scriptsVar>
     <script type="text/javascript" src="<@spring.url "javascripts/userAdmin.js" />"></script>
-</#macro>
+</#assign>
 
-@layout.base(prefix + user.user.name, scripts) {
+<@base.base title=(prefix + user.user.name) additionalScripts=scriptsVar>
 
     <div class="row">
         <div class="col-md-12">
@@ -116,4 +117,4 @@
 
     </div>
 
-}
+</@base.base>

@@ -1,5 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
 @import java.time.OffsetDateTime
 
@@ -9,7 +10,8 @@
 @import util.StringFormatterUtils._
 @(username: String, activities: Seq[Either[FlagActivity, ReviewActivity]])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 
-@layout.base(messages("activity.title") + username) {
+<#assign message><@spring.message "activity.title" /></#assign>
+<@base.base title=("${message}" + username)>
 
     <div class="row">
         <div class="col-md-12  header-flags">
@@ -59,4 +61,4 @@
             </div>
         </div>
     </div>
-}
+</@base.base>

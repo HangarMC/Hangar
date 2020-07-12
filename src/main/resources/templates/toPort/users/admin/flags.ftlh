@@ -1,5 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
 @import controllers.sugar.Requests.OreRequest
 @import models.querymodels.ShownFlag
@@ -14,17 +15,16 @@
 
 @projectRoutes = @{controllers.project.routes.Projects}
 
-<#macro scripts>
+<#assign scriptsVar>
     <script type="text/javascript" src="<@spring.url "javascripts/flags.js" />"></script>
     <script type="text/javascript" src="<@spring.url "javascripts/hideProject.js" />"></script>
-</#macro>
+</#assign>
 
-@layout.base("Flags", scripts) {
-
+<@base.base title="Flags" additionalScripts=scriptsVar>
     <div class="row">
         <div class="col-md-12 header-flags">
             <h2>Flags</h2>
-            <h3 class="minor no-flags" @if(flags.nonEmpty) { style="display: none;" }>
+            <h3 class="minor no-flags" <#if flags.nonEmpty>style="display: none;"</#if>>
                 <i class="far fa-thumbs-up"></i> <@spring.message "user.flags.none" />
             </h3>
         </div>
@@ -94,4 +94,4 @@
             </div>
         </div>
     </div>
-}
+</@base.base>
