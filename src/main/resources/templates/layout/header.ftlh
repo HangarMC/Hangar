@@ -6,7 +6,7 @@
         <div class="container">
             <#-- Left navbar -->
             <div id="sp-logo-container">
-                <a class="logo" href="<@spring.message "routes.showHome" />">
+                <a class="logo" href="${routes.getRouteUrl("showHome")}">
                     <img src="https://papermc.io/images/logo-marker.svg" alt="Paper logo">
                     <i class="fas fa-fw fa-chevron-down"></i>
                 </a>
@@ -28,7 +28,7 @@
                         <li><a href="https://papermc.io/javadocs">
                                 <i class="fa-fw fas fa-graduation-cap"></i><@spring.message "general.javadocs" />
                             </a></li>
-                        <li class="active"><a href="<@spring.message "routes.showHome" />">
+                        <li class="active"><a href="${routes.getRouteUrl("showHome")}">
                                 <img src="<@spring.url "images/ore-nav.svg" />" alt=""
                                      class="fa-fw ore-nav"><@spring.message "general.plugins" />
                                 (<@spring.message "general.appName" />)
@@ -55,11 +55,11 @@
                             </a>
                             <ul class="user-dropdown dropdown-menu" aria-label="Create new&hellip;">
                                 <li>
-                                    <a href="<@spring.message "routes.projects.showCreator" />">
+                                    <a href="${routes.getRouteUrl("projects.showCreator")}">
                                         <i class="fas fa-book fa-fw mr-1"></i>
                                         <span><@spring.message "project.create"/></span>
                                     </a>
-                                    <a href="<@spring.message "routes.org.showCreator" />">
+                                    <a href="${routes.getRouteUrl("org.showCreator")}">
                                         <i class="fas fa-users fa-fw mr-1"></i>
                                         <span><@spring.message "org.create" /></span>
                                     </a>
@@ -69,7 +69,7 @@
 
                         <#assign title><@spring.message "project.viewAuthors"/></#assign>
                         <li class="nav-icon authors-icon" <@tooltip title=title />>
-                            <a href="<@spring.message "routes.users.showAuthors" />">
+                            <a href="${routes.getRouteUrl("users.showAuthors")}">
                                 <i class="icon fas fa-users"></i>
                             </a>
                         </li>
@@ -77,7 +77,7 @@
                         <@hangar.hasPerm "IsStaff">
                             <#assign title><@spring.message "project.viewStaff"/></#assign>
                             <li class="nav-icon staff-icon" <@tooltip title=title />>
-                                <a href="<@spring.message "routes.users.showStaff" />">
+                                <a href="${routes.getRouteUrl("users.showStaff")}">
                                     <i class="icon fas fa-user-tie"></i>
                                 </a>
                             </li>
@@ -94,14 +94,14 @@
                             </a>
                             <ul class="user-dropdown dropdown-menu" aria-label="<@spring.messageArgs code="aria.dropdown.menu" args=[1] />">
                                 <li>
-                                    <a href="<@spring.message "routes.users.showProjects" />${cu.name}">
+                                    <a href="${routes.getRouteUrl("users.showProjects")}${cu.name}">
                                         <i class="fas fa-user mr-1"></i>
                                         <span>${cu.name}</span>
                                     </a>
                                 </li>
 
                                 <li>
-                                    <a href="<@spring.message "routes.users.showNotifications" />">
+                                    <a href="${routes.getRouteUrl("users.showNotifications")}">
                                         <i class="fas fa-bell mr-1"></i>
                                         <span><@spring.message "notification.plural" />
                                             <#if modelData.hasUnreadNotifications()>
@@ -113,7 +113,7 @@
 
                                 <@hangar.hasPerm "ModNotesAndFlags">
                                     <li>
-                                        <a href="<@spring.message "routes.showFlags" />">
+                                        <a href="${routes.getRouteUrl("showFlags")}">
                                             <i class="fas fa-flag mr-1"></i>
                                             <span><@spring.message "project.flag.plural" />
                                                 <#if modelData.unresolvedFlags()>
@@ -126,7 +126,7 @@
 
                                 <@hangar.hasPerm "ModNotesAndFlags">
                                     <li>
-                                        <a href="<@spring.message "routes.showProjectVisibility" />">
+                                        <a href="${routes.getRouteUrl("showProjectVisibility")}">
                                             <i class="fas fa-thumbs-up mr-1"></i>
                                             <span>
                                         Project approvals
@@ -140,7 +140,7 @@
 
                                 <@hangar.hasPerm "Reviewer">
                                     <li>
-                                        <a href="<@spring.message "routes.showQueue" />">
+                                        <a href="${routes.getRouteUrl("showQueue")}">
                                             <i class="far fa-thumbs-up mr-1"></i>
                                             <span><@spring.message "user.queue" />
                                                 <#if modelData.hasReviewQueue()>
@@ -153,7 +153,7 @@
 
                                 <@hangar.hasPerm "ViewStats">
                                     <li>
-                                        <a href="<@spring.message "routes.showStats" />">
+                                        <a href="${routes.getRouteUrl("showStats")}">
                                             <i class="fas fa-chart-area mr-1"></i>
                                             <span><@spring.message "user.stats" />
                                     </span>
@@ -163,7 +163,7 @@
 
                                 <@hangar.hasPerm "ViewHealth">
                                     <li>
-                                        <a href="<@spring.message "routes.showHealth" />">
+                                        <a href="${routes.getRouteUrl("showHealth")}">
                                             <i class="fas fa-heartbeat mr-1"></i>
                                             <span><@spring.message "admin.health.title" />
                                     </span>
@@ -173,7 +173,7 @@
 
                                 <@hangar.hasPerm "ViewLogs">
                                     <li>
-                                        <a href="<@spring.message "routes.showLog" />">
+                                        <a href="${routes.getRouteUrl("showLog")}">
                                             <i class="fas fa-list mr-1"></i>
                                             <span><@spring.message "admin.log.title" />
                                     </span>
@@ -183,7 +183,7 @@
 
                                 <li role="separator" class="divider"></li>
                                 <li>
-                                    <a href="<@spring.message "routes.users.logout" />">
+                                    <a href="${routes.getRouteUrl("users.logout")}">
                                         <i class="fas fa-sign-out-alt mr-1"></i>
                                         <span><@spring.message "general.signout" /></span>
                                     </a>
@@ -193,9 +193,9 @@
                     <#else>
                         <li>
                             <div class="btn-group-login">
-                                <a href="<@spring.message "routes.users.signUp" />"
+                                <a href="${routes.getRouteUrl("users.signUp")}"
                                    class="btn btn-primary navbar-btn"><@spring.message "general.signup" /></a>
-                                <a href="<@spring.messageArgs "routes.users.login" rc.requestUri?url />"
+                                <a href="${routes.getRouteUrl("users.login", rc.requestUri?url)}"
                                    class="btn btn-primary navbar-btn"><@spring.message "general.login" /></a>
                             </div>
                         </li>

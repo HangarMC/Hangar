@@ -1,4 +1,5 @@
 [#ftl]
 [#-- @implicitly included --]
+[#-- @ftlvariable name="routes" type="me.minidigger.hangar.util.RouteHelper" --]
 [#-- @ftlvariable name="modelData" type="me.minidigger.hangar.model.ModelData" --]
 [#-- @ftlvariable name="rc" type="org.springframework.web.servlet.support.RequestContext" --]

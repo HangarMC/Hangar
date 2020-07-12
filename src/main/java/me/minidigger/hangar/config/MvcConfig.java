@@ -44,7 +44,16 @@ public class MvcConfig implements WebMvcConfigurer {
         }
         freeMarkerConfigurer.getConfiguration().setOutputEncoding("UTF-8");
         freeMarkerConfigurer.getConfiguration().setLogTemplateExceptions(false);
-        freeMarkerConfigurer.getConfiguration().setTemplateExceptionHandler((te, env, out) -> System.out.println("[Template Error] " + te.getMessage()));
+        freeMarkerConfigurer.getConfiguration().setTemplateExceptionHandler((te, env, out) -> {
+            String message = te.getMessage();
+            if (message.contains("org.springframework.web.servlet.support.RequestContext.getMessage")) {
+                System.out.println("[Template Error, most likely missing key] " + message);
+            } else if (message.contains(" see cause exception in the Java stack trace.")) {
+                te.printStackTrace();
+            } else {
+                System.out.println("[Template Error] " + message);
+            }
+        });
         return freeMarkerConfigurer;
     }
 

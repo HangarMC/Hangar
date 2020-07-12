@@ -8,7 +8,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class UserController extends HangarController {
 
     @GetMapping("/staff")
-    public ModelAndView home() {
+    public ModelAndView staff() {
         return fillModel( new ModelAndView("users/staff"));
     }
 }

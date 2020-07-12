@@ -102,7 +102,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
 <#--        </script>-->
 <#--    </#if>-->
 
-        <script type="text/javascript" src="<@spring.message "routes.javaScriptRoutes"/>"></script>
+        <script type="text/javascript" src="${routes.getRouteUrl("javaScriptRoutes")}"></script>
         <script type="text/javascript" src="<@spring.url "build/vendors.js" />"></script>
         <script type="text/javascript" src="<@spring.url "build/font-awesome.js" />"></script>
         <script type="text/javascript" src="<@spring.url "build/commons.js" />"></script>

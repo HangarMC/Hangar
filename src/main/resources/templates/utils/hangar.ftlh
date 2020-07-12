@@ -11,5 +11,6 @@
 </#macro>
 
 <#macro linkout url>
-    /linkout?remoteUrl=${url}
+    <#--noinspection FtlReferencesInspection-->
+    ${routes.getRouteUrl("linkout", url)}
 </#macro>
