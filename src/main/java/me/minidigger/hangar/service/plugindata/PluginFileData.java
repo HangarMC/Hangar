@@ -22,44 +22,44 @@ public class PluginFileData {
 
     @Nullable
     public UUID getId() {
-        if (!dataValues.containsKey("id")) return null;
-        return ((UUIDDataValue) dataValues.get("id")).getValue();
+        DataValue id = dataValues.get("id");
+        return id != null ? ((UUIDDataValue) id).getValue() : null;
     }
 
     @Nullable
     public String getName() {
-        if (!dataValues.containsKey("name")) return null;
-        return ((StringDataValue) dataValues.get("name")).getValue();
+        DataValue name = dataValues.get("name");
+        return name != null ? ((StringDataValue) name).getValue() :  null;
     }
 
     @Nullable
     public String getDescription() {
-        if (!dataValues.containsKey("description")) return null;
-        return ((StringDataValue) dataValues.get("description")).getValue();
+        DataValue description = dataValues.get("description");
+        return description != null ? ((StringDataValue) description).getValue() :  null;
     }
 
     @Nullable
     public String getWebsite() {
-        if (!dataValues.containsKey("url")) return null;
-        return ((StringDataValue) dataValues.get("url")).getValue();
+        DataValue url = dataValues.get("url");
+        return url != null ? ((StringDataValue) url).getValue() :  null;
     }
 
     @Nullable
     public String getVersion() {
-        if (!dataValues.containsKey("version")) return null;
-        return ((StringDataValue) dataValues.get("version")).getValue();
+        DataValue version = dataValues.get("version");
+        return version != null ? ((StringDataValue) version).getValue() :  null;
     }
 
     @Nullable
     public List<String> getAuthors() {
-        if (!dataValues.containsKey("authors")) return null;
-        return ((StringListDataValue) dataValues.get("authors")).getValue();
+        DataValue authors = dataValues.get("authors");
+        return authors != null ? ((StringListDataValue) authors).getValue() :  null;
     }
 
     @Nullable
     public List<Dependency> getDependencies() {
-        if (!dataValues.containsKey("dependencies")) return null;
-        return ((DependencyDataValue) dataValues.get("dependencies")).getValue();
+        DataValue dependencies = dataValues.get("dependencies");
+        return dependencies != null ? ((DependencyDataValue) dependencies).getValue() :  null;
     }
 
     public boolean validate() {
