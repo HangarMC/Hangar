@@ -15,7 +15,7 @@
         </div>
         <div class="col-md-3">
             <select class="form-control select-sort" v-model="sort" @change="resetPage">
-                <option v-for="option in availableOptions.sort" :value="option.id">{{ option.name }}</option>
+                <option v-for="(option, index) in availableOptions.sort" :key="index" :value="option.id">{{ option.name }}</option>
             </select>
 
             <div>
@@ -30,7 +30,7 @@
                     </div>
 
                     <div class="list-group category-list">
-                        <a v-for="category in availableOptions.category" class="list-group-item" @click="changeCategory(category)"
+                        <a v-for="(category, index) in availableOptions.category" :key="index" class="list-group-item" @click="changeCategory(category)"
                            v-bind:class="{ active: categories.includes(category.id) }">
                             <i class="fas fa-fw" :class="'fa-' + category.icon"></i>
                             <strong>{{ category.name }}</strong>
@@ -46,7 +46,7 @@
                         <a class="list-group-item" @click="tags = []" v-bind:class="{ active: tags.length === 0 }">
                             <span class="parent">Any</span>
                         </a>
-                        <a v-for="platform in availableOptions.platform" class="list-group-item" @click="tags = [platform.id]"
+                        <a v-for="(platform, index) in availableOptions.platform" :key="index" class="list-group-item" @click="tags = [platform.id]"
                            v-bind:class="{ active: tags.includes(platform.id) }">
                             <span :class="{parent: platform.parent}">{{ platform.name }}</span>
                         </a>
