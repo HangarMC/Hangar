@@ -7,7 +7,7 @@ const Path = require('path');
 const sourceDir = Path.resolve(__dirname, 'src');
 const entryDir = Path.resolve(sourceDir, 'entries');
 const modulesDir = Path.resolve(__dirname, 'node_modules');
-const outputDir = Path.resolve(__dirname, 'build');
+const outputDir = Path.resolve(__dirname, '..', '..', '..', 'target', 'classes', 'public', 'build');
 
 module.exports = {
     entry: {
