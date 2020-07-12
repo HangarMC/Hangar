@@ -45,6 +45,13 @@ public class MvcConfig implements WebMvcConfigurer {
                 .setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
                 .resourceChain(true)
                 .addResolver(new VersionResourceResolver());
+
+        registry
+                .addResourceHandler("/lib/**")
+                .addResourceLocations("/webjars/")
+                .setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
+                .resourceChain(true)
+                .addResolver(new VersionResourceResolver());
     }
 
     @Bean
