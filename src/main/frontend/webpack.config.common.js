@@ -26,12 +26,13 @@ module.exports = {
     plugins: [
         new VueLoaderPlugin(),
         new MiniCssExtractPlugin(),
-        // new CopyPlugin([
-        //     {
-        //         from: Path.resolve(modulesDir, '@fortawesome', 'fontawesome-svg-core', 'styles.css'),
-        //         to: Path.resolve(outputDir, 'font-awesome.css')
-        //     }
-        // ]), TODO fix copy plugin
+        new CopyPlugin({
+                patterns: [{
+                    from: Path.resolve(modulesDir, '@fortawesome', 'fontawesome-svg-core', 'styles.css'),
+                    to: Path.resolve(outputDir, 'font-awesome.css')
+                }]
+            }
+        ),
         //new BundleAnalyzerPlugin()
     ],
     module: {
