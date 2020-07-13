@@ -62,7 +62,7 @@ Discussion page within Project overview.
         </div>
     <#else>
         <div class="pull-right">
-            <a href="@routes.Users.logIn(None, None, Some(request.path))"><@spring.message "general.login" /></a>
+            <a href="${routes.getRouteUrl("users.login", "", "", request.path)}"><@spring.message "general.login" /></a>
             <span class="minor"> <@spring.message "general.toReply" /></span>
         </div>
     </#if>

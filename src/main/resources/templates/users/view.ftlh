@@ -70,14 +70,14 @@ scopedData.permissions.has(Permission.EditOrganizationSettings)
                                 data-placement="top" title="<@spring.message "user.lock" />"></i>
                             </span>
 
-                            <a class="action-api" href="@routes.Users.editApiKeys(u.user.name)">
+                            <a class="action-api" href="${routes.getRouteUrl("users.editApiKeys", u.user.name)}">
                                 <i class="fas fa-key" data-toggle="tooltip" data-placement="top" title="API Keys"></i>
                             </a>
                         </#if>
 
                         <#if u.hasUser>
                             <#if u.userPerm.has(Permission.ModNotesAndFlags) || u.userPerm.has(Permission.Reviewer)>
-                                <a class="user-settings" href="@routes.Application.showActivities(u.user.name)">
+                                <a class="user-settings" href="${routes.getRouteUrl("showActivities", u.user.name)}">
                                     <i class="fas fa-calendar" data-toggle="tooltip"
                                     data-placement="top" title="Activity"></i>
                                 </a>
@@ -85,7 +85,7 @@ scopedData.permissions.has(Permission.EditOrganizationSettings)
                         </#if>
 
                         <#if request.headerData.globalPerm(Permission.EditAllUserSettings)>
-                            <a class="user-settings" href="@routes.Application.userAdmin(u.user.name)">
+                            <a class="user-settings" href="${routes.getRouteUrl("userAdmin", u.user.name)}">
                                 <i class="fas fa-wrench" data-toggle="tooltip"
                                 data-placement="top" title="User Admin"></i>
                             </a>

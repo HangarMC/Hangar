@@ -96,9 +96,9 @@
     <#if savable>
         @form(action = saveCall, Symbol("id") -> "form-editor-save") {
             @CSRF.formField
-            @if(extraFormValue != null) {
+            <#if extraFormValue??>
                 <input type="hidden" value="@extraFormValue" name="name">
-            }
+            </#if>
         }
     </#if>
 </#if>

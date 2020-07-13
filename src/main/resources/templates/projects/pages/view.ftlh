@@ -67,13 +67,13 @@ Documentation page within Project overview.
                 <p><@spring.message "project.category.info", p.project.category.title /></p>
                 <p><@spring.message "project.publishDate", prettifyDate(p.project.createdAt) /></p>
                 <p><span id="view-count"></span> views</p>
-                <p><span id="star-count"></span> <a href="@routes.Projects.showStargazers(p.project.ownerName, p.project.slug, None)">stars</a></p>
-                <p><span id="watcher-count"></span> <a href="@routes.Projects.showWatchers(p.project.ownerName, p.project.slug, None)">watchers</a></p>
+                <p><span id="star-count"></span> <a href="${routes.getRouteUrl("projects.showStargazers", p.project.ownerName, p.project.slug, "")}">stars</a></p>
+                <p><span id="watcher-count"></span> <a href="${routes.getRouteUrl("projects.showWatchers", p.project.ownerName, p.project.slug, "")}">watchers</a></p>
                 <p><span id="download-count"></span> total downloads</p>
                 @p.project.settings.licenseName.map { licenseName =>
                     <p>
                         @Html(messages("project.license.link"))
-                    <a target="_blank" rel="noopener" href="@p.project.settings.licenseUrl">@licenseName</a>
+                    <a target="_blank" rel="noopener" href="${p.project.settings.licenseUrl}">${licenseName}</a>
                     </p>
                 }
             </div>
@@ -100,8 +100,8 @@ Documentation page within Project overview.
                 </div>
                 <ul class="list-group">
                     <li class="list-group-item">
-                        <a href="@routes.Pages.show(p.project.ownerName, p.project.slug, Page.homeName)">
-                        @Page.homeName
+                        <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, Page.homeName)}">
+                        ${Page.homeName}
                         </a>
                     </li>
                     @rootPages.filter(_._1.name != Page.homeName).map { case (pg, children) =>
@@ -117,15 +117,15 @@ Documentation page within Project overview.
                                 </a>
                             </#if>
                         </#if>
-                    <a href="@routes.Pages.show(p.project.ownerName, p.project.slug, pg.fullSlug(None))">
-                    @pg.name
+                    <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, pg.fullSlug(""))}">
+                    ${pg.name}
                     </a>
                     </li>
                         <#if page.parentId.contains(pg.id)>
                             <div class="page-children" data-page-id="@pg.id">
                             @children.map { child =>
                                 <li class="list-group-item page-item-child">
-                                    <a href="@routes.Pages.show(p.project.ownerName, p.project.slug, child.fullSlug(Some(pg)))">
+                                    <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, child.fullSlug(Some(pg)))}">
                                     ${child.name}
                                     </a>
                                 </li>

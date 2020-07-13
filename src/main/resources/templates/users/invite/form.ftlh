@@ -40,7 +40,7 @@
             <tr>
                 <td>
                     @userAvatar(Some(owner.name), owner.avatarUrl, clazz = "user-avatar-xs")
-                    <strong>@owner.name</strong>
+                    <strong>${owner.name}</strong>
                     <span><i class="minor"><@spring.message "project.owner" /></i></span>
                 </td>
             </tr>
@@ -48,12 +48,12 @@
             @loadedUsers.map { user =>
                 <tr>
                     <td>
-                        <input form="form-continue" type="hidden" value="@user.id" />
+                        <input form="form-continue" type="hidden" value="${user.id}" />
                         @userAvatar(Some(user.name), user.avatarUrl, clazz = "user-avatar-xs")
-                        <a target="_blank" rel="noopener" href="@routes.Users.showProjects(user.name)">
-                            @user.name
+                        <a target="_blank" rel="noopener" href="${routes.getRouteUrl("users.showProjects", user.name)}">
+                            ${user.name}
                         </a>
-                        <span>@users.invite.roleSelect(roleCategory)</span>
+                        <span>${users.invite.roleSelect(roleCategory)}</span>
                     </td>
                 </tr>
             }

@@ -58,7 +58,7 @@
                 <tr>
                     <td>@userAvatar(Some(name), User.avatarUrl(name), clazz = "user-avatar-xs")</td>
                     <td>
-                        <a href="@routes.Users.showProjects(name)">@name</a>
+                        <a href="${routes.getRouteUrl("users.showProjects", name)}">${name}</a>
                     </td>
                     <td>
                         @optDonorRole.map { role =>
@@ -86,13 +86,13 @@
                         <td></td>
                         <td>
                             <#if authors.size gte pageSize>
-                                <a href="@routes.Users.showAuthors(Some(ordering), Some(page + 1))" class="btn btn-default">
+                                <a href="${routes.getRouteUrl("users.showAuthors", ordering, page + 1)}" class="btn btn-default">
                                     <i class="fas fa-arrow-right"></i>
                                 </a>
                             </#if>
 
                             <#if page gt 1>
-                                <a href="@routes.Users.showAuthors(Some(ordering), Some(page - 1))" class="btn btn-default">
+                                <a href="${routes.getRouteUrl("users.showAuthors", ordering, page - 1)}" class="btn btn-default">
                                     <i class="fas fa-arrow-left"></i>
                                 </a>
                             </#if>

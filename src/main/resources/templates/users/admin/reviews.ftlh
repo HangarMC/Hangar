@@ -27,10 +27,10 @@
     <div class="row">
         <div class="col-md-12  header-flags">
             <div class="clearfix">
-                <h1 class="pull-left">@project.name <i>@version.versionString</i></h1>
+                <h1 class="pull-left">${project.name} <i>${version.versionString}</i></h1>
             </div>
             <p class="user date pull-left">
-                <a href="@routes.Users.showProjects(project.ownerName)">
+                <a href="${routes.getRouteUrl("users.showProjects", project.ownerName)}">
                     <strong>@project.ownerName</strong>
                 </a>
                 released this version on @prettifyDate(version.createdAt)
@@ -38,7 +38,7 @@
             <#if !version.reviewState.isChecked>
                 <div class="pull-right">
                     <span class="btn-group-sm">
-                        <a href="#" class="btn btn-info btn-skip-review">@if(version.reviewState != ReviewState.Backlog) { Remove from queue } else { Add to queue }</a>
+                        <a href="#" class="btn btn-info btn-skip-review"><#if version.reviewState != ReviewState.Backlog> Remove from queue <#else> Add to queue </#if></a>
                         <a href="@projectRoutes.show(project.ownerName, project.slug)" class="btn btn-info">Project Page</a>
                         <a href="@versionRoutes.downloadJar(project.ownerName, project.slug, version.versionString, None)" class="btn btn-info">Download File</a>
                     </span>

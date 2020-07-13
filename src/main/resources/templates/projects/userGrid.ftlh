@@ -30,7 +30,7 @@
                         )
                     </div>
                     <div class="media-body center-vertically">
-                        <a class="media-heading mb-0" href="@routes.Users.showProjects(user.name)">@user.name</a>
+                        <a class="media-heading mb-0" href="${routes.getRouteUrl("users.showProjects", user.name)}">${user.name}</a>
                     </div>
                 </div>
             }

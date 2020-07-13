@@ -36,7 +36,7 @@
             <li data-flag-id="@flag.flagId" class="list-group-item">
                 <div class="row">
                     <div class="col-xs-12 col-md-1" style="width: 40px;">
-                        <a href="@routes.Users.showProjects(flag.reporter)">
+                        <a href="${routes.getRouteUrl("users.showProjects", flag.reporter)}">
                         @userAvatar(Some(flag.reporter), User.avatarUrl(flag.reporter), clazz = "user-avatar-xs")
                         </a>
                     </div>

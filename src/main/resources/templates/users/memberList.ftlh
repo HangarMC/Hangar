@@ -98,10 +98,10 @@
             @j.filteredMembers.map { case (role, user) =>
                 <li class="list-group-item">
                     @userAvatar(Some(user.name), user.avatarUrl, clazz = "user-avatar-xs")
-                <a class="username" href="@routes.Users.showProjects(user.name)">
+                <a class="username" href="${routes.getRouteUrl("users.showProjects", user.name)}">
                 @user.name
                 </a>
-                    <p style="display: none;" class="role-id">@role.id</p>
+                    <p style="display: none;" class="role-id">${role.id}</p>
                     <#if editable && perms.has(Permission.ManageSubjectMembers) && !role.role.permissions.has(Permission.IsOrganizationOwner)>
                         <a href="#">
                             <i style="padding-left:5px" class="fas fa-trash" data-toggle="modal" data-target="#modal-user-delete"></i>
@@ -111,9 +111,9 @@
 
                 <span class="minor pull-right">
                 <#if !role.isAccepted>
-                    <span class="minor">(Invited as @role.role.title)</span>
+                    <span class="minor">(Invited as ${role.role.title})</span>
                 <#else>
-                    @role.role.title
+                    ${role.role.title}
                 </#if>
                 </span>
 

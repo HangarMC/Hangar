@@ -7,8 +7,8 @@
 -->
 
 <#import "/spring.ftl" as spring />
-<#import "*/../utils/hangar.ftlh" as hangar />
-<#import "*/../layout/base.ftlh" as base />
+<#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
 <#assign scripts>
     <script type="text/javascript" src="<@hangar.url "javascripts/orgCreate.js" />"></script>

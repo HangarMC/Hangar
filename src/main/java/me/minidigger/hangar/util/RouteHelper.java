@@ -35,6 +35,9 @@ public class RouteHelper {
         register("javaScriptRoutes", "/javascriptRoutes");
 
         register("projects.showCreator", "/new");
+        //TODO
+        //GET     /:author/:slug/stars                                        @controllers.project.Projects.showStargazers(author, slug, page: Option[Int])
+        //GET     /:author/:slug/watchers                                     @controllers.project.Projects.showWatchers(author, slug, page: Option[Int])
 
         register("users.showAuthors", "/authors", "sort", "page");
         register("users.saveTagline", "{user}/settings/tagline");
@@ -82,6 +85,14 @@ public class RouteHelper {
         register("apiv1.listPages", "api/v1/projects/{pluginId}/pages", "parentId");
         register("apiv1.deployVersion", "api/v1/projects/{pluginId}/versions/{name}");
         register("apiv1.listTags", "api/v1/projects/{plugin}/tags/{versionName}");
+
+        //TODO
+        /*
+        GET     /:author/:slug/pages/*page/edit                             @controllers.project.Pages.showEditor(author, slug, page)
+        POST    /:author/:slug/pages/*page/edit                             @controllers.project.Pages.save(author, slug, page)
+        POST    /:author/:slug/pages/*page/delete                           @controllers.project.Pages.delete(author, slug, page)
+        GET     /:author/:slug/pages/*page                                  @controllers.project.Pages.show(author, slug, page)
+         */
     }
 
     // TODO support route params

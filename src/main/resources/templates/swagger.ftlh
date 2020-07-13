@@ -8,7 +8,7 @@ Mostly copied from swagger-ui's index file
 *@
 
 <#import "/spring.ftl" as spring />
-<#import "../utils/hangar.ftlh" as hangar />
+<#import "*/utils/hangar.ftlh" as hangar />
 
 <!DOCTYPE html>
 <html lang="@messages.lang.language">
@@ -92,11 +92,11 @@ Mostly copied from swagger-ui's index file
                     })
                 }
             </script>
-            @if(request != null) {
+            <#if request??>
                 <script @CSPNonce.attr>
                         csrf = '@play.filters.csrf.CSRF.getToken.get.value';
-                        isLoggedIn = @request.hasUser;
+                        isLoggedIn = ${request.hasUser};
                 </script>
-            }
+            </#if>
     </body>
 </html>
