@@ -13,12 +13,10 @@
 
 @(project: Project, version: Version, visibilityChanges: Seq[(Model[VersionVisibilityChange], Option[User])])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
 
-@versionRoutes = @{controllers.project.routes.Versions}
-
 @layout.base(messages("version.log.logger.title", project.namespace)) {
 	<div class="row">
 		<div class="col-md-12">
-			<h1><@spring.message "version.log.visibility.title" /> <a href="@versionRoutes.show(project.ownerName, project.slug, version.versionString)">@project.ownerName/@project.slug/versions/@version.versionString</a></h1>
+			<h1><@spring.message "version.log.visibility.title" /> <a href="${routes.getRouteUrl("versions.show", project.ownerName, project.slug, version.versionString)}">${project.ownerName}/${project.slug}/versions/${version.versionString}</a></h1>
 		</div>
 	</div>
 	<div class="row">

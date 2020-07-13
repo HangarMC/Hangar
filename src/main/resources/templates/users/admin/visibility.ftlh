@@ -9,8 +9,6 @@
 @(needsApproval: Seq[ProjectNeedsApproval],
  waitingProjects: Seq[ProjectNeedsApproval])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
 
-@projectRoutes = @{controllers.project.routes.Projects}
-
 @renderApprovalList(projectSeq: Seq[ProjectNeedsApproval]) = {
     <ul class="list-group list-flags-admin">
         <#if projectSeq.isEmpty>
@@ -23,20 +21,20 @@
                 <div class="row">
                     <div class="col-xs-12 col-md-8">
                         <span class="description">
-                            <strong>@project.changeRequester</strong>
+                            <strong>${project.changeRequester}</strong>
                             <span class="minor"> requested changes on </span>
-                            <a href="@projectRoutes.show(project.namespace.ownerName, project.namespace.slug)">
-                            @project.namespace
+                            <a href="${routes.getRouteUrl("projects.show", project.namespace.ownerName, project.namespace.slug)}">
+                            ${project.namespace}
                             </a>
                         </span>
                         <p>
                             <strong>Request:</strong>
-                            @renderer.render(project.comment)
+                            ${renderer.render(project.comment)}
                         </p>
                     </div>
                     <div class="col-xs-12 col-md-4">
                         <span class="pull-right btn-group-sm">
-                        @projects.helper.btnHide(project.namespace, project.visibility)
+                        ${projects.helper.btnHide(project.namespace, project.visibility)}
                         </span>
                     </div>
                 </div>
@@ -63,7 +61,7 @@
                     <h4 class="panel-title pull-left">Needs Approval</h4>
                     <div class="clearfix"></div>
                 </div>
-                @renderApprovalList(needsApproval)
+                ${renderApprovalList(needsApproval)}
             </div>
         </div>
         <div class="row">
@@ -78,7 +76,7 @@
                         <h4 class="panel-title pull-left">Waiting Changes</h4>
                         <div class="clearfix"></div>
                     </div>
-                    @renderApprovalList(waitingProjects)
+                    ${renderApprovalList(waitingProjects)}
                 </div>
             </div>
         </div>

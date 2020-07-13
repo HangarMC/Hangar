@@ -14,7 +14,6 @@
   erroredJobs: Seq[Job])(implicit request: OreRequest[_], messages: Messages, config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 
 @projectRoutes = @{controllers.project.routes.Projects}
-@versionRoutes = @{controllers.project.routes.Versions}
 
 <#assign message><@spring.message "admin.health.title" /></#assign>
 <@base.base title="${message}">
@@ -34,7 +33,7 @@
                 @noTopicProjects.map { project =>
                     <div class="list-group-item">
                         <a class="pull-left" href="@projectRoutes.show(project.namespace.ownerName, project.namespace.slug)">
-                            <strong>@project.namespace</strong>
+                            <strong>${project.namespace}</strong>
                         </a>
                         <div class="clearfix"></div>
                     </div>
@@ -50,7 +49,7 @@
                 <div class="panel-body">
                 @erroredJobs.map { job =>
                     <div class="list-group-item">
-                        Jobtype: @job.info.jobType Error type: @job.info.lastErrorDescriptor.get Happened: @job.info.lastUpdated.get
+                        Jobtype: ${job.info.jobType} Error type: ${job.info.lastErrorDescriptor} Happened: ${job.info.lastUpdated}
                         <div class="clearfix"></div>
                     </div>
                 }
@@ -68,7 +67,7 @@
                 @staleProjects.map { project =>
                     <div class="list-group-item">
                         <a href="@projectRoutes.show(project.namespace.ownerName, project.namespace.slug)">
-                            <strong>@project.namespace</strong>
+                            <strong>${project.namespace}</strong>
                         </a>
                     </div>
                 }
@@ -84,7 +83,7 @@
                 @notPublicProjects.map { project =>
                     <div class="list-group-item">
                         <a href="@projectRoutes.show(project.namespace.ownerName, project.namespace.slug)">
-                            <strong>@project.namespace</strong> <small><@spring.message "visibility.name." + project.visibility.nameKey /></small>
+                            <strong>${project.namespace}</strong> <small><@spring.message "visibility.name." + project.visibility.nameKey /></small>
                         </a>
                     </div>
                 }
@@ -111,8 +110,8 @@
                 <div class="panel-body list-group list-group-health">
                 @missingFileProjects.map { case (version, project) =>
                 <div class="list-group-item">
-                    <a href="@versionRoutes.show(project.ownerName, project.slug, version.name)">
-                        <strong>@project.namespace/@version.name</strong>
+                    <a href="${routes.getRouteUrl("versions.show", project.ownerName, project.slug, version.name)}">
+                        <strong>${project.namespace}/${version.name}</strong>
                 </a>
                 </div>
                 }

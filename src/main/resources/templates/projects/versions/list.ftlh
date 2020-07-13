@@ -15,9 +15,6 @@ Versions page within Project overview.
         sp: ScopedProjectData,
         channels: Seq[Channel])(implicit messages: Messages, request: OreRequest[_], flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
 
-@projectRoutes = @{ controllers.project.routes.Projects }
-@channelRoutes = @{ controllers.project.routes.Channels }
-
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/memberList.js" />"></script>
@@ -51,14 +48,14 @@ Versions page within Project overview.
                 <ul class="list-group list-channel">
                     @channels.sorted.map { channel =>
                         <li class="list-group-item">
-                            <span class="channel" style="background-color: @channel.color.hex">@channel.name</span>
+                            <span class="channel" style="background-color: ${channel.color.hex}">${channel.name}</span>
                             <input type="checkbox" class="pull-right"/>
                         </li>
                     }
 
                     <#if sp.perms(Permission.EditChannel)>
                         <li class="list-group-item text-right">
-                            <a class="btn yellow btn-xs" href="@channelRoutes.showList(p.project.ownerName, p.project.slug)">
+                            <a class="btn yellow btn-xs" href="${routes.getRouteUrl("channels.showList", p.project.ownerName, p.project.slug)}">
                                 Edit
                             </a>
                         </li>
@@ -68,7 +65,7 @@ Versions page within Project overview.
             @users.memberList(
                 j = p,
                 perms = sp.permissions,
-                settingsCall = projectRoutes.showSettings(p.project.ownerName, p.project.slug)
+                settingsCall = ${routes.getUrl("projects.showSettings", p.project.ownerName, p.project.slug)}
             )
         </div>
     </div>

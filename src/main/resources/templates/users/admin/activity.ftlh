@@ -36,10 +36,10 @@
                             case Right(review) => {
                                 <tr>
                                     <td>Review approved</td>
-                                    <td>@prettifyDateAndTime(review.endedAt.getOrElse(OffsetDateTime.MIN)))</td>
+                                    <td>${(review.endedAt!OffsetDateTime.MIN)?string.long}</td>
                                     <td>for:
-                                        <a href="@controllers.routes.Reviews.showReviews(review.project.ownerName, review.project.slug, review.id.toString)">
-                                            @review.project.ownerName / @review.project.slug
+                                        <a href="${routes.getRouteUrl("reviews.showReviews", review.project.ownerName, review.project.slug, review.id.toString)}">
+                                            ${review.project.ownerName} / ${review.project.slug}
                                         </a>
                                     </td>
                                 </tr>
@@ -47,10 +47,10 @@
                             case Left(flag) => {
                                 <tr>
                                     <td>Flag resolved</td>
-                                    <td>@prettifyDateAndTime(flag.resolvedAt.getOrElse(OffsetDateTime.MIN)))</td>
+                                    <td>${(flag.resolvedAt!OffsetDateTime.MIN)?string.long}</td>
                                     <td>for:
-                                        <a href="@controllers.project.routes.Projects.show(flag.project.ownerName, flag.project.slug)">
-                                            @flag.project.ownerName / @flag.project.slug
+                                        <a href="${routes.getRouteUrl("projects.show", flag.project.ownerName, flag.project.slug)}">
+                                            ${flag.project.ownerName} / ${flag.project.slug}
                                         </a>
                                     </td>
                                 </tr>

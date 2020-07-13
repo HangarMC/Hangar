@@ -12,8 +12,6 @@
 @import views.html.utils.userAvatar
 @(underReview: Seq[ReviewedQueueEntry], versions: Seq[NotStartedQueueEntry])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 
-@versionRoutes = @{controllers.project.routes.Versions}
-
 <#assign scriptsVar>
     <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "javascripts/queue.js" />"></script>
     <script @CSPNonce.attr>
@@ -68,23 +66,23 @@
                         @underReview.map { entry =>
                         <tr <#if entry.isUnfinished && request.headerData.isCurrentUser(entry.reviewerId)>class="warning"</#if>>
                         <td>
-                            <a href="@versionRoutes.show(entry.namespace.ownerName, entry.namespace.slug, entry.versionString)">
-                                @entry.namespace
+                            <a href="${routes.getRouteUrl("versions.show", entry.namespace.ownerName, entry.namespace.slug, entry.versionString)}">
+                                ${entry.namespace}
                             </a>
                             <br>
-                            @entry.versionString
-                            <span class="channel" style="background-color: @entry.channelColor.hex">@entry.channelName</span>
+                            ${entry.versionString}
+                            <span class="channel" style="background-color: ${entry.channelColor.hex}">${entry.channelName}</span>
                         </td>
                         <td>
                             <#if entry.versionAuthor.isDefined>
                                 <a href="https://papermc.io/forums/users/@entry.versionAuthor.get">
-                                @entry.versionAuthor.get
+                                ${entry.versionAuthor}
                                 </a>
                             <#else>
                                 Unknown
                             </#if>
                         <br>
-                        @prettifyDateAndTime(entry.versionCreatedAt)
+                        ${entry.versionCreatedAt?string.long}
                         </td>
                         <td style="text-align: right; max-width: 40px">
                         <#if entry.isUnfinished>
@@ -99,13 +97,13 @@
                         </td>
                         <td <#if try.isUnfinished>style="color: darkred"</#if> >
                         <#if entry.isUnfinished>
-                            @entry.reviewerName
+                            ${entry.reviewerName}
                             <br>
-                            <span data-ago="@entry.reviewStarted.toInstant.toEpochMilli" data-title="started "></span>
+                            <span data-ago="${entry.reviewStarted.toInstant.toEpochMilli}" data-title="started "></span>
                         <#else>
-                            <strike>@entry.reviewerName</strike>
+                            <strike>${entry.reviewerName}</strike>
                             <br>
-                            <span data-ago="@entry.reviewStarted.toInstant.toEpochMilli" data-title="abandoned "></span>
+                            <span data-ago="${entry.reviewStarted.toInstant.toEpochMilli}" data-title="abandoned "></span>
                         </#if>
                         </td>
                         <td style="vertical-align: middle; text-align: right; padding-right: 15px;">
@@ -155,19 +153,19 @@
                             @userAvatar(Some(entry.namespace.ownerName), User.avatarUrl(entry.namespace.ownerName), clazz = "user-avatar-xs")
                             </td>
                             <td>
-                                <a href="@versionRoutes.show(entry.namespace.ownerName, entry.namespace.slug, entry.versionString)">
-                                    @entry.namespace
+                                <a href="${routes.getRouteUrl("versions.show", entry.namespace.ownerName, entry.namespace.slug, entry.versionString)}">
+                                    ${entry.namespace}
                                 </a>
                             </td>
                             <td>
-                                <span class="faint">@prettifyDate(entry.versionCreatedAt)</span>
-                                <span class="minor">@entry.versionString</span>
-                                <span class="channel" style="background-color: @entry.channelColor.hex;">@entry.channelName</span>
+                                <span class="faint">${entry.versionCreatedAt?string.long}</span>
+                                <span class="minor">${entry.versionString}</span>
+                                <span class="channel" style="background-color: ${entry.channelColor.hex};">${entry.channelName}</span>
                             </td>
                             <td>
                                 <#if entry.versionAuthor.isDefined>
-                                    <a href="https://papermc.io/forums/users/@entry.versionAuthor.get">
-                                    @entry.versionAuthor.get
+                                    <a href="https://papermc.io/forums/users/${entry.versionAuthor}">
+                                    ${entry.versionAuthor}
                                     </a>
                                 </#if>
                             <br>

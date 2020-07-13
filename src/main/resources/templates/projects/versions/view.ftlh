@@ -15,9 +15,6 @@
 @(v: VersionData, sp: ScopedProjectData)(implicit messages: Messages, request: OreRequest[_], flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
 
 @projectRoutes = @{controllers.project.routes.Projects}
-@versionRoutes = @{controllers.project.routes.Versions}
-@reviewRoutes = @{controllers.routes.Reviews}
-@appRoutes = @{controllers.routes.Application}
 
 @projects.view(v.p, sp, "#versions", noButtons = true) {
 
@@ -26,8 +23,8 @@
         <div class="col-md-12 version-header">
                 <!-- Title -->
             <div class="clearfix">
-                <h1 class="pull-left">@v.v.versionString</h1>
-                <span class="channel channel-head" style="background-color: @v.c.color.hex;">@v.c.name</span>
+                <h1 class="pull-left">${v.v.versionString}</h1>
+                <span class="channel channel-head" style="background-color: ${v.c.color.hex};">${v.c.name}</span>
             </div>
 
                 <!-- User info -->
@@ -35,7 +32,7 @@
                 <a href="${routes.getRouteUrl("users.showProjects", v.p.project.ownerName)}">
                     <strong>${v.p.project.ownerName}</strong>
                 </a>
-                released this version on ${prettifyDate(v.v.createdAt)}
+                released this version on ${v.v.createdAt?string.long}
             </p>
 
                 <!-- Buttons -->
@@ -85,9 +82,9 @@
 
                         <#if request.headerData.globalPerm(Permission.Reviewer)>
                             <#if v.v.reviewState.isChecked>
-                                <a href="@reviewRoutes.showReviews(v.p.project.ownerName, v.p.project.slug, v.v.versionString)" class="btn btn-info"><@spring.message "review.log" /></a>
+                                <a href="${routes.getRouteUrl("reviews.showReviews", v.p.project.ownerName, v.p.project.slug, v.v.versionString)}" class="btn btn-info"><@spring.message "review.log" /></a>
                             <#else>
-                                <a href="@reviewRoutes.showReviews(v.p.project.ownerName, v.p.project.slug, v.v.versionString)" class="btn btn-success">
+                                <a href="${routes.getRouteUrl("showReviews", v.p.project.ownerName, v.p.project.slug, v.v.versionString)}" class="btn btn-success">
                                     <i class="fas fa-play"></i> <@spring.message "review.start" />
                                 </a>
                             </#if>
@@ -114,7 +111,7 @@
                         </#if>
 
                         <div class="btn-group btn-download">
-                            <a href="@versionRoutes.download(v.p.project.ownerName, v.p.project.slug, v.v.versionString, None)"
+                            <a href="${routes.getRouteUrl("versions.download", v.p.project.ownerName, v.p.project.slug, v.v.versionString, "")}"
                             title="<@spring.message "project.download.recommend" />" data-toggle="tooltip"
                             data-placement="bottom" class="btn btn-primary">
                                 <i class="fas fa-download"></i> <@spring.message "general.download" />
@@ -124,8 +121,8 @@
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right">
-                                <li><a href="@versionRoutes.download(v.p.project.ownerName, v.p.project.slug, v.v.versionString, None)"><@spring.message "general.download" /></a></li>
-                                <li><a href="#" class="copy-url" data-clipboard-text="@config.app.baseUrl@versionRoutes.download(v.p.project.ownerName, v.p.project.slug, v.v.versionString, None)">Copy URL</a></li>
+                                <li><a href="${routes.getRouteUrl("versions.download", v.p.project.ownerName, v.p.project.slug, v.v.versionString, "")}"><@spring.message "general.download" /></a></li>
+                                <li><a href="#" class="copy-url" data-clipboard-text="${config.app.baseUrl}${routes.getRouteUrl("versions.download", v.p.project.ownerName, v.p.project.slug, v.v.versionString, "")}">Copy URL</a></li>
                             </ul>
                         </div>
 
@@ -136,7 +133,7 @@
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="admin-version-actions">
-                                    <li><a href="@appRoutes.showLog(None, None, None, Some(v.v.versionString), None, None, None)">User Action Logs</a></li>
+                                    <li><a href="${routes.getRouteUrl("showLog", "", "", "", v.v.versionString, "", "", "")}">User Action Logs</a></li>
                                     <#if request.headerData.globalPerm(Permission.Reviewer)>
                                         <#if v.v.visibility == Visibility.SoftDelete>
                                             <li><a href="#" data-toggle="modal" data-target="#modal-restore">Undo delete</a></li>

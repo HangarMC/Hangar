@@ -11,8 +11,6 @@
         isTargetChannelNonReviewed: Boolean,
         downloadType: DownloadType)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 
-@versionRoutes = @{ controllers.project.routes.Versions }
-
 @layout.base(messages("version.download.confirm.title") + " " + messages("version.download.confirm.header", project.ownerName, project.name, target.name)) {
 
     <div class="row">
@@ -49,7 +47,7 @@
                         </div>
 
                         <div class="col-xs-12 col-sm-6">
-                            <form action="@versionRoutes.confirmDownload(project.ownerName, project.slug, target.name, Some(downloadType.value), None, Some("dummy"))" method="post" id="form-download">
+                            <form action="${routes.getRouteUrl("versions.confirmDownload", project.ownerName, project.slug, target.name, Some(downloadType.value), "", "dummy")}" method="post" id="form-download">
                                 @CSRF.formField
 
                                 <button type="submit" form="form-download" class="btn btn-danger pull-right-sm">

@@ -14,12 +14,9 @@
 @(mostRecentUnfinishedReview: Option[Review], reviews: Seq[(Model[Review], Option[String])], project: Project, version: Model[Version])(implicit messages: Messages,
         request: OreRequest[_], config: OreConfig, flash: Flash, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
 
-@projectRoutes = @{controllers.project.routes.Projects}
-@versionRoutes = @{controllers.project.routes.Versions}
-
 <#macro scripts>
     <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "javascripts/review.js" />"></script>
-    <script @CSPNonce.attr>versionPath = '@helper.urlEncode(project.ownerName)/@helper.urlEncode(project.slug)/versions/@helper.urlEncode(version.name)'</script>
+    <script @CSPNonce.attr>versionPath = '${helper.urlEncode(project.ownerName)}/${helper.urlEncode(project.slug)}/versions/${helper.urlEncode(version.name)}'</script>
 </#macro>
 
 @layout.base(messages("review.title", project.name, version.name), scripts) {
@@ -33,14 +30,14 @@
                 <a href="${routes.getRouteUrl("users.showProjects", project.ownerName)}">
                     <strong>@project.ownerName</strong>
                 </a>
-                released this version on @prettifyDate(version.createdAt)
+                released this version on ${version.createdAt?string.long}
             </p>
             <#if !version.reviewState.isChecked>
                 <div class="pull-right">
                     <span class="btn-group-sm">
                         <a href="#" class="btn btn-info btn-skip-review"><#if version.reviewState != ReviewState.Backlog> Remove from queue <#else> Add to queue </#if></a>
-                        <a href="@projectRoutes.show(project.ownerName, project.slug)" class="btn btn-info">Project Page</a>
-                        <a href="@versionRoutes.downloadJar(project.ownerName, project.slug, version.versionString, None)" class="btn btn-info">Download File</a>
+                        <a href="${routes.getRouteUrl("projects.show", project.ownerName, project.slug)}" class="btn btn-info">Project Page</a>
+                        <a href="${routes.getRouteUrl("versions.downloadJar", project.ownerName, project.slug, version.versionString, "")}" class="btn btn-info">Download File</a>
                     </span>
                     <span class="btn-group-sm">
                     <#if mostRecentUnfinishedReview.isDefined>
@@ -98,9 +95,9 @@
                     @defining((t._1, t._2)) { case (item, name) =>
                         <#if item.endedAt.isDefined>
                             <#if reviews.size > (reviews.size - index)>
-                                <#if prettifyDateAndTime(item.endedAt.get).equalsIgnoreCase(prettifyDateAndTime(reviews.reverse(reviews.size - index - 1)._1.createdAt))>
+                                <#if (item.endedAt?string.long).equalsIgnoreCase(reviews.reverse(reviews.size - index - 1)._1.createdAt?string.long)>
                                     <tr>
-                                        <td>@prettifyDateAndTime(item.endedAt.get)</td>
+                                        <td>${item.endedAt?string.long}</td>
                                         <td>
                                             <strong>@name.getOrElse("Unknown")</strong>
                                             took over from
@@ -114,27 +111,27 @@
                                     </tr>
                                 <#else>
                                     <tr>
-                                        <td>@prettifyDateAndTime(item.endedAt.get)</td>
-                                        <td><strong>@name.getOrElse("Unknown")</strong> stopped</td>
+                                        <td>${item.endedAt?string.long}</td>
+                                        <td><strong>${name!"Unknown"}</strong> stopped</td>
                                     </tr>
                                 </#if>
                             <#else>
                                 <#if version.approvedAt.isDefined>
                                     <tr>
-                                        <td>@prettifyDateAndTime(item.endedAt.get)</td>
-                                        <td><strong>@name.getOrElse("Unknown")</strong> approved</td>
+                                        <td>${item.endedAt?string.long}</td>
+                                        <td><strong>${name!"Unknown"}</strong> approved</td>
                                     </tr>
                                 <#else>
                                     <tr>
-                                        <td>@prettifyDateAndTime(item.endedAt.get)</td>
+                                        <td>${item.endedAt?string.long}</td>
                                         <td>
-                                            <strong>@name.getOrElse("Unknown")</strong>
+                                            <strong>${name!"Unknown"}</strong>
                                             stopped
                                             <br>
                                             <#if !item.decodeMessages.exists(_.isStop)>
                                                 <i>- no message provided -</i>
                                             <#else>
-                                                <i>@item.decodeMessages.filter(_.isStop).head.render</i>
+                                                <i>${item.decodeMessages.filter(_.isStop).head.render}</i>
                                             </#if>
                                         </td>
                                     </tr>
@@ -143,18 +140,18 @@
                         </#if>
                         @item.decodeMessages.filterNot(_.isTakeover).filterNot(_.isStop).reverse.map { message =>
                             <tr>
-                                <td>@message.getTime(messages.lang.locale)</td>
+                                <td>${message.getTime(messages.lang.locale)}</td>
                                 <td>
-                                    <strong>@name.getOrElse("Unknown")</strong>
+                                    <strong>${name!"Unknown"}</strong>
                                     added message
                                     <br>
-                                    <i>@message.render</i>
+                                    <i>${message.render}</i>
                                 </td>
                             </tr>
                         }
                         <tr>
-                            <td>@prettifyDateAndTime(item.createdAt.value)</td>
-                            <td><strong>@name.getOrElse("Unknown")</strong> started a review</td>
+                            <td>${item.createdAt.value?string.long}</td>
+                            <td><strong>${name!"Unknown"}</strong> started a review</td>
                         </tr>
                     }
                 }
