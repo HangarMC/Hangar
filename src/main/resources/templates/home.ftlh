@@ -57,7 +57,7 @@ sorted according to different criteria.
                     <div class="panel-body">
                         <#assign sponsor=randomSponsor() />
                         <a href="${sponsor.link}">
-                            <img class="logo" src="<@hangar.url sponsor.image />" alt="Sponsor" />
+                            <img class="logo" src="${sponsor.image}" alt="Sponsor" />
                         </a>
                     </div>
                 </div>

@@ -6,85 +6,87 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.List.of;
+
 @Component
 public class RouteHelper {
 
     private Map<String, Route> routes = new HashMap<>();
 
     public RouteHelper() {
-        register("showProjectVisibility", "/idk");
-        register("actorCount", "/pantopticon/actor-count", "timeoutMs");
-        register("actorTree", "/pantopticon/actor-tree", "timeoutMs");
-        register("updateUser", "/admin/user/{user}/update");
-        register("showQueue", "/admin/approval/versions");
-        register("showLog", "/admin/log", "page", "userFilter", "projectFilter", "versionFilter", "pageFilter", "actionFilter", "subjectFilter");
-        register("removeTrail", "{path}/");
-        register("faviconRedirect", "favicon.ico");
-        register("showFlags", "/admin/flags");
-        register("sitemapIndex", "/sitemap.xml");
-        register("globalSitemap", "/global-sitemap.xml");
-        register("showStats", "/admin/stats", "from", "to");
-        register("linkOut", "/linkout", "remoteUrl");
-        register("showHealth", "/admin/health");
-        register("showHome", "/");
-        register("robots", "/robots.txt");
-        register("setFlagResolved", "/admin/flags/{id}/resolve/{resolved}");
-        register("swagger", "/api");
-        register("showActivities", "/admin/activities/{user}");
-        register("userAdmin", "/admin/user/{user}");
-        register("javaScriptRoutes", "/javascriptRoutes");
+        register("showProjectVisibility", "/admin/approval/projects", of(), of());
+        register("actorCount", "/pantopticon/actor-count", of(), of("timeoutMs"));
+        register("actorTree", "/pantopticon/actor-tree", of(), of("timeoutMs"));
+        register("updateUser", "/admin/user/{user}/update", of("user"), of());
+        register("showQueue", "/admin/approval/versions", of(), of());
+        register("showLog", "/admin/log", of(), of("page", "userFilter", "projectFilter", "versionFilter", "pageFilter", "actionFilter", "subjectFilter"));
+        register("removeTrail", "/{path}/", of("path"), of());
+        register("faviconRedirect", "/favicon.ico", of(), of());
+        register("showFlags", "/admin/flags", of(), of());
+        register("sitemapIndex", "/sitemap.xml", of(), of());
+        register("globalSitemap", "/global-sitemap.xml", of(), of());
+        register("showStats", "/admin/stats", of(), of("from", "to"));
+        register("linkOut", "/linkout", of(), of("remoteUrl"));
+        register("showHealth", "/admin/health", of(), of());
+        register("showHome", "/", of(), of());
+        register("robots", "/robots.txt", of(), of());
+        register("setFlagResolved", "/admin/flags/{id}/resolve/{resolved}", of("id", "resolved"), of());
+        register("swagger", "/api", of(), of());
+        register("showActivities", "/admin/activities/{user}", of("user"), of());
+        register("userAdmin", "/admin/user/{user}", of("user"), of());
+        register("javaScriptRoutes", "/javascriptRoutes", of(), of());
 
-        register("projects.showCreator", "/new");
+        register("projects.showCreator", "/new", of(), of());
         //TODO
         //GET     /:author/:slug/stars                                        @controllers.project.Projects.showStargazers(author, slug, page: Option[Int])
         //GET     /:author/:slug/watchers                                     @controllers.project.Projects.showWatchers(author, slug, page: Option[Int])
 
-        register("users.showAuthors", "/authors", "sort", "page");
-        register("users.saveTagline", "{user}/settings/tagline");
-        register("users.signUp", "/signup");
-        register("users.showNotifications", "/notifications", "notificationFilter", "inviteFilter");
-        register("users.showProjects", "/{user}");
-        register("users.verify", "/verify", "returnPath");
-        register("users.markNotificationRead", "/notifications/read/{id}");
-        register("users.login", "/login", "sso", "sig", "returnUrl");
-        register("users.showStaff", "/staff", "sort", "page");
-        register("users.setLocked", "/{user}/settings/lock/{locked}", "sso", "sig");
-        register("users.markPromptRead", "/prompts/read/{id}");
-        register("users.logout", "/logout");
-        register("users.userSitemap", "/{user}/sitemap.xml");
-        register("users.editApiKeys", "/{user}/settings/apiKeys");
+        register("users.showAuthors", "/authors", of(), of("sort", "page"));
+        register("users.saveTagline", "/{user}/settings/tagline", of("user"), of());
+        register("users.signUp", "/signup", of(), of());
+        register("users.showNotifications", "/notifications", of(), of("notificationFilter", "inviteFilter"));
+        register("users.showProjects", "/{user}", of("user"), of());
+        register("users.verify", "/verify", of(), of("returnPath"));
+        register("users.markNotificationRead", "/notifications/read/{id}", of("id"), of());
+        register("users.login", "/login", of(), of("sso", "sig", "returnUrl"));
+        register("users.showStaff", "/staff", of(), of("sort", "page"));
+        register("users.setLocked", "/{user}/settings/lock/{locked}", of("user", "locked"), of("sso", "sig"));
+        register("users.markPromptRead", "/prompts/read/{id}", of("id"), of());
+        register("users.logout", "/logout", of(), of());
+        register("users.userSitemap", "/{user}/sitemap.xml", of("user"), of());
+        register("users.editApiKeys", "/{user}/settings/apiKeys", of("user"), of());
 
-        register("org.updateMembers", "/organisations/{organisations}/settings/members");
-        register("org.updateAvatar", "/organisations/{organisations}/settings/avatar");
-        register("org.setInviteStatus", "/organisations/invite/{id}/{status}");
-        register("org.showCreator", "/organisations/new");
-        register("org.create", "/organisations/new");
-        register("org.removeMember", "/organisations/{organisations}/settings/members/remove");
+        register("org.updateMembers", "/organisations/{organisations}/settings/members", of("organisations"), of());
+        register("org.updateAvatar", "/organisations/{organisations}/settings/avatar", of("organisations"), of());
+        register("org.setInviteStatus", "/organisations/invite/{id}/{status}", of("id", "status"), of());
+        register("org.showCreator", "/organisations/new", of(), of());
+        register("org.create", "/organisations/new", of(), of());
+        register("org.removeMember", "/organisations/{organisations}/settings/members/remove", of("organisations"), of());
 
-        register("reviews.addMessage", "{author}/{slug}/versions/{version}/reviews/addmessage");
-        register("reviews.backlogToggle", "{author}/{slug}/versions/{version}/reviews/reviewtoggle");
-        register("reviews.showReviews", "{author}/{slug}/versions/{version}/reviews");
-        register("reviews.approveReview", "{author}/{slug}/versions/{version}/reviews/approve");
-        register("reviews.editReview", "{author}/{slug}/versions/{version}/reviews/edit/{review}");
-        register("reviews.stopReview", "{author}/{slug}/versions/{version}/reviews/stop");
-        register("reviews.createReview", "{author}/{slug}/versions/{version}/reviews/init");
-        register("reviews.takeoverReview", "{author}/{slug}/versions/{version}/reviews/takeover");
-        register("reviews.reopenReview", "{author}/{slug}/versions/{version}/reviews/reopen");
+        register("reviews.addMessage", "/{author}/{slug}/versions/{version}/reviews/addmessage", of("author", "slug", "version"), of());
+        register("reviews.backlogToggle", "/{author}/{slug}/versions/{version}/reviews/reviewtoggle", of("author", "slug", "version"), of());
+        register("reviews.showReviews", "/{author}/{slug}/versions/{version}/reviews", of("author", "slug", "version"), of());
+        register("reviews.approveReview", "/{author}/{slug}/versions/{version}/reviews/approve", of("author", "slug", "version"), of());
+        register("reviews.editReview", "/{author}/{slug}/versions/{version}/reviews/edit/{review}", of("author", "slug", "version", "review"), of());
+        register("reviews.stopReview", "/{author}/{slug}/versions/{version}/reviews/stop", of("author", "slug", "version"), of());
+        register("reviews.createReview", "/{author}/{slug}/versions/{version}/reviews/init", of("author", "slug", "version"), of());
+        register("reviews.takeoverReview", "/{author}/{slug}/versions/{version}/reviews/takeover", of("author", "slug", "version"), of());
+        register("reviews.reopenReview", "/{author}/{slug}/versions/{version}/reviews/reopen", of("author", "slug", "version"), of());
 
-        register("apiv1.showVersion", "api/v1/projects/{pluginId}/versions/{name}");
-        register("apiv1.listProjects", "api/v1/projects", "categories", "sort", "q", "limit", "offset");
-        register("apiv1.listUsers", "api/v1/users", "limit", "offset");
-        register("apiv1.listVersions", "api/v1/projects/{pluginId}/versions", "channels", "limit", "offset");
-        register("apiv1.revokeKey", "api/v1/projects/{pluginId}/keys/revoke");
-        register("apiv1.createKey", "api/v1/projects/{pluginId}/keys/new");
-        register("apiv1.showProject", "api/v1/projects/{pluginId}");
-        register("apiv1.syncSso", "api/sync_sso");
-        register("apiv1.tagColor", "api/v1/tags/{tagId}");
-        register("apiv1.showStatusZ", "statusz");
-        register("apiv1.showUser", "api/v1/users/{user}");
-        register("apiv1.listPages", "api/v1/projects/{pluginId}/pages", "parentId");
-        register("apiv1.deployVersion", "api/v1/projects/{pluginId}/versions/{name}");
-        register("apiv1.listTags", "api/v1/projects/{plugin}/tags/{versionName}");
+        register("apiv1.showVersion", "/api/v1/projects/{pluginId}/versions/{name}", of("pluginId", "name"), of());
+        register("apiv1.listProjects", "/api/v1/projects", of(), of("categories", "sort", "q", "limit", "offset"));
+        register("apiv1.listUsers", "/api/v1/users", of(), of("limit", "offset"));
+        register("apiv1.listVersions", "/api/v1/projects/{pluginId}/versions", of("pluginId"), of("channels", "limit", "offset"));
+        register("apiv1.revokeKey", "/api/v1/projects/{pluginId}/keys/revoke", of("pluginId"), of());
+        register("apiv1.createKey", "/api/v1/projects/{pluginId}/keys/new", of("pluginId"), of());
+        register("apiv1.showProject", "/api/v1/projects/{pluginId}", of("pluginId"), of());
+        register("apiv1.syncSso", "/api/sync_sso", of(), of());
+        register("apiv1.tagColor", "/api/v1/tags/{tagId}", of("tagId"), of());
+        register("apiv1.showStatusZ", "/statusz", of(), of());
+        register("apiv1.showUser", "/api/v1/users/{user}", of("user"), of());
+        register("apiv1.listPages", "/api/v1/projects/{pluginId}/pages", of("pluginId"), of("parentId"));
+        register("apiv1.deployVersion", "/api/v1/projects/{pluginId}/versions/{name}", of("pluginId", "name"), of());
+        register("apiv1.listTags", "/api/v1/projects/{plugin}/tags/{versionName}", of("plugin", "versionName"), of());
 
         //TODO
         /*
@@ -100,16 +102,25 @@ public class RouteHelper {
         Route route = routes.get(name);
         if (route == null) {
             throw new RuntimeException("No Route " + name);
-        } else if(route.args.size() != args.length) {
-            throw new RuntimeException("Args dont match for route " + name + " " + route.args.size() + "!=" + args.length);
+        } else if ((route.pathParms.size() + route.queryParams.size()) != args.length) {
+            throw new RuntimeException("Args dont match for route " + name + " " + (route.pathParms.size() + route.queryParams.size()) + "!=" + args.length);
         }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(route.url);
-        boolean first = true;
-        for (int i = 0; i < args.length; i++) {
+        // path params first
+        String url = route.url;
+        for (int i = 0; i < route.pathParms.size(); i++) {
             String value = args[i];
-            if (value == null || value.equals("")) {
+            String key = route.pathParms.get(i);
+            url = url.replace("{" + key + "}", value);
+        }
+
+        // query params later
+        StringBuilder sb = new StringBuilder();
+        sb.append(url);
+        boolean first = true;
+        for (int i = 0; i < route.queryParams.size(); i++) {
+            String value = args[i + route.pathParms.size()];
+            if (value == null || value.length() == 0) {
                 continue;
             }
 
@@ -119,27 +130,29 @@ public class RouteHelper {
             } else {
                 sb.append("&");
             }
-            sb.append(route.args.get(i));
+            sb.append(route.queryParams.get(i));
             sb.append("=");
             sb.append(value);
         }
         return sb.toString();
     }
 
-    private void register(String name, String url, String... args) {
-        Route route = new Route(name, url, List.of(args));
+    private void register(String name, String url, List<String> pathParms, List<String> queryParams) {
+        Route route = new Route(name, url, pathParms, queryParams);
         routes.put(route.name, route);
     }
 
     class Route {
         String name;
         String url;
-        List<String> args;
+        List<String> pathParms;
+        List<String> queryParams;
 
-        public Route(String name, String url, List<String> args) {
+        public Route(String name, String url, List<String> pathParms, List<String> queryParams) {
             this.name = name;
             this.url = url;
-            this.args = args;
+            this.pathParms = pathParms;
+            this.queryParams = queryParams;
         }
     }
 }

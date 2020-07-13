@@ -95,7 +95,7 @@
                             <ul class="user-dropdown dropdown-menu"
                                 aria-label="<@spring.messageArgs code="aria.dropdown.menu" args=[1] />">
                                 <li>
-                                    <a href="${routes.getRouteUrl("users.showProjects")}${cu.name}">
+                                    <a href="${routes.getRouteUrl("users.showProjects", "")}${cu.name}">
                                         <i class="fas fa-user mr-1"></i>
                                         <span>${cu.name}</span>
                                     </a>

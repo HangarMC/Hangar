@@ -19,11 +19,15 @@ class RouteHelperTest {
     void testSomeShit() throws Exception {
         assertEquals("/", classUnderTest.getRouteUrl("showHome"));
         assertEquals("/organisations/new", classUnderTest.getRouteUrl("org.showCreator"));
-        assertEquals("/linkout", classUnderTest.getRouteUrl("linkout"));
-        assertEquals("/linkout?remoteUrl=TestUrl", classUnderTest.getRouteUrl("linkout", "TestUrl"));
-        assertEquals("/staff", classUnderTest.getRouteUrl("users.showStaff"));
+        assertEquals("/linkout", classUnderTest.getRouteUrl("linkOut", ""));
+        assertEquals("/linkout?remoteUrl=TestUrl", classUnderTest.getRouteUrl("linkOut", "TestUrl"));
+        assertEquals("/staff", classUnderTest.getRouteUrl("users.showStaff", "", ""));
         assertEquals("/staff?sort=ASC&page=1", classUnderTest.getRouteUrl("users.showStaff", "ASC", "1"));
         assertEquals("/staff?page=1", classUnderTest.getRouteUrl("users.showStaff", "", "1"));
-        assertEquals("/staff?sort=ASC", classUnderTest.getRouteUrl("users.showStaff", "ASC"));
+        assertEquals("/staff?sort=ASC", classUnderTest.getRouteUrl("users.showStaff", "ASC", ""));
+        assertEquals("/api/v1/projects/Essentials/tags/1.33.7", classUnderTest.getRouteUrl("apiv1.listTags", "Essentials", "1.33.7"));
+        assertEquals("/api/v1/projects/Essentials/pages?parentId=2", classUnderTest.getRouteUrl("apiv1.listPages", "Essentials", "2"));
+        assertEquals("/api/v1/projects/Essentials/pages", classUnderTest.getRouteUrl("apiv1.listPages", "Essentials", ""));
+
     }
 }
