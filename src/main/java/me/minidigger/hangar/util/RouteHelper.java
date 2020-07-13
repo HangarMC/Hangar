@@ -50,7 +50,7 @@ public class RouteHelper {
         register("projects.setInviteStatusOnBehalf", "/invite/{id}/{status}/{behalf}", of("id", "status", "behalf"), of());
         register("projects.delete", "/{author}/{slug}/manage/hardDelete", of("author", "slug"), of());
         register("projects.addMessage", "/{author}/{slug}/notes/addmessage", of("author", "slug"), of());
-        register("projects.showPendingIcon", "/{author}/{slug}/icon", of("author", "slug"), of());
+        register("projects.showPendingIcon", "/{author}/{slug}/icon/pending", of("author", "slug"), of());
         register("projects.postDiscussionReply", "/{author}/{slug}/discuss/reply", of("author", "slug"), of());
         register("projects.show", "/{author}/{slug}", of("author", "slug"), of());
         register("projects.showDiscussion", "/{author}/{slug}/discuss", of("author", "slug"), of());
