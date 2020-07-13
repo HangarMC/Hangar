@@ -28,15 +28,13 @@
                 </div>
                 <div class="panel-body">
                     <div class="alert alert-danger" style="margin-bottom: 10px">
-                    @if(isTargetChannelNonReviewed || target.reviewState == ReviewState.Backlog) {
+                    <#if isTargetChannelNonReviewed || target.reviewState == ReviewState.Backlog>
                         <@spring.message "version.download.confirm.nonReviewedChannel" />
-                    } else {
-                        @if(target.reviewState != ReviewState.PartiallyReviewed) {
-                            <@spring.message "version.download.confirm.reviewedChannel" />
-                        } else {
-                            <@spring.message "version.download.confirmPartial.reviewedChannel" />
-                        }
-                    }
+                    <#elseif target.reviewState != ReviewState.PartiallyReviewed>
+                        <@spring.message "version.download.confirm.reviewedChannel" />
+                    <#else>
+                        <@spring.message "version.download.confirmPartial.reviewedChannel" />
+                    </#if>
                     </div>
                     <p>
                         <@spring.message "general.disclaimer" />:

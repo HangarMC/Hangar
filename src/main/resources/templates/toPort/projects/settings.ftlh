@@ -17,7 +17,7 @@
 
 @projectRoutes = @{controllers.project.routes.Projects}
 
-@scripts = {
+<#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/projectManage.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/hideProject.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/iconUpload.js" />"></script>
@@ -25,14 +25,14 @@
     <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/memberList.js" />"></script>
     <script @CSPNonce.attr>
-            projectName = "@p.project.name";
-            PROJECT_OWNER = "@p.project.ownerName";
-            PROJECT_SLUG = "@p.project.slug";
-            pluginId = "@p.project.pluginId";
-            keyGenText = "<@spring.message "project.settings.genKey" />";
-            keyRevokeText = "<@spring.message "project.settings.revokeKey" />";
+        projectName = "${p.project.name}";
+        PROJECT_OWNER = "${p.project.ownerName}";
+        PROJECT_SLUG = "${p.project.slug}";
+        pluginId = "${p.project.pluginId}";
+        keyGenText = "<@spring.message "project.settings.genKey" />";
+        keyRevokeText = "<@spring.message "project.settings.revokeKey" />";
     </script>
-}
+</#assign>
 
 @projects.view(p, sp, "#settings", additionalScripts = scripts) {
 
@@ -43,7 +43,7 @@
             <div class="panel panel-default panel-settings">
                 <div class="panel-heading">
                     <h3 class="panel-title pull-left"><@spring.message "project.settings" /></h3>
-                    @if(request.headerData.globalPerm(Permission.SeeHidden)) {
+                    <#if request.headerData.globalPerm(Permission.SeeHidden)>
                         @projects.helper.btnHide(p.project.namespace, p.project.visibility)
 
                         <div class="modal fade" id="modal-visibility-comment" tabindex="-1" role="dialog" aria-labelledby="modal-visibility-comment">
@@ -65,7 +65,7 @@
                                 </div>
                             </div>
                         </div>
-                    }
+                    </#if>
                 </div>
 
                 <div class="panel-body">
@@ -131,7 +131,7 @@
                         </form>
                     </div>
 
-                    @if(sp.perms(Permission.EditApiKeys)) {
+                    <#if sp.perms(Permission.EditApiKeys)>
                         <div class="setting">
                             <div class="setting-description">
                                 <h4><@spring.message "project.settings.deployKey" /></h4>
@@ -160,7 +160,7 @@
                             </div>
                             <div class="clearfix"></div>
                         </div>
-                    }
+                    </#if>
 
                         <!-- Rename -->
                     <div class="setting">
@@ -181,7 +181,7 @@
                     </div>
 
                         <!-- Delete -->
-                    @if(sp.perms(Permission.DeleteProject)) {
+                    <#if sp.perms(Permission.DeleteProject)>
                         <div class="setting">
                             <div class="setting-description">
                                 <h4 class="danger">Delete</h4>
@@ -195,9 +195,9 @@
                             </div>
                         <div class="clearfix"></div>
                     </div>
-                    }
+                    </#if>
 
-                    @if(request.headerData.globalPerm(Permission.HardDeleteProject)) {
+                    <#if request.headerData.globalPerm(Permission.HardDeleteProject)>
                         <div class="setting striped">
                             <div class="setting-description">
                                 <h4 class="danger">Hard Delete</h4>
@@ -210,7 +210,7 @@
                             </div>
                             <div class="clearfix"></div>
                         </div>
-                    }
+                    </#if>
 
                     @form(action = projectRoutes.save(p.project.ownerName, p.project.slug), Symbol("id") -> "save",
                         Symbol("class") -> "pull-right") {

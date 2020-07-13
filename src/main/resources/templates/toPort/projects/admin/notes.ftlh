@@ -1,5 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
 @import java.time.{Instant, OffsetDateTime, ZoneOffset}
 
@@ -15,12 +16,14 @@
 
 
 @projectRoutes = @{controllers.project.routes.Projects}
-@scripts = {
+<#assign scriptsVar>
     <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "javascripts/notes.js" />"></script>
     <script @CSPNonce.attr>resourcePath = '@project.ownerName/@project.slug'</script>
-}
+</#assign>
 
-@layout.base(messages("notes"), scripts) {
+
+<#assign message><@spring.message "notes" /></#assign>
+<@base.base title="${message}" additionalScripts=scriptsVar>
     <div class="row">
         <div class="col-md-12  header-flags">
             <div class="clearfix">
@@ -41,27 +44,27 @@
         <div class="col-md-12">
             <h2><@spring.message "notes" /></h2>
         </div>
-        @if(notes.isEmpty) {
+        <#if notes.isEmpty>
             <div class="col-md-12">
                 <div class="alert-notes alert alert-info" role="alert">
                     <i class="fas fa-info-circle"></i>
                     This project does not have notes
                 </div>
             </div>
-        }
+        </#if>
 
         <div class="col-md-12">
             <table class="table table-condensed setting-no-border table-notes-log">
                 <tbody>
                 @notes.map { case (note, user) =>
                 <tr>
-                    <td class="note-fixed-with">@prettifyDateAndTime(OffsetDateTime.ofInstant(Instant.ofEpochMilli(note.time), ZoneOffset.UTC))</td>
-                    <td class="note-fixed-with"><strong>@user.map(_.name).getOrElse("Unknown")</strong></td>
-                    <td>@note.render</td>
+                    <td class="note-fixed-with">${prettifyDateAndTime(OffsetDateTime.ofInstant(Instant.ofEpochMilli(note.time), ZoneOffset.UTC))}</td>
+                    <td class="note-fixed-with"><strong>${user.map(_.name).getOrElse("Unknown")}</strong></td>
+                    <td>${note.render}</td>
                 </tr>
                 }
                 </tbody>
             </table>
         </div>
     </div>
-}
+</@base.base>

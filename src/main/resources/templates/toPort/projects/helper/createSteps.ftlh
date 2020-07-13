@@ -4,21 +4,19 @@
 @(step: Int)
 
 @stepState(s: Int) = {
-    @if(s == step) {
+    <#if s == step>
         step-active
-    } else {
-        @if(s < step) {
-            step-complete
-        }
-    }
+    <#elseif s < step>
+        step-complete
+    </#if>
 }
 
 @stepIcon(s: Int, defaultIcon: String) = {
-    @if(s < step) {
+    <#if s < step>
         fa-check-square
-    } else {
+    <#else>
         @Html(defaultIcon)
-    }
+    </#if>
 }
 
 <div class="project-create-steps col-md-2">

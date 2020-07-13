@@ -1,5 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
 @*
 Page used for uploading and creating new projects.
@@ -17,12 +18,13 @@ Page used for uploading and creating new projects.
 
 @projectRoutes = @{controllers.project.routes.Projects}
 
-@scripts = {
+<#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/projectCreateValidate.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/pluginUpload.js" />"></script>
-}
+</#assign>
 
-@layout.base(messages("project.create"), scripts) {
+<#assign message><@spring.message "project.create" /></#assign>
+<@base.base title="${message}" additionalScripts=scriptsVar>
 
     <div class="row">
         <div class="col-md-10">
@@ -55,9 +57,10 @@ Page used for uploading and creating new projects.
                             <div class="form-group">
                                 <label for="projectCategory"><@spring.message "project.create.input.category" /></label>
                                 <select id="projectCategory" name="category" class="form-control">
-                                @for(cat <- Category.visible) {
-                                    <option>@cat.title</option>
-                                }
+                                    <#-- todo: Category.visible -->
+                                <#list Category.visible as cat>
+                                    <option>${cat.title<}/option>
+                                </#list>
                                 </select>
                             </div>
 
@@ -70,9 +73,9 @@ Page used for uploading and creating new projects.
                                 <label for="projectCategory"><@spring.message "project.owner" /></label>
                                 <select id="projectCategory" name="owner" class="form-control">
                                     <option value="@user.id.value">@user.name</option>
-                                    @for(orga <- createProjectOrgas) {
-                                        <option value="@orga.id.value">@orga.name</option>
-                                    }
+                                    <#list createProjectOrgas as orga>
+                                        <option value="${orga.id.value}">${orga.name}</option>
+                                    </#list>
                                 </select>
                             </div>
 
@@ -83,4 +86,4 @@ Page used for uploading and creating new projects.
             </div>
         </div>
     </div>
-}
+</@base.base>

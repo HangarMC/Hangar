@@ -16,25 +16,25 @@ Discussion page within Project overview.
 
 @projectRoutes = @{controllers.project.routes.Projects}
 
-@scripts = {
+<#assign scriptsVar>
     <script @CSPNonce.attr>
-            DiscourseEmbed = {
-                discourseUrl: '@config.app.discourseUrl/',
-                topicId: @p.project.topicId
-            };
+        DiscourseEmbed = {
+            discourseUrl: '${config.app.discourseUrl}/',
+            topicId: ${p.project.topicId}
+        };
     </script>
     <script type="text/javascript" src="<@hangar.url "javascripts/projectDiscuss.js" />"></script>
     <script @CSPNonce.attr>$(function() { $('.btn-edit').click(); });</script>
-}
+</#assign>
 
 @projects.view(p, sp, "#discussion", additionalScripts = scripts) {
 
     <div id='discourse-comments'></div>
     <div class="row">
-    @if(request.headerData.currentUser.isDefined) {
+    <#if request.headerData.currentUser.isDefined>
         <div class="col-md-8">
             <div class="reply-box">
-                @if(sp.canPostAsOwnerOrga) {
+                <#if sp.canPostAsOwnerOrga>
                 <div class="pull-right push-down">
                     <i class="minor"><@spring.message "project.discuss.postAs" /></i>
                     <select name="poster" form="form-editor-save">
@@ -43,7 +43,7 @@ Discussion page within Project overview.
                     </select>
                 </div>
                         <div class="clearfix"></div>
-                }
+                </#if>
 
                 <div class="push-down">
                     @utils.editor(
@@ -55,17 +55,17 @@ Discussion page within Project overview.
             </div>
             <div class="reply-controls">
                 <a class="forums" target="_blank" rel="noopener"
-                href="@config.app.discourseUrl/t/@p.project.topicId">
+                href="${config.app.discourseUrl}/t/${p.project.topicId}">
                 <@spring.message "general.viewOnForums" />
                 </a>
             </div>
         </div>
-    } else {
+    <#else>
         <div class="pull-right">
             <a href="@routes.Users.logIn(None, None, Some(request.path))"><@spring.message "general.login" /></a>
             <span class="minor"> <@spring.message "general.toReply" /></span>
         </div>
-    }
+    </#if>
     </div>
 
 }

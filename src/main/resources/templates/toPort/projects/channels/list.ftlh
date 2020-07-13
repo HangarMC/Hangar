@@ -12,11 +12,11 @@
 @channelRoutes = @{controllers.project.routes.Channels}
 @versionRoutes = @{controllers.project.routes.Versions}
 
-@scripts = {
+<#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/channelManage.js" />"></script>
     <script @CSPNonce.attr>
-            PROJECT_OWNER = '@p.project.ownerName';
-            PROJECT_SLUG = '@p.project.slug';
+            PROJECT_OWNER = '${p.project.ownerName}';
+            PROJECT_SLUG = '${p.project.slug}';
             $(function() {
                 initChannelManager(
                         "#channel-new", "", "@config.defaultChannelColor.hex", "New channel",
@@ -25,7 +25,7 @@
                 );
             });
     </script>
-}
+</#assign>
 
 @layout.base(messages("channel.list.title", p.project.ownerName, p.project.slug), scripts) {
 
@@ -50,15 +50,15 @@
                                         <td>
                                             <div class="btn btn-sm yellow" data-toggle="modal" data-target="#channel-settings" id="channel-edit-@channel.id">Edit</div>
                                         </td>
-                                        @if(channels.size > 1) {
+                                        <#if channels.size gt 1>
                                             <td>
                                                 <div class="btn btn-sm yellow"
-                                                    @if(versions > 0) {
+                                                    <#if versions gt 0>
                                                         id="channel-delete-@channel.id" data-toggle="modal"
                                                         data-target="#modal-delete">
-                                                    } else {
-                                                        id="channel-delete-@channel.id" data-channel-delete="safe-delete"
-                                                        data-channel-id="@channel.id">
+                                                    <#else>
+                                                        id="channel-delete-${channel.id}" data-channel-delete="safe-delete"
+                                                        data-channel-id="${channel.id}">
 
                                                         @form(action = channelRoutes.delete(
                                                             p.project.ownerName, p.project.slug, channel.name),
@@ -66,19 +66,19 @@
                                                             Symbol("class") -> "form-channel-delete") {
                                                             @CSRF.formField
                                                         }
-                                                    }
+                                                    </#if>
                                                 Delete
                                                 </div>
                                             </td>
-                                        }
+                                        </#if>
                                         <script @CSPNonce.attr>
                                           $(function() {
-                                              initChannelDelete('#channel-delete-@channel.id', '@channel.name', @versions);
+                                              initChannelDelete('#channel-delete-${channel.id}', '${channel.name}', ${versions});
                                               initChannelManager(
-                                                      "#channel-edit-@channel.id", "@channel.name", "@channel.color.hex",
-                                                      "Edit channel", "@channelRoutes.save(
-                                                        p.project.ownerName, p.project.slug, channel.name)",
-                                                      "post", "Save changes", @channel.isNonReviewed
+                                                      "#channel-edit-${channel.id}", "${channel.name}", "${channel.color.hex}",
+                                                      "Edit channel", "${channelRoutes.save(
+                                                        p.project.ownerName, p.project.slug, channel.name)}",
+                                                      "post", "Save changes", ${channel.isNonReviewed}
                                               );
                                           });
                                       </script>
@@ -91,12 +91,12 @@
                             <i class="fas fa-arrow-left"></i>
                         </a>
                         <a href="#" id="channel-new" class="pull-right btn btn-primary"
-                           @if(channels.size >= config.ore.projects.maxChannels) {
+                           <#if channels.size gte config.ore.projects.maxChannels>
                                disabled data-toggle="tooltip" data-placement="left"
                                title="<@spring.message "channel.edit.maxReached" />"
-                           } else {
+                           <#else>
                                data-toggle="modal" data-target="#channel-settings"
-                           }
+                           </#if>
                         >
                             <i class="fas fa-plus"></i>
                         </a>

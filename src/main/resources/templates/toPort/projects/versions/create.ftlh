@@ -1,5 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
 @import controllers.project.{routes => projectRoutes}
 @import controllers.sugar.Requests.OreRequest
@@ -13,24 +14,23 @@
 @(projectName: String, pluginId: String, projectSlug: String, ownerName: String, projectDescription: Option[String], forumSync: Boolean, pending: Option[PendingVersion],
   channels: Seq[Channel])(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
 
-@mainWidth = @{
-    "col-md-10"
-}
+<#assign mainWidth = "col-md-10">
 
-@scripts = {
+<#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/channelManage.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/pluginUpload.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/projectDetail.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/versionCreateChannelNew.js" />"></script>
     <script @CSPNonce.attr>
-            DEFAULT_COLOR = '@config.defaultChannelColor.hex';
+            DEFAULT_COLOR = '${config.defaultChannelColor.hex}';
     </script>
-}
+</#assign>
 
-@layout.base(messages("version.create.pageTitle"), scripts) {
+<#assign message><@spring.message "version.create.pageTitle" /></#assign>
+<@base.base title="${message}" additionalScripts=scriptsVar>
 
     <div class="row">
-        <div class="@mainWidth">
+        <div class="${mainWidth}">
             <div class="panel panel-default panel-create">
                 <div class="panel-heading">
                     <h3 class="panel-title">
@@ -43,32 +43,32 @@
                         <span>@Html(messages("version.create.info", projectName, pluginId))</span>
                     </div>
 
-                    @if(pending.isDefined) {
+                    <#if pending.isDefined>
                         @* Show plugin meta *@
                         @defining(pending.get) { version: PendingVersion =>
                             <div class="plugin-meta">
                                 <table class="plugin-meta-table">
                                     <tr>
                                         <td><strong><@spring.message "version" /></strong></td>
-                                        <td>@version.versionString</td>
+                                        <td>${version.versionString}</td>
                                     </tr>
                                     <tr>
                                         <td><strong><@spring.message "version.description" /></strong></td>
                                         <td>
                                         @version.description.map { description =>
-                                            @description
+                                            ${description}
                                         }.getOrElse {
-                                            @projectDescription.getOrElse(messages("version.create.noDescription"))
+                                            ${projectDescription.getOrElse(messages("version.create.noDescription"))}
                                         }
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><strong><@spring.message "version.filename" /></strong></td>
-                                        <td>@version.fileName</td>
+                                        <td>${version.fileName}</td>
                                     </tr>
                                     <tr>
                                         <td><strong><@spring.message "version.fileSize" /></strong></td>
-                                        <td>@FileUtils.formatFileSize(version.fileSize)</td>
+                                        <td>${FileUtils.formatFileSize(version.fileSize)}</td>
                                     </tr>
                                     <tr>
                                         <td><strong>Channel</strong></td>
@@ -76,8 +76,8 @@
                                             @* Show channel selector if old project, editor if new project *@
                                             <select id="select-channel" form="form-publish" name="channel-input" class="form-control">
                                             @channels.map { channel =>
-                                                <option value="@channel.name" data-color="@channel.color.hex" @if(channel.name.equals(version.channelName)) {selected}>
-                                                @channel.name
+                                                <option value="@channel.name" data-color="@channel.color.hex" <#if channel.name.equals(version.channelName)>selected</#if>
+                                                ${channel.name}
                                                 </option>
                                             }
                                             </select>
@@ -91,9 +91,9 @@
                                         <td><strong>Platform</strong></td>
                                         <td>
                                             <div class="pull-right" id="upload-platform-tags">
-                                            @for(t <- version.dependenciesAsGhostTags) {
-                                                @projects.tag(ViewTag.fromVersionTag(t))
-                                            }
+                                            <#list version.dependenciesAsGhostTags as t>
+                                                ${projects.tag(ViewTag.fromVersionTag(t))}
+                                            </#list>
                                             </div>
                                         </td>
                                     </tr>
@@ -123,7 +123,7 @@
                                         <td class="rv">
                                             <div class="checkbox-inline">
                                                 <input form="form-publish" name="forum-post" type="checkbox"
-                                                @if(forumSync) { checked } value="true"/>
+                                                <#if forumSync> checked </#if> value="true"/>
                                             </div>
                                             <div class="clearfix"></div>
                                         </td>
@@ -147,7 +147,7 @@
                             </div>
                             <script @CSPNonce.attr>$(function () { $('.btn-edit').click() });</script>
                         }
-                    }
+                    </#if>
 
                     @form(action = projectRoutes.Versions.upload(ownerName, projectSlug),
                         Symbol("enctype") -> "multipart/form-data", Symbol("id") -> "form-upload") {
@@ -160,7 +160,7 @@
                             @projects.helper.alertFile()
                     }
 
-                    @if(pending.isDefined) {
+                    <#if pending.isDefined>
                         @* Ready to go! *@
                         @defining(pending.get) { version: PendingVersion =>
                             @form(action = projectRoutes.Versions.publish(
@@ -176,20 +176,20 @@
                                 </div>
                             }
                         }
-                    }
+                    </#if>
 
                 </div>
             </div>
             <span class="pull-left tos"><i>@Html(messages("version.create.tos", "#"))</i></span>
         </div>
-        @if(pending.isDefined) {
+        <#if pending.isDefined>
             @projects.helper.createSteps(2)
-        } else {
+        <#else>
             @projects.helper.createSteps(1)
-        }
+        </#if>
 
     </div>
 
     @projects.channels.helper.modalManage()
 
-}
+</@base.base>

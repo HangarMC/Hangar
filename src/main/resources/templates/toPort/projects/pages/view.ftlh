@@ -31,18 +31,18 @@ Documentation page within Project overview.
     sp.perms(Permission.EditPage)
 }
 
-@scripts = {
+<#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/pageCollapse.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/memberList.js" />"></script>
     <script @CSPNonce.attr>
-            pluginId = '@p.project.pluginId';
-            namespace = '@p.project.namespace';
+            pluginId = '${p.project.pluginId}';
+            namespace = '${p.project.namespace}';
     </script>
-    @if(editorOpen) {
+    <#if editorOpen>
         <script @CSPNonce.attr>$(function() { $('.btn-edit').click(); });</script>
-    }
-}
+    </#if>
+</#assign>
 
 @projects.view(p, sp, "#docs", additionalScripts = scripts) {
     <div class="row">
@@ -90,13 +90,13 @@ Documentation page within Project overview.
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="pull-left panel-title"><@spring.message "page.plural" /></h3>
-                    @if(canEditPages && pageCount < config.ore.projects.maxPages) {
+                    <#if canEditPages && pageCount < config.ore.projects.maxPages>
                         <button data-toggle="modal" data-target="#new-page" title="New"
                         class="new-page btn yellow btn-xs pull-right">
                             <i class="fas fa-plus"></i>
                         </button>
                         @projects.pages.modalPageCreate(p.project, rootPages.map(_._1))
-                    }
+                    </#if>
                 </div>
                 <ul class="list-group">
                     <li class="list-group-item">
@@ -106,32 +106,32 @@ Documentation page within Project overview.
                     </li>
                     @rootPages.filter(_._1.name != Page.homeName).map { case (pg, children) =>
                     <li class="list-group-item">
-                        @if(children.nonEmpty) {
-                            @if(!page.parentId.contains(pg.id.value)) {
+                        <#if children.nonEmpty>
+                            <#if !page.parentId.contains(pg.id.value)>
                                 <a class="page-expand" data-page-id="@pg.id">
                                     <i class="far fa-plus-square"></i>
                                 </a>
-                            } else {
+                            <#else>
                                 <a class="page-collapse" data-page-id="@pg.id">
                                     <i class="far fa-minus-square"></i>
                                 </a>
-                            }
-                        }
+                            </#if>
+                        </#if>
                     <a href="@routes.Pages.show(p.project.ownerName, p.project.slug, pg.fullSlug(None))">
                     @pg.name
                     </a>
                     </li>
-                        @if(page.parentId.contains(pg.id)) {
+                        <#if page.parentId.contains(pg.id)>
                             <div class="page-children" data-page-id="@pg.id">
                             @children.map { child =>
                                 <li class="list-group-item page-item-child">
                                     <a href="@routes.Pages.show(p.project.ownerName, p.project.slug, child.fullSlug(Some(pg)))">
-                                    @child.name
+                                    ${child.name}
                                     </a>
                                 </li>
                             }
                             </div>
-                        }
+                        </#if>
                     }
                 </ul>
             </div>

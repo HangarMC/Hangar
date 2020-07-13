@@ -18,20 +18,20 @@ Versions page within Project overview.
 @projectRoutes = @{ controllers.project.routes.Projects }
 @channelRoutes = @{ controllers.project.routes.Channels }
 
-@scripts = {
+<#assign scriptsVat>
     <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/memberList.js" />"></script>
     <script @CSPNonce.attr>
-            window.PLUGIN_ID = '@p.project.pluginId';
-            window.PROJECT_OWNER = '@p.project.ownerName';
-            window.PROJECT_SLUG = '@p.project.slug';
+            window.PLUGIN_ID = '${p.project.pluginId}';
+            window.PROJECT_OWNER = '${p.project.ownerName}';
+            window.PROJECT_SLUG = '${p.project.slug}';
     </script>
     <script type="text/javascript" src="<@hangar.url "build/version-list.js" />"></script>
-}
+</#assign>
 
-@stylesheets = {
+<#assign stylesheetsVar>
     <link rel="stylesheet" type="text/css" href="<@hangar.url "build/version-list.css" />" />
-}
+</#assign>
 
 @projects.view(p, sp, "#versions", additionalScripts = scripts, additionalStyling = stylesheets) {
 
@@ -56,13 +56,13 @@ Versions page within Project overview.
                         </li>
                     }
 
-                    @if(sp.perms(Permission.EditChannel)) {
+                    <#if sp.perms(Permission.EditChannel)>
                         <li class="list-group-item text-right">
                             <a class="btn yellow btn-xs" href="@channelRoutes.showList(p.project.ownerName, p.project.slug)">
                                 Edit
                             </a>
                         </li>
-                    }
+                    </#if>
                 </ul>
             </div>
             @users.memberList(

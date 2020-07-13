@@ -38,19 +38,19 @@
 						</tr>
 					</thead>
 					<tbody>
-						@if(visibilityChanges.isEmpty) {
+						<#if visibilityChanges.isEmpty>
 							<tr><td>No entries founds</td></tr>
-						}
+                        </#if>
 						@visibilityChanges.reverse.map { case (entry, createdBy) =>
 						<tr>
-							<td>@entry.visibility</td>
-							<td>@prettifyDateAndTime(entry.createdAt)</td>
-							<td>@entry.obj.render</td>
-							@if(createdBy.isDefined) {
-								<td>@createdBy.get.name</td>
-							} else {
+							<td>${entry.visibility}</td>
+							<td>${prettifyDateAndTime(entry.createdAt)}</td>
+							<td>${entry.obj.render}</td>
+							<#if createdBy.isDefined>
+								<td>${createdBy.get.name}</td>
+							<#else>
 								<td>Unknown</td>
-							}
+                            </#if>
 						</tr>
 						}
 					</tbody>

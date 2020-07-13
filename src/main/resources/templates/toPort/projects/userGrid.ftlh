@@ -9,9 +9,7 @@
 @import util.syntax._
 @(title: String, call: Int => Call, p: ProjectData, sp: ScopedProjectData, users: Seq[User], page: Int, pageSize: Int)(implicit messages: Messages, request: OreRequest[_], flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
 
-@columns = @{
-    3
-}
+<#assign columns = 3>
 
 @projects.view(p, sp, "") {
     <div class="row user-grid">
@@ -20,7 +18,7 @@
             <div class="extra-divider"></div>
         </div>
 
-        @for(div <- 0 until columns) {
+        <#list 1..columns as i>
             <div class="col-md-4">
             @users.iterator.zipWithIndex.filter(_._2 % columns == div).map(_._1).map { user =>
                 <div class="media">
@@ -32,24 +30,24 @@
                         )
                     </div>
                     <div class="media-body center-vertically">
-                        <a class="media-heading mb-0" href="@controllers.routes.Users.showProjects(user.name)">@user.name</a>
+                        <a class="media-heading mb-0" href="@routes.Users.showProjects(user.name)">@user.name</a>
                     </div>
                 </div>
             }
             </div>
-        }
+        </#list>
 
-        @if(p.starCount >= pageSize || page > 1) {
+        <#if p.starCount gte pageSize || page gt 1>
             <div class="col-xs-12">
                 <div class="pull-right next-back">
-                    @if(page > 1) {
+                    <#if page gt 1>
                         <a href="@call(page - 1)" class="btn btn-default"><i class="fa fa-arrow-left"></i></a>
-                    }
-                    @if(p.starCount > pageSize * page) {
+                    </#if>
+                    <#if p.starCount gt pageSize * page>
                         <a href="@call(page + 1)" class="btn btn-default"><i class="fa fa-arrow-right"></i></a>
-                    }
+                    </#if>
                 </div>
             </div>
-        }
+        </#if>
     </div>
 }

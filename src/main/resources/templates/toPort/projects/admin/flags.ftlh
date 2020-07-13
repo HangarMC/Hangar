@@ -1,5 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
 @import java.time.OffsetDateTime
 
@@ -11,7 +12,8 @@
 
 @projectRoutes = @{controllers.project.routes.Projects}
 
-@layout.base(messages("project.flag.plural")) {
+<#assign message><@spring.message "project.flag.plural" /></#assign>
+<@base.base title="${message}">
     <div class="row">
         <div class="col-md-12  header-flags">
             <div class="clearfix">
@@ -21,12 +23,12 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            @if(p.flagCount == 0) {
+            <#if p.flagCount == 0>
                 <div class="alert-review alert alert-info" role="alert">
                     <i class="fas fa-info-circle"></i>
                     No flags found
                 </div>
-            } else {
+            <#else>
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title pull-left"><@spring.message "project.flag.plural" /></h4>
@@ -44,21 +46,21 @@
                         <tbody>
                         @p.flags.map { case (flag, by, resolvedBy) =>
                         <tr>
-                            <td>@by</td>
-                            <td>@flag.reason, @flag.comment</td>
-                            <td>@prettifyDateAndTime(flag.createdAt)</td>
-                            @if(flag.isResolved) {
-                                <td>@resolvedBy.get
-                                    at @prettifyDateAndTime(flag.resolvedAt.getOrElse(OffsetDateTime.MIN)))</td>
-                            } else {
+                            <td>${by}</td>
+                            <td>${flag.reason}, ${flag.comment}</td>
+                            <td>${prettifyDateAndTime(flag.createdAt)}</td>
+                            <#if flag.isResolved>
+                                <td>${resolvedBy.get}
+                                    at ${prettifyDateAndTime(flag.resolvedAt.getOrElse(OffsetDateTime.MIN))}</td>
+                            <#else>
                                 <td>-not resolved-</td>
-                            }
+                            </#if>
                         </tr>
                         }
                         </tbody>
                     </table>
-                    }
+             </#if>
             </div>
         </div>
     </div>
-}
+</@base.base>

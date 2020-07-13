@@ -23,13 +23,13 @@
     </div>
     <div class="setting-content">
         <select class="form-control" id="category" name="category" form="@form">
-            @for(category <- Category.values) {
-                @if(category.isVisible) {
-                    <option @if(selected.isDefined && selected.get.equals(category)) { selected } >
-                        @category.title
+            <#list Category.values as category>
+                <#if category.isVisible>
+                    <option <#if selected.isDefined && selected.get.equals(category)> selected </#if> >
+                        ${category.title}
                     </option>
-                }
-            }
+                </#if>
+            </#list>
         </select>
     </div>
     <div class="clearfix"></div>
@@ -42,7 +42,7 @@
             These are special words that will return your project when people add them to their searches. Max 5.
         </p>
     </div>
-    <input @if(keywords.nonEmpty) { value="@keywords.mkString(" ")" } form="@form" type="text" class="form-control" id="keywords"
+    <input <#if keywords.nonEmpty> value="${keywords.mkString(" ")}" </#if> form="@form" type="text" class="form-control" id="keywords"
     name="keywords" placeholder="sponge server plugins mods" />
     <div class="clearfix"></div>
 </div>
@@ -55,7 +55,7 @@
             to gather information about your project.
         </p>
     </div>
-    <input @if(homepage.isDefined) { value="@homepage.get" } form="@form" type="url" class="form-control" id="homepage"
+    <input <#if homepage.isDefined> value="${homepage.get}" </#if> form="@form" type="url" class="form-control" id="homepage"
     name="homepage" placeholder="https://papermc.io" />
     <div class="clearfix"></div>
 </div>
@@ -68,7 +68,7 @@
             track bugs.
         </p>
     </div>
-    <input @if(issues.isDefined) { value="@issues.get" } form="@form" type="url" class="form-control" id="issues"
+    <input <#if issues.isDefined> value="${issues.get}" </#if> form="@form" type="url" class="form-control" id="issues"
            name="issues" placeholder="https://github.com/MiniDigger/Hangar/issues" />
     <div class="clearfix"></div>
 </div>
@@ -78,7 +78,7 @@
         <h4>Source code <i>(optional)</i></h4>
         <p>Support the community of developers by making your project open source!</p>
     </div>
-    <input @if(source.isDefined) { value="@source.get" } form="@form" type="url" class="form-control" id="source"
+    <input <#if source.isDefined> value="@source.get" </#if> form="@form" type="url" class="form-control" id="source"
            name="source" placeholder="https://github.com/MiniDigger/Hangar" />
 </div>
 
@@ -90,7 +90,7 @@
             somewhere else.
         </p>
     </div>
-    <input @if(support.isDefined) { value="@support.get" } form="@form" type="url" class="form-control" id="support"
+    <input <#if support.isDefined> value="${support.get}" </#if> form="@form" type="url" class="form-control" id="support"
     name="support" placeholder="https://discord.gg/papermc" />
     <div class="clearfix"></div>
 </div>
@@ -104,7 +104,7 @@
         <div class="input-group-btn">
             <button type="button" class="btn btn-default btn-license dropdown-toggle" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
-                <span class="license">@licenseName.getOrElse(messages("licenses.mit"))</span>
+                <span class="license">${licenseName.getOrElse(messages("licenses.mit"))}</span>
                 <span class="caret"></span>
             </button>
             <input type="text" class="form-control" style="display: none;" name="license-name" form="@form"
@@ -131,7 +131,7 @@
     </div>
     <div class="setting-content">
         <label>
-            <input @if(forumSync) { checked } value="true" form="@form" type="checkbox" id="forum-sync" name="forum-sync">
+            <input <#if forumSync> checked </#if> value="true" form="${form}" type="checkbox" id="forum-sync" name="forum-sync">
             Make forum posts
         </label>
     </div>
