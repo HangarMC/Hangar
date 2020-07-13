@@ -1,6 +1,7 @@
-package me.minidigger.hangar.controller.dummy;
+package me.minidigger.hangar.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,9 +47,9 @@ public class UsersController extends HangarController {
         return null; // TODO implement signUp request controller
     }
 
-    @RequestMapping("/staff")
-    public Object showStaff(@RequestParam Object sort, @RequestParam Object page) {
-        return null; // TODO implement showStaff request controller
+    @GetMapping("/staff")
+    public Object showStaff(@RequestParam(required = false) Object sort, @RequestParam(required = false) Object page) {
+        return fillModel( new ModelAndView("users/staff")); // TODO implement showStaff request controller
     }
 
     @RequestMapping("/verify")

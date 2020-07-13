@@ -60,7 +60,7 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // TODO we kinda want this to be /assets, via the hangar.url macro maybe?
-        registry.addResourceHandler("/**")
+        registry.addResourceHandler("/assets/**")
                 .addResourceLocations("classpath:/public/")
                 .setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
                 .resourceChain(true)

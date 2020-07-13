@@ -1,4 +1,4 @@
-package me.minidigger.hangar.controller.dummy;
+package me.minidigger.hangar.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

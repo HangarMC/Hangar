@@ -1,9 +1,10 @@
-package me.minidigger.hangar.controller.dummy;
+package me.minidigger.hangar.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import me.minidigger.hangar.controller.HangarController;
@@ -12,8 +13,8 @@ import me.minidigger.hangar.controller.HangarController;
 public class ApplicationController extends HangarController {
 
     @RequestMapping("/")
-    public Object showHome() {
-        return null; // TODO implement showHome request controller
+    public ModelAndView showHome() {
+        return fillModel( new ModelAndView("home"));
     }
 
     @RequestMapping("/admin/activities/{user}")
@@ -72,8 +73,9 @@ public class ApplicationController extends HangarController {
     }
 
     @RequestMapping("/favicon.ico")
+    @ResponseBody
     public Object faviconRedirect() {
-        return null; // TODO implement faviconRedirect request controller
+        return "no u"; // TODO implement faviconRedirect request controller
     }
 
     @RequestMapping("/global-sitemap.xml")
@@ -82,13 +84,16 @@ public class ApplicationController extends HangarController {
     }
 
     @RequestMapping("/javascriptRoutes")
+    @ResponseBody
     public Object javaScriptRoutes() {
-        return null; // TODO implement javaScriptRoutes request controller
+        return "no u"; // TODO implement javaScriptRoutes request controller
     }
 
     @RequestMapping("/linkout")
-    public Object linkOut(@RequestParam Object remoteUrl) {
-        return null; // TODO implement linkOut request controller
+    public ModelAndView linkOut(@RequestParam(defaultValue = "") String remoteUrl) {
+        ModelAndView view = new ModelAndView("linkout");
+        view.addObject("remoteUrl", remoteUrl);
+        return fillModel(view);
     }
 
     @RequestMapping("/pantopticon/actor-count")
@@ -115,6 +120,5 @@ public class ApplicationController extends HangarController {
     public Object removeTrail(@PathVariable Object path) {
         return null; // TODO implement removeTrail request controller
     }
-
 }
 
