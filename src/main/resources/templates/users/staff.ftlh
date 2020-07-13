@@ -46,7 +46,7 @@
 				<tr>
 					<td>@userAvatar(user.name, User.avatarUrl(name), clazz = "user-avatar-xs")</td>
 					<td>
-						<a href="@routes.Application.showActivities(name)">${user.name}</a>
+						<a href="${routes.getRouteUrl("showActivities", name)}">${user.name}</a>
 					</td>
 					<td>
 						<span class="user-role channel" style="background-color: ${user.role.color.hex}">

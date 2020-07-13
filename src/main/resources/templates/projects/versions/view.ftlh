@@ -32,7 +32,7 @@
 
                 <!-- User info -->
             <p class="user date pull-left">
-                <a href="@routes.Users.showProjects(v.p.project.ownerName)">
+                <a href="${routes.getRouteUrl("users.showProjects", v.p.project.ownerName)}">
                     <strong>${v.p.project.ownerName}</strong>
                 </a>
                 released this version on ${prettifyDate(v.v.createdAt)}
