@@ -18,7 +18,7 @@ Versions page within Project overview.
 @projectRoutes = @{ controllers.project.routes.Projects }
 @channelRoutes = @{ controllers.project.routes.Channels }
 
-<#assign scriptsVat>
+<#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/memberList.js" />"></script>
     <script @CSPNonce.attr>
