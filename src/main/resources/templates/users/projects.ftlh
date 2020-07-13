@@ -71,23 +71,23 @@
                     </div>
                     <table class="table panel-body">
                         <tbody>
-                        @if(u.orgas.isEmpty) {
+                        <#if u.orgas.isEmpty>
                             <tr><td><i class="minor"><i class="fas fa-star"></i> <@spring.message "user.noOrganizations", u.user.name /></i></td></tr>
-                        } else {
+                        <#else>
                             @u.orgas.map { case (organization, user, role, _) =>
                             <tr>
                                 <td>
                                     @userAvatar(Some(organization.name), user.avatarUrl, clazz = "user-avatar-xxs")
                                 <a href="@userRoutes.showProjects(organization.name)">
-                                @organization.name
+                                ${organization.name}
                                 </a>
                                 <div class="pull-right">
-                                @role.role.title
+                                ${role.role.title}
                             </div>
                             </td>
                             </tr>
                             }
-                        }
+                        </#if>
                         </tbody>
                     </table>
 

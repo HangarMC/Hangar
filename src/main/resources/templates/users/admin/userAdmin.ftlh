@@ -31,7 +31,7 @@
 
 @roleTable[T, M <: UserRoleModel[M]](keyName: String, tableType: String, withOwner: Boolean, roles: Set[(T, Model[M], String)], roleTypes: IndexedSeq[Role])(showKey: (T, M) => Html) = {
     <table class="table role-table">
-        <tr><th>@keyName</th>@if(withOwner) {<th>Owner</th>}<th>Role</th><th>Accepted</th></tr>
+        <tr><th>${keyName}</th><#if withOwner><th>Owner</th></#if><th>Role</th><th>Accepted</th></tr>
         @roles.map { case (t, role, owner) =>
         <tr data-role-type="@tableType" data-role-id="@role.id">
             <td>@showKey(t, role)</td>

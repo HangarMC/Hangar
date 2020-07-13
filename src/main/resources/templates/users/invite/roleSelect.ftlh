@@ -10,8 +10,8 @@
             .toList.sortBy(_.permissions: Long).reverse
 }
 
-<select id="@id" form="@form" class="@classes" @if(hidden) { style="display: none;" }>
-    @for(roleType <- roles) {
-        <option value="@roleType.value">@roleType.title</option>
-    }
+<select id="${id}" form="${form}" class="${classes}" <#if hidden> style="display: none;" </#if>>
+    <#list roles as roleType>
+        <option value="${roleType.value}">${roleType.title}</option>
+    </#list>
 </select>

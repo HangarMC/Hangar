@@ -91,11 +91,11 @@
                                 <#elseif action.project.id.isEmpty>
                                     <td>
                                         Resource deleted
-                                        @if(action.actionContext == LoggedActionContext.Project || action.actionContext == LoggedActionContext.ProjectPage) {
+                                        <#if action.actionContext == LoggedActionContext.Project || action.actionContext == LoggedActionContext.ProjectPage>
                                             <small class="filter-project">(<a href="@appRoutes.showLog(Some(page), userFilter, action.project.pluginId, versionFilter, pageFilter, actionFilter, subjectFilter)">@action.project.pluginId</a>)</small>
-                                        } else {
+                                        <#else>
                                             <small class="filter-version">(<a href="@appRoutes.showLog(Some(page), userFilter, projectFilter, action.version.versionString, pageFilter, actionFilter, subjectFilter)">@action.version.versionString</a>)</small>
-                                        }
+                                        </#if>
                                     </td>
                                 <#elseif action.actionContext == LoggedActionContext.Project>
                                     <td>

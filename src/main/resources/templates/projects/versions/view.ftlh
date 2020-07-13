@@ -100,7 +100,7 @@
                             </a>
                         <#else>
                             <#if sp.perms(Permission.DeleteVersion)>
-                                @if(v.p.publicVersions == 1) {
+                                <#if v.p.publicVersions == 1>
                                     <a class="btn btn-danger" disabled data-toggle="tooltip" data-placement="top"
                                     title="<@spring.message "version.delete.cannotLast" />">
                                         <i class="fas fa-trash"></i> <@spring.message "general.delete" />
@@ -109,7 +109,7 @@
                                     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal-delete">
                                         <i class="fas fa-trash"></i> <@spring.message "general.delete" />
                                     </button>
-                                }
+                                </#if>
                             </#if>
                         </#if>
 
@@ -205,19 +205,19 @@
 
                         @v.filteredDependencies.map { case (depend, project)=>
                         <li class="list-group-item">
-                            @if(project.isDefined) {
+                            <#if project.isDefined>
                                 <a href="@projectRoutes.show(
                                     project.get.ownerName, project.get.slug)">
-                                    <strong>@project.get.name</strong>
+                                    <strong>${project.get.name}</strong>
                                 </a>
-                            } else {
+                            <#else>
                                 <div class="minor">
-                                    @depend.pluginId
+                                    ${depend.pluginId}
                                     <i class="fas fa-question-circle"
                                     title="<@spring.message "version.dependency.notOnOre" />"
                                     data-toggle="tooltip" data-placement="right"></i>
                                 </div>
-                            }
+                            </#if>
                         <p class="version-string">@depend.version</p>
                         </li>
                         }

@@ -75,8 +75,8 @@
                 <!-- Notifications content -->
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="list-group-item no-notifications" @if(notifications.nonEmpty) {
-                        style="display: none; }">
+                    <div class="list-group-item no-notifications" <#if notifications.nonEmpty>
+                        style="display: none; </#if>">
                         <h3 class="minor">
                             <i class="far fa-thumbs-up"></i> <@spring.message notificationFilter.emptyMessage />
                         </h3>

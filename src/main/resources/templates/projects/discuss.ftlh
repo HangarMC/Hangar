@@ -38,8 +38,8 @@ Discussion page within Project overview.
                 <div class="pull-right push-down">
                     <i class="minor"><@spring.message "project.discuss.postAs" /></i>
                     <select name="poster" form="form-editor-save">
-                        <option selected>@request.headerData.currentUser.get.name</option>
-                        <option>@p.projectOwner.name</option>
+                        <option selected>${request.headerData.currentUser.get.name}</option>
+                        <option>${p.projectOwner.name}</option>
                     </select>
                 </div>
                         <div class="clearfix"></div>

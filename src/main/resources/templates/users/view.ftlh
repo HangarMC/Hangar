@@ -17,10 +17,10 @@ scopedData.permissions.has(Permission.EditOrganizationSettings)
     <script type="text/javascript" src="<@hangar.url "javascripts/userPage.js" />"></script>
     <script <#-- @CSPNonce.attr -->>
             window.USERNAME ='${u.user.name}';
-            @for(category <- Category.values) {
+            <#list Category.values as category> <#-- todo -->
                 CATEGORY_TITLE['${category.apiName}'] = '${category.title}';
                 CATEGORY_ICON['${category.apiName}'] = '${category.icon}';
-            }
+            </#list>
             NO_ACTION_MESSAGE.starred = '<@spring.messageArgs "user.noStars" u.user.name />';
             NO_ACTION_MESSAGE.watching = '<@spring.messageArgs "user.noWatching" u.user.name />';
     </script>
@@ -57,7 +57,7 @@ scopedData.permissions.has(Permission.EditOrganizationSettings)
 
                 <span class="user-title">
                     <h1 class="username">
-                        @u.user.name
+                        ${u.user.name}
 
                         <#if u.isCurrent && !u.isOrga>
                             <a class="user-settings" href="@config.security.api.url/accounts/settings">
@@ -120,7 +120,7 @@ scopedData.permissions.has(Permission.EditOrganizationSettings)
             </ul>
 
             <div class="user-info">
-                <i class="minor">@u.projectCount&nbsp;@if(u.projectCount == 1){project}else{projects}</i><br/>
+                <i class="minor">@u.projectCount&nbsp;<#if u.projectCount == 1>project<#else>projects</#if></i><br/>
                 <i class="minor">
                 @messages(
                     "user.memberSince",
