@@ -4,6 +4,7 @@ target/
 !**/src/main/**
 !**/src/test/**
 node_modules
+node.exe
 dist
 
 ### STS ###
