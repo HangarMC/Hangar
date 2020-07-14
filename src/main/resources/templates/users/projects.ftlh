@@ -1,7 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
 
-@import controllers.project.{routes => projectRoutes}
 @import controllers.routes.{Users => userRoutes}
 @import controllers.sugar.Requests.OreRequest
 @import models.viewhelper.{OrganizationData, ScopedOrganizationData, UserData}
@@ -46,15 +45,15 @@
                             @o.get._1.projectRoles.map { case (role, project) =>
                             <tr>
                                 <td>
-                                    <a href="@projectRoutes.Projects.show(project.ownerName, project.slug)">@project.ownerName/@project.slug</a>
-                                    <span class="minor">@role.role.title</span>
+                                    <a href="${routes.getRouteUrl("projects.show", project.ownerName, project.slug)}">${project.ownerName}/${project.slug}</a>
+                                    <span class="minor">${role.role.title}</span>
                                 </td>
                                 <td>
                                     <#if role.role != Role.ProjectOwner>
                                         <#if role.isAccepted>
-                                            <button class="btn btn-sm btn-danger pull-right btn-invite" data-invite-id="@role.id" data-invite-behalf="@u.user.name" data-invite-accepted="decline">Leave</button>
+                                            <button class="btn btn-sm btn-danger pull-right btn-invite" data-invite-id="${role.id}" data-invite-behalf="${u.user.name}" data-invite-accepted="decline">Leave</button>
                                         <#else>
-                                            <button class="btn btn-sm btn-info pull-right btn-invite" data-invite-id="@role.id" data-invite-behalf="@u.user.name" data-invite-accepted="accept">Join</button>
+                                            <button class="btn btn-sm btn-info pull-right btn-invite" data-invite-id="${role.id}" data-invite-behalf="${u.user.name}" data-invite-accepted="accept">Join</button>
                                         </#if>
                                     </#if>
                                 </td>
@@ -78,7 +77,7 @@
                             <tr>
                                 <td>
                                     @userAvatar(Some(organization.name), user.avatarUrl, clazz = "user-avatar-xxs")
-                                <a href="@userRoutes.showProjects(organization.name)">
+                                <a href="${routes.getRouteUrl("users.showProjects", organization.name)}">
                                 ${organization.name}
                                 </a>
                                 <div class="pull-right">

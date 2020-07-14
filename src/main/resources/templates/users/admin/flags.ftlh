@@ -13,8 +13,6 @@
 @* project perms for all visibilities *@
 @(flags: Seq[ShownFlag])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 
-@projectRoutes = @{controllers.project.routes.Projects}
-
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/flags.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/hideProject.js" />"></script>
@@ -42,16 +40,16 @@
                     </div>
                     <div class="col-xs-12 col-md-11">
                         <span class="description">
-                            <strong>@flag.reporter</strong>
+                            <strong>${flag.reporter}</strong>
                             <span class="minor"> reported </span>
-                            <a href="@projectRoutes.show(flag.projectOwnerName, flag.projectSlug)">
-                                @flag.projectNamespace
+                            <a href="${routes.getRouteUrl("projects.show", flag.projectOwnerName, flag.projectSlug)}">
+                                ${flag.projectNamespace}
                             </a>
                             <span class="minor"> for </span>
-                            <strong>@flag.flagReason.title</strong>
+                            <strong>${flag.flagReason.title}</strong>
                             <span class="minor"> at </span>
-                            <strong>@prettifyDateAndTime(flag.flagCreationDate)</strong>
-                            <br><i class="minor">@flag.flagComment</i>
+                            <strong>${flag.flagCreationDate?string.long}</strong>
+                            <br><i class="minor">${flag.flagComment}</i>
                         </span>
                     </div>
                     <div class="col-xs-12">
@@ -62,7 +60,7 @@
                             <a target="_blank" rel="noopener" href="https://papermc.io/forums/users/@flag.projectOwnerName" class="btn btn-default">
                                 <i class="fas fa-reply"></i> <@spring.message "user.flags.messageOwner" />
                             </a>
-                            @projects.helper.btnHide(flag.projectNamespace, flag.projectVisibility)
+                            ${projects.helper.btnHide(flag.projectNamespace, flag.projectVisibility)}
                             <button type="submit" class="btn btn-primary btn-resolve">
                                 <i class="fas fa-check"></i> <strong><@spring.message "user.flags.markResolved" /></strong>
                             </button>

@@ -10,14 +10,12 @@
 @import util.StringFormatterUtils._
 @(p: ProjectData)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 
-@projectRoutes = @{controllers.project.routes.Projects}
-
 <#assign message><@spring.message "project.flag.plural" /></#assign>
 <@base.base title="${message}">
     <div class="row">
         <div class="col-md-12  header-flags">
             <div class="clearfix">
-                <h1 class="pull-left"><@spring.message "project.flag.plural" /> for <a href="@projectRoutes.show(p.project.ownerName, p.project.slug)">@p.project.ownerName/@p.project.slug</a></h1>
+                <h1 class="pull-left"><@spring.message "project.flag.plural" /> for <a href="${routes.getRouteUrl("projects.show", p.project.ownerName, p.project.slug)}">${p.project.ownerName}/${p.project.slug}</a></h1>
             </div>
         </div>
     </div>
@@ -51,7 +49,7 @@
                             <td>${prettifyDateAndTime(flag.createdAt)}</td>
                             <#if flag.isResolved>
                                 <td>${resolvedBy.get}
-                                    at ${prettifyDateAndTime(flag.resolvedAt.getOrElse(OffsetDateTime.MIN))}</td>
+                                    at ${(flag.resolvedAt!OffsetDateTime.MIN)?string.long}</td>
                             <#else>
                                 <td>-not resolved-</td>
                             </#if>

@@ -57,8 +57,7 @@
                                                         id="channel-delete-${channel.id}" data-channel-delete="safe-delete"
                                                         data-channel-id="${channel.id}">
 
-                                                        <#-- routes.getRouteUrl("channels.delete", ...) -->
-                                                        @form(action = channelRoutes.delete(
+                                                        @form(action = routes.getRouteUrl("channels.delete",
                                                             p.project.ownerName, p.project.slug, channel.name),
                                                             Symbol("id") -> s"form-delete-${channel.id}",
                                                             Symbol("class") -> "form-channel-delete") {

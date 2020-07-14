@@ -16,8 +16,6 @@ Page used for uploading and creating new projects.
 @import views.html.helper.{CSRF, form}
 @(createProjectOrgas: Seq[Model[Organization]], user: Model[User])(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
 
-@projectRoutes = @{controllers.project.routes.Projects}
-
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/projectCreateValidate.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/pluginUpload.js" />"></script>
@@ -42,7 +40,7 @@ Page used for uploading and creating new projects.
                     </div>
 
                     <div>
-                        @form(action = projectRoutes.createProject()) {
+                        @form(action = routes.getRouteUrl("projects.createProject")) {
                             @CSRF.formField
                             <div class="form-group">
                                 <label for="projectName"><@spring.message "project.create.input.name" /></label>

@@ -13,8 +13,6 @@
   missingFileProjects: Seq[(Version, Project)],
   erroredJobs: Seq[Job])(implicit request: OreRequest[_], messages: Messages, config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 
-@projectRoutes = @{controllers.project.routes.Projects}
-
 <#assign message><@spring.message "admin.health.title" /></#assign>
 <@base.base title="${message}">
 
@@ -32,7 +30,7 @@
                 <div class="panel-body list-group list-group-health">
                 @noTopicProjects.map { project =>
                     <div class="list-group-item">
-                        <a class="pull-left" href="@projectRoutes.show(project.namespace.ownerName, project.namespace.slug)">
+                        <a class="pull-left" href="${routes.getRouteUrl("projects.show", project.namespace.ownerName, project.namespace.slug)}">
                             <strong>${project.namespace}</strong>
                         </a>
                         <div class="clearfix"></div>
@@ -66,7 +64,7 @@
                 <div class="panel-body list-group list-group-health">
                 @staleProjects.map { project =>
                     <div class="list-group-item">
-                        <a href="@projectRoutes.show(project.namespace.ownerName, project.namespace.slug)">
+                        <a href="${routes.getRouteUrl("projects.show", project.namespace.ownerName, project.namespace.slug)}">
                             <strong>${project.namespace}</strong>
                         </a>
                     </div>
@@ -82,7 +80,7 @@
                 <div class="panel-body list-group list-group-health">
                 @notPublicProjects.map { project =>
                     <div class="list-group-item">
-                        <a href="@projectRoutes.show(project.namespace.ownerName, project.namespace.slug)">
+                        <a href="${routes.getRouteUrl("projects.show", project.namespace.ownerName, project.namespace.slug)}">
                             <strong>${project.namespace}</strong> <small><@spring.message "visibility.name." + project.visibility.nameKey /></small>
                         </a>
                     </div>

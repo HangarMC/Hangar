@@ -14,8 +14,6 @@ Discussion page within Project overview.
 @(p: ProjectData, sp: ScopedProjectData)(implicit messages: Messages, request: OreRequest[_],
         flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
 
-@projectRoutes = @{controllers.project.routes.Projects}
-
 <#assign scriptsVar>
     <script @CSPNonce.attr>
         DiscourseEmbed = {
@@ -47,7 +45,7 @@ Discussion page within Project overview.
 
                 <div class="push-down">
                     @utils.editor(
-                    saveCall = projectRoutes.postDiscussionReply(p.project.ownerName, p.project.slug),
+                    saveCall = routes.getRouteUrl("projects.postDiscussionReply", p.project.ownerName, p.project.slug),
                     cancellable = false,
                     enabled = true
                     )

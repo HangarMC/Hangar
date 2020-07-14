@@ -2,8 +2,6 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
-@import controllers.project.{routes => projectRoutes}
-@import controllers.routes.{Application => appRoutes, Users => userRoutes}
 @import controllers.sugar.Requests.OreRequest
 @import ore.OreConfig
 @import ore.db.{DbRef, Model}
@@ -33,12 +31,12 @@
         <div class="col-md-3">
             <h4>Active Filters:</h4>
             <table class="table table-super-condensed">
-                <tr><td class="filter-user">User</td> <td>@userFilter.getOrElse("-")</td></tr>
-                <tr><td class="filter-project">Project</td> <td>@projectFilter.getOrElse("-")</td></tr>
-                <tr><td class="filter-version">Version</td> <td>@versionFilter.getOrElse("-")</td></tr>
-                <tr><td class="filter-page">Page</td><td>@pageFilter.getOrElse("-") </td></tr>
-                <tr><td class="filter-action">Action</td><td>@LoggedActionType.withValueOpt(actionFilter.getOrElse("")).getOrElse("-")</td></tr>
-                <tr><td class="filter-subject">Subject</td><td>@subjectFilter.getOrElse("-")</td></tr>
+                <tr><td class="filter-user">User</td> <td>${userFilter!"-"}</td></tr>
+                <tr><td class="filter-project">Project</td> <td>${projectFilter!"-"}</td></tr>
+                <tr><td class="filter-version">Version</td> <td>${versionFilter!"-"}</td></tr>
+                <tr><td class="filter-page">Page</td><td>${pageFilter!"-"} </td></tr>
+                <tr><td class="filter-action">Action</td><td>${LoggedActionType.withValueOpt(actionFilter!"")!"-"}</td></tr>
+                <tr><td class="filter-subject">Subject</td><td>${subjectFilter!"-"}</td></tr>
             </table>
         </div>
     </div>
@@ -46,7 +44,7 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title pull-left"><@spring.message "admin.log.title" /> &middot; Page #@page</h4>
+                    <h4 class="panel-title pull-left"><@spring.message "admin.log.title" /> &middot; Page #${page}</h4>
                     <div class="clearfix"></div>
                 </div>
                 <div class="table-responsive">
@@ -69,65 +67,65 @@
                             </#if>
                             @actions.zipWithIndex.map { case (action, index) =>
                             <tr>
-                                <td><b>@{offset + index + 1}</b></td>
+                                <td><b>${offset + index + 1}</b></td>
                                 <td>
-                                    <a href="@userRoutes.showProjects(action.userName)">@action.userName</a>
-                                    <small class="filter-user">(<a href="@appRoutes.showLog(Some(page), Some(action.userName), projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter)">@action.userName</a>)</small>
+                                    <a href="${routes.getRouteUrl("users.showProjects", action.userName)}">${action.userName}</a>
+                                    <small class="filter-user">(<a href="${routes.getRouteUrl("showLog", page, action.userName, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter)}">${action.userName}</a>)</small>
                                 </td>
 
                                 <#if canViewIP>
-                                    <td>@action.address.value</td>
+                                    <td>${action.address.value}</td>
                                 </#if>
-                                <td>@prettifyDateAndTime(action.createdAt)</td>
+                                <td>${action.createdAt?string.long}</td>
                                 <td>
-                                    @action.action
-                                <small class="filter-action">(<a href="@appRoutes.showLog(Some(page), userFilter, projectFilter, versionFilter, pageFilter, Some(action.action.value), subjectFilter)">@action.action.value</a>)</small>
+                                    ${action.action}
+                                <small class="filter-action">(<a href="${routes.getRouteUrl("showLog", page, userFilter, projectFilter, versionFilter, pageFilter, action.action.value, subjectFilter)}">${action.action.value}</a>)</small>
                                 </td>
                                 <#if action.actionContext == LoggedActionContext.User || action.actionContext == LoggedActionContext.Organization>
                                     <td>
-                                        <a href="@userRoutes.showProjects(action.subject.username.getOrElse("Unknown"))">@action.subject.username</a>
-                                        <small class="filter-subject">(<a href="@appRoutes.showLog(Some(page), userFilter, projectFilter, versionFilter, pageFilter, actionFilter, action.subject.username)">@action.subject.username</a>)</small>
+                                        <a href="${routes.getRouteUrl("users.showProjects", action.subject.username!"Unknown")}">${action.subject.username}</a>
+                                        <small class="filter-subject">(<a href="${routes.getRouteUrl("showLog", page, userFilter, projectFilter, versionFilter, pageFilter, actionFilter, action.subject.username)}">${action.subject.username}</a>)</small>
                                     </td>
                                 <#elseif action.project.id.isEmpty>
                                     <td>
                                         Resource deleted
                                         <#if action.actionContext == LoggedActionContext.Project || action.actionContext == LoggedActionContext.ProjectPage>
-                                            <small class="filter-project">(<a href="@appRoutes.showLog(Some(page), userFilter, action.project.pluginId, versionFilter, pageFilter, actionFilter, subjectFilter)">@action.project.pluginId</a>)</small>
+                                            <small class="filter-project">(<a href="${routes.getRouteUrl("showLog", page, userFilter, action.project.pluginId, versionFilter, pageFilter, actionFilter, subjectFilter)}">${action.project.pluginId}</a>)</small>
                                         <#else>
-                                            <small class="filter-version">(<a href="@appRoutes.showLog(Some(page), userFilter, projectFilter, action.version.versionString, pageFilter, actionFilter, subjectFilter)">@action.version.versionString</a>)</small>
+                                            <small class="filter-version">(<a href="${routes.getRouteUrl("showLog", page, userFilter, projectFilter, action.version.versionString, pageFilter, actionFilter, subjectFilter)}">${action.version.versionString}</a>)</small>
                                         </#if>
                                     </td>
                                 <#elseif action.actionContext == LoggedActionContext.Project>
                                     <td>
-                                        <a href="@projectRoutes.Projects.show(action.project.ownerName.getOrElse("Unknown"), action.project.slug.getOrElse("Unknown"))">@action.project.ownerName/@action.project.slug.getOrElse("Unknown")</a>
-                                        <small class="filter-project">(<a href="@appRoutes.showLog(Some(page), userFilter, action.project.pluginId, versionFilter, pageFilter, actionFilter, subjectFilter)">@action.project.pluginId</a>)</small>
+                                        <a href="${routes.getRouteUrl("projects.show", action.project.ownerName!"Unknown", action.project.slug!"Unknown")}">${action.project.ownerName}/${action.project.slug!"Unknown"}</a>
+                                        <small class="filter-project">(<a href="${routes.getRouteUrl("showLog", page, userFilter, action.project.pluginId, versionFilter, pageFilter, actionFilter, subjectFilter)}">${action.project.pluginId}</a>)</small>
                                     </td>
                                 <#elseif action.actionContext == LoggedActionContext.ProjectPage>
                                     <td>
-                                        <a href="@projectRoutes.Pages.show(action.project.ownerName.getOrElse("Unknown"), action.project.slug.getOrElse("Unknown"), action.page.slug.getOrElse("Unknown"))">@action.project.ownerName.getOrElse("Unknown")/@action.project.slug.getOrElse("Unknown")/@action.page.slug.getOrElse("Unknown")</a>
-                                        <small class="filter-project">(<a href="@appRoutes.showLog(Some(page), userFilter, action.project.pluginId, versionFilter, pageFilter, actionFilter, subjectFilter)">@action.project.pluginId</a>)</small>
-                                        <small class="filter-page">(<a href="@appRoutes.showLog(Some(page), userFilter, projectFilter, versionFilter, action.page.id, actionFilter, subjectFilter)">@action.page.id</a>)</small>
+                                        <a href="${routes.getRouteUrl("pages.show", action.project.ownerName!"Unknown", action.project.slug!"Unknown", action.page.slug!"Unknown")}">${action.project.ownerName!"Unknown"}/${action.project.slug!"Unknown"}/${action.page.slug!"Unknown"}</a>
+                                        <small class="filter-project">(<a href="${routes.getRouteUrl("showLog", page, userFilter, action.project.pluginId, versionFilter, pageFilter, actionFilter, subjectFilter)}">${action.project.pluginId}</a>)</small>
+                                        <small class="filter-page">(<a href="${routes.getRouteUrl("showLog", page, userFilter, projectFilter, versionFilter, action.page.id, actionFilter, subjectFilter)}">${action.page.id}</a>)</small>
                                     </td>
                                 <#elseif action.actionContext == LoggedActionContext.Version>
                                     <td>
-                                        <a href="@projectRoutes.Versions.show(action.project.ownerName.getOrElse("Unknown"), action.project.slug.getOrElse("Unknown"), action.version.versionString.getOrElse("Unknown"))">@action.project.ownerName.getOrElse("Unknown")/@action.project.slug.getOrElse("Unknown")/@action.version.versionString.getOrElse("Unknown")</a>
-                                        <small class="filter-project">(<a href="@appRoutes.showLog(Some(page), userFilter, action.project.pluginId, versionFilter, pageFilter, actionFilter, subjectFilter)">@action.project.pluginId</a>)</small>
-                                        <small class="filter-version">(<a href="@appRoutes.showLog(Some(page), userFilter, projectFilter, action.version.versionString, pageFilter, actionFilter, subjectFilter)">@action.version.versionString</a>)</small>
+                                        <a href="${routes.getRouteUrl("versions.show", action.project.ownerName!"Unknown", action.project.slug!"Unknown", action.version.versionString!"Unknown")}">${action.project.ownerName!"Unknown"}/${action.project.slug!"Unknown"}/${action.version.versionString!"Unknown"}</a>
+                                        <small class="filter-project">(<a href="${routes.getRouteUrl("showLog", page, userFilter, action.project.pluginId, versionFilter, pageFilter, actionFilter, subjectFilter)}">${action.project.pluginId}</a>)</small>
+                                        <small class="filter-version">(<a href="${routes.getRouteUrl("showLog", page, userFilter, projectFilter, action.version.versionString, pageFilter, actionFilter, subjectFilter)}">${action.version.versionString}</a>)</small>
                                     </td>
                                 </#if>
                                 @* Show diff only when page edit *@
                                 <#if action.action == LoggedActionType.ProjectPageEdited || action.action == LoggedActionType.VersionDescriptionEdited>
                                     <td>
-                                        <a href="#" class="data-view-old" data-view="@{offset + index}">View</a>
-                                        <textarea style="display: none" data-oldstate="@{offset + index}">@action.oldState</textarea>
+                                        <a href="#" class="data-view-old" data-view="${offset + index}">View</a>
+                                        <textarea style="display: none" data-oldstate="${offset + index}">${action.oldState}</textarea>
                                     </td>
                                     <td>
-                                        <a href="#" class="data-view-new" data-view="@{offset + index}">View</a> <small>(<a href="#" class="data-diff" data-diff="@{offset + index}">Show diff</a>)</small>
-                                        <textarea style="display: none" data-newstate="@{offset + index}">@action.newState</textarea>
+                                        <a href="#" class="data-view-new" data-view="${offset + index}">View</a> <small>(<a href="#" class="data-diff" data-diff="${offset + index}">Show diff</a>)</small>
+                                        <textarea style="display: none" data-newstate="${offset + index}">${action.newState}</textarea>
                                     </td>
                                 <#else>
-                                    <td>@action.oldState</td>
-                                    <td>@action.newState</td>
+                                    <td>${action.oldState}</td>
+                                    <td>${action.newState}</td>
                                 </#if>
                             </tr>
                             }
@@ -136,10 +134,10 @@
                 </div>
                 <div class="panel-heading" style="display:block">
                     <#if page gt 1>
-                        <h4 class="panel-title pull-left"><a href="@appRoutes.showLog(Some(page-1), userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter)">&leftarrow; @{page - 1}</a></h4>
+                        <h4 class="panel-title pull-left"><a href="${routes.getRouteUrl("showLog", page-1, userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter)}">&leftarrow; ${page - 1}</a></h4>
                     </#if>
                     <#if offset + limit < size>
-                        <h4 class="panel-title pull-right"><a href="@appRoutes.showLog(Some(page+1), userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter)">@{page + 1} &rightarrow;</a></h4>
+                        <h4 class="panel-title pull-right"><a href="${routes.getRouteUrl("showLog", page+1, userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter)}">${page + 1} &rightarrow;</a></h4>
                     </#if>
                     <div class="clearfix"></div>
                 </div>

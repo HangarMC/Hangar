@@ -57,7 +57,5 @@
 
 ---
 Notes to self (or anyone if they want to jump at it)
-* Search for `.isDefined`/`.get`/`.orElse` optional usage (left some behind)
+* Search for `.isDefined`/`.get`/`.orElse` optional usage (left some behind, `x.orElse(y)` -> `x!y`)
 * `prettifyDateAndTime(x)` -> `x?string.long`
-* `projectRoutes.x(...)` -> `routes.getRouteUrl("projects.x", ...)`
-* `x.orElse(y)` -> `x!y`

@@ -2,7 +2,6 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
-@import controllers.project.{routes => projectRoutes}
 @import controllers.sugar.Requests.OreRequest
 @import models.querymodels.ViewTag
 @import ore.OreConfig
@@ -149,7 +148,7 @@
                         }
                     </#if>
 
-                    @form(action = projectRoutes.Versions.upload(ownerName, projectSlug),
+                    @form(action = routes.getRouteUrl("versions.upload", ownerName, projectSlug),
                         Symbol("enctype") -> "multipart/form-data", Symbol("id") -> "form-upload") {
                         @CSRF.formField
                             <label class="btn btn-default pull-left" for="pluginFile">
@@ -163,7 +162,7 @@
                     <#if pending.isDefined>
                         @* Ready to go! *@
                         @defining(pending.get) { version: PendingVersion =>
-                            @form(action = projectRoutes.Versions.publish(
+                            @form(action = routes.getRouteUrl("versions.publish",
                                 ownerName, projectSlug, version.versionString),
                                 Symbol("id") -> "form-publish", Symbol("class") -> "pull-right") {
                                 @CSRF.formField

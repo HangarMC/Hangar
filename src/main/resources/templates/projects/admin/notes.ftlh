@@ -14,20 +14,17 @@
 @import views.html.helper.CSPNonce
 @(project: Project, notes: Seq[(Note, Option[User])])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
 
-
-@projectRoutes = @{controllers.project.routes.Projects}
 <#assign scriptsVar>
     <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "javascripts/notes.js" />"></script>
-    <script @CSPNonce.attr>resourcePath = '@project.ownerName/@project.slug'</script>
+    <script @CSPNonce.attr>resourcePath = '${project.ownerName}/${project.slug}'</script>
 </#assign>
-
 
 <#assign message><@spring.message "notes" /></#assign>
 <@base.base title="${message}" additionalScripts=scriptsVar>
     <div class="row">
         <div class="col-md-12  header-flags">
             <div class="clearfix">
-                <h1 class="pull-left"><@spring.message "notes" /> for <a href="@projectRoutes.show(project.ownerName, project.slug)">@project.ownerName/@project.slug</a></h1>
+                <h1 class="pull-left"><@spring.message "notes" /> for <a href="${routes.getRouteUrl("projects.show", project.ownerName, project.slug)}">${project.ownerName}/${project.slug}</a></h1>
             </div>
         </div>
     </div>
@@ -58,8 +55,8 @@
                 <tbody>
                 @notes.map { case (note, user) =>
                 <tr>
-                    <td class="note-fixed-with">${prettifyDateAndTime(OffsetDateTime.ofInstant(Instant.ofEpochMilli(note.time), ZoneOffset.UTC))}</td>
-                    <td class="note-fixed-with"><strong>${user.map(_.name).getOrElse("Unknown")}</strong></td>
+                    <td class="note-fixed-with">${(OffsetDateTime.ofInstant(Instant.ofEpochMilli(note.time), ZoneOffset.UTC))?string.long}</td>
+                    <td class="note-fixed-with"><strong>${user.map(_.name)!"Unknown"}</strong></td>
                     <td>${note.render}</td>
                 </tr>
                 }

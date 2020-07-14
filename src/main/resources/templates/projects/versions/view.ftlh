@@ -14,8 +14,6 @@
 @import views.html.utils.editor
 @(v: VersionData, sp: ScopedProjectData)(implicit messages: Messages, request: OreRequest[_], flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
 
-@projectRoutes = @{controllers.project.routes.Projects}
-
 @projects.view(v.p, sp, "#versions", noButtons = true) {
 
     <!-- Version header -->
@@ -203,8 +201,7 @@
                         @v.filteredDependencies.map { case (depend, project)=>
                         <li class="list-group-item">
                             <#if project.isDefined>
-                                <a href="@projectRoutes.show(
-                                    project.get.ownerName, project.get.slug)">
+                                <a href="${routes.getRouteUrl("projects.show", project.get.ownerName, project.get.slug)}">
                                     <strong>${project.get.name}</strong>
                                 </a>
                             <#else>
@@ -215,7 +212,7 @@
                                     data-toggle="tooltip" data-placement="right"></i>
                                 </div>
                             </#if>
-                        <p class="version-string">@depend.version</p>
+                        <p class="version-string">${depend.version}</p>
                         </li>
                         }
                     </ul>

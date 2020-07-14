@@ -15,8 +15,6 @@
 @(p: ProjectData, sp: ScopedProjectData, deploymentKey: Option[Model[ProjectApiKey]], iconUrl: String)(implicit messages: Messages, flash: Flash,
         request: OreRequest[_], config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
 
-@projectRoutes = @{controllers.project.routes.Projects}
-
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/projectManage.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/hideProject.js" />"></script>
@@ -212,7 +210,7 @@
                         </div>
                     </#if>
 
-                    @form(action = projectRoutes.save(p.project.ownerName, p.project.slug), Symbol("id") -> "save",
+                    @form(action = routes.getRouteUrl("projects.save", p.project.ownerName, p.project.slug), Symbol("id") -> "save",
                         Symbol("class") -> "pull-right") {
                         @CSRF.formField
                         <input type="hidden" id="update-icon" name="update-icon" value="false" />
@@ -229,8 +227,8 @@
             @users.memberList(p,
                 editable = true,
                 perms = sp.permissions,
-                removeCall = projectRoutes.removeMember(p.project.ownerName, p.project.slug),
-                settingsCall = projectRoutes.showSettings(p.project.ownerName, p.project.slug)
+                removeCall = routes.getRouteUrl("projects.removeMember", p.project.ownerName, p.project.slug),
+                settingsCall = routes.getRouteUrl("projects.showSettings", p.project.ownerName, p.project.slug)
             )
         </div>
     </div>
@@ -251,7 +249,7 @@
                 </div>
                 <div class="modal-footer">
                     <div class="form-inline">
-                    @form(action = projectRoutes.rename(p.project.ownerName, p.project.slug), Symbol("id") -> "rename") {
+                    @form(action = routes.getRouteUrl("projects.rename", p.project.ownerName, p.project.slug), Symbol("id") -> "rename") {
                         @CSRF.formField
                         <button type="button" class="btn btn-default" data-dismiss="modal">
                         <@spring.message "channel.edit.close" />
@@ -273,7 +271,7 @@
                     </button>
                     <h4 class="modal-title" id="label-delete"><@spring.message "project.delete.title" /></h4>
                 </div>
-                @form(action = projectRoutes.softDelete(p.project.ownerName, p.project.slug)) {
+                @form(action = routes.getRouteUrl("projects.softDelete", p.project.ownerName, p.project.slug)) {
                     <div class="modal-body">
                         <@spring.message "project.delete.info" />
                         <br>
