@@ -14,15 +14,14 @@
 
 <#macro form owner roleCategory loadedUsers=[]>
 
-<!-- Template row -->
+<#import "*/utils/userAvatar.ftlh" as userAvatar>
+<#-- Template row -->
 <table style="display: none;">
     <tbody>
         <tr id="result-row">
             <td>
                 <input type="hidden"/>
-                <#import "*/utils/userAvatar.ftlh" as userAvatar>
                 <@userAvatar.userAvatar clazz = "user-avatar-xs"/>
-<#--                @userAvatar(None, clazz = "user-avatar-xs")-->
                 <i class="fas fa-times user-cancel"></i>
                 <a class="username" target="_blank" rel="noopener" href=""></a>
                 <span>@users.invite.roleSelect(roleCategory)</span>
@@ -31,7 +30,7 @@
     </tbody>
 </table>
 
-<!-- User not found alert (hidden) -->
+<#-- User not found alert (hidden) -->
 <div class="alert alert-danger alert-dismissible" role="alert" style="display: none;">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
@@ -42,10 +41,10 @@
 <div class="member-table-container">
     <table class="table table-members">
         <tbody>
-            <!-- Owner (not submitted) -->
+            <#-- Owner (not submitted) -->
             <tr>
                 <td>
-                    @userAvatar(Some(owner.name), owner.avatarUrl, clazz = "user-avatar-xs")
+                    <@userAvatar.userAvatar userName=owner.name avatarUrl=owner.avatarUrl clazz="user-avatar-xs" />
                     <strong>${owner.name}</strong>
                     <span><i class="minor"><@spring.message "project.owner" /></i></span>
                 </td>
@@ -55,7 +54,7 @@
                 <tr>
                     <td>
                         <input form="form-continue" type="hidden" value="${user.id}" />
-                        @userAvatar(Some(user.name), user.avatarUrl, clazz = "user-avatar-xs")
+                        <@userAvatar.userAvatar userName=user.name avatarUrl=user.avatarUrl clazz="user-avatar-xs" />
                         <a target="_blank" rel="noopener" href="${routes.getRouteUrl("users.showProjects", user.name)}">
                             ${user.name}
                         </a>
@@ -64,7 +63,7 @@
                 </tr>
             }
 
-            <!-- User search -->
+            <#-- User search -->
             <tr>
                 <td>@users.invite.userSearch()</td>
             </tr>

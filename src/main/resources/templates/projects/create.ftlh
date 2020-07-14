@@ -3,19 +3,7 @@
 <#import "*/layout/base.ftlh" as base />
 
 <#--
-@*
 Page used for uploading and creating new projects.
-*@
-@import play.twirl.api.Html
-
-@import controllers.sugar.Requests.OreRequest
-@import ore.OreConfig
-@import ore.data.project.Category
-@import ore.db.Model
-@import ore.models.organization.Organization
-@import ore.models.user.User
-@import views.html.helper.{CSRF, form}
-@(createProjectOrgas: Seq[Model[Organization]], user: Model[User])(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
 -->
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/projectCreateValidate.js" />"></script>
@@ -73,9 +61,9 @@ Page used for uploading and creating new projects.
                             <div class="form-group">
                                 <label for="projectCategory"><@spring.message "project.owner" /></label>
                                 <select id="projectCategory" name="owner" class="form-control">
-                                    <option value="${user.id.value}">${user.name}</option>
+                                    <option value="${user.id}">${user.name}</option>
                                     <#list createProjectOrgas as orga>
-                                        <option value="${orga.id.value}">${orga.name}</option>
+                                        <option value="${orga.id}">${orga.name}</option>
                                     </#list>
                                 </select>
                             </div>

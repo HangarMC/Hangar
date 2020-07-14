@@ -13,8 +13,8 @@ import me.minidigger.hangar.controller.HangarController;
 public class UsersController extends HangarController {
 
     @RequestMapping("/authors")
-    public Object showAuthors(@RequestParam Object sort, @RequestParam Object page) {
-        return null; // TODO implement showAuthors request controller
+    public ModelAndView showAuthors(@RequestParam(required = false) Object sort, @RequestParam(required = false) Object page) {
+        return fillModel(new ModelAndView("users/authors")); // TODO implement showAuthors request controller
     }
 
     @RequestMapping("/login")

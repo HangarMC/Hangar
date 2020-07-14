@@ -8,10 +8,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import me.minidigger.hangar.controller.HangarController;
+import me.minidigger.hangar.model.Permission;
+import me.minidigger.hangar.service.OrgService;
+import me.minidigger.hangar.service.UserService;
 
 @Controller
 public class ProjectsController extends HangarController {
+
+    private final UserService userService;
+    private final OrgService orgService;
+
+    public ProjectsController(UserService userService, OrgService orgService) {
+        this.userService = userService;
+        this.orgService = orgService;
+    }
 
     @PostMapping("/")
     public Object createProject() {
@@ -30,7 +40,9 @@ public class ProjectsController extends HangarController {
 
     @RequestMapping("/new")
     public Object showCreator() {
-        return fillModel(new ModelAndView("projects/create"));
+        ModelAndView mav = new ModelAndView("projects/create");
+        mav.addObject("createProjectOrgas", orgService.getOrgsWithPerm(userService.getCurrentUser(), Permission.CreateProject));
+        return fillModel(mav);
     }
 
     @RequestMapping("/{author}/{slug}")
