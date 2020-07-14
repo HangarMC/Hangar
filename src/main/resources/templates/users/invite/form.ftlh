@@ -15,7 +15,7 @@
 @(owner: User, loadedUsers: Seq[Model[User]] = Seq(), roleCategory: RoleCategory)(implicit messages: Messages, config: OreConfig)
 -->
 
-<#macro form owner={} roleCategory="" loadedUsers=[]>
+<#macro form owner roleCategory="" loadedUsers=[]>
 
 <#-- Template row -->
 <table style="display: none;">
