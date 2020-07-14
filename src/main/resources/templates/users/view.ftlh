@@ -4,6 +4,8 @@
 <#import "*/utils/modal.ftlh" as modal />
 <#import "*/utils/prompt.ftlh" as prompt />
 <#import "*/utils/userAvatar.ftlh" as userAvatar />
+<#import "*/utils/form.ftlh" as form>
+<#import "*/utils/csrf.ftlh" as csrf>
 
 <#--
 @(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)], additionalScripts: Html = Html(""))(content: Html)(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
@@ -160,21 +162,16 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><@spring.message "general.close" /></button>
-                @form(action = routes.Users.verify(Some(routes.Users.setLocked(
-                    user = u.user.name,
-                    locked = !u.user.isLocked,
-                    sso = None,
-                    sig = None
-                ).path())), Symbol("class") -> "form-inline") {
-                    @CSRF.formField
+                <@form.form method="POST" action=routes.getRouteUrl("users.verify", routes.getRouteUrl("users.setLocked", u.user.name, !u.user.isLocked, "", "")) class="form-inline">
+                    <@csrf.formField />
                     <button type="submit" class="btn btn-primary"><@spring.message "general.continue" /></button>
-                }
+                </@form.form>
             </div>
         </@modal.modal>
 
         <@modal.modal "user.tagline.edit" "modal-tagline" "label-tagline">
-            @form(action = routes.Users.saveTagline(u.user.name)) {
-                @CSRF.formField
+            <@form.form action=routes.getRouteUrl("users.saveTagline", u.user.name) method="POST">
+                <@csrf.formField />
                 <div class="modal-body">
                     <div class="setting setting-no-border">
                         <div class="setting-description">
@@ -192,7 +189,7 @@
                     </button>
                     <input type="submit" value="<@spring.message "general.save" />" class="btn btn-primary" />
                 </div>
-            }
+            </@form.form>
         </@modal.modal>
     </@base.base>
 </#macro>

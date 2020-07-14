@@ -1,5 +1,7 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/utils/form.ftlh" as form>
+<#import "*/utils/csrf.ftlh" as csrf>
 
 <#--
 @import views.html.helper.{CSRF, form}
@@ -71,10 +73,11 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        @form(action = deleteCall, Symbol("class") -> "form-inline") {
-                            @CSRF.formField
+                        <#-- todo: where does this come from ._. -->
+                        <@form.form action=deleteCall class="form-inline">
+                            <@csrf.formField />
                             <button type="submit" class="btn btn-danger">Delete</button>
-                        }
+                        </@form.form>
                     </div>
                 </div>
             </div>
@@ -94,12 +97,13 @@
     <div class="page-preview page-rendered" style="display: none ;"></div>
 
     <#if savable>
-        @form(action = saveCall, Symbol("id") -> "form-editor-save") {
-            @CSRF.formField
+        <#-- todo: where does this come from ._. -->
+        <@form.form action=saveCall id="form-editor-save">
+            <@csrf.formField />
             <#if extraFormValue??>
                 <input type="hidden" value="@extraFormValue" name="name">
             </#if>
-        }
+        </@form.form>
     </#if>
 </#if>
 

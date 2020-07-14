@@ -1,5 +1,7 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/utils/form.ftlh" as form>
+<#import "*/utils/csrf.ftlh" as csrf>
 
 @import ore.OreConfig
 @import ore.models.user.role.UserRoleModel
@@ -49,14 +51,15 @@
                     </div>
                     <div class="modal-body"><@spring.message "project.removeMember.confirm" /></div>
                     <div class="modal-footer">
-                        @form(action = removeCall, Symbol("class") -> "form-inline") {
-                            @CSRF.formField
+                        <#-- todo: removeCall, gotten from settings template -->
+                        <@form.form action=removeCall method="POST" class="form-inline">
+                            <@csrf.formField />
                             <input type="hidden" name="username" />
                             <button type="button" class="btn btn-default" data-dismiss="modal">
                                 <@spring.message "general.close" />
                             </button>
                             <button type="submit" class="btn btn-danger"><@spring.message "general.remove" /></button>
-                        }
+                        </@form.form>
                     </div>
                 </div>
             </div>
@@ -81,13 +84,14 @@
                     </#if>
 
                     <#if saveCall??>
-                        @form(action = saveCall, Symbol("id") -> "save") {
-                            @CSRF.formField
+                        <#-- todo: saveCall, gotten from settings template -->
+                        <@form.form action=saveCall method="POST" id="save">
+                            <@csrf.formField />
                             <button class="btn-members-save btn btn-default btn-panel btn-xs" data-toggle="tooltip"
                                     data-placement="top" data-title="<@spring.message "org.users.save" />" style="display: none;">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
-                        }
+                        </@form.form>
                     </#if>
                 </div>
             </#if>
@@ -99,7 +103,7 @@
                 <li class="list-group-item">
                     @userAvatar(Some(user.name), user.avatarUrl, clazz = "user-avatar-xs")
                 <a class="username" href="${routes.getRouteUrl("users.showProjects", user.name)}">
-                @user.name
+                ${user.name}
                 </a>
                     <p style="display: none;" class="role-id">${role.id}</p>
                     <#if editable && perms.has(Permission.ManageSubjectMembers) && !role.role.permissions.has(Permission.IsOrganizationOwner)>

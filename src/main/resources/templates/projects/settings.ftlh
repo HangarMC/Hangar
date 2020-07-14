@@ -1,5 +1,7 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/utils/form.ftlh" as form>
+<#import "*/utils/csrf.ftlh" as csrf>
 
 @import controllers.sugar.Requests.OreRequest
 @import models.viewhelper.{ProjectData, ScopedProjectData}
@@ -210,14 +212,13 @@
                         </div>
                     </#if>
 
-                    @form(action = routes.getRouteUrl("projects.save", p.project.ownerName, p.project.slug), Symbol("id") -> "save",
-                        Symbol("class") -> "pull-right") {
-                        @CSRF.formField
+                    <@form.form action=routes.getRouteUrl("projects.save", p.project.ownerName, p.project.slug) method="POST" id="save" class="pull-right">
+                        <@csrf.formField />
                         <input type="hidden" id="update-icon" name="update-icon" value="false" />
                         <button type="submit" name="save" class="btn btn-success btn-spinner" data-icon="fa-check">
                             <i class="fas fa-check"></i> Save changes
                         </button>
-                    }
+                    </@form.form>
                 </div>
             </div>
         </div>
@@ -249,13 +250,13 @@
                 </div>
                 <div class="modal-footer">
                     <div class="form-inline">
-                    @form(action = routes.getRouteUrl("projects.rename", p.project.ownerName, p.project.slug), Symbol("id") -> "rename") {
-                        @CSRF.formField
-                        <button type="button" class="btn btn-default" data-dismiss="modal">
-                        <@spring.message "channel.edit.close" />
-                        </button>
-                        <input type="submit" name="rename" value="<@spring.message "project.rename" />" class="btn btn-warning">
-                        }
+                        <@form.form action=routes.getRouteUrl("projects.rename", p.project.ownerName, p.project.slug) method="POST" id="rename">
+                            <@csrf.formField />
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                <@spring.message "channel.edit.close" />
+                            </button>
+                            <input type="submit" name="rename" value="<@spring.message "project.rename" />" class="btn btn-warning">
+                        </@form.form>
                     </div>
                 </div>
             </div>
@@ -271,19 +272,19 @@
                     </button>
                     <h4 class="modal-title" id="label-delete"><@spring.message "project.delete.title" /></h4>
                 </div>
-                @form(action = routes.getRouteUrl("projects.softDelete", p.project.ownerName, p.project.slug)) {
+                <@form.form action=routes.getRouteUrl("projects.softDelete", p.project.ownerName, p.project.slug) method="POST">
                     <div class="modal-body">
                         <@spring.message "project.delete.info" />
                         <br>
                         <textarea name="comment" class="textarea-delete-comment form-control" rows="3"></textarea>
                         <br>
                         <div class="alert alert-warning">
-                        <@spring.message "project.delete.info.uniqueid", p.project.name />
+                        <@spring.messageArgs "project.delete.info.uniqueid", p.project.name />
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="form-inline">
-                            @CSRF.formField
+                            <@csrf.formField />
                             <button type="button" class="btn btn-default" data-dismiss="modal">
                             <@spring.message "channel.edit.close" />
                             </button>
@@ -291,7 +292,7 @@
                             value="<@spring.message "general.delete" />" class="btn btn-danger">
                         </div>
                     </div>
-                }
+                </@form.form>
             </div>
         </div>
 

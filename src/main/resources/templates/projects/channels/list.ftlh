@@ -1,6 +1,8 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/projects/channels/helper/modalManage.ftlh" as modalManage />
+<#import "*/utils/form.ftlh" as form>
+<#import "*/utils/csrf.ftlh" as csrf>
 
 @import controllers.sugar.Requests.OreRequest
 @import models.viewhelper.ProjectData
@@ -58,12 +60,11 @@
                                                         id="channel-delete-${channel.id}" data-channel-delete="safe-delete"
                                                         data-channel-id="${channel.id}">
 
-                                                        @form(action = routes.getRouteUrl("channels.delete",
-                                                            p.project.ownerName, p.project.slug, channel.name),
-                                                            Symbol("id") -> s"form-delete-${channel.id}",
-                                                            Symbol("class") -> "form-channel-delete") {
-                                                            @CSRF.formField
-                                                        }
+                                                        <@form.form method="POST" action=routes.getRouteUrl("channels.delete", p.project.ownerName, p.project.slug, channel.name)
+                                                            id="form-delete-${channel.id}"
+                                                            class="form-channel-delete">
+                                                            <@csrf.formField />
+                                                        </@form.form>
                                                     </#if>
                                                 Delete
                                                 </div>

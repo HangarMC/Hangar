@@ -1,6 +1,8 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
+<#import "*/utils/form.ftlh" as form>
+<#import "*/utils/csrf.ftlh" as csrf>
 
 @import controllers.sugar.Requests.OreRequest
 @import models.querymodels.ViewTag
@@ -148,32 +150,31 @@
                         }
                     </#if>
 
-                    @form(action = routes.getRouteUrl("versions.upload", ownerName, projectSlug),
-                        Symbol("enctype") -> "multipart/form-data", Symbol("id") -> "form-upload") {
-                        @CSRF.formField
+                    <@form.form action=routes.getRouteUrl("versions.upload", ownerName, projectSlug) method="POST"
+                        enctype="multipart/form-data" id="form-upload">
+                        <@csrf.formField />
                             <label class="btn btn-default pull-left" for="pluginFile">
                                 <input id="pluginFile" name="pluginFile" type="file" style="display: none;">
                                 <@spring.message "version.create.selectFile" />
                             </label>
 
                             ${projects.helper.alertFile()}
-                    }
+                    </@form.form>
 
                     <#if pending??>
                         @* Ready to go! *@
                         @defining(pending.get) { version: PendingVersion =>
-                            @form(action = routes.getRouteUrl("versions.publish",
-                                ownerName, projectSlug, version.versionString),
-                                Symbol("id") -> "form-publish", Symbol("class") -> "pull-right") {
-                                @CSRF.formField
+                            <@form.form method="POST" action=routes.getRouteUrl("versions.publish", ownerName, projectSlug, version.versionString)
+                                id="form-publish" class="pull-right">
+                                <@csrf.formField />
                                 <input type="hidden" class="channel-color-input" name="channel-color-input"
-                                value="@config.defaultChannelColor.hex" />
+                                value="${config.defaultChannelColor.hex}" />
 
                                 <div>
                                     <input type="submit" name="create" value="<@spring.message "version.create.publish" />"
                                     class="btn btn-primary" />
                                 </div>
-                            }
+                            </@form.form>
                         }
                     </#if>
 

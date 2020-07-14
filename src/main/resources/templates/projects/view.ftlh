@@ -140,9 +140,11 @@ TODO: this is a layout, should we move/rename it?
                                                 </button>
                                                 <h4 class="modal-title" id="label-flag">Flag project</h4>
                                             </div>
-                                            @form(action = Projects.flag(
-                                                p.project.ownerName, p.project.slug)) {
-                                                @CSRF.formField
+                                            <#import "*/utils/form.ftlh" as form>
+                                            <#-- todo: Projects.flag -->
+                                            <@form.form action=Projects.flag( p.project.ownerName, p.project.slug)>
+                                                <#import "*/utils/csrf.ftlh" as csrf>
+                                                <@csrf.formField />
                                                 <div class="modal-body">
                                                     <ul class="list-group list-flags">
                                                         <#list FlagReason.values.indices as i>
@@ -165,7 +167,7 @@ TODO: this is a layout, should we move/rename it?
                                                     </button>
                                                     <button type="submit" class="btn btn-primary">Flag</button>
                                                 </div>
-                                            }
+                                            </@form.form>
                                         </div>
                                     </div>
                                 </div>

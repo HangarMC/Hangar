@@ -1,5 +1,7 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/utils/form.ftlh" as form>
+<#import "*/utils/csrf.ftlh" as csrf>
 
 @import controllers.sugar.Requests.OreRequest
 @import models.viewhelper.{ScopedProjectData, VersionData}
@@ -69,13 +71,12 @@
                     <div>
 
                         <#if !v.isRecommended && sp.perms(Permission.EditVersion) && v.v.visibility != Visibility.SoftDelete>
-                            @form(action = versionRoutes.setRecommended(
-                                v.p.project.ownerName, v.p.project.slug, v.v.versionString), Symbol("class") -> "form-inline") {
-                                @CSRF.formField
+                            <@form.form method="POST" action=routes.getRouteUrl("versions.setRecommended", v.p.project.ownerName, v.p.project.slug, v.v.versionString) class="form-inline">
+                                <@csrf.formField />
                                 <button type="submit" class="btn btn-info">
                                     <i class="fas fa-gem"></i> Set recommended
                                 </button>
-                            }
+                            </@form.form>
                         </#if>
 
                         <#if request.headerData.globalPerm(Permission.Reviewer)>
@@ -233,21 +234,21 @@
                         </button>
                         <h4 class="modal-title" id="label-delete"><@spring.message "version.delete.title" /></h4>
                     </div>
-                    @form(action = versionRoutes.softDelete(v.p.project.ownerName, v.p.project.slug, v.v.versionString)) {
+                    <@form.form method="POST" action=routes.getRouteUrl("versions.softDelete", v.p.project.ownerName, v.p.project.slug, v.v.versionString)>
                         <div class="modal-body">
                             <@spring.message "version.delete.info" />
                             <textarea name="comment" class="textarea-delete-comment form-control" rows="3"></textarea>
                         </div>
                         <div class="modal-footer">
                             <div class="form-inline">
-                                @CSRF.formField
+                                <@csrf.formField />
                                 <button type="button" class="btn btn-default" data-dismiss="modal">
                                 <@spring.message "channel.edit.close" />
                                 </button>
                                 <input type="submit" name="delete" value="<@spring.message "general.delete" />" class="btn btn-danger">
                             </div>
                         </div>
-                    }
+                    </@form.form>
                 </div>
             </div>
         </div>
@@ -264,20 +265,20 @@
                             </button>
                             <h4 class="modal-title" id="label-delete"><@spring.message "general.restore" /></h4>
                         </div>
-                        @form(action = versionRoutes.restore(v.p.project.ownerName, v.p.project.slug, v.v.versionString)) {
+                        <@form.form method="POST" action=routes.getRouteUrl("versions.restore", v.p.project.ownerName, v.p.project.slug, v.v.versionString)>
                             <div class="modal-body">
                                 <textarea name="comment" class="textarea-delete-comment form-control" rows="3"></textarea>
                             </div>
                             <div class="modal-footer">
                                 <div class="form-inline">
-                                    @CSRF.formField
+                                    <@csrf.formField />
                                     <button type="button" class="btn btn-default" data-dismiss="modal">
                                     <@spring.message "channel.edit.close" />
                                     </button>
                                     <input type="submit" name="delete" value="<@spring.message "general.restore" />" class="btn btn-success">
                                 </div>
                             </div>
-                        }
+                        </@form.form>
                     </div>
                 </div>
             </div>
@@ -292,20 +293,20 @@
                             </button>
                             <h4 class="modal-title" id="label-delete"><@spring.message "general.harddelete" /></h4>
                         </div>
-                        @form(action = versionRoutes.delete(v.p.project.ownerName, v.p.project.slug, v.v.versionString)) {
+                        <@form.form method="POST" action=routes.getRouteUrl("versions.delete", v.p.project.ownerName, v.p.project.slug, v.v.versionString)>
                             <div class="modal-body">
                                 <textarea name="comment" class="textarea-delete-comment form-control" rows="3"></textarea>
                             </div>
                             <div class="modal-footer">
                                 <div class="form-inline">
-                                    @CSRF.formField
+                                    <@csrf.formField />
                                     <button type="button" class="btn btn-default" data-dismiss="modal">
                                     <@spring.message "channel.edit.close" />
                                     </button>
                                     <input type="submit" name="delete" value="<@spring.message "general.harddelete" />" class="btn btn-danger">
                                 </div>
                             </div>
-                        }
+                        </@form.form>
                     </div>
                 </div>
             </div>
