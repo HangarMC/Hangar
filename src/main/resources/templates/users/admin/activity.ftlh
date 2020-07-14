@@ -2,6 +2,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
+<#--
 @import java.time.OffsetDateTime
 
 @import controllers.sugar.Requests.OreRequest
@@ -9,14 +10,15 @@
 @import ore.OreConfig
 @import util.StringFormatterUtils._
 @(username: String, activities: Seq[Either[FlagActivity, ReviewActivity]])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
+-->
 
 <#assign message><@spring.message "activity.title" /></#assign>
-<@base.base title=("${message}" + username)>
+<@base.base title=("${message} ${username}")>
 
     <div class="row">
         <div class="col-md-12  header-flags">
             <div class="clearfix">
-                <h1 class="pull-left"><@spring.message "activity.title" /> <i>@username</i></h1>
+                <h1 class="pull-left"><@spring.message "activity.title" /> <i>${username}</i></h1>
             </div>
         </div>
     </div>

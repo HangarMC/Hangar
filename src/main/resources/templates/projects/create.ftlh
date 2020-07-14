@@ -2,6 +2,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
+<#--
 @*
 Page used for uploading and creating new projects.
 *@
@@ -15,7 +16,7 @@ Page used for uploading and creating new projects.
 @import ore.models.user.User
 @import views.html.helper.{CSRF, form}
 @(createProjectOrgas: Seq[Model[Organization]], user: Model[User])(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
-
+-->
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/projectCreateValidate.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/pluginUpload.js" />"></script>
@@ -35,8 +36,8 @@ Page used for uploading and creating new projects.
 
                 <div class="panel-body project-body">
                     <div class="minor create-blurb">
-                        <p>@Html(messages("project.create.infoText.head"))</p>
-                        <p>@Html(messages("project.create.infoText.guidelines"))</p>
+                        <p><@spring.message "project.create.infoText.head" /></p>
+                        <p><@spring.message "project.create.infoText.guidelines" /></p>
                     </div>
 
                     <div>
@@ -57,7 +58,7 @@ Page used for uploading and creating new projects.
                                 <select id="projectCategory" name="category" class="form-control">
                                     <#-- todo: Category.visible -->
                                 <#list Category.visible as cat>
-                                    <option>${cat.title<}/option>
+                                    <option>${cat.title}</option>
                                 </#list>
                                 </select>
                             </div>

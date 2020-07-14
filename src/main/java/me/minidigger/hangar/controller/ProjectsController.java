@@ -30,7 +30,7 @@ public class ProjectsController extends HangarController {
 
     @RequestMapping("/new")
     public Object showCreator() {
-        return null; // TODO implement showCreator request controller
+        return fillModel(new ModelAndView("projects/create"));
     }
 
     @RequestMapping("/{author}/{slug}")

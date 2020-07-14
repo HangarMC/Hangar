@@ -2,6 +2,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
+<#--
 @import java.time.LocalDate
 @import java.time.temporal.ChronoUnit
 
@@ -14,6 +15,7 @@
 
 @(stats: List[Stats], fromTime: LocalDate, toTime: LocalDate)(implicit messages: Messages,
         request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
+-->
 
 <#assign scriptsVar>
     <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "lib/chart.js/dist/Chart.min.js" />"></script>
@@ -105,6 +107,7 @@
 </#assign>
 
 <@base.base title="Stats" additionalScripts=scriptsVar>
+    <h1>Stats</h1>
     <div class="row">
         <div class="col-md-12">
             <div class="form-inline">

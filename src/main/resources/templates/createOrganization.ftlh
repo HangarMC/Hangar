@@ -1,11 +1,3 @@
-<#--
-@import controllers.sugar.Requests.OreRequest
-@import ore.OreConfig
-@import ore.permission.role.RoleCategory
-@import views.html.helper.{CSRF, form}
-@()(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
--->
-
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />

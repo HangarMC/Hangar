@@ -2,6 +2,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
+<#--
 @import controllers.sugar.Requests.OreRequest
 @import ore.OreConfig
 @import ore.db.{DbRef, Model}
@@ -13,6 +14,7 @@
 @(actions: Seq[Model[LoggedActionViewModel[_]]], limit: Int, offset: Int, page: Int, size: Int, userFilter: Option[String],
         projectFilter: Option[String], versionFilter: Option[String], pageFilter: Option[DbRef[Page]],
         actionFilter: Option[String], subjectFilter: Option[String], canViewIP: Boolean)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
+-->
 
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "diff-match-patch/javascript/diff_match_patch.js" />"></script>

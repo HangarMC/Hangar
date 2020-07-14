@@ -13,7 +13,7 @@ public class ReviewsController extends HangarController {
 
     @RequestMapping("/{author}/{slug}/versions/{version}/reviews")
     public Object showReviews(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
-        return null; // TODO implement showReviews request controller
+        return fillModel(new ModelAndView("users/admin/reviews")); // TODO implement showReviews request controller
     }
 
     @RequestMapping("/{author}/{slug}/versions/{version}/reviews/addmessage")

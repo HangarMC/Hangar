@@ -2,6 +2,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
+<#--
 @import controllers.sugar.Requests.OreRequest
 @import models.querymodels.ShownFlag
 @import ore.OreConfig
@@ -12,7 +13,7 @@
 
 @* project perms for all visibilities *@
 @(flags: Seq[ShownFlag])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
-
+-->
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/flags.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/hideProject.js" />"></script>

@@ -2,6 +2,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
+<#--
 @import controllers.sugar.Requests.OreRequest
 @import models.querymodels.UnhealtyProject
 @import ore.OreConfig
@@ -12,6 +13,7 @@
   notPublicProjects: Seq[UnhealtyProject],
   missingFileProjects: Seq[(Version, Project)],
   erroredJobs: Seq[Job])(implicit request: OreRequest[_], messages: Messages, config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
+-->
 
 <#assign message><@spring.message "admin.health.title" /></#assign>
 <@base.base title="${message}">

@@ -2,6 +2,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
+<#--
 @import controllers.sugar.Requests.OreRequest
 @import models.querymodels.{NotStartedQueueEntry, ReviewedQueueEntry}
 @import ore.OreConfig
@@ -11,6 +12,7 @@
 @import views.html.helper.CSPNonce
 @import views.html.utils.userAvatar
 @(underReview: Seq[ReviewedQueueEntry], versions: Seq[NotStartedQueueEntry])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
+-->
 
 <#assign scriptsVar>
     <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "javascripts/queue.js" />"></script>

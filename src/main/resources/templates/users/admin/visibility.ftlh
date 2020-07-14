@@ -2,14 +2,16 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
+<#--
 @import controllers.sugar.Requests.OreRequest
 @import models.querymodels.ProjectNeedsApproval
 @import ore.OreConfig
 @import ore.markdown.MarkdownRenderer
 @(needsApproval: Seq[ProjectNeedsApproval],
  waitingProjects: Seq[ProjectNeedsApproval])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
+-->
 
-@renderApprovalList(projectSeq: Seq[ProjectNeedsApproval]) = {
+<#macro renderApprovalList projectSeq>
     <ul class="list-group list-flags-admin">
         <#if projectSeq.isEmpty>
             <li class="list-group-item">
@@ -41,7 +43,7 @@
             </li>
         }
     </ul>
-}
+</#macro>
 
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/hideProject.js" />"></script>
@@ -61,7 +63,7 @@
                     <h4 class="panel-title pull-left">Needs Approval</h4>
                     <div class="clearfix"></div>
                 </div>
-                ${renderApprovalList(needsApproval)}
+                <@renderApprovalList needsApproval />
             </div>
         </div>
         <div class="row">
@@ -76,7 +78,7 @@
                         <h4 class="panel-title pull-left">Waiting Changes</h4>
                         <div class="clearfix"></div>
                     </div>
-                    ${renderApprovalList(waitingProjects)}
+                    <@renderApprovalList waitingProjects />
                 </div>
             </div>
         </div>

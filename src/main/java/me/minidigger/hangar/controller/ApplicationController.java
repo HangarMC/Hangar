@@ -18,23 +18,25 @@ public class ApplicationController extends HangarController {
     }
 
     @RequestMapping("/admin/activities/{user}")
-    public Object showActivities(@PathVariable Object user) {
-        return null; // TODO implement showActivities request controller
+    public ModelAndView showActivities(@PathVariable String user) {
+        ModelAndView mav = new ModelAndView("users/admin/activity");
+        mav.addObject("username", user);
+        return fillModel(mav);
     }
 
     @RequestMapping("/admin/approval/projects")
     public Object showProjectVisibility() {
-        return null; // TODO implement showProjectVisibility request controller
+        return fillModel(new ModelAndView("users/admin/visibility")); // TODO implement showProjectVisibility request controller
     }
 
     @RequestMapping("/admin/approval/versions")
-    public Object showQueue() {
-        return null; // TODO implement showQueue request controller
+    public ModelAndView showQueue() {
+        return fillModel(new ModelAndView("users/admin/queue")); // TODO implement showQueue request controller
     }
 
     @RequestMapping("/admin/flags")
     public Object showFlags() {
-        return null; // TODO implement showFlags request controller
+        return fillModel(new ModelAndView("users/admin/flags")); // TODO implement showFlags request controller
     }
 
     @RequestMapping("/admin/flags/{id}/resolve/{resolved}")
@@ -43,18 +45,24 @@ public class ApplicationController extends HangarController {
     }
 
     @RequestMapping("/admin/health")
-    public Object showHealth() {
-        return null; // TODO implement showHealth request controller
+    public ModelAndView showHealth() {
+        return fillModel(new ModelAndView("users/admin/health")); // TODO implement showHealth request controller
     }
 
     @RequestMapping("/admin/log")
-    public Object showLog(@RequestParam Object page, @RequestParam Object userFilter, @RequestParam Object projectFilter, @RequestParam Object versionFilter, @RequestParam Object pageFilter, @RequestParam Object actionFilter, @RequestParam Object subjectFilter) {
-        return null; // TODO implement showLog request controller
+    public ModelAndView showLog(@RequestParam(required = false) Object page,
+                                @RequestParam(required = false) Object userFilter,
+                                @RequestParam(required = false) Object projectFilter,
+                                @RequestParam(required = false) Object versionFilter,
+                                @RequestParam(required = false) Object pageFilter,
+                                @RequestParam(required = false) Object actionFilter,
+                                @RequestParam(required = false) Object subjectFilter) {
+        return fillModel(new ModelAndView("users/admin/log"));  // TODO implement showLog request controller
     }
 
     @RequestMapping("/admin/stats")
-    public Object showStats(@RequestParam Object from, @RequestParam Object to) {
-        return null; // TODO implement showStats request controller
+    public ModelAndView showStats(@RequestParam(required = false) Object from, @RequestParam(required = false) Object to) {
+        return fillModel(new ModelAndView("users/admin/stats")); // TODO implement showStats request controller
     }
 
     @RequestMapping("/admin/user/{user}")

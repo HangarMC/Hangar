@@ -1,6 +1,8 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
+<#--
 @import controllers.sugar.Requests.OreRequest
 @import ore.OreConfig
 @import ore.db.Model
@@ -13,14 +15,15 @@
 
 @(mostRecentUnfinishedReview: Option[Review], reviews: Seq[(Model[Review], Option[String])], project: Project, version: Model[Version])(implicit messages: Messages,
         request: OreRequest[_], config: OreConfig, flash: Flash, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
+-->
 
-<#macro scripts>
+<#assign scripts>
     <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "javascripts/review.js" />"></script>
     <script @CSPNonce.attr>versionPath = '${helper.urlEncode(project.ownerName)}/${helper.urlEncode(project.slug)}/versions/${helper.urlEncode(version.name)}'</script>
-</#macro>
+</#assign>
 
-@layout.base(messages("review.title", project.name, version.name), scripts) {
-
+<#assign message><@spring.messageArgs code="review.title" args=[project.name version.name] /></#assign>
+<@base.base title=message additionalScripts=scripts>
     <div class="row">
         <div class="col-md-12  header-flags">
             <div class="clearfix">
@@ -204,4 +207,4 @@
             </div>
         </div>
     </div>
-}
+</@base.base>

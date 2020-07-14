@@ -19,8 +19,8 @@ public class OrgController extends HangarController {
     }
 
     @GetMapping("/organisations/new")
-    public Object showCreator() {
-        return null; // TODO implement showCreator request controller
+    public ModelAndView showCreator() {
+        return fillModel(new ModelAndView("createOrganization"));
     }
 
     @PostMapping("/organisations/new")
