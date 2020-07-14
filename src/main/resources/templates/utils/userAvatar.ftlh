@@ -5,52 +5,30 @@
 
 <#-- TODO: all the userName.nonEmpty/isEmpty stuff - how do you do this? -->
 
-<#assign src>
-    <#if imgSrc??>
-        ${imgSrc}
-    <#else>
-        <#if userName.nonEmpty>
-            ${avatarUrl}
+<#macro userAvatar userName="" avatarUrl="" imgSrc="" clazz="" attr={} href="">
+    <#assign src>
+        <#if !imgSrc.isEmpty()>
+            ${imgSrc}
+        <#else>
+            <#if !userName.isEmpty()>
+                ${avatarUrl}
+            </#if>
         </#if>
-    </#if>
-</#assign>
+    </#assign>
 
-<#--
+    <#assign url>
+        <#if !href.isEmpty()>
+            ${href}
+        <#elseif !userName.isEmpty()>
+            ${routes.getRouteUrl("users.showProjects", userName)}
+        <#else>
+            #
+        </#if>
+    </#assign>
 
-<#assign url>
-    <#if href??>
-        ${href}
-    <#elseif userName.isEmpty>
-        #
-    <#else>
-        ${routes.getRouteUrl("users.showProjects")} -- ????????
-    </#if>
-</#assign>
+    <#assign name>${userName}</#assign>
 
-@url = @{
-    if (href != null)
-        href
-    else if (userName.isEmpty)
-        "#"
-    else
-        routes.Users.showProjects(userName.get).url
-}
-
--->
-
-<#assign name>
-    <#if !userName.isEmpty>
-        ${userName}
-    </#if>
-</#assign>
-@name = @{
-    if (userName.isEmpty)
-        ""
-    else
-        userName
-}
-
-<#-- TODO: attrs here -->
-<a href="${url}" @for((k, v) <- attr) { @(s"$k=$v") }>
-    <img class="user-avatar ${clazz}" title="${name}" src="${src}" alt="${name}" />
-</a>
+    <a href="${url}" <#list attr as k, v>${k + "=" + v + " "}</#list>>
+        <img class="user-avatar ${clazz}" title="${name}" src="${src}" alt="${name}" />
+    </a>
+</#macro>
