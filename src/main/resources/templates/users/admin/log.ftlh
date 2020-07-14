@@ -115,7 +115,7 @@
                                         <small class="filter-version">(<a href="${routes.getRouteUrl("showLog", page, userFilter, projectFilter, action.version.versionString, pageFilter, actionFilter, subjectFilter)}">${action.version.versionString}</a>)</small>
                                     </td>
                                 </#if>
-                                @* Show diff only when page edit *@
+                                <#-- Show diff only when page edit -->
                                 <#if action.action == LoggedActionType.ProjectPageEdited || action.action == LoggedActionType.VersionDescriptionEdited>
                                     <td>
                                         <a href="#" class="data-view-old" data-view="${offset + index}">View</a>

@@ -1,4 +1,4 @@
-@(userName: Option[String], avatarUrl: String = "", imgSrc: String = null, clazz: String = "", attr: Map[String, String] = Map(), href: String = null)
+<#--@(userName: Option[String], avatarUrl: String = "", imgSrc: String = null, clazz: String = "", attr: Map[String, String] = Map(), href: String = null)-->
 
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
@@ -7,19 +7,19 @@
 
 <#macro userAvatar userName="" avatarUrl="" imgSrc="" clazz="" attr={} href="">
     <#assign src>
-        <#if !imgSrc.isEmpty()>
+        <#if imgSrc?has_content>
             ${imgSrc}
         <#else>
-            <#if !userName.isEmpty()>
+            <#if userName?has_content>
                 ${avatarUrl}
             </#if>
         </#if>
     </#assign>
 
     <#assign url>
-        <#if !href.isEmpty()>
+        <#if href?has_content>
             ${href}
-        <#elseif !userName.isEmpty()>
+        <#elseif userName?has_content>
             ${routes.getRouteUrl("users.showProjects", userName)}
         <#else>
             #
@@ -29,6 +29,6 @@
     <#assign name>${userName}</#assign>
 
     <a href="${url}" <#list attr as k, v>${k + "=" + v + " "}</#list>>
-        <img class="user-avatar ${clazz}" title="${name}" src="${src}" alt="${name}" />
+        <img class="user-avatar ${clazz}" title="${name}" src="${imgSrc}" alt="${name}" />
     </a>
 </#macro>

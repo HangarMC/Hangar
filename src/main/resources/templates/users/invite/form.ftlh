@@ -1,5 +1,8 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/utils/userAvatar.ftlh" as userAvatar />
+<#import "*/users/invite/userSearch.ftlh" as userSearch />
+<#import "*/users/invite/roleSelect.ftlh" as roleSelect />
 
 <#--
 @import ore.OreConfig
@@ -12,7 +15,7 @@
 @(owner: User, loadedUsers: Seq[Model[User]] = Seq(), roleCategory: RoleCategory)(implicit messages: Messages, config: OreConfig)
 -->
 
-<#macro form owner roleCategory loadedUsers=[]>
+<#macro form owner={} roleCategory="" loadedUsers=[]>
 
 <!-- Template row -->
 <table style="display: none;">
@@ -20,7 +23,6 @@
         <tr id="result-row">
             <td>
                 <input type="hidden"/>
-                <#import "*/utils/userAvatar.ftlh" as userAvatar>
                 <@userAvatar.userAvatar clazz = "user-avatar-xs"/>
 <#--                @userAvatar(None, clazz = "user-avatar-xs")-->
                 <i class="fas fa-times user-cancel"></i>
@@ -45,28 +47,30 @@
             <!-- Owner (not submitted) -->
             <tr>
                 <td>
-                    @userAvatar(Some(owner.name), owner.avatarUrl, clazz = "user-avatar-xs")
-                    <strong>${owner.name}</strong>
+                    <@userAvatar.userAvatar userName=owner.name avatarUrl=owner.avatarUrl clazz="user-avatar-xs" />
+                    <#if owner.name?has_content>
+                        <strong>${owner.name}</strong>
+                    </#if>
                     <span><i class="minor"><@spring.message "project.owner" /></i></span>
                 </td>
             </tr>
 
-            @loadedUsers.map { user =>
+            <#list loadedUsers as user>
                 <tr>
                     <td>
                         <input form="form-continue" type="hidden" value="${user.id}" />
-                        @userAvatar(Some(user.name), user.avatarUrl, clazz = "user-avatar-xs")
+                        <@userAvatar.userAvatar userName=user.name avatarUrl=user.avatarUrl clazz="user-avatar-xs" />
                         <a target="_blank" rel="noopener" href="${routes.getRouteUrl("users.showProjects", user.name)}">
                             ${user.name}
                         </a>
-                        <span>${users.invite.roleSelect(roleCategory)}</span>
+                        <span><@roleSelect.roleSelect  roleCategory=roleCategory /></span>
                     </td>
                 </tr>
-            }
+            </#list>
 
             <!-- User search -->
             <tr>
-                <td>@users.invite.userSearch()</td>
+                <td><@userSearch.userSearch /></td>
             </tr>
 
         </tbody>
