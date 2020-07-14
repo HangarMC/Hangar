@@ -1,7 +1,7 @@
 ## Templates to port
 ### -
-* [ ] createOrganization
-* [ ] swagger
+* [x] createOrganization
+* [x] swagger
 
 ### Projects
 * [ ] admin\flags
@@ -21,7 +21,7 @@
 * [ ] versions\log
 * [ ] versions\unsafeDownload
 * [ ] versions\view
-* [ ] create
+* [x] create
 * [ ] discuss
 * [ ] settings
 * [ ] tag
