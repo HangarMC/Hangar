@@ -44,7 +44,8 @@
 			<tbody>
 				<#list staff as user>
 				<tr>
-					<td>@userAvatar(user.name, User.avatarUrl(name), clazz = "user-avatar-xs")</td>
+                    <#import "*/utils/userAvatar.ftlh" as userAvatar>
+					<td><@userAvatar.userAvatar userName=user.name avatarUrl=User.avatarUrl(name) clazz="user-avatar-xs"></@userAvatar.userAvatar></td>
 					<td>
 						<a href="${routes.getRouteUrl("showActivities", name)}">${user.name}</a>
 					</td>

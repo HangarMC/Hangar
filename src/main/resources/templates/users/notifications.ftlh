@@ -87,7 +87,8 @@
                     <li class="list-group-item notification" data-action="${notification.action!"none"}"
                     data-id="@notification.id">
                         @origin.map { origin =>
-                            @userAvatar(Some(origin.name), origin.avatarUrl, clazz = "user-avatar-s")
+                            <#import "*/utils/userAvatar.ftlh" as userAvatar>
+                            <@userAvatar.userAvatar userName=origin.name avatarUrl=origin.avatarUrl clazz = "user-avatar-s"></@userAvatar.userAvatar>
                         }
                         @formatNotification(notification)
 

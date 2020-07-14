@@ -76,7 +76,8 @@
                             @u.orgas.map { case (organization, user, role, _) =>
                             <tr>
                                 <td>
-                                    @userAvatar(Some(organization.name), user.avatarUrl, clazz = "user-avatar-xxs")
+                                    <#import "*/utils/userAvatar.ftlh" as userAvatar>
+                                    <@userAvatar.userAvatar userName=organization.name avatarUrl=user.avatarUrl clazz="user-avatar-xxs"></@userAvatar.userAvatar>
                                 <a href="${routes.getRouteUrl("users.showProjects", organization.name)}">
                                 ${organization.name}
                                 </a>

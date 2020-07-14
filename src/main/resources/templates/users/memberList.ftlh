@@ -2,6 +2,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/utils/form.ftlh" as form>
 <#import "*/utils/csrf.ftlh" as csrf>
+<#import "*/utils/userAvatar.ftlh" as userAvatar>
 
 @import ore.OreConfig
 @import ore.models.user.role.UserRoleModel
@@ -31,7 +32,7 @@
         <ul style="display: none;">
             <li id="row-user" class="list-group-item">
                 <input type="hidden" />
-                @userAvatar(None, clazz = "user-avatar-xs")
+                <@userAvatar.userAvatar clazz="user-avatar-xs"></@userAvatar.userAvatar>
                 <a class="username"></a>
                 <i class="fas fa-times user-cancel"></i>
                 @users.invite.roleSelect(roleCategory = j.roleCategory, classes="pull-right")
@@ -101,7 +102,7 @@
             <!-- Member list -->
             @j.filteredMembers.map { case (role, user) =>
                 <li class="list-group-item">
-                    @userAvatar(Some(user.name), user.avatarUrl, clazz = "user-avatar-xs")
+                    <@userAvatar.userAvatar userName=user.name avatarUrl=user.avatarUrl clazz="user-avatar-xs"></@userAvatar.userAvatar>
                 <a class="username" href="${routes.getRouteUrl("users.showProjects", user.name)}">
                 ${user.name}
                 </a>
