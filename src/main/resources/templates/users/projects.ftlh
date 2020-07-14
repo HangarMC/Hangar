@@ -21,7 +21,7 @@
 
 <#macro scripts>
     <script type="text/javascript" src="<@hangar.url "build/user-profile.js" />"></script>
-    <#if u.isOrga && o.isDefined && canEditOrgMembers>
+    <#if u.isOrga && o?? && canEditOrgMembers>
     <script type="text/javascript" src="<@hangar.url "javascripts/orgInvites.js" />"></script>
     </#if>
     <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
@@ -35,14 +35,14 @@
             <div id="user-profile"></div>
         </div>
         <div class="col-md-4">
-            <#if u.isOrga && o.isDefined && canEditOrgMembers>
+            <#if u.isOrga && o?? && canEditOrgMembers>
                 <div class="panel-user-info panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title"><@spring.message "project.manager" /></h3>
                     </div>
                     <table class="table panel-body">
                         <tbody>
-                            @o.get._1.projectRoles.map { case (role, project) =>
+                            @o._1.projectRoles.map { case (role, project) =>
                             <tr>
                                 <td>
                                     <a href="${routes.getRouteUrl("projects.show", project.ownerName, project.slug)}">${project.ownerName}/${project.slug}</a>

@@ -46,7 +46,7 @@
                         <tr>
                             <td>${by}</td>
                             <td>${flag.reason}, ${flag.comment}</td>
-                            <td>${prettifyDateAndTime(flag.createdAt)}</td>
+                            <td>${flag.createdAt?string.long}</td>
                             <#if flag.isResolved>
                                 <td>${resolvedBy.get}
                                     at ${(flag.resolvedAt!OffsetDateTime.MIN)?string.long}</td>

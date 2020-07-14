@@ -42,10 +42,10 @@
 						@visibilityChanges.reverse.map { case (entry, createdBy) =>
 						<tr>
 							<td>${entry.visibility}</td>
-							<td>${prettifyDateAndTime(entry.createdAt)}</td>
+							<td>${entry.createdAt?string.long}</td>
 							<td>${entry.obj.render}</td>
-							<#if createdBy.isDefined>
-								<td>${createdBy.get.name}</td>
+							<#if createdBy??>
+								<td>${createdBy.name}</td>
 							<#else>
 								<td>Unknown</td>
                             </#if>

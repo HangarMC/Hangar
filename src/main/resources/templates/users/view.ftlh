@@ -50,7 +50,7 @@ scopedData.permissions.has(Permission.EditOrganizationSettings)
                         <a href="${routes.Organizations.updateAvatar(u.user.name)}"><i class="fas fa-edit"></i> <@spring.message "user.editAvatar" /></a>
                     </div>
 
-                    <#if !u.currentUser.get.readPrompts.contains(Prompt.ChangeAvatar)>
+                    <#if !u.currentUser.readPrompts.contains(Prompt.ChangeAvatar)>
                         @prompt(Prompt.ChangeAvatar, "popover-avatar")
                     </#if>
                 </#if>
@@ -94,8 +94,8 @@ scopedData.permissions.has(Permission.EditOrganizationSettings)
 
                     <div class="user-tag">
                         <i class="minor">
-                        <#if u.user.tagline.isDefined>
-                            @u.user.tagline.get
+                        <#if u.user.tagline??>
+                            ${u.user.tagline.get}
                         <#elseif u.isCurrent || canEditOrgSettings>
                             Add a tagline
                         </#if>
@@ -114,17 +114,17 @@ scopedData.permissions.has(Permission.EditOrganizationSettings)
             <ul class="user-roles">
             @defining(u.globalRoles.toSeq.sortBy(_.permissions: Long).lastOption) { roleOpt =>
                 @roleOpt.map { role =>
-                    <li class="user-role channel" style="background-color: @role.color.hex">@role.title</li>
+                    <li class="user-role channel" style="background-color: ${role.color.hex}">${role.title}</li>
                 }
             }
             </ul>
 
             <div class="user-info">
-                <i class="minor">@u.projectCount&nbsp;<#if u.projectCount == 1>project<#else>projects</#if></i><br/>
+                <i class="minor">${u.projectCount}&nbsp;<#if u.projectCount == 1>project<#else>projects</#if></i><br/>
                 <i class="minor">
                 @messages(
                     "user.memberSince",
-                    u.user.joinDate.map(prettifyDate).getOrElse(prettifyDate(u.user.createdAt)))
+                    u.user.joinDate.map(prettifyDate)!prettifyDate(u.user.createdAt))
                 </i><br/>
                 <a href="https://papermc.io/forums/users/${u.user.name}">
                     <@spring.message "user.viewOnForums" /> <i class="fas fa-external-link-alt"></i>
@@ -169,8 +169,8 @@ scopedData.permissions.has(Permission.EditOrganizationSettings)
                         <h4><@spring.message "user.tagline" /></h4>
                         <p><@spring.message "user.tagline.info" /></p>
                     </div>
-                    <input class="form-control" type="text" value="@u.user.tagline.getOrElse("")" id="tagline"
-                           name="tagline" maxlength="@config.ore.users.maxTaglineLen" />
+                    <input class="form-control" type="text" value="${u.user.tagline!""}" id="tagline"
+                           name="tagline" maxlength="${config.ore.users.maxTaglineLen}" />
                 </div>
                 <div class="clearfix"></div>
             </div>

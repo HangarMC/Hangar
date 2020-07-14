@@ -53,7 +53,7 @@
 						${user.role.title}
 						</span>
 					</td>
-					<td>@prettifyDate(joinDate.getOrElse(createdAt))</td>
+					<td>@prettifyDate(joinDate!createdAt)</td>
 				</tr>
 				</#list>
 

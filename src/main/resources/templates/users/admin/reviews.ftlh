@@ -40,8 +40,8 @@
                         <a href="${routes.getRouteUrl("versions.downloadJar", project.ownerName, project.slug, version.versionString, "")}" class="btn btn-info">Download File</a>
                     </span>
                     <span class="btn-group-sm">
-                    <#if mostRecentUnfinishedReview.isDefined>
-                        <#if request.headerData.isCurrentUser(mostRecentUnfinishedReview.get.userId)>
+                    <#if mostRecentUnfinishedReview??>
+                        <#if request.headerData.isCurrentUser(mostRecentUnfinishedReview.userId)>
                             <button class="btn btn-review-stop btn-danger"><i class="fas fa-stop-circle"></i> <@spring.message "review.stop" /></button>
                             <button class="btn btn-review-approve btn-success"><i class="fas fa-thumbs-up"></i> <@spring.message "user.queue.approve" /></button>
                             <button class="btn btn-review-approve-partial btn-success"><i class="fas fa-thumbs-up"></i> <@spring.message "user.queue.approvePartial" /></button>
@@ -62,8 +62,8 @@
             </#if>
         </div>
     </div>
-    <#if mostRecentUnfinishedReview.isDefined>
-        <#if request.headerData.isCurrentUser(mostRecentUnfinishedReview.get.userId)>
+    <#if mostRecentUnfinishedReview??>
+        <#if request.headerData.isCurrentUser(mostRecentUnfinishedReview.userId)>
             <div class="row">
                 <div class="col-md-12">
                     <div class="input-group" style="width: 100%;
@@ -93,19 +93,19 @@
                 <tbody>
                 @reviews.reverse.zipWithIndex.map { case (t, index) =>
                     @defining((t._1, t._2)) { case (item, name) =>
-                        <#if item.endedAt.isDefined>
+                        <#if item.endedAt??>
                             <#if reviews.size > (reviews.size - index)>
                                 <#if (item.endedAt?string.long).equalsIgnoreCase(reviews.reverse(reviews.size - index - 1)._1.createdAt?string.long)>
                                     <tr>
                                         <td>${item.endedAt?string.long}</td>
                                         <td>
-                                            <strong>@name.getOrElse("Unknown")</strong>
+                                            <strong>${name!"Unknown"}</strong>
                                             took over from
-                                            <strong>@name.getOrElse("Unknown")</strong>
+                                            <strong>${name!"Unknown"}</strong>
                                             <#if !item.decodeMessages.exists(_.isTakeover)>
                                                 <i>- no message provided -</i>
                                             <#else>
-                                                <i>@item.decodeMessages.filter(_.isTakeover).head.render</i>
+                                                <i>${item.decodeMessages.filter(_.isTakeover).head.render}</i>
                                             </#if>
                                         </td>
                                     </tr>
@@ -116,7 +116,7 @@
                                     </tr>
                                 </#if>
                             <#else>
-                                <#if version.approvedAt.isDefined>
+                                <#if version.approvedAt??>
                                     <tr>
                                         <td>${item.endedAt?string.long}</td>
                                         <td><strong>${name!"Unknown"}</strong> approved</td>

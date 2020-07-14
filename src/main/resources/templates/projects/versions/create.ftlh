@@ -42,7 +42,7 @@
                         <span>@Html(messages("version.create.info", projectName, pluginId))</span>
                     </div>
 
-                    <#if pending.isDefined>
+                    <#if pending??>
                         @* Show plugin meta *@
                         @defining(pending.get) { version: PendingVersion =>
                             <div class="plugin-meta">
@@ -57,7 +57,7 @@
                                         @version.description.map { description =>
                                             ${description}
                                         }.getOrElse {
-                                            ${projectDescription.getOrElse(messages("version.create.noDescription"))}
+                                            ${projectDescription!messages("version.create.noDescription")}
                                         }
                                         </td>
                                     </tr>
@@ -138,7 +138,7 @@
                                     @editor(
                                         savable = false,
                                         enabled = true,
-                                        raw = version.description.getOrElse(""),
+                                        raw = version.description!"",
                                         cancellable = false,
                                         targetForm = "form-publish"
                                     )
@@ -156,10 +156,10 @@
                                 <@spring.message "version.create.selectFile" />
                             </label>
 
-                            @projects.helper.alertFile()
+                            ${projects.helper.alertFile()}
                     }
 
-                    <#if pending.isDefined>
+                    <#if pending??>
                         @* Ready to go! *@
                         @defining(pending.get) { version: PendingVersion =>
                             @form(action = routes.getRouteUrl("versions.publish",
@@ -181,14 +181,14 @@
             </div>
             <span class="pull-left tos"><i>@Html(messages("version.create.tos", "#"))</i></span>
         </div>
-        <#if pending.isDefined>
-            @projects.helper.createSteps(2)
+        <#if pending??>
+            ${projects.helper.createSteps(2)}
         <#else>
-            @projects.helper.createSteps(1)
+            ${projects.helper.createSteps(1)}
         </#if>
 
     </div>
 
-    @projects.channels.helper.modalManage()
+    ${projects.channels.helper.modalManage()}
 
 </@base.base>

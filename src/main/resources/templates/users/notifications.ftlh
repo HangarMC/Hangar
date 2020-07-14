@@ -84,7 +84,7 @@
 
                     <ul class="list-group">
                     @notifications.map { case (notification, origin) =>
-                    <li class="list-group-item notification" data-action="@notification.action.getOrElse("none")"
+                    <li class="list-group-item notification" data-action="${notification.action!"none"}"
                     data-id="@notification.id">
                         @origin.map { origin =>
                             @userAvatar(Some(origin.name), origin.avatarUrl, clazz = "user-avatar-s")

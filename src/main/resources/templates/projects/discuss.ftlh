@@ -29,14 +29,14 @@ Discussion page within Project overview.
 
     <div id='discourse-comments'></div>
     <div class="row">
-    <#if request.headerData.currentUser.isDefined>
+    <#if request.headerData.currentUser??>
         <div class="col-md-8">
             <div class="reply-box">
                 <#if sp.canPostAsOwnerOrga>
                 <div class="pull-right push-down">
                     <i class="minor"><@spring.message "project.discuss.postAs" /></i>
                     <select name="poster" form="form-editor-save">
-                        <option selected>${request.headerData.currentUser.get.name}</option>
+                        <option selected>${request.headerData.currentUser.name}</option>
                         <option>${p.projectOwner.name}</option>
                     </select>
                 </div>

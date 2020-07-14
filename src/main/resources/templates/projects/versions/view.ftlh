@@ -169,7 +169,7 @@
                         v.p.project.ownerName, v.p.project.slug, v.v.versionString
                     ),
                     enabled = sp.perms(Permission.EditPage),
-                    raw = v.v.description.getOrElse(""),
+                    raw = v.v.description!"",
                     cooked = v.v.obj.render,
                     subject = "Version"
                 )
@@ -200,9 +200,9 @@
 
                         @v.filteredDependencies.map { case (depend, project)=>
                         <li class="list-group-item">
-                            <#if project.isDefined>
-                                <a href="${routes.getRouteUrl("projects.show", project.get.ownerName, project.get.slug)}">
-                                    <strong>${project.get.name}</strong>
+                            <#if project??>
+                                <a href="${routes.getRouteUrl("projects.show", project.ownerName, project.slug)}">
+                                    <strong>${project.name}</strong>
                                 </a>
                             <#else>
                                 <div class="minor">

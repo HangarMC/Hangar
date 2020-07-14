@@ -49,7 +49,7 @@
                     </td>
                     <td <#if isActiveSort(UserOrdering.Projects)>class="user-sort"</#if> data-list="authors" >
                         Projects
-                        <#if isActiveSort(UserOrdering.Projects)><i class="o fas fa-@direction"></i></#if>
+                        <#if isActiveSort(UserOrdering.Projects)><i class="o fas fa-${direction}"></i></#if>
                     </td>
                 </tr>
             </thead>
@@ -62,19 +62,19 @@
                     </td>
                     <td>
                         @optDonorRole.map { role =>
-                            <span class="channel channel-sm" style="background-color: @role.color.hex">
+                            <span class="channel channel-sm" style="background-color: ${role.color.hex}">
                             @role.title
                             </span>
                         }
                         @optRole.map { role =>
-                            <span class="user-role channel" style="background-color: @role.color.hex">
+                            <span class="user-role channel" style="background-color: ${role.color.hex}">
                             @role.title
                             </span>
                         }
 
                     </td>
-                    <td>@prettifyDate(joinDate.getOrElse(createdAt))</td>
-                    <td>@projectCount</td>
+                    <td>@prettifyDate(joinDate!createdAt)</td>
+                    <td>${projectCount}</td>
                 </tr>
                 }
 

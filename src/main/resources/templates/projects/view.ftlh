@@ -21,8 +21,6 @@ Base template for Project overview.
         request: OreRequest[_], flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
 -->
 
-<#assign appRoutes>${controllers.routes.Application}</#assign>
-
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/projectDetail.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/pageEdit.js" />"></script>
@@ -121,7 +119,7 @@ Base template for Project overview.
                         </#if>
 
                         <!-- Flag button -->
-                        <#if request.hasUser && !request.currentUser.get.name.equals(p.project.ownerName)
+                        <#if request.hasUser && !request.currentUser.name.equals(p.project.ownerName)
                             && !sp.uProjectFlags
                             && p.project.visibility != Visibility.SoftDelete>
                             <button data-toggle="modal" data-target="#modal-flag" class="btn btn-default">
@@ -188,7 +186,7 @@ Base template for Project overview.
                                     Staff notes ${p.noteCount} </a></li>
                             </#if>
                             <#if request.headerData.globalPerm(Permission.ViewLogs)>
-                            <li><a href="${appRoutes.showLog(None, None, Some(p.project.pluginId), None, None, None, None)}">
+                            <li><a href="${routes.getRouteUrl("showLog", "", "", p.project.pluginId, "", "", "", "")}">
                                     User Action Logs</a></li>
                             </#if>
                             <li><a href="https://papermc.io/forums/${p.project.ownerName}">Owner on forum <i class="fas fa-external-link-alt" aria-hidden="true"></i></a></li>
@@ -218,7 +216,7 @@ Base template for Project overview.
                                 </a>
                             </li>
 
-                            <#if p.project.topicId.isDefined>
+                            <#if p.project.topicId??>
                                 <li id="discussion" class="">
                                     <a href="${Projects.showDiscussion(
                                         p.project.ownerName, p.project.slug)}">

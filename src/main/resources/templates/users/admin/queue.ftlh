@@ -74,8 +74,8 @@
                             <span class="channel" style="background-color: ${entry.channelColor.hex}">${entry.channelName}</span>
                         </td>
                         <td>
-                            <#if entry.versionAuthor.isDefined>
-                                <a href="https://papermc.io/forums/users/@entry.versionAuthor.get">
+                            <#if entry.versionAuthor??>
+                                <a href="https://papermc.io/forums/users/${entry.versionAuthor}">
                                 ${entry.versionAuthor}
                                 </a>
                             <#else>
@@ -163,7 +163,7 @@
                                 <span class="channel" style="background-color: ${entry.channelColor.hex};">${entry.channelName}</span>
                             </td>
                             <td>
-                                <#if entry.versionAuthor.isDefined>
+                                <#if entry.versionAuthor??>
                                     <a href="https://papermc.io/forums/users/${entry.versionAuthor}">
                                     ${entry.versionAuthor}
                                     </a>

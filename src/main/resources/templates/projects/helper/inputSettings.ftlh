@@ -22,10 +22,10 @@
         </p>
     </div>
     <div class="setting-content">
-        <select class="form-control" id="category" name="category" form="@form">
+        <select class="form-control" id="category" name="category" form="${form}">
             <#list Category.values as category>
                 <#if category.isVisible>
-                    <option <#if selected.isDefined && selected.get.equals(category)> selected </#if> >
+                    <option <#if selected?? && selected.equals(category)> selected </#if> >
                         ${category.title}
                     </option>
                 </#if>
@@ -55,7 +55,7 @@
             to gather information about your project.
         </p>
     </div>
-    <input <#if homepage.isDefined> value="${homepage.get}" </#if> form="@form" type="url" class="form-control" id="homepage"
+    <input <#if homepage??> value="${homepage}" </#if> form="${form}" type="url" class="form-control" id="homepage"
     name="homepage" placeholder="https://papermc.io" />
     <div class="clearfix"></div>
 </div>
@@ -68,7 +68,7 @@
             track bugs.
         </p>
     </div>
-    <input <#if issues.isDefined> value="${issues.get}" </#if> form="@form" type="url" class="form-control" id="issues"
+    <input <#if issues??> value="${issues}" </#if> form="${form}" type="url" class="form-control" id="issues"
            name="issues" placeholder="https://github.com/MiniDigger/Hangar/issues" />
     <div class="clearfix"></div>
 </div>
@@ -78,7 +78,7 @@
         <h4>Source code <i>(optional)</i></h4>
         <p>Support the community of developers by making your project open source!</p>
     </div>
-    <input <#if source.isDefined> value="@source.get" </#if> form="@form" type="url" class="form-control" id="source"
+    <input <#if source??> value="${source}" </#if> form="${form}" type="url" class="form-control" id="source"
            name="source" placeholder="https://github.com/MiniDigger/Hangar" />
 </div>
 
@@ -90,7 +90,7 @@
             somewhere else.
         </p>
     </div>
-    <input <#if support.isDefined> value="${support.get}" </#if> form="@form" type="url" class="form-control" id="support"
+    <input <#if support??> value="${support}" </#if> form="${form}" type="url" class="form-control" id="support"
     name="support" placeholder="https://discord.gg/papermc" />
     <div class="clearfix"></div>
 </div>
@@ -104,11 +104,11 @@
         <div class="input-group-btn">
             <button type="button" class="btn btn-default btn-license dropdown-toggle" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
-                <span class="license">${licenseName.getOrElse(messages("licenses.mit"))}</span>
+                <span class="license">${licenseName!messages("licenses.mit")}</span>
                 <span class="caret"></span>
             </button>
-            <input type="text" class="form-control" style="display: none;" name="license-name" form="@form"
-                   value="@licenseName.getOrElse(messages("licenses.mit"))" />
+            <input type="text" class="form-control" style="display: none;" name="license-name" form="${form}"
+                   value="${licenseName!messages("licenses.mit")}" />
             <ul class="dropdown-menu dropdown-license">
                 <li><a><@spring.message "licenses.mit" /></a></li>
                 <li><a><@spring.message "licenses.apache2.0" /></a></li>
@@ -118,8 +118,8 @@
                 <li><a class="license-custom"><@spring.message "licenses.custom" />&hellip;</a></li>
             </ul>
         </div>
-        <input type="text" name="license-url" class="form-control" form="@form"
-               placeholder="https://github.com/MiniDigger/Hangar/LICENSE.txt" value="@licenseUrl">
+        <input type="text" name="license-url" class="form-control" form="${form}"
+               placeholder="https://github.com/MiniDigger/Hangar/LICENSE.txt" value="${licenseUrl}">
     </div>
     <div class="clearfix"></div>
 </div>
