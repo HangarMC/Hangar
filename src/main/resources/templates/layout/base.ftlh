@@ -26,7 +26,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <link rel="prefetch" href="<@hangar.url "manifest/manifest.json" />">
         <link rel="prefetch" href="<@hangar.url "lib/jquery/dist/jquery.min.js" />">
 
-        <title>${title}</title>
+        <title>${title} | Hangar</title>
 
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">

@@ -22,8 +22,10 @@
                 <div class="project-body panel-body">
                     <p class="minor"> <@spring.message "org.info" /></p>
 
-                    @form(action = routes.Organizations.create(), Symbol("id") -> "form-continue") {
-                        @CSRF.formField
+                    <#import "*/utils/form.ftlh" as form>
+                    <@form.form action=routes.getRouteUrl("org.create") method="POST" id="form-continue">
+                        <#import "*/utils/csrf.ftlh" as csrf>
+                        <@csrf.formField />
                         <div class="setting">
                             <div class="setting-description">
                                 <h4><@spring.message "org.name" /></h4>
@@ -33,9 +35,11 @@
                             <i class="fas fa-spinner fa-spin status-org-name" style="display: none;"></i>
                             <div class="clearfix"></div>
                         </div>
-                    }
+                    </@form.form>
 
-                    @users.invite.form(owner = request.headerData.currentUser.get, roleCategory = RoleCategory.Organization)
+                    <#import "*/users/invite/form.ftlh" as userForm>
+<#--                    <@userForm.form owner=request.headerData.currentUser roleCategory=RoleCategory.Organization />-->
+                    <@userForm.form owner="" roleCategory="" />
 
                     <button title="Continue" type="submit" name="create" form="form-continue"
                     value="<@spring.message "general.continue" />"

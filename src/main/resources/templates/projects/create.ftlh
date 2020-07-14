@@ -41,8 +41,10 @@ Page used for uploading and creating new projects.
                     </div>
 
                     <div>
-                        @form(action = routes.getRouteUrl("projects.createProject")) {
-                            @CSRF.formField
+                        <#import "*/utils/form.ftlh" as form>
+                        <@form.form action=routes.getRouteUrl("projects.createProject") method="POST">
+                            <#import "*/utils/csrf.ftlh" as csrf>
+                            <@csrf.formField />
                             <div class="form-group">
                                 <label for="projectName"><@spring.message "project.create.input.name" /></label>
                                 <input type="text" id="projectName" name="name" class="form-control">
@@ -56,8 +58,8 @@ Page used for uploading and creating new projects.
                             <div class="form-group">
                                 <label for="projectCategory"><@spring.message "project.create.input.category" /></label>
                                 <select id="projectCategory" name="category" class="form-control">
-                                    <#-- todo: Category.visible -->
-                                <#list Category.visible as cat>
+                                <#assign Category=@helper["me.minidigger.hangar.model.Category"]>
+                                <#list Category.values() as cat>
                                     <option>${cat.title}</option>
                                 </#list>
                                 </select>
@@ -71,7 +73,7 @@ Page used for uploading and creating new projects.
                             <div class="form-group">
                                 <label for="projectCategory"><@spring.message "project.owner" /></label>
                                 <select id="projectCategory" name="owner" class="form-control">
-                                    <option value="@user.id.value">@user.name</option>
+                                    <option value="${user.id.value}">${user.name}</option>
                                     <#list createProjectOrgas as orga>
                                         <option value="${orga.id.value}">${orga.name}</option>
                                     </#list>
@@ -79,7 +81,7 @@ Page used for uploading and creating new projects.
                             </div>
 
                             <button type="submit" class="btn btn-primary">Create project</button>
-                        }
+                        </@form.form>
                     </div>
                 </div>
             </div>

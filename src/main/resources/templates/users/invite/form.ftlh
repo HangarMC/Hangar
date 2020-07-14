@@ -1,6 +1,7 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
 
+<#--
 @import ore.OreConfig
 @import ore.db.Model
 @import ore.models.user.User
@@ -9,6 +10,9 @@
 @import views.html.utils.userAvatar
 
 @(owner: User, loadedUsers: Seq[Model[User]] = Seq(), roleCategory: RoleCategory)(implicit messages: Messages, config: OreConfig)
+-->
+
+<#macro form owner roleCategory loadedUsers=[]>
 
 <!-- Template row -->
 <table style="display: none;">
@@ -16,7 +20,9 @@
         <tr id="result-row">
             <td>
                 <input type="hidden"/>
-                @userAvatar(None, clazz = "user-avatar-xs")
+                <#import "*/utils/userAvatar.ftlh" as userAvatar>
+                <@userAvatar.userAvatar clazz = "user-avatar-xs"/>
+<#--                @userAvatar(None, clazz = "user-avatar-xs")-->
                 <i class="fas fa-times user-cancel"></i>
                 <a class="username" target="_blank" rel="noopener" href=""></a>
                 <span>@users.invite.roleSelect(roleCategory)</span>
@@ -66,3 +72,4 @@
         </tbody>
     </table>
 </div>
+</#macro>
