@@ -1,5 +1,8 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/utils/userAvatar.ftlh" as userAvatar />
+<#import "*/users/invite/userSearch.ftlh" as userSearch />
+<#import "*/users/invite/roleSelect.ftlh" as roleSelect />
 
 <#--
 @import ore.OreConfig
@@ -12,9 +15,8 @@
 @(owner: User, loadedUsers: Seq[Model[User]] = Seq(), roleCategory: RoleCategory)(implicit messages: Messages, config: OreConfig)
 -->
 
-<#macro form owner roleCategory loadedUsers=[]>
+<#macro form owner roleCategory="" loadedUsers=[]>
 
-<#import "*/utils/userAvatar.ftlh" as userAvatar>
 <#-- Template row -->
 <table style="display: none;">
     <tbody>
@@ -45,12 +47,14 @@
             <tr>
                 <td>
                     <@userAvatar.userAvatar userName=owner.name avatarUrl=owner.avatarUrl clazz="user-avatar-xs" />
-                    <strong>${owner.name}</strong>
+                    <#if owner.name?has_content>
+                        <strong>${owner.name}</strong>
+                    </#if>
                     <span><i class="minor"><@spring.message "project.owner" /></i></span>
                 </td>
             </tr>
 
-            @loadedUsers.map { user =>
+            <#list loadedUsers as user>
                 <tr>
                     <td>
                         <input form="form-continue" type="hidden" value="${user.id}" />
@@ -58,14 +62,14 @@
                         <a target="_blank" rel="noopener" href="${routes.getRouteUrl("users.showProjects", user.name)}">
                             ${user.name}
                         </a>
-                        <span>${users.invite.roleSelect(roleCategory)}</span>
+                        <span><@roleSelect.roleSelect  roleCategory=roleCategory /></span>
                     </td>
                 </tr>
-            }
+            </#list>
 
             <#-- User search -->
             <tr>
-                <td>@users.invite.userSearch()</td>
+                <td><@userSearch.userSearch /></td>
             </tr>
 
         </tbody>
