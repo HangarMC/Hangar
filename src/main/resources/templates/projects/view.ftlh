@@ -4,6 +4,7 @@
 
 <#--
 Base template for Project overview.
+TODO: this is a layout, should we move/rename it?
 -->
 
 <#--
@@ -21,41 +22,43 @@ Base template for Project overview.
         request: OreRequest[_], flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
 -->
 
-<#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "javascripts/projectDetail.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "javascripts/pageEdit.js" />"></script>
-    <script <#-- @CSPNonce.attr -->>
-            var projectOwner = "${p.project.ownerName}";
-            var projectSlug = "${p.project.slug}";
-            var projectId = "${p.project.pluginId}";
-            var alreadyStarred = ${sp.starred};
-            $(function() { $(".nav").find("${active}").addClass("active"); });
-    </script>
-}
-</#assign>
+<#macro view p sp active noButtons=false additionalScripts="" additionalStyling="">
+    <#assign scriptsVar>
+        <script type="text/javascript" src="<@hangar.url "javascripts/projectDetail.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "javascripts/pageEdit.js" />"></script>
+        ${additionalScripts}
+        <script <#-- @CSPNonce.attr -->>
+                var projectOwner = "${p.project.ownerName}";
+                var projectSlug = "${p.project.slug}";
+                var projectId = "${p.project.pluginId}";
+                var alreadyStarred = ${sp.starred};
+                $(function() { $(".nav").find("${active}").addClass("active"); });
+        </script>
+    }
+    </#assign>
 
-<#assign metaVar>
-    <meta property="og:title" content="${p.project.ownerName} / ${p.project.name}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="${config.app.baseUrl}${Projects.show(p.project.ownerName, p.project.slug)}" />
-    <meta property="og:image" content="${p.iconUrl}" />
-    <meta property="og:site_name" content="<@spring.message "general.appName" />" />
-    <meta property="og:description" content="${p.project.description!}" />
-</#assign>
+    <#assign metaVar>
+        <meta property="og:title" content="${p.project.ownerName} / ${p.project.name}" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="${config.app.baseUrl}${Projects.show(p.project.ownerName, p.project.slug)}" />
+        <meta property="og:image" content="${p.iconUrl}" />
+        <meta property="og:site_name" content="<@spring.message "general.appName" />" />
+        <meta property="og:description" content="${p.project.description!}" />
+    </#assign>
 
-<@base.base title=(p.project.ownerName + " / " + p.project.name) additionalScripts=scriptsVar additionalMeta=metaVar>
-    <div class="project-header-container">
-        <#if p.visibility != Visibility.Public>
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="alert alert-danger" role="alert" style="margin: 0.2em 0 0 0">
-                        <#if p.visibility == Visibility.NeedsChanges>
-                            <#if sp.perms(Permission.EditPage)>
-                                <a class="btn btn-success pull-right" href="${p.fullSlug}/manage/sendforapproval">Send for approval</a>
-                                }
-                                <strong><@spring.message "visibility.notice." + p.visibility.nameKey /></strong>
-                                <br>
-                                ${p.renderVisibilityChange!"Unknown"}
+    <@base.base title=(p.project.ownerName + " / " + p.project.name) additionalScripts=scriptsVar additionalStyling=additionalStyling additionalMeta=metaVar>
+        <div class="project-header-container">
+            <#if p.visibility != Visibility.Public>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="alert alert-danger" role="alert" style="margin: 0.2em 0 0 0">
+                            <#if p.visibility == Visibility.NeedsChanges>
+                                <#if sp.perms(Permission.EditPage)>
+                                    <a class="btn btn-success pull-right" href="${p.fullSlug}/manage/sendforapproval">Send for approval</a>
+                                </#if>
+                                    <strong><@spring.message "visibility.notice." + p.visibility.nameKey /></strong>
+                                    <br>
+                                    ${p.renderVisibilityChange!"Unknown"}
                             <#else>
                                 <#if p.visibility == Visibility.SoftDelete>
                                     <@spring.messageArgs "visibility.notice." + p.visibility.nameKey, [p.lastVisibilityChangeUser] />
@@ -64,217 +67,218 @@ Base template for Project overview.
                                     ${p.renderVisibilityChange!}
                                 </#if>
                             </#if>
-                        </#if>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </#if>
+            </#if>
 
-        <!-- Header -->
-        <div class="row">
-            <div class="col-md-6">
-                <div class="project-header">
-                    <div class="project-path">
-                        <a href="${routes.Users.showProjects(p.project.ownerName)}">${p.project.ownerName}</a>
-                        /
-                        <a class="project-name" href="${Projects.show(p.project.ownerName, p.project.slug)}">${@p.project.name}</a>
-                    </div>
-                    <div>
-                        <i class="minor" title="@description">${p.project.description!}</i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <#if !noButtons>
-                    <div class="pull-right project-controls">
-
-                        <#-- TODO
-                        @flash.get("reported").map { _ =>
-                        <span class="flag-msg">
-                            <i class="fas fa-thumbs-up"></i> Flag submitted for review
-                        </span>
-                        }
-                        -->
-
-                        <#if p.project.visibility != Visibility.SoftDelete>
-                            <#if request.currentUser.exists(u => !p.project.isOwner(u))> <#-- todo: if current user == owner -->
-                                <button class="btn btn-default btn-star">
-                                    <i id="icon-star" <#if sp.starred>
-                                       class="fas fa-star"
-                                       <#else>
-                                       class="far fa-star"
-                                       </#if>></i>
-                                    <span class="starred">${p.starCount}</span>
-                                </button>
-
-                                <button class="btn btn-watch btn-default <#if sp.watching> watching </#if>">
-                                    <i class="fas <#if sp.watching> fa-eye-slash <#else> fa-eye </#if>"></i>
-                                    <span class="watch-status"> <#if sp.watching> Unwatch <#else> Watch </#if></span>
-                                </button>
-                            <#else>
-                                <span class="minor stars-static">
-                                    <i class="fas fa-star"></i> ${p.starCount}
-                                </span>
+            <!-- Header -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="project-header">
+                        <div class="project-path">
+                            <a href="${routes.getRouteUrl("users.showProjects", p.project.ownerName)}">${p.project.ownerName}</a>
+                            /
+                            <a class="project-name" href="${routes.getRouteUrl("projects.show", p.project.ownerName, p.project.slug)}">${@p.project.name}</a>
+                        </div>
+                        <div>
+                            <#if p.project.description>
+                                <i class="minor" title="${p.project.description}">${p.project.description}</i>
                             </#if>
-                        </#if>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <#if !noButtons>
+                        <div class="pull-right project-controls">
 
-                        <!-- Flag button -->
-                        <#if request.hasUser && !request.currentUser.name.equals(p.project.ownerName)
-                            && !sp.uProjectFlags
-                            && p.project.visibility != Visibility.SoftDelete>
-                            <button data-toggle="modal" data-target="#modal-flag" class="btn btn-default">
-                                <i class="fas fa-flag"></i> <@spring.message "project.flag" />
-                            </button>
-                            <div class="modal fade" id="modal-flag" tabindex="-1" role="dialog"
-                                 aria-labelledby="label-flag">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            <h4 class="modal-title" id="label-flag">Flag project</h4>
+                            <#-- TODO
+                            @flash.get("reported").map { _ =>
+                            <span class="flag-msg">
+                                <i class="fas fa-thumbs-up"></i> Flag submitted for review
+                            </span>
+                            }
+                            -->
+
+                            <#if p.project.visibility != Visibility.SoftDelete>
+                                <#if request.currentUser.exists(u => !p.project.isOwner(u))> <#-- todo: if current user == owner -->
+                                    <button class="btn btn-default btn-star">
+                                        <i id="icon-star" <#if sp.starred>
+                                           class="fas fa-star"
+                                           <#else>
+                                           class="far fa-star"
+                                           </#if>></i>
+                                        <span class="starred">${p.starCount}</span>
+                                    </button>
+
+                                    <button class="btn btn-watch btn-default <#if sp.watching> watching </#if>">
+                                        <i class="fas <#if sp.watching> fa-eye-slash <#else> fa-eye </#if>"></i>
+                                        <span class="watch-status"> <#if sp.watching> Unwatch <#else> Watch </#if></span>
+                                    </button>
+                                <#else>
+                                    <span class="minor stars-static">
+                                        <i class="fas fa-star"></i> ${p.starCount}
+                                    </span>
+                                </#if>
+                            </#if>
+
+                            <!-- Flag button -->
+                            <#if request.hasUser && !request.currentUser.name.equals(p.project.ownerName)
+                                && !sp.uProjectFlags
+                                && p.project.visibility != Visibility.SoftDelete>
+                                <button data-toggle="modal" data-target="#modal-flag" class="btn btn-default">
+                                    <i class="fas fa-flag"></i> <@spring.message "project.flag" />
+                                </button>
+                                <div class="modal fade" id="modal-flag" tabindex="-1" role="dialog"
+                                     aria-labelledby="label-flag">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                                <h4 class="modal-title" id="label-flag">Flag project</h4>
+                                            </div>
+                                            @form(action = Projects.flag(
+                                                p.project.ownerName, p.project.slug)) {
+                                                @CSRF.formField
+                                                <div class="modal-body">
+                                                    <ul class="list-group list-flags">
+                                                        <#list FlagReason.values.indices as i>
+                                                            <li class="list-group-item">
+                                                                <span>${FlagReason.withValue(i).title}</span> <#-- todo: how do you freemarker this -->
+                                                                <span class="pull-right">
+                                                                    <input required type="radio"
+                                                                           value="${FlagReason.withValue(i).value}" name="flag-reason"/>
+                                                                </span>
+                                                            </li>
+                                                        </#list>
+                                                    </ul>
+                                                    <input class="form-control" name="comment" type="text"
+                                                           maxlength="255" required="required"
+                                                           placeholder="<@spring.message "ph.comment" />&hellip;" />
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                        Close
+                                                    </button>
+                                                    <button type="submit" class="btn btn-primary">Flag</button>
+                                                </div>
+                                            }
                                         </div>
-                                        <#-- todo: ???
-                                        @form(action = Projects.flag(
-                                        p.project.ownerName, p.project.slug)) {
-                                        @CSRF.formField
-                                        -->
-                                        <div class="modal-body">
-                                            <ul class="list-group list-flags">
-                                                <#list FlagReason.values.indices as i>
-                                                    <li class="list-group-item">
-                                                        <span>${FlagReason.withValue(i).title}</span> <#-- todo: how do you freemarker this -->
-                                                        <span class="pull-right">
-                                                            <input required type="radio"
-                                                                   value="@FlagReason.withValue(i).value" name="flag-reason"/>
-                                                        </span>
-                                                    </li>
-                                                </#list>
-                                            </ul>
-                                            <input class="form-control" name="comment" type="text"
-                                                   maxlength="255" required="required"
-                                                   placeholder="<@spring.message "ph.comment" />&hellip;" />
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-default" data-dismiss="modal">
-                                                Close
-                                            </button>
-                                            <button type="submit" class="btn btn-primary">Flag</button>
-                                        </div>
-                                        <#-- closes @form
-                                        }
-                                        -->
                                     </div>
                                 </div>
-                            </div>
-                        </#if>
+                            </#if>
 
-                        <#if request.hasUser && (request.headerData.globalPerm(Permission.ModNotesAndFlags) || request.headerData.globalPerm(Permission.ViewLogs))>
-                        <button class="btn btn-alert dropdown-toggle" type="button" id="admin-actions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            Admin actions
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="admin-actions">
-                            <#if request.headerData.globalPerm(Permission.ModNotesAndFlags)>
-                            <li><a href="${Projects.showFlags(p.project.ownerName, p.project.slug)}">
-                                    Flag history (${p.flagCount} </a></li>
+                            <#if request.hasUser && (request.headerData.globalPerm(Permission.ModNotesAndFlags) || request.headerData.globalPerm(Permission.ViewLogs))>
+                            <button class="btn btn-alert dropdown-toggle" type="button" id="admin-actions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                Admin actions
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="admin-actions">
+                                <#if request.headerData.globalPerm(Permission.ModNotesAndFlags)>
+                                <li><a href="${Projects.showFlags(p.project.ownerName, p.project.slug)}">
+                                        Flag history (${p.flagCount} </a></li>
+                                </#if>
+                                <#if request.headerData.globalPerm(Permission.ModNotesAndFlags)>
+                                <li><a href="${Projects.showNotes(p.project.ownerName, p.project.slug)}">
+                                        Staff notes ${p.noteCount} </a></li>
+                                </#if>
+                                <#if request.headerData.globalPerm(Permission.ViewLogs)>
+                                <li><a href="${routes.getRouteUrl("showLog", "", "", p.project.pluginId, "", "", "", "")}">
+                                        User Action Logs</a></li>
+                                </#if>
+                                <li><a href="https://papermc.io/forums/${p.project.ownerName}">Owner on forum <i class="fas fa-external-link-alt" aria-hidden="true"></i></a></li>
+                            </ul>
                             </#if>
-                            <#if request.headerData.globalPerm(Permission.ModNotesAndFlags)>
-                            <li><a href="${Projects.showNotes(p.project.ownerName, p.project.slug)}">
-                                    Staff notes ${p.noteCount} </a></li>
-                            </#if>
-                            <#if request.headerData.globalPerm(Permission.ViewLogs)>
-                            <li><a href="${routes.getRouteUrl("showLog", "", "", p.project.pluginId, "", "", "", "")}">
-                                    User Action Logs</a></li>
-                            </#if>
-                            <li><a href="https://papermc.io/forums/${p.project.ownerName}">Owner on forum <i class="fas fa-external-link-alt" aria-hidden="true"></i></a></li>
-                        </ul>
-                        </#if>
-                    </div>
-                </#if>
+                        </div>
+                    </#if>
+                </div>
             </div>
-        </div>
 
-            <!-- Nav -->
-        <div class="row row-nav">
-            <div class="col-md-12">
-                <div class="navbar navbar-default project-navbar pull-left">
-                    <div class="navbar-inner">
-                        <ul class="nav navbar-nav">
-                                <!-- Tabs -->
-                            <li id="docs" class="">
-                                <a href="${Projects.show(p.project.ownerName, p.project.slug}">
-                                    <i class="fas fa-book"></i> <@spring.message "project.docs" /></a>
-                            </li>
+                <!-- Nav -->
+            <div class="row row-nav">
+                <div class="col-md-12">
+                    <div class="navbar navbar-default project-navbar pull-left">
+                        <div class="navbar-inner">
+                            <ul class="nav navbar-nav">
+                                    <!-- Tabs -->
+                                <li id="docs" class="">
+                                    <a href="${Projects.show(p.project.ownerName, p.project.slug}">
+                                        <i class="fas fa-book"></i> <@spring.message "project.docs" /></a>
+                                </li>
 
-                            <li id="versions" class="">
-                                <a href="${Versions.showList(
-                                    p.project.ownerName, p.project.slug)}">
-                                    <i class="fas fa-download"></i> <@spring.message "project.versions" />
-                                </a>
-                            </li>
-
-                            <#if p.project.topicId??>
-                                <li id="discussion" class="">
-                                    <a href="${Projects.showDiscussion(
+                                <li id="versions" class="">
+                                    <a href="${Versions.showList(
                                         p.project.ownerName, p.project.slug)}">
-                                        <i class="fas fa-users"></i> <@spring.message "project.discuss" />
+                                        <i class="fas fa-download"></i> <@spring.message "project.versions" />
                                     </a>
                                 </li>
-                            </#if>
 
-                            <#if sp.perms(Permission.EditProjectSettings)>
-                                <#-- Show manager if permitted -->
-                                <li id="settings" class="">
-                                    <a href="${Projects.showSettings(p.project.ownerName, p.project.slug)}">
-                                        <i class="fas fa-cog"></i> <@spring.message "project.settings" />
-                                    </a>
-                                </li>
-                            </#if>
+                                <#if p.project.topicId??>
+                                    <li id="discussion" class="">
+                                        <a href="${Projects.showDiscussion(
+                                            p.project.ownerName, p.project.slug)}">
+                                            <i class="fas fa-users"></i> <@spring.message "project.discuss" />
+                                        </a>
+                                    </li>
+                                </#if>
 
-                            <#if p.project.settings.homepage??>
-                                <#assign homepage>${p.project.settings.homepage}</#assign> <#-- move these assigns? -->
-                                <li id="homepage">
-                                    <a title="${homepage}" target="_blank" rel="noopener"
-                                       href="<@hangar.linkout homepage/>">
-                                        <i class="fas fa-home"></i> Homepage <i class="fas fa-external-link-alt"></i></a>
-                                </li>
-                            </#if>
+                                <#if sp.perms(Permission.EditProjectSettings)>
+                                    <#-- Show manager if permitted -->
+                                    <li id="settings" class="">
+                                        <a href="${Projects.showSettings(p.project.ownerName, p.project.slug)}">
+                                            <i class="fas fa-cog"></i> <@spring.message "project.settings" />
+                                        </a>
+                                    </li>
+                                </#if>
 
-                            <#if p.project.settings.issues??>
-                                <#assign issues>${p.project.settings.issues}</#assign>
-                                <li id="issues">
-                                    <a title="${issues}" target="_blank" rel="noopener"
-                                    href="<@hangar.linkout issues/>">
-                                        <i class="fas fa-bug"></i> Issues <i class="fas fa-external-link-alt"></i></a>
-                                </li>
-                            </#if>
+                                <#if p.project.settings.homepage??>
+                                    <#assign homepage>${p.project.settings.homepage}</#assign> <#-- move these assigns? -->
+                                    <li id="homepage">
+                                        <a title="${homepage}" target="_blank" rel="noopener"
+                                           href="<@hangar.linkout homepage/>">
+                                            <i class="fas fa-home"></i> Homepage <i class="fas fa-external-link-alt"></i></a>
+                                    </li>
+                                </#if>
 
-                            <#if p.project.settings.source??>
-                                <#assign source>${p.project.settings.source}</#assign>
-                                <li id="source">
-                                    <a title="${source}" target="_blank" rel="noopener"
-                                    href="<@hangar.linkout source/>">
-                                        <i class="fas fa-code"></i> Source <i class="fas fa-external-link-alt"></i>
-                                    </a>
-                                </li>
-                            </#if>
+                                <#if p.project.settings.issues??>
+                                    <#assign issues>${p.project.settings.issues}</#assign>
+                                    <li id="issues">
+                                        <a title="${issues}" target="_blank" rel="noopener"
+                                        href="<@hangar.linkout issues/>">
+                                            <i class="fas fa-bug"></i> Issues <i class="fas fa-external-link-alt"></i></a>
+                                    </li>
+                                </#if>
 
-                            <#if p.project.settings.support??>
-                                <#assign support>${p.project.settings.support}</#assign>
-                                <li id="support">
-                                    <a title="${support}" target="_blank" rel="noopener"
-                                    href="<@hangar.linkout support/>">
-                                        <i class="fas fa-question-circle"></i> Support <i class="fas fa-external-link-alt"></i>
-                                    </a>
-                                </li>
-                            </#if>
-                        </ul>
+                                <#if p.project.settings.source??>
+                                    <#assign source>${p.project.settings.source}</#assign>
+                                    <li id="source">
+                                        <a title="${source}" target="_blank" rel="noopener"
+                                        href="<@hangar.linkout source/>">
+                                            <i class="fas fa-code"></i> Source <i class="fas fa-external-link-alt"></i>
+                                        </a>
+                                    </li>
+                                </#if>
+
+                                <#if p.project.settings.support??>
+                                    <#assign support>${p.project.settings.support}</#assign>
+                                    <li id="support">
+                                        <a title="${support}" target="_blank" rel="noopener"
+                                        href="<@hangar.linkout support/>">
+                                            <i class="fas fa-question-circle"></i> Support <i class="fas fa-external-link-alt"></i>
+                                        </a>
+                                    </li>
+                                </#if>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</@base.base>
+
+        <#nested>
+
+    </@base.base>
+</#macro>

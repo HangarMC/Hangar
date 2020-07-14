@@ -1,5 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/projects/channels/helper/modalManage.ftlh" as modalManage />
 
 @import controllers.sugar.Requests.OreRequest
 @import models.viewhelper.ProjectData
@@ -97,7 +98,7 @@
                         >
                             <i class="fas fa-plus"></i>
                         </a>
-                        ${projects.channels.helper.modalManage()}
+                        <@modalManage.modalManage />
                     </div>
                 </div>
             </div>

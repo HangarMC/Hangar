@@ -1,9 +1,10 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/projects/view.ftlh" as projectView />
 
-@*
+<#--
 Documentation page within Project overview.
-*@
+-->
 
 @import java.text.NumberFormat
 
@@ -44,7 +45,7 @@ Documentation page within Project overview.
     </#if>
 </#assign>
 
-@projects.view(p, sp, "#docs", additionalScripts = scripts) {
+<@projectView.view p sp "#docs" additionalScripts=scriptsVar>
     <div class="row">
         <div class="col-md-9">
             <div class="row">
@@ -64,18 +65,18 @@ Documentation page within Project overview.
         <div class="col-md-3">
 
             <div class="stats minor">
-                <p><@spring.message "project.category.info", p.project.category.title /></p>
-                <p><@spring.message "project.publishDate", prettifyDate(p.project.createdAt) /></p>
+                <p><@spring.messageArgs "project.category.info", p.project.category.title /></p>
+                <p><@spring.messageArgs "project.publishDate", prettifyDate(p.project.createdAt) /></p>
                 <p><span id="view-count"></span> views</p>
                 <p><span id="star-count"></span> <a href="${routes.getRouteUrl("projects.showStargazers", p.project.ownerName, p.project.slug, "")}">stars</a></p>
                 <p><span id="watcher-count"></span> <a href="${routes.getRouteUrl("projects.showWatchers", p.project.ownerName, p.project.slug, "")}">watchers</a></p>
                 <p><span id="download-count"></span> total downloads</p>
-                @p.project.settings.licenseName.map { licenseName =>
+                <#list p.project.settings.licenseName as licenseName>
                     <p>
-                        @Html(messages("project.license.link"))
-                    <a target="_blank" rel="noopener" href="${p.project.settings.licenseUrl}">${licenseName}</a>
+                        <@spring.message "project.license.link" />
+                        <a target="_blank" rel="noopener" href="${p.project.settings.licenseUrl}">${licenseName}</a>
                     </p>
-                }
+                </#list>
             </div>
 
             <div class="panel panel-default">
@@ -144,5 +145,4 @@ Documentation page within Project overview.
             )
         </div>
     </div>
-
-}
+</@projectView.view>

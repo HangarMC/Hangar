@@ -189,6 +189,6 @@
 
     </div>
 
-    ${projects.channels.helper.modalManage()}
+    <@modalManage.modalManage />
 
 </@base.base>
