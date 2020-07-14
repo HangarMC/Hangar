@@ -1,7 +1,9 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/users/view.ftlh" as users />
+<#import "*/users/memberList.ftlh" as memberList />
 
-@import controllers.routes.{Users => userRoutes}
+<#--@import controllers.routes.{Users => userRoutes}
 @import controllers.sugar.Requests.OreRequest
 @import models.viewhelper.{OrganizationData, ScopedOrganizationData, UserData}
 @import ore.OreConfig
@@ -10,7 +12,7 @@
 @import util.syntax._
 @import views.html.utils.userAvatar
 @(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)])(
-        implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
+        implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)-->
 
 @canEditOrgMembers = @{
     u.isOrga &&
@@ -19,17 +21,16 @@
     }
 }
 
-<#macro scripts>
+<#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "build/user-profile.js" />"></script>
     <#if u.isOrga && o?? && canEditOrgMembers>
     <script type="text/javascript" src="<@hangar.url "javascripts/orgInvites.js" />"></script>
     </#if>
     <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/memberList.js" />"></script>
-</#macro>
+</#assign>
 
-@users.view(u, o, additionalScripts = scripts) {
-
+<@users.view u o additionalScripts=scriptsVar>
     <div class="row">
         <div class="col-md-8">
             <div id="user-profile"></div>
@@ -71,7 +72,7 @@
                     <table class="table panel-body">
                         <tbody>
                         <#if u.orgas.isEmpty>
-                            <tr><td><i class="minor"><i class="fas fa-star"></i> <@spring.message "user.noOrganizations", u.user.name /></i></td></tr>
+                            <tr><td><i class="minor"><i class="fas fa-star"></i> <@spring.messageArgs "user.noOrganizations" u.user.name /></i></td></tr>
                         <#else>
                             @u.orgas.map { case (organization, user, role, _) =>
                             <tr>
@@ -133,15 +134,9 @@
                 </div>
             <#else>
                 @o.map { case (orgData, scopedData) =>
-                    @users.memberList(orgData,
-                        editable = true,
-                        perms = scopedData.permissions,
-                        saveCall = routes.Organizations.updateMembers(orgData.orga.name),
-                        removeCall = routes.Organizations.removeMember(orgData.orga.name),
-                    )
+                    <@memberList.memberList editable=true perms=scopedData.permissions saveCall=routes.Organizations.updateMembers(orgData.orga.name) removeCall=routes.Organizations.removeMember(orgData.orga.name) />
                 }
             </#if>
         </div>
     </div>
-
-}
+</@users.view>

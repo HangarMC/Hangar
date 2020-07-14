@@ -1,32 +1,33 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/projects/view.ftlh" as view/>
+<#import "*/utils/editor.ftlh" as editor/>
 
-@*
+<#--
 Discussion page within Project overview.
-*@
-@import controllers.sugar.Requests.OreRequest
+-->
+<#--@import controllers.sugar.Requests.OreRequest
 @import models.viewhelper.{ProjectData, ScopedProjectData}
 @import ore.OreConfig
 @import ore.markdown.MarkdownRenderer
 @import views.html.helper.CSPNonce
-@import views.html.utils
+@import views.html.utils-->
 
-@(p: ProjectData, sp: ScopedProjectData)(implicit messages: Messages, request: OreRequest[_],
-        flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
+<#--@(p: ProjectData, sp: ScopedProjectData)(implicit messages: Messages, request: OreRequest[_],
+        flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)-->
 
 <#assign scriptsVar>
-    <script @CSPNonce.attr>
+    <script <#--@CSPNonce.attr-->>
         DiscourseEmbed = {
             discourseUrl: '${config.app.discourseUrl}/',
             topicId: ${p.project.topicId}
         };
     </script>
     <script type="text/javascript" src="<@hangar.url "javascripts/projectDiscuss.js" />"></script>
-    <script @CSPNonce.attr>$(function() { $('.btn-edit').click(); });</script>
+    <script <#--@CSPNonce.attr-->>$(function() { $('.btn-edit').click(); });</script>
 </#assign>
 
-@projects.view(p, sp, "#discussion", additionalScripts = scripts) {
-
+<@view.view p=p sp=sp active="#discussion" additionalScripts=scriptsVar>
     <div id='discourse-comments'></div>
     <div class="row">
     <#if request.headerData.currentUser??>
@@ -44,11 +45,7 @@ Discussion page within Project overview.
                 </#if>
 
                 <div class="push-down">
-                    @utils.editor(
-                    saveCall = routes.getRouteUrl("projects.postDiscussionReply", p.project.ownerName, p.project.slug),
-                    cancellable = false,
-                    enabled = true
-                    )
+                    <@editor.editor saveCall=routes.getRouteUrl("projects.postDiscussionReply", p.project.ownerName, p.project.slug) cancellable=false enabled=true/>
                 </div>
             </div>
             <div class="reply-controls">
@@ -65,5 +62,4 @@ Discussion page within Project overview.
         </div>
     </#if>
     </div>
-
-}
+</@view.view>

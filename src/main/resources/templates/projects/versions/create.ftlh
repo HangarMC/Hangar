@@ -45,7 +45,7 @@
                     </div>
 
                     <#if pending??>
-                        @* Show plugin meta *@
+                        <#-- Show plugin meta -->
                         @defining(pending.get) { version: PendingVersion =>
                             <div class="plugin-meta">
                                 <table class="plugin-meta-table">
@@ -74,7 +74,7 @@
                                     <tr>
                                         <td><strong>Channel</strong></td>
                                         <td class="form-inline">
-                                            @* Show channel selector if old project, editor if new project *@
+                                            <#-- Show channel selector if old project, editor if new project -->
                                             <select id="select-channel" form="form-publish" name="channel-input" class="form-control">
                                             @channels.map { channel =>
                                                 <option value="@channel.name" data-color="@channel.color.hex" <#if channel.name.equals(version.channelName)>selected</#if>
@@ -162,7 +162,7 @@
                     </@form.form>
 
                     <#if pending??>
-                        @* Ready to go! *@
+                        <#-- Ready to go! -->
                         @defining(pending.get) { version: PendingVersion =>
                             <@form.form method="POST" action=routes.getRouteUrl("versions.publish", ownerName, projectSlug, version.versionString)
                                 id="form-publish" class="pull-right">
@@ -180,7 +180,7 @@
 
                 </div>
             </div>
-            <span class="pull-left tos"><i>@Html(messages("version.create.tos", "#"))</i></span>
+            <span class="pull-left tos"><i><@spring.message "version.create.tos" "#" /></i></span>
         </div>
         <#if pending??>
             ${projects.helper.createSteps(2)}
