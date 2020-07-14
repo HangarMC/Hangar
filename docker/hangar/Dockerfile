@@ -1,8 +1,14 @@
+FROM maven:3.6.3-openjdk-14
+COPY ./pom.xml pom.xml
+COPY ./src/ src/
+RUN mvn clean package -DskipTests=true
+
+
 FROM openjdk:14-jdk-alpine
 
 LABEL maintainer="Yannick Lamprecht <yannicklamprecht@live.de>"
 
-ADD target/hangar-*.jar app.jar
+COPY --from=0 ./target/hangar-*.jar app.jar
 ADD docker/hangar/application.properties application.properties
 
 ENV TERM xterm-256color
