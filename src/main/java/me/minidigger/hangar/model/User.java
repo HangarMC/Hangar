@@ -39,6 +39,25 @@ public class User {
         return this;
     }
 
+    private String avatarUrl;
+    private String id;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
     /**
      * Get createdAt
      *
@@ -54,11 +73,6 @@ public class User {
 
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public User name(String name) {
-        this.name = name;
-        return this;
     }
 
     /**

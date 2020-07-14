@@ -38,8 +38,7 @@
                     </@form.form>
 
                     <#import "*/users/invite/form.ftlh" as userForm>
-<#--                    <@userForm.form owner=request.headerData.currentUser roleCategory=RoleCategory.Organization />-->
-                    <@userForm.form owner={} roleCategory="" />
+                    <@userForm.form owner={} roleCategory=@helper["me.minidigger.hangar.model.PermissionType"].ORGANIZATION />
 
                     <button title="Continue" type="submit" name="create" form="form-continue"
                     value="<@spring.message "general.continue" />"

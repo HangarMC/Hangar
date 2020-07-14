@@ -2,6 +2,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
+<#--
 @import java.time.OffsetDateTime
 
 @import controllers.sugar.Requests.OreRequest
@@ -17,6 +18,7 @@
 
 @pageSize = @{ config.ore.users.authorPageSize }
 @direction = @{ if (ordering.startsWith("-")) "chevron-down" else "chevron-up" }
+-->
 
 <#function isActiveSort td>
     var sort = ordering

@@ -46,7 +46,7 @@
             <#-- Right navbar -->
             <#if authEnabled>
                 <ul class="nav navbar-nav navbar-collapse collapse navbar-right">
-                    <#assign cu={ "name": "DumDum", "avatarUrl": "https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png"}>  <#-- todo login status  -->
+                    <#assign cu=user>
                     <#if cu??>
                         <li class="dropdown nav-icon new-controls">
                             <a href="#" class="drop-down-toggle" data-toggle="dropdown">

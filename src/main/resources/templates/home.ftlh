@@ -1,20 +1,11 @@
 <#--
-The main entry point of Ore. This page displays a list of Projects that can be
+The main entry point of Hangar. This page displays a list of Projects that can be
 sorted according to different criteria.
 -->
 
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base>
-
-<#function randomSponsor>
-    val logos = config.sponge.sponsors
-
-    val index = new Random().nextInt(logos.size)
-    logos(index)
-    <#-- todo implement random sponsor stuff -->
-    <#return { "link": "https://minidigger.me", "image": "https://avatars2.githubusercontent.com/u/2185527?s=400&v=4"}>
-</#function>
 
 <#macro scripts>
     <script src="<@hangar.url "build/home.js" />"></script>
@@ -37,7 +28,7 @@ sorted according to different criteria.
 <#assign stylesheetsVar><@stylesheets /></#assign>
 <#assign metaVar><@meta /></#assign>
 <@base.base title="${message}" additionalScripts=scriptsVar additionalMeta=metaVar additionalStyling=stylesheetsVar>
-    <!-- Header -->
+    <#-- Header -->
     <div class="index-header">
         <div class="row centered-content-row">
             <div class="col-md-9 ore-banner">
@@ -55,7 +46,7 @@ sorted according to different criteria.
                 <div class="panel sponsor-panel">
                     <span>Sponsored by</span>
                     <div class="panel-body">
-                        <#assign sponsor=randomSponsor() />
+                        <#assign sponsor=templateHelper.randomSponsor() />
                         <a href="${sponsor.link}">
                             <img class="logo" src="${sponsor.image}" alt="Sponsor" />
                         </a>
