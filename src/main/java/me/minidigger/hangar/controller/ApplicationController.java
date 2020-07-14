@@ -68,8 +68,8 @@ public class ApplicationController extends HangarController {
     }
 
     @RequestMapping("/api")
-    public Object swagger() {
-        return null; // TODO implement swagger request controller
+    public ModelAndView swagger() {
+        return fillModel(new ModelAndView("swagger"));
     }
 
     @RequestMapping("/favicon.ico")
@@ -116,9 +116,9 @@ public class ApplicationController extends HangarController {
         return null; // TODO implement sitemapIndex request controller
     }
 
-    @RequestMapping("/{path}/")
-    public Object removeTrail(@PathVariable Object path) {
-        return null; // TODO implement removeTrail request controller
-    }
+//    @RequestMapping("/{path}/")
+//    public Object removeTrail(@PathVariable Object path) {
+//        return null; // implement removeTrail request controller - pretty sure this one is dum
+//    }
 }
 
