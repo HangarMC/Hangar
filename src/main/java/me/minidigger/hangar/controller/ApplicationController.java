@@ -121,4 +121,3 @@ public class ApplicationController extends HangarController {
 //        return null; // implement removeTrail request controller - pretty sure this one is dum
 //    }
 }
-
