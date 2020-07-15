@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import me.minidigger.hangar.model.Dependency;
+import me.minidigger.hangar.model.generated.Dependency;
 
 import static me.minidigger.hangar.service.plugindata.DataValue.*;
 

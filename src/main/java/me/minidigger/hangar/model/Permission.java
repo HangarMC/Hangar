@@ -53,7 +53,7 @@ public class Permission {
     public static final Permission HardDeleteVersion = new Permission(1L << 42);
     public static final Permission EditAllUserSettings = new Permission(1L << 43);
 
-    private long value;
+    private final long value;
 
     private Permission(long value) {
         this.value = value;

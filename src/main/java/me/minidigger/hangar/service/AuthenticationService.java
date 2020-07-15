@@ -9,10 +9,10 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import me.minidigger.hangar.config.HangarConfig;
-import me.minidigger.hangar.model.ApiSession;
-import me.minidigger.hangar.model.ApiSessionResponse;
-import me.minidigger.hangar.model.SessionProperties;
-import me.minidigger.hangar.model.SessionType;
+import me.minidigger.hangar.model.generated.ApiSession;
+import me.minidigger.hangar.model.generated.ApiSessionResponse;
+import me.minidigger.hangar.model.generated.SessionProperties;
+import me.minidigger.hangar.model.generated.SessionType;
 
 @Service
 public class AuthenticationService {

@@ -3,7 +3,7 @@ package me.minidigger.hangar.service.plugindata;
 import java.util.List;
 import java.util.UUID;
 
-import me.minidigger.hangar.model.Dependency;
+import me.minidigger.hangar.model.generated.Dependency;
 
 public abstract class DataValue {
 

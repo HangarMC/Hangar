@@ -2,8 +2,8 @@ package me.minidigger.hangar.service;
 
 import org.springframework.stereotype.Service;
 
-import me.minidigger.hangar.model.ModelData;
-import me.minidigger.hangar.model.User;
+import me.minidigger.hangar.model.generated.ModelData;
+import me.minidigger.hangar.model.generated.User;
 
 @Service
 public class UserService {

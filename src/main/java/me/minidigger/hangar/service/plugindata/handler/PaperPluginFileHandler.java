@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import me.minidigger.hangar.model.Dependency;
+import me.minidigger.hangar.model.generated.Dependency;
 import me.minidigger.hangar.service.plugindata.DataValue;
 import me.minidigger.hangar.service.plugindata.DataValue.DependencyDataValue;
 import me.minidigger.hangar.service.plugindata.DataValue.StringDataValue;

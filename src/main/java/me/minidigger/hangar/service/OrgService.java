@@ -4,9 +4,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import me.minidigger.hangar.model.Organization;
+import me.minidigger.hangar.model.generated.Organization;
 import me.minidigger.hangar.model.Permission;
-import me.minidigger.hangar.model.User;
+import me.minidigger.hangar.model.generated.User;
 
 @Service
 public class OrgService {
