@@ -1,6 +1,7 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
+<#import "*/utils/userAvatar.ftlh" as userAvatar>
 
 @import controllers.sugar.Requests.OreRequest
 @import ore.OreConfig
@@ -40,7 +41,7 @@
 </#assign>
 
 <#assign message><@spring.message "notification.plural" /></#assign>
-<@base.base title="${message}" additionalScripts=scriptsVar>
+<@base.base title=message additionalScripts=scriptsVar>
 
     <div class="row">
         <div class="col-xs-12 col-md-8 header-flags">
@@ -84,11 +85,10 @@
 
                     <ul class="list-group">
                     @notifications.map { case (notification, origin) =>
-                    <li class="list-group-item notification" data-action="${notification.action!"none"}"
-                    data-id="@notification.id">
-                        @origin.map { origin =>
-                            @userAvatar(Some(origin.name), origin.avatarUrl, clazz = "user-avatar-s")
-                        }
+                    <li class="list-group-item notification" data-action="${notification.action!"none"}" data-id="@notification.id">
+                        <#list origin as origin>
+                            <@userAvatar.userAvatar userName=origin.name avatarUrl=origin.avatarUrl clazz="user-avatar-s" />
+                        </#list>
                         @formatNotification(notification)
 
                         <#if !notification.isRead>
@@ -142,7 +142,7 @@
 
                             <div class="invite-message invite-choice" style="display: auto;">
                                 <p>
-                                    <@spring.message "notification.invite", subject.getClass.getSimpleName.toLowerCase />
+                                    <@spring.messageArgs "notification.invite" subject.getClass.getSimpleName.toLowerCase />
                                 <a href="@subject.url">@subject.name</a>.
                                 </p>
                                 <button class="btn btn-invite btn-accept btn-sm btn-success">
@@ -155,7 +155,7 @@
 
                             <div class="invite-message invite-accepted" style="display: none;">
                                 <i class="minor fas fa-3x fa-birthday-cake"></i><br/>
-                                @Html(messages("notification.invite.joined", subject.name))<br/>
+                                @Html(<@spring.messageArgs "notification.invite.joined"  subject.name />)<br/>
                                 <a href="@subject.url" class="btn btn-sm btn-primary">
                                 <@spring.message "notification.invite.visit" />
                                 </a>
@@ -166,7 +166,7 @@
 
                             <div class="invite-message invite-declined" style="display: none;">
                                 <i class="minor fas fa-3x fa-times"></i>
-                                <p>@Html(messages("notification.invite.declined", subject.name))</p>
+                                <p>@Html(<@spring.messageArgs "notification.invite.declined" subject.name />)</p>
                             </div>
 
                             <i class="minor invite-loading fas fa-5x fa-spinner fa-spin" style="display: none;"></i>

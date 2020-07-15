@@ -1,27 +1,28 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/users/view.ftlh" as user />
 
-@import controllers.sugar.Requests.OreRequest
-@import models.viewhelper.{OrganizationData, ScopedOrganizationData, UserData}
-@import ore.OreConfig
-@import ore.models.api.ApiKey
-@import ore.permission.NamedPermission
-@import views.html.helper.CSPNonce
+<#--@import controllers.sugar.Requests.OreRequest-->
+<#--@import models.viewhelper.{OrganizationData, ScopedOrganizationData, UserData}-->
+<#--@import ore.OreConfig-->
+<#--@import ore.models.api.ApiKey-->
+<#--@import ore.permission.NamedPermission-->
+<#--@import views.html.helper.CSPNonce-->
 
-@(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)], keys: Seq[ApiKey], perms: Seq[NamedPermission])(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
+<#--@(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)], keys: Seq[ApiKey], perms: Seq[NamedPermission])(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)-->
 
-<#macro scripts>
+<#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/apiKeysManagement.js" />"></script>
-    <script @CSPNonce.attr>
+    <script <#--@CSPNonce.attr-->>
         NO_PERMS_SET = '<@spring.message "user.apiKeys.error.noPermsSet" />';
         NO_NAME_SET = '<@spring.message "user.apiKeys.error.noNameSet" />';
         TOO_LONG_NAME = '<@spring.message "user.apiKeys.error.tooLongName" />';
         NAMED_USED = '<@spring.message "user.apiKeys.error.nameAlreadyUsed" />';
         DELETE_KEY = '<@spring.message "user.apiKeys.keyDeleteButton" />';
     </script>
-</#macro>
+</#assign>
 
-@users.view(u, o, additionalScripts = scripts) {
+<@user.view u o additionalScripts=scriptsVar>
     <div id="keyAlert" class="alert alert-danger" role="alert" style="display: none;"></div>
 
     <div class="row">
@@ -61,13 +62,13 @@
             <h2><@spring.message "user.apiKeys.existingKeys" /></h2>
             <table class="table">
                 <thead>
-                    <tr>
-                        <th><@spring.message "user.apiKeys.keyName" /></th>
-                        <th><@spring.message "user.apiKeys.keyToken" /></th>
-                        <th><@spring.message "user.apiKeys.keyIdentifier" /></th>
-                        <th><@spring.message "user.apiKeys.keyPermissions" /></th>
-                        <th><@spring.message "user.apiKeys.keyDeleteColumn" /></th>
-                    </tr>
+                <tr>
+                    <th><@spring.message "user.apiKeys.keyName" /></th>
+                    <th><@spring.message "user.apiKeys.keyToken" /></th>
+                    <th><@spring.message "user.apiKeys.keyIdentifier" /></th>
+                    <th><@spring.message "user.apiKeys.keyPermissions" /></th>
+                    <th><@spring.message "user.apiKeys.keyDeleteColumn" /></th>
+                </tr>
                 </thead>
                 <tbody id="api-key-rows">
                 <#list keys as key>
@@ -83,4 +84,4 @@
             </table>
         </div>
     </div>
-}
+</@user.view>

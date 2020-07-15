@@ -152,7 +152,8 @@
                         @versions.sortWith((a, b) => a.versionCreatedAt.compareTo(b.versionCreatedAt) < 0).map { entry =>
                         <tr data-version="@helper.urlEncode(entry.namespace.ownerName)/@helper.urlEncode(entry.namespace.slug)/versions/@helper.urlEncode(entry.versionString)">
                             <td>
-                            @userAvatar(Some(entry.namespace.ownerName), User.avatarUrl(entry.namespace.ownerName), clazz = "user-avatar-xs")
+                                <#import "*/utils/userAvatar.ftlh" as userAvatar>
+                                <@userAvatar.userAvatar userName=entry.namespace.ownerName avatatUrl=User.avatarUrl(entry.namespace.ownerName) clazz="user-avatar-xs"></@userAvatar.userAvatar>
                             </td>
                             <td>
                                 <a href="${routes.getRouteUrl("versions.show", entry.namespace.ownerName, entry.namespace.slug, entry.versionString)}">

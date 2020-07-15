@@ -140,7 +140,7 @@
             </div>
         </div>
 
-        @content
+        <#nested />
 
         <#assign lockModalTitle>
             <#if u.user.isLocked>

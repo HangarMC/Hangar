@@ -58,19 +58,20 @@
             <tbody>
                 @authors.map { case (name, joinDate, createdAt, optRole, optDonorRole, projectCount) =>
                 <tr>
-                    <td>@userAvatar(Some(name), User.avatarUrl(name), clazz = "user-avatar-xs")</td>
+                    <#import "*/utils/userAvatar.ftlh" as userAvatar>
+                    <td><@userAvatar.userAvatar userName=name avatarUrl=User.avatarUrl(name) clazz="user-avatar-xs"></@userAvatar.userAvatar></td>
                     <td>
                         <a href="${routes.getRouteUrl("users.showProjects", name)}">${name}</a>
                     </td>
                     <td>
                         @optDonorRole.map { role =>
                             <span class="channel channel-sm" style="background-color: ${role.color.hex}">
-                            @role.title
+                            ${role.title}
                             </span>
                         }
                         @optRole.map { role =>
                             <span class="user-role channel" style="background-color: ${role.color.hex}">
-                            @role.title
+                            ${role.title}
                             </span>
                         }
 
