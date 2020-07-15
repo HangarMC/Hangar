@@ -1,3 +1,7 @@
+create extension hstore;
+create extension pgcrypto;
+create role hangar with login password 'hangar';
+
 create type role_category as enum ('global', 'project', 'organization');
 
 alter type role_category owner to root;
