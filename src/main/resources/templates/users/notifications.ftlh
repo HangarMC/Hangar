@@ -149,13 +149,13 @@
                                 <@spring.message "notification.invite.accept" />
                                 </button>
                                 <button class="btn btn-invite btn-decline btn-sm btn-danger">
-                                @Html(messages("notification.invite.decline"))
+                                <@spring.message "notification.invite.decline" />
                                 </button>
                             </div>
 
                             <div class="invite-message invite-accepted" style="display: none;">
                                 <i class="minor fas fa-3x fa-birthday-cake"></i><br/>
-                                @Html(<@spring.messageArgs "notification.invite.joined"  subject.name />)<br/>
+                                <@spring.messageArgs "notification.invite.joined"  subject.name /><br/>
                                 <a href="@subject.url" class="btn btn-sm btn-primary">
                                 <@spring.message "notification.invite.visit" />
                                 </a>
@@ -166,7 +166,7 @@
 
                             <div class="invite-message invite-declined" style="display: none;">
                                 <i class="minor fas fa-3x fa-times"></i>
-                                <p>@Html(<@spring.messageArgs "notification.invite.declined" subject.name />)</p>
+                                <p><@spring.messageArgs "notification.invite.declined" subject.name /></p>
                             </div>
 
                             <i class="minor invite-loading fas fa-5x fa-spinner fa-spin" style="display: none;"></i>
