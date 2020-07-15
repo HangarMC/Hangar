@@ -9,7 +9,7 @@
 * [ ] channels\helper\modalManage
 * [ ] channels\helper\popoverColorPicker
 * [ ] channels\list
-* [ ] helper\alertFile
+* [x] helper\alertFile
 * [ ] helper\btnHide
 * [ ] helper\createSteps
 * [ ] helper\inputSettings
@@ -38,9 +38,9 @@
 * [ ] admin\stats
 * [ ] admin\userAdmin
 * [ ] admin\visibility
-* [ ] invite\form
+* [x] invite\form
 * [ ] invite\roleSelect
-* [ ] invite\userSearch
+* [x] invite\userSearch
 * [ ] apiKeys
 * [ ] authors
 * [ ] memberList
@@ -49,8 +49,10 @@
 * [ ] view
 
 ### Utils
-* [ ] editor
+* [ ] alert
+* [ ] csrf
+* [x] editor
 * [ ] email
-* [ ] modal
-* [ ] prompt
-* [ ] userAvatar
+* [x] modal
+* [x] prompt
+* [x] userAvatar

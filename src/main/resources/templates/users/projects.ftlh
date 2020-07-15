@@ -30,7 +30,7 @@
     <script type="text/javascript" src="<@hangar.url "javascripts/memberList.js" />"></script>
 </#assign>
 
-<@users.view u o additionalScripts=scriptsVar>
+<@users.view u=u o=o additionalScripts=scriptsVar>
     <div class="row">
         <div class="col-md-8">
             <div id="user-profile"></div>
@@ -134,7 +134,9 @@
                 </div>
             <#else>
                 @o.map { case (orgData, scopedData) =>
-                    <@memberList.memberList editable=true perms=scopedData.permissions saveCall=routes.Organizations.updateMembers(orgData.orga.name) removeCall=routes.Organizations.removeMember(orgData.orga.name) />
+                    <@memberList.memberList j=orgData editable=true perms=scopedData.permissions
+                    saveCall=routes.getRouteUrl("org.updateMembers", orgData.orga.name)
+                    removeCall=routes.getRouteUrl("org.removeMember", orgData.orga.name) />
                 }
             </#if>
         </div>

@@ -10,8 +10,8 @@
 @(model: Project, rootPages: Seq[Model[Page]])(implicit messages: Messages, request: RequestHeader, config: OreConfig)
 
 <script @CSPNonce.attr>
-    PROJECT_OWNER = '@model.ownerName';
-    PROJECT_SLUG = '@model.slug';
+    PROJECT_OWNER = '${model.ownerName}';
+    PROJECT_SLUG = '${model.slug}';
 </script>
 
 <div class="modal fade" id="new-page" tabindex="-1" role="dialog" aria-labelledby="new-page-label">

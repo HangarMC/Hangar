@@ -79,7 +79,7 @@ TODO: this is a layout, should we move/rename it?
                         <div class="project-path">
                             <a href="${routes.getRouteUrl("users.showProjects", p.project.ownerName)}">${p.project.ownerName}</a>
                             /
-                            <a class="project-name" href="${routes.getRouteUrl("projects.show", p.project.ownerName, p.project.slug)}">${@p.project.name}</a>
+                            <a class="project-name" href="${routes.getRouteUrl("projects.show", p.project.ownerName, p.project.slug)}">${p.project.name}</a>
                         </div>
                         <div>
                             <#if p.project.description>

@@ -11,6 +11,6 @@
     <div class="container">
         <p>${recipient},</p>
         <p><@spring.message body /></p>
-        <p>@Html(<@spring.message "email.signature" />)</p>
+        <p><@spring.message "email.signature" /></p>
     </div>
 </@base.base>

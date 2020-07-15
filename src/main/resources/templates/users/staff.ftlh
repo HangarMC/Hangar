@@ -25,7 +25,7 @@
 
 <#assign scriptsVar>
 	<script type="text/javascript" src="<@hangar.url "javascripts/userList.js" />"></script>
-	<script <#--@CSPNonce.attr-->>CURRENT_PAGE = @page;</script>
+	<script <#--@CSPNonce.attr-->>CURRENT_PAGE = ${page};</script>
 </#assign>
 <@base.base title="Staff - Hangar" additionalScripts=scriptsVar>
 
@@ -36,15 +36,15 @@
 					<td></td>
 					<td <#if isActiveSort(UserOrdering.UserName)>class="user-sort"</#if> data-list="staff" >
 						Username
-						<#if isActiveSort(UserOrdering.UserName)><i class="fas o fa-@direction"></i></#if>
+						<#if isActiveSort(UserOrdering.UserName)><i class="fas o fa-${direction}"></i></#if>
 					</td>
 					<td <#if isActiveSort(UserOrdering.Role)>class="user-sort"</#if> data-list="staff" >
 						Roles
-						<#if isActiveSort(UserOrdering.Role)><i class="fas o fa-@direction"></i></#if>
+						<#if isActiveSort(UserOrdering.Role)><i class="fas o fa-${direction}"></i></#if>
 					</td>
 					<td <#if isActiveSort(UserOrdering.JoinDate)>class="user-sort"</#if> data-list="staff" >
 						Joined
-						<#if isActiveSort(UserOrdering.JoinDate)><i class="fas o fa-@direction"></i></#if>
+						<#if isActiveSort(UserOrdering.JoinDate)><i class="fas o fa-${direction}"></i></#if>
 					</td>
 				</tr>
 			</thead>

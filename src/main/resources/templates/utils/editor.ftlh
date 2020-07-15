@@ -3,20 +3,6 @@
 <#import "*/utils/form.ftlh" as form>
 <#import "*/utils/csrf.ftlh" as csrf>
 
-<#--
-@import views.html.helper.{CSRF, form}
-@(saveCall: Call = null,
-  deleteCall: Call = null,
-  savable: Boolean = true,
-  deletable: Boolean = false,
-  enabled: Boolean,
-  raw: String = "",
-  cooked: Html = Html(""),
-  subject: String = null,
-  cancellable: Boolean = true,
-  targetForm: String = null,
-  extraFormValue: String = null)(implicit messages: Messages, request: Request[_])
--->
 <#macro editor saveCall deleteCall="" savable=true deletable=false enabled=true raw="" cooked="" subject="" cancellable=true targetForm="" extraFormValue="">
     <#if enabled>
         <!-- Edit -->
@@ -73,8 +59,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <#-- todo: where does this come from ._. -->
-                            <@form.form action=deleteCall class="form-inline">
+                            <@form.form method="POST" action=deleteCall class="form-inline">
                                 <@csrf.formField />
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </@form.form>
@@ -97,8 +82,7 @@
         <div class="page-preview page-rendered" style="display: none ;"></div>
 
         <#if savable>
-            <#-- todo: where does this come from ._. -->
-            <@form.form action=saveCall id="form-editor-save">
+            <@form.form method="POST" action=saveCall id="form-editor-save">
                 <@csrf.formField />
                 <#if extraFormValue??>
                     <input type="hidden" value="@extraFormValue" name="name">

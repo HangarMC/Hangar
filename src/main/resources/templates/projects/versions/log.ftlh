@@ -1,5 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 
 @import controllers.sugar.Requests.OreRequest
 @import ore.OreConfig
@@ -13,7 +14,8 @@
 
 @(project: Project, version: Version, visibilityChanges: Seq[(Model[VersionVisibilityChange], Option[User])])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
 
-@layout.base(messages("version.log.logger.title", project.namespace)) {
+<#assign message><@spring.messageArgs "version.log.logger.title" project.namespace /></#assign>
+<@base.base title=message>
 	<div class="row">
 		<div class="col-md-12">
 			<h1><@spring.message "version.log.visibility.title" /> <a href="${routes.getRouteUrl("versions.show", project.ownerName, project.slug, version.versionString)}">${project.ownerName}/${project.slug}/versions/${version.versionString}</a></h1>
@@ -56,4 +58,4 @@
 			</div>
 		</div>
 	</div>
-}
+</@base.base>

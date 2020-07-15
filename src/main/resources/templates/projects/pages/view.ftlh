@@ -1,6 +1,7 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/projects/view.ftlh" as projectView />
+<#import "*/users/memberList.ftlh" as memberList />
 
 <#--
 Documentation page within Project overview.
@@ -45,7 +46,7 @@ Documentation page within Project overview.
     </#if>
 </#assign>
 
-<@projectView.view p sp "#docs" additionalScripts=scriptsVar>
+<@projectView.view p=p sp=sp active="#docs" additionalScripts=scriptsVar>
     <div class="row">
         <div class="col-md-9">
             <div class="row">
@@ -109,11 +110,11 @@ Documentation page within Project overview.
                     <li class="list-group-item">
                         <#if children.nonEmpty>
                             <#if !page.parentId.contains(pg.id.value)>
-                                <a class="page-expand" data-page-id="@pg.id">
+                                <a class="page-expand" data-page-id="${pg.id}">
                                     <i class="far fa-plus-square"></i>
                                 </a>
                             <#else>
-                                <a class="page-collapse" data-page-id="@pg.id">
+                                <a class="page-collapse" data-page-id="${pg.id}">
                                     <i class="far fa-minus-square"></i>
                                 </a>
                             </#if>
@@ -123,10 +124,10 @@ Documentation page within Project overview.
                     </a>
                     </li>
                         <#if page.parentId.contains(pg.id)>
-                            <div class="page-children" data-page-id="@pg.id">
+                            <div class="page-children" data-page-id="${pg.id}">
                             @children.map { child =>
                                 <li class="list-group-item page-item-child">
-                                    <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, child.fullSlug(Some(pg)))}">
+                                    <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, child.fullSlug(pg))}">
                                     ${child.name}
                                     </a>
                                 </li>
@@ -138,11 +139,7 @@ Documentation page within Project overview.
             </div>
 
                 <!-- Member list -->
-            @users.memberList(
-                j = p,
-                perms = sp.permissions,
-                settingsCall = routes.Projects.showSettings(p.project.ownerName, p.project.slug)
-            )
+            <@memberList.memberList j=p perms=sp.permissions settingsCall=routes.getRouteUrl("projects.showSettings", p.project.ownerName, p.project.slug) />
         </div>
     </div>
 </@projectView.view>

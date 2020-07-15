@@ -11,7 +11,6 @@
 @(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)], additionalScripts: Html = Html(""))(content: Html)(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
 -->
 
-
 <#macro view u o additionalScripts="">
     @canEditOrgSettings = @{
     u.isOrga &&
@@ -54,11 +53,11 @@
 
                     <#if canEditOrgSettings>
                         <div class="edit-avatar" style="display: none;">
-                            <a href="${routes.Organizations.updateAvatar(u.user.name)}"><i class="fas fa-edit"></i> <@spring.message "user.editAvatar" /></a>
+                            <a href="${routes.getRouteUrl("org.updateAvatar", u.user.name)}"><i class="fas fa-edit"></i> <@spring.message "user.editAvatar" /></a>
                         </div>
 
                         <#if !u.currentUser.readPrompts.contains(Prompt.ChangeAvatar)>
-                            @prompt(Prompt.ChangeAvatar, "popover-avatar")
+                            <@prompt.prompt prompt=Prompt.ChangeAvatar id="popover-avatar" />
                         </#if>
                     </#if>
 
@@ -67,7 +66,7 @@
                             ${u.user.name}
 
                             <#if u.isCurrent && !u.isOrga>
-                                <a class="user-settings" href="@config.security.api.url/accounts/settings">
+                                <a class="user-settings" href="${config.security.api.url}/accounts/settings">
                                     <i class="fas fa-cog" data-toggle="tooltip"
                                     data-placement="top" title="Settings"></i>
                                 </a>
@@ -129,9 +128,7 @@
                 <div class="user-info">
                     <i class="minor">${u.projectCount}&nbsp;<#if u.projectCount == 1>project<#else>projects</#if></i><br/>
                     <i class="minor">
-                    @messages(
-                        "user.memberSince",
-                        u.user.joinDate.map(prettifyDate)!prettifyDate(u.user.createdAt))
+                    <@spring.messageArgs "user.memberSince" u.user.joinDate.map(prettifyDate)!prettifyDate(u.user.createdAt) />
                     </i><br/>
                     <a href="https://papermc.io/forums/users/${u.user.name}">
                         <@spring.message "user.viewOnForums" /> <i class="fas fa-external-link-alt"></i>

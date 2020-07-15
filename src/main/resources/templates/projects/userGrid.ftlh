@@ -1,5 +1,7 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/utils/userAvatar.ftlh" as userAvatar />
+<#import "*/projects/view.ftlh" as projects />
 
 @import controllers.sugar.Requests.OreRequest
 @import models.viewhelper.{ProjectData, ScopedProjectData}
@@ -11,7 +13,7 @@
 
 <#assign columns = 3>
 
-@projects.view(p, sp, "") {
+<@projects.view p=p sp=sp active="">
     <div class="row user-grid">
         <div class="col-xs-12">
             <h3 class="text-bold mb-0">@title</h3>
@@ -23,11 +25,7 @@
             @users.iterator.zipWithIndex.filter(_._2 % columns == div).map(_._1).map { user =>
                 <div class="media">
                     <div class="media-left">
-                        @views.html.utils.userAvatar(
-                            userName = Some(user.name),
-                            avatarUrl = user.avatarUrl,
-                            clazz = "user-avatar-sm media-object"
-                        )
+                        <@userAvatar.userAvatar userName=user.name avatarUrl=user.avatarUrl clazz="user-avatar-sm media-object" />
                     </div>
                     <div class="media-body center-vertically">
                         <a class="media-heading mb-0" href="${routes.getRouteUrl("users.showProjects", user.name)}">${user.name}</a>
@@ -50,4 +48,4 @@
             </div>
         </#if>
     </div>
-}
+</@projects.view>

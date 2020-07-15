@@ -2,6 +2,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/utils/form.ftlh" as form>
 <#import "*/utils/csrf.ftlh" as csrf>
+<#import "*/projects/view.ftlh" as projects />
 
 @import controllers.sugar.Requests.OreRequest
 @import models.viewhelper.{ScopedProjectData, VersionData}
@@ -16,8 +17,7 @@
 @import views.html.utils.editor
 @(v: VersionData, sp: ScopedProjectData)(implicit messages: Messages, request: OreRequest[_], flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
 
-@projects.view(v.p, sp, "#versions", noButtons = true) {
-
+<@projects.view p=v.p sp=sp active="#versions" noButtons=true>
     <!-- Version header -->
     <div class="row">
         <div class="col-md-12 version-header">
@@ -312,4 +312,4 @@
             </div>
         </#if>
     </#if>
-}
+</@projects.view>

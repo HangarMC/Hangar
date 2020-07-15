@@ -85,7 +85,7 @@
 
                     <ul class="list-group">
                     @notifications.map { case (notification, origin) =>
-                    <li class="list-group-item notification" data-action="${notification.action!"none"}" data-id="@notification.id">
+                    <li class="list-group-item notification" data-action="${notification.action!"none"}" data-id="${notification.id}">
                         <#if origin??><@userAvatar.userAvatar userName=origin.name avatarUrl=origin.avatarUrl clazz="user-avatar-s" /></#if>
                         @formatNotification(notification)
                         <#if !notification.isRead>
@@ -133,14 +133,14 @@
                         data-type="@subject.getClass.getSimpleName.toLowerCase">
                             <span class="minor">
                                 <i class="dismiss pull-left fas fa-times" style="display: none;"></i>
-                                <span class="pull-right"><i class="fas fa-tag"></i> @subject.getClass.getSimpleName</span>
+                                <span class="pull-right"><i class="fas fa-tag"></i> ${subject.getClass.getSimpleName}</span>
                             </span>
                             <br/>
 
-                            <div class="invite-message invite-choice" style="display: auto;">
+                            <div class="invite-message invite-choice" style"=display: auto;">
                                 <p>
                                     <@spring.messageArgs "notification.invite" subject.getClass.getSimpleName.toLowerCase />
-                                <a href="@subject.url">@subject.name</a>.
+                                <a href=${subject.url}>@subject.name</a>.
                                 </p>
                                 <button class="btn btn-invite btn-accept btn-sm btn-success">
                                 <@spring.message "notification.invite.accept" />
@@ -153,7 +153,7 @@
                             <div class="invite-message invite-accepted" style="display: none;">
                                 <i class="minor fas fa-3x fa-birthday-cake"></i><br/>
                                 <@spring.messageArgs "notification.invite.joined"  subject.name /><br/>
-                                <a href="@subject.url" class="btn btn-sm btn-primary">
+                                <a href="{subject.url" class="btn btn-sm btn-primary">
                                 <@spring.message "notification.invite.visit" />
                                 </a>
                                 <button class="btn btn-undo btn-sm btn-info">

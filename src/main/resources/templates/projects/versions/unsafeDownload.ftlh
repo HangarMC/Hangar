@@ -1,5 +1,7 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
+<#import "*/utils/csrf.ftlh" as csrf>
 
 @import controllers.sugar.Requests.OreRequest
 @import ore.OreConfig
@@ -11,8 +13,8 @@
         isTargetChannelNonReviewed: Boolean,
         downloadType: DownloadType)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 
-@layout.base(messages("version.download.confirm.title") + " " + messages("version.download.confirm.header", project.ownerName, project.name, target.name)) {
-
+<#assign message><@spring.message "general.linkout.title" /> +  " " + <@spring.messageArgs code="general.linkout.title" args=[project.ownerName, project.name, target.name] /></#assign> <#-- todo: gud? -->
+<@base.base title=message>
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <div class="panel panel-default">
@@ -21,7 +23,7 @@
                         <h4 class="panel-title"><i class="fas fa-exclamation-triangle"></i>&ensp;<@spring.message "general.warning" /></h4>
                     </div>
                     <div class="col-xs-12 col-sm-8 no-padding">
-                        <span class="pull-right"><@spring.messageArgs "version.download.confirm.header" project.ownerName project.name target.name /></span>
+                        <span class="pull-right"><@spring.messageArgs code="version.download.confirm.header" args=[project.ownerName, project.name, target.name] /></span>
                     </div>
                 </div>
                 <div class="panel-body">
@@ -48,7 +50,7 @@
 
                         <div class="col-xs-12 col-sm-6">
                             <form action="${routes.getRouteUrl("versions.confirmDownload", project.ownerName, project.slug, target.name, Some(downloadType.value), "", "dummy")}" method="post" id="form-download">
-                                @CSRF.formField
+                                <@csrf.formField />
 
                                 <button type="submit" form="form-download" class="btn btn-danger pull-right-sm">
                                 <@spring.message "version.download.confirm.download" />
@@ -60,5 +62,4 @@
             </div>
         </div>
     </div>
-
-}
+</@base.base>

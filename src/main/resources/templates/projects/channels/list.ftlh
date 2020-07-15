@@ -1,5 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/layout/base.ftlh" as base />
 <#import "*/projects/channels/helper/modalManage.ftlh" as modalManage />
 <#import "*/utils/form.ftlh" as form>
 <#import "*/utils/csrf.ftlh" as csrf>
@@ -27,7 +28,8 @@
     </script>
 </#assign>
 
-@layout.base(messages("channel.list.title", p.project.ownerName, p.project.slug), scripts) {
+<#assign message><@spring.messageArgs code="channel.list.title" args=[p.project.ownerName, p.project.slug] /></#assign>
+<@base.base title=message additionalScripts=scriptsVar>
 
     <div class="row">
             <div class="col-md-6 col-md-offset-3">
@@ -133,4 +135,4 @@
             </div>
         </div>
 
-}
+</@base.base>

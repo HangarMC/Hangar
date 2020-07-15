@@ -1,5 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
+<#import "*/projects/view.ftlh" as projects />
 
 @*
 Versions page within Project overview.
@@ -30,8 +31,7 @@ Versions page within Project overview.
     <link rel="stylesheet" type="text/css" href="<@hangar.url "build/version-list.css" />" />
 </#assign>
 
-@projects.view(p, sp, "#versions", additionalScripts = scripts, additionalStyling = stylesheets) {
-
+<@projects.view p=p sp=sp active="#versions" additionalScripts=scriptsVar additionalStyling=stylesheetsVar>
     <div class="row">
         <div class="col-md-9">
             <div id="version-list"></div>
@@ -69,5 +69,4 @@ Versions page within Project overview.
             )
         </div>
     </div>
-
-}
+}</@projects.view>

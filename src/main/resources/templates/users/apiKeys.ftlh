@@ -22,7 +22,7 @@
     </script>
 </#assign>
 
-<@user.view u o additionalScripts=scriptsVar>
+<@user.view u=u o=o additionalScripts=scriptsVar>
     <div id="keyAlert" class="alert alert-danger" role="alert" style="display: none;"></div>
 
     <div class="row">
@@ -34,7 +34,7 @@
                         <#list perms.take(NamedPermission.values.length / 2) as perm>
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" id="perm.@perm.entryName"> @perm.entryName
+                                    <input type="checkbox" id="perm.${perm.entryName}"> $${perm.entryName}
                                 </label>
                             </div>
                         </#list>
@@ -43,7 +43,7 @@
                         <#list perms.drop(NamedPermission.values.length / 2) as perm>
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" id="perm.@perm.entryName"> @perm.entryName
+                                    <input type="checkbox" id="perm.${perm.entryName}"> ${perm.entryName}
                                 </label>
                             </div>
                         </#list>
@@ -73,9 +73,9 @@
                 <tbody id="api-key-rows">
                 <#list keys as key>
                     <tr class="api-key-row">
-                        <th class="api-key-name">@key.name</th>
+                        <th class="api-key-name">${key.name}</th>
                         <th></th>
-                        <th>@key.tokenIdentifier</th>
+                        <th>${key.tokenIdentifier}</th>
                         <th>@key.namedRawPermissions.map(_.entryName).mkString(", ")</th>
                         <th><button class="btn btn-danger api-key-row-delete-button"><@spring.message "user.apiKeys.keyDeleteButton" /></button></th>
                     </tr>

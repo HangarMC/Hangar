@@ -3,6 +3,8 @@
 <#import "*/layout/base.ftlh" as base />
 <#import "*/utils/form.ftlh" as form>
 <#import "*/utils/csrf.ftlh" as csrf>
+<#import "*/projects/channels/helper/modalManage.ftlh" as modalManage />
+<#import "*/projects/helper/alertFile.ftlh" as alertFile />
 
 @import controllers.sugar.Requests.OreRequest
 @import models.querymodels.ViewTag
@@ -158,7 +160,7 @@
                                 <@spring.message "version.create.selectFile" />
                             </label>
 
-                            ${projects.helper.alertFile()}
+                            <@alertFile.alertFile />
                     </@form.form>
 
                     <#if pending??>
@@ -180,7 +182,7 @@
 
                 </div>
             </div>
-            <span class="pull-left tos"><i><@spring.message "version.create.tos" "#" /></i></span>
+            <span class="pull-left tos"><i><@spring.messageArgs "version.create.tos" "#" /></i></span>
         </div>
         <#if pending??>
             ${projects.helper.createSteps(2)}

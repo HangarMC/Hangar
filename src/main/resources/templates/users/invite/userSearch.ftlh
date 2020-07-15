@@ -1,7 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
 
-<#--@()(implicit messages: Messages)-->
 <#macro userSearch>
     <div class="input-group input-group-sm user-search">
         <input type="text" class="form-control" placeholder="<@spring.message "org.users.add" />&hellip;" />
