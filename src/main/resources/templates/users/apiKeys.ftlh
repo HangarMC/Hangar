@@ -34,7 +34,7 @@
                         <#list perms.take(NamedPermission.values.length / 2) as perm>
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" id="perm.${perm.entryName}"> $${perm.entryName}
+                                    <input type="checkbox" id="perm.${perm.entryName}"> ${perm.entryName}
                                 </label>
                             </div>
                         </#list>
