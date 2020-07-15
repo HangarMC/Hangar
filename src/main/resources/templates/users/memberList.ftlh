@@ -6,6 +6,7 @@
 <#import "*/users/invite/userSearch.ftlh" as userSearch>
 <#import "*/users/invite/roleSelect.ftlh" as roleSelect>
 
+<#--
 @import ore.OreConfig
 @import ore.models.user.role.UserRoleModel
 @import util.syntax._
@@ -17,6 +18,7 @@
 @import ore.permission.Permission
 @(j: JoinableData[_ <: UserRoleModel[_], _], perms: Permission, editable: Boolean = false, removeCall: Call = null,
         settingsCall: Call = null, saveCall: Call = null)(implicit messages: Messages, config: OreConfig, request: OreRequest[_])
+-->
 
 <!-- TODO: Pagination -->
 <#macro memberList j perms editable=false removeCall="" settingsCall="" saveCall="">
@@ -125,7 +127,7 @@
                 <!-- User search -->
                 <#if perms.has(Permission.ManageSubjectMembers) && editable>
                     <li class="list-group-item">
-                        <@userSearch.userSearch>
+                        <@userSearch.userSearch />
                     </li>
                 </#if>
 

@@ -1,13 +1,18 @@
 package me.minidigger.hangar.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import me.minidigger.hangar.controller.HangarController;
+import me.minidigger.hangar.db.dao.UserDao;
+import me.minidigger.hangar.db.model.UsersTable;
 
 @Controller
 public class UsersController extends HangarController {
@@ -57,9 +62,22 @@ public class UsersController extends HangarController {
         return null; // TODO implement verify request controller
     }
 
+    @Autowired
+    private UserDao userDao;
+
     @RequestMapping("/{user}")
-    public Object showProjects(@PathVariable Object user) {
-        return null; // TODO implement showProjects request controller
+    public Object showProjects(@PathVariable String user) {
+        // TODO hacky test shit
+        UsersTable dbUser = userDao.getByName(user);
+        if (dbUser == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        System.out.println(dbUser);
+
+        ModelAndView mav = new ModelAndView("users/projects");
+        mav.addObject("u", dbUser); // TODO proper frontend model
+        mav.addObject("o", null);
+        return fillModel(mav); // TODO implement showProjects request controller
     }
 
     @RequestMapping("/{user}/settings/apiKeys")

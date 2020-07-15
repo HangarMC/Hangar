@@ -1,0 +1,71 @@
+package me.minidigger.hangar.db.model;
+
+
+import java.time.OffsetDateTime;
+
+import me.minidigger.hangar.db.customtypes.JSONB;
+
+public class ProjectVersionReviewsTable {
+
+    private long id;
+    private long versionId;
+    private long userId;
+    private OffsetDateTime createdAt;
+    private OffsetDateTime endedAt;
+    private JSONB comment;
+
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+
+    public long getVersionId() {
+        return versionId;
+    }
+
+    public void setVersionId(long versionId) {
+        this.versionId = versionId;
+    }
+
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+
+    public OffsetDateTime getEndedAt() {
+        return endedAt;
+    }
+
+    public void setEndedAt(OffsetDateTime endedAt) {
+        this.endedAt = endedAt;
+    }
+
+
+    public JSONB getComment() {
+        return comment;
+    }
+
+    public void setComment(JSONB comment) {
+        this.comment = comment;
+    }
+
+}

@@ -14,12 +14,14 @@
 @(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)])(
         implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)-->
 
+<#--
 @canEditOrgMembers = @{
     u.isOrga &&
     o.exists { case (_, scopedData) =>
         scopedData.permissions.has(Permission.sManageOrganizationMembers)
     }
 }
+-->
 
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "build/user-profile.js" />"></script>
@@ -30,6 +32,7 @@
     <script type="text/javascript" src="<@hangar.url "javascripts/memberList.js" />"></script>
 </#assign>
 
+<#assign o={} /><#-- todo dummy value -->
 <@users.view u=u o=o additionalScripts=scriptsVar>
     <div class="row">
         <div class="col-md-8">
@@ -64,7 +67,7 @@
                     </table>
                 </div>
             </#if>
-            <#if !u.isOrga>
+            <#if !u.isOrga!false>
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title"> <@spring.message "org.plural" /></h3>

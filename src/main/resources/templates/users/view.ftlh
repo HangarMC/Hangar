@@ -12,12 +12,12 @@
 -->
 
 <#macro view u o additionalScripts="">
-    @canEditOrgSettings = @{
+    <#--@canEditOrgSettings = @{
     u.isOrga &&
     o.exists { case (_, scopedData) =>
     scopedData.permissions.has(Permission.EditOrganizationSettings)
     }
-    }
+    }-->
 
     <#assign scriptsVar>
         <script type="text/javascript" src="<@hangar.url "javascripts/userPage.js" />"></script>
