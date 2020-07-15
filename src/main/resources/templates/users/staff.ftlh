@@ -6,20 +6,34 @@
 @(staff: Seq[(String, Role, Option[OffsetDateTime], OffsetDateTime)], ordering: String, page: Int)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 -->
 
-@pageSize = @{ config.ore.users.authorPageSize }
-@direction = @{ if (ordering.startsWith("-")) "chevron-down" else "chevron-up" }
+<#--@pageSize = @{ config.ore.users.authorPageSize }-->
+<#assign pageSize=config.ore.users.authorPageSize />
+<#--@direction = @{ if (ordering.startsWith("-")) "chevron-down" else "chevron-up" }-->
+<#assign direction>
+	<#if ordering.startsWith("-")>
+		"chevron-down"
+	<#else>
+		"chevron-up"
+	</#if>
+</#assign>
 
-@isActiveSort(td: String) = @{
-	val sort = if (ordering.startsWith("-")) ordering.substring(1) else ordering
-	sort.equalsIgnoreCase(td)
-}
-
-<#macro scripts>
-	<script type="text/javascript" src="<@hangar.url "javascripts/userList.js" />"></script>
-	<script @CSPNonce.attr>CURRENT_PAGE = @page;</script>
+<#macro isActiveSort td>
+	<#if ordering.startsWith("-")>
+		ordering.substring(1).equalsIgnoreCase(td)
+	<#else>
+		ordering.equalsIgnoreCase(td)
+	</#if>
 </#macro>
 
-<#assign scriptsVar><@scripts /></#assign>
+<#--@isActiveSort(td: String) = @{-->
+<#--	val sort = if (ordering.startsWith("-")) ordering.substring(1) else ordering-->
+<#--	sort.equalsIgnoreCase(td)-->
+<#--}-->
+
+<#assign scriptsVar>
+	<script type="text/javascript" src="<@hangar.url "javascripts/userList.js" />"></script>
+	<script <#--@CSPNonce.attr-->>CURRENT_PAGE = @page;</script>
+</#assign>
 <@base.base title="Staff - Hangar" additionalScripts=scriptsVar>
 
 	<div class="panel panel-default">
