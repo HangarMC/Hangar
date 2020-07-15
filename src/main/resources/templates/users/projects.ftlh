@@ -3,16 +3,16 @@
 <#import "*/users/view.ftlh" as users />
 <#import "*/users/memberList.ftlh" as memberList />
 
-<#--@import controllers.routes.{Users => userRoutes}-->
-<#--@import controllers.sugar.Requests.OreRequest-->
-<#--@import models.viewhelper.{OrganizationData, ScopedOrganizationData, UserData}-->
-<#--@import ore.OreConfig-->
-<#--@import ore.permission.Permission-->
-<#--@import ore.permission.role.Role-->
-<#--@import util.syntax._-->
-<#--@import views.html.utils.userAvatar-->
-<#--@(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)])(-->
-<#--        implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)-->
+<#--@import controllers.routes.{Users => userRoutes}
+@import controllers.sugar.Requests.OreRequest
+@import models.viewhelper.{OrganizationData, ScopedOrganizationData, UserData}
+@import ore.OreConfig
+@import ore.permission.Permission
+@import ore.permission.role.Role
+@import util.syntax._
+@import views.html.utils.userAvatar
+@(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)])(
+        implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)-->
 
 @canEditOrgMembers = @{
     u.isOrga &&
@@ -30,7 +30,6 @@
     <script type="text/javascript" src="<@hangar.url "javascripts/memberList.js" />"></script>
 </#assign>
 
-<#--@users.view(u, o, additionalScripts = scripts) {-->
 <@users.view u o additionalScripts=scriptsVar>
     <div class="row">
         <div class="col-md-8">
@@ -135,17 +134,9 @@
                 </div>
             <#else>
                 @o.map { case (orgData, scopedData) =>
-                    <@memberList.memberList editable=true perms=scopedData.permissions saveCall=routes.Organizations.updateMembers(orgData.orga.name) removeCall=routes.Organizations.removeMember(orgData.orga.name)>
-<#--                    @users.memberList(orgData,-->
-<#--                        editable = true,-->
-<#--                        perms = scopedData.permissions,-->
-<#--                        saveCall = routes.Organizations.updateMembers(orgData.orga.name),-->
-<#--                        removeCall = routes.Organizations.removeMember(orgData.orga.name),-->
-<#--                    )-->
-                    </@memberList.memberList>
+                    <@memberList.memberList editable=true perms=scopedData.permissions saveCall=routes.Organizations.updateMembers(orgData.orga.name) removeCall=routes.Organizations.removeMember(orgData.orga.name) />
                 }
             </#if>
         </div>
     </div>
 </@users.view>
-<#--}-->

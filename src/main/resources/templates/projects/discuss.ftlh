@@ -6,15 +6,15 @@
 <#--
 Discussion page within Project overview.
 -->
-<#--@import controllers.sugar.Requests.OreRequest-->
-<#--@import models.viewhelper.{ProjectData, ScopedProjectData}-->
-<#--@import ore.OreConfig-->
-<#--@import ore.markdown.MarkdownRenderer-->
-<#--@import views.html.helper.CSPNonce-->
-<#--@import views.html.utils-->
+<#--@import controllers.sugar.Requests.OreRequest
+@import models.viewhelper.{ProjectData, ScopedProjectData}
+@import ore.OreConfig
+@import ore.markdown.MarkdownRenderer
+@import views.html.helper.CSPNonce
+@import views.html.utils-->
 
-<#--@(p: ProjectData, sp: ScopedProjectData)(implicit messages: Messages, request: OreRequest[_],-->
-<#--        flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)-->
+<#--@(p: ProjectData, sp: ScopedProjectData)(implicit messages: Messages, request: OreRequest[_],
+        flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)-->
 
 <#assign scriptsVar>
     <script <#--@CSPNonce.attr-->>
@@ -46,11 +46,6 @@ Discussion page within Project overview.
 
                 <div class="push-down">
                     <@editor.editor saveCall=routes.getRouteUrl("projects.postDiscussionReply", p.project.ownerName, p.project.slug) cancellable=false enabled=true/>
-<#--                    @utils.editor(-->
-<#--                    saveCall = routes.getRouteUrl("projects.postDiscussionReply", p.project.ownerName, p.project.slug),-->
-<#--                    cancellable = false,-->
-<#--                    enabled = true-->
-<#--                    )-->
                 </div>
             </div>
             <div class="reply-controls">

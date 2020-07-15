@@ -24,12 +24,6 @@
 
         <#if editable && perms.has(Permission.ManageSubjectMembers)>
             <@roleSelect.roleSelect roleCategory=j.roleCategory id="select-role" classes="pull-right" hidden=true />
-<#--            @users.invite.roleSelect(-->
-<#--            roleCategory = j.roleCategory,-->
-<#--            id = "select-role",-->
-<#--            classes = "pull-right",-->
-<#--            hidden = true-->
-<#--            )-->
 
             <!-- Row template -->
             <ul style="display: none;">
@@ -39,7 +33,6 @@
                     <a class="username"></a>
                     <i class="fas fa-times user-cancel"></i>
                     <@roleSelect.roleSelect roleCategory=j.roleCategory classes="pull-right" />
-<#--                    @users.invite.roleSelect(roleCategory = j.roleCategory, classes="pull-right")-->
                 </li>
             </ul>
 

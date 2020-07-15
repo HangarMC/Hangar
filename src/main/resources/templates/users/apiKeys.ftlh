@@ -2,12 +2,12 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/users/view.ftlh" as user />
 
-<#--@import controllers.sugar.Requests.OreRequest-->
-<#--@import models.viewhelper.{OrganizationData, ScopedOrganizationData, UserData}-->
-<#--@import ore.OreConfig-->
-<#--@import ore.models.api.ApiKey-->
-<#--@import ore.permission.NamedPermission-->
-<#--@import views.html.helper.CSPNonce-->
+<#--@import controllers.sugar.Requests.OreRequest
+@import models.viewhelper.{OrganizationData, ScopedOrganizationData, UserData}
+@import ore.OreConfig
+@import ore.models.api.ApiKey
+@import ore.permission.NamedPermission
+@import views.html.helper.CSPNonce-->
 
 <#--@(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)], keys: Seq[ApiKey], perms: Seq[NamedPermission])(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)-->
 

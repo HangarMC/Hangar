@@ -6,9 +6,7 @@
 @(staff: Seq[(String, Role, Option[OffsetDateTime], OffsetDateTime)], ordering: String, page: Int)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 -->
 
-<#--@pageSize = @{ config.ore.users.authorPageSize }-->
 <#assign pageSize=config.ore.users.authorPageSize />
-<#--@direction = @{ if (ordering.startsWith("-")) "chevron-down" else "chevron-up" }-->
 <#assign direction>
 	<#if ordering.startsWith("-")>
 		"chevron-down"
@@ -24,11 +22,6 @@
 		ordering.equalsIgnoreCase(td)
 	</#if>
 </#macro>
-
-<#--@isActiveSort(td: String) = @{-->
-<#--	val sort = if (ordering.startsWith("-")) ordering.substring(1) else ordering-->
-<#--	sort.equalsIgnoreCase(td)-->
-<#--}-->
 
 <#assign scriptsVar>
 	<script type="text/javascript" src="<@hangar.url "javascripts/userList.js" />"></script>
