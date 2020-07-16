@@ -15,7 +15,6 @@ create table users
     id bigint not null
         constraint users_pkey
             primary key,
-    created_at timestamp with time zone not null,
     full_name varchar(255),
     name varchar(255) not null
         constraint users_name_key
