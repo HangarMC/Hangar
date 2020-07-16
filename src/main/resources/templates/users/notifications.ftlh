@@ -137,7 +137,7 @@
                             </span>
                             <br/>
 
-                            <div class="invite-message invite-choice" style="Fdisplay: auto;">
+                            <div class="invite-message invite-choice" style="display: auto;">
                                 <p>
                                     <@spring.messageArgs "notification.invite" subject.getClass.getSimpleName.toLowerCase />
                                 <a href=${subject.url}>@subject.name</a>.

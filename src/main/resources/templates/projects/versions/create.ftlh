@@ -5,6 +5,7 @@
 <#import "*/utils/csrf.ftlh" as csrf>
 <#import "*/projects/channels/helper/modalManage.ftlh" as modalManage />
 <#import "*/projects/helper/alertFile.ftlh" as alertFile />
+<#import "*/utils/editor.ftlh" as editor />
 
 @import controllers.sugar.Requests.OreRequest
 @import models.querymodels.ViewTag
@@ -139,13 +140,13 @@
                                     <h3><@spring.message "version.releaseBulletin" /></h3>
                                     <p><@spring.message "version.releaseBulletin.info" /></p>
 
-                                    @editor(
-                                        savable = false,
-                                        enabled = true,
-                                        raw = version.description!"",
-                                        cancellable = false,
-                                        targetForm = "form-publish"
-                                    )
+                                    <@editor.editor
+                                        savable=false
+                                        enabled=true
+                                        raw=version.description!""
+                                        cancellable=false
+                                        targetForm="form-publish"
+                                    />
                                 </div>
                             </div>
                             <script @CSPNonce.attr>$(function () { $('.btn-edit').click() });</script>

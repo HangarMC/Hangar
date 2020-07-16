@@ -32,7 +32,7 @@
         <div class="col-md-12">
             <ul class="list-group list-flags-admin">
             @flags.map { flag =>
-            <li data-flag-id="@flag.flagId" class="list-group-item">
+            <li data-flag-id="${flag.flagId}" class="list-group-item">
                 <div class="row">
                     <div class="col-xs-12 col-md-1" style="width: 40px;">
                         <a href="${routes.getRouteUrl("users.showProjects", flag.reporter)}">

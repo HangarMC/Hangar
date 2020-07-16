@@ -3,7 +3,7 @@
 
 @(call: Call, message: String, id: String = "modal-download")(implicit messages: Messages)
 
-<div class="modal fade" id="@id" tabindex="-1" role="dialog"
+<div class="modal fade" id="${id}" tabindex="-1" role="dialog"
      aria-labelledby="label-download">
     <div class="modal-dialog" role="document">
         <div class="modal-content">

@@ -2,6 +2,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/projects/view.ftlh" as projectView />
 <#import "*/users/memberList.ftlh" as memberList />
+<#import "*/utils/editor.ftlh" as editor />
 
 <#--
 Documentation page within Project overview.
@@ -51,15 +52,15 @@ Documentation page within Project overview.
         <div class="col-md-9">
             <div class="row">
                 <div class="col-md-12">
-                    @editor(
-                        saveCall = routes.Pages.save(p.project.ownerName, p.project.slug, page.fullSlug(parentPage)),
-                        deleteCall = routes.Pages.delete(p.project.ownerName, p.project.slug, page.fullSlug(parentPage)),
-                        deletable = !page.isHome,
-                        enabled = canEditPages,
-                        raw = page.contents,
-                        cooked = page.html(Some(p.project)),
-                        subject = "Page",
-                        extraFormValue = page.name)
+                    <@editor.editor
+                        saveCall=routes.getRouteUrl("pages.save", p.project.ownerName, p.project.slug, page.fullSlug(parentPage))
+                        deleteCall=routes.getRouteUrl("pages.delete", p.project.ownerName, p.project.slug, page.fullSlug(parentPage))
+                        deletable=!page.isHome
+                        enabled=canEditPages
+                        raw=page.contents
+                        cooked=page.html(p.project)
+                        subject="Page"
+                        extraFormValue=page.name />
                 </div>
             </div>
         </div>

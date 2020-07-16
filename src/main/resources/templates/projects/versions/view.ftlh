@@ -3,6 +3,7 @@
 <#import "*/utils/form.ftlh" as form>
 <#import "*/utils/csrf.ftlh" as csrf>
 <#import "*/projects/view.ftlh" as projects />
+<#import "*/utils/editor.ftlh" as editor />
 
 @import controllers.sugar.Requests.OreRequest
 @import models.viewhelper.{ScopedProjectData, VersionData}
@@ -165,15 +166,13 @@
                     </div>
                 </#if>
                 <div class="col-md-12">
-                @editor(
-                    saveCall = versionRoutes.saveDescription(
-                        v.p.project.ownerName, v.p.project.slug, v.v.versionString
-                    ),
-                    enabled = sp.perms(Permission.EditPage),
-                    raw = v.v.description!"",
-                    cooked = v.v.obj.render,
-                    subject = "Version"
-                )
+                <@editor.editor
+                    saveCall=routes.getRouteUrl("versions.saveDescription", v.p.project.ownerName, v.p.project.slug, v.v.versionString)
+                    enabled=sp.perms(Permission.EditPage)
+                    raw=v.v.description!""
+                    cooked=v.v.obj.render
+                    subject="Version"
+                />
                 </div>
             </div>
         </div>

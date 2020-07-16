@@ -48,7 +48,7 @@
                         <select class="form-control select-parent">
                             <option selected value="-1">&lt;none&gt;</option>
                             @rootPages.filter(_.name != Page.homeName).map { page =>
-                              <option value="@page.id" data-slug="@page.slug">@page.name</option>
+                              <option value="${page.id}" data-slug="${page.slug}">${page.name}</option>
                             }
                         </select>
                     </div>

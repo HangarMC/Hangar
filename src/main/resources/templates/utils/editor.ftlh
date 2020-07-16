@@ -3,7 +3,7 @@
 <#import "*/utils/form.ftlh" as form>
 <#import "*/utils/csrf.ftlh" as csrf>
 
-<#macro editor saveCall deleteCall="" savable=true deletable=false enabled=true raw="" cooked="" subject="" cancellable=true targetForm="" extraFormValue="">
+<#macro editor saveCall="" deleteCall="" savable=true deletable=false enabled=true raw="" cooked="" subject="" cancellable=true targetForm="" extraFormValue="">
     <#if enabled>
         <!-- Edit -->
         <button type="button" class="btn btn-sm btn-edit btn-page btn-default" title="<@spring.message "general.edit" />">

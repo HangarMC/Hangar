@@ -2,6 +2,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/utils/form.ftlh" as form>
 <#import "*/utils/csrf.ftlh" as csrf>
+<#import "*/projects/view.ftlh" as projects />
 
 @import controllers.sugar.Requests.OreRequest
 @import models.viewhelper.{ProjectData, ScopedProjectData}
@@ -34,7 +35,7 @@
     </script>
 </#assign>
 
-@projects.view(p, sp, "#settings", additionalScripts = scripts) {
+<@projects.view p=p sp=sp active="#settings" =additionalScripts=scriptsVar>
 
     <div class="row">
         <div class="col-md-8">
@@ -296,4 +297,4 @@
             </div>
         </div>
 
-}
+</@projects.view>

@@ -51,7 +51,6 @@
                         </div>
                         <div class="modal-body"><@spring.message "project.removeMember.confirm" /></div>
                         <div class="modal-footer">
-                            <#-- todo: removeCall, gotten from settings template -->
                             <@form.form action=removeCall method="POST" class="form-inline">
                                 <@csrf.formField />
                                 <input type="hidden" name="username" />
@@ -76,15 +75,14 @@
 
                 <#if perms.has(Permission.ManageSubjectMembers)>
                     <div class="pull-right">
-                        <#if !editable && settingsCall??>
-                            <a href="@settingsCall"
+                        <#if !editable && settingsCall?has_content>
+                            <a href="${settingsCall}"
                                class="btn yellow btn-xs">
                                 <i class="fas fa-pencil-alt"></i>
                             </a>
                         </#if>
 
-                        <#if saveCall??>
-                        <#-- todo: saveCall, gotten from settings template -->
+                        <#if saveCall?has_content>
                             <@form.form action=saveCall method="POST" id="save">
                                 <@csrf.formField />
                                 <button class="btn-members-save btn btn-default btn-panel btn-xs" data-toggle="tooltip"
