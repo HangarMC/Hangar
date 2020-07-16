@@ -8,15 +8,16 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserDao;
 import me.minidigger.hangar.db.model.UsersTable;
 
 @Component
 public class HangarAuthenticationProvider implements AuthenticationProvider {
 
-    private final UserDao userDao;
+    private final HangarDao<UserDao> userDao;
 
-    public HangarAuthenticationProvider(UserDao userDao) {
+    public HangarAuthenticationProvider(HangarDao<UserDao> userDao) {
         this.userDao = userDao;
     }
 
@@ -26,7 +27,7 @@ public class HangarAuthenticationProvider implements AuthenticationProvider {
         HangarAuthentication auth = (HangarAuthentication) authentication;
         String name = auth.getName();
 
-        UsersTable usersTable = userDao.getByName(name);
+        UsersTable usersTable = userDao.get().getByName(name);
         // TODO validate stuff, guess we need to pass sso stuff here?
 
         if (usersTable != null) {

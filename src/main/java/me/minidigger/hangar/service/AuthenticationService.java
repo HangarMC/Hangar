@@ -12,6 +12,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import me.minidigger.hangar.config.HangarConfig;
+import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserDao;
 import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.generated.ApiSession;
@@ -24,11 +25,11 @@ import me.minidigger.hangar.security.HangarAuthentication;
 public class AuthenticationService {
 
     private final HangarConfig hangarConfig;
-    private final UserDao userDao;
+    private final HangarDao<UserDao> userDao;
     private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public AuthenticationService(HangarConfig hangarConfig, UserDao userDao, AuthenticationManager authenticationManager) {
+    public AuthenticationService(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationManager authenticationManager) {
         this.hangarConfig = hangarConfig;
         this.userDao = userDao;
         this.authenticationManager = authenticationManager;
@@ -77,7 +78,7 @@ public class AuthenticationService {
 
     public void loginAsFakeUser() {
         String username = hangarConfig.getFakeUserName();
-        UsersTable userEntry = userDao.getByName(username);
+        UsersTable userEntry = userDao.get().getByName(username);
         if (userEntry == null) {
             userEntry = new UsersTable();
             userEntry.setEmail(hangarConfig.getFakeUserEmail());
@@ -86,7 +87,7 @@ public class AuthenticationService {
             userEntry.setId(hangarConfig.getFakeUserId());
             userEntry.setReadPrompts(new int[0]);
 
-            userEntry = userDao.insert(userEntry);
+            userEntry = userDao.get().insert(userEntry);
         }
         // TODO properly do auth, remember me shit too
         Authentication auth = new HangarAuthentication(userEntry.getName());

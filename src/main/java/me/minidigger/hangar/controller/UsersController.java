@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpSession;
 
 import me.minidigger.hangar.config.HangarConfig;
+import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserDao;
 import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.service.AuthenticationService;
@@ -20,13 +21,13 @@ import me.minidigger.hangar.service.AuthenticationService;
 @Controller
 public class UsersController extends HangarController {
 
-    private final UserDao userDao;
+    private final HangarDao<UserDao> userDao;
     private final HangarConfig hangarConfig;
     private final AuthenticationService authenticationService;
     private final ApplicationController applicationController;
 
     @Autowired
-    public UsersController(HangarConfig hangarConfig, UserDao userDao, AuthenticationService authenticationService, ApplicationController applicationController) {
+    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, ApplicationController applicationController) {
         this.hangarConfig = hangarConfig;
         this.userDao = userDao;
         this.authenticationService = authenticationService;
@@ -99,7 +100,7 @@ public class UsersController extends HangarController {
     @RequestMapping("/{user}")
     public Object showProjects(@PathVariable String user) {
         // TODO hacky test shit
-        UsersTable dbUser = userDao.getByName(user);
+        UsersTable dbUser = userDao.get().getByName(user);
         if (dbUser == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }

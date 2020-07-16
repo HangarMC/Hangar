@@ -1,10 +1,11 @@
 package me.minidigger.hangar.db.model;
 
 
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.StringJoiner;
 
-public class UsersTable {
+public class UsersTable implements Serializable {
 
     private long id;
     private OffsetDateTime createdAt;
