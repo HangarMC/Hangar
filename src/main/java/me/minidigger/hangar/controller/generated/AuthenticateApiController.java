@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
-import me.minidigger.hangar.filter.HangarAuthenticationFilter.HangarAuthentication;
+import me.minidigger.hangar.security.HangarAuthentication;
 import me.minidigger.hangar.model.generated.ApiSessionResponse;
 import me.minidigger.hangar.model.generated.SessionProperties;
 import me.minidigger.hangar.service.AuthenticationService;

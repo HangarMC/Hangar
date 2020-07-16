@@ -29,7 +29,8 @@ public abstract class HangarController {
         mav.addObject("@helper", builder.build().getStaticModels());
 
         // user data
-        mav.addObject("user", userService.getCurrentUser());
+        mav.addObject("user", userService.getCurrentUser()); // TODO this is wrong
+        mav.addObject("cu", userService.getCurrentUser());
         mav.addObject("modelData", userService.getModelData());
 
         return mav;

@@ -10,12 +10,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
-import me.minidigger.hangar.controller.HangarController;
+import javax.servlet.http.HttpSession;
+
+import me.minidigger.hangar.config.HangarConfig;
 import me.minidigger.hangar.db.dao.UserDao;
 import me.minidigger.hangar.db.model.UsersTable;
+import me.minidigger.hangar.service.AuthenticationService;
 
 @Controller
 public class UsersController extends HangarController {
+
+    private final UserDao userDao;
+    private final HangarConfig hangarConfig;
+    private final AuthenticationService authenticationService;
+    private final ApplicationController applicationController;
+
+    @Autowired
+    public UsersController(HangarConfig hangarConfig, UserDao userDao, AuthenticationService authenticationService, ApplicationController applicationController) {
+        this.hangarConfig = hangarConfig;
+        this.userDao = userDao;
+        this.authenticationService = authenticationService;
+        this.applicationController = applicationController;
+    }
 
     @RequestMapping("/authors")
     public ModelAndView showAuthors(@RequestParam(required = false) Object sort, @RequestParam(required = false) Object page) {
@@ -23,13 +39,31 @@ public class UsersController extends HangarController {
     }
 
     @RequestMapping("/login")
-    public Object login(@RequestParam Object sso, @RequestParam Object sig, @RequestParam Object returnUrl) {
-        return null; // TODO implement login request controller
+    public ModelAndView login(@RequestParam(defaultValue = "") String sso, @RequestParam(defaultValue = "") String sig, @RequestParam String returnUrl) {
+        if (hangarConfig.isFakeUserEnabled()) {
+            hangarConfig.checkDebug();
+
+            authenticationService.loginAsFakeUser();
+
+            return new ModelAndView("redirect:" + returnUrl);
+        } else if (sso.isEmpty() || sig.isBlank()) {
+            // TODO redirect to SSO
+            return new ModelAndView("redirect:" + returnUrl);
+        } else {
+            // TODO decode sso, then login
+            boolean success = authenticationService.loginWithSSO(sso, sig);
+            if (success) {
+                return new ModelAndView("redirect:" + returnUrl);
+            } else {
+                return applicationController.showHome(); // on a scale of banana to kneny, how bad is it to call another controller?
+            }
+        }
     }
 
     @RequestMapping("/logout")
-    public Object logout() {
-        return null; // TODO implement logout request controller
+    public ModelAndView logout(HttpSession session) {
+        session.invalidate();
+        return new ModelAndView("redirect:/"); // TODO redirect to sso
     }
 
     @RequestMapping("/notifications")
@@ -54,16 +88,13 @@ public class UsersController extends HangarController {
 
     @GetMapping("/staff")
     public Object showStaff(@RequestParam(required = false) Object sort, @RequestParam(required = false) Object page) {
-        return fillModel( new ModelAndView("users/staff")); // TODO implement showStaff request controller
+        return fillModel(new ModelAndView("users/staff")); // TODO implement showStaff request controller
     }
 
     @RequestMapping("/verify")
     public Object verify(@RequestParam Object returnPath) {
         return null; // TODO implement verify request controller
     }
-
-    @Autowired
-    private UserDao userDao;
 
     @RequestMapping("/{user}")
     public Object showProjects(@PathVariable String user) {

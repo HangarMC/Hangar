@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan("me.minidigger.hangar")
 public class HangarConfig {
 
-    @Value("${debug:false}")
+    @Value("${hangar.debug:false}")
     private boolean debug;
 
     @Value("${fakeUser.enabled:false}")

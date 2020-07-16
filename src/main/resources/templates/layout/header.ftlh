@@ -46,7 +46,6 @@
             <#-- Right navbar -->
             <#if authEnabled>
                 <ul class="nav navbar-nav navbar-collapse collapse navbar-right">
-                    <#assign cu=user>
                     <#if cu??>
                         <li class="dropdown nav-icon new-controls">
                             <a href="#" class="drop-down-toggle" data-toggle="dropdown">
@@ -195,7 +194,7 @@
                             <div class="btn-group-login">
                                 <a href="${routes.getRouteUrl("users.signUp")}"
                                    class="btn btn-primary navbar-btn"><@spring.message "general.signup" /></a>
-                                <a href="${routes.getRouteUrl("users.login", rc.requestUri?url)}"
+                                <a href="${routes.getRouteUrl("users.login", "", "", rc.requestUri?url)}"
                                    class="btn btn-primary navbar-btn"><@spring.message "general.login" /></a>
                             </div>
                         </li>

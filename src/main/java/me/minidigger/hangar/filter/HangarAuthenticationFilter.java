@@ -8,6 +8,8 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 
 import javax.servlet.http.HttpServletRequest;
 
+import me.minidigger.hangar.security.HangarAuthentication;
+
 public class HangarAuthenticationFilter extends AbstractPreAuthenticatedProcessingFilter {
 
     @Override
@@ -21,8 +23,9 @@ public class HangarAuthenticationFilter extends AbstractPreAuthenticatedProcessi
             return null;
         }
 
-        String key = header.replace("HangarApi ", "");
-        return new HangarAuthentication(key);
+//        String key = header.replace("HangarApi ", "");
+//        return new HangarAuthentication(key);
+        return null;
     }
 
     @Override
@@ -30,39 +33,18 @@ public class HangarAuthenticationFilter extends AbstractPreAuthenticatedProcessi
         return "N/A";
     }
 
-    public class HangarAuthentication {
-        private String key;
-        private long userId;
-
-        private HangarAuthentication(String key) {
-            this.key = key;
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public long getUserId() {
-            return userId;
-        }
-
-        void setUserId(long userId) {
-            this.userId = userId;
-        }
-    }
-
-    class HangarAuthenticationManager implements AuthenticationManager {
-
-        @Override
-        public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-            if (authentication.getPrincipal() instanceof  HangarAuthentication) {
-                authentication.setAuthenticated(true);
-                HangarAuthentication auth = (HangarAuthentication) authentication.getPrincipal();
-                auth.setUserId(-1);
-                // TODO auth
-            }
-
-            return authentication;
-        }
-    }
+//    class HangarAuthenticationManager implements AuthenticationManager {
+//
+//        @Override
+//        public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+//            if (authentication.getPrincipal() instanceof HangarAuthentication) {
+//                authentication.setAuthenticated(true);
+//                HangarAuthentication auth = (HangarAuthentication) authentication.getPrincipal();
+//                auth.setUserId(-1);
+//                // TODO auth
+//            }
+//
+//            return authentication;
+//        }
+//    }
 }
