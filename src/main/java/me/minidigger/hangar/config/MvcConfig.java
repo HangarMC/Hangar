@@ -2,6 +2,7 @@ package me.minidigger.hangar.config;
 
 import freemarker.template.TemplateException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -20,9 +21,18 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import me.minidigger.hangar.util.RouteHelper;
+
 @EnableWebMvc
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
+
+    private final RouteHelper routeHelper;
+
+    @Autowired
+    public MvcConfig(RouteHelper routeHelper) {
+        this.routeHelper = routeHelper;
+    }
 
     @Bean
     public FreeMarkerViewResolver freemarkerViewResolver() {
@@ -81,6 +91,8 @@ public class MvcConfig implements WebMvcConfigurer {
                 return new ModelAndView("errors/timeout");
             } else if (status == HttpStatus.NOT_FOUND) {
                 return new ModelAndView("errors/notFound");
+            } else if (status == HttpStatus.FORBIDDEN) {
+                return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.login", "", "", request.getRequestURI()));
             } else {
                 return new ModelAndView("errors/error");
             }

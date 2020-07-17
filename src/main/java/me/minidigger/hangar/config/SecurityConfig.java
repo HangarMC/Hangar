@@ -11,16 +11,19 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 import me.minidigger.hangar.filter.HangarAuthenticationFilter;
 import me.minidigger.hangar.security.HangarAuthenticationProvider;
+import me.minidigger.hangar.util.RouteHelper;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final HangarAuthenticationProvider authProvider;
+    private final RouteHelper routeHelper;
 
     @Autowired
-    public SecurityConfig(HangarAuthenticationProvider authProvider) {
+    public SecurityConfig(HangarAuthenticationProvider authProvider, RouteHelper routeHelper) {
         this.authProvider = authProvider;
+        this.routeHelper = routeHelper;
     }
 
     @Override
@@ -31,7 +34,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilter(new HangarAuthenticationFilter());
 
-        http.authorizeRequests().anyRequest().permitAll();
+        http.exceptionHandling().authenticationEntryPoint((request, response, e) -> response.sendRedirect(routeHelper.getRouteUrl("users.login", "", "", request.getRequestURI())));
+
+        http.authorizeRequests()
+                .antMatchers("/new").hasAnyRole("USER")
+
+                .anyRequest().permitAll();
     }
 
     @Override

@@ -31,7 +31,7 @@ public class HangarAuthenticationProvider implements AuthenticationProvider {
         // TODO validate stuff, guess we need to pass sso stuff here?
 
         if (usersTable != null) {
-            return new HangarAuthentication(name,usersTable , List.of(new SimpleGrantedAuthority("ADMIN")));
+            return new HangarAuthentication(name,usersTable , List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER")));
         } else {
             return null;
         }
