@@ -61,7 +61,7 @@ Page used for uploading and creating new projects.
                             <div class="form-group">
                                 <label for="projectCategory"><@spring.message "project.owner" /></label>
                                 <select id="projectCategory" name="owner" class="form-control">
-                                    <option value="${user.id}">${user.name}</option>
+                                    <option value="${cu.id}">${cu.name}</option>
                                     <#list createProjectOrgas as orga>
                                         <option value="${orga.id}">${orga.name}</option>
                                     </#list>

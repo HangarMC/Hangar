@@ -18,7 +18,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
-import me.minidigger.hangar.model.generated.Category;
+import me.minidigger.hangar.model.Category;
 import me.minidigger.hangar.model.generated.PaginatedProjectResult;
 import me.minidigger.hangar.model.generated.Project;
 import me.minidigger.hangar.model.generated.ProjectMember;

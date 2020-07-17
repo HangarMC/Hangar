@@ -8,6 +8,7 @@
 Documentation page within Project overview.
 -->
 
+<#--
 @import java.text.NumberFormat
 
 @import controllers.project.routes
@@ -33,6 +34,7 @@ Documentation page within Project overview.
 @canEditPages = @{
     sp.perms(Permission.EditPage)
 }
+-->
 
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/pageCollapse.js" />"></script>
@@ -98,7 +100,7 @@ Documentation page within Project overview.
                         class="new-page btn yellow btn-xs pull-right">
                             <i class="fas fa-plus"></i>
                         </button>
-                        @projects.pages.modalPageCreate(p.project, rootPages.map(_._1))
+                        <#--@projects.pages.modalPageCreate(p.project, rootPages.map(_._1)) TODO -->
                     </#if>
                 </div>
                 <ul class="list-group">

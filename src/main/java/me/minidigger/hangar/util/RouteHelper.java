@@ -57,7 +57,7 @@ public class RouteHelper {
         register("projects.softDelete", "/{author}/{slug}/manage/delete", of("author", "slug"), of());
         register("projects.showFlags", "/{author}/{slug}/flags", of("author", "slug"), of());
         register("projects.flag", "/{author}/{slug}/flag", of("author", "slug"), of());
-        register("projects.createProject", "/", of(), of());
+        register("projects.createProject", "/new", of(), of());
         register("projects.resetIcon", "/{author}/{slug}/icon/reset", of("author", "slug"), of());
         register("projects.save", "/{author}/{slug}/manage/save", of("author", "slug"), of());
         register("projects.showNotes", "/{author}/{slug}/notes", of("author", "slug"), of());

@@ -2,37 +2,34 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 
 <#macro alert alertType>
-<#--    <#if flash.get(alertType).isDefined || flash.get(s"$alertType-num").isDefined>-->
-<#--        <div class="alert alert-fade <@bootstrapNames type=alertType/> alert-dismissable"-->
-<#--             role="alert" style="display: none;">-->
-<#--            <button type="button" class="close" data-dismiss="alert" aria-label="<@spring.message "general.close" />">-->
-<#--                <span aria-hidden="true">&times;</span>-->
-<#--            </button>-->
+    <#if alerts[alertType]?? || alerts[alertType + "-num"]??>
+        <div class="alert alert-fade <@bootstrapName type=alertType/> alert-dismissable"
+             role="alert" style="display: none;">
+            <button type="button" class="close" data-dismiss="alert" aria-label="<@spring.message "general.close" />">
+                <span aria-hidden="true">&times;</span>
+            </button>
 
-<#--            <@normalAlert />-->
-<#--            <@numAlert />-->
-<#--        </div>-->
-<#--    </#if>-->
+            <@normalAlert alertType />
+            <@numAlert alertType />
+        </div>
+    </#if>
 </#macro>
 
-<#macro normalAlert>
-    @flash.get(alertType).map { message =>
-    @(messages(message))
-    }
+<#macro normalAlert alertType>
+    <#assign message=alerts[alertType]>
+    <#if message??>
+        <@spring.message message />
+    </#if>
 </#macro>
 
-<#-- todo port alerts -->
-
-<#macro numAlert>
-    @flash.get(s"$alertType-num").map { num =>
-    <ul>
-        @for(i <- 0 until num.toInt; msg <- flash.get(s"$alertType-$i").toSeq) {
-        <li>
-            <@spring.message msg />
-        </li>
-        }
-    </ul>
-    }
+<#macro numAlert alertType>
+    <#if alerts[alertType + "-num"]??>
+        <ul>
+            <#list 0..alerts[alertType + "-num"] as i>
+                <li><@spring.message alerts[alertType + "-" + i] /></li>
+            </#list>
+        </ul>
+    </#if>
 </#macro>
 
 <#macro bootstrapName type>

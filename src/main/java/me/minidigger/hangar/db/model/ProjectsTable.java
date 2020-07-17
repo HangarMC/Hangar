@@ -20,7 +20,7 @@ public class ProjectsTable {
     private long category;
     private String description;
     private long visibility;
-    private JSONB notes;
+    private Object notes; // TODO jsonb
     private String keywords;
     private String homepage;
     private String issues;
@@ -30,6 +30,20 @@ public class ProjectsTable {
     private String licenseUrl;
     private boolean forumSync;
 
+    public ProjectsTable() {
+        //
+    }
+
+    public ProjectsTable(String pluginId, String name, String slug, String ownerName, long ownerId, long category, String description, long visibility) {
+        this.pluginId = pluginId;
+        this.name = name;
+        this.slug = slug;
+        this.ownerName = ownerName;
+        this.ownerId = ownerId;
+        this.category = category;
+        this.description = description;
+        this.visibility = visibility;
+    }
 
     public long getId() {
         return id;
@@ -148,11 +162,11 @@ public class ProjectsTable {
     }
 
 
-    public JSONB getNotes() {
+    public Object getNotes() { //TODO jsonb
         return notes;
     }
 
-    public void setNotes(JSONB notes) {
+    public void setNotes(Object notes) {
         this.notes = notes;
     }
 

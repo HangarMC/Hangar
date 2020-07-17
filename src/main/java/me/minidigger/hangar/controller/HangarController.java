@@ -6,6 +6,9 @@ import freemarker.template.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.RouteHelper;
 import me.minidigger.hangar.util.TemplateHelper;
@@ -27,6 +30,11 @@ public abstract class HangarController {
         builder.setExposeFields(true);
         builder.setUseModelCache(true);
         mav.addObject("@helper", builder.build().getStaticModels());
+
+        // alerts
+        if (mav.getModelMap().getAttribute("alerts") == null) {
+            mav.addObject("alerts", new HashMap<>());
+        }
 
         // user data
         mav.addObject("user", userService.getCurrentUser()); // TODO this is wrong

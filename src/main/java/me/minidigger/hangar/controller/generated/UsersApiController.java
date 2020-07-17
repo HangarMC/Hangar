@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 
+import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.generated.PaginatedCompactProjectResult;
 import me.minidigger.hangar.model.generated.ProjectSortingStrategy;
-import me.minidigger.hangar.model.generated.User;
 
 @Controller
 public class UsersApiController implements UsersApi {
@@ -48,15 +48,15 @@ public class UsersApiController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<User> showUser(String user) {
+    public ResponseEntity<UsersTable> showUser(String user) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<>(objectMapper.readValue("{\n  \"join_date\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"roles\" : [ {\n    \"color\" : \"color\",\n    \"name\" : \"name\",\n    \"title\" : \"title\"\n  }, {\n    \"color\" : \"color\",\n    \"name\" : \"name\",\n    \"title\" : \"title\"\n  } ],\n  \"name\" : \"name\",\n  \"created_at\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"tagline\" : \"tagline\"\n}", User.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+//            try {
+//                return new ResponseEntity<>(objectMapper.readValue("{\n  \"join_date\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"roles\" : [ {\n    \"color\" : \"color\",\n    \"name\" : \"name\",\n    \"title\" : \"title\"\n  }, {\n    \"color\" : \"color\",\n    \"name\" : \"name\",\n    \"title\" : \"title\"\n  } ],\n  \"name\" : \"name\",\n  \"created_at\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"tagline\" : \"tagline\"\n}", User.class), HttpStatus.NOT_IMPLEMENTED);
+//            } catch (IOException e) {
+//                log.error("Couldn't serialize response for content type application/json", e);
+//                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);

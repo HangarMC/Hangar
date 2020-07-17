@@ -44,6 +44,7 @@ public class MvcConfig implements WebMvcConfigurer {
         }
         freeMarkerConfigurer.getConfiguration().setOutputEncoding("UTF-8");
         freeMarkerConfigurer.getConfiguration().setLogTemplateExceptions(false);
+        freeMarkerConfigurer.getConfiguration().setAPIBuiltinEnabled(true);
         freeMarkerConfigurer.getConfiguration().setTemplateExceptionHandler((te, env, out) -> {
             String message = te.getMessage();
             if (message.contains("org.springframework.web.servlet.support.RequestContext.getMessage")) {

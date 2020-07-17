@@ -1,11 +1,8 @@
-package me.minidigger.hangar.model.generated;
+package me.minidigger.hangar.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-/**
- * Gets or Sets Category
- */
 public enum Category {
     ADMIN_TOOLS(0, "Admin Tools", "fa-server", "admin_tools"),
     CHAT(1, "Chat", "fa-comment", "chat"),
@@ -67,6 +64,15 @@ public enum Category {
     public static Category fromValue(String text) {
         for (Category b : Category.values()) {
             if (b.apiName.equals(text)) {
+                return b;
+            }
+        }
+        return null;
+    }
+
+    public static Category fromTitle(String text) {
+        for (Category b : Category.values()) {
+            if (b.title.equals(text)) {
                 return b;
             }
         }

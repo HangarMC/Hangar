@@ -14,8 +14,8 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
+import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.generated.PaginatedCompactProjectResult;
-import me.minidigger.hangar.model.generated.User;
 import me.minidigger.hangar.model.generated.ProjectSortingStrategy;
 
 @Api(value = "users", description = "the users API", tags = {"Users"})
@@ -37,16 +37,16 @@ public interface UsersApi {
     );
 
 
-    @ApiOperation(value = "Gets a specific user", nickname = "showUser", notes = "Gets a specific user. Requires the `view_public_info` permission.", response = User.class, authorizations = {
+    @ApiOperation(value = "Gets a specific user", nickname = "showUser", notes = "Gets a specific user. Requires the `view_public_info` permission.", response = UsersTable.class, authorizations = {
             @Authorization(value = "Session")}, tags = {"Users",})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Ok", response = User.class),
+            @ApiResponse(code = 200, message = "Ok", response = UsersTable.class),
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")})
     @RequestMapping(value = "/users/{user}",
             produces = {"application/json"},
             method = RequestMethod.GET)
-    ResponseEntity<User> showUser(@ApiParam(value = "The user to return", required = true) @PathVariable("user") String user
+    ResponseEntity<UsersTable> showUser(@ApiParam(value = "The user to return", required = true) @PathVariable("user") String user
     );
 
 

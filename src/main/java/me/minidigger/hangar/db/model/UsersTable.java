@@ -127,6 +127,10 @@ public class UsersTable implements Serializable {
         this.language = language;
     }
 
+    public String getAvatarUrl() {
+        return "https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png"; // TODO figure out what to do with avatar url
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", UsersTable.class.getSimpleName() + "[", "]")

@@ -101,7 +101,7 @@ TODO: this is a layout, should we move/rename it?
                             -->
 
                             <#if p.project.visibility != Visibility.SoftDelete>
-                                <#if request.currentUser.exists(u => !p.project.isOwner(u))> <#-- todo: if current user == owner -->
+                                <#if request.currentUser.exists(u gte !p.project.isOwner(u))> <#-- todo: if current user == owner -->
                                     <button class="btn btn-default btn-star">
                                         <i id="icon-star" <#if sp.starred>
                                            class="fas fa-star"
@@ -207,7 +207,7 @@ TODO: this is a layout, should we move/rename it?
                             <ul class="nav navbar-nav">
                                     <!-- Tabs -->
                                 <li id="docs" class="">
-                                    <a href="${Projects.show(p.project.ownerName, p.project.slug}">
+                                    <a href="${Projects.show(p.project.ownerName, p.project.slug)}">
                                         <i class="fas fa-book"></i> <@spring.message "project.docs" /></a>
                                 </li>
 

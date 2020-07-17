@@ -1,5 +1,7 @@
 package me.minidigger.hangar.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,24 +10,94 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.regex.Pattern;
+
+import me.minidigger.hangar.db.dao.HangarDao;
+import me.minidigger.hangar.db.dao.UserDao;
+import me.minidigger.hangar.db.model.ProjectsTable;
+import me.minidigger.hangar.db.model.UsersTable;
+import me.minidigger.hangar.model.Category;
 import me.minidigger.hangar.model.Permission;
 import me.minidigger.hangar.service.OrgService;
 import me.minidigger.hangar.service.UserService;
+import me.minidigger.hangar.service.project.ProjectFactory;
+import me.minidigger.hangar.util.AlertUtil;
+import me.minidigger.hangar.util.HangarException;
+import me.minidigger.hangar.util.RouteHelper;
 
 @Controller
 public class ProjectsController extends HangarController {
 
+    public static final Pattern ID_PATTERN = Pattern.compile("[a-z][a-z0-9-_]{0,63}");
+
     private final UserService userService;
     private final OrgService orgService;
+    private final RouteHelper routeHelper;
+    private final ProjectFactory projectFactory;
+    private final HangarDao<UserDao> userDao;
 
-    public ProjectsController(UserService userService, OrgService orgService) {
+    @Autowired
+    public ProjectsController(UserService userService, OrgService orgService, RouteHelper routeHelper, ProjectFactory projectFactory, HangarDao<UserDao> userDao) {
         this.userService = userService;
         this.orgService = orgService;
+        this.routeHelper = routeHelper;
+        this.projectFactory = projectFactory;
+        this.userDao = userDao;
     }
 
-    @PostMapping("/")
-    public Object createProject() {
-        return null; // TODO implement createProject request controller
+    @PostMapping(value = "/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public Object createProject(@RequestParam("name") String name,
+                                @RequestParam("pluginId") String pluginId,
+                                @RequestParam("category") String cat,
+                                @RequestParam("description") String description,
+                                @RequestParam("owner") long owner) {
+        UsersTable currentUser = userService.getCurrentUser();
+        // check if creation should be prevented
+        String uploadError = projectFactory.getUploadError(currentUser);
+        if (uploadError != null) {
+            ModelAndView mav = showCreator();
+            AlertUtil.showAlert(mav, "error", uploadError);
+            return fillModel(mav);
+        }
+        // validate input
+        Category category = Category.fromTitle(cat);
+        if (category == null) {
+            ModelAndView mav = showCreator();
+            AlertUtil.showAlert(mav, "error", "error.project.categoryNotFound");
+            return fillModel(mav);
+        }
+        if (!ID_PATTERN.matcher(pluginId).matches()) {
+            ModelAndView mav = showCreator();
+            AlertUtil.showAlert(mav, "error", "error.project.invalidPluginId");
+            return fillModel(mav);
+        }
+        // TODO check that currentUser can upload to owner
+
+        // find owner
+        UsersTable ownerUser = userDao.get().getById(owner);
+        if (ownerUser == null) {
+            ModelAndView mav = showCreator();
+            AlertUtil.showAlert(mav, "error", "error.project.ownerNotFound");
+            return fillModel(mav);
+        }
+
+        // create project
+        ProjectsTable project;
+        try {
+            project = projectFactory.createProject(ownerUser, name, pluginId, category, description);
+        } catch (HangarException ex) {
+            ModelAndView mav = showCreator();
+            AlertUtil.showAlert(mav, "error", ex.getMessageKey());
+            return fillModel(mav);
+        }
+
+        // refresh home page
+        // service
+        //        .runDbCon(SharedQueries.refreshHomeView.run)
+        //        .runAsync(TaskUtils.logCallback("Failed to refresh home page", logger))
+        //        .to[F]
+
+        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.show", project.getOwnerName(), project.getSlug()));
     }
 
     @RequestMapping("/invite/{id}/{status}")
@@ -38,16 +110,18 @@ public class ProjectsController extends HangarController {
         return null; // TODO implement setInviteStatusOnBehalf request controller
     }
 
-    @RequestMapping("/new")
-    public Object showCreator() {
+    @GetMapping("/new")
+    public ModelAndView showCreator() {
         ModelAndView mav = new ModelAndView("projects/create");
         mav.addObject("createProjectOrgas", orgService.getOrgsWithPerm(userService.getCurrentUser(), Permission.CreateProject));
         return fillModel(mav);
     }
 
-    @RequestMapping("/{author}/{slug}")
-    public Object show(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement show request controller
+    @GetMapping("/{author}/{slug}")
+    public ModelAndView show(@PathVariable String author, @PathVariable String slug) {
+        ModelAndView mav = new ModelAndView("projects/pages/view");
+        // TODO implement show request controller
+        return fillModel(mav);
     }
 
     @RequestMapping("/{author}/{slug}/discuss")

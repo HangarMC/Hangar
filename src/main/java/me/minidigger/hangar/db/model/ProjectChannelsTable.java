@@ -12,6 +12,16 @@ public class ProjectChannelsTable {
     private long projectId;
     private boolean isNonReviewed;
 
+    public ProjectChannelsTable() {
+        //
+    }
+
+    public ProjectChannelsTable(String name, long color, long projectId) {
+        this.name = name;
+        this.color = color;
+        this.projectId = projectId;
+        this.isNonReviewed = false;
+    }
 
     public long getId() {
         return id;

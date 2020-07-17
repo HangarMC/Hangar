@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import me.minidigger.hangar.service.Color;
+
 @Configuration
 @ComponentScan("me.minidigger.hangar")
 public class HangarConfig {
@@ -27,6 +29,12 @@ public class HangarConfig {
 
     @Value("${pluginUploadDir:/work/uploads}")
     private String pluginUploadDir;
+
+    @Value("${defaultChannelName:Release}")
+    private String defaultChannelName;
+
+    @Value("${defaultChannelColor:7}")
+    private int defaultChannelColor;
 
     public boolean isFakeUserEnabled() {
         return fakeUserEnabled;
@@ -54,6 +62,14 @@ public class HangarConfig {
 
     public String getPluginUploadDir() {
         return pluginUploadDir;
+    }
+
+    public String getDefaultChannelName() {
+        return defaultChannelName;
+    }
+
+    public Color getDefaultChannelColor() {
+        return Color.getById(defaultChannelColor);
     }
 
     public void checkDebug() {

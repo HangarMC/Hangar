@@ -1,5 +1,6 @@
 [#ftl]
 [#-- @implicitly included --]
+[#-- @ftlvariable name="alerts" type="java.util.Map" --]
 [#-- @ftlvariable name="routes" type="me.minidigger.hangar.util.RouteHelper" --]
 [#-- @ftlvariable name="templateHelper" type="me.minidigger.hangar.util.TemplateHelper" --]
 [#-- @ftlvariable name="modelData" type="me.minidigger.hangar.model.generated.ModelData" --]

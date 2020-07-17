@@ -88,7 +88,7 @@
                                 <#if modelData.hasNotice()>
                                     <span class="unread"></span>
                                 </#if>
-                                <img height="32" width="32" class="user-avatar" src="${cu.avatarUrl}" alt="${cu.name}"/>
+                                <img height="32" width="32" class="user-avatar" src="${cu.getAvatarUrl()}" alt="${cu.name}"/>
                                 <span class="caret"></span>
                             </a>
                             <ul class="user-dropdown dropdown-menu"

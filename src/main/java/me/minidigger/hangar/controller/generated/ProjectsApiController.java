@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
-import me.minidigger.hangar.model.generated.Category;
+import me.minidigger.hangar.model.Category;
 import me.minidigger.hangar.model.generated.PaginatedProjectResult;
 import me.minidigger.hangar.model.generated.Project;
 import me.minidigger.hangar.model.generated.ProjectMember;
