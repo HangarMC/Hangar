@@ -22,6 +22,6 @@ public interface UserDao {
     @SqlQuery("select * from users where id = :id")
     UsersTable getById(long id);
 
-    @SqlQuery("select * from users where name = :name")
+    @SqlQuery("select * from users where LOWER(name) = LOWER(:name)")
     UsersTable getByName(String name);
 }
