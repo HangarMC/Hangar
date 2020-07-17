@@ -1,3 +1,3 @@
 <#macro formField>
-    <#-- TODO CSRF form field -->
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </#macro>

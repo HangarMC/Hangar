@@ -6,6 +6,7 @@ target/
 node_modules
 node.exe
 dist
+src/main/frontend/node
 
 ### STS ###
 .apt_generated
