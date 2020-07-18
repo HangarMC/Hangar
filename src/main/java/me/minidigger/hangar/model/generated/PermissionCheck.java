@@ -8,6 +8,7 @@ import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
 import io.swagger.annotations.ApiModelProperty;
+import me.minidigger.hangar.model.PermissionType;
 
 /**
  * ControllersApiv2ApiV2ControllerPermissionCheck

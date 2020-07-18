@@ -1,6 +1,8 @@
 package me.minidigger.hangar.db.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.StringJoiner;
@@ -34,6 +36,7 @@ public class UsersTable implements Serializable {
         this.language = language;
     }
 
+    @JsonIgnore
     public UsersTable getUser() {
         return this; // TODO dummy to fix frontend
     }

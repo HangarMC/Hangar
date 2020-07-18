@@ -5,28 +5,32 @@
 
 <#macro userAvatar userName="" avatarUrl="" imgSrc="" clazz="" attr={} href="">
     <#assign src>
-        <#if imgSrc?has_content>
-            ${imgSrc}
-        <#else>
-            <#if userName?has_content>
-                ${avatarUrl}
+        <#compress>
+            <#if imgSrc?has_content>
+                ${imgSrc}
+            <#else>
+                <#if userName?has_content>
+                    ${avatarUrl}
+                </#if>
             </#if>
-        </#if>
+        </#compress>
     </#assign>
 
     <#assign url>
-        <#if href?has_content>
-            ${href}
-        <#elseif userName?has_content>
-            ${routes.getRouteUrl("users.showProjects", userName)}
-        <#else>
-            #
-        </#if>
+        <#compress>
+            <#if href?has_content>
+                ${href}
+            <#elseif userName?has_content>
+                ${routes.getRouteUrl("users.showProjects", userName)}
+            <#else>
+                #
+            </#if>
+        </#compress>
     </#assign>
 
     <#assign name>${userName}</#assign>
 
     <a href="${url}" <#list attr as k, v>${k + "=" + v + " "}</#list>>
-        <img class="user-avatar ${clazz}" title="${name}" src="${imgSrc}" alt="${name}" />
+        <img class="user-avatar ${clazz}" title="${name}" src="${src}" alt="${name}"/>
     </a>
 </#macro>

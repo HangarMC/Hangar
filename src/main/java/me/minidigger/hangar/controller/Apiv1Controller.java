@@ -1,16 +1,26 @@
 package me.minidigger.hangar.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import me.minidigger.hangar.controller.HangarController;
+import me.minidigger.hangar.db.dao.HangarDao;
+import me.minidigger.hangar.db.dao.UserDao;
+import me.minidigger.hangar.db.model.UsersTable;
 
 @Controller
 public class Apiv1Controller extends HangarController {
+
+    private final HangarDao<UserDao> userDao;
+
+    @Autowired
+    public Apiv1Controller(HangarDao<UserDao> userDao) {
+        this.userDao = userDao;
+    }
 
     @RequestMapping("/api/sync_sso")
     public Object syncSso() {
@@ -73,8 +83,9 @@ public class Apiv1Controller extends HangarController {
     }
 
     @RequestMapping("/api/v1/users/{user}")
-    public Object showUser(@PathVariable Object user) {
-        return null; // TODO implement showUser request controller
+    @ResponseBody
+    public UsersTable showUser(@PathVariable String user) {
+        return userDao.get().getByName(user);
     }
 
     @RequestMapping("/statusz")

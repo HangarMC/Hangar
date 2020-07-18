@@ -25,10 +25,11 @@ $(function() {
         }
         alert.fadeOut();
 
-        // Check if user is already defined
+        // hangar: user.name was username everywhere
         var user = result.user;
+        // Check if user is already defined
         if ($('input[value="' + user.id + '"]').length
-            || $('.table-members').first('tr').find('strong').text() === user.username) {
+            || $('.table-members').first('tr').find('strong').text() === user.name) {
             return;
         }
 
@@ -36,7 +37,7 @@ $(function() {
         var newRow = $('#result-row').clone().removeAttr('id');
         newRow.find('input').attr('form', 'form-continue').val(user.id);
         newRow.find('select').attr('form', 'form-continue');
-        newRow.find('.username').attr('href', '/' + user.username).text(user.username);
+        newRow.find('.username').attr('href', '/' + user.name).text(user.name);
 
         var avatarImg = newRow.find('.user-avatar');
         if (user.hasOwnProperty('avatarUrl')) {
@@ -44,7 +45,7 @@ $(function() {
         } else {
             avatarImg.remove();
         }
-        
+
         // Bind cancel button
         newRow.find('.user-cancel').click(function() {
             $(this).closest('tr').remove();

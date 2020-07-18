@@ -1,11 +1,8 @@
-package me.minidigger.hangar.model.generated;
+package me.minidigger.hangar.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-/**
- * Gets or Sets type
- */
 public enum PermissionType {
     GLOBAL("global"),
 

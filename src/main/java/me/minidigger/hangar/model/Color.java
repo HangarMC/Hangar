@@ -1,4 +1,4 @@
-package me.minidigger.hangar.service;
+package me.minidigger.hangar.model;
 
 public enum Color {
 

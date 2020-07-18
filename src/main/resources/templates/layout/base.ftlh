@@ -4,6 +4,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
 
 (implicit request: OreRequest[_], messages: Messages, config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 -->
+<@compress single_line=true>
 <#import "/spring.ftl" as spring />
 <#import "../utils/hangar.ftlh" as hangar />
 
@@ -120,3 +121,4 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
     </body>
     </html>
 </#macro>
+</@compress>

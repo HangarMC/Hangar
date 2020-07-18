@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class Permission {
+public class Permission implements Comparable<Permission> {
 
     public static final Permission None = new Permission(0);
     public static final Permission All = new Permission(0XFFFFFFFFFFFFFFFFL);
@@ -85,5 +85,10 @@ public class Permission {
 
     public Collection<NamedPermission> toNamed() {
         return Arrays.stream(NamedPermission.values()).filter(perm -> has(perm.getPermission())).collect(Collectors.toUnmodifiableList());
+    }
+
+    @Override
+    public int compareTo(Permission o) {
+        return (int) (value - o.value);
     }
 }

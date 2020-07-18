@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.exceptionHandling().authenticationEntryPoint((request, response, e) -> response.sendRedirect(routeHelper.getRouteUrl("users.login", "", "", request.getRequestURI())));
 
         http.authorizeRequests()
-                .antMatchers("/new").hasAnyRole("USER")
+                .antMatchers("/new", "/organisations/new").hasAnyRole("USER")
 
                 .anyRequest().permitAll();
     }

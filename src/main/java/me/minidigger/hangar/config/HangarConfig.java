@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import me.minidigger.hangar.service.Color;
+import me.minidigger.hangar.model.Color;
 
 @Configuration
 @ComponentScan("me.minidigger.hangar")
