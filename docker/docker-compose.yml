@@ -27,8 +27,8 @@ services:
   db:
     build: ./db
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: 'changeme'
+      POSTGRES_USER: hangar
+      POSTGRES_PASSWORD: 'hangar'
       POSTGRES_DB: hangar
     ports:
       - "5432:5432"
