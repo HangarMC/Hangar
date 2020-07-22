@@ -14,7 +14,7 @@ import me.minidigger.hangar.db.model.UsersTable;
 @RegisterBeanMapper(UsersTable.class)
 public interface UserDao {
 
-    @SqlUpdate("insert into users (id, full_name, name, email, tagline, join_date, read_prompts, is_locked, language) values (:id, :fullName, :name, :email, :tagline, :now, :readPrompts, :isLocked, :language)")
+    @SqlUpdate("insert into users (id, created_at, full_name, name, email, tagline, join_date, read_prompts, is_locked, language) values (:id, :now, :fullName, :name, :email, :tagline, :now, :readPrompts, :isLocked, :language)")
     @Timestamped
     @GetGeneratedKeys
     UsersTable insert(@BindBean UsersTable user);
