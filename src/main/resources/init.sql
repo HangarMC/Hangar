@@ -1,14 +1,14 @@
 create type role_category as enum ('global', 'project', 'organization');
 
-alter type role_category owner to root;
+alter type role_category owner to hangar;
 
 create type logged_action_type as enum ('project_visibility_change', 'project_renamed', 'project_flagged', 'project_settings_changed', 'project_member_removed', 'project_icon_changed', 'project_page_edited', 'project_flag_resolved', 'version_deleted', 'version_uploaded', 'version_description_changed', 'version_review_state_changed', 'user_tagline_changed');
 
-alter type logged_action_type owner to root;
+alter type logged_action_type owner to hangar;
 
 create type job_state as enum ('not_started', 'started', 'done', 'fatal_failure');
 
-alter type job_state owner to root;
+alter type job_state owner to hangar;
 
 create table users
 (
@@ -30,7 +30,7 @@ create table users
     language varchar(16)
 );
 
-alter table users owner to root;
+alter table users owner to hangar;
 
 create table projects
 (
@@ -72,7 +72,7 @@ create table projects
         unique (owner_name, slug)
 );
 
-alter table projects owner to root;
+alter table projects owner to hangar;
 
 create index projects_recommended_version_id
     on projects (recommended_version_id);
@@ -94,7 +94,7 @@ create table project_stars
         primary key (user_id, project_id)
 );
 
-alter table project_stars owner to root;
+alter table project_stars owner to hangar;
 
 create table project_pages
 (
@@ -116,7 +116,7 @@ create table project_pages
             on delete set null
 );
 
-alter table project_pages owner to root;
+alter table project_pages owner to hangar;
 
 create index page_slug_idx
     on project_pages (lower(slug::text));
@@ -143,7 +143,7 @@ create table project_channels
         unique (project_id, color)
 );
 
-alter table project_channels owner to root;
+alter table project_channels owner to hangar;
 
 create table project_versions
 (
@@ -182,7 +182,7 @@ create table project_versions
     post_id integer
 );
 
-alter table project_versions owner to root;
+alter table project_versions owner to hangar;
 
 alter table projects
     add constraint projects_recommended_version_id_fkey
@@ -212,7 +212,7 @@ create table user_project_roles
         unique (user_id, role_type, project_id)
 );
 
-alter table user_project_roles owner to root;
+alter table user_project_roles owner to hangar;
 
 create table project_flags
 (
@@ -238,7 +238,7 @@ create table project_flags
             on delete set null
 );
 
-alter table project_flags owner to root;
+alter table project_flags owner to hangar;
 
 create table notifications
 (
@@ -260,7 +260,7 @@ create table notifications
     message_args varchar(255) [] not null
 );
 
-alter table notifications owner to root;
+alter table notifications owner to hangar;
 
 create table project_watchers
 (
@@ -278,7 +278,7 @@ create table project_watchers
         unique (project_id, user_id)
 );
 
-alter table project_watchers owner to root;
+alter table project_watchers owner to hangar;
 
 create table organizations
 (
@@ -302,7 +302,7 @@ create table organizations
             on delete cascade
 );
 
-alter table organizations owner to root;
+alter table organizations owner to hangar;
 
 create table organization_members
 (
@@ -318,7 +318,7 @@ create table organization_members
         primary key (user_id, organization_id)
 );
 
-alter table organization_members owner to root;
+alter table organization_members owner to hangar;
 
 create table user_organization_roles
 (
@@ -340,7 +340,7 @@ create table user_organization_roles
         unique (user_id, role_type, organization_id)
 );
 
-alter table user_organization_roles owner to root;
+alter table user_organization_roles owner to hangar;
 
 create table project_members
 (
@@ -356,7 +356,7 @@ create table project_members
         primary key (project_id, user_id)
 );
 
-alter table project_members owner to root;
+alter table project_members owner to hangar;
 
 create table user_sessions
 (
@@ -372,7 +372,7 @@ create table user_sessions
             on delete cascade
 );
 
-alter table user_sessions owner to root;
+alter table user_sessions owner to hangar;
 
 create index user_session_token_idx
     on user_sessions (token);
@@ -389,7 +389,7 @@ create table user_sign_ons
     is_completed boolean default false not null
 );
 
-alter table user_sign_ons owner to root;
+alter table user_sign_ons owner to hangar;
 
 create table project_version_unsafe_downloads
 (
@@ -405,7 +405,7 @@ create table project_version_unsafe_downloads
     download_type integer not null
 );
 
-alter table project_version_unsafe_downloads owner to root;
+alter table project_version_unsafe_downloads owner to hangar;
 
 create table project_version_download_warnings
 (
@@ -429,7 +429,7 @@ create table project_version_download_warnings
         unique (address, version_id)
 );
 
-alter table project_version_download_warnings owner to root;
+alter table project_version_download_warnings owner to hangar;
 
 create table project_api_keys
 (
@@ -444,7 +444,7 @@ create table project_api_keys
     value varchar(255) not null
 );
 
-alter table project_api_keys owner to root;
+alter table project_api_keys owner to hangar;
 
 create table project_version_reviews
 (
@@ -464,7 +464,7 @@ create table project_version_reviews
     comment jsonb default '{}'::jsonb not null
 );
 
-alter table project_version_reviews owner to root;
+alter table project_version_reviews owner to hangar;
 
 create table project_visibility_changes
 (
@@ -489,7 +489,7 @@ create table project_visibility_changes
     visibility integer not null
 );
 
-alter table project_visibility_changes owner to root;
+alter table project_visibility_changes owner to hangar;
 
 create table project_version_visibility_changes
 (
@@ -514,7 +514,7 @@ create table project_version_visibility_changes
     visibility integer not null
 );
 
-alter table project_version_visibility_changes owner to root;
+alter table project_version_visibility_changes owner to hangar;
 
 create table project_version_tags
 (
@@ -530,7 +530,7 @@ create table project_version_tags
     color integer not null
 );
 
-alter table project_version_tags owner to root;
+alter table project_version_tags owner to hangar;
 
 create index projects_versions_tags_version_id
     on project_version_tags (version_id);
@@ -552,7 +552,7 @@ create table roles
     permission bit(64) default '0'::bit(64) not null
 );
 
-alter table roles owner to root;
+alter table roles owner to hangar;
 
 create unique index role_name_idx
     on roles (name);
@@ -571,7 +571,7 @@ create table user_global_roles
         primary key (user_id, role_id)
 );
 
-alter table user_global_roles owner to root;
+alter table user_global_roles owner to hangar;
 
 create table api_keys
 (
@@ -593,7 +593,7 @@ create table api_keys
         unique (owner_id, name)
 );
 
-alter table api_keys owner to root;
+alter table api_keys owner to hangar;
 
 create table api_sessions
 (
@@ -613,7 +613,7 @@ create table api_sessions
     expires timestamp with time zone not null
 );
 
-alter table api_sessions owner to root;
+alter table api_sessions owner to hangar;
 
 create table logged_actions_project
 (
@@ -635,7 +635,7 @@ create table logged_actions_project
     old_state text not null
 );
 
-alter table logged_actions_project owner to root;
+alter table logged_actions_project owner to hangar;
 
 create table logged_actions_version
 (
@@ -661,7 +661,7 @@ create table logged_actions_version
     old_state text not null
 );
 
-alter table logged_actions_version owner to root;
+alter table logged_actions_version owner to hangar;
 
 create table logged_actions_page
 (
@@ -687,7 +687,7 @@ create table logged_actions_page
     old_state text not null
 );
 
-alter table logged_actions_page owner to root;
+alter table logged_actions_page owner to hangar;
 
 create table logged_actions_user
 (
@@ -709,7 +709,7 @@ create table logged_actions_user
     old_state text not null
 );
 
-alter table logged_actions_user owner to root;
+alter table logged_actions_user owner to hangar;
 
 create table logged_actions_organization
 (
@@ -731,7 +731,7 @@ create table logged_actions_organization
     old_state text not null
 );
 
-alter table logged_actions_organization owner to root;
+alter table logged_actions_organization owner to hangar;
 
 create table project_versions_downloads_individual
 (
@@ -756,7 +756,7 @@ create table project_versions_downloads_individual
     processed integer default 0 not null
 );
 
-alter table project_versions_downloads_individual owner to root;
+alter table project_versions_downloads_individual owner to hangar;
 
 create table project_versions_downloads
 (
@@ -774,7 +774,7 @@ create table project_versions_downloads
         primary key (day, version_id)
 );
 
-alter table project_versions_downloads owner to root;
+alter table project_versions_downloads owner to hangar;
 
 create index project_versions_downloads_project_id_version_id_idx
     on project_versions_downloads (project_id, version_id);
@@ -798,7 +798,7 @@ create table project_views_individual
     processed integer default 0 not null
 );
 
-alter table project_views_individual owner to root;
+alter table project_views_individual owner to hangar;
 
 create table project_views
 (
@@ -812,7 +812,7 @@ create table project_views
         primary key (project_id, day)
 );
 
-alter table project_views owner to root;
+alter table project_views owner to hangar;
 
 create table jobs
 (
@@ -829,7 +829,21 @@ create table jobs
     job_properties hstore not null
 );
 
-alter table jobs owner to root;
+alter table jobs owner to hangar;
+
+create view project_members_all(id, user_id) as
+SELECT p.id,
+       pm.user_id
+FROM projects p
+         LEFT JOIN project_members pm ON p.id = pm.project_id
+UNION
+SELECT p.id,
+       om.user_id
+FROM projects p
+         LEFT JOIN organization_members om ON p.owner_id = om.organization_id
+WHERE om.user_id IS NOT NULL;
+
+alter table project_members_all owner to hangar;
 
 create materialized view home_projects as
 WITH tags AS (
@@ -948,7 +962,7 @@ FROM projects p
                     GROUP BY pv.project_id) pdr ON p.id = pdr.project_id
 GROUP BY p.id, ps.stars, pw.watchers, pva.views, pda.downloads, pvr.recent_views, pdr.recent_downloads;
 
-alter materialized view home_projects owner to root;
+alter materialized view home_projects owner to hangar;
 
 create view global_trust(user_id, permission) as
 SELECT gr.user_id,
@@ -957,7 +971,7 @@ FROM user_global_roles gr
          JOIN roles r ON gr.role_id = r.id
 GROUP BY gr.user_id;
 
-alter table global_trust owner to root;
+alter table global_trust owner to hangar;
 
 create view project_trust(project_id, user_id, permission) as
 SELECT pm.project_id,
@@ -968,7 +982,7 @@ FROM project_members pm
          JOIN roles r ON rp.role_type::text = r.name::text
 GROUP BY pm.project_id, pm.user_id;
 
-alter table project_trust owner to root;
+alter table project_trust owner to hangar;
 
 create view organization_trust(organization_id, user_id, permission) as
 SELECT om.organization_id,
@@ -980,21 +994,7 @@ FROM organization_members om
          JOIN roles r ON ro.role_type::text = r.name::text
 GROUP BY om.organization_id, om.user_id;
 
-alter table organization_trust owner to root;
-
-create view project_members_all(id, user_id) as
-SELECT p.id,
-       pm.user_id
-FROM projects p
-         LEFT JOIN project_members pm ON p.id = pm.project_id
-UNION
-SELECT p.id,
-       om.user_id
-FROM projects p
-         LEFT JOIN organization_members om ON p.owner_id = om.organization_id
-WHERE om.user_id IS NOT NULL;
-
-alter table project_members_all owner to root;
+alter table organization_trust owner to hangar;
 
 create view v_logged_actions(id, created_at, user_id, user_name, address, action, context_type, new_state, old_state, p_id, p_plugin_id, p_slug, p_owner_name, pv_id, pv_version_string, pp_id, pp_name, pp_slug, s_id, s_name) as
 SELECT a.id,
@@ -1123,7 +1123,7 @@ FROM logged_actions_organization a
          LEFT JOIN users u ON a.user_id = u.id
          LEFT JOIN users s ON o.user_id = s.id;
 
-alter table v_logged_actions owner to root;
+alter table v_logged_actions owner to hangar;
 
 create function delete_old_project_version_download_warnings() returns trigger
     language plpgsql
@@ -1134,7 +1134,7 @@ BEGIN
 END
 $$;
 
-alter function delete_old_project_version_download_warnings() owner to root;
+alter function delete_old_project_version_download_warnings() owner to hangar;
 
 create trigger clean_old_project_version_download_warnings
     after insert
@@ -1150,7 +1150,7 @@ BEGIN
 END
 $$;
 
-alter function delete_old_project_version_unsafe_downloads() owner to root;
+alter function delete_old_project_version_unsafe_downloads() owner to hangar;
 
 create trigger clean_old_project_version_unsafe_downloads
     after insert
@@ -1165,7 +1165,7 @@ BEGIN
 END;
 $$;
 
-alter function update_project_name_trigger() owner to root;
+alter function update_project_name_trigger() owner to hangar;
 
 create trigger project_owner_name_updater
     after update
@@ -1202,4 +1202,4 @@ BEGIN
 END;
 $$;
 
-alter function logged_action_type_from_int(integer) owner to root;
+alter function logged_action_type_from_int(integer) owner to hangar;
