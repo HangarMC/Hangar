@@ -97,7 +97,7 @@ const scrollToAnchor = function (anchor) {
     return true;
 };
 
-$(window).load(function () {
+$(window).on('load', function () {
     return scrollToAnchor(window.location.hash);
 });
 
