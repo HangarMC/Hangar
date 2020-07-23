@@ -1,4 +1,5 @@
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const ProvidePlugin = require('webpack').ProvidePlugin;
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 //const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -8,6 +9,7 @@ const sourceDir = Path.resolve(__dirname, 'src');
 const entryDir = Path.resolve(sourceDir, 'entries');
 const modulesDir = Path.resolve(__dirname, 'node_modules');
 const outputDir = Path.resolve(__dirname, '..', '..', '..', 'target', 'classes', 'public', 'build');
+const javascriptDir = Path.resolve(__dirname, '..', '..', '..', 'target', 'classes', 'public', 'javascripts');
 
 module.exports = {
     entry: {
@@ -15,7 +17,7 @@ module.exports = {
         home: Path.resolve(entryDir, 'home.js'),
         'font-awesome': Path.resolve(entryDir, 'font-awesome.js'),
         'user-profile': Path.resolve(entryDir, 'user-profile.js'),
-        'version-list': Path.resolve(entryDir, 'version-list.js')
+        'version-list': Path.resolve(entryDir, 'version-list.js'),
     },
     output: {
         path: outputDir,
@@ -27,12 +29,22 @@ module.exports = {
         new VueLoaderPlugin(),
         new MiniCssExtractPlugin(),
         new CopyPlugin({
-                patterns: [{
-                    from: Path.resolve(modulesDir, '@fortawesome', 'fontawesome-svg-core', 'styles.css'),
-                    to: Path.resolve(outputDir, 'font-awesome.css')
-                }]
+                patterns: [
+                    {
+                        from: Path.resolve(modulesDir, '@fortawesome', 'fontawesome-svg-core', 'styles.css'),
+                        to: Path.resolve(outputDir, 'font-awesome.css')
+                    },
+                    {
+                        from: Path.resolve(sourceDir, "javascripts"),
+                        to: javascriptDir
+                    }
+                ]
             }
         ),
+        new ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery'
+        })
         //new BundleAnalyzerPlugin()
     ],
     module: {
