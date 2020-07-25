@@ -87,6 +87,10 @@ public class Permission implements Comparable<Permission> {
         return Arrays.stream(NamedPermission.values()).filter(perm -> has(perm.getPermission())).collect(Collectors.toUnmodifiableList());
     }
 
+    public long getValue() {
+        return value;
+    }
+
     @Override
     public int compareTo(Permission o) {
         return (int) (value - o.value);

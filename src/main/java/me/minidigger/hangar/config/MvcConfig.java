@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import me.minidigger.hangar.util.RouteHelper;
+import no.api.freemarker.java8.Java8ObjectWrapper;
 
 @EnableWebMvc
 @Configuration
@@ -55,6 +56,7 @@ public class MvcConfig implements WebMvcConfigurer {
         freeMarkerConfigurer.getConfiguration().setOutputEncoding("UTF-8");
         freeMarkerConfigurer.getConfiguration().setLogTemplateExceptions(false);
         freeMarkerConfigurer.getConfiguration().setAPIBuiltinEnabled(true);
+        freeMarkerConfigurer.getConfiguration().setObjectWrapper(new Java8ObjectWrapper(freemarker.template.Configuration.getVersion()));
         freeMarkerConfigurer.getConfiguration().setTemplateExceptionHandler((te, env, out) -> {
             String message = te.getMessage();
             if (message.contains("org.springframework.web.servlet.support.RequestContext.getMessage")) {

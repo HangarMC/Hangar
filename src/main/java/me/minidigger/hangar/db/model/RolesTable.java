@@ -2,6 +2,7 @@ package me.minidigger.hangar.db.model;
 
 
 import me.minidigger.hangar.db.customtypes.RoleCategory;
+import me.minidigger.hangar.model.Role;
 
 public class RolesTable {
 
@@ -11,9 +12,31 @@ public class RolesTable {
     private String title;
     private String color;
     private boolean isAssignable;
-    private long rank;
+    private Long rank;
     private long permission;
 
+    public static RolesTable fromRole(Role role) {
+        return new RolesTable(role.getRoleId(), role.getValue(), role.getCategory(), role.getTitle(), role.getColor().getHex(), role.isAssignable(), null, role.getPermissions().getValue());
+    }
+
+    public RolesTable() {
+        //
+    }
+
+    public RolesTable(long id, String name, RoleCategory category, String title, String color, boolean isAssignable, Long rank, long permission) {
+        this.id = id;
+        this.name = name;
+        this.category = category;
+        this.title = title;
+        this.color = color;
+        this.isAssignable = isAssignable;
+        this.rank = rank;
+        this.permission = permission;
+    }
+
+    public Role getRole() {
+        return Role.fromTitle(title);
+    }
 
     public long getId() {
         return id;
@@ -69,11 +92,11 @@ public class RolesTable {
     }
 
 
-    public long getRank() {
+    public Long getRank() {
         return rank;
     }
 
-    public void setRank(long rank) {
+    public void setRank(Long rank) {
         this.rank = rank;
     }
 

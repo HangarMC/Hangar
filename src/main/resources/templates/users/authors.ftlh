@@ -17,13 +17,22 @@
 @(authors: Seq[(String, Option[OffsetDateTime], OffsetDateTime, Option[Role], Option[Role], Long)], ordering: String, page: Int)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 
 @pageSize = @{ config.ore.users.authorPageSize }
-@direction = @{ if (ordering.startsWith("-")) "chevron-down" else "chevron-up" }
 -->
 
+<#function direction>
+    <#if ordering?startsWith("-")>
+        <#return "chevron-down">
+    <#else>
+        <#return "chevron-up">
+    </#if>
+</#function>
+
 <#function isActiveSort td>
-    var sort = ordering
-    if (sort.startsWith("-")) sort = sort.substring(1)
-    <#return sort.equalsIgnoreCase(td)>
+    <#assign sort=ordering>
+    <#if sort?startsWith("-")>
+        <#assign sort=sort?substring(1)>
+    </#if>
+    <#return sort?upperCase == td?upperCase>
 </#function>
 
 <#assign scriptsVar>
@@ -32,6 +41,8 @@
 </#assign>
 
 <@base.base title="Authors - Hangar" additionalScripts=scriptsVar>
+    <#assign UserOrdering = @helper["me.minidigger.hangar.model.UserOrdering"]>
+<#-- @ftlvariable name="UserOrdering" type="me.minidigger.hangar.model.UserOrdering" -->
     <div class="panel panel-default">
         <table class="table table-users">
             <thead>
@@ -39,56 +50,55 @@
                     <td></td>
                     <td <#if isActiveSort(UserOrdering.UserName)>class="user-sort"</#if> data-list="authors" >
                         Username
-                        <#if isActiveSort(UserOrdering.UserName)><i class="o fas fa-@direction"></i></#if>
+                        <#if isActiveSort(UserOrdering.UserName)><i class="o fas fa-${direction()}"></i></#if>
                     </td>
                     <td <#if isActiveSort(UserOrdering.Role)>class="user-sort"</#if> data-list="authors" >
                         Roles
-                        <#if isActiveSort(UserOrdering.Role)><i class="o fas fa-@direction"></i></#if>
+                        <#if isActiveSort(UserOrdering.Role)><i class="o fas fa-${direction()}"></i></#if>
                     </td>
                     <td <#if isActiveSort(UserOrdering.JoinDate)>class="user-sort"</#if> data-list="authors" >
                         Joined
-                        <#if isActiveSort(UserOrdering.JoinDate)><i class="o fas fa-@direction"></i></#if>
+                        <#if isActiveSort(UserOrdering.JoinDate)><i class="o fas fa-${direction()}"></i></#if>
                     </td>
                     <td <#if isActiveSort(UserOrdering.Projects)>class="user-sort"</#if> data-list="authors" >
                         Projects
-                        <#if isActiveSort(UserOrdering.Projects)><i class="o fas fa-${direction}"></i></#if>
+                        <#if isActiveSort(UserOrdering.Projects)><i class="o fas fa-${direction()}"></i></#if>
                     </td>
                 </tr>
             </thead>
             <tbody>
-                @authors.map { case (name, joinDate, createdAt, optRole, optDonorRole, projectCount) =>
+                <#list authors as author>
                 <tr>
                     <#import "*/utils/userAvatar.ftlh" as userAvatar>
-                    <td><@userAvatar.userAvatar userName=name avatarUrl=User.avatarUrl(name) clazz="user-avatar-xs"></@userAvatar.userAvatar></td>
+                    <td><@userAvatar.userAvatar userName=author.name avatarUrl=User.avatarUrl(author.name) clazz="user-avatar-xs"></@userAvatar.userAvatar></td>
                     <td>
-                        <a href="${routes.getRouteUrl("users.showProjects", name)}">${name}</a>
+                        <a href="${routes.getRouteUrl("users.showProjects", author.name)}">${author.name}</a>
                     </td>
                     <td>
-                        @optDonorRole.map { role =>
+                        <#if author.donatorRole??>
                             <span class="channel channel-sm" style="background-color: ${role.color.hex}">
-                            ${role.title}
+                            ${author.donatorRole}
                             </span>
-                        }
-                        @optRole.map { role =>
+                        </#if>
+                        <#if author.role??>
                             <span class="user-role channel" style="background-color: ${role.color.hex}">
-                            ${role.title}
+                            ${author.role}
                             </span>
-                        }
-
+                        </#if>
                     </td>
-                    <td>@prettifyDate(joinDate!createdAt)</td>
-                    <td>${projectCount}</td>
+                    <td>${(author.joinDate!author.createdAt).format("yyyy-MM-dd")}</td>
+                    <td>${author.projectCount}</td>
                 </tr>
-                }
+                </#list>
 
-                <#if page gt 1 || authors.size gte pageSize>
+                <#if page gt 1 || authors?size gte pageSize>
                     <tr class="authors-footer">
                         <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
                         <td>
-                            <#if authors.size gte pageSize>
+                            <#if authors?size gte pageSize>
                                 <a href="${routes.getRouteUrl("users.showAuthors", ordering, page + 1)}" class="btn btn-default">
                                     <i class="fas fa-arrow-right"></i>
                                 </a>

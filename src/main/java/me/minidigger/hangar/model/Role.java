@@ -22,9 +22,9 @@ public enum Role {
     WEB_DEV("Web_Dev", 9, GLOBAL, ViewLogs.add(ViewHealth), "Web Developer", BLUE),
 
     DOCUMENTER("Documenter", 10, GLOBAL, None, "Documenter", AQUA),
-    SUPPORT("Support", 10, GLOBAL, None, "Support", AQUA),
-    CONTRIBUTOR("Contributor", 10, GLOBAL, None, "Contributor", GREEN),
-    ADVISOR("Advisor", 10, GLOBAL, None, "Advisor", AQUA),
+    SUPPORT("Support", 11, GLOBAL, None, "Support", AQUA),
+    CONTRIBUTOR("Contributor", 12, GLOBAL, None, "Contributor", GREEN),
+    ADVISOR("Advisor", 13, GLOBAL, None, "Advisor", AQUA),
 
     STONE_DONOR("Stone_Donor", 14, GLOBAL, None, "Stone Donor", GRAY),
     QUARTZ_DONOR("Quartz_Donor",15, GLOBAL, None, "Quartz Donor", QUARTZ),
@@ -92,5 +92,14 @@ public enum Role {
 
     public boolean isAssignable() {
         return isAssignable;
+    }
+
+    public static Role fromTitle(String title) {
+        for (Role r : values()) {
+            if (r.title.equals(title)) {
+                return r;
+            }
+        }
+        return null;
     }
 }

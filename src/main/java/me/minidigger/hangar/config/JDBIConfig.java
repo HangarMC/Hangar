@@ -3,6 +3,7 @@ package me.minidigger.hangar.config;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.spi.JdbiPlugin;
 import org.jdbi.v3.postgres.PostgresPlugin;
+import org.jdbi.v3.postgres.PostgresTypes;
 import org.jdbi.v3.spring4.JdbiFactoryBean;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.springframework.beans.factory.InjectionPoint;
@@ -11,10 +12,12 @@ import org.springframework.beans.factory.config.DependencyDescriptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 
 import java.util.List;
 import javax.sql.DataSource;
 
+import me.minidigger.hangar.db.customtypes.RoleCategory;
 import me.minidigger.hangar.db.dao.HangarDao;
 
 @Configuration
@@ -31,10 +34,12 @@ public class JDBIConfig {
     }
 
     @Bean
-    public JdbiFactoryBean jdbiFactoryBean(DataSource dataSource, List<JdbiPlugin> jdbiPlugins) {
-        JdbiFactoryBean jdbiFactoryBean = new JdbiFactoryBean(dataSource);
-        jdbiFactoryBean.setPlugins(jdbiPlugins);
-        return jdbiFactoryBean;
+    public Jdbi jdbi(DataSource dataSource, List<JdbiPlugin> jdbiPlugins) {
+        TransactionAwareDataSourceProxy dataSourceProxy = new TransactionAwareDataSourceProxy(dataSource);
+        Jdbi jdbi = Jdbi.create(dataSourceProxy);
+        jdbiPlugins.forEach(jdbi::installPlugin);
+        jdbi.configure(PostgresTypes.class, pt -> pt.registerCustomType(RoleCategory.class, "role_category"));
+        return jdbi;
     }
 
     @Bean

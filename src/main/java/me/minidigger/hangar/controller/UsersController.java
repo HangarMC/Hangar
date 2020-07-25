@@ -17,6 +17,7 @@ import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserDao;
 import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.service.AuthenticationService;
+import me.minidigger.hangar.service.UserService;
 
 @Controller
 public class UsersController extends HangarController {
@@ -25,18 +26,25 @@ public class UsersController extends HangarController {
     private final HangarConfig hangarConfig;
     private final AuthenticationService authenticationService;
     private final ApplicationController applicationController;
+    private final UserService userService;
 
     @Autowired
-    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, ApplicationController applicationController) {
+    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, ApplicationController applicationController, UserService userService) {
         this.hangarConfig = hangarConfig;
         this.userDao = userDao;
         this.authenticationService = authenticationService;
         this.applicationController = applicationController;
+        this.userService = userService;
     }
 
     @RequestMapping("/authors")
-    public ModelAndView showAuthors(@RequestParam(required = false) Object sort, @RequestParam(required = false) Object page) {
-        return fillModel(new ModelAndView("users/authors")); // TODO implement showAuthors request controller
+    public ModelAndView showAuthors(@RequestParam(required = false, defaultValue = "projects") String sort, @RequestParam(required = false, defaultValue = "1") int page) {
+        ModelAndView mav = new ModelAndView("users/authors");
+        mav.addObject("authors", userService.getAuthors(page, sort));
+        mav.addObject("ordering", sort);
+        mav.addObject("page", page);
+        mav.addObject("pageSize", hangarConfig.getAuthorPageSize());
+        return fillModel(mav);
     }
 
     @RequestMapping("/login")

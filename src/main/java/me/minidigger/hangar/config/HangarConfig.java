@@ -36,6 +36,9 @@ public class HangarConfig {
     @Value("${defaultChannelColor:7}")
     private int defaultChannelColor;
 
+    @Value("${authorPageSize:25}")
+    private long authorPageSize;
+
     public boolean isFakeUserEnabled() {
         return fakeUserEnabled;
     }
@@ -76,5 +79,9 @@ public class HangarConfig {
         if (!debug) {
             throw new UnsupportedOperationException("this function is supported in debug mode only");
         }
+    }
+
+    public long getAuthorPageSize() {
+        return authorPageSize;
     }
 }
