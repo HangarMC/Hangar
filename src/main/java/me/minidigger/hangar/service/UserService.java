@@ -1,6 +1,7 @@
 package me.minidigger.hangar.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -50,6 +51,9 @@ public class UserService {
 
         return modelData;
     }
+
+    @CacheEvict(value = CacheConfig.AUTHORS_CACHE,  allEntries = true)
+    public void clearAuthorsCache() {}
 
     @Cacheable(CacheConfig.AUTHORS_CACHE)
     public List<Author> getAuthors(int page, String sort) {

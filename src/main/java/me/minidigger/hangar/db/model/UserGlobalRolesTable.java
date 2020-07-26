@@ -6,6 +6,14 @@ public class UserGlobalRolesTable {
     private long userId;
     private long roleId;
 
+    public UserGlobalRolesTable(long userId, long roleId) {
+        this.userId = userId;
+        this.roleId = roleId;
+    }
+
+    public UserGlobalRolesTable() {
+        //
+    }
 
     public long getUserId() {
         return userId;

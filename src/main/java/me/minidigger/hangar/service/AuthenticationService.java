@@ -15,6 +15,7 @@ import me.minidigger.hangar.config.HangarConfig;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserDao;
 import me.minidigger.hangar.db.model.UsersTable;
+import me.minidigger.hangar.model.Role;
 import me.minidigger.hangar.model.generated.ApiSession;
 import me.minidigger.hangar.model.generated.ApiSessionResponse;
 import me.minidigger.hangar.model.generated.SessionProperties;
@@ -27,12 +28,14 @@ public class AuthenticationService {
     private final HangarConfig hangarConfig;
     private final HangarDao<UserDao> userDao;
     private final AuthenticationManager authenticationManager;
+    private final RoleService roleService;
 
     @Autowired
-    public AuthenticationService(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationManager authenticationManager) {
+    public AuthenticationService(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationManager authenticationManager, RoleService roleService) {
         this.hangarConfig = hangarConfig;
         this.userDao = userDao;
         this.authenticationManager = authenticationManager;
+        this.roleService = roleService;
     }
 
     public ApiSessionResponse authenticateDev() {
@@ -88,6 +91,8 @@ public class AuthenticationService {
             userEntry.setReadPrompts(new int[0]);
 
             userEntry = userDao.get().insert(userEntry);
+
+            roleService.addGlobalRole(userEntry.getId(), Role.HANGAR_ADMIN.getRoleId());
         }
         // TODO properly do auth, remember me shit too
         Authentication auth = new HangarAuthentication(userEntry.getName());

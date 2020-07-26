@@ -5,10 +5,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import me.minidigger.hangar.controller.generated.ProjectsApiController;
 import me.minidigger.hangar.db.dao.HangarDao;
+import me.minidigger.hangar.db.dao.ProjectMembersDao;
 import me.minidigger.hangar.db.dao.RoleDao;
+import me.minidigger.hangar.db.dao.UserGlobalRolesDao;
+import me.minidigger.hangar.db.dao.UserProjectRolesDao;
+import me.minidigger.hangar.db.model.ProjectMembersTable;
+import me.minidigger.hangar.db.model.ProjectsTable;
 import me.minidigger.hangar.db.model.RolesTable;
+import me.minidigger.hangar.db.model.UserGlobalRolesTable;
+import me.minidigger.hangar.db.model.UserProjectRolesTable;
 import me.minidigger.hangar.model.Role;
 
 @Service
@@ -17,10 +23,16 @@ public class RoleService {
     private static final Logger log = LoggerFactory.getLogger(RoleService.class);
 
     private final HangarDao<RoleDao> roleDao;
+    private final HangarDao<UserProjectRolesDao> userProjectRolesDao;
+    private final HangarDao<ProjectMembersDao> projectMembersDao;
+    private final HangarDao<UserGlobalRolesDao> userGlobalRolesDao;
 
     @Autowired
-    public RoleService(HangarDao<RoleDao> roleDao) {
+    public RoleService(HangarDao<RoleDao> roleDao, HangarDao<UserProjectRolesDao> userProjectRolesDao, HangarDao<ProjectMembersDao> projectMembersDao, HangarDao<UserGlobalRolesDao> userGlobalRolesDao) {
         this.roleDao = roleDao;
+        this.userProjectRolesDao = userProjectRolesDao;
+        this.projectMembersDao = projectMembersDao;
+        this.userGlobalRolesDao = userGlobalRolesDao;
         init();
     }
 
@@ -37,7 +49,19 @@ public class RoleService {
         }
     }
 
-//    public void addRole() {
-//        boolean exists =
-//    }
+    public void addRole(ProjectsTable projectsTable, long userId, Role role, boolean isAccepted) {
+        boolean exists = userProjectRolesDao.get().getByProjectAndUser(projectsTable.getId(), userId) != null;
+        if (!exists) {
+            addMember(projectsTable.getId(), userId);
+        }
+        userProjectRolesDao.get().insert(new UserProjectRolesTable(userId, role.getValue(), projectsTable.getId(), isAccepted));
+    }
+
+    public void addMember(long projectId, long userId) {
+        projectMembersDao.get().insert(new ProjectMembersTable(projectId, userId));
+    }
+
+    public void addGlobalRole(long userId, int roleId) {
+        userGlobalRolesDao.get().insert(new UserGlobalRolesTable(userId, roleId));
+    }
 }

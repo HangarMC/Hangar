@@ -81,13 +81,13 @@
                             </span>
                         </#if>
                         <#if author.role??>
-                            <span class="user-role channel" style="background-color: ${role.color.hex}">
-                            ${author.role}
+                            <span class="user-role channel" style="background-color: ${author.role.color.hex}">
+                            ${author.role.title}
                             </span>
                         </#if>
                     </td>
                     <td>${(author.joinDate!author.createdAt).format("yyyy-MM-dd")}</td>
-                    <td>${author.projectCount}</td>
+                    <td>${author.count}</td>
                 </tr>
                 </#list>
 

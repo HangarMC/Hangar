@@ -2,26 +2,28 @@ package me.minidigger.hangar.model.viewhelpers;
 
 import java.time.OffsetDateTime;
 
+import me.minidigger.hangar.model.Role;
+
 public class Author {
 
     private String name;
     private OffsetDateTime joinDate;
     private OffsetDateTime createdAt;
-    private String role;
-    private String donatorRole;
-    private long projectCount;
+    private Role role;
+    private Role donatorRole;
+    private long count;
 
     public Author() {
         //
     }
 
-    public Author(String name, OffsetDateTime joinDate, OffsetDateTime createdAt, String role, String donatorRole, long projectCount) {
+    public Author(String name, OffsetDateTime joinDate, OffsetDateTime createdAt, Role role, Role donatorRole, long count) {
         this.name = name;
         this.joinDate = joinDate;
         this.createdAt = createdAt;
         this.role = role;
         this.donatorRole = donatorRole;
-        this.projectCount = projectCount;
+        this.count = count;
     }
 
     public String getName() {
@@ -48,27 +50,27 @@ public class Author {
         this.createdAt = createdAt;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
-    public String getDonatorRole() {
+    public Role getDonatorRole() {
         return donatorRole;
     }
 
-    public void setDonatorRole(String donatorRole) {
+    public void setDonatorRole(Role donatorRole) {
         this.donatorRole = donatorRole;
     }
 
-    public long getProjectCount() {
-        return projectCount;
+    public long getCount() {
+        return count;
     }
 
-    public void setProjectCount(long projectCount) {
-        this.projectCount = projectCount;
+    public void setCount(long count) {
+        this.count = count;
     }
 }

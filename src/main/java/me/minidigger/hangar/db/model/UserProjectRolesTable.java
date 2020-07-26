@@ -12,6 +12,12 @@ public class UserProjectRolesTable {
     private long projectId;
     private boolean isAccepted;
 
+    public UserProjectRolesTable(long userId, String roleType, long projectId, boolean isAccepted) {
+        this.userId = userId;
+        this.roleType = roleType;
+        this.projectId = projectId;
+        this.isAccepted = isAccepted;
+    }
 
     public long getId() {
         return id;

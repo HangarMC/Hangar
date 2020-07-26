@@ -14,6 +14,7 @@ import me.minidigger.hangar.model.Category;
 import me.minidigger.hangar.model.Role;
 import me.minidigger.hangar.model.Visibility;
 import me.minidigger.hangar.service.RoleService;
+import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.StringUtils;
 
 @Component
@@ -23,13 +24,15 @@ public class ProjectFactory {
     private final HangarDao<ProjectChannelDao> projectChannelDao;
     private final HangarDao<ProjectDao> projectDao;
     private final RoleService roleService;
+    private final UserService userService;
 
     @Autowired
-    public ProjectFactory(HangarConfig hangarConfig, HangarDao<ProjectChannelDao> projectChannelDao, HangarDao<ProjectDao> projectDao, RoleService roleService) {
+    public ProjectFactory(HangarConfig hangarConfig, HangarDao<ProjectChannelDao> projectChannelDao, HangarDao<ProjectDao> projectDao, RoleService roleService, UserService userService) {
         this.hangarConfig = hangarConfig;
         this.projectChannelDao = projectChannelDao;
         this.projectDao = projectDao;
         this.roleService = roleService;
+        this.userService = userService;
     }
 
     public String getUploadError(UsersTable user) {
@@ -55,8 +58,9 @@ public class ProjectFactory {
         channelsTable.setProjectId(projectsTable.getId());
         projectChannelDao.get().insert(channelsTable);
 
-        // TODO role stuff
-//        roleService.addRole(projectsTable, ownerUser.getId(), Role.PROJECT_OWNER, true);
+        roleService.addRole(projectsTable, ownerUser.getId(), Role.PROJECT_OWNER, true);
+
+        userService.clearAuthorsCache();
 
         return projectsTable;
     }

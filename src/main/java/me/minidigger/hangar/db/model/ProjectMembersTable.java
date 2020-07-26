@@ -6,6 +6,14 @@ public class ProjectMembersTable {
     private long projectId;
     private long userId;
 
+    public ProjectMembersTable(long projectId, long userId) {
+        this.projectId = projectId;
+        this.userId = userId;
+    }
+
+    public ProjectMembersTable() {
+        //
+    }
 
     public long getProjectId() {
         return projectId;
