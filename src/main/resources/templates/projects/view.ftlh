@@ -22,6 +22,9 @@ TODO: this is a layout, should we move/rename it?
         request: OreRequest[_], flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
 -->
 
+<#assign Visibility=@helper["me.minidigger.hangar.model.Visibility"]>
+<#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
+<#assign FlagReason=@helper["me.minidigger.hangar.model.FlagReason"]>
 <#macro view p sp active noButtons=false additionalScripts="" additionalStyling="">
     <#assign scriptsVar>
         <script type="text/javascript" src="<@hangar.url "javascripts/projectDetail.js" />"></script>
@@ -31,7 +34,7 @@ TODO: this is a layout, should we move/rename it?
                 var projectOwner = "${p.project.ownerName}";
                 var projectSlug = "${p.project.slug}";
                 var projectId = "${p.project.pluginId}";
-                var alreadyStarred = ${sp.starred};
+                var alreadyStarred = ${sp.starred?c};
                 $(function() { $(".nav").find("${active}").addClass("active"); });
         </script>
     }
@@ -40,7 +43,7 @@ TODO: this is a layout, should we move/rename it?
     <#assign metaVar>
         <meta property="og:title" content="${p.project.ownerName} / ${p.project.name}" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="${config.app.baseUrl}${Projects.show(p.project.ownerName, p.project.slug)}" />
+        <meta property="og:url" content="${routes.getRouteUrl("projects.show", p.project.ownerName, p.project.slug)}" />
         <meta property="og:image" content="${p.iconUrl}" />
         <meta property="og:site_name" content="<@spring.message "general.appName" />" />
         <meta property="og:description" content="${p.project.description!}" />
@@ -48,22 +51,22 @@ TODO: this is a layout, should we move/rename it?
 
     <@base.base title=(p.project.ownerName + " / " + p.project.name) additionalScripts=scriptsVar additionalStyling=additionalStyling additionalMeta=metaVar>
         <div class="project-header-container">
-            <#if p.visibility != Visibility.Public>
+            <#if p.visibility != Visibility.PUBLIC>
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="alert alert-danger" role="alert" style="margin: 0.2em 0 0 0">
-                            <#if p.visibility == Visibility.NeedsChanges>
+                            <#if p.visibility == Visibility.NEEDSCHANGES>
                                 <#if sp.perms(Permission.EditPage)>
                                     <a class="btn btn-success pull-right" href="${p.fullSlug}/manage/sendforapproval">Send for approval</a>
                                 </#if>
-                                    <strong><@spring.message "visibility.notice." + p.visibility.nameKey /></strong>
+                                    <strong><@spring.message "visibility.notice." + p.visibility.getName() /></strong>
                                     <br>
                                     ${p.renderVisibilityChange!"Unknown"}
                             <#else>
-                                <#if p.visibility == Visibility.SoftDelete>
-                                    <@spring.messageArgs "visibility.notice." + p.visibility.nameKey, [p.lastVisibilityChangeUser] />
+                                <#if p.visibility == Visibility.SOFTDELETE>
+                                    <@spring.messageArgs "visibility.notice." + p.visibility.getName(), [p.lastVisibilityChangeUser] />
                                 <#else>
-                                    <@spring.message "visibility.notice." + p.visibility.nameKey />
+                                    <@spring.message "visibility.notice." + p.visibility.getName() />
                                     ${p.renderVisibilityChange!}
                                 </#if>
                             </#if>
@@ -82,7 +85,7 @@ TODO: this is a layout, should we move/rename it?
                             <a class="project-name" href="${routes.getRouteUrl("projects.show", p.project.ownerName, p.project.slug)}">${p.project.name}</a>
                         </div>
                         <div>
-                            <#if p.project.description>
+                            <#if p.project.description??>
                                 <i class="minor" title="${p.project.description}">${p.project.description}</i>
                             </#if>
                         </div>
@@ -100,8 +103,8 @@ TODO: this is a layout, should we move/rename it?
                             }
                             -->
 
-                            <#if p.project.visibility != Visibility.SoftDelete>
-                                <#if request.currentUser.exists(u gte !p.project.isOwner(u))> <#-- todo: if current user == owner -->
+                            <#if p.getVisibility() != Visibility.SOFTDELETE>
+                                <#if headerData.hasUser() && p.isOwner(headerData.getCurrentUser())>
                                     <button class="btn btn-default btn-star">
                                         <i id="icon-star" <#if sp.starred>
                                            class="fas fa-star"
@@ -123,9 +126,9 @@ TODO: this is a layout, should we move/rename it?
                             </#if>
 
                             <!-- Flag button -->
-                            <#if request.hasUser && !request.currentUser.name.equals(p.project.ownerName)
+                            <#if headerData.hasUser() && !p.isOwner(headerData.getCurrentUser())
                                 && !sp.uProjectFlags
-                                && p.project.visibility != Visibility.SoftDelete>
+                                && p.getVisibility() != Visibility.SoftDelete>
                                 <button data-toggle="modal" data-target="#modal-flag" class="btn btn-default">
                                     <i class="fas fa-flag"></i> <@spring.message "project.flag" />
                                 </button>
@@ -173,21 +176,21 @@ TODO: this is a layout, should we move/rename it?
                                 </div>
                             </#if>
 
-                            <#if request.hasUser && (request.headerData.globalPerm(Permission.ModNotesAndFlags) || request.headerData.globalPerm(Permission.ViewLogs))>
+                            <#if headerData.hasUser() && (headerData.globalPerm(Permission.ModNotesAndFlags) || headerData.globalPerm(Permission.ViewLogs))>
                             <button class="btn btn-alert dropdown-toggle" type="button" id="admin-actions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                 Admin actions
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="admin-actions">
-                                <#if request.headerData.globalPerm(Permission.ModNotesAndFlags)>
+                                <#if headerData.globalPerm(Permission.ModNotesAndFlags)>
                                 <li><a href="${Projects.showFlags(p.project.ownerName, p.project.slug)}">
                                         Flag history (${p.flagCount} </a></li>
                                 </#if>
-                                <#if request.headerData.globalPerm(Permission.ModNotesAndFlags)>
+                                <#if headerData.globalPerm(Permission.ModNotesAndFlags)>
                                 <li><a href="${Projects.showNotes(p.project.ownerName, p.project.slug)}">
                                         Staff notes ${p.noteCount} </a></li>
                                 </#if>
-                                <#if request.headerData.globalPerm(Permission.ViewLogs)>
+                                <#if headerData.globalPerm(Permission.ViewLogs)>
                                 <li><a href="${routes.getRouteUrl("showLog", "", "", p.project.pluginId, "", "", "", "")}">
                                         User Action Logs</a></li>
                                 </#if>
@@ -205,23 +208,21 @@ TODO: this is a layout, should we move/rename it?
                     <div class="navbar navbar-default project-navbar pull-left">
                         <div class="navbar-inner">
                             <ul class="nav navbar-nav">
-                                    <!-- Tabs -->
+                                <!-- Tabs -->
                                 <li id="docs" class="">
-                                    <a href="${Projects.show(p.project.ownerName, p.project.slug)}">
+                                    <a href="${routes.getRouteUrl("projects.show", p.project.ownerName, p.project.slug)}">
                                         <i class="fas fa-book"></i> <@spring.message "project.docs" /></a>
                                 </li>
 
                                 <li id="versions" class="">
-                                    <a href="${Versions.showList(
-                                        p.project.ownerName, p.project.slug)}">
+                                    <a href="${routes.getRouteUrl("versions.showList", p.project.ownerName, p.project.slug)}">
                                         <i class="fas fa-download"></i> <@spring.message "project.versions" />
                                     </a>
                                 </li>
 
                                 <#if p.project.topicId??>
                                     <li id="discussion" class="">
-                                        <a href="${Projects.showDiscussion(
-                                            p.project.ownerName, p.project.slug)}">
+                                        <a href="${routes.getRouteUrl("projects.showDiscussion", p.project.ownerName, p.project.slug)}">
                                             <i class="fas fa-users"></i> <@spring.message "project.discuss" />
                                         </a>
                                     </li>
@@ -230,14 +231,14 @@ TODO: this is a layout, should we move/rename it?
                                 <#if sp.perms(Permission.EditProjectSettings)>
                                     <#-- Show manager if permitted -->
                                     <li id="settings" class="">
-                                        <a href="${Projects.showSettings(p.project.ownerName, p.project.slug)}">
+                                        <a href="${routes.getRouteUrl("projects.showSettings", p.project.ownerName, p.project.slug)}">
                                             <i class="fas fa-cog"></i> <@spring.message "project.settings" />
                                         </a>
                                     </li>
                                 </#if>
 
-                                <#if p.project.settings.homepage??>
-                                    <#assign homepage>${p.project.settings.homepage}</#assign> <#-- move these assigns? -->
+                                <#if p.project.homepage??>
+                                    <#assign homepage>${p.project.homepage}</#assign> <#-- move these assigns? -->
                                     <li id="homepage">
                                         <a title="${homepage}" target="_blank" rel="noopener"
                                            href="<@hangar.linkout homepage/>">
@@ -245,8 +246,8 @@ TODO: this is a layout, should we move/rename it?
                                     </li>
                                 </#if>
 
-                                <#if p.project.settings.issues??>
-                                    <#assign issues>${p.project.settings.issues}</#assign>
+                                <#if p.project.issues??>
+                                    <#assign issues>${p.project.issues}</#assign>
                                     <li id="issues">
                                         <a title="${issues}" target="_blank" rel="noopener"
                                         href="<@hangar.linkout issues/>">
@@ -254,8 +255,8 @@ TODO: this is a layout, should we move/rename it?
                                     </li>
                                 </#if>
 
-                                <#if p.project.settings.source??>
-                                    <#assign source>${p.project.settings.source}</#assign>
+                                <#if p.project.source??>
+                                    <#assign source>${p.project.source}</#assign>
                                     <li id="source">
                                         <a title="${source}" target="_blank" rel="noopener"
                                         href="<@hangar.linkout source/>">
@@ -264,8 +265,8 @@ TODO: this is a layout, should we move/rename it?
                                     </li>
                                 </#if>
 
-                                <#if p.project.settings.support??>
-                                    <#assign support>${p.project.settings.support}</#assign>
+                                <#if p.project.support??>
+                                    <#assign support>${p.project.support}</#assign>
                                     <li id="support">
                                         <a title="${support}" target="_blank" rel="noopener"
                                         href="<@hangar.linkout support/>">

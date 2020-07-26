@@ -8,44 +8,22 @@
 Documentation page within Project overview.
 -->
 
-<#--
-@import java.text.NumberFormat
 
-@import controllers.project.routes
-@import controllers.sugar.Requests.OreRequest
-@import models.viewhelper.{ProjectData, ScopedProjectData}
-@import ore.OreConfig
-@import ore.db.Model
-@import ore.markdown.MarkdownRenderer
-@import ore.models.project.Page
-@import ore.permission.Permission
-@import util.StringFormatterUtils._
-@import util.syntax._
-@import views.html.helper.CSPNonce
-@import views.html.utils.editor
-@(p: ProjectData,
-  sp: ScopedProjectData,
-  rootPages: Seq[(Model[Page], Seq[Page])],
-  page: Page,
-  parentPage: Option[Page],
-  pageCount: Int,
-  editorOpen: Boolean = false)(implicit messages: Messages, request: OreRequest[_], flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
-
-@canEditPages = @{
-    sp.perms(Permission.EditPage)
-}
--->
+<#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
+<#function canEditPages>
+    <#return sp.perms(Permission.EditPage)>
+</#function>
 
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/pageCollapse.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/memberList.js" />"></script>
-    <script @CSPNonce.attr>
-            pluginId = '${p.project.pluginId}';
-            namespace = '${p.project.namespace}';
+    <script> <#--@CSPNonce.attr-->
+            pluginId = '${p.getProject().pluginId}';
+            namespace = '${p.getFullSlug()}';
     </script>
     <#if editorOpen>
-        <script @CSPNonce.attr>$(function() { $('.btn-edit').click(); });</script>
+        <script <#--@CSPNonce.attr-->>$(function() { $('.btn-edit').click(); });</script>
     </#if>
 </#assign>
 
@@ -55,10 +33,10 @@ Documentation page within Project overview.
             <div class="row">
                 <div class="col-md-12">
                     <@editor.editor
-                        saveCall=routes.getRouteUrl("pages.save", p.project.ownerName, p.project.slug, page.fullSlug(parentPage))
-                        deleteCall=routes.getRouteUrl("pages.delete", p.project.ownerName, p.project.slug, page.fullSlug(parentPage))
-                        deletable=!page.isHome
-                        enabled=canEditPages
+                        saveCall=routes.getRouteUrl("pages.save", p.project.ownerName, p.project.slug, page.getFullSlug(parentPage))
+                        deleteCall=routes.getRouteUrl("pages.delete", p.project.ownerName, p.project.slug, page.getFullSlug(parentPage))
+                        deletable=!page.isHome()
+                        enabled=canEditPages()
                         raw=page.contents
                         cooked=page.html(p.project)
                         subject="Page"
@@ -95,7 +73,7 @@ Documentation page within Project overview.
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="pull-left panel-title"><@spring.message "page.plural" /></h3>
-                    <#if canEditPages && pageCount < config.ore.projects.maxPages>
+                    <#if canEditPages() && pageCount < config.ore.projects.maxPages>
                         <button data-toggle="modal" data-target="#new-page" title="New"
                         class="new-page btn yellow btn-xs pull-right">
                             <i class="fas fa-plus"></i>
@@ -105,11 +83,11 @@ Documentation page within Project overview.
                 </div>
                 <ul class="list-group">
                     <li class="list-group-item">
-                        <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, Page.homeName)}">
-                        ${Page.homeName}
+                        <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, "Home")}">
+                        ${"Home"}
                         </a>
                     </li>
-                    @rootPages.filter(_._1.name != Page.homeName).map { case (pg, children) =>
+                    @rootPages.filter(_._1.name != "Home").map { case (pg, children) =>
                     <li class="list-group-item">
                         <#if children.nonEmpty>
                             <#if !page.parentId.contains(pg.id.value)>

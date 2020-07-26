@@ -12,8 +12,38 @@ public class ProjectPagesTable {
     private String slug;
     private String contents;
     private boolean isDeletable;
-    private long parentId;
+    private Long parentId;
 
+    public ProjectPagesTable(long id, OffsetDateTime createdAt, long projectId, String name, String slug, String contents, boolean isDeletable, Long parentId) {
+        this.id = id;
+        this.createdAt = createdAt;
+        this.projectId = projectId;
+        this.name = name;
+        this.slug = slug;
+        this.contents = contents;
+        this.isDeletable = isDeletable;
+        this.parentId = parentId;
+    }
+
+    public ProjectPagesTable() {
+        //
+    }
+
+    public String getFullSlug(ProjectPagesTable parentTable) {
+        if (parentTable != null) {
+            return parentTable.slug + "/" + slug;
+        }
+        return slug;
+    }
+
+    public String html(ProjectsTable project) {
+        // TODO markdown renderer
+        return contents;
+    }
+
+    public boolean isHome() {
+        return name.equals("Home") && parentId == null;
+    }
 
     public long getId() {
         return id;
@@ -78,11 +108,11 @@ public class ProjectPagesTable {
     }
 
 
-    public long getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 
-    public void setParentId(long parentId) {
+    public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
 

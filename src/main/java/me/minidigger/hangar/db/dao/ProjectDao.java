@@ -4,6 +4,7 @@ import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
+import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +18,7 @@ public interface ProjectDao {
     @Timestamped
     @GetGeneratedKeys
     ProjectsTable insert(@BindBean ProjectsTable project);
+
+    @SqlQuery("select * from projects where lower(owner_name) = lower(:author) AND lower(slug) = lower(:slug)")
+    ProjectsTable getBySlug(String author, String slug);
 }

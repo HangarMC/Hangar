@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum Visibility {
     PUBLIC(1, "public", false, ""),
 
-    NEW(2,"new", false, "project-new"),
+    NEW(2, "new", false, "project-new"),
 
-    NEEDSCHANGES(3,"needsChanges", true, "striped project-needsChanges"),
+    NEEDSCHANGES(3, "needsChanges", true, "striped project-needsChanges"),
 
     NEEDSAPPROVAL(4, "needsApproval", false, "striped project-needsChanges"),
 
@@ -52,6 +52,15 @@ public enum Visibility {
     public static Visibility fromValue(String text) {
         for (Visibility b : Visibility.values()) {
             if (String.valueOf(b.value).equals(text)) {
+                return b;
+            }
+        }
+        return null;
+    }
+
+    public static Visibility fromId(long visibility) {
+        for (Visibility b : Visibility.values()) {
+            if (b.value == visibility) {
                 return b;
             }
         }

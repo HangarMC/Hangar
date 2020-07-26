@@ -14,13 +14,17 @@ import java.util.regex.Pattern;
 
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserDao;
+import me.minidigger.hangar.db.model.ProjectPagesTable;
 import me.minidigger.hangar.db.model.ProjectsTable;
 import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.Category;
 import me.minidigger.hangar.model.Permission;
+import me.minidigger.hangar.model.viewhelpers.ProjectData;
+import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
 import me.minidigger.hangar.service.OrgService;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.service.project.ProjectFactory;
+import me.minidigger.hangar.service.project.ProjectService;
 import me.minidigger.hangar.util.AlertUtil;
 import me.minidigger.hangar.util.HangarException;
 import me.minidigger.hangar.util.RouteHelper;
@@ -35,14 +39,16 @@ public class ProjectsController extends HangarController {
     private final RouteHelper routeHelper;
     private final ProjectFactory projectFactory;
     private final HangarDao<UserDao> userDao;
+    private final ProjectService projectService;
 
     @Autowired
-    public ProjectsController(UserService userService, OrgService orgService, RouteHelper routeHelper, ProjectFactory projectFactory, HangarDao<UserDao> userDao) {
+    public ProjectsController(UserService userService, OrgService orgService, RouteHelper routeHelper, ProjectFactory projectFactory, HangarDao<UserDao> userDao, ProjectService projectService) {
         this.userService = userService;
         this.orgService = orgService;
         this.routeHelper = routeHelper;
         this.projectFactory = projectFactory;
         this.userDao = userDao;
+        this.projectService = projectService;
     }
 
     @PostMapping(value = "/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -120,6 +126,14 @@ public class ProjectsController extends HangarController {
     @GetMapping("/{author}/{slug}")
     public ModelAndView show(@PathVariable String author, @PathVariable String slug) {
         ModelAndView mav = new ModelAndView("projects/pages/view");
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        mav.addObject("p", projectData);
+        mav.addObject("sp", new ScopedProjectData());
+        mav.addObject("rootPages");
+        mav.addObject("page", projectService.getPage(projectData.getProject().getId(), "Home"));
+        mav.addObject("parentPage");
+        mav.addObject("pageCount", 0);
+        mav.addObject("editorOpen", false);
         // TODO implement show request controller
         return fillModel(mav);
     }
