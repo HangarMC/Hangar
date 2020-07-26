@@ -18,6 +18,7 @@ import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.UserOrdering;
 import me.minidigger.hangar.model.generated.ModelData;
 import me.minidigger.hangar.model.viewhelpers.Author;
+import me.minidigger.hangar.model.viewhelpers.Staff;
 import me.minidigger.hangar.security.HangarAuthentication;
 
 @Service
@@ -66,8 +67,24 @@ public class UserService {
         long pageSize = config.getAuthorPageSize();
         long offset = (page - 1) * pageSize;
 
-
         return userDao.get().getAuthors(offset, pageSize, userOrder(reverse, sort));
+    }
+
+    @CacheEvict(value = CacheConfig.STAFF_CACHE,  allEntries = true)
+    public void clearStaffCache() {}
+
+    @Cacheable(CacheConfig.STAFF_CACHE)
+    public List<Staff> getStaff(int page, String sort) {
+        boolean reverse = true;
+        if (sort.startsWith("-")) {
+            sort = sort.substring(1);
+            reverse = false;
+        }
+
+        long pageSize = config.getAuthorPageSize();
+        long offset = (page - 1) * pageSize;
+
+        return userDao.get().getStaff(offset, pageSize, userOrder(reverse, sort));
     }
 
     private String userOrder(boolean reverse, String sortStr) {

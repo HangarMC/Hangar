@@ -20,24 +20,24 @@
 -->
 
 <#function direction>
-    <#if ordering?startsWith("-")>
-        <#return "chevron-down">
-    <#else>
-        <#return "chevron-up">
-    </#if>
+	<#if ordering?startsWith("-")>
+		<#return "chevron-down">
+	<#else>
+		<#return "chevron-up">
+	</#if>
 </#function>
 
 <#function isActiveSort td>
-    <#assign sort=ordering>
-    <#if sort?startsWith("-")>
-        <#assign sort=sort?substring(1)>
-    </#if>
-    <#return sort?upperCase == td?upperCase>
+	<#assign sort=ordering>
+	<#if sort?startsWith("-")>
+		<#assign sort=sort?substring(1)>
+	</#if>
+	<#return sort?upperCase == td?upperCase>
 </#function>
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "javascripts/userList.js" />"></script>
-    <script @CSPNonce.attr>CURRENT_PAGE = ${page};</script>
+	<script type="text/javascript" src="<@hangar.url "javascripts/userList.js" />"></script>
+	<script <#--@CSPNonce.attr-->>CURRENT_PAGE = ${page};</script>
 </#assign>
 
 <@base.base title="Authors - Hangar" additionalScripts=scriptsVar>

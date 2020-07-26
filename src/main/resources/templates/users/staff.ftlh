@@ -6,29 +6,30 @@
 @(staff: Seq[(String, Role, Option[OffsetDateTime], OffsetDateTime)], ordering: String, page: Int)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 -->
 
-<#assign pageSize=config.ore.users.authorPageSize />
-<#assign direction>
-	<#if ordering.startsWith("-")>
-		"chevron-down"
+<#function direction>
+	<#if ordering?startsWith("-")>
+		<#return "chevron-down">
 	<#else>
-		"chevron-up"
+		<#return "chevron-up">
 	</#if>
-</#assign>
+</#function>
 
-<#macro isActiveSort td>
-	<#if ordering.startsWith("-")>
-		ordering.substring(1).equalsIgnoreCase(td)
-	<#else>
-		ordering.equalsIgnoreCase(td)
+<#function isActiveSort td>
+	<#assign sort=ordering>
+	<#if sort?startsWith("-")>
+		<#assign sort=sort?substring(1)>
 	</#if>
-</#macro>
+	<#return sort?upperCase == td?upperCase>
+</#function>
 
 <#assign scriptsVar>
 	<script type="text/javascript" src="<@hangar.url "javascripts/userList.js" />"></script>
 	<script <#--@CSPNonce.attr-->>CURRENT_PAGE = ${page};</script>
 </#assign>
-<@base.base title="Staff - Hangar" additionalScripts=scriptsVar>
 
+<@base.base title="Staff - Hangar" additionalScripts=scriptsVar>
+	<#assign UserOrdering = @helper["me.minidigger.hangar.model.UserOrdering"]>
+<#-- @ftlvariable name="UserOrdering" type="me.minidigger.hangar.model.UserOrdering" -->
 	<div class="panel panel-default">
 		<table class="table table-users">
 			<thead>
@@ -36,15 +37,15 @@
 					<td></td>
 					<td <#if isActiveSort(UserOrdering.UserName)>class="user-sort"</#if> data-list="staff" >
 						Username
-						<#if isActiveSort(UserOrdering.UserName)><i class="fas o fa-${direction}"></i></#if>
+						<#if isActiveSort(UserOrdering.UserName)><i class="fas o fa-${direction()}"></i></#if>
 					</td>
 					<td <#if isActiveSort(UserOrdering.Role)>class="user-sort"</#if> data-list="staff" >
 						Roles
-						<#if isActiveSort(UserOrdering.Role)><i class="fas o fa-${direction}"></i></#if>
+						<#if isActiveSort(UserOrdering.Role)><i class="fas o fa-${direction()}"></i></#if>
 					</td>
 					<td <#if isActiveSort(UserOrdering.JoinDate)>class="user-sort"</#if> data-list="staff" >
 						Joined
-						<#if isActiveSort(UserOrdering.JoinDate)><i class="fas o fa-${direction}"></i></#if>
+						<#if isActiveSort(UserOrdering.JoinDate)><i class="fas o fa-${direction()}"></i></#if>
 					</td>
 				</tr>
 			</thead>
@@ -52,26 +53,26 @@
 				<#list staff as user>
 				<tr>
                     <#import "*/utils/userAvatar.ftlh" as userAvatar>
-					<td><@userAvatar.userAvatar userName=user.name avatarUrl=User.avatarUrl(name) clazz="user-avatar-xs"></@userAvatar.userAvatar></td>
+					<td><@userAvatar.userAvatar userName=user.name avatarUrl=User.avatarUrl(user.name) clazz="user-avatar-xs"></@userAvatar.userAvatar></td>
 					<td>
-						<a href="${routes.getRouteUrl("showActivities", name)}">${user.name}</a>
+						<a href="${routes.getRouteUrl("showActivities", user.name)}">${user.name}</a>
 					</td>
 					<td>
 						<span class="user-role channel" style="background-color: ${user.role.color.hex}">
 						${user.role.title}
 						</span>
 					</td>
-					<td>@prettifyDate(joinDate!createdAt)</td>
+					<td>${(user.joinDate!user.createdAt).format("yyyy-MM-dd")}</td>
 				</tr>
 				</#list>
 
-				<#if page gt 1 || staff.size gte pageSize>
+				<#if page gt 1 || staff?size gte pageSize>
 					<tr class="authors-footer">
 						<td></td>
 						<td></td>
 						<td></td>
 						<td>
-							<#if staff.size gte pageSize>
+							<#if staff?size gte pageSize>
 								<a href="${routes.getRouteUrl("users.showStaff", ordering, page + 1)}" class="btn btn-default">
 									<i class="fas fa-arrow-right"></i>
 								</a>

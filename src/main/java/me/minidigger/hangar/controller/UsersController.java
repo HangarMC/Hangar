@@ -96,8 +96,13 @@ public class UsersController extends HangarController {
     }
 
     @GetMapping("/staff")
-    public Object showStaff(@RequestParam(required = false) Object sort, @RequestParam(required = false) Object page) {
-        return fillModel(new ModelAndView("users/staff")); // TODO implement showStaff request controller
+    public Object showStaff(@RequestParam(required = false, defaultValue = "roles") String sort, @RequestParam(required = false, defaultValue = "1") int page) {
+        ModelAndView mav = new ModelAndView("users/staff");
+        mav.addObject("staff", userService.getStaff(page, sort));
+        mav.addObject("ordering", sort);
+        mav.addObject("page", page);
+        mav.addObject("pageSize", hangarConfig.getAuthorPageSize());
+        return fillModel(mav);
     }
 
     @RequestMapping("/verify")

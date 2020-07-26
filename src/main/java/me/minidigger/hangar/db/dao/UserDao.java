@@ -14,6 +14,7 @@ import java.util.List;
 
 import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.viewhelpers.Author;
+import me.minidigger.hangar.model.viewhelpers.Staff;
 
 @Repository
 @RegisterBeanMapper(UsersTable.class)
@@ -58,4 +59,22 @@ public interface UserDao {
     @UseStringTemplateEngine
     @RegisterBeanMapper(Author.class)
     List<Author> getAuthors(long offset, long pageSize, @Define String sort);
+
+    @SqlQuery("SELECT sq.name, sq.role, sq.join_date, sq.created_at" +
+              "  FROM (SELECT u.name                                                  AS name," +
+              "               r.name                                                  AS role," +
+              "               u.join_date," +
+              "               u.created_at," +
+              "               r.permission," +
+              "               rank() OVER (PARTITION BY u.name ORDER BY r.permission::BIGINT DESC) AS rank" +
+              "          FROM users u" +
+              "                 JOIN user_global_roles ugr ON u.id = ugr.user_id" +
+              "                 JOIN roles r ON ugr.role_id = r.id" +
+              "          WHERE r.name IN ('Hangar_Admin', 'Hangar_Mod')) sq" +
+              "  WHERE sq.rank = 1" +
+              "    <sort>" +
+              "    OFFSET :offset LIMIT :pageSize")
+    @UseStringTemplateEngine
+    @RegisterBeanMapper(Staff.class)
+    List<Staff> getStaff(long offset, long pageSize, @Define String sort);
 }
