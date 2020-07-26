@@ -36,7 +36,7 @@ public class ProjectFactory {
     }
 
     public String getUploadError(UsersTable user) {
-        if (user.getIsLocked()) {
+        if (user.isLocked()) {
             return "error.user.locked";
         } else {
             return null;

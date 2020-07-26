@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.minidigger.hangar.config.CacheConfig;
@@ -15,10 +16,14 @@ import me.minidigger.hangar.config.HangarConfig;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserDao;
 import me.minidigger.hangar.db.model.UsersTable;
+import me.minidigger.hangar.model.Permission;
+import me.minidigger.hangar.model.Role;
 import me.minidigger.hangar.model.UserOrdering;
-import me.minidigger.hangar.model.generated.ModelData;
+import me.minidigger.hangar.model.generated.Organization;
 import me.minidigger.hangar.model.viewhelpers.Author;
+import me.minidigger.hangar.model.viewhelpers.HeaderData;
 import me.minidigger.hangar.model.viewhelpers.Staff;
+import me.minidigger.hangar.model.viewhelpers.UserData;
 import me.minidigger.hangar.security.HangarAuthentication;
 
 @Service
@@ -47,10 +52,13 @@ public class UserService {
         return null;
     }
 
-    public ModelData getModelData() {
-        ModelData modelData = new ModelData();
+    public HeaderData getHeaderData() {
+        HeaderData headerData = new HeaderData();
 
-        return modelData;
+        headerData.setCurrentUser(getCurrentUser());
+        // TODO fill headerdata
+
+        return headerData;
     }
 
     @CacheEvict(value = CacheConfig.AUTHORS_CACHE,  allEntries = true)
@@ -105,5 +113,16 @@ public class UserService {
             default:
                 return " ";
         }
+    }
+
+    public UserData getUserData(UsersTable user) {
+        // TODO getUserData
+        boolean isOrga = false;
+        int projectCount = 1;
+        List<Organization> orgas = new ArrayList<>();
+        List<Role> globalRoles = List.of(Role.HANGAR_ADMIN);
+        Permission userPerm = Permission.All;
+        Permission orgaPerm = Permission.None;
+        return new UserData(getHeaderData(), user, isOrga, projectCount, orgas, globalRoles, userPerm, orgaPerm);
     }
 }

@@ -3,6 +3,7 @@
 [#-- @ftlvariable name="alerts" type="java.util.Map" --]
 [#-- @ftlvariable name="routes" type="me.minidigger.hangar.util.RouteHelper" --]
 [#-- @ftlvariable name="templateHelper" type="me.minidigger.hangar.util.TemplateHelper" --]
-[#-- @ftlvariable name="modelData" type="me.minidigger.hangar.model.generated.ModelData" --]
+[#-- @ftlvariable name="headerData" type="me.minidigger.hangar.model.viewhelpers.HeaderData" --]
 [#-- @ftlvariable name="rc" type="org.springframework.web.servlet.support.RequestContext" --]
 [#-- @ftlvariable name="user" type="me.minidigger.hangar.model.generated.User" --]
+[#-- @ftlvariable name="config" type="me.minidigger.hangar.config.HangarConfig" --]

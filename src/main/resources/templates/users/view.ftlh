@@ -7,23 +7,21 @@
 <#import "*/utils/form.ftlh" as form>
 <#import "*/utils/csrf.ftlh" as csrf>
 
-<#--
-@(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)], additionalScripts: Html = Html(""))(content: Html)(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
--->
+<#-- @ftlvariable name="u" type="me.minidigger.hangar.model.viewhelpers.UserData" -->
+<#-- @ftlvariable name="Permission" type="me.minidigger.hangar.model.Permission" -->
+<#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
+<#function canEditOrgSettings u o={}>
+    <#return u.isOrga() && o?? && o.scopedData.permissions.has(Permission.EditOrganizationSettings)>
+</#function>
 
-<#macro view u o additionalScripts="">
-    <#--@canEditOrgSettings = @{
-    u.isOrga &&
-    o.exists { case (_, scopedData) =>
-    scopedData.permissions.has(Permission.EditOrganizationSettings)
-    }
-    }-->
+<#macro view u o={} additionalScripts="">
 
     <#assign scriptsVar>
         <script type="text/javascript" src="<@hangar.url "javascripts/userPage.js" />"></script>
         <script <#-- @CSPNonce.attr -->>
                 window.USERNAME ='${u.user.name}';
-                <#list Category.values as category> <#-- todo -->
+                <#assign Category=@helper["me.minidigger.hangar.model.Category"]>
+                <#list Category.values() as category>
                     CATEGORY_TITLE['${category.apiName}'] = '${category.title}';
                     CATEGORY_ICON['${category.apiName}'] = '${category.icon}';
                 </#list>
@@ -47,16 +45,16 @@
                     <!-- Title -->
                 <span class="user-badge">
                     <#assign avatarClass>
-                        user-avatar-md <#if canEditOrgSettings>organization-avatar</#if>
+                        user-avatar-md <#if canEditOrgSettings(u, o)>organization-avatar</#if>
                     </#assign>
                     <@userAvatar.userAvatar userName=u.user.name avatarUrl=u.user.avatarUrl clazz=avatarClass />
 
-                    <#if canEditOrgSettings>
+                    <#if canEditOrgSettings(u, o)>
                         <div class="edit-avatar" style="display: none;">
                             <a href="${routes.getRouteUrl("org.updateAvatar", u.user.name)}"><i class="fas fa-edit"></i> <@spring.message "user.editAvatar" /></a>
                         </div>
 
-                        <#if !u.currentUser.readPrompts.contains(Prompt.ChangeAvatar)>
+                        <#if !u.headerData.currentUser.readPrompts.contains(Prompt.ChangeAvatar)>
                             <@prompt.prompt prompt=Prompt.ChangeAvatar id="popover-avatar" />
                         </#if>
                     </#if>
@@ -65,14 +63,14 @@
                         <h1 class="username">
                             ${u.user.name}
 
-                            <#if u.isCurrent && !u.isOrga>
-                                <a class="user-settings" href="${config.security.api.url}/accounts/settings">
+                            <#if u.isCurrent() && !u.isOrga()>
+                                <a class="user-settings" href="${config.getAuthUrl()}/accounts/settings">
                                     <i class="fas fa-cog" data-toggle="tooltip"
                                     data-placement="top" title="Settings"></i>
                                 </a>
 
                                 <span data-toggle="modal" data-target="#modal-lock">
-                                    <i class="fas @{if (u.user.isLocked) "fa-lock" else "fa-unlock-alt"} action-lock-account" data-toggle="tooltip"
+                                    <i class="fas <#if u.user.isLocked()>fa-lock<#else>fa-unlock-alt</#if> action-lock-account" data-toggle="tooltip"
                                     data-placement="top" title="<@spring.message "user.lock" />"></i>
                                 </span>
 
@@ -81,7 +79,7 @@
                                 </a>
                             </#if>
 
-                            <#if u.hasUser>
+                            <#if u.hasUser()>
                                 <#if u.userPerm.has(Permission.ModNotesAndFlags) || u.userPerm.has(Permission.Reviewer)>
                                     <a class="user-settings" href="${routes.getRouteUrl("showActivities", u.user.name)}">
                                         <i class="fas fa-calendar" data-toggle="tooltip"
@@ -90,7 +88,7 @@
                                 </#if>
                             </#if>
 
-                            <#if request.headerData.globalPerm(Permission.EditAllUserSettings)>
+                            <#if u.headerData.globalPerm(Permission.EditAllUserSettings)>
                                 <a class="user-settings" href="${routes.getRouteUrl("userAdmin", u.user.name)}">
                                     <i class="fas fa-wrench" data-toggle="tooltip"
                                     data-placement="top" title="User Admin"></i>
@@ -101,13 +99,13 @@
                         <div class="user-tag">
                             <i class="minor">
                             <#if u.user.tagline??>
-                                ${u.user.tagline.get}
-                            <#elseif u.isCurrent || canEditOrgSettings>
+                                ${u.user.tagline}
+                            <#elseif u.isCurrent() || canEditOrgSettings(u, o)>
                                 Add a tagline
                             </#if>
                             </i>
 
-                            <#if u.isCurrent || canEditOrgSettings>
+                            <#if u.isCurrent() || canEditOrgSettings(u, o)>
                                 <a href="#" data-toggle="modal" data-target="#modal-tagline">
                                     <i class="fas fa-edit"></i>
                                 </a>
@@ -118,17 +116,15 @@
 
                 <!-- Roles -->
                 <ul class="user-roles">
-                @defining(u.globalRoles.toSeq.sortBy(_.permissions: Long).lastOption) { roleOpt =>
-                    @roleOpt.map { role =>
+                    <#list u.globalRoles?sort_by("value") as role>
                         <li class="user-role channel" style="background-color: ${role.color.hex}">${role.title}</li>
-                    }
-                }
+                    </#list>
                 </ul>
 
                 <div class="user-info">
                     <i class="minor">${u.projectCount}&nbsp;<#if u.projectCount == 1>project<#else>projects</#if></i><br/>
                     <i class="minor">
-                    <@spring.messageArgs "user.memberSince" u.user.joinDate.map(prettifyDate)!prettifyDate(u.user.createdAt) />
+                    <@spring.messageArgs code="user.memberSince" args=[(u.user.joinDate!u.user.createdAt).format("yyyy-MM-dd")] />
                     </i><br/>
                     <a href="https://papermc.io/forums/users/${u.user.name}">
                         <@spring.message "user.viewOnForums" /> <i class="fas fa-external-link-alt"></i>
@@ -140,16 +136,18 @@
         <#nested />
 
         <#assign lockModalTitle>
-            <#if u.user.isLocked>
+            <#compress>
+            <#if u.user.isLocked()>
                 user.unlock
             <#else>
                 user.lock
             </#if>
+            </#compress>
         </#assign>
         <@modal.modal lockModalTitle "modal-lock" "label-lock">
             <div class="modal-body">
                 <p class="minor">
-                    <#if u.user.isLocked>
+                    <#if u.user.isLocked()>
                         <@spring.message "user.unlock.confirm" />
                     <#else>
                         <@spring.message "user.lock.confirm" />
@@ -159,7 +157,7 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><@spring.message "general.close" /></button>
-                <@form.form method="POST" action=routes.getRouteUrl("users.verify", routes.getRouteUrl("users.setLocked", u.user.name, !u.user.isLocked, "", "")) class="form-inline">
+                <@form.form method="POST" action=routes.getRouteUrl("users.verify", routes.getRouteUrl("users.setLocked", u.user.name, (!u.user.isLocked())?string, "", "")) class="form-inline">
                     <@csrf.formField />
                     <button type="submit" class="btn btn-primary"><@spring.message "general.continue" /></button>
                 </@form.form>
@@ -176,7 +174,7 @@
                             <p><@spring.message "user.tagline.info" /></p>
                         </div>
                         <input class="form-control" type="text" value="${u.user.tagline!""}" id="tagline"
-                               name="tagline" maxlength="${config.ore.users.maxTaglineLen}" />
+                               name="tagline" maxlength="${config.getMaxTaglineLen()}" />
                     </div>
                     <div class="clearfix"></div>
                 </div>

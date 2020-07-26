@@ -16,6 +16,7 @@ import me.minidigger.hangar.config.HangarConfig;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserDao;
 import me.minidigger.hangar.db.model.UsersTable;
+import me.minidigger.hangar.model.viewhelpers.UserData;
 import me.minidigger.hangar.service.AuthenticationService;
 import me.minidigger.hangar.service.UserService;
 
@@ -112,15 +113,13 @@ public class UsersController extends HangarController {
 
     @RequestMapping("/{user}")
     public Object showProjects(@PathVariable String user) {
-        // TODO hacky test shit
         UsersTable dbUser = userDao.get().getByName(user);
         if (dbUser == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        System.out.println(dbUser);
 
         ModelAndView mav = new ModelAndView("users/projects");
-        mav.addObject("u", dbUser); // TODO proper frontend model
+        mav.addObject("u", userService.getUserData(dbUser));
         mav.addObject("o", null);
         return fillModel(mav); // TODO implement showProjects request controller
     }

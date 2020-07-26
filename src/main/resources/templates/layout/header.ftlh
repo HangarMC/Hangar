@@ -85,7 +85,7 @@
                     <#-- Show user controls -->
                         <li class="dropdown user-controls nav-icon">
                             <a href="#" class="drop-down-toggle user-toggle" data-toggle="dropdown">
-                                <#if modelData.hasNotice()>
+                                <#if headerData.hasNotice()>
                                     <span class="unread"></span>
                                 </#if>
                                 <img height="32" width="32" class="user-avatar" src="${cu.getAvatarUrl()}" alt="${cu.name}"/>
@@ -104,7 +104,7 @@
                                     <a href="${routes.getRouteUrl("users.showNotifications", "", "")}">
                                         <i class="fas fa-bell mr-1"></i>
                                         <span><@spring.message "notification.plural" />
-                                            <#if modelData.hasUnreadNotifications()>
+                                            <#if headerData.hasUnreadNotifications()>
                                                 <span class="unread"></span>
                                             </#if>
                                 </span>
@@ -116,7 +116,7 @@
                                         <a href="${routes.getRouteUrl("showFlags")}">
                                             <i class="fas fa-flag mr-1"></i>
                                             <span><@spring.message "project.flag.plural" />
-                                                <#if modelData.unresolvedFlags()>
+                                                <#if headerData.hasUnresolvedFlags()>
                                                     <span class="unread"></span>
                                                 </#if>
                                     </span>
@@ -130,7 +130,7 @@
                                             <i class="fas fa-thumbs-up mr-1"></i>
                                             <span>
                                         Project approvals
-                                       <#if modelData.hasProjectApprovals()>
+                                       <#if headerData.hasProjectApprovals()>
                                            <span class="unread"></span>
                                        </#if>
                                     </span>
@@ -143,7 +143,7 @@
                                         <a href="${routes.getRouteUrl("showQueue")}">
                                             <i class="far fa-thumbs-up mr-1"></i>
                                             <span><@spring.message "user.queue" />
-                                                <#if modelData.hasReviewQueue()>
+                                                <#if headerData.hasReviewQueue()>
                                                     <span class="unread"></span>
                                                 </#if>
                                     </span>

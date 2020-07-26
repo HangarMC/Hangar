@@ -113,7 +113,7 @@ public class UsersTable implements Serializable {
     }
 
 
-    public boolean getIsLocked() {
+    public boolean isLocked() {
         return isLocked;
     }
 

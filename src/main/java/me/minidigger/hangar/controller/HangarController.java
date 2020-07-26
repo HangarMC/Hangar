@@ -9,6 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.HashMap;
 import java.util.Map;
 
+import me.minidigger.hangar.config.HangarConfig;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.RouteHelper;
 import me.minidigger.hangar.util.TemplateHelper;
@@ -21,6 +22,8 @@ public abstract class HangarController {
     private UserService userService;
     @Autowired
     private TemplateHelper templateHelper;
+    @Autowired
+    private HangarConfig hangarConfig;
 
     protected ModelAndView fillModel(ModelAndView mav) {
         // helpers
@@ -30,6 +33,7 @@ public abstract class HangarController {
         builder.setExposeFields(true);
         builder.setUseModelCache(true);
         mav.addObject("@helper", builder.build().getStaticModels());
+        mav.addObject("config", hangarConfig);
 
         // alerts
         if (mav.getModelMap().getAttribute("alerts") == null) {
@@ -39,7 +43,7 @@ public abstract class HangarController {
         // user data
         mav.addObject("user", userService.getCurrentUser()); // TODO this is wrong
         mav.addObject("cu", userService.getCurrentUser());
-        mav.addObject("modelData", userService.getModelData());
+        mav.addObject("headerData", userService.getHeaderData());
 
         return mav;
     }

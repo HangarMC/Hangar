@@ -61,6 +61,7 @@ public class MvcConfig implements WebMvcConfigurer {
             String message = te.getMessage();
             if (message.contains("org.springframework.web.servlet.support.RequestContext.getMessage")) {
                 System.out.println("[Template Error, most likely missing key] " + message);
+                te.getCause().printStackTrace();
             } else if (message.contains(" see cause exception in the Java stack trace.")) {
                 te.printStackTrace();
             } else {

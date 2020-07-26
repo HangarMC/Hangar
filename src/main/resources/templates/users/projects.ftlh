@@ -14,32 +14,26 @@
 @(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)])(
         implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)-->
 
-<#--
-@canEditOrgMembers = @{
-    u.isOrga &&
-    o.exists { case (_, scopedData) =>
-        scopedData.permissions.has(Permission.sManageOrganizationMembers)
-    }
-}
--->
+<#function canEditOrgMembers>
+    <#return u.isOrga() && o?? && o.scopedData.permissions.has(Permissions.ManageOrganizationMembers)>
+</#function>
 
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "build/user-profile.js" />"></script>
-    <#if u.isOrga && o?? && canEditOrgMembers>
+    <#if u.isOrga() && o?? && canEditOrgMembers()>
     <script type="text/javascript" src="<@hangar.url "javascripts/orgInvites.js" />"></script>
     </#if>
     <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/memberList.js" />"></script>
 </#assign>
 
-<#assign o={} /><#-- todo dummy value -->
 <@users.view u=u o=o additionalScripts=scriptsVar>
     <div class="row">
         <div class="col-md-8">
             <div id="user-profile"></div>
         </div>
         <div class="col-md-4">
-            <#if u.isOrga && o?? && canEditOrgMembers>
+            <#if u.isOrga() && o?? && canEditOrgMembers()>
                 <div class="panel-user-info panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title"><@spring.message "project.manager" /></h3>
@@ -67,17 +61,17 @@
                     </table>
                 </div>
             </#if>
-            <#if !u.isOrga!false>
+            <#if !u.isOrga()>
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title"> <@spring.message "org.plural" /></h3>
                     </div>
                     <table class="table panel-body">
                         <tbody>
-                        <#if u.orgas.isEmpty>
-                            <tr><td><i class="minor"><i class="fas fa-star"></i> <@spring.messageArgs "user.noOrganizations" u.user.name /></i></td></tr>
+                        <#if u.orgas?size == 0>
+                            <tr><td><i class="minor"><i class="fas fa-star"></i> <@spring.messageArgs code="user.noOrganizations" args=[u.user.name] /></i></td></tr>
                         <#else>
-                            @u.orgas.map { case (organization, user, role, _) =>
+                            <#list u.orgas as organization> <#-- , user, role -->
                             <tr>
                                 <td>
                                     <#import "*/utils/userAvatar.ftlh" as userAvatar>
@@ -90,7 +84,7 @@
                             </div>
                             </td>
                             </tr>
-                            }
+                            </#list>
                         </#if>
                         </tbody>
                     </table>
@@ -136,11 +130,10 @@
                     </div>
                 </div>
             <#else>
-                @o.map { case (orgData, scopedData) =>
-                    <@memberList.memberList j=orgData editable=true perms=scopedData.permissions
-                    saveCall=routes.getRouteUrl("org.updateMembers", orgData.orga.name)
-                    removeCall=routes.getRouteUrl("org.removeMember", orgData.orga.name) />
-                }
+                <#assign orgData=o> <#-- todo fix scopeddata -->
+                <@memberList.memberList j=orgData editable=true perms=scopedData.permissions
+                saveCall=routes.getRouteUrl("org.updateMembers", orgData.orga.name)
+                removeCall=routes.getRouteUrl("org.removeMember", orgData.orga.name) />
             </#if>
         </div>
     </div>

@@ -39,6 +39,12 @@ public class HangarConfig {
     @Value("${authorPageSize:25}")
     private long authorPageSize;
 
+    @Value("${maxTaglineLen:100}")
+    private long maxTaglineLen;
+
+    @Value("${authUrl:https://hangarauth.minidigger.me}")
+    private String authUrl;
+
     public boolean isFakeUserEnabled() {
         return fakeUserEnabled;
     }
@@ -83,5 +89,13 @@ public class HangarConfig {
 
     public long getAuthorPageSize() {
         return authorPageSize;
+    }
+
+    public long getMaxTaglineLen() {
+        return maxTaglineLen;
+    }
+
+    public String getAuthUrl() {
+        return authUrl;
     }
 }
