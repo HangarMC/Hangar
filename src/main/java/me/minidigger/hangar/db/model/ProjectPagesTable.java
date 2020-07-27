@@ -36,11 +36,6 @@ public class ProjectPagesTable {
         return slug;
     }
 
-    public String html(ProjectsTable project) {
-        // TODO markdown renderer
-        return contents;
-    }
-
     public boolean isHome() {
         return name.equals("Home") && parentId == null;
     }

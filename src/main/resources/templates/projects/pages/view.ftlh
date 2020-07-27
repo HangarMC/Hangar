@@ -38,7 +38,7 @@ Documentation page within Project overview.
                         deletable=!page.isHome()
                         enabled=canEditPages()
                         raw=page.contents
-                        cooked=page.html(p.project)
+                        cooked=markdownService.render(page.contents)
                         subject="Page"
                         extraFormValue=page.name />
                 </div>

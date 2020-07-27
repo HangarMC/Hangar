@@ -116,6 +116,13 @@
             <artifactId>postgresql</artifactId>
         </dependency>
 
+        <!-- markdown -->
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-all</artifactId>
+            <version>0.62.2</version>
+        </dependency>
+
         <!-- webjars -->
         <dependency>
             <groupId>org.webjars</groupId>

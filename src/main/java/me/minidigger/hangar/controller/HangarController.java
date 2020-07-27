@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import me.minidigger.hangar.config.HangarConfig;
+import me.minidigger.hangar.service.MarkdownService;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.RouteHelper;
 import me.minidigger.hangar.util.TemplateHelper;
@@ -24,6 +25,8 @@ public abstract class HangarController {
     private TemplateHelper templateHelper;
     @Autowired
     private HangarConfig hangarConfig;
+    @Autowired
+    private MarkdownService markdownService;
 
     protected ModelAndView fillModel(ModelAndView mav) {
         // helpers
@@ -34,6 +37,7 @@ public abstract class HangarController {
         builder.setUseModelCache(true);
         mav.addObject("@helper", builder.build().getStaticModels());
         mav.addObject("config", hangarConfig);
+        mav.addObject("markdownService", markdownService);
 
         // alerts
         if (mav.getModelMap().getAttribute("alerts") == null) {
