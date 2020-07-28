@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.ProjectDao;
@@ -36,8 +37,19 @@ public class ProjectService {
 
     public ProjectData getProjectData(String author, String slug) {
         ProjectsTable projectsTable = projectDao.get().getBySlug(author, slug);
-        UsersTable projectOwner = userDao.get().getByName(author);
-        if (projectsTable == null || projectOwner == null) {
+        if (projectsTable == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return getProjectData(projectsTable);
+
+    }
+
+    public List<ProjectData> getProjectsData(long id) {
+        List<ProjectsTable> projectsTables = projectDao.get().getProjectsByUserId(id);
+        return projectsTables.stream().map(this::getProjectData).collect(Collectors.toList());
+    }
+
+    public ProjectData getProjectData(ProjectsTable projectsTable) {
+        UsersTable projectOwner = userDao.get().getById(projectsTable.getOwnerId());
+        if (projectOwner == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         int publicVersions = 0;
