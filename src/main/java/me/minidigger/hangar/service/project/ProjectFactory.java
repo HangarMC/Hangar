@@ -1,5 +1,6 @@
 package me.minidigger.hangar.service.project;
 
+import me.minidigger.hangar.util.HangarException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,8 @@ import me.minidigger.hangar.model.Visibility;
 import me.minidigger.hangar.service.RoleService;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.StringUtils;
+
+import java.util.List;
 
 @Component
 public class ProjectFactory {
@@ -49,10 +52,15 @@ public class ProjectFactory {
 
         ProjectChannelsTable channelsTable = new ProjectChannelsTable(hangarConfig.getDefaultChannelName(), hangarConfig.getDefaultChannelColor().getValue(), -1);
 
-        // TODO check plugin id "project with that plugin id already exists"
-        // TODO check owner, name combo "project with that name already exists"
-        // TODO check owner, slug combo "slug not available"
-        // TODO check if project name is valid "invalid name"
+        InvalidProject invalidProjectReason = null;
+        if (!hangarConfig.isValidProjectName(name)) {
+            invalidProjectReason = InvalidProject.INVALID_NAME;
+        } else {
+            invalidProjectReason = projectDao.get().checkValidProject(ownerUser.getId(), pluginId, name, slug);
+        }
+        if (invalidProjectReason != null) {
+            throw new HangarException(invalidProjectReason.key);
+        }
 
         projectsTable = projectDao.get().insert(projectsTable);
         channelsTable.setProjectId(projectsTable.getId());
@@ -63,5 +71,17 @@ public class ProjectFactory {
         userService.clearAuthorsCache();
 
         return projectsTable;
+    }
+
+    public enum InvalidProject {
+        PLUGIN_ID("error.project.invalidPluginId"),
+        OWNER_NAME("error.project.nameExists"),
+        OWNER_SLUG("error.project.slugExists"),
+        INVALID_NAME("error.project.invalidName");
+
+        final String key;
+        InvalidProject(String key) {
+            this.key = key;
+        }
     }
 }

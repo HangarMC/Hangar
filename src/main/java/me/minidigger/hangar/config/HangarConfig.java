@@ -1,5 +1,6 @@
 package me.minidigger.hangar.config;
 
+import me.minidigger.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -44,6 +45,9 @@ public class HangarConfig {
 
     @Value("${authUrl:https://hangarauth.minidigger.me}")
     private String authUrl;
+
+    @Value("${maxProjectNameLen:25}")
+    private long maxProjectNameLen;
 
     public boolean isFakeUserEnabled() {
         return fakeUserEnabled;
@@ -97,5 +101,10 @@ public class HangarConfig {
 
     public String getAuthUrl() {
         return authUrl;
+    }
+
+    public boolean isValidProjectName(String name) {
+        String sanitized = StringUtils.compact(name);
+        return sanitized.length() >= 1 && sanitized.length() <= maxProjectNameLen;
     }
 }

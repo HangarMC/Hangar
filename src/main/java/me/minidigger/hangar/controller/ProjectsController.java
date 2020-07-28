@@ -78,7 +78,6 @@ public class ProjectsController extends HangarController {
             return fillModel(mav);
         }
         // TODO check that currentUser can upload to owner
-
         // find owner
         UsersTable ownerUser = userDao.get().getById(owner);
         if (ownerUser == null) {
