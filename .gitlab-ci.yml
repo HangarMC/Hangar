@@ -17,6 +17,11 @@ before_script:
   - base64 -d /home/docker/key.pem.base64 >> /home/docker/key.pem
   - alias secure-docker="docker -H tcp://glados.minidigger.me:4243 --tlsverify --tlscacert=/home/docker/ca.pem --tlscert=/home/docker/cert.pem --tlskey=/home/docker/key.pem"
 
+cache:
+  paths:
+    - .m2/repository/
+    - target/
+
 build:
   stage: build
   variables:

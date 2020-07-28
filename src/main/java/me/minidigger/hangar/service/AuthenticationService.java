@@ -54,7 +54,7 @@ public class AuthenticationService {
 
     public ApiSessionResponse authenticatePublic() {
         // TODO, get properties session expiration and stuff
-        OffsetDateTime sessionExpiration = OffsetDateTime.now().plusSeconds(hangarConfig.getSessionExpiration());
+        OffsetDateTime sessionExpiration = OffsetDateTime.now().plus(hangarConfig.api.session.getExpiration());
         String uuidtoken = UUID.randomUUID().toString();
         ApiSession session = new ApiSession(uuidtoken, null, null, sessionExpiration);
 
