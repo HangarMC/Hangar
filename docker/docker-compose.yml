@@ -33,7 +33,7 @@ services:
       POSTGRES_PASSWORD: 'hangar'
       POSTGRES_DB: hangar
     ports:
-      - "5432:5432" # pls dont abuse open port :/
+      - "2345:5432" # pls dont abuse open port :/
     volumes:
       - db_data:/var/lib/postgresql/data
     networks:
