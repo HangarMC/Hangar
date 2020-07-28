@@ -15,7 +15,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.hangar.loadbalancer.server.port=8080"
-      - "traefik.http.routers.hangar.rule=Host(`hangar.minidigger.me`)"
+      - "traefik.http.routers.hangar.rule=Host(`hangar-new.minidigger.me`)"
       - "traefik.http.routers.hangar.entrypoints=web-secure"
       - "traefik.http.routers.hangar.tls=true"
       - "traefik.http.routers.hangar.tls.options=default"
@@ -31,26 +31,26 @@ services:
       POSTGRES_PASSWORD: 'hangar'
       POSTGRES_DB: hangar
     ports:
-      - "5432:5432"
+      - "5432:5432" # pls dont abuse open port :/
     volumes:
       - db_data:/var/lib/postgresql/data
     networks:
       - web
-  mail:
-    image: mailhog/mailhog:latest
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.hangar-mail.loadbalancer.server.port=8025"
-      - "traefik.http.routers.hangar-mail.middlewares=basicauth@file"
-      - "traefik.http.routers.hangar-mail.rule=Host(`hangar-mail.minidigger.me`)"
-      - "traefik.http.routers.hangar-mail.entrypoints=web-secure"
-      - "traefik.http.routers.hangar-mail.tls=true"
-      - "traefik.http.routers.hangar-mail.tls.options=default"
-      - "traefik.http.routers.hangar-mail.tls.certresolver=default"
-      - "traefik.http.routers.hangar-mail.tls.domains[0].main=minidigger.me"
-      - "traefik.http.routers.hangar-mail.tls.domains[0].sans=*.minidigger.me"
-    networks:
-      - web
+#  mail:
+#    image: mailhog/mailhog:latest
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.services.hangar-mail.loadbalancer.server.port=8025"
+#      - "traefik.http.routers.hangar-mail.middlewares=basicauth@file"
+#      - "traefik.http.routers.hangar-mail.rule=Host(`hangar-mail.minidigger.me`)"
+#      - "traefik.http.routers.hangar-mail.entrypoints=web-secure"
+#      - "traefik.http.routers.hangar-mail.tls=true"
+#      - "traefik.http.routers.hangar-mail.tls.options=default"
+#      - "traefik.http.routers.hangar-mail.tls.certresolver=default"
+#      - "traefik.http.routers.hangar-mail.tls.domains[0].main=minidigger.me"
+#      - "traefik.http.routers.hangar-mail.tls.domains[0].sans=*.minidigger.me"
+#    networks:
+#      - web
 #  auth:
 #    image: registry.gitlab.com/minidigger/hangarauth
 #    depends_on:
