@@ -1,4 +1,3 @@
-HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
@@ -6,7 +5,7 @@ target/
 node_modules
 node.exe
 dist
-src/main/frontend/node
+node
 
 ### STS ###
 .apt_generated

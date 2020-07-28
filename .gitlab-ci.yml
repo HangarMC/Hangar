@@ -1,0 +1,23 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+before_script:
+  - mkdir -pv /home/docker
+  - echo $DOCKER_CA_PEM >> /home/docker/ca.pem.base64
+  - echo $DOCKER_CERT >> /home/docker/cert.pem.base64
+  - echo $DOCKER_KEY >> /home/docker/key.pem.base64
+  - base64 -d /home/docker/ca.pem.base64 >> /home/docker/ca.pem
+  - base64 -d /home/docker/cert.pem.base64 >> /home/docker/cert.pem
+  - base64 -d /home/docker/key.pem.base64 >> /home/docker/key.pem
+  - alias secure-docker="docker -H tcp://glados.minidigger.me:4243 --tlsverify --tlscacert=/home/docker/ca.pem --tlscert=/home/docker/cert.pem --tlskey=/home/docker/key.pem"
+
+build:
+  stage: build
+  variables:
+    SERVICE_NAME: hangarnew
+  script:
+    - secure-docker stack deploy --with-registry-auth --compose-file=docker/docker-compose.yml ${SERVICE_NAME}
+  only:
+    - master

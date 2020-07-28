@@ -1,5 +1,6 @@
 package me.minidigger.hangar.controller;
 
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,16 +34,19 @@ public class VersionsController extends HangarController {
         return null; // TODO implement showList request controller
     }
 
+    @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/versions/new")
     public Object showCreator(@PathVariable Object author, @PathVariable Object slug) {
         return null; // TODO implement showCreator request controller
     }
 
+    @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/versions/new/upload")
     public Object upload(@PathVariable Object author, @PathVariable Object slug) {
         return null; // TODO implement upload request controller
     }
 
+    @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/versions/new/{version}")
     public Object showCreatorWithMeta(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
         return null; // TODO implement showCreatorWithMeta request controller
@@ -58,6 +62,7 @@ public class VersionsController extends HangarController {
         return null; // TODO implement downloadRecommendedJar request controller
     }
 
+    @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/versions/{version}")
     public Object publish(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
         return null; // TODO implement publish request controller
@@ -68,11 +73,13 @@ public class VersionsController extends HangarController {
         return null; // TODO implement show request controller
     }
 
+    @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/versions/{version}/approve")
     public Object approve(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
         return null; // TODO implement approve request controller
     }
 
+    @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/versions/{version}/approvePartial")
     public Object approvePartial(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
         return null; // TODO implement approvePartial request controller
@@ -88,6 +95,7 @@ public class VersionsController extends HangarController {
         return null; // TODO implement confirmDownload request controller
     }
 
+    @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/versions/{version}/delete")
     public Object softDelete(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
         return null; // TODO implement softDelete request controller
@@ -98,6 +106,7 @@ public class VersionsController extends HangarController {
         return null; // TODO implement download request controller
     }
 
+    @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/versions/{version}/hardDelete")
     public Object delete(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
         return null; // TODO implement delete request controller
@@ -108,16 +117,19 @@ public class VersionsController extends HangarController {
         return null; // TODO implement downloadJar request controller
     }
 
+    @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/versions/{version}/recommended")
     public Object setRecommended(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
         return null; // TODO implement setRecommended request controller
     }
 
+    @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/versions/{version}/restore")
     public Object restore(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
         return null; // TODO implement restore request controller
     }
 
+    @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/versions/{version}/save")
     public Object saveDescription(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
         return null; // TODO implement saveDescription request controller

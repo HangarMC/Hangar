@@ -1,4 +1,4 @@
-package me.minidigger.hangar.controller.generated;
+package me.minidigger.hangar.controller.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +19,7 @@ import me.minidigger.hangar.model.generated.PaginatedCompactProjectResult;
 import me.minidigger.hangar.model.generated.ProjectSortingStrategy;
 
 @Api(value = "users", description = "the users API", tags = {"Users"})
+@RequestMapping("/api/v2/")
 public interface UsersApi {
 
     @ApiOperation(value = "Gets the starred projects for a specific user", nickname = "showStarred", notes = "Gets the starred projects for a specific user. Requires the `view_public_info` permission.", response = PaginatedCompactProjectResult.class, authorizations = {

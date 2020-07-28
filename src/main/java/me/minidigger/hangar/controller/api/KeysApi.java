@@ -1,10 +1,11 @@
-package me.minidigger.hangar.controller.generated;
+package me.minidigger.hangar.controller.api;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
@@ -20,6 +21,7 @@ import me.minidigger.hangar.model.generated.ApiKeyResponse;
 import me.minidigger.hangar.model.generated.ApiKeyRequest;
 
 @Api(value = "keys", description = "the keys API", tags = "Keys")
+@RequestMapping("/api/v2/")
 public interface KeysApi {
 
     @ApiOperation(value = "Creates an API key", nickname = "createKey", notes = "Creates an API key. Requires the `edit_api_keys` permission.", response = ApiKeyResponse.class, authorizations = {

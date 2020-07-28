@@ -49,7 +49,8 @@ export class API {
                     return $.ajax({
                         url: '/api/v2/authenticate/user',
                         method: 'POST',
-                        dataType: 'json'
+                        dataType: 'json',
+                        contentType: 'application/json'
                     }).done((data) => {
                         if (data.type !== 'user') {
                             reject('Expected user session from user authentication');
@@ -69,7 +70,8 @@ export class API {
                     $.ajax({
                         url: '/api/v2/authenticate',
                         method: 'POST',
-                        dataType: 'json'
+                        dataType: 'json',
+                        contentType: 'application/json'
                     }).done((data) => {
                         if (data.type !== 'public') {
                             reject('Expected public session from public authentication')

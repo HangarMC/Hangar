@@ -2,20 +2,20 @@
 
 ## stuff to do
 
-* port all templates
-    * enable user dropdown in templates
-    * config stuff for templates
-    * fix alerts
-* figure out messages
-* figure out database
-* figure out internal api
+* fix all templates
+* make all pages use the db for data
+* implement internal api
 * implement external api
-* csrf stuff
-* dev server for frontend
+* better config handling
 
 ### stuff that is done
 
 * model external api
 * implement plugin file detection shit
-* kinda port templates (the first ones anyways)
+* kinda port templates (majority of stuff is done)
 * add frontend (which actually builds)
+* csrf stuff
+* figure out messages
+* figure out database
+* dev server for frontend
+* fix alerts

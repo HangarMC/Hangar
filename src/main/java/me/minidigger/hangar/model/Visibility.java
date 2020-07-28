@@ -45,13 +45,13 @@ public enum Visibility {
     @Override
     @JsonValue
     public String toString() {
-        return String.valueOf(value);
+        return String.valueOf(name);
     }
 
     @JsonCreator
     public static Visibility fromValue(String text) {
         for (Visibility b : Visibility.values()) {
-            if (String.valueOf(b.value).equals(text)) {
+            if (String.valueOf(b.name).equals(text)) {
                 return b;
             }
         }

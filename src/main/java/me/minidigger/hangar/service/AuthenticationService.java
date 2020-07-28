@@ -52,6 +52,17 @@ public class AuthenticationService {
         }
     }
 
+    public ApiSessionResponse authenticatePublic() {
+        // TODO, get properties session expiration and stuff
+        OffsetDateTime sessionExpiration = OffsetDateTime.now().plusSeconds(hangarConfig.getSessionExpiration());
+        String uuidtoken = UUID.randomUUID().toString();
+        ApiSession session = new ApiSession(uuidtoken, null, null, sessionExpiration);
+
+        saveSession(session);
+
+        return new ApiSessionResponse(session.getToken(), session.getExpires(), SessionType.PUBLIC);
+    }
+
     public ApiSessionResponse authenticateKeyPublic(SessionProperties properties, long userId) {
         // TODO, get properties session expiration and stuff
         OffsetDateTime sessionExpiration = OffsetDateTime.now().plus(hangarConfig.api.session.getExpiration());
@@ -74,7 +85,7 @@ public class AuthenticationService {
     }
 
     private void saveSession(ApiSession session) {
-
+        // TODO
     }
 
     public void loginAsFakeUser() {
@@ -100,6 +111,7 @@ public class AuthenticationService {
     }
 
     public boolean loginWithSSO(String sso, String sig) {
+        // TODO
         return false;
     }
 }

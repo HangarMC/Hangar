@@ -3,6 +3,7 @@ package me.minidigger.hangar.controller;
 import me.minidigger.hangar.util.AlertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -80,16 +81,19 @@ public class UsersController extends HangarController {
         return new ModelAndView("redirect:/"); // TODO redirect to sso
     }
 
+    @Secured("ROLE_USER")
     @RequestMapping("/notifications")
     public Object showNotifications(@RequestParam Object notificationFilter, @RequestParam Object inviteFilter) {
         return null; // TODO implement showNotifications request controller
     }
 
+    @Secured("ROLE_USER")
     @RequestMapping("/notifications/read/{id}")
     public Object markNotificationRead(@PathVariable Object id) {
         return null; // TODO implement markNotificationRead request controller
     }
 
+    @Secured("ROLE_USER")
     @RequestMapping("/prompts/read/{id}")
     public Object markPromptRead(@PathVariable Object id) {
         return null; // TODO implement markPromptRead request controller
@@ -127,16 +131,19 @@ public class UsersController extends HangarController {
         return fillModel(mav);
     }
 
+    @Secured("ROLE_USER")
     @RequestMapping("/{user}/settings/apiKeys")
     public Object editApiKeys(@PathVariable Object user) {
         return null; // TODO implement editApiKeys request controller
     }
 
+    @Secured("ROLE_USER")
     @RequestMapping("/{user}/settings/lock/{locked}")
     public Object setLocked(@PathVariable Object user, @PathVariable Object locked, @RequestParam Object sso, @RequestParam Object sig) {
         return null; // TODO implement setLocked request controller
     }
 
+    @Secured("ROLE_USER")
     @PostMapping(value = "/{user}/settings/tagline")
     public ModelAndView saveTagline(@PathVariable String user, @RequestParam("tagline") String tagline) {
         if (tagline.length() > hangarConfig.user.getMaxTaglineLen()) {

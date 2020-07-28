@@ -63,7 +63,7 @@ public enum Category {
     @JsonCreator
     public static Category fromValue(String text) {
         for (Category b : Category.values()) {
-            if (b.apiName.equals(text)) {
+            if (b.apiName.equalsIgnoreCase(text)) {
                 return b;
             }
         }
@@ -72,7 +72,7 @@ public enum Category {
 
     public static Category fromTitle(String text) {
         for (Category b : Category.values()) {
-            if (b.title.equals(text)) {
+            if (b.title.equalsIgnoreCase(text)) {
                 return b;
             }
         }
