@@ -1,5 +1,9 @@
 image: docker:latest
 
+# Use the OverlayFS driver for improved performance.
+variables:
+  DOCKER_DRIVER: overlay
+
 services:
   - docker:dind
 
@@ -18,6 +22,7 @@ build:
   variables:
     SERVICE_NAME: hangarnew
   script:
+      - apk add --no-cache docker-compose
       - cd docker
       - docker-compose build
       - docker-compose push
