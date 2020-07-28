@@ -7,8 +7,8 @@ services:
       dockerfile: docker/hangar/Dockerfile
     depends_on:
       - 'db'
-      #      - 'auth'
-      - 'mail'
+      # - 'auth'
+      # - 'mail'
     stdin_open: true
     ports:
       - "8080:8080"
