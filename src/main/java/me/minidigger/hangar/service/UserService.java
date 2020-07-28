@@ -2,6 +2,7 @@ package me.minidigger.hangar.service;
 
 import me.minidigger.hangar.db.dao.OrganizationDao;
 import me.minidigger.hangar.db.dao.ProjectDao;
+import me.minidigger.hangar.db.dao.RoleDao;
 import me.minidigger.hangar.model.viewhelpers.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -34,14 +35,16 @@ public class UserService {
     private final HangarDao<UserDao> userDao;
     private final HangarDao<OrganizationDao> orgDao;
     private final HangarDao<ProjectDao> projectDao;
+    private final RoleService roleService;
     private final HangarConfig config;
 
     @Autowired
-    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao) {
+    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, RoleService roleService) {
         this.userDao = userDao;
         this.config = config;
         this.orgDao = orgDao;
         this.projectDao = projectDao;
+        this.roleService = roleService;
     }
 
     public UsersTable getCurrentUser() {
@@ -126,7 +129,8 @@ public class UserService {
         boolean isOrga = false;
         int projectCount = projectDao.get().getProjectCountByUserId(user.getId());
         List<Organization> organizations = orgDao.get().getUserOrgs(user.getId());
-        List<Role> globalRoles = List.of(Role.HANGAR_ADMIN);
+//        List<Role> globalRoles = List.of(Role.HANGAR_ADMIN);
+        List<Role> globalRoles = roleService.getGlobalRolesForUser(user.getId());
         Permission userPerm = Permission.All;
         Permission orgaPerm = Permission.None;
         return new UserData(getHeaderData(), user, isOrga, projectCount, organizations, globalRoles, userPerm, orgaPerm);

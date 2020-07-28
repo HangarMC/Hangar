@@ -17,6 +17,9 @@ import me.minidigger.hangar.db.model.UserGlobalRolesTable;
 import me.minidigger.hangar.db.model.UserProjectRolesTable;
 import me.minidigger.hangar.model.Role;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class RoleService {
 
@@ -61,7 +64,11 @@ public class RoleService {
         projectMembersDao.get().insert(new ProjectMembersTable(projectId, userId));
     }
 
-    public void addGlobalRole(long userId, int roleId) {
+    public void addGlobalRole(long userId, long roleId) {
         userGlobalRolesDao.get().insert(new UserGlobalRolesTable(userId, roleId));
+    }
+
+    public List<Role> getGlobalRolesForUser(long userId) {
+        return userGlobalRolesDao.get().getRolesByUserId(userId).stream().map(adf -> Role.fromId(adf.getId())).collect(Collectors.toList());
     }
 }
