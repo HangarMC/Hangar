@@ -18,6 +18,6 @@ build:
   variables:
     SERVICE_NAME: hangarnew
   script:
-    - secure-docker stack deploy --with-registry-auth --compose-file=stack.yml ${SERVICE_NAME}
+    - secure-docker stack deploy --with-registry-auth --compose-file=docker/docker-compose.yml ${SERVICE_NAME}
   only:
     - master
