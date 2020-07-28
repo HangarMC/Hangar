@@ -45,7 +45,7 @@ public enum Role {
     ORGANIZATION("Organization", 23, RoleCategory.ORGANIZATION, ORGANIZATION_OWNER.permissions, "Organization", PURPLE, false);
 
     private String value;
-    private int roleId;
+    private long roleId;
     private RoleCategory category;
     private Permission permissions;
     private String title;
@@ -70,7 +70,7 @@ public enum Role {
         return value;
     }
 
-    public int getRoleId() {
+    public long getRoleId() {
         return roleId;
     }
 
@@ -97,6 +97,15 @@ public enum Role {
     public static Role fromTitle(String title) {
         for (Role r : values()) {
             if (r.title.equals(title)) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    public static Role fromId(long id) {
+        for (Role r : values()) {
+            if (r.roleId == id) {
                 return r;
             }
         }
