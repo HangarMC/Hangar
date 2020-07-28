@@ -25,6 +25,10 @@ public interface UserDao {
     @GetGeneratedKeys
     UsersTable insert(@BindBean UsersTable user);
 
+    @SqlUpdate("UPDATE users SET full_name = :fullName, name = :name, email = :email, tagline = :tagline, read_prompts = :readPrompts, is_locked = :isLocked, language = :language WHERE id = :id")
+    @GetGeneratedKeys
+    UsersTable update(@BindBean UsersTable user);
+
     @SqlQuery("select * from users where id = :id")
     UsersTable getById(long id);
 
