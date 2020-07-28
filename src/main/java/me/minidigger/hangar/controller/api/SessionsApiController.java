@@ -1,4 +1,4 @@
-package me.minidigger.hangar.controller.generated;
+package me.minidigger.hangar.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -29,7 +29,7 @@ public class SessionsApiController implements SessionsApi {
     @Override
     public ResponseEntity<Void> deleteSession() {
         String accept = request.getHeader("Accept");
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        return new ResponseEntity<>(HttpStatus.OK); // TODO Implement me
     }
 
 }

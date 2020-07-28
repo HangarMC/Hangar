@@ -28,6 +28,7 @@
                 NO_ACTION_MESSAGE.starred = '<@spring.messageArgs "user.noStars" u.user.name />';
                 NO_ACTION_MESSAGE.watching = '<@spring.messageArgs "user.noWatching" u.user.name />';
         </script>
+        ${additionalScripts}
     </#assign>
 
     <@base.base title=u.user.name additionalScripts=scriptsVar>

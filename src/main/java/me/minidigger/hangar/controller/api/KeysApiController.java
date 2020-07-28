@@ -1,4 +1,4 @@
-package me.minidigger.hangar.controller.generated;
+package me.minidigger.hangar.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -32,23 +32,18 @@ public class KeysApiController implements KeysApi {
 
     @Override
     public ResponseEntity<ApiKeyResponse> createKey(ApiKeyRequest body) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<>(objectMapper.readValue("{\n  \"perms\" : [ \"view_public_info\", \"view_public_info\" ],\n  \"key\" : \"key\"\n}", ApiKeyResponse.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+        try {
+            return new ResponseEntity<>(objectMapper.readValue("{\n  \"perms\" : [ \"view_public_info\", \"view_public_info\" ],\n  \"key\" : \"key\"\n}", ApiKeyResponse.class), HttpStatus.OK); // TODO Implement me
+        } catch (IOException e) {
+            log.error("Couldn't serialize response for content type application/json", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @Override
     public ResponseEntity<Void> deleteKey(String name) {
         String accept = request.getHeader("Accept");
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        return new ResponseEntity<>(HttpStatus.OK); // TODO Implement me
     }
 
 }

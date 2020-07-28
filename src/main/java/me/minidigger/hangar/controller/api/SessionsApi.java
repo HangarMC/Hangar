@@ -1,4 +1,4 @@
-package me.minidigger.hangar.controller.generated;
+package me.minidigger.hangar.controller.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 
 @Api(value = "sessions", description = "the sessions API", tags = "Sessions (Authentication)")
+@RequestMapping("/api/v2/")
 public interface SessionsApi {
 
     @ApiOperation(value = "Invalidates the API session used for the request.", nickname = "deleteSession", notes = "Invalidates the API session used to make this call.", authorizations = {

@@ -1,4 +1,4 @@
-package me.minidigger.hangar.controller.generated;
+package me.minidigger.hangar.controller.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +23,14 @@ public class AuthenticateApiController implements AuthenticateApi {
 
     @Override
     public ResponseEntity<ApiSessionResponse> authenticate(SessionProperties body) {
-        Boolean fake = body.isFake();
-        if (fake != null && fake) {
+        if (body != null && body.isFake() != null && body.isFake()) {
             return ResponseEntity.ok(service.authenticateDev());
         } else {
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (principal instanceof HangarAuthentication) {
                 return ResponseEntity.ok(service.authenticateKeyPublic(body, ((HangarAuthentication) principal).getUserId()));
+            } else if (principal.equals("anonymousUser")) {
+                return ResponseEntity.ok(service.authenticatePublic());
             } else {
                 throw AuthUtils.unAuth();
             }

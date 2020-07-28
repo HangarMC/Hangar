@@ -6,10 +6,10 @@ public class ApiSession {
 
     private String token;
     private ApiKey key;
-    private long user; // User?
+    private Long user; // User?
     private OffsetDateTime expires;
 
-    public ApiSession(String token, ApiKey key, long user, OffsetDateTime expires) {
+    public ApiSession(String token, ApiKey key, Long user, OffsetDateTime expires) {
         this.token = token;
         this.key = key;
         this.user = user;
@@ -24,7 +24,7 @@ public class ApiSession {
         return key;
     }
 
-    public long getUser() {
+    public Long getUser() {
         return user;
     }
 

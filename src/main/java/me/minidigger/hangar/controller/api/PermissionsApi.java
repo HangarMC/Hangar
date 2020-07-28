@@ -1,8 +1,9 @@
-package me.minidigger.hangar.controller.generated;
+package me.minidigger.hangar.controller.api;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import me.minidigger.hangar.model.generated.PermissionCheck;
 import me.minidigger.hangar.model.NamedPermission;
 
 @Api(value = "permissions", description = "the permissions API", tags = "Permissions")
+@RequestMapping("/api/v2/")
 public interface PermissionsApi {
 
     @ApiOperation(value = "Do an AND permission check", nickname = "hasAll", notes = "Checks that you have all the permissions passed in with a given session in a given context", response = PermissionCheck.class, authorizations = {

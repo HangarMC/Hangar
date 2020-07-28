@@ -1,5 +1,6 @@
 package me.minidigger.hangar.model.generated;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +21,7 @@ public class ApiSessionResponse {
     private String session = null;
 
     @JsonProperty("expires")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private OffsetDateTime expires = null;
 
     @JsonProperty("type")

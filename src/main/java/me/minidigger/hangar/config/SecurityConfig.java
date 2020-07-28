@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -15,6 +16,7 @@ import me.minidigger.hangar.util.RouteHelper;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final HangarAuthenticationProvider authProvider;
@@ -29,17 +31,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().ignoringAntMatchers(
-                "/authenticate", "/sessions/current", "/keys"
+                "/api/v2/authenticate", "/api/v2/sessions/current", "/api/v2/keys"
         );
 
         http.addFilter(new HangarAuthenticationFilter());
 
         http.exceptionHandling().authenticationEntryPoint((request, response, e) -> response.sendRedirect(routeHelper.getRouteUrl("users.login", "", "", request.getRequestURI())));
 
-        http.authorizeRequests()
-                .antMatchers("/new", "/organisations/new").hasAnyRole("USER")
-
-                .anyRequest().permitAll();
+        http.authorizeRequests().anyRequest().permitAll(); // we use method security
     }
 
     @Override

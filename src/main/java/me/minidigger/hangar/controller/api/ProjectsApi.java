@@ -1,9 +1,10 @@
-package me.minidigger.hangar.controller.generated;
+package me.minidigger.hangar.controller.api;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
@@ -26,6 +27,7 @@ import me.minidigger.hangar.model.generated.ProjectStatsDay;
 import me.minidigger.hangar.model.generated.ProjectSortingStrategy;
 
 @Api(value = "projects", description = "the projects API", tags = "Projects")
+@RequestMapping("/api/v2/")
 public interface ProjectsApi {
 
     @ApiOperation(value = "Searches the projects on Ore", nickname = "listProjects", notes = "Searches all the projects on ore, or for a single user. Requires the `view_public_info` permission.", response = PaginatedProjectResult.class, authorizations = {

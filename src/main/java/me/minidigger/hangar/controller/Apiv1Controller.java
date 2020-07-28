@@ -1,6 +1,7 @@
 package me.minidigger.hangar.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,11 +38,13 @@ public class Apiv1Controller extends HangarController {
         return null; // TODO implement showProject request controller
     }
 
+    @Secured("ROLE_USER")
     @RequestMapping("/api/v1/projects/{pluginId}/keys/new")
     public Object createKey(@PathVariable Object pluginId) {
         return null; // TODO implement createKey request controller
     }
 
+    @Secured("ROLE_USER")
     @RequestMapping("/api/v1/projects/{pluginId}/keys/revoke")
     public Object revokeKey(@PathVariable Object pluginId) {
         return null; // TODO implement revokeKey request controller
@@ -62,6 +65,7 @@ public class Apiv1Controller extends HangarController {
         return null; // TODO implement showVersion request controller
     }
 
+    @Secured("ROLE_USER")
     @PostMapping("/api/v1/projects/{pluginId}/versions/{name}")
     public Object deployVersion(@PathVariable Object pluginId, @PathVariable Object name) {
         return null; // TODO implement deployVersion request controller

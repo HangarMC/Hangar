@@ -1,10 +1,11 @@
-package me.minidigger.hangar.controller.generated;
+package me.minidigger.hangar.controller.api;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +28,7 @@ import me.minidigger.hangar.model.generated.Version;
 import me.minidigger.hangar.model.generated.VersionStatsDay;
 
 @Api(value = "versions", description = "the versions API", tags = "Versions")
+@RequestMapping("/api/v2/")
 public interface VersionsApi {
 
     @ApiOperation(value = "Creates a new version", nickname = "deployVersion", notes = "Creates a new version for a project. Requires the `create_version` permission in the project or owning organization.", response = Version.class, authorizations = {
