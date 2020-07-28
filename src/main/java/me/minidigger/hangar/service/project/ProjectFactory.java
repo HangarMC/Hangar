@@ -48,7 +48,7 @@ public class ProjectFactory {
         String slug = StringUtils.slugify(name);
         ProjectsTable projectsTable = new ProjectsTable(pluginId, name, slug, ownerUser.getName(), ownerUser.getId(), category, description, Visibility.NEW.getValue());
 
-        ProjectChannelsTable channelsTable = new ProjectChannelsTable(hangarConfig.getDefaultChannelName(), hangarConfig.getDefaultChannelColor().getValue(), -1);
+        ProjectChannelsTable channelsTable = new ProjectChannelsTable(hangarConfig.channels.getNameDefault(), hangarConfig.channels.getColorDefault().getValue(), -1);
 
         InvalidProjectReason invalidProjectReason;
         if (!hangarConfig.isValidProjectName(name)) {

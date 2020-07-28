@@ -1,0 +1,81 @@
+###########
+# General #
+###########
+server:
+  port: 8080
+
+
+
+spring:
+  freemarker:
+    request-context-attribute: rc
+  ############
+  # DataBase #
+  ############
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/hangar
+    username: hangar
+    password: hangar
+
+#############
+# Fake User #
+#############
+fake-user:
+  enabled: true
+  id: -2
+  name: paper
+  username: paper
+  email: paper@papermc.io
+
+
+hangar:
+  debug: true
+  debug-level: 3
+  staging: true
+  log-timings: false
+
+  homepage:
+    update-interval: 10m
+
+  channels:
+    max-name-len: 15
+    name-regex: "^[a-zA-Z0-9]+$"
+    color-default: 7
+    name-default: "Release"
+
+  pages:
+    home:
+      name: "Hello"
+      message: "Welcome to your new project!"
+    min-len: 15
+    max-len: 32000
+    page:
+      max-len: 75000
+
+  projects:
+    max-name-len: 25
+    max-pages: 50
+    max-channels: 5
+    init-load: 25
+    init-version-load: 10
+    max-desc-len: 120
+    file-validate: true
+    stale-age: 28d
+    check-interval: 1h
+    draft-expire: 1d
+    user-grid-page-size: 30
+
+  users:
+    stars-per-page: 5
+    max-tagline-len: 100
+    author-page-size: 25
+    project-page-size: 5
+
+
+################
+# Spring Debug #
+################
+#debug=true
+#logging.level.org.springframework.security=DEBUG
+

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
@@ -50,13 +49,13 @@ public class UsersController extends HangarController {
         mav.addObject("authors", userService.getAuthors(page, sort));
         mav.addObject("ordering", sort);
         mav.addObject("page", page);
-        mav.addObject("pageSize", hangarConfig.getAuthorPageSize());
+        mav.addObject("pageSize", hangarConfig.user.getAuthorPageSize());
         return fillModel(mav);
     }
 
     @RequestMapping("/login")
     public ModelAndView login(@RequestParam(defaultValue = "") String sso, @RequestParam(defaultValue = "") String sig, @RequestParam String returnUrl) {
-        if (hangarConfig.isFakeUserEnabled()) {
+        if (hangarConfig.fakeUser.isEnabled()) {
             hangarConfig.checkDebug();
 
             authenticationService.loginAsFakeUser();
@@ -111,7 +110,7 @@ public class UsersController extends HangarController {
         mav.addObject("staff", userService.getStaff(page, sort));
         mav.addObject("ordering", sort);
         mav.addObject("page", page);
-        mav.addObject("pageSize", hangarConfig.getAuthorPageSize());
+        mav.addObject("pageSize", hangarConfig.user.getAuthorPageSize());
         return fillModel(mav);
     }
 
@@ -147,7 +146,7 @@ public class UsersController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping(value = "/{user}/settings/tagline")
     public ModelAndView saveTagline(@PathVariable String user, @RequestParam("tagline") String tagline) {
-        if (tagline.length() > hangarConfig.getMaxTaglineLen()) {
+        if (tagline.length() > hangarConfig.user.getMaxTaglineLen()) {
             ModelAndView mav = showProjects(user);
             AlertUtil.showAlert(mav, AlertUtil.ERROR, "error.tagline.tooLong"); // TODO pass length param to key
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", user));

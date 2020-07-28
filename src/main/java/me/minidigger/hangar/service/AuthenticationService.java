@@ -1,16 +1,5 @@
 package me.minidigger.hangar.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.time.OffsetDateTime;
-import java.util.UUID;
-
 import me.minidigger.hangar.config.HangarConfig;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserDao;
@@ -21,6 +10,16 @@ import me.minidigger.hangar.model.generated.ApiSessionResponse;
 import me.minidigger.hangar.model.generated.SessionProperties;
 import me.minidigger.hangar.model.generated.SessionType;
 import me.minidigger.hangar.security.HangarAuthentication;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.time.OffsetDateTime;
+import java.util.UUID;
 
 @Service
 public class AuthenticationService {
@@ -39,12 +38,11 @@ public class AuthenticationService {
     }
 
     public ApiSessionResponse authenticateDev() {
-        if (hangarConfig.isFakeUserEnabled()) {
+        if (hangarConfig.fakeUser.isEnabled()) {
             hangarConfig.checkDebug();
-
-            OffsetDateTime sessionExpiration = OffsetDateTime.now().plusSeconds(hangarConfig.getSessionExpiration());
+            OffsetDateTime sessionExpiration = OffsetDateTime.now().plus(hangarConfig.api.session.getExpiration());
             String uuidtoken = UUID.randomUUID().toString();
-            ApiSession session = new ApiSession(uuidtoken, null, hangarConfig.getFakeUserId(), sessionExpiration);
+            ApiSession session = new ApiSession(uuidtoken, null, hangarConfig.fakeUser.getId(), sessionExpiration);
 
             saveSession(session);
 
@@ -67,7 +65,7 @@ public class AuthenticationService {
 
     public ApiSessionResponse authenticateKeyPublic(SessionProperties properties, long userId) {
         // TODO, get properties session expiration and stuff
-        OffsetDateTime sessionExpiration = OffsetDateTime.now().plusSeconds(hangarConfig.getSessionExpiration());
+        OffsetDateTime sessionExpiration = OffsetDateTime.now().plus(hangarConfig.api.session.getExpiration());
         String uuidtoken = UUID.randomUUID().toString();
         ApiSession session = new ApiSession(uuidtoken, null, userId, sessionExpiration);
 
@@ -77,7 +75,7 @@ public class AuthenticationService {
     }
 
     public ApiSessionResponse authenticateUser(long userId) {
-        OffsetDateTime sessionExpiration = OffsetDateTime.now().plusSeconds(hangarConfig.getSessionExpiration());
+        OffsetDateTime sessionExpiration = OffsetDateTime.now().plus(hangarConfig.api.session.getExpiration());
         String uuidtoken = UUID.randomUUID().toString();
         ApiSession session = new ApiSession(uuidtoken, null, userId, sessionExpiration);
 
@@ -91,14 +89,15 @@ public class AuthenticationService {
     }
 
     public void loginAsFakeUser() {
-        String username = hangarConfig.getFakeUserName();
+        String username = hangarConfig.fakeUser.getUsername();
         UsersTable userEntry = userDao.get().getByName(username);
+        System.out.println(hangarConfig.channels.getColorDefault());
         if (userEntry == null) {
             userEntry = new UsersTable();
-            userEntry.setEmail(hangarConfig.getFakeUserEmail());
-            userEntry.setFullName(hangarConfig.getFakeUserName());
-            userEntry.setName(hangarConfig.getFakeUserUserName());
-            userEntry.setId(hangarConfig.getFakeUserId());
+            userEntry.setEmail(hangarConfig.fakeUser.getEmail());
+            userEntry.setFullName(hangarConfig.fakeUser.getName());
+            userEntry.setName(hangarConfig.fakeUser.getUsername());
+            userEntry.setId(hangarConfig.fakeUser.getId());
             userEntry.setReadPrompts(new int[0]);
 
             userEntry = userDao.get().insert(userEntry);
