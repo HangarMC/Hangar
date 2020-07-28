@@ -2,6 +2,7 @@ version: '3.7'
 
 services:
   app:
+    image: registry.gitlab.com/minidigger/hangar2:app
     build:
       context: ..
       dockerfile: docker/hangar/Dockerfile
@@ -25,6 +26,7 @@ services:
     networks:
       - web
   db:
+    image: registry.gitlab.com/minidigger/hangar2:db
     build: ./db
     environment:
       POSTGRES_USER: hangar

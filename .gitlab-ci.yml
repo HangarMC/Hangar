@@ -18,6 +18,10 @@ build:
   variables:
     SERVICE_NAME: hangarnew
   script:
-    - secure-docker stack deploy --with-registry-auth --compose-file=docker/docker-compose.yml ${SERVICE_NAME}
+      - cd docker
+      - docker-compose build
+      - docker-compose push
+      - secure-docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+      - secure-docker stack deploy --with-registry-auth --compose-file=docker-compose.yml ${SERVICE_NAME}
   only:
     - master
