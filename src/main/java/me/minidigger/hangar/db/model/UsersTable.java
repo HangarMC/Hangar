@@ -117,6 +117,10 @@ public class UsersTable implements Serializable {
         return isLocked;
     }
 
+    public boolean getIsLocked() {
+        return isLocked;
+    } // Apparently the userDao didn't like not having this?
+
     public void setIsLocked(boolean isLocked) {
         this.isLocked = isLocked;
     }

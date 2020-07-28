@@ -1,11 +1,13 @@
 package me.minidigger.hangar.controller;
 
+import me.minidigger.hangar.util.AlertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
@@ -16,7 +18,6 @@ import me.minidigger.hangar.config.HangarConfig;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserDao;
 import me.minidigger.hangar.db.model.UsersTable;
-import me.minidigger.hangar.model.viewhelpers.UserData;
 import me.minidigger.hangar.service.AuthenticationService;
 import me.minidigger.hangar.service.UserService;
 
@@ -112,16 +113,19 @@ public class UsersController extends HangarController {
     }
 
     @RequestMapping("/{user}")
-    public Object showProjects(@PathVariable String user) {
+    public ModelAndView showProjects(@PathVariable String user) {
         UsersTable dbUser = userDao.get().getByName(user);
+        return showProjects(dbUser);
+    }
+
+    private ModelAndView showProjects(UsersTable dbUser) {
         if (dbUser == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-
         ModelAndView mav = new ModelAndView("users/projects");
         mav.addObject("u", userService.getUserData(dbUser));
         mav.addObject("o", null);
-        return fillModel(mav); // TODO implement showProjects request controller
+        return fillModel(mav);
     }
 
     @RequestMapping("/{user}/settings/apiKeys")
@@ -134,9 +138,18 @@ public class UsersController extends HangarController {
         return null; // TODO implement setLocked request controller
     }
 
-    @RequestMapping("/{user}/settings/tagline")
-    public Object saveTagline(@PathVariable Object user) {
-        return null; // TODO implement saveTagline request controller
+    @RequestMapping(value = "/{user}/settings/tagline", method = RequestMethod.POST)
+    public ModelAndView saveTagline(@PathVariable String user, @RequestParam("tagline") String tagline) {
+        if (tagline.length() > hangarConfig.getMaxTaglineLen()) {
+            ModelAndView mav = showProjects(user);
+            AlertUtil.showAlert(mav, AlertUtil.ERROR, "error.tagline.tooLong"); // TODO pass length param to key
+            return showProjects(user);
+        }
+        // TODO user action log
+        UsersTable usersTable = userDao.get().getByName(user);
+        usersTable.setTagline(tagline);
+        usersTable = userDao.get().update(usersTable);
+        return showProjects(usersTable);
     }
 
     @RequestMapping("/{user}/sitemap.xml")
