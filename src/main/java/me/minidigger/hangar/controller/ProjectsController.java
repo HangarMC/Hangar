@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import me.minidigger.hangar.db.dao.HangarDao;
@@ -127,8 +129,10 @@ public class ProjectsController extends HangarController {
         ModelAndView mav = new ModelAndView("projects/pages/view");
         ProjectData projectData = projectService.getProjectData(author, slug);
         mav.addObject("p", projectData);
-        mav.addObject("sp", new ScopedProjectData());
-        mav.addObject("rootPages");
+        ScopedProjectData sp = new ScopedProjectData();
+        sp.setPermissions(Permission.IsProjectOwner.add(Permission.EditPage));
+        mav.addObject("sp", sp);
+        mav.addObject("rootPages", new HashMap<ProjectPagesTable, List<ProjectPagesTable>>());
         mav.addObject("page", projectService.getPage(projectData.getProject().getId(), "Home"));
         mav.addObject("parentPage");
         mav.addObject("pageCount", 0);

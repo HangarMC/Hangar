@@ -21,8 +21,9 @@
 -->
 
 <!-- TODO: Pagination -->
+<#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
 <#macro memberList j perms editable=false removeCall="" settingsCall="" saveCall="">
-    <#if j.members.nonEmpty>
+    <#if j.members?size != 0>
 
         <#if editable && perms.has(Permission.ManageSubjectMembers)>
             <@roleSelect.roleSelect roleCategory=j.roleCategory id="select-role" classes="pull-right" hidden=true />

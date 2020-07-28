@@ -1,6 +1,6 @@
 package me.minidigger.hangar.db.dao;
 
-import me.minidigger.hangar.service.project.ProjectFactory.InvalidProject;
+import me.minidigger.hangar.service.project.ProjectFactory.InvalidProjectReason;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
@@ -23,7 +23,7 @@ public interface ProjectDao {
     ProjectsTable insert(@BindBean ProjectsTable project);
 
     @SqlQuery("SELECT CASE WHEN owner_id = :ownerId AND name = :name THEN 'OWNER_NAME' WHEN owner_id = :ownerId AND slug = :slug THEN 'OWNER_SLUG' WHEN plugin_id = :pluginId THEN 'PLUGIN_ID' END FROM projects")
-    InvalidProject checkValidProject(long ownerId, String pluginId, String name, String slug);
+    InvalidProjectReason checkValidProject(long ownerId, String pluginId, String name, String slug);
 
     @SqlQuery("select * from projects where lower(owner_name) = lower(:author) AND lower(slug) = lower(:slug)")
     ProjectsTable getBySlug(String author, String slug);

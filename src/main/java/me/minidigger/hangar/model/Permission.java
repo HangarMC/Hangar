@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 public class Permission implements Comparable<Permission> {
 
     public static final Permission None = new Permission(0);
-    public static final Permission All = new Permission(0XFFFFFFFFFFFFFFFFL);
+    public static final Permission All = new Permission(0XFFFFFFFFFFFFFFFL);
 
     public static final Permission ViewPublicInfo = new Permission(1L << 0);
     public static final Permission EditOwnUserSettings = new Permission(1L << 1);

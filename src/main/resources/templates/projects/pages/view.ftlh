@@ -47,18 +47,18 @@ Documentation page within Project overview.
         <div class="col-md-3">
 
             <div class="stats minor">
-                <p><@spring.messageArgs "project.category.info", p.project.category.title /></p>
-                <p><@spring.messageArgs "project.publishDate", prettifyDate(p.project.createdAt) /></p>
+                <p><@spring.messageArgs code="project.category.info" args=[p.project.category.title] /></p>
+                <p><@spring.messageArgs code="project.publishDate" args=[p.project.createdAt.format("yyyy-MM-dd")] /></p>
                 <p><span id="view-count"></span> views</p>
                 <p><span id="star-count"></span> <a href="${routes.getRouteUrl("projects.showStargazers", p.project.ownerName, p.project.slug, "")}">stars</a></p>
                 <p><span id="watcher-count"></span> <a href="${routes.getRouteUrl("projects.showWatchers", p.project.ownerName, p.project.slug, "")}">watchers</a></p>
                 <p><span id="download-count"></span> total downloads</p>
-                <#list p.project.settings.licenseName as licenseName>
+                <#if p.project.licenseName??>
                     <p>
-                        <@spring.message "project.license.link" />
-                        <a target="_blank" rel="noopener" href="${p.project.settings.licenseUrl}">${licenseName}</a>
+                      <@spring.message "project.license.link" />
+                      <a target="_blank" rel="noopener" href="${p.project.licenseUrl}">${p.project.licenseName}</a>
                     </p>
-                </#list>
+                </#if>
             </div>
 
             <div class="panel panel-default">
@@ -87,7 +87,7 @@ Documentation page within Project overview.
                         ${"Home"}
                         </a>
                     </li>
-                    @rootPages.filter(_._1.name != "Home").map { case (pg, children) =>
+                    <#list rootPages as pg, children>
                     <li class="list-group-item">
                         <#if children.nonEmpty>
                             <#if !page.parentId.contains(pg.id.value)>
@@ -106,16 +106,16 @@ Documentation page within Project overview.
                     </li>
                         <#if page.parentId.contains(pg.id)>
                             <div class="page-children" data-page-id="${pg.id}">
-                            @children.map { child =>
-                                <li class="list-group-item page-item-child">
-                                    <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, child.fullSlug(pg))}">
-                                    ${child.name}
-                                    </a>
-                                </li>
-                            }
+                                <#list children as child>
+                                    <li class="list-group-item page-item-child">
+                                        <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, child.fullSlug(pg))}">
+                                            ${child.name}
+                                        </a>
+                                    </li>
+                                </#list>
                             </div>
                         </#if>
-                    }
+                    </#list>
                 </ul>
             </div>
 

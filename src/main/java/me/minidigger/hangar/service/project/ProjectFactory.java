@@ -1,6 +1,5 @@
 package me.minidigger.hangar.service.project;
 
-import me.minidigger.hangar.util.HangarException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +15,8 @@ import me.minidigger.hangar.model.Role;
 import me.minidigger.hangar.model.Visibility;
 import me.minidigger.hangar.service.RoleService;
 import me.minidigger.hangar.service.UserService;
+import me.minidigger.hangar.util.HangarException;
 import me.minidigger.hangar.util.StringUtils;
-
-import java.util.List;
 
 @Component
 public class ProjectFactory {
@@ -48,13 +46,13 @@ public class ProjectFactory {
 
     public ProjectsTable createProject(UsersTable ownerUser, String name, String pluginId, Category category, String description) {
         String slug = StringUtils.slugify(name);
-        ProjectsTable projectsTable = new ProjectsTable(pluginId, name, slug, ownerUser.getName(), ownerUser.getId(), category.getValue(), description, Visibility.NEW.getValue());
+        ProjectsTable projectsTable = new ProjectsTable(pluginId, name, slug, ownerUser.getName(), ownerUser.getId(), category, description, Visibility.NEW.getValue());
 
         ProjectChannelsTable channelsTable = new ProjectChannelsTable(hangarConfig.getDefaultChannelName(), hangarConfig.getDefaultChannelColor().getValue(), -1);
 
-        InvalidProject invalidProjectReason = null;
+        InvalidProjectReason invalidProjectReason;
         if (!hangarConfig.isValidProjectName(name)) {
-            invalidProjectReason = InvalidProject.INVALID_NAME;
+            invalidProjectReason = InvalidProjectReason.INVALID_NAME;
         } else {
             invalidProjectReason = projectDao.get().checkValidProject(ownerUser.getId(), pluginId, name, slug);
         }
@@ -73,14 +71,15 @@ public class ProjectFactory {
         return projectsTable;
     }
 
-    public enum InvalidProject {
+    public enum InvalidProjectReason {
         PLUGIN_ID("error.project.invalidPluginId"),
         OWNER_NAME("error.project.nameExists"),
         OWNER_SLUG("error.project.slugExists"),
         INVALID_NAME("error.project.invalidName");
 
         final String key;
-        InvalidProject(String key) {
+
+        InvalidProjectReason(String key) {
             this.key = key;
         }
     }

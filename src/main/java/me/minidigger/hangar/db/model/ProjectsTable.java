@@ -1,9 +1,12 @@
 package me.minidigger.hangar.db.model;
 
 
+import org.jdbi.v3.core.enums.EnumByOrdinal;
+
 import java.time.OffsetDateTime;
 
 import me.minidigger.hangar.db.customtypes.JSONB;
+import me.minidigger.hangar.model.Category;
 
 public class ProjectsTable {
 
@@ -17,7 +20,7 @@ public class ProjectsTable {
     private long ownerId;
     private long topicId;
     private long postId;
-    private long category;
+    private Category category;
     private String description;
     private long visibility;
     private Object notes; // TODO jsonb
@@ -34,7 +37,7 @@ public class ProjectsTable {
         //
     }
 
-    public ProjectsTable(String pluginId, String name, String slug, String ownerName, long ownerId, long category, String description, long visibility) {
+    public ProjectsTable(String pluginId, String name, String slug, String ownerName, long ownerId, Category category, String description, long visibility) {
         this.pluginId = pluginId;
         this.name = name;
         this.slug = slug;
@@ -135,11 +138,13 @@ public class ProjectsTable {
     }
 
 
-    public long getCategory() {
+    @EnumByOrdinal
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(long category) {
+    @EnumByOrdinal
+    public void setCategory(Category category) {
         this.category = category;
     }
 

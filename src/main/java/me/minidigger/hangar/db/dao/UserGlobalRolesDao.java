@@ -25,4 +25,3 @@ public interface UserGlobalRolesDao {
     @RegisterBeanMapper(RolesTable.class)
     List<RolesTable> getRolesByUserId(long id);
 }
-`

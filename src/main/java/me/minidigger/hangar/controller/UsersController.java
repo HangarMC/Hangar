@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,7 @@ import me.minidigger.hangar.db.dao.UserDao;
 import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.service.AuthenticationService;
 import me.minidigger.hangar.service.UserService;
+import me.minidigger.hangar.util.RouteHelper;
 
 @Controller
 public class UsersController extends HangarController {
@@ -29,14 +31,16 @@ public class UsersController extends HangarController {
     private final AuthenticationService authenticationService;
     private final ApplicationController applicationController;
     private final UserService userService;
+    private final RouteHelper routeHelper;
 
     @Autowired
-    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, ApplicationController applicationController, UserService userService) {
+    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, ApplicationController applicationController, UserService userService, RouteHelper routeHelper) {
         this.hangarConfig = hangarConfig;
         this.userDao = userDao;
         this.authenticationService = authenticationService;
         this.applicationController = applicationController;
         this.userService = userService;
+        this.routeHelper = routeHelper;
     }
 
     @RequestMapping("/authors")
@@ -115,10 +119,6 @@ public class UsersController extends HangarController {
     @RequestMapping("/{user}")
     public ModelAndView showProjects(@PathVariable String user) {
         UsersTable dbUser = userDao.get().getByName(user);
-        return showProjects(dbUser);
-    }
-
-    private ModelAndView showProjects(UsersTable dbUser) {
         if (dbUser == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -138,18 +138,18 @@ public class UsersController extends HangarController {
         return null; // TODO implement setLocked request controller
     }
 
-    @RequestMapping(value = "/{user}/settings/tagline", method = RequestMethod.POST)
+    @PostMapping(value = "/{user}/settings/tagline")
     public ModelAndView saveTagline(@PathVariable String user, @RequestParam("tagline") String tagline) {
         if (tagline.length() > hangarConfig.getMaxTaglineLen()) {
             ModelAndView mav = showProjects(user);
             AlertUtil.showAlert(mav, AlertUtil.ERROR, "error.tagline.tooLong"); // TODO pass length param to key
-            return showProjects(user);
+            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", user));
         }
         // TODO user action log
         UsersTable usersTable = userDao.get().getByName(user);
         usersTable.setTagline(tagline);
-        usersTable = userDao.get().update(usersTable);
-        return showProjects(usersTable);
+        userDao.get().update(usersTable);
+        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", user));
     }
 
     @RequestMapping("/{user}/sitemap.xml")
