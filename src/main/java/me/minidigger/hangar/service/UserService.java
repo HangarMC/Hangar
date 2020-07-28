@@ -1,5 +1,8 @@
 package me.minidigger.hangar.service;
 
+import me.minidigger.hangar.db.dao.OrganizationDao;
+import me.minidigger.hangar.db.dao.ProjectDao;
+import me.minidigger.hangar.model.viewhelpers.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,7 +22,6 @@ import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.Permission;
 import me.minidigger.hangar.model.Role;
 import me.minidigger.hangar.model.UserOrdering;
-import me.minidigger.hangar.model.generated.Organization;
 import me.minidigger.hangar.model.viewhelpers.Author;
 import me.minidigger.hangar.model.viewhelpers.HeaderData;
 import me.minidigger.hangar.model.viewhelpers.Staff;
@@ -30,12 +32,16 @@ import me.minidigger.hangar.security.HangarAuthentication;
 public class UserService {
 
     private final HangarDao<UserDao> userDao;
+    private final HangarDao<OrganizationDao> orgDao;
+    private final HangarDao<ProjectDao> projectDao;
     private final HangarConfig config;
 
     @Autowired
-    public UserService(HangarDao<UserDao> userDao, HangarConfig config) {
+    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao) {
         this.userDao = userDao;
         this.config = config;
+        this.orgDao = orgDao;
+        this.projectDao = projectDao;
     }
 
     public UsersTable getCurrentUser() {
@@ -118,11 +124,11 @@ public class UserService {
     public UserData getUserData(UsersTable user) {
         // TODO getUserData
         boolean isOrga = false;
-        int projectCount = 1;
-        List<Organization> orgas = new ArrayList<>();
+        int projectCount = projectDao.get().getProjectCountByUserId(user.getId());
+        List<Organization> organizations = orgDao.get().getUserOrgs(user.getId());
         List<Role> globalRoles = List.of(Role.HANGAR_ADMIN);
         Permission userPerm = Permission.All;
         Permission orgaPerm = Permission.None;
-        return new UserData(getHeaderData(), user, isOrga, projectCount, orgas, globalRoles, userPerm, orgaPerm);
+        return new UserData(getHeaderData(), user, isOrga, projectCount, organizations, globalRoles, userPerm, orgaPerm);
     }
 }

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import me.minidigger.hangar.db.model.ProjectsTable;
 
+import java.util.List;
+
 @Repository
 @RegisterBeanMapper(ProjectsTable.class)
 public interface ProjectDao {
@@ -21,4 +23,10 @@ public interface ProjectDao {
 
     @SqlQuery("select * from projects where lower(owner_name) = lower(:author) AND lower(slug) = lower(:slug)")
     ProjectsTable getBySlug(String author, String slug);
+
+    @SqlQuery("SELECT COUNT(*) FROM projects WHERE owner_id = :id")
+    int getProjectCountByUserId(long id);
+
+    @SqlQuery("SELECT * FROM projects WHERE owner_id = :id")
+    List<ProjectsTable> getProjectsByUserId(long id);
 }

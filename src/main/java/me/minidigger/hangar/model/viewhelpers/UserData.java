@@ -6,7 +6,6 @@ import java.util.List;
 import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.Permission;
 import me.minidigger.hangar.model.Role;
-import me.minidigger.hangar.model.generated.Organization;
 
 public class UserData {
 
