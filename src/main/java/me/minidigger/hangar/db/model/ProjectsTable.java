@@ -1,12 +1,12 @@
 package me.minidigger.hangar.db.model;
 
 
+import me.minidigger.hangar.model.Category;
+import me.minidigger.hangar.model.Visibility;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 import java.time.OffsetDateTime;
-
-import me.minidigger.hangar.db.customtypes.JSONB;
-import me.minidigger.hangar.model.Category;
 
 public class ProjectsTable {
 
@@ -22,7 +22,7 @@ public class ProjectsTable {
     private long postId;
     private Category category;
     private String description;
-    private long visibility;
+    private Visibility visibility;
     private Object notes; // TODO jsonb
     private String keywords;
     private String homepage;
@@ -37,7 +37,7 @@ public class ProjectsTable {
         //
     }
 
-    public ProjectsTable(String pluginId, String name, String slug, String ownerName, long ownerId, Category category, String description, long visibility) {
+    public ProjectsTable(String pluginId, String name, String slug, String ownerName, long ownerId, Category category, String description, Visibility visibility) {
         this.pluginId = pluginId;
         this.name = name;
         this.slug = slug;
@@ -157,12 +157,13 @@ public class ProjectsTable {
         this.description = description;
     }
 
-
-    public long getVisibility() {
+    @EnumByOrdinal
+    public Visibility getVisibility() {
         return visibility;
     }
 
-    public void setVisibility(long visibility) {
+    @EnumByOrdinal
+    public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
     }
 

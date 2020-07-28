@@ -1,5 +1,9 @@
 package me.minidigger.hangar.service.project;
 
+import me.minidigger.hangar.model.generated.Project;
+import me.minidigger.hangar.model.generated.ProjectNamespace;
+import me.minidigger.hangar.model.generated.ProjectSettings;
+import me.minidigger.hangar.model.generated.UserActions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -68,5 +72,29 @@ public class ProjectService {
     public ProjectPagesTable getPage(long projectId, String slug) {
         // TODO get project page
         return new ProjectPagesTable(1, OffsetDateTime.now(), projectId, "Home", slug, "# Test\n This is a test", false, null);
+    }
+
+    public Project getProjectApi(String pluginId) {
+        ProjectsTable projectsTable = projectDao.get().getByPluginId(pluginId);
+        if (projectsTable == null) return null;
+        Project project = new Project();
+        project.setCreatedAt(projectsTable.getCreatedAt());
+        project.setPluginId(projectsTable.getPluginId());
+        project.setName(projectsTable.getName());
+        ProjectNamespace projectNamespace = new ProjectNamespace();
+        projectNamespace.setOwner(userDao.get().getById(projectsTable.getOwnerId()).getName());
+        projectNamespace.setSlug(projectsTable.getSlug());
+        project.setNamespace(projectNamespace);
+
+        project.setPromotedVersions(new ArrayList<>()); // TODO implement
+        project.setStats(projectDao.get().getProjectStats(projectsTable.getId()));
+        project.setCategory(projectsTable.getCategory());
+        project.setDescription(projectsTable.getDescription());
+        project.setLastUpdated(OffsetDateTime.now()); // TODO implement
+        project.setVisibility(projectsTable.getVisibility());
+        project.setUserActions(new UserActions()); // TODO implement
+        project.setSettings(new ProjectSettings()); // TODO implement
+        project.setIconUrl(""); // TODO implement
+        return project;
     }
 }

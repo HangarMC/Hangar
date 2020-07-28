@@ -4,15 +4,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Visibility {
-    PUBLIC(1, "public", false, ""),
+    PUBLIC(0, "public", false, ""),
 
-    NEW(2, "new", false, "project-new"),
+    NEW(1, "new", false, "project-new"),
 
-    NEEDSCHANGES(3, "needsChanges", true, "striped project-needsChanges"),
+    NEEDSCHANGES(2, "needsChanges", true, "striped project-needsChanges"),
 
-    NEEDSAPPROVAL(4, "needsApproval", false, "striped project-needsChanges"),
+    NEEDSAPPROVAL(3, "needsApproval", false, "striped project-needsChanges"),
 
-    SOFTDELETE(5, "softDelete", true, "striped project-hidden");
+    SOFTDELETE(4, "softDelete", true, "striped project-hidden");
 
     private long value;
     private String name;

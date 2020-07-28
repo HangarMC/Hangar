@@ -46,7 +46,7 @@ public class ProjectFactory {
 
     public ProjectsTable createProject(UsersTable ownerUser, String name, String pluginId, Category category, String description) {
         String slug = StringUtils.slugify(name);
-        ProjectsTable projectsTable = new ProjectsTable(pluginId, name, slug, ownerUser.getName(), ownerUser.getId(), category, description, Visibility.NEW.getValue());
+        ProjectsTable projectsTable = new ProjectsTable(pluginId, name, slug, ownerUser.getName(), ownerUser.getId(), category, description, Visibility.NEW);
 
         ProjectChannelsTable channelsTable = new ProjectChannelsTable(hangarConfig.channels.getNameDefault(), hangarConfig.channels.getColorDefault().getValue(), -1);
 

@@ -58,7 +58,7 @@ public class ProjectData {
     }
 
     public Visibility getVisibility() {
-        return Visibility.fromId(getProject().getVisibility());
+        return getProject().getVisibility();
     }
 
     public String getFullSlug() {
