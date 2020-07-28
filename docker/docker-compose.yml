@@ -11,8 +11,6 @@ services:
       # - 'auth'
       # - 'mail'
     stdin_open: true
-    ports:
-      - "8080:8080"
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.hangar.loadbalancer.server.port=8080"
