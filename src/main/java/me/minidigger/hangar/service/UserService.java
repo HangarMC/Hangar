@@ -81,7 +81,7 @@ public class UserService {
             reverse = false;
         }
 
-        long pageSize = config.getAuthorPageSize();
+        long pageSize = config.user.getAuthorPageSize();
         long offset = (page - 1) * pageSize;
 
         return userDao.get().getAuthors(offset, pageSize, userOrder(reverse, sort));
@@ -98,7 +98,7 @@ public class UserService {
             reverse = false;
         }
 
-        long pageSize = config.getAuthorPageSize();
+        long pageSize = config.user.getAuthorPageSize();
         long offset = (page - 1) * pageSize;
 
         return userDao.get().getStaff(offset, pageSize, userOrder(reverse, sort));
