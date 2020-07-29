@@ -1,3 +1,5 @@
+<#-- @ftlvariable name="editorOpen" type="java.lang.Boolean" -->
+<#-- @ftlvariable name="page" type="me.minidigger.hangar.model.viewhelpers.ProjectPage" -->
 <#-- @ftlvariable name="rootPages" type="java.util.Map<ProjectPage, java.util.List<ProjectPage>>" -->
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
@@ -37,7 +39,7 @@ Documentation page within Project overview.
                     <@editor.editor
                         saveCall=routes.getRouteUrl("pages.save", p.project.ownerName, p.project.slug, page.getFullSlug(parentPage))
                         deleteCall=routes.getRouteUrl("pages.delete", p.project.ownerName, p.project.slug, page.getFullSlug(parentPage))
-                        deletable=!page.isHome()
+                        deletable=page.deletable
                         enabled=canEditPages()
                         raw=page.contents
                         cooked=markdownService.render(page.contents)
