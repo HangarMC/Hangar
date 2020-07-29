@@ -94,14 +94,13 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
     </#if>
 
     <#if scriptsEnabled>
-<#--    <#if request?? && play.filters.csrf.CSRF.getToken.isDefined>-->
-<#--        &lt;#&ndash; TODO FIX CSRF &ndash;&gt;-->
-<#--        <script @CSPNonce.attr>-->
-<#--            window.csrf = '@play.filters.csrf.CSRF.getToken.get.value';-->
-<#--            window.isLoggedIn = @request.hasUser;-->
-<#--            $.ajaxSetup({headers: {'Csrf-Token': csrf}});-->
-<#--        </script>-->
-<#--    </#if>-->
+        <#if _csrf?? && _csrf.token??>
+            <script>
+                window.csrf = '${_csrf.token}';
+                window.isLoggedIn = ${headerData.hasUser()?c};
+                $.ajaxSetup({headers: {'Csrf-Token': csrf}});
+            </script>
+        </#if>
 
         <script type="text/javascript" src="${routes.getRouteUrl("javaScriptRoutes")}"></script>
         <script type="text/javascript" src="<@hangar.url "build/vendors.js" />"></script>
