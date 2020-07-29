@@ -49,9 +49,9 @@
                         <div class="setting-content">
                             <select class="form-control select-parent">
                                 <option selected value="-1">&lt;none&gt;</option>
-                                @rootPages.filter(_.name != Page.homeName).map { page =>
-                                <option value="${page.id}" data-slug="${page.slug}">${page.name}</option>
-                                }
+                                <#list rootPages?keys?filter(x -> x.name != config.pages.home.name) as singlePage>
+                                    <option value="${singlePage.id}" data-slug="${singlePage.slug}">${singlePage.name}</option>
+                                </#list>
                             </select>
                         </div>
                         <div class="clearfix"></div>
