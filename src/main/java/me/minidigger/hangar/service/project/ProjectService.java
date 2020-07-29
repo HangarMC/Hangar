@@ -1,9 +1,19 @@
 package me.minidigger.hangar.service.project;
 
+import me.minidigger.hangar.db.dao.HangarDao;
+import me.minidigger.hangar.db.dao.ProjectDao;
+import me.minidigger.hangar.db.dao.UserDao;
+import me.minidigger.hangar.db.model.ProjectPagesTable;
+import me.minidigger.hangar.db.model.ProjectVersionsTable;
+import me.minidigger.hangar.db.model.ProjectVisibilityChangesTable;
+import me.minidigger.hangar.db.model.ProjectsTable;
+import me.minidigger.hangar.db.model.UserProjectRolesTable;
+import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.generated.Project;
 import me.minidigger.hangar.model.generated.ProjectNamespace;
 import me.minidigger.hangar.model.generated.ProjectSettings;
 import me.minidigger.hangar.model.generated.UserActions;
+import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,16 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import me.minidigger.hangar.db.dao.HangarDao;
-import me.minidigger.hangar.db.dao.ProjectDao;
-import me.minidigger.hangar.db.dao.UserDao;
-import me.minidigger.hangar.db.model.ProjectPagesTable;
-import me.minidigger.hangar.db.model.ProjectVersionsTable;
-import me.minidigger.hangar.db.model.ProjectVisibilityChangesTable;
-import me.minidigger.hangar.db.model.ProjectsTable;
-import me.minidigger.hangar.db.model.UserProjectRolesTable;
-import me.minidigger.hangar.db.model.UsersTable;
-import me.minidigger.hangar.model.viewhelpers.ProjectData;
+<<<<<<<HEAD
+=======
+        >>>>>>>partial work on pages
 
 @Service
 public class ProjectService {

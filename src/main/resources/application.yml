@@ -46,7 +46,7 @@ hangar:
 
   pages:
     home:
-      name: "Hello"
+      name: "Home"
       message: "Welcome to your new project!"
     min-len: 15
     max-len: 32000

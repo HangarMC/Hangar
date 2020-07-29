@@ -1,8 +1,10 @@
+<#-- @ftlvariable name="rootPages" type="java.util.Map<ProjectPage, java.util.List<ProjectPage>>" -->
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/projects/view.ftlh" as projectView />
 <#import "*/users/memberList.ftlh" as memberList />
 <#import "*/utils/editor.ftlh" as editor />
+<#import "*/pages/modalPageCreate.ftlh" as pageCreate />
 
 <#--
 Documentation page within Project overview.
@@ -73,23 +75,24 @@ Documentation page within Project overview.
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="pull-left panel-title"><@spring.message "page.plural" /></h3>
-                    <#if canEditPages() && pageCount < config.ore.projects.maxPages>
+                    <#if canEditPages() && pageCount < config.projects.maxPages>
                         <button data-toggle="modal" data-target="#new-page" title="New"
                         class="new-page btn yellow btn-xs pull-right">
                             <i class="fas fa-plus"></i>
                         </button>
+                        <@pageCreate.pageCreate p.project rootPages />
                         <#--@projects.pages.modalPageCreate(p.project, rootPages.map(_._1)) TODO -->
                     </#if>
                 </div>
                 <ul class="list-group">
-                    <li class="list-group-item">
-                        <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, "Home")}">
-                        ${"Home"}
-                        </a>
-                    </li>
+<#--                    <li class="list-group-item">-->
+<#--                        <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, config.pages.home.name)}">-->
+<#--                        ${"Home"}-->
+<#--                        </a>-->
+<#--                    </li>-->
                     <#list rootPages as pg, children>
                     <li class="list-group-item">
-                        <#if children.nonEmpty>
+                        <#if children?size gt 0>
                             <#if !page.parentId.contains(pg.id.value)>
                                 <a class="page-expand" data-page-id="${pg.id}">
                                     <i class="far fa-plus-square"></i>
@@ -100,15 +103,15 @@ Documentation page within Project overview.
                                 </a>
                             </#if>
                         </#if>
-                    <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, pg.fullSlug(""))}">
+                    <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, pg.getFullSlug(null))}">
                     ${pg.name}
                     </a>
                     </li>
-                        <#if page.parentId.contains(pg.id)>
+                        <#if page.parentId?has_content && page.parentId = pg.id>
                             <div class="page-children" data-page-id="${pg.id}">
                                 <#list children as child>
                                     <li class="list-group-item page-item-child">
-                                        <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, child.fullSlug(pg))}">
+                                        <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, child.getFullSlug(pg))}">
                                             ${child.name}
                                         </a>
                                     </li>

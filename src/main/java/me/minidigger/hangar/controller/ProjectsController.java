@@ -1,5 +1,8 @@
 package me.minidigger.hangar.controller;
 
+import me.minidigger.hangar.config.HangarConfig;
+import me.minidigger.hangar.model.viewhelpers.ProjectPage;
+import me.minidigger.hangar.service.project.PagesSerivce;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
@@ -11,13 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserDao;
-import me.minidigger.hangar.db.model.ProjectPagesTable;
 import me.minidigger.hangar.db.model.ProjectsTable;
 import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.Category;
@@ -37,21 +37,25 @@ public class ProjectsController extends HangarController {
 
     public static final Pattern ID_PATTERN = Pattern.compile("[a-z][a-z0-9-_]{0,63}");
 
+    private final HangarConfig hangarConfig;
     private final UserService userService;
     private final OrgService orgService;
     private final RouteHelper routeHelper;
     private final ProjectFactory projectFactory;
     private final HangarDao<UserDao> userDao;
     private final ProjectService projectService;
+    private final PagesSerivce pagesSerivce;
 
     @Autowired
-    public ProjectsController(UserService userService, OrgService orgService, RouteHelper routeHelper, ProjectFactory projectFactory, HangarDao<UserDao> userDao, ProjectService projectService) {
+    public ProjectsController(HangarConfig hangarConfig, UserService userService, OrgService orgService, RouteHelper routeHelper, ProjectFactory projectFactory, HangarDao<UserDao> userDao, ProjectService projectService, PagesSerivce pagesSerivce) {
+        this.hangarConfig = hangarConfig;
         this.userService = userService;
         this.orgService = orgService;
         this.routeHelper = routeHelper;
         this.projectFactory = projectFactory;
         this.userDao = userDao;
         this.projectService = projectService;
+        this.pagesSerivce = pagesSerivce;
     }
 
     @PostMapping(value = "/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -136,11 +140,11 @@ public class ProjectsController extends HangarController {
         ScopedProjectData sp = new ScopedProjectData();
         sp.setPermissions(Permission.IsProjectOwner.add(Permission.EditPage));
         mav.addObject("sp", sp);
-        mav.addObject("rootPages", new HashMap<ProjectPagesTable, List<ProjectPagesTable>>());
-        mav.addObject("page", projectService.getPage(projectData.getProject().getId(), "Home"));
+        mav.addObject("page", ProjectPage.of(pagesSerivce.getPage(projectData.getProject().getId(), hangarConfig.pages.home.getName())));
+        System.out.println(mav.getModelMap().getAttribute("page"));
         mav.addObject("parentPage");
-        mav.addObject("pageCount", 0);
         mav.addObject("editorOpen", false);
+        pagesSerivce.fillPages(mav, projectData.getProject().getId());
         // TODO implement show request controller
         return fillModel(mav);
     }

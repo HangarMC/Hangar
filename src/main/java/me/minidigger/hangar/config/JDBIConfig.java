@@ -1,10 +1,11 @@
 package me.minidigger.hangar.config;
 
+import me.minidigger.hangar.db.customtypes.RoleCategory;
+import me.minidigger.hangar.db.dao.HangarDao;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.spi.JdbiPlugin;
 import org.jdbi.v3.postgres.PostgresPlugin;
 import org.jdbi.v3.postgres.PostgresTypes;
-import org.jdbi.v3.spring4.JdbiFactoryBean;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.springframework.beans.factory.InjectionPoint;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -14,11 +15,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 
-import java.util.List;
 import javax.sql.DataSource;
-
-import me.minidigger.hangar.db.customtypes.RoleCategory;
-import me.minidigger.hangar.db.dao.HangarDao;
+import java.util.List;
 
 @Configuration
 public class JDBIConfig {
