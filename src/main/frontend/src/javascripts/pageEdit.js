@@ -23,10 +23,6 @@ $(function() {
             if (parentId !== null)
                 url = '/' + projectOwner + '/' + projectSlug + '/pages/' + parent.data('slug') + '/' + slugify(pageName) + '/edit';
         }
-        // var csrfValue = $('input[type=hidden][name=_csrf]');
-        // if (csrfValue.length) {
-        //     csrfValue = csrfValue.attr('value')
-        // } else csrfValue = "";
         $.ajax({
             method: 'post',
             url: url,

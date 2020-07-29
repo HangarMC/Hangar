@@ -55,7 +55,7 @@ public class PagesController extends HangarController {
     }
 
     @PostMapping(value = "/pages/preview", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Object showPreview(@RequestBody String raw) throws JSONException {
+    public ResponseEntity<String> showPreview(@RequestBody String raw) throws JSONException {
         JSONObject rawJson;
         try {
             rawJson = new JSONObject(raw);
@@ -131,7 +131,7 @@ public class PagesController extends HangarController {
 
     @Secured("ROLE_USER")
     @GetMapping({"/{author}/{slug}/pages/{page}/edit", "/{author}/{slug}/pages/{page}/{subPage}/edit"})
-    public Object showEditor(@PathVariable String author, @PathVariable String slug, @PathVariable String page, @PathVariable(required = false) String subPage) {
+    public ModelAndView showEditor(@PathVariable String author, @PathVariable String slug, @PathVariable String page, @PathVariable(required = false) String subPage) {
         String pageName = getPageName(page, subPage);
         ModelAndView mav = new ModelAndView("projects/pages/view");
         ProjectData projectData = projectService.getProjectData(author, slug);
