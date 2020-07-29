@@ -6,6 +6,7 @@ import me.minidigger.hangar.db.dao.ProjectPageDao;
 import me.minidigger.hangar.db.model.ProjectPagesTable;
 import me.minidigger.hangar.model.viewhelpers.ProjectPage;
 import me.minidigger.hangar.util.HangarException;
+import me.minidigger.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
+import java.util.Map;
 
 @Component
 public class PagesFactory {
@@ -28,8 +30,8 @@ public class PagesFactory {
 
     public ProjectPage createPage(String contents, String name, String slug, @Nullable Long parentId, long projectId) {
         if (parentId != null) {
-            ProjectPagesTable parentTable = projectPageDao.get().getPage(projectId, null, parentId);
-            if (parentTable == null) {
+            Map<Long, ProjectPage> rootPages = projectPageDao.get().getRootPages(projectId);
+            if (!rootPages.containsKey(parentId)) { // This prevents more than 1 level of nesting
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
         }
@@ -43,7 +45,7 @@ public class PagesFactory {
                 OffsetDateTime.now(),
                 projectId,
                 name,
-                slug,
+                StringUtils.slugify(slug),
                 contents,
                 true,
                 parentId

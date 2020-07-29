@@ -14,6 +14,7 @@ import me.minidigger.hangar.model.generated.ProjectNamespace;
 import me.minidigger.hangar.model.generated.ProjectSettings;
 import me.minidigger.hangar.model.generated.UserActions;
 import me.minidigger.hangar.model.viewhelpers.ProjectData;
+import me.minidigger.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class ProjectService {
     }
 
     public ProjectData getProjectData(String author, String slug) {
-        ProjectsTable projectsTable = projectDao.get().getBySlug(author, slug);
+        ProjectsTable projectsTable = projectDao.get().getBySlug(author, StringUtils.slugify(slug));
         if (projectsTable == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return getProjectData(projectsTable);
 

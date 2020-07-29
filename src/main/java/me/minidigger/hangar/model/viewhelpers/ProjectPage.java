@@ -10,7 +10,6 @@ public class ProjectPage {
 
     private ProjectPagesTable table;
 
-    private ProjectData project;
     private long id;
     private OffsetDateTime createdAt;
     private String name;
@@ -20,8 +19,7 @@ public class ProjectPage {
     @Nullable
     private Long parentId;
 
-    public ProjectPage(ProjectData project, long id, OffsetDateTime createdAt, String name, String slug, String contents, boolean isDeletable, @Nullable Long parentId, ProjectPagesTable table) {
-        this.project = project;
+    public ProjectPage(long id, OffsetDateTime createdAt, String name, String slug, String contents, boolean isDeletable, @Nullable Long parentId, ProjectPagesTable table) {
         this.createdAt = createdAt;
         this.name = name;
         this.slug = slug;
@@ -33,16 +31,6 @@ public class ProjectPage {
 
     public ProjectPage() {
         //
-    }
-
-    @Unmappable
-    public ProjectData getProject() {
-        return project;
-    }
-
-    @Unmappable
-    public void setProject(ProjectData project) {
-        this.project = project;
     }
 
     public long getId() {
@@ -106,15 +94,15 @@ public class ProjectPage {
         return name.equals("Home") && parentId == null; // TODO check against config default
     }
 
-    public String getFullSlug(ProjectPage parent) {
-        if (parent != null) {
-            return parent.table.getSlug() + "/" + slug;
-        }
-        return slug;
-    }
+//    public String getFullSlug(ProjectPage parent) {
+//        if (parent != null) {
+//            return parent.table.getSlug() + "/" + slug;
+//        }
+//        return slug;
+//    }
 
     public static ProjectPage of(ProjectPagesTable pagesTable) {
         if (pagesTable == null) return null;
-        return new ProjectPage(null, pagesTable.getId(), pagesTable.getCreatedAt(), pagesTable.getName(), pagesTable.getSlug(), pagesTable.getContents(), pagesTable.getIsDeletable(), pagesTable.getParentId(), pagesTable);
+        return new ProjectPage(pagesTable.getId(), pagesTable.getCreatedAt(), pagesTable.getName(), pagesTable.getSlug(), pagesTable.getContents(), pagesTable.getIsDeletable(), pagesTable.getParentId(), pagesTable);
     }
 }

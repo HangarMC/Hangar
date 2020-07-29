@@ -11,6 +11,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,9 @@ public interface ProjectPageDao {
     @GetGeneratedKeys
     ProjectPagesTable update(@BindBean ProjectPagesTable projectPagesTable);
 
+    @SqlUpdate("DELETE FROM project_pages WHERE id = :id")
+    void delete(@BindBean ProjectPagesTable projectPagesTable);
+
     @SqlQuery("SELECT * FROM project_pages WHERE project_id = :projectId AND (lower(slug) = lower(:pageName) OR id = :pageId)")
     ProjectPagesTable getPage(long projectId, String pageName, Long pageId);
 
@@ -35,8 +39,8 @@ public interface ProjectPageDao {
 
     @RegisterBeanMapper(ProjectPage.class)
     @KeyColumn("id")
-    @SqlQuery("SELECT id, created_at, name, slug, contents, is_deletable FROM project_pages WHERE project_id = :projectId AND parent_id IS NULL")
-    Map<Long, ProjectPage> getRootPages(long projectId);
+    @SqlQuery("SELECT id, created_at, name, slug, contents, is_deletable FROM project_pages WHERE project_id = :projectId AND parent_id IS NULL ORDER BY created_at")
+    LinkedHashMap<Long, ProjectPage> getRootPages(long projectId);
 
     @RegisterBeanMapper(ProjectPage.class)
     @SqlQuery("SELECT id, created_at, name, slug, contents, is_deletable, parent_id FROM project_pages WHERE project_id = :projectId AND parent_id = :parentId")

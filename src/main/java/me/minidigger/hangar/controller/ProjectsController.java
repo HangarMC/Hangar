@@ -141,7 +141,6 @@ public class ProjectsController extends HangarController {
         sp.setPermissions(Permission.IsProjectOwner.add(Permission.EditPage));
         mav.addObject("sp", sp);
         mav.addObject("page", ProjectPage.of(pagesSerivce.getPage(projectData.getProject().getId(), hangarConfig.pages.home.getName())));
-        System.out.println(mav.getModelMap().getAttribute("page"));
         mav.addObject("parentPage");
         mav.addObject("editorOpen", false);
         pagesSerivce.fillPages(mav, projectData.getProject().getId());

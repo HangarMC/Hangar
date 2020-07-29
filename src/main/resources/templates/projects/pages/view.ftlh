@@ -1,5 +1,5 @@
+<#-- @ftlvariable name="pageCount" type="java.lang.Integer" -->
 <#-- @ftlvariable name="editorOpen" type="java.lang.Boolean" -->
-<#-- @ftlvariable name="page" type="me.minidigger.hangar.model.viewhelpers.ProjectPage" -->
 <#-- @ftlvariable name="rootPages" type="java.util.Map<ProjectPage, java.util.List<ProjectPage>>" -->
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
@@ -36,9 +36,10 @@ Documentation page within Project overview.
         <div class="col-md-9">
             <div class="row">
                 <div class="col-md-12">
+                    <#-- @ftlvariable name="page" type="me.minidigger.hangar.model.viewhelpers.ProjectPage" -->
                     <@editor.editor
-                        saveCall=routes.getRouteUrl("pages.save", p.project.ownerName, p.project.slug, page.getFullSlug(parentPage))
-                        deleteCall=routes.getRouteUrl("pages.delete", p.project.ownerName, p.project.slug, page.getFullSlug(parentPage))
+                        saveCall=routes.getRouteUrl("pages.save", p.project.ownerName, p.project.slug, page.slug)
+                        deleteCall=routes.getRouteUrl("pages.delete", p.project.ownerName, p.project.slug, page.slug)
                         deletable=page.deletable
                         enabled=canEditPages()
                         raw=page.contents
@@ -82,8 +83,7 @@ Documentation page within Project overview.
                         class="new-page btn yellow btn-xs pull-right">
                             <i class="fas fa-plus"></i>
                         </button>
-                        <@pageCreate.pageCreate p.project rootPages />
-                        <#--@projects.pages.modalPageCreate(p.project, rootPages.map(_._1)) TODO -->
+                        <@pageCreate.pageCreate p.project rootPages /> <#-- TODO this is showing when user logged out -->
                     </#if>
                 </div>
                 <ul class="list-group">
@@ -92,29 +92,32 @@ Documentation page within Project overview.
 <#--                        ${"Home"}-->
 <#--                        </a>-->
 <#--                    </li>-->
+                    <#-- @ftlvariable name="pg" type="me.minidigger.hangar.model.viewhelpers.ProjectPage" -->
+                    <#-- @ftlvariable name="children" type="java.util.List<ProjectPage>" -->
                     <#list rootPages as pg, children>
-                    <li class="list-group-item">
-                        <#if children?size gt 0>
-                            <#if !page.parentId.contains(pg.id.value)>
-                                <a class="page-expand" data-page-id="${pg.id}">
-                                    <i class="far fa-plus-square"></i>
-                                </a>
-                            <#else>
-                                <a class="page-collapse" data-page-id="${pg.id}">
-                                    <i class="far fa-minus-square"></i>
-                                </a>
+                        <li class="list-group-item">
+                            <#if children?size gt 0>
+                                <#if page.parentId?? && page.parentId = pg.id>
+                                    <a class="page-collapse" data-page-id="${pg.id}">
+                                        <i class="far fa-minus-square"></i>
+                                    </a>
+                                <#else>
+                                    <a class="page-expand" data-page-id="${pg.id}">
+                                        <i class="far fa-plus-square"></i>
+                                    </a>
+                                </#if>
                             </#if>
-                        </#if>
-                    <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, pg.getFullSlug(null))}">
-                    ${pg.name}
-                    </a>
-                    </li>
-                        <#if page.parentId?has_content && page.parentId = pg.id>
+                            <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, pg.slug)}" class="href">
+                                ${pg.name}
+                            </a>
+                        </li>
+                        <#if page.parentId?? && page.parentId = pg.id>
                             <div class="page-children" data-page-id="${pg.id}">
-                                <#list children as child>
+                                <#-- @ftlvariable name="childPage" type="me.minidigger.hangar.model.viewhelpers.ProjectPage" -->
+                                <#list children as childPage>
                                     <li class="list-group-item page-item-child">
-                                        <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, child.getFullSlug(pg))}">
-                                            ${child.name}
+                                        <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, childPage.slug)}">
+                                            ${childPage.name}
                                         </a>
                                     </li>
                                 </#list>

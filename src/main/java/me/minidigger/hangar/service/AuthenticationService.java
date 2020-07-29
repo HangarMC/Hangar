@@ -91,7 +91,6 @@ public class AuthenticationService {
     public void loginAsFakeUser() {
         String username = hangarConfig.fakeUser.getUsername();
         UsersTable userEntry = userDao.get().getByName(username);
-        System.out.println(hangarConfig.channels.getColorDefault());
         if (userEntry == null) {
             userEntry = new UsersTable();
             userEntry.setEmail(hangarConfig.fakeUser.getEmail());
