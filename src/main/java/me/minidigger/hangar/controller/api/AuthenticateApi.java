@@ -37,6 +37,6 @@ public interface AuthenticateApi {
     @PostMapping(value = "/authenticate/user",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<ApiSessionResponse> authenticateUser(@ApiParam(value = "") @Valid @RequestBody SessionProperties body
+    ResponseEntity<ApiSessionResponse> authenticateUser(@ApiParam(value = "") @Valid @RequestBody(required = false) SessionProperties body
     );
 }
