@@ -23,16 +23,14 @@ $(function() {
             if (parentId !== null)
                 url = '/' + projectOwner + '/' + projectSlug + '/pages/' + parent.data('slug') + '/' + slugify(pageName) + '/edit';
         }
-        var csrfValue = $('input[type=hidden][name=_csrf]');
-        if (csrfValue.length) {
-            csrfValue = csrfValue.attr('value')
-        } else csrfValue = "";
-        console.log(parentId);
-        console.log(csrfValue);
+        // var csrfValue = $('input[type=hidden][name=_csrf]');
+        // if (csrfValue.length) {
+        //     csrfValue = csrfValue.attr('value')
+        // } else csrfValue = "";
         $.ajax({
             method: 'post',
             url: url,
-            data: {'parent-id': parentId, 'content': '# ' + pageName + '\n', 'name': pageName, '_csrf': csrfValue},
+            data: {'parent-id': parentId, 'content': '# ' + pageName + '\n', 'name': pageName},
             success: function() {
                 go(url);
             },

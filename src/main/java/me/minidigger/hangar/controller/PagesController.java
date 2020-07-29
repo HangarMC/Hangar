@@ -14,6 +14,7 @@ import me.minidigger.hangar.util.RouteHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -73,31 +74,29 @@ public class PagesController extends HangarController {
 
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/pages/{page:.*}/edit", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ModelAndView save(@PathVariable String author, @PathVariable String slug, @PathVariable String page, @RequestParam(value = "parent-id", required = false) String parentId, @RequestParam("content") String pageContent, @RequestParam("name") String pageName) {
-        System.out.println(page);
+    public Object save(@PathVariable String author, @PathVariable String slug, @PathVariable String page, @RequestParam(value = "parent-id", required = false) String parentId, @RequestParam("content") String pageContent, @RequestParam("name") String pageName) {
         ProjectData projectData = projectService.getProjectData(author, slug);
         if (projectData == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        System.out.println("test1");
         ProjectPagesTable projectPage = pagesSerivce.getPage(projectData.getProject().getId(), page);
         if (projectPage == null) { // new page
+            System.out.println("new page");
             Long parentIdLong;
             try {
                 parentIdLong = Long.parseLong(parentId);
             } catch (NumberFormatException e) {
                 parentIdLong = null;
             }
-            System.out.println("test2");
-            ProjectPage newPage = pagesFactory.createPage(pageContent, pageName, page, parentIdLong, projectData.getProject().getId());
+            pagesFactory.createPage(pageContent, pageName, page, parentIdLong, projectData.getProject().getId());
+            return new ResponseEntity<>(HttpStatus.OK); // redirect handled by pageEdit.js
         } else {
+            System.out.println("edit page");
             projectPage.setContents(pageContent);
             projectPageDao.get().update(projectPage);
+            return new RedirectView(routeHelper.getRouteUrl("pages.show", author, slug, page));
         }
         // TODO User action log
-
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("pages.show", author, slug, page));
-//        return new ModelAn; // TODO implement save request controller
     }
 
     @Secured("ROLE_USER")
@@ -106,6 +105,7 @@ public class PagesController extends HangarController {
         ModelAndView mav = new ModelAndView("projects/pages/view");
         ProjectData projectData = projectService.getProjectData(author, slug);
         ProjectPage projectPage = ProjectPage.of(pagesSerivce.getPage(projectData.getProject().getId(), page));
+        if (projectPage == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         mav.addObject("p", projectData);
         ScopedProjectData sp = new ScopedProjectData();
         sp.setPermissions(Permission.IsProjectOwner.add(Permission.EditPage));
