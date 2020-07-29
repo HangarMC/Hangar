@@ -16,7 +16,8 @@ public interface UserProjectRolesDao {
     @SqlQuery("SELECT * FROM user_project_roles WHERE project_id = :projectId AND user_id = :userId")
     UserProjectRolesTable getByProjectAndUser(long projectId, long userId);
 
-    @SqlUpdate("INSERT INTO user_project_roles (created_at, user_id, role_type, project_id, is_accepted) VALUES (:now, :userId, :roleType, :projectId, :isAccepted)")
+    @SqlUpdate("INSERT INTO user_project_roles (created_at, user_id, role_type, project_id, is_accepted) " +
+               "VALUES (:now, :userId, :roleType, :projectId, :isAccepted)")
     @Timestamped
     void insert(@BindBean UserProjectRolesTable userProjectRolesTable);
 }
