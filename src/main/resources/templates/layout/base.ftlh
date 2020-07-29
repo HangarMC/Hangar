@@ -97,8 +97,9 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <#if _csrf?? && _csrf.token??>
             <script>
                 window.csrf = '${_csrf.token}';
+                window.ajaxSettings = {"headers": { '${_csrf.headerName}': window.csrf}};
                 window.isLoggedIn = ${headerData.hasUser()?c};
-                $.ajaxSetup({headers: {'${_csrf.headerName}': csrf}});
+                $.ajaxSetup(window.ajaxSettings);
             </script>
         </#if>
 

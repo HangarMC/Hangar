@@ -45,7 +45,8 @@ function getApiSession() {
                 return $.ajax({
                     url: '/api/v2/authenticate/user',
                     method: 'POST',
-                    dataType: 'json'
+                    dataType: 'json',
+                    contentType: 'application/json'
                 }).done(function (data) {
                     if (data.type !== 'user') {
                         reject('Expected user session from user authentication');
@@ -65,7 +66,8 @@ function getApiSession() {
                 $.ajax({
                     url: '/api/v2/authenticate',
                     method: 'POST',
-                    dataType: 'json'
+                    dataType: 'json',
+                    contentType: 'application/json'
                 }).done(function (data) {
                     if (data.type !== 'public') {
                         reject('Expected public session from public authentication')
