@@ -8,12 +8,15 @@ import me.minidigger.hangar.model.Permission;
 import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.model.viewhelpers.ProjectPage;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
+import me.minidigger.hangar.service.MarkdownService;
 import me.minidigger.hangar.service.project.PagesFactory;
 import me.minidigger.hangar.service.project.PagesSerivce;
 import me.minidigger.hangar.service.project.ProjectService;
 import me.minidigger.hangar.util.RouteHelper;
 import me.minidigger.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
@@ -37,20 +41,29 @@ public class PagesController extends HangarController {
     private final PagesFactory pagesFactory;
     private final HangarDao<ProjectPageDao> projectPageDao;
     private final RouteHelper routeHelper;
+    private final MarkdownService markdownService;
 
     @Autowired
-    public PagesController(HangarConfig hangarConfig, ProjectService projectService, PagesSerivce pagesSerivce, PagesFactory pagesFactory, HangarDao<ProjectPageDao> projectPageDao, RouteHelper routeHelper) {
+    public PagesController(HangarConfig hangarConfig, ProjectService projectService, PagesSerivce pagesSerivce, PagesFactory pagesFactory, HangarDao<ProjectPageDao> projectPageDao, RouteHelper routeHelper, MarkdownService markdownService) {
         this.hangarConfig = hangarConfig;
         this.projectService = projectService;
         this.pagesSerivce = pagesSerivce;
         this.pagesFactory = pagesFactory;
         this.projectPageDao = projectPageDao;
         this.routeHelper = routeHelper;
+        this.markdownService = markdownService;
     }
 
-    @PostMapping("/pages/preview")
-    public Object showPreview() {
-        return "Test"; // TODO implement showPreview request controller
+    @PostMapping(value = "/pages/preview", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Object showPreview(@RequestBody String raw) throws JSONException {
+        JSONObject rawJson;
+        try {
+            rawJson = new JSONObject(raw);
+            rawJson.getString("raw");
+        } catch (JSONException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(markdownService.render(rawJson.getString("raw")), HttpStatus.OK);
     }
 
     @GetMapping({"/{author}/{slug}/pages/{page}", "/{author}/{slug}/pages/{page}/{subPage}"})
