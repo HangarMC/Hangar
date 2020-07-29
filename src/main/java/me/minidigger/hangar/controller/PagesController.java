@@ -95,6 +95,9 @@ public class PagesController extends HangarController {
         if (projectPage == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+        if (!projectPage.getIsDeletable()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot delete this page");
+        }
         projectPageDao.get().delete(projectPage);
         return new RedirectView(routeHelper.getRouteUrl("projects.show", author, slug));
     }
