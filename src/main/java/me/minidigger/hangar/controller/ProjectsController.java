@@ -40,6 +40,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -146,7 +147,7 @@ public class ProjectsController extends HangarController {
     }
 
     @GetMapping("/{author}/{slug}")
-    public ModelAndView show(@PathVariable String author, @PathVariable String slug) {
+    public ModelAndView show(@PathVariable String author, @PathVariable String slug, HttpServletRequest request) {
         ModelAndView mav = new ModelAndView("projects/pages/view");
         ProjectData projectData = projectService.getProjectData(author, slug);
         mav.addObject("p", projectData);

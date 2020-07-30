@@ -53,4 +53,8 @@ public class PagesFactory {
         table = projectPageDao.get().insert(table);
         return ProjectPage.of(table);
     }
+
+    public void update(ProjectPagesTable projectPagesTable) {
+        projectPageDao.get().update(projectPagesTable);
+    }
 }
