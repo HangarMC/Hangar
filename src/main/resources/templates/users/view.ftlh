@@ -175,7 +175,7 @@
                             <p><@spring.message "user.tagline.info" /></p>
                         </div>
                         <input class="form-control" type="text" value="${u.user.tagline!""}" id="tagline"
-                               name="tagline" maxlength="${config.getMaxTaglineLen()}" />
+                               name="tagline" maxlength="${config.getUser().maxTaglineLen}" />
                     </div>
                     <div class="clearfix"></div>
                 </div>

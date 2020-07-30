@@ -246,6 +246,14 @@ public class HangarConfig {
             }
         }
 
+        public Home getHome() {
+            return home;
+        }
+
+        public void setHome(Home home) {
+            this.home = home;
+        }
+
         public int getMinLen() {
             return minLen;
         }
@@ -531,5 +539,39 @@ public class HangarConfig {
     public boolean isValidProjectName(String name) {
         String sanitized = StringUtils.compact(name);
         return sanitized.length() >= 1 && sanitized.length() <= projects.maxNameLen;
+    }
+
+    // Added to make freemarker realize they are here
+
+    public FakeUserConfig getFakeUser() {
+        return fakeUser;
+    }
+
+    public HangarHomepageConfig getHomepage() {
+        return homepage;
+    }
+
+    public HangarChannelsConfig getChannels() {
+        return channels;
+    }
+
+    public HangarPagesConfig getPages() {
+        return pages;
+    }
+
+    public HangarProjectsConfig getProjects() {
+        return projects;
+    }
+
+    public HangarUserConfig getUser() {
+        return user;
+    }
+
+    public HangarOrgConfig getOrg() {
+        return org;
+    }
+
+    public HangarApiConfig getApi() {
+        return api;
     }
 }

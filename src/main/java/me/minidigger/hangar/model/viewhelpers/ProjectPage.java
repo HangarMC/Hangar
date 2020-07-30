@@ -1,15 +1,17 @@
-package me.minidigger.hangar.db.model;
+package me.minidigger.hangar.model.viewhelpers;
 
-
+import me.minidigger.hangar.db.model.ProjectPagesTable;
+import org.jdbi.v3.core.annotation.Unmappable;
 import org.springframework.lang.Nullable;
 
 import java.time.OffsetDateTime;
 
-public class ProjectPagesTable {
+public class ProjectPage {
+
+    private ProjectPagesTable table;
 
     private long id;
     private OffsetDateTime createdAt;
-    private long projectId;
     private String name;
     private String slug;
     private String contents;
@@ -17,18 +19,17 @@ public class ProjectPagesTable {
     @Nullable
     private Long parentId;
 
-    public ProjectPagesTable(long id, OffsetDateTime createdAt, long projectId, String name, String slug, String contents, boolean isDeletable, Long parentId) {
-        this.id = id;
+    public ProjectPage(long id, OffsetDateTime createdAt, String name, String slug, String contents, boolean isDeletable, @Nullable Long parentId, ProjectPagesTable table) {
         this.createdAt = createdAt;
-        this.projectId = projectId;
         this.name = name;
         this.slug = slug;
         this.contents = contents;
         this.isDeletable = isDeletable;
         this.parentId = parentId;
+        this.table = table;
     }
 
-    public ProjectPagesTable() {
+    public ProjectPage() {
         //
     }
 
@@ -40,7 +41,6 @@ public class ProjectPagesTable {
         this.id = id;
     }
 
-
     public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
@@ -48,16 +48,6 @@ public class ProjectPagesTable {
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
-
-
-    public long getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(long projectId) {
-        this.projectId = projectId;
-    }
-
 
     public String getName() {
         return name;
@@ -67,7 +57,6 @@ public class ProjectPagesTable {
         this.name = name;
     }
 
-
     public String getSlug() {
         return slug;
     }
@@ -75,7 +64,6 @@ public class ProjectPagesTable {
     public void setSlug(String slug) {
         this.slug = slug;
     }
-
 
     public String getContents() {
         return contents;
@@ -85,22 +73,36 @@ public class ProjectPagesTable {
         this.contents = contents;
     }
 
-
-    public boolean getIsDeletable() {
+    public boolean isDeletable() {
         return isDeletable;
     }
 
-    public void setIsDeletable(boolean isDeletable) {
-        this.isDeletable = isDeletable;
+    public void setDeletable(boolean deletable) {
+        isDeletable = deletable;
     }
 
-
+    @Nullable
     public Long getParentId() {
         return parentId;
     }
 
-    public void setParentId(Long parentId) {
+    public void setParentId(@Nullable Long parentId) {
         this.parentId = parentId;
     }
 
+    public boolean isHome() {
+        return name.equals("Home") && parentId == null; // TODO check against config default
+    }
+
+//    public String getFullSlug(ProjectPage parent) {
+//        if (parent != null) {
+//            return parent.table.getSlug() + "/" + slug;
+//        }
+//        return slug;
+//    }
+
+    public static ProjectPage of(ProjectPagesTable pagesTable) {
+        if (pagesTable == null) return null;
+        return new ProjectPage(pagesTable.getId(), pagesTable.getCreatedAt(), pagesTable.getName(), pagesTable.getSlug(), pagesTable.getContents(), pagesTable.getIsDeletable(), pagesTable.getParentId(), pagesTable);
+    }
 }

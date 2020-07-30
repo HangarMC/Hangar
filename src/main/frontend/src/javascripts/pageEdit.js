@@ -30,7 +30,8 @@ $(function() {
             success: function() {
                 go(url);
             },
-            error: function() {
+            error: function(err) {
+                console.log(err)
                 console.log("error");
                 $("#new-page-label-error").show().delay(2000).fadeOut();
             }
