@@ -1,5 +1,6 @@
 package me.minidigger.hangar.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,10 +10,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import me.minidigger.hangar.controller.HangarController;
+import java.util.List;
+
+import me.minidigger.hangar.model.viewhelpers.ProjectData;
+import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
+import me.minidigger.hangar.model.viewhelpers.VersionData;
+import me.minidigger.hangar.service.VersionService;
+import me.minidigger.hangar.service.project.ProjectService;
 
 @Controller
 public class VersionsController extends HangarController {
+
+    private final ProjectService projectService;
+    private final VersionService versionService;
+
+    @Autowired
+    public VersionsController(ProjectService projectService, VersionService versionService) {
+        this.projectService = projectService;
+        this.versionService = versionService;
+    }
 
     @RequestMapping("/api/project/{pluginId}/versions/recommended/download")
     public Object downloadRecommendedJarById(@PathVariable Object pluginId, @RequestParam Object token) {
@@ -30,8 +46,14 @@ public class VersionsController extends HangarController {
     }
 
     @RequestMapping("/{author}/{slug}/versions")
-    public Object showList(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement showList request controller
+    public ModelAndView showList(@PathVariable String author, @PathVariable String slug) {
+        ModelAndView mav = new ModelAndView("projects/versions/list");
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        ScopedProjectData sp = projectService.getScopedProjectData(projectData.getProject().getId());
+        mav.addObject("sp", sp);
+        mav.addObject("p", projectData);
+        mav.addObject("channels", List.of()); // TODO channel list
+        return fillModel(mav);
     }
 
     @Secured("ROLE_USER")
@@ -69,8 +91,13 @@ public class VersionsController extends HangarController {
     }
 
     @GetMapping("/{author}/{slug}/versions/{version}")
-    public Object show(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
-        return null; // TODO implement show request controller
+    public ModelAndView show(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
+        ModelAndView mav = new ModelAndView("projects/versions/view");
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        ScopedProjectData sp = projectService.getScopedProjectData(projectData.getProject().getId());
+        mav.addObject("v", new VersionData(projectData, versionService.getVersion(projectData.getProject().getId()), null));
+        mav.addObject("sp", sp);
+        return fillModel(mav);  // TODO implement show request controller
     }
 
     @Secured("ROLE_USER")

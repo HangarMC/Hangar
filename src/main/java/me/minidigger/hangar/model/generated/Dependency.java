@@ -20,8 +20,8 @@ public class Dependency {
     @JsonProperty("version")
     private String version = null;
 
-    @JsonProperty("version")
-    private boolean required = false;
+    @JsonProperty("required")
+    private boolean required = true;
 
     public Dependency(String pluginId, String version) {
         this(pluginId, version, true);
@@ -31,6 +31,10 @@ public class Dependency {
         this.pluginId = pluginId;
         this.version = version;
         this.required = required;
+    }
+
+    public Dependency() {
+        //
     }
 
     /**

@@ -4,22 +4,6 @@
 
 <#--
 Base template for Project overview.
-TODO: this is a layout, should we move/rename it?
--->
-
-<#--
-@import controllers.project.routes._
-@import controllers.sugar.Requests.OreRequest
-@import models.viewhelper.{ProjectData, ScopedProjectData}
-@import ore.OreConfig
-@import ore.data.project.FlagReason
-@import ore.markdown.MarkdownRenderer
-@import ore.models.project.Visibility
-@import ore.permission.Permission
-@import views.html.helper.{CSPNonce, CSRF, form}
-
-@(p: ProjectData, sp: ScopedProjectData, active: String, noButtons: Boolean = false, additionalScripts: Html = Html(""), additionalStyling: Html = Html(""))(content: Html)(implicit messages: Messages,
-        request: OreRequest[_], flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
 -->
 
 <#assign Visibility=@helper["me.minidigger.hangar.model.Visibility"]>
@@ -37,7 +21,6 @@ TODO: this is a layout, should we move/rename it?
                 var alreadyStarred = ${sp.starred?c};
                 $(function() { $(".nav").find("${active}").addClass("active"); });
         </script>
-    }
     </#assign>
 
     <#assign metaVar>

@@ -16,6 +16,7 @@ import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.model.viewhelpers.ProjectMember;
 import me.minidigger.hangar.model.viewhelpers.ProjectViewSettings;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
+import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,11 +34,13 @@ public class ProjectService {
 
     private final HangarDao<ProjectDao> projectDao;
     private final HangarDao<UserDao> userDao;
+    private final UserService userService;
 
     @Autowired
-    public ProjectService(HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao) {
+    public ProjectService(HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, UserService userService) {
         this.projectDao = projectDao;
         this.userDao = userDao;
+        this.userService = userService;
     }
 
     public ProjectData getProjectData(String author, String slug) {
@@ -95,8 +98,13 @@ public class ProjectService {
         );
     }
 
-    public ScopedProjectData getScopedProjectData(long projectId, long userId) {
-        return projectDao.get().getScopedProjectData(projectId, userId);
+    public ScopedProjectData getScopedProjectData(long projectId) {
+        UsersTable currentUser = userService.getCurrentUser();
+        if (currentUser == null) {
+            return new ScopedProjectData();
+        } else {
+            return projectDao.get().getScopedProjectData(projectId, currentUser.getId());
+        }
     }
 
     public ProjectPagesTable getPage(long projectId, String slug) {

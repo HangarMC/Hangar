@@ -21,7 +21,7 @@
                                         <span class="text-bold">{{ version.name }}</span>
                                     </div>
                                     <div class="col-xs-12">
-                                        <span class="channel" v-bind:style="{ background: channel.color.background }">{{ channel.data }}</span>
+                                        <span v-if="channel" class="channel" v-bind:style="{ background: channel.color.background }">{{ channel.data }}</span>
                                     </div>
                                 </div>
                             </div>

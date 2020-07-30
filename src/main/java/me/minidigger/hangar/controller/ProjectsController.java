@@ -146,7 +146,7 @@ public class ProjectsController extends HangarController {
         ModelAndView mav = new ModelAndView("projects/pages/view");
         ProjectData projectData = projectService.getProjectData(author, slug);
         mav.addObject("p", projectData);
-        ScopedProjectData sp = projectService.getScopedProjectData(projectData.getProject().getId(), projectData.getProjectOwner().getId());
+        ScopedProjectData sp = projectService.getScopedProjectData(projectData.getProject().getId());
         mav.addObject("sp", sp);
         mav.addObject("page", ProjectPage.of(pagesSerivce.getPage(projectData.getProject().getId(), hangarConfig.pages.home.getName())));
         mav.addObject("parentPage");
@@ -207,7 +207,7 @@ public class ProjectsController extends HangarController {
         ModelAndView mav = new ModelAndView("projects/settings");
         ProjectData projectData = projectService.getProjectData(author, slug);
         mav.addObject("p", projectData);
-        ScopedProjectData scopedProjectData = projectService.getScopedProjectData(projectData.getProject().getId(), projectData.getProjectOwner().getId());
+        ScopedProjectData scopedProjectData = projectService.getScopedProjectData(projectData.getProject().getId());
         mav.addObject("sp", scopedProjectData);
         // TODO add deploymentKey and iconUrl
         return fillModel(mav);

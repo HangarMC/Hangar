@@ -6,20 +6,6 @@
 <#import "*/users/invite/userSearch.ftlh" as userSearch>
 <#import "*/users/invite/roleSelect.ftlh" as roleSelect>
 
-<#--
-@import ore.OreConfig
-@import ore.models.user.role.UserRoleModel
-@import util.syntax._
-@import views.html.helper.{CSRF, form}
-@import views.html.utils.userAvatar
-@* MemberData? with perms *@
-@import controllers.sugar.Requests.OreRequest
-@import models.viewhelper.JoinableData
-@import ore.permission.Permission
-@(j: JoinableData[_ <: UserRoleModel[_], _], perms: Permission, editable: Boolean = false, removeCall: Call = null,
-        settingsCall: Call = null, saveCall: Call = null)(implicit messages: Messages, config: OreConfig, request: OreRequest[_])
--->
-
 <!-- TODO: Pagination -->
 <#-- @ftlvariable name="j" type="java.util.Set<me.minidigger.hangar.model.viewhelpers.ProjectMember>" -->
 <#-- @ftlvariable name="perms" type="me.minidigger.hangar.model.Permission" -->

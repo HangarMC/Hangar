@@ -5,6 +5,7 @@
 <#import "*/projects/view.ftlh" as projects />
 <#import "*/utils/editor.ftlh" as editor />
 
+<#--
 @import controllers.sugar.Requests.OreRequest
 @import models.viewhelper.{ScopedProjectData, VersionData}
 @import ore.OreConfig
@@ -16,7 +17,7 @@
 @import util.syntax._
 @import views.html.helper.{CSRF, form}
 @import views.html.utils.editor
-@(v: VersionData, sp: ScopedProjectData)(implicit messages: Messages, request: OreRequest[_], flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
+@(v: VersionData, sp: ScopedProjectData)(implicit messages: Messages, request: OreRequest[_], flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)-->
 
 <@projects.view p=v.p sp=sp active="#versions" noButtons=true>
     <!-- Version header -->
@@ -251,7 +252,7 @@
                 </div>
             </div>
         </div>
-    }</#if>
+    </#if>
 
     <#if request.headerData.globalPerm(Permission.Reviewer)>
         <#if v.v.visibility == Visibility.SoftDelete>
