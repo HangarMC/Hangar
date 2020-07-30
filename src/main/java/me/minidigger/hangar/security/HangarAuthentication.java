@@ -1,13 +1,14 @@
 package me.minidigger.hangar.security;
 
+import me.minidigger.hangar.db.model.UsersTable;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
-import me.minidigger.hangar.db.model.UsersTable;
-
 public class HangarAuthentication extends AbstractAuthenticationToken {
+
+    private static final long serialVersionUID = 3847099128940870714L;
 
     private final String username;
     private UsersTable table; // todo replace me
@@ -18,7 +19,7 @@ public class HangarAuthentication extends AbstractAuthenticationToken {
         setAuthenticated(false);
     }
 
-    public HangarAuthentication(String username, UsersTable usersTable, Collection<? extends GrantedAuthority> authorities) {
+    public HangarAuthentication(String username, UsersTable usersTable, Collection<GrantedAuthority> authorities) {
         super(authorities);
         this.username = username;
         this.table = usersTable;

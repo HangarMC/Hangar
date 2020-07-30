@@ -1,31 +1,44 @@
 package me.minidigger.hangar.config;
 
+import me.minidigger.hangar.filter.HangarAuthenticationFilter;
+import me.minidigger.hangar.security.HangarAuthenticationProvider;
+import me.minidigger.hangar.security.voters.GlobalPermissionVoter;
+import me.minidigger.hangar.service.PermissionService;
+import me.minidigger.hangar.util.RouteHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.AuthenticatedVoter;
+import org.springframework.security.access.vote.RoleVoter;
+import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.access.expression.WebExpressionVoter;
 
-import me.minidigger.hangar.filter.HangarAuthenticationFilter;
-import me.minidigger.hangar.security.HangarAuthenticationProvider;
-import me.minidigger.hangar.util.RouteHelper;
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final HangarAuthenticationProvider authProvider;
+    private final MethodSecurityConfig methodSecurityConfig;
     private final RouteHelper routeHelper;
+    private final PermissionService permissionService;
 
     @Autowired
-    public SecurityConfig(HangarAuthenticationProvider authProvider, RouteHelper routeHelper) {
+    public SecurityConfig(HangarAuthenticationProvider authProvider, MethodSecurityConfig methodSecurityConfig, RouteHelper routeHelper, PermissionService permissionService) {
         this.authProvider = authProvider;
+        this.methodSecurityConfig = methodSecurityConfig;
         this.routeHelper = routeHelper;
+        this.permissionService = permissionService;
     }
 
     @Override
@@ -38,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.exceptionHandling().authenticationEntryPoint((request, response, e) -> response.sendRedirect(routeHelper.getRouteUrl("users.login", "", "", request.getRequestURI())));
 
-        http.authorizeRequests().anyRequest().permitAll(); // we use method security
+        http.authorizeRequests().anyRequest().permitAll().accessDecisionManager(accessDecisionManager()); // we use method security
     }
 
     @Override
@@ -50,5 +63,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
+    }
+
+    @Bean
+    public AccessDecisionManager accessDecisionManager() {
+        List<AccessDecisionVoter<? extends Object>> decisionVoters = Arrays.asList(
+                new WebExpressionVoter(),
+                new RoleVoter(),
+                new AuthenticatedVoter(),
+                new GlobalPermissionVoter(permissionService)
+        );
+        return new UnanimousBased(decisionVoters);
     }
 }

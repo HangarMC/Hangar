@@ -131,7 +131,7 @@ public class UserService {
         int projectCount = projectDao.get().getProjectCountByUserId(user.getId());
         List<Organization> organizations = orgDao.get().getUserOrgs(user.getId());
 //        List<Role> globalRoles = List.of(Role.HANGAR_ADMIN);
-        List<Role> globalRoles = roleService.getGlobalRolesForUser(user.getId());
+        List<Role> globalRoles = roleService.getGlobalRolesForUser(user.getId(), null);
         Permission userPerm = Permission.All;
         Permission orgaPerm = Permission.None;
         return new UserData(getHeaderData(), user, isOrga, projectCount, organizations, globalRoles, userPerm, orgaPerm);

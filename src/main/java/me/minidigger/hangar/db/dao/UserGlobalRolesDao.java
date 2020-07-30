@@ -21,7 +21,11 @@ public interface UserGlobalRolesDao {
     void insert(@BindBean UserGlobalRolesTable entry);
 
     @AllowUnusedBindings
-    @SqlQuery("SELECT r.id, r.name, r.category, r.title, r.color, r.is_assignable, r.rank, r.permission FROM user_global_roles ugr JOIN roles r on ugr.role_id = r.id")
+    @SqlQuery("SELECT r.id, r.name, r.category, r.title, r.color, r.is_assignable, r.rank, r.permission " +
+            "FROM user_global_roles ugr " +
+            "JOIN roles r on ugr.role_id = r.id " +
+            "JOIN users u on ugr.user_id = u.id " +
+            "WHERE (u.id = :id OR u.name = :userName)")
     @RegisterBeanMapper(RolesTable.class)
-    List<RolesTable> getRolesByUserId(long id);
+    List<RolesTable> getRolesByUserId(Long id, String userName);
 }

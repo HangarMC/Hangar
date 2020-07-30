@@ -1,8 +1,10 @@
 package me.minidigger.hangar.service;
 
+import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import me.minidigger.hangar.db.dao.HangarDao;
@@ -68,7 +70,8 @@ public class RoleService {
         userGlobalRolesDao.get().insert(new UserGlobalRolesTable(userId, roleId));
     }
 
-    public List<Role> getGlobalRolesForUser(long userId) {
-        return userGlobalRolesDao.get().getRolesByUserId(userId).stream().map(adf -> Role.fromId(adf.getId())).collect(Collectors.toList());
+    public List<Role> getGlobalRolesForUser(@Nullable Long userId, @Nullable String userName) {
+        Preconditions.checkArgument(userId != null || userName != null, "One of (userId, userName) must be nonnull");
+        return userGlobalRolesDao.get().getRolesByUserId(userId, userName).stream().map(adf -> Role.fromId(adf.getId())).collect(Collectors.toList());
     }
 }
