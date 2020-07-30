@@ -44,6 +44,11 @@ public class RoleCategory extends PGobject {
     }
 
     @Override
+    public String toString() {
+        return "RoleCategory{value:" + this.value + "}";
+    }
+
+    @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (value != null ? value.hashCode() : 0);
