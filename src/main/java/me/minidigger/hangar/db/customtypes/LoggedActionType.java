@@ -1,24 +1,68 @@
 package me.minidigger.hangar.db.customtypes;
 
-import me.minidigger.hangar.db.customtypes.LoggedActionType.IntEntry;
+import me.minidigger.hangar.db.customtypes.LoggedActionType.AbstractContext;
 
-public class LoggedActionType<C extends IntEntry> {
+import java.util.HashMap;
+import java.util.Map;
 
-    public static final LoggedActionType<ProjectContext> PROJECT_VISIBILITY_CHANGE = new LoggedActionType<>("project_visibility_change");
+public class LoggedActionType<C extends AbstractContext<C>> {
+
+    public static final Map<String, LoggedActionType<? extends AbstractContext<?>>> loggedActionTypes = new HashMap<>();
+
+    public static final LoggedActionType<ProjectContext> PROJECT_VISIBILITY_CHANGE = new LoggedActionType<>(LoggedAction.PROJECT_VISIBILITY_CHANGE, "ProjectVisibilityChange", "The project visibility state was changed");
+    public static final LoggedActionType<ProjectContext> PROJECT_RENAMED = new LoggedActionType<>(LoggedAction.PROJECT_RENAMED, "ProjectRename", "The project was renamed");
+    public static final LoggedActionType<ProjectContext> PROJECT_FLAGGED = new LoggedActionType<>(LoggedAction.PROJECT_FLAGGED, "ProjectFlagged", "The project got flagged");
+    public static final LoggedActionType<ProjectContext> PROJECT_SETTINGS_CHANGED = new LoggedActionType<>(LoggedAction.PROJECT_SETTINGS_CHANGED, "ProjectSettingsChanged", "The project settings were changed");
+    public static final LoggedActionType<ProjectContext> PROJECT_MEMBER_REMOVED = new LoggedActionType<>(LoggedAction.PROJECT_MEMBER_REMOVED, "ProjectMemberRemoved", "A Member was removed from the project");
+    public static final LoggedActionType<ProjectContext> PROJECT_ICON_CHANGED = new LoggedActionType<>(LoggedAction.PROJECT_ICON_CHANGED, "ProjectIconChanged", "The project icon was changed");
+    public static final LoggedActionType<ProjectPageContext> PROJECT_PAGE_EDITED = new LoggedActionType<>(LoggedAction.PROJECT_PAGE_EDITED, "ProjectPageEdited", "A project page got edited");
+    public static final LoggedActionType<ProjectContext> PROJECT_FLAG_RESOLVED = new LoggedActionType<>(LoggedAction.PROJECT_FLAG_RESOLVED, "ProjectFlagResolved", "The flag was resolved");
+    public static final LoggedActionType<VersionContext> VERSION_DELETED = new LoggedActionType<>(LoggedAction.VERSION_DELETED, "VersionDeleted", "The version was deleted");
+    public static final LoggedActionType<VersionContext> VERSION_UPLOADED = new LoggedActionType<>(LoggedAction.VERSION_UPLOADED, "VersionUploaded", "A new version was uploaded");
+    public static final LoggedActionType<VersionContext> VERSION_DESCRIPTION_CHANGED = new LoggedActionType<>(LoggedAction.VERSION_DESCRIPTION_CHANGED, "VersionDescriptionEdited", "The version description was edited");
+    public static final LoggedActionType<VersionContext> VERSION_REVIEW_STATE_CHANGED = new LoggedActionType<>(LoggedAction.VERSION_REVIEW_STATE_CHANGED, "VersionReviewStateChanged", "If the review state changed");
+    public static final LoggedActionType<UserContext> USER_TAGLINE_CHANGED = new LoggedActionType<>(LoggedAction.USER_TAGLINE_CHANGED, "UserTaglineChanged", "The user tagline changed");
 
 
-    private final String value;
+    private final LoggedAction value;
     private final String name;
     private C actionContext;
     private final String description;
 
-    private LoggedActionType(String value, String name, String description) {
+    private LoggedActionType(LoggedAction value, String name, String description) {
         this.value = value;
         this.name = name;
         this.description = description;
     }
 
-    public static class ProjectContext extends IntEntry {
+    private LoggedActionType(LoggedActionType<C> actionType, C actionContext) {
+        this.value = actionType.value;
+        this.name = actionType.name;
+        this.description = actionType.description;
+        this.actionContext = actionContext;
+    }
+
+    public LoggedAction getValue() {
+        return value;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public C getActionContext() {
+        return actionContext;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public LoggedActionType<C> with(C actionContext) {
+        return new LoggedActionType<>(this, actionContext);
+    }
+
+    public static class ProjectContext extends AbstractContext<ProjectContext> {
 
         private final long projectId;
 
@@ -36,7 +80,7 @@ public class LoggedActionType<C extends IntEntry> {
         }
     }
 
-    public static class VersionContext extends IntEntry {
+    public static class VersionContext extends AbstractContext<VersionContext> {
 
         private final long versionId;
 
@@ -54,7 +98,7 @@ public class LoggedActionType<C extends IntEntry> {
         }
     }
 
-    public static class ProjectPageContext extends IntEntry {
+    public static class ProjectPageContext extends AbstractContext<ProjectPageContext> {
 
         private final long projectId;
         private final long pageId;
@@ -78,7 +122,7 @@ public class LoggedActionType<C extends IntEntry> {
         }
     }
 
-    public static class UserContext extends IntEntry {
+    public static class UserContext extends AbstractContext<UserContext> {
 
         private final long userId;
 
@@ -96,7 +140,7 @@ public class LoggedActionType<C extends IntEntry> {
         }
     }
 
-    public static class OrganizationContext extends IntEntry {
+    public static class OrganizationContext extends AbstractContext<OrganizationContext> {
 
         private final long orgId;
 
@@ -114,9 +158,9 @@ public class LoggedActionType<C extends IntEntry> {
         }
     }
 
-    abstract static class IntEntry {
+    abstract static class AbstractContext<C> {
 
-        public IntEntry(int value) {
+        public AbstractContext(int value) {
             this.value = value;
         }
 

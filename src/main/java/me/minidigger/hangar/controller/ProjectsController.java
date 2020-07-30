@@ -157,6 +157,7 @@ public class ProjectsController extends HangarController {
         mav.addObject("parentPage");
         mav.addObject("editorOpen", false);
         pagesSerivce.fillPages(mav, projectData.getProject().getId());
+        request.getAd
         // TODO implement show request controller
         return fillModel(mav);
     }

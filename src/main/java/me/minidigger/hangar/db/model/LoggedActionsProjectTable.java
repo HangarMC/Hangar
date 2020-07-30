@@ -17,6 +17,16 @@ public class LoggedActionsProjectTable {
     private String newState;
     private String oldState;
 
+    public LoggedActionsProjectTable(long userId, InetAddress address, LoggedAction action, long projectId, String newState, String oldState) {
+        this.userId = userId;
+        this.address = address;
+        this.action = action;
+        this.projectId = projectId;
+        this.newState = newState;
+        this.oldState = oldState;
+    }
+
+    public LoggedActionsProjectTable() { }
 
     public long getId() {
         return id;
