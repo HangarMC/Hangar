@@ -1,22 +1,25 @@
 package me.minidigger.hangar.model.viewhelpers;
 
-import java.util.List;
-import java.util.Map;
-
 import me.minidigger.hangar.db.customtypes.RoleCategory;
 import me.minidigger.hangar.db.model.ProjectVersionsTable;
 import me.minidigger.hangar.db.model.ProjectVisibilityChangesTable;
 import me.minidigger.hangar.db.model.ProjectsTable;
-import me.minidigger.hangar.db.model.UserProjectRolesTable;
 import me.minidigger.hangar.db.model.UsersTable;
+import me.minidigger.hangar.model.Permission;
 import me.minidigger.hangar.model.Visibility;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ProjectData {
 
     private ProjectsTable joinable;
     private UsersTable projectOwner;
     private int publicVersions;
-    private Map<UsersTable, UserProjectRolesTable> members;
+    private Map<ProjectMember, UsersTable> members;
     private List<Object> flags; // TODO flags, flag, user.name, resolvedBy
     private int noteCount;
     private ProjectVisibilityChangesTable lastVisibilityChange;
@@ -25,12 +28,14 @@ public class ProjectData {
     private String iconUrl;
     private long starCount;
     private long watcherCount;
+    private String namespace;
+    private ProjectViewSettings settings;
 
     public ProjectData() {
         //
     }
 
-    public ProjectData(ProjectsTable joinable, UsersTable projectOwner, int publicVersions, Map<UsersTable, UserProjectRolesTable> members, List<Object> flags, int noteCount, ProjectVisibilityChangesTable lastVisibilityChange, String lastVisibilityChangeUser, ProjectVersionsTable recommendedVersion, String iconUrl, long starCount, long watcherCount) {
+    public ProjectData(ProjectsTable joinable, UsersTable projectOwner, int publicVersions, Map<ProjectMember, UsersTable> members, List<Object> flags, int noteCount, ProjectVisibilityChangesTable lastVisibilityChange, String lastVisibilityChangeUser, ProjectVersionsTable recommendedVersion, String iconUrl, long starCount, long watcherCount, ProjectViewSettings settings) {
         this.joinable = joinable;
         this.projectOwner = projectOwner;
         this.publicVersions = publicVersions;
@@ -43,6 +48,8 @@ public class ProjectData {
         this.iconUrl = iconUrl;
         this.starCount = starCount;
         this.watcherCount = watcherCount;
+        namespace = projectOwner.getName() + "/" + joinable.getSlug();
+        this.settings = settings;
     }
 
     public int getFlagCount() {
@@ -81,7 +88,7 @@ public class ProjectData {
         return publicVersions;
     }
 
-    public Map<UsersTable, UserProjectRolesTable> getMembers() {
+    public Map<ProjectMember, UsersTable> getMembers() {
         return members;
     }
 
@@ -115,5 +122,20 @@ public class ProjectData {
 
     public long getWatcherCount() {
         return watcherCount;
+    }
+
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public ProjectViewSettings getSettings() {
+        return settings;
+    }
+
+    public Map<ProjectMember, UsersTable> filteredMembers(HeaderData headerData) {
+        boolean hasEditMembers = headerData.globalPerm(Permission.ManageSubjectMembers);
+        boolean userIsOwner = headerData.isAuthenticated() ? headerData.getCurrentUser().getId() == projectOwner.getId() : false;
+        if (hasEditMembers || userIsOwner) return members;
+        else return members.entrySet().stream().filter(member -> member.getKey().getIsAccepted()).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
     }
 }

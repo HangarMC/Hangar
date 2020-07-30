@@ -1,5 +1,11 @@
 package me.minidigger.hangar.model;
 
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -53,9 +59,15 @@ public class Permission implements Comparable<Permission> {
     public static final Permission HardDeleteVersion = new Permission(1L << 42);
     public static final Permission EditAllUserSettings = new Permission(1L << 43);
 
-    private final long value;
+    private long value;
 
     private Permission(long value) {
+        this.value = value;
+    }
+
+    public Permission() { }
+
+    public void setValue(long value) {
         this.value = value;
     }
 
@@ -94,5 +106,9 @@ public class Permission implements Comparable<Permission> {
     @Override
     public int compareTo(Permission o) {
         return (int) (value - o.value);
+    }
+
+    public static Permission fromLong(long value) {
+        return new Permission(value);
     }
 }

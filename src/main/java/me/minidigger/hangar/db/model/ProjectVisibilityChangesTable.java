@@ -1,6 +1,8 @@
 package me.minidigger.hangar.db.model;
 
 
+import org.springframework.lang.Nullable;
+
 import java.time.OffsetDateTime;
 
 public class ProjectVisibilityChangesTable {
@@ -10,10 +12,24 @@ public class ProjectVisibilityChangesTable {
     private long createdBy;
     private long projectId;
     private String comment;
+    @Nullable
     private OffsetDateTime resolvedAt;
-    private long resolvedBy;
+    @Nullable
+    private Long resolvedBy;
     private long visibility;
 
+    public ProjectVisibilityChangesTable(long id, OffsetDateTime createdAt, long createdBy, long projectId, String comment, @Nullable OffsetDateTime resolvedAt, @Nullable Long resolvedBy, long visibility) {
+        this.id = id;
+        this.createdAt = createdAt;
+        this.createdBy = createdBy;
+        this.projectId = projectId;
+        this.comment = comment;
+        this.resolvedAt = resolvedAt;
+        this.resolvedBy = resolvedBy;
+        this.visibility = visibility;
+    }
+
+    public ProjectVisibilityChangesTable() { }
 
     public long getId() {
         return id;
@@ -60,16 +76,18 @@ public class ProjectVisibilityChangesTable {
     }
 
 
+    @Nullable
     public OffsetDateTime getResolvedAt() {
         return resolvedAt;
     }
 
-    public void setResolvedAt(OffsetDateTime resolvedAt) {
+    public void setResolvedAt(@Nullable OffsetDateTime resolvedAt) {
         this.resolvedAt = resolvedAt;
     }
 
 
-    public long getResolvedBy() {
+    @Nullable
+    public Long getResolvedBy() {
         return resolvedBy;
     }
 

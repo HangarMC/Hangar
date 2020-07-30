@@ -542,7 +542,6 @@ public class HangarConfig {
     }
 
     // Added to make freemarker realize they are here
-
     public FakeUserConfig getFakeUser() {
         return fakeUser;
     }

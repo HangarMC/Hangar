@@ -21,6 +21,8 @@
 -->
 
 <!-- TODO: Pagination -->
+<#-- @ftlvariable name="j" type="java.util.Set<me.minidigger.hangar.model.viewhelpers.ProjectMember>" -->
+<#-- @ftlvariable name="perms" type="me.minidigger.hangar.model.Permission" -->
 <#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
 <#macro memberList j perms editable=false removeCall="" settingsCall="" saveCall="">
     <#if j.members?size != 0>
@@ -98,33 +100,34 @@
 
             <ul class="list-members list-group">
                 <!-- Member list -->
-                @j.filteredMembers.map { case (role, user) =>
-                <li class="list-group-item">
-                    <@userAvatar.userAvatar userName=user.name avatarUrl=user.avatarUrl clazz="user-avatar-xs"></@userAvatar.userAvatar>
-                    <a class="username" href="${routes.getRouteUrl("users.showProjects", user.name)}">
-                        ${user.name}
-                    </a>
-                    <p style="display: none;" class="role-id">${role.id}</p>
-                    <#if editable && perms.has(Permission.ManageSubjectMembers) && !role.role.permissions.has(Permission.IsOrganizationOwner)>
-                        <a href="#">
-                            <i style="padding-left:5px" class="fas fa-trash" data-toggle="modal" data-target="#modal-user-delete"></i>
+                <#-- @ftlvariable name="projectMember" type="me.minidigger.hangar.model.viewhelpers.ProjectMember" -->
+                <#-- @ftlvariable name="user" type="me.minidigger.hangar.db.model.UsersTable" -->
+                <#list j.filteredMembers(headerData) as projectMember, user>
+                    <li class="list-group-item">
+                        <@userAvatar.userAvatar userName=user.name avatarUrl=user.avatarUrl clazz="user-avatar-xs"></@userAvatar.userAvatar>
+                        <a class="username" href="${routes.getRouteUrl("users.showProjects", user.name)}">
+                            ${user.name}
                         </a>
-                        <a href="#"><i style="padding-left:5px" class="fas fa-edit"></i></a>
-                    </#if>
+                        <p style="display: none;" class="role-id">${projectMember.role.roleId}</p>
+                        <#if editable && perms.has(Permission.ManageSubjectMembers) && !projectMember.role.permissions.has(Permission.IsOrganizationOwner)>
+                            <a href="#">
+                                <i style="padding-left:5px" class="fas fa-trash" data-toggle="modal" data-target="#modal-user-delete"></i>
+                            </a>
+                            <a href="#"><i style="padding-left:5px" class="fas fa-edit"></i></a>
+                        </#if>
 
-                    <span class="minor pull-right">
-                <#if !role.isAccepted>
-                    <span class="minor">(Invited as ${role.role.title})</span>
-                <#else>
-                    ${role.role.title}
-                </#if>
-                </span>
-
-                </li>
-                }
+                        <span class="minor pull-right">
+                            <#if !projectMember.isAccepted>
+                                <span class="minor">(Invited as ${projectMember.role.title})</span>
+                            <#else>
+                                ${projectMember.role.title}
+                            </#if>
+                        </span>
+                    </li>
+                </#list>
 
                 <!-- User search -->
-                <#if perms.has(Permission.ManageSubjectMembers) && editable>
+                <#if perms.has(@helper["me.minidigger.hangar.model.Permission"].ManageSubjectMembers) && editable>
                     <li class="list-group-item">
                         <@userSearch.userSearch />
                     </li>

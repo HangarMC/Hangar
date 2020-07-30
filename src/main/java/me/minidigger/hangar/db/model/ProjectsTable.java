@@ -7,6 +7,7 @@ import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 import java.time.OffsetDateTime;
+import java.util.Collection;
 
 public class ProjectsTable {
 
@@ -24,7 +25,7 @@ public class ProjectsTable {
     private String description;
     private Visibility visibility;
     private Object notes; // TODO jsonb
-    private String keywords;
+    private Collection<String> keywords;
     private String homepage;
     private String issues;
     private String source;
@@ -177,11 +178,11 @@ public class ProjectsTable {
     }
 
 
-    public String getKeywords() {
+    public Collection<String> getKeywords() {
         return keywords;
     }
 
-    public void setKeywords(String keywords) {
+    public void setKeywords(Collection<String> keywords) {
         this.keywords = keywords;
     }
 

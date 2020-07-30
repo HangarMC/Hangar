@@ -1,6 +1,8 @@
 package me.minidigger.hangar.model.viewhelpers;
 
 import me.minidigger.hangar.model.Permission;
+import org.jdbi.v3.core.annotation.Unmappable;
+import org.jdbi.v3.core.mapper.Nested;
 
 public class ScopedProjectData {
 
@@ -14,10 +16,12 @@ public class ScopedProjectData {
         return permissions.has(perm);
     }
 
+    @Unmappable
     public boolean isCanPostAsOwnerOrga() {
         return canPostAsOwnerOrga;
     }
 
+    @Unmappable
     public void setCanPostAsOwnerOrga(boolean canPostAsOwnerOrga) {
         this.canPostAsOwnerOrga = canPostAsOwnerOrga;
     }
@@ -50,7 +54,9 @@ public class ScopedProjectData {
         return permissions;
     }
 
+    @Nested("perm")
     public void setPermissions(Permission permissions) {
         this.permissions = permissions;
+        this.canPostAsOwnerOrga = permissions.has(Permission.PostAsOrganization);
     }
 }

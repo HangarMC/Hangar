@@ -7,13 +7,15 @@ import me.minidigger.hangar.db.model.ProjectPagesTable;
 import me.minidigger.hangar.db.model.ProjectVersionsTable;
 import me.minidigger.hangar.db.model.ProjectVisibilityChangesTable;
 import me.minidigger.hangar.db.model.ProjectsTable;
-import me.minidigger.hangar.db.model.UserProjectRolesTable;
 import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.generated.Project;
 import me.minidigger.hangar.model.generated.ProjectNamespace;
 import me.minidigger.hangar.model.generated.ProjectSettings;
 import me.minidigger.hangar.model.generated.UserActions;
 import me.minidigger.hangar.model.viewhelpers.ProjectData;
+import me.minidigger.hangar.model.viewhelpers.ProjectMember;
+import me.minidigger.hangar.model.viewhelpers.ProjectViewSettings;
+import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
 import me.minidigger.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +24,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -57,7 +58,9 @@ public class ProjectService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         int publicVersions = 0;
-        Map<UsersTable, UserProjectRolesTable> members = new HashMap<>();
+        Map<ProjectMember, UsersTable> projectMembers = projectDao.get().getProjectMembers(projectsTable.getId());
+        projectMembers.forEach(ProjectMember::setUser); // I don't know why the SQL query isn't doing this automatically...
+//        System.out.println(projectMembers.keySet().stream().findFirst().get().getRole().getPermissions().toNamed()); TODO REMOVE
         List<Object> flags = new ArrayList<>();
         int noteCount = 0;
         ProjectVisibilityChangesTable lastVisibilityChange = null;
@@ -66,7 +69,34 @@ public class ProjectService {
         String iconUrl = "";
         long starCount = 0;
         long watcherCount = 0;
-        return new ProjectData(projectsTable, projectOwner, publicVersions, members, flags, noteCount, lastVisibilityChange, lastVisibilityChangeUser, recommendedVersion, iconUrl, starCount, watcherCount);
+        ProjectViewSettings settings = new ProjectViewSettings(
+                projectsTable.getKeywords(),
+                projectsTable.getHomepage(),
+                projectsTable.getIssues(),
+                projectsTable.getSource(),
+                projectsTable.getSupport(),
+                projectsTable.getLicenseName(),
+                projectsTable.getLicenseUrl(),
+                projectsTable.getForumSync()
+        );
+        return new ProjectData(projectsTable,
+                projectOwner,
+                publicVersions,
+                projectMembers,
+                flags,
+                noteCount,
+                lastVisibilityChange,
+                lastVisibilityChangeUser,
+                recommendedVersion,
+                iconUrl,
+                starCount,
+                watcherCount,
+                settings
+        );
+    }
+
+    public ScopedProjectData getScopedProjectData(long projectId, long userId) {
+        return projectDao.get().getScopedProjectData(projectId, userId);
     }
 
     public ProjectPagesTable getPage(long projectId, String slug) {

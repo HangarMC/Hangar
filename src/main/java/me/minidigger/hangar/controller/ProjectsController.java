@@ -1,8 +1,27 @@
 package me.minidigger.hangar.controller;
 
+
 import me.minidigger.hangar.config.HangarConfig;
+import me.minidigger.hangar.db.dao.HangarDao;
+import me.minidigger.hangar.db.dao.ProjectDao;
+import me.minidigger.hangar.db.dao.UserDao;
+import me.minidigger.hangar.db.model.ProjectsTable;
+import me.minidigger.hangar.db.model.UsersTable;
+import me.minidigger.hangar.model.Category;
+import me.minidigger.hangar.model.Permission;
+import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.model.viewhelpers.ProjectPage;
+import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
+import me.minidigger.hangar.service.OrgService;
+import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.service.project.PagesSerivce;
+import me.minidigger.hangar.service.project.ProjectFactory;
+import me.minidigger.hangar.service.project.ProjectService;
+import me.minidigger.hangar.util.AlertUtil;
+import me.minidigger.hangar.util.AlertUtil.AlertType;
+import me.minidigger.hangar.util.HangarException;
+import me.minidigger.hangar.util.RouteHelper;
+import me.minidigger.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
@@ -13,24 +32,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.Set;
 import java.util.regex.Pattern;
-
-import me.minidigger.hangar.db.dao.HangarDao;
-import me.minidigger.hangar.db.dao.UserDao;
-import me.minidigger.hangar.db.model.ProjectsTable;
-import me.minidigger.hangar.db.model.UsersTable;
-import me.minidigger.hangar.model.Category;
-import me.minidigger.hangar.model.Permission;
-import me.minidigger.hangar.model.viewhelpers.ProjectData;
-import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
-import me.minidigger.hangar.service.OrgService;
-import me.minidigger.hangar.service.UserService;
-import me.minidigger.hangar.service.project.ProjectFactory;
-import me.minidigger.hangar.service.project.ProjectService;
-import me.minidigger.hangar.util.AlertUtil;
-import me.minidigger.hangar.util.HangarException;
-import me.minidigger.hangar.util.RouteHelper;
 
 @Controller
 public class ProjectsController extends HangarController {
@@ -45,9 +51,10 @@ public class ProjectsController extends HangarController {
     private final HangarDao<UserDao> userDao;
     private final ProjectService projectService;
     private final PagesSerivce pagesSerivce;
+    private final HangarDao<ProjectDao> projectDao;
 
     @Autowired
-    public ProjectsController(HangarConfig hangarConfig, UserService userService, OrgService orgService, RouteHelper routeHelper, ProjectFactory projectFactory, HangarDao<UserDao> userDao, ProjectService projectService, PagesSerivce pagesSerivce) {
+    public ProjectsController(HangarConfig hangarConfig, UserService userService, OrgService orgService, RouteHelper routeHelper, ProjectFactory projectFactory, HangarDao<UserDao> userDao, ProjectService projectService, HangarDao<ProjectDao> projectDao, PagesSerivce pagesSerivce) {
         this.hangarConfig = hangarConfig;
         this.userService = userService;
         this.orgService = orgService;
@@ -56,6 +63,7 @@ public class ProjectsController extends HangarController {
         this.userDao = userDao;
         this.projectService = projectService;
         this.pagesSerivce = pagesSerivce;
+        this.projectDao = projectDao;
     }
 
     @PostMapping(value = "/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -69,19 +77,19 @@ public class ProjectsController extends HangarController {
         String uploadError = projectFactory.getUploadError(currentUser);
         if (uploadError != null) {
             ModelAndView mav = showCreator();
-            AlertUtil.showAlert(mav, "error", uploadError);
+            AlertUtil.showAlert(mav, AlertType.ERROR, uploadError);
             return fillModel(mav);
         }
         // validate input
         Category category = Category.fromTitle(cat);
         if (category == null) {
             ModelAndView mav = showCreator();
-            AlertUtil.showAlert(mav, "error", "error.project.categoryNotFound");
+            AlertUtil.showAlert(mav, AlertType.ERROR, "error.project.categoryNotFound");
             return fillModel(mav);
         }
         if (!ID_PATTERN.matcher(pluginId).matches()) {
             ModelAndView mav = showCreator();
-            AlertUtil.showAlert(mav, "error", "error.project.invalidPluginId");
+            AlertUtil.showAlert(mav, AlertType.ERROR, "error.project.invalidPluginId");
             return fillModel(mav);
         }
         // TODO check that currentUser can upload to owner
@@ -89,7 +97,7 @@ public class ProjectsController extends HangarController {
         UsersTable ownerUser = userDao.get().getById(owner);
         if (ownerUser == null) {
             ModelAndView mav = showCreator();
-            AlertUtil.showAlert(mav, "error", "error.project.ownerNotFound");
+            AlertUtil.showAlert(mav, AlertType.ERROR, "error.project.ownerNotFound");
             return fillModel(mav);
         }
 
@@ -99,7 +107,7 @@ public class ProjectsController extends HangarController {
             project = projectFactory.createProject(ownerUser, name, pluginId, category, description);
         } catch (HangarException ex) {
             ModelAndView mav = showCreator();
-            AlertUtil.showAlert(mav, "error", ex.getMessageKey());
+            AlertUtil.showAlert(mav, AlertType.ERROR, ex.getMessageKey());
             return fillModel(mav);
         }
 
@@ -137,8 +145,7 @@ public class ProjectsController extends HangarController {
         ModelAndView mav = new ModelAndView("projects/pages/view");
         ProjectData projectData = projectService.getProjectData(author, slug);
         mav.addObject("p", projectData);
-        ScopedProjectData sp = new ScopedProjectData();
-        sp.setPermissions(Permission.IsProjectOwner.add(Permission.EditPage));
+        ScopedProjectData sp = projectService.getScopedProjectData(projectData.getProject().getId(), projectData.getProjectOwner().getId());
         mav.addObject("sp", sp);
         mav.addObject("page", ProjectPage.of(pagesSerivce.getPage(projectData.getProject().getId(), hangarConfig.pages.home.getName())));
         mav.addObject("parentPage");
@@ -195,20 +202,37 @@ public class ProjectsController extends HangarController {
 
     @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/manage")
-    public Object showSettings(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement showSettings request controller
+    public ModelAndView showSettings(@PathVariable String author, @PathVariable String slug) {
+        ModelAndView mav = new ModelAndView("projects/settings");
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        mav.addObject("p", projectData);
+        ScopedProjectData scopedProjectData = projectService.getScopedProjectData(projectData.getProject().getId(), projectData.getProjectOwner().getId());
+        mav.addObject("sp", scopedProjectData);
+        // TODO add deploymentKey and iconUrl
+        return fillModel(mav);
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/manage/delete")
-    public Object softDelete(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement softDelete request controller
+    @PostMapping(value = "/{author}/{slug}/manage/delete", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public RedirectView softDelete(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String comment, RedirectAttributes ra) {
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        projectFactory.softDeleteProject(projectData, comment);
+
+        // TODO user action log
+        ra.addFlashAttribute("alertType", AlertType.SUCCESS);
+        ra.addFlashAttribute("alertMsg", "project.deleted");// TODO add old project name as msg arg
+        return new RedirectView(routeHelper.getRouteUrl("showHome"));
     }
 
     @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/manage/hardDelete")
-    public Object delete(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement delete request controller
+    public RedirectView delete(@PathVariable String author, @PathVariable String slug, RedirectAttributes ra) {
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        projectFactory.hardDeleteProject(projectData);
+        // TODO UAL
+        ra.addFlashAttribute("alertType", AlertType.SUCCESS);
+        ra.addFlashAttribute("alertMsg", "project.deleted");// TODO add old project name as msg arg
+        return new RedirectView(routeHelper.getRouteUrl("showHome"));
     }
 
     @Secured("ROLE_USER")
@@ -218,15 +242,54 @@ public class ProjectsController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/manage/rename")
-    public Object rename(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement rename request controller
+    @PostMapping(value = "/{author}/{slug}/manage/rename", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public Object rename(@PathVariable String author, @PathVariable String slug, @RequestParam("name") String newName) {
+        ProjectData projectData = projectService.getProjectData(author, slug);
+
+        try {
+            projectFactory.checkProjectAvailability(projectData.getProjectOwner(), newName);
+        } catch (HangarException e) {
+            ModelAndView mav = showSettings(author, slug);
+            AlertUtil.showAlert(mav, AlertType.ERROR, "error.nameUnavailable");
+            AlertUtil.showAlert(mav, AlertType.ERROR, e.getMessageKey());
+            return mav;
+        }
+
+        projectData.getProject().setName(newName);
+        projectData.getProject().setSlug(StringUtils.slugify(newName));
+        projectDao.get().update(projectData.getProject());
+        // TODO User action log
+        return new RedirectView(routeHelper.getRouteUrl("projects.show", author, newName));
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/manage/save")
-    public Object save(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement save request controller
+    @PostMapping(value = "/{author}/{slug}/manage/save", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public RedirectView save(@PathVariable String author,
+                             @PathVariable String slug,
+                             @RequestParam Category category,
+                             @RequestParam(required = false) String keywords,
+                             @RequestParam(required = false) String issues,
+                             @RequestParam(required = false) String source,
+                             @RequestParam(value = "license-name", required = false) String licenseName,
+                             @RequestParam(value = "license-url", required = false) String licenseUrl,
+                             @RequestParam("forum-sync") boolean forumSync,
+                             @RequestParam String description,
+                             @RequestParam("update-icon") boolean updateIcon) {
+        ProjectsTable projectsTable = projectService.getProjectData(author, slug).getProject();
+        projectsTable.setCategory(category);
+        Set<String> keywordSet = keywords != null ? Set.of(keywords.split(" ")) : Set.of();
+        projectsTable.setKeywords(keywordSet);
+        projectsTable.setIssues(issues);
+        projectsTable.setSource(source);
+        projectsTable.setLicenseName(licenseName);
+        projectsTable.setLicenseUrl(licenseUrl);
+        projectsTable.setForumSync(forumSync);
+        projectsTable.setDescription(description);
+        projectDao.get().update(projectsTable);
+        // TODO update icon handling
+        // TODO user action log
+
+        return new RedirectView(routeHelper.getRouteUrl("projects.show", author, slug)); // TODO implement save request controller
     }
 
     @Secured("ROLE_USER")
