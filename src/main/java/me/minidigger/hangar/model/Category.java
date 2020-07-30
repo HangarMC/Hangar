@@ -3,6 +3,10 @@ package me.minidigger.hangar.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 public enum Category {
     ADMIN_TOOLS(0, "Admin Tools", "fa-server", "admin_tools"),
     CHAT(1, "Chat", "fa-comment", "chat"),
@@ -77,5 +81,9 @@ public enum Category {
             }
         }
         return null;
+    }
+
+    public static Set<Category> visible() {
+        return Arrays.stream(Category.values()).filter(Category::isVisible).collect(Collectors.toSet());
     }
 }

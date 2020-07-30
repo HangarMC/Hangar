@@ -1,6 +1,7 @@
 package me.minidigger.hangar.controller;
 
 import me.minidigger.hangar.util.AlertUtil;
+import me.minidigger.hangar.util.AlertUtil.AlertType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -70,7 +71,7 @@ public class UsersController extends HangarController {
             if (success) {
                 return new ModelAndView("redirect:" + returnUrl);
             } else {
-                return applicationController.showHome(); // on a scale of banana to kneny, how bad is it to call another controller?
+                return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
             }
         }
     }
@@ -148,7 +149,7 @@ public class UsersController extends HangarController {
     public ModelAndView saveTagline(@PathVariable String user, @RequestParam("tagline") String tagline) {
         if (tagline.length() > hangarConfig.user.getMaxTaglineLen()) {
             ModelAndView mav = showProjects(user);
-            AlertUtil.showAlert(mav, AlertUtil.ERROR, "error.tagline.tooLong"); // TODO pass length param to key
+            AlertUtil.showAlert(mav, AlertType.ERROR, "error.tagline.tooLong"); // TODO pass length param to key
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", user));
         }
         // TODO user action log

@@ -3,8 +3,12 @@
 <#import "*/utils/form.ftlh" as form>
 <#import "*/utils/csrf.ftlh" as csrf>
 <#import "*/projects/view.ftlh" as projects />
+<#import "*/projects/helper/btnHide.ftlh" as btnHide />
+<#import "*/projects/helper/inputSettings.ftlh" as inputSettings />
+<#import "*/utils/userAvatar.ftlh" as userAvatar />
+<#import "*/users/memberList.ftlh" as memberList />
 
-@import controllers.sugar.Requests.OreRequest
+<#--@import controllers.sugar.Requests.OreRequest
 @import models.viewhelper.{ProjectData, ScopedProjectData}
 @import ore.OreConfig
 @import ore.db.Model
@@ -16,7 +20,7 @@
 @import views.html.utils
 
 @(p: ProjectData, sp: ScopedProjectData, deploymentKey: Option[Model[ProjectApiKey]], iconUrl: String)(implicit messages: Messages, flash: Flash,
-        request: OreRequest[_], config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
+        request: OreRequest[_], config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)-->
 
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/projectManage.js" />"></script>
@@ -25,7 +29,7 @@
     <script type="text/javascript" src="<@hangar.url "javascripts/keyGen.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/memberList.js" />"></script>
-    <script @CSPNonce.attr>
+    <script <#--@CSPNonce.attr -->>
         projectName = "${p.project.name}";
         PROJECT_OWNER = "${p.project.ownerName}";
         PROJECT_SLUG = "${p.project.slug}";
@@ -35,7 +39,10 @@
     </script>
 </#assign>
 
-<@projects.view p=p sp=sp active="#settings" =additionalScripts=scriptsVar>
+<#-- @ftlvariable name="p" type="me.minidigger.hangar.model.viewhelpers.ProjectData" -->
+<#-- @ftlvariable name="sp" type="me.minidigger.hangar.model.viewhelpers.ScopedProjectData" -->
+<#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
+<@projects.view p=p sp=sp active="#settings" additionalScripts=scriptsVar>
 
     <div class="row">
         <div class="col-md-8">
@@ -44,8 +51,8 @@
             <div class="panel panel-default panel-settings">
                 <div class="panel-heading">
                     <h3 class="panel-title pull-left"><@spring.message "project.settings" /></h3>
-                    <#if request.headerData.globalPerm(Permission.SeeHidden)>
-                        @projects.helper.btnHide(p.project.namespace, p.project.visibility)
+                    <#if headerData.globalPerm(Permission.SeeHidden)>
+                        <@btnHide.btnHide p.namespace, p.visibility />
 
                         <div class="modal fade" id="modal-visibility-comment" tabindex="-1" role="dialog" aria-labelledby="modal-visibility-comment">
                             <div class="modal-dialog" role="document">
@@ -70,50 +77,48 @@
                 </div>
 
                 <div class="panel-body">
-                    @projects.helper.inputSettings(
-                        form = "save",
-                        homepage = p.project.settings.homepage,
-                        issues = p.project.settings.issues,
-                        source = p.project.settings.source,
-                        support = p.project.settings.support,
-                        licenseName = p.project.settings.licenseName,
-                        licenseUrl = p.project.settings.licenseUrl,
-                        selected = Some(p.project.category),
-                        forumSync = p.project.settings.forumSync,
-                        keywords = p.project.settings.keywords
-                    )
-
+                    <@inputSettings.inputSettings
+                        "save"
+                        p.settings.homepage
+                        p.settings.issues
+                        p.settings.source
+                        p.settings.support
+                        p.settings.licenseName
+                        p.settings.licenseUrl
+                        p.project.category
+                        p.settings.forumSync
+                        p.settings.keywords
+                    />
                         <!-- Description -->
-                    @defining(config.ore.projects.maxDescLen) { maxLength =>
-                        <div class="setting">
-                            <div class="setting-description">
-                                <h4>Description</h4>
-                                <p>A short description of your project (max @maxLength).</p>
-                            </div>
-                            <input form="save" class="form-control" type="text" id="description"
-                            name="description" maxlength="@maxLength"
-                                @p.project.description.map { description =>
-                                value="@description"
-                                }.getOrElse {
-                                    placeholder="<@spring.message "version.create.noDescription" />"
-                            }
-                            />
-                            <div class="clearfix"></div>
+                    <div class="setting">
+                        <div class="setting-description">
+                            <h4>Description</h4>
+                            <p>A short description of your project (max ${config.projects.maxDescLen})</p>
                         </div>
-                    }
+                        <input
+                                type="text"
+                                form="save"
+                                class="form-control"
+                                id="description"
+                                name="description"
+                                maxlength="${config.projects.maxDescLen}"
+                                <#if p.project.description?has_content>
+                                    value="${p.project.description}"
+                                <#else>
+                                    placeholder="<@spring.message "version.create.noDescription" />"
+                                </#if>
+                        >
+                        <div class="clearfix"></div>
+                    </div>
 
                         <!-- Project icon -->
                     <div class="setting setting-icon">
                         <form id="form-icon" enctype="multipart/form-data">
-                            @CSRF.formField
+                            <@csrf.formField />
                             <div class="setting-description">
                                 <h4>Icon</h4>
-
-                                @utils.userAvatar(
-                                    Some(p.projectOwner.name),
-                                    p.projectOwner.avatarUrl,
-                                    imgSrc = iconUrl,
-                                    clazz = "user-avatar-md")
+                                <#-- @ftlvariable name="iconUrl" type="java.lang.String" -->
+                                <@userAvatar.userAvatar userName=p.projectOwner.name avatarUrl=p.projectOwner.avatarUrl imgSrc=iconUrl clazz="user-avatar-md" />
 
                                 <input class="form-control-static" type="file" id="icon" name="icon" />
                             </div>
@@ -132,7 +137,7 @@
                         </form>
                     </div>
 
-                    <#if sp.perms(Permission.EditApiKeys)>
+                    <#if sp.perms(@helper["me.minidigger.hangar.model.Permission"].EditApiKeys)>
                         <div class="setting">
                             <div class="setting-description">
                                 <h4><@spring.message "project.settings.deployKey" /></h4>
@@ -140,6 +145,7 @@
                                     <@spring.message "project.settings.deployKey.info" />
                                     <a href="#"><i class="fas fa-question-circle"></i></a>
                                 </p>
+                                <#-- TODO project api keys -->
                                 @deploymentKey.map { key =>
                                 <input class="form-control input-key" type="text" value="@key.value" readonly />
                                 }.getOrElse {
@@ -171,18 +177,17 @@
                         </div>
                         <div class="setting-content">
                             <input form="rename" id="name" name="name" class="form-control" type="text"
-                            value="@p.project.name"
+                            value="${p.project.name}"
                             maxlength="@config.ore.projects.maxNameLen">
-                            <button id="btn-rename" data-toggle="modal" data-target="#modal-rename"
-                            class="btn btn-warning" disabled>
-                            <@spring.message "project.rename" />
+                            <button id="btn-rename" data-toggle="modal" data-target="#modal-rename" class="btn btn-warning" disabled>
+                                <@spring.message "project.rename" />
                             </button>
                         </div>
                         <div class="clearfix"></div>
                     </div>
 
                         <!-- Delete -->
-                    <#if sp.perms(Permission.DeleteProject)>
+                    <#if sp.perms(@helper["me.minidigger.hangar.model.Permission"].DeleteProject)>
                         <div class="setting">
                             <div class="setting-description">
                                 <h4 class="danger">Delete</h4>
@@ -198,14 +203,14 @@
                     </div>
                     </#if>
 
-                    <#if request.headerData.globalPerm(Permission.HardDeleteProject)>
+                    <#if headerData.globalPerm(@helper["me.minidigger.hangar.model.Permission"].HardDeleteProject)>
                         <div class="setting striped">
                             <div class="setting-description">
                                 <h4 class="danger">Hard Delete</h4>
                                 <p>Once you delete a project, it cannot be recovered.</p>
                             </div>
                             <div class="setting-content">
-                                <button class="btn btn-delete btn-danger btn-visibility-change" data-project="@p.project.ownerName/@p.project.slug" data-level="-99" data-modal="true">
+                                <button class="btn btn-delete btn-danger btn-visibility-change" data-project="${p.project.ownerName}/${p.project.slug}" data-level="-99" data-modal="true">
                                     <strong>Hard Delete</strong>
                                 </button>
                             </div>
@@ -220,18 +225,24 @@
                             <i class="fas fa-check"></i> Save changes
                         </button>
                     </@form.form>
+
+                    <script>
+                        // Basically, hides the form value if its empty. Makes the controller simpler
+                        $("#save").submit(function() {
+                            $(":input[form=save]").filter(function () {
+                                return !this.value;
+                            }).attr("disabled", true);
+
+                            return true;
+                        });
+                    </script>
                 </div>
             </div>
         </div>
 
             <!-- Side panel -->
         <div class="col-md-4">
-            @users.memberList(p,
-                editable = true,
-                perms = sp.permissions,
-                removeCall = routes.getRouteUrl("projects.removeMember", p.project.ownerName, p.project.slug),
-                settingsCall = routes.getRouteUrl("projects.showSettings", p.project.ownerName, p.project.slug)
-            )
+            <@memberList.memberList j=p perms=sp.permissions editable=true removeCall=routes.getRouteUrl("projects.removeMember", p.project.ownerName, p.project.slug) settingsCall=routes.getRouteUrl("projects.showSettings", p.project.ownerName, p.project.slug) />
         </div>
     </div>
     </div>

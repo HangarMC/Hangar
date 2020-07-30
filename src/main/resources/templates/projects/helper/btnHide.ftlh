@@ -1,9 +1,7 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
 
-@import ore.data.project.ProjectNamespace
-@import ore.models.project.Visibility
-
+<#assign Visibility=@helper["me.minidigger.hangar.model.Visibility"] />
 <#macro btnHide namespace projectVisibility>
     <div class="btn-group">
         <button class="btn btn-sm btn-alert btn-hide-dropdown dropdown-toggle" type="button" id="visibility-actions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-project="${namespace}" style="color: black">
@@ -11,7 +9,7 @@
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="visibility-actions">
-            <#list Visibility.values.sortBy(_.value) as visibility>
+            <#list Visibility.values as visibility>
                 <li>
                     <a href="#" class="btn-visibility-change" data-project="${namespace}" data-level="${visibility.value}" <#if visibility.showModal> data-modal="true" </#if>>
                         <@spring.message "visibility.name." + visibility.nameKey /> <#if projectVisibility == visibility>  <i class="fa fa-check" style="color: black" aria-hidden="true"></i> </#if>

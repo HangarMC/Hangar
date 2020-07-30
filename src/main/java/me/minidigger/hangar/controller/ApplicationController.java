@@ -1,10 +1,13 @@
 package me.minidigger.hangar.controller;
 
+import me.minidigger.hangar.util.AlertUtil;
+import me.minidigger.hangar.util.AlertUtil.AlertType;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MimeType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,13 +15,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import me.minidigger.hangar.controller.HangarController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import springfox.documentation.schema.Enums;
 
 @Controller
 public class ApplicationController extends HangarController {
 
     @RequestMapping("/")
-    public ModelAndView showHome() {
-        return fillModel( new ModelAndView("home"));
+    public ModelAndView showHome(@ModelAttribute("alertType") String alertType, @ModelAttribute("alertMsg") String alertMsg) {
+        ModelAndView mav = new ModelAndView("home");
+        AlertType type;
+        try {
+            type = AlertType.valueOf(alertType);
+        } catch (IllegalArgumentException e) {
+            type = null;
+        }
+        if (type != null && alertMsg != null)
+            AlertUtil.showAlert(mav, type, alertMsg);
+        return fillModel(mav);
     }
 
     @Secured("ROLE_USER")

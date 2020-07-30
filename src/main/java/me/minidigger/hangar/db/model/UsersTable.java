@@ -2,6 +2,7 @@ package me.minidigger.hangar.db.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.jdbi.v3.core.annotation.Unmappable;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;
@@ -37,6 +38,7 @@ public class UsersTable implements Serializable {
     }
 
     @JsonIgnore
+    @Unmappable
     public UsersTable getUser() {
         return this; // TODO dummy to fix frontend
     }
