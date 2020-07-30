@@ -1,5 +1,7 @@
 package me.minidigger.hangar.service.project;
 
+import me.minidigger.hangar.db.dao.ProjectPageDao;
+import me.minidigger.hangar.db.model.ProjectPagesTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,22 +20,28 @@ import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.HangarException;
 import me.minidigger.hangar.util.StringUtils;
 
+import java.time.OffsetDateTime;
+
 @Component
 public class ProjectFactory {
 
     private final HangarConfig hangarConfig;
     private final HangarDao<ProjectChannelDao> projectChannelDao;
     private final HangarDao<ProjectDao> projectDao;
+    private final HangarDao<ProjectPageDao> projectPagesDao;
     private final RoleService roleService;
     private final UserService userService;
+    private final PagesFactory pagesFactory;
 
     @Autowired
-    public ProjectFactory(HangarConfig hangarConfig, HangarDao<ProjectChannelDao> projectChannelDao, HangarDao<ProjectDao> projectDao, RoleService roleService, UserService userService) {
+    public ProjectFactory(HangarConfig hangarConfig, HangarDao<ProjectChannelDao> projectChannelDao, HangarDao<ProjectDao> projectDao, HangarDao<ProjectPageDao> projectPagesDao, RoleService roleService, UserService userService, PagesFactory pagesFactory) {
         this.hangarConfig = hangarConfig;
         this.projectChannelDao = projectChannelDao;
         this.projectDao = projectDao;
         this.roleService = roleService;
         this.userService = userService;
+        this.pagesFactory = pagesFactory;
+        this.projectPagesDao = projectPagesDao;
     }
 
     public String getUploadError(UsersTable user) {
@@ -50,6 +58,9 @@ public class ProjectFactory {
 
         ProjectChannelsTable channelsTable = new ProjectChannelsTable(hangarConfig.channels.getNameDefault(), hangarConfig.channels.getColorDefault().getValue(), -1);
 
+        String content = "# " + name + "\n\n" + hangarConfig.pages.home.getMessage();
+        ProjectPagesTable pagesTable = new ProjectPagesTable(-1, OffsetDateTime.now(), -1, hangarConfig.pages.home.getName(), StringUtils.slugify(hangarConfig.pages.home.getName()), content, false, null);
+
         InvalidProjectReason invalidProjectReason;
         if (!hangarConfig.isValidProjectName(name)) {
             invalidProjectReason = InvalidProjectReason.INVALID_NAME;
@@ -63,6 +74,9 @@ public class ProjectFactory {
         projectsTable = projectDao.get().insert(projectsTable);
         channelsTable.setProjectId(projectsTable.getId());
         projectChannelDao.get().insert(channelsTable);
+
+        pagesTable.setProjectId(projectsTable.getId());
+        projectPagesDao.get().insert(pagesTable);
 
         roleService.addRole(projectsTable, ownerUser.getId(), Role.PROJECT_OWNER, true);
 

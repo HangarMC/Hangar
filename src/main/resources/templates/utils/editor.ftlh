@@ -71,7 +71,7 @@
 
         <!-- Edit window -->
         <div class="page-edit" style="display: none ;">
-            <textarea name="content" class="form-control" <#if targetForm??>
+            <textarea name="content" class="form-control" <#if targetForm?has_content>
                 form="${targetForm}"
             <#else>
                 form="form-editor-save"
@@ -84,8 +84,8 @@
         <#if savable>
             <@form.form method="POST" action=saveCall id="form-editor-save">
                 <@csrf.formField />
-                <#if extraFormValue??>
-                    <input type="hidden" value="@extraFormValue" name="name">
+                <#if extraFormValue?has_content>
+                    <input type="hidden" value="${extraFormValue}" name="name">
                 </#if>
             </@form.form>
         </#if>

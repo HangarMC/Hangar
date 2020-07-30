@@ -1,9 +1,9 @@
 package me.minidigger.hangar.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-
 import freemarker.template.TemplateException;
-
+import me.minidigger.hangar.util.RouteHelper;
+import no.api.freemarker.java8.Java8ObjectWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
 import org.springframework.context.MessageSource;
@@ -26,9 +26,6 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
-
-import me.minidigger.hangar.util.RouteHelper;
-import no.api.freemarker.java8.Java8ObjectWrapper;
 
 @EnableWebMvc
 @Configuration
