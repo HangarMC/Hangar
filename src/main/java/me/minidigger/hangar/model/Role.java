@@ -32,10 +32,10 @@ public enum Role {
     GOLD_DONOR("Gold_Donor",17, GLOBAL, None, "Gold Donor", GOLD),
     DIAMOND_DONOR("Diamond_Donor",18, GLOBAL, None, "Diamond Donor", LIGHTBLUE),
 
-    PROJECT_OWNER("Project_Owner", 19, PROJECT, IsProjectOwner.add(EditApiKeys).add(DeleteProject).add(DeleteVersion), "Owner", TRANSPARENT, false),
     PROJECT_SUPPORT("Project_Support", 22, PROJECT, IsProjectMember, "Support", TRANSPARENT),
     PROJECT_EDITOR("Project_Editor", 21, PROJECT, EditPage.add(PROJECT_SUPPORT.getPermissions()), "Editor", TRANSPARENT),
     PROJECT_DEVELOPER("Project_Developer", 20, PROJECT, CreateVersion.add(EditVersion).add(PROJECT_EDITOR.getPermissions()), "Developer", TRANSPARENT),
+    PROJECT_OWNER("Project_Owner", 19, PROJECT, IsProjectOwner.add(EditApiKeys).add(DeleteProject).add(DeleteVersion).add(PROJECT_DEVELOPER.getPermissions()), "Owner", TRANSPARENT, false),
 
     ORGANIZATION_SUPPORT("Organization_Support", 28, RoleCategory.ORGANIZATION, PostAsOrganization.add(IsOrganizationMember), "Support", TRANSPARENT),
     ORGANIZATION_EDITOR("Organization_Editor", 27, RoleCategory.ORGANIZATION, PROJECT_EDITOR.permissions.add(ORGANIZATION_SUPPORT.permissions), "Editor", TRANSPARENT),
