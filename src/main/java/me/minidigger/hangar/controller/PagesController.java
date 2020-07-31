@@ -1,6 +1,8 @@
 package me.minidigger.hangar.controller;
 
 import me.minidigger.hangar.config.HangarConfig;
+import me.minidigger.hangar.db.customtypes.LoggedActionType;
+import me.minidigger.hangar.db.customtypes.LoggedActionType.ProjectPageContext;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.ProjectPageDao;
 import me.minidigger.hangar.db.model.ProjectPagesTable;
@@ -9,6 +11,7 @@ import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.model.viewhelpers.ProjectPage;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
 import me.minidigger.hangar.service.MarkdownService;
+import me.minidigger.hangar.service.UserActionLogService;
 import me.minidigger.hangar.service.project.PagesFactory;
 import me.minidigger.hangar.service.project.PagesSerivce;
 import me.minidigger.hangar.service.project.ProjectService;
@@ -32,10 +35,12 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class PagesController extends HangarController {
 
-    private final HangarConfig hangarConfig;
+    private final UserActionLogService userActionLogService;
     private final ProjectService projectService;
     private final PagesSerivce pagesSerivce;
     private final PagesFactory pagesFactory;
@@ -44,8 +49,8 @@ public class PagesController extends HangarController {
     private final MarkdownService markdownService;
 
     @Autowired
-    public PagesController(HangarConfig hangarConfig, ProjectService projectService, PagesSerivce pagesSerivce, PagesFactory pagesFactory, HangarDao<ProjectPageDao> projectPageDao, RouteHelper routeHelper, MarkdownService markdownService) {
-        this.hangarConfig = hangarConfig;
+    public PagesController(UserActionLogService userActionLogService, ProjectService projectService, PagesSerivce pagesSerivce, PagesFactory pagesFactory, HangarDao<ProjectPageDao> projectPageDao, RouteHelper routeHelper, MarkdownService markdownService) {
+        this.userActionLogService = userActionLogService;
         this.projectService = projectService;
         this.pagesSerivce = pagesSerivce;
         this.pagesFactory = pagesFactory;
@@ -104,14 +109,23 @@ public class PagesController extends HangarController {
 
     @Secured("ROLE_USER")
     @PostMapping(value = {"/{author}/{slug}/pages/{page}/edit", "/{author}/{slug}/pages/{page}/{subPage}/edit"}, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public Object save(@PathVariable String author, @PathVariable String slug, @PathVariable String page, @PathVariable(required = false) String subPage, @RequestParam(value = "parent-id", required = false) String parentId, @RequestParam("content") String pageContent, @RequestParam("name") String newPageName) {
+    public Object save(@PathVariable String author,
+                       @PathVariable String slug,
+                       @PathVariable String page,
+                       @PathVariable(required = false) String subPage,
+                       @RequestParam(value = "parent-id", required = false) String parentId,
+                       @RequestParam("content") String pageContent,
+                       @RequestParam("name") String newPageName,
+                       HttpServletRequest request) {
         String pageName = getPageName(page, subPage);
 
         ProjectData projectData = projectService.getProjectData(author, slug);
         if (projectData == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+        String oldContents = null;
         ProjectPagesTable projectPage = pagesSerivce.getPage(projectData.getProject().getId(), pageName);
+        Object toReturn;
         if (projectPage == null) { // new page
             Long parentIdLong;
             try {
@@ -119,14 +133,16 @@ public class PagesController extends HangarController {
             } catch (NumberFormatException e) {
                 parentIdLong = null;
             }
-            pagesFactory.createPage(pageContent, newPageName, pageName, parentIdLong, projectData.getProject().getId());
-            return new ResponseEntity<>(HttpStatus.OK); // redirect handled by pageEdit.js
+            projectPage = pagesFactory.createPage(pageContent, newPageName, pageName, parentIdLong, projectData.getProject().getId());
+            toReturn = new ResponseEntity<>(HttpStatus.OK); // redirect handled by pageEdit.js
         } else {
+            oldContents = projectPage.getContents();
             projectPage.setContents(pageContent);
             projectPageDao.get().update(projectPage);
-            return new RedirectView(routeHelper.getRouteUrl("pages.show", author, slug, StringUtils.slugify(pageName)));
+            toReturn = new RedirectView(routeHelper.getRouteUrl("pages.show", author, slug, StringUtils.slugify(pageName)));
         }
-        // TODO User action log
+        userActionLogService.projectPage(request, LoggedActionType.PROJECT_PAGE_EDITED.with(ProjectPageContext.of(projectData.getProject().getId(), projectPage.getId())), pageContent, oldContents);
+        return toReturn;
     }
 
     @Secured("ROLE_USER")
