@@ -17,6 +17,16 @@ public class LoggedActionsOrganizationTable {
     private String newState;
     private String oldState;
 
+    public LoggedActionsOrganizationTable(long userId, InetAddress address, LoggedAction action, long organizationId, String newState, String oldState) {
+        this.userId = userId;
+        this.address = address;
+        this.action = action;
+        this.organizationId = organizationId;
+        this.newState = newState;
+        this.oldState = oldState;
+    }
+
+    public LoggedActionsOrganizationTable() { }
 
     public long getId() {
         return id;

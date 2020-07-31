@@ -38,9 +38,10 @@ public class JDBIConfig {
         TransactionAwareDataSourceProxy dataSourceProxy = new TransactionAwareDataSourceProxy(dataSource);
         Jdbi jdbi = Jdbi.create(dataSourceProxy);
         jdbiPlugins.forEach(jdbi::installPlugin);
-        jdbi.configure(PostgresTypes.class, pt -> pt.registerCustomType(RoleCategory.class, "role_category"));
-        jdbi.configure(PostgresTypes.class, pt -> pt.registerCustomType(LoggedAction.class, "logged_action"));
-        jdbi.configure(PostgresTypes.class, pt -> pt.registerCustomType(JobState.class, "job_state"));
+        PostgresTypes config = jdbi.getConfig(PostgresTypes.class);
+        config.registerCustomType(LoggedAction.class, "logged_action_type");
+        config.registerCustomType(RoleCategory.class, "role_category");
+        config.registerCustomType(JobState.class, "job_state");
         return jdbi;
     }
 

@@ -75,26 +75,32 @@ public class LoggedActionType<C extends AbstractContext<C>> {
             return projectId;
         }
 
-        public static UserContext of(long projectId) {
-            return new UserContext(projectId);
+        public static ProjectContext of(long projectId) {
+            return new ProjectContext(projectId);
         }
     }
 
     public static class VersionContext extends AbstractContext<VersionContext> {
 
+        private final long projectId;
         private final long versionId;
 
-        private VersionContext(long versionId) {
+        private VersionContext(long projectId, long versionId) {
             super(1);
+            this.projectId = projectId;
             this.versionId = versionId;
+        }
+
+        public long getProjectId() {
+            return projectId;
         }
 
         public long getVersionId() {
             return versionId;
         }
 
-        public static VersionContext of(long versionId) {
-            return new VersionContext(versionId);
+        public static VersionContext of(long projectId, long versionId) {
+            return new VersionContext(projectId, versionId);
         }
     }
 
@@ -149,7 +155,7 @@ public class LoggedActionType<C extends AbstractContext<C>> {
             this.orgId = orgId;
         }
 
-        public long getOrgId() {
+        public long getOrganizationLog() {
             return orgId;
         }
 

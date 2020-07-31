@@ -1,5 +1,8 @@
 package me.minidigger.hangar.controller;
 
+import me.minidigger.hangar.db.customtypes.LoggedActionType;
+import me.minidigger.hangar.db.customtypes.LoggedActionType.UserContext;
+import me.minidigger.hangar.service.UserActionLogService;
 import me.minidigger.hangar.util.AlertUtil;
 import me.minidigger.hangar.util.AlertUtil.AlertType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import me.minidigger.hangar.config.HangarConfig;
@@ -30,17 +34,17 @@ public class UsersController extends HangarController {
     private final HangarDao<UserDao> userDao;
     private final HangarConfig hangarConfig;
     private final AuthenticationService authenticationService;
-    private final ApplicationController applicationController;
     private final UserService userService;
+    private final UserActionLogService userActionLogService;
     private final RouteHelper routeHelper;
 
     @Autowired
-    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, ApplicationController applicationController, UserService userService, RouteHelper routeHelper) {
+    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, ApplicationController applicationController, UserService userService, UserActionLogService userActionLogService, RouteHelper routeHelper) {
         this.hangarConfig = hangarConfig;
         this.userDao = userDao;
         this.authenticationService = authenticationService;
-        this.applicationController = applicationController;
         this.userService = userService;
+        this.userActionLogService = userActionLogService;
         this.routeHelper = routeHelper;
     }
 
@@ -146,14 +150,14 @@ public class UsersController extends HangarController {
 
     @Secured("ROLE_USER")
     @PostMapping(value = "/{user}/settings/tagline")
-    public ModelAndView saveTagline(@PathVariable String user, @RequestParam("tagline") String tagline) {
+    public ModelAndView saveTagline(@PathVariable String user, @RequestParam("tagline") String tagline, HttpServletRequest request) {
         if (tagline.length() > hangarConfig.user.getMaxTaglineLen()) {
             ModelAndView mav = showProjects(user);
             AlertUtil.showAlert(mav, AlertType.ERROR, "error.tagline.tooLong"); // TODO pass length param to key
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", user));
         }
-        // TODO user action log
         UsersTable usersTable = userDao.get().getByName(user);
+        userActionLogService.user(request, LoggedActionType.USER_TAGLINE_CHANGED.with(UserContext.of(usersTable.getId())), tagline, usersTable.getTagline());
         usersTable.setTagline(tagline);
         userDao.get().update(usersTable);
         return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", user));
