@@ -1,9 +1,11 @@
 package me.minidigger.hangar.controller;
 
+import me.minidigger.hangar.model.viewhelpers.UserData;
+import me.minidigger.hangar.service.ApiKeyService;
+import me.minidigger.hangar.service.PermissionService;
 import me.minidigger.hangar.util.AlertUtil;
 import me.minidigger.hangar.util.AlertUtil.AlertType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
@@ -23,6 +24,7 @@ import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.service.AuthenticationService;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.RouteHelper;
+import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class UsersController extends HangarController {
@@ -33,15 +35,19 @@ public class UsersController extends HangarController {
     private final ApplicationController applicationController;
     private final UserService userService;
     private final RouteHelper routeHelper;
+    private final ApiKeyService apiKeyService;
+    private final PermissionService permissionService;
 
     @Autowired
-    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, ApplicationController applicationController, UserService userService, RouteHelper routeHelper) {
+    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, ApplicationController applicationController, UserService userService, RouteHelper routeHelper, ApiKeyService apiKeyService, PermissionService permissionService) {
         this.hangarConfig = hangarConfig;
         this.userDao = userDao;
         this.authenticationService = authenticationService;
         this.applicationController = applicationController;
         this.userService = userService;
         this.routeHelper = routeHelper;
+        this.apiKeyService = apiKeyService;
+        this.permissionService = permissionService;
     }
 
     @RequestMapping("/authors")
@@ -77,9 +83,9 @@ public class UsersController extends HangarController {
     }
 
     @RequestMapping("/logout")
-    public ModelAndView logout(HttpSession session) {
+    public RedirectView logout(HttpSession session) {
         session.invalidate();
-        return new ModelAndView("redirect:/"); // TODO redirect to sso
+        return new RedirectView(routeHelper.getRouteUrl("showHome")); // TODO redirect to sso
     }
 
     @Secured("ROLE_USER")
@@ -122,26 +128,30 @@ public class UsersController extends HangarController {
 
     @RequestMapping("/{user}")
     public ModelAndView showProjects(@PathVariable String user) {
-        UsersTable dbUser = userDao.get().getByName(user);
-        if (dbUser == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
         ModelAndView mav = new ModelAndView("users/projects");
-        mav.addObject("u", userService.getUserData(dbUser));
+        mav.addObject("u", userService.getUserData(user));
         mav.addObject("o", null);
         return fillModel(mav);
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{user}/settings/apiKeys")
-    public Object editApiKeys(@PathVariable Object user) {
-        return null; // TODO implement editApiKeys request controller
+    @GetMapping("/{user}/settings/apiKeys")
+    public ModelAndView editApiKeys(@PathVariable String user) {
+        ModelAndView mav = new ModelAndView("users/apiKeys");
+        UserData userData = userService.getUserData(user);
+        long userId = userData.getUser().getId();
+        mav.addObject("u", userData);
+        mav.addObject("keys", apiKeyService.getKeysForUser(userId));
+        mav.addObject("perms", permissionService.getPossibleOrganizationPermissions(userId).add(permissionService.getPossibleProjectPermissions(userId)).add(userData.getUserPerm()).toNamed());
+        return fillModel(mav); // TODO implement editApiKeys request controller
     }
 
     @Secured("ROLE_USER")
     @RequestMapping("/{user}/settings/lock/{locked}")
-    public Object setLocked(@PathVariable Object user, @PathVariable Object locked, @RequestParam Object sso, @RequestParam Object sig) {
-        return null; // TODO implement setLocked request controller
+    public RedirectView setLocked(@PathVariable String user, @PathVariable boolean locked, @RequestParam Object sso, @RequestParam Object sig) {
+        // TODO auth
+        userService.setLocked(user, locked);
+        return new RedirectView(routeHelper.getRouteUrl("users.showProjects", user));
     }
 
     @Secured("ROLE_USER")

@@ -1,6 +1,9 @@
 package me.minidigger.hangar.db.model;
 
 
+import me.minidigger.hangar.model.Permission;
+import org.jdbi.v3.core.mapper.Nested;
+
 import java.time.OffsetDateTime;
 
 public class ApiKeysTable {
@@ -11,7 +14,8 @@ public class ApiKeysTable {
     private long ownerId;
     private String tokenIdentifier;
     private String token;
-    private long rawKeyPermissions;
+    @Nested("perm")
+    private Permission rawKeyPermissions;
 
 
     public long getId() {
@@ -68,11 +72,11 @@ public class ApiKeysTable {
     }
 
 
-    public long getRawKeyPermissions() {
+    public Permission getRawKeyPermissions() {
         return rawKeyPermissions;
     }
 
-    public void setRawKeyPermissions(long rawKeyPermissions) {
+    public void setRawKeyPermissions(Permission rawKeyPermissions) {
         this.rawKeyPermissions = rawKeyPermissions;
     }
 
