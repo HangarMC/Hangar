@@ -16,7 +16,7 @@ public class RolesTable {
     private long permission;
 
     public static RolesTable fromRole(Role role) {
-        return new RolesTable(role.getRoleId(), role.getValue(), role.getCategory(), role.getTitle(), role.getColor().getHex(), role.isAssignable(), null, role.getPermissions().getValue());
+        return new RolesTable(role.getRoleId(), role.getValue(), role.getCategory(), role.getTitle(), role.getColor().getHex(), role.isAssignable(), role.getRank(), role.getPermissions().getValue());
     }
 
     public RolesTable() {

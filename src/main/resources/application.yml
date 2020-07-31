@@ -35,6 +35,14 @@ hangar:
   staging: true
   log-timings: false
 
+  sponsors:
+    - name: Theranos
+      image: https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Theranos_Logo.svg/1200px-Theranos_Logo.svg.png
+      link: https://en.wikipedia.org/wiki/Theranos
+    - name: MiniDigger
+      image: https://avatars2.githubusercontent.com/u/2185527?s=400&v=4
+      link: https://minidigger.me
+
   homepage:
     update-interval: 10m
 

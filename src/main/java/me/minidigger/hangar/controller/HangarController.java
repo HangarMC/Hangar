@@ -8,12 +8,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 import me.minidigger.hangar.config.HangarConfig;
 import me.minidigger.hangar.service.MarkdownService;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.RouteHelper;
-import me.minidigger.hangar.util.TemplateHelper;
 
 public abstract class HangarController {
 
@@ -22,8 +22,6 @@ public abstract class HangarController {
     @Autowired
     private UserService userService;
     @Autowired
-    private TemplateHelper templateHelper;
-    @Autowired
     private HangarConfig hangarConfig;
     @Autowired
     private MarkdownService markdownService;
@@ -31,13 +29,13 @@ public abstract class HangarController {
     protected ModelAndView fillModel(ModelAndView mav) {
         // helpers
         mav.addObject("routes", routeHelper);
-        mav.addObject("templateHelper", templateHelper);
         BeansWrapperBuilder builder = new BeansWrapperBuilder(Configuration.VERSION_2_3_30);
         builder.setExposeFields(true);
         builder.setUseModelCache(true);
         mav.addObject("@helper", builder.build().getStaticModels());
         mav.addObject("config", hangarConfig);
         mav.addObject("markdownService", markdownService);
+        mav.addObject("rand", ThreadLocalRandom.current());
 
         // alerts
         if (mav.getModelMap().getAttribute("alerts") == null) {
