@@ -9,10 +9,10 @@
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="visibility-actions">
-            <#list Visibility.values as visibility>
+            <#list Visibility.values() as visibility>
                 <li>
-                    <a href="#" class="btn-visibility-change" data-project="${namespace}" data-level="${visibility.value}" <#if visibility.showModal> data-modal="true" </#if>>
-                        <@spring.message "visibility.name." + visibility.nameKey /> <#if projectVisibility == visibility>  <i class="fa fa-check" style="color: black" aria-hidden="true"></i> </#if>
+                    <a href="#" class="btn-visibility-change" data-project="${namespace}" data-level="${visibility.value}" data-modal="${visibility.showModal?string('true', 'false')}" >
+                        <@spring.message "visibility.name." + visibility.getName() /> <#if projectVisibility == visibility>  <i class="fa fa-check" style="color: black" aria-hidden="true"></i> </#if>
                     </a>
                 </li>
             </#list>

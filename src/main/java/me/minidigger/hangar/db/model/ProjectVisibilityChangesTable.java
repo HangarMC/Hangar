@@ -18,9 +18,7 @@ public class ProjectVisibilityChangesTable {
     private Long resolvedBy;
     private long visibility;
 
-    public ProjectVisibilityChangesTable(long id, OffsetDateTime createdAt, long createdBy, long projectId, String comment, @Nullable OffsetDateTime resolvedAt, @Nullable Long resolvedBy, long visibility) {
-        this.id = id;
-        this.createdAt = createdAt;
+    public ProjectVisibilityChangesTable(long createdBy, long projectId, String comment, @Nullable OffsetDateTime resolvedAt, @Nullable Long resolvedBy, long visibility) {
         this.createdBy = createdBy;
         this.projectId = projectId;
         this.comment = comment;

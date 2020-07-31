@@ -33,7 +33,7 @@ public class GlobalPermissionVoter implements AccessDecisionVoter {
     @Override
     public int vote(Authentication authentication, Object object, Collection collection) {
         Permission globalPerm = permissionService.getGlobalPermission(authentication.getName());
-        if (globalPerm == null) globalPerm = !authentication.getPrincipal().equals("anonymousUser") ? Permission.HardDeleteProject : Permission.None; // TODO testing
+        if (globalPerm == null) globalPerm = !authentication.getPrincipal().equals("anonymousUser") ? Permission.HardDeleteProject.add(Permission.SeeHidden) : Permission.None; // TODO testing
 
         Set<NamedPermission> requiredPermissions =  ((Collection<ConfigAttribute>) collection).stream().filter(this::supports).map(PermissionAttribute.class::cast).map(PermissionAttribute::getPermission).collect(Collectors.toSet());
         Collection<NamedPermission> userGlobalPermissions = globalPerm.toNamed();

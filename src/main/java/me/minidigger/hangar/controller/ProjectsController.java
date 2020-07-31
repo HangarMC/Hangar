@@ -8,13 +8,11 @@ import me.minidigger.hangar.db.dao.UserDao;
 import me.minidigger.hangar.db.model.ProjectsTable;
 import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.Category;
-import me.minidigger.hangar.model.NamedPermission;
 import me.minidigger.hangar.model.Permission;
-import me.minidigger.hangar.model.Role;
+import me.minidigger.hangar.model.Visibility;
 import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.model.viewhelpers.ProjectPage;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
-import me.minidigger.hangar.security.annotations.GlobalPermission;
 import me.minidigger.hangar.service.OrgService;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.service.project.PagesSerivce;
@@ -327,9 +325,15 @@ public class ProjectsController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/visible/{visibility}")
-    public Object setVisible(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object visibility) {
-        return null; // TODO implement setVisible request controller
+    @PostMapping(value = "/{author}/{slug}/visible/{visibility}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public void setVisible(@PathVariable String author,
+                           @PathVariable String slug,
+                           @PathVariable Visibility visibility,
+                           @RequestParam(required = false) String comment) {
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        projectService.changeVisibility(projectData.getProject(), visibility, comment);
+        // TODO user action logging
     }
 
     @RequestMapping("/{author}/{slug}/watchers")

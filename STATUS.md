@@ -6,7 +6,7 @@
 * make all pages use the db for data
 * implement internal api
 * implement external api
-* better config handling
+* better config handling (kinda worked on a bit)
 
 ### stuff that is done
 

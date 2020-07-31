@@ -27,5 +27,12 @@ public interface VisibilityDao {
     @SqlQuery("SELECT * FROM project_visibility_changes WHERE project_id = :projectId AND resolved_at IS NULL ORDER BY created_at LIMIT 1")
     ProjectVisibilityChangesTable getLatestProjectVisibilityChange(long projectId);
 
+    @Timestamped
+    @SqlUpdate("UPDATE project_visibility_changes " +
+            "SET resolved_at = :now, resolved_by = :userId " +
+            "FROM " +
+            "(SELECT project_id FROM project_visibility_changes WHERE project_id = :projectId AND resolved_at IS NULL AND resolved_by IS NULL ORDER BY created_at LIMIT 1) AS subquery " +
+            "WHERE project_visibility_changes.project_id=subquery.project_id")
+    void updateLatestChange(long userId, long projectId);
 
 }
