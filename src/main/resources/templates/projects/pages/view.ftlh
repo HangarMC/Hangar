@@ -55,8 +55,8 @@ Documentation page within Project overview.
                 <p><@spring.messageArgs code="project.category.info" args=[p.project.category.title] /></p>
                 <p><@spring.messageArgs code="project.publishDate" args=[p.project.createdAt.format("yyyy-MM-dd")] /></p>
                 <p><span id="view-count"></span> views</p>
-                <p><span id="star-count"></span> <a href="${routes.getRouteUrl("projects.showStargazers", p.project.ownerName, p.project.slug, "")}">stars</a></p>
-                <p><span id="watcher-count"></span> <a href="${routes.getRouteUrl("projects.showWatchers", p.project.ownerName, p.project.slug, "")}">watchers</a></p>
+                <p><span id="star-count"></span> <a href="${routes.getRouteUrl("projects.showStargazers", p.project.ownerName, p.project.slug, "")}">star<#if p.starCount != 1>s</#if></a></p>
+                <p><span id="watcher-count"></span> <a href="${routes.getRouteUrl("projects.showWatchers", p.project.ownerName, p.project.slug, "")}">watcher<#if p.watcherCount != 1>s</#if></a></p>
                 <p><span id="download-count"></span> total downloads</p>
                 <#if p.project.licenseName?has_content && p.project.licenseUrl?has_content>
                     <p>

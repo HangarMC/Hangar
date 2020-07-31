@@ -27,10 +27,12 @@ import me.minidigger.hangar.util.AlertUtil.AlertType;
 import me.minidigger.hangar.util.HangarException;
 import me.minidigger.hangar.util.RouteHelper;
 import me.minidigger.hangar.util.StringUtils;
+import me.minidigger.hangar.util.TriFunction;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,9 +42,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-
+import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 @Controller
@@ -323,15 +326,22 @@ public class ProjectsController extends HangarController {
         return null; // TODO implement addMessage request controller
     }
 
-    @RequestMapping("/{author}/{slug}/stars")
-    public Object showStargazers(@PathVariable Object author, @PathVariable Object slug, @RequestParam Object page) {
-        return null; // TODO implement showStargazers request controller
+    @GetMapping("/{author}/{slug}/stars")
+    public ModelAndView showStargazers(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false, defaultValue = "1") Integer page) {
+        return showUserGrid(author, slug, page, "Stargazers", projectService::getProjectStargazers);
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/stars/toggle")
-    public Object toggleStarred(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement toggleStarred request controller
+    @PostMapping("/{author}/{slug}/stars/toggle")
+    @ResponseStatus(HttpStatus.OK)
+    public void toggleStarred(@PathVariable String author, @PathVariable String slug) {
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        ScopedProjectData scopedProjectData = projectService.getScopedProjectData(projectData.getProject().getId());
+        if (scopedProjectData.isStarred()) {
+            userDao.get().removeStargazing(projectData.getProject().getId(), userService.getCurrentUser().getId());
+        } else {
+            userDao.get().setStargazing(projectData.getProject().getId(), userService.getCurrentUser().getId());
+        }
     }
 
     @Secured("ROLE_USER")
@@ -346,15 +356,40 @@ public class ProjectsController extends HangarController {
         // TODO user action logging
     }
 
-    @RequestMapping("/{author}/{slug}/watchers")
-    public Object showWatchers(@PathVariable Object author, @PathVariable Object slug, @RequestParam Object page) {
-        return null; // TODO implement showWatchers request controller
+    @GetMapping("/{author}/{slug}/watchers")
+    public ModelAndView showWatchers(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false, defaultValue = "1") Integer page) {
+        return showUserGrid(author, slug, page, "Watchers", projectService::getProjectWatchers);
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/watchers/{watching}")
-    public Object setWatching(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object watching) {
-        return null; // TODO implement setWatching request controller
+    @PostMapping("/{author}/{slug}/watchers/{watching}")
+    @ResponseStatus(HttpStatus.OK)
+    public void setWatching(@PathVariable String author, @PathVariable String slug, @PathVariable boolean watching) {
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        ScopedProjectData scopedProjectData = projectService.getScopedProjectData(projectData.getProject().getId());
+        if (scopedProjectData.isWatching() == watching) return; // No change
+        if (watching) {
+            userDao.get().setWatching(projectData.getProject().getId(), userService.getCurrentUser().getId());
+        } else {
+            userDao.get().removeWatching(projectData.getProject().getId(), userService.getCurrentUser().getId());
+        }
+    }
+
+    private ModelAndView showUserGrid(String author, String slug, Integer page, String title, TriFunction<Long, Integer, Integer, Collection<UsersTable>> getUsers) {
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        ScopedProjectData scopedProjectData = projectService.getScopedProjectData(projectData.getProject().getId());
+
+        int pageSize = hangarConfig.projects.getUserGridPageSize();
+        int offset = (page - 1) * pageSize;
+
+        ModelAndView mav = new ModelAndView("projects/userGrid");
+        mav.addObject("title", title);
+        mav.addObject("p", projectData);
+        mav.addObject("sp", scopedProjectData);
+        mav.addObject("users", getUsers.apply(projectData.getProject().getId(), offset, pageSize));
+        mav.addObject("page", page);
+        mav.addObject("pageSize", pageSize);
+        return fillModel(mav);
     }
 
 }

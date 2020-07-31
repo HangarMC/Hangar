@@ -76,8 +76,8 @@ public class ProjectService {
         String lastVisibilityChangeUser = null;
         ProjectVersionsTable recommendedVersion = null;
         String iconUrl = "";
-        long starCount = 0;
-        long watcherCount = 0;
+        long starCount = userDao.get().getProjectStargazers(projectsTable.getId(), 0, null).size();
+        long watcherCount = userDao.get().getProjectWatchers(projectsTable.getId(), 0, null).size();
         ProjectViewSettings settings = new ProjectViewSettings(
                 projectsTable.getKeywords(),
                 projectsTable.getHomepage(),
@@ -125,6 +125,14 @@ public class ProjectService {
         project.setVisibility(newVisibility);
         projectDao.get().update(project);
         // TODO user action log
+    }
+
+    public List<UsersTable> getProjectWatchers(long projectId, int offset, int limit) {
+        return userDao.get().getProjectWatchers(projectId, offset, limit);
+    }
+
+    public List<UsersTable> getProjectStargazers(long projectId, int offset, int limit) {
+        return userDao.get().getProjectStargazers(projectId, offset, limit);
     }
 
     public Project getProjectApi(String pluginId) { // TODO still probably have to work out a standard for how to handle the api models
