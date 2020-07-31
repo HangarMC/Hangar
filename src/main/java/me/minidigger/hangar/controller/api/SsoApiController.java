@@ -1,15 +1,13 @@
 package me.minidigger.hangar.controller.api;
 
 import me.minidigger.hangar.config.HangarConfig;
-import me.minidigger.hangar.model.generated.SsoSyncSignedPayload;
 import me.minidigger.hangar.util.DiscourseSsoSigner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.util.Map;
 
 @Controller
@@ -25,18 +23,18 @@ public class SsoApiController implements SsoApi {
     }
 
     @Override
-    public ResponseEntity<Void> syncSso(@Valid SsoSyncSignedPayload payload) {
-        if (!payload.getApiKey().equals(ssoConfig.getApiKey())) {
-            System.out.println("FAILED SSO SYNC: bad API key (provided " + payload.getApiKey() + " not " + ssoConfig.getApiKey() + ")");
+    public ResponseEntity<Void> syncSso(@NotEmpty String sso, @NotEmpty String sig, @RequestParam(name = "api_key") @NotEmpty String apiKey) {
+        if (!apiKey.equals(ssoConfig.getApiKey())) {
+            System.out.println("FAILED SSO SYNC: bad API key (provided " + apiKey + " not " + ssoConfig.getApiKey() + ")");
             return ResponseEntity.badRequest().build();
         }
 
         try {
-            Map<String, String> map = signer.decode(payload.getSso(), payload.getSig());
+            Map<String, String> map = signer.decode(sso, sig);
             System.out.println("SUCCESSFUL SSO SYNC: " + map.toString());
             return ResponseEntity.ok().build();
         } catch (DiscourseSsoSigner.SignatureException e) {
-            System.out.println("FAILED SSO SYNC: invalid signature (" + payload.getSig() + " for data " + payload.getSso() + ")");
+            System.out.println("FAILED SSO SYNC: invalid signature (" + sig + " for data " + sso + ")");
             return ResponseEntity.badRequest().build();
         }
     }
