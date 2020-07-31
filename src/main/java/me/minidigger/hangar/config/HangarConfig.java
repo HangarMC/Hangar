@@ -20,7 +20,7 @@ import java.util.List;
 @ComponentScan("me.minidigger.hangar")
 public class HangarConfig {
 
-    private String logo = "https://www.spongepowered.org/assets/img/icons/spongie-mark.svg";
+    private String logo = "https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png";
     private String service = "Hangar";
     private List<Sponsor> sponsors;
 
