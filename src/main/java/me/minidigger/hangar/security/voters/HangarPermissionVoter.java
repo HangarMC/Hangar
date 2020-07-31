@@ -34,11 +34,17 @@ public abstract class HangarPermissionVoter implements AccessDecisionVoter {
 
     @Override
     public int vote(Authentication authentication, Object object, Collection collection) {
-        if (!(authentication instanceof HangarAuthentication) || authentication.getPrincipal().equals("anonymousUser")) return ACCESS_DENIED;
-        HangarAuthentication hangarAuth = (HangarAuthentication) authentication;
-        if (authChecks.test(hangarAuth)) return ACCESS_DENIED;
-        Collection<NamedPermission> userPermissions = getUserPermissions.apply(hangarAuth);
         Collection<NamedPermission> requiredPermissions = ((Collection<ConfigAttribute>) collection).stream().filter(this::supports).map(PermissionAttribute.class::cast).map(PermissionAttribute::getPermission).collect(Collectors.toSet());
+        if (requiredPermissions.isEmpty() && (!(authentication instanceof HangarAuthentication) || authentication.getPrincipal().equals("anonymousUser"))) {
+            return ACCESS_ABSTAIN;
+        }
+        else if (!requiredPermissions.isEmpty() && (!(authentication instanceof HangarAuthentication) || authentication.getPrincipal().equals("anonymousUser"))) {
+            return ACCESS_DENIED;
+        }
+
+        HangarAuthentication hangarAuth = (HangarAuthentication) authentication;
+        if (!authChecks.test(hangarAuth)) return ACCESS_DENIED;
+        Collection<NamedPermission> userPermissions = getUserPermissions.apply(hangarAuth);
         if (!userPermissions.containsAll(requiredPermissions)) {
             System.out.println("Required perms: " + requiredPermissions.toString());
             System.out.println("User perms: " + userPermissions.toString());

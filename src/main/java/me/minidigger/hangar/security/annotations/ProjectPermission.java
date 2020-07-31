@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ProjectPermission {
-    NamedPermission[] value();
+    NamedPermission[] value() default {};
 }

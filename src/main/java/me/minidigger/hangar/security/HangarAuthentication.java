@@ -11,7 +11,6 @@ public class HangarAuthentication extends AbstractAuthenticationToken {
     private static final long serialVersionUID = 3847099128940870714L;
 
     private final String username;
-    private Long projectId; // current project
     private UsersTable table; // todo replace me
 
     public HangarAuthentication(String username) {
@@ -51,13 +50,5 @@ public class HangarAuthentication extends AbstractAuthenticationToken {
 
     public long getUserId() {
         return table.getId();
-    }
-
-    public Long getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
     }
 }
