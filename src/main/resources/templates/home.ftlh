@@ -23,6 +23,11 @@ sorted according to different criteria.
     <meta property="og:description" content="<@spring.message "general.description" />" />
 </#macro>
 
+<#function randomSponsor>
+    <#local index = rand.nextInt(config.getSponsors()?size) />
+    <#return config.sponsors[index] />
+</#function>
+
 <#assign message><@spring.message "general.title" /></#assign>
 <#assign scriptsVar><@scripts /></#assign>
 <#assign stylesheetsVar><@stylesheets /></#assign>
@@ -46,9 +51,10 @@ sorted according to different criteria.
                 <div class="panel sponsor-panel">
                     <span>Sponsored by</span>
                     <div class="panel-body">
-                        <#assign sponsor=templateHelper.randomSponsor() />
+                        <#-- @ftlvariable name="sponsor" type="me.minidigger.hangar.config.HangarConfig.Sponsor" -->
+                        <#assign sponsor=randomSponsor() />
                         <a href="${sponsor.link}">
-                            <img class="logo" src="${sponsor.image}" alt="Sponsor" />
+                            <img class="logo" src="${sponsor.image}" alt="${sponsor.name}" />
                         </a>
                     </div>
                 </div>
