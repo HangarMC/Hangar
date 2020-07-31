@@ -2,7 +2,8 @@ package me.minidigger.hangar.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import freemarker.template.TemplateException;
-import me.minidigger.hangar.model.converters.CategoryConverter;
+import me.minidigger.hangar.controller.converters.CategoryConverter;
+import me.minidigger.hangar.controller.converters.VisibilityConverter;
 import me.minidigger.hangar.util.RouteHelper;
 import no.api.freemarker.java8.Java8ObjectWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,5 +137,6 @@ public class MvcConfig implements WebMvcConfigurer {
             }
         });
         registry.addConverter(new CategoryConverter());
+        registry.addConverter(new VisibilityConverter());
     }
 }
