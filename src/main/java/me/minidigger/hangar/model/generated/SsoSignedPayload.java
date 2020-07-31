@@ -2,7 +2,8 @@ package me.minidigger.hangar.model.generated;
 
 import javax.validation.constraints.NotEmpty;
 
-public class SsoSyncSignedPayload {
+// TODO: use this (or delete?)
+public class SsoSignedPayload {
 
     @NotEmpty
     private String sso;
