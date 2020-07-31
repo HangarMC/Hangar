@@ -23,4 +23,12 @@ public class PermissionService {
     public Permission getGlobalPermission(String userName) {
         return permissionsDao.get().getGlobalPermission(null, userName);
     }
+
+    public Permission getPossibleProjectPermissions(long userId) {
+        return permissionsDao.get().getPossibleProjectPermissions(userId);
+    }
+
+    public Permission getPossibleOrganizationPermissions(long userId) {
+        return permissionsDao.get().getPossibleOrganizationPermissions(userId);
+    }
 }

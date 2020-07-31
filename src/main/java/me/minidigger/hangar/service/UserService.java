@@ -7,6 +7,7 @@ import me.minidigger.hangar.model.viewhelpers.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +29,7 @@ import me.minidigger.hangar.model.viewhelpers.HeaderData;
 import me.minidigger.hangar.model.viewhelpers.Staff;
 import me.minidigger.hangar.model.viewhelpers.UserData;
 import me.minidigger.hangar.security.HangarAuthentication;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class UserService {
@@ -125,7 +127,20 @@ public class UserService {
         }
     }
 
+    public void setLocked(String userName, boolean locked) {
+        UsersTable user = userDao.get().getByName(userName);
+        user.setIsLocked(locked);
+        userDao.get().update(user);
+    }
+
+    public UserData getUserData(String userName) {
+        return getUserData(userDao.get().getByName(userName));
+    }
+
     public UserData getUserData(UsersTable user) {
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         // TODO getUserData
         boolean isOrga = false;
         int projectCount = projectDao.get().getProjectCountByUserId(user.getId());
