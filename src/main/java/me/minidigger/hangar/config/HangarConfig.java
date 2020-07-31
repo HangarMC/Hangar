@@ -28,6 +28,7 @@ public class HangarConfig {
     private int debugLevel = 3;
     private boolean staging = true;
     private boolean logTimings = false;
+    private String authUrl = "https://hangarauth.minidigger.me";
 
     @NestedConfigurationProperty
     public final FakeUserConfig fakeUser;
@@ -45,6 +46,8 @@ public class HangarConfig {
     public HangarOrgConfig org;
     @NestedConfigurationProperty
     public HangarApiConfig api;
+    @NestedConfigurationProperty
+    public HangarSsoConfig sso;
 
     @Component
     public static class Sponsor {
@@ -78,7 +81,7 @@ public class HangarConfig {
     }
 
     @Autowired
-    public HangarConfig(FakeUserConfig fakeUser, HangarHomepageConfig homepage, HangarChannelsConfig channels, HangarPagesConfig pages, HangarProjectsConfig projects, HangarUserConfig user, HangarOrgConfig org, HangarApiConfig api) {
+    public HangarConfig(FakeUserConfig fakeUser, HangarHomepageConfig homepage, HangarChannelsConfig channels, HangarPagesConfig pages, HangarProjectsConfig projects, HangarUserConfig user, HangarOrgConfig org, HangarApiConfig api, HangarSsoConfig sso) {
         this.fakeUser = fakeUser;
         this.homepage = homepage;
         this.channels = channels;
@@ -87,6 +90,7 @@ public class HangarConfig {
         this.user = user;
         this.org = org;
         this.api = api;
+        this.sso = sso;
     }
 
     public String getLogo() {
@@ -143,6 +147,14 @@ public class HangarConfig {
 
     public void setLogTimings(boolean logTimings) {
         this.logTimings = logTimings;
+    }
+
+    public String getAuthUrl() {
+        return authUrl;
+    }
+
+    public void setAuthUrl(String authUrl) {
+        this.authUrl = authUrl;
     }
 
     @Component
@@ -576,11 +588,95 @@ public class HangarConfig {
         }
     }
 
+    @Component
+    @ConfigurationProperties(prefix = "hangar.sso")
+    public static class HangarSsoConfig {
+
+        private boolean enabled = true;
+        private String loginUrl = "/sso/";
+        private String signupUrl = "/sso/signup/";
+        private String verifyUrl = "/sso/sudo/";
+        private String avatarUrl = "/avatar/%s?size=120x120";
+        private String secret = "changeme";
+        private String apiKey = "changeme";
+        private Duration timeout = Duration.ofSeconds(2);
+        private Duration reset = Duration.ofMinutes(10);
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public String getLoginUrl() {
+            return loginUrl;
+        }
+
+        public void setLoginUrl(String loginUrl) {
+            this.loginUrl = loginUrl;
+        }
+
+        public String getSignupUrl() {
+            return signupUrl;
+        }
+
+        public void setSignupUrl(String signupUrl) {
+            this.signupUrl = signupUrl;
+        }
+
+        public String getVerifyUrl() {
+            return verifyUrl;
+        }
+
+        public void setVerifyUrl(String verifyUrl) {
+            this.verifyUrl = verifyUrl;
+        }
+
+        public String getAvatarUrl() {
+            return avatarUrl;
+        }
+
+        public void setAvatarUrl(String avatarUrl) {
+            this.avatarUrl = avatarUrl;
+        }
+
+        public String getSecret() {
+            return secret;
+        }
+
+        public void setSecret(String secret) {
+            this.secret = secret;
+        }
+
+        public String getApiKey() {
+            return apiKey;
+        }
+
+        public void setApiKey(String apiKey) {
+            this.apiKey = apiKey;
+        }
+
+        public Duration getTimeout() {
+            return timeout;
+        }
+
+        public void setTimeout(Duration timeout) {
+            this.timeout = timeout;
+        }
+
+        public Duration getReset() {
+            return reset;
+        }
+
+        public void setReset(Duration reset) {
+            this.reset = reset;
+        }
+    }
+
     @Value("${pluginUploadDir:/work/uploads}")
     private String pluginUploadDir;
-
-    @Value("${authUrl:https://hangarauth.minidigger.me}")
-    private String authUrl;
 
     public String getPluginUploadDir() {
         return pluginUploadDir;
@@ -590,10 +686,6 @@ public class HangarConfig {
         if (!debug) {
             throw new UnsupportedOperationException("this function is supported in debug mode only");
         }
-    }
-
-    public String getAuthUrl() {
-        return authUrl;
     }
 
     public boolean isValidProjectName(String name) {
@@ -632,5 +724,9 @@ public class HangarConfig {
 
     public HangarApiConfig getApi() {
         return api;
+    }
+
+    public HangarSsoConfig getSso() {
+        return sso;
     }
 }
