@@ -1,6 +1,26 @@
 package me.minidigger.hangar.controller;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.Collection;
+import java.util.Set;
+import java.util.regex.Pattern;
+import javax.servlet.http.HttpServletRequest;
+
 import me.minidigger.hangar.config.HangarConfig;
 import me.minidigger.hangar.db.customtypes.LoggedActionType;
 import me.minidigger.hangar.db.customtypes.LoggedActionType.ProjectContext;
@@ -12,7 +32,6 @@ import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.Category;
 import me.minidigger.hangar.model.Permission;
 import me.minidigger.hangar.model.Visibility;
-import me.minidigger.hangar.model.generated.Project;
 import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.model.viewhelpers.ProjectPage;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
@@ -28,25 +47,6 @@ import me.minidigger.hangar.util.HangarException;
 import me.minidigger.hangar.util.RouteHelper;
 import me.minidigger.hangar.util.StringUtils;
 import me.minidigger.hangar.util.TriFunction;
-import org.apache.commons.logging.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.parameters.P;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
-import java.util.Collection;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.regex.Pattern;
 
 @Controller
 public class ProjectsController extends HangarController {

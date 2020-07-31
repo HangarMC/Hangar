@@ -12,7 +12,6 @@
 Documentation page within Project overview.
 -->
 
-
 <#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
 <#function canEditPages>
     <#return sp.perms(Permission.EditPage)>
