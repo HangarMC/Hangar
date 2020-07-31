@@ -18,6 +18,17 @@ public class LoggedActionsVersionTable {
     private String newState;
     private String oldState;
 
+    public LoggedActionsVersionTable(long userId, InetAddress address, LoggedAction action, long projectId, long versionId, String newState, String oldState) {
+        this.userId = userId;
+        this.address = address;
+        this.action = action;
+        this.projectId = projectId;
+        this.versionId = versionId;
+        this.newState = newState;
+        this.oldState = oldState;
+    }
+
+    public LoggedActionsVersionTable() { }
 
     public long getId() {
         return id;

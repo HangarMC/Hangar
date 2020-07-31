@@ -1,4 +1,4 @@
-package me.minidigger.hangar.model.converters;
+package me.minidigger.hangar.controller.converters;
 
 import me.minidigger.hangar.model.Category;
 import org.springframework.core.convert.converter.Converter;

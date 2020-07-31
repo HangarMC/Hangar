@@ -28,7 +28,7 @@ public class PagesFactory {
         this.hangarConfig = hangarConfig;
     }
 
-    public ProjectPage createPage(String contents, String name, String slug, @Nullable Long parentId, long projectId) {
+    public ProjectPagesTable createPage(String contents, String name, String slug, @Nullable Long parentId, long projectId) {
         if (parentId != null) {
             Map<Long, ProjectPage> rootPages = projectPageDao.get().getRootPages(projectId);
             if (!rootPages.containsKey(parentId)) { // This prevents more than 1 level of nesting
@@ -51,6 +51,10 @@ public class PagesFactory {
                 parentId
         );
         table = projectPageDao.get().insert(table);
-        return ProjectPage.of(table);
+        return table;
+    }
+
+    public void update(ProjectPagesTable projectPagesTable) {
+        projectPageDao.get().update(projectPagesTable);
     }
 }

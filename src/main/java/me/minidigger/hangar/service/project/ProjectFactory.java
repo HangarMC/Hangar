@@ -23,11 +23,7 @@ import me.minidigger.hangar.service.RoleService;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.HangarException;
 import me.minidigger.hangar.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
-
-import java.time.OffsetDateTime;
 
 import java.time.OffsetDateTime;
 
@@ -41,18 +37,18 @@ public class ProjectFactory {
     private final HangarDao<VisibilityDao> visibilityDao;
     private final RoleService roleService;
     private final UserService userService;
-    private final PagesFactory pagesFactory;
+    private final ProjectService projectService;
 
     @Autowired
-    public ProjectFactory(HangarConfig hangarConfig, HangarDao<ProjectChannelDao> projectChannelDao, HangarDao<ProjectDao> projectDao, HangarDao<ProjectPageDao> projectPagesDao, HangarDao<VisibilityDao> visibilityDao, RoleService roleService, UserService userService, PagesFactory pagesFactory) {
+    public ProjectFactory(HangarConfig hangarConfig, HangarDao<ProjectChannelDao> projectChannelDao, HangarDao<ProjectDao> projectDao, HangarDao<ProjectPageDao> projectPagesDao, HangarDao<VisibilityDao> visibilityDao, RoleService roleService, UserService userService, ProjectService projectService) {
         this.hangarConfig = hangarConfig;
         this.projectChannelDao = projectChannelDao;
         this.projectDao = projectDao;
         this.visibilityDao = visibilityDao;
         this.roleService = roleService;
         this.userService = userService;
-        this.pagesFactory = pagesFactory;
         this.projectPagesDao = projectPagesDao;
+        this.projectService = projectService;
     }
 
     public String getUploadError(UsersTable user) {
@@ -90,21 +86,12 @@ public class ProjectFactory {
 
     public void softDeleteProject(ProjectData projectData, String comment) {
         ProjectsTable project = projectData.getProject();
-//        if (project.getVisibility() == Visibility.NEW) {
-//            hardDeleteProject(projectData);
-//            return;
-//        }
-
-        ProjectVisibilityChangesTable latestChange = visibilityDao.get().getLatestProjectVisibilityChange(project.getId());
-        if (latestChange != null) { // resolve last unresolved change
-            latestChange.setResolvedAt(OffsetDateTime.now());
-            latestChange.setResolvedBy(project.getOwnerId());
-            visibilityDao.get().update(latestChange);
+        if (project.getVisibility() == Visibility.NEW) {
+            hardDeleteProject(projectData);
+            return;
         }
-        visibilityDao.get().insert(new ProjectVisibilityChangesTable(-1, OffsetDateTime.now(), project.getOwnerId(), project.getId(), comment, null, null, Visibility.SOFTDELETE.getValue()));
 
-        project.setVisibility(Visibility.SOFTDELETE);
-        projectDao.get().update(project);
+        projectService.changeVisibility(project, Visibility.SOFTDELETE, comment);
     }
 
     public void hardDeleteProject(ProjectData projectData) {
