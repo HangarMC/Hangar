@@ -5,29 +5,35 @@ import javax.validation.constraints.NotEmpty;
 public class SsoSyncSignedPayload {
 
     @NotEmpty
-    private final String sso;
+    private String sso;
 
     @NotEmpty
-    private final String sig;
+    private String sig;
 
     @NotEmpty
-    private final String apiKey;
-
-    public SsoSyncSignedPayload(String sso, String sig, String apiKey) {
-        this.sso = sso;
-        this.sig = sig;
-        this.apiKey = apiKey;
-    }
+    private String apiKey;
 
     public String getSso() {
         return sso;
+    }
+
+    public void setSso(String sso) {
+        this.sso = sso;
     }
 
     public String getSig() {
         return sig;
     }
 
+    public void setSig(String sig) {
+        this.sig = sig;
+    }
+
     public String getApiKey() {
         return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 }

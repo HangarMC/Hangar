@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
@@ -22,7 +23,6 @@ public interface SsoApi {
             @ApiResponse(code = 401, message = "Sent if the signature or API key missing or invalid.")})
     @PostMapping(value = "/sync_sso",
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    ResponseEntity<Void> syncSso(@ApiParam(value = "") @Valid @RequestBody(required = true) SsoSyncSignedPayload body
-    );
+    ResponseEntity<Void> syncSso(@Valid SsoSyncSignedPayload payload);
 
 }
