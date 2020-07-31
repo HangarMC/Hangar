@@ -23,7 +23,7 @@ public class LoggedAction extends PGobject {
     private String value;
 
     public LoggedAction(String value) {
-        setType("logged_action");
+        setType("logged_action_type");
         this.value = value;
     }
 

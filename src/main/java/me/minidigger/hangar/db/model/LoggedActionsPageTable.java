@@ -18,6 +18,17 @@ public class LoggedActionsPageTable {
     private String newState;
     private String oldState;
 
+    public LoggedActionsPageTable(long userId, InetAddress address, LoggedAction action, long projectId, long pageId, String newState, String oldState) {
+        this.userId = userId;
+        this.address = address;
+        this.action = action;
+        this.projectId = projectId;
+        this.pageId = pageId;
+        this.newState = newState;
+        this.oldState = oldState;
+    }
+
+    public LoggedActionsPageTable() { }
 
     public long getId() {
         return id;
