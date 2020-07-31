@@ -49,7 +49,8 @@ public class DiscourseSsoSigner {
         }
 
         String querystring = new String(Base64.getDecoder().decode(payload));
-        return UriComponentsBuilder.fromUriString(querystring).build().getQueryParams().toSingleValueMap();
+        // TODO: prepending "/?" is a hack
+        return UriComponentsBuilder.fromUriString("/?" + querystring).build().getQueryParams().toSingleValueMap();
     }
 
     /**
