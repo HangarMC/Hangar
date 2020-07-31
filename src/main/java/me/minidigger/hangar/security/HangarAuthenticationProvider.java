@@ -1,11 +1,6 @@
 package me.minidigger.hangar.security;
 
-import me.minidigger.hangar.model.NamedPermission;
-import me.minidigger.hangar.model.Permission;
-import me.minidigger.hangar.security.authorities.PermissionAuthority;
 import me.minidigger.hangar.service.PermissionService;
-import me.minidigger.hangar.service.RoleService;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -16,8 +11,6 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserDao;

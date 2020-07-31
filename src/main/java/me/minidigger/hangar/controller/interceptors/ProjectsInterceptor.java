@@ -1,9 +1,9 @@
 package me.minidigger.hangar.controller.interceptors;
 
-import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.security.HangarAuthentication;
 import me.minidigger.hangar.security.annotations.ProjectPermission;
 import me.minidigger.hangar.service.project.ProjectService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,7 +27,7 @@ public class ProjectsInterceptor extends HandlerInterceptorAdapter {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) throws Exception {
         HandlerMethod method = (HandlerMethod) handler;
         if (method.getMethod().isAnnotationPresent(ProjectPermission.class)) {
             if (!(SecurityContextHolder.getContext().getAuthentication() instanceof HangarAuthentication)) {
@@ -38,6 +38,7 @@ public class ProjectsInterceptor extends HandlerInterceptorAdapter {
 
             HangarAuthentication hangerAuth = (HangarAuthentication) SecurityContextHolder.getContext().getAuthentication();
             hangerAuth.setProjectId(projectId);
+            System.out.println("set project id");
 
         }
         return true;

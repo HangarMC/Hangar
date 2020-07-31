@@ -1,8 +1,12 @@
-package me.minidigger.hangar.security.authorities;
+package me.minidigger.hangar.security;
 
 import me.minidigger.hangar.model.NamedPermission;
 import org.springframework.security.core.GrantedAuthority;
 
+/**
+ * @deprecated Not used atm. This can be used if we want to store global roles on the auth model
+ */
+@Deprecated
 public class PermissionAuthority implements GrantedAuthority {
     private final NamedPermission permission;
 
