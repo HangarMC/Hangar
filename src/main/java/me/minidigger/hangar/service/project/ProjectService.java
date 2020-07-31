@@ -3,11 +3,12 @@ package me.minidigger.hangar.service.project;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.ProjectDao;
 import me.minidigger.hangar.db.dao.UserDao;
-import me.minidigger.hangar.db.model.ProjectPagesTable;
+import me.minidigger.hangar.db.dao.VisibilityDao;
 import me.minidigger.hangar.db.model.ProjectVersionsTable;
 import me.minidigger.hangar.db.model.ProjectVisibilityChangesTable;
 import me.minidigger.hangar.db.model.ProjectsTable;
 import me.minidigger.hangar.db.model.UsersTable;
+import me.minidigger.hangar.model.Visibility;
 import me.minidigger.hangar.model.generated.Project;
 import me.minidigger.hangar.model.generated.ProjectNamespace;
 import me.minidigger.hangar.model.generated.ProjectSettings;
@@ -16,10 +17,13 @@ import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.model.viewhelpers.ProjectMember;
 import me.minidigger.hangar.model.viewhelpers.ProjectViewSettings;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
+import me.minidigger.hangar.security.annotations.GlobalPermission;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.StringUtils;
+import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -34,12 +38,14 @@ public class ProjectService {
 
     private final HangarDao<ProjectDao> projectDao;
     private final HangarDao<UserDao> userDao;
+    private final HangarDao<VisibilityDao> visibilityDao;
     private final UserService userService;
 
     @Autowired
-    public ProjectService(HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, UserService userService) {
+    public ProjectService(HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, UserService userService) {
         this.projectDao = projectDao;
         this.userDao = userDao;
+        this.visibilityDao = visibilityDao;
         this.userService = userService;
     }
 
@@ -70,8 +76,8 @@ public class ProjectService {
         String lastVisibilityChangeUser = null;
         ProjectVersionsTable recommendedVersion = null;
         String iconUrl = "";
-        long starCount = 0;
-        long watcherCount = 0;
+        long starCount = userDao.get().getProjectStargazers(projectsTable.getId(), 0, null).size();
+        long watcherCount = userDao.get().getProjectWatchers(projectsTable.getId(), 0, null).size();
         ProjectViewSettings settings = new ProjectViewSettings(
                 projectsTable.getKeywords(),
                 projectsTable.getHomepage(),
@@ -107,12 +113,29 @@ public class ProjectService {
         }
     }
 
-    public ProjectPagesTable getPage(long projectId, String slug) {
-        // TODO get project page
-        return new ProjectPagesTable(1, OffsetDateTime.now(), projectId, "Home", slug, "# Test\n This is a test", false, null);
+    @Secured("ROLE_USER")
+    public void changeVisibility(ProjectsTable project, Visibility newVisibility, String comment) {
+        Preconditions.checkArgument(project != null && newVisibility != null, "project and visibility cannot be null");
+        if (project.getVisibility() == newVisibility) return; // No change
+
+        visibilityDao.get().updateLatestChange(userService.getCurrentUser().getId(), project.getId());
+
+        visibilityDao.get().insert(new ProjectVisibilityChangesTable(project.getOwnerId(), project.getId(), comment, null, null, newVisibility.getValue()));
+
+        project.setVisibility(newVisibility);
+        projectDao.get().update(project);
+        // TODO user action log
     }
 
-    public Project getProjectApi(String pluginId) {
+    public List<UsersTable> getProjectWatchers(long projectId, int offset, int limit) {
+        return userDao.get().getProjectWatchers(projectId, offset, limit);
+    }
+
+    public List<UsersTable> getProjectStargazers(long projectId, int offset, int limit) {
+        return userDao.get().getProjectStargazers(projectId, offset, limit);
+    }
+
+    public Project getProjectApi(String pluginId) { // TODO still probably have to work out a standard for how to handle the api models
         ProjectsTable projectsTable = projectDao.get().getByPluginId(pluginId);
         if (projectsTable == null) return null;
         Project project = new Project();

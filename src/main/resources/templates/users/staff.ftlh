@@ -2,10 +2,6 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base>
 
-<#--
-@(staff: Seq[(String, Role, Option[OffsetDateTime], OffsetDateTime)], ordering: String, page: Int)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
--->
-
 <#function direction>
 	<#if ordering?startsWith("-")>
 		<#return "chevron-down">
@@ -50,22 +46,23 @@
 				</tr>
 			</thead>
 			<tbody>
-				<#list staff as user>
+				<#list staff as staffUser>
 				<tr>
                     <#import "*/utils/userAvatar.ftlh" as userAvatar>
-					<td><@userAvatar.userAvatar userName=user.name avatarUrl=User.avatarUrl(user.name) clazz="user-avatar-xs"></@userAvatar.userAvatar></td>
+					<td><@userAvatar.userAvatar userName=staffUser.name avatarUrl=staffUser.avatarUrl clazz="user-avatar-xs"></@userAvatar.userAvatar></td>
 					<td>
-						<a href="${routes.getRouteUrl("showActivities", user.name)}">${user.name}</a>
+						<a href="${routes.getRouteUrl("showActivities", staffUser.name)}">${staffUser.name}</a>
 					</td>
 					<td>
-						<span class="user-role channel" style="background-color: ${user.role.color.hex}">
-						${user.role.title}
+						<span class="user-role channel" style="background-color: ${staffUser.role.color.hex}">
+						${staffUser.role.title}
 						</span>
 					</td>
-					<td>${(user.joinDate!user.createdAt).format("yyyy-MM-dd")}</td>
+					<td>${(staffUser.joinDate!staffUser.createdAt).format("yyyy-MM-dd")}</td>
 				</tr>
 				</#list>
-
+				<#-- @ftlvariable name="page" type="java.lang.Integer" -->
+				<#-- @ftlvariable name="pageSize" type="java.lang.Integer" -->
 				<#if page gt 1 || staff?size gte pageSize>
 					<tr class="authors-footer">
 						<td></td>

@@ -137,7 +137,7 @@
                         </form>
                     </div>
 
-                    <#if sp.perms(@helper["me.minidigger.hangar.model.Permission"].EditApiKeys)>
+                    <#if sp.perms(Permission.EditApiKeys)>
                         <div class="setting">
                             <div class="setting-description">
                                 <h4><@spring.message "project.settings.deployKey" /></h4>
@@ -187,7 +187,7 @@
                     </div>
 
                         <!-- Delete -->
-                    <#if sp.perms(@helper["me.minidigger.hangar.model.Permission"].DeleteProject)>
+                    <#if sp.perms(Permission.DeleteProject)>
                         <div class="setting">
                             <div class="setting-description">
                                 <h4 class="danger">Delete</h4>
@@ -203,7 +203,7 @@
                     </div>
                     </#if>
 
-                    <#if headerData.globalPerm(@helper["me.minidigger.hangar.model.Permission"].HardDeleteProject)>
+                    <#if headerData.globalPerm(Permission.HardDeleteProject)>
                         <div class="setting striped">
                             <div class="setting-description">
                                 <h4 class="danger">Hard Delete</h4>

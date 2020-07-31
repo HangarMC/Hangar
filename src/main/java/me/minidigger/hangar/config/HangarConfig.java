@@ -13,11 +13,16 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Configuration
 @ConfigurationProperties(prefix = "hangar")
 @ComponentScan("me.minidigger.hangar")
 public class HangarConfig {
+
+    private String logo = "https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png";
+    private String service = "Hangar";
+    private List<Sponsor> sponsors;
 
     private boolean debug = false;
     private int debugLevel = 3;
@@ -41,6 +46,37 @@ public class HangarConfig {
     @NestedConfigurationProperty
     public HangarApiConfig api;
 
+    @Component
+    public static class Sponsor {
+        private String name;
+        private String image;
+        private String link;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getImage() {
+            return image;
+        }
+
+        public void setImage(String image) {
+            this.image = image;
+        }
+
+        public String getLink() {
+            return link;
+        }
+
+        public void setLink(String link) {
+            this.link = link;
+        }
+    }
+
     @Autowired
     public HangarConfig(FakeUserConfig fakeUser, HangarHomepageConfig homepage, HangarChannelsConfig channels, HangarPagesConfig pages, HangarProjectsConfig projects, HangarUserConfig user, HangarOrgConfig org, HangarApiConfig api) {
         this.fakeUser = fakeUser;
@@ -51,6 +87,30 @@ public class HangarConfig {
         this.user = user;
         this.org = org;
         this.api = api;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
+    public String getService() {
+        return service;
+    }
+
+    public void setService(String service) {
+        this.service = service;
+    }
+
+    public List<Sponsor> getSponsors() {
+        return sponsors;
+    }
+
+    public void setSponsors(List<Sponsor> sponsors) {
+        this.sponsors = sponsors;
     }
 
     public boolean isDebug() {

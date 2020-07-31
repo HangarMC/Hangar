@@ -82,4 +82,22 @@ public interface UserDao {
     @UseStringTemplateEngine
     @RegisterBeanMapper(Staff.class)
     List<Staff> getStaff(long offset, long pageSize, @Define String sort);
+
+    @SqlQuery("SELECT u.* FROM project_watchers pw JOIN users u ON pw.user_id = u.id WHERE project_id = :projectId OFFSET :offset LIMIT :limit")
+    List<UsersTable> getProjectWatchers(long projectId, int offset, Integer limit);
+
+    @SqlUpdate("INSERT INTO project_watchers (project_id, user_id) VALUES (:projectId, :userId)")
+    void setWatching(long projectId, long userId);
+
+    @SqlUpdate("DELETE FROM project_watchers WHERE project_id = :projectId AND user_id = :userId")
+    void removeWatching(long projectId, long userId);
+
+    @SqlQuery("SELECT u.* FROM project_stars ps JOIN users u ON ps.user_id = u.id WHERE project_id = :projectId OFFSET :offset LIMIT :limit")
+    List<UsersTable> getProjectStargazers(long projectId, int offset, Integer limit);
+
+    @SqlUpdate("INSERT INTO project_stars (project_id, user_id) VALUES (:projectId, :userId)")
+    void setStargazing(long projectId, long userId);
+
+    @SqlUpdate("DELETE FROM project_stars WHERE project_id = :projectId AND user_id = :userId")
+    void removeStargazing(long projectId, long userId);
 }

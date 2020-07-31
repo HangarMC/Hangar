@@ -34,7 +34,7 @@ public enum Visibility {
         return name;
     }
 
-    public boolean isShowModal() {
+    public boolean getShowModal() {
         return showModal;
     }
 

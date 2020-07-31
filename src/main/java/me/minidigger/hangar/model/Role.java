@@ -26,11 +26,11 @@ public enum Role {
     CONTRIBUTOR("Contributor", 12, GLOBAL, None, "Contributor", GREEN),
     ADVISOR("Advisor", 13, GLOBAL, None, "Advisor", AQUA),
 
-    STONE_DONOR("Stone_Donor", 14, GLOBAL, None, "Stone Donor", GRAY),
-    QUARTZ_DONOR("Quartz_Donor",15, GLOBAL, None, "Quartz Donor", QUARTZ),
-    IRON_DONOR("Iron_Donor",16, GLOBAL, None, "Iron Donor", SILVER),
-    GOLD_DONOR("Gold_Donor",17, GLOBAL, None, "Gold Donor", GOLD),
-    DIAMOND_DONOR("Diamond_Donor",18, GLOBAL, None, "Diamond Donor", LIGHTBLUE),
+    STONE_DONOR("Stone_Donor", 14, GLOBAL, None, "Stone Donor", GRAY, 5L),
+    QUARTZ_DONOR("Quartz_Donor",15, GLOBAL, None, "Quartz Donor", QUARTZ, 4L),
+    IRON_DONOR("Iron_Donor",16, GLOBAL, None, "Iron Donor", SILVER, 3L),
+    GOLD_DONOR("Gold_Donor",17, GLOBAL, None, "Gold Donor", GOLD, 2L),
+    DIAMOND_DONOR("Diamond_Donor",18, GLOBAL, None, "Diamond Donor", LIGHTBLUE, 1L),
 
     PROJECT_SUPPORT("Project_Support", 22, PROJECT, IsProjectMember, "Support", TRANSPARENT),
     PROJECT_EDITOR("Project_Editor", 21, PROJECT, EditPage.add(PROJECT_SUPPORT.getPermissions()), "Editor", TRANSPARENT),
@@ -51,9 +51,15 @@ public enum Role {
     private String title;
     private Color color;
     private boolean isAssignable;
+    private Long rank = null;
 
     Role(String value, int roleId, RoleCategory category, Permission permissions, String title, Color color) {
         this(value, roleId, category, permissions, title, color, true);
+    }
+
+    Role(String value, int roleId, RoleCategory category, Permission permissions, String title, Color color, Long rank) {
+        this(value, roleId, category, permissions, title, color);
+        this.rank = rank;
     }
 
     Role(String value, int roleId, RoleCategory category, Permission permissions, String title, Color color, boolean isAssignable) {
@@ -92,6 +98,10 @@ public enum Role {
 
     public boolean isAssignable() {
         return isAssignable;
+    }
+
+    public Long getRank() {
+        return rank;
     }
 
     public static Role fromTitle(String title) {

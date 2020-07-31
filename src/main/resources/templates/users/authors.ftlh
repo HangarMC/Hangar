@@ -18,6 +18,7 @@
 
 @pageSize = @{ config.ore.users.authorPageSize }
 -->
+<#assign pageSize=config.user.authorPageSize />
 
 <#function direction>
 	<#if ordering?startsWith("-")>
@@ -40,6 +41,7 @@
 	<script <#--@CSPNonce.attr-->>CURRENT_PAGE = ${page};</script>
 </#assign>
 
+<#-- @ftlvariable name="page" type="java.lang.Integer" -->
 <@base.base title="Authors - Hangar" additionalScripts=scriptsVar>
     <#assign UserOrdering = @helper["me.minidigger.hangar.model.UserOrdering"]>
 <#-- @ftlvariable name="UserOrdering" type="me.minidigger.hangar.model.UserOrdering" -->
@@ -70,13 +72,13 @@
                 <#list authors as author>
                 <tr>
                     <#import "*/utils/userAvatar.ftlh" as userAvatar>
-                    <td><@userAvatar.userAvatar userName=author.name avatarUrl=User.avatarUrl(author.name) clazz="user-avatar-xs"></@userAvatar.userAvatar></td>
+                    <td><@userAvatar.userAvatar userName=author.name avatarUrl=author.avatarUrl clazz="user-avatar-xs"></@userAvatar.userAvatar></td>
                     <td>
                         <a href="${routes.getRouteUrl("users.showProjects", author.name)}">${author.name}</a>
                     </td>
                     <td>
                         <#if author.donatorRole??>
-                            <span class="channel channel-sm" style="background-color: ${role.color.hex}">
+                            <span class="channel channel-sm" style="background-color: ${author.donatorRole.color.hex}">
                             ${author.donatorRole}
                             </span>
                         </#if>
