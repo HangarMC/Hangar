@@ -11,6 +11,14 @@ public class OrganizationsTable {
     private long ownerId;
     private long userId;
 
+    public OrganizationsTable(String name, long ownerId, long userId) {
+        this.name = name;
+        this.ownerId = ownerId;
+        this.userId = userId;
+    }
+
+    public OrganizationsTable() {
+    }
 
     public long getId() {
         return id;

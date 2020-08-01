@@ -1,5 +1,8 @@
 package me.minidigger.hangar.service;
 
+import me.minidigger.hangar.db.dao.UserOrganizationRolesDao;
+import me.minidigger.hangar.db.model.UserOrganizationRolesTable;
+import me.minidigger.hangar.model.viewhelpers.OrgMember;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,13 +34,17 @@ public class RoleService {
     private final HangarDao<UserProjectRolesDao> userProjectRolesDao;
     private final HangarDao<ProjectMembersDao> projectMembersDao;
     private final HangarDao<UserGlobalRolesDao> userGlobalRolesDao;
+    private final HangarDao<UserOrganizationRolesDao> userOrganizationRolesDao;
+    private final OrgService orgService;
 
     @Autowired
-    public RoleService(HangarDao<RoleDao> roleDao, HangarDao<UserProjectRolesDao> userProjectRolesDao, HangarDao<ProjectMembersDao> projectMembersDao, HangarDao<UserGlobalRolesDao> userGlobalRolesDao) {
+    public RoleService(HangarDao<RoleDao> roleDao, HangarDao<UserProjectRolesDao> userProjectRolesDao, HangarDao<ProjectMembersDao> projectMembersDao, HangarDao<UserGlobalRolesDao> userGlobalRolesDao, HangarDao<UserOrganizationRolesDao> userOrganizationRolesDao, OrgService orgService) {
         this.roleDao = roleDao;
         this.userProjectRolesDao = userProjectRolesDao;
         this.projectMembersDao = projectMembersDao;
         this.userGlobalRolesDao = userGlobalRolesDao;
+        this.userOrganizationRolesDao = userOrganizationRolesDao;
+        this.orgService = orgService;
         init();
     }
 
@@ -70,8 +77,20 @@ public class RoleService {
         userGlobalRolesDao.get().insert(new UserGlobalRolesTable(userId, roleId));
     }
 
+
     public void removeGlobalRole(long userId, long roleId) {
         userGlobalRolesDao.get().delete(new UserGlobalRolesTable(userId, roleId));
+    }
+
+    public void addOrgMemberRole(long orgId, long userId, Role role, boolean accepted) {
+        OrgMember orgMember = orgService.getOrganizationMember(orgId, userId);
+        if (orgMember == null) { // add org member
+            orgMember = orgService.addOrgMember(orgId, userId);
+        }
+        for (Role userRole : orgMember.getRoles()) {
+            if (userRole == role) return; // no change
+        }
+        userOrganizationRolesDao.get().insert(new UserOrganizationRolesTable(userId, role.getValue(), orgId, accepted));
     }
 
     public List<Role> getGlobalRolesForUser(@Nullable Long userId, @Nullable String userName) {
