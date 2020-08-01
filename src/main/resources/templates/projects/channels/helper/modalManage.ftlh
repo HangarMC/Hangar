@@ -4,10 +4,6 @@
 <#import "*/utils/form.ftlh" as form>
 <#import "*/utils/csrf.ftlh" as csrf>
 
-@import ore.OreConfig
-@import views.html.helper.{CSRF, form}
-@()(implicit messages: Messages, config: OreConfig, request: Request[_])
-
 <#macro modalManage>
     <div class="modal fade" id="channel-settings" tabindex="-1" role="dialog" aria-labelledBy="settings-label">
         <div class="modal-dialog" role="document">
@@ -24,7 +20,7 @@
                         <div class="form-inline">
                             <label for="channel-input"><@spring.message "channel.name" /></label>
                             <input class="form-control channel-input" name="channel-input" type="text" value=""
-                                   maxlength="${config.ore.channels.maxNameLen}"/>
+                                   maxlength="${config.channels.maxNameLen}"/>
                             <input type="hidden" name="channel-color-input" class="channel-color-input" value="" />
                             <a href="#">
                                 <span class="color-picker" data-toggle="popover" data-placement="right" data-trigger="hover">

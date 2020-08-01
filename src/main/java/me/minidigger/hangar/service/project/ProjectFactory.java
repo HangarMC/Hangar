@@ -18,9 +18,11 @@ import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.Category;
 import me.minidigger.hangar.model.Role;
 import me.minidigger.hangar.model.Visibility;
+import me.minidigger.hangar.model.generated.Project;
 import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.service.RoleService;
 import me.minidigger.hangar.service.UserService;
+import me.minidigger.hangar.service.pluginupload.PendingVersion;
 import me.minidigger.hangar.util.HangarException;
 import me.minidigger.hangar.util.StringUtils;
 import org.springframework.lang.Nullable;
@@ -109,6 +111,10 @@ public class ProjectFactory {
         else if (pluginId != null) invalidProjectReason = projectDao.get().checkValidProject(author.getId(), pluginId, page, StringUtils.slugify(page));
         else invalidProjectReason = projectDao.get().checkNamespace(author.getId(), page, StringUtils.slugify(page));
         if (invalidProjectReason != null) throw new HangarException(invalidProjectReason.key);
+    }
+
+    public void createVersion(Project project, PendingVersion pendingVersion) {
+        // TODO createVersion
     }
 
     public enum InvalidProjectReason {

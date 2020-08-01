@@ -72,6 +72,10 @@ public class ProjectFiles {
         return findFirstFile(getPendingIconDir(owner, name));
     }
 
+    public Path getTempDir(String owner) {
+        return tmpDir.resolve(owner);
+    }
+
     private Path findFirstFile(Path dir) {
         try {
             return Files.list(dir).filter(Files::isRegularFile).findFirst().orElse(null); // TODO no clue if this is what is desired here

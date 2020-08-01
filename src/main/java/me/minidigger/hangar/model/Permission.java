@@ -1,13 +1,7 @@
 package me.minidigger.hangar.model;
 
-import org.jdbi.v3.core.mapper.reflect.ColumnName;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Permission implements Comparable<Permission> {
@@ -95,7 +89,7 @@ public class Permission implements Comparable<Permission> {
         return Long.toBinaryString(value);
     }
 
-    public Collection<NamedPermission> toNamed() {
+    public List<NamedPermission> toNamed() {
         return Arrays.stream(NamedPermission.values()).filter(perm -> has(perm.getPermission())).collect(Collectors.toUnmodifiableList());
     }
 

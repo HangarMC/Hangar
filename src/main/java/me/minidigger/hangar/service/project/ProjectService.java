@@ -20,7 +20,6 @@ import me.minidigger.hangar.model.viewhelpers.ProjectMember;
 import me.minidigger.hangar.model.viewhelpers.ProjectViewSettings;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
 import me.minidigger.hangar.model.viewhelpers.UserRole;
-import me.minidigger.hangar.security.annotations.GlobalPermission;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.StringUtils;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
@@ -170,5 +169,9 @@ public class ProjectService {
         project.setSettings(new ProjectSettings()); // TODO implement
         project.setIconUrl(""); // TODO implement
         return project;
+    }
+
+    public long getIdByPluginId(String pluginId) {
+        return projectDao.get().getByPluginId(pluginId).getId();
     }
 }
