@@ -10,12 +10,12 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -26,19 +26,19 @@ import java.util.Map;
 @Service
 public class SsoService {
 
-    private final HangarConfig.HangarSsoConfig ssoConfig;
+    private final HangarConfig hangarConfig;
     private final Cache<String, String> returnUrls;
 
     @Autowired
-    public SsoService(HangarConfig.HangarSsoConfig ssoConfig) {
-        this.ssoConfig = ssoConfig;
-        this.returnUrls = Caffeine.newBuilder().expireAfterWrite(ssoConfig.getTimeout()).build();
+    public SsoService(HangarConfig hangarConfig) {
+        this.hangarConfig = hangarConfig;
+        this.returnUrls = Caffeine.newBuilder().expireAfterWrite(hangarConfig.sso.getTimeout()).build();
     }
 
     private String sign(String payload) {
         try {
             Mac hasher = Mac.getInstance("HmacSHA256");
-            hasher.init(new SecretKeySpec(ssoConfig.getSecret().getBytes(), "HmacSHA256"));
+            hasher.init(new SecretKeySpec(hangarConfig.sso.getSecret().getBytes(), "HmacSHA256"));
             byte[] hash = hasher.doFinal(payload.getBytes());
             return HexConverter.convertToHexString(hash);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
@@ -99,6 +99,39 @@ public class SsoService {
 
     public void clearReturnUrl(String nonce) {
         returnUrls.invalidate(nonce);
+    }
+    
+    public String generateAuthReturnUrl(String returnUrl) {
+        String nonce = setReturnUrl(returnUrl);
+        return ServletUriComponentsBuilder.fromCurrentRequestUri()
+                .replaceQuery("")
+                .build().toString() + "&nonce=" + nonce; // spongeauth doesn't like properly-formatted query strings, so we have to append this ourselves
+    }
+
+    public String getAuthLoginUrl(String payload, String signature) {
+        return UriComponentsBuilder.fromHttpUrl(hangarConfig.getAuthUrl() + hangarConfig.sso.getLoginUrl())
+                .queryParam("sso", payload)
+                .queryParam("sig", signature)
+                .build().toString();
+    }
+
+    public String getAuthSignupUrl(String payload, String signature) {
+        return UriComponentsBuilder.fromHttpUrl(hangarConfig.getAuthUrl() + hangarConfig.sso.getSignupUrl())
+                .queryParam("sso", payload)
+                .queryParam("sig", signature)
+                .build().toString();
+    }
+
+    public String getAuthVerifyUrl(String payload, String signature) {
+        return UriComponentsBuilder.fromHttpUrl(hangarConfig.getAuthUrl() + hangarConfig.sso.getVerifyUrl())
+                .queryParam("sso", payload)
+                .queryParam("sig", signature)
+                .build().toString();
+    }
+
+    public String getAuthLogoutUrl() {
+        return UriComponentsBuilder.fromHttpUrl(hangarConfig.getAuthUrl() + hangarConfig.sso.getLogoutUrl())
+                .build().toString();
     }
 
     public static class SignatureException extends HangarException {

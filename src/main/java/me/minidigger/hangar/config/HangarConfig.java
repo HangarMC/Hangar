@@ -596,6 +596,7 @@ public class HangarConfig {
         private String loginUrl = "/sso/";
         private String signupUrl = "/sso/signup/";
         private String verifyUrl = "/sso/sudo/";
+        private String logoutUrl = "/accounts/logout/";
         private String avatarUrl = "/avatar/%s?size=120x120";
         private String secret = "changeme";
         private String apiKey = "changeme";
@@ -632,6 +633,14 @@ public class HangarConfig {
 
         public void setVerifyUrl(String verifyUrl) {
             this.verifyUrl = verifyUrl;
+        }
+
+        public String getLogoutUrl() {
+            return logoutUrl;
+        }
+
+        public void setLogoutUrl(String logoutUrl) {
+            this.logoutUrl = logoutUrl;
         }
 
         public String getAvatarUrl() {

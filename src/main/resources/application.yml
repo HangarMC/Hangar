@@ -87,6 +87,7 @@ hangar:
     login-url: "/sso/"
     signup-url: "/sso/signup/"
     verify-url: "/sso/sudo/"
+    logout-url: "/accounts/logout/"
     avatar-url: "/avatar/%s?size=120x120"
     secret: "changeme"
     api-key: "changeme"

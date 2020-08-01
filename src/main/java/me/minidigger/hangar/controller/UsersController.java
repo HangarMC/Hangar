@@ -76,15 +76,9 @@ public class UsersController extends HangarController {
             return new ModelAndView("redirect:" + returnUrl);
         } else if (sso.isEmpty() || sig.isBlank()) {
             // redirect to SSO
-            String nonce = ssoService.setReturnUrl(returnUrl);
-            String authRedirectUrl = ServletUriComponentsBuilder.fromCurrentRequestUri()
-                    .replaceQuery("")
-                    .build().toString() + "&nonce=" + nonce; // spongeauth doesn't like properly-formatted query strings
+            String authRedirectUrl = ssoService.generateAuthReturnUrl(returnUrl);
             Pair<String, String> ssoData = ssoService.encode(Map.of("return_sso_url", authRedirectUrl));
-            String ssoUrl = UriComponentsBuilder.fromHttpUrl(hangarConfig.getAuthUrl() + hangarConfig.sso.getLoginUrl())
-                    .queryParam("sso", ssoData.getLeft())
-                    .queryParam("sig", ssoData.getRight())
-                    .build().toString();
+            String ssoUrl = ssoService.getAuthLoginUrl(ssoData.getLeft(), ssoData.getRight());
             return new ModelAndView("redirect:" + ssoUrl);
         } else {
             boolean success = authenticationService.loginWithSSO(sso, sig);
@@ -100,9 +94,9 @@ public class UsersController extends HangarController {
     }
 
     @RequestMapping("/logout")
-    public RedirectView logout(HttpSession session) {
+    public ModelAndView logout(HttpSession session) {
         session.invalidate();
-        return new RedirectView(routeHelper.getRouteUrl("showHome")); // TODO redirect to sso
+        return new ModelAndView("redirect:" + ssoService.getAuthLogoutUrl());
     }
 
     @Secured("ROLE_USER")
@@ -124,8 +118,12 @@ public class UsersController extends HangarController {
     }
 
     @RequestMapping("/signup")
-    public Object signUp() {
-        return null; // TODO implement signUp request controller
+    public ModelAndView signUp(@RequestParam(defaultValue = "") String returnUrl) {
+        // redirect to SSO
+        String authRedirectUrl = ssoService.generateAuthReturnUrl(returnUrl);
+        Pair<String, String> ssoData = ssoService.encode(Map.of("return_sso_url", authRedirectUrl));
+        String ssoUrl = ssoService.getAuthSignupUrl(ssoData.getLeft(), ssoData.getRight());
+        return new ModelAndView("redirect:" + ssoUrl);
     }
 
     @GetMapping("/staff")
