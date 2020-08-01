@@ -1,11 +1,15 @@
 package me.minidigger.hangar.controller;
 
+import me.minidigger.hangar.model.NamedPermission;
+import me.minidigger.hangar.model.viewhelpers.UserData;
+import me.minidigger.hangar.security.annotations.GlobalPermission;
+import me.minidigger.hangar.service.UserService;
+import me.minidigger.hangar.service.project.ProjectService;
 import me.minidigger.hangar.util.AlertUtil;
 import me.minidigger.hangar.util.AlertUtil.AlertType;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.MimeType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,12 +18,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import me.minidigger.hangar.controller.HangarController;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import springfox.documentation.schema.Enums;
-
 @Controller
 public class ApplicationController extends HangarController {
+
+    private final UserService userService;
+    private final ProjectService projectService;
+
+    @Autowired
+    public ApplicationController(UserService userService, ProjectService projectService) {
+        this.userService = userService;
+        this.projectService = projectService;
+    }
 
     @RequestMapping("/")
     public ModelAndView showHome(@ModelAttribute("alertType") String alertType, @ModelAttribute("alertMsg") String alertMsg) {
@@ -36,11 +45,9 @@ public class ApplicationController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/admin/activities/{user}")
+    @GetMapping("/admin/activities/{user}")
     public ModelAndView showActivities(@PathVariable String user) {
-        ModelAndView mav = new ModelAndView("users/admin/activity");
-        mav.addObject("username", user);
-        return fillModel(mav);
+        return null; // TODO implement
     }
 
     @Secured("ROLE_USER")
@@ -91,10 +98,16 @@ public class ApplicationController extends HangarController {
         return fillModel(new ModelAndView("users/admin/stats")); // TODO implement showStats request controller
     }
 
+    @GlobalPermission(NamedPermission.EDIT_ALL_USER_SETTINGS)
     @Secured("ROLE_USER")
     @RequestMapping("/admin/user/{user}")
-    public Object userAdmin(@PathVariable Object user) {
-        return null; // TODO implement userAdmin request controller
+    public ModelAndView userAdmin(@PathVariable String user) {
+        ModelAndView mav = new ModelAndView("users/admin/userAdmin");
+        UserData userData = userService.getUserData(user);
+        mav.addObject("u", userData);
+        // TODO organization
+        mav.addObject("userProjectRoles", projectService.getProjectsAndRoles(userData.getUser().getId()));
+        return fillModel(mav);
     }
 
     @Secured("ROLE_USER")

@@ -1,8 +1,11 @@
 package me.minidigger.hangar.model.viewhelpers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import me.minidigger.hangar.db.model.UserOrganizationRolesTable;
 import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.Permission;
 import me.minidigger.hangar.model.Role;
@@ -11,18 +14,18 @@ public class UserData {
 
     private HeaderData headerData;
     private UsersTable user;
-    private boolean isOrga;
+    private boolean isOrga = false;
     private int projectCount;
-    private List<Organization> orgas;
+    private Map<Organization, UserRole<UserOrganizationRolesTable>> orgas;
     private List<Role> globalRoles;
     private Permission userPerm;
     private Permission orgaPerm;
 
     public static UserData of(UsersTable user, HeaderData headerData) {
-        return new UserData(headerData, user, false, 0, new ArrayList<>(), new ArrayList<>(), Permission.None, Permission.None);
+        return new UserData(headerData, user, false, 0, new HashMap<>(), new ArrayList<>(), Permission.None, Permission.None);
     }
 
-    public UserData(HeaderData headerData, UsersTable user, boolean isOrga, int projectCount, List<Organization> orgas, List<Role> globalRoles, Permission userPerm, Permission orgaPerm) {
+    public UserData(HeaderData headerData, UsersTable user, boolean isOrga, int projectCount, Map<Organization, UserRole<UserOrganizationRolesTable>> orgas, List<Role> globalRoles, Permission userPerm, Permission orgaPerm) {
         this.headerData = headerData;
         this.user = user;
         this.isOrga = isOrga;
@@ -77,11 +80,11 @@ public class UserData {
         this.projectCount = projectCount;
     }
 
-    public List<Organization> getOrgas() {
+    public Map<Organization, UserRole<UserOrganizationRolesTable>> getOrgas() {
         return orgas;
     }
 
-    public void setOrgas(List<Organization> orgas) {
+    public void setOrgas(Map<Organization, UserRole<UserOrganizationRolesTable>> orgas) {
         this.orgas = orgas;
     }
 

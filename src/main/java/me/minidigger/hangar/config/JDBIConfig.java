@@ -4,6 +4,7 @@ import me.minidigger.hangar.db.customtypes.JobState;
 import me.minidigger.hangar.db.customtypes.LoggedAction;
 import me.minidigger.hangar.db.customtypes.RoleCategory;
 import me.minidigger.hangar.db.dao.HangarDao;
+import me.minidigger.hangar.db.mappers.RoleMapper;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.spi.JdbiPlugin;
 import org.jdbi.v3.postgres.PostgresPlugin;
@@ -39,6 +40,7 @@ public class JDBIConfig {
         Jdbi jdbi = Jdbi.create(dataSourceProxy);
         jdbiPlugins.forEach(jdbi::installPlugin);
         PostgresTypes config = jdbi.getConfig(PostgresTypes.class);
+        jdbi.registerRowMapper(new RoleMapper());
         config.registerCustomType(LoggedAction.class, "logged_action_type");
         config.registerCustomType(RoleCategory.class, "role_category");
         config.registerCustomType(JobState.class, "job_state");

@@ -7,7 +7,9 @@ import me.minidigger.hangar.db.dao.VisibilityDao;
 import me.minidigger.hangar.db.model.ProjectVersionsTable;
 import me.minidigger.hangar.db.model.ProjectVisibilityChangesTable;
 import me.minidigger.hangar.db.model.ProjectsTable;
+import me.minidigger.hangar.db.model.UserProjectRolesTable;
 import me.minidigger.hangar.db.model.UsersTable;
+import me.minidigger.hangar.model.Role;
 import me.minidigger.hangar.model.Visibility;
 import me.minidigger.hangar.model.generated.Project;
 import me.minidigger.hangar.model.generated.ProjectNamespace;
@@ -17,6 +19,7 @@ import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.model.viewhelpers.ProjectMember;
 import me.minidigger.hangar.model.viewhelpers.ProjectViewSettings;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
+import me.minidigger.hangar.model.viewhelpers.UserRole;
 import me.minidigger.hangar.security.annotations.GlobalPermission;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.StringUtils;
@@ -29,6 +32,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -133,6 +137,15 @@ public class ProjectService {
 
     public List<UsersTable> getProjectStargazers(long projectId, int offset, int limit) {
         return userDao.get().getProjectStargazers(projectId, offset, limit);
+    }
+
+    public Map<ProjectData, UserRole> getProjectsAndRoles(long userId) {
+        Map<ProjectsTable, UserProjectRolesTable> dbMap = projectDao.get().getProjectsAndRoles(userId);
+        Map<ProjectData, UserRole> map = new HashMap<>();
+        dbMap.forEach((projectsTable, role) -> {
+            map.put(getProjectData(projectsTable), new UserRole<>(role, role.getIsAccepted(), role.getRoleType()));
+        });
+        return map;
     }
 
     public Project getProjectApi(String pluginId) { // TODO still probably have to work out a standard for how to handle the api models
