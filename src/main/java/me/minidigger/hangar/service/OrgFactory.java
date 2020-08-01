@@ -47,6 +47,7 @@ public class OrgFactory {
         roleService.addGlobalRole(orgUser.getUser().getId(), Role.ORGANIZATION.getRoleId());
         roleService.addOrgMemberRole(orgId, ownerId, Role.ORGANIZATION_OWNER, true);
         members.forEach((memberId, role) -> roleService.addOrgMemberRole(orgId, memberId, role, false));
+        // TODO notifications for members
         return org;
     }
 }
