@@ -1,6 +1,8 @@
 package me.minidigger.hangar.controller;
 
 
+import me.minidigger.hangar.model.NamedPermission;
+import me.minidigger.hangar.security.annotations.ProjectPermission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

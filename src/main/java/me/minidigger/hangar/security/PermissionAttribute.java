@@ -1,4 +1,4 @@
-package me.minidigger.hangar.security.attributes;
+package me.minidigger.hangar.security;
 
 import me.minidigger.hangar.model.NamedPermission;
 import org.springframework.security.access.ConfigAttribute;
