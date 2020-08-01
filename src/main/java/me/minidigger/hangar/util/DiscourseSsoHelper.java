@@ -10,6 +10,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -17,12 +20,12 @@ import java.util.Map;
 
 // reference: https://github.com/MiniDigger/HangarAuth/blob/master/spongeauth/sso/discourse_sso.py
 @Component
-public class DiscourseSsoSigner {
+public class DiscourseSsoHelper {
 
     private final HangarConfig.HangarSsoConfig ssoConfig;
 
     @Autowired
-    public DiscourseSsoSigner(HangarConfig.HangarSsoConfig ssoConfig) {
+    public DiscourseSsoHelper(HangarConfig.HangarSsoConfig ssoConfig) {
         this.ssoConfig = ssoConfig;
     }
 
@@ -48,7 +51,8 @@ public class DiscourseSsoSigner {
             throw new SignatureException(payload, signature);
         }
 
-        String querystring = new String(Base64.getDecoder().decode(payload));
+        String decoded = new String(Base64.getDecoder().decode(payload));
+        String querystring = URLDecoder.decode(decoded, StandardCharsets.UTF_8);
         // TODO: prepending "/?" is a hack
         return UriComponentsBuilder.fromUriString("/?" + querystring).build().getQueryParams().toSingleValueMap();
     }
@@ -60,14 +64,19 @@ public class DiscourseSsoSigner {
     public Pair<String, String> encode(Map<String, String> payloadData) {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String> entry : payloadData.entrySet()) {
-            sb.append(sb.length() == 0 ? "?" : "&")
+            sb.append(sb.length() == 0 ? "" : "&")
                     .append(entry.getKey())
                     .append("=")
                     .append(entry.getValue());
         }
 
-        String encoded = Base64.getEncoder().encodeToString(sb.toString().getBytes());
+        String queryString = URLEncoder.encode(sb.toString(), StandardCharsets.UTF_8);
+        String encoded = Base64.getEncoder().encodeToString(queryString.getBytes());
         return ImmutablePair.of(encoded, sign(encoded));
+    }
+
+    public static String parsePythonNullable(String input) {
+        return input.equals("None") ? null : input;
     }
 
     public static class SignatureException extends HangarException {

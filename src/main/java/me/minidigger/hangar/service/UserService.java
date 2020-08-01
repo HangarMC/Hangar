@@ -3,6 +3,7 @@ package me.minidigger.hangar.service;
 import me.minidigger.hangar.db.dao.OrganizationDao;
 import me.minidigger.hangar.db.dao.ProjectDao;
 import me.minidigger.hangar.db.dao.RoleDao;
+import me.minidigger.hangar.model.generated.SsoSyncData;
 import me.minidigger.hangar.model.viewhelpers.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -13,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import me.minidigger.hangar.config.CacheConfig;
@@ -150,5 +150,28 @@ public class UserService {
         Permission userPerm = Permission.All;
         Permission orgaPerm = Permission.None;
         return new UserData(getHeaderData(), user, isOrga, projectCount, organizations, globalRoles, userPerm, orgaPerm);
+    }
+
+    public void ssoSyncUser(SsoSyncData syncData) {
+        UsersTable user = userDao.get().getById(syncData.getExternalId());
+        if (user == null) {
+            user = new UsersTable(
+                    syncData.getExternalId(),
+                    syncData.getFullName(),
+                    syncData.getUsername(),
+                    syncData.getEmail(),
+                    null,
+                    new int[0],
+                    false,
+                    "en_US" // todo: how does language
+            );
+            user = userDao.get().insert(user);
+        } else {
+            user.setFullName(syncData.getFullName());
+            user.setName(syncData.getUsername());
+            user.setEmail(syncData.getEmail());
+            userDao.get().update(user);
+        }
+        // TODO: roles
     }
 }

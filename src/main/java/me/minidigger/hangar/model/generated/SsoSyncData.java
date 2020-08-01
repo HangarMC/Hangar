@@ -1,17 +1,46 @@
 package me.minidigger.hangar.model.generated;
 
-// TODO: use this
+import me.minidigger.hangar.util.DiscourseSsoHelper;
+
+import java.util.Map;
+
 public class SsoSyncData {
 
     private int externalId;
     private String email;
     private String username;
-    private String name;
+    private String fullName;
     private String addGroups; // todo: this is a comma-separated list of global roles to add on sync, map these to Roles
     private String removeGroups; // todo: same but remove
     private boolean admin;
     private boolean moderator;
     private boolean requireActivation;
+
+    public SsoSyncData(int externalId, String email, String username, String fullName, String addGroups, String removeGroups, boolean admin, boolean moderator, boolean requireActivation) {
+        this.externalId = externalId;
+        this.email = email;
+        this.username = username;
+        this.fullName = fullName;
+        this.addGroups = addGroups;
+        this.removeGroups = removeGroups;
+        this.admin = admin;
+        this.moderator = moderator;
+        this.requireActivation = requireActivation;
+    }
+
+    public static SsoSyncData fromSignedPayload(Map<String, String> payload) {
+        return new SsoSyncData(
+                Integer.parseInt(payload.get("external_id")),
+                payload.get("email"),
+                payload.get("username"),
+                DiscourseSsoHelper.parsePythonNullable(payload.get("name")),
+                payload.get("addGroups"),
+                payload.get("removeGroups"),
+                Boolean.parseBoolean(payload.get("admin")),
+                Boolean.parseBoolean(payload.get("moderator")),
+                Boolean.parseBoolean(payload.get("require_activation"))
+        );
+    }
 
     public int getExternalId() {
         return externalId;
@@ -37,12 +66,12 @@ public class SsoSyncData {
         this.username = username;
     }
 
-    public String getName() {
-        return name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getAddGroups() {
