@@ -22,7 +22,7 @@ spring:
 # Fake User #
 #############
 fake-user:
-  enabled: true
+  enabled: false
   id: -2
   name: paper
   username: paper
@@ -34,7 +34,7 @@ hangar:
   debug-level: 3
   staging: true
   log-timings: false
-  auth-url: "https://localhost:8000"
+  auth-url: "http://localhost:8000"
 
   sponsors:
     - name: Theranos

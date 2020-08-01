@@ -1,11 +1,15 @@
-package me.minidigger.hangar.util;
+package me.minidigger.hangar.service;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import io.undertow.util.HexConverter;
 import me.minidigger.hangar.config.HangarConfig;
+import me.minidigger.hangar.util.HangarException;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.crypto.Mac;
@@ -19,14 +23,16 @@ import java.util.Base64;
 import java.util.Map;
 
 // reference: https://github.com/MiniDigger/HangarAuth/blob/master/spongeauth/sso/discourse_sso.py
-@Component
-public class DiscourseSsoHelper {
+@Service
+public class SsoService {
 
     private final HangarConfig.HangarSsoConfig ssoConfig;
+    private final Cache<String, String> returnUrls;
 
     @Autowired
-    public DiscourseSsoHelper(HangarConfig.HangarSsoConfig ssoConfig) {
+    public SsoService(HangarConfig.HangarSsoConfig ssoConfig) {
         this.ssoConfig = ssoConfig;
+        this.returnUrls = Caffeine.newBuilder().expireAfterWrite(ssoConfig.getTimeout()).build();
     }
 
     private String sign(String payload) {
@@ -70,13 +76,29 @@ public class DiscourseSsoHelper {
                     .append(entry.getValue());
         }
 
-        String queryString = URLEncoder.encode(sb.toString(), StandardCharsets.UTF_8);
-        String encoded = Base64.getEncoder().encodeToString(queryString.getBytes());
+//        String queryString = URLEncoder.encode(sb.toString(), StandardCharsets.UTF_8);
+//        String encoded = Base64.getEncoder().encodeToString(queryString.getBytes());
+        String encoded = Base64.getEncoder().encodeToString(sb.toString().getBytes());
         return ImmutablePair.of(encoded, sign(encoded));
     }
 
-    public static String parsePythonNullable(String input) {
-        return input.equals("None") ? null : input;
+    /**
+     * @param returnUrl The URL to return to after login
+     * @return A randomly-generated nonce to pass to SSO provider
+     */
+    public String setReturnUrl(String returnUrl) {
+        // TODO: I have no idea if this is a good way to generate the nonce
+        String nonce = RandomStringUtils.randomAlphanumeric(32);
+        returnUrls.put(nonce, returnUrl);
+        return nonce;
+    }
+
+    public String getReturnUrl(String nonce) {
+        return returnUrls.getIfPresent(nonce);
+    }
+
+    public void clearReturnUrl(String nonce) {
+        returnUrls.invalidate(nonce);
     }
 
     public static class SignatureException extends HangarException {

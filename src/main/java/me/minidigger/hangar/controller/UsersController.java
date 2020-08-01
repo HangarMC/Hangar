@@ -1,12 +1,11 @@
 package me.minidigger.hangar.controller;
 import me.minidigger.hangar.model.viewhelpers.UserData;
-import me.minidigger.hangar.service.ApiKeyService;
-import me.minidigger.hangar.service.PermissionService;
+import me.minidigger.hangar.service.*;
 import me.minidigger.hangar.db.customtypes.LoggedActionType;
 import me.minidigger.hangar.db.customtypes.LoggedActionType.UserContext;
-import me.minidigger.hangar.service.UserActionLogService;
 import me.minidigger.hangar.util.AlertUtil;
 import me.minidigger.hangar.util.AlertUtil.AlertType;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -24,10 +23,12 @@ import me.minidigger.hangar.config.HangarConfig;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserDao;
 import me.minidigger.hangar.db.model.UsersTable;
-import me.minidigger.hangar.service.AuthenticationService;
-import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.RouteHelper;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Map;
 
 @Controller
 public class UsersController extends HangarController {
@@ -40,9 +41,10 @@ public class UsersController extends HangarController {
     private final RouteHelper routeHelper;
     private final ApiKeyService apiKeyService;
     private final PermissionService permissionService;
+    private final SsoService ssoService;
 
     @Autowired
-    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, ApplicationController applicationController, UserService userService, UserActionLogService userActionLogService, RouteHelper routeHelper, ApiKeyService apiKeyService, PermissionService permissionService) {
+    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, ApplicationController applicationController, UserService userService, UserActionLogService userActionLogService, RouteHelper routeHelper, ApiKeyService apiKeyService, PermissionService permissionService, SsoService ssoService) {
         this.hangarConfig = hangarConfig;
         this.userDao = userDao;
         this.authenticationService = authenticationService;
@@ -51,6 +53,7 @@ public class UsersController extends HangarController {
         this.routeHelper = routeHelper;
         this.apiKeyService = apiKeyService;
         this.permissionService = permissionService;
+        this.ssoService = ssoService;
     }
 
     @RequestMapping("/authors")
@@ -64,7 +67,7 @@ public class UsersController extends HangarController {
     }
 
     @RequestMapping("/login")
-    public ModelAndView login(@RequestParam(defaultValue = "") String sso, @RequestParam(defaultValue = "") String sig, @RequestParam String returnUrl) {
+    public ModelAndView login(@RequestParam(defaultValue = "") String sso, @RequestParam(defaultValue = "") String sig, @RequestParam(defaultValue = "") String returnUrl) {
         if (hangarConfig.fakeUser.isEnabled()) {
             hangarConfig.checkDebug();
 
@@ -72,12 +75,23 @@ public class UsersController extends HangarController {
 
             return new ModelAndView("redirect:" + returnUrl);
         } else if (sso.isEmpty() || sig.isBlank()) {
-            // TODO redirect to SSO
-            return new ModelAndView("redirect:" + returnUrl);
+            // redirect to SSO
+            String nonce = ssoService.setReturnUrl(returnUrl);
+            String authRedirectUrl = ServletUriComponentsBuilder.fromCurrentRequestUri()
+                    .replaceQuery("")
+                    .build().toString() + "&nonce=" + nonce; // spongeauth doesn't like properly-formatted query strings
+            Pair<String, String> ssoData = ssoService.encode(Map.of("return_sso_url", authRedirectUrl));
+            String ssoUrl = UriComponentsBuilder.fromHttpUrl(hangarConfig.getAuthUrl() + hangarConfig.sso.getLoginUrl())
+                    .queryParam("sso", ssoData.getLeft())
+                    .queryParam("sig", ssoData.getRight())
+                    .build().toString();
+            return new ModelAndView("redirect:" + ssoUrl);
         } else {
-            // TODO decode sso, then login
             boolean success = authenticationService.loginWithSSO(sso, sig);
             if (success) {
+                String nonce = ssoService.decode(sso, sig).get("nonce");
+                returnUrl = ssoService.getReturnUrl(nonce);
+                ssoService.clearReturnUrl(nonce);
                 return new ModelAndView("redirect:" + returnUrl);
             } else {
                 return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));

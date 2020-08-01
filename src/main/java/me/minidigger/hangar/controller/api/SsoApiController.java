@@ -3,7 +3,7 @@ package me.minidigger.hangar.controller.api;
 import me.minidigger.hangar.config.HangarConfig;
 import me.minidigger.hangar.model.generated.SsoSyncData;
 import me.minidigger.hangar.service.UserService;
-import me.minidigger.hangar.util.DiscourseSsoHelper;
+import me.minidigger.hangar.service.SsoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,11 +16,11 @@ import java.util.Map;
 public class SsoApiController implements SsoApi {
 
     private final UserService userService;
-    private final DiscourseSsoHelper signer;
+    private final SsoService signer;
     private final HangarConfig.HangarSsoConfig ssoConfig;
 
     @Autowired
-    public SsoApiController(UserService userService, DiscourseSsoHelper signer, HangarConfig.HangarSsoConfig ssoConfig) {
+    public SsoApiController(UserService userService, SsoService signer, HangarConfig.HangarSsoConfig ssoConfig) {
         this.userService = userService;
         this.signer = signer;
         this.ssoConfig = ssoConfig;
@@ -39,7 +39,7 @@ public class SsoApiController implements SsoApi {
             userService.ssoSyncUser(data);
             System.out.println("SUCCESSFUL SSO SYNC: " + map.toString());
             return ResponseEntity.ok().build();
-        } catch (DiscourseSsoHelper.SignatureException e) {
+        } catch (SsoService.SignatureException e) {
             System.out.println("FAILED SSO SYNC: invalid signature (" + sig + " for data " + sso + ")");
             return ResponseEntity.badRequest().build();
         }

@@ -1,6 +1,6 @@
 package me.minidigger.hangar.model.generated;
 
-import me.minidigger.hangar.util.DiscourseSsoHelper;
+import me.minidigger.hangar.util.SsoUtil;
 
 import java.util.Map;
 
@@ -10,8 +10,8 @@ public class SsoSyncData {
     private String email;
     private String username;
     private String fullName;
-    private String addGroups; // todo: this is a comma-separated list of global roles to add on sync, map these to Roles
-    private String removeGroups; // todo: same but remove
+    private String addGroups; // todo: this is a comma-separated list of global roles the user has
+    private String removeGroups; // todo: list of global roles the user *doesn't* have
     private boolean admin;
     private boolean moderator;
     private boolean requireActivation;
@@ -33,7 +33,7 @@ public class SsoSyncData {
                 Integer.parseInt(payload.get("external_id")),
                 payload.get("email"),
                 payload.get("username"),
-                DiscourseSsoHelper.parsePythonNullable(payload.get("name")),
+                SsoUtil.parsePythonNullable(payload.get("name")),
                 payload.get("addGroups"),
                 payload.get("removeGroups"),
                 Boolean.parseBoolean(payload.get("admin")),
