@@ -26,8 +26,7 @@ public class UsersTable implements Serializable {
 
     }
 
-    public UsersTable(int id, String fullName, String name, String email, String tagline, int[] readPrompts, boolean isLocked, String language) {
-        this.id = id;
+    public UsersTable(String fullName, String name, String email, String tagline, int[] readPrompts, boolean isLocked, String language) {
         this.fullName = fullName;
         this.name = name;
         this.email = email;

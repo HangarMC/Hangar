@@ -1,14 +1,15 @@
 package me.minidigger.hangar.model.viewhelpers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import me.minidigger.hangar.db.model.OrganizationsTable;
 import me.minidigger.hangar.db.model.UserOrganizationRolesTable;
 import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.Permission;
 import me.minidigger.hangar.model.Role;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UserData {
 
@@ -16,7 +17,7 @@ public class UserData {
     private UsersTable user;
     private boolean isOrga = false;
     private int projectCount;
-    private Map<Organization, UserRole<UserOrganizationRolesTable>> orgas;
+    private Map<OrganizationsTable, UserRole<UserOrganizationRolesTable>> orgas;
     private List<Role> globalRoles;
     private Permission userPerm;
     private Permission orgaPerm;
@@ -25,7 +26,7 @@ public class UserData {
         return new UserData(headerData, user, false, 0, new HashMap<>(), new ArrayList<>(), Permission.None, Permission.None);
     }
 
-    public UserData(HeaderData headerData, UsersTable user, boolean isOrga, int projectCount, Map<Organization, UserRole<UserOrganizationRolesTable>> orgas, List<Role> globalRoles, Permission userPerm, Permission orgaPerm) {
+    public UserData(HeaderData headerData, UsersTable user, boolean isOrga, int projectCount, Map<OrganizationsTable, UserRole<UserOrganizationRolesTable>> orgas, List<Role> globalRoles, Permission userPerm, Permission orgaPerm) {
         this.headerData = headerData;
         this.user = user;
         this.isOrga = isOrga;
@@ -80,11 +81,11 @@ public class UserData {
         this.projectCount = projectCount;
     }
 
-    public Map<Organization, UserRole<UserOrganizationRolesTable>> getOrgas() {
+    public Map<OrganizationsTable, UserRole<UserOrganizationRolesTable>> getOrgas() {
         return orgas;
     }
 
-    public void setOrgas(Map<Organization, UserRole<UserOrganizationRolesTable>> orgas) {
+    public void setOrgas(Map<OrganizationsTable, UserRole<UserOrganizationRolesTable>> orgas) {
         this.orgas = orgas;
     }
 

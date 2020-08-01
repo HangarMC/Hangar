@@ -2,7 +2,6 @@ package me.minidigger.hangar.db.dao;
 
 import me.minidigger.hangar.db.model.OrganizationsTable;
 import me.minidigger.hangar.db.model.UserOrganizationRolesTable;
-import me.minidigger.hangar.model.viewhelpers.Organization;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
@@ -23,13 +22,13 @@ public interface OrganizationDao {
     @GetGeneratedKeys
     OrganizationsTable insert(@BindBean OrganizationsTable organization);
 
+    @SqlQuery("SELECT * FROM organizations WHERE id = :orgId")
+    OrganizationsTable getById(long orgId);
 
     @SqlQuery("SELECT o.id, o.created_at, o.name, o.owner_id, o.user_id FROM organization_members om JOIN organizations o ON om.organization_id = o.id WHERE om.user_id = :id")
-    @RegisterBeanMapper(Organization.class)
-    List<Organization> getUserOrgs(long id);
+    List<OrganizationsTable> getUserOrgs(long id);
 
-
-    @RegisterBeanMapper(value = Organization.class, prefix = "o")
+    @RegisterBeanMapper(value = OrganizationsTable.class, prefix = "o")
     @RegisterBeanMapper(value = UserOrganizationRolesTable.class, prefix = "r")
     @SqlQuery("SELECT o.id o_id, o.created_at o_created_at, o.name o_name, o.owner_id o_owner_id, o.user_id o_user_id, " +
             "uor.id r_id, uor.created_at r_created_at, uor.user_id r_user_id, uor.role_type r_role_type, uor.organization_id r_organization_id, uor.is_accepted r_is_accepted " +
@@ -37,5 +36,8 @@ public interface OrganizationDao {
             "   JOIN user_organization_roles uor ON uor.organization_id = o.id " +
             "   JOIN roles r ON uor.role_type = r.name " +
             "WHERE uor.user_id = :userId")
-    Map<Organization, UserOrganizationRolesTable> getUserOrganizationsAndRoles(long userId);
+    Map<OrganizationsTable, UserOrganizationRolesTable> getUserOrganizationsAndRoles(long userId);
+
+    @SqlQuery("SELECT * FROM organizations WHERE owner_id = :userId")
+    List<OrganizationsTable> getUserOwnedOrgs(long userId);
 }
