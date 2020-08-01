@@ -19,6 +19,8 @@ public class UserProjectRolesTable {
         this.isAccepted = isAccepted;
     }
 
+    public UserProjectRolesTable() { }
+
     public long getId() {
         return id;
     }

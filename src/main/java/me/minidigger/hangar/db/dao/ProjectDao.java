@@ -1,8 +1,10 @@
 package me.minidigger.hangar.db.dao;
 
 import me.minidigger.hangar.db.model.ProjectsTable;
+import me.minidigger.hangar.db.model.UserProjectRolesTable;
 import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.Permission;
+import me.minidigger.hangar.model.Role;
 import me.minidigger.hangar.model.generated.ProjectStatsAll;
 import me.minidigger.hangar.model.viewhelpers.ProjectMember;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
@@ -100,4 +102,9 @@ public interface ProjectDao {
               "upr.is_accepted pm_is_accepted " +
               "FROM user_project_roles upr JOIN users u on upr.user_id = u.id WHERE upr.project_id = :projectId")
     Map<ProjectMember, UsersTable> getProjectMembers(long projectId);
+
+
+    @RegisterBeanMapper(value = UserProjectRolesTable.class, prefix = "upr")
+    @SqlQuery("SELECT p.*, upr.id upr_id, upr.created_at upr_created_at, upr.user_id upr_user_id, upr.role_type upr_role_type, upr.project_id upr_project_id, upr.is_accepted upr_is_accepted FROM user_project_roles upr JOIN projects p ON p.id = upr.project_id JOIN roles r ON upr.role_type = r.name WHERE upr.user_id = :userId")
+    Map<ProjectsTable, UserProjectRolesTable> getProjectsAndRoles(long userId);
 }
