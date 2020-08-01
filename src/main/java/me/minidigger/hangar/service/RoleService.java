@@ -70,6 +70,10 @@ public class RoleService {
         userGlobalRolesDao.get().insert(new UserGlobalRolesTable(userId, roleId));
     }
 
+    public void removeGlobalRole(long userId, long roleId) {
+        userGlobalRolesDao.get().delete(new UserGlobalRolesTable(userId, roleId));
+    }
+
     public List<Role> getGlobalRolesForUser(@Nullable Long userId, @Nullable String userName) {
         Preconditions.checkArgument(userId != null || userName != null, "One of (userId, userName) must be nonnull");
         return userGlobalRolesDao.get().getRolesByUserId(userId, userName).stream().map(adf -> Role.fromId(adf.getId())).collect(Collectors.toList());

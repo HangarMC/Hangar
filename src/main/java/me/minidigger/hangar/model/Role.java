@@ -113,6 +113,15 @@ public enum Role {
         return null;
     }
 
+    public static Role fromValue(String value) {
+        for (Role r : values()) {
+            if (r.value.equals(value)) {
+                return r;
+            }
+        }
+        return null;
+    }
+
     public static Role fromId(long id) {
         for (Role r : values()) {
             if (r.roleId == id) {

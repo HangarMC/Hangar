@@ -10,13 +10,13 @@ public class SsoSyncData {
     private String email;
     private String username;
     private String fullName;
-    private String addGroups; // todo: this is a comma-separated list of global roles the user has
-    private String removeGroups; // todo: list of global roles the user *doesn't* have
+    private String[] addGroups; // todo: this is a comma-separated list of global roles the user has
+    private String[] removeGroups; // todo: list of global roles the user *doesn't* have
     private boolean admin;
     private boolean moderator;
     private boolean requireActivation;
 
-    public SsoSyncData(int externalId, String email, String username, String fullName, String addGroups, String removeGroups, boolean admin, boolean moderator, boolean requireActivation) {
+    public SsoSyncData(int externalId, String email, String username, String fullName, String[] addGroups, String[] removeGroups, boolean admin, boolean moderator, boolean requireActivation) {
         this.externalId = externalId;
         this.email = email;
         this.username = username;
@@ -34,8 +34,8 @@ public class SsoSyncData {
                 payload.get("email"),
                 payload.get("username"),
                 SsoUtil.parsePythonNullable(payload.get("name")),
-                payload.get("addGroups"),
-                payload.get("removeGroups"),
+                payload.get("add_groups").split(","),
+                payload.get("remove_groups").split(","),
                 Boolean.parseBoolean(payload.get("admin")),
                 Boolean.parseBoolean(payload.get("moderator")),
                 Boolean.parseBoolean(payload.get("require_activation"))
@@ -74,19 +74,19 @@ public class SsoSyncData {
         this.fullName = fullName;
     }
 
-    public String getAddGroups() {
+    public String[] getAddGroups() {
         return addGroups;
     }
 
-    public void setAddGroups(String addGroups) {
+    public void setAddGroups(String[] addGroups) {
         this.addGroups = addGroups;
     }
 
-    public String getRemoveGroups() {
+    public String[] getRemoveGroups() {
         return removeGroups;
     }
 
-    public void setRemoveGroups(String removeGroups) {
+    public void setRemoveGroups(String[] removeGroups) {
         this.removeGroups = removeGroups;
     }
 

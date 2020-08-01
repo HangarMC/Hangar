@@ -172,6 +172,19 @@ public class UserService {
             user.setEmail(syncData.getEmail());
             userDao.get().update(user);
         }
-        // TODO: roles
+
+        for (String roleName : syncData.getAddGroups()) {
+            Role role = Role.fromValue(roleName);
+            if (role != null) {
+                roleService.addGlobalRole(user.getId(), role.getRoleId());
+            }
+        }
+
+        for (String roleName : syncData.getRemoveGroups()) {
+            Role role = Role.fromValue(roleName);
+            if (role != null) {
+                roleService.removeGlobalRole(user.getId(), role.getRoleId());
+            }
+        }
     }
 }
