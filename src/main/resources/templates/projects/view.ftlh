@@ -109,7 +109,7 @@ Base template for Project overview.
                             </#if>
 
                             <!-- Flag button -->
-                            <#if headerData.hasUser() <#--&& !p.isOwner(headerData.getCurrentUser())-->
+                            <#if headerData.hasUser() && !p.isOwner(headerData.getCurrentUser())
                                 && !sp.uprojectFlags
                                 && p.getVisibility() != Visibility.SOFTDELETE>
                                 <button data-toggle="modal" data-target="#modal-flag" class="btn btn-default">
