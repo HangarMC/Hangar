@@ -5,6 +5,7 @@ import me.minidigger.hangar.db.model.OrganizationsTable;
 import me.minidigger.hangar.service.OrgService;
 import me.minidigger.hangar.service.OrgFactory;
 import me.minidigger.hangar.service.UserService;
+import me.minidigger.hangar.util.AlertUtil.AlertType;
 import me.minidigger.hangar.util.RouteHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -49,7 +53,12 @@ public class OrgController extends HangarController {
 
     @Secured("ROLE_USER")
     @GetMapping("/organisations/new")
-    public ModelAndView showCreator() {
+    public ModelAndView showCreator(RedirectAttributes attributes, HttpServletRequest request) {
+        if (orgService.getUserOwnedOrgs(userService.getCurrentUser().getId()).size() >= hangarConfig.org.getCreateLimit()) {
+            attributes.addFlashAttribute("alertType", AlertType.ERROR.name().toUpperCase());
+            attributes.addFlashAttribute("alertMsg", "error.org.createLimit"); // TODO arguments
+            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
+        }
 //        if (orgLimitReached) { TODO org limit
 //            ModelAndView mav = new ModelAndView("forward:/");
 //            AlertUtil.showAlert(mav, "error", "error.org.createLimit");
