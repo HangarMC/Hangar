@@ -12,6 +12,16 @@ public class ScopedProjectData {
     private boolean watching = false;
     private Permission permissions = Permission.None;
 
+    public ScopedProjectData(boolean canPostAsOwnerOrga, boolean uprojectFlags, boolean starred, boolean watching, Permission permissions) {
+        this.canPostAsOwnerOrga = canPostAsOwnerOrga;
+        this.uprojectFlags = uprojectFlags;
+        this.starred = starred;
+        this.watching = watching;
+        this.permissions = permissions;
+    }
+
+    public ScopedProjectData() { }
+
     public boolean perms(Permission perm) {
         return permissions.has(perm);
     }
@@ -26,7 +36,7 @@ public class ScopedProjectData {
         this.canPostAsOwnerOrga = canPostAsOwnerOrga;
     }
 
-    public boolean isUprojectFlags() {
+    public boolean getUprojectFlags() {
         return uprojectFlags;
     }
 

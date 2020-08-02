@@ -20,7 +20,7 @@ public class ProjectData {
     private UsersTable projectOwner;
     private int publicVersions;
     private Map<ProjectMember, UsersTable> members;
-    private List<Object> flags; // TODO flags, flag, user.name, resolvedBy
+    private List<ProjectFlag> flags;
     private int noteCount;
     private ProjectVisibilityChangesTable lastVisibilityChange;
     private String lastVisibilityChangeUser;
@@ -35,7 +35,7 @@ public class ProjectData {
         //
     }
 
-    public ProjectData(ProjectsTable joinable, UsersTable projectOwner, int publicVersions, Map<ProjectMember, UsersTable> members, List<Object> flags, int noteCount, ProjectVisibilityChangesTable lastVisibilityChange, String lastVisibilityChangeUser, ProjectVersionsTable recommendedVersion, String iconUrl, long starCount, long watcherCount, ProjectViewSettings settings) {
+    public ProjectData(ProjectsTable joinable, UsersTable projectOwner, int publicVersions, Map<ProjectMember, UsersTable> members, List<ProjectFlag> flags, int noteCount, ProjectVisibilityChangesTable lastVisibilityChange, String lastVisibilityChangeUser, ProjectVersionsTable recommendedVersion, String iconUrl, long starCount, long watcherCount, ProjectViewSettings settings) {
         this.joinable = joinable;
         this.projectOwner = projectOwner;
         this.publicVersions = publicVersions;
@@ -92,7 +92,7 @@ public class ProjectData {
         return members;
     }
 
-    public List<Object> getFlags() {
+    public List<ProjectFlag> getFlags() {
         return flags;
     }
 

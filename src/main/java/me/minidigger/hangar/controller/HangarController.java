@@ -3,6 +3,7 @@ package me.minidigger.hangar.controller;
 import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.Configuration;
 
+import me.minidigger.hangar.util.TemplateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -36,6 +37,7 @@ public abstract class HangarController {
         mav.addObject("config", hangarConfig);
         mav.addObject("markdownService", markdownService);
         mav.addObject("rand", ThreadLocalRandom.current());
+        mav.addObject("utils", new TemplateHelper());
 
         // alerts
         if (mav.getModelMap().getAttribute("alerts") == null) {

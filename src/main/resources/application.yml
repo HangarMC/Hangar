@@ -82,6 +82,7 @@ hangar:
     author-page-size: 25
     project-page-size: 5
 
+
   sso:
     enabled: true
     # relative to auth-url
@@ -94,6 +95,20 @@ hangar:
     api-key: "changeme"
     timeout: "2s"
     reset: "10m"
+
+  security:
+    secure: false
+    unsafe-download-max-age: 600000
+    api:
+      url: "http://localhost:8000"
+      avatar-url: "http://localhost:8000/avatar/%s?size=120x120"
+      key: changeme
+      timeout: 10000
+      breaker:
+        max-failures: 5
+        timeout: 10s
+        reset: 5m
+
 
 ################
 # Spring Debug #

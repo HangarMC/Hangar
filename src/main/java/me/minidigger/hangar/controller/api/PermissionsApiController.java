@@ -71,10 +71,10 @@ public class PermissionsApiController implements PermissionsApi {
         long userId = userService.getCurrentUser().getId();
         long pluginId = projectService.getIdByPluginId(pluginName);
         PermissionType type = PermissionType.PROJECT;
-        List<NamedPermission> perms = permissionService.getProjectPermissions(userId, pluginId);
+        List<NamedPermission> perms = permissionService.getProjectPermissions(userId, pluginId).toNamed();
         if (perms.isEmpty()) {
             type = PermissionType.GLOBAL;
-            perms = permissionService.getGlobalPermissions(userId);
+            perms = permissionService.getGlobalPermissions(userId).toNamed();
         }
         return new ResponseEntity<>(new Permissions().type(type).permissions(perms), HttpStatus.OK);
     }

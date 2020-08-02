@@ -77,7 +77,7 @@ public interface ProjectDao {
 
     @RegisterBeanMapper(value = ScopedProjectData.class)
     @RegisterBeanMapper(value = Permission.class, prefix = "perm")
-    @SqlQuery("SELECT watching, starred, uproject_flags, perm_value::bigint FROM" +
+    @SqlQuery("SELECT watching, starred, uproject_flags, coalesce(perm_value, B'0'::BIT(64))::BIGINT perm_value FROM" +
               "(SELECT exists(SELECT 1 FROM project_watchers WHERE project_id = :projectId AND user_id = :userId) as watching) as is_watching," +
               "(SELECT exists(SELECT 1 FROM project_stars WHERE project_id = :projectId AND user_id = :userId) as starred) as is_starred," +
               "(SELECT exists(SELECT 1 FROM project_flags WHERE project_id = :projectId AND user_id = :userId AND is_resolved IS FALSE) as uproject_flags) as is_flagged," +

@@ -1,23 +1,23 @@
 package me.minidigger.hangar.controller;
 
-import me.minidigger.hangar.config.HangarConfig;
 import me.minidigger.hangar.db.customtypes.LoggedActionType;
 import me.minidigger.hangar.db.customtypes.LoggedActionType.ProjectPageContext;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.ProjectPageDao;
 import me.minidigger.hangar.db.model.ProjectPagesTable;
-import me.minidigger.hangar.model.Permission;
 import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.model.viewhelpers.ProjectPage;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
+import me.minidigger.hangar.service.project.FlagService;
 import me.minidigger.hangar.service.MarkdownService;
+import me.minidigger.hangar.service.PermissionService;
 import me.minidigger.hangar.service.UserActionLogService;
+import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.service.project.PagesFactory;
 import me.minidigger.hangar.service.project.PagesSerivce;
 import me.minidigger.hangar.service.project.ProjectService;
 import me.minidigger.hangar.util.RouteHelper;
 import me.minidigger.hangar.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -40,23 +40,28 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class PagesController extends HangarController {
 
+    private final RouteHelper routeHelper;
     private final UserActionLogService userActionLogService;
     private final ProjectService projectService;
+    private final PermissionService permissionService;
+    private final MarkdownService markdownService;
+    private final UserService userService;
+    private final FlagService flagService;
     private final PagesSerivce pagesSerivce;
     private final PagesFactory pagesFactory;
     private final HangarDao<ProjectPageDao> projectPageDao;
-    private final RouteHelper routeHelper;
-    private final MarkdownService markdownService;
 
-    @Autowired
-    public PagesController(UserActionLogService userActionLogService, ProjectService projectService, PagesSerivce pagesSerivce, PagesFactory pagesFactory, HangarDao<ProjectPageDao> projectPageDao, RouteHelper routeHelper, MarkdownService markdownService) {
+    public PagesController(RouteHelper routeHelper, UserActionLogService userActionLogService, ProjectService projectService, PermissionService permissionService, MarkdownService markdownService, UserService userService, FlagService flagService, PagesSerivce pagesSerivce, PagesFactory pagesFactory, HangarDao<ProjectPageDao> projectPageDao) {
+        this.routeHelper = routeHelper;
         this.userActionLogService = userActionLogService;
         this.projectService = projectService;
+        this.permissionService = permissionService;
+        this.markdownService = markdownService;
+        this.userService = userService;
+        this.flagService = flagService;
         this.pagesSerivce = pagesSerivce;
         this.pagesFactory = pagesFactory;
         this.projectPageDao = projectPageDao;
-        this.routeHelper = routeHelper;
-        this.markdownService = markdownService;
     }
 
     @PostMapping(value = "/pages/preview", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -78,8 +83,7 @@ public class PagesController extends HangarController {
         ProjectData projectData = projectService.getProjectData(author, slug);
         ProjectPage projectPage = ProjectPage.of(pagesSerivce.getPage(projectData.getProject().getId(), pageName));
         mav.addObject("p", projectData);
-        ScopedProjectData sp = new ScopedProjectData();
-        sp.setPermissions(Permission.IsProjectOwner.add(Permission.EditPage));
+        ScopedProjectData sp = projectService.getScopedProjectData(projectData.getProject().getId());
         mav.addObject("sp", sp);
         mav.addObject("page", projectPage);
         mav.addObject("parentPage");
@@ -154,8 +158,7 @@ public class PagesController extends HangarController {
         ProjectPage projectPage = ProjectPage.of(pagesSerivce.getPage(projectData.getProject().getId(), pageName));
         if (projectPage == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         mav.addObject("p", projectData);
-        ScopedProjectData sp = new ScopedProjectData();
-        sp.setPermissions(Permission.IsProjectOwner.add(Permission.EditPage));
+        ScopedProjectData sp = projectService.getScopedProjectData(projectData.getProject().getId());
         mav.addObject("sp", sp);
         mav.addObject("page", projectPage);
         mav.addObject("parentPage"); // TODO parentPage
