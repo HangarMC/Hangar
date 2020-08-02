@@ -1,13 +1,5 @@
 package me.minidigger.hangar.db.dao;
 
-import me.minidigger.hangar.db.model.OrganizationsTable;
-import me.minidigger.hangar.db.model.UserOrganizationRolesTable;
-import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
-import org.jdbi.v3.sqlobject.statement.SqlQuery;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Map;
 import me.minidigger.hangar.db.model.UserOrganizationRolesTable;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -37,5 +29,4 @@ public interface UserOrganizationRolesDao {
             "WHERE r.category = 'organization' AND uor.organization_id = :orgId AND uor.user_id = :userId " +
             "ORDER BY r.id DESC") // should get roles in correct hierarchy order, might be useful somewhere
     List<UserOrganizationRolesTable> getUserRoles(long orgId, long userId);
-
 }

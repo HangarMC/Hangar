@@ -56,6 +56,7 @@ public class UsersController extends HangarController {
     private final PermissionService permissionService;
     private final NotificationService notificationService;
     private final SsoService ssoService;
+    private final NotificationService notificationService;
 
     @Autowired
     public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, ApplicationController applicationController, UserService userService, UserActionLogService userActionLogService, RouteHelper routeHelper, ApiKeyService apiKeyService, PermissionService permissionService, SsoService ssoService, NotificationService notificationService) {
