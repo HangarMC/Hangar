@@ -151,7 +151,7 @@ public class UserService {
         Map<Organization, UserOrganizationRolesTable> dbOrgs = orgDao.get().getUserOrganizationsAndRoles(user.getId());
         Map<Organization, UserRole<UserOrganizationRolesTable>> organizations = new HashMap<>();
         dbOrgs.forEach((organization, userOrganizationRolesTable) -> {
-            organizations.put(organization, new UserRole<>(userOrganizationRolesTable, userOrganizationRolesTable.getIsAccepted(), userOrganizationRolesTable.getRoleType()));
+            organizations.put(organization, new UserRole<>(userOrganizationRolesTable));
         });
 //        List<Role> globalRoles = List.of(Role.HANGAR_ADMIN);
         List<Role> globalRoles = roleService.getGlobalRolesForUser(user.getId(), null);

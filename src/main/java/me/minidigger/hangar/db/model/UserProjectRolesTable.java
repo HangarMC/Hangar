@@ -3,7 +3,7 @@ package me.minidigger.hangar.db.model;
 
 import java.time.OffsetDateTime;
 
-public class UserProjectRolesTable {
+public class UserProjectRolesTable implements RoleTable {
 
     private long id;
     private OffsetDateTime createdAt;

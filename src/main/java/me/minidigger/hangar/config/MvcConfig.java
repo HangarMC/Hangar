@@ -2,8 +2,7 @@ package me.minidigger.hangar.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import freemarker.template.TemplateException;
-import me.minidigger.hangar.controller.converters.CategoryConverter;
-import me.minidigger.hangar.controller.converters.VisibilityConverter;
+import me.minidigger.hangar.controller.converters.StringToEnumConverterFactory;
 import me.minidigger.hangar.controller.interceptors.ProjectsInterceptor;
 import me.minidigger.hangar.service.PermissionService;
 import me.minidigger.hangar.service.project.ProjectService;
@@ -144,8 +143,9 @@ public class MvcConfig implements WebMvcConfigurer {
                 };
             }
         });
-        registry.addConverter(new CategoryConverter());
-        registry.addConverter(new VisibilityConverter());
+        registry.addConverterFactory(new StringToEnumConverterFactory());
+//        registry.addConverter(new CategoryConverter());
+//        registry.addConverter(new VisibilityConverter());
     }
 
     @Override

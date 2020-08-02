@@ -1,9 +1,11 @@
 package me.minidigger.hangar.db.model;
 
 
+import org.jdbi.v3.core.annotation.Unmappable;
+
 import java.time.OffsetDateTime;
 
-public class OrganizationsTable {
+public class OrganizationsTable implements Visitable {
 
     private long id;
     private OffsetDateTime createdAt;
@@ -56,4 +58,9 @@ public class OrganizationsTable {
         this.userId = userId;
     }
 
+    @Unmappable
+    @Override
+    public String getUrl() {
+        return "/" + getName();
+    }
 }

@@ -1,6 +1,12 @@
 package me.minidigger.hangar.controller;
+import me.minidigger.hangar.db.model.NotificationsTable;
+import me.minidigger.hangar.model.InviteFilter;
+import me.minidigger.hangar.model.NotificationFilter;
+import me.minidigger.hangar.model.viewhelpers.InviteSubject;
 import me.minidigger.hangar.model.viewhelpers.UserData;
+import me.minidigger.hangar.model.viewhelpers.UserRole;
 import me.minidigger.hangar.service.ApiKeyService;
+import me.minidigger.hangar.service.NotificationService;
 import me.minidigger.hangar.service.PermissionService;
 import me.minidigger.hangar.db.customtypes.LoggedActionType;
 import me.minidigger.hangar.db.customtypes.LoggedActionType.UserContext;
@@ -8,6 +14,8 @@ import me.minidigger.hangar.service.UserActionLogService;
 import me.minidigger.hangar.util.AlertUtil;
 import me.minidigger.hangar.util.AlertUtil.AlertType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +38,9 @@ import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.RouteHelper;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @Controller
 public class UsersController extends HangarController {
 
@@ -40,9 +52,10 @@ public class UsersController extends HangarController {
     private final RouteHelper routeHelper;
     private final ApiKeyService apiKeyService;
     private final PermissionService permissionService;
+    private final NotificationService notificationService;
 
     @Autowired
-    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, ApplicationController applicationController, UserService userService, UserActionLogService userActionLogService, RouteHelper routeHelper, ApiKeyService apiKeyService, PermissionService permissionService) {
+    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, ApplicationController applicationController, UserService userService, UserActionLogService userActionLogService, RouteHelper routeHelper, ApiKeyService apiKeyService, PermissionService permissionService, NotificationService notificationService) {
         this.hangarConfig = hangarConfig;
         this.userDao = userDao;
         this.authenticationService = authenticationService;
@@ -51,6 +64,7 @@ public class UsersController extends HangarController {
         this.routeHelper = routeHelper;
         this.apiKeyService = apiKeyService;
         this.permissionService = permissionService;
+        this.notificationService = notificationService;
     }
 
     @RequestMapping("/authors")
@@ -92,15 +106,24 @@ public class UsersController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/notifications")
-    public Object showNotifications(@RequestParam Object notificationFilter, @RequestParam Object inviteFilter) {
-        return null; // TODO implement showNotifications request controller
+    @GetMapping("/notifications")
+    public ModelAndView showNotifications(@RequestParam(defaultValue = "UNREAD") NotificationFilter notificationFilter, @RequestParam(defaultValue = "ALL") InviteFilter inviteFilter) {
+        ModelAndView mav = new ModelAndView("users/notifications");
+        mav.addObject("notificationFilter", notificationFilter);
+        mav.addObject("inviteFilter", inviteFilter);
+        Map<NotificationsTable, UserData> notifications = notificationService.getNotifications(notificationFilter);
+        mav.addObject("notifications", notifications);
+        Map<UserRole, InviteSubject> invites = notificationService.getInvites(inviteFilter);
+        mav.addObject("invites", invites);
+        return fillModel(mav);
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/notifications/read/{id}")
-    public Object markNotificationRead(@PathVariable Object id) {
-        return null; // TODO implement markNotificationRead request controller
+    @PostMapping("/notifications/read/{id}")
+    public ResponseEntity<String> markNotificationRead(@PathVariable long id) {
+        if (notificationService.markAsRead(id)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @Secured("ROLE_USER")
