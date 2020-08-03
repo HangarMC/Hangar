@@ -13,14 +13,14 @@ services:
     stdin_open: true
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.hangar.loadbalancer.server.port=8080"
-      - "traefik.http.routers.hangar.rule=Host(`hangar-new.minidigger.me`)"
-      - "traefik.http.routers.hangar.entrypoints=web-secure"
-      - "traefik.http.routers.hangar.tls=true"
-      - "traefik.http.routers.hangar.tls.options=default"
-      - "traefik.http.routers.hangar.tls.certresolver=default"
-      - "traefik.http.routers.hangar.tls.domains[0].main=minidigger.me"
-      - "traefik.http.routers.hangar.tls.domains[0].sans=*.minidigger.me"
+      - "traefik.http.services.hangarnew.loadbalancer.server.port=8080"
+      - "traefik.http.routers.hangarnew.rule=Host(`hangar-new.minidigger.me`)"
+      - "traefik.http.routers.hangarnew.entrypoints=web-secure"
+      - "traefik.http.routers.hangarnew.tls=true"
+      - "traefik.http.routers.hangarnew.tls.options=default"
+      - "traefik.http.routers.hangarnew.tls.certresolver=default"
+      - "traefik.http.routers.hangarnew.tls.domains[0].main=minidigger.me"
+      - "traefik.http.routers.hangarnew.tls.domains[0].sans=*.minidigger.me"
     networks:
       - web
   db:
