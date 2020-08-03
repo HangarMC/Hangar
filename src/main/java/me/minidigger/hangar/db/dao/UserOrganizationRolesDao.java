@@ -1,6 +1,5 @@
 package me.minidigger.hangar.db.dao;
 
-import me.minidigger.hangar.db.model.UserOrganizationRolesTable;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
@@ -10,6 +9,10 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
+
+import me.minidigger.hangar.db.model.OrganizationsTable;
+import me.minidigger.hangar.db.model.UserOrganizationRolesTable;
 
 @Repository
 @RegisterBeanMapper(UserOrganizationRolesTable.class)

@@ -1,31 +1,31 @@
 package me.minidigger.hangar.service;
 
-import com.ibm.icu.impl.locale.XCldrStub.CollectionUtilities;
+import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.NotificationsDao;
 import me.minidigger.hangar.db.dao.UserOrganizationRolesDao;
 import me.minidigger.hangar.db.dao.UserProjectRolesDao;
 import me.minidigger.hangar.db.model.NotificationsTable;
+import me.minidigger.hangar.db.model.OrganizationsTable;
+import me.minidigger.hangar.db.model.ProjectsTable;
+import me.minidigger.hangar.db.model.RoleTable;
 import me.minidigger.hangar.db.model.UserOrganizationRolesTable;
 import me.minidigger.hangar.db.model.UserProjectRolesTable;
+import me.minidigger.hangar.db.model.Visitable;
 import me.minidigger.hangar.model.InviteFilter;
 import me.minidigger.hangar.model.NotificationFilter;
 import me.minidigger.hangar.model.NotificationType;
 import me.minidigger.hangar.model.viewhelpers.InviteSubject;
 import me.minidigger.hangar.model.viewhelpers.UserData;
 import me.minidigger.hangar.model.viewhelpers.UserRole;
-import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class NotificationService {
@@ -58,21 +58,30 @@ public class NotificationService {
         return notificationsDao.get().getUserNotifications(userService.getCurrentUser().getId(), filter.getFilter()).entrySet().stream().collect(Collectors.toMap(Entry::getKey, entry -> userService.getUserData(entry.getValue())));
     }
 
-    // maybe this should go in RoleService? Also, this looks ugly af
-    public Map<UserRole, InviteSubject> getInvites(InviteFilter inviteFilter) {
+    public Map<UserRole<?>, InviteSubject<?>> getInvites(InviteFilter inviteFilter) {
         long userId = userService.getCurrentUser().getId();
+        Map<UserRole<?>, InviteSubject<?>> result = new HashMap<>();
         switch (inviteFilter) {
             case PROJECTS:
-                return userProjectRolesDao.get().getUnacceptedRoles(userId).entrySet().stream().collect(Collectors.toMap(entry -> new UserRole<>(entry.getKey()), entry -> InviteSubject.PROJECT.with(entry.getValue())));
+                for (Entry<UserProjectRolesTable, ProjectsTable> entry : userProjectRolesDao.get().getUnacceptedRoles(userId).entrySet()) {
+                    result.put(new UserRole<>(entry.getKey()), InviteSubject.PROJECT.with(entry.getValue()));
+                }
+                return result;
             case ORGANIZATIONS:
-                return userOrganizationRolesTable.get().getUnacceptedRoles(userId).entrySet().stream().collect(Collectors.toMap(entry -> new UserRole<>(entry.getKey()), entry -> InviteSubject.ORGANIZATION.with(entry.getValue())));
+                for (Entry<UserOrganizationRolesTable, OrganizationsTable> entry : userOrganizationRolesTable.get().getUnacceptedRoles(userId).entrySet()) {
+                    result.put(new UserRole<>(entry.getKey()), InviteSubject.ORGANIZATION.with(entry.getValue()));
+                }
+                return result;
             case ALL:
-                return Stream.concat(
-                        userProjectRolesDao.get().getUnacceptedRoles(userId).entrySet().stream().collect(Collectors.toMap(entry -> new UserRole<>(entry.getKey()), entry -> InviteSubject.PROJECT.with(entry.getValue()))).entrySet().stream(),
-                        userOrganizationRolesTable.get().getUnacceptedRoles(userId).entrySet().stream().collect(Collectors.toMap(entry -> new UserRole<>(entry.getKey()), entry -> InviteSubject.ORGANIZATION.with(entry.getValue()))).entrySet().stream()
-                ).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+                for (Entry<UserProjectRolesTable, ProjectsTable> entry : userProjectRolesDao.get().getUnacceptedRoles(userId).entrySet()) {
+                    result.put(new UserRole<>(entry.getKey()), InviteSubject.PROJECT.with(entry.getValue()));
+                }
+                for (Entry<UserOrganizationRolesTable, OrganizationsTable> entry : userOrganizationRolesTable.get().getUnacceptedRoles(userId).entrySet()) {
+                    result.put(new UserRole<>(entry.getKey()), InviteSubject.ORGANIZATION.with(entry.getValue()));
+                }
+                return result;
             default:
-                return new LinkedHashMap<>(); // make IJ shut it
+                return result;
         }
     }
 }

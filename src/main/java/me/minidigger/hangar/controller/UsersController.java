@@ -1,17 +1,5 @@
 package me.minidigger.hangar.controller;
-import me.minidigger.hangar.db.model.NotificationsTable;
-import me.minidigger.hangar.model.InviteFilter;
-import me.minidigger.hangar.model.NotificationFilter;
-import me.minidigger.hangar.model.viewhelpers.InviteSubject;
-import me.minidigger.hangar.model.viewhelpers.UserData;
-import me.minidigger.hangar.service.ApiKeyService;
-import me.minidigger.hangar.service.NotificationService;
-import me.minidigger.hangar.service.PermissionService;
-import me.minidigger.hangar.service.SsoService;
-import me.minidigger.hangar.service.UserActionLogService;
-import me.minidigger.hangar.service.UserService;
-import me.minidigger.hangar.util.AlertUtil;
-import me.minidigger.hangar.util.AlertUtil.AlertType;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,25 +11,34 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import me.minidigger.hangar.config.HangarConfig;
+import me.minidigger.hangar.db.customtypes.LoggedActionType;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserDao;
+import me.minidigger.hangar.db.model.NotificationsTable;
 import me.minidigger.hangar.db.model.UsersTable;
+import me.minidigger.hangar.model.InviteFilter;
+import me.minidigger.hangar.model.NotificationFilter;
+import me.minidigger.hangar.model.viewhelpers.InviteSubject;
+import me.minidigger.hangar.model.viewhelpers.UserData;
+import me.minidigger.hangar.model.viewhelpers.UserRole;
+import me.minidigger.hangar.service.ApiKeyService;
+import me.minidigger.hangar.service.AuthenticationService;
+import me.minidigger.hangar.service.NotificationService;
+import me.minidigger.hangar.service.PermissionService;
+import me.minidigger.hangar.service.SsoService;
+import me.minidigger.hangar.service.UserActionLogService;
+import me.minidigger.hangar.service.UserService;
+import me.minidigger.hangar.util.AlertUtil;
+import me.minidigger.hangar.util.AlertUtil.AlertType;
 import me.minidigger.hangar.util.RouteHelper;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.Map;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @Controller
 public class UsersController extends HangarController {
@@ -56,7 +53,6 @@ public class UsersController extends HangarController {
     private final PermissionService permissionService;
     private final NotificationService notificationService;
     private final SsoService ssoService;
-    private final NotificationService notificationService;
 
     @Autowired
     public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, ApplicationController applicationController, UserService userService, UserActionLogService userActionLogService, RouteHelper routeHelper, ApiKeyService apiKeyService, PermissionService permissionService, SsoService ssoService, NotificationService notificationService) {
@@ -123,7 +119,7 @@ public class UsersController extends HangarController {
         mav.addObject("inviteFilter", inviteFilter);
         Map<NotificationsTable, UserData> notifications = notificationService.getNotifications(notificationFilter);
         mav.addObject("notifications", notifications);
-        Map<UserRole, InviteSubject> invites = notificationService.getInvites(inviteFilter);
+        Map<UserRole<?>, InviteSubject<?>> invites = notificationService.getInvites(inviteFilter);
         mav.addObject("invites", invites);
         return fillModel(mav);
     }
@@ -133,7 +129,9 @@ public class UsersController extends HangarController {
     public ResponseEntity<String> markNotificationRead(@PathVariable long id) {
         if (notificationService.markAsRead(id)) {
             return new ResponseEntity<>(HttpStatus.OK);
-        } else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @Secured("ROLE_USER")
@@ -203,7 +201,7 @@ public class UsersController extends HangarController {
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", user));
         }
         UsersTable usersTable = userDao.get().getByName(user);
-        userActionLogService.user(request, LoggedActionType.USER_TAGLINE_CHANGED.with(UserContext.of(usersTable.getId())), tagline, usersTable.getTagline());
+        userActionLogService.user(request, LoggedActionType.USER_TAGLINE_CHANGED.with(LoggedActionType.UserContext.of(usersTable.getId())), tagline, usersTable.getTagline());
         usersTable.setTagline(tagline);
         userDao.get().update(usersTable);
         return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", user));

@@ -3,20 +3,6 @@
 <#import "*/layout/base.ftlh" as base />
 <#import "*/utils/userAvatar.ftlh" as userAvatar>
 
-<#--@import controllers.sugar.Requests.OreRequest
-@import ore.OreConfig
-@import ore.db.Model
-@import ore.db.impl.common.Visitable
-@import ore.models.user.notification.{InviteFilter, NotificationFilter}
-@import ore.models.user.role.UserRoleModel
-@import ore.models.user.{Notification, User}
-@import util.syntax._
-@import views.html.utils.userAvatar
-
-@import cats.data.{NonEmptyList => NEL}
-@(notifications: Seq[(Model[Notification], Option[User])], invites: Seq[(Model[UserRoleModel[_]], Visitable)], notificationFilter: NotificationFilter,
-        inviteFilter: InviteFilter)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder) -->
-
 <#macro notificationFilterOption option>
     <#if option == notificationFilter>
         selected
