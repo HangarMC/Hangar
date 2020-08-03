@@ -1,6 +1,6 @@
 package me.minidigger.hangar.service.project;
 
-import me.minidigger.hangar.config.HangarConfig;
+import me.minidigger.hangar.config.hangar.HangarConfig;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.ProjectPageDao;
 import me.minidigger.hangar.db.model.ProjectPagesTable;

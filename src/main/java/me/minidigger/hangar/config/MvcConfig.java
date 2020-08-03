@@ -144,8 +144,6 @@ public class MvcConfig implements WebMvcConfigurer {
             }
         });
         registry.addConverterFactory(new StringToEnumConverterFactory());
-//        registry.addConverter(new CategoryConverter());
-//        registry.addConverter(new VisibilityConverter());
     }
 
     @Override

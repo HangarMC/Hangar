@@ -18,7 +18,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import me.minidigger.hangar.config.HangarConfig;
+import me.minidigger.hangar.config.hangar.HangarConfig;
 import me.minidigger.hangar.db.customtypes.LoggedActionType;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserDao;

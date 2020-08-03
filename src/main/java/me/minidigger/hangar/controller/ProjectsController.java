@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
-import me.minidigger.hangar.config.HangarConfig;
+import me.minidigger.hangar.config.hangar.HangarConfig;
 import me.minidigger.hangar.db.customtypes.LoggedActionType;
 import me.minidigger.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import me.minidigger.hangar.db.dao.HangarDao;

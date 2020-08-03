@@ -1,6 +1,6 @@
 package me.minidigger.hangar.controller.api;
 
-import me.minidigger.hangar.config.HangarConfig;
+import me.minidigger.hangar.config.hangar.SsoConfig;
 import me.minidigger.hangar.model.SsoSyncData;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.service.SsoService;
@@ -19,12 +19,12 @@ public class SsoApiController implements SsoApi {
 
     private final UserService userService;
     private final SsoService signer;
-    private final HangarConfig.HangarSsoConfig ssoConfig;
+    private final SsoConfig ssoConfig;
 
     private static final Logger log = LoggerFactory.getLogger(SsoApiController.class);
 
     @Autowired
-    public SsoApiController(UserService userService, SsoService signer, HangarConfig.HangarSsoConfig ssoConfig) {
+    public SsoApiController(UserService userService, SsoService signer, SsoConfig ssoConfig) {
         this.userService = userService;
         this.signer = signer;
         this.ssoConfig = ssoConfig;

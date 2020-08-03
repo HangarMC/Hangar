@@ -51,7 +51,7 @@ sorted according to different criteria.
                 <div class="panel sponsor-panel">
                     <span>Sponsored by</span>
                     <div class="panel-body">
-                        <#-- @ftlvariable name="sponsor" type="me.minidigger.hangar.config.HangarConfig.Sponsor" -->
+                        <#-- @ftlvariable name="sponsor" type="me.minidigger.hangar.config.hangar.HangarConfig.Sponsor" -->
                         <#assign sponsor=randomSponsor() />
                         <a href="${sponsor.link}">
                             <img class="logo" src="${sponsor.image}" alt="${sponsor.name}" />

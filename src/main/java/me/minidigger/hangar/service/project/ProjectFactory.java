@@ -6,13 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
-import me.minidigger.hangar.config.HangarConfig;
+import me.minidigger.hangar.config.hangar.HangarConfig;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.ProjectChannelDao;
 import me.minidigger.hangar.db.dao.ProjectDao;
 import me.minidigger.hangar.db.dao.VisibilityDao;
 import me.minidigger.hangar.db.model.ProjectChannelsTable;
-import me.minidigger.hangar.db.model.ProjectVisibilityChangesTable;
 import me.minidigger.hangar.db.model.ProjectsTable;
 import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.Category;

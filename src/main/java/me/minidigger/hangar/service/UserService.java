@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import me.minidigger.hangar.config.CacheConfig;
-import me.minidigger.hangar.config.HangarConfig;
+import me.minidigger.hangar.config.hangar.HangarConfig;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.OrganizationDao;
 import me.minidigger.hangar.db.dao.ProjectDao;

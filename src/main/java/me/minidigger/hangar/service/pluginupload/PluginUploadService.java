@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.minidigger.hangar.config.HangarConfig;
+import me.minidigger.hangar.config.hangar.HangarConfig;
 import me.minidigger.hangar.db.model.ProjectChannelsTable;
 import me.minidigger.hangar.db.model.ProjectsTable;
 import me.minidigger.hangar.db.model.UsersTable;

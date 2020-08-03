@@ -7,4 +7,4 @@
 [#-- @ftlvariable name="rand" type="java.util.Random" --]
 [#-- @ftlvariable name="headerData" type="me.minidigger.hangar.model.viewhelpers.HeaderData" --]
 [#-- @ftlvariable name="rc" type="org.springframework.web.servlet.support.RequestContext" --]
-[#-- @ftlvariable name="config" type="me.minidigger.hangar.config.HangarConfig" --]
+[#-- @ftlvariable name="config" type="me.minidigger.hangar.config.hangar.HangarConfig" --]
