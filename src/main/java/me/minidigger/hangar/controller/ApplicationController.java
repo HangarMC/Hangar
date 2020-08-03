@@ -76,7 +76,10 @@ public class ApplicationController extends HangarController {
     @Secured("ROLE_USER")
     @RequestMapping("/admin/approval/projects")
     public Object showProjectVisibility() {
-        return fillModel(new ModelAndView("users/admin/visibility")); // TODO implement showProjectVisibility request controller
+        ModelAndView mv = new ModelAndView("users/admin/visibility");
+        mv.addObject("needsApproval", projectService.getProjectsNeedingApproval());
+        mv.addObject("waitingProjects", projectService.getProjectsWaitingForChanges());
+        return fillModel(mv);
     }
 
     @Secured("ROLE_USER")

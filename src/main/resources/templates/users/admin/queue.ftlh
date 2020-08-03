@@ -5,11 +5,11 @@
 <#-- todo @helper.urlEncode usages in this class -->
 
 <#assign scriptsVar>
-    <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "javascripts/queue.js" />"></script>
-    <script @CSPNonce.attr>
+    <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "javascripts/queue.js" />"></script>
+    <script <#--@CSPNonce.attr-->>
         $(function(){
             var momentNow = moment();
-            var maxDifference = @config.ore.queue.maxReviewTime.toMillis;
+            var maxDifference = ${config.queue.maxReviewTime};
             $('span[data-ago]').each(function() {
                 var momentAgo = moment($(this).data('ago'))
                 $(this).text($(this).data('title') + momentAgo.fromNow());

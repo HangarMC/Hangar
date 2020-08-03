@@ -5,6 +5,7 @@ import me.minidigger.hangar.db.model.UserProjectRolesTable;
 import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.Permission;
 import me.minidigger.hangar.model.generated.ProjectStatsAll;
+import me.minidigger.hangar.model.viewhelpers.ProjectApprovalData;
 import me.minidigger.hangar.model.viewhelpers.ProjectMember;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
 import me.minidigger.hangar.service.project.ProjectFactory.InvalidProjectReason;
@@ -106,4 +107,36 @@ public interface ProjectDao {
     @RegisterBeanMapper(value = UserProjectRolesTable.class, prefix = "upr")
     @SqlQuery("SELECT p.*, upr.id upr_id, upr.created_at upr_created_at, upr.user_id upr_user_id, upr.role_type upr_role_type, upr.project_id upr_project_id, upr.is_accepted upr_is_accepted FROM user_project_roles upr JOIN projects p ON p.id = upr.project_id JOIN roles r ON upr.role_type = r.name WHERE upr.user_id = :userId")
     Map<ProjectsTable, UserProjectRolesTable> getProjectsAndRoles(long userId);
+
+
+    @RegisterBeanMapper(ProjectApprovalData.class)
+    @SqlQuery("SELECT sq.owner_name," +
+            "       sq.slug," +
+            "       sq.visibility," +
+            "       sq.last_comment," +
+            "       u.name AS change_requester" +
+            "  FROM (SELECT p.owner_name," +
+            "               p.slug," +
+            "               p.visibility," +
+            "               vc.resolved_at," +
+            "               lag(vc.comment) OVER last_vc    AS last_comment," +
+            "               lag(vc.visibility) OVER last_vc AS last_visibility," +
+            "               lag(vc.created_by) OVER last_vc AS last_changer" +
+            "          FROM projects p" +
+            "                 JOIN project_visibility_changes vc ON p.id = vc.project_id" +
+            "          WHERE p.visibility = 4 WINDOW last_vc AS (PARTITION BY p.id ORDER BY vc.created_at)) sq" +
+            "         JOIN users u ON sq.last_changer = u.id" +
+            "  WHERE sq.resolved_at IS NULL" +
+            "    AND sq.last_visibility = 3" +
+            "  ORDER BY sq.owner_name || sq.slug")
+    List<ProjectApprovalData> getVisibilityNeedsApproval();
+
+    @RegisterBeanMapper(ProjectApprovalData.class)
+    @SqlQuery("SELECT p.owner_name, p.slug, p.visibility, vc.comment, u.name AS change_requester" +
+            "  FROM projects p" +
+            "         JOIN project_visibility_changes vc ON p.id = vc.project_id" +
+            "         JOIN users u ON vc.created_by = u.id" +
+            "  WHERE vc.resolved_at IS NULL" +
+            "    AND p.visibility = 3")
+    List<ProjectApprovalData> getVisibilityWaitingProject();
 }

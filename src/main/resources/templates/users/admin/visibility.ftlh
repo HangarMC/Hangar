@@ -1,47 +1,39 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
-
-<#--
-@import controllers.sugar.Requests.OreRequest
-@import models.querymodels.ProjectNeedsApproval
-@import ore.OreConfig
-@import ore.markdown.MarkdownRenderer
-@(needsApproval: Seq[ProjectNeedsApproval],
- waitingProjects: Seq[ProjectNeedsApproval])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
--->
+<#import "*/projects/helper/btnHide.ftlh" as btnHide />
 
 <#macro renderApprovalList projectSeq>
     <ul class="list-group list-flags-admin">
-        <#if projectSeq.isEmpty>
+        <#if !projectSeq?has_content>
             <li class="list-group-item">
                 <p>No projects found.</p>
             </li>
         </#if>
-        @projectSeq.map { project =>
+        <#list projectSeq as project>
             <li class="list-group-item">
                 <div class="row">
                     <div class="col-xs-12 col-md-8">
                         <span class="description">
                             <strong>${project.changeRequester}</strong>
                             <span class="minor"> requested changes on </span>
-                            <a href="${routes.getRouteUrl("projects.show", project.namespace.ownerName, project.namespace.slug)}">
+                            <a href="${routes.getRouteUrl("projects.show", project.getNamespace().getOwner(), project.getNamespace().getSlug())}">
                             ${project.namespace}
                             </a>
                         </span>
                         <p>
                             <strong>Request:</strong>
-                            ${renderer.render(project.comment)}
+                            ${markdownService.render(project.comment)}
                         </p>
                     </div>
                     <div class="col-xs-12 col-md-4">
                         <span class="pull-right btn-group-sm">
-                        ${projects.helper.btnHide(project.namespace, project.visibility)}
+                        <@btnHide.btnHide project.namespace, project.visibility/>
                         </span>
                     </div>
                 </div>
             </li>
-        }
+        </#list>
     </ul>
 </#macro>
 
@@ -68,14 +60,14 @@
         </div>
         <div class="row">
             <div class="col-md-12 header-flags">
-                <h2>Wating Changes</h2>
+                <h2>Awaiting Changes</h2>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h4 class="panel-title pull-left">Waiting Changes</h4>
+                        <h4 class="panel-title pull-left">Awaiting Changes</h4>
                         <div class="clearfix"></div>
                     </div>
                     <@renderApprovalList waitingProjects />

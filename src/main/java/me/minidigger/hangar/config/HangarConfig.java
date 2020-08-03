@@ -50,6 +50,8 @@ public class HangarConfig {
     public HangarSsoConfig sso;
     @NestedConfigurationProperty
     public HangarSecurityConfig security;
+    @NestedConfigurationProperty
+    public HangarQueueConfig queue;
 
     @Component
     public static class Sponsor {
@@ -872,5 +874,9 @@ public class HangarConfig {
     }
     public HangarSecurityConfig getSecurity() {
         return security;
+    }
+
+    public HangarQueueConfig getQueue() {
+        return queue;
     }
 }
