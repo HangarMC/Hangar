@@ -11,6 +11,8 @@ import me.minidigger.hangar.service.UserActionLogService;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.service.project.FlagService;
 import me.minidigger.hangar.service.project.ProjectService;
+import me.minidigger.hangar.service.reviewqueue.NotStartedQueueEntry;
+import me.minidigger.hangar.service.reviewqueue.ReviewQueueEntry;
 import me.minidigger.hangar.util.AlertUtil;
 import me.minidigger.hangar.util.AlertUtil.AlertType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,8 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class ApplicationController extends HangarController {
@@ -75,7 +79,19 @@ public class ApplicationController extends HangarController {
     @Secured("ROLE_USER")
     @RequestMapping("/admin/approval/versions")
     public ModelAndView showQueue() {
-        return fillModel(new ModelAndView("users/admin/queue")); // TODO implement showQueue request controller
+        ModelAndView mv = new ModelAndView("users/admin/queue");
+        List<ReviewQueueEntry> reviewQueueEntries = new ArrayList<>();
+        List<NotStartedQueueEntry> notStartedQueueEntries = new ArrayList<>();
+        for (ReviewQueueEntry entry : projectService.getReviewQueue()) {
+            if (entry.hasReviewer()) {
+                reviewQueueEntries.add(entry);
+            } else {
+                notStartedQueueEntries.add(entry.asNotStarted());
+            }
+        }
+        mv.addObject("underReview", reviewQueueEntries);
+        mv.addObject("versions", notStartedQueueEntries);
+        return fillModel(mv);
     }
 
     @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)

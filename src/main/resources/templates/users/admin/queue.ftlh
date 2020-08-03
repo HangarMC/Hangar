@@ -2,18 +2,6 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
-<#--
-@import controllers.sugar.Requests.OreRequest
-@import models.querymodels.{NotStartedQueueEntry, ReviewedQueueEntry}
-@import ore.OreConfig
-@import ore.models.user.User
-@import util.StringFormatterUtils._
-@import util.syntax._
-@import views.html.helper.CSPNonce
-@import views.html.utils.userAvatar
-@(underReview: Seq[ReviewedQueueEntry], versions: Seq[NotStartedQueueEntry])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
--->
-
 <#assign scriptsVar>
     <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "javascripts/queue.js" />"></script>
     <script @CSPNonce.attr>
@@ -58,17 +46,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <#if underReview.isEmpty>
+                        <#if underReview?has_content>
                             <tr>
                                 <th rowspan="5">
                                     <h3><@spring.message "queue.review.none" /></h3>
                                 </th>
                             </tr>
                         </#if>
-                        @underReview.map { entry =>
-                        <tr <#if entry.isUnfinished && request.headerData.isCurrentUser(entry.reviewerId)>class="warning"</#if>>
+                        <#list underReview as entry>
+                        <tr <#if entry.unfinished && headerData.isCurrentUser(entry.reviewerId)>class="warning"</#if>>
                         <td>
-                            <a href="${routes.getRouteUrl("versions.show", entry.namespace.ownerName, entry.namespace.slug, entry.versionString)}">
+                            <a href="${routes.getRouteUrl("versions.show", entry.namespace.owner, entry.namespace.slug, entry.versionString)}">
                                 ${entry.namespace}
                             </a>
                             <br>
@@ -84,11 +72,11 @@
                                 Unknown
                             </#if>
                         <br>
-                        ${entry.versionCreatedAt?string.long}
+                        ${entry.versionCreatedAt}
                         </td>
                         <td style="text-align: right; max-width: 40px">
-                        <#if entry.isUnfinished>
-                            <#if request.headerData.isCurrentUser(entry.reviewerId)>
+                        <#if entry.unfinished>
+                            <#if headerData.isCurrentUser(entry.reviewerId)>
                                 <i class="status fas fa-fw fa-play-circle fa-2x" style="color: green"></i>
                             <#else>
                                 <i class="status fas fa-fw fa-cog fa-2x" style="color: black"></i>
@@ -97,22 +85,22 @@
                             <i class="status fas fa-fw fa-pause-circle fa-2x" style="color: orange"></i>
                         </#if>
                         </td>
-                        <td <#if try.isUnfinished>style="color: darkred"</#if> >
-                        <#if entry.isUnfinished>
+                        <td <#if entry.unfinished>style="color: darkred"</#if> >
+                        <#if entry.unfinished>
                             ${entry.reviewerName}
                             <br>
-                            <span data-ago="${entry.reviewStarted.toInstant.toEpochMilli}" data-title="started "></span>
+                            <span data-ago="${entry.reviewStarted.toInstant().toEpochMilli()}" data-title="started "></span>
                         <#else>
                             <strike>${entry.reviewerName}</strike>
                             <br>
-                            <span data-ago="${entry.reviewStarted.toInstant.toEpochMilli}" data-title="abandoned "></span>
+                            <span data-ago="${entry.reviewStarted.toInstant().toEpochMilli()}" data-title="abandoned "></span>
                         </#if>
                         </td>
                         <td style="vertical-align: middle; text-align: right; padding-right: 15px;">
                             <a href="/@helper.urlEncode(entry.namespace.ownerName)/@helper.urlEncode(entry.namespace.slug)/versions/@helper.urlEncode(entry.versionString)/reviews"><i class="fas fa-2x fa-fw fa-info"></i></a>
                         </td>
                         </tr>
-                        }
+                        </#list>
                     </tbody>
                 </table>
             </div>
@@ -142,26 +130,26 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <#if versions.isEmpty>
+                        <#if versions?has_content>
                             <tr>
                                 <th rowspan="5">
                                     <h3><i class="fas fa-thumbs-o-up"></i> <@spring.message "user.queue.none" /></h3>
                                 </th>
                             </tr>
                         </#if>
-                        @versions.sortWith((a, b) => a.versionCreatedAt.compareTo(b.versionCreatedAt) < 0).map { entry =>
+                        <#list versions?sort_by("versionCreatedAt") as entry> <#-- TODO correct? -->
                         <tr data-version="@helper.urlEncode(entry.namespace.ownerName)/@helper.urlEncode(entry.namespace.slug)/versions/@helper.urlEncode(entry.versionString)">
                             <td>
                                 <#import "*/utils/userAvatar.ftlh" as userAvatar>
-                                <@userAvatar.userAvatar userName=entry.namespace.ownerName avatatUrl=User.avatarUrl(entry.namespace.ownerName) clazz="user-avatar-xs"></@userAvatar.userAvatar>
+                                <@userAvatar.userAvatar userName=entry.namespace.owner avatarUrl=User.avatarUrl(entry.namespace.owner) clazz="user-avatar-xs"></@userAvatar.userAvatar>
                             </td>
                             <td>
-                                <a href="${routes.getRouteUrl("versions.show", entry.namespace.ownerName, entry.namespace.slug, entry.versionString)}">
+                                <a href="${routes.getRouteUrl("versions.show", entry.namespace.owner, entry.namespace.slug, entry.versionString)}">
                                     ${entry.namespace}
                                 </a>
                             </td>
                             <td>
-                                <span class="faint">${entry.versionCreatedAt?string.long}</span>
+                                <span class="faint">${entry.versionCreatedAt}</span>
                                 <span class="minor">${entry.versionString}</span>
                                 <span class="channel" style="background-color: ${entry.channelColor.hex};">${entry.channelName}</span>
                             </td>
@@ -176,7 +164,7 @@
                             <a class="btn btn-success" href="/@helper.urlEncode(entry.namespace.ownerName)/@helper.urlEncode(entry.namespace.slug)/versions/@helper.urlEncode(entry.versionString)/reviews">Start review</a>
                         </td>
                         </tr>
-                        }
+                        </#list>
                     </tbody>
                 </table>
             </div>

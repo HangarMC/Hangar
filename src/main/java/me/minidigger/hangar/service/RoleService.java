@@ -50,7 +50,7 @@ public class RoleService {
 
     public void init() {
         RolesTable admin = roleDao.get().getById(1);
-        if(admin != null && admin.getRole().equals(Role.HANGAR_ADMIN)) {
+        if (admin != null && admin.getRole() == Role.HANGAR_ADMIN) {
             log.info("Skipping role init");
             return;
         }

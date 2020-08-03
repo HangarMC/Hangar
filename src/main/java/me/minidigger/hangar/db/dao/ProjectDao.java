@@ -4,7 +4,6 @@ import me.minidigger.hangar.db.model.ProjectsTable;
 import me.minidigger.hangar.db.model.UserProjectRolesTable;
 import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.Permission;
-import me.minidigger.hangar.model.Role;
 import me.minidigger.hangar.model.generated.ProjectStatsAll;
 import me.minidigger.hangar.model.viewhelpers.ProjectMember;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;

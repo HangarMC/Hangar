@@ -21,6 +21,7 @@ import me.minidigger.hangar.model.viewhelpers.ProjectViewSettings;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
 import me.minidigger.hangar.model.viewhelpers.UserRole;
 import me.minidigger.hangar.service.UserService;
+import me.minidigger.hangar.service.reviewqueue.ReviewQueueEntry;
 import me.minidigger.hangar.util.StringUtils;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,5 +173,9 @@ public class ProjectService {
 
     public long getIdByPluginId(String pluginId) {
         return projectDao.get().getByPluginId(pluginId).getId();
+    }
+
+    public List<ReviewQueueEntry> getReviewQueue() {
+        return List.of(); //TODO
     }
 }

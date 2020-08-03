@@ -44,13 +44,15 @@ public enum Role {
     ORGANIZATION_OWNER("Organization_Owner", 24, RoleCategory.ORGANIZATION, IsOrganizationOwner.add(PROJECT_OWNER.permissions).add(ORGANIZATION_ADMIN.permissions), "Owner", PURPLE, false),
     ORGANIZATION("Organization", 23, RoleCategory.ORGANIZATION, ORGANIZATION_OWNER.permissions, "Organization", PURPLE, false);
 
-    private String value;
-    private long roleId;
-    private RoleCategory category;
-    private Permission permissions;
-    private String title;
-    private Color color;
-    private boolean isAssignable;
+    private static final Role[] VALUES = values();
+
+    private final String value;
+    private final long roleId;
+    private final RoleCategory category;
+    private final Permission permissions;
+    private final String title;
+    private final Color color;
+    private final boolean isAssignable;
     private Long rank = null;
 
     Role(String value, int roleId, RoleCategory category, Permission permissions, String title, Color color) {
@@ -105,7 +107,7 @@ public enum Role {
     }
 
     public static Role fromTitle(String title) {
-        for (Role r : values()) {
+        for (Role r : VALUES) {
             if (r.title.equals(title)) {
                 return r;
             }
@@ -123,7 +125,7 @@ public enum Role {
     }
 
     public static Role fromId(long id) {
-        for (Role r : values()) {
+        for (Role r : VALUES) {
             if (r.roleId == id) {
                 return r;
             }
