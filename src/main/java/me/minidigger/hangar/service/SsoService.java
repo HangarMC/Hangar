@@ -32,7 +32,7 @@ public class SsoService {
     @Autowired
     public SsoService(HangarConfig hangarConfig) {
         this.hangarConfig = hangarConfig;
-        this.returnUrls = Caffeine.newBuilder().expireAfterWrite(hangarConfig.sso.getTimeout()).build();
+        this.returnUrls = Caffeine.newBuilder().expireAfterWrite(hangarConfig.sso.getReset()).build();
     }
 
     private String sign(String payload) {
