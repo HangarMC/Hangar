@@ -1,5 +1,3 @@
-image: docker:latest
-
 variables:
   # Use the OverlayFS driver for improved performance.
   DOCKER_DRIVER: overlay
@@ -10,9 +8,6 @@ variables:
   # when running from the command line.
   # `installAtEnd` and `deployAtEnd`are only effective with recent version of the corresponding plugins.
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
-
-services:
-  - docker:dind
 
 stages:
   - build
@@ -44,6 +39,7 @@ build:
 
 deploy:
   stage: deploy
+  image: docker:latest
   services:
     - docker:dind
   variables:
