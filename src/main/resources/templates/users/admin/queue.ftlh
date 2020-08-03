@@ -47,6 +47,7 @@
                     </thead>
                     <tbody>
                         <#if underReview?has_content>
+                        <#else>
                             <tr>
                                 <th rowspan="5">
                                     <h3><@spring.message "queue.review.none" /></h3>
@@ -131,13 +132,14 @@
                     </thead>
                     <tbody>
                         <#if versions?has_content>
+                        <#else>
                             <tr>
                                 <th rowspan="5">
                                     <h3><i class="fas fa-thumbs-o-up"></i> <@spring.message "user.queue.none" /></h3>
                                 </th>
                             </tr>
                         </#if>
-                        <#list versions?sort_by("versionCreatedAt") as entry> <#-- TODO correct? -->
+                        <#list versions?sort_by("versionCreatedAt") as entry>
                         <tr data-version="@helper.urlEncode(entry.namespace.ownerName)/@helper.urlEncode(entry.namespace.slug)/versions/@helper.urlEncode(entry.versionString)">
                             <td>
                                 <#import "*/utils/userAvatar.ftlh" as userAvatar>
