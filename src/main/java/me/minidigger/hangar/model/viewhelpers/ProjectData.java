@@ -142,7 +142,6 @@ public class ProjectData {
 
     public String renderVisibilityChange(MarkdownService markdownService, String fallback) {
         if (lastVisibilityChange != null) {
-            System.out.println(lastVisibilityChange.getComment());
             if (!lastVisibilityChange.getComment().isBlank()) {
                 return markdownService.render(lastVisibilityChange.getComment());
             }
