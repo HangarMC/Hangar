@@ -6,6 +6,12 @@ public class OrganizationMembersTable {
     private long userId;
     private long organizationId;
 
+    public OrganizationMembersTable(long userId, long organizationId) {
+        this.userId = userId;
+        this.organizationId = organizationId;
+    }
+
+    public OrganizationMembersTable() { }
 
     public long getUserId() {
         return userId;

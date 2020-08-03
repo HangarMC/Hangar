@@ -41,7 +41,7 @@
                 <#if !u.isOrga()>
                     <@panel "Organizations">
                         <@roleTable keyName="Organization" tableType="orgRole" withOwner=true roles=u.orgas roleTypes=orgRoles ; org, role>
-                            <#-- @ftlvariable name="org" type="me.minidigger.hangar.model.viewhelpers.Organization" -->
+                            <#-- @ftlvariable name="org" type="me.minidigger.hangar.db.model.OrganizationsTable" -->
                             <a href="${routes.getRouteUrl("userAdmin", org.name)}">
                                 ${org.name}
                             </a>

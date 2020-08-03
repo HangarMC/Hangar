@@ -12,6 +12,14 @@ public class UserOrganizationRolesTable {
     private long organizationId;
     private boolean isAccepted;
 
+    public UserOrganizationRolesTable(long userId, String roleType, long organizationId, boolean isAccepted) {
+        this.userId = userId;
+        this.roleType = roleType;
+        this.organizationId = organizationId;
+        this.isAccepted = isAccepted;
+    }
+
+    public UserOrganizationRolesTable() { }
 
     public long getId() {
         return id;
