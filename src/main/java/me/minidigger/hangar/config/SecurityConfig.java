@@ -44,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().ignoringAntMatchers(
-                "/api/v2/authenticate", "/api/v2/sessions/current", "/api/v2/keys"
+                "/api/v2/authenticate", "/api/v2/sessions/current", "/api/v2/keys", "/api/v2/sync_sso"
         );
 
         http.addFilter(new HangarAuthenticationFilter());
