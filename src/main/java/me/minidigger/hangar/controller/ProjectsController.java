@@ -325,8 +325,13 @@ public class ProjectsController extends HangarController {
 
     @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/manage/sendforapproval")
-    public Object sendForApproval(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement sendForApproval request controller
+    public ModelAndView sendForApproval(@PathVariable String author, @PathVariable String slug, HttpServletRequest request) {
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        if (projectData.getVisibility() == Visibility.NEEDSCHANGES) {
+            projectService.changeVisibility(projectData.getProject(), Visibility.NEEDSAPPROVAL, "");
+            userActionLogService.project(request, LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(projectData.getProject().getId())), Visibility.NEEDSAPPROVAL.getName(), Visibility.NEEDSCHANGES.getName());
+        }
+        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.show", author, slug));
     }
 
     @Secured("ROLE_USER")
