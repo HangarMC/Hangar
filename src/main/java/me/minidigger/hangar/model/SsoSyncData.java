@@ -1,4 +1,4 @@
-package me.minidigger.hangar.model.generated;
+package me.minidigger.hangar.model;
 
 import me.minidigger.hangar.util.SsoUtil;
 

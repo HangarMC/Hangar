@@ -23,7 +23,7 @@ spring:
 # Fake User #
 #############
 fake-user:
-  enabled: false
+  enabled: true
   id: -2
   name: paper
   username: paper

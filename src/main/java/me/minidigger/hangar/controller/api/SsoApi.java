@@ -12,7 +12,6 @@ import javax.validation.constraints.NotEmpty;
 @RequestMapping("/api/v2/")
 public interface SsoApi {
 
-    // TODO: do we even want to document this in swagger?
     @ApiOperation(value = "Syncs SSO data to Hangar", nickname = "syncSso", notes = "Syncs data for a user from a SpongeAuth-compatible SSO provider. The SSO provider must be provided with this endpoint, as well as with a secret and API key that matches this Hangar instance.", authorizations = {
             @Authorization(value = "SSO")}, tags = "SSO")
     @ApiResponses(value = {

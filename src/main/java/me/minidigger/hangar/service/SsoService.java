@@ -8,6 +8,8 @@ import me.minidigger.hangar.util.HangarException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -26,6 +28,8 @@ import java.util.Map;
 @Service
 public class SsoService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SsoService.class);
+
     private final HangarConfig hangarConfig;
     private final Cache<String, String> returnUrls;
 
@@ -42,8 +46,8 @@ public class SsoService {
             byte[] hash = hasher.doFinal(payload.getBytes());
             return HexConverter.convertToHexString(hash);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            e.printStackTrace();
-            return null;
+            LOGGER.warn("Error while singing sso key", e);
+            throw new HangarException("error.loginFailed");
         }
     }
 
@@ -59,7 +63,6 @@ public class SsoService {
 
         String decoded = new String(Base64.getDecoder().decode(payload));
         String querystring = URLDecoder.decode(decoded, StandardCharsets.UTF_8);
-        // TODO: prepending "/?" is a hack
         return UriComponentsBuilder.fromUriString("/?" + querystring).build().getQueryParams().toSingleValueMap();
     }
 
@@ -76,8 +79,6 @@ public class SsoService {
                     .append(entry.getValue());
         }
 
-//        String queryString = URLEncoder.encode(sb.toString(), StandardCharsets.UTF_8);
-//        String encoded = Base64.getEncoder().encodeToString(queryString.getBytes());
         String encoded = Base64.getEncoder().encodeToString(sb.toString().getBytes());
         return ImmutablePair.of(encoded, sign(encoded));
     }
@@ -87,7 +88,6 @@ public class SsoService {
      * @return A randomly-generated nonce to pass to SSO provider
      */
     public String setReturnUrl(String returnUrl) {
-        // TODO: I have no idea if this is a good way to generate the nonce
         String nonce = RandomStringUtils.randomAlphanumeric(32);
         returnUrls.put(nonce, returnUrl);
         return nonce;
@@ -100,7 +100,7 @@ public class SsoService {
     public void clearReturnUrl(String nonce) {
         returnUrls.invalidate(nonce);
     }
-    
+
     public String generateAuthReturnUrl(String returnUrl) {
         String nonce = setReturnUrl(returnUrl);
         return ServletUriComponentsBuilder.fromCurrentRequestUri()

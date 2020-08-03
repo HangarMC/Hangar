@@ -106,10 +106,7 @@ public class AuthenticationService {
 
             roleService.addGlobalRole(userEntry.getId(), Role.HANGAR_ADMIN.getRoleId());
         }
-        // TODO properly do auth, remember me shit too
-        Authentication auth = new HangarAuthentication(userEntry.getName());
-        authenticationManager.authenticate(auth);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        authenticate(userEntry);
     }
 
     public boolean loginWithSSO(String sso, String sig) {
@@ -120,12 +117,17 @@ public class AuthenticationService {
             String returnUrl = ssoService.getReturnUrl(nonce);
             if (returnUrl != null) {
                 UsersTable user = userDao.get().getById(Integer.parseInt(id));
-                Authentication auth = new HangarAuthentication(user.getName());
-                authenticationManager.authenticate(auth);
-                SecurityContextHolder.getContext().setAuthentication(auth);
+                authenticate(user);
                 return true;
             }
         }
         return false;
+    }
+
+    private void authenticate(UsersTable user) {
+        // TODO properly do auth, remember me shit too
+        Authentication auth = new HangarAuthentication(user.getName());
+        authenticationManager.authenticate(auth);
+        SecurityContextHolder.getContext().setAuthentication(auth);
     }
 }

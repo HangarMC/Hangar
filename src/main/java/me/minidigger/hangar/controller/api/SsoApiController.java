@@ -1,8 +1,7 @@
 package me.minidigger.hangar.controller.api;
 
 import me.minidigger.hangar.config.HangarConfig;
-import me.minidigger.hangar.model.generated.SsoSyncData;
-import me.minidigger.hangar.service.RoleService;
+import me.minidigger.hangar.model.SsoSyncData;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.service.SsoService;
 import org.slf4j.Logger;
