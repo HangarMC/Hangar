@@ -36,6 +36,8 @@ services:
       - db_data:/var/lib/postgresql/data
     networks:
       - web
+    labels:
+      - "traefik.enable=false"
 #  mail:
 #    image: mailhog/mailhog:latest
 #    labels:
