@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -28,13 +29,15 @@ public class AuthenticationService {
     private final HangarDao<UserDao> userDao;
     private final AuthenticationManager authenticationManager;
     private final RoleService roleService;
+    private final SsoService ssoService;
 
     @Autowired
-    public AuthenticationService(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationManager authenticationManager, RoleService roleService) {
+    public AuthenticationService(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationManager authenticationManager, RoleService roleService, SsoService ssoService) {
         this.hangarConfig = hangarConfig;
         this.userDao = userDao;
         this.authenticationManager = authenticationManager;
         this.roleService = roleService;
+        this.ssoService = ssoService;
     }
 
     public ApiSessionResponse authenticateDev() {
@@ -103,14 +106,28 @@ public class AuthenticationService {
 
             roleService.addGlobalRole(userEntry.getId(), Role.HANGAR_ADMIN.getRoleId());
         }
-        // TODO properly do auth, remember me shit too
-        Authentication auth = new HangarAuthentication(userEntry.getName());
-        authenticationManager.authenticate(auth);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        authenticate(userEntry);
     }
 
     public boolean loginWithSSO(String sso, String sig) {
-        // TODO
+        Map<String, String> ssoData = ssoService.decode(sso, sig);
+        String nonce = ssoData.get("nonce");
+        String id = ssoData.get("external_id");
+        if (nonce != null && id != null) {
+            String returnUrl = ssoService.getReturnUrl(nonce);
+            if (returnUrl != null) {
+                UsersTable user = userDao.get().getById(Integer.parseInt(id));
+                authenticate(user);
+                return true;
+            }
+        }
         return false;
+    }
+
+    private void authenticate(UsersTable user) {
+        // TODO properly do auth, remember me shit too
+        Authentication auth = new HangarAuthentication(user.getName());
+        authenticationManager.authenticate(auth);
+        SecurityContextHolder.getContext().setAuthentication(auth);
     }
 }

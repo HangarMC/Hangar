@@ -4,15 +4,15 @@ import me.minidigger.hangar.model.InviteFilter;
 import me.minidigger.hangar.model.NotificationFilter;
 import me.minidigger.hangar.model.viewhelpers.InviteSubject;
 import me.minidigger.hangar.model.viewhelpers.UserData;
-import me.minidigger.hangar.model.viewhelpers.UserRole;
 import me.minidigger.hangar.service.ApiKeyService;
 import me.minidigger.hangar.service.NotificationService;
 import me.minidigger.hangar.service.PermissionService;
-import me.minidigger.hangar.db.customtypes.LoggedActionType;
-import me.minidigger.hangar.db.customtypes.LoggedActionType.UserContext;
+import me.minidigger.hangar.service.SsoService;
 import me.minidigger.hangar.service.UserActionLogService;
+import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.AlertUtil;
 import me.minidigger.hangar.util.AlertUtil.AlertType;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,10 +33,12 @@ import me.minidigger.hangar.config.HangarConfig;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserDao;
 import me.minidigger.hangar.db.model.UsersTable;
-import me.minidigger.hangar.service.AuthenticationService;
-import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.RouteHelper;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Map;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -53,9 +55,10 @@ public class UsersController extends HangarController {
     private final ApiKeyService apiKeyService;
     private final PermissionService permissionService;
     private final NotificationService notificationService;
+    private final SsoService ssoService;
 
     @Autowired
-    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, ApplicationController applicationController, UserService userService, UserActionLogService userActionLogService, RouteHelper routeHelper, ApiKeyService apiKeyService, PermissionService permissionService, NotificationService notificationService) {
+    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, ApplicationController applicationController, UserService userService, UserActionLogService userActionLogService, RouteHelper routeHelper, ApiKeyService apiKeyService, PermissionService permissionService, SsoService ssoService, NotificationService notificationService) {
         this.hangarConfig = hangarConfig;
         this.userDao = userDao;
         this.authenticationService = authenticationService;
@@ -64,6 +67,7 @@ public class UsersController extends HangarController {
         this.routeHelper = routeHelper;
         this.apiKeyService = apiKeyService;
         this.permissionService = permissionService;
+        this.ssoService = ssoService;
         this.notificationService = notificationService;
     }
 
@@ -78,7 +82,7 @@ public class UsersController extends HangarController {
     }
 
     @RequestMapping("/login")
-    public ModelAndView login(@RequestParam(defaultValue = "") String sso, @RequestParam(defaultValue = "") String sig, @RequestParam String returnUrl) {
+    public ModelAndView login(@RequestParam(defaultValue = "") String sso, @RequestParam(defaultValue = "") String sig, @RequestParam(defaultValue = "") String returnUrl) {
         if (hangarConfig.fakeUser.isEnabled()) {
             hangarConfig.checkDebug();
 
@@ -86,12 +90,17 @@ public class UsersController extends HangarController {
 
             return new ModelAndView("redirect:" + returnUrl);
         } else if (sso.isEmpty() || sig.isBlank()) {
-            // TODO redirect to SSO
-            return new ModelAndView("redirect:" + returnUrl);
+            // redirect to SSO
+            String authRedirectUrl = ssoService.generateAuthReturnUrl(returnUrl);
+            Pair<String, String> ssoData = ssoService.encode(Map.of("return_sso_url", authRedirectUrl));
+            String ssoUrl = ssoService.getAuthLoginUrl(ssoData.getLeft(), ssoData.getRight());
+            return new ModelAndView("redirect:" + ssoUrl);
         } else {
-            // TODO decode sso, then login
             boolean success = authenticationService.loginWithSSO(sso, sig);
             if (success) {
+                String nonce = ssoService.decode(sso, sig).get("nonce");
+                returnUrl = ssoService.getReturnUrl(nonce);
+                ssoService.clearReturnUrl(nonce);
                 return new ModelAndView("redirect:" + returnUrl);
             } else {
                 return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
@@ -100,9 +109,9 @@ public class UsersController extends HangarController {
     }
 
     @RequestMapping("/logout")
-    public RedirectView logout(HttpSession session) {
+    public ModelAndView logout(HttpSession session) {
         session.invalidate();
-        return new RedirectView(routeHelper.getRouteUrl("showHome")); // TODO redirect to sso
+        return new ModelAndView("redirect:" + ssoService.getAuthLogoutUrl());
     }
 
     @Secured("ROLE_USER")
@@ -133,8 +142,12 @@ public class UsersController extends HangarController {
     }
 
     @RequestMapping("/signup")
-    public Object signUp() {
-        return null; // TODO implement signUp request controller
+    public ModelAndView signUp(@RequestParam(defaultValue = "") String returnUrl) {
+        // redirect to SSO
+        String authRedirectUrl = ssoService.generateAuthReturnUrl(returnUrl);
+        Pair<String, String> ssoData = ssoService.encode(Map.of("return_sso_url", authRedirectUrl));
+        String ssoUrl = ssoService.getAuthSignupUrl(ssoData.getLeft(), ssoData.getRight());
+        return new ModelAndView("redirect:" + ssoUrl);
     }
 
     @GetMapping("/staff")

@@ -17,7 +17,7 @@ import java.util.List;
 @RegisterBeanMapper(UserGlobalRolesDao.class)
 public interface UserGlobalRolesDao {
 
-    @SqlUpdate("INSERT INTO user_global_roles VALUES (:userId, :roleId)")
+    @SqlUpdate("INSERT INTO user_global_roles VALUES (:userId, :roleId) ON CONFLICT DO NOTHING")
     void insert(@BindBean UserGlobalRolesTable entry);
 
     @AllowUnusedBindings
@@ -28,4 +28,7 @@ public interface UserGlobalRolesDao {
             "WHERE (u.id = :id OR u.name = :userName)")
     @RegisterBeanMapper(RolesTable.class)
     List<RolesTable> getRolesByUserId(Long id, String userName);
+
+    @SqlUpdate("DELETE FROM user_global_roles WHERE user_id=:userId AND role_id=:roleId")
+    void delete(@BindBean UserGlobalRolesTable entry);
 }

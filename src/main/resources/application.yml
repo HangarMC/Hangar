@@ -35,6 +35,7 @@ hangar:
   debug-level: 3
   staging: true
   log-timings: false
+  auth-url: "http://localhost:8000"
 
   sponsors:
     - name: Theranos
@@ -81,6 +82,18 @@ hangar:
     author-page-size: 25
     project-page-size: 5
 
+  sso:
+    enabled: true
+    # relative to auth-url
+    login-url: "/sso/"
+    signup-url: "/sso/signup/"
+    verify-url: "/sso/sudo/"
+    logout-url: "/accounts/logout/"
+    avatar-url: "/avatar/%s?size=120x120"
+    secret: "changeme"
+    api-key: "changeme"
+    timeout: "2s"
+    reset: "10m"
 
 ################
 # Spring Debug #
