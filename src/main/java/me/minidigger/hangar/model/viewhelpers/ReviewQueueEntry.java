@@ -1,8 +1,8 @@
-package me.minidigger.hangar.service.reviewqueue;
+package me.minidigger.hangar.model.viewhelpers;
 
 import me.minidigger.hangar.model.Color;
 import me.minidigger.hangar.model.generated.ProjectNamespace;
-import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.OffsetDateTime;
 
@@ -15,12 +15,13 @@ public class ReviewQueueEntry {
     private String channelName;
     private Color channelColor;
     private String versionAuthor;
+
     private Long reviewerId;
     private String reviewerName;
     private OffsetDateTime reviewStarted;
     private OffsetDateTime reviewEnded;
 
-    public ReviewQueueEntry(ProjectNamespace namespace, String projectName, String versionString, OffsetDateTime versionCreatedAt, String channelName, Color channelColor, String versionAuthor, Long reviewerId, String reviewerName, OffsetDateTime reviewStarted, OffsetDateTime reviewEnded) {
+    public ReviewQueueEntry(ProjectNamespace namespace, String projectName, String versionString, OffsetDateTime versionCreatedAt, String channelName, Color channelColor, String versionAuthor, @Nullable Long reviewerId, @Nullable String reviewerName, @Nullable OffsetDateTime reviewStarted, @Nullable OffsetDateTime reviewEnded) {
         this.namespace = namespace;
         this.projectName = projectName;
         this.versionString = versionString;
@@ -34,20 +35,16 @@ public class ReviewQueueEntry {
         this.reviewEnded = reviewEnded;
     }
 
+    public ReviewQueueEntry(ProjectNamespace namespace, String projectName, String versionString, OffsetDateTime versionCreatedAt, String channelName, Color channelColor, String versionAuthor) {
+        this(namespace, projectName, versionString, versionCreatedAt, channelName, channelColor, versionAuthor, null, null, null, null);
+    }
+
     public boolean isUnfinished() {
         return reviewEnded == null;
     }
 
     public boolean hasReviewer() {
         return reviewerId != null;
-    }
-
-    /**
-     * @see #hasReviewer()
-     */
-    public NotStartedQueueEntry asNotStarted() {
-        Preconditions.checkArgument(reviewerId == null, "Reviews is a started review");
-        return new NotStartedQueueEntry(namespace, projectName, versionString, versionCreatedAt, channelName, channelColor, versionAuthor);
     }
 
     public ProjectNamespace getNamespace() {
@@ -78,18 +75,22 @@ public class ReviewQueueEntry {
         return versionAuthor;
     }
 
+    @Nullable
     public Long getReviewerId() {
         return reviewerId;
     }
 
+    @Nullable
     public String getReviewerName() {
         return reviewerName;
     }
 
+    @Nullable
     public OffsetDateTime getReviewStarted() {
         return reviewStarted;
     }
 
+    @Nullable
     public OffsetDateTime getReviewEnded() {
         return reviewEnded;
     }

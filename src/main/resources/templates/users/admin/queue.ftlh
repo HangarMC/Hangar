@@ -2,6 +2,8 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
+<#-- todo @helper.urlEncode usages in this class -->
+
 <#assign scriptsVar>
     <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "javascripts/queue.js" />"></script>
     <script @CSPNonce.attr>
@@ -46,8 +48,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <#if underReview?has_content>
-                        <#else>
+                        <#if !underReview?has_content>
                             <tr>
                                 <th rowspan="5">
                                     <h3><@spring.message "queue.review.none" /></h3>
@@ -73,7 +74,7 @@
                                 Unknown
                             </#if>
                         <br>
-                        ${entry.versionCreatedAt}
+                        ${entry.versionCreatedAt.format("yyyy-MM-dd HH:mm")}
                         </td>
                         <td style="text-align: right; max-width: 40px">
                         <#if entry.unfinished>
@@ -131,8 +132,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <#if versions?has_content>
-                        <#else>
+                        <#if !versions?has_content>
                             <tr>
                                 <th rowspan="5">
                                     <h3><i class="fas fa-thumbs-o-up"></i> <@spring.message "user.queue.none" /></h3>
@@ -143,6 +143,7 @@
                         <tr data-version="@helper.urlEncode(entry.namespace.ownerName)/@helper.urlEncode(entry.namespace.slug)/versions/@helper.urlEncode(entry.versionString)">
                             <td>
                                 <#import "*/utils/userAvatar.ftlh" as userAvatar>
+                                <#-- todo User avatar -->
                                 <@userAvatar.userAvatar userName=entry.namespace.owner avatarUrl=User.avatarUrl(entry.namespace.owner) clazz="user-avatar-xs"></@userAvatar.userAvatar>
                             </td>
                             <td>
@@ -151,7 +152,7 @@
                                 </a>
                             </td>
                             <td>
-                                <span class="faint">${entry.versionCreatedAt}</span>
+                                <span class="faint">${entry.versionCreatedAt.format("yyyy-MM-dd HH:mm")}</span>
                                 <span class="minor">${entry.versionString}</span>
                                 <span class="channel" style="background-color: ${entry.channelColor.hex};">${entry.channelName}</span>
                             </td>
