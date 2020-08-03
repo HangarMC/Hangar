@@ -14,6 +14,7 @@ import me.minidigger.hangar.model.generated.Project;
 import me.minidigger.hangar.model.generated.ProjectNamespace;
 import me.minidigger.hangar.model.generated.ProjectSettings;
 import me.minidigger.hangar.model.generated.UserActions;
+import me.minidigger.hangar.model.viewhelpers.ProjectApprovalData;
 import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.model.viewhelpers.ProjectFlag;
 import me.minidigger.hangar.model.viewhelpers.ProjectMember;
@@ -172,5 +173,13 @@ public class ProjectService {
 
     public long getIdByPluginId(String pluginId) {
         return projectDao.get().getByPluginId(pluginId).getId();
+    }
+
+    public List<ProjectApprovalData> getProjectsNeedingApproval() {
+        return projectDao.get().getVisibilityNeedsApproval();
+    }
+
+    public List<ProjectApprovalData> getProjectsWaitingForChanges() {
+        return projectDao.get().getVisibilityWaitingProject();
     }
 }

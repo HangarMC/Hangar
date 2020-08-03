@@ -8,8 +8,8 @@ public enum FlagReason {
     MALINTENT(3, "Malicious Intent"),
     OTHER(4, "Other");
 
-    private int value;
-    private String title;
+    private final int value;
+    private final String title;
 
     FlagReason(int value, String title) {
         this.value = value;

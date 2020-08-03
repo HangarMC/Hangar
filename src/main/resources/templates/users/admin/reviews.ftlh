@@ -22,7 +22,7 @@
     <script @CSPNonce.attr>versionPath = '${helper.urlEncode(project.ownerName)}/${helper.urlEncode(project.slug)}/versions/${helper.urlEncode(version.name)}'</script>
 </#assign>
 
-<#assign message><@spring.messageArgs code="review.title" args=[project.name version.name] /></#assign>
+<#assign message><@spring.messageArgs code="review.title" args=[project.name, version.name] /></#assign>
 <@base.base title=message additionalScripts=scripts>
     <div class="row">
         <div class="col-md-12  header-flags">

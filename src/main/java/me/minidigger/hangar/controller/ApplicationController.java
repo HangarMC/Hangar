@@ -4,11 +4,13 @@ import me.minidigger.hangar.db.customtypes.LoggedActionType;
 import me.minidigger.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import me.minidigger.hangar.db.model.ProjectFlagsTable;
 import me.minidigger.hangar.model.NamedPermission;
+import me.minidigger.hangar.model.viewhelpers.ReviewQueueEntry;
 import me.minidigger.hangar.model.viewhelpers.ProjectFlag;
 import me.minidigger.hangar.model.viewhelpers.UserData;
 import me.minidigger.hangar.security.annotations.GlobalPermission;
 import me.minidigger.hangar.service.UserActionLogService;
 import me.minidigger.hangar.service.UserService;
+import me.minidigger.hangar.service.VersionService;
 import me.minidigger.hangar.service.project.FlagService;
 import me.minidigger.hangar.service.project.ProjectService;
 import me.minidigger.hangar.util.AlertUtil;
@@ -29,6 +31,8 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class ApplicationController extends HangarController {
@@ -37,13 +41,16 @@ public class ApplicationController extends HangarController {
     private final ProjectService projectService;
     private final FlagService flagService;
     private final UserActionLogService userActionLogService;
+    private final VersionService versionService;
 
     @Autowired
     public ApplicationController(UserService userService, ProjectService projectService, FlagService flagService, UserActionLogService userActionLogService) {
+    public ApplicationController(UserService userService, ProjectService projectService, VersionService versionService) {
         this.userService = userService;
         this.projectService = projectService;
         this.flagService = flagService;
         this.userActionLogService = userActionLogService;
+        this.versionService = versionService;
     }
 
     @RequestMapping("/")
@@ -69,13 +76,22 @@ public class ApplicationController extends HangarController {
     @Secured("ROLE_USER")
     @RequestMapping("/admin/approval/projects")
     public Object showProjectVisibility() {
-        return fillModel(new ModelAndView("users/admin/visibility")); // TODO implement showProjectVisibility request controller
+        ModelAndView mv = new ModelAndView("users/admin/visibility");
+        mv.addObject("needsApproval", projectService.getProjectsNeedingApproval());
+        mv.addObject("waitingProjects", projectService.getProjectsWaitingForChanges());
+        return fillModel(mv);
     }
 
     @Secured("ROLE_USER")
     @RequestMapping("/admin/approval/versions")
     public ModelAndView showQueue() {
-        return fillModel(new ModelAndView("users/admin/queue")); // TODO implement showQueue request controller
+        ModelAndView mv = new ModelAndView("users/admin/queue");
+        List<ReviewQueueEntry> reviewQueueEntries = new ArrayList<>();
+        List<ReviewQueueEntry> notStartedQueueEntries = new ArrayList<>();
+        versionService.getReviewQueue().forEach(entry -> (entry.hasReviewer() ? reviewQueueEntries : notStartedQueueEntries).add(entry));
+        mv.addObject("underReview", reviewQueueEntries);
+        mv.addObject("versions", notStartedQueueEntries);
+        return fillModel(mv);
     }
 
     @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)

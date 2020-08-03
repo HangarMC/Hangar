@@ -25,6 +25,10 @@ public class HeaderData {
         return hasUser() && currentUser.getId() == usersTable.getId();
     }
 
+    public boolean isCurrentUser(long userId) {
+        return hasUser() && currentUser.getId() == userId;
+    }
+
     public boolean globalPerm(Permission permission) {
         return globalPermission.has(permission);
     }

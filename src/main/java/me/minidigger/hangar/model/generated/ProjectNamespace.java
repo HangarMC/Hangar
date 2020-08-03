@@ -83,13 +83,7 @@ public class ProjectNamespace {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class ModelsProtocolsAPIV2ProjectNamespace {\n");
-
-        sb.append("    owner: ").append(toIndentedString(owner)).append("\n");
-        sb.append("    slug: ").append(toIndentedString(slug)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return owner + "/" + slug;
     }
 
     /**

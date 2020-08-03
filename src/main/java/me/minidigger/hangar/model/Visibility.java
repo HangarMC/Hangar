@@ -14,10 +14,10 @@ public enum Visibility {
 
     SOFTDELETE(4, "softDelete", true, "striped project-hidden");
 
-    private long value;
-    private String name;
-    private boolean showModal;
-    private String cssClass;
+    private final long value;
+    private final String name;
+    private final boolean showModal;
+    private final String cssClass;
 
     Visibility(long value, String name, boolean showModal, String cssClass) {
         this.value = value;

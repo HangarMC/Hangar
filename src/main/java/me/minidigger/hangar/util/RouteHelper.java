@@ -11,7 +11,7 @@ import static java.util.List.of;
 @Component
 public class RouteHelper {
 
-    private Map<String, Route> routes = new HashMap<>();
+    private final Map<String, Route> routes = new HashMap<>();
 
     public RouteHelper() {
         register("showProjectVisibility", "/admin/approval/projects", of(), of());
