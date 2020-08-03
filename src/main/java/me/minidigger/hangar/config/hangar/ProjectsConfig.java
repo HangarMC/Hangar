@@ -3,6 +3,8 @@ package me.minidigger.hangar.config.hangar;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+
 @Component
 @ConfigurationProperties(prefix = "hangar.projects")
 public class ProjectsConfig {
@@ -13,7 +15,7 @@ public class ProjectsConfig {
     private int initVersionLoad = 10;
     private int maxDescLen = 120;
     private boolean fileValidate = true;
-    private String staleAge = "28d";
+    private Duration staleAge = Duration.ofDays(28);
     private String checkInterval = "1h";
     private String draftExpire = "1d";
     private int userGridPageSize = 30;
@@ -74,11 +76,11 @@ public class ProjectsConfig {
         this.fileValidate = fileValidate;
     }
 
-    public String getStaleAge() {
+    public Duration getStaleAge() {
         return staleAge;
     }
 
-    public void setStaleAge(String staleAge) {
+    public void setStaleAge(Duration staleAge) {
         this.staleAge = staleAge;
     }
 

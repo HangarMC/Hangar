@@ -1,19 +1,6 @@
 package me.minidigger.hangar.service.project;
 
-import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import me.minidigger.hangar.config.hangar.HangarConfig;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.ProjectDao;
 import me.minidigger.hangar.db.dao.UserDao;
@@ -34,13 +21,28 @@ import me.minidigger.hangar.model.viewhelpers.ProjectFlag;
 import me.minidigger.hangar.model.viewhelpers.ProjectMember;
 import me.minidigger.hangar.model.viewhelpers.ProjectViewSettings;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
+import me.minidigger.hangar.model.viewhelpers.UnhealthyProject;
 import me.minidigger.hangar.model.viewhelpers.UserRole;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.StringUtils;
+import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectService {
 
+    private final HangarConfig hangarConfig;
     private final HangarDao<ProjectDao> projectDao;
     private final HangarDao<UserDao> userDao;
     private final HangarDao<VisibilityDao> visibilityDao;
@@ -48,7 +50,8 @@ public class ProjectService {
     private final FlagService flagService;
 
     @Autowired
-    public ProjectService(HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, UserService userService, FlagService flagService) {
+    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, UserService userService, FlagService flagService) {
+        this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
         this.userDao = userDao;
         this.visibilityDao = visibilityDao;
@@ -181,5 +184,9 @@ public class ProjectService {
 
     public List<ProjectApprovalData> getProjectsWaitingForChanges() {
         return projectDao.get().getVisibilityWaitingProject();
+    }
+
+    public List<UnhealthyProject> getUnhealthyProjects() {
+        return projectDao.get().getUnhealthyProjects(hangarConfig.projects.getStaleAge().toMillis());
     }
 }

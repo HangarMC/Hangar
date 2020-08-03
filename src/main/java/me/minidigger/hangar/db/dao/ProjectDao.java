@@ -9,15 +9,19 @@ import me.minidigger.hangar.model.generated.ProjectStatsAll;
 import me.minidigger.hangar.model.viewhelpers.ProjectApprovalData;
 import me.minidigger.hangar.model.viewhelpers.ProjectMember;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
+import me.minidigger.hangar.model.viewhelpers.UnhealthyProject;
 import me.minidigger.hangar.service.project.ProjectFactory.InvalidProjectReason;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
+import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
+import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 import org.springframework.stereotype.Repository;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -140,4 +144,14 @@ public interface ProjectDao {
             "  WHERE vc.resolved_at IS NULL" +
             "    AND p.visibility = 2")
     List<ProjectApprovalData> getVisibilityWaitingProject();
+
+    @RegisterBeanMapper(UnhealthyProject.class)
+    @UseStringTemplateEngine
+    @SqlQuery("SELECT p.owner_name, p.slug, p.topic_id, p.post_id, coalesce(hp.last_updated, p.created_at), p.visibility" +
+            "  FROM projects p JOIN home_projects hp ON p.id = hp.id" +
+            "  WHERE p.topic_id IS NULL" +
+            "     OR p.post_id IS NULL" +
+            "     OR hp.last_updated > (now() - make_interval(secs := <age>))" +
+            "     OR p.visibility != 0")
+    List<UnhealthyProject> getUnhealthyProjects(@Define("age") long staleAgeSeconds);
 }

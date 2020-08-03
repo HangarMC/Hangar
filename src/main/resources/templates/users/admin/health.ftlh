@@ -30,14 +30,14 @@
                     <h4 class="panel-title"><@spring.message "admin.health.discuss" /></h4>
                 </div>
                 <div class="panel-body list-group list-group-health">
-                @noTopicProjects.map { project =>
-                    <div class="list-group-item">
-                        <a class="pull-left" href="${routes.getRouteUrl("projects.show", project.namespace.ownerName, project.namespace.slug)}">
-                            <strong>${project.namespace}</strong>
-                        </a>
-                        <div class="clearfix"></div>
-                    </div>
-                }
+                    <#list noTopicProjects as project>
+                        <div class="list-group-item">
+                            <a class="pull-left" href="${routes.getRouteUrl("projects.show", project.getNamespace().getOwner(), project.getNamespace().getSlug())}">
+                                <strong>${project.namespace}</strong>
+                            </a>
+                            <div class="clearfix"></div>
+                        </div>
+                    </#list>
                 </div>
             </div>
         </div>
@@ -47,12 +47,12 @@
                     <h4 class="panel-title"><@spring.message "admin.health.jobs" /></h4>
                 </div>
                 <div class="panel-body">
-                @erroredJobs.map { job =>
-                    <div class="list-group-item">
-                        Jobtype: ${job.info.jobType} Error type: ${job.info.lastErrorDescriptor} Happened: ${job.info.lastUpdated}
-                        <div class="clearfix"></div>
-                    </div>
-                }
+                    <#list erroredJobs as job>
+                        <div class="list-group-item">
+                            Job type: ${job.jobType} Error type: ${job.lastErrorDescriptor} Happened: ${(job.lastUpdated).format("YYYY-mm-dd HH:mm:ss")}
+                            <div class="clearfix"></div>
+                        </div>
+                    </#list>
                 </div>
             </div>
         </div>
@@ -64,13 +64,13 @@
                     <h4 class="panel-title"><@spring.message "admin.health.stale" /></h4>
                 </div>
                 <div class="panel-body list-group list-group-health">
-                @staleProjects.map { project =>
-                    <div class="list-group-item">
-                        <a href="${routes.getRouteUrl("projects.show", project.namespace.ownerName, project.namespace.slug)}">
-                            <strong>${project.namespace}</strong>
-                        </a>
-                    </div>
-                }
+                    <#list staleProjects as project>
+                        <div class="list-group-item">
+                            <a href="${routes.getRouteUrl("projects.show", project.getNamespace().getOwner(), project.getNamespace().getSlug())}">
+                                <strong>${project.namespace}</strong>
+                            </a>
+                        </div>
+                    </#list>
                 </div>
             </div>
         </div>
@@ -80,13 +80,13 @@
                     <h4 class="panel-title"><@spring.message "admin.health.hidden" /></h4>
                 </div>
                 <div class="panel-body list-group list-group-health">
-                @notPublicProjects.map { project =>
-                    <div class="list-group-item">
-                        <a href="${routes.getRouteUrl("projects.show", project.namespace.ownerName, project.namespace.slug)}">
-                            <strong>${project.namespace}</strong> <small><@spring.message "visibility.name." + project.visibility.nameKey /></small>
-                        </a>
-                    </div>
-                }
+                    <#list notPublicProjects as project>
+                        <div class="list-group-item">
+                            <a href="${routes.getRouteUrl("projects.show", project.getNamespace().getOwner(), project.getNamespace().getSlug())}">
+                                <strong>${project.namespace}</strong> <small><@spring.message "visibility.name." + project.visibility.name /></small>
+                            </a>
+                        </div>
+                    </#list>
                 </div>
             </div>
         </div>
@@ -108,13 +108,13 @@
                     <h4 class="panel-title"><@spring.message "admin.health.missingFile" /></h4>
                 </div>
                 <div class="panel-body list-group list-group-health">
-                @missingFileProjects.map { case (version, project) =>
+                <#--@missingFileProjects.map { case (version, project) =>
                 <div class="list-group-item">
                     <a href="${routes.getRouteUrl("versions.show", project.ownerName, project.slug, version.name)}">
                         <strong>${project.namespace}/${version.name}</strong>
                 </a>
                 </div>
-                }
+                }--> <#--TODO missinFileProjects -->
                 </div>
             </div>
         </div>

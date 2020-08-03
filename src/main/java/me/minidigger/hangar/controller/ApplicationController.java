@@ -3,10 +3,13 @@ package me.minidigger.hangar.controller;
 import me.minidigger.hangar.db.customtypes.LoggedActionType;
 import me.minidigger.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import me.minidigger.hangar.model.NamedPermission;
+import me.minidigger.hangar.model.Visibility;
 import me.minidigger.hangar.model.viewhelpers.ProjectFlag;
 import me.minidigger.hangar.model.viewhelpers.ReviewQueueEntry;
+import me.minidigger.hangar.model.viewhelpers.UnhealthyProject;
 import me.minidigger.hangar.model.viewhelpers.UserData;
 import me.minidigger.hangar.security.annotations.GlobalPermission;
+import me.minidigger.hangar.service.JobService;
 import me.minidigger.hangar.service.UserActionLogService;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.service.VersionService;
@@ -31,6 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class ApplicationController extends HangarController {
@@ -40,14 +44,16 @@ public class ApplicationController extends HangarController {
     private final FlagService flagService;
     private final UserActionLogService userActionLogService;
     private final VersionService versionService;
+    private final JobService jobService;
 
     @Autowired
-    public ApplicationController(UserService userService, ProjectService projectService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService) {
+    public ApplicationController(UserService userService, ProjectService projectService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService) {
         this.userService = userService;
         this.projectService = projectService;
         this.flagService = flagService;
         this.userActionLogService = userActionLogService;
         this.versionService = versionService;
+        this.jobService = jobService;
     }
 
     @RequestMapping("/")
@@ -117,10 +123,19 @@ public class ApplicationController extends HangarController {
         userActionLogService.project(request, LoggedActionType.PROJECT_FLAG_RESOLVED.with(ProjectContext.of(flag.getFlag().getProjectId())), "Flag resovled by " + userName, "Flagged by " + flag.getReportedBy());
     }
 
+    @GlobalPermission(NamedPermission.VIEW_HEALTH)
     @Secured("ROLE_USER")
     @RequestMapping("/admin/health")
     public ModelAndView showHealth() {
-        return fillModel(new ModelAndView("users/admin/health")); // TODO implement showHealth request controller
+        ModelAndView mav = new ModelAndView("users/admin/health");
+        List<UnhealthyProject> unhealthyProjects = projectService.getUnhealthyProjects();
+        mav.addObject("noTopicProjects", unhealthyProjects.stream().filter(p -> p.getTopicId() == null || p.getPostId() == null).collect(Collectors.toList()));
+        mav.addObject("staleProjects", unhealthyProjects);
+        mav.addObject("notPublicProjects", unhealthyProjects.stream().filter(p -> p.getVisibility() != Visibility.PUBLIC).collect(Collectors.toList()));
+        // TODO missingFiles
+        mav.addObject("missingFileProjects");
+        mav.addObject("erroredJobs", jobService.getErroredJobs());
+        return fillModel(mav);
     }
 
     @Secured("ROLE_USER")
