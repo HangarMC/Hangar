@@ -1,4 +1,5 @@
 spring:
+  datasource:
     url: jdbc:postgresql://db:5432/hangar
     username: hangar
     password: hangar
