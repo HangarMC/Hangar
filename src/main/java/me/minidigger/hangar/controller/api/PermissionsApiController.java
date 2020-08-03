@@ -14,8 +14,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import me.minidigger.hangar.model.NamedPermission;
+import me.minidigger.hangar.model.PermissionType;
 import me.minidigger.hangar.model.generated.PermissionCheck;
 import me.minidigger.hangar.model.generated.Permissions;
+import me.minidigger.hangar.service.PermissionService;
+import me.minidigger.hangar.service.UserService;
+import me.minidigger.hangar.service.project.ProjectService;
 
 @Controller
 public class PermissionsApiController implements PermissionsApi {
@@ -26,10 +30,17 @@ public class PermissionsApiController implements PermissionsApi {
 
     private final HttpServletRequest request;
 
+    private final PermissionService permissionService;
+    private final UserService userService;
+    private final ProjectService projectService;
+
     @Autowired
-    public PermissionsApiController(ObjectMapper objectMapper, HttpServletRequest request) {
+    public PermissionsApiController(ObjectMapper objectMapper, HttpServletRequest request, PermissionService permissionService, UserService userService, ProjectService projectService) {
         this.objectMapper = objectMapper;
         this.request = request;
+        this.permissionService = permissionService;
+        this.userService = userService;
+        this.projectService = projectService;
     }
 
     @Override
@@ -55,13 +66,17 @@ public class PermissionsApiController implements PermissionsApi {
 
 
     @Override
-    public ResponseEntity<Permissions> showPermissions(String pluginId, String organizationName) {
-        try {
-            return new ResponseEntity<>(objectMapper.readValue("{\n  \"permissions\" : [ \"view_public_info\", \"view_public_info\" ],\n  \"type\" : \"global\"\n}", Permissions.class), HttpStatus.OK); // TODO Implement me
-        } catch (IOException e) {
-            log.error("Couldn't serialize response for content type application/json", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Permissions> showPermissions(String pluginName, String organizationName) {
+        // TODO no clue what to do with organization Name
+        long userId = userService.getCurrentUser().getId();
+        long pluginId = projectService.getIdByPluginId(pluginName);
+        PermissionType type = PermissionType.PROJECT;
+        List<NamedPermission> perms = permissionService.getProjectPermissions(userId, pluginId);
+        if (perms.isEmpty()) {
+            type = PermissionType.GLOBAL;
+            perms = permissionService.getGlobalPermissions(userId);
         }
+        return new ResponseEntity<>(new Permissions().type(type).permissions(perms), HttpStatus.OK);
     }
 }
 

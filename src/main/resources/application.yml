@@ -4,8 +4,6 @@
 server:
   port: 8080
 
-
-
 spring:
   freemarker:
     request-context-attribute: rc
@@ -17,6 +15,9 @@ spring:
     url: jdbc:postgresql://localhost:5432/hangar
     username: hangar
     password: hangar
+  security:
+    filter:
+      order: 1000
 
 #############
 # Fake User #

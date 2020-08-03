@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -15,19 +16,30 @@ import java.util.List;
 import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
 import me.minidigger.hangar.model.viewhelpers.VersionData;
+import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.service.VersionService;
+import me.minidigger.hangar.service.pluginupload.PendingVersion;
+import me.minidigger.hangar.service.pluginupload.PluginUploadService;
+import me.minidigger.hangar.service.project.ProjectFactory;
 import me.minidigger.hangar.service.project.ProjectService;
+import me.minidigger.hangar.util.AlertUtil;
 
 @Controller
 public class VersionsController extends HangarController {
 
     private final ProjectService projectService;
     private final VersionService versionService;
+    private final ProjectFactory projectFactory;
+    private final UserService userService;
+    private final PluginUploadService pluginUploadService;
 
     @Autowired
-    public VersionsController(ProjectService projectService, VersionService versionService) {
+    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService) {
         this.projectService = projectService;
         this.versionService = versionService;
+        this.projectFactory = projectFactory;
+        this.userService = userService;
+        this.pluginUploadService = pluginUploadService;
     }
 
     @RequestMapping("/api/project/{pluginId}/versions/recommended/download")
@@ -57,21 +69,59 @@ public class VersionsController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/versions/new")
-    public Object showCreator(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement showCreator request controller
+    @GetMapping("/{author}/{slug}/versions/new")
+    public ModelAndView showCreator(@PathVariable String author, @PathVariable String slug) {
+        return _showCreator(author, slug, null);
     }
 
     @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/versions/new/upload")
-    public Object upload(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement upload request controller
+    public ModelAndView upload(@PathVariable String author, @PathVariable String slug, @RequestParam("pluginFile") MultipartFile file) {
+        String uploadError = projectFactory.getUploadError(userService.getCurrentUser());
+        if (uploadError != null) {
+            if (file == null) {
+                uploadError = "error.noFile";
+            }
+        }
+        if (uploadError != null) {
+            ModelAndView mav = _showCreator(author, slug, null);
+            AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, uploadError);
+            return fillModel(mav);
+        }
+
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        PendingVersion pendingVersion = pluginUploadService.processSubsequentPluginUpload(file, projectData.getProjectOwner(), projectData.getProject());
+
+        return _showCreator(author, slug, pendingVersion);
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/versions/new/{version}")
-    public Object showCreatorWithMeta(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
-        return null; // TODO implement showCreatorWithMeta request controller
+    @RequestMapping("/{author}/{slug}/versions/new/{versionName}")
+    public ModelAndView showCreatorWithMeta(@PathVariable String author, @PathVariable String slug, @PathVariable String versionName) {
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        PendingVersion pendingVersion = pluginUploadService.getPendingVersion(projectData.getProject(), versionName);
+
+        if (pendingVersion == null) {
+            ModelAndView mav = _showCreator(author, slug, null);
+            AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, "error.plugin.timeout");
+            return fillModel(mav);
+        }
+
+        return _showCreator(author, slug, pendingVersion);
+    }
+
+    private ModelAndView _showCreator(String author, String slug, Object pendingVersion) {
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        ModelAndView mav = new ModelAndView("projects/versions/create");
+        mav.addObject("projectName", projectData.getProject().getName());
+        mav.addObject("pluginId", projectData.getProject().getPluginId());
+        mav.addObject("projectSlug", slug);
+        mav.addObject("ownerName", author);
+        mav.addObject("projectDescription", projectData.getProject().getDescription());
+        mav.addObject("forumSync", projectData.getProject().getForumSync());
+        mav.addObject("pending", pendingVersion);
+        mav.addObject("channels", List.of());// TODO channel list
+        return fillModel(mav);
     }
 
     @RequestMapping("/{author}/{slug}/versions/recommended/download")

@@ -4,6 +4,7 @@ import me.minidigger.hangar.filter.HangarAuthenticationFilter;
 import me.minidigger.hangar.security.HangarAuthenticationProvider;
 import me.minidigger.hangar.security.voters.GlobalPermissionVoter;
 import me.minidigger.hangar.service.PermissionService;
+import me.minidigger.hangar.service.project.ProjectService;
 import me.minidigger.hangar.util.RouteHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +16,6 @@ import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -29,16 +29,16 @@ import java.util.List;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final HangarAuthenticationProvider authProvider;
-    private final MethodSecurityConfig methodSecurityConfig;
     private final RouteHelper routeHelper;
     private final PermissionService permissionService;
+    private final ProjectService projectService;
 
     @Autowired
-    public SecurityConfig(HangarAuthenticationProvider authProvider, MethodSecurityConfig methodSecurityConfig, RouteHelper routeHelper, PermissionService permissionService) {
+    public SecurityConfig(HangarAuthenticationProvider authProvider, RouteHelper routeHelper, PermissionService permissionService, ProjectService projectService) {
         this.authProvider = authProvider;
-        this.methodSecurityConfig = methodSecurityConfig;
         this.routeHelper = routeHelper;
         this.permissionService = permissionService;
+        this.projectService = projectService;
     }
 
     @Override

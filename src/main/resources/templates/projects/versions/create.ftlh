@@ -7,17 +7,6 @@
 <#import "*/projects/helper/alertFile.ftlh" as alertFile />
 <#import "*/utils/editor.ftlh" as editor />
 
-@import controllers.sugar.Requests.OreRequest
-@import models.querymodels.ViewTag
-@import ore.OreConfig
-@import ore.models.project.Channel
-@import ore.models.project.factory.PendingVersion
-@import ore.util.FileUtils
-@import views.html.helper.{CSPNonce, CSRF, form}
-@import views.html.utils.editor
-@(projectName: String, pluginId: String, projectSlug: String, ownerName: String, projectDescription: Option[String], forumSync: Boolean, pending: Option[PendingVersion],
-  channels: Seq[Channel])(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)
-
 <#assign mainWidth = "col-md-10">
 
 <#assign scriptsVar>
@@ -25,8 +14,8 @@
     <script type="text/javascript" src="<@hangar.url "javascripts/pluginUpload.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/projectDetail.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/versionCreateChannelNew.js" />"></script>
-    <script @CSPNonce.attr>
-            DEFAULT_COLOR = '${config.defaultChannelColor.hex}';
+    <script>
+             DEFAULT_COLOR = '${config.channels.colorDefault.hex}';
     </script>
 </#assign>
 
@@ -44,12 +33,12 @@
 
                 <div class="create-body panel-body">
                     <div class="minor create-blurb">
-                        <span>@Html(messages("version.create.info", projectName, pluginId))</span>
+                        <span><@spring.messageArgs code="version.create.info" args=[projectName, pluginId] /></span>
                     </div>
 
                     <#if pending??>
                         <#-- Show plugin meta -->
-                        @defining(pending.get) { version: PendingVersion =>
+                        <#assign version = pending>
                             <div class="plugin-meta">
                                 <table class="plugin-meta-table">
                                     <tr>
@@ -59,11 +48,11 @@
                                     <tr>
                                         <td><strong><@spring.message "version.description" /></strong></td>
                                         <td>
-                                        @version.description.map { description =>
-                                            ${description}
-                                        }.getOrElse {
-                                            ${projectDescription!messages("version.create.noDescription")}
-                                        }
+                                            <#if version.description??>
+                                                ${description}
+                                            <#else>
+                                                ${projectDescription!messages("version.create.noDescription")}
+                                            </#if>
                                         </td>
                                     </tr>
                                     <tr>
@@ -79,11 +68,11 @@
                                         <td class="form-inline">
                                             <#-- Show channel selector if old project, editor if new project -->
                                             <select id="select-channel" form="form-publish" name="channel-input" class="form-control">
-                                            @channels.map { channel =>
+                                            <#list channels as channel>
                                                 <option value="@channel.name" data-color="@channel.color.hex" <#if channel.name.equals(version.channelName)>selected</#if>
                                                 ${channel.name}
                                                 </option>
-                                            }
+                                            </#list>
                                             </select>
                                             <a href="#">
                                                 <i id="channel-new" class="fas fa-plus" data-toggle="modal"
@@ -150,14 +139,13 @@
                                 </div>
                             </div>
                             <script @CSPNonce.attr>$(function () { $('.btn-edit').click() });</script>
-                        }
                     </#if>
 
                     <@form.form action=routes.getRouteUrl("versions.upload", ownerName, projectSlug) method="POST"
                         enctype="multipart/form-data" id="form-upload">
                         <@csrf.formField />
                             <label class="btn btn-default pull-left" for="pluginFile">
-                                <input id="pluginFile" name="pluginFile" type="file" style="display: none;">
+                                <input id="pluginFile" name="pluginFile" type="file" style="display: none;" accept=".jar,.zip">
                                 <@spring.message "version.create.selectFile" />
                             </label>
 
@@ -166,29 +154,30 @@
 
                     <#if pending??>
                         <#-- Ready to go! -->
-                        @defining(pending.get) { version: PendingVersion =>
-                            <@form.form method="POST" action=routes.getRouteUrl("versions.publish", ownerName, projectSlug, version.versionString)
-                                id="form-publish" class="pull-right">
-                                <@csrf.formField />
-                                <input type="hidden" class="channel-color-input" name="channel-color-input"
-                                value="${config.defaultChannelColor.hex}" />
+                        <#assign version = pending>
+                        <@form.form method="POST" action=routes.getRouteUrl("versions.publish", ownerName, projectSlug, version.versionString)
+                            id="form-publish" class="pull-right">
+                            <@csrf.formField />
+                            <input type="hidden" class="channel-color-input" name="channel-color-input"
+                            value="${config.channels.colorDefault.hex}" />
 
-                                <div>
-                                    <input type="submit" name="create" value="<@spring.message "version.create.publish" />"
-                                    class="btn btn-primary" />
-                                </div>
-                            </@form.form>
-                        }
+                            <div>
+                                <input type="submit" name="create" value="<@spring.message "version.create.publish" />"
+                                class="btn btn-primary" />
+                            </div>
+                        </@form.form>
                     </#if>
 
                 </div>
             </div>
             <span class="pull-left tos"><i><@spring.messageArgs "version.create.tos" "#" /></i></span>
         </div>
+
+        <#import "*/projects/helper/createSteps.ftlh" as createSteps>
         <#if pending??>
-            ${projects.helper.createSteps(2)}
+            <@createSteps.createSteps 2 />
         <#else>
-            ${projects.helper.createSteps(1)}
+            <@createSteps.createSteps 1 />
         </#if>
 
     </div>

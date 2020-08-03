@@ -4,7 +4,9 @@ import me.minidigger.hangar.db.dao.OrganizationDao;
 import me.minidigger.hangar.db.dao.ProjectDao;
 import me.minidigger.hangar.db.dao.RoleDao;
 import me.minidigger.hangar.model.generated.SsoSyncData;
+import me.minidigger.hangar.db.model.UserOrganizationRolesTable;
 import me.minidigger.hangar.model.viewhelpers.Organization;
+import me.minidigger.hangar.model.viewhelpers.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -14,7 +16,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import me.minidigger.hangar.config.CacheConfig;
 import me.minidigger.hangar.config.HangarConfig;
@@ -144,7 +149,11 @@ public class UserService {
         // TODO getUserData
         boolean isOrga = false;
         int projectCount = projectDao.get().getProjectCountByUserId(user.getId());
-        List<Organization> organizations = orgDao.get().getUserOrgs(user.getId());
+        Map<Organization, UserOrganizationRolesTable> dbOrgs = orgDao.get().getUserOrganizationsAndRoles(user.getId());
+        Map<Organization, UserRole<UserOrganizationRolesTable>> organizations = new HashMap<>();
+        dbOrgs.forEach((organization, userOrganizationRolesTable) -> {
+            organizations.put(organization, new UserRole<>(userOrganizationRolesTable, userOrganizationRolesTable.getIsAccepted(), userOrganizationRolesTable.getRoleType()));
+        });
 //        List<Role> globalRoles = List.of(Role.HANGAR_ADMIN);
         List<Role> globalRoles = roleService.getGlobalRolesForUser(user.getId(), null);
         Permission userPerm = Permission.All;

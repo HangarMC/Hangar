@@ -1,6 +1,8 @@
 package me.minidigger.hangar.config;
 
-import me.minidigger.hangar.security.annotations.GlobalPermissionMetadataSource;
+import me.minidigger.hangar.security.metadatasources.GlobalPermissionSource;
+import me.minidigger.hangar.security.metadatasources.HangarMetadataSources;
+import me.minidigger.hangar.security.metadatasources.ProjectPermissionSource;
 import me.minidigger.hangar.security.voters.GlobalPermissionVoter;
 import me.minidigger.hangar.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,7 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
 
     @Override
     protected MethodSecurityMetadataSource customMethodSecurityMetadataSource() {
-        return new GlobalPermissionMetadataSource();
+        return new HangarMetadataSources(new GlobalPermissionSource(), new ProjectPermissionSource());
     }
 
     @Override

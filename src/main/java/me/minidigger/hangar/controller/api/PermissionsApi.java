@@ -2,6 +2,7 @@ package me.minidigger.hangar.controller.api;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,6 +58,7 @@ public interface PermissionsApi {
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired")})
     @GetMapping(value = "/permissions",
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @Secured("ROLE_USER")
     ResponseEntity<Permissions> showPermissions(@ApiParam(value = "The plugin to check permissions in. Must not be used together with `organizationName`") @Valid @RequestParam(value = "pluginId", required = false) String pluginId
             , @ApiParam(value = "The organization to check permissions in. Must not be used together with `pluginId`") @Valid @RequestParam(value = "organizationName", required = false) String organizationName
     );

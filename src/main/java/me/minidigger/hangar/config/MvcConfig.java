@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import freemarker.template.TemplateException;
 import me.minidigger.hangar.controller.converters.CategoryConverter;
 import me.minidigger.hangar.controller.converters.VisibilityConverter;
+import me.minidigger.hangar.controller.interceptors.ProjectsInterceptor;
+import me.minidigger.hangar.service.PermissionService;
+import me.minidigger.hangar.service.project.ProjectService;
 import me.minidigger.hangar.util.RouteHelper;
 import no.api.freemarker.java8.Java8ObjectWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.VersionResourceResolver;
@@ -34,10 +38,14 @@ import java.util.concurrent.TimeUnit;
 public class MvcConfig implements WebMvcConfigurer {
 
     private final RouteHelper routeHelper;
+    private final ProjectService projectService;
+    private final PermissionService permissionService;
 
     @Autowired
-    public MvcConfig(RouteHelper routeHelper) {
+    public MvcConfig(RouteHelper routeHelper, ProjectService projectService, PermissionService permissionService) {
         this.routeHelper = routeHelper;
+        this.projectService = projectService;
+        this.permissionService = permissionService;
     }
 
     @Bean
@@ -138,5 +146,10 @@ public class MvcConfig implements WebMvcConfigurer {
         });
         registry.addConverter(new CategoryConverter());
         registry.addConverter(new VisibilityConverter());
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new ProjectsInterceptor(projectService, permissionService));
     }
 }
