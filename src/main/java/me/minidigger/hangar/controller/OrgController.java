@@ -59,22 +59,15 @@ public class OrgController extends HangarController {
             attributes.addFlashAttribute("alertMsg", "error.org.createLimit"); // TODO arguments
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
         }
-//        if (orgLimitReached) { TODO org limit
-//            ModelAndView mav = new ModelAndView("forward:/");
-//            AlertUtil.showAlert(mav, "error", "error.org.createLimit");
-//            return fillModel(mav);
-//        }
         return fillModel(new ModelAndView("createOrganization"));
     }
 
     @Secured("ROLE_USER")
     @PostMapping(value = "/organisations/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView create(@RequestParam String name) { // TODO other params
-//        System.out.println(body);
         if (orgService.getUserOwnedOrgs(userService.getCurrentUser().getId()).size() >= hangarConfig.org.getCreateLimit()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "at create limit");
         }
-        ModelAndView mav;
         if (userService.getCurrentUser().isLocked()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         if (!hangarConfig.org.isEnabled()) {
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("org.showCreator"));
