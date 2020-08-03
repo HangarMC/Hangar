@@ -9,4 +9,4 @@ ENV TERM xterm-256color
 
 EXPOSE 8080
 # "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005" is for debug only
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-XX:+ShowCodeDetailsInExceptionMessages", "-jar", "app.jar"]
