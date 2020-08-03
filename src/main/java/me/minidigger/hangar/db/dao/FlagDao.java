@@ -44,7 +44,7 @@ public interface FlagDao {
     @RegisterBeanMapper(value = ProjectFlagsTable.class, prefix = "p")
     @RegisterBeanMapper(value = ProjectFlag.class, prefix = "pf")
     @SqlQuery("SELECT pf.id p_id, pf.created_at p_created_at, pf.project_id p_project_id, pf.user_id p_user_id, pf.reason p_reason, pf.is_resolved p_is_resolved, pf.comment p_comment, pf.resolved_at p_resolved_at, pf.resolved_by p_resolved_by, " +
-            "u.name pf_name, ru.name pf_resolved_by, p.owner_name pf_project_owner_name, p.slug pf_project_slug, p.visibility pf_project_visibility " +
+            "u.name pf_reported_by, ru.name pf_resolved_by, p.owner_name pf_project_owner_name, p.slug pf_project_slug, p.visibility pf_project_visibility " +
             "FROM project_flags pf " +
             "   JOIN users u ON u.id = pf.user_id " +
             "   JOIN projects p ON pf.project_id = p.id" +
