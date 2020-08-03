@@ -58,7 +58,7 @@
                         <#list underReview as entry>
                         <tr <#if entry.unfinished && headerData.isCurrentUser(entry.reviewerId)>class="warning"</#if>>
                         <td>
-                            <a href="${routes.getRouteUrl("versions.show", entry.namespace.owner, entry.namespace.slug, entry.versionString)}">
+                            <a href="${routes.getRouteUrl("versions.show", entry.getNamespace().getOwner(), entry.getNamespace().getSlug(), entry.versionString)}">
                                 ${entry.namespace}
                             </a>
                             <br>
@@ -99,7 +99,7 @@
                         </#if>
                         </td>
                         <td style="vertical-align: middle; text-align: right; padding-right: 15px;">
-                            <a href="/@helper.urlEncode(entry.namespace.ownerName)/@helper.urlEncode(entry.namespace.slug)/versions/@helper.urlEncode(entry.versionString)/reviews"><i class="fas fa-2x fa-fw fa-info"></i></a>
+                            <a href="/${entry.namespace}/versions/entry.versionString/reviews"><i class="fas fa-2x fa-fw fa-info"></i></a> <#-- TODO url encode -->
                         </td>
                         </tr>
                         </#list>
@@ -140,14 +140,14 @@
                             </tr>
                         </#if>
                         <#list versions?sort_by("versionCreatedAt") as entry>
-                        <tr data-version="@helper.urlEncode(entry.namespace.ownerName)/@helper.urlEncode(entry.namespace.slug)/versions/@helper.urlEncode(entry.versionString)">
+                        <tr data-version="${entry.namespace}/versions/entry.versionString"> <#-- TODO url encode -->
                             <td>
                                 <#import "*/utils/userAvatar.ftlh" as userAvatar>
                                 <#-- todo User avatar -->
-                                <@userAvatar.userAvatar userName=entry.namespace.owner avatarUrl=User.avatarUrl(entry.namespace.owner) clazz="user-avatar-xs"></@userAvatar.userAvatar>
+                                <@userAvatar.userAvatar userName=entry.getNamespace().getOwner() avatarUrl=User.avatarUrl(entry.getNamespace().getOwner()) clazz="user-avatar-xs"></@userAvatar.userAvatar>
                             </td>
                             <td>
-                                <a href="${routes.getRouteUrl("versions.show", entry.namespace.owner, entry.namespace.slug, entry.versionString)}">
+                                <a href="${routes.getRouteUrl("versions.show", entry.getNamespace().getOwner(), entry.getNamespace().getSlug(), entry.versionString)}">
                                     ${entry.namespace}
                                 </a>
                             </td>
@@ -164,7 +164,7 @@
                                 </#if>
                             <br>
                         <td style="vertical-align: middle; text-align: right">
-                            <a class="btn btn-success" href="/@helper.urlEncode(entry.namespace.ownerName)/@helper.urlEncode(entry.namespace.slug)/versions/@helper.urlEncode(entry.versionString)/reviews">Start review</a>
+                            <a class="btn btn-success" href="/${entry.namespace}/versions/entry.versionString/reviews">Start review</a> <#-- TODO -->
                         </td>
                         </tr>
                         </#list>
