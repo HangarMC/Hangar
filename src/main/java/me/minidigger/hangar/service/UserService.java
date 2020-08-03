@@ -1,24 +1,5 @@
 package me.minidigger.hangar.service;
 
-import me.minidigger.hangar.config.CacheConfig;
-import me.minidigger.hangar.config.HangarConfig;
-import me.minidigger.hangar.db.dao.HangarDao;
-import me.minidigger.hangar.db.dao.OrganizationDao;
-import me.minidigger.hangar.db.dao.ProjectDao;
-import me.minidigger.hangar.model.SsoSyncData;
-import me.minidigger.hangar.db.dao.UserDao;
-import me.minidigger.hangar.db.model.OrganizationsTable;
-import me.minidigger.hangar.db.model.UserOrganizationRolesTable;
-import me.minidigger.hangar.db.model.UsersTable;
-import me.minidigger.hangar.model.Permission;
-import me.minidigger.hangar.model.Role;
-import me.minidigger.hangar.model.UserOrdering;
-import me.minidigger.hangar.model.viewhelpers.Author;
-import me.minidigger.hangar.model.viewhelpers.HeaderData;
-import me.minidigger.hangar.model.viewhelpers.Staff;
-import me.minidigger.hangar.model.viewhelpers.UserData;
-import me.minidigger.hangar.model.viewhelpers.UserRole;
-import me.minidigger.hangar.security.HangarAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -32,6 +13,26 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import me.minidigger.hangar.config.CacheConfig;
+import me.minidigger.hangar.config.HangarConfig;
+import me.minidigger.hangar.db.dao.HangarDao;
+import me.minidigger.hangar.db.dao.OrganizationDao;
+import me.minidigger.hangar.db.dao.ProjectDao;
+import me.minidigger.hangar.db.dao.UserDao;
+import me.minidigger.hangar.db.model.OrganizationsTable;
+import me.minidigger.hangar.db.model.UserOrganizationRolesTable;
+import me.minidigger.hangar.db.model.UsersTable;
+import me.minidigger.hangar.model.Permission;
+import me.minidigger.hangar.model.Role;
+import me.minidigger.hangar.model.SsoSyncData;
+import me.minidigger.hangar.model.UserOrdering;
+import me.minidigger.hangar.model.viewhelpers.Author;
+import me.minidigger.hangar.model.viewhelpers.HeaderData;
+import me.minidigger.hangar.model.viewhelpers.Staff;
+import me.minidigger.hangar.model.viewhelpers.UserData;
+import me.minidigger.hangar.model.viewhelpers.UserRole;
+import me.minidigger.hangar.security.HangarAuthentication;
 
 @Service
 public class UserService {
@@ -155,7 +156,6 @@ public class UserService {
         dbOrgs.forEach((organization, userOrganizationRolesTable) -> {
             organizations.put(organization, new UserRole<>(userOrganizationRolesTable));
         });
-//        List<Role> globalRoles = List.of(Role.HANGAR_ADMIN);
         List<Role> globalRoles = roleService.getGlobalRolesForUser(user.getId(), null);
         Permission userPerm = Permission.All;
         Permission orgaPerm = Permission.None;

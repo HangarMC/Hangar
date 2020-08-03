@@ -1,5 +1,6 @@
 package me.minidigger.hangar.db.dao;
 
+import me.minidigger.hangar.db.model.UserOrganizationRolesTable;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 import me.minidigger.hangar.db.model.OrganizationsTable;
 import me.minidigger.hangar.db.model.UserOrganizationRolesTable;
+
 
 @Repository
 @RegisterBeanMapper(UserOrganizationRolesTable.class)
