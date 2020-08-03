@@ -2,10 +2,9 @@ package me.minidigger.hangar.controller;
 
 import me.minidigger.hangar.db.customtypes.LoggedActionType;
 import me.minidigger.hangar.db.customtypes.LoggedActionType.ProjectContext;
-import me.minidigger.hangar.db.model.ProjectFlagsTable;
 import me.minidigger.hangar.model.NamedPermission;
-import me.minidigger.hangar.model.viewhelpers.ReviewQueueEntry;
 import me.minidigger.hangar.model.viewhelpers.ProjectFlag;
+import me.minidigger.hangar.model.viewhelpers.ReviewQueueEntry;
 import me.minidigger.hangar.model.viewhelpers.UserData;
 import me.minidigger.hangar.security.annotations.GlobalPermission;
 import me.minidigger.hangar.service.UserActionLogService;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -44,8 +42,7 @@ public class ApplicationController extends HangarController {
     private final VersionService versionService;
 
     @Autowired
-    public ApplicationController(UserService userService, ProjectService projectService, FlagService flagService, UserActionLogService userActionLogService) {
-    public ApplicationController(UserService userService, ProjectService projectService, VersionService versionService) {
+    public ApplicationController(UserService userService, ProjectService projectService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService) {
         this.userService = userService;
         this.projectService = projectService;
         this.flagService = flagService;
