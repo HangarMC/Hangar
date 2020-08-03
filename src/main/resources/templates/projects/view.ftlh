@@ -5,11 +5,11 @@
 <#--
 Base template for Project overview.
 -->
-
 <#assign Visibility=@helper["me.minidigger.hangar.model.Visibility"]>
 <#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
 <#assign FlagReason=@helper["me.minidigger.hangar.model.FlagReason"]>
 <#macro view p sp active noButtons=false additionalScripts="" additionalStyling="">
+    <#-- @ftlvariable name="sp" type="me.minidigger.hangar.model.viewhelpers.ScopedProjectData" -->
     <#assign scriptsVar>
         <script type="text/javascript" src="<@hangar.url "javascripts/projectDetail.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "javascripts/pageEdit.js" />"></script>
@@ -110,8 +110,8 @@ Base template for Project overview.
 
                             <!-- Flag button -->
                             <#if headerData.hasUser() && !p.isOwner(headerData.getCurrentUser())
-                                && !sp.uProjectFlags
-                                && p.getVisibility() != Visibility.SoftDelete>
+                                && !sp.uprojectFlags
+                                && p.getVisibility() != Visibility.SOFTDELETE>
                                 <button data-toggle="modal" data-target="#modal-flag" class="btn btn-default">
                                     <i class="fas fa-flag"></i> <@spring.message "project.flag" />
                                 </button>
@@ -127,18 +127,17 @@ Base template for Project overview.
                                                 <h4 class="modal-title" id="label-flag">Flag project</h4>
                                             </div>
                                             <#import "*/utils/form.ftlh" as form>
-                                            <#-- todo: Projects.flag -->
-                                            <@form.form action=Projects.flag( p.project.ownerName, p.project.slug)>
+                                            <@form.form action=routes.getRouteUrl("projects.flag", p.project.ownerName, p.project.slug) method="POST">
                                                 <#import "*/utils/csrf.ftlh" as csrf>
                                                 <@csrf.formField />
                                                 <div class="modal-body">
                                                     <ul class="list-group list-flags">
-                                                        <#list FlagReason.values.indices as i>
+                                                        <#list FlagReason.values() as reason>
+                                                            <#-- @ftlvariable name="reason" type="me.minidigger.hangar.model.FlagReason" -->
                                                             <li class="list-group-item">
-                                                                <span>${FlagReason.withValue(i).title}</span> <#-- todo: how do you freemarker this -->
+                                                                <span>${reason.title}</span>
                                                                 <span class="pull-right">
-                                                                    <input required type="radio"
-                                                                           value="${FlagReason.withValue(i).value}" name="flag-reason"/>
+                                                                    <input type="radio" required value="${reason.name()}" name="flag-reason" />
                                                                 </span>
                                                             </li>
                                                         </#list>
@@ -166,12 +165,12 @@ Base template for Project overview.
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="admin-actions">
                                 <#if headerData.globalPerm(Permission.ModNotesAndFlags)>
-                                <li><a href="${Projects.showFlags(p.project.ownerName, p.project.slug)}">
-                                        Flag history (${p.flagCount} </a></li>
+                                    <li><a href="${routes.getRouteUrl("projects.showFlags", p.project.ownerName, p.project.slug)}">
+                                        Flag history (${p.flagCount}) </a></li>
                                 </#if>
                                 <#if headerData.globalPerm(Permission.ModNotesAndFlags)>
-                                <li><a href="${Projects.showNotes(p.project.ownerName, p.project.slug)}">
-                                        Staff notes ${p.noteCount} </a></li>
+                                <li><a href="${routes.getRouteUrl("projects.showNotes", p.project.ownerName, p.project.slug)}">
+                                        Staff notes (${p.noteCount}) </a></li>
                                 </#if>
                                 <#if headerData.globalPerm(Permission.ViewLogs)>
                                 <li><a href="${routes.getRouteUrl("showLog", "", "", p.project.pluginId, "", "", "", "")}">

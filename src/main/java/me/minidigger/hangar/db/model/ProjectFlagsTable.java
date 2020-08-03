@@ -1,6 +1,9 @@
 package me.minidigger.hangar.db.model;
 
 
+import me.minidigger.hangar.model.FlagReason;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
+
 import java.time.OffsetDateTime;
 
 public class ProjectFlagsTable {
@@ -9,12 +12,20 @@ public class ProjectFlagsTable {
     private OffsetDateTime createdAt;
     private long projectId;
     private long userId;
-    private long reason;
+    private FlagReason reason;
     private boolean isResolved;
     private String comment;
     private OffsetDateTime resolvedAt;
     private long resolvedBy;
 
+    public ProjectFlagsTable(long projectId, long userId, FlagReason reason, String comment) {
+        this.projectId = projectId;
+        this.userId = userId;
+        this.reason = reason;
+        this.comment = comment;
+    }
+
+    public ProjectFlagsTable() { }
 
     public long getId() {
         return id;
@@ -52,11 +63,13 @@ public class ProjectFlagsTable {
     }
 
 
-    public long getReason() {
+    @EnumByOrdinal
+    public FlagReason getReason() {
         return reason;
     }
 
-    public void setReason(long reason) {
+    @EnumByOrdinal
+    public void setReason(FlagReason reason) {
         this.reason = reason;
     }
 

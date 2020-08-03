@@ -9,13 +9,13 @@ import me.minidigger.hangar.db.model.ProjectVisibilityChangesTable;
 import me.minidigger.hangar.db.model.ProjectsTable;
 import me.minidigger.hangar.db.model.UserProjectRolesTable;
 import me.minidigger.hangar.db.model.UsersTable;
-import me.minidigger.hangar.model.Role;
 import me.minidigger.hangar.model.Visibility;
 import me.minidigger.hangar.model.generated.Project;
 import me.minidigger.hangar.model.generated.ProjectNamespace;
 import me.minidigger.hangar.model.generated.ProjectSettings;
 import me.minidigger.hangar.model.generated.UserActions;
 import me.minidigger.hangar.model.viewhelpers.ProjectData;
+import me.minidigger.hangar.model.viewhelpers.ProjectFlag;
 import me.minidigger.hangar.model.viewhelpers.ProjectMember;
 import me.minidigger.hangar.model.viewhelpers.ProjectViewSettings;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
@@ -43,13 +43,15 @@ public class ProjectService {
     private final HangarDao<UserDao> userDao;
     private final HangarDao<VisibilityDao> visibilityDao;
     private final UserService userService;
+    private final FlagService flagService;
 
     @Autowired
-    public ProjectService(HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, UserService userService) {
+    public ProjectService(HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, UserService userService, FlagService flagService) {
         this.projectDao = projectDao;
         this.userDao = userDao;
         this.visibilityDao = visibilityDao;
         this.userService = userService;
+        this.flagService = flagService;
     }
 
     public ProjectData getProjectData(String author, String slug) {
@@ -72,9 +74,8 @@ public class ProjectService {
         int publicVersions = 0;
         Map<ProjectMember, UsersTable> projectMembers = projectDao.get().getProjectMembers(projectsTable.getId());
         projectMembers.forEach(ProjectMember::setUser); // I don't know why the SQL query isn't doing this automatically...
-//        System.out.println(projectMembers.keySet().stream().findFirst().get().getRole().getPermissions().toNamed()); TODO REMOVE
-        List<Object> flags = new ArrayList<>();
-        int noteCount = 0;
+        List<ProjectFlag> flags = flagService.getProjectFlags(projectsTable.getId());
+        int noteCount = 0; // TODO a whole lot
         ProjectVisibilityChangesTable lastVisibilityChange = null;
         String lastVisibilityChangeUser = null;
         ProjectVersionsTable recommendedVersion = null;

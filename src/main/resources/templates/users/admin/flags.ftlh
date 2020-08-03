@@ -1,6 +1,7 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
+<#import "*/projects/helper/btnHide.ftlh" as hide />
 
 <#--
 @import controllers.sugar.Requests.OreRequest
@@ -15,7 +16,7 @@
 @(flags: Seq[ShownFlag])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 -->
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "javascripts/flags.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "javascripts/adminFlags.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/hideProject.js" />"></script>
 </#assign>
 
@@ -23,7 +24,7 @@
     <div class="row">
         <div class="col-md-12 header-flags">
             <h2>Flags</h2>
-            <h3 class="minor no-flags" <#if flags.nonEmpty>style="display: none;"</#if>>
+            <h3 class="minor no-flags" <#if flags?size gt 0>style="display: none;"</#if>>
                 <i class="far fa-thumbs-up"></i> <@spring.message "user.flags.none" />
             </h3>
         </div>
@@ -31,46 +32,46 @@
     <div class="row">
         <div class="col-md-12">
             <ul class="list-group list-flags-admin">
-            @flags.map { flag =>
-            <li data-flag-id="${flag.flagId}" class="list-group-item">
-                <div class="row">
-                    <div class="col-xs-12 col-md-1" style="width: 40px;">
-                        <a href="${routes.getRouteUrl("users.showProjects", flag.reporter)}">
-                            <#import "*/utils/userAvatar.ftlh" as userAvatar>
-                            <@userAvatar.userAvatar userName=flag.reporter avatarUrl=User.avatarUrl(flag.reporter) clazz="user-avatar-xs"></@userAvatar.userAvatar>
-                        </a>
-                    </div>
-                    <div class="col-xs-12 col-md-11">
-                        <span class="description">
-                            <strong>${flag.reporter}</strong>
-                            <span class="minor"> reported </span>
-                            <a href="${routes.getRouteUrl("projects.show", flag.projectOwnerName, flag.projectSlug)}">
-                                ${flag.projectNamespace}
-                            </a>
-                            <span class="minor"> for </span>
-                            <strong>${flag.flagReason.title}</strong>
-                            <span class="minor"> at </span>
-                            <strong>${flag.flagCreationDate?string.long}</strong>
-                            <br><i class="minor">${flag.flagComment}</i>
-                        </span>
-                    </div>
-                    <div class="col-xs-12">
-                        <span class="pull-right btn-group-sm">
-                            <a target="_blank" rel="noopener" href="https://papermc.io/forums/users/@flag.reporter" class="btn btn-default">
-                                <i class="fas fa-reply"></i> <@spring.message "user.flags.messageUser" />
-                            </a>
-                            <a target="_blank" rel="noopener" href="https://papermc.io/forums/users/@flag.projectOwnerName" class="btn btn-default">
-                                <i class="fas fa-reply"></i> <@spring.message "user.flags.messageOwner" />
-                            </a>
-                            ${projects.helper.btnHide(flag.projectNamespace, flag.projectVisibility)}
-                            <button type="submit" class="btn btn-primary btn-resolve">
-                                <i class="fas fa-check"></i> <strong><@spring.message "user.flags.markResolved" /></strong>
-                            </button>
-                        </span>
-                    </div>
-                </div>
-            </li>
-            }
+                <#list flags as flag>
+                    <li data-flag-id="${flag.flag.id}" class="list-group-item">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-1" style="width: 40px;">
+                                <a href="${routes.getRouteUrl("users.showProjects", flag)}">
+                                    <#import "*/utils/userAvatar.ftlh" as userAvatar>
+                                    <@userAvatar.userAvatar userName=flag.reportedBy avatarUrl=utils.format(config.security.api.avatarUrl, flag.reportedBy) clazz="user-avatar-xs"></@userAvatar.userAvatar>
+                                </a>
+                            </div>
+                            <div class="col-xs-12 col-md-11">
+                            <span class="description">
+                                <strong>${flag.reportedBy}</strong>
+                                <span class="minor"> reported </span>
+                                <a href="${routes.getRouteUrl("projects.show", flag.projectOwnerName, flag.projectSlug)}">
+                                    ${flag.projectNamespace}
+                                </a>
+                                <span class="minor"> for </span>
+                                <strong>${flag.flag.reason.title}</strong>
+                                <span class="minor"> at </span>
+                                <strong>${(flag.flag.createdAt).format("yyyy-MM-dd HH:mm:ss")}</strong>
+                                <br><i class="minor">${flag.flag.comment}</i>
+                            </span>
+                        </div>
+                            <div class="col-xs-12">
+                                <span class="pull-right btn-group-sm">
+                                    <a target="_blank" rel="noopener" href="https://papermc.io/forums/users/${flag.reportedBy}" class="btn btn-default">
+                                        <i class="fas fa-reply"></i> <@spring.message "user.flags.messageUser" />
+                                    </a>
+                                    <a target="_blank" rel="noopener" href="https://papermc.io/forums/users/${flag.projectOwnerName}" class="btn btn-default">
+                                        <i class="fas fa-reply"></i> <@spring.message "user.flags.messageOwner" />
+                                    </a>
+                                    <@hide.btnHide flag.projectNamespace flag.projectVisibility />
+                                    <button type="submit" class="btn btn-primary btn-resolve">
+                                        <i class="fas fa-check"></i> <strong><@spring.message "user.flags.markResolved" /></strong>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+                </#list>
             </ul>
         </div>
     </div>

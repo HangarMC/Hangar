@@ -1,33 +1,49 @@
 package me.minidigger.hangar.controller;
 
+import me.minidigger.hangar.db.customtypes.LoggedActionType;
+import me.minidigger.hangar.db.customtypes.LoggedActionType.ProjectContext;
+import me.minidigger.hangar.db.model.ProjectFlagsTable;
 import me.minidigger.hangar.model.NamedPermission;
+import me.minidigger.hangar.model.viewhelpers.ProjectFlag;
 import me.minidigger.hangar.model.viewhelpers.UserData;
 import me.minidigger.hangar.security.annotations.GlobalPermission;
+import me.minidigger.hangar.service.UserActionLogService;
 import me.minidigger.hangar.service.UserService;
+import me.minidigger.hangar.service.project.FlagService;
 import me.minidigger.hangar.service.project.ProjectService;
 import me.minidigger.hangar.util.AlertUtil;
 import me.minidigger.hangar.util.AlertUtil.AlertType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class ApplicationController extends HangarController {
 
     private final UserService userService;
     private final ProjectService projectService;
+    private final FlagService flagService;
+    private final UserActionLogService userActionLogService;
 
     @Autowired
-    public ApplicationController(UserService userService, ProjectService projectService) {
+    public ApplicationController(UserService userService, ProjectService projectService, FlagService flagService, UserActionLogService userActionLogService) {
         this.userService = userService;
         this.projectService = projectService;
+        this.flagService = flagService;
+        this.userActionLogService = userActionLogService;
     }
 
     @RequestMapping("/")
@@ -62,16 +78,29 @@ public class ApplicationController extends HangarController {
         return fillModel(new ModelAndView("users/admin/queue")); // TODO implement showQueue request controller
     }
 
+    @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
     @Secured("ROLE_USER")
-    @RequestMapping("/admin/flags")
-    public Object showFlags() {
-        return fillModel(new ModelAndView("users/admin/flags")); // TODO implement showFlags request controller
+    @GetMapping("/admin/flags")
+    public ModelAndView showFlags() {
+        ModelAndView mav = new ModelAndView("users/admin/flags");
+        mav.addObject("flags", flagService.getAllProjectFlags());
+        return fillModel(mav);
     }
 
+    @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
     @Secured("ROLE_USER")
-    @RequestMapping("/admin/flags/{id}/resolve/{resolved}")
-    public Object setFlagResolved(@PathVariable Object id, @PathVariable Object resolved) {
-        return null; // TODO implement setFlagResolved request controller
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/admin/flags/{id}/resolve/{resolved}")
+    public void setFlagResolved(@PathVariable long id, @PathVariable boolean resolved, HttpServletRequest request) {
+        ProjectFlag flag = flagService.getProjectFlag(id);
+        if (flag == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        if (flag.getFlag().getIsResolved() == resolved) return; // No change
+
+        flagService.markAsResolved(id, resolved);
+        String userName = userService.getCurrentUser().getName();
+        userActionLogService.project(request, LoggedActionType.PROJECT_FLAG_RESOLVED.with(ProjectContext.of(flag.getFlag().getProjectId())), "Flag resovled by " + userName, "Flagged by " + flag.getReportedBy());
     }
 
     @Secured("ROLE_USER")

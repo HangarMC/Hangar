@@ -2,13 +2,13 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
-@import java.time.OffsetDateTime
+<#--@import java.time.OffsetDateTime-->
 
-@import controllers.sugar.Requests.OreRequest
-@import models.viewhelper.ProjectData
-@import ore.OreConfig
-@import util.StringFormatterUtils._
-@(p: ProjectData)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
+<#--@import controllers.sugar.Requests.OreRequest-->
+<#--@import models.viewhelper.ProjectData-->
+<#--@import ore.OreConfig-->
+<#--@import util.StringFormatterUtils._-->
+<#--@(p: ProjectData)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)-->
 
 <#assign message><@spring.message "project.flag.plural" /></#assign>
 <@base.base title="${message}">
@@ -42,19 +42,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @p.flags.map { case (flag, by, resolvedBy) =>
-                        <tr>
-                            <td>${by}</td>
-                            <td>${flag.reason}, ${flag.comment}</td>
-                            <td>${flag.createdAt?string.long}</td>
-                            <#if flag.isResolved>
-                                <td>${resolvedBy.get}
-                                    at ${(flag.resolvedAt!OffsetDateTime.MIN)?string.long}</td>
-                            <#else>
-                                <td>-not resolved-</td>
-                            </#if>
-                        </tr>
-                        }
+                        <#list p.flags as flag>
+                            <tr>
+                                <td>${flag.reportedBy}</td>
+                                <td>${flag.flag.reason.title}, ${flag.flag.comment}</td>
+                                <td>${(flag.flag.createdAt).format("yyyy-MM-dd HH:mm:ss")}</td>
+                                <#if flag.flag.isResolved>
+                                    <td>${flag.resolvedBy} at ${(flag.flag.resolvedAt).format("yyyy-MM-dd HH:mm:ss")}</td>
+                                <#else>
+                                    <td>-not resolved-</td>
+                                </#if>
+                            </tr>
+                        </#list>
                         </tbody>
                     </table>
              </#if>

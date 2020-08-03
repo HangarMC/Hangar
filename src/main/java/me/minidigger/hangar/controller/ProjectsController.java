@@ -1,5 +1,7 @@
 package me.minidigger.hangar.controller;
 
+import me.minidigger.hangar.model.FlagReason;
+import me.minidigger.hangar.service.project.FlagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -53,28 +56,30 @@ public class ProjectsController extends HangarController {
     public static final Pattern ID_PATTERN = Pattern.compile("[a-z][a-z0-9-_]{0,63}");
 
     private final HangarConfig hangarConfig;
+    private final RouteHelper routeHelper;
     private final UserService userService;
     private final OrgService orgService;
-    private final RouteHelper routeHelper;
-    private final ProjectFactory projectFactory;
-    private final HangarDao<UserDao> userDao;
+    private final FlagService flagService;
     private final ProjectService projectService;
+    private final ProjectFactory projectFactory;
     private final PagesSerivce pagesSerivce;
     private final UserActionLogService userActionLogService;
+    private final HangarDao<UserDao> userDao;
     private final HangarDao<ProjectDao> projectDao;
 
     @Autowired
-    public ProjectsController(HangarConfig hangarConfig, UserService userService, OrgService orgService, RouteHelper routeHelper, ProjectFactory projectFactory, HangarDao<UserDao> userDao, ProjectService projectService, HangarDao<ProjectDao> projectDao, PagesSerivce pagesSerivce, UserActionLogService userActionLogService) {
+    public ProjectsController(HangarConfig hangarConfig, RouteHelper routeHelper, UserService userService, OrgService orgService, FlagService flagService, ProjectService projectService, ProjectFactory projectFactory, PagesSerivce pagesSerivce, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao) {
         this.hangarConfig = hangarConfig;
+        this.routeHelper = routeHelper;
         this.userService = userService;
         this.orgService = orgService;
-        this.routeHelper = routeHelper;
-        this.projectFactory = projectFactory;
-        this.userDao = userDao;
+        this.flagService = flagService;
         this.projectService = projectService;
+        this.projectFactory = projectFactory;
         this.pagesSerivce = pagesSerivce;
-        this.projectDao = projectDao;
         this.userActionLogService = userActionLogService;
+        this.userDao = userDao;
+        this.projectDao = projectDao;
     }
 
     @PostMapping(value = "/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -178,15 +183,26 @@ public class ProjectsController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/flag")
-    public Object flag(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement flag request controller
+    @PostMapping(value = "/{author}/{slug}/flag", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ModelAndView flag(@PathVariable String author, @PathVariable String slug, @RequestParam("flag-reason") FlagReason flagReason, @RequestParam String comment, HttpServletRequest request) {
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        if (flagService.hasUnresolvedFlag(projectData.getProject().getId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only 1 flag at a time per project per user");
+        } else if (comment.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Comment must not be blank");
+        }
+        flagService.flagProject(projectData.getProject().getId(), flagReason, comment);
+        String userName = userService.getCurrentUser().getName();
+        userActionLogService.project(request, LoggedActionType.PROJECT_FLAGGED.with(ProjectContext.of(projectData.getProject().getId())), "Flagged by " + userName, "Not flagged by " + userName);
+        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.show", author, slug)); // TODO flashing
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/flags")
-    public Object showFlags(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement showFlags request controller
+    @GetMapping("/{author}/{slug}/flags")
+    public ModelAndView showFlags(@PathVariable String author, @PathVariable String slug) {
+        ModelAndView mav = new ModelAndView("projects/admin/flags");
+        mav.addObject("p", projectService.getProjectData(author, slug));
+        return fillModel(mav);
     }
 
     @Secured("ROLE_USER")

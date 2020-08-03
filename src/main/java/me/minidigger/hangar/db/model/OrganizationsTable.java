@@ -19,8 +19,7 @@ public class OrganizationsTable implements Visitable {
         this.userId = userId;
     }
 
-    public OrganizationsTable() {
-    }
+    public OrganizationsTable() { }
 
     public long getId() {
         return id;
