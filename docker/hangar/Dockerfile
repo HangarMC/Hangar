@@ -9,4 +9,4 @@ ENV TERM xterm-256color
 
 EXPOSE 8080
 # "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005" is for debug only
-ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom -Djava.net.preferIPv4Stack=true", "-jar", "app.jar",  "--spring.config.location=file:application.properties"]
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom -Djava.net.preferIPv4Stack=true", "-jar", "app.jar",  "--spring.config.location=file:application.yml"]
