@@ -36,8 +36,6 @@ deploy:
     SERVICE_NAME: hangarnew
   services:
     - docker:dind
-  dependencies:
-    - build:build
   before_script:
     - mkdir -pv /home/docker
     - echo $DOCKER_CA_PEM >> /home/docker/ca.pem.base64
