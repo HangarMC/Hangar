@@ -1,6 +1,8 @@
 package me.minidigger.hangar.db.model;
 
 
+import me.minidigger.hangar.model.Visibility;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.springframework.lang.Nullable;
 
 import java.time.OffsetDateTime;
@@ -16,9 +18,9 @@ public class ProjectVisibilityChangesTable {
     private OffsetDateTime resolvedAt;
     @Nullable
     private Long resolvedBy;
-    private long visibility;
+    private Visibility visibility;
 
-    public ProjectVisibilityChangesTable(long createdBy, long projectId, String comment, @Nullable OffsetDateTime resolvedAt, @Nullable Long resolvedBy, long visibility) {
+    public ProjectVisibilityChangesTable(long createdBy, long projectId, String comment, @Nullable OffsetDateTime resolvedAt, @Nullable Long resolvedBy, Visibility visibility) {
         this.createdBy = createdBy;
         this.projectId = projectId;
         this.comment = comment;
@@ -89,16 +91,18 @@ public class ProjectVisibilityChangesTable {
         return resolvedBy;
     }
 
-    public void setResolvedBy(long resolvedBy) {
+    public void setResolvedBy(Long resolvedBy) {
         this.resolvedBy = resolvedBy;
     }
 
 
-    public long getVisibility() {
+    @EnumByOrdinal
+    public Visibility getVisibility() {
         return visibility;
     }
 
-    public void setVisibility(long visibility) {
+    @EnumByOrdinal
+    public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
     }
 

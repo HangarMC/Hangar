@@ -70,6 +70,7 @@ public class ApplicationController extends HangarController {
         return null; // TODO implement
     }
 
+    @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
     @RequestMapping("/admin/approval/projects")
     public Object showProjectVisibility() {

@@ -2,14 +2,6 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
-<#--@import java.time.OffsetDateTime-->
-
-<#--@import controllers.sugar.Requests.OreRequest-->
-<#--@import models.viewhelper.ProjectData-->
-<#--@import ore.OreConfig-->
-<#--@import util.StringFormatterUtils._-->
-<#--@(p: ProjectData)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)-->
-
 <#assign message><@spring.message "project.flag.plural" /></#assign>
 <@base.base title="${message}">
     <div class="row">

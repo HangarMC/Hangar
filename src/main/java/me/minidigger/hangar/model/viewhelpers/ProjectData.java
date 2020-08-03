@@ -7,6 +7,7 @@ import me.minidigger.hangar.db.model.ProjectsTable;
 import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.Permission;
 import me.minidigger.hangar.model.Visibility;
+import me.minidigger.hangar.service.MarkdownService;
 
 import java.util.List;
 import java.util.Map;
@@ -134,8 +135,18 @@ public class ProjectData {
 
     public Map<ProjectMember, UsersTable> filteredMembers(HeaderData headerData) {
         boolean hasEditMembers = headerData.globalPerm(Permission.ManageSubjectMembers);
-        boolean userIsOwner = headerData.isAuthenticated() ? headerData.getCurrentUser().getId() == projectOwner.getId() : false;
+        boolean userIsOwner = headerData.isAuthenticated() && headerData.getCurrentUser().getId() == projectOwner.getId();
         if (hasEditMembers || userIsOwner) return members;
         else return members.entrySet().stream().filter(member -> member.getKey().getIsAccepted()).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+    }
+
+    public String renderVisibilityChange(MarkdownService markdownService, String fallback) {
+        if (lastVisibilityChange != null) {
+            System.out.println(lastVisibilityChange.getComment());
+            if (!lastVisibilityChange.getComment().isBlank()) {
+                return markdownService.render(lastVisibilityChange.getComment());
+            }
+        }
+        return fallback;
     }
 }

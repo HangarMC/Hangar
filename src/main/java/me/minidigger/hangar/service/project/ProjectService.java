@@ -77,8 +77,7 @@ public class ProjectService {
         projectMembers.forEach(ProjectMember::setUser); // I don't know why the SQL query isn't doing this automatically...
         List<ProjectFlag> flags = flagService.getProjectFlags(projectsTable.getId());
         int noteCount = 0; // TODO a whole lot
-        ProjectVisibilityChangesTable lastVisibilityChange = null;
-        String lastVisibilityChangeUser = null;
+        Map.Entry<String, ProjectVisibilityChangesTable> latestProjectVisibilityChangeWithUser = visibilityDao.get().getLatestProjectVisibilityChange(projectsTable.getId());
         ProjectVersionsTable recommendedVersion = null;
         String iconUrl = "";
         long starCount = userDao.get().getProjectStargazers(projectsTable.getId(), 0, null).size();
@@ -99,8 +98,8 @@ public class ProjectService {
                 projectMembers,
                 flags,
                 noteCount,
-                lastVisibilityChange,
-                lastVisibilityChangeUser,
+                latestProjectVisibilityChangeWithUser.getValue(),
+                latestProjectVisibilityChangeWithUser.getKey(),
                 recommendedVersion,
                 iconUrl,
                 starCount,
@@ -125,7 +124,7 @@ public class ProjectService {
 
         visibilityDao.get().updateLatestChange(userService.getCurrentUser().getId(), project.getId());
 
-        visibilityDao.get().insert(new ProjectVisibilityChangesTable(project.getOwnerId(), project.getId(), comment, null, null, newVisibility.getValue()));
+        visibilityDao.get().insert(new ProjectVisibilityChangesTable(project.getOwnerId(), project.getId(), comment, null, null, newVisibility));
 
         project.setVisibility(newVisibility);
         projectDao.get().update(project);

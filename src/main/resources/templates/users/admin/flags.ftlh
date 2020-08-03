@@ -3,18 +3,6 @@
 <#import "*/layout/base.ftlh" as base />
 <#import "*/projects/helper/btnHide.ftlh" as hide />
 
-<#--
-@import controllers.sugar.Requests.OreRequest
-@import models.querymodels.ShownFlag
-@import ore.OreConfig
-@import ore.models.user.User
-@import util.StringFormatterUtils._
-@import util.syntax._
-@import views.html.utils.userAvatar
-
-@* project perms for all visibilities *@
-@(flags: Seq[ShownFlag])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
--->
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/adminFlags.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/hideProject.js" />"></script>
@@ -24,7 +12,7 @@
     <div class="row">
         <div class="col-md-12 header-flags">
             <h2>Flags</h2>
-            <h3 class="minor no-flags" <#if flags?size gt 0>style="display: none;"</#if>>
+            <h3 class="minor no-flags" <#if flags?has_content>style="display: none;"</#if>>
                 <i class="far fa-thumbs-up"></i> <@spring.message "user.flags.none" />
             </h3>
         </div>
@@ -36,7 +24,7 @@
                     <li data-flag-id="${flag.flag.id}" class="list-group-item">
                         <div class="row">
                             <div class="col-xs-12 col-md-1" style="width: 40px;">
-                                <a href="${routes.getRouteUrl("users.showProjects", flag)}">
+                                <a href="${routes.getRouteUrl("users.showProjects", flag.reportedBy)}">
                                     <#import "*/utils/userAvatar.ftlh" as userAvatar>
                                     <@userAvatar.userAvatar userName=flag.reportedBy avatarUrl=utils.format(config.security.api.avatarUrl, flag.reportedBy) clazz="user-avatar-xs"></@userAvatar.userAvatar>
                                 </a>

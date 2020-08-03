@@ -17,7 +17,13 @@ public class StringToEnumConverterFactory implements ConverterFactory<String, En
         @Override
         @SuppressWarnings("unchecked")
         public T convert(String s) {
-            return (T) Enum.valueOf(this.enumType, s.trim().toUpperCase());
+            int ordinal;
+            try {
+                ordinal = Integer.parseInt(s);
+                return enumType.getEnumConstants()[ordinal];
+            } catch (NumberFormatException e) {
+                return (T) Enum.valueOf(this.enumType, s.trim().toUpperCase());
+            }
         }
     }
 

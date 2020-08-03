@@ -9,6 +9,7 @@ Base template for Project overview.
 <#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
 <#assign FlagReason=@helper["me.minidigger.hangar.model.FlagReason"]>
 <#macro view p sp active noButtons=false additionalScripts="" additionalStyling="">
+    <#-- @ftlvariable name="p" type="me.minidigger.hangar.model.viewhelpers.ProjectData" -->
     <#-- @ftlvariable name="sp" type="me.minidigger.hangar.model.viewhelpers.ScopedProjectData" -->
     <#assign scriptsVar>
         <script type="text/javascript" src="<@hangar.url "javascripts/projectDetail.js" />"></script>
@@ -42,15 +43,15 @@ Base template for Project overview.
                                 <#if sp.perms(Permission.EditPage)>
                                     <a class="btn btn-success pull-right" href="${p.fullSlug}/manage/sendforapproval">Send for approval</a>
                                 </#if>
-                                    <strong><@spring.message "visibility.notice." + p.visibility.getName() /></strong>
-                                    <br>
-                                    ${p.renderVisibilityChange!"Unknown"}
+                                <strong><@spring.message "visibility.notice." + p.visibility.getName() /></strong>
+                                <br>
+                                ${p.renderVisibilityChange(markdownService, "Unknown")}
                             <#else>
                                 <#if p.visibility == Visibility.SOFTDELETE>
                                     <@spring.messageArgs "visibility.notice." + p.visibility.getName(), [p.lastVisibilityChangeUser] />
                                 <#else>
                                     <@spring.message "visibility.notice." + p.visibility.getName() />
-                                    ${p.renderVisibilityChange!}
+                                    ${p.renderVisibilityChange(markdownService, "")}
                                 </#if>
                             </#if>
                         </div>

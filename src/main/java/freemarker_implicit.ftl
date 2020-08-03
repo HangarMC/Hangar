@@ -1,5 +1,6 @@
 [#ftl]
 [#-- @implicitly included --]
+[#-- @ftlvariable name="markdownService" type="me.minidigger.hangar.service.MarkdownService" --]
 [#-- @ftlvariable name="utils" type="me.minidigger.hangar.util.TemplateHelper" --]
 [#-- @ftlvariable name="@helper" type="freemarker.template.TemplateHashModel" --]
 [#-- @ftlvariable name="alerts" type="java.util.Map" --]
