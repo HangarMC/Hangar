@@ -1,5 +1,19 @@
 package me.minidigger.hangar.service.project;
 
+import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.ProjectDao;
 import me.minidigger.hangar.db.dao.UserDao;
@@ -23,19 +37,6 @@ import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
 import me.minidigger.hangar.model.viewhelpers.UserRole;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.util.StringUtils;
-import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class ProjectService {
@@ -98,8 +99,8 @@ public class ProjectService {
                 projectMembers,
                 flags,
                 noteCount,
-                latestProjectVisibilityChangeWithUser.getValue(),
-                latestProjectVisibilityChangeWithUser.getKey(),
+                latestProjectVisibilityChangeWithUser != null ? latestProjectVisibilityChangeWithUser.getValue() : null,
+                latestProjectVisibilityChangeWithUser != null ? latestProjectVisibilityChangeWithUser.getKey() : null,
                 recommendedVersion,
                 iconUrl,
                 starCount,
