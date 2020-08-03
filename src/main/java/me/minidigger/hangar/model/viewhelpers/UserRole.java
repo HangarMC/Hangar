@@ -1,17 +1,18 @@
 package me.minidigger.hangar.model.viewhelpers;
 
+import me.minidigger.hangar.db.model.RoleTable;
 import me.minidigger.hangar.model.Role;
 
-public class UserRole<R> {
+public class UserRole<R extends RoleTable> {
 
-    R userRole;
-    private boolean isAccepted;
-    private Role role;
+    private final R userRole;
+    private final boolean isAccepted;
+    private final Role role;
 
-    public UserRole(R userRole, boolean isAccepted, String roleType) {
+    public UserRole(R userRole) {
         this.userRole = userRole;
-        this.isAccepted = isAccepted;
-        this.role = Role.valueOf(roleType.toUpperCase());
+        this.isAccepted = userRole.getIsAccepted();
+        this.role = Role.valueOf(userRole.getRoleType().toUpperCase());
     }
 
     public R getUserRole() {

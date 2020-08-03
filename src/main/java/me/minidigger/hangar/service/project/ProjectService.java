@@ -138,12 +138,10 @@ public class ProjectService {
         return userDao.get().getProjectStargazers(projectId, offset, limit);
     }
 
-    public Map<ProjectData, UserRole> getProjectsAndRoles(long userId) {
+    public Map<ProjectData, UserRole<UserProjectRolesTable>> getProjectsAndRoles(long userId) {
         Map<ProjectsTable, UserProjectRolesTable> dbMap = projectDao.get().getProjectsAndRoles(userId);
-        Map<ProjectData, UserRole> map = new HashMap<>();
-        dbMap.forEach((projectsTable, role) -> {
-            map.put(getProjectData(projectsTable), new UserRole<>(role, role.getIsAccepted(), role.getRoleType()));
-        });
+        Map<ProjectData, UserRole<UserProjectRolesTable>> map = new HashMap<>();
+        dbMap.forEach((projectsTable, role) -> map.put(getProjectData(projectsTable), new UserRole<>(role)));
         return map;
     }
 

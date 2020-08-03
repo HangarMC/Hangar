@@ -3,13 +3,14 @@ package me.minidigger.hangar.db.model;
 
 import me.minidigger.hangar.model.Category;
 import me.minidigger.hangar.model.Visibility;
+import org.jdbi.v3.core.annotation.Unmappable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 import java.time.OffsetDateTime;
 import java.util.Collection;
 
-public class ProjectsTable {
+public class ProjectsTable implements Visitable {
 
     private long id;
     private OffsetDateTime createdAt;
@@ -249,4 +250,9 @@ public class ProjectsTable {
         this.forumSync = forumSync;
     }
 
+    @Unmappable
+    @Override
+    public String getUrl() {
+        return "/" + getOwnerName() + "/" + getSlug();
+    }
 }

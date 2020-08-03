@@ -1,6 +1,9 @@
 package me.minidigger.hangar.db.model;
 
 
+import me.minidigger.hangar.model.NotificationType;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
+
 import java.time.OffsetDateTime;
 
 public class NotificationsTable {
@@ -8,12 +11,21 @@ public class NotificationsTable {
     private long id;
     private OffsetDateTime createdAt;
     private long userId;
-    private long notificationType;
+    private NotificationType notificationType;
     private String action;
     private boolean read;
     private long originId;
-    private String messageArgs;
+    private String[] messageArgs;
 
+    public NotificationsTable(long userId, NotificationType notificationType, String action, long originId, String[] messageArgs) {
+        this.userId = userId;
+        this.notificationType = notificationType;
+        this.action = action;
+        this.originId = originId;
+        this.messageArgs = messageArgs;
+    }
+
+    public NotificationsTable() { }
 
     public long getId() {
         return id;
@@ -42,11 +54,13 @@ public class NotificationsTable {
     }
 
 
-    public long getNotificationType() {
+    @EnumByOrdinal
+    public NotificationType getNotificationType() {
         return notificationType;
     }
 
-    public void setNotificationType(long notificationType) {
+    @EnumByOrdinal
+    public void setNotificationType(NotificationType notificationType) {
         this.notificationType = notificationType;
     }
 
@@ -78,11 +92,11 @@ public class NotificationsTable {
     }
 
 
-    public String getMessageArgs() {
+    public String[] getMessageArgs() {
         return messageArgs;
     }
 
-    public void setMessageArgs(String messageArgs) {
+    public void setMessageArgs(String[] messageArgs) {
         this.messageArgs = messageArgs;
     }
 
