@@ -2,21 +2,9 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
-@import java.time.{Instant, OffsetDateTime, ZoneOffset}
-
-@import controllers.sugar.Requests.OreRequest
-@import ore.OreConfig
-@import ore.markdown.MarkdownRenderer
-@import ore.models.project.{Note, Project}
-@import ore.models.user.User
-@import util.StringFormatterUtils._
-@import util.syntax._
-@import views.html.helper.CSPNonce
-@(project: Project, notes: Seq[(Note, Option[User])])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
-
 <#assign scriptsVar>
-    <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "javascripts/notes.js" />"></script>
-    <script @CSPNonce.attr>resourcePath = '${project.ownerName}/${project.slug}'</script>
+    <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "javascripts/notes.js" />"></script>
+    <script <#--@CSPNonce.attr--> resourcePath="${project.ownerName}/${project.slug}"></script>
 </#assign>
 
 <#assign message><@spring.message "notes" /></#assign>
@@ -24,7 +12,7 @@
     <div class="row">
         <div class="col-md-12  header-flags">
             <div class="clearfix">
-                <h1 class="pull-left"><@spring.message "notes" /> for <a href="${routes.getRouteUrl("projects.show", project.ownerName, project.slug)}">${project.ownerName}/${project.slug}</a></h1>
+                <h1 class="pull-left"><@spring.message "notes" /> <a href="${routes.getRouteUrl("projects.show", project.ownerName, project.slug)}">${project.ownerName}/${project.slug}</a></h1>
             </div>
         </div>
     </div>
@@ -41,7 +29,7 @@
         <div class="col-md-12">
             <h2><@spring.message "notes" /></h2>
         </div>
-        <#if notes.isEmpty>
+        <#if !notes?has_content>
             <div class="col-md-12">
                 <div class="alert-notes alert alert-info" role="alert">
                     <i class="fas fa-info-circle"></i>
@@ -53,13 +41,16 @@
         <div class="col-md-12">
             <table class="table table-condensed setting-no-border table-notes-log">
                 <tbody>
-                @notes.map { case (note, user) =>
+                <#assign OffsetDateTime=@helper["java.time.OffsetDateTime"]>
+                <#assign Instant=@helper["java.time.Instant"]>
+                <#assign ZoneOffset=@helper["java.time.ZoneOffset"]>
+                <#list notes as note>
                 <tr>
-                    <td class="note-fixed-with">${(OffsetDateTime.ofInstant(Instant.ofEpochMilli(note.time), ZoneOffset.UTC))?string.long}</td>
-                    <td class="note-fixed-with"><strong>${user.map(_.name)!"Unknown"}</strong></td>
-                    <td>${note.render}</td>
+                    <td class="note-fixed-with">${note.toDateTime().format("yyyy-MM-dd HH:mm:ss")}</td>
+                    <td class="note-fixed-with"><strong>${note.getUser()!"Unknown"}</strong></td>
+                    <td>${markdownService.render(note.getMessage())}</td>
                 </tr>
-                }
+                </#list>
                 </tbody>
             </table>
         </div>

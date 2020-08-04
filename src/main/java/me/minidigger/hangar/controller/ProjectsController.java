@@ -1,7 +1,36 @@
 package me.minidigger.hangar.controller;
 
+import me.minidigger.hangar.config.hangar.HangarConfig;
+import me.minidigger.hangar.db.customtypes.LoggedActionType;
+import me.minidigger.hangar.db.customtypes.LoggedActionType.ProjectContext;
+import me.minidigger.hangar.db.dao.HangarDao;
+import me.minidigger.hangar.db.dao.ProjectDao;
+import me.minidigger.hangar.db.dao.UserDao;
+import me.minidigger.hangar.db.model.ProjectsTable;
+import me.minidigger.hangar.db.model.UsersTable;
+import me.minidigger.hangar.model.Category;
 import me.minidigger.hangar.model.FlagReason;
+import me.minidigger.hangar.model.NamedPermission;
+import me.minidigger.hangar.model.Permission;
+import me.minidigger.hangar.model.Visibility;
+import me.minidigger.hangar.model.generated.Note;
+import me.minidigger.hangar.model.viewhelpers.ProjectData;
+import me.minidigger.hangar.model.viewhelpers.ProjectPage;
+import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
+import me.minidigger.hangar.security.annotations.GlobalPermission;
+import me.minidigger.hangar.service.OrgService;
+import me.minidigger.hangar.service.UserActionLogService;
+import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.service.project.FlagService;
+import me.minidigger.hangar.service.project.PagesSerivce;
+import me.minidigger.hangar.service.project.ProjectFactory;
+import me.minidigger.hangar.service.project.ProjectService;
+import me.minidigger.hangar.util.AlertUtil;
+import me.minidigger.hangar.util.AlertUtil.AlertType;
+import me.minidigger.hangar.util.HangarException;
+import me.minidigger.hangar.util.RouteHelper;
+import me.minidigger.hangar.util.StringUtils;
+import me.minidigger.hangar.util.TriFunction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,37 +47,11 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
-import javax.servlet.http.HttpServletRequest;
-
-import me.minidigger.hangar.config.hangar.HangarConfig;
-import me.minidigger.hangar.db.customtypes.LoggedActionType;
-import me.minidigger.hangar.db.customtypes.LoggedActionType.ProjectContext;
-import me.minidigger.hangar.db.dao.HangarDao;
-import me.minidigger.hangar.db.dao.ProjectDao;
-import me.minidigger.hangar.db.dao.UserDao;
-import me.minidigger.hangar.db.model.ProjectsTable;
-import me.minidigger.hangar.db.model.UsersTable;
-import me.minidigger.hangar.model.Category;
-import me.minidigger.hangar.model.Permission;
-import me.minidigger.hangar.model.Visibility;
-import me.minidigger.hangar.model.viewhelpers.ProjectData;
-import me.minidigger.hangar.model.viewhelpers.ProjectPage;
-import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
-import me.minidigger.hangar.service.OrgService;
-import me.minidigger.hangar.service.UserActionLogService;
-import me.minidigger.hangar.service.UserService;
-import me.minidigger.hangar.service.project.PagesSerivce;
-import me.minidigger.hangar.service.project.ProjectFactory;
-import me.minidigger.hangar.service.project.ProjectService;
-import me.minidigger.hangar.util.AlertUtil;
-import me.minidigger.hangar.util.AlertUtil.AlertType;
-import me.minidigger.hangar.util.HangarException;
-import me.minidigger.hangar.util.RouteHelper;
-import me.minidigger.hangar.util.StringUtils;
-import me.minidigger.hangar.util.TriFunction;
 
 @Controller
 public class ProjectsController extends HangarController {
@@ -393,6 +396,18 @@ public class ProjectsController extends HangarController {
         } else {
             userDao.get().removeWatching(projectData.getProject().getId(), userService.getCurrentUser().getId());
         }
+    }
+
+    @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
+    @Secured("ROLE_USER")
+    @GetMapping("/{author}/{slug}/notes")
+    public ModelAndView showNotes(@PathVariable String author, @PathVariable String slug) {
+        ModelAndView mv = new ModelAndView("projects/admin/notes");
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        mv.addObject("project", projectData.getProject());
+        //TODO get and save real notes
+        mv.addObject("notes", List.of(new Note().message("## 10/10\n* has everything\n* but also nothing").user("kneny")));
+        return fillModel(mv);
     }
 
     private ModelAndView showUserGrid(String author, String slug, Integer page, String title, TriFunction<Long, Integer, Integer, Collection<UsersTable>> getUsers) {

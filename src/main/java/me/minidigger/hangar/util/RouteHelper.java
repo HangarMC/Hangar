@@ -63,6 +63,7 @@ public class RouteHelper {
         register("projects.showNotes", "/{author}/{slug}/notes", of("author", "slug"), of());
         register("projects.setVisible", "/{author}/{slug}/visible/{visibility}", of("author", "slug", "visibility"), of());
         register("projects.removeMember", "/{author}/{slug}/manage/members/remove", of("author", "slug"), of());
+        register("projects.showNotes", "/{author}/{slug}/notes", of("author", "slug"), of());
 
         register("versions.restore", "/{author}/{slug}/versions/{version}/restore", of("author", "slug", "version"), of());
         register("versions.downloadRecommendedJar", "/{author}/{slug}/versions/recommended/jar", of("author", "slug"), of("token"));
