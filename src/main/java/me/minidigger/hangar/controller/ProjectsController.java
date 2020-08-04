@@ -247,9 +247,10 @@ public class ProjectsController extends HangarController {
     public RedirectView softDelete(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String comment, RedirectAttributes ra, HttpServletRequest request) {
         ProjectData projectData = projectService.getProjectData(author, slug);
         Visibility oldVisibility = projectData.getVisibility();
-        projectFactory.softDeleteProject(projectData, comment);
 
         userActionLogService.project(request, LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(projectData.getProject().getId())), Visibility.SOFTDELETE.getName(), oldVisibility.getName());
+        projectFactory.softDeleteProject(projectData, comment);
+
         ra.addFlashAttribute("alertType", AlertType.SUCCESS);
         ra.addFlashAttribute("alertMsg", "project.deleted");// TODO add old project name as msg arg
         return new RedirectView(routeHelper.getRouteUrl("showHome"));
@@ -321,7 +322,7 @@ public class ProjectsController extends HangarController {
         projectsTable.setDescription(description);
         projectDao.get().update(projectsTable);
         // TODO update icon handling
-        userActionLogService.project(request, LoggedActionType.PROJECT_SETTINGS_CHANGED.with(ProjectContext.of(projectsTable.getId())), null, null);
+        userActionLogService.project(request, LoggedActionType.PROJECT_SETTINGS_CHANGED.with(ProjectContext.of(projectsTable.getId())), "", "");
 
         return new RedirectView(routeHelper.getRouteUrl("projects.show", author, slug)); // TODO implement save request controller
     }
