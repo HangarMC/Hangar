@@ -10,10 +10,13 @@ import me.minidigger.hangar.db.model.ProjectVisibilityChangesTable;
 import me.minidigger.hangar.db.model.ProjectsTable;
 import me.minidigger.hangar.db.model.UserProjectRolesTable;
 import me.minidigger.hangar.db.model.UsersTable;
+import me.minidigger.hangar.model.Category;
 import me.minidigger.hangar.model.Visibility;
 import me.minidigger.hangar.model.generated.Project;
 import me.minidigger.hangar.model.generated.ProjectNamespace;
 import me.minidigger.hangar.model.generated.ProjectSettings;
+import me.minidigger.hangar.model.generated.ProjectSortingStrategy;
+import me.minidigger.hangar.model.generated.Tag;
 import me.minidigger.hangar.model.generated.UserActions;
 import me.minidigger.hangar.model.viewhelpers.ProjectApprovalData;
 import me.minidigger.hangar.model.viewhelpers.ProjectData;
@@ -188,5 +191,13 @@ public class ProjectService {
 
     public List<UnhealthyProject> getUnhealthyProjects() {
         return projectDao.get().getUnhealthyProjects(hangarConfig.projects.getStaleAge().toMillis());
+    }
+
+    public List<Project> getProjects(String pluginId, List<Category> categories, List<Tag> parsedTags, String query, String owner, boolean seeHidden, long requesterId, ProjectSortingStrategy sort, boolean relevance, long limit, long offset) {
+        return List.of(getProjectApi("test")); // TODO getProjects query
+    }
+
+    public long countProjects(String pluginId, List<Category> categories, List<Tag> parsedTags, String query, String owner, boolean seeHidden, long requesterId) {
+        return 1; // TODO count projects query
     }
 }
