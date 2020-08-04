@@ -13,12 +13,15 @@ import me.minidigger.hangar.db.model.LoggedActionsPageTable;
 import me.minidigger.hangar.db.model.LoggedActionsProjectTable;
 import me.minidigger.hangar.db.model.LoggedActionsUserTable;
 import me.minidigger.hangar.db.model.LoggedActionsVersionTable;
+import me.minidigger.hangar.model.viewhelpers.LoggedActionViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserActionLogService {
@@ -92,6 +95,10 @@ public class UserActionLogService {
                 oldState
         );
         actionsDao.get().insertOrganizationLog(log);
+    }
+
+    public List<LoggedActionViewModel> getLog(Integer oPage, Object userFilter, Object projectFilter, Object versionFilter, Object pageFilter, Object actionFilter, Object subjectFilter) {
+        return new ArrayList<>(); //TODO See AppQueries.getLog(...)
     }
 
     private InetAddress getInetAddress(HttpServletRequest request) {

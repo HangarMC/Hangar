@@ -1,6 +1,7 @@
 package me.minidigger.hangar.db.customtypes;
 
 import me.minidigger.hangar.db.customtypes.LoggedActionType.AbstractContext;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -164,16 +165,21 @@ public class LoggedActionType<C extends AbstractContext<C>> {
         }
     }
 
-    abstract static class AbstractContext<C> {
-
-        public AbstractContext(int value) {
-            this.value = value;
-        }
+    public abstract static class AbstractContext<C> {
 
         protected int value;
+
+        protected AbstractContext(int value) {
+            this.value = value;
+        }
 
         public int getValue() {
             return value;
         }
+    }
+
+    @Nullable
+    public static LoggedActionType<? extends AbstractContext<?>> getLoggedActionType(String name) {
+        return loggedActionTypes.get(name);
     }
 }

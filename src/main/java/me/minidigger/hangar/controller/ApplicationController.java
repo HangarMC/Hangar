@@ -3,7 +3,9 @@ package me.minidigger.hangar.controller;
 import me.minidigger.hangar.db.customtypes.LoggedActionType;
 import me.minidigger.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import me.minidigger.hangar.model.NamedPermission;
+import me.minidigger.hangar.model.Permission;
 import me.minidigger.hangar.model.Visibility;
+import me.minidigger.hangar.model.viewhelpers.LoggedActionViewModel;
 import me.minidigger.hangar.model.viewhelpers.ProjectFlag;
 import me.minidigger.hangar.model.viewhelpers.ReviewQueueEntry;
 import me.minidigger.hangar.model.viewhelpers.UnhealthyProject;
@@ -140,14 +142,31 @@ public class ApplicationController extends HangarController {
 
     @Secured("ROLE_USER")
     @RequestMapping("/admin/log")
-    public ModelAndView showLog(@RequestParam(required = false) Object page,
+    public ModelAndView showLog(@RequestParam(required = false) Integer oPage,
                                 @RequestParam(required = false) Object userFilter,
                                 @RequestParam(required = false) Object projectFilter,
                                 @RequestParam(required = false) Object versionFilter,
                                 @RequestParam(required = false) Object pageFilter,
                                 @RequestParam(required = false) Object actionFilter,
                                 @RequestParam(required = false) Object subjectFilter) {
-        return fillModel(new ModelAndView("users/admin/log"));  // TODO implement showLog request controller
+        ModelAndView mv = new ModelAndView("users/admin/log");
+        int pageSize = 50;
+        int page = oPage != null ? oPage : 1;
+        int offset = (page - 1) * pageSize;
+        List<LoggedActionViewModel> log = userActionLogService.getLog(oPage, userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter);
+        mv.addObject("actions", log);
+        mv.addObject("limit", pageSize);
+        mv.addObject("offset", offset);
+        mv.addObject("page", page);
+        mv.addObject("size", 10); //TODO sum of table sizes of all LoggedAction tables (I think)
+        mv.addObject("userFilter", userFilter);
+        mv.addObject("projectFilter", projectFilter);
+        mv.addObject("versionFilter", versionFilter);
+        mv.addObject("pageFilter", pageFilter);
+        mv.addObject("actionFilter", actionFilter);
+        mv.addObject("subjectFilter", subjectFilter);
+        mv.addObject("canViewIP", userService.getHeaderData().getGlobalPermission().has(Permission.ViewIp));
+        return fillModel(mv);
     }
 
     @Secured("ROLE_USER")
@@ -195,31 +214,31 @@ public class ApplicationController extends HangarController {
     public String javaScriptRoutes() {
         // yeah, dont even ask wtf is happening here, I dont have an answer
         return "var jsRoutes = {}; (function(_root){\n" +
-               "var _nS = function(c,f,b){var e=c.split(f||\".\"),g=b||_root,d,a;for(d=0,a=e.length;d<a;d++){g=g[e[d]]=g[e[d]]||{}}return g}\n" +
-               "var _qS = function(items){var qs = ''; for(var i=0;i<items.length;i++) {if(items[i]) qs += (qs ? '&' : '') + items[i]}; return qs ? ('?' + qs) : ''}\n" +
-               "var _s = function(p,s){return p+((s===true||(s&&s.secure))?'s':'')+'://'}\n" +
-               "var _wA = function(r){return {ajax:function(c){c=c||{};c.url=r.url;c.type=r.method;return jQuery.ajax(c)}, method:r.method,type:r.method,url:r.url,absoluteURL: function(s){return _s('http',s)+'localhost:8080'+r.url},webSocketURL: function(s){return _s('ws',s)+'localhost:9000'+r.url}}}\n" +
-               "_nS('controllers.project.Projects'); _root['controllers']['project']['Projects']['show'] = \n" +
-               "        function(author0,slug1) {\n" +
-               "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"author\", author0)) + \"/\" + encodeURIComponent((function(k,v) {return v})(\"slug\", slug1))})\n" +
-               "        }\n" +
-               "      ;\n" +
-               "_nS('controllers.project.Versions'); _root['controllers']['project']['Versions']['show'] = \n" +
-               "        function(author0,slug1,version2) {\n" +
-               "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"author\", author0)) + \"/\" + encodeURIComponent((function(k,v) {return v})(\"slug\", slug1)) + \"/versions/\" + encodeURIComponent((function(k,v) {return v})(\"version\", version2))})\n" +
-               "        }\n" +
-               "      ;\n" +
-               "_nS('controllers.project.Versions'); _root['controllers']['project']['Versions']['showCreator'] = \n" +
-               "        function(author0,slug1) {\n" +
-               "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"author\", author0)) + \"/\" + encodeURIComponent((function(k,v) {return v})(\"slug\", slug1)) + \"/versions/new\"})\n" +
-               "        }\n" +
-               "      ;\n" +
-               "_nS('controllers.Users'); _root['controllers']['Users']['showProjects'] = \n" +
-               "        function(user0) {\n" +
-               "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"user\", user0))})\n" +
-               "        }\n" +
-               "      ;\n" +
-               "})(jsRoutes)"; // TODO implement javaScriptRoutes request controller
+                "var _nS = function(c,f,b){var e=c.split(f||\".\"),g=b||_root,d,a;for(d=0,a=e.length;d<a;d++){g=g[e[d]]=g[e[d]]||{}}return g}\n" +
+                "var _qS = function(items){var qs = ''; for(var i=0;i<items.length;i++) {if(items[i]) qs += (qs ? '&' : '') + items[i]}; return qs ? ('?' + qs) : ''}\n" +
+                "var _s = function(p,s){return p+((s===true||(s&&s.secure))?'s':'')+'://'}\n" +
+                "var _wA = function(r){return {ajax:function(c){c=c||{};c.url=r.url;c.type=r.method;return jQuery.ajax(c)}, method:r.method,type:r.method,url:r.url,absoluteURL: function(s){return _s('http',s)+'localhost:8080'+r.url},webSocketURL: function(s){return _s('ws',s)+'localhost:9000'+r.url}}}\n" +
+                "_nS('controllers.project.Projects'); _root['controllers']['project']['Projects']['show'] = \n" +
+                "        function(author0,slug1) {\n" +
+                "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"author\", author0)) + \"/\" + encodeURIComponent((function(k,v) {return v})(\"slug\", slug1))})\n" +
+                "        }\n" +
+                "      ;\n" +
+                "_nS('controllers.project.Versions'); _root['controllers']['project']['Versions']['show'] = \n" +
+                "        function(author0,slug1,version2) {\n" +
+                "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"author\", author0)) + \"/\" + encodeURIComponent((function(k,v) {return v})(\"slug\", slug1)) + \"/versions/\" + encodeURIComponent((function(k,v) {return v})(\"version\", version2))})\n" +
+                "        }\n" +
+                "      ;\n" +
+                "_nS('controllers.project.Versions'); _root['controllers']['project']['Versions']['showCreator'] = \n" +
+                "        function(author0,slug1) {\n" +
+                "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"author\", author0)) + \"/\" + encodeURIComponent((function(k,v) {return v})(\"slug\", slug1)) + \"/versions/new\"})\n" +
+                "        }\n" +
+                "      ;\n" +
+                "_nS('controllers.Users'); _root['controllers']['Users']['showProjects'] = \n" +
+                "        function(user0) {\n" +
+                "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"user\", user0))})\n" +
+                "        }\n" +
+                "      ;\n" +
+                "})(jsRoutes)"; // TODO implement javaScriptRoutes request controller
     }
 
     @RequestMapping("/linkout")
