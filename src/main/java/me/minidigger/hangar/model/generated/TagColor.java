@@ -13,7 +13,11 @@ import io.swagger.annotations.ApiModelProperty;
  * ModelsProtocolsAPIV2VersionTagColor
  */
 @Validated
-public class TagColor {
+public class TagColor { // TODO actual colors
+
+    public static TagColor PAPER = new TagColor().foreground("#333333").background("#FFA500");
+
+
     @JsonProperty("foreground")
     private String foreground = null;
 

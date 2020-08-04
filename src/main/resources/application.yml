@@ -18,6 +18,10 @@ spring:
   security:
     filter:
       order: 1000
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 11MB
 
 #############
 # Fake User #

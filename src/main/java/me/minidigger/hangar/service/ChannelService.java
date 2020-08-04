@@ -8,6 +8,8 @@ import me.minidigger.hangar.db.dao.ProjectChannelDao;
 import me.minidigger.hangar.db.model.ProjectChannelsTable;
 import me.minidigger.hangar.db.model.ProjectsTable;
 
+import java.util.List;
+
 @Service
 public class ChannelService {
 
@@ -22,5 +24,9 @@ public class ChannelService {
         // TODO get first channel
 
         return null;
+    }
+
+    public List<ProjectChannelsTable> getProjectChannels(long projectId) {
+        return channelDao.get().getProjectChannels(projectId);
     }
 }

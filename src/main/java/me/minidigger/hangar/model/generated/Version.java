@@ -2,6 +2,8 @@ package me.minidigger.hangar.model.generated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.jdbi.v3.core.enums.EnumByOrdinal;
+import org.jdbi.v3.core.mapper.Nested;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.OffsetDateTime;
@@ -30,25 +32,30 @@ public class Version {
     private List<Dependency> dependencies = new ArrayList<>();
 
     @JsonProperty("visibility")
+    @EnumByOrdinal
     private Visibility visibility = null;
 
     @JsonProperty("description")
     private String description = null;
 
     @JsonProperty("stats")
+    @Nested("stat")
     private VersionStatsAll stats = null;
 
     @JsonProperty("file_info")
+    @Nested("fi")
     private FileInfo fileInfo = null;
 
     @JsonProperty("author")
     private String author = null;
 
     @JsonProperty("review_state")
+    @EnumByOrdinal
     private ReviewState reviewState = null;
 
     @JsonProperty("tags")
     @Valid
+    @Nested("tag")
     private List<Tag> tags = new ArrayList<>();
 
     public Version createdAt(OffsetDateTime createdAt) {

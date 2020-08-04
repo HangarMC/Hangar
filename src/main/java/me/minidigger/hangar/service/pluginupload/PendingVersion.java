@@ -2,7 +2,9 @@ package me.minidigger.hangar.service.pluginupload;
 
 import java.util.List;
 
+import me.minidigger.hangar.db.model.ProjectVersionTagsTable;
 import me.minidigger.hangar.model.Color;
+import me.minidigger.hangar.model.Platform;
 import me.minidigger.hangar.model.generated.Dependency;
 import me.minidigger.hangar.model.generated.Project;
 import me.minidigger.hangar.service.plugindata.PluginFileData;
@@ -36,6 +38,58 @@ public class PendingVersion {
         this.channelColor = channelColor;
         this.plugin = plugin;
         this.createForumPost = createForumPost;
+    }
+
+    public String getVersionString() {
+        return versionString;
+    }
+
+    public List<Dependency> getDependencies() {
+        return dependencies;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public long getProjectId() {
+        return projectId;
+    }
+
+    public long getFileSize() {
+        return fileSize;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public long getAuthorId() {
+        return authorId;
+    }
+
+    public String getChannelName() {
+        return channelName;
+    }
+
+    public Color getChannelColor() {
+        return channelColor;
+    }
+
+    public PluginFileData getPlugin() {
+        return plugin;
+    }
+
+    public boolean isCreateForumPost() {
+        return createForumPost;
+    }
+
+    public List<ProjectVersionTagsTable> getDependenciesAsGhostTags() {
+        return Platform.getGhostTags(-1L, dependencies);
     }
 
     public void complete(Project project, ProjectFactory factory) {

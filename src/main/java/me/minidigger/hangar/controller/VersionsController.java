@@ -1,5 +1,6 @@
 package me.minidigger.hangar.controller;
 
+import me.minidigger.hangar.service.ChannelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -32,14 +33,16 @@ public class VersionsController extends HangarController {
     private final ProjectFactory projectFactory;
     private final UserService userService;
     private final PluginUploadService pluginUploadService;
+    private final ChannelService channelService;
 
     @Autowired
-    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService) {
+    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService, ChannelService channelService) {
         this.projectService = projectService;
         this.versionService = versionService;
         this.projectFactory = projectFactory;
         this.userService = userService;
         this.pluginUploadService = pluginUploadService;
+        this.channelService = channelService;
     }
 
     @RequestMapping("/api/project/{pluginId}/versions/recommended/download")
@@ -64,7 +67,7 @@ public class VersionsController extends HangarController {
         ScopedProjectData sp = projectService.getScopedProjectData(projectData.getProject().getId());
         mav.addObject("sp", sp);
         mav.addObject("p", projectData);
-        mav.addObject("channels", List.of()); // TODO channel list
+        mav.addObject("channels", channelService.getProjectChannels(projectData.getProject().getId()));
         return fillModel(mav);
     }
 
@@ -110,7 +113,7 @@ public class VersionsController extends HangarController {
         return _showCreator(author, slug, pendingVersion);
     }
 
-    private ModelAndView _showCreator(String author, String slug, Object pendingVersion) {
+    private ModelAndView _showCreator(String author, String slug, PendingVersion pendingVersion) {
         ProjectData projectData = projectService.getProjectData(author, slug);
         ModelAndView mav = new ModelAndView("projects/versions/create");
         mav.addObject("projectName", projectData.getProject().getName());
@@ -120,7 +123,7 @@ public class VersionsController extends HangarController {
         mav.addObject("projectDescription", projectData.getProject().getDescription());
         mav.addObject("forumSync", projectData.getProject().getForumSync());
         mav.addObject("pending", pendingVersion);
-        mav.addObject("channels", List.of());// TODO channel list
+        mav.addObject("channels", channelService.getProjectChannels(projectData.getProject().getId()));
         return fillModel(mav);
     }
 

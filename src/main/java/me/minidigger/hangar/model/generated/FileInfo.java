@@ -2,6 +2,7 @@ package me.minidigger.hangar.model.generated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.jdbi.v3.core.mapper.Nested;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.Objects;

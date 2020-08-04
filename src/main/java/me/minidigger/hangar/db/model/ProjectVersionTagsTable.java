@@ -1,14 +1,25 @@
 package me.minidigger.hangar.db.model;
 
 
+import me.minidigger.hangar.model.generated.TagColor;
+
 public class ProjectVersionTagsTable {
 
     private long id;
     private long versionId;
     private String name;
     private String data;
-    private long color;
+    private TagColor color;
 
+    public ProjectVersionTagsTable(long id, long versionId, String name, String data, TagColor color) {
+        this.id = id;
+        this.versionId = versionId;
+        this.name = name;
+        this.data = data;
+        this.color = color;
+    }
+
+    public ProjectVersionTagsTable() { }
 
     public long getId() {
         return id;
@@ -46,11 +57,11 @@ public class ProjectVersionTagsTable {
     }
 
 
-    public long getColor() {
+    public TagColor getColor() {
         return color;
     }
 
-    public void setColor(long color) {
+    public void setColor(TagColor color) {
         this.color = color;
     }
 
