@@ -71,7 +71,7 @@
                         <#if u.orgas?size == 0>
                             <tr><td><i class="minor"><i class="fas fa-star"></i> <@spring.messageArgs code="user.noOrganizations" args=[u.user.name] /></i></td></tr>
                         <#else>
-                            <#list u.orgas as organization, role> <#-- , user, role -->
+                            <#list u.orgas as organization, role>
                             <tr>
                                 <td>
                                     <#import "*/utils/userAvatar.ftlh" as userAvatar>

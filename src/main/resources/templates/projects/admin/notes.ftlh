@@ -41,9 +41,6 @@
         <div class="col-md-12">
             <table class="table table-condensed setting-no-border table-notes-log">
                 <tbody>
-                <#assign OffsetDateTime=@helper["java.time.OffsetDateTime"]>
-                <#assign Instant=@helper["java.time.Instant"]>
-                <#assign ZoneOffset=@helper["java.time.ZoneOffset"]>
                 <#list notes as note>
                 <tr>
                     <td class="note-fixed-with">${note.toDateTime().format("yyyy-MM-dd HH:mm:ss")}</td>
