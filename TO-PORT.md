@@ -4,18 +4,18 @@
 * [x] swagger
 
 ### Projects
-* [ ] admin\flags
+* [x] admin\flags
 * [ ] admin\notes
 * [ ] channels\helper\modalManage
 * [ ] channels\helper\popoverColorPicker
 * [ ] channels\list
 * [x] helper\alertFile
-* [ ] helper\btnHide
-* [ ] helper\createSteps
-* [ ] helper\inputSettings
+* [x] helper\btnHide
+* [x] helper\createSteps
+* [x] helper\inputSettings
 * [ ] helper\modalDownload
-* [ ] pages\modalPageCreate
-* [ ] pages\view
+* [x] pages\modalPageCreate
+* [x] pages\view
 * [ ] versions\create
 * [ ] versions\list
 * [ ] versions\log
@@ -24,32 +24,33 @@
 * [x] create
 * [ ] discuss
 * [ ] settings
-* [ ] tag
+* [x] tag
 * [ ] userGrid
 * [ ] view
 
 ### Users
 * [ ] admin\activity
-* [ ] admin\flags
+* [x] admin\flags
 * [ ] admin\health
-* [ ] admin\log
-* [ ] admin\queue
+* [x] admin\log
+* [x] admin\queue
 * [ ] admin\reviews
 * [ ] admin\stats
 * [ ] admin\userAdmin
-* [ ] admin\visibility
+* [x] admin\visibility
 * [x] invite\form
-* [ ] invite\roleSelect
+* [x] invite\roleSelect
 * [x] invite\userSearch
 * [ ] apiKeys
 * [ ] authors
 * [ ] memberList
 * [ ] notifications
 * [ ] projects
-* [ ] view
+* [x] staff
+* [x] view
 
 ### Utils
-* [ ] alert
+* [x] alert
 * [ ] csrf
 * [x] editor
 * [ ] email
