@@ -29,7 +29,7 @@
 * [ ] view
 
 ### Users
-* [ ] admin\activity
+* [x] admin\activity
 * [x] admin\flags
 * [ ] admin\health
 * [x] admin\log

@@ -2,16 +2,6 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
-<#--
-@import java.time.OffsetDateTime
-
-@import controllers.sugar.Requests.OreRequest
-@import models.querymodels.{FlagActivity, ReviewActivity}
-@import ore.OreConfig
-@import util.StringFormatterUtils._
-@(username: String, activities: Seq[Either[FlagActivity, ReviewActivity]])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
--->
-
 <#assign message><@spring.message "activity.title" /></#assign>
 <@base.base title=("${message} ${username}")>
 
@@ -31,33 +21,33 @@
                 </div>
                 <table class="table table-condensed setting-no-border table-review-log">
                     <tbody>
-                        <#if activities.isEmpty>
+                        <#if !activities?has_content>
                             <tr><td>No activities founds</td></tr>
                         </#if>
-                        @activities.map {
-                            case Right(review) => {
+                        <#assign OffsetDateTime=@helper["java.time.OffsetDateTime"]>
+                        <#list activities as activity>
+                            <#if activity.class.simpleName == "ReviewActivity">
                                 <tr>
                                     <td>Review approved</td>
-                                    <td>${(review.endedAt!OffsetDateTime.MIN)?string.long}</td>
+                                    <td>${(activity.endedAt!OffsetDateTime.MIN).format("yyyy-MM-dd HH:mm:ss")}</td>
                                     <td>for:
-                                        <a href="${routes.getRouteUrl("reviews.showReviews", review.project.ownerName, review.project.slug, review.id.toString)}">
-                                            ${review.project.ownerName} / ${review.project.slug}
+                                        <a href="${routes.getRouteUrl("reviews.showReviews", activity.getProject().getOwner(), activity.getProject().getSlug(), activity.id)}">
+                                            ${activity.getProject().getOwner()} / ${activity.getProject().getSlug()}
                                         </a>
                                     </td>
                                 </tr>
-                            }
-                            case Left(flag) => {
+                            <#elseif activity.class.simpleName = "FlagActivity">
                                 <tr>
                                     <td>Flag resolved</td>
-                                    <td>${(flag.resolvedAt!OffsetDateTime.MIN)?string.long}</td>
+                                    <td>${(activity.resolvedAt!OffsetDateTime.MIN).format("yyyy-MM-dd HH:mm:ss")}</td>
                                     <td>for:
-                                        <a href="${routes.getRouteUrl("projects.show", flag.project.ownerName, flag.project.slug)}">
-                                            ${flag.project.ownerName} / ${flag.project.slug}
+                                        <a href="${routes.getRouteUrl("projects.show", activity.getProject().getSlug(), activity.getProject().getSlug())}">
+                                            ${activity.getProject().getOwner()} / ${activity.getProject().getSlug()}
                                         </a>
                                     </td>
                                 </tr>
-                            }
-                        }
+                            </#if>
+                        </#list>
                     </tbody>
                 </table>
             </div>

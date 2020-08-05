@@ -1,5 +1,7 @@
 package me.minidigger.hangar.db.dao;
 
+import me.minidigger.hangar.model.viewhelpers.FlagActivity;
+import me.minidigger.hangar.model.viewhelpers.ReviewActivity;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Define;
@@ -100,4 +102,24 @@ public interface UserDao {
 
     @SqlUpdate("DELETE FROM project_stars WHERE project_id = :projectId AND user_id = :userId")
     void removeStargazing(long projectId, long userId);
+
+
+    @SqlQuery("SELECT pvr.ended_at, pvr.id, p.owner_name, p.slug" +
+            "  FROM users u" +
+            "         JOIN project_version_reviews pvr ON u.id = pvr.user_id" +
+            "         JOIN project_versions pv ON pvr.version_id = pv.id" +
+            "         JOIN projects p ON pv.project_id = p.id" +
+            "  WHERE u.name = :username" +
+            "  LIMIT 20")
+    @RegisterBeanMapper(ReviewActivity.class)
+    List<ReviewActivity> getReviewActivity(String username);
+
+    @SqlQuery("SELECT pf.resolved_at, p.owner_name, p.slug" +
+            "  FROM users u" +
+            "         JOIN project_flags pf ON u.id = pf.user_id" +
+            "         JOIN projects p ON pf.project_id = p.id" +
+            "  WHERE u.name = :username" +
+            "  LIMIT 20")
+    @RegisterBeanMapper(FlagActivity.class)
+    List<FlagActivity> getFlagActivity(String username);
 }

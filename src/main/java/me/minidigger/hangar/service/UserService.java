@@ -1,5 +1,7 @@
 package me.minidigger.hangar.service;
 
+import me.minidigger.hangar.model.viewhelpers.FlagActivity;
+import me.minidigger.hangar.model.viewhelpers.ReviewActivity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -197,5 +199,13 @@ public class UserService {
                 roleService.removeGlobalRole(user.getId(), role.getRoleId());
             }
         }
+    }
+
+    public List<ReviewActivity> getRewiewActivity(String username) {
+        return userDao.get().getReviewActivity(username);
+    }
+
+    public List<FlagActivity> getFlagActivity(String username) {
+        return userDao.get().getFlagActivity(username);
     }
 }
