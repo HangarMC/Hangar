@@ -338,15 +338,22 @@ public class ProjectsController extends HangarController {
         return new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.show", author, slug));
     }
 
+    @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
     @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/notes")
-    public Object showNotes(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement showNotes request controller
+    public ModelAndView showNotes(@PathVariable String author, @PathVariable String slug) {
+        ModelAndView mv = new ModelAndView("projects/admin/notes");
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        mv.addObject("project", projectData.getProject());
+        //TODO get real notes
+        mv.addObject("notes", List.of(new Note().message("## 10/10\n* has everything\n* but also nothing").user("kneny")));
+        return fillModel(mv);
     }
 
+    @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
     @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/notes/addmessage")
-    public Object addMessage(@PathVariable Object author, @PathVariable Object slug) {
+    public ModelAndView addMessage(@PathVariable String author, @PathVariable String slug) {
         return null; // TODO implement addMessage request controller
     }
 
@@ -397,18 +404,6 @@ public class ProjectsController extends HangarController {
         } else {
             userDao.get().removeWatching(projectData.getProject().getId(), userService.getCurrentUser().getId());
         }
-    }
-
-    @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
-    @Secured("ROLE_USER")
-    @GetMapping("/{author}/{slug}/notes")
-    public ModelAndView showNotes(@PathVariable String author, @PathVariable String slug) {
-        ModelAndView mv = new ModelAndView("projects/admin/notes");
-        ProjectData projectData = projectService.getProjectData(author, slug);
-        mv.addObject("project", projectData.getProject());
-        //TODO get and save real notes
-        mv.addObject("notes", List.of(new Note().message("## 10/10\n* has everything\n* but also nothing").user("kneny")));
-        return fillModel(mv);
     }
 
     private ModelAndView showUserGrid(String author, String slug, Integer page, String title, TriFunction<Long, Integer, Integer, Collection<UsersTable>> getUsers) {
