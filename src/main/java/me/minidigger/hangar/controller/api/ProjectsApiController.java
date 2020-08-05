@@ -71,7 +71,8 @@ public class ProjectsApiController implements ProjectsApi {
 
         UsersTable currentUser = userService.getCurrentUser();
         // TODO this is really meh, we want to save global permissions somewhere
-        boolean seeHidden = permissionService.getGlobalPermissions(currentUser.getId()).has(Permission.SeeHidden);
+        boolean seeHidden = currentUser != null && permissionService.getGlobalPermissions(currentUser.getId()).has(Permission.SeeHidden);
+        Long requesterId = currentUser == null ? null : currentUser.getId();
 
         List<Project> projects = projectService.getProjects(
                 null,
@@ -80,7 +81,7 @@ public class ProjectsApiController implements ProjectsApi {
                 q,
                 owner,
                 seeHidden,
-                currentUser.getId(),
+                requesterId,
                 sort,
                 relevance,
                 limit,
@@ -94,7 +95,7 @@ public class ProjectsApiController implements ProjectsApi {
                 q,
                 owner,
                 seeHidden,
-                currentUser.getId()
+                requesterId
         );
 
         PaginatedProjectResult result = new PaginatedProjectResult();

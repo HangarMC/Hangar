@@ -193,11 +193,11 @@ public class ProjectService {
         return projectDao.get().getUnhealthyProjects(hangarConfig.projects.getStaleAge().toMillis());
     }
 
-    public List<Project> getProjects(String pluginId, List<Category> categories, List<Tag> parsedTags, String query, String owner, boolean seeHidden, long requesterId, ProjectSortingStrategy sort, boolean relevance, long limit, long offset) {
+    public List<Project> getProjects(String pluginId, List<Category> categories, List<Tag> parsedTags, String query, String owner, boolean seeHidden, Long requesterId, ProjectSortingStrategy sort, boolean relevance, long limit, long offset) {
         return List.of(getProjectApi("test")); // TODO getProjects query
     }
 
-    public long countProjects(String pluginId, List<Category> categories, List<Tag> parsedTags, String query, String owner, boolean seeHidden, long requesterId) {
+    public long countProjects(String pluginId, List<Category> categories, List<Tag> parsedTags, String query, String owner, boolean seeHidden, Long requesterId) {
         return 1; // TODO count projects query
     }
 }
