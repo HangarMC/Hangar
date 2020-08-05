@@ -6,13 +6,61 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.3.2.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
+
     <groupId>me.minidigger</groupId>
     <artifactId>hangar</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+
     <name>hangar</name>
     <description>Ore, but in Spring, but for Paper</description>
+
+    <properties>
+        <!-- compiling -->
+        <java.version>11</java.version>
+
+        <!-- encoding -->
+        <encoding>UTF-8</encoding>
+        <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
+
+        <!-- dependency management -->
+        <jdbi3-bom.version>3.14.1</jdbi3-bom.version>
+
+        <!-- dependencies -->
+        <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
+        <freemarker.version>2.3.30</freemarker.version>
+        <freemarker-java8.version>2.0.0</freemarker-java8.version>
+        <flexmark-all.version>0.62.2</flexmark-all.version>
+        <snakeyaml.version>1.26</snakeyaml.version>
+
+        <!-- webjars dependencies -->
+        <webjars-locator.version>0.40</webjars-locator.version>
+        <jquery.version>3.5.1</jquery.version>
+        <font-awesome.version>5.13.1</font-awesome.version>
+        <filesize.version>6.0.1</filesize.version>
+        <moment.version>2.27.0</moment.version>
+        <clipboard.version>2.0.6</clipboard.version>
+        <chart.js.version>2.9.3</chart.js.version>
+        <swagger-ui.version>3.30.0</swagger-ui.version>
+
+        <!-- plugins -->
+        <frontend-maven-plugin.version>1.10.0</frontend-maven-plugin.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jdbi</groupId>
+                <artifactId>jdbi3-bom</artifactId>
+                <type>pom</type>
+                <version>${jdbi3-bom.version}</version>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -54,7 +102,7 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-boot-starter</artifactId>
-            <version>3.0.0</version>
+            <version>${springfox-boot-starter.version}</version>
             <exclusions>
                 <exclusion>
                     <!-- old version -->
@@ -74,20 +122,20 @@
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>1.26</version>
+            <version>${snakeyaml.version}</version>
         </dependency>
 
         <!-- template engine -->
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
-            <version>2.3.30</version>
+            <version>${freemarker.version}</version>
         </dependency>
         <!-- java 8 objects in freemarker -->
         <dependency>
             <groupId>no.api.freemarker</groupId>
             <artifactId>freemarker-java8</artifactId>
-            <version>2.0.0</version>
+            <version>${freemarker-java8.version}</version>
         </dependency>
 
         <!-- jdbi -->
@@ -120,49 +168,49 @@
         <dependency>
             <groupId>com.vladsch.flexmark</groupId>
             <artifactId>flexmark-all</artifactId>
-            <version>0.62.2</version>
+            <version>${flexmark-all.version}</version>
         </dependency>
 
         <!-- webjars -->
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>webjars-locator</artifactId>
-            <version>0.40</version>
+            <version>${webjars-locator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.webjars.npm</groupId>
             <artifactId>jquery</artifactId>
-            <version>3.5.1</version>
+            <version>${jquery.version}</version>
         </dependency>
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>font-awesome</artifactId>
-            <version>5.13.1</version>
+            <version>${font-awesome.version}</version>
         </dependency>
         <dependency>
             <groupId>org.webjars.npm</groupId>
             <artifactId>filesize</artifactId>
-            <version>6.0.1</version>
+            <version>${filesize.version}</version>
         </dependency>
         <dependency>
             <groupId>org.webjars.npm</groupId>
             <artifactId>moment</artifactId>
-            <version>2.27.0</version>
+            <version>${moment.version}</version>
         </dependency>
         <dependency>
             <groupId>org.webjars.npm</groupId>
             <artifactId>clipboard</artifactId>
-            <version>2.0.6</version>
+            <version>${clipboard.version}</version>
         </dependency>
         <dependency>
             <groupId>org.webjars.npm</groupId>
             <artifactId>chart.js</artifactId>
-            <version>2.9.3</version>
+            <version>${chart.js.version}</version>
         </dependency>
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>swagger-ui</artifactId>
-            <version>3.30.0</version>
+            <version>${swagger-ui.version}</version>
         </dependency>
 
         <!-- runtime -->
@@ -197,28 +245,18 @@
         </dependency>
     </dependencies>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.jdbi</groupId>
-                <artifactId>jdbi3-bom</artifactId>
-                <type>pom</type>
-                <version>3.14.1</version>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                    <encoding>UTF-8</encoding>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <testSource>${java.version}</testSource>
+                    <testTarget>${java.version}</testTarget>
+                    <encoding>${encoding}</encoding>
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>
@@ -231,7 +269,7 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.10.0</version>
+                <version>${frontend-maven-plugin.version}</version>
 
                 <configuration>
                     <workingDirectory>src/main/frontend</workingDirectory>
