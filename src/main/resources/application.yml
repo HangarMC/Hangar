@@ -22,6 +22,21 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 11MB
+  devtools:
+    restart:
+      exclude:
+        - META-INF/maven/**
+        - META-INF/resources/**
+        - resources/**
+        - static/**
+        - public/**
+        - templates/**
+        - "**/*Test.class"
+        - "**/*Tests.class"
+        - git.properties
+        - META-INF/build-info.properties
+        - tmp/**
+        - plugins/**
 
 #############
 # Fake User #
@@ -40,6 +55,7 @@ hangar:
   staging: true
   log-timings: false
   auth-url: "http://localhost:8000"
+  base-url: "http://localhost:8080"
 
   sponsors:
     - name: Theranos

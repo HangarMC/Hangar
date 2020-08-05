@@ -7,24 +7,38 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets reviewState
  */
 public enum ReviewState {
-    UNREVIEWED("unreviewed"),
+    UNREVIEWED(0, "unreviewed"),
 
-    REVIEWED("reviewed"),
+    REVIEWED(1, "reviewed"),
 
-    BACKLOG("backlog"),
+    BACKLOG(2, "backlog"),
 
-    PARTIALLY_REVIEWED("partially_reviewed");
+    PARTIALLY_REVIEWED(3, "partially_reviewed");
 
-    private final String value;
+    private final long value;
+    private final String apiName;
 
-    ReviewState(String value) {
+    ReviewState(long value, String apiName) {
         this.value = value;
+        this.apiName = apiName;
     }
 
     @Override
     @JsonValue
     public String toString() {
         return String.valueOf(value);
+    }
+
+    public long getValue() {
+        return value;
+    }
+
+    public String getApiName() {
+        return apiName;
+    }
+
+    public boolean isChecked() {
+        return this == ReviewState.REVIEWED || this == ReviewState.PARTIALLY_REVIEWED;
     }
 
     @JsonCreator

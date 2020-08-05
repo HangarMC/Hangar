@@ -30,6 +30,7 @@ public class HangarConfig {
     private String authUrl = "https://hangarauth.minidigger.me";
     private final ApplicationHome home = new ApplicationHome(HangarApplication.class);
     private String pluginUploadDir = home.getDir().getAbsolutePath();
+    private String baseUrl = "https://localhost:8080";
 
     @NestedConfigurationProperty
     public final FakeUserConfig fakeUser;
@@ -170,6 +171,14 @@ public class HangarConfig {
 
     public void setPluginUploadDir(String pluginUploadDir) {
         this.pluginUploadDir = pluginUploadDir;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
     public void checkDebug() {

@@ -1,7 +1,7 @@
 package me.minidigger.hangar.db.model;
 
-
-import me.minidigger.hangar.model.generated.TagColor;
+import me.minidigger.hangar.model.TagColor;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 public class ProjectVersionTagsTable {
 
@@ -57,10 +57,12 @@ public class ProjectVersionTagsTable {
     }
 
 
+    @EnumByOrdinal
     public TagColor getColor() {
         return color;
     }
 
+    @EnumByOrdinal
     public void setColor(TagColor color) {
         this.color = color;
     }

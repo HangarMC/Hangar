@@ -2,7 +2,7 @@ package me.minidigger.hangar.model;
 
 import me.minidigger.hangar.db.model.ProjectVersionTagsTable;
 import me.minidigger.hangar.model.generated.Dependency;
-import me.minidigger.hangar.model.generated.TagColor;
+import me.minidigger.hangar.service.VersionService;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public enum Platform { // TODO add platforms
 
-    PAPER("Paper", PlatformCategory.SERVER_CATEGORY, 0, "paper-api", TagColor.PAPER, "https://papermc.io/downloads");
+    PAPER("Paper", PlatformCategory.SERVER_CATEGORY, 0, "paperapi", TagColor.PAPER, "https://papermc.io/downloads");
 
     private final String name;
     private final PlatformCategory platformCategory;
@@ -64,6 +64,10 @@ public enum Platform { // TODO add platforms
 
     public static List<ProjectVersionTagsTable> getGhostTags(long versionId, List<Dependency> dependencies) {
         return getPlatforms(dependencies.stream().map(Dependency::getPluginId).collect(Collectors.toList())).stream().map(p -> p.createGhostTag(versionId, dependencies.stream().filter(d -> d.getPluginId().equals(p.dependencyId)).findFirst().get().getVersion())).collect(Collectors.toList());
+    }
+
+    public static List<ProjectVersionTagsTable> createPlatformTags(VersionService versionService, long versionId, List<Dependency> dependencies) {
+        return versionService.insertTags(getGhostTags(versionId, dependencies));
     }
 
     public enum PlatformCategory {

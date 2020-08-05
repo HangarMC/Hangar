@@ -74,8 +74,8 @@
                                             <#-- Show channel selector if old project, editor if new project -->
                                             <select id="select-channel" form="form-publish" name="channel-input" class="form-control">
                                             <#list channels as channel>
-                                                <option value="${channel.name}" data-color="${channel.color.hex}" <#if channel.name == version.channelName>selected</#if>
-                                                ${channel.name}
+                                                <option value="${channel.name}" data-color="${channel.color.hex}" <#if channel.name == version.channelName>selected</#if>>
+                                                    ${channel.name}
                                                 </option>
                                             </#list>
                                             </select>

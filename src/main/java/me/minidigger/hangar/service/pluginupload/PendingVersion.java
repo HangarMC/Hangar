@@ -1,14 +1,19 @@
 package me.minidigger.hangar.service.pluginupload;
 
-import java.util.List;
-
 import me.minidigger.hangar.db.model.ProjectVersionTagsTable;
+import me.minidigger.hangar.db.model.ProjectVersionsTable;
 import me.minidigger.hangar.model.Color;
 import me.minidigger.hangar.model.Platform;
 import me.minidigger.hangar.model.generated.Dependency;
 import me.minidigger.hangar.model.generated.Project;
+import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.service.plugindata.PluginFileData;
+import me.minidigger.hangar.service.plugindata.PluginFileWithData;
 import me.minidigger.hangar.service.project.ProjectFactory;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.List;
 
 public class PendingVersion {
 
@@ -22,10 +27,10 @@ public class PendingVersion {
     private long authorId;
     private String channelName;
     private Color channelColor;
-    private PluginFileData plugin;
+    private PluginFileWithData plugin;
     private boolean createForumPost;
 
-    public PendingVersion(String versionString, List<Dependency> dependencies, String description, long projectId, long fileSize, String hash, String fileName, long authorId, String channelName, Color channelColor, PluginFileData plugin, boolean createForumPost) {
+    public PendingVersion(String versionString, List<Dependency> dependencies, String description, long projectId, long fileSize, String hash, String fileName, long authorId, String channelName, Color channelColor, PluginFileWithData plugin, boolean createForumPost) {
         this.versionString = versionString;
         this.dependencies = dependencies;
         this.description = description;
@@ -80,7 +85,7 @@ public class PendingVersion {
         return channelColor;
     }
 
-    public PluginFileData getPlugin() {
+    public PluginFileWithData getPlugin() {
         return plugin;
     }
 
@@ -92,7 +97,24 @@ public class PendingVersion {
         return Platform.getGhostTags(-1L, dependencies);
     }
 
-    public void complete(Project project, ProjectFactory factory) {
-        factory.createVersion(project, this);
+    public PendingVersion copy(String channelName, Color channelColor, boolean createForumPost, String description) {
+        return new PendingVersion(
+                versionString,
+                dependencies,
+                description,
+                projectId,
+                fileSize,
+                hash,
+                fileName,
+                authorId,
+                channelName,
+                channelColor,
+                plugin,
+                createForumPost
+        );
+    }
+
+    public ProjectVersionsTable complete(HttpServletRequest request, ProjectData project, ProjectFactory factory) throws IOException {
+        return factory.createVersion(request, project, this);
     }
 }

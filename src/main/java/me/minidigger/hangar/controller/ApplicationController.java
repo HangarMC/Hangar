@@ -60,16 +60,10 @@ public class ApplicationController extends HangarController {
     }
 
     @RequestMapping("/")
-    public ModelAndView showHome(@ModelAttribute("alertType") String alertType, @ModelAttribute("alertMsg") String alertMsg) {
+    public ModelAndView showHome(@ModelAttribute(AlertUtil.TYPE) AlertType alertType, @ModelAttribute("alertMsg") String alertMsg) {
         ModelAndView mav = new ModelAndView("home");
-        AlertType type;
-        try {
-            type = AlertType.valueOf(alertType);
-        } catch (IllegalArgumentException e) {
-            type = null;
-        }
-        if (type != null && alertMsg != null)
-            AlertUtil.showAlert(mav, type, alertMsg);
+        if (alertType != null && alertMsg != null)
+            AlertUtil.showAlert(mav, alertType, alertMsg);
         return fillModel(mav);
     }
 

@@ -18,7 +18,7 @@ sorted according to different criteria.
 <#macro meta>
     <meta property="og:title" content="<@spring.message "general.appName" />">
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="@config.app.baseUrl">
+    <meta property="og:url" content="${config.baseUrl}">
     <meta property="og:image" content="<@hangar.url "images/ore-dark.png" />" />
     <meta property="og:description" content="<@spring.message "general.description" />" />
 </#macro>

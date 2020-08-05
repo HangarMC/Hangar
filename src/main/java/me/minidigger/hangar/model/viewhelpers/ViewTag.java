@@ -1,7 +1,7 @@
 package me.minidigger.hangar.model.viewhelpers;
 
 import me.minidigger.hangar.db.model.ProjectVersionTagsTable;
-import me.minidigger.hangar.model.generated.TagColor;
+import me.minidigger.hangar.model.TagColor;
 
 public class ViewTag {
 

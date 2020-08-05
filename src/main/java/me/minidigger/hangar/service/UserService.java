@@ -70,7 +70,7 @@ public class UserService {
 
     public HeaderData getHeaderData() {
         HeaderData headerData = new HeaderData();
-        Permission global = Permission.HardDeleteProject.add(Permission.SeeHidden).add(Permission.ModNotesAndFlags);
+        Permission global = Permission.HardDeleteProject.add(Permission.SeeHidden).add(Permission.ModNotesAndFlags).add(Permission.Reviewer).add(Permission.All);
         headerData.setGlobalPermission(headerData.getGlobalPermission().add(global)); // TODO remove
 
         headerData.setCurrentUser(getCurrentUser());

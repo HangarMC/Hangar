@@ -1,22 +1,23 @@
 package me.minidigger.hangar.service.pluginupload;
 
+import me.minidigger.hangar.config.CacheConfig;
+import me.minidigger.hangar.service.plugindata.PluginFileWithData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 import me.minidigger.hangar.config.hangar.HangarConfig;
 import me.minidigger.hangar.db.model.ProjectChannelsTable;
 import me.minidigger.hangar.db.model.ProjectsTable;
 import me.minidigger.hangar.db.model.UsersTable;
-import me.minidigger.hangar.service.ChannelService;
+import me.minidigger.hangar.service.project.ChannelService;
 import me.minidigger.hangar.service.plugindata.PluginDataService;
 import me.minidigger.hangar.service.plugindata.PluginFileData;
 import me.minidigger.hangar.util.HangarException;
@@ -30,19 +31,19 @@ public class PluginUploadService {
     private final ProjectFiles projectFiles;
     private final PluginDataService pluginDataService;
     private final ChannelService channelService;
+    private final CacheManager cacheManager;
     private final HangarConfig config;
 
-    private Map<String, PendingVersion> cache = new HashMap<>();
-
     @Autowired
-    public PluginUploadService(ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, HangarConfig config) {
+    public PluginUploadService(ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, CacheManager cacheManager, HangarConfig config) {
         this.projectFiles = projectFiles;
         this.pluginDataService = pluginDataService;
         this.channelService = channelService;
+        this.cacheManager = cacheManager;
         this.config = config;
     }
 
-    public PluginFileData processPluginUpload(MultipartFile file, UsersTable owner) {
+    public PluginFileWithData processPluginUpload(MultipartFile file, UsersTable owner) {
         String pluginFileName = file.getOriginalFilename();
 
         if (!pluginFileName.endsWith(".zip") && !pluginFileName.endsWith(".jar")) {
@@ -68,55 +69,57 @@ public class PluginUploadService {
         }
 
         try {
-            return pluginDataService.loadMeta(tmpPluginFile);
+            return pluginDataService.loadMeta(tmpPluginFile, owner.getId());
         } catch (IOException e) {
             LOGGER.error("Error while uploading {} for {}", pluginFileName, owner.getName(), e);
             throw new HangarException("error.plugin.unexpected");
         }
     }
 
-    public PendingVersion processSubsequentPluginUpload(MultipartFile file, UsersTable owner, ProjectsTable project) {
-        PluginFileData pluginFileData = processPluginUpload(file, owner);
+    public PendingVersion processSubsequentPluginUpload(MultipartFile file, UsersTable owner, ProjectsTable project) throws HangarException {
+        PluginFileWithData plugin = processPluginUpload(file, owner);
+//        if (!plugin.getData().getId().equals(project.getPluginId())) { // TODO pluginId
+//            throw new HangarException("error.version.invalidPluginId");
+//        } else if (plugin.getData().getVersion().contains("recommended")) {
+//            throw new HangarException("error.version.illegalVersion");
+//        }
+
 
         ProjectChannelsTable channel = channelService.getFirstChannel(project);
-//        String channelName = channel.getName(); // TODO fix this
-        String channelName = "dumChannel";
 
-        PendingVersion pendingVersion = startVersion(pluginFileData, project.getPluginId(), project.getId(), project.getForumSync(), channelName);
+        PendingVersion pendingVersion = startVersion(plugin, project.getPluginId(), project.getId(), project.getForumSync(), channel.getName());
 
         // todo duplicate checking and shit
-
+        cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).put(project.getId() + "/" + pendingVersion.getVersionString(), pendingVersion);
         return pendingVersion;
     }
 
-    private PendingVersion startVersion(PluginFileData pluginFileData, String pluginId, long projectId, boolean forumSync, String channelName) {
-        if (pluginFileData.getVersion() == null || pluginFileData.getVersion().isEmpty()) {
+    private PendingVersion startVersion(PluginFileWithData plugin, String pluginId, long projectId, boolean forumSync, String channelName) throws HangarException {
+        PluginFileData metaData = plugin.getData();
+        if (metaData.getVersion() == null || metaData.getVersion().isEmpty()) {
             throw new HangarException("error.plugin.noVersion");
         }
+//        if (!metaData.getId().equals(pluginId)) { // TODO pluginId
+//            throw new HangarException("error.plugin.invalidPluginId");
+//        } else if (metaData.getVersion() == null || metaData.getVersion().isBlank()) {
+//            throw new HangarException("error.plugin.noVersion");
+//        }
 
-        // TODO finish startVersion
-        String hash = "";
-        String fileName = "";
-        long authorId = -1;
-        long fileSize = -1;
+        Path path = plugin.getPath();
 
         return new PendingVersion(
-                StringUtils.slugify(pluginFileData.getVersion()),
-                pluginFileData.getDependencies(),
-                pluginFileData.getDescription(),
+                StringUtils.slugify(metaData.getVersion()),
+                metaData.getDependencies(),
+                metaData.getDescription(),
                 projectId,
-                fileSize,
-                hash,
-                fileName,
-                authorId,
+                path.toFile().length(),
+                plugin.getMd5(),
+                path.getFileName().toString(),
+                plugin.getUserId(),
                 channelName,
                 config.getChannels().getColorDefault(),
-                pluginFileData,
+                plugin,
                 forumSync
-                );
-    }
-
-    public PendingVersion getPendingVersion(ProjectsTable projectsTable, String versionName) {
-        return cache.get(projectsTable.getId() + "/" + versionName);
+        );
     }
 }

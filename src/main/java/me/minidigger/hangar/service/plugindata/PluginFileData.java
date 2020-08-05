@@ -1,7 +1,10 @@
 package me.minidigger.hangar.service.plugindata;
 
+import me.minidigger.hangar.db.model.ProjectVersionTagsTable;
+import me.minidigger.hangar.service.VersionService;
 import org.springframework.lang.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,5 +67,10 @@ public class PluginFileData {
 
     public boolean validate() {
         return getId() != null && getName() != null && getAuthors() != null && getDependencies() != null;
+    }
+
+    public List<ProjectVersionTagsTable> createTags(long versionId, VersionService versionService) {
+        // TODO not sure what is happening here in ore... it seems to only add tags if they contain mixins?
+        return new ArrayList<>();
     }
 }

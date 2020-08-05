@@ -36,7 +36,7 @@ public class PluginDataService {
         }
     }
 
-    public PluginFileData loadMeta(Path file) throws IOException {
+    public PluginFileWithData loadMeta(Path file, long userId) throws IOException {
         try (JarInputStream jarInputStream = openJar(file)) {
 
             List<DataValue> dataValues = new ArrayList<>();
@@ -55,8 +55,8 @@ public class PluginDataService {
                 throw new HangarException("error.plugin.metaNotFound");
             } else {
                 dataValues.add(new UUIDDataValue("id", UUID.randomUUID()));
-                PluginFileData fileData = new PluginFileData(dataValues);
-                if (!fileData.validate()) {
+                PluginFileWithData fileData = new PluginFileWithData(file, new PluginFileData(dataValues), userId);
+                if (!fileData.getData().validate()) {
                     throw new HangarException("error.plugin.incomplete", "id or version");
                 }
                 return fileData;

@@ -19,6 +19,9 @@
 @import views.html.utils.editor
 @(v: VersionData, sp: ScopedProjectData)(implicit messages: Messages, request: OreRequest[_], flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)-->
 
+<#assign ReviewState=@helper["me.minidigger.hangar.model.generated.ReviewState"] />
+<#assign Permission=@helper["me.minidigger.hangar.model.Permission"] />
+<#assign Visibility=@helper["me.minidigger.hangar.model.Visibility"] />
 <@projects.view p=v.p sp=sp active="#versions" noButtons=true>
     <!-- Version header -->
     <div class="row">
@@ -34,7 +37,7 @@
                 <a href="${routes.getRouteUrl("users.showProjects", v.p.project.ownerName)}">
                     <strong>${v.p.project.ownerName}</strong>
                 </a>
-                released this version on ${v.v.createdAt?string.long}
+                released this version on ${(v.v.createdAt).format("YYYY-mm-dd HH:mm:ss")}
             </p>
 
                 <!-- Buttons -->
@@ -42,21 +45,22 @@
             <div class="pull-right version-actions">
                 <div class="version-icons">
                     <div>
-                    <#if v.isRecommended>
+                    <#if v.recommended>
                             <i data-toggle="tooltip" data-placement="left"
                             title="<@spring.message "version.recommended" />"
                             class="recommended far fa-lg fa-gem pull-right"></i>
                     </#if>
 
-                    <#if v.v.reviewState.isChecked>
-                            <#if request.headerData.globalPerm(Permission.Reviewer)>
-                                @v.approvedBy.zip(v.v.approvedAt).map { t =>
+                    <#if v.v.reviewState.checked>
+                            <#if headerData.globalPerm(Permission.Reviewer)>
+                                <#if v.approvedBy?has_content>
                                     <i class="minor">
-                                        @Html(messages("version.approved.info", t._1, prettifyDate(t._2)))
+                                        <#assign msgArgs=[v.approvedBy, (v.v.approvedAt).format("YYYY-mm-dd HH:mm:ss")] />
+                                        <@spring.messageArgs "version.approved.info" msgArgs />
                                     </i>
-                                }
+                                </#if>
                             </#if>
-                            <#if v.v.reviewState == ReviewState.PartiallyReviewed>
+                            <#if v.v.reviewState == ReviewState.PARTIALLY_REVIEWED>
                                 <i data-toggle="tooltip" data-placement="left" title="<@spring.message "version.approvedPartial" />"
                                 class="far fa-lg fa-check-circle"></i>
                             <#else>
@@ -68,11 +72,11 @@
                 </div>
 
                 <div class="version-buttons pull-right">
-                    <div><span class="date">${v.v.humanFileSize}</span></div>
+                    <div><span class="date">${utils.formatFileSize(v.v.fileSize)}</span></div>
 
                     <div>
 
-                        <#if !v.isRecommended && sp.perms(Permission.EditVersion) && v.v.visibility != Visibility.SoftDelete>
+                        <#if !v.recommended && sp.perms(Permission.EditVersion) && v.v.visibility != Visibility.SOFTDELETE>
                             <@form.form method="POST" action=routes.getRouteUrl("versions.setRecommended", v.p.project.ownerName, v.p.project.slug, v.v.versionString) class="form-inline">
                                 <@csrf.formField />
                                 <button type="submit" class="btn btn-info">
@@ -81,17 +85,17 @@
                             </@form.form>
                         </#if>
 
-                        <#if request.headerData.globalPerm(Permission.Reviewer)>
-                            <#if v.v.reviewState.isChecked>
+                        <#if headerData.globalPerm(Permission.Reviewer)>
+                            <#if v.v.reviewState.checked>
                                 <a href="${routes.getRouteUrl("reviews.showReviews", v.p.project.ownerName, v.p.project.slug, v.v.versionString)}" class="btn btn-info"><@spring.message "review.log" /></a>
                             <#else>
-                                <a href="${routes.getRouteUrl("showReviews", v.p.project.ownerName, v.p.project.slug, v.v.versionString)}" class="btn btn-success">
+                                <a href="${routes.getRouteUrl("reviews.showReviews", v.p.project.ownerName, v.p.project.slug, v.v.versionString)}" class="btn btn-success">
                                     <i class="fas fa-play"></i> <@spring.message "review.start" />
                                 </a>
                             </#if>
                         </#if>
 
-                        <#if v.v.visibility == Visibility.SoftDelete>
+                        <#if v.v.visibility == Visibility.SOFTDELETE>
                             <a class="btn btn-danger" disabled data-toggle="tooltip" data-placement="top"
                             title="<@spring.message "version.delete.alreadyDeleted" />">
                                 <i class="fas fa-trash"></i> <@spring.message "general.delete" />
@@ -112,7 +116,7 @@
                         </#if>
 
                         <div class="btn-group btn-download">
-                            <a href="${routes.getRouteUrl("versions.download", v.p.project.ownerName, v.p.project.slug, v.v.versionString, "")}"
+                            <a href="${routes.getRouteUrl("versions.download", v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}"
                             title="<@spring.message "project.download.recommend" />" data-toggle="tooltip"
                             data-placement="bottom" class="btn btn-primary">
                                 <i class="fas fa-download"></i> <@spring.message "general.download" />
@@ -122,12 +126,12 @@
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right">
-                                <li><a href="${routes.getRouteUrl("versions.download", v.p.project.ownerName, v.p.project.slug, v.v.versionString, "")}"><@spring.message "general.download" /></a></li>
-                                <li><a href="#" class="copy-url" data-clipboard-text="${config.app.baseUrl}${routes.getRouteUrl("versions.download", v.p.project.ownerName, v.p.project.slug, v.v.versionString, "")}">Copy URL</a></li>
+                                <li><a href="${routes.getRouteUrl("versions.download", v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}"><@spring.message "general.download" /></a></li>
+                                <li><a href="#" class="copy-url" data-clipboard-text="${config.baseUrl}${routes.getRouteUrl("versions.download", v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}">Copy URL</a></li>
                             </ul>
                         </div>
 
-                        <#if request.hasUser && request.headerData.globalPerm(Permission.ViewLogs)>
+                        <#if cu?? && headerData.globalPerm(Permission.ViewLogs)>
                             <div class="dropdown dropdown-menu-right" style="display: inline-block">
                                 <button class="btn btn-alert dropdown-toggle" type="button" id="admin-version-actions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                     Admin actions
@@ -135,11 +139,11 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="admin-version-actions">
                                     <li><a href="${routes.getRouteUrl("showLog", "", "", "", v.v.versionString, "", "", "")}">User Action Logs</a></li>
-                                    <#if request.headerData.globalPerm(Permission.Reviewer)>
-                                        <#if v.v.visibility == Visibility.SoftDelete>
+                                    <#if headerData.globalPerm(Permission.Reviewer)>
+                                        <#if v.v.visibility == Visibility.SOFTDELETE>
                                             <li><a href="#" data-toggle="modal" data-target="#modal-restore">Undo delete</a></li>
                                         </#if>
-                                        <#if request.headerData.globalPerm(Permission.HardDeleteVersion) && !v.isRecommended && (v.p.publicVersions gt 1 || v.v.visibility == Visibility.SoftDelete)>
+                                        <#if headerData.globalPerm(Permission.HardDeleteVersion) && !v.recommended && (v.p.publicVersions gt 1 || v.v.visibility == Visibility.SoftDelete)>
                                             <li><a href="#" data-toggle="modal" data-target="#modal-harddelete" style="color: darkred">Hard delete</a></li>
                                         </#if>
                                     </#if>
@@ -158,7 +162,7 @@
     <div class="row version-description">
         <div id="description" class="col-md-8">
             <div class="row">
-                <#if !v.v.reviewState.isChecked>
+                <#if !v.v.reviewState.checked>
                     <div class="col-md-12">
                         <div class="alert-review alert alert-info" role="alert">
                             <i class="fas fa-info-circle"></i>
@@ -171,7 +175,7 @@
                     saveCall=routes.getRouteUrl("versions.saveDescription", v.p.project.ownerName, v.p.project.slug, v.v.versionString)
                     enabled=sp.perms(Permission.EditPage)
                     raw=v.v.description!""
-                    cooked=v.v.obj.render
+                    cooked=markdownService.render(v.v.description)
                     subject="Version"
                 />
                 </div>
@@ -179,7 +183,7 @@
         </div>
 
 
-        <#if v.v.dependencies.nonEmpty>
+        <#if v.v.dependencies?has_content>
                 <!-- Dependencies -->
             <div class="col-md-4">
                 <div class="panel panel-default">
@@ -187,35 +191,42 @@
                         <h3 class="panel-title">Dependencies</h3>
                     </div>
                     <ul class="list-group">
-
-                        @for(platform <- Platform.getPlatforms(v.dependencies.map(_._1.pluginId).toList)) {
-                            @v.v.dependencies.find(_.pluginId == platform.dependencyId).map { dependency =>
+                        <#assign Platform=@helper["me.minidigger.hangar.model.Platform"] />
+                        <#-- @ftlvariable name="Platform" type="me.minidigger.hangar.model.Platform" -->
+                        <#list Platform.getPlatforms(v.dependencies?map(d -> d.pluginId)) as platform>
+                            <#assign dependency=v.dependencies?filter(d -> d.pluginId == platform.dependencyId)?first />
+                            <#if dependency?has_content>
                                 <li class="list-group-item">
-                                    <a href="@{platform.url}">
-                                        <strong>@{platform.name}</strong>
+                                    <a href="${platform.url}">
+                                        <strong>${platform.getName()}</strong>
                                     </a>
-                                    <p class="version-string">@dependency.version</p>
-                                </li>
-                            }
-                        }
+                                    <#if dependency.version?has_content>
+                                        <p class="version-string">${dependency.version}</p>
+                                    <#else>
+                                        <p class="version-string">N/A</p>
+                                    </#if>
 
-                        @v.filteredDependencies.map { case (depend, project)=>
-                        <li class="list-group-item">
-                            <#if project??>
-                                <a href="${routes.getRouteUrl("projects.show", project.ownerName, project.slug)}">
-                                    <strong>${project.name}</strong>
-                                </a>
-                            <#else>
-                                <div class="minor">
-                                    ${depend.pluginId}
-                                    <i class="fas fa-question-circle"
-                                    title="<@spring.message "version.dependency.notOnOre" />"
-                                    data-toggle="tooltip" data-placement="right"></i>
-                                </div>
+                                </li>
                             </#if>
-                        <p class="version-string">${depend.version}</p>
-                        </li>
-                        }
+                        </#list>
+
+                        <#list v.filteredDependencies as depend, project>
+                            <li class="list-group-item">
+                                <#if project??>
+                                    <a href="${routes.getRouteUrl("projects.show", project.ownerName, project.slug)}">
+                                        <strong>${project.name}</strong>
+                                    </a>
+                                <#else>
+                                    <div class="minor">
+                                        ${depend.pluginId}
+                                        <i class="fas fa-question-circle"
+                                           title="<@spring.message "version.dependency.notOnOre" />"
+                                           data-toggle="tooltip" data-placement="right"></i>
+                                    </div>
+                                </#if>
+                                <p class="version-string">${depend.version}</p>
+                            </li>
+                        </#list>
                     </ul>
                 </div>
             </div>
@@ -254,8 +265,8 @@
         </div>
     </#if>
 
-    <#if request.headerData.globalPerm(Permission.Reviewer)>
-        <#if v.v.visibility == Visibility.SoftDelete>
+    <#if headerData.globalPerm(Permission.Reviewer)>
+        <#if v.v.visibility == Visibility.SOFTDELETE>
             <div class="modal fade" id="modal-restore" tabindex="-1" role="dialog" aria-labelledby="label-delete">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -283,7 +294,7 @@
                 </div>
             </div>
         </#if>
-        <#if request.headerData.globalPerm(Permission.HardDeleteVersion)>
+        <#if headerData.globalPerm(Permission.HardDeleteVersion)>
             <div class="modal fade" id="modal-harddelete" tabindex="-1" role="dialog" aria-labelledby="label-delete">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">

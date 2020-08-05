@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.springframework.validation.annotation.Validated;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
@@ -114,4 +116,15 @@ public class Dependency {
         }
         return o.toString().replace("\n", "\n    ");
     }
+
+    public static List<Dependency> from(List<String> dependencies) {
+        List<Dependency> deps = new ArrayList<>();
+        for (String dependency : dependencies) {
+            if (dependency.contains(":"))
+                deps.add(new Dependency(dependency.split(":")[0], dependency.split(":")[1]));
+            else deps.add(new Dependency(dependency, null));
+        }
+        return deps;
+    }
+
 }
