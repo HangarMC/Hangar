@@ -17,36 +17,37 @@
     <description>Ore, but in Spring, but for Paper</description>
 
     <properties>
+        <!-- compiling -->
         <java.version>11</java.version>
 
-        <!-- compiling -->
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-        <maven.compiler.testSource>${java.version}</maven.compiler.testSource>
-        <maven.compiler.testTarget>${java.version}</maven.compiler.testTarget>
-
         <!-- encoding -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <encoding>UTF-8</encoding>
+        <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
+
+        <!-- dependency management -->
+        <jdbi3-bom.version>3.14.1</jdbi3-bom.version>
 
         <!-- dependencies -->
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
         <freemarker.version>2.3.30</freemarker.version>
         <freemarker-java8.version>2.0.0</freemarker-java8.version>
         <flexmark-all.version>0.62.2</flexmark-all.version>
-        <jquery.version>3.5.1</jquery.version>
-        <chart.js.version>2.9.3</chart.js.version>
-        <clipboard.version>2.0.6</clipboard.version>
-        <moment.version>2.27.0</moment.version>
-        <filesize.version>6.0.1</filesize.version>
-        <font-awesome.version>5.13.1</font-awesome.version>
-        <webjars-locator.version>0.40</webjars-locator.version>
-        <swagger-ui.version>3.30.0</swagger-ui.version>
         <snakeyaml.version>1.26</snakeyaml.version>
-        <jdbi3-bom.version>3.14.1</jdbi3-bom.version>
+
+        <!-- webjars dependencies -->
+        <webjars-locator.version>0.40</webjars-locator.version>
+        <jquery.version>3.5.1</jquery.version>
+        <font-awesome.version>5.13.1</font-awesome.version>
+        <filesize.version>6.0.1</filesize.version>
+        <moment.version>2.27.0</moment.version>
+        <clipboard.version>2.0.6</clipboard.version>
+        <chart.js.version>2.9.3</chart.js.version>
+        <swagger-ui.version>3.30.0</swagger-ui.version>
 
         <!-- plugins -->
         <frontend-maven-plugin.version>1.10.0</frontend-maven-plugin.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -246,6 +247,21 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <testSource>${java.version}</testSource>
+                    <testTarget>${java.version}</testTarget>
+                    <encoding>${encoding}</encoding>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
