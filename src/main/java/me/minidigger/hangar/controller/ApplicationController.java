@@ -5,14 +5,9 @@ import me.minidigger.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import me.minidigger.hangar.model.NamedPermission;
 import me.minidigger.hangar.model.Permission;
 import me.minidigger.hangar.model.Visibility;
-import me.minidigger.hangar.model.generated.ProjectNamespace;
-import me.minidigger.hangar.model.generated.Version;
 import me.minidigger.hangar.model.viewhelpers.Activity;
-import me.minidigger.hangar.model.viewhelpers.FlagActivity;
 import me.minidigger.hangar.model.viewhelpers.LoggedActionViewModel;
 import me.minidigger.hangar.model.viewhelpers.ProjectFlag;
-import me.minidigger.hangar.model.viewhelpers.Review;
-import me.minidigger.hangar.model.viewhelpers.ReviewActivity;
 import me.minidigger.hangar.model.viewhelpers.ReviewQueueEntry;
 import me.minidigger.hangar.model.viewhelpers.UnhealthyProject;
 import me.minidigger.hangar.model.viewhelpers.UserData;
@@ -40,7 +35,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -84,15 +78,9 @@ public class ApplicationController extends HangarController {
     public ModelAndView showActivities(@PathVariable String user) {
         ModelAndView mv = new ModelAndView("users/admin/activity");
         mv.addObject("username", user);
-
         List<Activity> activities = new ArrayList<>();
         activities.addAll(userService.getFlagActivity(user));
         activities.addAll(userService.getRewiewActivity(user));
-
-        activities.add(new ReviewActivity(OffsetDateTime.now(),
-                new Review(new Version(), 1L, OffsetDateTime.now(), "suks"), new ProjectNamespace().owner("Kneny").slug("Swags")));
-        activities.add(new FlagActivity(OffsetDateTime.now(), new ProjectNamespace().owner("Kneny").slug("Swags")));
-
         mv.addObject("activities", activities);
         return mv;
     }
