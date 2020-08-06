@@ -136,6 +136,7 @@
                                     <p><@spring.message "version.releaseBulletin.info" /></p>
 
                                     <@editor.editor
+                                        cooked=markdownService.render(version.description!"")
                                         savable=false
                                         enabled=true
                                         raw=version.description!""

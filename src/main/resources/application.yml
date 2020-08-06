@@ -24,19 +24,7 @@ spring:
       max-request-size: 11MB
   devtools:
     restart:
-      exclude:
-        - META-INF/maven/**
-        - META-INF/resources/**
-        - resources/**
-        - static/**
-        - public/**
-        - templates/**
-        - "**/*Test.class"
-        - "**/*Tests.class"
-        - git.properties
-        - META-INF/build-info.properties
-        - tmp/**
-        - plugins/**
+      additional-exclude: work/**
 
 #############
 # Fake User #

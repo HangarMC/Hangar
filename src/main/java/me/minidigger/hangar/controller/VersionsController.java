@@ -6,15 +6,24 @@ import me.minidigger.hangar.db.customtypes.LoggedActionType;
 import me.minidigger.hangar.db.customtypes.LoggedActionType.VersionContext;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.ProjectDao;
-import me.minidigger.hangar.db.dao.ProjectVersionDao;
 import me.minidigger.hangar.db.model.ProjectChannelsTable;
 import me.minidigger.hangar.db.model.ProjectVersionsTable;
 import me.minidigger.hangar.model.Color;
 import me.minidigger.hangar.model.NamedPermission;
 import me.minidigger.hangar.model.Visibility;
+import me.minidigger.hangar.model.viewhelpers.ProjectData;
+import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
+import me.minidigger.hangar.model.viewhelpers.VersionData;
 import me.minidigger.hangar.security.annotations.GlobalPermission;
-import me.minidigger.hangar.service.project.ChannelService;
 import me.minidigger.hangar.service.UserActionLogService;
+import me.minidigger.hangar.service.UserService;
+import me.minidigger.hangar.service.VersionService;
+import me.minidigger.hangar.service.pluginupload.PendingVersion;
+import me.minidigger.hangar.service.pluginupload.PluginUploadService;
+import me.minidigger.hangar.service.project.ChannelService;
+import me.minidigger.hangar.service.project.ProjectFactory;
+import me.minidigger.hangar.service.project.ProjectService;
+import me.minidigger.hangar.util.AlertUtil;
 import me.minidigger.hangar.util.AlertUtil.AlertType;
 import me.minidigger.hangar.util.HangarException;
 import me.minidigger.hangar.util.RouteHelper;
@@ -31,21 +40,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
-import me.minidigger.hangar.model.viewhelpers.ProjectData;
-import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
-import me.minidigger.hangar.model.viewhelpers.VersionData;
-import me.minidigger.hangar.service.UserService;
-import me.minidigger.hangar.service.VersionService;
-import me.minidigger.hangar.service.pluginupload.PendingVersion;
-import me.minidigger.hangar.service.pluginupload.PluginUploadService;
-import me.minidigger.hangar.service.project.ProjectFactory;
-import me.minidigger.hangar.service.project.ProjectService;
-import me.minidigger.hangar.util.AlertUtil;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 @Controller
 public class VersionsController extends HangarController {
@@ -112,7 +109,7 @@ public class VersionsController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @PostMapping(value = "/{author}/{slug}/versions/new/upload", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/{author}/{slug}/versions/new/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ModelAndView upload(@PathVariable String author, @PathVariable String slug, @RequestParam("pluginFile") MultipartFile file) {
         String uploadError = projectFactory.getUploadError(userService.getCurrentUser());
         if (uploadError != null) {
@@ -122,13 +119,19 @@ public class VersionsController extends HangarController {
         }
         if (uploadError != null) {
             ModelAndView mav = _showCreator(author, slug, null);
-            AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, uploadError);
+            AlertUtil.showAlert(mav, AlertType.ERROR, uploadError);
             return fillModel(mav);
         }
 
         ProjectData projectData = projectService.getProjectData(author, slug);
-        PendingVersion pendingVersion = pluginUploadService.processSubsequentPluginUpload(file, projectData.getProjectOwner(), projectData.getProject());
-
+        PendingVersion pendingVersion;
+        try {
+            pendingVersion = pluginUploadService.processSubsequentPluginUpload(file, projectData.getProjectOwner(), projectData.getProject());
+        } catch (HangarException e) {
+            ModelAndView mav = _showCreator(author, slug, null);
+            AlertUtil.showAlert(mav, AlertType.ERROR, e.getMessageKey(), e.getArgs());
+            return fillModel(mav);
+        }
         return _showCreator(author, slug, pendingVersion);
     }
 
@@ -137,9 +140,6 @@ public class VersionsController extends HangarController {
     public ModelAndView showCreatorWithMeta(@PathVariable String author, @PathVariable String slug, @PathVariable String versionName) {
         ProjectData projectData = projectService.getProjectData(author, slug);
         PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(projectData.getProject().getId() + "/" + versionName, PendingVersion.class);
-        if (pendingVersion == null) {
-            // TODO error out
-        }
 
         if (pendingVersion == null) {
             ModelAndView mav = _showCreator(author, slug, null);
@@ -180,11 +180,11 @@ public class VersionsController extends HangarController {
                                 @PathVariable String slug,
                                 @PathVariable("version") String versionName,
                                 @RequestParam(defaultValue = "false") boolean unstable,
-                                @RequestParam boolean recommended,
+                                @RequestParam(defaultValue = "false") boolean recommended,
                                 @RequestParam("channel-input") String channelInput,
                                 @RequestParam(value = "channel-color-input", required = false) Color channelColorInput,
                                 @RequestParam(value = "non-reviewed", defaultValue = "false") boolean nonReviewed,
-                                @RequestParam("forum-post") boolean forumPost,
+                                @RequestParam(value = "forum-post", defaultValue = "false") boolean forumPost,
                                 @RequestParam(required = false) String content,
                                 HttpServletRequest request,
                                 RedirectAttributes attributes) {
@@ -212,9 +212,6 @@ public class VersionsController extends HangarController {
         } catch (HangarException e) {
             AlertUtil.showAlert(attributes, AlertType.ERROR, e.getMessage(), e.getArgs());
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.showCreator", author, slug));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.showCreator", author, slug));
         }
 
         if (recommended) {
@@ -228,7 +225,7 @@ public class VersionsController extends HangarController {
 
         userActionLogService.version(request, LoggedActionType.VERSION_UPLOADED.with(VersionContext.of(projectData.getProject().getId(), version.getId())), "published", "null");
 
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.show", author, slug, versionName)); // TODO implement publish request controller
+        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.show", author, slug, versionName));
     }
 
     @GetMapping("/{author}/{slug}/versions/{version:.*}")
@@ -269,7 +266,7 @@ public class VersionsController extends HangarController {
     public ModelAndView softDelete(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String comment, HttpServletRequest request, RedirectAttributes ra) {
         VersionData versionData = versionService.getVersionData(author, slug, version);
         try {
-            projectFactory.prepareDeleteVersion(request, versionData);
+            projectFactory.prepareDeleteVersion(versionData);
         } catch (HangarException e) {
             AlertUtil.showAlert(ra, AlertType.ERROR, e.getMessage());
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.show", author, slug, version));

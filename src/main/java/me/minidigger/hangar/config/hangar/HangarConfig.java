@@ -29,7 +29,7 @@ public class HangarConfig {
     private boolean logTimings = false;
     private String authUrl = "https://hangarauth.minidigger.me";
     private final ApplicationHome home = new ApplicationHome(HangarApplication.class);
-    private String pluginUploadDir = home.getDir().getAbsolutePath();
+    private String pluginUploadDir = home.getDir().toPath().resolve("work").toString();
     private String baseUrl = "https://localhost:8080";
 
     @NestedConfigurationProperty

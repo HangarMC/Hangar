@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -138,7 +139,7 @@ public class ProjectFactory {
         if (invalidProjectReason != null) throw new HangarException(invalidProjectReason.key);
     }
 
-    public ProjectVersionsTable createVersion(HttpServletRequest request, ProjectData project, PendingVersion pendingVersion) throws IOException {
+    public ProjectVersionsTable createVersion(HttpServletRequest request, ProjectData project, PendingVersion pendingVersion) {
 
         ProjectChannelsTable channel = projectChannelDao.get().getProjectChannel(project.getProject().getId(), pendingVersion.getChannelName(), null);
         if (channel == null) channel = channelService.addProjectChannel(project.getProject().getId(), pendingVersion.getChannelName(), pendingVersion.getChannelColor());
@@ -168,7 +169,13 @@ public class ProjectFactory {
         Platform.createPlatformTags(versionService, version.getId(), Dependency.from(version.getDependencies()));
 
         // TODO notify watchers
-        uploadPlugin(project, pendingVersion.getPlugin(), version);
+        try {
+            uploadPlugin(project, pendingVersion.getPlugin(), version);
+        } catch (IOException e) {
+            versionService.deleteVersion(version.getId());
+            throw new HangarException("error.version.fileIOError");
+        }
+
 
         // first project upload
         if (project.getVisibility() == Visibility.NEW) {
@@ -190,7 +197,7 @@ public class ProjectFactory {
         if (Files.notExists(newPath)) {
             Files.createDirectories(newPath.getParent());
         }
-        Files.move(oldPath, newPath);
+        Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING); // TODO maybe remove the replace_existing in prod?
         Files.deleteIfExists(oldPath);
 
         if (Files.notExists(newPath)) {
@@ -198,7 +205,7 @@ public class ProjectFactory {
         }
     }
 
-    public void prepareDeleteVersion(HttpServletRequest request, VersionData versionData) {
+    public void prepareDeleteVersion(VersionData versionData) {
         if (versionData.getP().getVisibility() == Visibility.SOFTDELETE) return;
         List<ProjectVersionsTable> projectVersions = projectVersionDao.get().getProjectVersions(versionData.getP().getProject().getId());
         if (projectVersions.stream().filter(p -> p.getVisibility() == Visibility.PUBLIC).count() <= 1) {

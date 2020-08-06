@@ -62,6 +62,10 @@ public class VersionService {
         versionDao.get().update(projectVersionsTable);
     }
 
+    public void deleteVersion(long versionId) {
+        versionDao.get().deleteVersion(versionId);
+    }
+
     public void changeVisibility(VersionData versionData, Visibility visibility, String comment, long userId) {
         if (versionData.getV().getVisibility() == visibility) return; // No change
 

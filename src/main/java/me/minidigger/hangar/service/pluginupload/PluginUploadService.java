@@ -1,6 +1,7 @@
 package me.minidigger.hangar.service.pluginupload;
 
 import me.minidigger.hangar.config.CacheConfig;
+import me.minidigger.hangar.service.VersionService;
 import me.minidigger.hangar.service.plugindata.PluginFileWithData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,17 +29,21 @@ public class PluginUploadService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PluginUploadService.class);
 
+    private final HangarConfig hangarConfig;
     private final ProjectFiles projectFiles;
     private final PluginDataService pluginDataService;
     private final ChannelService channelService;
+    private final VersionService versionService;
     private final CacheManager cacheManager;
     private final HangarConfig config;
 
     @Autowired
-    public PluginUploadService(ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, CacheManager cacheManager, HangarConfig config) {
+    public PluginUploadService(HangarConfig hangarConfig, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, VersionService versionService, CacheManager cacheManager, HangarConfig config) {
+        this.hangarConfig = hangarConfig;
         this.projectFiles = projectFiles;
         this.pluginDataService = pluginDataService;
         this.channelService = channelService;
+        this.versionService = versionService;
         this.cacheManager = cacheManager;
         this.config = config;
     }
@@ -78,32 +83,36 @@ public class PluginUploadService {
 
     public PendingVersion processSubsequentPluginUpload(MultipartFile file, UsersTable owner, ProjectsTable project) throws HangarException {
         PluginFileWithData plugin = processPluginUpload(file, owner);
-//        if (!plugin.getData().getId().equals(project.getPluginId())) { // TODO pluginId
+        // TODO not sure what to do w/plugin id, that isn't stored in the metadata for the file
+//        if (!plugin.getData().getId().equals(project.getPluginId())) {
 //            throw new HangarException("error.version.invalidPluginId");
-//        } else if (plugin.getData().getVersion().contains("recommended")) {
-//            throw new HangarException("error.version.illegalVersion");
 //        }
+        if (plugin.getData().getVersion() != null && plugin.getData().getVersion().contains("recommended")) {
+            throw new HangarException("error.version.illegalVersion");
+        }
 
 
         ProjectChannelsTable channel = channelService.getFirstChannel(project);
 
         PendingVersion pendingVersion = startVersion(plugin, project.getPluginId(), project.getId(), project.getForumSync(), channel.getName());
 
-        // todo duplicate checking and shit
+        boolean exists = versionService.exists(pendingVersion);
+        if (exists && hangarConfig.projects.isFileValidate()) {
+            throw new HangarException("error.version.duplicate");
+        }
         cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).put(project.getId() + "/" + pendingVersion.getVersionString(), pendingVersion);
         return pendingVersion;
     }
 
-    private PendingVersion startVersion(PluginFileWithData plugin, String pluginId, long projectId, boolean forumSync, String channelName) throws HangarException {
+    private PendingVersion startVersion(PluginFileWithData plugin, String pluginId, long projectId, boolean forumSync, String channelName) {
         PluginFileData metaData = plugin.getData();
-        if (metaData.getVersion() == null || metaData.getVersion().isEmpty()) {
+        // TODO same issue here w/plugin id, its not stored in metadata
+//        if (!metaData.getId().equals(pluginId)) {
+//            throw new HangarException("error.plugin.invalidPluginId");
+//        }
+        if (metaData.getVersion() == null || metaData.getVersion().isBlank()) {
             throw new HangarException("error.plugin.noVersion");
         }
-//        if (!metaData.getId().equals(pluginId)) { // TODO pluginId
-//            throw new HangarException("error.plugin.invalidPluginId");
-//        } else if (metaData.getVersion() == null || metaData.getVersion().isBlank()) {
-//            throw new HangarException("error.plugin.noVersion");
-//        }
 
         Path path = plugin.getPath();
 

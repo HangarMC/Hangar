@@ -5,30 +5,28 @@ import me.minidigger.hangar.db.model.ProjectVersionsTable;
 import me.minidigger.hangar.model.Color;
 import me.minidigger.hangar.model.Platform;
 import me.minidigger.hangar.model.generated.Dependency;
-import me.minidigger.hangar.model.generated.Project;
 import me.minidigger.hangar.model.viewhelpers.ProjectData;
-import me.minidigger.hangar.service.plugindata.PluginFileData;
+import me.minidigger.hangar.service.VersionService;
 import me.minidigger.hangar.service.plugindata.PluginFileWithData;
 import me.minidigger.hangar.service.project.ProjectFactory;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.List;
 
 public class PendingVersion {
 
-    private String versionString;
-    private List<Dependency> dependencies;
-    private String description;
-    private long projectId;
-    private long fileSize;
-    private String hash;
-    private String fileName;
-    private long authorId;
-    private String channelName;
-    private Color channelColor;
-    private PluginFileWithData plugin;
-    private boolean createForumPost;
+    private final String versionString;
+    private final List<Dependency> dependencies;
+    private final String description;
+    private final long projectId;
+    private final long fileSize;
+    private final String hash;
+    private final String fileName;
+    private final long authorId;
+    private final String channelName;
+    private final Color channelColor;
+    private final PluginFileWithData plugin;
+    private final boolean createForumPost;
 
     public PendingVersion(String versionString, List<Dependency> dependencies, String description, long projectId, long fileSize, String hash, String fileName, long authorId, String channelName, Color channelColor, PluginFileWithData plugin, boolean createForumPost) {
         this.versionString = versionString;
@@ -114,7 +112,7 @@ public class PendingVersion {
         );
     }
 
-    public ProjectVersionsTable complete(HttpServletRequest request, ProjectData project, ProjectFactory factory) throws IOException {
+    public ProjectVersionsTable complete(HttpServletRequest request, ProjectData project, ProjectFactory factory) {
         return factory.createVersion(request, project, this);
     }
 }
