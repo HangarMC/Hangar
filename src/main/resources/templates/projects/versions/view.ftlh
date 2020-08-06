@@ -37,7 +37,7 @@
                 <a href="${routes.getRouteUrl("users.showProjects", v.p.project.ownerName)}">
                     <strong>${v.p.project.ownerName}</strong>
                 </a>
-                released this version on ${(v.v.createdAt).format("YYYY-mm-dd HH:mm:ss")}
+                released this version on ${utils.prettifyDate(v.v.createdAt)}
             </p>
 
                 <!-- Buttons -->
@@ -55,7 +55,7 @@
                             <#if headerData.globalPerm(Permission.Reviewer)>
                                 <#if v.approvedBy?has_content>
                                     <i class="minor">
-                                        <#assign msgArgs=[v.approvedBy, (v.v.approvedAt).format("YYYY-mm-dd HH:mm:ss")] />
+                                        <#assign msgArgs=[v.approvedBy, utils.prettifyDate(v.v.approvedAt)] />
                                         <@spring.messageArgs "version.approved.info" msgArgs />
                                     </i>
                                 </#if>

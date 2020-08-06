@@ -19,14 +19,12 @@ import me.minidigger.hangar.service.VersionService;
 import me.minidigger.hangar.service.project.FlagService;
 import me.minidigger.hangar.service.project.ProjectService;
 import me.minidigger.hangar.util.AlertUtil;
-import me.minidigger.hangar.util.AlertUtil.AlertType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -74,7 +72,7 @@ public class ApplicationController extends HangarController {
         mv.addObject("username", user);
         List<Activity> activities = new ArrayList<>();
         activities.addAll(userService.getFlagActivity(user));
-        activities.addAll(userService.getRewiewActivity(user));
+        activities.addAll(userService.getReviewActivity(user));
         mv.addObject("activities", activities);
         return mv;
     }

@@ -28,7 +28,8 @@ public interface ProjectVersionDao {
             "(:now, :versionString, :dependencies, :description, :projectId, :channelId, :fileSize, :hash, :fileName, :authorId, :createForumPost)")
     ProjectVersionsTable insert(@BindBean ProjectVersionsTable projectVersionsTable);
 
-    @SqlUpdate("UPDATE project_versions SET visibility = :visibility, reviewer_id = :reviewerId, approved_at = :approvedAt, description = :description " +
+    @SqlUpdate("UPDATE project_versions SET visibility = :visibility, reviewer_id = :reviewerId, approved_at = :approvedAt, description = :description, " +
+               "review_state = :reviewState " +
                "WHERE id = :id")
     void update(@BindBean ProjectVersionsTable projectVersionsTable);
 

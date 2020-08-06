@@ -11,10 +11,12 @@ import me.minidigger.hangar.db.model.ProjectVersionsTable;
 import me.minidigger.hangar.model.Color;
 import me.minidigger.hangar.model.NamedPermission;
 import me.minidigger.hangar.model.Visibility;
+import me.minidigger.hangar.model.generated.ReviewState;
 import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
 import me.minidigger.hangar.model.viewhelpers.VersionData;
 import me.minidigger.hangar.security.annotations.GlobalPermission;
+import me.minidigger.hangar.service.ReviewService;
 import me.minidigger.hangar.service.UserActionLogService;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.service.VersionService;
@@ -43,6 +45,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.OffsetDateTime;
 
 @Controller
 public class VersionsController extends HangarController {
@@ -243,16 +246,30 @@ public class VersionsController extends HangarController {
         return fillModel(mav);
     }
 
+    @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/versions/{version}/approve")
-    public Object approve(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
-        return null; // TODO implement approve request controller
+    @PostMapping("/{author}/{slug}/versions/{version}/approve")
+    public ModelAndView approve(@PathVariable String author, @PathVariable String slug, @PathVariable String version, HttpServletRequest request) {
+        return _approve(author, slug, version, false, request);
     }
 
+    @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/versions/{version}/approvePartial")
-    public Object approvePartial(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
-        return null; // TODO implement approvePartial request controller
+    @PostMapping("/{author}/{slug}/versions/{version}/approvePartial")
+    public ModelAndView approvePartial(@PathVariable String author, @PathVariable String slug, @PathVariable String version, HttpServletRequest request) {
+        return _approve(author, slug, version, true, request);
+    }
+
+    private ModelAndView _approve(String author, String slug, String version, boolean partial, HttpServletRequest request) {
+        ReviewState newState = partial ? ReviewState.PARTIALLY_REVIEWED : ReviewState.REVIEWED;
+        ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
+        ReviewState oldState = versionsTable.getReviewState();
+        versionsTable.setReviewState(newState);
+        versionsTable.setReviewerId(userService.getCurrentUser().getId());
+        versionsTable.setApprovedAt(OffsetDateTime.now());
+        versionService.update(versionsTable);
+        userActionLogService.version(request, LoggedActionType.VERSION_REVIEW_STATE_CHANGED.with(VersionContext.of(versionsTable.getProjectId(), versionsTable.getId())), newState.name(), oldState.name());
+        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.show", author, slug, version));
     }
 
     @RequestMapping("/{author}/{slug}/versions/{version}/confirm")

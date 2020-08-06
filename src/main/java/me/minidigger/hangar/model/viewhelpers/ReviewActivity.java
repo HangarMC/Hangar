@@ -6,8 +6,8 @@ import java.time.OffsetDateTime;
 
 public class ReviewActivity extends Activity {
 
-    private OffsetDateTime endedAt;
-    private Review id;
+    private final OffsetDateTime endedAt;
+    private final Review id;
 
     public ReviewActivity(OffsetDateTime endedAt, Review id, ProjectNamespace project) {
         super(project);

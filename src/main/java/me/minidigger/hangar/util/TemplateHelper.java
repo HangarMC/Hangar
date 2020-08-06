@@ -4,6 +4,9 @@ import me.minidigger.hangar.config.hangar.HangarConfig;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 public class TemplateHelper {
 
@@ -33,5 +36,9 @@ public class TemplateHelper {
             long z = (63L - Long.numberOfLeadingZeros(size)) / 10L;
             return String.format("%.1f %cB", size.doubleValue() / (1L << (z * 10)), " KMGTPE".charAt((int) z));
         }
+    }
+
+    public String prettifyDate(OffsetDateTime dateTime) {
+        return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(dateTime);
     }
 }

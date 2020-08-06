@@ -1,5 +1,6 @@
 package me.minidigger.hangar.config;
 
+import me.minidigger.hangar.db.customtypes.JSONB;
 import me.minidigger.hangar.db.customtypes.JobState;
 import me.minidigger.hangar.db.customtypes.LoggedAction;
 import me.minidigger.hangar.db.customtypes.RoleCategory;
@@ -44,6 +45,7 @@ public class JDBIConfig {
         config.registerCustomType(LoggedAction.class, "logged_action_type");
         config.registerCustomType(RoleCategory.class, "role_category");
         config.registerCustomType(JobState.class, "job_state");
+        config.registerCustomType(JSONB.class, "jsonb");
         return jdbi;
     }
 

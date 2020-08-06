@@ -14,6 +14,22 @@ public class ProjectVersionReviewsTable {
     private OffsetDateTime endedAt;
     private JSONB comment;
 
+    public ProjectVersionReviewsTable(ProjectVersionReviewsTable projectVersionReviewsTable) {
+        this.id = projectVersionReviewsTable.id;
+        this.versionId = projectVersionReviewsTable.versionId;
+        this.userId = projectVersionReviewsTable.userId;
+        this.createdAt = projectVersionReviewsTable.createdAt;
+        this.endedAt = projectVersionReviewsTable.endedAt;
+        this.comment = projectVersionReviewsTable.comment;
+    }
+
+    public ProjectVersionReviewsTable(long versionId, long userId, JSONB comment) {
+        this.versionId = versionId;
+        this.userId = userId;
+        this.comment = comment;
+    }
+
+    public ProjectVersionReviewsTable() { }
 
     public long getId() {
         return id;

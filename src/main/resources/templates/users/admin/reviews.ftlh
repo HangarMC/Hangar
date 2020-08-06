@@ -18,33 +18,35 @@
 -->
 
 <#assign scripts>
-    <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "javascripts/review.js" />"></script>
-    <script @CSPNonce.attr>versionPath = '${helper.urlEncode(project.ownerName)}/${helper.urlEncode(project.slug)}/versions/${helper.urlEncode(version.name)}'</script>
+    <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "javascripts/review.js" />"></script>
+    <script <#--@CSPNonce.attr-->>versionPath = '${utils.urlEncode(project.project.ownerName)}/${utils.urlEncode(project.project.slug)}/versions/${utils.urlEncode(version.v.versionString)}'</script>
 </#assign>
 
-<#assign message><@spring.messageArgs code="review.title" args=[project.name, version.name] /></#assign>
+<#assign ReviewState=@helper["me.minidigger.hangar.model.generated.ReviewState"] />
+<#-- @ftlvariable name="ReviewState" type="me.minidigger.hangar.model.generated.ReviewState" -->
+<#assign message><@spring.messageArgs code="review.title" args=[project.project.name, version.v.versionString] /></#assign>
 <@base.base title=message additionalScripts=scripts>
     <div class="row">
         <div class="col-md-12  header-flags">
             <div class="clearfix">
-                <h1 class="pull-left">${project.name} <i>${version.versionString}</i></h1>
+                <h1 class="pull-left">${project.project.name} <i>${version.v.versionString}</i></h1>
             </div>
             <p class="user date pull-left">
-                <a href="${routes.getRouteUrl("users.showProjects", project.ownerName)}">
-                    <strong>@project.ownerName</strong>
+                <a href="${routes.getRouteUrl("users.showProjects", project.project.ownerName)}">
+                    <strong>${project.project.ownerName}</strong>
                 </a>
-                released this version on ${version.createdAt?string.long}
+                released this version on ${utils.prettifyDate(version.v.createdAt)}
             </p>
-            <#if !version.reviewState.isChecked>
+            <#if !version.v.reviewState.checked>
                 <div class="pull-right">
                     <span class="btn-group-sm">
-                        <a href="#" class="btn btn-info btn-skip-review"><#if version.reviewState != ReviewState.Backlog> Remove from queue <#else> Add to queue </#if></a>
-                        <a href="${routes.getRouteUrl("projects.show", project.ownerName, project.slug)}" class="btn btn-info">Project Page</a>
-                        <a href="${routes.getRouteUrl("versions.downloadJar", project.ownerName, project.slug, version.versionString, "")}" class="btn btn-info">Download File</a>
+                        <a href="#" class="btn btn-info btn-skip-review"><#if version.v.reviewState != ReviewState.BACKLOG> Remove from queue <#else> Add to queue </#if></a>
+                        <a href="${routes.getRouteUrl("projects.show", project.project.ownerName, project.project.slug)}" class="btn btn-info">Project Page</a>
+                        <a href="${routes.getRouteUrl("versions.downloadJar", project.project.ownerName, project.project.slug, version.v.versionString, "")}" class="btn btn-info">Download File</a>
                     </span>
                     <span class="btn-group-sm">
                     <#if mostRecentUnfinishedReview??>
-                        <#if request.headerData.isCurrentUser(mostRecentUnfinishedReview.userId)>
+                        <#if headerData.isCurrentUser(mostRecentUnfinishedReview.userId)>
                             <button class="btn btn-review-stop btn-danger"><i class="fas fa-stop-circle"></i> <@spring.message "review.stop" /></button>
                             <button class="btn btn-review-approve btn-success"><i class="fas fa-thumbs-up"></i> <@spring.message "user.queue.approve" /></button>
                             <button class="btn btn-review-approve-partial btn-success"><i class="fas fa-thumbs-up"></i> <@spring.message "user.queue.approvePartial" /></button>
@@ -66,12 +68,12 @@
         </div>
     </div>
     <#if mostRecentUnfinishedReview??>
-        <#if request.headerData.isCurrentUser(mostRecentUnfinishedReview.userId)>
+        <#if headerData.isCurrentUser(mostRecentUnfinishedReview.userId)>
             <div class="row">
                 <div class="col-md-12">
                     <div class="input-group" style="width: 100%;
                         margin-top: 1em;">
-                        <textarea type="text" class="form-control textarea-addmessage" placeholder="Message"></textarea>
+                        <textarea type="text" class="form-control textarea-addmessage" placeholder="Message" autocomplete="off"></textarea>
                         <div class="input-group-addon btn btn-review-addmessage-submit btn-primary"><i class="fas fa-clipboard"></i> <@spring.message "review.addmessage" /></div>
                     </div>
                 </div>
@@ -82,7 +84,7 @@
         <div class="col-md-12">
             <h2><@spring.message "review.log" /></h2>
         </div>
-        <#if reviews.isEmpty>
+        <#if !reviews?has_content>
             <div class="col-md-12">
                 <div class="alert-review alert alert-info" role="alert">
                     <i class="fas fa-info-circle"></i>
@@ -94,70 +96,70 @@
         <div class="col-md-12">
             <table class="table table-condensed setting-no-border table-review-log">
                 <tbody>
-                @reviews.reverse.zipWithIndex.map { case (t, index) =>
-                    @defining((t._1, t._2)) { case (item, name) =>
-                        <#if item.endedAt??>
-                            <#if reviews.size > (reviews.size - index)>
-                                <#if (item.endedAt?string.long).equalsIgnoreCase(reviews.reverse(reviews.size - index - 1)._1.createdAt?string.long)>
-                                    <tr>
-                                        <td>${item.endedAt?string.long}</td>
-                                        <td>
-                                            <strong>${name!"Unknown"}</strong>
-                                            took over from
-                                            <strong>${name!"Unknown"}</strong>
-                                            <#if !item.decodeMessages.exists(_.isTakeover)>
-                                                <i>- no message provided -</i>
-                                            <#else>
-                                                <i>${item.decodeMessages.filter(_.isTakeover).head.render}</i>
-                                            </#if>
-                                        </td>
-                                    </tr>
-                                <#else>
-                                    <tr>
-                                        <td>${item.endedAt?string.long}</td>
-                                        <td><strong>${name!"Unknown"}</strong> stopped</td>
-                                    </tr>
-                                </#if>
+                <#-- @ftlvariable name="review" type="me.minidigger.hangar.model.viewhelpers.VersionReview" -->
+                <#list reviews as review>
+                    <#if review.endedAt??>
+                        <#if reviews?size gt (reviews?size - review?index)>
+                            <#if review.endedAt.toEpochSecond() == reviews?reverse[reviews?size - review?index - 1].endedAt.toEpochSecond()>
+                                <tr>
+                                    <td>${utils.prettifyDate(review.endedAt)}</td>
+                                    <td>
+                                        <strong>${review.userName!"Unknown"}</strong>
+                                        took over from
+                                        <strong>${review.userName!"Unknown"}</strong>
+                                        <#if !review.messages?filter(m -> m.takeover)?has_content>
+                                            <i>- no message provided -</i>
+                                        <#else>
+                                            <i>${markdownService.render(review.messages?filter(m -> m.takeover)?first.message)}</i>
+                                        </#if>
+                                    </td>
+                                </tr>
                             <#else>
-                                <#if version.approvedAt??>
-                                    <tr>
-                                        <td>${item.endedAt?string.long}</td>
-                                        <td><strong>${name!"Unknown"}</strong> approved</td>
-                                    </tr>
-                                <#else>
-                                    <tr>
-                                        <td>${item.endedAt?string.long}</td>
-                                        <td>
-                                            <strong>${name!"Unknown"}</strong>
-                                            stopped
-                                            <br>
-                                            <#if !item.decodeMessages.exists(_.isStop)>
-                                                <i>- no message provided -</i>
-                                            <#else>
-                                                <i>${item.decodeMessages.filter(_.isStop).head.render}</i>
-                                            </#if>
-                                        </td>
-                                    </tr>
-                                </#if>
+                                <tr>
+                                    <td>${utils.prettifyDate(review.endedAt)}</td>
+                                    <td><strong>${review.userName!"Unknown"}</strong> stopped</td>
+                                </tr>
+                            </#if>
+                        <#else>
+                            <#if version.approvedAt??>
+                                <tr>
+                                    <td>${utils.prettifyDate(review.endedAt)}</td>
+                                    <td><strong>${review.userName!"Unknown"}</strong> approved</td>
+                                </tr>
+                            <#else>
+                                <tr>
+                                    <td>${utils.prettifyDate(review.endedAt)}</td>
+                                    <td>
+                                        <strong>${review.userName!"Unknown"}</strong>
+                                        stopped
+                                        <br>
+                                        <#if !review.messages?filter(m -> m.stop)?has_content>
+                                            <i>- no message provided -</i>
+                                        <#else>
+                                            <i>${markdownService.render(review.messages?filter(m -> m.stop)?first.message)}</i>
+                                        </#if>
+                                    </td>
+                                </tr>
                             </#if>
                         </#if>
-                        @item.decodeMessages.filterNot(_.isTakeover).filterNot(_.isStop).reverse.map { message =>
-                            <tr>
-                                <td>${message.getTime(messages.lang.locale)}</td>
-                                <td>
-                                    <strong>${name!"Unknown"}</strong>
-                                    added message
-                                    <br>
-                                    <i>${message.render}</i>
-                                </td>
-                            </tr>
-                        }
+                    </#if>
+                    <#list review.getMessages()?filter(m -> !m.takeover && !m.stop)?reverse as message>
+                        <#-- @ftlvariable name="message" type="me.minidigger.hangar.model.viewhelpers.VersionReviewMessage" -->
                         <tr>
-                            <td>${item.createdAt.value?string.long}</td>
-                            <td><strong>${name!"Unknown"}</strong> started a review</td>
+                            <td>${message.getFormattedTime()}</td> <#-- TODO per locale-->
+                            <td>
+                                <strong>${review.userName!"Unknown"}</strong>
+                                added message
+                                <br>
+                                <i>${markdownService.render(message.message)}</i>
+                            </td>
                         </tr>
-                    }
-                }
+                    </#list>
+                    <tr>
+                        <td>${utils.prettifyDate(review.createdAt)}</td>
+                        <td><strong>${review.userName!"Unknown"}</strong> started a review</td>
+                    </tr>
+                </#list>
                 </tbody>
             </table>
         </div>

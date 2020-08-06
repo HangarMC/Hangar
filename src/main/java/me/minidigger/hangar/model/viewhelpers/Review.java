@@ -6,10 +6,10 @@ import java.time.OffsetDateTime;
 
 public class Review {
     
-    private Version version;
-    private long userId;
-    private OffsetDateTime endedAt;
-    private String message;
+    private final Version version;
+    private final long userId;
+    private final OffsetDateTime endedAt;
+    private final String message;
 
     public Review(Version version, long userId, OffsetDateTime endedAt, String message) {
         this.version = version;

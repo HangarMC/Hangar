@@ -201,7 +201,7 @@ public class UserService {
         }
     }
 
-    public List<ReviewActivity> getRewiewActivity(String username) {
+    public List<ReviewActivity> getReviewActivity(String username) {
         return userDao.get().getReviewActivity(username);
     }
 
