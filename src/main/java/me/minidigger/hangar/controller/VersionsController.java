@@ -92,7 +92,7 @@ public class VersionsController extends HangarController {
         return null; // TODO implement showLog request controller
     }
 
-    @RequestMapping("/{author}/{slug}/versions")
+    @GetMapping("/{author}/{slug}/versions")
     public ModelAndView showList(@PathVariable String author, @PathVariable String slug) {
         ModelAndView mav = new ModelAndView("projects/versions/list");
         ProjectData projectData = projectService.getProjectData(author, slug);
@@ -112,7 +112,7 @@ public class VersionsController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/versions/new/upload")
+    @PostMapping(value = "/{author}/{slug}/versions/new/upload", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView upload(@PathVariable String author, @PathVariable String slug, @RequestParam("pluginFile") MultipartFile file) {
         String uploadError = projectFactory.getUploadError(userService.getCurrentUser());
         if (uploadError != null) {
@@ -133,7 +133,7 @@ public class VersionsController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/versions/new/{versionName}")
+    @GetMapping("/{author}/{slug}/versions/new/{versionName}")
     public ModelAndView showCreatorWithMeta(@PathVariable String author, @PathVariable String slug, @PathVariable String versionName) {
         ProjectData projectData = projectService.getProjectData(author, slug);
         PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(projectData.getProject().getId() + "/" + versionName, PendingVersion.class);
@@ -265,7 +265,7 @@ public class VersionsController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/versions/{version}/delete")
+    @PostMapping(value = "/{author}/{slug}/versions/{version}/delete", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView softDelete(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String comment, HttpServletRequest request, RedirectAttributes ra) {
         VersionData versionData = versionService.getVersionData(author, slug, version);
         try {
@@ -298,14 +298,17 @@ public class VersionsController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/versions/{version}/recommended")
-    public Object setRecommended(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
-        return null; // TODO implement setRecommended request controller
+    @PostMapping("/{author}/{slug}/versions/{version}/recommended")
+    public ModelAndView setRecommended(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
+        VersionData versionData = versionService.getVersionData(author, slug, version);
+        versionData.getP().getProject().setRecommendedVersionId(versionData.getV().getId());
+        projectDao.get().update(versionData.getP().getProject());
+        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.show", author, slug, version));
     }
 
     @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/versions/{version}/restore")
+    @PostMapping(value = "/{author}/{slug}/versions/{version}/restore", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView restore(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String comment, HttpServletRequest request) {
         VersionData versionData = versionService.getVersionData(author, slug, version);
         versionService.changeVisibility(versionData, Visibility.PUBLIC, comment, userService.getCurrentUser().getId());
@@ -314,9 +317,15 @@ public class VersionsController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/versions/{version}/save")
-    public Object saveDescription(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
-        return null; // TODO implement saveDescription request controller
+    @PostMapping(value = "/{author}/{slug}/versions/{version}/save", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ModelAndView saveDescription(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String content, HttpServletRequest request) {
+        VersionData versionData = versionService.getVersionData(author, slug, version);
+        String oldDesc = versionData.getV().getDescription();
+        String newDesc = content.trim();
+        versionData.getV().setDescription(newDesc);
+        versionService.update(versionData.getV());
+        userActionLogService.version(request, LoggedActionType.VERSION_DESCRIPTION_CHANGED.with(VersionContext.of(versionData.getP().getProject().getId(), versionData.getV().getId())), newDesc, oldDesc);
+        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.show", author, slug, version));
     }
 
 }

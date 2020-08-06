@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,10 +61,9 @@ public class ApplicationController extends HangarController {
     }
 
     @RequestMapping("/")
-    public ModelAndView showHome(@ModelAttribute(AlertUtil.TYPE) AlertType alertType, @ModelAttribute("alertMsg") String alertMsg) {
+    public ModelAndView showHome(ModelMap modelMap) {
         ModelAndView mav = new ModelAndView("home");
-        if (alertType != null && alertMsg != null)
-            AlertUtil.showAlert(mav, alertType, alertMsg);
+        AlertUtil.transferAlerts(mav, modelMap);
         return fillModel(mav);
     }
 

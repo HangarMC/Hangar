@@ -58,6 +58,10 @@ public class VersionService {
         return versionDao.get().getProjectVersion(projectsTable.getId(), null, versionString);
     }
 
+    public void update(ProjectVersionsTable projectVersionsTable) {
+        versionDao.get().update(projectVersionsTable);
+    }
+
     public void changeVisibility(VersionData versionData, Visibility visibility, String comment, long userId) {
         if (versionData.getV().getVisibility() == visibility) return; // No change
 
