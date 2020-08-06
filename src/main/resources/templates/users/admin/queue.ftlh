@@ -2,8 +2,6 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
-<#-- todo @helper.urlEncode usages in this class -->
-
 <#assign scriptsVar>
     <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "javascripts/queue.js" />"></script>
     <script <#--@CSPNonce.attr-->>
@@ -99,7 +97,7 @@
                         </#if>
                         </td>
                         <td style="vertical-align: middle; text-align: right; padding-right: 15px;">
-                            <a href="/${entry.namespace}/versions/entry.versionString/reviews"><i class="fas fa-2x fa-fw fa-info"></i></a> <#-- TODO url encode -->
+                            <a href="/${utils.urlEncode(entry.namespace)}/versions/entry.versionString/reviews"><i class="fas fa-2x fa-fw fa-info"></i></a>
                         </td>
                         </tr>
                         </#list>
@@ -140,11 +138,10 @@
                             </tr>
                         </#if>
                         <#list versions?sort_by("versionCreatedAt") as entry>
-                        <tr data-version="${entry.namespace}/versions/entry.versionString"> <#-- TODO url encode -->
+                        <tr data-version="${utils.urlEncode(entry.namespace)}/versions/entry.versionString">
                             <td>
                                 <#import "*/utils/userAvatar.ftlh" as userAvatar>
-                                <#-- todo User avatar -->
-                                <@userAvatar.userAvatar userName=entry.getNamespace().getOwner() avatarUrl=User.avatarUrl(entry.getNamespace().getOwner()) clazz="user-avatar-xs"></@userAvatar.userAvatar>
+                                <@userAvatar.userAvatar userName=entry.getNamespace().getOwner() avatarUrl=utils.avatarUrl(entry.getNamespace().getOwner()) clazz="user-avatar-xs"></@userAvatar.userAvatar>
                             </td>
                             <td>
                                 <a href="${routes.getRouteUrl("versions.show", entry.getNamespace().getOwner(), entry.getNamespace().getSlug(), entry.versionString)}">
@@ -164,7 +161,7 @@
                                 </#if>
                             <br>
                         <td style="vertical-align: middle; text-align: right">
-                            <a class="btn btn-success" href="/${entry.namespace}/versions/entry.versionString/reviews">Start review</a> <#-- TODO -->
+                            <a class="btn btn-success" href="/${utils.urlEncode(entry.namespace)}/versions/entry.versionString/reviews">Start review</a>
                         </td>
                         </tr>
                         </#list>

@@ -36,7 +36,7 @@ public abstract class HangarController {
         mav.addObject("config", hangarConfig);
         mav.addObject("markdownService", markdownService);
         mav.addObject("rand", ThreadLocalRandom.current());
-        mav.addObject("utils", new TemplateHelper());
+        mav.addObject("utils", new TemplateHelper(hangarConfig));
 
         // alerts
         if (mav.getModelMap().getAttribute("alerts") == null) {
