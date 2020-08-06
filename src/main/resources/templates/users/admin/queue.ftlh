@@ -72,7 +72,7 @@
                                 Unknown
                             </#if>
                         <br>
-                        ${entry.versionCreatedAt.format("yyyy-MM-dd HH:mm")}
+                        ${utils.prettifyDateTime(entry.versionCreatedAt)}
                         </td>
                         <td style="text-align: right; max-width: 40px">
                         <#if entry.unfinished>
@@ -149,9 +149,9 @@
                                 </a>
                             </td>
                             <td>
-                                <span class="faint">${entry.versionCreatedAt.format("yyyy-MM-dd HH:mm")}</span>
+                                <span class="faint">${utils.prettifyDateTime(entry.versionCreatedAt)}</span>
                                 <span class="minor">${entry.versionString}</span>
-                                <span class="channel" style="background-color: ${entry.channelColor.hex};">${entry.channelName}</span>
+                                <span class="channel" style="background-color: ${entry.channelColor.hex};">${entry.channelName}</span>`
                             </td>
                             <td>
                                 <#if entry.versionAuthor??>

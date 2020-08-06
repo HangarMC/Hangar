@@ -125,7 +125,7 @@
                 <div class="user-info">
                     <i class="minor">${u.projectCount}&nbsp;<#if u.projectCount == 1>project<#else>projects</#if></i><br/>
                     <i class="minor">
-                    <@spring.messageArgs code="user.memberSince" args=[(u.user.joinDate!u.user.createdAt).format("yyyy-MM-dd")] />
+                    <@spring.messageArgs code="user.memberSince" args=[utils.prettifyDate(u.user.joinDate!u.user.createdAt)] />
                     </i><br/>
                     <a href="https://papermc.io/forums/users/${u.user.name}">
                         <@spring.message "user.viewOnForums" /> <i class="fas fa-external-link-alt"></i>

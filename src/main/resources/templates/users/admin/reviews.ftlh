@@ -35,7 +35,7 @@
                 <a href="${routes.getRouteUrl("users.showProjects", project.project.ownerName)}">
                     <strong>${project.project.ownerName}</strong>
                 </a>
-                released this version on ${utils.prettifyDate(version.v.createdAt)}
+                released this version on ${utils.prettifyDateTime(version.v.createdAt)}
             </p>
             <#if !version.v.reviewState.checked>
                 <div class="pull-right">
@@ -102,7 +102,7 @@
                         <#if reviews?size gt (reviews?size - review?index)>
                             <#if review.endedAt.toEpochSecond() == reviews?reverse[reviews?size - review?index - 1].endedAt.toEpochSecond()>
                                 <tr>
-                                    <td>${utils.prettifyDate(review.endedAt)}</td>
+                                    <td>${utils.prettifyDateTime(review.endedAt)}</td>
                                     <td>
                                         <strong>${review.userName!"Unknown"}</strong>
                                         took over from
@@ -116,19 +116,19 @@
                                 </tr>
                             <#else>
                                 <tr>
-                                    <td>${utils.prettifyDate(review.endedAt)}</td>
+                                    <td>${utils.prettifyDateTime(review.endedAt)}</td>
                                     <td><strong>${review.userName!"Unknown"}</strong> stopped</td>
                                 </tr>
                             </#if>
                         <#else>
                             <#if version.approvedAt??>
                                 <tr>
-                                    <td>${utils.prettifyDate(review.endedAt)}</td>
+                                    <td>${utils.prettifyDateTime(review.endedAt)}</td>
                                     <td><strong>${review.userName!"Unknown"}</strong> approved</td>
                                 </tr>
                             <#else>
                                 <tr>
-                                    <td>${utils.prettifyDate(review.endedAt)}</td>
+                                    <td>${utils.prettifyDateTime(review.endedAt)}</td>
                                     <td>
                                         <strong>${review.userName!"Unknown"}</strong>
                                         stopped
@@ -156,7 +156,7 @@
                         </tr>
                     </#list>
                     <tr>
-                        <td>${utils.prettifyDate(review.createdAt)}</td>
+                        <td>${utils.prettifyDateTime(review.createdAt)}</td>
                         <td><strong>${review.userName!"Unknown"}</strong> started a review</td>
                     </tr>
                 </#list>

@@ -38,9 +38,9 @@
                             <tr>
                                 <td>${flag.reportedBy}</td>
                                 <td>${flag.flag.reason.title}, ${flag.flag.comment}</td>
-                                <td>${(flag.flag.createdAt).format("yyyy-MM-dd HH:mm:ss")}</td>
+                                <td>${utils.prettifyDateTime(flag.flag.createdAt)}</td>
                                 <#if flag.flag.isResolved>
-                                    <td>${flag.resolvedBy} at ${(flag.flag.resolvedAt).format("yyyy-MM-dd HH:mm:ss")}</td>
+                                    <td>${flag.resolvedBy} at ${utils.prettifyDateTime(flag.flag.resolvedAt)}</td>
                                 <#else>
                                     <td>-not resolved-</td>
                                 </#if>

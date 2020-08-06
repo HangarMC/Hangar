@@ -58,7 +58,7 @@
 						${staffUser.role.title}
 						</span>
 					</td>
-					<td>${(staffUser.joinDate!staffUser.createdAt).format("yyyy-MM-dd")}</td>
+					<td>${utils.prettifyDate(staffUser.joinDate!staffUser.createdAt)}</td>
 				</tr>
 				</#list>
 				<#-- @ftlvariable name="page" type="java.lang.Integer" -->

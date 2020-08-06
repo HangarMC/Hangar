@@ -49,7 +49,7 @@
                 <div class="panel-body">
                     <#list erroredJobs as job>
                         <div class="list-group-item">
-                            Job type: ${job.jobType} Error type: ${job.lastErrorDescriptor} Happened: ${(job.lastUpdated).format("YYYY-mm-dd HH:mm:ss")}
+                            Job type: ${job.jobType} Error type: ${job.lastErrorDescriptor} Happened: ${utils.prettifyDateTime(job.lastUpdated)}
                             <div class="clearfix"></div>
                         </div>
                     </#list>

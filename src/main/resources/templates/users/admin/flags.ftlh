@@ -39,7 +39,7 @@
                                 <span class="minor"> for </span>
                                 <strong>${flag.flag.reason.title}</strong>
                                 <span class="minor"> at </span>
-                                <strong>${(flag.flag.createdAt).format("yyyy-MM-dd HH:mm:ss")}</strong>
+                                <strong>${utils.prettifyDateTime(flag.flag.createdAt)}</strong>
                                 <br><i class="minor">${flag.flag.comment}</i>
                             </span>
                         </div>

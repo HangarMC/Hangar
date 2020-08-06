@@ -88,7 +88,7 @@
                             </span>
                         </#if>
                     </td>
-                    <td>${(author.joinDate!author.createdAt).format("yyyy-MM-dd")}</td>
+                    <td>${utils.prettifyDate(author.joinDate!author.createdAt)}</td>
                     <td>${author.count}</td>
                 </tr>
                 </#list>

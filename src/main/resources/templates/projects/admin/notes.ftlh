@@ -43,7 +43,7 @@
                 <tbody>
                 <#list notes as note>
                 <tr>
-                    <td class="note-fixed-with">${note.toDateTime().format("yyyy-MM-dd HH:mm:ss")}</td>
+                    <td class="note-fixed-with">${utils.prettifyDateTime(note.toDateTime())}</td>
                     <td class="note-fixed-with"><strong>${note.getUser()!"Unknown"}</strong></td>
                     <td>${markdownService.render(note.getMessage())}</td>
                 </tr>

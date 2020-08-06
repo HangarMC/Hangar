@@ -38,7 +38,11 @@ public class TemplateHelper {
         }
     }
 
-    public String prettifyDate(OffsetDateTime dateTime) {
+    public String prettifyDateTime(OffsetDateTime dateTime) {
         return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(dateTime);
+    }
+
+    public String prettifyDate(OffsetDateTime dateTime) {
+        return DateTimeFormatter.ofPattern("dd MM uuuu").format(dateTime);
     }
 }

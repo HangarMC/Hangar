@@ -64,7 +64,7 @@
                                 <#if canViewIP>
                                     <td>${action.address}</td>
                                 </#if>
-                                <td>${action.createdAt.format("yyyy-MM-dd HH:mm:ss")}</td>
+                                <td>${utils.prettifyDateTime(action.createdAt)}</td>
                                 <td>
                                     ${action.action.description}
                                 <small class="filter-action">(<a href="${routes.getRouteUrl("showLog", page?string, userFilter, projectFilter, versionFilter, pageFilter, action.action.value, subjectFilter)}">${action.action.value}</a>)</small>
