@@ -142,7 +142,9 @@ public class ProjectFactory {
     public ProjectVersionsTable createVersion(HttpServletRequest request, ProjectData project, PendingVersion pendingVersion) {
 
         ProjectChannelsTable channel = projectChannelDao.get().getProjectChannel(project.getProject().getId(), pendingVersion.getChannelName(), null);
-        if (channel == null) channel = channelService.addProjectChannel(project.getProject().getId(), pendingVersion.getChannelName(), pendingVersion.getChannelColor());
+        if (channel == null) {
+            channel = channelService.addProjectChannel(project.getProject().getId(), pendingVersion.getChannelName(), pendingVersion.getChannelColor());
+        }
 
         if (versionService.exists(pendingVersion) && hangarConfig.projects.isFileValidate()) {
             throw new HangarException("error.version.duplicate");
@@ -181,7 +183,7 @@ public class ProjectFactory {
         if (project.getVisibility() == Visibility.NEW) {
             projectService.changeVisibility(project.getProject(), Visibility.PUBLIC, "First upload");
             userActionLogService.project(request, LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(project.getProject().getId())), Visibility.PUBLIC.getName(), Visibility.NEW.getName());
-            // Add forum job
+            // TODO Add forum job
 
         }
 

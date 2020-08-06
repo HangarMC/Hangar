@@ -192,7 +192,8 @@ public class VersionsController extends HangarController {
         ProjectData projectData = projectService.getProjectData(author, slug);
         PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(projectData.getProject().getId() + "/" + versionName, PendingVersion.class);
         if (pendingVersion == null) {
-            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.showCreator", author, slug)); // TODO w/errors
+            AlertUtil.showAlert(attributes, AlertType.ERROR, "error.plugin.timeout");
+            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.showCreator", author, slug));
         }
 
         PendingVersion newPendingVersion = pendingVersion.copy(
@@ -202,7 +203,10 @@ public class VersionsController extends HangarController {
                 content
         );
 
-        // TODO duplication check on newPendingVersion
+        if (versionService.exists(newPendingVersion)) {
+            AlertUtil.showAlert(attributes, AlertType.ERROR, "error.plugin.versionExists");
+            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.showCreator", author, slug));
+        }
 
         ProjectChannelsTable channel = channelService.getProjectChannel(projectData.getProject().getId(), channelInput);
         ProjectVersionsTable version;

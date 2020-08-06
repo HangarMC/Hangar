@@ -50,7 +50,9 @@ public class ChannelService {
         if (reason != null) {
             if (reason == InvalidChannelCreationReason.MAX_CHANNELS) {
                 throw new HangarException(reason.reason, String.valueOf(hangarConfig.projects.getMaxChannels()));
-            } else throw new HangarException(reason.reason);
+            } else {
+                throw new HangarException(reason.reason);
+            }
         }
 
         return channelFactory.createChannel(projectId, channelName, color);

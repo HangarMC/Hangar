@@ -51,7 +51,7 @@ public class VersionData {
     }
 
     public Map<Dependency, ProjectsTable> getFilteredDependencies() {
-        List<String> platformIds = Arrays.stream(Platform.values()).map(Platform::getDependencyId).collect(Collectors.toList());
+        List<String> platformIds = Arrays.stream(Platform.getValues()).map(Platform::getDependencyId).collect(Collectors.toList());
         return dependencies.entrySet().stream().filter(entry -> !platformIds.contains(entry.getKey().getPluginId())).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
     }
 

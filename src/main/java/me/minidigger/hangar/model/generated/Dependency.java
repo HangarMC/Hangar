@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -118,13 +119,15 @@ public class Dependency {
     }
 
     public static List<Dependency> from(List<String> dependencies) {
-        List<Dependency> deps = new ArrayList<>();
-        for (String dependency : dependencies) {
-            if (dependency.contains(":"))
-                deps.add(new Dependency(dependency.split(":")[0], dependency.split(":")[1]));
-            else deps.add(new Dependency(dependency, null));
+        return dependencies.stream().map(Dependency::fromString).collect(Collectors.toList());
+    }
+
+    private static Dependency fromString(String dep) {
+        if (dep.contains(":")) {
+            return new Dependency(dep.split(":")[0], dep.split(":")[1]);
+        } else {
+            return new Dependency(dep, null);
         }
-        return deps;
     }
 
 }

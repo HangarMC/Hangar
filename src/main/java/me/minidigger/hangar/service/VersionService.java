@@ -110,8 +110,12 @@ public class VersionService {
         String approvedBy = null;
         if (projectVersion.getReviewerId() != null) {
             UserData approveUser = userService.getUserData(projectVersion.getReviewerId());
-            if (approveUser == null) approvedBy = "Unknown";
-            else approvedBy = approveUser.getUser().getName();
+            if (approveUser == null) {
+                approvedBy = "Unknown";
+            }
+            else {
+                approvedBy = approveUser.getUser().getName();
+            }
         }
 
         Map<Dependency, ProjectsTable> dependencies = Dependency.from(projectVersion.getDependencies()).stream().collect(HashMap::new, (m, v) -> {

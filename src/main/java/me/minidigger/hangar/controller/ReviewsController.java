@@ -27,7 +27,7 @@ public class ReviewsController extends HangarController {
     public ModelAndView showReviews(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
         ModelAndView mav = new ModelAndView("users/admin/reviews");
         VersionData versionData = versionService.getVersionData(author, slug, version);
-
+        // TODO finish controller
         return fillModel(mav);
     }
 

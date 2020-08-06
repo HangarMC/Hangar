@@ -60,12 +60,46 @@ public enum Platform {
         return new ProjectVersionTagsTable(-1, versionId, name, version, tagColor);
     }
 
+    private static final Platform[] VALUES = Platform.values();
+
+    public static Platform[] getValues() {
+        return VALUES;
+    }
+
     public static List<Platform> getPlatforms(List<String> dependencyIds) { // OMFG
-        return Arrays.stream(Platform.values()).filter(p -> dependencyIds.contains(p.dependencyId)).collect(Collectors.groupingBy(Platform::getPlatformCategory)).entrySet().stream().flatMap(entry -> entry.getValue().stream().collect(Collectors.groupingBy(Platform::getPriority)).entrySet().stream().max(Comparator.comparingInt(Entry::getKey)).get().getValue().stream()).collect(Collectors.toList());
+        return Arrays.stream(Platform.getValues())
+                .filter(p -> dependencyIds.contains(p.dependencyId))
+                .collect(Collectors.groupingBy(Platform::getPlatformCategory))
+                .entrySet()
+                .stream()
+                .flatMap(entry -> entry.getValue().stream()
+                        .collect(Collectors.groupingBy(Platform::getPriority))
+                        .entrySet()
+                        .stream()
+                        .max(Comparator.comparingInt(Entry::getKey))
+                        .get()
+                        .getValue()
+                        .stream())
+                .collect(Collectors.toList());
     }
 
     public static List<ProjectVersionTagsTable> getGhostTags(long versionId, List<Dependency> dependencies) {
-        return getPlatforms(dependencies.stream().map(Dependency::getPluginId).collect(Collectors.toList())).stream().map(p -> p.createGhostTag(versionId, dependencies.stream().filter(d -> d.getPluginId().equals(p.dependencyId)).findFirst().get().getVersion())).collect(Collectors.toList());
+        return getPlatforms(
+                dependencies
+                        .stream()
+                        .map(Dependency::getPluginId)
+                        .collect(Collectors.toList())
+        ).stream()
+                .map(p -> p.createGhostTag(
+                        versionId,
+                        dependencies
+                                .stream()
+                                .filter(d -> d.getPluginId().equals(p.dependencyId))
+                                .findFirst()
+                                .get()
+                                .getVersion()
+                ))
+                .collect(Collectors.toList());
     }
 
     public static List<ProjectVersionTagsTable> createPlatformTags(VersionService versionService, long versionId, List<Dependency> dependencies) {
@@ -93,7 +127,7 @@ public enum Platform {
         }
 
         public List<Platform> getPlatforms() {
-            return Arrays.stream(Platform.values()).filter(p -> p.platformCategory == this).collect(Collectors.toList());
+            return Arrays.stream(Platform.getValues()).filter(p -> p.platformCategory == this).collect(Collectors.toList());
         }
     }
 }
