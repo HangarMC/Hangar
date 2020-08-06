@@ -1,21 +1,34 @@
 package me.minidigger.hangar.controller;
 
+import me.minidigger.hangar.model.NamedPermission;
+import me.minidigger.hangar.model.viewhelpers.VersionData;
+import me.minidigger.hangar.security.annotations.GlobalPermission;
+import me.minidigger.hangar.service.VersionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import me.minidigger.hangar.controller.HangarController;
 
 @Controller
 public class ReviewsController extends HangarController {
 
+    private final VersionService versionService;
+
+    @Autowired
+    public ReviewsController(VersionService versionService) {
+        this.versionService = versionService;
+    }
+
+    @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/versions/{version}/reviews")
-    public Object showReviews(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
-        return fillModel(new ModelAndView("users/admin/reviews")); // TODO implement showReviews request controller
+    public ModelAndView showReviews(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
+        ModelAndView mav = new ModelAndView("users/admin/reviews");
+        VersionData versionData = versionService.getVersionData(author, slug, version);
+        // TODO finish controller
+        return fillModel(mav);
     }
 
     @Secured("ROLE_USER")

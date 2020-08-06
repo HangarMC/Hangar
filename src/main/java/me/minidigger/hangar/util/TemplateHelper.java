@@ -24,4 +24,14 @@ public class TemplateHelper {
     public String avatarUrl(String name) {
         return String.format(hangarConfig.security.api.getAvatarUrl(), name);
     }
+
+    public String formatFileSize(Long size) {
+        if (size < 1024) {
+            return size + "B";
+        }
+        else {
+            long z = (63L - Long.numberOfLeadingZeros(size)) / 10L;
+            return String.format("%.1f %cB", size.doubleValue() / (1L << (z * 10)), " KMGTPE".charAt((int) z));
+        }
+    }
 }

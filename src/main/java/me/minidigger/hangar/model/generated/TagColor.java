@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Validated
 public class TagColor {
+
     @JsonProperty("foreground")
     private String foreground = null;
 

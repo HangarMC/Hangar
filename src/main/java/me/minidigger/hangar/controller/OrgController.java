@@ -5,6 +5,7 @@ import me.minidigger.hangar.db.model.OrganizationsTable;
 import me.minidigger.hangar.service.OrgService;
 import me.minidigger.hangar.service.OrgFactory;
 import me.minidigger.hangar.service.UserService;
+import me.minidigger.hangar.util.AlertUtil;
 import me.minidigger.hangar.util.AlertUtil.AlertType;
 import me.minidigger.hangar.util.RouteHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,8 +52,7 @@ public class OrgController extends HangarController {
     @GetMapping("/organisations/new")
     public ModelAndView showCreator(RedirectAttributes attributes, HttpServletRequest request) {
         if (orgService.getUserOwnedOrgs(userService.getCurrentUser().getId()).size() >= hangarConfig.org.getCreateLimit()) {
-            attributes.addFlashAttribute("alertType", AlertType.ERROR.name().toUpperCase());
-            attributes.addFlashAttribute("alertMsg", "error.org.createLimit"); // TODO arguments
+            AlertUtil.showAlert(attributes, AlertType.ERROR, "error.org.createLimit", String.valueOf(hangarConfig.org.getCreateLimit()));
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
         }
         return fillModel(new ModelAndView("createOrganization"));

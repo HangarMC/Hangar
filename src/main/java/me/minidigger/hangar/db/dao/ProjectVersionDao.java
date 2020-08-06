@@ -1,21 +1,39 @@
 package me.minidigger.hangar.db.dao;
 
+import me.minidigger.hangar.db.model.ProjectVersionTagsTable;
 import me.minidigger.hangar.db.model.ProjectVersionsTable;
 import me.minidigger.hangar.model.generated.ReviewState;
 import me.minidigger.hangar.model.viewhelpers.ReviewQueueEntry;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
+import org.jdbi.v3.sqlobject.customizer.BindBean;
+import org.jdbi.v3.sqlobject.customizer.Timestamped;
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
+import org.jdbi.v3.sqlobject.statement.SqlBatch;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 @RegisterBeanMapper(ProjectVersionsTable.class)
+@RegisterBeanMapper(ProjectVersionTagsTable.class)
 public interface ProjectVersionDao {
 
-    @SqlQuery("SELECT * FROM project_versions WHERE project_id = :projectId")
-    ProjectVersionsTable getVersion(long projectId);
+    @Timestamped
+    @GetGeneratedKeys
+    @SqlUpdate("INSERT INTO project_versions " +
+            "(created_at, version_string, dependencies, description, project_id, channel_id, file_size, hash, file_name, author_id, create_forum_post) VALUES " +
+            "(:now, :versionString, :dependencies, :description, :projectId, :channelId, :fileSize, :hash, :fileName, :authorId, :createForumPost)")
+    ProjectVersionsTable insert(@BindBean ProjectVersionsTable projectVersionsTable);
+
+    @SqlUpdate("UPDATE project_versions SET visibility = :visibility, reviewer_id = :reviewerId, approved_at = :approvedAt, description = :description " +
+               "WHERE id = :id")
+    void update(@BindBean ProjectVersionsTable projectVersionsTable);
+
+    @SqlUpdate("DELETE FROM project_versions WHERE id = :id")
+    void deleteVersion(long id);
 
     @RegisterBeanMapper(ReviewQueueEntry.class)
     @SqlQuery("SELECT sq.project_author," +
@@ -56,4 +74,17 @@ public interface ProjectVersionDao {
             "  WHERE row = 1" +
             "  ORDER BY sq.project_name DESC, sq.version_string DESC")
     List<ReviewQueueEntry> getQueue(@EnumByOrdinal ReviewState reviewState);
+
+    @SqlQuery("SELECT * FROM project_versions WHERE project_id = :projectId AND (hash = :hash OR lower(version_string) = lower(:versionString))")
+    ProjectVersionsTable getProjectVersion(long projectId, String hash, String versionString);
+
+    @SqlQuery("SELECT * FROM project_versions WHERE project_id = :projectId ORDER BY created_at DESC")
+    List<ProjectVersionsTable> getProjectVersions(long projectId);
+
+    @GetGeneratedKeys
+    @SqlBatch("INSERT INTO project_version_tags (version_id, name, data, color) VALUES (:versionId, :name, :data, :color)")
+    List<ProjectVersionTagsTable> insertTags(@BindBean List<ProjectVersionTagsTable> tags);
+
+    @SqlUpdate("INSERT INTO project_version_tags (version_id, name, data, color) VALUES (:versionId, :name, :data, :color)")
+    void insertTag(@BindBean ProjectVersionTagsTable projectVersionTagsTable);
 }

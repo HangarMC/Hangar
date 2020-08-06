@@ -1,28 +1,47 @@
 package me.minidigger.hangar.db.model;
 
 
+import me.minidigger.hangar.model.Visibility;
+import me.minidigger.hangar.model.generated.ReviewState;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
+
 import java.time.OffsetDateTime;
+import java.util.List;
 
 public class ProjectVersionsTable {
 
     private long id;
     private OffsetDateTime createdAt;
     private String versionString;
-    private String dependencies;
+    private List<String> dependencies;
     private String description;
     private long projectId;
     private long channelId;
     private long fileSize;
     private String hash;
     private String fileName;
-    private long reviewerId;
+    private Long reviewerId;
     private OffsetDateTime approvedAt;
     private long authorId;
-    private long visibility;
-    private long reviewState;
-    private boolean createForumPost;
-    private long postId;
+    private Visibility visibility = Visibility.PUBLIC;
+    private ReviewState reviewState = ReviewState.UNREVIEWED;
+    private boolean createForumPost = true;
+    private Long postId;
 
+    public ProjectVersionsTable(String versionString, List<String> dependencies, String description, long projectId, long channelId, long fileSize, String hash, String fileName, long authorId, boolean createForumPost) {
+        this.versionString = versionString;
+        this.dependencies = dependencies;
+        this.description = description;
+        this.projectId = projectId;
+        this.channelId = channelId;
+        this.fileSize = fileSize;
+        this.hash = hash;
+        this.fileName = fileName;
+        this.authorId = authorId;
+        this.createForumPost = createForumPost;
+    }
+
+    public ProjectVersionsTable() { }
 
     public long getId() {
         return id;
@@ -51,11 +70,11 @@ public class ProjectVersionsTable {
     }
 
 
-    public String getDependencies() {
+    public List<String> getDependencies() {
         return dependencies;
     }
 
-    public void setDependencies(String dependencies) {
+    public void setDependencies(List<String> dependencies) {
         this.dependencies = dependencies;
     }
 
@@ -114,11 +133,11 @@ public class ProjectVersionsTable {
     }
 
 
-    public long getReviewerId() {
+    public Long getReviewerId() {
         return reviewerId;
     }
 
-    public void setReviewerId(long reviewerId) {
+    public void setReviewerId(Long reviewerId) {
         this.reviewerId = reviewerId;
     }
 
@@ -141,20 +160,24 @@ public class ProjectVersionsTable {
     }
 
 
-    public long getVisibility() {
+    @EnumByOrdinal
+    public Visibility getVisibility() {
         return visibility;
     }
 
-    public void setVisibility(long visibility) {
+    @EnumByOrdinal
+    public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
     }
 
 
-    public long getReviewState() {
+    @EnumByOrdinal
+    public ReviewState getReviewState() {
         return reviewState;
     }
 
-    public void setReviewState(long reviewState) {
+    @EnumByOrdinal
+    public void setReviewState(ReviewState reviewState) {
         this.reviewState = reviewState;
     }
 
@@ -168,11 +191,11 @@ public class ProjectVersionsTable {
     }
 
 
-    public long getPostId() {
+    public Long getPostId() {
         return postId;
     }
 
-    public void setPostId(long postId) {
+    public void setPostId(Long postId) {
         this.postId = postId;
     }
 

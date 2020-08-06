@@ -250,20 +250,17 @@ public class ProjectsController extends HangarController {
 
         userActionLogService.project(request, LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(projectData.getProject().getId())), Visibility.SOFTDELETE.getName(), oldVisibility.getName());
         projectFactory.softDeleteProject(projectData, comment);
-
-        ra.addFlashAttribute("alertType", AlertType.SUCCESS);
-        ra.addFlashAttribute("alertMsg", "project.deleted");// TODO add old project name as msg arg
+        AlertUtil.showAlert(ra, AlertType.SUCCESS, "project.deleted", projectData.getProject().getName());
         return new RedirectView(routeHelper.getRouteUrl("showHome"));
     }
 
     @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/manage/hardDelete")
-    public RedirectView delete(@PathVariable String author, @PathVariable String slug, RedirectAttributes ra) {
+    public RedirectView delete(@PathVariable String author, @PathVariable String slug, HttpServletRequest request, RedirectAttributes ra) {
         ProjectData projectData = projectService.getProjectData(author, slug);
         projectFactory.hardDeleteProject(projectData);
-        // TODO UAL
-        ra.addFlashAttribute("alertType", AlertType.SUCCESS);
-        ra.addFlashAttribute("alertMsg", "project.deleted");// TODO add old project name as msg arg
+        userActionLogService.project(request, LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(projectData.getProject().getId())), "deleted", projectData.getVisibility().getName());
+        AlertUtil.showAlert(ra, AlertType.SUCCESS, "project.deleted", projectData.getProject().getName());
         return new RedirectView(routeHelper.getRouteUrl("showHome"));
     }
 

@@ -1,10 +1,13 @@
 package me.minidigger.hangar.config.hangar;
 
+import me.minidigger.hangar.HangarApplication;
 import me.minidigger.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.boot.system.ApplicationHome;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
@@ -25,9 +28,9 @@ public class HangarConfig {
     private boolean staging = true;
     private boolean logTimings = false;
     private String authUrl = "https://hangarauth.minidigger.me";
-
-    @Value("${pluginUploadDir:/work/uploads}")
-    private String pluginUploadDir;
+    private final ApplicationHome home = new ApplicationHome(HangarApplication.class);
+    private String pluginUploadDir = home.getDir().toPath().resolve("work").toString();
+    private String baseUrl = "https://localhost:8080";
 
     @NestedConfigurationProperty
     public final FakeUserConfig fakeUser;
@@ -164,6 +167,18 @@ public class HangarConfig {
 
     public String getPluginUploadDir() {
         return pluginUploadDir;
+    }
+
+    public void setPluginUploadDir(String pluginUploadDir) {
+        this.pluginUploadDir = pluginUploadDir;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
     public void checkDebug() {

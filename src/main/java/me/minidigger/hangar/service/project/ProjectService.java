@@ -129,13 +129,12 @@ public class ProjectService {
         Preconditions.checkArgument(project != null && newVisibility != null, "project and visibility cannot be null");
         if (project.getVisibility() == newVisibility) return; // No change
 
-        visibilityDao.get().updateLatestChange(userService.getCurrentUser().getId(), project.getId());
+        visibilityDao.get().updateLatestProjectChange(userService.getCurrentUser().getId(), project.getId());
 
         visibilityDao.get().insert(new ProjectVisibilityChangesTable(project.getOwnerId(), project.getId(), comment, null, null, newVisibility));
 
         project.setVisibility(newVisibility);
         projectDao.get().update(project);
-        // TODO user action log
     }
 
     public List<UsersTable> getProjectWatchers(long projectId, int offset, int limit) {

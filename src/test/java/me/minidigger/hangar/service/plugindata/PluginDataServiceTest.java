@@ -29,7 +29,7 @@ class PluginDataServiceTest {
 
     @Test
     void test_paper_happyDay() throws Exception {
-        PluginFileData data = classUnderTest.loadMeta(path.resolve("Paper.jar"));
+        PluginFileData data = classUnderTest.loadMeta(path.resolve("Paper.jar"), -1).getData();
 
         assertTrue(data.validate());
         assertEquals("Maintenance", data.getName());
@@ -47,7 +47,7 @@ class PluginDataServiceTest {
 
     @Test
     void test_waterfall_happyDay() throws Exception {
-        PluginFileData data = classUnderTest.loadMeta(path.resolve("Waterfall.jar"));
+        PluginFileData data = classUnderTest.loadMeta(path.resolve("Waterfall.jar"), -1).getData();
 
         assertTrue(data.validate());
         assertEquals("Maintenance", data.getName());
@@ -61,7 +61,7 @@ class PluginDataServiceTest {
 
     @Test
     void test_velocity_happyDay() throws Exception {
-        PluginFileData data = classUnderTest.loadMeta(path.resolve("Velocity.jar"));
+        PluginFileData data = classUnderTest.loadMeta(path.resolve("Velocity.jar"), -1).getData();
 
         assertTrue(data.validate());
         assertEquals("Maintenance", data.getName());
@@ -78,7 +78,7 @@ class PluginDataServiceTest {
     @Test
     void test_emptyMeta_shouldFail() {
         HangarException hangarException = assertThrows(HangarException.class, () -> {
-            classUnderTest.loadMeta(path.resolve("EmptyMeta.jar"));
+            classUnderTest.loadMeta(path.resolve("EmptyMeta.jar"), -1);
         });
         assertEquals("error.plugin.metaNotFound", hangarException.getMessageKey());
     }
@@ -86,7 +86,7 @@ class PluginDataServiceTest {
     @Test
     void test_noMeta_shouldFail() {
         HangarException hangarException = assertThrows(HangarException.class, () -> {
-            classUnderTest.loadMeta(path.resolve("Empty.jar"));
+            classUnderTest.loadMeta(path.resolve("Empty.jar"), -1);
         });
 
         assertEquals("error.plugin.metaNotFound", hangarException.getMessageKey());
@@ -95,7 +95,7 @@ class PluginDataServiceTest {
     @Test
     void test_incompleteMeta_shouldFail() {
         HangarException hangarException = assertThrows(HangarException.class, () -> {
-            classUnderTest.loadMeta(path.resolve("IncompleteMeta.jar"));
+            classUnderTest.loadMeta(path.resolve("IncompleteMeta.jar"), -1);
         });
 
         assertEquals("error.plugin.incomplete", hangarException.getMessageKey());
@@ -103,7 +103,7 @@ class PluginDataServiceTest {
 
     @Test
     void test_zip_happyDay() throws Exception {
-        PluginFileData data = classUnderTest.loadMeta(path.resolve("TestZip.zip"));
+        PluginFileData data = classUnderTest.loadMeta(path.resolve("TestZip.zip"), -1).getData();
 
         assertTrue(data.validate());
         assertEquals("Maintenance", data.getName());
@@ -122,7 +122,7 @@ class PluginDataServiceTest {
     @Test
     void test_zipNoJar_shouldFail() {
         HangarException hangarException = assertThrows(HangarException.class, () -> {
-            classUnderTest.loadMeta(path.resolve("Empty.zip"));
+            classUnderTest.loadMeta(path.resolve("Empty.zip"), -1);
         });
         assertEquals("error.plugin.jarNotFound", hangarException.getMessageKey());
     }

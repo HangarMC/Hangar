@@ -46,4 +46,8 @@ public class ChannelsConfig {
     public void setNameDefault(String nameDefault) {
         this.nameDefault = nameDefault;
     }
+
+    public boolean isValidChannelName(String name) {
+        return name.length() >= 1 && name.length() <= maxNameLen && name.matches(nameRegex);
+    }
 }

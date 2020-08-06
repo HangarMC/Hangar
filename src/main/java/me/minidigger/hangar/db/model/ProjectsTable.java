@@ -5,7 +5,6 @@ import me.minidigger.hangar.model.Category;
 import me.minidigger.hangar.model.Visibility;
 import org.jdbi.v3.core.annotation.Unmappable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
-import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 import java.time.OffsetDateTime;
 import java.util.Collection;
@@ -18,7 +17,7 @@ public class ProjectsTable implements Visitable {
     private String name;
     private String slug;
     private String ownerName;
-    private long recommendedVersionId;
+    private Long recommendedVersionId;
     private long ownerId;
     private long topicId;
     private long postId;
@@ -104,11 +103,11 @@ public class ProjectsTable implements Visitable {
     }
 
 
-    public long getRecommendedVersionId() {
+    public Long getRecommendedVersionId() {
         return recommendedVersionId;
     }
 
-    public void setRecommendedVersionId(long recommendedVersionId) {
+    public void setRecommendedVersionId(Long recommendedVersionId) {
         this.recommendedVersionId = recommendedVersionId;
     }
 

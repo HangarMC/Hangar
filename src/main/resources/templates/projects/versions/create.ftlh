@@ -5,6 +5,7 @@
 <#import "*/utils/csrf.ftlh" as csrf>
 <#import "*/projects/channels/helper/modalManage.ftlh" as modalManage />
 <#import "*/projects/helper/alertFile.ftlh" as alertFile />
+<#import "*/projects/tag.ftlh" as projectTag />
 <#import "*/utils/editor.ftlh" as editor />
 
 <#assign mainWidth = "col-md-10">
@@ -48,10 +49,14 @@
                                     <tr>
                                         <td><strong><@spring.message "version.description" /></strong></td>
                                         <td>
-                                            <#if version.description??>
-                                                ${description}
+                                            <#if version.description?has_content>
+                                                ${version.description}
                                             <#else>
-                                                ${projectDescription!messages("version.create.noDescription")}
+                                                <#if projectDescription?has_content>
+                                                    ${projectDescription}
+                                                <#else>
+                                                    <@spring.message "version.create.noDescription" />
+                                                </#if>
                                             </#if>
                                         </td>
                                     </tr>
@@ -61,7 +66,7 @@
                                     </tr>
                                     <tr>
                                         <td><strong><@spring.message "version.fileSize" /></strong></td>
-                                        <td>${FileUtils.formatFileSize(version.fileSize)}</td>
+                                        <td>${utils.formatFileSize(version.fileSize)}</td>
                                     </tr>
                                     <tr>
                                         <td><strong>Channel</strong></td>
@@ -69,8 +74,8 @@
                                             <#-- Show channel selector if old project, editor if new project -->
                                             <select id="select-channel" form="form-publish" name="channel-input" class="form-control">
                                             <#list channels as channel>
-                                                <option value="@channel.name" data-color="@channel.color.hex" <#if channel.name.equals(version.channelName)>selected</#if>
-                                                ${channel.name}
+                                                <option value="${channel.name}" data-color="${channel.color.hex}" <#if channel.name == version.channelName>selected</#if>>
+                                                    ${channel.name}
                                                 </option>
                                             </#list>
                                             </select>
@@ -85,7 +90,7 @@
                                         <td>
                                             <div class="pull-right" id="upload-platform-tags">
                                             <#list version.dependenciesAsGhostTags as t>
-                                                ${projects.tag(ViewTag.fromVersionTag(t))}
+                                                <@projectTag.tagTemplate @helper["me.minidigger.hangar.model.viewhelpers.ViewTag"].fromVersionTag(t) />
                                             </#list>
                                             </div>
                                         </td>
@@ -115,6 +120,7 @@
                                         <td><strong>Create forum post</strong></td>
                                         <td class="rv">
                                             <div class="checkbox-inline">
+                                                <#-- @ftlvariable name="forumSync" type="java.lang.Boolean" -->
                                                 <input form="form-publish" name="forum-post" type="checkbox"
                                                 <#if forumSync> checked </#if> value="true"/>
                                             </div>
@@ -130,6 +136,7 @@
                                     <p><@spring.message "version.releaseBulletin.info" /></p>
 
                                     <@editor.editor
+                                        cooked=markdownService.render(version.description!"")
                                         savable=false
                                         enabled=true
                                         raw=version.description!""
@@ -138,7 +145,7 @@
                                     />
                                 </div>
                             </div>
-                            <script @CSPNonce.attr>$(function () { $('.btn-edit').click() });</script>
+                            <script <#--@CSPNonce.attr-->>$(function () { $('.btn-edit').click() });</script>
                     </#if>
 
                     <@form.form action=routes.getRouteUrl("versions.upload", ownerName, projectSlug) method="POST"

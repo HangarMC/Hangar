@@ -1,6 +1,9 @@
 package me.minidigger.hangar.db.model;
 
 
+import me.minidigger.hangar.model.Visibility;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
+
 import java.time.OffsetDateTime;
 
 public class ProjectVersionVisibilityChangesTable {
@@ -12,8 +15,16 @@ public class ProjectVersionVisibilityChangesTable {
     private String comment;
     private OffsetDateTime resolvedAt;
     private long resolvedBy;
-    private long visibility;
+    private Visibility visibility;
 
+    public ProjectVersionVisibilityChangesTable(long createdBy, long versionId, String comment, Visibility visibility) {
+        this.createdBy = createdBy;
+        this.versionId = versionId;
+        this.comment = comment;
+        this.visibility = visibility;
+    }
+
+    public ProjectVersionVisibilityChangesTable() { }
 
     public long getId() {
         return id;
@@ -78,11 +89,13 @@ public class ProjectVersionVisibilityChangesTable {
     }
 
 
-    public long getVisibility() {
+    @EnumByOrdinal
+    public Visibility getVisibility() {
         return visibility;
     }
 
-    public void setVisibility(long visibility) {
+    @EnumByOrdinal
+    public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
     }
 

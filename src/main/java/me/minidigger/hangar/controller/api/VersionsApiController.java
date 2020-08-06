@@ -2,6 +2,9 @@ package me.minidigger.hangar.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import me.minidigger.hangar.db.dao.HangarDao;
+import me.minidigger.hangar.db.dao.api.ApiVersionsDao;
+import me.minidigger.hangar.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -31,10 +35,15 @@ public class VersionsApiController implements VersionsApi {
 
     private final HttpServletRequest request;
 
+    private final HangarDao<ApiVersionsDao> apiVersionsDao;
+    private final UserService userService;
+
     @Autowired
-    public VersionsApiController(ObjectMapper objectMapper, HttpServletRequest request) {
+    public VersionsApiController(ObjectMapper objectMapper, HttpServletRequest request, HangarDao<ApiVersionsDao> apiVersionsDao, UserService userService) {
         this.objectMapper = objectMapper;
         this.request = request;
+        this.apiVersionsDao = apiVersionsDao;
+        this.userService = userService;
     }
 
     @Override
@@ -50,6 +59,7 @@ public class VersionsApiController implements VersionsApi {
 
     @Override
     public ResponseEntity<PaginatedVersionResult> listVersions(String pluginId, List<String> tags, Long limit, Long offset) {
+        apiVersionsDao.get().listVersions(pluginId, tags, false, limit, offset, null); // TODO finish api
         try {
             return new ResponseEntity<>(objectMapper.readValue("{\n  \"result\" : [ {\n    \"visibility\" : \"public\",\n    \"stats\" : {\n      \"downloads\" : 0\n    },\n    \"author\" : \"author\",\n    \"file_info\" : {\n      \"size_bytes\" : 6,\n      \"md_5_hash\" : \"md_5_hash\",\n      \"name\" : \"name\"\n    },\n    \"name\" : \"name\",\n    \"created_at\" : \"2000-01-23T04:56:07.000+00:00\",\n    \"description\" : \"description\",\n    \"dependencies\" : [ {\n      \"plugin_id\" : \"plugin_id\",\n      \"version\" : \"version\"\n    }, {\n      \"plugin_id\" : \"plugin_id\",\n      \"version\" : \"version\"\n    } ],\n    \"review_state\" : \"unreviewed\",\n    \"tags\" : [ {\n      \"data\" : \"data\",\n      \"color\" : {\n        \"background\" : \"background\",\n        \"foreground\" : \"foreground\"\n      },\n      \"name\" : \"name\"\n    }, {\n      \"data\" : \"data\",\n      \"color\" : {\n        \"background\" : \"background\",\n        \"foreground\" : \"foreground\"\n      },\n      \"name\" : \"name\"\n    } ]\n  }, {\n    \"visibility\" : \"public\",\n    \"stats\" : {\n      \"downloads\" : 0\n    },\n    \"author\" : \"author\",\n    \"file_info\" : {\n      \"size_bytes\" : 6,\n      \"md_5_hash\" : \"md_5_hash\",\n      \"name\" : \"name\"\n    },\n    \"name\" : \"name\",\n    \"created_at\" : \"2000-01-23T04:56:07.000+00:00\",\n    \"description\" : \"description\",\n    \"dependencies\" : [ {\n      \"plugin_id\" : \"plugin_id\",\n      \"version\" : \"version\"\n    }, {\n      \"plugin_id\" : \"plugin_id\",\n      \"version\" : \"version\"\n    } ],\n    \"review_state\" : \"unreviewed\",\n    \"tags\" : [ {\n      \"data\" : \"data\",\n      \"color\" : {\n        \"background\" : \"background\",\n        \"foreground\" : \"foreground\"\n      },\n      \"name\" : \"name\"\n    }, {\n      \"data\" : \"data\",\n      \"color\" : {\n        \"background\" : \"background\",\n        \"foreground\" : \"foreground\"\n      },\n      \"name\" : \"name\"\n    } ]\n  } ],\n  \"pagination\" : {\n    \"offset\" : 6,\n    \"limit\" : 0,\n    \"count\" : 1\n  }\n}", PaginatedVersionResult.class), HttpStatus.OK); // TODO Implement me
         } catch (IOException e) {

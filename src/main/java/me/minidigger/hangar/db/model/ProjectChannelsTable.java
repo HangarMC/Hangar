@@ -1,6 +1,9 @@
 package me.minidigger.hangar.db.model;
 
 
+import me.minidigger.hangar.model.Color;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
+
 import java.time.OffsetDateTime;
 
 public class ProjectChannelsTable {
@@ -8,7 +11,7 @@ public class ProjectChannelsTable {
     private long id;
     private OffsetDateTime createdAt;
     private String name;
-    private long color;
+    private Color color;
     private long projectId;
     private boolean isNonReviewed;
 
@@ -16,7 +19,7 @@ public class ProjectChannelsTable {
         //
     }
 
-    public ProjectChannelsTable(String name, long color, long projectId) {
+    public ProjectChannelsTable(String name, Color color, long projectId) {
         this.name = name;
         this.color = color;
         this.projectId = projectId;
@@ -49,12 +52,13 @@ public class ProjectChannelsTable {
         this.name = name;
     }
 
-
-    public long getColor() {
+    @EnumByOrdinal
+    public Color getColor() {
         return color;
     }
 
-    public void setColor(long color) {
+    @EnumByOrdinal
+    public void setColor(Color color) {
         this.color = color;
     }
 

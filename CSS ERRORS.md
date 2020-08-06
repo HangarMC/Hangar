@@ -1,5 +1,8 @@
-### Project Settings
+#### General
+Main dropdown menu doesn't work on mobile
+
+#### Project Settings
 Hovering over Visibility Actions makes background look bad
 
-### Project Home
+#### Project Home
 Edit page button is on top of page, change z-index

@@ -40,4 +40,11 @@ public enum Color {
     public static Color getById(int id) {
         return values()[id];
     }
+
+    public static Color getByHexStr(String hexStr) {
+        for (Color value : Color.values()) {
+            if (value.getHex() == hexStr) return value;
+        }
+        return null;
+    }
 }

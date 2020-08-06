@@ -2,6 +2,7 @@ package me.minidigger.hangar.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import freemarker.template.TemplateException;
+import me.minidigger.hangar.controller.converters.ColorHexConverter;
 import me.minidigger.hangar.controller.converters.StringToEnumConverterFactory;
 import me.minidigger.hangar.controller.interceptors.ProjectsInterceptor;
 import me.minidigger.hangar.service.PermissionService;
@@ -144,6 +145,7 @@ public class MvcConfig implements WebMvcConfigurer {
             }
         });
         registry.addConverterFactory(new StringToEnumConverterFactory());
+        registry.addConverter(new ColorHexConverter());
     }
 
     @Override

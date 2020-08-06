@@ -37,7 +37,8 @@ public interface ProjectDao {
 
     // TODO expand as needed
     @SqlUpdate("UPDATE projects SET name = :name, slug = :slug, category = :category, keywords = :keywords, issues = :issues, source = :source, " +
-            "license_name = :licenseName, license_url = :licenseUrl, forum_sync = :forumSync, description = :description, visibility = :visibility WHERE id = :id")
+            "license_name = :licenseName, license_url = :licenseUrl, forum_sync = :forumSync, description = :description, visibility = :visibility, " +
+            "recommended_version_id = :recommendedVersionId WHERE id = :id")
     void update(@BindBean ProjectsTable project);
 
     @SqlUpdate("DELETE FROM projects WHERE id = :id")
@@ -64,6 +65,9 @@ public interface ProjectDao {
 
     @SqlQuery("SELECT * FROM projects WHERE plugin_id = :pluginId")
     ProjectsTable getByPluginId(String pluginId);
+
+    @SqlQuery("SELECT * FROM projects WHERE id = :projectId")
+    ProjectsTable getById(long projectId);
 
     @SqlQuery("SELECT COUNT(*) FROM projects WHERE owner_id = :id")
     int getProjectCountByUserId(long id);

@@ -18,6 +18,13 @@ spring:
   security:
     filter:
       order: 1000
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 11MB
+  devtools:
+    restart:
+      additional-exclude: work/**
 
 #############
 # Fake User #
@@ -36,6 +43,7 @@ hangar:
   staging: true
   log-timings: false
   auth-url: "http://localhost:8000"
+  base-url: "http://localhost:8080"
 
   sponsors:
     - name: Theranos
