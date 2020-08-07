@@ -8,6 +8,8 @@ import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.mappers.RoleMapper;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.spi.JdbiPlugin;
+import org.jdbi.v3.core.statement.SqlLogger;
+import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.postgres.PostgresPlugin;
 import org.jdbi.v3.postgres.PostgresTypes;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
@@ -21,6 +23,7 @@ import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Configuration
 public class JDBIConfig {
@@ -37,8 +40,15 @@ public class JDBIConfig {
 
     @Bean
     public Jdbi jdbi(DataSource dataSource, List<JdbiPlugin> jdbiPlugins) {
+        SqlLogger myLogger = new SqlLogger() {
+            @Override
+            public void logAfterExecution(StatementContext context) {
+                Logger.getLogger("sql").info("sql: " + context.getRenderedSql());
+            }
+        };
         TransactionAwareDataSourceProxy dataSourceProxy = new TransactionAwareDataSourceProxy(dataSource);
         Jdbi jdbi = Jdbi.create(dataSourceProxy);
+//        jdbi.setSqlLogger(myLogger); // TODO for debugging sql statements
         jdbiPlugins.forEach(jdbi::installPlugin);
         PostgresTypes config = jdbi.getConfig(PostgresTypes.class);
         jdbi.registerRowMapper(new RoleMapper());

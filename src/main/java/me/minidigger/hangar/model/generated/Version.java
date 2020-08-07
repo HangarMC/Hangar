@@ -32,7 +32,6 @@ public class Version {
     private List<Dependency> dependencies = new ArrayList<>();
 
     @JsonProperty("visibility")
-    @EnumByOrdinal
     private Visibility visibility = null;
 
     @JsonProperty("description")
@@ -50,7 +49,6 @@ public class Version {
     private String author = null;
 
     @JsonProperty("review_state")
-    @EnumByOrdinal
     private ReviewState reviewState = null;
 
     @JsonProperty("tags")
@@ -140,10 +138,12 @@ public class Version {
     @ApiModelProperty(required = true, value = "")
     @NotNull
 
+    @EnumByOrdinal
     public Visibility getVisibility() {
         return visibility;
     }
 
+    @EnumByOrdinal
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
     }
@@ -245,10 +245,12 @@ public class Version {
     @ApiModelProperty(required = true, value = "")
     @NotNull
 
+    @EnumByOrdinal
     public ReviewState getReviewState() {
         return reviewState;
     }
 
+    @EnumByOrdinal
     public void setReviewState(ReviewState reviewState) {
         this.reviewState = reviewState;
     }
@@ -271,10 +273,12 @@ public class Version {
     @ApiModelProperty(required = true, value = "")
     @NotNull
     @Valid
+    @Nested("tag")
     public List<Tag> getTags() {
         return tags;
     }
 
+    @Nested("tag")
     public void setTags(List<Tag> tags) {
         this.tags = tags;
     }

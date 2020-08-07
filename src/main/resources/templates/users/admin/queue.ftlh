@@ -97,7 +97,7 @@
                         </#if>
                         </td>
                         <td style="vertical-align: middle; text-align: right; padding-right: 15px;">
-                            <a href="/${utils.urlEncode(entry.namespace)}/versions/entry.versionString/reviews"><i class="fas fa-2x fa-fw fa-info"></i></a>
+                            <a href="/${utils.urlEncode(entry.namespace.toString())}/versions/entry.versionString/reviews"><i class="fas fa-2x fa-fw fa-info"></i></a>
                         </td>
                         </tr>
                         </#list>
@@ -138,7 +138,7 @@
                             </tr>
                         </#if>
                         <#list versions?sort_by("versionCreatedAt") as entry>
-                        <tr data-version="${utils.urlEncode(entry.namespace)}/versions/entry.versionString">
+                        <tr data-version="${utils.urlEncode(entry.namespace.toString())}/versions/entry.versionString">
                             <td>
                                 <#import "*/utils/userAvatar.ftlh" as userAvatar>
                                 <@userAvatar.userAvatar userName=entry.getNamespace().getOwner() avatarUrl=utils.avatarUrl(entry.getNamespace().getOwner()) clazz="user-avatar-xs"></@userAvatar.userAvatar>
@@ -161,7 +161,7 @@
                                 </#if>
                             <br>
                         <td style="vertical-align: middle; text-align: right">
-                            <a class="btn btn-success" href="/${utils.urlEncode(entry.namespace)}/versions/entry.versionString/reviews">Start review</a>
+                            <a class="btn btn-success" href="/${utils.urlEncode(entry.namespace.toString())}/versions/entry.versionString/reviews">Start review</a>
                         </td>
                         </tr>
                         </#list>

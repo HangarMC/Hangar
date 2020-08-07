@@ -65,7 +65,7 @@ public interface VersionsApi {
             @ApiResponse(code = 200, message = "Ok", response = Version.class),
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")})
-    @GetMapping(value = "/projects/{pluginId}/versions/{name}",
+    @GetMapping(value = "/projects/{pluginId}/versions/{name:.*}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Version> showVersion(@ApiParam(value = "The plugin id of the project to return the version for", required = true) @PathVariable("pluginId") String pluginId
             , @ApiParam(value = "The name of the version to return", required = true) @PathVariable("name") String name
