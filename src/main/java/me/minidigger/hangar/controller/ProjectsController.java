@@ -342,7 +342,6 @@ public class ProjectsController extends HangarController {
         ModelAndView mv = new ModelAndView("projects/admin/notes");
         ProjectData projectData = projectService.getProjectData(author, slug);
         mv.addObject("project", projectData.getProject());
-        //TODO get real notes
         mv.addObject("notes", List.of(new Note().message("## 10/10\n* has everything\n* but also nothing").user("kneny")));
         return fillModel(mv);
     }
