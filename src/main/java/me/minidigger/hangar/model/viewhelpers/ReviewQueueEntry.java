@@ -1,15 +1,16 @@
 package me.minidigger.hangar.model.viewhelpers;
 
 import me.minidigger.hangar.model.Color;
-import me.minidigger.hangar.model.generated.ProjectNamespace;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.OffsetDateTime;
 
 public class ReviewQueueEntry {
 
-    private ProjectNamespace namespace;
+    private String projectAuthor;
     private String projectName;
+    private String projectSlug;
     private String versionString;
     private OffsetDateTime versionCreatedAt;
     private String channelName;
@@ -21,9 +22,13 @@ public class ReviewQueueEntry {
     private OffsetDateTime reviewStarted;
     private OffsetDateTime reviewEnded;
 
-    public ReviewQueueEntry(ProjectNamespace namespace, String projectName, String versionString, OffsetDateTime versionCreatedAt, String channelName, Color channelColor, String versionAuthor, @Nullable Long reviewerId, @Nullable String reviewerName, @Nullable OffsetDateTime reviewStarted, @Nullable OffsetDateTime reviewEnded) {
-        this.namespace = namespace;
+    public ReviewQueueEntry() {
+    }
+
+    public ReviewQueueEntry(String projectAuthor, String projectName, String projectSlug, String versionString, OffsetDateTime versionCreatedAt, String channelName, Color channelColor, String versionAuthor, @Nullable Long reviewerId, @Nullable String reviewerName, @Nullable OffsetDateTime reviewStarted, @Nullable OffsetDateTime reviewEnded) {
+        this.projectAuthor = projectAuthor;
         this.projectName = projectName;
+        this.projectSlug = projectSlug;
         this.versionString = versionString;
         this.versionCreatedAt = versionCreatedAt;
         this.channelName = channelName;
@@ -35,10 +40,6 @@ public class ReviewQueueEntry {
         this.reviewEnded = reviewEnded;
     }
 
-    public ReviewQueueEntry(ProjectNamespace namespace, String projectName, String versionString, OffsetDateTime versionCreatedAt, String channelName, Color channelColor, String versionAuthor) {
-        this(namespace, projectName, versionString, versionCreatedAt, channelName, channelColor, versionAuthor, null, null, null, null);
-    }
-
     public boolean isUnfinished() {
         return reviewEnded == null;
     }
@@ -47,12 +48,28 @@ public class ReviewQueueEntry {
         return reviewerId != null;
     }
 
-    public ProjectNamespace getNamespace() {
-        return namespace;
+    public String getNamespace() {
+        return projectAuthor + "/" + projectSlug;
+    }
+
+    public String getAuthor() {
+        return projectAuthor;
+    }
+
+    public String getProjectAuthor() {
+        return projectAuthor;
     }
 
     public String getProjectName() {
         return projectName;
+    }
+
+    public String getSlug() {
+        return projectSlug;
+    }
+
+    public String getProjectSlug() {
+        return projectSlug;
     }
 
     public String getVersionString() {
@@ -67,6 +84,7 @@ public class ReviewQueueEntry {
         return channelName;
     }
 
+    @EnumByOrdinal
     public Color getChannelColor() {
         return channelColor;
     }
@@ -93,5 +111,72 @@ public class ReviewQueueEntry {
     @Nullable
     public OffsetDateTime getReviewEnded() {
         return reviewEnded;
+    }
+
+    public void setProjectAuthor(String author) {
+        this.projectAuthor = author;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public void setProjectSlug(String projectSlug) {
+        this.projectSlug = projectSlug;
+    }
+
+    public void setVersionString(String versionString) {
+        this.versionString = versionString;
+    }
+
+    public void setVersionCreatedAt(OffsetDateTime versionCreatedAt) {
+        this.versionCreatedAt = versionCreatedAt;
+    }
+
+    public void setChannelName(String channelName) {
+        this.channelName = channelName;
+    }
+
+    @EnumByOrdinal
+    public void setChannelColor(Color channelColor) {
+        this.channelColor = channelColor;
+    }
+
+    public void setVersionAuthor(String versionAuthor) {
+        this.versionAuthor = versionAuthor;
+    }
+
+    public void setReviewerId(Long reviewerId) {
+        this.reviewerId = reviewerId;
+    }
+
+    public void setReviewerName(String reviewerName) {
+        this.reviewerName = reviewerName;
+    }
+
+    public void setReviewStarted(OffsetDateTime reviewStarted) {
+        this.reviewStarted = reviewStarted;
+    }
+
+    public void setReviewEnded(OffsetDateTime reviewEnded) {
+        this.reviewEnded = reviewEnded;
+    }
+
+    @Override
+    public String toString() {
+        return "ReviewQueueEntry{" +
+                "author='" + projectAuthor + '\'' +
+                ", projectName='" + projectName + '\'' +
+                ", slug='" + projectSlug + '\'' +
+                ", versionString='" + versionString + '\'' +
+                ", versionCreatedAt=" + versionCreatedAt +
+                ", channelName='" + channelName + '\'' +
+                ", channelColor=" + channelColor +
+                ", versionAuthor='" + versionAuthor + '\'' +
+                ", reviewerId=" + reviewerId +
+                ", reviewerName='" + reviewerName + '\'' +
+                ", reviewStarted=" + reviewStarted +
+                ", reviewEnded=" + reviewEnded +
+                '}';
     }
 }

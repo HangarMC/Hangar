@@ -111,12 +111,12 @@ public class ReviewsController extends HangarController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         review.addMessage(new VersionReviewMessage(content), reviewService);
-        return new ResponseEntity<>("Review" + review, HttpStatus.OK);
+        return new ResponseEntity<>("Review" + review, HttpStatus.OK); //TODO
     }
 
     @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
-    @PostMapping(value = "/{author}/{slug}/versions/{version}/reviews/init")
+    @PostMapping("/{author}/{slug}/versions/{version}/reviews/init")
     public ModelAndView createReview(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
         ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
         ProjectVersionReviewsTable review = new ProjectVersionReviewsTable(
