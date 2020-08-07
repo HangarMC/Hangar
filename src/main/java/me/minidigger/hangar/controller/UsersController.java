@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Map;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -201,7 +202,7 @@ public class UsersController extends HangarController {
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", user));
         }
         UsersTable usersTable = userDao.get().getByName(user);
-        userActionLogService.user(request, LoggedActionType.USER_TAGLINE_CHANGED.with(LoggedActionType.UserContext.of(usersTable.getId())), tagline, usersTable.getTagline());
+        userActionLogService.user(request, LoggedActionType.USER_TAGLINE_CHANGED.with(LoggedActionType.UserContext.of(usersTable.getId())), tagline, Optional.ofNullable(usersTable.getTagline()).orElse(""));
         usersTable.setTagline(tagline);
         userDao.get().update(usersTable);
         return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", user));
