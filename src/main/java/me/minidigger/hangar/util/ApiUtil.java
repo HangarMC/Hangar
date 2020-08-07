@@ -2,6 +2,8 @@ package me.minidigger.hangar.util;
 
 public class ApiUtil {
 
+    private ApiUtil() { }
+
     public static long limitOrDefault(Long limit, long defaultValue) {
         return Math.min(limit == null ? defaultValue : limit, defaultValue);
     }

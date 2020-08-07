@@ -12,6 +12,8 @@ import me.minidigger.hangar.model.generated.SessionProperties;
 import me.minidigger.hangar.service.AuthenticationService;
 import me.minidigger.hangar.util.AuthUtils;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class AuthenticateApiController implements AuthenticateApi {
 
@@ -24,14 +26,14 @@ public class AuthenticateApiController implements AuthenticateApi {
 
     @Override
     public ResponseEntity<ApiSessionResponse> authenticate(SessionProperties body) {
-        if (body != null && body.isFake() != null && body.isFake()) {
+        if (body != null && body.isFake()) {
             return ResponseEntity.ok(service.authenticateDev());
         } else {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication instanceof HangarAuthentication) {
                 return ResponseEntity.ok(service.authenticateKeyPublic(body, ((HangarAuthentication) authentication).getUserId()));
             } else if (authentication.getPrincipal().equals("anonymousUser")) {
-                return ResponseEntity.ok(service.authenticatePublic());
+                return ResponseEntity.ok(service.authenticatePublic(body));
             } else {
                 throw AuthUtils.unAuth();
             }

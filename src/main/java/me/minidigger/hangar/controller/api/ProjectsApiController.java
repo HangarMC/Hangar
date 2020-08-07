@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -54,6 +55,7 @@ public class ProjectsApiController implements ProjectsApi {
     }
 
     @Override
+    @PreAuthorize("@authenticationService.apiAction(T(me.minidigger.hangar.model.Permission).ViewPublicInfo, 'global')")
     public ResponseEntity<PaginatedProjectResult> listProjects(String q, List<Category> categories, List<String> tags, String owner, ProjectSortingStrategy sort, boolean relevance, Long inLimit, Long inOffset) {
         // handle input
         long limit = limitOrDefault(inLimit, hangarConfig.getProjects().getInitLoad());

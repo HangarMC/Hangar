@@ -1,13 +1,13 @@
 package me.minidigger.hangar.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import me.minidigger.hangar.db.dao.HangarDao;
-import me.minidigger.hangar.db.dao.api.ApiVersionsDao;
+import me.minidigger.hangar.config.hangar.HangarConfig;
 import me.minidigger.hangar.model.generated.DeployVersionInfo;
 import me.minidigger.hangar.model.generated.PaginatedVersionResult;
 import me.minidigger.hangar.model.generated.Pagination;
 import me.minidigger.hangar.model.generated.Version;
 import me.minidigger.hangar.model.generated.VersionStatsDay;
+import me.minidigger.hangar.service.ApiService;
 import me.minidigger.hangar.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +18,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+
+import static me.minidigger.hangar.util.ApiUtil.limitOrDefault;
+import static me.minidigger.hangar.util.ApiUtil.offsetOrZero;
 
 @Controller
 public class VersionsApiController implements VersionsApi {
@@ -30,19 +32,19 @@ public class VersionsApiController implements VersionsApi {
 
     private static final Logger log = LoggerFactory.getLogger(VersionsApiController.class);
 
+    private final HangarConfig hangarConfig;
     private final ObjectMapper objectMapper;
-
-    private final HttpServletRequest request;
-
-    private final HangarDao<ApiVersionsDao> apiVersionsDao;
     private final UserService userService;
+    private final ApiService apiService;
+
+
 
     @Autowired
-    public VersionsApiController(ObjectMapper objectMapper, HttpServletRequest request, HangarDao<ApiVersionsDao> apiVersionsDao, UserService userService) {
+    public VersionsApiController(HangarConfig hangarConfig, ObjectMapper objectMapper, UserService userService, ApiService apiService) {
+        this.hangarConfig = hangarConfig;
         this.objectMapper = objectMapper;
-        this.request = request;
-        this.apiVersionsDao = apiVersionsDao;
         this.userService = userService;
+        this.apiService = apiService;
     }
 
     @Override
@@ -58,17 +60,17 @@ public class VersionsApiController implements VersionsApi {
 
     @Override
     public ResponseEntity<PaginatedVersionResult> listVersions(String pluginId, List<String> tags, Long limit, Long offset) {
-        // TODO handling users
-        List<Version> versions = apiVersionsDao.get().listVersions(pluginId, null, tags, false, limit, offset, null);
-        int count = apiVersionsDao.get().listVersions(pluginId, null,tags, false, limit, offset, null).size();
-        return new ResponseEntity<>(new PaginatedVersionResult().result(versions).pagination(new Pagination().limit(limit).offset(offset).count((long) count)), HttpStatus.OK);
+        // TODO users
+        List<Version> versions = apiService.getVersionList(pluginId, tags, false, limitOrDefault(limit, hangarConfig.projects.getInitVersionLoad()), offsetOrZero(offset), null);
+        long versionCount = apiService.getVersionCount(pluginId, tags, false, null);
+        return new ResponseEntity<>(new PaginatedVersionResult().result(versions).pagination(new Pagination().limit(limit).offset(offset).count(versionCount)), HttpStatus.OK);
     }
 
 
     @Override
     public ResponseEntity<Version> showVersion(String pluginId, String name) {
         // TODO handling users
-        Version version = apiVersionsDao.get().listVersions(pluginId, name, null, false, 1L, 0, null).stream().findFirst().orElse(null);
+        Version version = apiService.getVersion(pluginId, name, false, null);
         if (version == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
