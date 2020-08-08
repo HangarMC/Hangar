@@ -43,7 +43,7 @@
         <moment.version>2.27.0</moment.version>
         <clipboard.version>2.0.6</clipboard.version>
         <chart.js.version>2.9.3</chart.js.version>
-        <swagger-ui.version>3.30.0</swagger-ui.version>
+        <swagger-ui.version>3.31.1</swagger-ui.version>
 
         <!-- plugins -->
         <frontend-maven-plugin.version>1.10.0</frontend-maven-plugin.version>
