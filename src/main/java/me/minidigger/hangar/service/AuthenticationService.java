@@ -224,7 +224,7 @@ public class AuthenticationService {
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
-    private AuthCredentials parseAuthHeader() {
+    public AuthCredentials parseAuthHeader() {
         String authHeader = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader == null || authHeader.isBlank() || !authHeader.startsWith("HangarApi")) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         return AuthCredentials.parseHeader(authHeader);
@@ -242,13 +242,21 @@ public class AuthenticationService {
         }
     }
 
-    private static class AuthCredentials {
+    public static class AuthCredentials {
         private final String apiKey;
         private final String session;
 
         private AuthCredentials(String apiKey, String session) {
             this.apiKey = apiKey;
             this.session = session;
+        }
+
+        public String getApiKey() {
+            return apiKey;
+        }
+
+        public String getSession() {
+            return session;
         }
 
         public static AuthCredentials parseHeader(String authHeader) {
