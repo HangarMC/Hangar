@@ -38,7 +38,7 @@
         <!-- webjars dependencies -->
         <webjars-locator.version>0.40</webjars-locator.version>
         <jquery.version>3.5.1</jquery.version>
-        <font-awesome.version>5.13.1</font-awesome.version>
+        <font-awesome.version>5.14.0</font-awesome.version>
         <filesize.version>6.0.1</filesize.version>
         <moment.version>2.27.0</moment.version>
         <clipboard.version>2.0.6</clipboard.version>
