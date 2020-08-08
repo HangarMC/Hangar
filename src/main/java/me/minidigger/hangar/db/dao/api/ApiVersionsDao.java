@@ -86,8 +86,7 @@ public interface ApiVersionsDao {
             "   LEFT JOIN project_channels pc ON pv.channel_id = pc.id " +
             "WHERE <if(!canSeeHidden)>(pv.visibility = 0 " +
             "<if(userId)>OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4) <endif>) AND <endif> " +
-            "p.plugin_id = :pluginId <if(versionName)> AND " +
-            " pv.version_string = '<versionName>' <endif> <if(tags)> AND " +
+            "p.plugin_id = :pluginId <if(tags)> AND " +
             "(" +
             "   pvt.name || ':' || pvt.data IN (<tags>) OR " +
             "   pvt.name IN (<tags>) OR " +

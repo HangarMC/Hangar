@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -58,6 +59,7 @@ public class VersionsApiController implements VersionsApi {
     }
 
 
+    @PreAuthorize("@authenticationService.apiAction(T(me.minidigger.hangar.model.Permission).ViewPublicInfo, 'project', #pluginId)")
     @Override
     public ResponseEntity<PaginatedVersionResult> listVersions(String pluginId, List<String> tags, Long limit, Long offset) {
         // TODO users
@@ -68,6 +70,7 @@ public class VersionsApiController implements VersionsApi {
 
 
     @Override
+    @PreAuthorize("@authenticationService.apiAction(T(me.minidigger.hangar.model.Permission).ViewPublicInfo, 'project', #pluginId)")
     public ResponseEntity<Version> showVersion(String pluginId, String name) {
         // TODO handling users
         Version version = apiService.getVersion(pluginId, name, false, null);

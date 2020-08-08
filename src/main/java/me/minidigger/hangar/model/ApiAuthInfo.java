@@ -21,10 +21,12 @@ public class ApiAuthInfo {
         return user;
     }
 
+    @Nested("u")
     public void setUser(UsersTable user) {
         this.user = user;
     }
 
+    @Nested("u")
     public ApiKey getKey() {
         return key;
     }

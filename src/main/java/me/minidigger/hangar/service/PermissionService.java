@@ -1,5 +1,6 @@
 package me.minidigger.hangar.service;
 
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,30 +20,38 @@ public class PermissionService {
     }
 
     public Permission getGlobalPermissions(long userid) {
-        return permissionsDao.get().getGlobalPermission(userid, null).add(ALWAYS_HAVE);
+        return addDefaults(permissionsDao.get().getGlobalPermission(userid, null));
     }
 
     public Permission getGlobalPermissions(String userName) {
-        return permissionsDao.get().getGlobalPermission(null, userName).add(ALWAYS_HAVE);
+        return addDefaults(permissionsDao.get().getGlobalPermission(null, userName));
     }
 
     public Permission getProjectPermissions(long userId, long projectId) {
-        return permissionsDao.get().getProjectPermission(userId, projectId).add(ALWAYS_HAVE);
+        return addDefaults(permissionsDao.get().getProjectPermission(userId, projectId));
     }
 
     public Permission getProjectPermissions(long userId, String pluginId) {
-        return permissionsDao.get().getProjectPermission(userId, pluginId).add(ALWAYS_HAVE);
+        return addDefaults(permissionsDao.get().getProjectPermission(userId, pluginId));
     }
 
     public Permission getOrganizationPermissions(long userId, String orgName) {
-        return permissionsDao.get().getOrgPermission(userId, orgName).add(ALWAYS_HAVE);
+        return addDefaults(permissionsDao.get().getOrgPermission(userId, orgName));
     }
 
     public Permission getPossibleProjectPermissions(long userId) {
-        return permissionsDao.get().getPossibleProjectPermissions(userId).add(ALWAYS_HAVE);
+        return addDefaults(permissionsDao.get().getPossibleProjectPermissions(userId));
     }
 
     public Permission getPossibleOrganizationPermissions(long userId) {
-        return permissionsDao.get().getPossibleOrganizationPermissions(userId).add(ALWAYS_HAVE);
+        return addDefaults(permissionsDao.get().getPossibleOrganizationPermissions(userId));
+    }
+
+    private Permission addDefaults(@Nullable Permission permission) {
+        if (permission == null) {
+            return ALWAYS_HAVE;
+        } else {
+            return permission.add(ALWAYS_HAVE);
+        }
     }
 }

@@ -35,6 +35,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static me.minidigger.hangar.util.AuthUtils.unAuth;
+
 @Service
 public class AuthenticationService {
 
@@ -47,12 +49,10 @@ public class AuthenticationService {
     private final PermissionService permissionService;
     private final SsoService ssoService;
 
-    private static final Pattern API_KEY_HEADER_PATTERN = Pattern.compile("(?<=apikey=\")\\w*(?=\")", Pattern.CASE_INSENSITIVE);
-    private static final Pattern SESSION_HEADER_PATTERN = Pattern.compile("(?<=session=\")\\w*(?=\")", Pattern.CASE_INSENSITIVE);
+    private static final Pattern API_KEY_HEADER_PATTERN = Pattern.compile("(?<=apikey=\").*(?=\")", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+    private static final Pattern SESSION_HEADER_PATTERN = Pattern.compile("(?<=session=\").*(?=\")", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     private static final String UUID_REGEX = "[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}";
     private static final Pattern API_KEY_PATTERN = Pattern.compile("(" + UUID_REGEX + ").(" + UUID_REGEX + ")");
-
-    private final HttpHeaders authorizationHeader = new HttpHeaders();
 
     @Autowired
     public AuthenticationService(HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService, SsoService ssoService) {
@@ -64,23 +64,21 @@ public class AuthenticationService {
         this.roleService = roleService;
         this.permissionService = permissionService;
         this.ssoService = ssoService;
-
-        authorizationHeader.add(HttpHeaders.WWW_AUTHENTICATE, "HangarApi");
     }
 
     public boolean apiAction(Permission perms, String apiScope, String...args) {
         AuthCredentials credentials = parseAuthHeader();
         if (credentials.session == null) {
-            unAuth("No session specified");
+            throw unAuth("No session specified");
         }
         String token = credentials.session;
         ApiAuthInfo apiKey = apiKeyDao.get().getApiAuthInfo(token);
         if (apiKey == null) {
-            unAuth("Invalid Session");
+            throw unAuth("Invalid Session");
         }
         if (apiKey.getExpires().isBefore(OffsetDateTime.now())) {
             sessionsDao.get().delete(token);
-            unAuth("Api session expired");
+            throw unAuth("Api session expired");
         }
         switch (apiScope.toLowerCase()) {
             case "global":
@@ -148,7 +146,7 @@ public class AuthenticationService {
         ApiSessionsTable apiSession;
         if (credentials.apiKey != null) {
             if (!API_KEY_PATTERN.matcher(credentials.apiKey).find()) {
-                unAuth("No valid apikey parameter found in Authorization");
+                throw unAuth("No valid apikey parameter found in Authorization");
             }
 
             if (sessionExpiration == null) {
@@ -159,7 +157,7 @@ public class AuthenticationService {
             String token = credentials.apiKey.split("\\.")[1];
             ApiKeysTable apiKeysTable = apiKeyDao.get().findApiKey(identifier, token);
             if (apiKeysTable == null) {
-                unAuth("Invalid api key");
+                throw unAuth("Invalid api key");
             }
             apiSession = new ApiSessionsTable(uuidToken, apiKeysTable.getId(), apiKeysTable.getOwnerId(), sessionExpiration);
             sessionType = SessionType.KEY;
@@ -267,13 +265,11 @@ public class AuthenticationService {
             } else if (sessionMatcher.find()) {
                 sessionKey = sessionMatcher.group();
             } else {
+                System.out.println(apiKeyMatcher);
+                System.out.println(sessionMatcher);
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Authorization header format");
             }
             return new AuthCredentials(apiKey, sessionKey);
         }
-    }
-
-    public void unAuth(String msg) {
-        throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, msg, authorizationHeader, null, null);
     }
 }
