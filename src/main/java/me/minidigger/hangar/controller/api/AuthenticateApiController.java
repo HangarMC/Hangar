@@ -28,10 +28,9 @@ public class AuthenticateApiController implements AuthenticateApi {
     public ResponseEntity<ApiSessionResponse> authenticate(SessionProperties body) {
         if (body != null && body.isFake()) {
             return ResponseEntity.ok(service.authenticateDev());
-        } else if (body != null ) {
-            return ResponseEntity.ok(service.authenticateKeyPublic(body));
         } else {
-            return ResponseEntity.ok(service.authenticatePublic());
+            return ResponseEntity.ok(service.authenticateKeyPublic(body == null ? new SessionProperties() : body));
+        }
             // TODO not sure if all this is needed because you don't need the hangarauth user id, all that is from the api key
 //            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //            if (authentication instanceof HangarAuthentication) {
@@ -41,7 +40,7 @@ public class AuthenticateApiController implements AuthenticateApi {
 //            } else {
 //                throw AuthUtils.unAuth();
 //            }
-        }
+//        }
     }
 
     @Override

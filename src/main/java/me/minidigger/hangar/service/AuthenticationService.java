@@ -150,7 +150,6 @@ public class AuthenticationService {
             if (!API_KEY_PATTERN.matcher(credentials.apiKey).find()) {
                 throw unAuth("No valid apikey parameter found in Authorization");
             }
-
             if (sessionExpiration == null) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The requested expiration can't be used");
             }
