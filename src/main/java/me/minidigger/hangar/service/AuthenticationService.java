@@ -122,13 +122,9 @@ public class AuthenticationService {
         }
     }
 
-    public ApiSessionResponse authenticatePublic(@Nullable SessionProperties properties) {
-        OffsetDateTime sessionExpiration = expiration(hangarConfig.api.session.getExpiration(), properties != null ? properties.getExpiresIn() : null);
+    public ApiSessionResponse authenticatePublic() {
+        OffsetDateTime sessionExpiration = expiration(hangarConfig.api.session.getExpiration(), null);
         String uuidToken = UUID.randomUUID().toString();
-
-        if (sessionExpiration == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The requested expiration can't be used");
-        }
 
         ApiSessionsTable apiSession = new ApiSessionsTable(uuidToken, null, null, sessionExpiration);
         saveSession(apiSession);
@@ -136,7 +132,7 @@ public class AuthenticationService {
         return new ApiSessionResponse(apiSession.getToken(), apiSession.getExpires(), SessionType.PUBLIC);
     }
 
-    public ApiSessionResponse authenticateKeyPublic(SessionProperties properties, long userId) {
+    public ApiSessionResponse authenticateKeyPublic(SessionProperties properties) {
         OffsetDateTime sessionExpiration = expiration(hangarConfig.api.session.getExpiration(), properties.getExpiresIn());
         OffsetDateTime publicSessionExpiration = expiration(hangarConfig.api.session.getPublicExpiration(), properties.getExpiresIn());
         String uuidToken = UUID.randomUUID().toString();

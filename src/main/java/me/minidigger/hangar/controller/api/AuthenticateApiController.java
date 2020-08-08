@@ -28,15 +28,19 @@ public class AuthenticateApiController implements AuthenticateApi {
     public ResponseEntity<ApiSessionResponse> authenticate(SessionProperties body) {
         if (body != null && body.isFake()) {
             return ResponseEntity.ok(service.authenticateDev());
+        } else if (body != null ) {
+            return ResponseEntity.ok(service.authenticateKeyPublic(body));
         } else {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication instanceof HangarAuthentication) {
-                return ResponseEntity.ok(service.authenticateKeyPublic(body, ((HangarAuthentication) authentication).getUserId()));
-            } else if (authentication.getPrincipal().equals("anonymousUser")) {
-                return ResponseEntity.ok(service.authenticatePublic(body));
-            } else {
-                throw AuthUtils.unAuth();
-            }
+            return ResponseEntity.ok(service.authenticatePublic());
+            // TODO not sure if all this is needed because you don't need the hangarauth user id, all that is from the api key
+//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//            if (authentication instanceof HangarAuthentication) {
+//                return ResponseEntity.ok(service.authenticateKeyPublic(body, ((HangarAuthentication) authentication).getUserId()));
+//            } else if (authentication.getPrincipal().equals("anonymousUser")) {
+//                return ResponseEntity.ok(service.authenticatePublic(body));
+//            } else {
+//                throw AuthUtils.unAuth();
+//            }
         }
     }
 

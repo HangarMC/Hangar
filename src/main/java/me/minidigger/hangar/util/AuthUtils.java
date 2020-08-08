@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 
 public class AuthUtils {
 
+    private AuthUtils() { }
+
     public static RuntimeException unAuth() {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.WWW_AUTHENTICATE, "HangarApi");
