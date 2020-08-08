@@ -1,6 +1,14 @@
 package me.minidigger.hangar.controller.api;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 import me.minidigger.hangar.model.ApiAuthInfo;
+import me.minidigger.hangar.model.generated.ApiKeyRequest;
+import me.minidigger.hangar.model.generated.ApiKeyResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,15 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
-import me.minidigger.hangar.model.generated.ApiKeyResponse;
-import me.minidigger.hangar.model.generated.ApiKeyRequest;
 
 @Api(value = "keys", description = "the keys API", tags = "Keys")
 @RequestMapping("/api/v2/")

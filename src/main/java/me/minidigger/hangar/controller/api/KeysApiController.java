@@ -1,25 +1,22 @@
 package me.minidigger.hangar.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.undertow.util.BadRequestException;
 import me.minidigger.hangar.model.ApiAuthInfo;
 import me.minidigger.hangar.model.NamedPermission;
 import me.minidigger.hangar.model.Permission;
+import me.minidigger.hangar.model.generated.ApiKeyRequest;
+import me.minidigger.hangar.model.generated.ApiKeyResponse;
 import me.minidigger.hangar.service.ApiKeyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
-
-import me.minidigger.hangar.model.generated.ApiKeyRequest;
-import me.minidigger.hangar.model.generated.ApiKeyResponse;
-import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 public class KeysApiController implements KeysApi {

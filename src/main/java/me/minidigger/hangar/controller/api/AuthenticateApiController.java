@@ -1,18 +1,15 @@
 package me.minidigger.hangar.controller.api;
 
+import me.minidigger.hangar.model.generated.ApiSessionResponse;
+import me.minidigger.hangar.model.generated.SessionProperties;
+import me.minidigger.hangar.security.HangarAuthentication;
+import me.minidigger.hangar.service.AuthenticationService;
+import me.minidigger.hangar.util.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-
-import me.minidigger.hangar.security.HangarAuthentication;
-import me.minidigger.hangar.model.generated.ApiSessionResponse;
-import me.minidigger.hangar.model.generated.SessionProperties;
-import me.minidigger.hangar.service.AuthenticationService;
-import me.minidigger.hangar.util.AuthUtils;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class AuthenticateApiController implements AuthenticateApi {

@@ -2,12 +2,10 @@ package me.minidigger.hangar.db.dao;
 
 import me.minidigger.hangar.db.model.ApiKeysTable;
 import me.minidigger.hangar.model.ApiAuthInfo;
-import me.minidigger.hangar.model.Permission;
 import me.minidigger.hangar.model.viewhelpers.ApiKey;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
-import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;

@@ -7,7 +7,6 @@ import me.minidigger.hangar.db.customtypes.RoleCategory;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.mappers.RoleMapper;
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.argument.Arguments;
 import org.jdbi.v3.core.spi.JdbiPlugin;
 import org.jdbi.v3.core.statement.SqlLogger;
 import org.jdbi.v3.core.statement.StatementContext;

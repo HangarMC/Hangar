@@ -1,7 +1,5 @@
 package me.minidigger.hangar.controller.resolvers;
 
-import me.minidigger.hangar.db.dao.ApiKeyDao;
-import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.model.ApiAuthInfo;
 import me.minidigger.hangar.service.AuthenticationService;
 import me.minidigger.hangar.service.AuthenticationService.AuthCredentials;

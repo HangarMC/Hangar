@@ -1,13 +1,12 @@
 package me.minidigger.hangar.service;
 
+import me.minidigger.hangar.db.dao.HangarDao;
+import me.minidigger.hangar.db.dao.PermissionsDao;
 import me.minidigger.hangar.db.model.UsersTable;
+import me.minidigger.hangar.model.Permission;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import me.minidigger.hangar.db.dao.HangarDao;
-import me.minidigger.hangar.db.dao.PermissionsDao;
-import me.minidigger.hangar.model.Permission;
 
 @Service
 public class PermissionService {
