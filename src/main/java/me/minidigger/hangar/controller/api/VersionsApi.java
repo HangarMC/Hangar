@@ -1,5 +1,6 @@
 package me.minidigger.hangar.controller.api;
 
+import me.minidigger.hangar.model.ApiAuthInfo;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,6 +58,7 @@ public interface VersionsApi {
             , @ApiParam(value = "A list of tags all the returned versions should have. Should be formated either as `tagname` or `tagname:tagdata`.") @Valid @RequestParam(value = "tags", required = false) List<String> tags
             , @ApiParam(value = "The maximum amount of versions to return") @Valid @RequestParam(value = "limit", required = false) Long limit
             , @ApiParam(value = "Where to start returning", defaultValue = "0") @Valid @RequestParam(value = "offset", required = false, defaultValue = "0") Long offset
+            , ApiAuthInfo apiAuthInfo
     );
 
     @ApiOperation(value = "Returns a specific version of a project", nickname = "showVersion", notes = "Returns a specific version of a project. Requires the `view_public_info` permission in the project or owning organization.", response = Version.class, authorizations = {

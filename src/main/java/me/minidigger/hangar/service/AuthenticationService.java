@@ -28,6 +28,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.Map;
@@ -225,7 +226,11 @@ public class AuthenticationService {
     }
 
     public AuthCredentials parseAuthHeader() {
-        String authHeader = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getHeader(HttpHeaders.AUTHORIZATION);
+        return parseAuthHeader(null);
+    }
+
+    public AuthCredentials parseAuthHeader(@Nullable HttpServletRequest request) {
+        String authHeader = request == null ? ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getHeader(HttpHeaders.AUTHORIZATION) : request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader == null || authHeader.isBlank() || !authHeader.startsWith("HangarApi")) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         return AuthCredentials.parseHeader(authHeader);
     }

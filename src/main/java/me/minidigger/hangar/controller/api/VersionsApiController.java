@@ -2,6 +2,7 @@ package me.minidigger.hangar.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.minidigger.hangar.config.hangar.HangarConfig;
+import me.minidigger.hangar.model.ApiAuthInfo;
 import me.minidigger.hangar.model.generated.DeployVersionInfo;
 import me.minidigger.hangar.model.generated.PaginatedVersionResult;
 import me.minidigger.hangar.model.generated.Pagination;
@@ -61,7 +62,8 @@ public class VersionsApiController implements VersionsApi {
 
     @PreAuthorize("@authenticationService.apiAction(T(me.minidigger.hangar.model.Permission).ViewPublicInfo, 'project', #pluginId)")
     @Override
-    public ResponseEntity<PaginatedVersionResult> listVersions(String pluginId, List<String> tags, Long limit, Long offset) {
+    public ResponseEntity<PaginatedVersionResult> listVersions(String pluginId, List<String> tags, Long limit, Long offset, ApiAuthInfo apiAuthInfo) {
+        System.out.println(apiAuthInfo);
         // TODO users
         List<Version> versions = apiService.getVersionList(pluginId, tags, false, limitOrDefault(limit, hangarConfig.projects.getInitVersionLoad()), offsetOrZero(offset), null);
         long versionCount = apiService.getVersionCount(pluginId, tags, false, null);
