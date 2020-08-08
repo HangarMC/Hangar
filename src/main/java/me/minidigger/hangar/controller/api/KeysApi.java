@@ -1,5 +1,6 @@
 package me.minidigger.hangar.controller.api;
 
+import me.minidigger.hangar.model.ApiAuthInfo;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,8 +34,8 @@ public interface KeysApi {
     @PostMapping(value = "/keys",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<ApiKeyResponse> createKey(@ApiParam(value = "", required = true) @Valid @RequestBody ApiKeyRequest body
-    );
+    ResponseEntity<ApiKeyResponse> createKey(@ApiParam(value = "", required = true) @Valid @RequestBody ApiKeyRequest body,
+                                             ApiAuthInfo apiAuthInfo);
 
 
     @ApiOperation(value = "Delete an API key", nickname = "deleteKey", notes = "Delete an API key. Requires the `edit_api_keys` permission.", authorizations = {
@@ -44,7 +45,7 @@ public interface KeysApi {
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")})
     @DeleteMapping(value = "/keys")
-    ResponseEntity<Void> deleteKey(@NotNull @ApiParam(value = "The name of the key to delete", required = true) @Valid @RequestParam("name") String name
-    );
+    ResponseEntity<Void> deleteKey(@NotNull @ApiParam(value = "The name of the key to delete", required = true) @Valid @RequestParam("name") String name,
+                                   ApiAuthInfo apiAuthInfo);
 
 }

@@ -180,7 +180,7 @@ public class UsersController extends HangarController {
         UserData userData = userService.getUserData(user);
         long userId = userData.getUser().getId();
         mav.addObject("u", userData);
-        mav.addObject("keys", apiKeyService.getKeysForUser(userId));
+        mav.addObject("keys", apiKeyService.getKeys(userId));
         mav.addObject("perms", permissionService.getPossibleOrganizationPermissions(userId).add(permissionService.getPossibleProjectPermissions(userId)).add(userData.getUserPerm()).toNamed());
         return fillModel(mav); // TODO implement editApiKeys request controller
     }

@@ -279,8 +279,6 @@ public class AuthenticationService {
             } else if (sessionMatcher.find()) {
                 sessionKey = sessionMatcher.group();
             } else {
-                System.out.println(apiKeyMatcher);
-                System.out.println(sessionMatcher);
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Authorization header format");
             }
             return new AuthCredentials(apiKey, sessionKey);

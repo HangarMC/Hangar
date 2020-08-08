@@ -64,9 +64,9 @@
                 <#-- @ftlvariable name="key" type="me.minidigger.hangar.model.viewhelpers.ApiKey" -->
                 <#list keys as key>
                     <tr class="api-key-row">
-                        <th class="api-key-name">${key.key.name}</th>
+                        <th class="api-key-name">${key.name}</th>
                         <th></th>
-                        <th>${key.key.tokenIdentifier}</th>
+                        <th>${key.tokenIdentifier}</th>
                         <th>${key.namedRawPermissions?map(np -> np.name())?join(", ")}</th>
                         <th><button class="btn btn-danger api-key-row-delete-button"><@spring.message "user.apiKeys.keyDeleteButton" /></button></th>
                     </tr>

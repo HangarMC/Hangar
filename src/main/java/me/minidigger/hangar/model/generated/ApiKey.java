@@ -1,6 +1,7 @@
 package me.minidigger.hangar.model.generated;
 
 import me.minidigger.hangar.model.Permission;
+import org.jdbi.v3.core.annotation.Unmappable;
 import org.jdbi.v3.core.mapper.Nested;
 
 public class ApiKey {
@@ -51,5 +52,10 @@ public class ApiKey {
                 ", tokenIdentifier='" + tokenIdentifier + '\'' +
                 ", rawKeyPermissions=" + rawKeyPermissions +
                 '}';
+    }
+
+    @Unmappable
+    public boolean isSubKey(Permission perm) {
+        return this.getRawKeyPermissions().has(perm);
     }
 }

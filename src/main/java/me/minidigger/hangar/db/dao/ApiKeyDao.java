@@ -3,6 +3,7 @@ package me.minidigger.hangar.db.dao;
 import me.minidigger.hangar.db.model.ApiKeysTable;
 import me.minidigger.hangar.model.ApiAuthInfo;
 import me.minidigger.hangar.model.Permission;
+import me.minidigger.hangar.model.viewhelpers.ApiKey;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
@@ -18,13 +19,18 @@ import java.util.List;
 public interface ApiKeyDao {
 
     @Timestamped
-    @GetGeneratedKeys
-    @SqlUpdate("INSERT INTO api_keys (created_at, name, owner_id, token_identifier, token, raw_key_permissions) VALUES (:now, :name, :ownerId, :tokenIdentifier, :token, :rawKeyPermissions)")
-    ApiKeysTable insert(@BindBean ApiKeysTable apiKeysTable);
+    @SqlUpdate("INSERT INTO api_keys (created_at, name, owner_id, token_identifier, token, raw_key_permissions) VALUES (:now, :name, :ownerId, :tokenIdentifier, crypt(:token, gen_salt('bf')), :permValue::BIT(64))")
+    void insert(@BindBean ApiKeysTable apiKeysTable, long permValue);
 
-    @RegisterBeanMapper(value = Permission.class, prefix = "perm")
+    @SqlUpdate("DELETE FROM api_keys k WHERE k.name = :keyName AND k.owner_id = :ownerId")
+    int delete(String keyName, long ownerId);
+
+    @RegisterBeanMapper(ApiKey.class)
     @SqlQuery("SELECT *, raw_key_permissions::BIGINT perm_value FROM api_keys WHERE owner_id = :ownerId")
-    List<ApiKeysTable> getByOwner(long ownerId);
+    List<ApiKey> getByOwner(long ownerId);
+
+    @SqlQuery("SELECT *, raw_key_permissions::BIGINT perm_value FROM api_keys WHERE name = :keyName AND owner_id = :ownerId")
+    ApiKeysTable getKey(String keyName, long ownerId);
 
     @SqlQuery("SELECT *, raw_key_permissions::BIGINT perm_value FROM api_keys k WHERE k.token_identifier = :identifier AND k.token = crypt(:token, k.token)")
     ApiKeysTable findApiKey(String identifier, String token);
