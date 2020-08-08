@@ -5,6 +5,7 @@ import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.ProjectDao;
 import me.minidigger.hangar.db.dao.UserDao;
 import me.minidigger.hangar.db.dao.VisibilityDao;
+import me.minidigger.hangar.db.dao.api.ProjectApiDao;
 import me.minidigger.hangar.db.model.ProjectVersionsTable;
 import me.minidigger.hangar.db.model.ProjectVisibilityChangesTable;
 import me.minidigger.hangar.db.model.ProjectsTable;
@@ -49,15 +50,17 @@ public class ProjectService {
     private final HangarDao<ProjectDao> projectDao;
     private final HangarDao<UserDao> userDao;
     private final HangarDao<VisibilityDao> visibilityDao;
+    private final HangarDao<ProjectApiDao> projectApiDao;
     private final UserService userService;
     private final FlagService flagService;
 
     @Autowired
-    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, UserService userService, FlagService flagService) {
+    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectApiDao> projectApiDao, UserService userService, FlagService flagService) {
         this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
         this.userDao = userDao;
         this.visibilityDao = visibilityDao;
+        this.projectApiDao = projectApiDao;
         this.userService = userService;
         this.flagService = flagService;
     }
@@ -192,8 +195,16 @@ public class ProjectService {
         return projectDao.get().getUnhealthyProjects(hangarConfig.projects.getStaleAge().toMillis());
     }
 
-    public List<Project> getProjects(String pluginId, List<Category> categories, List<Tag> parsedTags, String query, String owner, boolean seeHidden, Long requesterId, ProjectSortingStrategy sort, boolean relevance, long limit, long offset) {
-        return List.of(getProjectApi("test")); // TODO getProjects query
+    public List<Project> getProjects(String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean seeHidden, Long requesterId, ProjectSortingStrategy sort, boolean relevance, long limit, long offset) {
+        String ordering;
+        if (relevance && query != null && !query.isEmpty()) {
+            // TODO implement ordering by relevance, see APIVV2Queries#199
+            ordering = sort.getSql();
+        } else {
+            ordering = sort.getSql();
+        }
+
+        return projectApiDao.get().listProjects(pluginId, categories, tags, query, owner, seeHidden, requesterId, ordering, limit, offset);
     }
 
     public long countProjects(String pluginId, List<Category> categories, List<Tag> parsedTags, String query, String owner, boolean seeHidden, Long requesterId) {
