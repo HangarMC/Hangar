@@ -13,6 +13,8 @@ public class PermissionService {
 
     private final HangarDao<PermissionsDao> permissionsDao;
 
+    public static final Permission DEFAULT_GLOBAL_PERMISSIONS = Permission.ViewPublicInfo.add(Permission.EditOwnUserSettings).add(Permission.EditApiKeys);
+
     @Autowired
     public PermissionService(HangarDao<PermissionsDao> permissionsDao) {
         this.permissionsDao = permissionsDao;
@@ -38,8 +40,7 @@ public class PermissionService {
         return permissionsDao.get().getPossibleOrganizationPermissions(userId);
     }
 
-    private final Permission def = Permission.ViewPublicInfo.add(Permission.EditOwnUserSettings).add(Permission.EditApiKeys);
     private Permission orDefault(@Nullable Permission permission) {
-        return permission == null ? def : permission.add(def);
+        return permission == null ? DEFAULT_GLOBAL_PERMISSIONS : permission.add(DEFAULT_GLOBAL_PERMISSIONS);
     }
 }

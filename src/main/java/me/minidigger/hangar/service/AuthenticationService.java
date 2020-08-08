@@ -21,7 +21,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -108,12 +107,12 @@ public class AuthenticationService {
 
             roleService.addGlobalRole(userEntry.getId(), Role.HANGAR_ADMIN.getRoleId());
         }
-        authenticate(userEntry);
+        setAuthenticatedUser(userEntry);
     }
 
-    public void authenticate(UsersTable user) {
+    public void setAuthenticatedUser(UsersTable user) {
         // TODO properly do auth, remember me shit too
-        Authentication auth = new HangarAuthentication(user.getName(), user, List.of(new SimpleGrantedAuthority("ROLE_USER")));
+        Authentication auth = new HangarAuthentication(List.of(new SimpleGrantedAuthority("ROLE_USER")), user.getName(), user.getId(), user);
         authenticationManager.authenticate(auth);
         SecurityContextHolder.getContext().setAuthentication(auth);
     }

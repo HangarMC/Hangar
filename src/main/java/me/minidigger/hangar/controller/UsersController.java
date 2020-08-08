@@ -4,7 +4,6 @@ import me.minidigger.hangar.service.RoleService;
 import me.minidigger.hangar.service.sso.AuthUser;
 import me.minidigger.hangar.service.sso.UrlWithNonce;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -106,7 +105,7 @@ public class UsersController extends HangarController {
             authUser.getGlobalRoles().forEach(role -> {
                 roleService.addGlobalRole(user.getId(), role.getRoleId());
             });
-            authenticationService.authenticate(user);
+            authenticationService.setAuthenticatedUser(user);
 
             // TODO redirect to flash
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));

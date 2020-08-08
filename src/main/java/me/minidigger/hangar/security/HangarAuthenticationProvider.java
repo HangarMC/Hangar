@@ -1,20 +1,16 @@
 package me.minidigger.hangar.security;
 
+import me.minidigger.hangar.db.dao.HangarDao;
+import me.minidigger.hangar.db.dao.UserDao;
+import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.service.PermissionService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-
-import me.minidigger.hangar.db.dao.HangarDao;
-import me.minidigger.hangar.db.dao.UserDao;
-import me.minidigger.hangar.db.model.UsersTable;
 
 @Component
 public class HangarAuthenticationProvider implements AuthenticationProvider {
@@ -28,19 +24,14 @@ public class HangarAuthenticationProvider implements AuthenticationProvider {
     }
 
     @Override
-    public Authentication authenticate(Authentication authentication)  throws AuthenticationException {
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        String userName = authentication.getName();
 
-        HangarAuthentication auth = (HangarAuthentication) authentication;
-        String name = auth.getName();
-
-        UsersTable usersTable = userDao.get().getByName(name);
+        UsersTable usersTable = userDao.get().getByName(userName);
         // TODO validate stuff, guess we need to pass sso stuff here?
 
-        Collection<GrantedAuthority> authorities = new HashSet<>();
-        authorities.addAll(List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER")));
-
         if (usersTable != null) {
-            return new HangarAuthentication(name, usersTable, authorities);
+            return new HangarAuthentication(List.of(new SimpleGrantedAuthority("ROLE_USER")), userName, usersTable.getId(), usersTable);
         } else {
             return null;
         }

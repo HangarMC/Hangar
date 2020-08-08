@@ -44,15 +44,17 @@ public class UserService {
     private final HangarDao<OrganizationDao> orgDao;
     private final HangarDao<ProjectDao> projectDao;
     private final RoleService roleService;
+    private final PermissionService permissionService;
     private final HangarConfig config;
 
     @Autowired
-    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, RoleService roleService) {
+    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, RoleService roleService, PermissionService permissionService) {
         this.userDao = userDao;
         this.config = config;
         this.orgDao = orgDao;
         this.projectDao = projectDao;
         this.roleService = roleService;
+        this.permissionService = permissionService;
     }
 
     public UsersTable getCurrentUser() {
@@ -70,13 +72,17 @@ public class UserService {
     }
 
     public HeaderData getHeaderData() {
-        HeaderData headerData = new HeaderData();
-        Permission global = Permission.HardDeleteProject.add(Permission.SeeHidden).add(Permission.ModNotesAndFlags).add(Permission.Reviewer).add(Permission.All);
-        headerData.setGlobalPermission(headerData.getGlobalPermission().add(global)); // TODO remove
-
-        headerData.setCurrentUser(getCurrentUser());
-        // TODO fill headerdata
-
+        boolean hasCurrentUser = getCurrentUser() != null;
+        HeaderData headerData = new HeaderData(
+                getCurrentUser(),
+                hasCurrentUser ? permissionService.getGlobalPermissions(getCurrentUser().getId()) : PermissionService.DEFAULT_GLOBAL_PERMISSIONS,
+                false,
+                false,
+                false,
+                false,
+                false
+        );
+        // TODO fill header data
         return headerData;
     }
 
