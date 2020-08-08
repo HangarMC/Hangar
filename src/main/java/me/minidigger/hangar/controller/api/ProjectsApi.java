@@ -1,5 +1,6 @@
 package me.minidigger.hangar.controller.api;
 
+import me.minidigger.hangar.model.ApiAuthInfo;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,10 +44,10 @@ public interface ProjectsApi {
             , @ApiParam(value = "A list of tags all the returned projects should have. Should be formated either as `tagname` or `tagname:tagdata`.") @Valid @RequestParam(value = "tags", required = false) List<String> tags
             , @ApiParam(value = "Limit the search to a specific user") @Valid @RequestParam(value = "owner", required = false) String owner
             , @ApiParam(value = "How to sort the projects") @Valid @RequestParam(value = "sort", required = false, defaultValue = "updated") ProjectSortingStrategy sort
-            , @ApiParam(value = "If how relevant the project is to the given query should be used when sorting the projects") @Valid @RequestParam(value = "relevance", required = false, defaultValue = "true") boolean relevance
+            , @ApiParam(value = "If how relevant the project is to the given query should be used when sorting the projects") @RequestParam(value = "relevance", required = false, defaultValue = "true") boolean relevance
             , @ApiParam(value = "The maximum amount of projects to return") @Valid @RequestParam(value = "limit", required = false) Long limit
-            , @ApiParam(value = "Where to start searching", defaultValue = "0") @Valid @RequestParam(value = "offset", required = false, defaultValue = "0") Long offset
-    );
+            , @ApiParam(value = "Where to start searching", defaultValue = "0") @Valid @RequestParam(value = "offset", required = false, defaultValue = "0") Long offset,
+                                                        ApiAuthInfo apiAuthInfo);
 
     @ApiOperation(value = "Returns the members of a project", nickname = "showMembers", notes = "Returns the members of a project. Requires the `view_public_info` permission.", response = ProjectMember.class, authorizations = {
             @Authorization(value = "Session")}, tags = "Projects")

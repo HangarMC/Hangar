@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
@@ -84,7 +83,7 @@ public interface VersionsApi {
     ResponseEntity<Map<String, VersionStatsDay>> showVersionStats(
             @ApiParam(value = "The plugin id of the version to return the stats for", required = true) @PathVariable("pluginId") String pluginId,
             @ApiParam(value = "The version to return the stats for", required = true) @PathVariable("version") String version,
-            @NotNull @ApiParam(value = "The first date to include in the result", required = true) @Valid @RequestParam(value = "fromDate") LocalDate fromDate,
-            @NotNull @ApiParam(value = "The last date to include in the result", required = true) @Valid @RequestParam(value = "toDate") LocalDate toDate
+            @ApiParam(value = "The first date to include in the result", required = true) @RequestParam(value = "fromDate") @NotNull @Valid String fromDate,
+            @ApiParam(value = "The last date to include in the result", required = true) @RequestParam(value = "toDate") @NotNull @Valid String toDate
     );
 }

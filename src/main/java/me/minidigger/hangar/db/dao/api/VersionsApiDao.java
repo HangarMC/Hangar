@@ -2,7 +2,11 @@ package me.minidigger.hangar.db.dao.api;
 
 import me.minidigger.hangar.db.dao.api.mappers.VersionMapper;
 import me.minidigger.hangar.model.generated.Version;
+import me.minidigger.hangar.model.generated.VersionStatsDay;
+import org.jdbi.v3.sqlobject.config.KeyColumn;
+import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
+import org.jdbi.v3.sqlobject.config.ValueColumn;
 import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.customizer.BindList.EmptyHandling;
 import org.jdbi.v3.sqlobject.customizer.Define;
@@ -10,11 +14,13 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @RegisterRowMapper(VersionMapper.class)
-public interface ApiVersionsDao {
+public interface VersionsApiDao {
 
     @UseStringTemplateEngine
     @SqlQuery("SELECT pv.created_at," +
@@ -95,4 +101,17 @@ public interface ApiVersionsDao {
             "  )<endif> " +
             "GROUP BY p.id, pv.id, u.id, pc.id ")
     long versionCount(String pluginId, @BindList(value = "tags", onEmpty = EmptyHandling.NULL_VALUE) List<String> tags, @Define boolean canSeeHidden, @Define Long userId);
+
+    @KeyColumn("date")
+    @RegisterBeanMapper(value = VersionStatsDay.class, prefix = "vsd")
+    @UseStringTemplateEngine
+    @SqlQuery("SELECT CAST(dates.day as DATE) date, coalesce(pvd.downloads, 0) vsd_downloads" +
+            "    FROM projects p," +
+            "         project_versions pv," +
+            "         (SELECT generate_series(:fromDate::DATE, :toDate::DATE, INTERVAL '1 DAY') AS day) dates" +
+            "             LEFT JOIN project_versions_downloads pvd ON dates.day = pvd.day" +
+            "    WHERE p.plugin_id = :pluginId" +
+            "      AND pv.version_string = :versionString" +
+            "      AND (pvd IS NULL OR (pvd.project_id = p.id AND pvd.version_id = pv.id));")
+    Map<String, VersionStatsDay> versionStats(String pluginId, String versionString, LocalDate fromDate, LocalDate toDate);
 }

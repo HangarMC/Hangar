@@ -1,18 +1,21 @@
-package me.minidigger.hangar.service;
+package me.minidigger.hangar.service.api;
 
 import me.minidigger.hangar.db.dao.HangarDao;
-import me.minidigger.hangar.db.dao.api.ApiVersionsDao;
+import me.minidigger.hangar.db.dao.api.VersionsApiDao;
 import me.minidigger.hangar.model.generated.Version;
+import me.minidigger.hangar.model.generated.VersionStatsDay;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Service
-public class ApiService {
+public class VersionApiService {
 
-    private final HangarDao<ApiVersionsDao> apiVersionsDao;
+    private final HangarDao<VersionsApiDao> apiVersionsDao;
 
-    public ApiService(HangarDao<ApiVersionsDao> apiVersionsDao) {
+    public VersionApiService(HangarDao<VersionsApiDao> apiVersionsDao) {
         this.apiVersionsDao = apiVersionsDao;
     }
 
@@ -26,6 +29,10 @@ public class ApiService {
 
     public long getVersionCount(String pluginId, List<String> tags, boolean canSeeHidden, Long userId) {
         return apiVersionsDao.get().versionCount(pluginId, tags, canSeeHidden, userId);
+    }
+
+    public Map<String, VersionStatsDay> getVersionStats(String pluginId, String versionString, LocalDate fromDate, LocalDate toDate) {
+        return apiVersionsDao.get().versionStats(pluginId, versionString, fromDate, toDate);
     }
 
 }

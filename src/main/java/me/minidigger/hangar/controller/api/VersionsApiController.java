@@ -9,7 +9,7 @@ import me.minidigger.hangar.model.generated.PaginatedVersionResult;
 import me.minidigger.hangar.model.generated.Pagination;
 import me.minidigger.hangar.model.generated.Version;
 import me.minidigger.hangar.model.generated.VersionStatsDay;
-import me.minidigger.hangar.service.ApiService;
+import me.minidigger.hangar.service.api.VersionApiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -37,13 +40,13 @@ public class VersionsApiController implements VersionsApi {
 
     private final HangarConfig hangarConfig;
     private final ObjectMapper objectMapper;
-    private final ApiService apiService;
+    private final VersionApiService versionApiService;
 
     @Autowired
-    public VersionsApiController(HangarConfig hangarConfig, ObjectMapper objectMapper, ApiService apiService) {
+    public VersionsApiController(HangarConfig hangarConfig, ObjectMapper objectMapper, VersionApiService versionApiService) {
         this.hangarConfig = hangarConfig;
         this.objectMapper = objectMapper;
-        this.apiService = apiService;
+        this.versionApiService = versionApiService;
     }
 
     @Override
@@ -60,8 +63,8 @@ public class VersionsApiController implements VersionsApi {
     @PreAuthorize("@authenticationService.apiAction(T(Permission).ViewPublicInfo, T(ApiScope).forProject(#pluginId))")
     @Override
     public ResponseEntity<PaginatedVersionResult> listVersions(String pluginId, List<String> tags, Long limit, Long offset, ApiAuthInfo apiAuthInfo) {
-        List<Version> versions = apiService.getVersionList(pluginId, tags, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), limitOrDefault(limit, hangarConfig.projects.getInitVersionLoad()), offsetOrZero(offset), userIdOrNull(apiAuthInfo.getUser()));
-        long versionCount = apiService.getVersionCount(pluginId, tags, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), userIdOrNull(apiAuthInfo.getUser()));
+        List<Version> versions = versionApiService.getVersionList(pluginId, tags, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), limitOrDefault(limit, hangarConfig.projects.getInitVersionLoad()), offsetOrZero(offset), userIdOrNull(apiAuthInfo.getUser()));
+        long versionCount = versionApiService.getVersionCount(pluginId, tags, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), userIdOrNull(apiAuthInfo.getUser()));
         return new ResponseEntity<>(new PaginatedVersionResult().result(versions).pagination(new Pagination().limit(limit).offset(offset).count(versionCount)), HttpStatus.OK);
     }
 
@@ -69,7 +72,7 @@ public class VersionsApiController implements VersionsApi {
     @Override
     @PreAuthorize("@authenticationService.apiAction(T(Permission).ViewPublicInfo, T(ApiScope).forProject(#pluginId))")
     public ResponseEntity<Version> showVersion(String pluginId, String name, ApiAuthInfo apiAuthInfo) {
-        Version version = apiService.getVersion(pluginId, name, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), userIdOrNull(apiAuthInfo.getUser()));
+        Version version = versionApiService.getVersion(pluginId, name, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), userIdOrNull(apiAuthInfo.getUser()));
         if (version == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
@@ -79,13 +82,25 @@ public class VersionsApiController implements VersionsApi {
 
 
     @Override
-    @PreAuthorize("@authenticationService.apiAction(T(Permission).ViewPublicInfo, T(ApiScope).forProject(#pluginId))")
-    public ResponseEntity<Map<String, VersionStatsDay>> showVersionStats(String pluginId, String version, LocalDate fromDate, LocalDate toDate) {
+    @PreAuthorize("@authenticationService.apiAction(T(Permission).IsProjectMember, T(ApiScope).forProject(#pluginId))")
+    public ResponseEntity<Map<String, VersionStatsDay>> showVersionStats(String pluginId, String version, @NotNull @Valid String fromDate, @NotNull @Valid String toDate) {
+        LocalDate from = parseDate(fromDate);
+        LocalDate to = parseDate(toDate);
+        if (from.isAfter(to)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "From date is after to date");
+        }
+        Map<String, VersionStatsDay> versionStats = versionApiService.getVersionStats(pluginId, version, from, to);
+        if (versionStats.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND); // TODO Not found might not be right here?
+        }
+        return ResponseEntity.ok(versionStats);
+    }
+
+    private LocalDate parseDate(String date) {
         try {
-            return new ResponseEntity<Map<String, VersionStatsDay>>(objectMapper.readValue("{\n  \"key\" : {\n    \"downloads\" : 0\n  }\n}", Map.class), HttpStatus.OK); // TODO Implement me
-        } catch (IOException e) {
-            log.error("Couldn't serialize response for content type application/json", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return LocalDate.parse(date);
+        } catch (DateTimeParseException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Badly formatted date " + date);
         }
     }
 }
