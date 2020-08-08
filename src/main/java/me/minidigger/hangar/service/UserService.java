@@ -2,6 +2,7 @@ package me.minidigger.hangar.service;
 
 import me.minidigger.hangar.model.viewhelpers.FlagActivity;
 import me.minidigger.hangar.model.viewhelpers.ReviewActivity;
+import me.minidigger.hangar.service.sso.AuthUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -163,6 +164,24 @@ public class UserService {
         Permission userPerm = Permission.All;
         Permission orgaPerm = Permission.None;
         return new UserData(getHeaderData(), user, isOrga, projectCount, organizations, globalRoles, userPerm, orgaPerm);
+    }
+
+    public UsersTable getOrCreate(String username, AuthUser authUser) {
+        UsersTable user = userDao.get().getByName(username);
+        if (user == null) {
+            user = new UsersTable(
+                    authUser.getId(),
+                    null,
+                    authUser.getUsername(),
+                    authUser.getEmail(),
+                    null,
+                    new int[0],
+                    false,
+                    authUser.getLang().toLanguageTag()
+            );
+            userDao.get().insert(user);
+        }
+        return user;
     }
 
     public void ssoSyncUser(SsoSyncData syncData) {

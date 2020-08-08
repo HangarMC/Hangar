@@ -31,4 +31,7 @@ public interface UserGlobalRolesDao {
 
     @SqlUpdate("DELETE FROM user_global_roles WHERE user_id=:userId AND role_id=:roleId")
     void delete(@BindBean UserGlobalRolesTable entry);
+
+    @SqlUpdate("DELETE FROM user_global_roles WHERE user_id = :userId")
+    void deleteAll(long userId);
 }

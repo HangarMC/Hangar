@@ -14,11 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -109,24 +111,9 @@ public class AuthenticationService {
         authenticate(userEntry);
     }
 
-    public boolean loginWithSSO(String sso, String sig) {
-        Map<String, String> ssoData = ssoService.decode(sso, sig);
-        String nonce = ssoData.get("nonce");
-        String id = ssoData.get("external_id");
-        if (nonce != null && id != null) {
-            String returnUrl = ssoService.getReturnUrl(nonce);
-            if (returnUrl != null) {
-                UsersTable user = userDao.get().getById(Integer.parseInt(id));
-                authenticate(user);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void authenticate(UsersTable user) {
+    public void authenticate(UsersTable user) {
         // TODO properly do auth, remember me shit too
-        Authentication auth = new HangarAuthentication(user.getName());
+        Authentication auth = new HangarAuthentication(user.getName(), user, List.of(new SimpleGrantedAuthority("ROLE_USER")));
         authenticationManager.authenticate(auth);
         SecurityContextHolder.getContext().setAuthentication(auth);
     }

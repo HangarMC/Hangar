@@ -1,5 +1,8 @@
 package me.minidigger.hangar.controller;
 
+import me.minidigger.hangar.service.RoleService;
+import me.minidigger.hangar.service.sso.AuthUser;
+import me.minidigger.hangar.service.sso.UrlWithNonce;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Map;
@@ -44,29 +48,30 @@ import me.minidigger.hangar.util.RouteHelper;
 @Controller
 public class UsersController extends HangarController {
 
-    private final HangarDao<UserDao> userDao;
     private final HangarConfig hangarConfig;
+    private final RouteHelper routeHelper;
     private final AuthenticationService authenticationService;
     private final UserService userService;
-    private final UserActionLogService userActionLogService;
-    private final RouteHelper routeHelper;
+    private final RoleService roleService;
     private final ApiKeyService apiKeyService;
     private final PermissionService permissionService;
     private final NotificationService notificationService;
     private final SsoService ssoService;
+    private final UserActionLogService userActionLogService;
+    private final HangarDao<UserDao> userDao;
 
-    @Autowired
-    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, UserService userService, UserActionLogService userActionLogService, RouteHelper routeHelper, ApiKeyService apiKeyService, PermissionService permissionService, SsoService ssoService, NotificationService notificationService) {
+    public UsersController(HangarConfig hangarConfig, RouteHelper routeHelper, AuthenticationService authenticationService, UserService userService, RoleService roleService, ApiKeyService apiKeyService, PermissionService permissionService, NotificationService notificationService, SsoService ssoService, UserActionLogService userActionLogService, HangarDao<UserDao> userDao) {
         this.hangarConfig = hangarConfig;
-        this.userDao = userDao;
+        this.routeHelper = routeHelper;
         this.authenticationService = authenticationService;
         this.userService = userService;
-        this.userActionLogService = userActionLogService;
-        this.routeHelper = routeHelper;
+        this.roleService = roleService;
         this.apiKeyService = apiKeyService;
         this.permissionService = permissionService;
-        this.ssoService = ssoService;
         this.notificationService = notificationService;
+        this.ssoService = ssoService;
+        this.userActionLogService = userActionLogService;
+        this.userDao = userDao;
     }
 
     @RequestMapping("/authors")
@@ -80,31 +85,62 @@ public class UsersController extends HangarController {
     }
 
     @RequestMapping("/login")
-    public ModelAndView login(@RequestParam(defaultValue = "") String sso, @RequestParam(defaultValue = "") String sig, @RequestParam(defaultValue = "") String returnUrl) {
+    public ModelAndView login(@RequestParam(defaultValue = "") String sso, @RequestParam(defaultValue = "") String sig, @RequestParam(defaultValue = "") String returnUrl, RedirectAttributes attributes) {
         if (hangarConfig.fakeUser.isEnabled()) {
             hangarConfig.checkDebug();
 
             authenticationService.loginAsFakeUser();
 
             return new ModelAndView("redirect:" + returnUrl);
-        } else if (sso.isEmpty() || sig.isBlank()) {
-            // redirect to SSO
-            String authRedirectUrl = ssoService.generateAuthReturnUrl(returnUrl);
-            Pair<String, String> ssoData = ssoService.encode(Map.of("return_sso_url", authRedirectUrl));
-            String ssoUrl = ssoService.getAuthLoginUrl(ssoData.getLeft(), ssoData.getRight());
-            return new ModelAndView("redirect:" + ssoUrl);
+        } else if (sso.isEmpty()) {
+            return redirectToSso(ssoService.getLoginUrl(hangarConfig.getBaseUrl() + "/login"), attributes);
         } else {
-            boolean success = authenticationService.loginWithSSO(sso, sig);
-            if (success) {
-                String nonce = ssoService.decode(sso, sig).get("nonce");
-                returnUrl = ssoService.getReturnUrl(nonce);
-                ssoService.clearReturnUrl(nonce);
-                return new ModelAndView("redirect:" + returnUrl);
-            } else {
+            AuthUser authUser = ssoService.authenticate(sso, sig);
+            if (authUser == null) {
+                AlertUtil.showAlert(attributes, AlertType.ERROR, "error.loginFailed");
                 return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
             }
+
+            UsersTable user = userService.getOrCreate(authUser.getUsername(), authUser);
+            roleService.removeAllGlobalRoles(user.getId());
+            authUser.getGlobalRoles().forEach(role -> {
+                roleService.addGlobalRole(user.getId(), role.getRoleId());
+            });
+            authenticationService.authenticate(user);
+
+            // TODO redirect to flash
+            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
+
         }
+
+//        else if (sso.isEmpty() || sig.isBlank()) {
+//            // redirect to SSO
+//            String authRedirectUrl = ssoService.generateAuthReturnUrl(returnUrl);
+//            Pair<String, String> ssoData = ssoService.encode(Map.of("return_sso_url", authRedirectUrl));
+//            String ssoUrl = ssoService.getAuthLoginUrl(ssoData.getLeft(), ssoData.getRight());
+//            return new ModelAndView("redirect:" + ssoUrl);
+//        } else {
+//            boolean success = authenticationService.loginWithSSO(sso, sig);
+//            if (success) {
+//                String nonce = ssoService.decode(sso, sig).get("nonce");
+//                returnUrl = ssoService.getReturnUrl(nonce);
+//                ssoService.clearReturnUrl(nonce);
+//                return new ModelAndView("redirect:" + returnUrl);
+//            } else {
+//                return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
+//            }
+//        }
     }
+
+    private ModelAndView redirectToSso(UrlWithNonce urlWithNonce, RedirectAttributes attributes) {
+        if (!hangarConfig.sso.isEnabled()) {
+            AlertUtil.showAlert(attributes, AlertType.ERROR, "error.noLogin");
+            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
+        }
+        ssoService.insert(urlWithNonce.getNonce());
+        return new ModelAndView("redirect:" + urlWithNonce.getUrl());
+    }
+
 
     @RequestMapping("/logout")
     public ModelAndView logout(HttpSession session) {

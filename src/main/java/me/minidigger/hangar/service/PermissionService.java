@@ -1,6 +1,7 @@
 package me.minidigger.hangar.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import me.minidigger.hangar.db.dao.HangarDao;
@@ -18,7 +19,7 @@ public class PermissionService {
     }
 
     public Permission getGlobalPermissions(long userid) {
-        return permissionsDao.get().getGlobalPermission(userid, null);
+        return orDefault(permissionsDao.get().getGlobalPermission(userid, null));
     }
 
     public Permission getGlobalPermissions(String userName) {
@@ -35,5 +36,10 @@ public class PermissionService {
 
     public Permission getPossibleOrganizationPermissions(long userId) {
         return permissionsDao.get().getPossibleOrganizationPermissions(userId);
+    }
+
+    private final Permission def = Permission.ViewPublicInfo.add(Permission.EditOwnUserSettings).add(Permission.EditApiKeys);
+    private Permission orDefault(@Nullable Permission permission) {
+        return permission == null ? def : permission.add(def);
     }
 }

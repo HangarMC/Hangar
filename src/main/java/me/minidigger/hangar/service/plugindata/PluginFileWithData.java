@@ -1,6 +1,6 @@
 package me.minidigger.hangar.service.plugindata;
 
-import me.minidigger.hangar.util.StringUtils;
+import me.minidigger.hangar.util.CryptoUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,7 +31,7 @@ public class PluginFileWithData {
 
     public String getMd5() {
         try {
-            return StringUtils.md5ToHex(Files.readAllBytes(this.path));
+            return CryptoUtils.md5ToHex(Files.readAllBytes(this.path));
         } catch (IOException e) {
             e.printStackTrace();
             return null;
