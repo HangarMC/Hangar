@@ -42,4 +42,14 @@ public class ApiKey {
     public void setRawKeyPermissions(Permission rawKeyPermissions) {
         this.rawKeyPermissions = rawKeyPermissions;
     }
+
+    @Override
+    public String toString() {
+        return "ApiKey{" +
+                "name='" + name + '\'' +
+                ", ownerId=" + ownerId +
+                ", tokenIdentifier='" + tokenIdentifier + '\'' +
+                ", rawKeyPermissions=" + rawKeyPermissions +
+                '}';
+    }
 }

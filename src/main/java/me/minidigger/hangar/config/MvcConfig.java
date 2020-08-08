@@ -6,8 +6,6 @@ import me.minidigger.hangar.controller.converters.ColorHexConverter;
 import me.minidigger.hangar.controller.converters.StringToEnumConverterFactory;
 import me.minidigger.hangar.controller.interceptors.ProjectsInterceptor;
 import me.minidigger.hangar.controller.resolvers.ApiAuthInfoMethodArgumentResolver;
-import me.minidigger.hangar.db.dao.ApiKeyDao;
-import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.service.AuthenticationService;
 import me.minidigger.hangar.service.PermissionService;
 import me.minidigger.hangar.service.project.ProjectService;
@@ -48,15 +46,13 @@ public class MvcConfig implements WebMvcConfigurer {
     private final ProjectService projectService;
     private final PermissionService permissionService;
     private final AuthenticationService authenticationService;
-    private final HangarDao<ApiKeyDao> apiKeyDao;
 
     @Autowired
-    public MvcConfig(RouteHelper routeHelper, ProjectService projectService, PermissionService permissionService, @Lazy AuthenticationService authenticationService, HangarDao<ApiKeyDao> apiKeyDao) {
+    public MvcConfig(RouteHelper routeHelper, ProjectService projectService, PermissionService permissionService, @Lazy AuthenticationService authenticationService) {
         this.routeHelper = routeHelper;
         this.projectService = projectService;
         this.permissionService = permissionService;
         this.authenticationService = authenticationService;
-        this.apiKeyDao = apiKeyDao;
     }
 
     @Bean
@@ -166,6 +162,6 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new ApiAuthInfoMethodArgumentResolver(apiKeyDao, authenticationService));
+        resolvers.add(new ApiAuthInfoMethodArgumentResolver(authenticationService));
     }
 }

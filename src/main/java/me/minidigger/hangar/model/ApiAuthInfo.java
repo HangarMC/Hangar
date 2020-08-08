@@ -8,13 +8,10 @@ import java.time.OffsetDateTime;
 
 public class ApiAuthInfo {
 
-    @Nested("u")
     private UsersTable user;
-    @Nested("ak")
     private ApiKey key;
     private String session;
     private OffsetDateTime expires;
-    @Nested("gp")
     private Permission globalPerms;
 
     public UsersTable getUser() {
@@ -23,16 +20,16 @@ public class ApiAuthInfo {
 
     @Nested("u")
     public void setUser(UsersTable user) {
-        this.user = user;
+        this.user = user.getName() == null ? null : user;
     }
 
-    @Nested("u")
     public ApiKey getKey() {
         return key;
     }
 
+    @Nested("ak")
     public void setKey(ApiKey key) {
-        this.key = key;
+        this.key = key.getName() == null ? null : key;
     }
 
     public String getSession() {
@@ -55,7 +52,19 @@ public class ApiAuthInfo {
         return globalPerms;
     }
 
+    @Nested("gp")
     public void setGlobalPerms(Permission globalPerms) {
         this.globalPerms = globalPerms;
+    }
+
+    @Override
+    public String toString() {
+        return "ApiAuthInfo{" +
+                "user=" + user +
+                ", key=" + key +
+                ", session='" + session + '\'' +
+                ", expires=" + expires +
+                ", globalPerms=" + globalPerms +
+                '}';
     }
 }

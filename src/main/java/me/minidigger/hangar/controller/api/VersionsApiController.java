@@ -3,13 +3,13 @@ package me.minidigger.hangar.controller.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.minidigger.hangar.config.hangar.HangarConfig;
 import me.minidigger.hangar.model.ApiAuthInfo;
+import me.minidigger.hangar.model.Permission;
 import me.minidigger.hangar.model.generated.DeployVersionInfo;
 import me.minidigger.hangar.model.generated.PaginatedVersionResult;
 import me.minidigger.hangar.model.generated.Pagination;
 import me.minidigger.hangar.model.generated.Version;
 import me.minidigger.hangar.model.generated.VersionStatsDay;
 import me.minidigger.hangar.service.ApiService;
-import me.minidigger.hangar.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +27,7 @@ import java.util.Map;
 
 import static me.minidigger.hangar.util.ApiUtil.limitOrDefault;
 import static me.minidigger.hangar.util.ApiUtil.offsetOrZero;
+import static me.minidigger.hangar.util.ApiUtil.userIdOrNull;
 
 @Controller
 public class VersionsApiController implements VersionsApi {
@@ -36,16 +37,12 @@ public class VersionsApiController implements VersionsApi {
 
     private final HangarConfig hangarConfig;
     private final ObjectMapper objectMapper;
-    private final UserService userService;
     private final ApiService apiService;
 
-
-
     @Autowired
-    public VersionsApiController(HangarConfig hangarConfig, ObjectMapper objectMapper, UserService userService, ApiService apiService) {
+    public VersionsApiController(HangarConfig hangarConfig, ObjectMapper objectMapper, ApiService apiService) {
         this.hangarConfig = hangarConfig;
         this.objectMapper = objectMapper;
-        this.userService = userService;
         this.apiService = apiService;
     }
 
@@ -60,22 +57,19 @@ public class VersionsApiController implements VersionsApi {
     }
 
 
-    @PreAuthorize("@authenticationService.apiAction(T(me.minidigger.hangar.model.Permission).ViewPublicInfo, 'project', #pluginId)")
+    @PreAuthorize("@authenticationService.apiAction(T(Permission).ViewPublicInfo, T(ApiScope).forProject(#pluginId))")
     @Override
     public ResponseEntity<PaginatedVersionResult> listVersions(String pluginId, List<String> tags, Long limit, Long offset, ApiAuthInfo apiAuthInfo) {
-        System.out.println(apiAuthInfo);
-        // TODO users
-        List<Version> versions = apiService.getVersionList(pluginId, tags, false, limitOrDefault(limit, hangarConfig.projects.getInitVersionLoad()), offsetOrZero(offset), null);
-        long versionCount = apiService.getVersionCount(pluginId, tags, false, null);
+        List<Version> versions = apiService.getVersionList(pluginId, tags, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), limitOrDefault(limit, hangarConfig.projects.getInitVersionLoad()), offsetOrZero(offset), userIdOrNull(apiAuthInfo.getUser()));
+        long versionCount = apiService.getVersionCount(pluginId, tags, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), userIdOrNull(apiAuthInfo.getUser()));
         return new ResponseEntity<>(new PaginatedVersionResult().result(versions).pagination(new Pagination().limit(limit).offset(offset).count(versionCount)), HttpStatus.OK);
     }
 
 
     @Override
-    @PreAuthorize("@authenticationService.apiAction(T(me.minidigger.hangar.model.Permission).ViewPublicInfo, 'project', #pluginId)")
-    public ResponseEntity<Version> showVersion(String pluginId, String name) {
-        // TODO handling users
-        Version version = apiService.getVersion(pluginId, name, false, null);
+    @PreAuthorize("@authenticationService.apiAction(T(Permission).ViewPublicInfo, T(ApiScope).forProject(#pluginId))")
+    public ResponseEntity<Version> showVersion(String pluginId, String name, ApiAuthInfo apiAuthInfo) {
+        Version version = apiService.getVersion(pluginId, name, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), userIdOrNull(apiAuthInfo.getUser()));
         if (version == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
@@ -85,6 +79,7 @@ public class VersionsApiController implements VersionsApi {
 
 
     @Override
+    @PreAuthorize("@authenticationService.apiAction(T(Permission).ViewPublicInfo, T(ApiScope).forProject(#pluginId))")
     public ResponseEntity<Map<String, VersionStatsDay>> showVersionStats(String pluginId, String version, LocalDate fromDate, LocalDate toDate) {
         try {
             return new ResponseEntity<Map<String, VersionStatsDay>>(objectMapper.readValue("{\n  \"key\" : {\n    \"downloads\" : 0\n  }\n}", Map.class), HttpStatus.OK); // TODO Implement me

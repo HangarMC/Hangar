@@ -1,5 +1,6 @@
 package me.minidigger.hangar.service;
 
+import me.minidigger.hangar.db.model.UsersTable;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,12 +32,14 @@ public class PermissionService {
         return addDefaults(permissionsDao.get().getProjectPermission(userId, projectId));
     }
 
-    public Permission getProjectPermissions(long userId, String pluginId) {
-        return addDefaults(permissionsDao.get().getProjectPermission(userId, pluginId));
+    public Permission getProjectPermissions(UsersTable usersTable, String pluginId) {
+        if (usersTable == null) return ALWAYS_HAVE;
+        return addDefaults(permissionsDao.get().getProjectPermission(usersTable.getId(), pluginId));
     }
 
-    public Permission getOrganizationPermissions(long userId, String orgName) {
-        return addDefaults(permissionsDao.get().getOrgPermission(userId, orgName));
+    public Permission getOrganizationPermissions(UsersTable usersTable, String orgName) {
+        if (usersTable == null) return ALWAYS_HAVE;
+        return addDefaults(permissionsDao.get().getOrgPermission(usersTable.getId(), orgName));
     }
 
     public Permission getPossibleProjectPermissions(long userId) {

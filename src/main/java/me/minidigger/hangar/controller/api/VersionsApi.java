@@ -70,8 +70,8 @@ public interface VersionsApi {
     @GetMapping(value = "/projects/{pluginId}/versions/{name:.*}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Version> showVersion(@ApiParam(value = "The plugin id of the project to return the version for", required = true) @PathVariable("pluginId") String pluginId
-            , @ApiParam(value = "The name of the version to return", required = true) @PathVariable("name") String name
-    );
+            , @ApiParam(value = "The name of the version to return", required = true) @PathVariable("name") String name,
+                                        ApiAuthInfo apiAuthInfo);
 
     @ApiOperation(value = "Returns the stats for a version", nickname = "showVersionStats", notes = "Returns the stats(downloads) for a version per day for a certain date range. Requires the `is_subject_member` permission.", response = VersionStatsDay.class, responseContainer = "Map", authorizations = {
             @Authorization(value = "Session")}, tags = "Versions")

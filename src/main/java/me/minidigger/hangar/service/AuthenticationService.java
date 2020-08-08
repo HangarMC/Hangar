@@ -1,6 +1,7 @@
 package me.minidigger.hangar.service;
 
 import me.minidigger.hangar.config.hangar.HangarConfig;
+import me.minidigger.hangar.controller.util.ApiScope;
 import me.minidigger.hangar.db.dao.ApiKeyDao;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserDao;
@@ -67,39 +68,43 @@ public class AuthenticationService {
         this.ssoService = ssoService;
     }
 
-    public boolean apiAction(Permission perms, String apiScope, String...args) {
+    public ApiAuthInfo getApiAuthInfo(String token) {
+        return apiKeyDao.get().getApiAuthInfo(token);
+    }
+
+    public boolean apiAction(Permission perms, ApiScope apiScope) {
         AuthCredentials credentials = parseAuthHeader();
         if (credentials.session == null) {
             throw unAuth("No session specified");
         }
         String token = credentials.session;
-        ApiAuthInfo apiKey = apiKeyDao.get().getApiAuthInfo(token);
-        if (apiKey == null) {
+        ApiAuthInfo apiAuthInfo = apiKeyDao.get().getApiAuthInfo(token);
+        if (apiAuthInfo == null) {
             throw unAuth("Invalid Session");
         }
-        if (apiKey.getExpires().isBefore(OffsetDateTime.now())) {
+        if (apiAuthInfo.getExpires().isBefore(OffsetDateTime.now())) {
             sessionsDao.get().delete(token);
             throw unAuth("Api session expired");
         }
-        switch (apiScope.toLowerCase()) {
-            case "global":
-                if (!apiKey.getGlobalPerms().has(perms)) {
+        switch (apiScope.getType()) {
+            case GLOBAL:
+                if (!apiAuthInfo.getGlobalPerms().has(perms)) {
                     throw new ResponseStatusException(HttpStatus.FORBIDDEN);
                 }
                 return true;
-            case "project":
-                if (args == null || args.length != 1) {
+            case PROJECT:
+                if (apiScope.getValue() == null || apiScope.getValue().isBlank()) {
                     throw new IllegalStateException("Must have passed the pluginId to apiAction");
                 }
-                if (!permissionService.getProjectPermissions(apiKey.getUser().getId(), args[0]).has(perms)) {
+                if (!permissionService.getProjectPermissions(apiAuthInfo.getUser(), apiScope.getValue()).has(perms)) {
                     throw new ResponseStatusException(HttpStatus.FORBIDDEN);
                 }
                 return true;
-            case "org":
-                if (args == null || args.length != 1) {
+            case ORGANIZATION:
+                if (apiScope.getValue() == null || apiScope.getValue().isBlank()) {
                     throw new IllegalStateException("Must have passed the org name to apiAction");
                 }
-                if (!permissionService.getOrganizationPermissions(apiKey.getUser().getId(), args[0]).has(perms)) {
+                if (!permissionService.getOrganizationPermissions(apiAuthInfo.getUser(), apiScope.getValue()).has(perms)) {
                     throw new ResponseStatusException(HttpStatus.FORBIDDEN);
                 }
                 return true;
