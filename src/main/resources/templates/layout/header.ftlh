@@ -88,7 +88,7 @@
                                 <#if headerData.hasNotice()>
                                     <span class="unread"></span>
                                 </#if>
-                                <img height="32" width="32" class="user-avatar" src="${cu.getAvatarUrl()}" alt="${cu.name}"/>
+                                <img height="32" width="32" class="user-avatar" src="${utils.avatarUrl(cu.name)}" alt="${cu.name}"/>
                                 <span class="caret"></span>
                             </a>
                             <ul class="user-dropdown dropdown-menu"
@@ -103,11 +103,12 @@
                                 <li>
                                     <a href="${routes.getRouteUrl("users.showNotifications", "", "")}">
                                         <i class="fas fa-bell mr-1"></i>
-                                        <span><@spring.message "notification.plural" />
-                                            <#if headerData.hasUnreadNotifications()>
-                                                <span class="unread"></span>
-                                            </#if>
-                                </span>
+                                    <span>
+                                        <@spring.message "notification.plural" />
+                                        <#if headerData.hasUnreadNotifications()>
+                                            <span class="unread"></span>
+                                        </#if>
+                                    </span>
                                     </a>
                                 </li>
 
@@ -115,11 +116,12 @@
                                     <li>
                                         <a href="${routes.getRouteUrl("showFlags")}">
                                             <i class="fas fa-flag mr-1"></i>
-                                            <span><@spring.message "project.flag.plural" />
+                                            <span>
+                                                <@spring.message "project.flag.plural" />
                                                 <#if headerData.hasUnresolvedFlags()>
                                                     <span class="unread"></span>
                                                 </#if>
-                                    </span>
+                                            </span>
                                         </a>
                                     </li>
                                 </@hangar.hasPerm>
@@ -129,11 +131,11 @@
                                         <a href="${routes.getRouteUrl("showProjectVisibility")}">
                                             <i class="fas fa-thumbs-up mr-1"></i>
                                             <span>
-                                        Project approvals
-                                       <#if headerData.hasProjectApprovals()>
-                                           <span class="unread"></span>
-                                       </#if>
-                                    </span>
+                                                Project approvals
+                                               <#if headerData.hasProjectApprovals()>
+                                                   <span class="unread"></span>
+                                               </#if>
+                                            </span>
                                         </a>
                                     </li>
                                 </@hangar.hasPerm>
@@ -142,11 +144,12 @@
                                     <li>
                                         <a href="${routes.getRouteUrl("showQueue")}">
                                             <i class="far fa-thumbs-up mr-1"></i>
-                                            <span><@spring.message "user.queue" />
+                                            <span>
+                                                <@spring.message "user.queue" />
                                                 <#if headerData.hasReviewQueue()>
                                                     <span class="unread"></span>
                                                 </#if>
-                                    </span>
+                                            </span>
                                         </a>
                                     </li>
                                 </@hangar.hasPerm>
@@ -155,8 +158,7 @@
                                     <li>
                                         <a href="${routes.getRouteUrl("showStats", "", "")}">
                                             <i class="fas fa-chart-area mr-1"></i>
-                                            <span><@spring.message "user.stats" />
-                                    </span>
+                                            <span><@spring.message "user.stats" /></span>
                                         </a>
                                     </li>
                                 </@hangar.hasPerm>
@@ -165,8 +167,7 @@
                                     <li>
                                         <a href="${routes.getRouteUrl("showHealth")}">
                                             <i class="fas fa-heartbeat mr-1"></i>
-                                            <span><@spring.message "admin.health.title" />
-                                    </span>
+                                            <span><@spring.message "admin.health.title" /></span>
                                         </a>
                                     </li>
                                 </@hangar.hasPerm>

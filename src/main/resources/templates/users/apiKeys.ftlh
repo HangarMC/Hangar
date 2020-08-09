@@ -3,7 +3,6 @@
 <#import "*/users/view.ftlh" as userView />
 
 <#--@(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)], keys: Seq[ApiKey], perms: Seq[NamedPermission])(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)-->
-<#-- @ftlvariable name="u" type="me.minidigger.hangar.model.viewhelpers.UserData" -->
 <#-- @ftlvariable name="keys" type="java.util.List<ApiKey>" -->
 <#-- @ftlvariable name="perms" type="java.util.Collection<NamedPermission>" -->
 <#assign scriptsVar>
