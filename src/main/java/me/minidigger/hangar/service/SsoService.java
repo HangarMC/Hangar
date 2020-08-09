@@ -7,20 +7,16 @@ import me.minidigger.hangar.config.hangar.HangarConfig;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserSignOnDao;
 import me.minidigger.hangar.db.model.UserSignOnsTable;
-import me.minidigger.hangar.model.SsoSyncData;
 import me.minidigger.hangar.service.sso.AuthUser;
 import me.minidigger.hangar.service.sso.UrlWithNonce;
 import me.minidigger.hangar.util.CryptoUtils;
 import me.minidigger.hangar.util.HangarException;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.crypto.Mac;
@@ -79,7 +75,7 @@ public class SsoService {
     private UrlWithNonce getUrl(String returnUrl, String baseUrl) {
         String generatedNonce = nonce();
         String payload = generatePayload( returnUrl, generatedNonce);
-        String sig = generateSignature(payload);
+        String sig = sign(payload);
         String urlEncoded = URLEncoder.encode(payload, StandardCharsets.UTF_8);
         return new UrlWithNonce(String.format("%s?sso=%s&sig=%s", hangarConfig.security.api.getUrl() + baseUrl, urlEncoded, sig), generatedNonce);
     }
@@ -91,15 +87,6 @@ public class SsoService {
     private String generatePayload(String returnUrl, String nonce) {
         String payload = String.format("return_sso_url=%s&nonce=%s", returnUrl, nonce);
         return new String(Base64.getEncoder().encode(payload.getBytes(StandardCharsets.UTF_8)));
-    }
-
-    private String generateSignature(String payload) {
-        try {
-            return CryptoUtils.hmacSha256(hangarConfig.sso.getSecret(), payload.getBytes(StandardCharsets.UTF_8));
-        } catch (InvalidKeyException | NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     // TODO logging
@@ -129,10 +116,7 @@ public class SsoService {
 
     private String sign(String payload) {
         try {
-            Mac hasher = Mac.getInstance("HmacSHA256");
-            hasher.init(new SecretKeySpec(hangarConfig.sso.getSecret().getBytes(), "HmacSHA256"));
-            byte[] hash = hasher.doFinal(payload.getBytes());
-            return HexConverter.convertToHexString(hash);
+            return CryptoUtils.hmacSha256(hangarConfig.sso.getSecret(), payload.getBytes(StandardCharsets.UTF_8));
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             LOGGER.warn("Error while singing sso key", e);
             throw new HangarException("error.loginFailed");
@@ -154,72 +138,8 @@ public class SsoService {
         return UriComponentsBuilder.fromUriString("/?" + querystring).build().getQueryParams().toSingleValueMap();
     }
 
-    /**
-     * @param payloadData Parameters to encode and sign
-     * @return A pair of payload and signature
-     */
-    public Pair<String, String> encode(Map<String, String> payloadData) {
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, String> entry : payloadData.entrySet()) {
-            sb.append(sb.length() == 0 ? "" : "&")
-                    .append(entry.getKey())
-                    .append("=")
-                    .append(entry.getValue());
-        }
-
-        String encoded = Base64.getEncoder().encodeToString(sb.toString().getBytes());
-        return ImmutablePair.of(encoded, sign(encoded));
-    }
-
-    /**
-     * @param returnUrl The URL to return to after login
-     * @return A randomly-generated nonce to pass to SSO provider
-     */
-    public String setReturnUrl(String returnUrl) {
-        String nonce = RandomStringUtils.randomAlphanumeric(32);
-        returnUrls.put(nonce, returnUrl);
-        return nonce;
-    }
-
     public String getReturnUrl(String nonce) {
         return returnUrls.getIfPresent(nonce);
-    }
-
-    public void clearReturnUrl(String nonce) {
-        returnUrls.invalidate(nonce);
-    }
-
-    public String generateAuthReturnUrl(String returnUrl) {
-        String nonce = setReturnUrl(returnUrl);
-        return ServletUriComponentsBuilder.fromCurrentRequestUri()
-                .replaceQuery("")
-                .build().toString() + "&nonce=" + nonce; // spongeauth doesn't like properly-formatted query strings, so we have to append this ourselves
-    }
-
-    public String getAuthLoginUrl(String payload, String signature) {
-        return UriComponentsBuilder.fromHttpUrl(hangarConfig.getAuthUrl() + hangarConfig.sso.getLoginUrl())
-                .queryParam("sso", payload)
-                .queryParam("sig", signature)
-                .build().toString();
-    }
-
-    public String getAuthSignupUrl(String payload, String signature) {
-        return UriComponentsBuilder.fromHttpUrl(hangarConfig.getAuthUrl() + hangarConfig.sso.getSignupUrl())
-                .queryParam("sso", payload)
-                .queryParam("sig", signature)
-                .build().toString();
-    }
-
-    public String getAuthVerifyUrl(String payload, String signature) {
-        return UriComponentsBuilder.fromHttpUrl(hangarConfig.getAuthUrl() + hangarConfig.sso.getVerifyUrl())
-                .queryParam("sso", payload)
-                .queryParam("sig", signature)
-                .build().toString();
-    }
-
-    public String getAuthLogoutUrl() {
-        return UriComponentsBuilder.fromHttpUrl(hangarConfig.getAuthUrl() + hangarConfig.sso.getLogoutUrl())
-                .build().toString();
     }
 
     public static class SignatureException extends HangarException {

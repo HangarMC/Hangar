@@ -3,6 +3,7 @@ package me.minidigger.hangar.controller;
 import me.minidigger.hangar.service.RoleService;
 import me.minidigger.hangar.service.sso.AuthUser;
 import me.minidigger.hangar.service.sso.UrlWithNonce;
+import me.minidigger.hangar.util.HangarException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -91,7 +92,13 @@ public class UsersController extends HangarController {
 
             return new ModelAndView("redirect:" + returnUrl);
         } else if (sso.isEmpty()) {
-            return redirectToSso(ssoService.getLoginUrl(hangarConfig.getBaseUrl() + "/login"), attributes);
+            try {
+                return redirectToSso(ssoService.getLoginUrl(hangarConfig.getBaseUrl() + "/login"), attributes);
+            } catch (HangarException e) {
+                AlertUtil.showAlert(attributes, AlertType.ERROR, e.getMessageKey(), e.getArgs());
+                return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
+            }
+
         } else {
             AuthUser authUser = ssoService.authenticate(sso, sig);
             if (authUser == null) {
@@ -121,8 +128,9 @@ public class UsersController extends HangarController {
 
     @RequestMapping("/logout")
     public ModelAndView logout(HttpSession session) {
+        // TODO flash
         session.invalidate();
-        return new ModelAndView("redirect:" + ssoService.getAuthLogoutUrl());
+        return new ModelAndView("redirect:" + hangarConfig.security.api.getUrl() + "/accounts/logout/");
     }
 
     @Secured("ROLE_USER")
@@ -156,7 +164,12 @@ public class UsersController extends HangarController {
 
     @RequestMapping("/signup")
     public ModelAndView signUp(@RequestParam(defaultValue = "") String returnUrl, RedirectAttributes attributes) {
-        return redirectToSso(ssoService.getSignupUrl(returnUrl), attributes);
+        try {
+            return redirectToSso(ssoService.getSignupUrl(returnUrl), attributes);
+        } catch (HangarException e) {
+            AlertUtil.showAlert(attributes, AlertType.ERROR, e.getMessageKey(), e.getArgs());
+            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
+        }
     }
 
     @GetMapping("/staff")
@@ -171,7 +184,12 @@ public class UsersController extends HangarController {
 
     @RequestMapping("/verify")
     public ModelAndView verify(@RequestParam String returnPath, RedirectAttributes attributes) {
-        return redirectToSso(ssoService.getVerifyUrl(returnPath), attributes);
+        try {
+            return redirectToSso(ssoService.getVerifyUrl(returnPath), attributes);
+        } catch (HangarException e) {
+            AlertUtil.showAlert(attributes, AlertType.ERROR, e.getMessageKey(), e.getArgs());
+            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
+        }
     }
 
     @RequestMapping("/{user}")
