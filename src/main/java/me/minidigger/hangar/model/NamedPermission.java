@@ -3,6 +3,9 @@ package me.minidigger.hangar.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Gets or Sets NamedPermission
  */
@@ -76,6 +79,10 @@ public enum NamedPermission {
             }
         }
         return null;
+    }
+
+    public static List<NamedPermission> parseNamed(List<String> permStrings) {
+        return permStrings.stream().map(s -> NamedPermission.valueOf(s.toUpperCase())).collect(Collectors.toList());
     }
 
     public Permission getPermission() {

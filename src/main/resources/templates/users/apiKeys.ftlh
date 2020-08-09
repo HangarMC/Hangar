@@ -3,9 +3,6 @@
 <#import "*/users/view.ftlh" as userView />
 
 <#--@(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)], keys: Seq[ApiKey], perms: Seq[NamedPermission])(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)-->
-<#-- @ftlvariable name="u" type="me.minidigger.hangar.model.viewhelpers.UserData" -->
-<#-- @ftlvariable name="keys" type="java.util.List<ApiKey>" -->
-<#-- @ftlvariable name="perms" type="java.util.Collection<NamedPermission>" -->
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/apiKeysManagement.js" />"></script>
     <script <#--@CSPNonce.attr-->>
@@ -61,12 +58,11 @@
                 </tr>
                 </thead>
                 <tbody id="api-key-rows">
-                <#-- @ftlvariable name="key" type="me.minidigger.hangar.model.viewhelpers.ApiKey" -->
                 <#list keys as key>
                     <tr class="api-key-row">
-                        <th class="api-key-name">${key.key.name}</th>
+                        <th class="api-key-name">${key.name}</th>
                         <th></th>
-                        <th>${key.key.tokenIdentifier}</th>
+                        <th>${key.tokenIdentifier}</th>
                         <th>${key.namedRawPermissions?map(np -> np.name())?join(", ")}</th>
                         <th><button class="btn btn-danger api-key-row-delete-button"><@spring.message "user.apiKeys.keyDeleteButton" /></button></th>
                     </tr>

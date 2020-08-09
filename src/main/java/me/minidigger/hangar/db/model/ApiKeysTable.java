@@ -14,9 +14,17 @@ public class ApiKeysTable {
     private long ownerId;
     private String tokenIdentifier;
     private String token;
-    @Nested("perm")
     private Permission rawKeyPermissions;
 
+    public ApiKeysTable(String name, long ownerId, String tokenIdentifier, String token, Permission rawKeyPermissions) {
+        this.name = name;
+        this.ownerId = ownerId;
+        this.tokenIdentifier = tokenIdentifier;
+        this.token = token;
+        this.rawKeyPermissions = rawKeyPermissions;
+    }
+
+    public ApiKeysTable() { }
 
     public long getId() {
         return id;
@@ -76,6 +84,7 @@ public class ApiKeysTable {
         return rawKeyPermissions;
     }
 
+    @Nested("perm")
     public void setRawKeyPermissions(Permission rawKeyPermissions) {
         this.rawKeyPermissions = rawKeyPermissions;
     }

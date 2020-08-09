@@ -22,7 +22,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 
 @Controller
@@ -50,7 +49,7 @@ public class OrgController extends HangarController {
 
     @Secured("ROLE_USER")
     @GetMapping("/organisations/new")
-    public ModelAndView showCreator(RedirectAttributes attributes, HttpServletRequest request) {
+    public ModelAndView showCreator(RedirectAttributes attributes) {
         if (orgService.getUserOwnedOrgs(userService.getCurrentUser().getId()).size() >= hangarConfig.org.getCreateLimit()) {
             AlertUtil.showAlert(attributes, AlertType.ERROR, "error.org.createLimit", String.valueOf(hangarConfig.org.getCreateLimit()));
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));

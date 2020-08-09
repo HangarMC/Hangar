@@ -1,22 +1,9 @@
 package me.minidigger.hangar.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import me.minidigger.hangar.config.hangar.HangarConfig;
 import me.minidigger.hangar.db.model.UsersTable;
+import me.minidigger.hangar.model.ApiAuthInfo;
 import me.minidigger.hangar.model.Category;
 import me.minidigger.hangar.model.Permission;
 import me.minidigger.hangar.model.generated.PaginatedProjectResult;
@@ -29,6 +16,19 @@ import me.minidigger.hangar.model.generated.Tag;
 import me.minidigger.hangar.service.PermissionService;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.service.project.ProjectService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static me.minidigger.hangar.util.ApiUtil.limitOrDefault;
 import static me.minidigger.hangar.util.ApiUtil.offsetOrZero;
@@ -54,7 +54,8 @@ public class ProjectsApiController implements ProjectsApi {
     }
 
     @Override
-    public ResponseEntity<PaginatedProjectResult> listProjects(String q, List<Category> categories, List<String> tags, String owner, ProjectSortingStrategy sort, boolean relevance, Long inLimit, Long inOffset) {
+    @PreAuthorize("@authenticationService.authApiRequest(T(me.minidigger.hangar.model.Permission).ViewPublicInfo, T(me.minidigger.hangar.controller.util.ApiScope).forGlobal())")
+    public ResponseEntity<PaginatedProjectResult> listProjects(String q, List<Category> categories, List<String> tags, String owner, ProjectSortingStrategy sort, boolean relevance, Long inLimit, Long inOffset, ApiAuthInfo apiAuthInfo) {
         // handle input
         long limit = limitOrDefault(inLimit, hangarConfig.getProjects().getInitLoad());
         long offset = offsetOrZero(inOffset);

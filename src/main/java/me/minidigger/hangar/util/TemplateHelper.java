@@ -43,6 +43,6 @@ public class TemplateHelper {
     }
 
     public String prettifyDate(OffsetDateTime dateTime) {
-        return DateTimeFormatter.ofPattern("dd MM uuuu").format(dateTime);
+        return DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).format(dateTime.toLocalDate());
     }
 }

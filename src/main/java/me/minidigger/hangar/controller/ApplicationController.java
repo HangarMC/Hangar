@@ -48,14 +48,17 @@ public class ApplicationController extends HangarController {
     private final VersionService versionService;
     private final JobService jobService;
 
+    private final HttpServletRequest request;
+
     @Autowired
-    public ApplicationController(UserService userService, ProjectService projectService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService) {
+    public ApplicationController(UserService userService, ProjectService projectService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, HttpServletRequest request) {
         this.userService = userService;
         this.projectService = projectService;
         this.flagService = flagService;
         this.userActionLogService = userActionLogService;
         this.versionService = versionService;
         this.jobService = jobService;
+        this.request = request;
     }
 
     @RequestMapping("/")
@@ -112,7 +115,7 @@ public class ApplicationController extends HangarController {
     @Secured("ROLE_USER")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/admin/flags/{id}/resolve/{resolved}")
-    public void setFlagResolved(@PathVariable long id, @PathVariable boolean resolved, HttpServletRequest request) {
+    public void setFlagResolved(@PathVariable long id, @PathVariable boolean resolved) {
         ProjectFlag flag = flagService.getProjectFlag(id);
         if (flag == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);

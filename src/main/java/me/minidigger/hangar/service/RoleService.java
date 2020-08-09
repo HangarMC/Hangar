@@ -82,6 +82,10 @@ public class RoleService {
         userGlobalRolesDao.get().delete(new UserGlobalRolesTable(userId, roleId));
     }
 
+    public void removeAllGlobalRoles(long userId) {
+        userGlobalRolesDao.get().deleteAll(userId);
+    }
+
     public void addOrgMemberRole(long orgId, long userId, Role role, boolean accepted) {
         OrgMember orgMember = orgService.getOrganizationMember(orgId, userId);
         if (orgMember == null) { // add org member

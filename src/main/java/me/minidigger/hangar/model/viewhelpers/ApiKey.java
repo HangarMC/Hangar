@@ -6,22 +6,13 @@ import me.minidigger.hangar.model.Permission;
 
 import java.util.Collection;
 
-public class ApiKey {
-    private ApiKeysTable key;
-
-    public ApiKey(ApiKeysTable key) {
-        this.key = key;
-    }
-
-    public ApiKeysTable getKey() {
-        return key;
-    }
+public class ApiKey extends ApiKeysTable {
 
     public boolean getIsSubKey(Permission perm) {
-        return key.getRawKeyPermissions().has(perm);
+        return this.getRawKeyPermissions().has(perm);
     }
 
     public Collection<NamedPermission> getNamedRawPermissions() {
-        return key.getRawKeyPermissions().toNamed();
+        return this.getRawKeyPermissions().toNamed();
     }
 }

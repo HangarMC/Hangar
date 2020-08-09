@@ -5,6 +5,7 @@
 <#import "*/users/invite/roleSelect.ftlh" as roleSelect />
 
 <#macro form owner roleCategory="" loadedUsers=[]>
+    <#-- @ftlvariable name="owner" type="me.minidigger.hangar.db.model.UsersTable" -->
     <#-- Template row -->
     <table style="display: none;">
         <tbody>
@@ -34,7 +35,7 @@
             <#-- Owner (not submitted) -->
             <tr>
                 <td>
-                    <@userAvatar.userAvatar userName=owner.name avatarUrl=owner.avatarUrl clazz="user-avatar-xs" />
+                    <@userAvatar.userAvatar userName=owner.name avatarUrl=utils.avatarUrl(owner.name) clazz="user-avatar-xs" />
                     <#if owner.name?has_content>
                         <strong>${owner.name}</strong>
                     </#if>

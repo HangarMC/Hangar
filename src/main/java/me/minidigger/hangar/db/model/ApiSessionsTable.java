@@ -8,10 +8,19 @@ public class ApiSessionsTable {
     private long id;
     private OffsetDateTime createdAt;
     private String token;
-    private long keyId;
-    private long userId;
+    private Long keyId;
+    private Long userId;
     private OffsetDateTime expires;
 
+    public ApiSessionsTable(String token, Long keyId, Long userId, OffsetDateTime expires) {
+        this.token = token;
+        this.keyId = keyId;
+        this.userId = userId;
+        this.expires = expires;
+    }
+
+    public ApiSessionsTable() {
+    }
 
     public long getId() {
         return id;
@@ -40,20 +49,20 @@ public class ApiSessionsTable {
     }
 
 
-    public long getKeyId() {
+    public Long getKeyId() {
         return keyId;
     }
 
-    public void setKeyId(long keyId) {
+    public void setKeyId(Long keyId) {
         this.keyId = keyId;
     }
 
 
-    public long getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
