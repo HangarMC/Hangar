@@ -1,27 +1,5 @@
 package me.minidigger.hangar.controller;
 
-import me.minidigger.hangar.service.RoleService;
-import me.minidigger.hangar.service.sso.AuthUser;
-import me.minidigger.hangar.service.sso.UrlWithNonce;
-import me.minidigger.hangar.util.HangarException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
-
-import java.util.Map;
-import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import me.minidigger.hangar.config.hangar.HangarConfig;
 import me.minidigger.hangar.db.customtypes.LoggedActionType;
 import me.minidigger.hangar.db.dao.HangarDao;
@@ -37,12 +15,33 @@ import me.minidigger.hangar.service.ApiKeyService;
 import me.minidigger.hangar.service.AuthenticationService;
 import me.minidigger.hangar.service.NotificationService;
 import me.minidigger.hangar.service.PermissionService;
+import me.minidigger.hangar.service.RoleService;
 import me.minidigger.hangar.service.SsoService;
 import me.minidigger.hangar.service.UserActionLogService;
 import me.minidigger.hangar.service.UserService;
+import me.minidigger.hangar.service.sso.AuthUser;
+import me.minidigger.hangar.service.sso.UrlWithNonce;
 import me.minidigger.hangar.util.AlertUtil;
 import me.minidigger.hangar.util.AlertUtil.AlertType;
+import me.minidigger.hangar.util.HangarException;
 import me.minidigger.hangar.util.RouteHelper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.Map;
+import java.util.Optional;
 
 @Controller
 public class UsersController extends HangarController {

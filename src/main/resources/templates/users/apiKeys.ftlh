@@ -3,8 +3,6 @@
 <#import "*/users/view.ftlh" as userView />
 
 <#--@(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)], keys: Seq[ApiKey], perms: Seq[NamedPermission])(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)-->
-<#-- @ftlvariable name="keys" type="java.util.List<ApiKey>" -->
-<#-- @ftlvariable name="perms" type="java.util.Collection<NamedPermission>" -->
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "javascripts/apiKeysManagement.js" />"></script>
     <script <#--@CSPNonce.attr-->>
@@ -60,7 +58,6 @@
                 </tr>
                 </thead>
                 <tbody id="api-key-rows">
-                <#-- @ftlvariable name="key" type="me.minidigger.hangar.model.viewhelpers.ApiKey" -->
                 <#list keys as key>
                     <tr class="api-key-row">
                         <th class="api-key-name">${key.key.name}</th>

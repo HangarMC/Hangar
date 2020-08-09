@@ -2,7 +2,6 @@ package me.minidigger.hangar.service;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import io.undertow.util.HexConverter;
 import me.minidigger.hangar.config.hangar.HangarConfig;
 import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.UserSignOnDao;
@@ -11,16 +10,12 @@ import me.minidigger.hangar.service.sso.AuthUser;
 import me.minidigger.hangar.service.sso.UrlWithNonce;
 import me.minidigger.hangar.util.CryptoUtils;
 import me.minidigger.hangar.util.HangarException;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.math.BigInteger;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
