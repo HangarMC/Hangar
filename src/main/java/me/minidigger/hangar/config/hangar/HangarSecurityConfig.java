@@ -24,7 +24,7 @@ public class HangarSecurityConfig {
     public static class SecurityApiConfig {
 
         private String url = "http://localhost:8000";
-        private String avatarUrl = url = "/avatar/%s?size=120x120";
+        private String avatarUrl = "http://localhost:8000/avatar/%s?size=120x120";
         private String key = "changeme";
         private long timeout = 10000;
         @NestedConfigurationProperty

@@ -1,5 +1,15 @@
 package me.minidigger.hangar.controller.api;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+import me.minidigger.hangar.model.generated.DeployVersionInfo;
+import me.minidigger.hangar.model.generated.PaginatedVersionResult;
+import me.minidigger.hangar.model.generated.Version;
+import me.minidigger.hangar.model.generated.VersionStatsDay;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,22 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
-import me.minidigger.hangar.model.generated.PaginatedVersionResult;
-import me.minidigger.hangar.model.generated.DeployVersionInfo;
-import me.minidigger.hangar.model.generated.Version;
-import me.minidigger.hangar.model.generated.VersionStatsDay;
+import java.util.List;
+import java.util.Map;
 
 @Api(value = "versions", description = "the versions API", tags = "Versions")
 @RequestMapping("/api/v2/")
@@ -68,8 +66,7 @@ public interface VersionsApi {
     @GetMapping(value = "/projects/{pluginId}/versions/{name:.*}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Version> showVersion(@ApiParam(value = "The plugin id of the project to return the version for", required = true) @PathVariable("pluginId") String pluginId
-            , @ApiParam(value = "The name of the version to return", required = true) @PathVariable("name") String name
-    );
+            , @ApiParam(value = "The name of the version to return", required = true) @PathVariable("name") String name);
 
     @ApiOperation(value = "Returns the stats for a version", nickname = "showVersionStats", notes = "Returns the stats(downloads) for a version per day for a certain date range. Requires the `is_subject_member` permission.", response = VersionStatsDay.class, responseContainer = "Map", authorizations = {
             @Authorization(value = "Session")}, tags = "Versions")
@@ -82,7 +79,7 @@ public interface VersionsApi {
     ResponseEntity<Map<String, VersionStatsDay>> showVersionStats(
             @ApiParam(value = "The plugin id of the version to return the stats for", required = true) @PathVariable("pluginId") String pluginId,
             @ApiParam(value = "The version to return the stats for", required = true) @PathVariable("version") String version,
-            @NotNull @ApiParam(value = "The first date to include in the result", required = true) @Valid @RequestParam(value = "fromDate") LocalDate fromDate,
-            @NotNull @ApiParam(value = "The last date to include in the result", required = true) @Valid @RequestParam(value = "toDate") LocalDate toDate
+            @ApiParam(value = "The first date to include in the result", required = true) @RequestParam(value = "fromDate") @NotNull @Valid String fromDate,
+            @ApiParam(value = "The last date to include in the result", required = true) @RequestParam(value = "toDate") @NotNull @Valid String toDate
     );
 }

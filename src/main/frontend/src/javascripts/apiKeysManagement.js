@@ -53,8 +53,7 @@ $(function () {
                 showError(TOO_LONG_NAME);
                 return;
             }
-
-            var nameTaken = $('.api-key-name:contains(' + name + ')').size();
+            var nameTaken = $('.api-key-name:contains(' + name + ')').length;
             if (nameTaken !== 0) {
                 showError(NAMED_USED);
                 return;

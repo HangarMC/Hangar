@@ -54,7 +54,7 @@ Versions page within Project overview.
                 </ul>
             </div>
             <#import "*/users/memberList.ftlh" as users>
-            <@users.memberList j=p perms=sp.permissions settingsCall=routes.getRouteUrl("projects.showSettings", p.project.ownerName, p.project.slug) />
+            <@users.memberList project=p perms=sp.permissions settingsCall=routes.getRouteUrl("projects.showSettings", p.project.ownerName, p.project.slug) />
         </div>
     </div>
 </@projects.view>

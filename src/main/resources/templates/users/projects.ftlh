@@ -131,7 +131,7 @@
                 </div>
             <#else>
                 <#assign orgData=o> <#-- todo fix scopeddata -->
-                <@memberList.memberList j=orgData editable=true perms=scopedData.permissions
+                <@memberList.memberList project=orgData editable=true perms=scopedData.permissions
                 saveCall=routes.getRouteUrl("org.updateMembers", orgData.orga.name)
                 removeCall=routes.getRouteUrl("org.removeMember", orgData.orga.name) />
             </#if>

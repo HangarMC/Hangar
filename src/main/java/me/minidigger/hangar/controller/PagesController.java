@@ -8,11 +8,8 @@ import me.minidigger.hangar.db.model.ProjectPagesTable;
 import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.model.viewhelpers.ProjectPage;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
-import me.minidigger.hangar.service.project.FlagService;
 import me.minidigger.hangar.service.MarkdownService;
-import me.minidigger.hangar.service.PermissionService;
 import me.minidigger.hangar.service.UserActionLogService;
-import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.service.project.PagesFactory;
 import me.minidigger.hangar.service.project.PagesSerivce;
 import me.minidigger.hangar.service.project.ProjectService;
@@ -43,25 +40,22 @@ public class PagesController extends HangarController {
     private final RouteHelper routeHelper;
     private final UserActionLogService userActionLogService;
     private final ProjectService projectService;
-    private final PermissionService permissionService;
     private final MarkdownService markdownService;
-    private final UserService userService;
-    private final FlagService flagService;
     private final PagesSerivce pagesSerivce;
     private final PagesFactory pagesFactory;
     private final HangarDao<ProjectPageDao> projectPageDao;
 
-    public PagesController(RouteHelper routeHelper, UserActionLogService userActionLogService, ProjectService projectService, PermissionService permissionService, MarkdownService markdownService, UserService userService, FlagService flagService, PagesSerivce pagesSerivce, PagesFactory pagesFactory, HangarDao<ProjectPageDao> projectPageDao) {
+    private final HttpServletRequest request;
+
+    public PagesController(RouteHelper routeHelper, UserActionLogService userActionLogService, ProjectService projectService, MarkdownService markdownService, PagesSerivce pagesSerivce, PagesFactory pagesFactory, HangarDao<ProjectPageDao> projectPageDao, HttpServletRequest request) {
         this.routeHelper = routeHelper;
         this.userActionLogService = userActionLogService;
         this.projectService = projectService;
-        this.permissionService = permissionService;
         this.markdownService = markdownService;
-        this.userService = userService;
-        this.flagService = flagService;
         this.pagesSerivce = pagesSerivce;
         this.pagesFactory = pagesFactory;
         this.projectPageDao = projectPageDao;
+        this.request = request;
     }
 
     @PostMapping(value = "/pages/preview", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -119,8 +113,7 @@ public class PagesController extends HangarController {
                        @PathVariable(required = false) String subPage,
                        @RequestParam(value = "parent-id", required = false) String parentId,
                        @RequestParam("content") String pageContent,
-                       @RequestParam("name") String newPageName,
-                       HttpServletRequest request) {
+                       @RequestParam("name") String newPageName) {
         String pageName = getPageName(page, subPage);
 
         ProjectData projectData = projectService.getProjectData(author, slug);

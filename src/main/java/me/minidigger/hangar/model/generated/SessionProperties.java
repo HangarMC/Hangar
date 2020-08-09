@@ -14,7 +14,7 @@ import io.swagger.annotations.ApiModelProperty;
 @Validated
 public class SessionProperties {
     @JsonProperty("_fake")
-    private Boolean _fake = null;
+    private boolean _fake = false;
 
     @JsonProperty("expires_in")
     private Long expiresIn = null;
@@ -31,11 +31,11 @@ public class SessionProperties {
      **/
     @ApiModelProperty(value = "")
 
-    public Boolean isFake() {
+    public boolean isFake() {
         return _fake;
     }
 
-    public void setFake(Boolean _fake) {
+    public void setFake(boolean _fake) {
         this._fake = _fake;
     }
 

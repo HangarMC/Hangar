@@ -16,7 +16,6 @@ import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
 import me.minidigger.hangar.model.viewhelpers.VersionData;
 import me.minidigger.hangar.security.annotations.GlobalPermission;
-import me.minidigger.hangar.service.ReviewService;
 import me.minidigger.hangar.service.UserActionLogService;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.service.VersionService;
@@ -62,8 +61,10 @@ public class VersionsController extends HangarController {
     private final HangarConfig hangarConfig;
     private final HangarDao<ProjectDao> projectDao;
 
+    private final HttpServletRequest request;
+
     @Autowired
-    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService, ChannelService channelService, UserActionLogService userActionLogService, CacheManager cacheManager, RouteHelper routeHelper, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao) {
+    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService, ChannelService channelService, UserActionLogService userActionLogService, CacheManager cacheManager, RouteHelper routeHelper, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HttpServletRequest request) {
         this.projectService = projectService;
         this.versionService = versionService;
         this.projectFactory = projectFactory;
@@ -75,6 +76,7 @@ public class VersionsController extends HangarController {
         this.routeHelper = routeHelper;
         this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
+        this.request = request;
     }
 
     @RequestMapping("/api/project/{pluginId}/versions/recommended/download")
@@ -189,7 +191,6 @@ public class VersionsController extends HangarController {
                                 @RequestParam(value = "non-reviewed", defaultValue = "false") boolean nonReviewed,
                                 @RequestParam(value = "forum-post", defaultValue = "false") boolean forumPost,
                                 @RequestParam(required = false) String content,
-                                HttpServletRequest request,
                                 RedirectAttributes attributes) {
         Color channelColor = channelColorInput == null ? hangarConfig.channels.getColorDefault() : channelColorInput;
         ProjectData projectData = projectService.getProjectData(author, slug);
@@ -249,18 +250,18 @@ public class VersionsController extends HangarController {
     @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/approve")
-    public ModelAndView approve(@PathVariable String author, @PathVariable String slug, @PathVariable String version, HttpServletRequest request) {
-        return _approve(author, slug, version, false, request);
+    public ModelAndView approve(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
+        return _approve(author, slug, version, false);
     }
 
     @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/approvePartial")
-    public ModelAndView approvePartial(@PathVariable String author, @PathVariable String slug, @PathVariable String version, HttpServletRequest request) {
-        return _approve(author, slug, version, true, request);
+    public ModelAndView approvePartial(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
+        return _approve(author, slug, version, true);
     }
 
-    private ModelAndView _approve(String author, String slug, String version, boolean partial, HttpServletRequest request) {
+    private ModelAndView _approve(String author, String slug, String version, boolean partial) {
         ReviewState newState = partial ? ReviewState.PARTIALLY_REVIEWED : ReviewState.REVIEWED;
         ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
         ReviewState oldState = versionsTable.getReviewState();
@@ -284,7 +285,7 @@ public class VersionsController extends HangarController {
 
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version}/delete", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ModelAndView softDelete(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String comment, HttpServletRequest request, RedirectAttributes ra) {
+    public ModelAndView softDelete(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String comment, RedirectAttributes ra) {
         VersionData versionData = versionService.getVersionData(author, slug, version);
         try {
             projectFactory.prepareDeleteVersion(versionData);
@@ -327,7 +328,7 @@ public class VersionsController extends HangarController {
     @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version}/restore", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ModelAndView restore(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String comment, HttpServletRequest request) {
+    public ModelAndView restore(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String comment) {
         VersionData versionData = versionService.getVersionData(author, slug, version);
         versionService.changeVisibility(versionData, Visibility.PUBLIC, comment, userService.getCurrentUser().getId());
         userActionLogService.version(request, LoggedActionType.VERSION_DELETED.with(VersionContext.of(versionData.getP().getProject().getId(), versionData.getV().getId())), "Restore: " + comment, "");
@@ -336,7 +337,7 @@ public class VersionsController extends HangarController {
 
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version}/save", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ModelAndView saveDescription(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String content, HttpServletRequest request) {
+    public ModelAndView saveDescription(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String content) {
         VersionData versionData = versionService.getVersionData(author, slug, version);
         String oldDesc = versionData.getV().getDescription();
         String newDesc = content.trim();

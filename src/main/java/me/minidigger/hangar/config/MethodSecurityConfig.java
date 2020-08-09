@@ -5,14 +5,21 @@ import me.minidigger.hangar.security.metadatasources.HangarMetadataSources;
 import me.minidigger.hangar.security.metadatasources.ProjectPermissionSource;
 import me.minidigger.hangar.security.voters.GlobalPermissionVoter;
 import me.minidigger.hangar.service.PermissionService;
+import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.expression.spel.support.StandardTypeLocator;
 import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.access.method.MethodSecurityMetadataSource;
 import org.springframework.security.access.vote.AbstractAccessDecisionManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
+import org.springframework.security.core.Authentication;
 
 @Configuration
 @AutoConfigureBefore(SecurityConfig.class)

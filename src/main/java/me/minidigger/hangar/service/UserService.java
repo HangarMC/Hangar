@@ -2,6 +2,7 @@ package me.minidigger.hangar.service;
 
 import me.minidigger.hangar.model.viewhelpers.FlagActivity;
 import me.minidigger.hangar.model.viewhelpers.ReviewActivity;
+import me.minidigger.hangar.service.sso.AuthUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -43,15 +44,17 @@ public class UserService {
     private final HangarDao<OrganizationDao> orgDao;
     private final HangarDao<ProjectDao> projectDao;
     private final RoleService roleService;
+    private final PermissionService permissionService;
     private final HangarConfig config;
 
     @Autowired
-    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, RoleService roleService) {
+    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, RoleService roleService, PermissionService permissionService) {
         this.userDao = userDao;
         this.config = config;
         this.orgDao = orgDao;
         this.projectDao = projectDao;
         this.roleService = roleService;
+        this.permissionService = permissionService;
     }
 
     public UsersTable getCurrentUser() {
@@ -69,13 +72,17 @@ public class UserService {
     }
 
     public HeaderData getHeaderData() {
-        HeaderData headerData = new HeaderData();
-        Permission global = Permission.HardDeleteProject.add(Permission.SeeHidden).add(Permission.ModNotesAndFlags).add(Permission.Reviewer).add(Permission.All);
-        headerData.setGlobalPermission(headerData.getGlobalPermission().add(global)); // TODO remove
-
-        headerData.setCurrentUser(getCurrentUser());
-        // TODO fill headerdata
-
+        boolean hasCurrentUser = getCurrentUser() != null;
+        HeaderData headerData = new HeaderData(
+                getCurrentUser(),
+                hasCurrentUser ? permissionService.getGlobalPermissions(getCurrentUser().getId()) : PermissionService.DEFAULT_GLOBAL_PERMISSIONS,
+                false,
+                false,
+                false,
+                false,
+                false
+        );
+        // TODO fill header data
         return headerData;
     }
 
@@ -163,6 +170,24 @@ public class UserService {
         Permission userPerm = Permission.All;
         Permission orgaPerm = Permission.None;
         return new UserData(getHeaderData(), user, isOrga, projectCount, organizations, globalRoles, userPerm, orgaPerm);
+    }
+
+    public UsersTable getOrCreate(String username, AuthUser authUser) {
+        UsersTable user = userDao.get().getByName(username);
+        if (user == null) {
+            user = new UsersTable(
+                    authUser.getId(),
+                    null,
+                    authUser.getUsername(),
+                    authUser.getEmail(),
+                    null,
+                    new int[0],
+                    false,
+                    authUser.getLang().toLanguageTag()
+            );
+            userDao.get().insert(user);
+        }
+        return user;
     }
 
     public void ssoSyncUser(SsoSyncData syncData) {

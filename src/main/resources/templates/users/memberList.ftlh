@@ -7,14 +7,14 @@
 <#import "*/users/invite/roleSelect.ftlh" as roleSelect>
 
 <!-- TODO: Pagination -->
-<#-- @ftlvariable name="j" type="java.util.Set<me.minidigger.hangar.model.viewhelpers.ProjectMember>" -->
 <#-- @ftlvariable name="perms" type="me.minidigger.hangar.model.Permission" -->
 <#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
-<#macro memberList j perms editable=false removeCall="" settingsCall="" saveCall="">
-    <#if j.members?size != 0>
+<#macro memberList project perms editable=false removeCall="" settingsCall="" saveCall="">
+    <#-- @ftlvariable name="project" type="me.minidigger.hangar.model.viewhelpers.ProjectData" -->
+    <#if project.members?size != 0>
 
         <#if editable && perms.has(Permission.ManageSubjectMembers)>
-            <@roleSelect.roleSelect roleCategory=j.roleCategory id="select-role" classes="pull-right" hidden=true />
+            <@roleSelect.roleSelect roleCategory=project.roleCategory id="select-role" classes="pull-right" hidden=true />
 
             <!-- Row template -->
             <ul style="display: none;">
@@ -23,7 +23,7 @@
                     <@userAvatar.userAvatar clazz="user-avatar-xs"></@userAvatar.userAvatar>
                     <a class="username"></a>
                     <i class="fas fa-times user-cancel"></i>
-                    <@roleSelect.roleSelect roleCategory=j.roleCategory classes="pull-right" />
+                    <@roleSelect.roleSelect roleCategory=project.roleCategory classes="pull-right" />
                 </li>
             </ul>
 
@@ -88,9 +88,9 @@
                 <!-- Member list -->
                 <#-- @ftlvariable name="projectMember" type="me.minidigger.hangar.model.viewhelpers.ProjectMember" -->
                 <#-- @ftlvariable name="user" type="me.minidigger.hangar.db.model.UsersTable" -->
-                <#list j.filteredMembers(headerData) as projectMember, user>
+                <#list project.filteredMembers(headerData) as projectMember, user>
                     <li class="list-group-item">
-                        <@userAvatar.userAvatar userName=user.name avatarUrl=user.avatarUrl clazz="user-avatar-xs"></@userAvatar.userAvatar>
+                        <@userAvatar.userAvatar userName=user.name avatarUrl=utils.avatarUrl(user.name) clazz="user-avatar-xs"></@userAvatar.userAvatar>
                         <a class="username" href="${routes.getRouteUrl("users.showProjects", user.name)}">
                             ${user.name}
                         </a>

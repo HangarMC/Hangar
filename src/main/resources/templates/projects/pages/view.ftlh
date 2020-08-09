@@ -127,7 +127,7 @@ Documentation page within Project overview.
             </div>
 
                 <!-- Member list -->
-            <@memberList.memberList j=p perms=sp.permissions settingsCall=routes.getRouteUrl("projects.showSettings", p.project.ownerName, p.project.slug) />
+            <@memberList.memberList project=p perms=sp.permissions settingsCall=routes.getRouteUrl("projects.showSettings", p.project.ownerName, p.project.slug) />
         </div>
     </div>
 </@projectView.view>

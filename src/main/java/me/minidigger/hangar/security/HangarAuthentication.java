@@ -1,6 +1,7 @@
 package me.minidigger.hangar.security;
 
 import me.minidigger.hangar.db.model.UsersTable;
+import me.minidigger.hangar.service.sso.AuthUser;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -11,19 +12,22 @@ public class HangarAuthentication extends AbstractAuthenticationToken {
     private static final long serialVersionUID = 3847099128940870714L;
 
     private final String username;
+    private final Long userId;
     private UsersTable table; // todo replace me
 
     public HangarAuthentication(String username) {
         super(null);
         this.username = username;
+        this.userId = null;
         setAuthenticated(false);
     }
 
-    public HangarAuthentication(String username, UsersTable usersTable, Collection<GrantedAuthority> authorities) {
+    public HangarAuthentication(Collection<? extends GrantedAuthority> authorities, String username, long userId, UsersTable table) {
         super(authorities);
         this.username = username;
-        this.table = usersTable;
-        super.setAuthenticated(true); // must use super, as we override
+        this.userId = userId;
+        this.table = table;
+        super.setAuthenticated(true);
     }
 
     @Override

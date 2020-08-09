@@ -105,4 +105,9 @@ public class Permission implements Comparable<Permission> {
     public static Permission fromLong(long value) {
         return new Permission(value);
     }
+
+    @Override
+    public String toString() {
+        return toNamed().toString();
+    }
 }

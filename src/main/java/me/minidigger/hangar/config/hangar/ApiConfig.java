@@ -24,16 +24,18 @@ public class ApiConfig {
     @Component
     @ConfigurationProperties(prefix = "hangar.api.session")
     public static class Session {
-        private String publicExpiration = "3h";
+        @DurationUnit(ChronoUnit.HOURS)
+        private Duration publicExpiration = Duration.ofHours(3);
         @DurationUnit(ChronoUnit.DAYS)
         private Duration expiration = Duration.ofDays(14);
         private String checkInterval = "5m";
 
-        public String getPublicExpiration() {
+
+        public Duration getPublicExpiration() {
             return publicExpiration;
         }
 
-        public void setPublicExpiration(String publicExpiration) {
+        public void setPublicExpiration(Duration publicExpiration) {
             this.publicExpiration = publicExpiration;
         }
 

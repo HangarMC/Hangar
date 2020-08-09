@@ -15,7 +15,7 @@
 </#function>
 
 <#macro view u o={} additionalScripts="">
-
+    <#-- @ftlvariable name="u" type="me.minidigger.hangar.model.viewhelpers.UserData" -->
     <#assign scriptsVar>
         <script type="text/javascript" src="<@hangar.url "javascripts/userPage.js" />"></script>
         <script <#-- @CSPNonce.attr -->>
@@ -48,7 +48,7 @@
                     <#assign avatarClass>
                         user-avatar-md <#if canEditOrgSettings(u, o)>organization-avatar</#if>
                     </#assign>
-                    <@userAvatar.userAvatar userName=u.user.name avatarUrl=u.user.avatarUrl clazz=avatarClass />
+                    <@userAvatar.userAvatar userName=u.user.name avatarUrl=utils.avatarUrl(u.user.name) clazz=avatarClass />
 
                     <#if canEditOrgSettings(u, o)>
                         <div class="edit-avatar" style="display: none;">

@@ -13,7 +13,7 @@ function apiV2Request(url, method = "GET", data = {}) {
                 contentType: isFormData ? false : 'application/json',
                 data: isBodyRequest && !isFormData ? JSON.stringify(data) : data,
                 processData: !(isFormData || isBodyRequest),
-                headers: {'Authorization': 'HangarApi session=' + session}
+                headers: {'Authorization': 'HangarApi session="' + session + '"'}
             }).done(function (data) {
                 resolve(data);
             }).fail(function (xhr) {

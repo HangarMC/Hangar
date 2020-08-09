@@ -242,7 +242,7 @@
 
             <!-- Side panel -->
         <div class="col-md-4">
-            <@memberList.memberList j=p perms=sp.permissions editable=true removeCall=routes.getRouteUrl("projects.removeMember", p.project.ownerName, p.project.slug) settingsCall=routes.getRouteUrl("projects.showSettings", p.project.ownerName, p.project.slug) />
+            <@memberList.memberList project=p perms=sp.permissions editable=true removeCall=routes.getRouteUrl("projects.removeMember", p.project.ownerName, p.project.slug) settingsCall=routes.getRouteUrl("projects.showSettings", p.project.ownerName, p.project.slug) />
         </div>
     </div>
     </div>

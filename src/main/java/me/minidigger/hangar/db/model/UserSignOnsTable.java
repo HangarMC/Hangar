@@ -10,6 +10,12 @@ public class UserSignOnsTable {
     private String nonce;
     private boolean isCompleted;
 
+    public UserSignOnsTable(String nonce) {
+        this.nonce = nonce;
+    }
+
+    public UserSignOnsTable() {
+    }
 
     public long getId() {
         return id;

@@ -1,24 +1,5 @@
 package me.minidigger.hangar.controller;
 
-import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
-
-import java.util.Map;
-import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import me.minidigger.hangar.config.hangar.HangarConfig;
 import me.minidigger.hangar.db.customtypes.LoggedActionType;
 import me.minidigger.hangar.db.dao.HangarDao;
@@ -34,39 +15,72 @@ import me.minidigger.hangar.service.ApiKeyService;
 import me.minidigger.hangar.service.AuthenticationService;
 import me.minidigger.hangar.service.NotificationService;
 import me.minidigger.hangar.service.PermissionService;
+import me.minidigger.hangar.service.RoleService;
 import me.minidigger.hangar.service.SsoService;
 import me.minidigger.hangar.service.UserActionLogService;
 import me.minidigger.hangar.service.UserService;
+import me.minidigger.hangar.service.sso.AuthUser;
+import me.minidigger.hangar.service.sso.UrlWithNonce;
 import me.minidigger.hangar.util.AlertUtil;
 import me.minidigger.hangar.util.AlertUtil.AlertType;
+import me.minidigger.hangar.util.HangarException;
 import me.minidigger.hangar.util.RouteHelper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.Map;
+import java.util.Optional;
 
 @Controller
 public class UsersController extends HangarController {
 
-    private final HangarDao<UserDao> userDao;
     private final HangarConfig hangarConfig;
+    private final RouteHelper routeHelper;
     private final AuthenticationService authenticationService;
     private final UserService userService;
-    private final UserActionLogService userActionLogService;
-    private final RouteHelper routeHelper;
+    private final RoleService roleService;
     private final ApiKeyService apiKeyService;
     private final PermissionService permissionService;
     private final NotificationService notificationService;
     private final SsoService ssoService;
+    private final UserActionLogService userActionLogService;
+    private final HangarDao<UserDao> userDao;
+
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
+
 
     @Autowired
-    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, UserService userService, UserActionLogService userActionLogService, RouteHelper routeHelper, ApiKeyService apiKeyService, PermissionService permissionService, SsoService ssoService, NotificationService notificationService) {
+    public UsersController(HangarConfig hangarConfig, RouteHelper routeHelper, AuthenticationService authenticationService, UserService userService, RoleService roleService, ApiKeyService apiKeyService, PermissionService permissionService, NotificationService notificationService, SsoService ssoService, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, HttpServletRequest request, HttpServletResponse response) {
         this.hangarConfig = hangarConfig;
-        this.userDao = userDao;
+        this.routeHelper = routeHelper;
         this.authenticationService = authenticationService;
         this.userService = userService;
-        this.userActionLogService = userActionLogService;
-        this.routeHelper = routeHelper;
+        this.roleService = roleService;
         this.apiKeyService = apiKeyService;
         this.permissionService = permissionService;
-        this.ssoService = ssoService;
         this.notificationService = notificationService;
+        this.ssoService = ssoService;
+        this.userActionLogService = userActionLogService;
+        this.userDao = userDao;
+        this.request = request;
+        this.response = response;
     }
 
     @RequestMapping("/authors")
@@ -80,36 +94,55 @@ public class UsersController extends HangarController {
     }
 
     @RequestMapping("/login")
-    public ModelAndView login(@RequestParam(defaultValue = "") String sso, @RequestParam(defaultValue = "") String sig, @RequestParam(defaultValue = "") String returnUrl) {
+    public ModelAndView login(@RequestParam(defaultValue = "") String sso, @RequestParam(defaultValue = "") String sig, @RequestParam(defaultValue = "") String returnUrl, @CookieValue(value = "url", required = false) String redirectUrl, RedirectAttributes attributes) {
         if (hangarConfig.fakeUser.isEnabled()) {
             hangarConfig.checkDebug();
 
             authenticationService.loginAsFakeUser();
 
             return new ModelAndView("redirect:" + returnUrl);
-        } else if (sso.isEmpty() || sig.isBlank()) {
-            // redirect to SSO
-            String authRedirectUrl = ssoService.generateAuthReturnUrl(returnUrl);
-            Pair<String, String> ssoData = ssoService.encode(Map.of("return_sso_url", authRedirectUrl));
-            String ssoUrl = ssoService.getAuthLoginUrl(ssoData.getLeft(), ssoData.getRight());
-            return new ModelAndView("redirect:" + ssoUrl);
-        } else {
-            boolean success = authenticationService.loginWithSSO(sso, sig);
-            if (success) {
-                String nonce = ssoService.decode(sso, sig).get("nonce");
-                returnUrl = ssoService.getReturnUrl(nonce);
-                ssoService.clearReturnUrl(nonce);
-                return new ModelAndView("redirect:" + returnUrl);
-            } else {
+        } else if (sso.isEmpty()) {
+            String returnPath = returnUrl.isBlank() ? request.getRequestURI() : returnUrl;
+            try {
+                response.addCookie(new Cookie("url", returnPath));
+                return redirectToSso(ssoService.getLoginUrl(hangarConfig.getBaseUrl() + "/login"), attributes);
+            } catch (HangarException e) {
+                AlertUtil.showAlert(attributes, AlertType.ERROR, e.getMessageKey(), e.getArgs());
                 return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
             }
+
+        } else {
+            AuthUser authUser = ssoService.authenticate(sso, sig);
+            if (authUser == null) {
+                AlertUtil.showAlert(attributes, AlertType.ERROR, "error.loginFailed");
+                return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
+            }
+
+            UsersTable user = userService.getOrCreate(authUser.getUsername(), authUser);
+            roleService.removeAllGlobalRoles(user.getId());
+            authUser.getGlobalRoles().forEach(role -> roleService.addGlobalRole(user.getId(), role.getRoleId()));
+            authenticationService.setAuthenticatedUser(user);
+
+            String redirectPath = redirectUrl != null ? redirectUrl : routeHelper.getRouteUrl("showHome");
+            return new ModelAndView("redirect:" + redirectPath);
         }
     }
 
+    private ModelAndView redirectToSso(UrlWithNonce urlWithNonce, RedirectAttributes attributes) {
+        if (!hangarConfig.sso.isEnabled()) {
+            AlertUtil.showAlert(attributes, AlertType.ERROR, "error.noLogin");
+            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
+        }
+        ssoService.insert(urlWithNonce.getNonce());
+        return new ModelAndView("redirect:" + urlWithNonce.getUrl());
+    }
+
+
     @RequestMapping("/logout")
     public ModelAndView logout(HttpSession session) {
+        // TODO flash
         session.invalidate();
-        return new ModelAndView("redirect:" + ssoService.getAuthLogoutUrl());
+        return new ModelAndView("redirect:" + hangarConfig.security.api.getUrl() + "/accounts/logout/");
     }
 
     @Secured("ROLE_USER")
@@ -142,12 +175,13 @@ public class UsersController extends HangarController {
     }
 
     @RequestMapping("/signup")
-    public ModelAndView signUp(@RequestParam(defaultValue = "") String returnUrl) {
-        // redirect to SSO
-        String authRedirectUrl = ssoService.generateAuthReturnUrl(returnUrl);
-        Pair<String, String> ssoData = ssoService.encode(Map.of("return_sso_url", authRedirectUrl));
-        String ssoUrl = ssoService.getAuthSignupUrl(ssoData.getLeft(), ssoData.getRight());
-        return new ModelAndView("redirect:" + ssoUrl);
+    public ModelAndView signUp(@RequestParam(defaultValue = "") String returnUrl, RedirectAttributes attributes) {
+        try {
+            return redirectToSso(ssoService.getSignupUrl(returnUrl), attributes);
+        } catch (HangarException e) {
+            AlertUtil.showAlert(attributes, AlertType.ERROR, e.getMessageKey(), e.getArgs());
+            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
+        }
     }
 
     @GetMapping("/staff")
@@ -161,15 +195,20 @@ public class UsersController extends HangarController {
     }
 
     @RequestMapping("/verify")
-    public Object verify(@RequestParam Object returnPath) {
-        return null; // TODO implement verify request controller
+    public ModelAndView verify(@RequestParam String returnPath, RedirectAttributes attributes) {
+        try {
+            return redirectToSso(ssoService.getVerifyUrl(returnPath), attributes);
+        } catch (HangarException e) {
+            AlertUtil.showAlert(attributes, AlertType.ERROR, e.getMessageKey(), e.getArgs());
+            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
+        }
     }
 
     @RequestMapping("/{user}")
     public ModelAndView showProjects(@PathVariable String user) {
         ModelAndView mav = new ModelAndView("users/projects");
         mav.addObject("u", userService.getUserData(user));
-        mav.addObject("o", null);
+        mav.addObject("o", null); // TODO organization
         return fillModel(mav);
     }
 
@@ -180,14 +219,14 @@ public class UsersController extends HangarController {
         UserData userData = userService.getUserData(user);
         long userId = userData.getUser().getId();
         mav.addObject("u", userData);
-        mav.addObject("keys", apiKeyService.getKeysForUser(userId));
+        mav.addObject("keys", apiKeyService.getKeys(userId));
         mav.addObject("perms", permissionService.getPossibleOrganizationPermissions(userId).add(permissionService.getPossibleProjectPermissions(userId)).add(userData.getUserPerm()).toNamed());
-        return fillModel(mav); // TODO implement editApiKeys request controller
+        return fillModel(mav);
     }
 
     @Secured("ROLE_USER")
     @RequestMapping("/{user}/settings/lock/{locked}")
-    public RedirectView setLocked(@PathVariable String user, @PathVariable boolean locked, @RequestParam Object sso, @RequestParam Object sig) {
+    public RedirectView setLocked(@PathVariable String user, @PathVariable boolean locked, @RequestParam String sso, @RequestParam String sig) {
         // TODO auth
         userService.setLocked(user, locked);
         return new RedirectView(routeHelper.getRouteUrl("users.showProjects", user));
@@ -195,10 +234,10 @@ public class UsersController extends HangarController {
 
     @Secured("ROLE_USER")
     @PostMapping(value = "/{user}/settings/tagline")
-    public ModelAndView saveTagline(@PathVariable String user, @RequestParam("tagline") String tagline, HttpServletRequest request) {
+    public ModelAndView saveTagline(@PathVariable String user, @RequestParam("tagline") String tagline) {
         if (tagline.length() > hangarConfig.user.getMaxTaglineLen()) {
             ModelAndView mav = showProjects(user);
-            AlertUtil.showAlert(mav, AlertType.ERROR, "error.tagline.tooLong"); // TODO pass length param to key
+            AlertUtil.showAlert(mav, AlertType.ERROR, "error.tagline.tooLong", String.valueOf(hangarConfig.user.getMaxTaglineLen()));
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", user));
         }
         UsersTable usersTable = userDao.get().getByName(user);
