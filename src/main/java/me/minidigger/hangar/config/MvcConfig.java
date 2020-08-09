@@ -5,8 +5,6 @@ import freemarker.template.TemplateException;
 import me.minidigger.hangar.controller.converters.ColorHexConverter;
 import me.minidigger.hangar.controller.converters.StringToEnumConverterFactory;
 import me.minidigger.hangar.controller.interceptors.ProjectsInterceptor;
-import me.minidigger.hangar.controller.resolvers.ApiAuthInfoMethodArgumentResolver;
-import me.minidigger.hangar.service.AuthenticationService;
 import me.minidigger.hangar.service.PermissionService;
 import me.minidigger.hangar.service.project.ProjectService;
 import me.minidigger.hangar.util.RouteHelper;
@@ -16,14 +14,12 @@ import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolve
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -35,7 +31,6 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @EnableWebMvc
@@ -45,14 +40,12 @@ public class MvcConfig implements WebMvcConfigurer {
     private final RouteHelper routeHelper;
     private final ProjectService projectService;
     private final PermissionService permissionService;
-    private final AuthenticationService authenticationService;
 
     @Autowired
-    public MvcConfig(RouteHelper routeHelper, ProjectService projectService, PermissionService permissionService, @Lazy AuthenticationService authenticationService) {
+    public MvcConfig(RouteHelper routeHelper, ProjectService projectService, PermissionService permissionService) {
         this.routeHelper = routeHelper;
         this.projectService = projectService;
         this.permissionService = permissionService;
-        this.authenticationService = authenticationService;
     }
 
     @Bean
@@ -158,10 +151,5 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new ProjectsInterceptor(projectService, permissionService));
-    }
-
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new ApiAuthInfoMethodArgumentResolver(authenticationService));
     }
 }

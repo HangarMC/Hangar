@@ -1,6 +1,5 @@
 package me.minidigger.hangar.controller.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.minidigger.hangar.model.ApiAuthInfo;
 import me.minidigger.hangar.model.NamedPermission;
 import me.minidigger.hangar.model.Permission;
@@ -14,27 +13,25 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.UUID;
 
 @Controller
 public class KeysApiController implements KeysApi {
 
-    private final ObjectMapper objectMapper;
-    private final HttpServletRequest request;
     private final ApiKeyService apiKeyService;
 
+    private final ApiAuthInfo apiAuthInfo;
+
     @Autowired
-    public KeysApiController(ObjectMapper objectMapper, HttpServletRequest request, ApiKeyService apiKeyService) {
-        this.objectMapper = objectMapper;
-        this.request = request;
+    public KeysApiController(ApiKeyService apiKeyService, ApiAuthInfo apiAuthInfo) {
         this.apiKeyService = apiKeyService;
+        this.apiAuthInfo = apiAuthInfo;
     }
 
     @Override
-    @PreAuthorize("@authenticationService.apiAction(T(me.minidigger.hangar.model.Permission).EditApiKeys, T(me.minidigger.hangar.controller.util.ApiScope).forGlobal())")
-    public ResponseEntity<ApiKeyResponse> createKey(ApiKeyRequest body, ApiAuthInfo apiAuthInfo) {
+    @PreAuthorize("@authenticationService.authApiRequest(T(me.minidigger.hangar.model.Permission).EditApiKeys, T(me.minidigger.hangar.controller.util.ApiScope).forGlobal())")
+    public ResponseEntity<ApiKeyResponse> createKey(ApiKeyRequest body) {
         List<NamedPermission> perms;
         try {
             perms = NamedPermission.parseNamed(body.getPermissions());
@@ -65,8 +62,8 @@ public class KeysApiController implements KeysApi {
     }
 
     @Override
-    @PreAuthorize("@authenticationService.apiAction(T(me.minidigger.hangar.model.Permission).EditApiKeys, T(me.minidigger.hangar.controller.util.ApiScope).forGlobal())")
-    public ResponseEntity<Void> deleteKey(String name, ApiAuthInfo apiAuthInfo) {
+    @PreAuthorize("@authenticationService.authApiRequest(T(me.minidigger.hangar.model.Permission).EditApiKeys, T(me.minidigger.hangar.controller.util.ApiScope).forGlobal())")
+    public ResponseEntity<Void> deleteKey(String name) {
         if (apiAuthInfo.getUser() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Public keys can't be used to delete");
         }

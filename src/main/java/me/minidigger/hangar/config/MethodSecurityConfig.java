@@ -44,19 +44,4 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
         manager.getDecisionVoters().add(new GlobalPermissionVoter(permissionService));
         return manager;
     }
-
-    @Bean
-    public MethodSecurityExpressionHandler methodSecurityExpressionHandler() {
-        return new DefaultMethodSecurityExpressionHandler() {
-            @Override
-            public StandardEvaluationContext createEvaluationContextInternal(Authentication auth, MethodInvocation mi) {
-                StandardEvaluationContext evaluationContext = super.createEvaluationContextInternal(auth, mi);
-
-                ((StandardTypeLocator) evaluationContext.getTypeLocator()).registerImport("me.minidigger.hangar.model");
-                ((StandardTypeLocator) evaluationContext.getTypeLocator()).registerImport("me.minidigger.hangar.controller.util");
-
-                return evaluationContext;
-            }
-        };
-    }
 }

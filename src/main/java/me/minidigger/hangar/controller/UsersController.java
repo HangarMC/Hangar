@@ -54,8 +54,10 @@ public class UsersController extends HangarController {
     private final NotificationService notificationService;
     private final SsoService ssoService;
 
+    private final HttpServletRequest request;
+
     @Autowired
-    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, UserService userService, UserActionLogService userActionLogService, RouteHelper routeHelper, ApiKeyService apiKeyService, PermissionService permissionService, SsoService ssoService, NotificationService notificationService) {
+    public UsersController(HangarConfig hangarConfig, HangarDao<UserDao> userDao, AuthenticationService authenticationService, UserService userService, UserActionLogService userActionLogService, RouteHelper routeHelper, ApiKeyService apiKeyService, PermissionService permissionService, SsoService ssoService, NotificationService notificationService, HttpServletRequest request) {
         this.hangarConfig = hangarConfig;
         this.userDao = userDao;
         this.authenticationService = authenticationService;
@@ -66,6 +68,7 @@ public class UsersController extends HangarController {
         this.permissionService = permissionService;
         this.ssoService = ssoService;
         this.notificationService = notificationService;
+        this.request = request;
     }
 
     @RequestMapping("/authors")
@@ -194,7 +197,7 @@ public class UsersController extends HangarController {
 
     @Secured("ROLE_USER")
     @PostMapping(value = "/{user}/settings/tagline")
-    public ModelAndView saveTagline(@PathVariable String user, @RequestParam("tagline") String tagline, HttpServletRequest request) {
+    public ModelAndView saveTagline(@PathVariable String user, @RequestParam("tagline") String tagline) {
         if (tagline.length() > hangarConfig.user.getMaxTaglineLen()) {
             ModelAndView mav = showProjects(user);
             AlertUtil.showAlert(mav, AlertType.ERROR, "error.tagline.tooLong"); // TODO pass length param to key

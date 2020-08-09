@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
-import me.minidigger.hangar.model.ApiAuthInfo;
 import me.minidigger.hangar.model.generated.DeployVersionInfo;
 import me.minidigger.hangar.model.generated.PaginatedVersionResult;
 import me.minidigger.hangar.model.generated.Version;
@@ -56,7 +55,6 @@ public interface VersionsApi {
             , @ApiParam(value = "A list of tags all the returned versions should have. Should be formated either as `tagname` or `tagname:tagdata`.") @Valid @RequestParam(value = "tags", required = false) List<String> tags
             , @ApiParam(value = "The maximum amount of versions to return") @Valid @RequestParam(value = "limit", required = false) Long limit
             , @ApiParam(value = "Where to start returning", defaultValue = "0") @Valid @RequestParam(value = "offset", required = false, defaultValue = "0") Long offset
-            , ApiAuthInfo apiAuthInfo
     );
 
     @ApiOperation(value = "Returns a specific version of a project", nickname = "showVersion", notes = "Returns a specific version of a project. Requires the `view_public_info` permission in the project or owning organization.", response = Version.class, authorizations = {
@@ -68,8 +66,7 @@ public interface VersionsApi {
     @GetMapping(value = "/projects/{pluginId}/versions/{name:.*}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Version> showVersion(@ApiParam(value = "The plugin id of the project to return the version for", required = true) @PathVariable("pluginId") String pluginId
-            , @ApiParam(value = "The name of the version to return", required = true) @PathVariable("name") String name,
-                                        ApiAuthInfo apiAuthInfo);
+            , @ApiParam(value = "The name of the version to return", required = true) @PathVariable("name") String name);
 
     @ApiOperation(value = "Returns the stats for a version", nickname = "showVersionStats", notes = "Returns the stats(downloads) for a version per day for a certain date range. Requires the `is_subject_member` permission.", response = VersionStatsDay.class, responseContainer = "Map", authorizations = {
             @Authorization(value = "Session")}, tags = "Versions")

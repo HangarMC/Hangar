@@ -13,27 +13,24 @@ import me.minidigger.hangar.model.ApiAuthInfo;
 import me.minidigger.hangar.model.Permission;
 import me.minidigger.hangar.model.Role;
 import me.minidigger.hangar.model.generated.ApiSessionResponse;
-import me.minidigger.hangar.model.generated.SessionProperties;
 import me.minidigger.hangar.model.generated.SessionType;
 import me.minidigger.hangar.security.HangarAuthentication;
-import org.jetbrains.annotations.Nullable;
+import me.minidigger.hangar.util.AuthUtils;
+import me.minidigger.hangar.util.AuthUtils.AuthCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static me.minidigger.hangar.util.AuthUtils.unAuth;
@@ -41,6 +38,8 @@ import static me.minidigger.hangar.util.AuthUtils.unAuth;
 @Service
 public class AuthenticationService {
 
+    private final HttpServletRequest request;
+    private final ApiAuthInfo apiAuthInfo;
     private final HangarConfig hangarConfig;
     private final HangarDao<UserDao> userDao;
     private final HangarDao<SessionsDao> sessionsDao;
@@ -50,13 +49,13 @@ public class AuthenticationService {
     private final PermissionService permissionService;
     private final SsoService ssoService;
 
-    private static final Pattern API_KEY_HEADER_PATTERN = Pattern.compile("(?<=apikey=\").*(?=\")", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-    private static final Pattern SESSION_HEADER_PATTERN = Pattern.compile("(?<=session=\").*(?=\")", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     private static final String UUID_REGEX = "[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}";
     private static final Pattern API_KEY_PATTERN = Pattern.compile("(" + UUID_REGEX + ").(" + UUID_REGEX + ")");
 
     @Autowired
-    public AuthenticationService(HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService, SsoService ssoService) {
+    public AuthenticationService(HttpServletRequest request, ApiAuthInfo apiAuthInfo, HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService, SsoService ssoService) {
+        this.request = request;
+        this.apiAuthInfo = apiAuthInfo;
         this.hangarConfig = hangarConfig;
         this.userDao = userDao;
         this.sessionsDao = sessionsDao;
@@ -71,20 +70,31 @@ public class AuthenticationService {
         return apiKeyDao.get().getApiAuthInfo(token);
     }
 
-    public boolean apiAction(Permission perms, ApiScope apiScope) {
-        AuthCredentials credentials = parseAuthHeader();
-        if (credentials.session == null) {
-            throw unAuth("No session specified");
+    @Bean
+    @RequestScope
+    public ApiAuthInfo apiAuthInfo() {
+        if (request.getRequestURI().startsWith("/api/v2")) { // if api method
+            AuthCredentials credentials = AuthUtils.parseAuthHeader(request);
+            if (credentials.getSession() == null) {
+                throw unAuth("No session specified");
+            }
+            ApiAuthInfo info = apiKeyDao.get().getApiAuthInfo(credentials.getSession());
+            if (info == null) {
+                throw unAuth("Invalid session");
+            }
+            if (info.getExpires().isBefore(OffsetDateTime.now())) {
+                sessionsDao.get().delete(credentials.getSession());
+                throw unAuth("Api session expired");
+            }
+            return info;
         }
-        String token = credentials.session;
-        ApiAuthInfo apiAuthInfo = apiKeyDao.get().getApiAuthInfo(token);
-        if (apiAuthInfo == null) {
-            throw unAuth("Invalid Session");
-        }
-        if (apiAuthInfo.getExpires().isBefore(OffsetDateTime.now())) {
-            sessionsDao.get().delete(token);
-            throw unAuth("Api session expired");
-        }
+        return null;
+    }
+
+    // It might be possible to prevent double apiAuthInfo requests by adding an ApiAuthInfo to each api handler method
+    // and then in the @PreAuthorize annotation, pass that parameter into this function. Because right now, the ApiAuthInfo is
+    // requested in ApiAuthInfoMethodArgumentResolver so its available in various ApiRequests
+    public boolean authApiRequest(Permission perms, ApiScope apiScope) {
         switch (apiScope.getType()) {
             case GLOBAL:
                 if (!apiAuthInfo.getGlobalPerms().has(perms)) {
@@ -115,7 +125,7 @@ public class AuthenticationService {
     public ApiSessionResponse authenticateDev() {
         if (hangarConfig.fakeUser.isEnabled()) {
             hangarConfig.checkDebug();
-            OffsetDateTime sessionExpiration = expiration(hangarConfig.api.session.getExpiration(), null);
+            OffsetDateTime sessionExpiration = AuthUtils.expiration(hangarConfig.api.session.getExpiration(), null);
             String uuidToken = UUID.randomUUID().toString();
 
             ApiSessionsTable apiSession = new ApiSessionsTable(uuidToken, null, hangarConfig.fakeUser.getId(), sessionExpiration);
@@ -127,34 +137,24 @@ public class AuthenticationService {
         }
     }
 
-    public ApiSessionResponse authenticatePublic() {
-        OffsetDateTime sessionExpiration = expiration(hangarConfig.api.session.getExpiration(), null);
+    public ApiSessionResponse authenticateKeyPublic(Long expiresIn) {
+        OffsetDateTime sessionExpiration = AuthUtils.expiration(hangarConfig.api.session.getExpiration(), expiresIn);
+        OffsetDateTime publicSessionExpiration = AuthUtils.expiration(hangarConfig.api.session.getPublicExpiration(), expiresIn);
         String uuidToken = UUID.randomUUID().toString();
 
-        ApiSessionsTable apiSession = new ApiSessionsTable(uuidToken, null, null, sessionExpiration);
-        saveSession(apiSession);
-
-        return new ApiSessionResponse(apiSession.getToken(), apiSession.getExpires(), SessionType.PUBLIC);
-    }
-
-    public ApiSessionResponse authenticateKeyPublic(SessionProperties properties) {
-        OffsetDateTime sessionExpiration = expiration(hangarConfig.api.session.getExpiration(), properties.getExpiresIn());
-        OffsetDateTime publicSessionExpiration = expiration(hangarConfig.api.session.getPublicExpiration(), properties.getExpiresIn());
-        String uuidToken = UUID.randomUUID().toString();
-
-        AuthCredentials credentials = parseAuthHeader();
+        AuthCredentials credentials = AuthUtils.parseAuthHeader();
         SessionType sessionType;
         ApiSessionsTable apiSession;
-        if (credentials.apiKey != null) {
-            if (!API_KEY_PATTERN.matcher(credentials.apiKey).find()) {
+        if (credentials.getApiKey() != null) {
+            if (!API_KEY_PATTERN.matcher(credentials.getApiKey()).find()) {
                 throw unAuth("No valid apikey parameter found in Authorization");
             }
             if (sessionExpiration == null) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The requested expiration can't be used");
             }
             // I THINK that is how its setup, couldn't really figure it out via ore
-            String identifier = credentials.apiKey.split("\\.")[0];
-            String token = credentials.apiKey.split("\\.")[1];
+            String identifier = credentials.getApiKey().split("\\.")[0];
+            String token = credentials.getApiKey().split("\\.")[1];
             ApiKeysTable apiKeysTable = apiKeyDao.get().findApiKey(identifier, token);
             if (apiKeysTable == null) {
                 throw unAuth("Invalid api key");
@@ -175,7 +175,7 @@ public class AuthenticationService {
     }
 
     public ApiSessionResponse authenticateUser(long userId) {
-        OffsetDateTime sessionExpiration = expiration( hangarConfig.api.session.getExpiration(), null);
+        OffsetDateTime sessionExpiration = AuthUtils.expiration( hangarConfig.api.session.getExpiration(), null);
         String uuidToken = UUID.randomUUID().toString();
 
         ApiSessionsTable apiSession = new ApiSessionsTable(uuidToken, null, userId, sessionExpiration);
@@ -228,58 +228,4 @@ public class AuthenticationService {
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
-    public AuthCredentials parseAuthHeader() {
-        return parseAuthHeader(null);
-    }
-
-    public AuthCredentials parseAuthHeader(@Nullable HttpServletRequest request) {
-        String authHeader = request == null ? ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getHeader(HttpHeaders.AUTHORIZATION) : request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authHeader == null || authHeader.isBlank() || !authHeader.startsWith("HangarApi")) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        return AuthCredentials.parseHeader(authHeader);
-    }
-
-    private OffsetDateTime expiration(Duration expirationDuration, Long userChoice) {
-        long durationSeconds = expirationDuration.toSeconds();
-
-        if (userChoice == null) {
-            return OffsetDateTime.now().plusSeconds(durationSeconds);
-        } else if (userChoice <= durationSeconds) {
-            return OffsetDateTime.now().plusSeconds(userChoice);
-        } else {
-            return null;
-        }
-    }
-
-    public static class AuthCredentials {
-        private final String apiKey;
-        private final String session;
-
-        private AuthCredentials(String apiKey, String session) {
-            this.apiKey = apiKey;
-            this.session = session;
-        }
-
-        public String getApiKey() {
-            return apiKey;
-        }
-
-        public String getSession() {
-            return session;
-        }
-
-        public static AuthCredentials parseHeader(String authHeader) {
-            Matcher apiKeyMatcher = API_KEY_HEADER_PATTERN.matcher(authHeader);
-            Matcher sessionMatcher = SESSION_HEADER_PATTERN.matcher(authHeader);
-            String apiKey = null;
-            String sessionKey = null;
-            if (apiKeyMatcher.find()) {
-                apiKey = apiKeyMatcher.group();
-            } else if (sessionMatcher.find()) {
-                sessionKey = sessionMatcher.group();
-            } else {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Authorization header format");
-            }
-            return new AuthCredentials(apiKey, sessionKey);
-        }
-    }
 }

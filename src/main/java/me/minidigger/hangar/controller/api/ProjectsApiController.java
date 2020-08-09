@@ -54,7 +54,7 @@ public class ProjectsApiController implements ProjectsApi {
     }
 
     @Override
-    @PreAuthorize("@authenticationService.apiAction(T(me.minidigger.hangar.model.Permission).ViewPublicInfo, T(me.minidigger.hangar.controller.util.ApiScope).forGlobal())")
+    @PreAuthorize("@authenticationService.authApiRequest(T(me.minidigger.hangar.model.Permission).ViewPublicInfo, T(me.minidigger.hangar.controller.util.ApiScope).forGlobal())")
     public ResponseEntity<PaginatedProjectResult> listProjects(String q, List<Category> categories, List<String> tags, String owner, ProjectSortingStrategy sort, boolean relevance, Long inLimit, Long inOffset, ApiAuthInfo apiAuthInfo) {
         // handle input
         long limit = limitOrDefault(inLimit, hangarConfig.getProjects().getInitLoad());

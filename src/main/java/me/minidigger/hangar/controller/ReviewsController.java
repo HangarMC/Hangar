@@ -1,6 +1,5 @@
 package me.minidigger.hangar.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import me.minidigger.hangar.db.customtypes.JSONB;
 import me.minidigger.hangar.db.customtypes.LoggedActionType;
 import me.minidigger.hangar.db.customtypes.LoggedActionType.VersionContext;
@@ -44,13 +43,16 @@ public class ReviewsController extends HangarController {
     private final UserService userService;
     private final RouteHelper routeHelper;
 
+    private final HttpServletRequest request;
+
     @Autowired
-    public ReviewsController(VersionService versionService, ReviewService reviewService, UserActionLogService userActionLogService, UserService userService, RouteHelper routeHelper) {
+    public ReviewsController(VersionService versionService, ReviewService reviewService, UserActionLogService userActionLogService, UserService userService, RouteHelper routeHelper, HttpServletRequest request) {
         this.versionService = versionService;
         this.reviewService = reviewService;
         this.userActionLogService = userActionLogService;
         this.userService = userService;
         this.routeHelper = routeHelper;
+        this.request = request;
     }
 
     @GlobalPermission(NamedPermission.REVIEWER)
@@ -71,7 +73,7 @@ public class ReviewsController extends HangarController {
     @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version}/reviews/addmessage", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<String> addMessage(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String content) throws JsonProcessingException {
+    public ResponseEntity<String> addMessage(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String content) {
         ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
         VersionReview recentReview = reviewService.getMostRecentUnfinishedReview(versionsTable.getId());
         if (recentReview == null) {
@@ -151,7 +153,7 @@ public class ReviewsController extends HangarController {
     @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/versions/{version}/reviews/reviewtoggle")
-    public ModelAndView backlogToggle(@PathVariable String author, @PathVariable String slug, @PathVariable String version, HttpServletRequest request) {
+    public ModelAndView backlogToggle(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
         ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
         if (versionsTable.getReviewState() != ReviewState.BACKLOG && versionsTable.getReviewState() != ReviewState.UNREVIEWED) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid state for toggle backlog");

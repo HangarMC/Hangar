@@ -70,8 +70,10 @@ public class ProjectsController extends HangarController {
     private final HangarDao<UserDao> userDao;
     private final HangarDao<ProjectDao> projectDao;
 
+    private final HttpServletRequest request;
+
     @Autowired
-    public ProjectsController(HangarConfig hangarConfig, RouteHelper routeHelper, UserService userService, OrgService orgService, FlagService flagService, ProjectService projectService, ProjectFactory projectFactory, PagesSerivce pagesSerivce, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao) {
+    public ProjectsController(HangarConfig hangarConfig, RouteHelper routeHelper, UserService userService, OrgService orgService, FlagService flagService, ProjectService projectService, ProjectFactory projectFactory, PagesSerivce pagesSerivce, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao, HttpServletRequest request) {
         this.hangarConfig = hangarConfig;
         this.routeHelper = routeHelper;
         this.userService = userService;
@@ -83,6 +85,7 @@ public class ProjectsController extends HangarController {
         this.userActionLogService = userActionLogService;
         this.userDao = userDao;
         this.projectDao = projectDao;
+        this.request = request;
     }
 
     @PostMapping(value = "/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -160,7 +163,7 @@ public class ProjectsController extends HangarController {
     }
 
     @GetMapping("/{author}/{slug}")
-    public ModelAndView show(@PathVariable String author, @PathVariable String slug, HttpServletRequest request) {
+    public ModelAndView show(@PathVariable String author, @PathVariable String slug) {
         ModelAndView mav = new ModelAndView("projects/pages/view");
         ProjectData projectData = projectService.getProjectData(author, slug);
         mav.addObject("p", projectData);
@@ -187,7 +190,7 @@ public class ProjectsController extends HangarController {
 
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/flag", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ModelAndView flag(@PathVariable String author, @PathVariable String slug, @RequestParam("flag-reason") FlagReason flagReason, @RequestParam String comment, HttpServletRequest request) {
+    public ModelAndView flag(@PathVariable String author, @PathVariable String slug, @RequestParam("flag-reason") FlagReason flagReason, @RequestParam String comment) {
         ProjectData projectData = projectService.getProjectData(author, slug);
         if (flagService.hasUnresolvedFlag(projectData.getProject().getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only 1 flag at a time per project per user");
@@ -244,7 +247,7 @@ public class ProjectsController extends HangarController {
 
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/manage/delete", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public RedirectView softDelete(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String comment, RedirectAttributes ra, HttpServletRequest request) {
+    public RedirectView softDelete(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String comment, RedirectAttributes ra) {
         ProjectData projectData = projectService.getProjectData(author, slug);
         Visibility oldVisibility = projectData.getVisibility();
 
@@ -256,7 +259,7 @@ public class ProjectsController extends HangarController {
 
     @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/manage/hardDelete")
-    public RedirectView delete(@PathVariable String author, @PathVariable String slug, HttpServletRequest request, RedirectAttributes ra) {
+    public RedirectView delete(@PathVariable String author, @PathVariable String slug, RedirectAttributes ra) {
         ProjectData projectData = projectService.getProjectData(author, slug);
         projectFactory.hardDeleteProject(projectData);
         userActionLogService.project(request, LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(projectData.getProject().getId())), "deleted", projectData.getVisibility().getName());
@@ -272,7 +275,7 @@ public class ProjectsController extends HangarController {
 
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/manage/rename", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public Object rename(@PathVariable String author, @PathVariable String slug, @RequestParam("name") String newName, HttpServletRequest request) {
+    public Object rename(@PathVariable String author, @PathVariable String slug, @RequestParam("name") String newName) {
         String compactNewName = StringUtils.compact(newName);
 
         ProjectData projectData = projectService.getProjectData(author, slug);
@@ -305,8 +308,7 @@ public class ProjectsController extends HangarController {
                              @RequestParam(value = "license-url", required = false) String licenseUrl,
                              @RequestParam("forum-sync") boolean forumSync,
                              @RequestParam String description,
-                             @RequestParam("update-icon") boolean updateIcon,
-                             HttpServletRequest request) {
+                             @RequestParam("update-icon") boolean updateIcon) {
         ProjectsTable projectsTable = projectService.getProjectData(author, slug).getProject();
         projectsTable.setCategory(category);
         Set<String> keywordSet = keywords != null ? Set.of(keywords.split(" ")) : Set.of();
@@ -326,7 +328,7 @@ public class ProjectsController extends HangarController {
 
     @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/manage/sendforapproval")
-    public ModelAndView sendForApproval(@PathVariable String author, @PathVariable String slug, HttpServletRequest request) {
+    public ModelAndView sendForApproval(@PathVariable String author, @PathVariable String slug) {
         ProjectData projectData = projectService.getProjectData(author, slug);
         if (projectData.getVisibility() == Visibility.NEEDSCHANGES) {
             projectService.changeVisibility(projectData.getProject(), Visibility.NEEDSAPPROVAL, "");
