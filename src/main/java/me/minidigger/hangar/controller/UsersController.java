@@ -3,7 +3,6 @@ package me.minidigger.hangar.controller;
 import me.minidigger.hangar.service.RoleService;
 import me.minidigger.hangar.service.sso.AuthUser;
 import me.minidigger.hangar.service.sso.UrlWithNonce;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -102,33 +101,12 @@ public class UsersController extends HangarController {
 
             UsersTable user = userService.getOrCreate(authUser.getUsername(), authUser);
             roleService.removeAllGlobalRoles(user.getId());
-            authUser.getGlobalRoles().forEach(role -> {
-                roleService.addGlobalRole(user.getId(), role.getRoleId());
-            });
+            authUser.getGlobalRoles().forEach(role -> roleService.addGlobalRole(user.getId(), role.getRoleId()));
             authenticationService.setAuthenticatedUser(user);
 
             // TODO redirect to flash
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
-
         }
-
-//        else if (sso.isEmpty() || sig.isBlank()) {
-//            // redirect to SSO
-//            String authRedirectUrl = ssoService.generateAuthReturnUrl(returnUrl);
-//            Pair<String, String> ssoData = ssoService.encode(Map.of("return_sso_url", authRedirectUrl));
-//            String ssoUrl = ssoService.getAuthLoginUrl(ssoData.getLeft(), ssoData.getRight());
-//            return new ModelAndView("redirect:" + ssoUrl);
-//        } else {
-//            boolean success = authenticationService.loginWithSSO(sso, sig);
-//            if (success) {
-//                String nonce = ssoService.decode(sso, sig).get("nonce");
-//                returnUrl = ssoService.getReturnUrl(nonce);
-//                ssoService.clearReturnUrl(nonce);
-//                return new ModelAndView("redirect:" + returnUrl);
-//            } else {
-//                return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
-//            }
-//        }
     }
 
     private ModelAndView redirectToSso(UrlWithNonce urlWithNonce, RedirectAttributes attributes) {
@@ -177,12 +155,8 @@ public class UsersController extends HangarController {
     }
 
     @RequestMapping("/signup")
-    public ModelAndView signUp(@RequestParam(defaultValue = "") String returnUrl) {
-        // redirect to SSO
-        String authRedirectUrl = ssoService.generateAuthReturnUrl(returnUrl);
-        Pair<String, String> ssoData = ssoService.encode(Map.of("return_sso_url", authRedirectUrl));
-        String ssoUrl = ssoService.getAuthSignupUrl(ssoData.getLeft(), ssoData.getRight());
-        return new ModelAndView("redirect:" + ssoUrl);
+    public ModelAndView signUp(@RequestParam(defaultValue = "") String returnUrl, RedirectAttributes attributes) {
+        return redirectToSso(ssoService.getSignupUrl(returnUrl), attributes);
     }
 
     @GetMapping("/staff")
@@ -196,15 +170,15 @@ public class UsersController extends HangarController {
     }
 
     @RequestMapping("/verify")
-    public Object verify(@RequestParam Object returnPath) {
-        return null; // TODO implement verify request controller
+    public ModelAndView verify(@RequestParam String returnPath, RedirectAttributes attributes) {
+        return redirectToSso(ssoService.getVerifyUrl(returnPath), attributes);
     }
 
     @RequestMapping("/{user}")
     public ModelAndView showProjects(@PathVariable String user) {
         ModelAndView mav = new ModelAndView("users/projects");
         mav.addObject("u", userService.getUserData(user));
-        mav.addObject("o", null);
+        mav.addObject("o", null); // TODO organization
         return fillModel(mav);
     }
 
@@ -217,12 +191,12 @@ public class UsersController extends HangarController {
         mav.addObject("u", userData);
         mav.addObject("keys", apiKeyService.getKeysForUser(userId));
         mav.addObject("perms", permissionService.getPossibleOrganizationPermissions(userId).add(permissionService.getPossibleProjectPermissions(userId)).add(userData.getUserPerm()).toNamed());
-        return fillModel(mav); // TODO implement editApiKeys request controller
+        return fillModel(mav);
     }
 
     @Secured("ROLE_USER")
     @RequestMapping("/{user}/settings/lock/{locked}")
-    public RedirectView setLocked(@PathVariable String user, @PathVariable boolean locked, @RequestParam Object sso, @RequestParam Object sig) {
+    public RedirectView setLocked(@PathVariable String user, @PathVariable boolean locked, @RequestParam String sso, @RequestParam String sig) {
         // TODO auth
         userService.setLocked(user, locked);
         return new RedirectView(routeHelper.getRouteUrl("users.showProjects", user));
@@ -233,7 +207,7 @@ public class UsersController extends HangarController {
     public ModelAndView saveTagline(@PathVariable String user, @RequestParam("tagline") String tagline, HttpServletRequest request) {
         if (tagline.length() > hangarConfig.user.getMaxTaglineLen()) {
             ModelAndView mav = showProjects(user);
-            AlertUtil.showAlert(mav, AlertType.ERROR, "error.tagline.tooLong"); // TODO pass length param to key
+            AlertUtil.showAlert(mav, AlertType.ERROR, "error.tagline.tooLong", String.valueOf(hangarConfig.user.getMaxTaglineLen()));
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", user));
         }
         UsersTable usersTable = userDao.get().getByName(user);
