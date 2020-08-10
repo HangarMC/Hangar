@@ -9,6 +9,7 @@ import me.minidigger.hangar.db.model.ProjectPagesTable;
 import me.minidigger.hangar.db.model.ProjectVersionsTable;
 import me.minidigger.hangar.model.Platform;
 import me.minidigger.hangar.model.generated.Dependency;
+import me.minidigger.hangar.model.viewhelpers.ProjectPage;
 import me.minidigger.hangar.model.viewhelpers.VersionData;
 import me.minidigger.hangar.service.UserActionLogService;
 import me.minidigger.hangar.service.VersionService;
@@ -96,7 +97,7 @@ public class ProjectFactory {
         ProjectChannelsTable channelsTable = new ProjectChannelsTable(hangarConfig.channels.getNameDefault(), hangarConfig.channels.getColorDefault(), -1);
 
         String content = "# " + name + "\n\n" + hangarConfig.pages.home.getMessage();
-        ProjectPagesTable pagesTable = new ProjectPagesTable(-1, OffsetDateTime.now(), -1, hangarConfig.pages.home.getName(), StringUtils.slugify(hangarConfig.pages.home.getName()), content, false, null);
+        ProjectPagesTable pagesTable = new ProjectPage( -1, hangarConfig.pages.home.getName(), StringUtils.slugify(hangarConfig.pages.home.getName()), content, false, null);
 
         checkProjectAvailability(ownerUser, name, pluginId);
 

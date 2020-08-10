@@ -22,6 +22,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserActionLogService {
@@ -54,8 +55,8 @@ public class UserActionLogService {
                 loggedActionType.getValue(),
                 loggedActionType.getActionContext().getProjectId(),
                 loggedActionType.getActionContext().getPageId(),
-                newState,
-                oldState
+                Objects.toString(newState, ""),
+                Objects.toString(oldState, "")
         );
         actionsDao.get().insertProjectPageLog(log);
     }
@@ -67,8 +68,8 @@ public class UserActionLogService {
                 loggedActionType.getValue(),
                 loggedActionType.getActionContext().getProjectId(),
                 loggedActionType.getActionContext().getVersionId(),
-                newState,
-                oldState
+                Objects.toString(newState, ""),
+                Objects.toString(oldState, "")
         );
         actionsDao.get().insertVersionLog(log);
     }
@@ -79,8 +80,8 @@ public class UserActionLogService {
                 getInetAddress(request),
                 loggedActionType.getValue(),
                 loggedActionType.getActionContext().getUserId(),
-                newState,
-                oldState
+                Objects.toString(newState, ""),
+                Objects.toString(oldState, "")
         );
         actionsDao.get().insertUserLog(log);
     }
@@ -91,8 +92,8 @@ public class UserActionLogService {
                 getInetAddress(request),
                 loggedActionType.getValue(),
                 loggedActionType.getActionContext().getOrganizationLog(),
-                newState,
-                oldState
+                Objects.toString(newState, ""),
+                Objects.toString(oldState, "")
         );
         actionsDao.get().insertOrganizationLog(log);
     }

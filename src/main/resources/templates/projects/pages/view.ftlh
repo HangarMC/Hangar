@@ -35,16 +35,15 @@ Documentation page within Project overview.
         <div class="col-md-9">
             <div class="row">
                 <div class="col-md-12">
-                    <#-- @ftlvariable name="page" type="me.minidigger.hangar.model.viewhelpers.ProjectPage" -->
                     <@editor.editor
-                        saveCall=routes.getRouteUrl("pages.save", p.project.ownerName, p.project.slug, page.slug)
-                        deleteCall=routes.getRouteUrl("pages.delete", p.project.ownerName, p.project.slug, page.slug)
-                        deletable=page.deletable
+                        saveCall=routes.getRouteUrl("pages.save", p.project.ownerName, p.project.slug, projectPage.slug)
+                        deleteCall=routes.getRouteUrl("pages.delete", p.project.ownerName, p.project.slug, projectPage.slug)
+                        deletable=projectPage.isDeletable
                         enabled=canEditPages()
-                        raw=page.contents
-                        cooked=markdownService.render(page.contents)
+                        raw=projectPage.contents
+                        cooked=markdownService.render(projectPage.contents)
                         subject="Page"
-                        extraFormValue=page.name />
+                        extraFormValue=projectPage.name />
                 </div>
             </div>
         </div>
@@ -96,7 +95,7 @@ Documentation page within Project overview.
                     <#list rootPages as pg, children>
                         <li class="list-group-item">
                             <#if children?size gt 0>
-                                <#if page.parentId?? && page.parentId = pg.id>
+                                <#if projectPage.parentId?? && projectPage.parentId = pg.id>
                                     <a class="page-collapse" data-page-id="${pg.id}">
                                         <i class="far fa-minus-square"></i>
                                     </a>
@@ -110,7 +109,7 @@ Documentation page within Project overview.
                                 ${pg.name}
                             </a>
                         </li>
-                        <#if page.parentId?? && page.parentId = pg.id>
+                        <#if projectPage.parentId?? && projectPage.parentId = pg.id>
                             <div class="page-children" data-page-id="${pg.id}">
                                 <#-- @ftlvariable name="childPage" type="me.minidigger.hangar.model.viewhelpers.ProjectPage" -->
                                 <#list children as childPage>

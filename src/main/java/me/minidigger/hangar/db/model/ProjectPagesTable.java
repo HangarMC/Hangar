@@ -1,8 +1,5 @@
 package me.minidigger.hangar.db.model;
 
-
-import org.springframework.lang.Nullable;
-
 import java.time.OffsetDateTime;
 
 public class ProjectPagesTable {
@@ -14,12 +11,9 @@ public class ProjectPagesTable {
     private String slug;
     private String contents;
     private boolean isDeletable;
-    @Nullable
     private Long parentId;
 
-    public ProjectPagesTable(long id, OffsetDateTime createdAt, long projectId, String name, String slug, String contents, boolean isDeletable, Long parentId) {
-        this.id = id;
-        this.createdAt = createdAt;
+    public ProjectPagesTable(long projectId, String name, String slug, String contents, boolean isDeletable, Long parentId) {
         this.projectId = projectId;
         this.name = name;
         this.slug = slug;

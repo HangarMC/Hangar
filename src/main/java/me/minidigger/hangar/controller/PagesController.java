@@ -75,12 +75,11 @@ public class PagesController extends HangarController {
         String pageName = getPageName(page, subPage);
         ModelAndView mav = new ModelAndView("projects/pages/view");
         ProjectData projectData = projectService.getProjectData(author, slug);
-        ProjectPage projectPage = ProjectPage.of(pagesSerivce.getPage(projectData.getProject().getId(), pageName));
+        ProjectPage projectPage = pagesSerivce.getPage(projectData.getProject().getId(), pageName);
         mav.addObject("p", projectData);
         ScopedProjectData sp = projectService.getScopedProjectData(projectData.getProject().getId());
         mav.addObject("sp", sp);
-        mav.addObject("page", projectPage);
-        mav.addObject("parentPage");
+        mav.addObject("projectPage", projectPage);
         mav.addObject("editorOpen", false);
         pagesSerivce.fillPages(mav, projectData.getProject().getId());
         return fillModel(mav);
@@ -148,13 +147,12 @@ public class PagesController extends HangarController {
         String pageName = getPageName(page, subPage);
         ModelAndView mav = new ModelAndView("projects/pages/view");
         ProjectData projectData = projectService.getProjectData(author, slug);
-        ProjectPage projectPage = ProjectPage.of(pagesSerivce.getPage(projectData.getProject().getId(), pageName));
+        ProjectPage projectPage = pagesSerivce.getPage(projectData.getProject().getId(), pageName);
         if (projectPage == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         mav.addObject("p", projectData);
         ScopedProjectData sp = projectService.getScopedProjectData(projectData.getProject().getId());
         mav.addObject("sp", sp);
-        mav.addObject("page", projectPage);
-        mav.addObject("parentPage"); // TODO parentPage
+        mav.addObject("projectPage", projectPage);
         mav.addObject("editorOpen", true);
         pagesSerivce.fillPages(mav, projectData.getProject().getId());
         return fillModel(mav);
