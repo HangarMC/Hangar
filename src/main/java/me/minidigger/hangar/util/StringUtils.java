@@ -1,8 +1,5 @@
 package me.minidigger.hangar.util;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 public class StringUtils {
 
     /**

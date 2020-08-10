@@ -182,10 +182,6 @@ public class ProjectService {
         return project;
     }
 
-    public long getIdByPluginId(String pluginId) {
-        return projectDao.get().getByPluginId(pluginId).getId();
-    }
-
     public List<ProjectApprovalData> getProjectsNeedingApproval() {
         return projectDao.get().getVisibilityNeedsApproval();
     }

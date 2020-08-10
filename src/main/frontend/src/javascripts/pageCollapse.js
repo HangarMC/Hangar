@@ -27,7 +27,7 @@ function bindExpand(e) {
                         '</li>'
                     );
                     var link = childPage.find('a');
-                    link.attr("href", '/' + namespace + '/pages/' + page.fullSlug);
+                    link.attr("href", namespace + '/pages/' + page.fullSlug);
                     link.text(page.name); // this will sanitize the input
                     div.append(childPage);
                 }

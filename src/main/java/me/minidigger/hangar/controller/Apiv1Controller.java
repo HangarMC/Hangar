@@ -1,25 +1,43 @@
 package me.minidigger.hangar.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import me.minidigger.hangar.db.dao.HangarDao;
+import me.minidigger.hangar.db.dao.UserDao;
+import me.minidigger.hangar.db.model.ProjectPagesTable;
+import me.minidigger.hangar.db.model.UsersTable;
+import me.minidigger.hangar.model.viewhelpers.ProjectPage;
+import me.minidigger.hangar.service.project.PagesSerivce;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
-import me.minidigger.hangar.db.dao.HangarDao;
-import me.minidigger.hangar.db.dao.UserDao;
-import me.minidigger.hangar.db.model.UsersTable;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Controller
 public class Apiv1Controller extends HangarController {
 
+    private final ObjectMapper mapper;
+    private final PagesSerivce pagesSerivce;
     private final HangarDao<UserDao> userDao;
 
     @Autowired
-    public Apiv1Controller(HangarDao<UserDao> userDao) {
+    public Apiv1Controller(ObjectMapper mapper, PagesSerivce pagesSerivce, HangarDao<UserDao> userDao) {
+        this.mapper = mapper;
+        this.pagesSerivce = pagesSerivce;
         this.userDao = userDao;
     }
 
@@ -50,9 +68,27 @@ public class Apiv1Controller extends HangarController {
         return null; // TODO implement revokeKey request controller
     }
 
-    @RequestMapping("/api/v1/projects/{pluginId}/pages")
-    public Object listPages(@PathVariable Object pluginId, @RequestParam Object parentId) {
-        return null; // TODO implement listPages request controller
+    @GetMapping(value = "/api/v1/projects/{pluginId}/pages", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ArrayNode> listPages(@PathVariable String pluginId, @RequestParam(required = false) Long parentId) {
+        List<ProjectPage> pages = pagesSerivce.getPages(pluginId);
+        ArrayNode pagesArray = mapper.createArrayNode();
+        pages.stream().filter(p -> {
+            if (parentId != null) {
+                return parentId.equals(p.getParentId());
+            } else return true;
+        }).forEach(page -> {
+            ObjectNode pageObj = mapper.createObjectNode();
+            pageObj.set("createdAt", mapper.valueToTree(page.getCreatedAt()));
+            pageObj.set("id", mapper.valueToTree(page.getId()));
+            pageObj.set("name", mapper.valueToTree(page.getName()));
+            pageObj.set("parentId", mapper.valueToTree(page.getParentId()));
+            String[] slug = page.getSlug().split("/");
+            pageObj.set("slug", mapper.valueToTree(slug[slug.length - 1]));
+            pageObj.set("fullSlug", mapper.valueToTree(page.getSlug()));
+            pagesArray.add(pageObj);
+        });
+        if (pagesArray.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(pagesArray);
     }
 
     @RequestMapping("/api/v1/projects/{pluginId}/versions")

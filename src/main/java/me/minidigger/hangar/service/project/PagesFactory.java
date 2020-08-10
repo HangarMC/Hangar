@@ -13,7 +13,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.OffsetDateTime;
 import java.util.Map;
 
 @Component
@@ -40,9 +39,7 @@ public class PagesFactory {
             throw new HangarException("error.minLength");
         }
 
-        ProjectPagesTable table = new ProjectPagesTable(
-                -1,
-                OffsetDateTime.now(),
+        ProjectPagesTable table = new ProjectPage(
                 projectId,
                 name,
                 StringUtils.slugify(slug),

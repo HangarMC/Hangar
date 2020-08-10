@@ -29,11 +29,13 @@ public class PagesSerivce {
         this.projectPageDao = projectPageDao;
     }
 
-    public ProjectPagesTable getPage(long projectId, String pageName) {
-        ProjectPagesTable projectPagesTable = projectPageDao.get().getPage(projectId, StringUtils.slugify(pageName), null);
-        return projectPagesTable;
+    public ProjectPage getPage(long projectId, String pageName) {
+        return projectPageDao.get().getPage(projectId, StringUtils.slugify(pageName), null);
     }
 
+    public List<ProjectPage> getPages(String pluginId) {
+        return projectPageDao.get().getPages(pluginId);
+    }
 
     /**
      * Gets a page parents. Must specified either pageName or pageId
@@ -42,7 +44,7 @@ public class PagesSerivce {
      * @param pageId page id
      * @return List of page parents
      */
-    public List<ProjectPagesTable> getPageParents(long projectId, @Nullable String pageName, @Nullable Long pageId) {
+    public List<ProjectPage> getPageParents(long projectId, @Nullable String pageName, @Nullable Long pageId) {
         Preconditions.checkArgument(pageName == null && pageId == null, "One of (pageName, pageId) must be nonnull!");
         return projectPageDao.get().getPageParents(projectId, pageName, pageId);
     }

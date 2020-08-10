@@ -187,8 +187,7 @@ public class ProjectsController extends HangarController {
         mav.addObject("p", projectData);
         ScopedProjectData sp = projectService.getScopedProjectData(projectData.getProject().getId());
         mav.addObject("sp", sp);
-        mav.addObject("page", ProjectPage.of(pagesSerivce.getPage(projectData.getProject().getId(), hangarConfig.pages.home.getName())));
-        mav.addObject("parentPage"); // TODO parent page
+        mav.addObject("projectPage", pagesSerivce.getPage(projectData.getProject().getId(), hangarConfig.pages.home.getName()));
         mav.addObject("editorOpen", false);
         pagesSerivce.fillPages(mav, projectData.getProject().getId());
         return fillModel(mav);

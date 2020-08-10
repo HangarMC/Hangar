@@ -13,10 +13,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 @RegisterBeanMapper(ProjectPagesTable.class)
+@RegisterBeanMapper(ProjectPage.class)
 public interface ProjectPageDao {
 
     @SqlUpdate("INSERT INTO project_pages (created_at, project_id, name, slug, contents, is_deletable, parent_id) VALUES (:now, :projectId, :name, :slug, :contents, :isDeletable, :parentId)")
@@ -32,10 +32,13 @@ public interface ProjectPageDao {
     void delete(@BindBean ProjectPagesTable projectPagesTable);
 
     @SqlQuery("SELECT * FROM project_pages WHERE project_id = :projectId AND (lower(slug) = lower(:pageName) OR id = :pageId)")
-    ProjectPagesTable getPage(long projectId, String pageName, Long pageId);
+    ProjectPage getPage(long projectId, String pageName, Long pageId);
+
+    @SqlQuery("SELECT pp.* FROM project_pages pp JOIN projects p ON pp.project_id = p.id WHERE p.plugin_id = :pluginId")
+    List<ProjectPage> getPages(String pluginId);
 
     @SqlQuery("WITH RECURSIVE parents AS (SELECT * FROM project_pages WHERE project_id = :projectId AND (name = :pageName OR id = :pageId) UNION SELECT pp.* FROM project_pages pp INNER JOIN parents par ON par.id = pp.parent_id) SELECT * FROM parents")
-    List<ProjectPagesTable> getPageParents(long projectId, String pageName, Long pageId);
+    List<ProjectPage> getPageParents(long projectId, String pageName, Long pageId);
 
     @RegisterBeanMapper(ProjectPage.class)
     @KeyColumn("id")
