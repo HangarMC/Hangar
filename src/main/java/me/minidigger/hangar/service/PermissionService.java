@@ -33,13 +33,29 @@ public class PermissionService {
     }
 
     public Permission getProjectPermissions(UsersTable usersTable, String pluginId) {
-        if (usersTable == null) return DEFAULT_GLOBAL_PERMISSIONS;
-        return addDefaults(permissionsDao.get().getProjectPermission(usersTable.getId(), pluginId));
+        return getProjectPermissions(usersTable, pluginId, true);
+    }
+
+    public Permission getProjectPermissions(UsersTable usersTable, String pluginId, boolean includeGlobal) {
+        if (usersTable == null) {
+            if (includeGlobal) return DEFAULT_GLOBAL_PERMISSIONS;
+            else return Permission.None;
+        }
+        if (includeGlobal) return addDefaults(permissionsDao.get().getProjectPermission(usersTable.getId(), pluginId));
+        return permissionsDao.get().getProjectPermission(usersTable.getId(), pluginId);
     }
 
     public Permission getOrganizationPermissions(UsersTable usersTable, String orgName) {
-        if (usersTable == null) return DEFAULT_GLOBAL_PERMISSIONS;
-        return addDefaults(permissionsDao.get().getOrgPermission(usersTable.getId(), orgName));
+        return getOrganizationPermissions(usersTable, orgName, true);
+    }
+
+    public Permission getOrganizationPermissions(UsersTable usersTable, String orgName, boolean includeGlobal) {
+        if (usersTable == null) {
+            if (includeGlobal) return DEFAULT_GLOBAL_PERMISSIONS;
+            else return Permission.None;
+        }
+        if (includeGlobal) return addDefaults(permissionsDao.get().getOrgPermission(usersTable.getId(), orgName));
+        else return permissionsDao.get().getOrgPermission(usersTable.getId(), orgName);
     }
 
     public Permission getPossibleProjectPermissions(long userId) {
