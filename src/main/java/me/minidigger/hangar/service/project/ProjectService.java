@@ -28,7 +28,9 @@ import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
 import me.minidigger.hangar.model.viewhelpers.UnhealthyProject;
 import me.minidigger.hangar.model.viewhelpers.UserRole;
 import me.minidigger.hangar.service.UserService;
+import me.minidigger.hangar.service.pluginupload.ProjectFiles;
 import me.minidigger.hangar.util.StringUtils;
+import me.minidigger.hangar.util.TemplateHelper;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,6 +38,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -195,6 +198,7 @@ public class ProjectService {
         return projectDao.get().getUnhealthyProjects(hangarConfig.projects.getStaleAge().toMillis());
     }
 
+    // TODO move to API daos
     public List<Project> getProjects(String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean seeHidden, Long requesterId, ProjectSortingStrategy sort, boolean relevance, long limit, long offset) {
         String ordering;
         if (relevance && query != null && !query.isEmpty()) {
