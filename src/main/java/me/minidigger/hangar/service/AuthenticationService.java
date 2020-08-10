@@ -92,9 +92,6 @@ public class AuthenticationService {
         return null;
     }
 
-    // It might be possible to prevent double apiAuthInfo requests by adding an ApiAuthInfo to each api handler method
-    // and then in the @PreAuthorize annotation, pass that parameter into this function. Because right now, the ApiAuthInfo is
-    // requested in ApiAuthInfoMethodArgumentResolver so its available in various ApiRequests
     public boolean authApiRequest(Permission perms, ApiScope apiScope) {
         switch (apiScope.getType()) {
             case GLOBAL:
