@@ -17,7 +17,7 @@ export class API {
                     contentType: isFormData ? false : 'application/json',
                     data: isBodyRequest && !isFormData ? JSON.stringify(data) : data,
                     processData: !(isFormData || isBodyRequest),
-                    headers: {'Authorization': 'HangarApi session=' + session}
+                    headers: {'Authorization': 'HangarApi session="' + session + '"'}
                 }).done((data) => {
                     resolve(data);
                 }).fail((xhr) => {

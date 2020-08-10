@@ -1,6 +1,5 @@
 package me.minidigger.hangar.util;
 
-import org.checkerframework.checker.units.qual.A;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
