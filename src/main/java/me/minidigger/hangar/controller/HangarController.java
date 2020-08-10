@@ -25,6 +25,8 @@ public abstract class HangarController {
     private HangarConfig hangarConfig;
     @Autowired
     private MarkdownService markdownService;
+    @Autowired
+    private TemplateHelper templateHelper;
 
     protected ModelAndView fillModel(ModelAndView mav) {
         // helpers
@@ -36,7 +38,7 @@ public abstract class HangarController {
         mav.addObject("config", hangarConfig);
         mav.addObject("markdownService", markdownService);
         mav.addObject("rand", ThreadLocalRandom.current());
-        mav.addObject("utils", new TemplateHelper(hangarConfig));
+        mav.addObject("utils", templateHelper);
 
         // alerts
         if (mav.getModelMap().getAttribute("alerts") == null) {

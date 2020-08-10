@@ -18,22 +18,28 @@ import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.model.viewhelpers.ProjectPage;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
 import me.minidigger.hangar.security.annotations.GlobalPermission;
+import me.minidigger.hangar.security.annotations.ProjectPermission;
 import me.minidigger.hangar.service.OrgService;
 import me.minidigger.hangar.service.UserActionLogService;
 import me.minidigger.hangar.service.UserService;
+import me.minidigger.hangar.service.pluginupload.ProjectFiles;
 import me.minidigger.hangar.service.project.FlagService;
 import me.minidigger.hangar.service.project.PagesSerivce;
 import me.minidigger.hangar.service.project.ProjectFactory;
 import me.minidigger.hangar.service.project.ProjectService;
 import me.minidigger.hangar.util.AlertUtil;
 import me.minidigger.hangar.util.AlertUtil.AlertType;
+import me.minidigger.hangar.util.FileUtils;
 import me.minidigger.hangar.util.HangarException;
 import me.minidigger.hangar.util.RouteHelper;
 import me.minidigger.hangar.util.StringUtils;
+import me.minidigger.hangar.util.TemplateHelper;
 import me.minidigger.hangar.util.TriFunction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,12 +48,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -67,13 +81,15 @@ public class ProjectsController extends HangarController {
     private final ProjectFactory projectFactory;
     private final PagesSerivce pagesSerivce;
     private final UserActionLogService userActionLogService;
+    private final ProjectFiles projectFiles;
+    private final TemplateHelper templateHelper;
     private final HangarDao<UserDao> userDao;
     private final HangarDao<ProjectDao> projectDao;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public ProjectsController(HangarConfig hangarConfig, RouteHelper routeHelper, UserService userService, OrgService orgService, FlagService flagService, ProjectService projectService, ProjectFactory projectFactory, PagesSerivce pagesSerivce, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao, HttpServletRequest request) {
+    public ProjectsController(HangarConfig hangarConfig, RouteHelper routeHelper, UserService userService, OrgService orgService, FlagService flagService, ProjectService projectService, ProjectFactory projectFactory, PagesSerivce pagesSerivce, UserActionLogService userActionLogService, ProjectFiles projectFiles, TemplateHelper templateHelper, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao, HttpServletRequest request) {
         this.hangarConfig = hangarConfig;
         this.routeHelper = routeHelper;
         this.userService = userService;
@@ -83,6 +99,8 @@ public class ProjectsController extends HangarController {
         this.projectFactory = projectFactory;
         this.pagesSerivce = pagesSerivce;
         this.userActionLogService = userActionLogService;
+        this.projectFiles = projectFiles;
+        this.templateHelper = templateHelper;
         this.userDao = userDao;
         this.projectDao = projectDao;
         this.request = request;
@@ -170,10 +188,9 @@ public class ProjectsController extends HangarController {
         ScopedProjectData sp = projectService.getScopedProjectData(projectData.getProject().getId());
         mav.addObject("sp", sp);
         mav.addObject("page", ProjectPage.of(pagesSerivce.getPage(projectData.getProject().getId(), hangarConfig.pages.home.getName())));
-        mav.addObject("parentPage");
+        mav.addObject("parentPage"); // TODO parent page
         mav.addObject("editorOpen", false);
         pagesSerivce.fillPages(mav, projectData.getProject().getId());
-        // TODO implement show request controller
         return fillModel(mav);
     }
 
@@ -212,25 +229,73 @@ public class ProjectsController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @PostMapping("/{author}/{slug}/icon")
-    public Object uploadIcon(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement uploadIcon request controller
+    @ProjectPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)
+    @PostMapping(value = "/{author}/{slug}/icon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Object uploadIcon(@PathVariable String author, @PathVariable String slug, @RequestParam MultipartFile icon, RedirectAttributes attributes) {
+        ProjectsTable project = projectService.getProjectData(author, slug).getProject();
+        if (icon.getContentType() == null || (!icon.getContentType().equals(MediaType.IMAGE_PNG_VALUE) && !icon.getContentType().equals(MediaType.IMAGE_JPEG_VALUE))) {
+            AlertUtil.showAlert(attributes, AlertType.ERROR, "error.invalidFile");
+            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.showSettings", author, slug));
+        }
+        if (icon.getOriginalFilename() == null || icon.getOriginalFilename().isBlank()) {
+            AlertUtil.showAlert(attributes, AlertType.ERROR, "error.noFile");
+            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.showSettings", author, slug));
+        }
+        try {
+            Path pendingDir = projectFiles.getPendingIconDir(author, slug);
+            if (Files.notExists(pendingDir)) {
+                Files.createDirectories(pendingDir);
+            }
+            FileUtils.deletedFiles(pendingDir);
+            Files.copy(icon.getInputStream(), pendingDir.resolve(icon.getOriginalFilename()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // todo data
+        userActionLogService.project(request, LoggedActionType.PROJECT_ICON_CHANGED.with(ProjectContext.of(project.getId())), "", "");
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/{author}/{slug}/icon")
-    public Object showIcon(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement showIcon request controller
+    public Object showIcon(@PathVariable String author, @PathVariable String slug) {
+        Path iconPath = projectFiles.getIconPath(author, slug);
+        if (iconPath == null) {
+            return new ModelAndView("redirect:" + templateHelper.avatarUrl(author));
+        }
+        return showImage(iconPath);
     }
 
     @GetMapping("/{author}/{slug}/icon/pending")
-    public Object showPendingIcon(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement showPendingIcon request controller
+    public ResponseEntity<byte[]> showPendingIcon(@PathVariable String author, @PathVariable String slug) {
+        Path path = projectFiles.getPendingIconPath(author, slug);
+        if (path == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return showImage(path);
+    }
+
+    private ResponseEntity<byte[]> showImage(Path path) {
+        try {
+            byte[] lastModified = Files.getLastModifiedTime(path).toString().getBytes(StandardCharsets.UTF_8);
+            byte[] lastModifiedHash = MessageDigest.getInstance("MD5").digest(lastModified);
+            String hashString = Base64.getEncoder().encodeToString(lastModifiedHash);
+            return ResponseEntity.ok().header(HttpHeaders.ETAG, hashString).header(HttpHeaders.CACHE_CONTROL, "max-age=" + 3600).body(Files.readAllBytes(path));
+        } catch (IOException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/icon/reset")
-    public Object resetIcon(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement resetIcon request controller
+    @PostMapping("/{author}/{slug}/icon/reset")
+    @ResponseStatus(HttpStatus.OK)
+    public void resetIcon(@PathVariable String author, @PathVariable String slug) {
+        ProjectsTable projectsTable = projectService.getProjectData(author, slug).getProject();
+        Path icon = projectFiles.getIconPath(author, slug);
+        Path pendingIcon = projectFiles.getPendingIconPath(author, slug);
+        FileUtils.delete(icon);
+        FileUtils.delete(pendingIcon);
+
+        // TODO data
+        userActionLogService.project(request, LoggedActionType.PROJECT_ICON_CHANGED.with(ProjectContext.of(projectsTable.getId())), "", "");
     }
 
     @Secured("ROLE_USER")
@@ -241,7 +306,8 @@ public class ProjectsController extends HangarController {
         mav.addObject("p", projectData);
         ScopedProjectData scopedProjectData = projectService.getScopedProjectData(projectData.getProject().getId());
         mav.addObject("sp", scopedProjectData);
-        // TODO add deploymentKey and iconUrl
+        mav.addObject("iconUrl", templateHelper.projectAvatarUrl(projectData.getProject()));
+        // TODO add deploymentKey
         return fillModel(mav);
     }
 
@@ -320,10 +386,28 @@ public class ProjectsController extends HangarController {
         projectsTable.setForumSync(forumSync);
         projectsTable.setDescription(description);
         projectDao.get().update(projectsTable);
-        // TODO update icon handling
+
+        if (updateIcon) {
+            Path pendingIconPath = projectFiles.getPendingIconPath(author, slug);
+            if (pendingIconPath != null) {
+                 try {
+                    Path iconDir = projectFiles.getIconDir(author, slug);
+                    if (Files.notExists(iconDir)) {
+                        Files.createDirectories(iconDir);
+                    }
+                     FileUtils.deletedFiles(iconDir);
+                    Files.move(pendingIconPath, iconDir.resolve(pendingIconPath.getFileName()));
+                } catch (IOException e) {
+                     e.printStackTrace();
+                 }
+            }
+        }
+
+        // TODO add new roles
+        // TODO update existing roles
         userActionLogService.project(request, LoggedActionType.PROJECT_SETTINGS_CHANGED.with(ProjectContext.of(projectsTable.getId())), "", "");
 
-        return new RedirectView(routeHelper.getRouteUrl("projects.show", author, slug)); // TODO implement save request controller
+        return new RedirectView(routeHelper.getRouteUrl("projects.show", author, slug));
     }
 
     @Secured("ROLE_USER")

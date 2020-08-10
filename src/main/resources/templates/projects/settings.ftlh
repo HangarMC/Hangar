@@ -8,17 +8,7 @@
 <#import "*/utils/userAvatar.ftlh" as userAvatar />
 <#import "*/users/memberList.ftlh" as memberList />
 
-<#--@import controllers.sugar.Requests.OreRequest
-@import models.viewhelper.{ProjectData, ScopedProjectData}
-@import ore.OreConfig
-@import ore.db.Model
-@import ore.markdown.MarkdownRenderer
-@import ore.models.api.ProjectApiKey
-@import ore.permission.Permission
-@import util.syntax._
-@import views.html.helper.{CSPNonce, CSRF, form}
-@import views.html.utils
-
+<#--
 @(p: ProjectData, sp: ScopedProjectData, deploymentKey: Option[Model[ProjectApiKey]], iconUrl: String)(implicit messages: Messages, flash: Flash,
         request: OreRequest[_], config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)-->
 
@@ -39,8 +29,6 @@
     </script>
 </#assign>
 
-<#-- @ftlvariable name="p" type="me.minidigger.hangar.model.viewhelpers.ProjectData" -->
-<#-- @ftlvariable name="sp" type="me.minidigger.hangar.model.viewhelpers.ScopedProjectData" -->
 <#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
 <@projects.view p=p sp=sp active="#settings" additionalScripts=scriptsVar>
 
@@ -117,8 +105,7 @@
                             <@csrf.formField />
                             <div class="setting-description">
                                 <h4>Icon</h4>
-                                <#-- @ftlvariable name="iconUrl" type="java.lang.String" -->
-                                <@userAvatar.userAvatar userName=p.projectOwner.name avatarUrl=p.projectOwner.avatarUrl imgSrc=iconUrl clazz="user-avatar-md" />
+                                <@userAvatar.userAvatar userName=p.projectOwner.name avatarUrl=utils.avatarUrl(p.projectOwner.name) imgSrc=iconUrl clazz="user-avatar-md" />
 
                                 <input class="form-control-static" type="file" id="icon" name="icon" />
                             </div>
