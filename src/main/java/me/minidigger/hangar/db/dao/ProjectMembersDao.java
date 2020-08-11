@@ -13,4 +13,7 @@ public interface ProjectMembersDao {
 
     @SqlUpdate("INSERT INTO project_members VALUES (:projectId, :userId)")
     void insert(@BindBean ProjectMembersTable entry);
+
+    @SqlUpdate("DELETE FROM project_members WHERE project_id = :projectId AND user_id = :userId")
+    int delete(long projectId, long userId);
 }

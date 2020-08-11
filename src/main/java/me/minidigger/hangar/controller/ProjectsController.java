@@ -12,14 +12,16 @@ import me.minidigger.hangar.model.Category;
 import me.minidigger.hangar.model.FlagReason;
 import me.minidigger.hangar.model.NamedPermission;
 import me.minidigger.hangar.model.Permission;
+import me.minidigger.hangar.model.Role;
 import me.minidigger.hangar.model.Visibility;
 import me.minidigger.hangar.model.generated.Note;
 import me.minidigger.hangar.model.viewhelpers.ProjectData;
-import me.minidigger.hangar.model.viewhelpers.ProjectPage;
 import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
+import me.minidigger.hangar.model.viewhelpers.UserData;
 import me.minidigger.hangar.security.annotations.GlobalPermission;
 import me.minidigger.hangar.security.annotations.ProjectPermission;
 import me.minidigger.hangar.service.OrgService;
+import me.minidigger.hangar.service.RoleService;
 import me.minidigger.hangar.service.UserActionLogService;
 import me.minidigger.hangar.service.UserService;
 import me.minidigger.hangar.service.pluginupload.ProjectFiles;
@@ -64,8 +66,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Controller
 public class ProjectsController extends HangarController {
@@ -80,6 +84,7 @@ public class ProjectsController extends HangarController {
     private final ProjectService projectService;
     private final ProjectFactory projectFactory;
     private final PagesSerivce pagesSerivce;
+    private final RoleService roleService;
     private final UserActionLogService userActionLogService;
     private final ProjectFiles projectFiles;
     private final TemplateHelper templateHelper;
@@ -89,7 +94,7 @@ public class ProjectsController extends HangarController {
     private final HttpServletRequest request;
 
     @Autowired
-    public ProjectsController(HangarConfig hangarConfig, RouteHelper routeHelper, UserService userService, OrgService orgService, FlagService flagService, ProjectService projectService, ProjectFactory projectFactory, PagesSerivce pagesSerivce, UserActionLogService userActionLogService, ProjectFiles projectFiles, TemplateHelper templateHelper, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao, HttpServletRequest request) {
+    public ProjectsController(HangarConfig hangarConfig, RouteHelper routeHelper, UserService userService, OrgService orgService, FlagService flagService, ProjectService projectService, ProjectFactory projectFactory, PagesSerivce pagesSerivce, RoleService roleService, UserActionLogService userActionLogService, ProjectFiles projectFiles, TemplateHelper templateHelper, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao, HttpServletRequest request) {
         this.hangarConfig = hangarConfig;
         this.routeHelper = routeHelper;
         this.userService = userService;
@@ -98,6 +103,7 @@ public class ProjectsController extends HangarController {
         this.projectService = projectService;
         this.projectFactory = projectFactory;
         this.pagesSerivce = pagesSerivce;
+        this.roleService = roleService;
         this.userActionLogService = userActionLogService;
         this.projectFiles = projectFiles;
         this.templateHelper = templateHelper;
@@ -333,9 +339,20 @@ public class ProjectsController extends HangarController {
     }
 
     @Secured("ROLE_USER")
+    @ProjectPermission(NamedPermission.MANAGE_SUBJECT_MEMBERS)
     @RequestMapping("/{author}/{slug}/manage/members/remove")
-    public Object removeMember(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement removeMember request controller
+    public ModelAndView removeMember(@PathVariable String author, @PathVariable String slug, @RequestParam String username) {
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        UserData user = userService.getUserData(username);
+        if (user == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        if (roleService.removeMember(projectData.getProject(), user.getUser().getId()) != 0) {
+            userActionLogService.project(
+                    request,
+                    LoggedActionType.PROJECT_MEMBER_REMOVED.with(ProjectContext.of(projectData.getProject().getId())),
+                    user.getUser().getName() + " is not a member of " + projectData.getNamespace(),
+                    user.getUser().getName() + " is a member of " + projectData.getNamespace());
+        }
+        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.showSettings", author, slug));
     }
 
     @Secured("ROLE_USER")
@@ -373,7 +390,12 @@ public class ProjectsController extends HangarController {
                              @RequestParam(value = "license-url", required = false) String licenseUrl,
                              @RequestParam("forum-sync") boolean forumSync,
                              @RequestParam String description,
-                             @RequestParam("update-icon") boolean updateIcon) {
+                             @RequestParam("update-icon") boolean updateIcon,
+                             @RequestParam(required = false) List<Long> users,
+                             @RequestParam(required = false) List<Role> roles,
+                             @RequestParam(required = false) List<String> userUps,
+                             @RequestParam(required = false) List<Role> roleUps) {
+
         ProjectsTable projectsTable = projectService.getProjectData(author, slug).getProject();
         projectsTable.setCategory(category);
         Set<String> keywordSet = keywords != null ? Set.of(keywords.split(" ")) : Set.of();
@@ -402,8 +424,22 @@ public class ProjectsController extends HangarController {
             }
         }
 
-        // TODO add new roles
-        // TODO update existing roles
+        if (users != null && roles != null) {
+            for (int i = 0; i < users.size(); i++) {
+                roleService.addRole(projectsTable, users.get(i), roles.get(i), false);
+                // TODO notifications
+            }
+        }
+
+        if (userUps != null && roleUps != null) {
+            Map<String, UsersTable> usersToUpdate = userService.getUsers(userUps).stream().collect(Collectors.toMap(UsersTable::getName, user -> user));
+            if (usersToUpdate.size() != roleUps.size()) throw new RuntimeException("Mismatching userUps & roleUps size");
+            for (int i = 0; i < userUps.size(); i++) {
+                roleService.updateRole(projectsTable, usersToUpdate.get(userUps.get(i)).getId(), roleUps.get(i));
+            }
+        }
+
+
         userActionLogService.project(request, LoggedActionType.PROJECT_SETTINGS_CHANGED.with(ProjectContext.of(projectsTable.getId())), "", "");
 
         return new RedirectView(routeHelper.getRouteUrl("projects.show", author, slug));

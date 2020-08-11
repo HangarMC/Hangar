@@ -20,10 +20,16 @@ public interface UserProjectRolesDao {
     @SqlQuery("SELECT * FROM user_project_roles WHERE project_id = :projectId AND user_id = :userId")
     UserProjectRolesTable getByProjectAndUser(long projectId, long userId);
 
+    @Timestamped
     @SqlUpdate("INSERT INTO user_project_roles (created_at, user_id, role_type, project_id, is_accepted) " +
                "VALUES (:now, :userId, :roleType, :projectId, :isAccepted)")
-    @Timestamped
     void insert(@BindBean UserProjectRolesTable userProjectRolesTable);
+
+    @SqlUpdate("UPDATE user_project_roles SET role_type = :roleType, is_accepted = :isAccepted WHERE id = :id")
+    void update(@BindBean UserProjectRolesTable userProjectRolesTable);
+
+    @SqlUpdate("DELETE FROM user_project_roles WHERE project_id = :projectId AND user_id = :userId")
+    void delete(long projectId, long userId);
 
     @RegisterBeanMapper(ProjectsTable.class)
     @RegisterBeanMapper(value = UserProjectRolesTable.class, prefix = "upr")

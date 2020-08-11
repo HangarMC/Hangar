@@ -126,7 +126,8 @@ public class ProjectService {
         if (currentUser == null) {
             return new ScopedProjectData();
         } else {
-            return projectDao.get().getScopedProjectData(projectId, currentUser.getId());
+            ScopedProjectData sp = projectDao.get().getScopedProjectData(projectId, currentUser.getId());
+            return sp == null ? new ScopedProjectData() : sp;
         }
     }
 

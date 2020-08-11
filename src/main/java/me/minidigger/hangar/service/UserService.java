@@ -172,6 +172,10 @@ public class UserService {
         return new UserData(getHeaderData(), user, isOrga, projectCount, organizations, globalRoles, userPerm, orgaPerm);
     }
 
+    public List<UsersTable> getUsers(List<String> userNames) {
+        return userDao.get().getUsers(userNames);
+    }
+
     public UsersTable getOrCreate(String username, AuthUser authUser) {
         UsersTable user = userDao.get().getByName(username);
         if (user == null) {

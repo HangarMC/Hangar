@@ -2,14 +2,14 @@
 
 function updateIndices() {
     var memberList = $('.list-members');
-    memberList.find('.user-new').each(function(i) {
-        $(this).find('input').attr('name', 'users[' + i + ']');
-        $(this).find('select').attr('name', 'roles[' + i + ']');
+    memberList.find('.user-new').each(function() {
+        $(this).find('input').attr('name', 'users');
+        $(this).find('select').attr('name', 'roles');
     });
 
     memberList.find('.user-changed').each(function(i) {
-        $(this).find('input').attr('name', 'userUps[' + i + ']');
-        $(this).find('select').attr('name', 'roleUps[' + i + ']');
+        $(this).find('input').attr('name', 'userUps');
+        $(this).find('select').attr('name', 'roleUps');
     });
 }
 

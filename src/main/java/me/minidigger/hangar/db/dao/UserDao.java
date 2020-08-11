@@ -4,6 +4,8 @@ import me.minidigger.hangar.model.viewhelpers.FlagActivity;
 import me.minidigger.hangar.model.viewhelpers.ReviewActivity;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
+import org.jdbi.v3.sqlobject.customizer.BindList;
+import org.jdbi.v3.sqlobject.customizer.BindList.EmptyHandling;
 import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
@@ -37,6 +39,9 @@ public interface UserDao {
 
     @SqlQuery("select * from users where LOWER(name) = LOWER(:name)")
     UsersTable getByName(String name);
+
+    @SqlQuery("SELECT * FROM users WHERE name IN (<userNames>)")
+    List<UsersTable> getUsers(@BindList(onEmpty = EmptyHandling.NULL_STRING) List<String> userNames);
 
     @SqlQuery("SELECT sq.name," +
               "       sq.join_date," +

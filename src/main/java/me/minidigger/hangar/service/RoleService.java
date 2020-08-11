@@ -69,8 +69,24 @@ public class RoleService {
         userProjectRolesDao.get().insert(new UserProjectRolesTable(userId, role.getValue(), projectsTable.getId(), isAccepted));
     }
 
+    public void updateRole(ProjectsTable projectsTable, long userId, Role role) {
+        UserProjectRolesTable userProjectRole = userProjectRolesDao.get().getByProjectAndUser(projectsTable.getId(), userId);
+        if (userProjectRole == null) return;
+        userProjectRole.setRoleType(role.getValue());
+        userProjectRolesDao.get().update(userProjectRole);
+    }
+
+    public void removeRole(ProjectsTable projectsTable, long userId) {
+        userProjectRolesDao.get().delete(projectsTable.getId(), userId);
+    }
+
     public void addMember(long projectId, long userId) {
         projectMembersDao.get().insert(new ProjectMembersTable(projectId, userId));
+    }
+
+    public int removeMember(ProjectsTable projectsTable, long userId) {
+        removeRole(projectsTable, userId);
+        return projectMembersDao.get().delete(projectsTable.getId(), userId);
     }
 
     public void addGlobalRole(long userId, long roleId) {
