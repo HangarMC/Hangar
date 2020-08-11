@@ -11,6 +11,7 @@ import me.minidigger.hangar.db.model.UsersTable;
 import me.minidigger.hangar.model.Category;
 import me.minidigger.hangar.model.FlagReason;
 import me.minidigger.hangar.model.NamedPermission;
+import me.minidigger.hangar.model.NotificationType;
 import me.minidigger.hangar.model.Permission;
 import me.minidigger.hangar.model.Role;
 import me.minidigger.hangar.model.Visibility;
@@ -20,6 +21,7 @@ import me.minidigger.hangar.model.viewhelpers.ScopedProjectData;
 import me.minidigger.hangar.model.viewhelpers.UserData;
 import me.minidigger.hangar.security.annotations.GlobalPermission;
 import me.minidigger.hangar.security.annotations.ProjectPermission;
+import me.minidigger.hangar.service.NotificationService;
 import me.minidigger.hangar.service.OrgService;
 import me.minidigger.hangar.service.RoleService;
 import me.minidigger.hangar.service.UserActionLogService;
@@ -85,6 +87,7 @@ public class ProjectsController extends HangarController {
     private final ProjectFactory projectFactory;
     private final PagesSerivce pagesSerivce;
     private final RoleService roleService;
+    private final NotificationService notificationService;
     private final UserActionLogService userActionLogService;
     private final ProjectFiles projectFiles;
     private final TemplateHelper templateHelper;
@@ -94,7 +97,7 @@ public class ProjectsController extends HangarController {
     private final HttpServletRequest request;
 
     @Autowired
-    public ProjectsController(HangarConfig hangarConfig, RouteHelper routeHelper, UserService userService, OrgService orgService, FlagService flagService, ProjectService projectService, ProjectFactory projectFactory, PagesSerivce pagesSerivce, RoleService roleService, UserActionLogService userActionLogService, ProjectFiles projectFiles, TemplateHelper templateHelper, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao, HttpServletRequest request) {
+    public ProjectsController(HangarConfig hangarConfig, RouteHelper routeHelper, UserService userService, OrgService orgService, FlagService flagService, ProjectService projectService, ProjectFactory projectFactory, PagesSerivce pagesSerivce, RoleService roleService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles, TemplateHelper templateHelper, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao, HttpServletRequest request) {
         this.hangarConfig = hangarConfig;
         this.routeHelper = routeHelper;
         this.userService = userService;
@@ -104,6 +107,7 @@ public class ProjectsController extends HangarController {
         this.projectFactory = projectFactory;
         this.pagesSerivce = pagesSerivce;
         this.roleService = roleService;
+        this.notificationService = notificationService;
         this.userActionLogService = userActionLogService;
         this.projectFiles = projectFiles;
         this.templateHelper = templateHelper;
@@ -424,10 +428,11 @@ public class ProjectsController extends HangarController {
             }
         }
 
+        // TODO perhaps bulk notification insert?
         if (users != null && roles != null) {
             for (int i = 0; i < users.size(); i++) {
                 roleService.addRole(projectsTable, users.get(i), roles.get(i), false);
-                // TODO notifications
+                notificationService.sendNotification(users.get(i), projectsTable.getOwnerId(), NotificationType.PROJECT_INVITE, new String[] { "notification.project.invite", roles.get(i).getTitle(), projectsTable.getName()});
             }
         }
 

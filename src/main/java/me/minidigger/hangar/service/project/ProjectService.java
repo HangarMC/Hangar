@@ -144,7 +144,7 @@ public class ProjectService {
         projectDao.get().update(project);
     }
 
-    public List<UsersTable> getProjectWatchers(long projectId, int offset, int limit) {
+    public List<UsersTable> getProjectWatchers(long projectId, int offset, Integer limit) {
         return userDao.get().getProjectWatchers(projectId, offset, limit);
     }
 

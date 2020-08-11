@@ -2,15 +2,16 @@ package me.minidigger.hangar.service.project;
 
 import me.minidigger.hangar.db.customtypes.LoggedActionType;
 import me.minidigger.hangar.db.customtypes.LoggedActionType.ProjectContext;
-import me.minidigger.hangar.db.customtypes.LoggedActionType.VersionContext;
 import me.minidigger.hangar.db.dao.ProjectPageDao;
 import me.minidigger.hangar.db.dao.ProjectVersionDao;
 import me.minidigger.hangar.db.model.ProjectPagesTable;
 import me.minidigger.hangar.db.model.ProjectVersionsTable;
+import me.minidigger.hangar.model.NotificationType;
 import me.minidigger.hangar.model.Platform;
 import me.minidigger.hangar.model.generated.Dependency;
 import me.minidigger.hangar.model.viewhelpers.ProjectPage;
 import me.minidigger.hangar.model.viewhelpers.VersionData;
+import me.minidigger.hangar.service.NotificationService;
 import me.minidigger.hangar.service.UserActionLogService;
 import me.minidigger.hangar.service.VersionService;
 import me.minidigger.hangar.service.plugindata.PluginFileWithData;
@@ -43,7 +44,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,22 +55,21 @@ public class ProjectFactory {
     private final HangarDao<ProjectChannelDao> projectChannelDao;
     private final HangarDao<ProjectDao> projectDao;
     private final HangarDao<ProjectPageDao> projectPagesDao;
-    private final HangarDao<VisibilityDao> visibilityDao;
     private final HangarDao<ProjectVersionDao> projectVersionDao;
     private final RoleService roleService;
     private final UserService userService;
     private final ProjectService projectService;
     private final ChannelService channelService;
     private final VersionService versionService;
+    private final NotificationService notificationService;
     private final UserActionLogService userActionLogService;
     private final ProjectFiles projectFiles;
 
     @Autowired
-    public ProjectFactory(HangarConfig hangarConfig, HangarDao<ProjectChannelDao> projectChannelDao, HangarDao<ProjectDao> projectDao, HangarDao<ProjectPageDao> projectPagesDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectVersionDao> projectVersionDao, RoleService roleService, UserService userService, ProjectService projectService, ChannelService channelService, VersionService versionService, UserActionLogService userActionLogService, ProjectFiles projectFiles) {
+    public ProjectFactory(HangarConfig hangarConfig, HangarDao<ProjectChannelDao> projectChannelDao, HangarDao<ProjectDao> projectDao, HangarDao<ProjectPageDao> projectPagesDao, HangarDao<ProjectVersionDao> projectVersionDao, RoleService roleService, UserService userService, ProjectService projectService, ChannelService channelService, VersionService versionService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles) {
         this.hangarConfig = hangarConfig;
         this.projectChannelDao = projectChannelDao;
         this.projectDao = projectDao;
-        this.visibilityDao = visibilityDao;
         this.projectVersionDao = projectVersionDao;
         this.roleService = roleService;
         this.userService = userService;
@@ -78,6 +77,7 @@ public class ProjectFactory {
         this.projectService = projectService;
         this.channelService = channelService;
         this.versionService = versionService;
+        this.notificationService = notificationService;
         this.userActionLogService = userActionLogService;
         this.projectFiles = projectFiles;
     }
@@ -173,7 +173,15 @@ public class ProjectFactory {
         pendingVersion.getPlugin().getData().createTags(version.getId(), versionService); // TODO not sure what this is for
         Platform.createPlatformTags(versionService, version.getId(), Dependency.from(version.getDependencies()));
 
-        // TODO notify watchers
+        List<UsersTable> watchers = projectService.getProjectWatchers(project.getProject().getId(), 0, null);
+        // TODO bulk notif insert
+        watchers.forEach(watcher -> notificationService.sendNotification(
+                watcher.getId(),
+                project.getProject().getOwnerId(),
+                NotificationType.NEW_PROJECT_VERSION,
+                new String[]{"notification.project.newVersion", project.getProject().getName(), version.getVersionString()},
+                project.getNamespace() + "/versions/" + version.getVersionString()
+                ));
         try {
             uploadPlugin(project, pendingVersion.getPlugin(), version);
         } catch (IOException e) {

@@ -1,5 +1,20 @@
 package me.minidigger.hangar.service;
 
+import me.minidigger.hangar.db.dao.HangarDao;
+import me.minidigger.hangar.db.dao.NotificationsDao;
+import me.minidigger.hangar.db.dao.UserOrganizationRolesDao;
+import me.minidigger.hangar.db.dao.UserProjectRolesDao;
+import me.minidigger.hangar.db.model.NotificationsTable;
+import me.minidigger.hangar.db.model.OrganizationsTable;
+import me.minidigger.hangar.db.model.ProjectsTable;
+import me.minidigger.hangar.db.model.UserOrganizationRolesTable;
+import me.minidigger.hangar.db.model.UserProjectRolesTable;
+import me.minidigger.hangar.model.InviteFilter;
+import me.minidigger.hangar.model.NotificationFilter;
+import me.minidigger.hangar.model.NotificationType;
+import me.minidigger.hangar.model.viewhelpers.InviteSubject;
+import me.minidigger.hangar.model.viewhelpers.UserData;
+import me.minidigger.hangar.model.viewhelpers.UserRole;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,24 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-
-import me.minidigger.hangar.db.dao.HangarDao;
-import me.minidigger.hangar.db.dao.NotificationsDao;
-import me.minidigger.hangar.db.dao.UserOrganizationRolesDao;
-import me.minidigger.hangar.db.dao.UserProjectRolesDao;
-import me.minidigger.hangar.db.model.NotificationsTable;
-import me.minidigger.hangar.db.model.OrganizationsTable;
-import me.minidigger.hangar.db.model.ProjectsTable;
-import me.minidigger.hangar.db.model.RoleTable;
-import me.minidigger.hangar.db.model.UserOrganizationRolesTable;
-import me.minidigger.hangar.db.model.UserProjectRolesTable;
-import me.minidigger.hangar.db.model.Visitable;
-import me.minidigger.hangar.model.InviteFilter;
-import me.minidigger.hangar.model.NotificationFilter;
-import me.minidigger.hangar.model.NotificationType;
-import me.minidigger.hangar.model.viewhelpers.InviteSubject;
-import me.minidigger.hangar.model.viewhelpers.UserData;
-import me.minidigger.hangar.model.viewhelpers.UserRole;
 
 @Service
 public class NotificationService {
@@ -44,8 +41,12 @@ public class NotificationService {
     }
 
     public NotificationsTable sendNotification(long userId, long originId, NotificationType type, String[] messageArgs) {
+        return sendNotification(userId, originId, type, messageArgs, null);
+    }
+
+    public NotificationsTable sendNotification(long userId, long originId, NotificationType type, String[] messageArgs, String action) {
         Preconditions.checkArgument(messageArgs.length != 0, "messageArgs must be non-empty");
-        NotificationsTable notification = new NotificationsTable(userId, type, null, originId, messageArgs);
+        NotificationsTable notification = new NotificationsTable(userId, type, action, originId, messageArgs);
         notificationsDao.get().insert(notification);
         return notification;
     }
