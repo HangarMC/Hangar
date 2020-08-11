@@ -73,13 +73,13 @@ $(function() {
         // hangar: user.name was username everywhere
         var user = result.user;
         // Check if user is already defined
-        if ($('.list-members').find('a[href="/' + user.name + '"]').length) {
+        if ($('.list-members').find('a[href="/' + user.username + '"]').length) {
             return;
         }
 
         // Build result row
         var resultRow = $('#row-user').clone().removeAttr('id').addClass('user-new');
-        resultRow.find('.username').attr('href', '/' + user.name).text(user.name);
+        resultRow.find('.username').attr('href', '/' + user.username).text(user.username);
         resultRow.find('input').attr('form', 'save').val(user.id);
         resultRow.find('select').attr('form', 'save');
         resultRow.find('svg').click(function() {

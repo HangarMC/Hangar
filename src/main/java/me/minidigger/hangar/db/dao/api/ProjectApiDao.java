@@ -1,5 +1,8 @@
 package me.minidigger.hangar.db.dao.api;
 
+import me.minidigger.hangar.model.Category;
+import me.minidigger.hangar.model.generated.Project;
+import me.minidigger.hangar.model.generated.Tag;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.AllowUnusedBindings;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -7,10 +10,6 @@ import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
-import me.minidigger.hangar.model.Category;
-import me.minidigger.hangar.model.generated.Project;
-import me.minidigger.hangar.model.generated.Tag;
 
 @Repository
 @RegisterBeanMapper(Project.class)
