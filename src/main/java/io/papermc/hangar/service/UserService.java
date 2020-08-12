@@ -206,7 +206,7 @@ public class UserService {
                     null,
                     new int[0],
                     false,
-                    "en_US" // todo: how does language
+                    null
             );
             user = userDao.get().insert(user);
         } else {

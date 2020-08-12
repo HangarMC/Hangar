@@ -3,12 +3,13 @@
 function updateIndices() {
     // Set the input fields to their proper indices so the server can read
     // them as a list.
+    // hangar remove index from form attrs, spring will auto put them in lists
     var rows = $('.table-members').find('tr');
     rows.each(function(i) {
-        if (i == 0 || i == rows.length - 1) return; // Skip owner and search rows
+        if (i === 0 || i === rows.length - 1) return; // Skip owner and search rows
         var index = i - 1;
-        $(this).find('input').attr('name', 'users[' + index + ']');
-        $(this).find('select').attr('name', 'roles[' + index + ']');
+        $(this).find('input').attr('name', 'users');
+        $(this).find('select').attr('name', 'roles');
     });
 }
 
@@ -25,11 +26,10 @@ $(function() {
         }
         alert.fadeOut();
 
-        // hangar: user.name was username everywhere
         var user = result.user;
         // Check if user is already defined
         if ($('input[value="' + user.id + '"]').length
-            || $('.table-members').first('tr').find('strong').text() === user.name) {
+            || $('.table-members').first('tr').find('strong').text() === user.username) {
             return;
         }
 
@@ -37,7 +37,7 @@ $(function() {
         var newRow = $('#result-row').clone().removeAttr('id');
         newRow.find('input').attr('form', 'form-continue').val(user.id);
         newRow.find('select').attr('form', 'form-continue');
-        newRow.find('.username').attr('href', '/' + user.name).text(user.name);
+        newRow.find('.username').attr('href', '/' + user.username).text(user.username);
 
         var avatarImg = newRow.find('.user-avatar');
         if (user.hasOwnProperty('avatarUrl')) {

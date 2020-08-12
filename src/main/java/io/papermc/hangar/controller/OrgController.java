@@ -2,10 +2,13 @@ package io.papermc.hangar.controller;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.model.OrganizationsTable;
+import io.papermc.hangar.model.Role;
 import io.papermc.hangar.service.OrgFactory;
 import io.papermc.hangar.service.OrgService;
 import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.util.AlertUtil;
+import io.papermc.hangar.util.AlertUtil.AlertType;
+import io.papermc.hangar.util.HangarException;
 import io.papermc.hangar.util.RouteHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +25,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class OrgController extends HangarController {
@@ -58,15 +63,30 @@ public class OrgController extends HangarController {
 
     @Secured("ROLE_USER")
     @PostMapping(value = "/organisations/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ModelAndView create(@RequestParam String name) { // TODO other params
+    public ModelAndView create(@RequestParam String name, @RequestParam(required = false) List<Long> users, @RequestParam(required = false) List<Role> roles, RedirectAttributes attributes) {
         if (orgService.getUserOwnedOrgs(userService.getCurrentUser().getId()).size() >= hangarConfig.org.getCreateLimit()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "at create limit");
         }
         if (userService.getCurrentUser().isLocked()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         if (!hangarConfig.org.isEnabled()) {
+            AlertUtil.showAlert(attributes, AlertType.ERROR, "error.org.disabled");
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("org.showCreator"));
         } else {
-            OrganizationsTable org = orgFactory.createOrganization(name, userService.getCurrentUser().getId(), new HashMap<>()); // TODO members
+            Map<Long, Role> userRoles = new HashMap<>();
+            if (users != null && roles != null) {
+                if (users.size() != roles.size()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                for (int i = 0; i < users.size(); i++) {
+                    userRoles.put(users.get(i), roles.get(i));
+                }
+            }
+
+            OrganizationsTable org;
+            try {
+                org = orgFactory.createOrganization(name, userService.getCurrentUser().getId(), userRoles);
+            } catch (HangarException e) {
+                AlertUtil.showAlert(attributes, AlertType.ERROR, e.getMessageKey(), e.getArgs());
+                return new ModelAndView("redirect:" + routeHelper.getRouteUrl("org.showCreator"));
+            }
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", org.getName()));
         }
     }

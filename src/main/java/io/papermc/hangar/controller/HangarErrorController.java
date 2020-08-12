@@ -16,7 +16,7 @@ public class HangarErrorController extends HangarController implements ErrorCont
     public ModelAndView handleError(HttpServletRequest request) {
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 
-        ModelAndView mav = new ModelAndView("errors/error");
+        ModelAndView mav = new ModelAndView("errors/error"); // TODO show custom message with error if applicable
         if (status != null) {
             int statusCode = Integer.parseInt(status.toString());
 
