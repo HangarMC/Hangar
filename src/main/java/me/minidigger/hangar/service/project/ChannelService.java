@@ -1,18 +1,15 @@
 package me.minidigger.hangar.service.project;
 
 import me.minidigger.hangar.config.hangar.HangarConfig;
+import me.minidigger.hangar.db.dao.HangarDao;
+import me.minidigger.hangar.db.dao.ProjectChannelDao;
+import me.minidigger.hangar.db.model.ProjectChannelsTable;
+import me.minidigger.hangar.db.model.ProjectsTable;
 import me.minidigger.hangar.model.Color;
 import me.minidigger.hangar.util.HangarException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import me.minidigger.hangar.db.dao.HangarDao;
-import me.minidigger.hangar.db.dao.ProjectChannelDao;
-import me.minidigger.hangar.db.model.ProjectChannelsTable;
-import me.minidigger.hangar.db.model.ProjectsTable;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -64,6 +61,7 @@ public class ChannelService {
         UNIQUE_COLOR("error.channel.duplicateColor");
 
         private final String reason;
+
         InvalidChannelCreationReason(String reason) {
             this.reason = reason;
         }

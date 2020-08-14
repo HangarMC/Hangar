@@ -21,6 +21,7 @@ public enum Color {
     GRAY(16, "#A9A9A9"),
     TRANSPARENT(17, "transparent");
 
+    private static final Color[] VALUES = values();
     private final int value;
     private final String hex;
 
@@ -38,12 +39,12 @@ public enum Color {
     }
 
     public static Color getById(int id) {
-        return values()[id];
+        return VALUES[id];
     }
 
     public static Color getByHexStr(String hexStr) {
-        for (Color value : Color.values()) {
-            if (value.getHex() == hexStr) return value;
+        for (Color value : VALUES) {
+            if (value.hex.equalsIgnoreCase(hexStr)) return value;
         }
         return null;
     }

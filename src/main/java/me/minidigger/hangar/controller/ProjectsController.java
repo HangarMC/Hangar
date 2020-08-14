@@ -204,8 +204,13 @@ public class ProjectsController extends HangarController {
     }
 
     @RequestMapping("/{author}/{slug}/discuss")
-    public Object showDiscussion(@PathVariable Object author, @PathVariable Object slug) {
-        return null; // TODO implement showDiscussion request controller
+    public ModelAndView showDiscussion(@PathVariable String author, @PathVariable String slug) {
+        ModelAndView mv = new ModelAndView("projects/discuss");
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        ScopedProjectData scopedProjectData = projectService.getScopedProjectData(projectData.getProject().getId());
+        mv.addObject("p", projectData);
+        mv.addObject("sp", scopedProjectData);
+        return fillModel(mv);
     }
 
     @Secured("ROLE_USER")

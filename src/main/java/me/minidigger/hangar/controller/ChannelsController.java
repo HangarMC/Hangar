@@ -1,5 +1,6 @@
 package me.minidigger.hangar.controller;
 
+import me.minidigger.hangar.model.Color;
 import me.minidigger.hangar.model.viewhelpers.ProjectData;
 import me.minidigger.hangar.service.project.ChannelService;
 import me.minidigger.hangar.service.project.ProjectService;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -39,8 +41,10 @@ public class ChannelsController extends HangarController {
 
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/channels")
-    public ModelAndView create(@PathVariable String author, @PathVariable String slug) {
-        // TODO implement create request controller
+    public ModelAndView create(@PathVariable String author, @PathVariable String slug, @RequestParam("channel-input") String channelId, @RequestParam("channel-color-input") String channelHex) {
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        channelService.addProjectChannel(projectData.getProject().getId(), channelId, Color.getByHexStr(channelHex));
+        //TODO fix popoverColorPicker to select the color
         return new ModelAndView("redirect:" + routeHelper.getRouteUrl("channels.showList", author, slug));
     }
 

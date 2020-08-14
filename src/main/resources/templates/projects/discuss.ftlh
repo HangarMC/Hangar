@@ -6,16 +6,8 @@
 <#--
 Discussion page within Project overview.
 -->
-<#--@import controllers.sugar.Requests.OreRequest
-@import models.viewhelper.{ProjectData, ScopedProjectData}
-@import ore.OreConfig
-@import ore.markdown.MarkdownRenderer
-@import views.html.helper.CSPNonce
-@import views.html.utils-->
 
-<#--@(p: ProjectData, sp: ScopedProjectData)(implicit messages: Messages, request: OreRequest[_],
-        flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)-->
-
+<#-- todo: Bridge to Paper Discourse page? Directly save discussion in Hangar? -->
 <#assign scriptsVar>
     <script <#--@CSPNonce.attr-->>
         DiscourseEmbed = {
@@ -30,14 +22,14 @@ Discussion page within Project overview.
 <@view.view p=p sp=sp active="#discussion" additionalScripts=scriptsVar>
     <div id='discourse-comments'></div>
     <div class="row">
-    <#if request.headerData.currentUser??>
+    <#if cu??>
         <div class="col-md-8">
             <div class="reply-box">
                 <#if sp.canPostAsOwnerOrga>
                 <div class="pull-right push-down">
                     <i class="minor"><@spring.message "project.discuss.postAs" /></i>
                     <select name="poster" form="form-editor-save">
-                        <option selected>${request.headerData.currentUser.name}</option>
+                        <option selected>${cu.name}</option>
                         <option>${p.projectOwner.name}</option>
                     </select>
                 </div>

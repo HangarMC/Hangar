@@ -12,8 +12,7 @@
         PROJECT_SLUG = '${p.project.slug}';
         $(function () {
             initChannelManager(
-                <#-- todo config entry -->
-                "#channel-new", "", "${config.defaultChannelColor.hex}", "New channel",
+                "#channel-new", "", "${config.channels.colorDefault.hex}", "New channel",
                 "${routes.getRouteUrl("channels.create", p.project.ownerName, p.project.slug)}",
                 "post", "Create channel", false
             );

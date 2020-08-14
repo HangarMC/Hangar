@@ -1,52 +1,50 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
 
-<#-- TODO: all the color stuff -->
-<#-- also, we could just move this macro over to modalManage? not used anywhere else -->
-@import ore.models.project.Channel.Colors
-
 <#macro popoverColorPicker>
+    <#assign Color=@helper["me.minidigger.hangar.model.Color"]>
     <table class="popover-color-picker" style="display: none;">
         <tbody>
             <tr>
                 <td style="padding: 3px;">
-                    <i class="fas fa-circle channel-id" style="color: @Colors.head.hex"></i>
+                    <i class="fas fa-circle channel-id" style="color: ${Color.getById(0).getHex()}="></i>
                 </td>
                 <td style="padding: 3px;">
-                    <i class="fas fa-circle channel-id" style="color: @Colors(1).hex"></i></td>
-                <td style="padding: 3px;">
-                    <i class="fas fa-circle channel-id" style="color: @Colors(2).hex"></i>
+                    <i class="fas fa-circle channel-id" style="color: ${Color.getById(1).getHex()}"></i>
                 </td>
                 <td style="padding: 3px;">
-                    <i class="fas fa-circle channel-id" style="color: @Colors(3).hex"></i>
-                </td>
-            </tr>
-            <tr>
-                <td style="padding: 3px;">
-                    <i class="fas fa-circle channel-id" style="color: @Colors(4).hex"></i>
+                    <i class="fas fa-circle channel-id" style="color: ${Color.getById(2).getHex()}"></i>
                 </td>
                 <td style="padding: 3px;">
-                    <i class="fas fa-circle channel-id" style="color: @Colors(5).hex"></i>
-                </td>
-                <td style="padding: 3px;">
-                    <i class="fas fa-circle channel-id" style="color: @Colors(6).hex"></i>
-                </td>
-                <td style="padding: 3px;">
-                    <i class="fas fa-circle channel-id" style="color: @Colors(7).hex"></i>
+                    <i class="fas fa-circle channel-id" style="color: ${Color.getById(3).getHex()}"></i>
                 </td>
             </tr>
             <tr>
                 <td style="padding: 3px;">
-                    <i class="fas fa-circle channel-id" style="color: @Colors(8).hex"></i>
+                    <i class="fas fa-circle channel-id" style="color: ${Color.getById(4).getHex()}"></i>
                 </td>
                 <td style="padding: 3px;">
-                    <i class="fas fa-circle channel-id" style="color: @Colors(9).hex"></i>
+                    <i class="fas fa-circle channel-id" style="color: ${Color.getById(5).getHex()}"></i>
                 </td>
                 <td style="padding: 3px;">
-                    <i class="fas fa-circle channel-id" style="color: @Colors(10).hex"></i>
+                    <i class="fas fa-circle channel-id" style="color: ${Color.getById(6).getHex()}"></i>
                 </td>
                 <td style="padding: 3px;">
-                    <i class="fas fa-circle channel-id" style="color: @Colors(11).hex"></i>
+                    <i class="fas fa-circle channel-id" style="color: ${Color.getById(7).getHex()}"></i>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 3px;">
+                    <i class="fas fa-circle channel-id" style="color: ${Color.getById(8).getHex()}"></i>
+                </td>
+                <td style="padding: 3px;">
+                    <i class="fas fa-circle channel-id" style="color: ${Color.getById(9).getHex()}"></i>
+                </td>
+                <td style="padding: 3px;">
+                    <i class="fas fa-circle channel-id" style="color: ${Color.getById(10).getHex()}"></i>
+                </td>
+                <td style="padding: 3px;">
+                    <i class="fas fa-circle channel-id" style="color: ${Color.getById(11).getHex()}"></i>
                 </td>
             </tr>
         </tbody>
