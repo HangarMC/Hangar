@@ -15,7 +15,7 @@
     "@fortawesome/free-regular-svg-icons": "5.14.0",
     "@fortawesome/free-solid-svg-icons": "5.14.0",
     "jquery": "3.5.1",
-    "lodash": "4.17.19",
+    "lodash": "4.17.20",
     "query-string": "6.13.1",
     "vue": "2.6.11"
   },
