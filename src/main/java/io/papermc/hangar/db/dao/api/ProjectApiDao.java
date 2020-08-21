@@ -3,6 +3,8 @@ package io.papermc.hangar.db.dao.api;
 import io.papermc.hangar.model.Category;
 import io.papermc.hangar.model.generated.Project;
 import io.papermc.hangar.model.generated.Tag;
+
+import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.AllowUnusedBindings;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;

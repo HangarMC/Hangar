@@ -1,14 +1,17 @@
 package io.papermc.hangar.db.customtypes;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ContainerNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.postgresql.util.PGobject;
 
 public class JSONB extends PGobject {
 
-    private transient ObjectNode json;
+    private transient JsonNode json;
 
     public JSONB(String value) {
         setType("jsonb");
@@ -16,7 +19,8 @@ public class JSONB extends PGobject {
         parseJson();
     }
 
-    public JSONB(ObjectNode json) {
+    @JsonCreator
+    public JSONB(JsonNode json) {
         setType("jsonb");
         this.value = json.toString();
         this.json = json;
@@ -26,6 +30,7 @@ public class JSONB extends PGobject {
         setType("jsonb");
     }
 
+    @JsonValue
     public JsonNode getJson() {
         return json;
     }
@@ -38,7 +43,7 @@ public class JSONB extends PGobject {
 
     private void parseJson() {
         try {
-            this.json = (ObjectNode) new ObjectMapper().readTree(value);
+            this.json = new ObjectMapper().readTree(value);
         } catch (JsonProcessingException | ClassCastException e) {
             e.printStackTrace();
         }

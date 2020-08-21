@@ -1,16 +1,20 @@
 package io.papermc.hangar.model.generated;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.Visibility;
 import io.swagger.annotations.ApiModelProperty;
 import io.papermc.hangar.model.Category;
@@ -34,7 +38,7 @@ public class Project {
 
     @JsonProperty("promoted_versions")
     @Valid
-    private List<PromotedVersion> promotedVersions = new ArrayList<>();
+    private JSONB /*List<PromotedVersion>*/ promotedVersions = new JSONB("[]"); // TODO back to list but fix jdbi
 
     @JsonProperty("stats")
     private ProjectStatsAll stats = null;
@@ -58,22 +62,24 @@ public class Project {
     private ProjectSettings settings = null;
 
     @JsonProperty("icon_url")
-    private String iconUrl = null;
+    private String iconUrl = "";
 
-    public Project createdAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-        return this;
-    }
+    // dummy values, only used for db -> model
+    @JsonIgnore
+    private String ownerName;
+    @JsonIgnore
+    private Long views;
+    @JsonIgnore
+    private Long downloads;
+    @JsonIgnore
+    private Long recentViews;
+    @JsonIgnore
+    private Long recentDownloads;
+    @JsonIgnore
+    private Long stars;
+    @JsonIgnore
+    private Long watchers;
 
-    /**
-     * Get createdAt
-     *
-     * @return createdAt
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
-
-    @Valid
     public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
@@ -81,19 +87,6 @@ public class Project {
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
-
-    public Project pluginId(String pluginId) {
-        this.pluginId = pluginId;
-        return this;
-    }
-
-    /**
-     * Get pluginId
-     *
-     * @return pluginId
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
 
     public String getPluginId() {
         return pluginId;
@@ -103,19 +96,6 @@ public class Project {
         this.pluginId = pluginId;
     }
 
-    public Project name(String name) {
-        this.name = name;
-        return this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return name
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
-
     public String getName() {
         return name;
     }
@@ -124,21 +104,10 @@ public class Project {
         this.name = name;
     }
 
-    public Project namespace(ProjectNamespace namespace) {
-        this.namespace = namespace;
-        return this;
-    }
-
-    /**
-     * Get namespace
-     *
-     * @return namespace
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
-
-    @Valid
     public ProjectNamespace getNamespace() {
+        if (namespace == null) {
+            namespace = new ProjectNamespace().owner(ownerName).slug(name);
+        }
         return namespace;
     }
 
@@ -146,47 +115,18 @@ public class Project {
         this.namespace = namespace;
     }
 
-    public Project promotedVersions(List<PromotedVersion> promotedVersions) {
-        this.promotedVersions = promotedVersions;
-        return this;
-    }
-
-    public Project addPromotedVersionsItem(PromotedVersion promotedVersionsItem) {
-        this.promotedVersions.add(promotedVersionsItem);
-        return this;
-    }
-
-    /**
-     * Get promotedVersions
-     *
-     * @return promotedVersions
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
-    @Valid
-    public List<PromotedVersion> getPromotedVersions() {
+    public JSONB /*List<PromotedVersion>*/ getPromotedVersions() {
         return promotedVersions;
     }
 
-    public void setPromotedVersions(List<PromotedVersion> promotedVersions) {
+    public void setPromotedVersions(JSONB /*List<PromotedVersion>*/ promotedVersions) {
         this.promotedVersions = promotedVersions;
     }
 
-    public Project stats(ProjectStatsAll stats) {
-        this.stats = stats;
-        return this;
-    }
-
-    /**
-     * Get stats
-     *
-     * @return stats
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
-
-    @Valid
     public ProjectStatsAll getStats() {
+        if (stats == null) {
+            stats = new ProjectStatsAll(views, downloads, recentViews, recentDownloads, stars, watchers);
+        }
         return stats;
     }
 
@@ -194,39 +134,15 @@ public class Project {
         this.stats = stats;
     }
 
-    public Project category(Category category) {
-        this.category = category;
-        return this;
-    }
-
-    /**
-     * Get category
-     *
-     * @return category
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
-
-    @Valid
+    @EnumByOrdinal
     public Category getCategory() {
         return category;
     }
 
+    @EnumByOrdinal
     public void setCategory(Category category) {
         this.category = category;
     }
-
-    public Project description(String description) {
-        this.description = description;
-        return this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return description
-     **/
-    @ApiModelProperty(value = "")
 
     public String getDescription() {
         return description;
@@ -236,20 +152,6 @@ public class Project {
         this.description = description;
     }
 
-    public Project lastUpdated(OffsetDateTime lastUpdated) {
-        this.lastUpdated = lastUpdated;
-        return this;
-    }
-
-    /**
-     * Get lastUpdated
-     *
-     * @return lastUpdated
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
-
-    @Valid
     public OffsetDateTime getLastUpdated() {
         return lastUpdated;
     }
@@ -258,41 +160,16 @@ public class Project {
         this.lastUpdated = lastUpdated;
     }
 
-    public Project visibility(Visibility visibility) {
-        this.visibility = visibility;
-        return this;
-    }
-
-    /**
-     * Get visibility
-     *
-     * @return visibility
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
-
+    @EnumByOrdinal
     public Visibility getVisibility() {
         return visibility;
     }
 
+    @EnumByOrdinal
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
     }
 
-    public Project userActions(UserActions userActions) {
-        this.userActions = userActions;
-        return this;
-    }
-
-    /**
-     * Get userActions
-     *
-     * @return userActions
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
-
-    @Valid
     public UserActions getUserActions() {
         return userActions;
     }
@@ -301,20 +178,6 @@ public class Project {
         this.userActions = userActions;
     }
 
-    public Project settings(ProjectSettings settings) {
-        this.settings = settings;
-        return this;
-    }
-
-    /**
-     * Get settings
-     *
-     * @return settings
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
-
-    @Valid
     public ProjectSettings getSettings() {
         return settings;
     }
@@ -322,19 +185,6 @@ public class Project {
     public void setSettings(ProjectSettings settings) {
         this.settings = settings;
     }
-
-    public Project iconUrl(String iconUrl) {
-        this.iconUrl = iconUrl;
-        return this;
-    }
-
-    /**
-     * Get iconUrl
-     *
-     * @return iconUrl
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
 
     public String getIconUrl() {
         return iconUrl;
@@ -344,65 +194,120 @@ public class Project {
         this.iconUrl = iconUrl;
     }
 
+    // dummy values below
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    public Long getViews() {
+        return views;
+    }
+
+    public void setViews(Long views) {
+        this.views = views;
+    }
+
+    public Long getDownloads() {
+        return downloads;
+    }
+
+    public void setDownloads(Long downloads) {
+        this.downloads = downloads;
+    }
+
+    public Long getRecentViews() {
+        return recentViews;
+    }
+
+    public void setRecentViews(Long recentViews) {
+        this.recentViews = recentViews;
+    }
+
+    public Long getRecentDownloads() {
+        return recentDownloads;
+    }
+
+    public void setRecentDownloads(Long recentDownloads) {
+        this.recentDownloads = recentDownloads;
+    }
+
+    public Long getStars() {
+        return stars;
+    }
+
+    public void setStars(Long stars) {
+        this.stars = stars;
+    }
+
+    public Long getWatchers() {
+        return watchers;
+    }
+
+    public void setWatchers(Long watchers) {
+        this.watchers = watchers;
+    }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
         Project project = (Project) o;
-        return Objects.equals(this.createdAt, project.createdAt) &&
-               Objects.equals(this.pluginId, project.pluginId) &&
-               Objects.equals(this.name, project.name) &&
-               Objects.equals(this.namespace, project.namespace) &&
-               Objects.equals(this.promotedVersions, project.promotedVersions) &&
-               Objects.equals(this.stats, project.stats) &&
-               Objects.equals(this.category, project.category) &&
-               Objects.equals(this.description, project.description) &&
-               Objects.equals(this.lastUpdated, project.lastUpdated) &&
-               Objects.equals(this.visibility, project.visibility) &&
-               Objects.equals(this.userActions, project.userActions) &&
-               Objects.equals(this.settings, project.settings) &&
-               Objects.equals(this.iconUrl, project.iconUrl);
+
+        if (!Objects.equals(createdAt, project.createdAt)) return false;
+        if (!Objects.equals(pluginId, project.pluginId)) return false;
+        if (!Objects.equals(name, project.name)) return false;
+        if (!Objects.equals(namespace, project.namespace)) return false;
+        if (!Objects.equals(promotedVersions, project.promotedVersions)) return false;
+        if (!Objects.equals(stats, project.stats)) return false;
+        if (category != project.category) return false;
+        if (!Objects.equals(description, project.description)) return false;
+        if (!Objects.equals(lastUpdated, project.lastUpdated)) return false;
+        if (visibility != project.visibility) return false;
+        if (!Objects.equals(userActions, project.userActions)) return false;
+        if (!Objects.equals(settings, project.settings)) return false;
+        return Objects.equals(iconUrl, project.iconUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(createdAt, pluginId, name, namespace, promotedVersions, stats, category, description, lastUpdated, visibility, userActions, settings, iconUrl);
+        int result = createdAt != null ? createdAt.hashCode() : 0;
+        result = 31 * result + (pluginId != null ? pluginId.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (namespace != null ? namespace.hashCode() : 0);
+        result = 31 * result + (promotedVersions != null ? promotedVersions.hashCode() : 0);
+        result = 31 * result + (stats != null ? stats.hashCode() : 0);
+        result = 31 * result + (category != null ? category.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (lastUpdated != null ? lastUpdated.hashCode() : 0);
+        result = 31 * result + (visibility != null ? visibility.hashCode() : 0);
+        result = 31 * result + (userActions != null ? userActions.hashCode() : 0);
+        result = 31 * result + (settings != null ? settings.hashCode() : 0);
+        result = 31 * result + (iconUrl != null ? iconUrl.hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class ModelsProtocolsAPIV2Project {\n");
-
-        sb.append("    createdAt: ").append(toIndentedString(createdAt)).append("\n");
-        sb.append("    pluginId: ").append(toIndentedString(pluginId)).append("\n");
-        sb.append("    name: ").append(toIndentedString(name)).append("\n");
-        sb.append("    namespace: ").append(toIndentedString(namespace)).append("\n");
-        sb.append("    promotedVersions: ").append(toIndentedString(promotedVersions)).append("\n");
-        sb.append("    stats: ").append(toIndentedString(stats)).append("\n");
-        sb.append("    category: ").append(toIndentedString(category)).append("\n");
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    lastUpdated: ").append(toIndentedString(lastUpdated)).append("\n");
-        sb.append("    visibility: ").append(toIndentedString(visibility)).append("\n");
-        sb.append("    userActions: ").append(toIndentedString(userActions)).append("\n");
-        sb.append("    settings: ").append(toIndentedString(settings)).append("\n");
-        sb.append("    iconUrl: ").append(toIndentedString(iconUrl)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
+        return new StringJoiner(", ", Project.class.getSimpleName() + "[", "]")
+                .add("createdAt=" + createdAt)
+                .add("pluginId='" + pluginId + "'")
+                .add("name='" + name + "'")
+                .add("namespace=" + namespace)
+                .add("promotedVersions=" + promotedVersions)
+                .add("stats=" + stats)
+                .add("category=" + category)
+                .add("description='" + description + "'")
+                .add("lastUpdated=" + lastUpdated)
+                .add("visibility=" + visibility)
+                .add("userActions=" + userActions)
+                .add("settings=" + settings)
+                .add("iconUrl='" + iconUrl + "'")
+                .toString();
     }
 }

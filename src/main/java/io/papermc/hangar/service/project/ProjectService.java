@@ -169,7 +169,7 @@ public class ProjectService {
         projectNamespace.setSlug(projectsTable.getSlug());
         project.setNamespace(projectNamespace);
 
-        project.setPromotedVersions(new ArrayList<>()); // TODO implement
+//        project.setPromotedVersions(new ArrayList<>()); // TODO implement
         project.setStats(projectDao.get().getProjectStats(projectsTable.getId()));
         project.setCategory(projectsTable.getCategory());
         project.setDescription(projectsTable.getDescription());

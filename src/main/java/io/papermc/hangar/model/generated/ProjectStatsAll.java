@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.Objects;
+import java.util.StringJoiner;
 import javax.validation.constraints.NotNull;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -32,18 +33,18 @@ public class ProjectStatsAll {
     @JsonProperty("watchers")
     private Long watchers = null;
 
-    public ProjectStatsAll views(Long views) {
-        this.views = views;
-        return this;
+    public ProjectStatsAll() {
+        //
     }
 
-    /**
-     * Get views
-     *
-     * @return views
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
+    public ProjectStatsAll(Long views, Long downloads, Long recentViews, Long recentDownloads, Long stars, Long watchers) {
+        this.views = views;
+        this.downloads = downloads;
+        this.recentViews = recentViews;
+        this.recentDownloads = recentDownloads;
+        this.stars = stars;
+        this.watchers = watchers;
+    }
 
     public Long getViews() {
         return views;
@@ -53,19 +54,6 @@ public class ProjectStatsAll {
         this.views = views;
     }
 
-    public ProjectStatsAll downloads(Long downloads) {
-        this.downloads = downloads;
-        return this;
-    }
-
-    /**
-     * Get downloads
-     *
-     * @return downloads
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
-
     public Long getDownloads() {
         return downloads;
     }
@@ -73,19 +61,6 @@ public class ProjectStatsAll {
     public void setDownloads(Long downloads) {
         this.downloads = downloads;
     }
-
-    public ProjectStatsAll recentViews(Long recentViews) {
-        this.recentViews = recentViews;
-        return this;
-    }
-
-    /**
-     * Get recentViews
-     *
-     * @return recentViews
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
 
     public Long getRecentViews() {
         return recentViews;
@@ -95,19 +70,6 @@ public class ProjectStatsAll {
         this.recentViews = recentViews;
     }
 
-    public ProjectStatsAll recentDownloads(Long recentDownloads) {
-        this.recentDownloads = recentDownloads;
-        return this;
-    }
-
-    /**
-     * Get recentDownloads
-     *
-     * @return recentDownloads
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
-
     public Long getRecentDownloads() {
         return recentDownloads;
     }
@@ -116,39 +78,13 @@ public class ProjectStatsAll {
         this.recentDownloads = recentDownloads;
     }
 
-    public ProjectStatsAll stars(Long stars) {
-        this.stars = stars;
-        return this;
-    }
-
-    /**
-     * Get stars
-     *
-     * @return stars
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
-
-    public Long getStars() {
+   public Long getStars() {
         return stars;
     }
 
     public void setStars(Long stars) {
         this.stars = stars;
     }
-
-    public ProjectStatsAll watchers(Long watchers) {
-        this.watchers = watchers;
-        return this;
-    }
-
-    /**
-     * Get watchers
-     *
-     * @return watchers
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
 
     public Long getWatchers() {
         return watchers;
@@ -158,51 +94,41 @@ public class ProjectStatsAll {
         this.watchers = watchers;
     }
 
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ProjectStatsAll projectStatsAll = (ProjectStatsAll) o;
-        return Objects.equals(this.views, projectStatsAll.views) &&
-               Objects.equals(this.downloads, projectStatsAll.downloads) &&
-               Objects.equals(this.recentViews, projectStatsAll.recentViews) &&
-               Objects.equals(this.recentDownloads, projectStatsAll.recentDownloads) &&
-               Objects.equals(this.stars, projectStatsAll.stars) &&
-               Objects.equals(this.watchers, projectStatsAll.watchers);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ProjectStatsAll that = (ProjectStatsAll) o;
+
+        if (!Objects.equals(views, that.views)) return false;
+        if (!Objects.equals(downloads, that.downloads)) return false;
+        if (!Objects.equals(recentViews, that.recentViews)) return false;
+        if (!Objects.equals(recentDownloads, that.recentDownloads)) return false;
+        if (!Objects.equals(stars, that.stars)) return false;
+        return Objects.equals(watchers, that.watchers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(views, downloads, recentViews, recentDownloads, stars, watchers);
+        int result = views != null ? views.hashCode() : 0;
+        result = 31 * result + (downloads != null ? downloads.hashCode() : 0);
+        result = 31 * result + (recentViews != null ? recentViews.hashCode() : 0);
+        result = 31 * result + (recentDownloads != null ? recentDownloads.hashCode() : 0);
+        result = 31 * result + (stars != null ? stars.hashCode() : 0);
+        result = 31 * result + (watchers != null ? watchers.hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class ModelsProtocolsAPIV2ProjectStatsAll {\n");
-
-        sb.append("    views: ").append(toIndentedString(views)).append("\n");
-        sb.append("    downloads: ").append(toIndentedString(downloads)).append("\n");
-        sb.append("    recentViews: ").append(toIndentedString(recentViews)).append("\n");
-        sb.append("    recentDownloads: ").append(toIndentedString(recentDownloads)).append("\n");
-        sb.append("    stars: ").append(toIndentedString(stars)).append("\n");
-        sb.append("    watchers: ").append(toIndentedString(watchers)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
+        return new StringJoiner(", ", ProjectStatsAll.class.getSimpleName() + "[", "]")
+                .add("views=" + views)
+                .add("downloads=" + downloads)
+                .add("recentViews=" + recentViews)
+                .add("recentDownloads=" + recentDownloads)
+                .add("stars=" + stars)
+                .add("watchers=" + watchers)
+                .toString();
     }
 }
