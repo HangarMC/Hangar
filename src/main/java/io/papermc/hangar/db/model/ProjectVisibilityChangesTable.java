@@ -1,11 +1,11 @@
 package io.papermc.hangar.db.model;
 
-
-import me.minidigger.hangar.model.Visibility;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.springframework.lang.Nullable;
 
 import java.time.OffsetDateTime;
+
+import io.papermc.hangar.model.Visibility;
 
 public class ProjectVisibilityChangesTable {
 
