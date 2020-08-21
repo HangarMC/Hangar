@@ -1,10 +1,13 @@
 package me.minidigger.hangar.service;
 
+import me.minidigger.hangar.db.dao.HangarDao;
 import me.minidigger.hangar.db.dao.ProjectDao;
+import me.minidigger.hangar.db.dao.ProjectVersionDao;
 import me.minidigger.hangar.db.dao.VisibilityDao;
 import me.minidigger.hangar.db.model.ProjectChannelsTable;
 import me.minidigger.hangar.db.model.ProjectVersionTagsTable;
 import me.minidigger.hangar.db.model.ProjectVersionVisibilityChangesTable;
+import me.minidigger.hangar.db.model.ProjectVersionsTable;
 import me.minidigger.hangar.db.model.ProjectsTable;
 import me.minidigger.hangar.model.TagColor;
 import me.minidigger.hangar.model.Visibility;
@@ -20,10 +23,6 @@ import me.minidigger.hangar.service.project.ProjectService;
 import me.minidigger.hangar.util.HangarException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import me.minidigger.hangar.db.dao.HangarDao;
-import me.minidigger.hangar.db.dao.ProjectVersionDao;
-import me.minidigger.hangar.db.model.ProjectVersionsTable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +49,7 @@ public class VersionService {
     }
 
     public ProjectVersionsTable getVersion(long projectId, String versionString) {
-        return versionDao.get().getProjectVersion(projectId,"", versionString);
+        return versionDao.get().getProjectVersion(projectId, "", versionString);
     }
 
     public ProjectVersionsTable getVersion(String author, String slug, String versionString) {
@@ -112,8 +111,7 @@ public class VersionService {
             UserData approveUser = userService.getUserData(projectVersion.getReviewerId());
             if (approveUser == null) {
                 approvedBy = "Unknown";
-            }
-            else {
+            } else {
                 approvedBy = approveUser.getUser().getName();
             }
         }
@@ -129,5 +127,9 @@ public class VersionService {
                 approvedBy,
                 dependencies
         );
+    }
+
+    public Map<ProjectVersionVisibilityChangesTable, String> getVersionVisibilityChanges(long versionId) {
+        return visibilityDao.get().getProjectVersionVisibilityChanges(versionId);
     }
 }

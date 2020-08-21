@@ -7,7 +7,7 @@
         <tbody>
             <tr>
                 <td style="padding: 3px;">
-                    <i class="fas fa-circle channel-id" style="color: ${Color.getById(0).getHex()}="></i>
+                    <i class="fas fa-circle channel-id" style="color: ${Color.getById(0).getHex()}"></i>
                 </td>
                 <td style="padding: 3px;">
                     <i class="fas fa-circle channel-id" style="color: ${Color.getById(1).getHex()}"></i>
@@ -50,4 +50,3 @@
         </tbody>
     </table>
 </#macro>
-

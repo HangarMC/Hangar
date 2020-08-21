@@ -90,8 +90,14 @@ public class VersionsController extends HangarController {
     }
 
     @RequestMapping("/{author}/{slug}/versionLog")
-    public Object showLog(@PathVariable Object author, @PathVariable Object slug, @RequestParam Object versionString) {
-        return null; // TODO implement showLog request controller
+    public ModelAndView showLog(@PathVariable String author, @PathVariable String slug, @RequestParam String versionString) {
+        ModelAndView mv = new ModelAndView("projects/versions/log");
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        ProjectVersionsTable version = versionService.getVersion(projectData.getProject().getId(), versionString);
+        mv.addObject("project", projectData);
+        mv.addObject("version", version);
+        mv.addObject("visibilityChanges", versionService.getVersionVisibilityChanges(version.getId()));
+        return fillModel(mv);
     }
 
     @GetMapping("/{author}/{slug}/versions")

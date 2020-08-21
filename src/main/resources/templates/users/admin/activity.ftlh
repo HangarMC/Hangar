@@ -29,7 +29,7 @@
                             <#if activity.class.simpleName == "ReviewActivity">
                                 <tr>
                                     <td>Review approved</td>
-                                    <td>${utils.prettifyDateTime(activity.endedAt!OffsetDateTime.MIN))}</td>
+                                    <td>${utils.prettifyDateTime(activity.endedAt!OffsetDateTime.MIN)}</td>
                                     <td>for:
                                         <a href="${routes.getRouteUrl("reviews.showReviews", activity.getProject().getOwner(), activity.getProject().getSlug(), activity.id)}">
                                             ${activity.getProject().getOwner()} / ${activity.getProject().getSlug()}
@@ -39,7 +39,7 @@
                             <#elseif activity.class.simpleName = "FlagActivity">
                                 <tr>
                                     <td>Flag resolved</td>
-                                    <td>${utils.prettifyDateTime(activity.resolvedAt!OffsetDateTime.MIN))}</td> <#--TODO: activity end datetime needs to be moved to abstract Activity-->
+                                    <td>${utils.prettifyDateTime(activity.resolvedAt!OffsetDateTime.MIN)}</td> <#--TODO: activity end datetime needs to be moved to abstract Activity-->
                                     <td>for:
                                         <a href="${routes.getRouteUrl("projects.show", activity.getProject().getSlug(), activity.getProject().getSlug())}">
                                             ${activity.getProject().getOwner()} / ${activity.getProject().getSlug()}
