@@ -273,6 +273,7 @@ public class VersionsController extends HangarController {
         versionsTable.setReviewState(newState);
         versionsTable.setReviewerId(userService.getCurrentUser().getId());
         versionsTable.setApprovedAt(OffsetDateTime.now());
+        versionsTable.setVisibility(Visibility.PUBLIC);
         versionService.update(versionsTable);
         userActionLogService.version(request, LoggedActionType.VERSION_REVIEW_STATE_CHANGED.with(VersionContext.of(versionsTable.getProjectId(), versionsTable.getId())), newState.name(), oldState.name());
         return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.show", author, slug, version));
