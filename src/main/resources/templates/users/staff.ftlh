@@ -25,7 +25,7 @@
 
 <@base.base title="Staff - Hangar" additionalScripts=scriptsVar>
 	<#assign UserOrdering = @helper["me.minidigger.hangar.model.UserOrdering"]>
-<#-- @ftlvariable name="UserOrdering" type="me.minidigger.hangar.model.UserOrdering" -->
+<#-- @ftlvariable name="UserOrdering" type="io.papermc.hangar.model.UserOrdering" -->
     <div class="panel panel-default">
 		<table class="table table-users">
 			<thead>

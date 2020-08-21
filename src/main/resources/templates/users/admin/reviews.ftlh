@@ -23,7 +23,7 @@
 </#assign>
 
 <#assign ReviewState=@helper["me.minidigger.hangar.model.generated.ReviewState"] />
-<#-- @ftlvariable name="ReviewState" type="me.minidigger.hangar.model.generated.ReviewState" -->
+<#-- @ftlvariable name="ReviewState" type="io.papermc.hangar.model.generated.ReviewState" -->
 <#assign message><@spring.messageArgs code="review.title" args=[project.project.name, version.v.versionString] /></#assign>
 <@base.base title=message additionalScripts=scripts>
     <div class="row">
@@ -96,7 +96,7 @@
         <div class="col-md-12">
             <table class="table table-condensed setting-no-border table-review-log">
                 <tbody>
-                <#-- @ftlvariable name="review" type="me.minidigger.hangar.model.viewhelpers.VersionReview" -->
+                <#-- @ftlvariable name="review" type="io.papermc.hangar.model.viewhelpers.VersionReview" -->
                 <#list reviews as review>
                     <#if review.endedAt??>
                         <#if reviews?size gt (reviews?size - review?index)>
@@ -144,7 +144,7 @@
                         </#if>
                     </#if>
                     <#list review.getMessages()?filter(m -> !m.takeover && !m.stop)?reverse as message>
-                        <#-- @ftlvariable name="message" type="me.minidigger.hangar.model.viewhelpers.VersionReviewMessage" -->
+                    <#-- @ftlvariable name="message" type="io.papermc.hangar.model.viewhelpers.VersionReviewMessage" -->
                         <tr>
                             <td>${message.getFormattedTime()}</td> <#-- TODO per locale-->
                             <td>

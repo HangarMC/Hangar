@@ -16,7 +16,7 @@
 </#macro>
 
 <#macro formatNotification notification>
-    <#-- @ftlvariable name="notification" type="me.minidigger.hangar.db.model.NotificationsTable" -->
+<#-- @ftlvariable name="notification" type="io.papermc.hangar.db.model.NotificationsTable" -->
     <#if notification.messageArgs?size gt 1>
         <@spring.messageArgs notification.messageArgs[0] notification.messageArgs[1..] /> <#--this might not work? idk if freemarker has a array spread operator, couldn't find one-->
     <#else>

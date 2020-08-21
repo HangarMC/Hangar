@@ -41,7 +41,7 @@
                 <#if !u.isOrga()>
                     <@panel "Organizations">
                         <@roleTable keyName="Organization" tableType="orgRole" withOwner=true roles=u.orgas roleTypes=orgRoles ; org, role>
-                            <#-- @ftlvariable name="org" type="me.minidigger.hangar.db.model.OrganizationsTable" -->
+                        <#-- @ftlvariable name="org" type="io.papermc.hangar.db.model.OrganizationsTable" -->
                             <a href="${routes.getRouteUrl("userAdmin", org.name)}">
                                 ${org.name}
                             </a>
@@ -51,7 +51,7 @@
                     <@panel "Members">
                         TODO organization members map
                         <@roleTable keyName="User" tableType="memberRole" withOwner=false roles={} roleTypes=orgRoles ; member, role>
-                            <#-- @ftlvariable name="member" type="me.minidigger.hangar.model.viewhelpers.UserData" -->
+                        <#-- @ftlvariable name="member" type="io.papermc.hangar.model.viewhelpers.UserData" -->
                             <a href="${routes.getRouteUrl("userAdmin", member.user.name)}">
                                 ${member.user.name}
                             </a>
@@ -63,7 +63,7 @@
                 <div class="row">
                     <@panel "Projects">
                         <@roleTable keyName="Project" tableType="projectRole" withOwner=true roles=userProjectRoles roleTypes=projectRoles ; project, role>
-                            <#-- @ftlvariable name="project" type="me.minidigger.hangar.model.viewhelpers.ProjectData" -->
+                        <#-- @ftlvariable name="project" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
                             <a href="${routes.getRouteUrl("projects.show", project.projectOwner.name, project.project.slug)}">
                                 ${project.project.name}
                             </a>
@@ -93,7 +93,7 @@
     <table class="table role-table">
         <tr><th>${keyName}</th><#if withOwner><th>Owner</th></#if><th>Role</th><th>Accepted</th></tr>
         <#list roles as object, role>
-        <#-- @ftlvariable name="role" type="me.minidigger.hangar.model.viewhelpers.UserRole" -->
+        <#-- @ftlvariable name="role" type="io.papermc.hangar.model.viewhelpers.UserRole" -->
             <tr data-role-type="${tableType}" data-role-id="${role.role.roleId}">
                 <td><#nested object, role /></td>
                 <#if withOwner>

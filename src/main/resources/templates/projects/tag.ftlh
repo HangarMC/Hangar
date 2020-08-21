@@ -2,7 +2,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 
 <#macro tagTemplate tag tagCount=0>
-    <#-- @ftlvariable name="tag" type="me.minidigger.hangar.model.viewhelpers.ViewTag" -->
+<#-- @ftlvariable name="tag" type="io.papermc.hangar.model.viewhelpers.ViewTag" -->
     <#if tag.data?has_content || tagCount gt 2 || (tag.data?has_content && tag.data?length gt 14)>
         <div class="tags">
             <span style="color: ${tag.color.getForeground()}; background-color:${tag.color.getBackground()}; border-color: ${tag.color.getBackground()}" class="tag">${tag.name}</span>

@@ -192,7 +192,7 @@
                     </div>
                     <ul class="list-group">
                         <#assign Platform=@helper["me.minidigger.hangar.model.Platform"] />
-                        <#-- @ftlvariable name="Platform" type="me.minidigger.hangar.model.Platform" -->
+                        <#-- @ftlvariable name="Platform" type="io.papermc.hangar.model.Platform" -->
                         <#list Platform.getPlatforms(v.dependencies?map(d -> d.pluginId)) as platform>
                             <#assign dependency=v.dependencies?filter(d -> d.pluginId == platform.dependencyId)?first />
                             <#if dependency?has_content>

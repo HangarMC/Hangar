@@ -7,15 +7,15 @@
 <#import "*/utils/form.ftlh" as form>
 <#import "*/utils/csrf.ftlh" as csrf>
 
-<#-- @ftlvariable name="u" type="me.minidigger.hangar.model.viewhelpers.UserData" -->
-<#-- @ftlvariable name="Permission" type="me.minidigger.hangar.model.Permission" -->
+<#-- @ftlvariable name="u" type="io.papermc.hangar.model.viewhelpers.UserData" -->
+<#-- @ftlvariable name="Permission" type="io.papermc.hangar.model.Permission" -->
 <#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
 <#function canEditOrgSettings u o={}>
     <#return u.isOrga() && o?? && o.scopedData.permissions.has(Permission.EditOrganizationSettings)>
 </#function>
 
 <#macro view u o={} additionalScripts="">
-    <#-- @ftlvariable name="u" type="me.minidigger.hangar.model.viewhelpers.UserData" -->
+<#-- @ftlvariable name="u" type="io.papermc.hangar.model.viewhelpers.UserData" -->
     <#assign scriptsVar>
         <script type="text/javascript" src="<@hangar.url "javascripts/userPage.js" />"></script>
         <script <#-- @CSPNonce.attr -->>

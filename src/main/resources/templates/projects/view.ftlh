@@ -9,8 +9,8 @@ Base template for Project overview.
 <#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
 <#assign FlagReason=@helper["me.minidigger.hangar.model.FlagReason"]>
 <#macro view p sp active noButtons=false additionalScripts="" additionalStyling="">
-    <#-- @ftlvariable name="p" type="me.minidigger.hangar.model.viewhelpers.ProjectData" -->
-    <#-- @ftlvariable name="sp" type="me.minidigger.hangar.model.viewhelpers.ScopedProjectData" -->
+<#-- @ftlvariable name="p" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
+<#-- @ftlvariable name="sp" type="io.papermc.hangar.model.viewhelpers.ScopedProjectData" -->
     <#assign scriptsVar>
         <script type="text/javascript" src="<@hangar.url "javascripts/projectDetail.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "javascripts/pageEdit.js" />"></script>
@@ -134,7 +134,7 @@ Base template for Project overview.
                                                 <div class="modal-body">
                                                     <ul class="list-group list-flags">
                                                         <#list FlagReason.values() as reason>
-                                                            <#-- @ftlvariable name="reason" type="me.minidigger.hangar.model.FlagReason" -->
+                                                        <#-- @ftlvariable name="reason" type="io.papermc.hangar.model.FlagReason" -->
                                                             <li class="list-group-item">
                                                                 <span>${reason.title}</span>
                                                                 <span class="pull-right">

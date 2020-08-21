@@ -7,10 +7,10 @@
 <#import "*/users/invite/roleSelect.ftlh" as roleSelect>
 
 <!-- TODO: Pagination -->
-<#-- @ftlvariable name="perms" type="me.minidigger.hangar.model.Permission" -->
+<#-- @ftlvariable name="perms" type="io.papermc.hangar.model.Permission" -->
 <#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
 <#macro memberList project perms editable=false removeCall="" settingsCall="" saveCall="">
-    <#-- @ftlvariable name="project" type="me.minidigger.hangar.model.viewhelpers.ProjectData" -->
+<#-- @ftlvariable name="project" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
     <#if project.members?size != 0>
 
         <#if editable && perms.has(Permission.ManageSubjectMembers)>
@@ -86,8 +86,8 @@
 
             <ul class="list-members list-group">
                 <!-- Member list -->
-                <#-- @ftlvariable name="projectMember" type="me.minidigger.hangar.model.viewhelpers.ProjectMember" -->
-                <#-- @ftlvariable name="user" type="me.minidigger.hangar.db.model.UsersTable" -->
+                <#-- @ftlvariable name="projectMember" type="io.papermc.hangar.model.viewhelpers.ProjectMember" -->
+                <#-- @ftlvariable name="user" type="io.papermc.hangar.db.model.UsersTable" -->
                 <#list project.filteredMembers(headerData) as projectMember, user>
                     <li class="list-group-item">
                         <@userAvatar.userAvatar userName=user.name avatarUrl=utils.avatarUrl(user.name) clazz="user-avatar-xs"></@userAvatar.userAvatar>

@@ -26,8 +26,8 @@
 
         <#list 1..columns as div>
             <div class="col-md-4">
-                <#-- @ftlvariable name="users" type="java.util.Collection<me.minidigger.hangar.db.model.UsersTable>" -->
-                <#-- @ftlvariable name="gridUser" type="me.minidigger.hangar.db.model.UsersTable" -->
+                <#-- @ftlvariable name="users" type="java.util.Collection<io.papermc.hangar.db.model.UsersTable>" -->
+                <#-- @ftlvariable name="gridUser" type="io.papermc.hangar.db.model.UsersTable" -->
                 <#list users?filter(u -> (users?seq_index_of(u) + 1) % columns == div) as gridUser>
                     <div class="media">
                         <div class="media-left">

@@ -90,7 +90,7 @@ Documentation page within Project overview.
 <#--                        ${"Home"}-->
 <#--                        </a>-->
 <#--                    </li>-->
-                    <#-- @ftlvariable name="pg" type="me.minidigger.hangar.model.viewhelpers.ProjectPage" -->
+                    <#-- @ftlvariable name="pg" type="io.papermc.hangar.model.viewhelpers.ProjectPage" -->
                     <#-- @ftlvariable name="children" type="java.util.List<ProjectPage>" -->
                     <#list rootPages as pg, children>
                         <li class="list-group-item">
@@ -111,7 +111,7 @@ Documentation page within Project overview.
                         </li>
                         <#if projectPage.parentId?? && projectPage.parentId = pg.id>
                             <div class="page-children" data-page-id="${pg.id}">
-                                <#-- @ftlvariable name="childPage" type="me.minidigger.hangar.model.viewhelpers.ProjectPage" -->
+                                <#-- @ftlvariable name="childPage" type="io.papermc.hangar.model.viewhelpers.ProjectPage" -->
                                 <#list children as childPage>
                                     <li class="list-group-item page-item-child">
                                         <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, childPage.slug)}">
