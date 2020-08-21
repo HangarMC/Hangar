@@ -71,7 +71,7 @@ public enum Category {
                 return b;
             }
         }
-        return null;
+        return fromTitle(text);
     }
 
     public static Category fromTitle(String text) {

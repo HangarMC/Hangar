@@ -83,6 +83,7 @@ hangar:
     check-interval: 1h
     draft-expire: 1d
     user-grid-page-size: 30
+    max-keywords: 5
 
   users:
     stars-per-page: 5

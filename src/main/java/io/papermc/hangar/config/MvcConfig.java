@@ -128,23 +128,6 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void addFormatters(FormatterRegistry registry) {
-        registry.addConverterFactory(new ConverterFactory<String, Enum>() {
-            @Override
-            public <T extends Enum> Converter<String, T> getConverter(Class<T> targetType) {
-                return source -> {
-                    try {
-                        for (Method declaredMethod : targetType.getDeclaredMethods()) {
-                            if (declaredMethod.isAnnotationPresent(JsonCreator.class)) {
-                                return (T) declaredMethod.invoke(null, source);
-                            }
-                        }
-                        return (T) Enum.valueOf(targetType, source);
-                    } catch (Exception e) {
-                        return targetType.getEnumConstants()[Integer.parseInt(source)];
-                    }
-                };
-            }
-        });
         registry.addConverterFactory(new StringToEnumConverterFactory());
         registry.addConverter(new ColorHexConverter());
     }

@@ -14,6 +14,7 @@ public class ProjectsConfig {
     private int initLoad = 25;
     private int initVersionLoad = 10;
     private int maxDescLen = 120;
+    private int maxKeywords = 5;
     private boolean fileValidate = true;
     private Duration staleAge = Duration.ofDays(28);
     private String checkInterval = "1h";
@@ -106,5 +107,13 @@ public class ProjectsConfig {
 
     public void setUserGridPageSize(int userGridPageSize) {
         this.userGridPageSize = userGridPageSize;
+    }
+
+    public int getMaxKeywords() {
+        return maxKeywords;
+    }
+
+    public void setMaxKeywords(int maxKeywords) {
+        this.maxKeywords = maxKeywords;
     }
 }

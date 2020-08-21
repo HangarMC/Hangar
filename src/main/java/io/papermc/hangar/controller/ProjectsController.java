@@ -388,7 +388,7 @@ public class ProjectsController extends HangarController {
 
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/manage/save", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public RedirectView save(@PathVariable String author,
+    public ModelAndView save(@PathVariable String author,
                              @PathVariable String slug,
                              @RequestParam Category category,
                              @RequestParam(required = false) String keywords,
@@ -404,9 +404,15 @@ public class ProjectsController extends HangarController {
                              @RequestParam(required = false) List<String> userUps,
                              @RequestParam(required = false) List<Role> roleUps) {
 
+        Set<String> keywordSet = keywords != null ? Set.of(keywords.split(" ")) : Set.of();
+        if (keywordSet.size() > hangarConfig.getProjects().getMaxKeywords()) {
+            ModelAndView mav = showSettings(author, slug);
+            AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, "error.project.maxKeywords", hangarConfig.getProjects().getMaxKeywords());
+            return mav;
+        }
+
         ProjectsTable projectsTable = projectService.getProjectData(author, slug).getProject();
         projectsTable.setCategory(category);
-        Set<String> keywordSet = keywords != null ? Set.of(keywords.split(" ")) : Set.of();
         projectsTable.setKeywords(keywordSet);
         projectsTable.setIssues(issues);
         projectsTable.setSource(source);
@@ -451,7 +457,7 @@ public class ProjectsController extends HangarController {
 
         userActionLogService.project(request, LoggedActionType.PROJECT_SETTINGS_CHANGED.with(ProjectContext.of(projectsTable.getId())), "", "");
 
-        return new RedirectView(routeHelper.getRouteUrl("projects.show", author, slug));
+        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.show", author, slug));
     }
 
     @Secured("ROLE_USER")

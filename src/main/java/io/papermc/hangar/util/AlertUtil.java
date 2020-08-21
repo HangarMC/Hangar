@@ -20,7 +20,8 @@ public class AlertUtil {
     public static final String MSG = "alertMsg";
     public static final String ARGS = "alertArgs";
 
-    public static ModelAndView showAlert(ModelAndView mav, AlertType alertType, String alertMessage, String...args) {
+    public static ModelAndView showAlert(ModelAndView mav, AlertType alertType, String alertMessage, Object...args) {
+        // TODO alerts with args?
         Map<String, String> alerts = (Map<String, String>) mav.getModelMap().getAttribute("alerts");
         if (alerts == null) {
             alerts = new HashMap<>();
