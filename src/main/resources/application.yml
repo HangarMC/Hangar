@@ -109,7 +109,8 @@ hangar:
     unsafe-download-max-age: 600000
     api:
       url: "http://localhost:8000"
-      avatar-url: "http://localhost:8000/avatar/%s?size=120x120"
+      # avatar-url: "http://localhost:8000/avatar/%s?size=120x120" # only comment in if you run auth locally
+      avatar-url: "https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png"
       key: changeme
       timeout: 10000
       breaker:
