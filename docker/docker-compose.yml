@@ -8,8 +8,8 @@ services:
       dockerfile: docker/hangar/Dockerfile
     depends_on:
       - 'db'
-      # - 'auth'
-      # - 'mail'
+      - 'auth'
+      - 'mail'
     stdin_open: true
     labels:
       - "traefik.enable=true"
@@ -38,52 +38,52 @@ services:
       - web
     labels:
       - "traefik.enable=false"
-#  mail:
-#    image: mailhog/mailhog:latest
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.services.hangar-mail.loadbalancer.server.port=8025"
-#      - "traefik.http.routers.hangar-mail.middlewares=basicauth@file"
-#      - "traefik.http.routers.hangar-mail.rule=Host(`hangar-mail.minidigger.me`)"
-#      - "traefik.http.routers.hangar-mail.entrypoints=web-secure"
-#      - "traefik.http.routers.hangar-mail.tls=true"
-#      - "traefik.http.routers.hangar-mail.tls.options=default"
-#      - "traefik.http.routers.hangar-mail.tls.certresolver=default"
-#      - "traefik.http.routers.hangar-mail.tls.domains[0].main=minidigger.me"
-#      - "traefik.http.routers.hangar-mail.tls.domains[0].sans=*.minidigger.me"
-#    networks:
-#      - web
-#  auth:
-#    image: registry.gitlab.com/minidigger/hangarauth
-#    depends_on:
-#      - 'db'
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.services.hangar-auth.loadbalancer.server.port=8000"
-#      - "traefik.http.routers.hangar-auth.rule=Host(`hangar-auth.minidigger.me`)"
-#      - "traefik.http.routers.hangar-auth.entrypoints=web-secure"
-#      - "traefik.http.routers.hangar-auth.tls=true"
-#      - "traefik.http.routers.hangar-auth.tls.options=default"
-#      - "traefik.http.routers.hangar-auth.tls.certresolver=default"
-#      - "traefik.http.routers.hangar-auth.tls.domains[0].main=minidigger.me"
-#      - "traefik.http.routers.hangar-auth.tls.domains[0].sans=*.minidigger.me"
-#    environment:
-#      SECRET_KEY: "TzNc3RTpfVn1xxNV90PPGEfs7SZhy5"
-#      EMAIL_HOST: "mail"
-#      EMAIL_PORT: "1025"
-#      EMAIL_SSL: "false"
-#      EMAIL_TLS: "false"
-#      EMAIL_HOST_USER: "dum"
-#      EMAIL_HOST_PASSWORD: "dum"
-#      DB_NAME: "spongeauth"
-#      DB_USER: "spongeauth"
-#      DB_PASSWORD: "spongeauth"
-#      DB_HOST: "hangar_db"
-#      SSO_ENDPOINT_ore: "{ 'sync_sso_endpoint': ('http://hangar_app:9000/api/sync_sso'), 'sso_secret': 'changeme', 'api_key': 'changeme' }"
-#      DEBUG: "false"
-#      DJANGO_SETTINGS_MODULE: "spongeauth.settings.prod"
-#    networks:
-#      - web
+  mail:
+    image: mailhog/mailhog:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.hangar-mail.loadbalancer.server.port=8025"
+      - "traefik.http.routers.hangar-mail.middlewares=basicauth@file"
+      - "traefik.http.routers.hangar-mail.rule=Host(`hangar-mail-new.minidigger.me`)"
+      - "traefik.http.routers.hangar-mail.entrypoints=web-secure"
+      - "traefik.http.routers.hangar-mail.tls=true"
+      - "traefik.http.routers.hangar-mail.tls.options=default"
+      - "traefik.http.routers.hangar-mail.tls.certresolver=default"
+      - "traefik.http.routers.hangar-mail.tls.domains[0].main=minidigger.me"
+      - "traefik.http.routers.hangar-mail.tls.domains[0].sans=*.minidigger.me"
+    networks:
+      - web
+  auth:
+    image: registry.gitlab.com/minidigger/hangarauth
+    depends_on:
+      - 'db'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.hangar-auth.loadbalancer.server.port=8000"
+      - "traefik.http.routers.hangar-auth.rule=Host(`hangar-auth-new.minidigger.me`)"
+      - "traefik.http.routers.hangar-auth.entrypoints=web-secure"
+      - "traefik.http.routers.hangar-auth.tls=true"
+      - "traefik.http.routers.hangar-auth.tls.options=default"
+      - "traefik.http.routers.hangar-auth.tls.certresolver=default"
+      - "traefik.http.routers.hangar-auth.tls.domains[0].main=minidigger.me"
+      - "traefik.http.routers.hangar-auth.tls.domains[0].sans=*.minidigger.me"
+    environment:
+      SECRET_KEY: "TzNc3RTpfVn1xxNV90PPGEfs7SZhy5"
+      EMAIL_HOST: "mail"
+      EMAIL_PORT: "1025"
+      EMAIL_SSL: "false"
+      EMAIL_TLS: "false"
+      EMAIL_HOST_USER: "dum"
+      EMAIL_HOST_PASSWORD: "dum"
+      DB_NAME: "spongeauth"
+      DB_USER: "spongeauth"
+      DB_PASSWORD: "spongeauth"
+      DB_HOST: "hangar_db"
+      SSO_ENDPOINT_ore: "{ 'sync_sso_endpoint': ('http://hangar_app:9000/api/sync_sso'), 'sso_secret': 'changeme', 'api_key': 'changeme' }"
+      DEBUG: "false"
+      DJANGO_SETTINGS_MODULE: "spongeauth.settings.prod"
+    networks:
+      - web
 
 networks:
   web:

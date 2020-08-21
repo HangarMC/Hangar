@@ -43,7 +43,7 @@
 
 <#-- @ftlvariable name="page" type="java.lang.Integer" -->
 <@base.base title="Authors - Hangar" additionalScripts=scriptsVar>
-    <#assign UserOrdering = @helper["me.minidigger.hangar.model.UserOrdering"]>
+    <#assign UserOrdering = @helper["io.papermc.hangar.model.UserOrdering"]>
 <#-- @ftlvariable name="UserOrdering" type="io.papermc.hangar.model.UserOrdering" -->
     <div class="panel panel-default">
         <table class="table table-users">

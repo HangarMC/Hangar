@@ -28,8 +28,8 @@
     <script type="text/javascript" src="<@hangar.url "javascripts/notifications.js" />"></script>
 </#assign>
 
-<#assign NotificationFilter=@helper["me.minidigger.hangar.model.NotificationFilter"] />
-<#assign InviteFilter=@helper["me.minidigger.hangar.model.InviteFilter"] />
+<#assign NotificationFilter=@helper["io.papermc.hangar.model.NotificationFilter"] />
+<#assign InviteFilter=@helper["io.papermc.hangar.model.InviteFilter"] />
 <#assign message><@spring.message "notification.plural" /></#assign>
 <@base.base title=message additionalScripts=scriptsVar>
 

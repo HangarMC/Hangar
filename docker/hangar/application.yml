@@ -5,7 +5,18 @@ spring:
     password: hangar
 
 fake-user:
-  enabled: true
+  enabled: false
 
 hangar:
   debug: true
+  auth-url: "https://hangar-auth-new.minidigger.me"
+  base-url: "https://hangar-new.minidigger.me"
+
+  sso:
+    secret: "changeme"
+    api-key: "changeme"
+
+  security:
+    api:
+      url: "https://hangar-auth-new.minidigger.me"
+      avatar-url: "https://hangar-auth-new.minidigger.me/avatar/%s?size=120x120"

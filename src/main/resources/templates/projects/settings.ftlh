@@ -29,7 +29,7 @@
     </script>
 </#assign>
 
-<#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
+<#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
 <@projects.view p=p sp=sp active="#settings" additionalScripts=scriptsVar>
 
     <div class="row">

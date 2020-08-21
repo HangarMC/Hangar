@@ -22,7 +22,7 @@
     <script <#--@CSPNonce.attr-->>versionPath = '${utils.urlEncode(project.project.ownerName)}/${utils.urlEncode(project.project.slug)}/versions/${utils.urlEncode(version.v.versionString)}'</script>
 </#assign>
 
-<#assign ReviewState=@helper["me.minidigger.hangar.model.generated.ReviewState"] />
+<#assign ReviewState=@helper["io.papermc.hangar.model.generated.ReviewState"] />
 <#-- @ftlvariable name="ReviewState" type="io.papermc.hangar.model.generated.ReviewState" -->
 <#assign message><@spring.messageArgs code="review.title" args=[project.project.name, version.v.versionString] /></#assign>
 <@base.base title=message additionalScripts=scripts>

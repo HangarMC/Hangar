@@ -2,7 +2,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 
 <#macro popoverColorPicker>
-    <#assign Color=@helper["me.minidigger.hangar.model.Color"]>
+    <#assign Color=@helper["io.papermc.hangar.model.Color"]>
     <table class="popover-color-picker" style="display: none;">
         <tbody>
             <tr>

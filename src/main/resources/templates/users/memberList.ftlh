@@ -8,7 +8,7 @@
 
 <!-- TODO: Pagination -->
 <#-- @ftlvariable name="perms" type="io.papermc.hangar.model.Permission" -->
-<#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
+<#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
 <#macro memberList project perms editable=false removeCall="" settingsCall="" saveCall="">
 <#-- @ftlvariable name="project" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
     <#if project.members?size != 0>
@@ -113,7 +113,7 @@
                 </#list>
 
                 <!-- User search -->
-                <#if perms.has(@helper["me.minidigger.hangar.model.Permission"].ManageSubjectMembers) && editable>
+                <#if perms.has(@helper["io.papermc.hangar.model.Permission"].ManageSubjectMembers) && editable>
                     <li class="list-group-item">
                         <@userSearch.userSearch />
                     </li>

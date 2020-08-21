@@ -22,7 +22,7 @@
                 <tr><td class="filter-project">Project</td> <td>${projectFilter!"-"}</td></tr>
                 <tr><td class="filter-version">Version</td> <td>${versionFilter!"-"}</td></tr>
                 <tr><td class="filter-page">Page</td><td>${pageFilter!"-"} </td></tr>
-                <#assign LoggedActionType=@helper["me.minidigger.hangar.db.customtypes.LoggedActionType"] />
+                <#assign LoggedActionType=@helper["io.papermc.hangar.db.customtypes.LoggedActionType"] />
                 <tr><td class="filter-action">Action</td><td>${LoggedActionType.getLoggedActionType(actionFilter!"")!"-"}</td></tr>
                 <tr><td class="filter-subject">Subject</td><td>${subjectFilter!"-"}</td></tr>
             </table>

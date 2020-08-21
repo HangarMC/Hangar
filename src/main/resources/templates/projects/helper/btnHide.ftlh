@@ -1,7 +1,7 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
 
-<#assign Visibility=@helper["me.minidigger.hangar.model.Visibility"] />
+<#assign Visibility=@helper["io.papermc.hangar.model.Visibility"] />
 <#macro btnHide namespace projectVisibility>
     <div class="btn-group">
         <button class="btn btn-sm btn-alert btn-hide-dropdown dropdown-toggle" type="button" id="visibility-actions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-project="${namespace}" style="color: black">

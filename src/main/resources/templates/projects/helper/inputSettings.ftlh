@@ -1,19 +1,19 @@
 <#import "/spring.ftl" as spring />
 <#import "*/utils/hangar.ftlh" as hangar />
 
-<#macro inputSettings form homepage="" issues="" source="" support="" licenseName="" licenseUrl="" selected=@helper["me.minidigger.hangar.model.Category"].UNDEFINED forumSync=true keywords=[]>
+<#macro inputSettings form homepage="" issues="" source="" support="" licenseName="" licenseUrl="" selected=@helper["io.papermc.hangar.model.Category"].UNDEFINED forumSync=true keywords=[]>
     <div class="setting">
         <div class="setting-description">
             <h4>Category</h4>
             <p>
-                Categorize your project into one of ${@helper["me.minidigger.hangar.model.Category"].visible()?size} categories. Appropriately categorizing your
+                Categorize your project into one of ${@helper["io.papermc.hangar.model.Category"].visible()?size} categories. Appropriately categorizing your
                 project makes it easier for people to find.
             </p>
         </div>
         <div class="setting-content">
             <select class="form-control" id="category" name="category" form="${form}">
                 <#-- @ftlvariable name="category" type="io.papermc.hangar.model.Category" -->
-                <#list @helper["me.minidigger.hangar.model.Category"].values() as category>
+                <#list @helper["io.papermc.hangar.model.Category"].values() as category>
                     <#if category.isVisible()>
                         <option <#if selected?? && selected.equals(category)> selected </#if> >
                             ${category.title}

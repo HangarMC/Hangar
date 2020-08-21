@@ -19,9 +19,9 @@
 @import views.html.utils.editor
 @(v: VersionData, sp: ScopedProjectData)(implicit messages: Messages, request: OreRequest[_], flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)-->
 
-<#assign ReviewState=@helper["me.minidigger.hangar.model.generated.ReviewState"] />
-<#assign Permission=@helper["me.minidigger.hangar.model.Permission"] />
-<#assign Visibility=@helper["me.minidigger.hangar.model.Visibility"] />
+<#assign ReviewState=@helper["io.papermc.hangar.model.generated.ReviewState"] />
+<#assign Permission=@helper["io.papermc.hangar.model.Permission"] />
+<#assign Visibility=@helper["io.papermc.hangar.model.Visibility"] />
 <@projects.view p=v.p sp=sp active="#versions" noButtons=true>
     <!-- Version header -->
     <div class="row">
@@ -191,7 +191,7 @@
                         <h3 class="panel-title">Dependencies</h3>
                     </div>
                     <ul class="list-group">
-                        <#assign Platform=@helper["me.minidigger.hangar.model.Platform"] />
+                        <#assign Platform=@helper["io.papermc.hangar.model.Platform"] />
                         <#-- @ftlvariable name="Platform" type="io.papermc.hangar.model.Platform" -->
                         <#list Platform.getPlatforms(v.dependencies?map(d -> d.pluginId)) as platform>
                             <#assign dependency=v.dependencies?filter(d -> d.pluginId == platform.dependencyId)?first />

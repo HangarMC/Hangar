@@ -12,7 +12,7 @@
 Documentation page within Project overview.
 -->
 
-<#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
+<#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
 <#function canEditPages>
     <#return sp.perms(Permission.EditPage)>
 </#function>

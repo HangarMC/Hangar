@@ -90,7 +90,7 @@
                                         <td>
                                             <div class="pull-right" id="upload-platform-tags">
                                             <#list version.dependenciesAsGhostTags as t>
-                                                <@projectTag.tagTemplate @helper["me.minidigger.hangar.model.viewhelpers.ViewTag"].fromVersionTag(t) />
+                                                <@projectTag.tagTemplate @helper["io.papermc.hangar.model.viewhelpers.ViewTag"].fromVersionTag(t) />
                                             </#list>
                                             </div>
                                         </td>

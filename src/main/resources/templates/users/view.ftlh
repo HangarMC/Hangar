@@ -9,7 +9,7 @@
 
 <#-- @ftlvariable name="u" type="io.papermc.hangar.model.viewhelpers.UserData" -->
 <#-- @ftlvariable name="Permission" type="io.papermc.hangar.model.Permission" -->
-<#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
+<#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
 <#function canEditOrgSettings u o={}>
     <#return u.isOrga() && o?? && o.scopedData.permissions.has(Permission.EditOrganizationSettings)>
 </#function>
@@ -20,7 +20,7 @@
         <script type="text/javascript" src="<@hangar.url "javascripts/userPage.js" />"></script>
         <script <#-- @CSPNonce.attr -->>
                 window.USERNAME ='${u.user.name}';
-                <#assign Category=@helper["me.minidigger.hangar.model.Category"]>
+                <#assign Category=@helper["io.papermc.hangar.model.Category"]>
                 <#list Category.values() as category>
                     CATEGORY_TITLE['${category.apiName}'] = '${category.title}';
                     CATEGORY_ICON['${category.apiName}'] = '${category.icon}';

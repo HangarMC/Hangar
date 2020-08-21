@@ -18,8 +18,8 @@
     Edit ${u.isOrga()?string("Organization", "User")}
 </#assign>
 
-<#assign Role=@helper["me.minidigger.hangar.model.Role"] />
-<#assign RoleCategory=@helper["me.minidigger.hangar.db.customtypes.RoleCategory"] />
+<#assign Role=@helper["io.papermc.hangar.model.Role"] />
+<#assign RoleCategory=@helper["io.papermc.hangar.db.customtypes.RoleCategory"] />
 <#assign orgRoles=Role.values()?filter(role -> role.category == RoleCategory.ORGANIZATION) />
 <#assign projectRoles=Role.values()?filter(role -> role.category == RoleCategory.PROJECT) />
 

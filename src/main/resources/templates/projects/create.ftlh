@@ -46,7 +46,7 @@ Page used for uploading and creating new projects.
                             <div class="form-group">
                                 <label for="projectCategory"><@spring.message "project.create.input.category" /></label>
                                 <select id="projectCategory" name="category" class="form-control">
-                                <#assign Category=@helper["me.minidigger.hangar.model.Category"]>
+                                <#assign Category=@helper["io.papermc.hangar.model.Category"]>
                                 <#list Category.values() as cat>
                                     <option>${cat.title}</option>
                                 </#list>

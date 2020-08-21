@@ -5,9 +5,9 @@
 <#--
 Base template for Project overview.
 -->
-<#assign Visibility=@helper["me.minidigger.hangar.model.Visibility"]>
-<#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
-<#assign FlagReason=@helper["me.minidigger.hangar.model.FlagReason"]>
+<#assign Visibility=@helper["io.papermc.hangar.model.Visibility"]>
+<#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
+<#assign FlagReason=@helper["io.papermc.hangar.model.FlagReason"]>
 <#macro view p sp active noButtons=false additionalScripts="" additionalStyling="">
 <#-- @ftlvariable name="p" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
 <#-- @ftlvariable name="sp" type="io.papermc.hangar.model.viewhelpers.ScopedProjectData" -->

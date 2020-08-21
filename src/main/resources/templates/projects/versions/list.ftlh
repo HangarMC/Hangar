@@ -43,7 +43,7 @@ Versions page within Project overview.
                         </li>
                     </#list>
 
-                    <#assign Permission=@helper["me.minidigger.hangar.model.Permission"]>
+                    <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
                     <#if sp.perms(Permission.EditTags)>
                         <li class="list-group-item text-right">
                             <a class="btn yellow btn-xs" href="${routes.getRouteUrl("channels.showList", p.project.ownerName, p.project.slug)}">

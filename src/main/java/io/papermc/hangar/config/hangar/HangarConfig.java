@@ -14,7 +14,7 @@ import java.util.List;
 
 @Configuration
 @ConfigurationProperties(prefix = "hangar")
-@ComponentScan("me.minidigger.hangar")
+@ComponentScan("io.papermc.hangar")
 public class HangarConfig {
 
     private String logo = "https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png";

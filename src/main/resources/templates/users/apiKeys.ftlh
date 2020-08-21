@@ -14,7 +14,7 @@
     </script>
 </#assign>
 
-<#assign NamedPermission=@helper["me.minidigger.hangar.model.NamedPermission"] />
+<#assign NamedPermission=@helper["io.papermc.hangar.model.NamedPermission"] />
 <@userView.view u=u o=o additionalScripts=scriptsVar>
     <div id="keyAlert" class="alert alert-danger" role="alert" style="display: none;"></div>
 
