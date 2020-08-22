@@ -3,10 +3,13 @@ package io.papermc.hangar.model;
 import io.papermc.hangar.db.model.ProjectVersionTagsTable;
 import io.papermc.hangar.model.generated.Dependency;
 import io.papermc.hangar.service.VersionService;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
@@ -15,6 +18,14 @@ public enum Platform {
     PAPER("Paper", PlatformCategory.SERVER_CATEGORY, 0, "paperapi", TagColor.PAPER, "https://papermc.io/downloads"),
     WATERFALL("Waterfall", PlatformCategory.PROXY_CATEGORY, 1, "waterfall", TagColor.WATERFALL, "https://papermc.io/downloads#Waterfall"),
     VELOCITY("Velocity", PlatformCategory.PROXY_CATEGORY, 1, "velocity", TagColor.VELOCITY, "https://www.velocitypowered.com/downloads");
+
+    private static final Map<String, Platform> PLATFORMS_BY_DEPENDENDY = new HashMap<>();
+
+    static {
+        for (Platform platform : values()) {
+            PLATFORMS_BY_DEPENDENDY.put(platform.dependencyId, platform);
+        }
+    }
 
     private final String name;
     private final PlatformCategory platformCategory;
@@ -100,6 +111,11 @@ public enum Platform {
                                 .getVersion()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    @Nullable
+    public static Platform getByDependencyId(String dependencyId) {
+        return PLATFORMS_BY_DEPENDENDY.get(dependencyId.toLowerCase());
     }
 
     public static List<ProjectVersionTagsTable> createPlatformTags(VersionService versionService, long versionId, List<Dependency> dependencies) {

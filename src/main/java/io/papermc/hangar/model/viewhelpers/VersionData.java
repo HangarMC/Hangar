@@ -6,12 +6,10 @@ import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.generated.Dependency;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class VersionData {
 
@@ -50,11 +48,18 @@ public class VersionData {
     }
 
     public Map<Dependency, ProjectsTable> getFilteredDependencies() {
-        List<String> platformIds = Arrays.stream(Platform.getValues()).map(Platform::getDependencyId).collect(Collectors.toList());
-        return dependencies.entrySet().stream().filter(entry -> !platformIds.contains(entry.getKey().getPluginId())).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+        // Value is nullable, so we can't use Collectors#toMap
+        Map<Dependency, ProjectsTable> map = new HashMap<>();
+        for (Entry<Dependency, ProjectsTable> entry : dependencies.entrySet()) {
+            if (Platform.getByDependencyId(entry.getKey().getPluginId()) == null) { // Exclude the platform dependency
+                map.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return map;
     }
 
     public boolean isRecommended() {
-        return p.getProject().getRecommendedVersionId() == v.getId();
+        final Long recommendedVersionId = p.getProject().getRecommendedVersionId();
+        return recommendedVersionId != null && recommendedVersionId == v.getId();
     }
 }
