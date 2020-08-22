@@ -1,6 +1,7 @@
 package io.papermc.hangar.service.project;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.db.dao.GeneralDao;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.ProjectChannelDao;
 import io.papermc.hangar.db.dao.ProjectDao;
@@ -64,9 +65,10 @@ public class ProjectFactory {
     private final NotificationService notificationService;
     private final UserActionLogService userActionLogService;
     private final ProjectFiles projectFiles;
+    private final HangarDao<GeneralDao> generalDao;
 
     @Autowired
-    public ProjectFactory(HangarConfig hangarConfig, HangarDao<ProjectChannelDao> projectChannelDao, HangarDao<ProjectDao> projectDao, HangarDao<ProjectPageDao> projectPagesDao, HangarDao<ProjectVersionDao> projectVersionDao, RoleService roleService, UserService userService, ProjectService projectService, ChannelService channelService, VersionService versionService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles) {
+    public ProjectFactory(HangarConfig hangarConfig, HangarDao<ProjectChannelDao> projectChannelDao, HangarDao<ProjectDao> projectDao, HangarDao<ProjectPageDao> projectPagesDao, HangarDao<ProjectVersionDao> projectVersionDao, RoleService roleService, UserService userService, ProjectService projectService, ChannelService channelService, VersionService versionService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles, HangarDao<GeneralDao> generalDao) {
         this.hangarConfig = hangarConfig;
         this.projectChannelDao = projectChannelDao;
         this.projectDao = projectDao;
@@ -80,6 +82,7 @@ public class ProjectFactory {
         this.notificationService = notificationService;
         this.userActionLogService = userActionLogService;
         this.projectFiles = projectFiles;
+        this.generalDao = generalDao;
     }
 
     public String getUploadError(UsersTable user) {
@@ -111,6 +114,7 @@ public class ProjectFactory {
         roleService.addRole(projectsTable, ownerUser.getId(), Role.PROJECT_OWNER, true);
 
         userService.clearAuthorsCache();
+        generalDao.get().refreshHomeProjects();
 
         return projectsTable;
     }
@@ -198,6 +202,8 @@ public class ProjectFactory {
 
         }
 
+        generalDao.get().refreshHomeProjects();
+        userService.clearAuthorsCache();
 
         return version;
     }
