@@ -26,6 +26,7 @@ public class ChannelFactory {
         if (!hangarConfig.channels.isValidChannelName(channelName)) {
             throw new HangarException("error.channel.invalidName", channelName);
         }
+
         ProjectChannelsTable channel = new ProjectChannelsTable(channelName, color, projectId);
         channelDao.get().insert(channel);
         return channel;

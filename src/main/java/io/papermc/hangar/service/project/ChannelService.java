@@ -7,6 +7,7 @@ import io.papermc.hangar.db.model.ProjectChannelsTable;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.model.Color;
 import io.papermc.hangar.util.HangarException;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +45,21 @@ public class ChannelService {
 
     public ProjectChannelsTable addProjectChannel(long projectId, String channelName, Color color) {
         InvalidChannelCreationReason reason = channelDao.get().validateChannelCreation(projectId, channelName, color.getValue(), hangarConfig.projects.getMaxChannels());
+        checkInvalidChannelCreationReason(reason);
+        return channelFactory.createChannel(projectId, channelName, color);
+    }
+
+    public void updateProjectChannel(long projectId, String oldChannel, String channelName, Color color) {
+        if (!hangarConfig.channels.isValidChannelName(channelName)) {
+            throw new HangarException("error.channel.invalidName", channelName);
+        }
+
+        InvalidChannelCreationReason reason = channelDao.get().validateChanneUpdate(projectId, oldChannel, channelName, color.getValue());
+        checkInvalidChannelCreationReason(reason);
+        channelDao.get().update(projectId, oldChannel, channelName, color);
+    }
+
+    private void checkInvalidChannelCreationReason(@Nullable InvalidChannelCreationReason reason) {
         if (reason != null) {
             if (reason == InvalidChannelCreationReason.MAX_CHANNELS) {
                 throw new HangarException(reason.reason, String.valueOf(hangarConfig.projects.getMaxChannels()));
@@ -51,8 +67,6 @@ public class ChannelService {
                 throw new HangarException(reason.reason);
             }
         }
-
-        return channelFactory.createChannel(projectId, channelName, color);
     }
 
     public enum InvalidChannelCreationReason {

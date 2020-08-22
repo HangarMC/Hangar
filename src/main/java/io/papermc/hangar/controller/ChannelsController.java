@@ -50,8 +50,10 @@ public class ChannelsController extends HangarController {
 
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/channels/{channel}")
-    public ModelAndView save(@PathVariable String author, @PathVariable String slug, @PathVariable String channel) {
-        // TODO implement save request controller
+    public ModelAndView save(@PathVariable String author, @PathVariable String slug, @PathVariable String channel,
+                             @RequestParam("channel-input") String newChannelName, @RequestParam("channel-color-input") String newChannelHex) {
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        channelService.updateProjectChannel(projectData.getProject().getId(), channel, newChannelName, Color.getByHexStr(newChannelHex));
         return new ModelAndView("redirect:" + routeHelper.getRouteUrl("channels.showList", author, slug));
     }
 
