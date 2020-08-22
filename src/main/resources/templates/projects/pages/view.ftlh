@@ -69,7 +69,7 @@ Documentation page within Project overview.
 
             <div class="stats minor">
                 <p><@spring.messageArgs code="project.category.info" args=[p.project.category.title] /></p>
-                <p><@spring.messageArgs code="project.publishDate" args=[utils.prettifyDateTime(p.project.createdAt)] /></p>
+                <p><@spring.messageArgs code="project.publishDate" args=[utils.prettifyDate(p.project.createdAt)] /></p>
                 <p><span id="view-count"></span> views</p>
                 <p><span id="star-count"></span> <a href="${routes.getRouteUrl("projects.showStargazers", p.project.ownerName, p.project.slug, "")}">star<#if p.starCount != 1>s</#if></a></p>
                 <p><span id="watcher-count"></span> <a href="${routes.getRouteUrl("projects.showWatchers", p.project.ownerName, p.project.slug, "")}">watcher<#if p.watcherCount != 1>s</#if></a></p>
