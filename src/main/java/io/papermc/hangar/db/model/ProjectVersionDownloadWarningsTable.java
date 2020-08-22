@@ -1,7 +1,6 @@
 package io.papermc.hangar.db.model;
 
 
-import java.net.InetAddress;
 import java.time.OffsetDateTime;
 
 public class ProjectVersionDownloadWarningsTable {
@@ -11,9 +10,9 @@ public class ProjectVersionDownloadWarningsTable {
     private OffsetDateTime expiration;
     private String token;
     private long versionId;
-    private InetAddress address;
+    private String address; // inet
     private boolean isConfirmed;
-    private long downloadId;
+    private Long downloadId;
 
 
     public long getId() {
@@ -61,11 +60,11 @@ public class ProjectVersionDownloadWarningsTable {
     }
 
 
-    public InetAddress getAddress() {
+    public String getAddress() {
         return address;
     }
 
-    public void setAddress(InetAddress address) {
+    public void setAddress(String address) {
         this.address = address;
     }
 
@@ -87,4 +86,11 @@ public class ProjectVersionDownloadWarningsTable {
         this.downloadId = downloadId;
     }
 
+    public static String cookieKey(long versionId) {
+        return "_warning_" + versionId;
+    }
+
+    public boolean hasExpired() {
+        return expiration.isBefore(OffsetDateTime.now());
+    }
 }

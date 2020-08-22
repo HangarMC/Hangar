@@ -1,35 +1,12 @@
 package io.papermc.hangar.controller;
 
-import io.papermc.hangar.config.CacheConfig;
-import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.ProjectDao;
-import io.papermc.hangar.db.model.ProjectChannelsTable;
-import io.papermc.hangar.db.model.ProjectVersionsTable;
-import io.papermc.hangar.model.Color;
-import io.papermc.hangar.model.Visibility;
-import io.papermc.hangar.model.generated.ReviewState;
-import io.papermc.hangar.service.UserService;
-import io.papermc.hangar.service.project.ChannelService;
-import io.papermc.hangar.service.project.ProjectFactory;
-import io.papermc.hangar.util.AlertUtil;
-import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.customtypes.LoggedActionType.VersionContext;
-import io.papermc.hangar.model.NamedPermission;
-import io.papermc.hangar.model.viewhelpers.ProjectData;
-import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
-import io.papermc.hangar.model.viewhelpers.VersionData;
-import io.papermc.hangar.security.annotations.GlobalPermission;
-import io.papermc.hangar.service.UserActionLogService;
-import io.papermc.hangar.service.VersionService;
-import io.papermc.hangar.service.pluginupload.PendingVersion;
-import io.papermc.hangar.service.pluginupload.PluginUploadService;
-import io.papermc.hangar.service.project.ProjectService;
-import io.papermc.hangar.util.HangarException;
-import io.papermc.hangar.util.RouteHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -38,12 +15,52 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.http.HttpServletRequest;
+import java.nio.file.Path;
 import java.time.OffsetDateTime;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import io.papermc.hangar.config.CacheConfig;
+import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.db.customtypes.LoggedActionType;
+import io.papermc.hangar.db.customtypes.LoggedActionType.VersionContext;
+import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.dao.ProjectDao;
+import io.papermc.hangar.db.dao.ProjectVersionDownloadWarningDao;
+import io.papermc.hangar.db.model.ProjectChannelsTable;
+import io.papermc.hangar.db.model.ProjectVersionDownloadWarningsTable;
+import io.papermc.hangar.db.model.ProjectVersionsTable;
+import io.papermc.hangar.db.model.ProjectsTable;
+import io.papermc.hangar.model.Color;
+import io.papermc.hangar.model.DownloadType;
+import io.papermc.hangar.model.NamedPermission;
+import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.model.generated.ReviewState;
+import io.papermc.hangar.model.viewhelpers.ProjectData;
+import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
+import io.papermc.hangar.model.viewhelpers.VersionData;
+import io.papermc.hangar.security.annotations.GlobalPermission;
+import io.papermc.hangar.service.UserActionLogService;
+import io.papermc.hangar.service.UserService;
+import io.papermc.hangar.service.VersionService;
+import io.papermc.hangar.service.plugindata.PluginDataService;
+import io.papermc.hangar.service.pluginupload.PendingVersion;
+import io.papermc.hangar.service.pluginupload.PluginUploadService;
+import io.papermc.hangar.service.pluginupload.ProjectFiles;
+import io.papermc.hangar.service.project.ChannelService;
+import io.papermc.hangar.service.project.ProjectFactory;
+import io.papermc.hangar.service.project.ProjectService;
+import io.papermc.hangar.util.AlertUtil;
+import io.papermc.hangar.util.HangarException;
+import io.papermc.hangar.util.RequestUtil;
+import io.papermc.hangar.util.RouteHelper;
 
 @Controller
 public class VersionsController extends HangarController {
@@ -59,11 +76,15 @@ public class VersionsController extends HangarController {
     private final RouteHelper routeHelper;
     private final HangarConfig hangarConfig;
     private final HangarDao<ProjectDao> projectDao;
+    private final ProjectFiles projectFiles;
+    private final HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao;
+    private final PluginDataService pluginDataService;
 
     private final HttpServletRequest request;
+    private final HttpServletResponse response;
 
     @Autowired
-    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService, ChannelService channelService, UserActionLogService userActionLogService, CacheManager cacheManager, RouteHelper routeHelper, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HttpServletRequest request) {
+    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService, ChannelService channelService, UserActionLogService userActionLogService, CacheManager cacheManager, RouteHelper routeHelper, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, PluginDataService pluginDataService, HttpServletRequest request, HttpServletResponse response) {
         this.projectService = projectService;
         this.versionService = versionService;
         this.projectFactory = projectFactory;
@@ -75,17 +96,38 @@ public class VersionsController extends HangarController {
         this.routeHelper = routeHelper;
         this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
+        this.projectFiles = projectFiles;
+        this.downloadWarningDao = downloadWarningDao;
+        this.pluginDataService = pluginDataService;
         this.request = request;
+        this.response = response;
     }
 
-    @RequestMapping("/api/project/{pluginId}/versions/recommended/download")
-    public Object downloadRecommendedJarById(@PathVariable Object pluginId, @RequestParam Object token) {
-        return null; // TODO implement downloadRecommendedJarById request controller
+    @RequestMapping(value = "/api/project/{pluginId}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ResponseBody
+    public Object downloadRecommendedJarById(@PathVariable String pluginId, @RequestParam(required = false) String token) {
+        ProjectsTable project = projectDao.get().getByPluginId(pluginId);
+
+        Long recommendedVersionId = project.getRecommendedVersionId();
+        if (recommendedVersionId == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } else {
+            ProjectVersionsTable versionsTable = versionService.getVersion(project.getId(), recommendedVersionId);// TODO we need to check visibility here, the query currently doesnt do that
+            return sendVersion(project, versionsTable, token, true);
+        }
     }
 
-    @RequestMapping("/api/project/{pluginId}/versions/{name}/download")
-    public Object downloadJarById(@PathVariable Object pluginId, @PathVariable Object name, @RequestParam Object token) {
-        return null; // TODO implement downloadJarById request controller
+    @RequestMapping(value = "/api/project/{pluginId}/versions/{name}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ResponseBody
+    public Object downloadJarById(@PathVariable String pluginId, @PathVariable String name, @RequestParam(required = false) String token) {
+        ProjectsTable project = projectDao.get().getByPluginId(pluginId);
+        ProjectVersionsTable versionsTable = versionService.getVersion(project.getId(), name);// TODO we need to check visibility here, the query currently doesnt do that
+        if (token != null) {
+            // TODO  confirmDownload0(version.id, Some(DownloadType.JarFile.value), Some(token)).orElseFail(notFound) *>
+            return sendJar(project, versionsTable, token, true);
+        } else {
+            return sendJar(project, versionsTable, null, true);
+        }
     }
 
     @GlobalPermission(NamedPermission.VIEW_LOGS)
@@ -176,14 +218,32 @@ public class VersionsController extends HangarController {
         return fillModel(mav);
     }
 
-    @RequestMapping("/{author}/{slug}/versions/recommended/download")
-    public Object downloadRecommended(@PathVariable Object author, @PathVariable Object slug, @RequestParam Object token) {
-        return null; // TODO implement downloadRecommended request controller
+    @RequestMapping(value = "/{author}/{slug}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ResponseBody
+    public Object downloadRecommended(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String token) {
+        ProjectsTable project = projectDao.get().getBySlug(author, slug);
+
+        Long recommendedVersionId = project.getRecommendedVersionId();
+        if (recommendedVersionId == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } else {
+            ProjectVersionsTable versionsTable = versionService.getVersion(project.getId(), recommendedVersionId);// TODO we need to check visibility here, the query currently doesnt do that
+            return sendVersion(project, versionsTable, token, false);
+        }
     }
 
-    @RequestMapping("/{author}/{slug}/versions/recommended/jar")
-    public Object downloadRecommendedJar(@PathVariable Object author, @PathVariable Object slug, @RequestParam Object token) {
-        return null; // TODO implement downloadRecommendedJar request controller
+    @RequestMapping(value = "/{author}/{slug}/versions/recommended/jar", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ResponseBody
+    public Object downloadRecommendedJar(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String token) {
+        ProjectsTable project = projectDao.get().getBySlug(author, slug);
+
+        Long recommendedVersionId = project.getRecommendedVersionId();
+        if (recommendedVersionId == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } else {
+            ProjectVersionsTable versionsTable = versionService.getVersion(project.getId(), recommendedVersionId);// TODO we need to check visibility here, the query currently doesnt do that
+            return sendJar(project, versionsTable, token, false);
+        }
     }
 
     @Secured("ROLE_USER")
@@ -286,7 +346,8 @@ public class VersionsController extends HangarController {
         return null; // TODO implement showDownloadConfirm request controller
     }
 
-    @PostMapping("/{author}/{slug}/versions/{version}/confirm")
+    @PostMapping(value = "/{author}/{slug}/versions/{version}/confirm", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ResponseBody
     public Object confirmDownload(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version, @RequestParam Object downloadType, @RequestParam Object api, @RequestParam Object dummy) {
         return null; // TODO implement confirmDownload request controller
     }
@@ -308,9 +369,58 @@ public class VersionsController extends HangarController {
         return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.showList", author, slug));
     }
 
-    @RequestMapping("/{author}/{slug}/versions/{version}/download")
-    public Object download(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version, @RequestParam Object token, @RequestParam Object confirm) {
-        return null; // TODO implement download request controller
+    @RequestMapping(value = "/{author}/{slug}/versions/{version}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ResponseBody
+    public Object download(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(required = false) String token, @RequestParam(defaultValue = "false") boolean confirm) {
+        ProjectsTable project = projectDao.get().getBySlug(author, slug);
+        ProjectVersionsTable versionsTable = versionService.getVersion(project.getId(), version);// TODO we need to check visibility here, the query currently doesnt do that
+        return sendVersion(project, versionsTable, token, confirm);
+    }
+
+    private Object sendVersion(ProjectsTable project, ProjectVersionsTable version, String token, boolean confirm) {
+        boolean passed = checkConfirmation(version, token);
+        if (passed || confirm) {
+            return _sendVersion(project, version);
+        } else {
+            return new RedirectView(routeHelper.getRouteUrl("versions.showDownloadConfirm",
+                    project.getOwnerName(),
+                    project.getSlug(),
+                    version.getVersionString(),
+                    DownloadType.UPLOADED_FILE.ordinal() + "",
+                    false + "",
+                    "dummy"));
+        }
+    }
+
+    private boolean checkConfirmation(ProjectVersionsTable version, String token) {
+        if (version.getReviewState() == ReviewState.REVIEWED) {
+            return true;
+        } else {
+            boolean hasSessionConfirm = "confirmed".equals(request.getSession().getAttribute(ProjectVersionDownloadWarningsTable.cookieKey(version.getId())));
+
+            if (hasSessionConfirm) {
+                return true;
+            } else {
+                ProjectVersionDownloadWarningsTable warning = downloadWarningDao.get().find(token, version.getId(), RequestUtil.getRemoteAddress(request));
+
+                if (warning.hasExpired()) {
+                    downloadWarningDao.get().delete(warning);
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        }
+    }
+
+    private FileSystemResource _sendVersion(ProjectsTable project, ProjectVersionsTable version) {
+        // TODO version download stat
+
+        Path path = projectFiles.getVersionDir(project.getOwnerName(), project.getName(), version.getVersionString()).resolve(version.getFileName());
+
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + version.getFileName() + "\"");
+
+        return new FileSystemResource(path);
     }
 
     @Secured("ROLE_USER")
@@ -319,9 +429,45 @@ public class VersionsController extends HangarController {
         return null; // TODO implement delete request controller
     }
 
-    @RequestMapping("/{author}/{slug}/versions/{version}/jar")
-    public Object downloadJar(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version, @RequestParam Object token) {
-        return null; // TODO implement downloadJar request controller
+    @RequestMapping(value = "/{author}/{slug}/versions/{version}/jar", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ResponseBody
+    public Object downloadJar(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(required = false) String token) {
+        ProjectsTable project = projectDao.get().getBySlug(author, slug);
+        ProjectVersionsTable versionsTable = versionService.getVersion(project.getId(), version);// TODO we need to check visibility here, the query currently doesnt do that
+        return sendJar(project, versionsTable, token, false);
+    }
+
+    private Object sendJar(ProjectsTable project, ProjectVersionsTable version, String token, boolean api) {
+        if (project.getVisibility() == Visibility.SOFTDELETE) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } else {
+            boolean passed = checkConfirmation(version, token);
+
+            if (!passed) {
+                return new RedirectView(routeHelper.getRouteUrl("versions.showDownloadConfirm",
+                        project.getOwnerName(),
+                        project.getSlug(),
+                        version.getVersionString(),
+                        DownloadType.JAR_FILE.ordinal() + "",
+                        api + "",
+                        null));
+            } else {
+                String fileName = version.getFileName();
+                Path path = projectFiles.getVersionDir(project.getOwnerName(), project.getName(), version.getVersionString()).resolve(fileName);
+
+                // TODO download stats
+
+                if (fileName.endsWith(".jar")) {
+                    response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + version.getFileName() + "\"");
+
+                    return new FileSystemResource(path);
+                } else {
+                    // pluginDataService.openJar(path);
+
+                    throw new RuntimeException("MiniDigger was too lazy to implement this dum feature of turning files into jars"); // TODO auto converting to jar
+                }
+            }
+        }
     }
 
     @Secured("ROLE_USER")

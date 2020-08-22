@@ -53,6 +53,10 @@ public class VersionService {
         return versionDao.get().getProjectVersion(projectId, "", versionString);
     }
 
+    public ProjectVersionsTable getVersion(long projectId, long versionId) {
+        return versionDao.get().getProjectVersion(projectId, "", versionId);
+    }
+
     public ProjectVersionsTable getVersion(String author, String slug, String versionString) {
         ProjectsTable projectsTable = projectDao.get().getBySlug(author, slug);
         return versionDao.get().getProjectVersion(projectsTable.getId(), null, versionString);

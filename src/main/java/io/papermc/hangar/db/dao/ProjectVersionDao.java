@@ -79,6 +79,9 @@ public interface ProjectVersionDao {
     @SqlQuery("SELECT * FROM project_versions WHERE project_id = :projectId AND (hash = :hash OR lower(version_string) = lower(:versionString))")
     ProjectVersionsTable getProjectVersion(long projectId, String hash, String versionString);
 
+    @SqlQuery("SELECT * FROM project_versions WHERE project_id = :projectId AND (hash = :hash OR id = :versionId)")
+    ProjectVersionsTable getProjectVersion(long projectId, String hash, long versionId);
+
     @SqlQuery("SELECT * FROM project_versions WHERE project_id = :projectId ORDER BY created_at DESC")
     List<ProjectVersionsTable> getProjectVersions(long projectId);
 

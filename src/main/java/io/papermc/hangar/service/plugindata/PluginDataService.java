@@ -64,7 +64,7 @@ public class PluginDataService {
         }
     }
 
-    private JarInputStream openJar(Path file) throws IOException {
+    public JarInputStream openJar(Path file) throws IOException {
         if (file.toString().endsWith(".jar")) {
             return new JarInputStream(Files.newInputStream(file));
         } else {
