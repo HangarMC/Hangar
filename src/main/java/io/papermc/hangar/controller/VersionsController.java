@@ -88,6 +88,8 @@ public class VersionsController extends HangarController {
         return null; // TODO implement downloadJarById request controller
     }
 
+    @GlobalPermission(NamedPermission.VIEW_LOGS)
+    @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/versionLog")
     public ModelAndView showLog(@PathVariable String author, @PathVariable String slug, @RequestParam String versionString) {
         ModelAndView mv = new ModelAndView("projects/versions/log");
