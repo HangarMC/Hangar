@@ -3,6 +3,7 @@ package io.papermc.hangar.model.viewhelpers;
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.generated.ProjectNamespace;
 
+import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 
 import java.time.OffsetDateTime;
@@ -50,10 +51,12 @@ public class UnhealthyProject {
         this.lastUpdated = lastUpdated;
     }
 
+    @EnumByOrdinal
     public Visibility getVisibility() {
         return visibility;
     }
 
+    @EnumByOrdinal
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
     }

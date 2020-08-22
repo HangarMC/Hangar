@@ -1,27 +1,9 @@
 package io.papermc.hangar.controller;
 
-import io.papermc.hangar.model.Visibility;
-import io.papermc.hangar.model.viewhelpers.Activity;
-import io.papermc.hangar.model.viewhelpers.ProjectFlag;
-import io.papermc.hangar.service.UserService;
-import io.papermc.hangar.service.project.FlagService;
-import io.papermc.hangar.util.AlertUtil;
-import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
-import io.papermc.hangar.model.NamedPermission;
-import io.papermc.hangar.model.Permission;
-import io.papermc.hangar.model.viewhelpers.LoggedActionViewModel;
-import io.papermc.hangar.model.viewhelpers.ReviewQueueEntry;
-import io.papermc.hangar.model.viewhelpers.UnhealthyProject;
-import io.papermc.hangar.model.viewhelpers.UserData;
-import io.papermc.hangar.security.annotations.GlobalPermission;
-import io.papermc.hangar.service.JobService;
-import io.papermc.hangar.service.UserActionLogService;
-import io.papermc.hangar.service.VersionService;
-import io.papermc.hangar.service.project.ProjectService;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -34,10 +16,31 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+
+import io.papermc.hangar.db.customtypes.LoggedActionType;
+import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
+import io.papermc.hangar.model.NamedPermission;
+import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.model.viewhelpers.Activity;
+import io.papermc.hangar.model.viewhelpers.LoggedActionViewModel;
+import io.papermc.hangar.model.viewhelpers.ProjectFlag;
+import io.papermc.hangar.model.viewhelpers.ReviewQueueEntry;
+import io.papermc.hangar.model.viewhelpers.UnhealthyProject;
+import io.papermc.hangar.model.viewhelpers.UserData;
+import io.papermc.hangar.security.annotations.GlobalPermission;
+import io.papermc.hangar.service.JobService;
+import io.papermc.hangar.service.SitemapService;
+import io.papermc.hangar.service.UserActionLogService;
+import io.papermc.hangar.service.UserService;
+import io.papermc.hangar.service.VersionService;
+import io.papermc.hangar.service.project.FlagService;
+import io.papermc.hangar.service.project.ProjectService;
+import io.papermc.hangar.util.AlertUtil;
 
 @Controller
 public class ApplicationController extends HangarController {
@@ -48,17 +51,19 @@ public class ApplicationController extends HangarController {
     private final UserActionLogService userActionLogService;
     private final VersionService versionService;
     private final JobService jobService;
+    private final SitemapService sitemapService;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public ApplicationController(UserService userService, ProjectService projectService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, HttpServletRequest request) {
+    public ApplicationController(UserService userService, ProjectService projectService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, HttpServletRequest request) {
         this.userService = userService;
         this.projectService = projectService;
         this.flagService = flagService;
         this.userActionLogService = userActionLogService;
         this.versionService = versionService;
         this.jobService = jobService;
+        this.sitemapService = sitemapService;
         this.request = request;
     }
 
@@ -201,15 +206,16 @@ public class ApplicationController extends HangarController {
         return fillModel(new ModelAndView("swagger"));
     }
 
-    @RequestMapping("/favicon.ico")
+    @RequestMapping(value = "/favicon.ico", produces = "images/x-icon")
     @ResponseBody
-    public Object faviconRedirect() {
-        return "no u"; // TODO implement faviconRedirect request controller
+    public ClassPathResource faviconRedirect() {
+        return new ClassPathResource("public/images/favicon.ico");
     }
 
-    @RequestMapping("/global-sitemap.xml")
-    public Object globalSitemap() {
-        return null; // TODO implement globalSitemap request controller
+    @RequestMapping(value = "/global-sitemap.xml", produces =  MediaType.APPLICATION_XML_VALUE)
+    @ResponseBody
+    public String globalSitemap() {
+        return sitemapService.getGlobalSitemap();
     }
 
     @GetMapping(value = "/javascriptRoutes", produces = "text/javascript")
@@ -217,31 +223,31 @@ public class ApplicationController extends HangarController {
     public String javaScriptRoutes() {
         // yeah, dont even ask wtf is happening here, I dont have an answer
         return "var jsRoutes = {}; (function(_root){\n" +
-                "var _nS = function(c,f,b){var e=c.split(f||\".\"),g=b||_root,d,a;for(d=0,a=e.length;d<a;d++){g=g[e[d]]=g[e[d]]||{}}return g}\n" +
-                "var _qS = function(items){var qs = ''; for(var i=0;i<items.length;i++) {if(items[i]) qs += (qs ? '&' : '') + items[i]}; return qs ? ('?' + qs) : ''}\n" +
-                "var _s = function(p,s){return p+((s===true||(s&&s.secure))?'s':'')+'://'}\n" +
-                "var _wA = function(r){return {ajax:function(c){c=c||{};c.url=r.url;c.type=r.method;return jQuery.ajax(c)}, method:r.method,type:r.method,url:r.url,absoluteURL: function(s){return _s('http',s)+'localhost:8080'+r.url},webSocketURL: function(s){return _s('ws',s)+'localhost:9000'+r.url}}}\n" +
-                "_nS('controllers.project.Projects'); _root['controllers']['project']['Projects']['show'] = \n" +
-                "        function(author0,slug1) {\n" +
-                "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"author\", author0)) + \"/\" + encodeURIComponent((function(k,v) {return v})(\"slug\", slug1))})\n" +
-                "        }\n" +
-                "      ;\n" +
-                "_nS('controllers.project.Versions'); _root['controllers']['project']['Versions']['show'] = \n" +
-                "        function(author0,slug1,version2) {\n" +
-                "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"author\", author0)) + \"/\" + encodeURIComponent((function(k,v) {return v})(\"slug\", slug1)) + \"/versions/\" + encodeURIComponent((function(k,v) {return v})(\"version\", version2))})\n" +
-                "        }\n" +
-                "      ;\n" +
-                "_nS('controllers.project.Versions'); _root['controllers']['project']['Versions']['showCreator'] = \n" +
-                "        function(author0,slug1) {\n" +
-                "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"author\", author0)) + \"/\" + encodeURIComponent((function(k,v) {return v})(\"slug\", slug1)) + \"/versions/new\"})\n" +
-                "        }\n" +
-                "      ;\n" +
-                "_nS('controllers.Users'); _root['controllers']['Users']['showProjects'] = \n" +
-                "        function(user0) {\n" +
-                "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"user\", user0))})\n" +
-                "        }\n" +
-                "      ;\n" +
-                "})(jsRoutes)"; // TODO implement javaScriptRoutes request controller
+               "var _nS = function(c,f,b){var e=c.split(f||\".\"),g=b||_root,d,a;for(d=0,a=e.length;d<a;d++){g=g[e[d]]=g[e[d]]||{}}return g}\n" +
+               "var _qS = function(items){var qs = ''; for(var i=0;i<items.length;i++) {if(items[i]) qs += (qs ? '&' : '') + items[i]}; return qs ? ('?' + qs) : ''}\n" +
+               "var _s = function(p,s){return p+((s===true||(s&&s.secure))?'s':'')+'://'}\n" +
+               "var _wA = function(r){return {ajax:function(c){c=c||{};c.url=r.url;c.type=r.method;return jQuery.ajax(c)}, method:r.method,type:r.method,url:r.url,absoluteURL: function(s){return _s('http',s)+'localhost:8080'+r.url},webSocketURL: function(s){return _s('ws',s)+'localhost:9000'+r.url}}}\n" +
+               "_nS('controllers.project.Projects'); _root['controllers']['project']['Projects']['show'] = \n" +
+               "        function(author0,slug1) {\n" +
+               "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"author\", author0)) + \"/\" + encodeURIComponent((function(k,v) {return v})(\"slug\", slug1))})\n" +
+               "        }\n" +
+               "      ;\n" +
+               "_nS('controllers.project.Versions'); _root['controllers']['project']['Versions']['show'] = \n" +
+               "        function(author0,slug1,version2) {\n" +
+               "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"author\", author0)) + \"/\" + encodeURIComponent((function(k,v) {return v})(\"slug\", slug1)) + \"/versions/\" + encodeURIComponent((function(k,v) {return v})(\"version\", version2))})\n" +
+               "        }\n" +
+               "      ;\n" +
+               "_nS('controllers.project.Versions'); _root['controllers']['project']['Versions']['showCreator'] = \n" +
+               "        function(author0,slug1) {\n" +
+               "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"author\", author0)) + \"/\" + encodeURIComponent((function(k,v) {return v})(\"slug\", slug1)) + \"/versions/new\"})\n" +
+               "        }\n" +
+               "      ;\n" +
+               "_nS('controllers.Users'); _root['controllers']['Users']['showProjects'] = \n" +
+               "        function(user0) {\n" +
+               "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"user\", user0))})\n" +
+               "        }\n" +
+               "      ;\n" +
+               "})(jsRoutes)"; // TODO implement javaScriptRoutes request controller
     }
 
     @RequestMapping("/linkout")
@@ -263,18 +269,16 @@ public class ApplicationController extends HangarController {
         return null; // TODO implement actorTree request controller
     }
 
-    @RequestMapping("/robots.txt")
+    @RequestMapping(value = "/robots.txt", produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
     public Object robots() {
-        return null; // TODO implement robots request controller
+        return new ClassPathResource("public/robots.txt");
     }
 
-    @RequestMapping("/sitemap.xml")
-    public Object sitemapIndex() {
-        return null; // TODO implement sitemapIndex request controller
+    @RequestMapping(value = "/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
+    @ResponseBody
+    public String sitemapIndex() {
+        return sitemapService.getSitemap();
     }
 
-//    @RequestMapping("/{path}/")
-//    public Object removeTrail(@PathVariable Object path) {
-//        return null; // implement removeTrail request controller - pretty sure this one is dum
-//    }
 }

@@ -8,6 +8,7 @@ import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.InviteFilter;
 import io.papermc.hangar.model.NotificationFilter;
 import io.papermc.hangar.service.NotificationService;
+import io.papermc.hangar.service.SitemapService;
 import io.papermc.hangar.service.SsoService;
 import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.sso.AuthUser;
@@ -26,6 +27,7 @@ import io.papermc.hangar.util.HangarException;
 import io.papermc.hangar.util.RouteHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -35,6 +37,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -60,13 +63,14 @@ public class UsersController extends HangarController {
     private final SsoService ssoService;
     private final UserActionLogService userActionLogService;
     private final HangarDao<UserDao> userDao;
+    private final SitemapService sitemapService;
 
     private final HttpServletRequest request;
     private final HttpServletResponse response;
 
 
     @Autowired
-    public UsersController(HangarConfig hangarConfig, RouteHelper routeHelper, AuthenticationService authenticationService, UserService userService, RoleService roleService, ApiKeyService apiKeyService, PermissionService permissionService, NotificationService notificationService, SsoService ssoService, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, HttpServletRequest request, HttpServletResponse response) {
+    public UsersController(HangarConfig hangarConfig, RouteHelper routeHelper, AuthenticationService authenticationService, UserService userService, RoleService roleService, ApiKeyService apiKeyService, PermissionService permissionService, NotificationService notificationService, SsoService ssoService, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, SitemapService sitemapService, HttpServletRequest request, HttpServletResponse response) {
         this.hangarConfig = hangarConfig;
         this.routeHelper = routeHelper;
         this.authenticationService = authenticationService;
@@ -78,6 +82,7 @@ public class UsersController extends HangarController {
         this.ssoService = ssoService;
         this.userActionLogService = userActionLogService;
         this.userDao = userDao;
+        this.sitemapService = sitemapService;
         this.request = request;
         this.response = response;
     }
@@ -246,9 +251,15 @@ public class UsersController extends HangarController {
         return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", user));
     }
 
-    @RequestMapping("/{user}/sitemap.xml")
-    public Object userSitemap(@PathVariable Object user) {
-        return null; // TODO implement userSitemap request controller
+    @RequestMapping(value = "/{user}/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
+    @ResponseBody
+    public String userSitemap(@PathVariable String user) {
+        UsersTable usersTable = userDao.get().getByName(user);
+        if (usersTable == null) {
+            response.setStatus(404);
+            return null;
+        }
+        return sitemapService.getUserSitemap(usersTable);
     }
 
 }

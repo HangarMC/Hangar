@@ -127,4 +127,10 @@ public interface UserDao {
             "  LIMIT 20")
     @RegisterBeanMapper(FlagActivity.class)
     List<FlagActivity> getFlagActivity(String username);
+
+    @SqlQuery("SELECT u.name" +
+              "    FROM users u" +
+              "    ORDER BY (SELECT COUNT(*) FROM project_members_all pma WHERE pma.user_id = u.id) DESC" +
+              "    LIMIT 49000")
+    List<String> getAllAuthorNames();
 }

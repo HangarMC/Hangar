@@ -34,6 +34,7 @@
         <freemarker-java8.version>2.0.0</freemarker-java8.version>
         <flexmark-all.version>0.62.2</flexmark-all.version>
         <snakeyaml.version>1.26</snakeyaml.version>
+        <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
 
         <!-- webjars dependencies -->
         <webjars-locator.version>0.40</webjars-locator.version>
@@ -169,6 +170,12 @@
             <groupId>com.vladsch.flexmark</groupId>
             <artifactId>flexmark-all</artifactId>
             <version>${flexmark-all.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cz.jiripinkas</groupId>
+            <artifactId>jsitemapgenerator</artifactId>
+            <version>${jsitemapgenerator.version}</version>
         </dependency>
 
         <!-- webjars -->
