@@ -1,13 +1,19 @@
 package io.papermc.hangar.model.viewhelpers;
 
+import org.jdbi.v3.core.mapper.Nested;
+
 import io.papermc.hangar.model.generated.ProjectNamespace;
 
 import java.time.OffsetDateTime;
 
 public class ReviewActivity extends Activity {
 
-    private final OffsetDateTime endedAt;
-    private final Review id;
+    private OffsetDateTime endedAt;
+    private Review id;
+
+    public ReviewActivity() {
+        //
+    }
 
     public ReviewActivity(OffsetDateTime endedAt, Review id, ProjectNamespace project) {
         super(project);
@@ -21,5 +27,13 @@ public class ReviewActivity extends Activity {
 
     public Review getId() {
         return id;
+    }
+
+    public void setEndedAt(OffsetDateTime endedAt) {
+        this.endedAt = endedAt;
+    }
+
+    public void setId(Review id) {
+        this.id = id;
     }
 }
