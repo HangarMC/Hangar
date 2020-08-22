@@ -126,7 +126,7 @@ public class ProjectsApiController implements ProjectsApi {
             log.error("Couldn't find a project for that pluginId");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(projectService.getProjectApi(pluginId), HttpStatus.OK);
+        return new ResponseEntity<>(project, HttpStatus.OK);
     }
 
 

@@ -49,6 +49,24 @@ Documentation page within Project overview.
         </div>
         <div class="col-md-3">
 
+            <#if p.project.recommendedVersionId??>
+            <div class="btn-group btn-download">
+                <a href="${routes.getRouteUrl("versions.downloadRecommended", p.project.ownerName, p.project.slug, "")}"
+                   title="<@spring.message "project.download.recommend" />" data-toggle="tooltip"
+                   data-placement="bottom" class="btn btn-primary">
+                    <i class="fas fa-download"></i> <@spring.message "general.download" />
+                </a>
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a href="${routes.getRouteUrl("versions.downloadRecommended", p.project.ownerName, p.project.slug, "")}"><@spring.message "general.download" /></a></li>
+                    <li><a href="#" class="copy-url" data-clipboard-text="${config.baseUrl}${routes.getRouteUrl("versions.downloadRecommended", p.project.ownerName, p.project.slug, "")}">Copy URL</a></li>
+                </ul>
+            </div>
+            </#if>
+
             <div class="stats minor">
                 <p><@spring.messageArgs code="project.category.info" args=[p.project.category.title] /></p>
                 <p><@spring.messageArgs code="project.publishDate" args=[utils.prettifyDateTime(p.project.createdAt)] /></p>
