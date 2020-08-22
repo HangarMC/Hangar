@@ -21,12 +21,14 @@ public class AlertUtil {
     public static final String ARGS = "alertArgs";
 
     public static ModelAndView showAlert(ModelAndView mav, AlertType alertType, String alertMessage, Object...args) {
-        // TODO alerts with args?
-        Map<String, String> alerts = (Map<String, String>) mav.getModelMap().getAttribute("alerts");
+        Map<String, Object> alerts = (Map<String, Object>) mav.getModelMap().getAttribute("alerts");
         if (alerts == null) {
             alerts = new HashMap<>();
         }
-        alerts.put(alertType.name().toLowerCase(), alertMessage);
+        Map<String, Object> thisAlert = new HashMap<>();
+        thisAlert.put("message", alertMessage);
+        thisAlert.put("args", args);
+        alerts.put(alertType.name().toLowerCase(), thisAlert);
         mav.addObject("alerts", alerts);
         return mav;
     }
