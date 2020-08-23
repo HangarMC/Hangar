@@ -38,7 +38,7 @@ public class Project {
 
     @JsonProperty("promoted_versions")
     @Valid
-    private JSONB /*List<PromotedVersion>*/ promotedVersions = new JSONB("[]"); // TODO back to list but fix jdbi
+    private List<PromotedVersion> promotedVersions = null;
 
     @JsonProperty("stats")
     private ProjectStatsAll stats = null;
@@ -115,11 +115,11 @@ public class Project {
         this.namespace = namespace;
     }
 
-    public JSONB /*List<PromotedVersion>*/ getPromotedVersions() {
+    public List<PromotedVersion> getPromotedVersions() {
         return promotedVersions;
     }
 
-    public void setPromotedVersions(JSONB /*List<PromotedVersion>*/ promotedVersions) {
+    public void setPromotedVersions(List<PromotedVersion> promotedVersions) {
         this.promotedVersions = promotedVersions;
     }
 
