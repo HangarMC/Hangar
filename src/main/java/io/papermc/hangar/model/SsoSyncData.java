@@ -10,8 +10,8 @@ public class SsoSyncData {
     private String email;
     private String username;
     private String fullName;
-    private String[] addGroups; // todo: this is a comma-separated list of global roles the user has
-    private String[] removeGroups; // todo: list of global roles the user *doesn't* have
+    private String[] addGroups;
+    private String[] removeGroups;
     private boolean admin;
     private boolean moderator;
     private boolean requireActivation;
