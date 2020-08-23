@@ -83,6 +83,7 @@ public class ProjectService {
         if (projectOwner == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+
         int publicVersions = 0;
         Map<ProjectMember, UsersTable> projectMembers = projectDao.get().getProjectMembers(projectsTable.getId());
         projectMembers.forEach(ProjectMember::setUser); // I don't know why the SQL query isn't doing this automatically...
@@ -131,7 +132,8 @@ public class ProjectService {
 
     @Secured("ROLE_USER")
     public void changeVisibility(ProjectsTable project, Visibility newVisibility, String comment) {
-        Preconditions.checkArgument(project != null && newVisibility != null, "project and visibility cannot be null");
+        Preconditions.checkNotNull(project, "project");
+        Preconditions.checkNotNull(newVisibility, "newVisibility");
         if (project.getVisibility() == newVisibility) return; // No change
 
         visibilityDao.get().updateLatestProjectChange(userService.getCurrentUser().getId(), project.getId());

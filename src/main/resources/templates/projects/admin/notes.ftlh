@@ -3,8 +3,8 @@
 <#import "*/layout/base.ftlh" as base />
 
 <#assign scriptsVar>
-    <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "javascripts/notes.js" />"></script>
-    <script <#--@CSPNonce.attr--> resourcePath="${project.ownerName}/${project.slug}"></script>
+    <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "javascripts/showNotes.js" />"></script>
+    <script<#--@CSPNonce.attr-->> resourcePath = '${project.ownerName}/${project.slug}'</script>
 </#assign>
 
 <#assign message><@spring.message "notes" /></#assign>

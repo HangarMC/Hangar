@@ -1,43 +1,46 @@
 package io.papermc.hangar.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.db.customtypes.LoggedActionType;
+import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.dao.GeneralDao;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.ProjectDao;
 import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UsersTable;
-import io.papermc.hangar.model.NotificationType;
-import io.papermc.hangar.model.Visibility;
-import io.papermc.hangar.service.NotificationService;
-import io.papermc.hangar.service.OrgService;
-import io.papermc.hangar.service.UserService;
-import io.papermc.hangar.service.project.FlagService;
-import io.papermc.hangar.service.project.ProjectFactory;
-import io.papermc.hangar.util.AlertUtil;
-import io.papermc.hangar.util.FileUtils;
-import io.papermc.hangar.util.StringUtils;
-import io.papermc.hangar.util.TemplateHelper;
-import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.model.Category;
 import io.papermc.hangar.model.FlagReason;
 import io.papermc.hangar.model.NamedPermission;
+import io.papermc.hangar.model.NotificationType;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.Role;
+import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.generated.Note;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.model.viewhelpers.UserData;
 import io.papermc.hangar.security.annotations.GlobalPermission;
 import io.papermc.hangar.security.annotations.ProjectPermission;
+import io.papermc.hangar.service.NotificationService;
+import io.papermc.hangar.service.OrgService;
 import io.papermc.hangar.service.RoleService;
 import io.papermc.hangar.service.UserActionLogService;
+import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.pluginupload.ProjectFiles;
+import io.papermc.hangar.service.project.FlagService;
 import io.papermc.hangar.service.project.PagesSerivce;
+import io.papermc.hangar.service.project.ProjectFactory;
 import io.papermc.hangar.service.project.ProjectService;
+import io.papermc.hangar.util.AlertUtil;
+import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.HangarException;
 import io.papermc.hangar.util.RouteHelper;
+import io.papermc.hangar.util.StringUtils;
+import io.papermc.hangar.util.TemplateHelper;
 import io.papermc.hangar.util.TriFunction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -65,6 +68,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
@@ -425,16 +429,16 @@ public class ProjectsController extends HangarController {
         if (updateIcon) {
             Path pendingIconPath = projectFiles.getPendingIconPath(author, slug);
             if (pendingIconPath != null) {
-                 try {
+                try {
                     Path iconDir = projectFiles.getIconDir(author, slug);
                     if (Files.notExists(iconDir)) {
                         Files.createDirectories(iconDir);
                     }
-                     FileUtils.deletedFiles(iconDir);
+                    FileUtils.deletedFiles(iconDir);
                     Files.move(pendingIconPath, iconDir.resolve(pendingIconPath.getFileName()));
                 } catch (IOException e) {
-                     e.printStackTrace();
-                 }
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -442,13 +446,14 @@ public class ProjectsController extends HangarController {
         if (users != null && roles != null) {
             for (int i = 0; i < users.size(); i++) {
                 roleService.addRole(projectsTable, users.get(i), roles.get(i), false);
-                notificationService.sendNotification(users.get(i), projectsTable.getOwnerId(), NotificationType.PROJECT_INVITE, new String[] { "notification.project.invite", roles.get(i).getTitle(), projectsTable.getName()});
+                notificationService.sendNotification(users.get(i), projectsTable.getOwnerId(), NotificationType.PROJECT_INVITE, new String[]{"notification.project.invite", roles.get(i).getTitle(), projectsTable.getName()});
             }
         }
 
         if (userUps != null && roleUps != null) {
             Map<String, UsersTable> usersToUpdate = userService.getUsers(userUps).stream().collect(Collectors.toMap(UsersTable::getName, user -> user));
-            if (usersToUpdate.size() != roleUps.size()) throw new RuntimeException("Mismatching userUps & roleUps size");
+            if (usersToUpdate.size() != roleUps.size())
+                throw new RuntimeException("Mismatching userUps & roleUps size");
             for (int i = 0; i < userUps.size(); i++) {
                 roleService.updateRole(projectsTable, usersToUpdate.get(userUps.get(i)).getId(), roleUps.get(i));
             }
@@ -477,16 +482,34 @@ public class ProjectsController extends HangarController {
     public ModelAndView showNotes(@PathVariable String author, @PathVariable String slug) {
         ModelAndView mv = new ModelAndView("projects/admin/notes");
         ProjectData projectData = projectService.getProjectData(author, slug);
+
+        List<Note> notes = new ArrayList<>();
+        ArrayNode messages = (ArrayNode) projectData.getProject().getNotes().getJson().get("messages");
+        if (messages != null) {
+            for (JsonNode message : messages) {
+                Note note = new Note().message(message.get("message").asText());
+                notes.add(note);
+                UserData user = userService.getUserData(message.get("user").asLong());
+                note.user(user.getUser().getName());
+            }
+        }
+
         mv.addObject("project", projectData.getProject());
-        mv.addObject("notes", List.of(new Note().message("## 10/10\n* has everything\n* but also nothing").user("kneny")));
+        mv.addObject("notes", notes);
         return fillModel(mv);
     }
 
     @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
     @Secured("ROLE_USER")
     @RequestMapping("/{author}/{slug}/notes/addmessage")
-    public ModelAndView addMessage(@PathVariable String author, @PathVariable String slug) {
-        return null; // TODO implement addMessage request controller
+    public ModelAndView addMessage(@PathVariable String author, @PathVariable String slug, @RequestParam String content) {
+        ProjectData projectData = projectService.getProjectData(author, slug);
+        ArrayNode messages = projectData.getProject().getNotes().getJson().withArray("messages");
+        ObjectNode note = messages.addObject();
+        note.put("message", content);
+        note.put("user", userService.getCurrentUser().getId());
+        projectDao.get().update(projectData.getProject()); // TODO check why this doesn't update notes
+        return null;
     }
 
     @GetMapping("/{author}/{slug}/stars")

@@ -36,7 +36,7 @@ public interface ProjectDao {
     // TODO expand as needed
     @SqlUpdate("UPDATE projects SET name = :name, slug = :slug, category = :category, keywords = :keywords, issues = :issues, source = :source, " +
             "license_name = :licenseName, license_url = :licenseUrl, forum_sync = :forumSync, description = :description, visibility = :visibility, " +
-            "recommended_version_id = :recommendedVersionId WHERE id = :id")
+            "recommended_version_id = :recommendedVersionId, notes = :notes WHERE id = :id")
     void update(@BindBean ProjectsTable project);
 
     @SqlUpdate("DELETE FROM projects WHERE id = :id")
