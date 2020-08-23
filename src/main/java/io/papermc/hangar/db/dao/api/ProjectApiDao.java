@@ -1,11 +1,13 @@
 package io.papermc.hangar.db.dao.api;
 
+import io.papermc.hangar.db.mappers.PromotedVersionMapper;
 import io.papermc.hangar.model.Category;
 import io.papermc.hangar.model.generated.Project;
 import io.papermc.hangar.model.generated.Tag;
 
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
+import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.customizer.AllowUnusedBindings;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
@@ -43,6 +45,7 @@ public interface ProjectApiDao {
               "       ps.forum_sync" +
               "  FROM home_projects p" +
               "         JOIN projects ps ON p.id = ps.id") // TODO add all the missing filters
+    @RegisterColumnMapper(PromotedVersionMapper.class)
     @AllowUnusedBindings // todo remove
     List<Project> listProjects(String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean seeHidden, Long requesterId, String ordering, long limit, long offset);
 }
