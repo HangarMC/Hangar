@@ -2,7 +2,7 @@
 
 ## stuff to do
 
-* fix all templates
+* fix all templates (see [TO-PORT.md](TO-PORT.md))
 * make all pages use the db for data
 * implement internal api
 * implement external api

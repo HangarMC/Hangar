@@ -5,10 +5,10 @@
 
 ### Projects
 * [x] admin\flags
-* [ ] admin\notes
+* [x] admin\notes
 * [ ] channels\helper\modalManage
 * [ ] channels\helper\popoverColorPicker
-* [ ] channels\list
+* [x] channels\list
 * [x] helper\alertFile
 * [x] helper\btnHide
 * [x] helper\createSteps
@@ -16,16 +16,16 @@
 * [ ] helper\modalDownload
 * [x] pages\modalPageCreate
 * [x] pages\view
-* [ ] versions\create
-* [ ] versions\list
-* [ ] versions\log
+* [x] versions\create
+* [x] versions\list
+* [x] versions\log
 * [ ] versions\unsafeDownload
 * [ ] versions\view
 * [x] create
 * [ ] discuss
 * [ ] settings
 * [x] tag
-* [ ] userGrid
+* [x] userGrid
 * [ ] view
 
 ### Users
@@ -34,17 +34,17 @@
 * [ ] admin\health
 * [x] admin\log
 * [x] admin\queue
-* [ ] admin\reviews
+* [x] admin\reviews
 * [ ] admin\stats
-* [ ] admin\userAdmin
+* [x] admin\userAdmin
 * [x] admin\visibility
 * [x] invite\form
 * [x] invite\roleSelect
 * [x] invite\userSearch
 * [ ] apiKeys
-* [ ] authors
+* [x] authors
 * [ ] memberList
-* [ ] notifications
+* [x] notifications
 * [ ] projects
 * [x] staff
 * [x] view
