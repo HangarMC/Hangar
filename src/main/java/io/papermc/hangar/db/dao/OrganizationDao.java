@@ -26,6 +26,9 @@ public interface OrganizationDao {
     @SqlQuery("SELECT * FROM organizations WHERE id = :orgId")
     OrganizationsTable getById(long orgId);
 
+    @SqlQuery("SELECT * FROM organizations WHERE user_id = :userId")
+    OrganizationsTable getByUserId(long userId);
+
     @SqlQuery("SELECT o.id, o.created_at, o.name, o.owner_id, o.user_id FROM organization_members om JOIN organizations o ON om.organization_id = o.id WHERE om.user_id = :id")
     List<OrganizationsTable> getUserOrgs(long id);
 

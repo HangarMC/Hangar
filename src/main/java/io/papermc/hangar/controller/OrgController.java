@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,12 +54,12 @@ public class OrgController extends HangarController {
 
     @Secured("ROLE_USER")
     @GetMapping("/organisations/new")
-    public ModelAndView showCreator(RedirectAttributes attributes) {
+    public ModelAndView showCreator(RedirectAttributes attributes, ModelMap modelMap) {
         if (orgService.getUserOwnedOrgs(userService.getCurrentUser().getId()).size() >= hangarConfig.org.getCreateLimit()) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.org.createLimit", String.valueOf(hangarConfig.org.getCreateLimit()));
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
         }
-        return fillModel(new ModelAndView("createOrganization"));
+        return fillModel(AlertUtil.transferAlerts(new ModelAndView("createOrganization"), modelMap));
     }
 
     @Secured("ROLE_USER")

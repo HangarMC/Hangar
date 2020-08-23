@@ -63,9 +63,10 @@ public class OrgFactory {
         try {
             authOrgUser = mapper.treeToValue(restTemplate.postForObject(hangarConfig.security.api.getUrl() + "/api/users", new HttpEntity<>(map, headers), ObjectNode.class), AuthUser.class);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new HangarException("error.org.cannotCreate");
         }
-        if (true) throw new RuntimeException();
+        // TODO this will happen via /api/sync_sso, but I have no idea how to get that whole system working with Docker
         userDao.get().insert(new UsersTable(authOrgUser.getId(), null, name, dummyEmail, null, new int[0], false, authOrgUser.getLang().toLanguageTag()));
         OrganizationsTable org = new OrganizationsTable(name, ownerId, authOrgUser.getId());
         org = organizationDao.get().insert(org);

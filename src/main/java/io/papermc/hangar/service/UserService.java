@@ -44,16 +44,18 @@ public class UserService {
     private final HangarDao<UserDao> userDao;
     private final HangarDao<OrganizationDao> orgDao;
     private final HangarDao<ProjectDao> projectDao;
+    private final HangarDao<OrganizationDao> organizationDao;
     private final RoleService roleService;
     private final PermissionService permissionService;
     private final HangarConfig config;
 
     @Autowired
-    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, RoleService roleService, PermissionService permissionService) {
+    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, HangarDao<OrganizationDao> organizationDao, RoleService roleService, PermissionService permissionService) {
         this.userDao = userDao;
         this.config = config;
         this.orgDao = orgDao;
         this.projectDao = projectDao;
+        this.organizationDao = organizationDao;
         this.roleService = roleService;
         this.permissionService = permissionService;
     }
@@ -160,7 +162,7 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         // TODO getUserData
-        boolean isOrga = false;
+        boolean isOrga = organizationDao.get().getByUserId(user.getId()) != null;
         int projectCount = projectDao.get().getProjectCountByUserId(user.getId());
         Map<OrganizationsTable, UserOrganizationRolesTable> dbOrgs = orgDao.get().getUserOrganizationsAndRoles(user.getId());
         Map<OrganizationsTable, UserRole<UserOrganizationRolesTable>> organizations = new HashMap<>();
