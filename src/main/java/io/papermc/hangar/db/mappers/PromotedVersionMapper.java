@@ -19,7 +19,7 @@ import java.util.List;
 public class PromotedVersionMapper implements ColumnMapper<List<PromotedVersion>> {
     public List<PromotedVersion> map(ResultSet r, int columnNumber, StatementContext ctx) throws SQLException {
         JSONB jsonb = (JSONB) r.getObject(columnNumber);
-        LoggerFactory.getLogger(PromotedVersionMapper.class).info(jsonb.toString()); // for json logging
+//        LoggerFactory.getLogger(PromotedVersionMapper.class).info(jsonb.toString()); // for json logging
         JsonNode jsonNode = jsonb.getJson();
         ObjectMapper mapper = new ObjectMapper();
         ObjectReader reader = mapper.readerFor(new TypeReference<List<PromotedVersion>>() {});
