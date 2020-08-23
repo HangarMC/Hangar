@@ -99,7 +99,7 @@ Documentation page within Project overview.
                         class="new-page btn yellow btn-xs pull-right">
                             <i class="fas fa-plus"></i>
                         </button>
-                        <@pageCreate.pageCreate p.project rootPages /> <#-- TODO this is showing when user logged out -->
+                        <@pageCreate.pageCreate p.project rootPages />
                     </#if>
                 </div>
                 <ul class="list-group">

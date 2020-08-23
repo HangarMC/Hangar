@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.db.dao.GeneralDao;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.ProjectDao;
 import io.papermc.hangar.db.dao.UserDao;
@@ -92,11 +93,12 @@ public class ProjectsController extends HangarController {
     private final TemplateHelper templateHelper;
     private final HangarDao<UserDao> userDao;
     private final HangarDao<ProjectDao> projectDao;
+    private final HangarDao<GeneralDao> generalDao;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public ProjectsController(HangarConfig hangarConfig, RouteHelper routeHelper, UserService userService, OrgService orgService, FlagService flagService, ProjectService projectService, ProjectFactory projectFactory, PagesSerivce pagesSerivce, RoleService roleService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles, TemplateHelper templateHelper, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao, HttpServletRequest request) {
+    public ProjectsController(HangarConfig hangarConfig, RouteHelper routeHelper, UserService userService, OrgService orgService, FlagService flagService, ProjectService projectService, ProjectFactory projectFactory, PagesSerivce pagesSerivce, RoleService roleService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles, TemplateHelper templateHelper, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao, HangarDao<GeneralDao> generalDao, HttpServletRequest request) {
         this.hangarConfig = hangarConfig;
         this.routeHelper = routeHelper;
         this.userService = userService;
@@ -112,6 +114,7 @@ public class ProjectsController extends HangarController {
         this.templateHelper = templateHelper;
         this.userDao = userDao;
         this.projectDao = projectDao;
+        this.generalDao = generalDao;
         this.request = request;
     }
 
@@ -161,10 +164,7 @@ public class ProjectsController extends HangarController {
         }
 
         // refresh home page
-        // service
-        //        .runDbCon(SharedQueries.refreshHomeView.run)
-        //        .runAsync(TaskUtils.logCallback("Failed to refresh home page", logger))
-        //        .to[F]
+        generalDao.get().refreshHomeProjects();
 
         return new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.show", project.getOwnerName(), project.getSlug()));
     }
