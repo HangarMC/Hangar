@@ -224,7 +224,9 @@
                                            data-toggle="tooltip" data-placement="right"></i>
                                     </div>
                                 </#if>
-                                <p class="version-string">${depend.version}</p>
+                                <#if depend.version??>
+                                    <p class="version-string">${depend.version}</p>
+                                </#if>
                             </li>
                         </#list>
                     </ul>

@@ -2,21 +2,6 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
-<#--
-@import controllers.sugar.Requests.OreRequest
-@import ore.OreConfig
-@import ore.db.Model
-@import ore.markdown.MarkdownRenderer
-@import ore.models.admin.Review
-@import ore.models.project.{Project, ReviewState, Version}
-@import util.StringFormatterUtils._
-@import util.syntax._
-@import views.html.helper.CSPNonce
-
-@(mostRecentUnfinishedReview: Option[Review], reviews: Seq[(Model[Review], Option[String])], project: Project, version: Model[Version])(implicit messages: Messages,
-        request: OreRequest[_], config: OreConfig, flash: Flash, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)
--->
-
 <#assign scripts>
     <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "javascripts/review.js" />"></script>
     <script <#--@CSPNonce.attr-->>versionPath = '${utils.urlEncode(project.project.ownerName)}/${utils.urlEncode(project.project.slug)}/versions/${utils.urlEncode(version.v.versionString)}'</script>
