@@ -11,6 +11,7 @@ import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.model.TagColor;
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.api.V1ApiService;
@@ -42,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -136,13 +138,17 @@ public class Apiv1Controller extends HangarController {
     }
 
     @RequestMapping("/api/v1/tags/{tagId}")
-    public Object tagColor(@PathVariable Object tagId) {
-        return null; // TODO implement tagColor request controller
+    public ResponseEntity<ObjectNode> tagColor(@PathVariable("tagId") TagColor tag) {
+        ObjectNode tagColor = mapper.createObjectNode();
+        tagColor.set("id", mapper.valueToTree(tag.ordinal()));
+        tagColor.set("backgroundColor", mapper.valueToTree(tag.getBackground()));
+        tagColor.set("foregroundColor", mapper.valueToTree(tag.getForeground()));
+        return ResponseEntity.of(Optional.of(tagColor));
     }
 
     @RequestMapping("/api/v1/users")
-    public Object listUsers(@RequestParam Object limit, @RequestParam Object offset) {
-        return null; // TODO implement listUsers request controller
+    public ResponseEntity<ArrayNode> listUsers(@RequestParam(defaultValue = "0") int offset, @RequestParam(required = false) Integer limit) {
+        return ResponseEntity.of(Optional.of(writeUsers(v1ApiService.getUsers(offset, limit))));
     }
 
     @RequestMapping("/api/v1/users/{user}")

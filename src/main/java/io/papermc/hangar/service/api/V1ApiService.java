@@ -31,6 +31,11 @@ public class V1ApiService {
         return v1ApiDao.get().getProjectsForUsers(userIds).stream().collect(Collectors.groupingBy(ProjectsTable::getOwnerId));
     }
 
+    public List<UsersTable> getUsers(int offset, Integer limit) {
+        return v1ApiDao.get().getUsers(offset, limit);
+    }
+
+
     // TODO better way for this?
     public Map<Long, List<String>> getStarredPlugins(List<Long> userIds) {
         return v1ApiDao.get().getStarredPlugins(userIds).stream()

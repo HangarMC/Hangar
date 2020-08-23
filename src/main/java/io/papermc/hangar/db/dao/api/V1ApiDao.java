@@ -62,4 +62,8 @@ public interface V1ApiDao {
     @RegisterBeanMapper(ProjectVersionTagsTable.class)
     @SqlQuery("SELECT pv.id pv_id, pvt.* FROM project_version_tags pvt JOIN project_versions pv ON pv.id = pvt.version_id WHERE pv.visibility = 0 AND pv.id IN (<versionIds>)")
     List<Map.Entry<Long, ProjectVersionTagsTable>> getVersionsTags(@BindList(onEmpty = EmptyHandling.NULL_STRING) List<Long> versionIds);
+
+    @RegisterBeanMapper(UsersTable.class)
+    @SqlQuery("SELECT * FROM users OFFSET :offset LIMIT :limit")
+    List<UsersTable> getUsers(int offset, Integer limit);
 }
