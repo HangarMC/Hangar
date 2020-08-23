@@ -49,7 +49,7 @@
 				<#list staff as staffUser>
 				<tr>
                     <#import "*/utils/userAvatar.ftlh" as userAvatar>
-					<td><@userAvatar.userAvatar userName=staffUser.name avatarUrl=staffUser.avatarUrl clazz="user-avatar-xs"></@userAvatar.userAvatar></td>
+					<td><@userAvatar.userAvatar userName=staffUser.name avatarUrl=utils.avatarUrl(staffUser.name) clazz="user-avatar-xs"></@userAvatar.userAvatar></td>
 					<td>
 						<a href="${routes.getRouteUrl("showActivities", staffUser.name)}">${staffUser.name}</a>
 					</td>

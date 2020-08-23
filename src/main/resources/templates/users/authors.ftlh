@@ -72,7 +72,7 @@
                 <#list authors as author>
                 <tr>
                     <#import "*/utils/userAvatar.ftlh" as userAvatar>
-                    <td><@userAvatar.userAvatar userName=author.name avatarUrl=author.avatarUrl clazz="user-avatar-xs"></@userAvatar.userAvatar></td>
+                    <td><@userAvatar.userAvatar userName=author.name avatarUrl=utils.avatarUrl(author.name) clazz="user-avatar-xs"></@userAvatar.userAvatar></td>
                     <td>
                         <a href="${routes.getRouteUrl("users.showProjects", author.name)}">${author.name}</a>
                     </td>

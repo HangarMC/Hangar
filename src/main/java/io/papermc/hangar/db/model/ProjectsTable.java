@@ -1,6 +1,7 @@
 package io.papermc.hangar.db.model;
 
 
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.Category;
 import io.papermc.hangar.model.Visibility;
 import org.jdbi.v3.core.annotation.Unmappable;
@@ -24,7 +25,7 @@ public class ProjectsTable implements Visitable {
     private Category category;
     private String description;
     private Visibility visibility;
-    private Object notes; // TODO jsonb
+    private JSONB notes;
     private Collection<String> keywords;
     private String homepage;
     private String issues;
@@ -169,11 +170,11 @@ public class ProjectsTable implements Visitable {
     }
 
 
-    public Object getNotes() { //TODO jsonb
+    public JSONB getNotes() {
         return notes;
     }
 
-    public void setNotes(Object notes) {
+    public void setNotes(JSONB notes) {
         this.notes = notes;
     }
 

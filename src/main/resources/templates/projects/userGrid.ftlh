@@ -31,23 +31,13 @@
                 <#list users?filter(u -> (users?seq_index_of(u) + 1) % columns == div) as gridUser>
                     <div class="media">
                         <div class="media-left">
-                            <@userAvatar.userAvatar userName=gridUser.name avatarUrl=gridUser.avatarUrl clazz="user-avatar-sm media-object" />
+                            <@userAvatar.userAvatar userName=gridUser.name avatarUrl=utils.avatarUrl(gridUser.name) clazz="user-avatar-sm media-object" />
                         </div>
                         <div class="media-body center-vertically">
                             <a class="media-heading mb-0" href="${routes.getRouteUrl("users.showProjects", gridUser.name)}">${gridUser.name}</a>
                         </div>
                     </div>
                 </#list>
-<#--            @users.iterator.zipWithIndex.filter(_._2 % columns == div).map(_._1).map { user =>-->
-<#--                <div class="media">-->
-<#--                    <div class="media-left">-->
-<#--                        <@userAvatar.userAvatar userName=user.name avatarUrl=user.avatarUrl clazz="user-avatar-sm media-object" />-->
-<#--                    </div>-->
-<#--                    <div class="media-body center-vertically">-->
-<#--                        <a class="media-heading mb-0" href="${routes.getRouteUrl("users.showProjects", user.name)}">${user.name}</a>-->
-<#--                    </div>-->
-<#--                </div>-->
-<#--            }-->
             </div>
         </#list>
 

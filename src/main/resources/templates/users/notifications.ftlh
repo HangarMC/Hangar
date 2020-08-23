@@ -75,7 +75,7 @@
                     <ul class="list-group">
                         <#list notifications as notification, origin>
                             <li class="list-group-item notification" data-action="${notification.action!"none"}" data-id="${notification.id}">
-                                <#if origin??><@userAvatar.userAvatar userName=origin.user.name avatarUrl=origin.user.avatarUrl clazz="user-avatar-s" /></#if>
+                                <#if origin??><@userAvatar.userAvatar userName=origin.user.name avatarUrl=utils.avatarUrl(origin.user.name) clazz="user-avatar-s" /></#if>
                                 <@formatNotification notification />
                                 <#if !notification.read>
                                     <span class="btn-mark-read">
