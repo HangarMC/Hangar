@@ -16,13 +16,11 @@
 </#macro>
 
 <#macro normalAlert alertType>
-    <#assign message=alerts[alertType]["message"]>
-    <#assign args=alerts[alertType]["args"]>
-    <#if message??>
-        <#if args??>
-            <@spring.messageArgs message args />
+    <#if alerts[alertType]["message"]??>
+        <#if alerts[alertType]["args"]??>
+            <@spring.messageArgs alerts[alertType]["message"] alerts[alertType]["args"] />
         <#else>
-            <@spring.message message />
+            <@spring.message alerts[alertType]["message"] />
         </#if>
     </#if>
 </#macro>
