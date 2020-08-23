@@ -12,18 +12,13 @@ import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.model.generated.*;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.ProjectFlag;
 import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.util.StringUtils;
 import io.papermc.hangar.db.dao.VisibilityDao;
 import io.papermc.hangar.model.Category;
-import io.papermc.hangar.model.generated.Project;
-import io.papermc.hangar.model.generated.ProjectNamespace;
-import io.papermc.hangar.model.generated.ProjectSettings;
-import io.papermc.hangar.model.generated.ProjectSortingStrategy;
-import io.papermc.hangar.model.generated.Tag;
-import io.papermc.hangar.model.generated.UserActions;
 import io.papermc.hangar.model.viewhelpers.ProjectApprovalData;
 import io.papermc.hangar.model.viewhelpers.ProjectViewSettings;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
@@ -176,8 +171,20 @@ public class ProjectService {
         project.setLastUpdated(OffsetDateTime.now()); // TODO implement
         project.setVisibility(projectsTable.getVisibility());
         project.setUserActions(new UserActions()); // TODO implement
-        project.setSettings(new ProjectSettings()); // TODO implement
         project.setIconUrl(""); // TODO implement
+
+        ProjectSettings projectSettings = new ProjectSettings();
+        projectSettings.setHomepage(projectsTable.getHomepage());
+        projectSettings.setIssues(projectsTable.getIssues());
+        projectSettings.setSources(projectsTable.getSource());
+        projectSettings.setSupport(projectsTable.getSupport());
+        projectSettings.setForumSync(projectsTable.getForumSync());
+
+        ProjectLicense projectLicense = new ProjectLicense();
+        projectLicense.setName(projectsTable.getLicenseName());
+        projectLicense.setUrl(projectsTable.getLicenseUrl());
+        projectSettings.setLicense(projectLicense);
+        project.setSettings(projectSettings);
         return project;
     }
 
