@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.model.ProjectChannelsTable;
 import io.papermc.hangar.db.model.ProjectVersionTagsTable;
 import io.papermc.hangar.db.model.ProjectVersionsTable;
@@ -12,7 +13,10 @@ import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.TagColor;
+import io.papermc.hangar.model.SsoSyncData;
 import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.service.SsoService;
+import io.papermc.hangar.service.SsoService.SignatureException;
 import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.api.V1ApiService;
 import io.papermc.hangar.util.TemplateHelper;
@@ -22,6 +26,8 @@ import io.papermc.hangar.model.viewhelpers.ProjectPage;
 import io.papermc.hangar.model.viewhelpers.UserData;
 import io.papermc.hangar.service.project.PagesSerivce;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -48,52 +54,54 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping("/api")
 public class Apiv1Controller extends HangarController {
 
+    private static final Logger log = LoggerFactory.getLogger(Apiv1Controller.class);
+
+    private final HangarConfig hangarConfig;
     private final ObjectMapper mapper;
     private final TemplateHelper templateHelper;
     private final PagesSerivce pagesSerivce;
     private final UserService userService;
+    private final SsoService ssoService;
 
     private final V1ApiService v1ApiService;
 
     @Autowired
-    public Apiv1Controller(ObjectMapper mapper, TemplateHelper templateHelper, PagesSerivce pagesSerivce, UserService userService, V1ApiService v1ApiService) {
+    public Apiv1Controller(HangarConfig hangarConfig, ObjectMapper mapper, TemplateHelper templateHelper, PagesSerivce pagesSerivce, UserService userService, SsoService ssoService, V1ApiService v1ApiService) {
+        this.hangarConfig = hangarConfig;
         this.mapper = mapper;
         this.templateHelper = templateHelper;
         this.pagesSerivce = pagesSerivce;
         this.userService = userService;
+        this.ssoService = ssoService;
         this.v1ApiService = v1ApiService;
     }
 
-    @RequestMapping("/api/sync_sso")
-    public Object syncSso() {
-        return null; // TODO implement syncSso request controller
-    }
-
-    @RequestMapping("/api/v1/projects")
+    @RequestMapping("/v1/projects")
     public Object listProjects(@RequestParam Object categories, @RequestParam Object sort, @RequestParam Object q, @RequestParam Object limit, @RequestParam Object offset) {
         return null; // TODO implement listProjects request controller
     }
 
-    @RequestMapping("/api/v1/projects/{pluginId}")
+    @RequestMapping("/v1/projects/{pluginId}")
     public Object showProject(@PathVariable Object pluginId) {
         return null; // TODO implement showProject request controller
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/api/v1/projects/{pluginId}/keys/new")
+    @RequestMapping("/v1/projects/{pluginId}/keys/new")
     public Object createKey(@PathVariable Object pluginId) {
         return null; // TODO implement createKey request controller
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/api/v1/projects/{pluginId}/keys/revoke")
+    @RequestMapping("/v1/projects/{pluginId}/keys/revoke")
     public Object revokeKey(@PathVariable Object pluginId) {
         return null; // TODO implement revokeKey request controller
     }
 
-    @GetMapping(value = "/api/v1/projects/{pluginId}/pages", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/v1/projects/{pluginId}/pages", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ArrayNode> listPages(@PathVariable String pluginId, @RequestParam(required = false) Long parentId) {
         List<ProjectPage> pages = pagesSerivce.getPages(pluginId);
         ArrayNode pagesArray = mapper.createArrayNode();
@@ -116,28 +124,28 @@ public class Apiv1Controller extends HangarController {
         return ResponseEntity.ok(pagesArray);
     }
 
-    @RequestMapping("/api/v1/projects/{pluginId}/versions")
+    @RequestMapping("/v1/projects/{pluginId}/versions")
     public Object listVersions(@PathVariable Object pluginId, @RequestParam Object channels, @RequestParam Object limit, @RequestParam Object offset) {
         return null; // TODO implement listVersions request controller
     }
 
-    @RequestMapping("/api/v1/projects/{pluginId}/versions/{name}")
+    @RequestMapping("/v1/projects/{pluginId}/versions/{name}")
     public Object showVersion(@PathVariable Object pluginId, @PathVariable Object name) {
         return null; // TODO implement showVersion request controller
     }
 
     @Secured("ROLE_USER")
-    @PostMapping("/api/v1/projects/{pluginId}/versions/{name}")
+    @PostMapping("/v1/projects/{pluginId}/versions/{name}")
     public Object deployVersion(@PathVariable Object pluginId, @PathVariable Object name) {
         return null; // TODO implement deployVersion request controller
     }
 
-    @RequestMapping("/api/v1/projects/{plugin}/tags/{versionName}")
+    @RequestMapping("/v1/projects/{plugin}/tags/{versionName}")
     public Object listTags(@PathVariable Object plugin, @PathVariable Object versionName) {
         return null; // TODO implement listTags request controller
     }
 
-    @RequestMapping("/api/v1/tags/{tagId}")
+    @RequestMapping("/v1/tags/{tagId}")
     public ResponseEntity<ObjectNode> tagColor(@PathVariable("tagId") TagColor tag) {
         ObjectNode tagColor = mapper.createObjectNode();
         tagColor.set("id", mapper.valueToTree(tag.ordinal()));
@@ -146,12 +154,12 @@ public class Apiv1Controller extends HangarController {
         return ResponseEntity.of(Optional.of(tagColor));
     }
 
-    @RequestMapping("/api/v1/users")
+    @RequestMapping("/v1/users")
     public ResponseEntity<ArrayNode> listUsers(@RequestParam(defaultValue = "0") int offset, @RequestParam(required = false) Integer limit) {
         return ResponseEntity.of(Optional.of(writeUsers(v1ApiService.getUsers(offset, limit))));
     }
 
-    @RequestMapping("/api/v1/users/{user}")
+    @RequestMapping("/v1/users/{user}")
     @ResponseBody
     public ResponseEntity<ObjectNode> showUser(@PathVariable String user) {
         UserData userData = userService.getUserData(user);
@@ -286,5 +294,23 @@ public class Apiv1Controller extends HangarController {
             membersArray.add(memberObj);
         });
         return membersArray;
+    }
+
+    @PostMapping(value = "/sync_sso")
+    public ResponseEntity<ObjectNode> syncSso(@RequestParam String sso, @RequestParam String sig, @RequestParam String apiKey) {
+        if (!apiKey.equals(hangarConfig.sso.getApiKey())) {
+            log.warn("SSO sync failed: bad API key (" + apiKey + " provided, " + hangarConfig.sso.getApiKey() + " expected)");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        try {
+            Map<String, String> map = ssoService.decode(sso, sig);
+            SsoSyncData data = SsoSyncData.fromSignedPayload(map);
+            userService.ssoSyncUser(data);
+            log.debug("SSO sync successful: " + map.toString());
+            return new ResponseEntity<>(mapper.createObjectNode().set("status", mapper.valueToTree("success")), HttpStatus.OK);
+        } catch (SignatureException e) {
+            log.warn("SSO sync failed: invalid signature (" + sig + " for data " + sso + ")");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }

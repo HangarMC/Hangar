@@ -44,16 +44,18 @@ public class UserService {
     private final HangarDao<UserDao> userDao;
     private final HangarDao<OrganizationDao> orgDao;
     private final HangarDao<ProjectDao> projectDao;
+    private final HangarDao<OrganizationDao> organizationDao;
     private final RoleService roleService;
     private final PermissionService permissionService;
     private final HangarConfig config;
 
     @Autowired
-    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, RoleService roleService, PermissionService permissionService) {
+    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, HangarDao<OrganizationDao> organizationDao, RoleService roleService, PermissionService permissionService) {
         this.userDao = userDao;
         this.config = config;
         this.orgDao = orgDao;
         this.projectDao = projectDao;
+        this.organizationDao = organizationDao;
         this.roleService = roleService;
         this.permissionService = permissionService;
     }
@@ -160,7 +162,6 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         // TODO getUserData
-        boolean isOrga = false;
         int projectCount = projectDao.get().getProjectCountByUserId(user.getId());
         Map<OrganizationsTable, UserOrganizationRolesTable> dbOrgs = orgDao.get().getUserOrganizationsAndRoles(user.getId());
         Map<OrganizationsTable, UserRole<UserOrganizationRolesTable>> organizations = new HashMap<>();
@@ -168,8 +169,9 @@ public class UserService {
             organizations.put(organization, new UserRole<>(userOrganizationRolesTable));
         });
         List<Role> globalRoles = roleService.getGlobalRolesForUser(user.getId(), null);
-        Permission userPerm = Permission.All;
-        Permission orgaPerm = Permission.None;
+        boolean isOrga = globalRoles.contains(Role.ORGANIZATION);
+        Permission userPerm = Permission.All; // TODO perms here
+        Permission orgaPerm = Permission.None; // TODO perms here
         return new UserData(getHeaderData(), user, isOrga, projectCount, organizations, globalRoles, userPerm, orgaPerm);
     }
 
@@ -206,7 +208,7 @@ public class UserService {
                     null,
                     new int[0],
                     false,
-                    "en_US" // todo: how does language
+                    null
             );
             user = userDao.get().insert(user);
         } else {

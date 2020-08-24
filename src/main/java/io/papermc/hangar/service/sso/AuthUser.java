@@ -1,6 +1,8 @@
 package io.papermc.hangar.service.sso;
 
 import io.papermc.hangar.model.Role;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +19,8 @@ public class AuthUser {
     private final Locale lang;
     private final String addGroups;
 
-    public AuthUser(long id, String username, String email, String avatarUrl, Locale lang, String addGroups) {
+    @JsonCreator
+    public AuthUser(long id, String username, String email, @JsonProperty("avatar_url") String avatarUrl, Locale lang, String addGroups) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -43,7 +46,7 @@ public class AuthUser {
     }
 
     public Locale getLang() {
-        return lang;
+        return lang == null ? Locale.ENGLISH : lang;
     }
 
     public String getAddGroups() {
@@ -53,5 +56,17 @@ public class AuthUser {
     public List<Role> getGlobalRoles() {
         if (addGroups == null || addGroups.isBlank()) return new ArrayList<>();
         return Arrays.stream(addGroups.trim().split(",")).map(Role::fromValue).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    @Override
+    public String toString() {
+        return "AuthUser{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", lang=" + lang +
+                ", addGroups='" + addGroups + '\'' +
+                '}';
     }
 }

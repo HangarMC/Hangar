@@ -1,8 +1,6 @@
 package io.papermc.hangar.config;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import freemarker.template.TemplateException;
-
 import io.papermc.hangar.controller.converters.ColorHexConverter;
 import io.papermc.hangar.controller.converters.StringToEnumConverterFactory;
 import io.papermc.hangar.controller.interceptors.ProjectsInterceptor;
@@ -16,11 +14,12 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -31,7 +30,7 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @EnableWebMvc
@@ -135,5 +134,15 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new ProjectsInterceptor(projectService, permissionService));
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        RestTemplate restTemplate = new RestTemplate();
+        List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        messageConverters.add(converter);
+        restTemplate.setMessageConverters(messageConverters);
+        return restTemplate;
     }
 }

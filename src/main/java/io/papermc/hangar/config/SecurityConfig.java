@@ -1,10 +1,9 @@
 package io.papermc.hangar.config;
 
-import io.papermc.hangar.security.HangarAuthenticationProvider;
 import io.papermc.hangar.filter.HangarAuthenticationFilter;
+import io.papermc.hangar.security.HangarAuthenticationProvider;
 import io.papermc.hangar.security.voters.GlobalPermissionVoter;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.RouteHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -31,14 +30,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final HangarAuthenticationProvider authProvider;
     private final RouteHelper routeHelper;
     private final PermissionService permissionService;
-    private final ProjectService projectService;
 
     @Autowired
-    public SecurityConfig(HangarAuthenticationProvider authProvider, RouteHelper routeHelper, PermissionService permissionService, ProjectService projectService) {
+    public SecurityConfig(HangarAuthenticationProvider authProvider, RouteHelper routeHelper, PermissionService permissionService) {
         this.authProvider = authProvider;
         this.routeHelper = routeHelper;
         this.permissionService = permissionService;
-        this.projectService = projectService;
     }
 
     @Override
