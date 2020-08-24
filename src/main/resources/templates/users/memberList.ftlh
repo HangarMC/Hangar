@@ -10,7 +10,7 @@
 <#-- @ftlvariable name="perms" type="io.papermc.hangar.model.Permission" -->
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
 <#macro memberList project perms editable=false removeCall="" settingsCall="" saveCall="">
-<#-- @ftlvariable name="project" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
+<#-- @ftlvariable name="project" type="io.papermc.hangar.model.viewhelpers.JoinableData" -->
     <#if project.members?size != 0>
 
         <#if editable && perms.has(Permission.ManageSubjectMembers)>
@@ -86,16 +86,16 @@
 
             <ul class="list-members list-group">
                 <!-- Member list -->
-                <#-- @ftlvariable name="projectMember" type="io.papermc.hangar.model.viewhelpers.ProjectMember" -->
-                <#-- @ftlvariable name="user" type="io.papermc.hangar.db.model.UsersTable" -->
-                <#list project.filteredMembers(headerData) as projectMember, user>
+                <#list project.filteredMembers(headerData) as subjectRole, user>
+                    <#-- @ftlvariable name="subjectRole" type="io.papermc.hangar.db.model.RoleTable" -->
+                    <#-- @ftlvariable name="user" type="io.papermc.hangar.db.model.UsersTable" -->
                     <li class="list-group-item">
                         <@userAvatar.userAvatar userName=user.name avatarUrl=utils.avatarUrl(user.name) clazz="user-avatar-xs"></@userAvatar.userAvatar>
                         <a class="username" href="${routes.getRouteUrl("users.showProjects", user.name)}">
                             ${user.name}
                         </a>
-                        <p style="display: none;" class="role-id">${projectMember.role.roleId}</p>
-                        <#if editable && perms.has(Permission.ManageSubjectMembers) && !projectMember.role.permissions.has(Permission.IsOrganizationOwner)>
+                        <p style="display: none;" class="role-id">${subjectRole.role.roleId}</p>
+                        <#if editable && perms.has(Permission.ManageSubjectMembers) && !subjectRole.role.permissions.has(Permission.IsOrganizationOwner)>
                             <a href="#">
                                 <i style="padding-left:5px" class="fas fa-trash" data-toggle="modal" data-target="#modal-user-delete"></i>
                             </a>
@@ -103,10 +103,10 @@
                         </#if>
 
                         <span class="minor pull-right">
-                            <#if !projectMember.isAccepted>
-                                <span class="minor">(Invited as ${projectMember.role.title})</span>
+                            <#if !subjectRole.isAccepted>
+                                <span class="minor">(Invited as ${subjectRole.role.title})</span>
                             <#else>
-                                ${projectMember.role.title}
+                                ${subjectRole.role.title}
                             </#if>
                         </span>
                     </li>

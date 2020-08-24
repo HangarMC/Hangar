@@ -6,7 +6,6 @@ import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.generated.ProjectStatsAll;
 import io.papermc.hangar.model.viewhelpers.ProjectApprovalData;
-import io.papermc.hangar.model.viewhelpers.ProjectMember;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.model.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.service.project.ProjectFactory.InvalidProjectReason;
@@ -93,7 +92,7 @@ public interface ProjectDao {
 
 
     @RegisterBeanMapper(value = UsersTable.class, prefix = "usr")
-    @RegisterBeanMapper(value = ProjectMember.class, prefix = "pm")
+    @RegisterBeanMapper(value = UserProjectRolesTable.class, prefix = "pr")
     @SqlQuery("SELECT " +
               "u.id usr_id," +
               "u.created_at usr_created_at, " +
@@ -105,10 +104,14 @@ public interface ProjectDao {
               "u.read_prompts usr_read_prompts," +
               "u.is_locked usr_is_locked," +
               "u.language usr_language," +
-              "upr.role_type pm_role," +
-              "upr.is_accepted pm_is_accepted " +
+              "upr.id pr_id," +
+              "upr.created_at pr_created_at," +
+              "upr.user_id pr_user_id," +
+              "upr.role_type pr_role_type," +
+              "upr.project_id pr_project_id," +
+              "upr.is_accepted pr_is_accepted " +
               "FROM user_project_roles upr JOIN users u on upr.user_id = u.id WHERE upr.project_id = :projectId")
-    Map<ProjectMember, UsersTable> getProjectMembers(long projectId);
+    Map<UserProjectRolesTable, UsersTable> getProjectMembers(long projectId);
 
 
     @RegisterBeanMapper(value = UserProjectRolesTable.class, prefix = "upr")
@@ -156,4 +159,9 @@ public interface ProjectDao {
             "     OR hp.last_updated > (now() - make_interval(secs := <age>))" +
             "     OR p.visibility != 0")
     List<UnhealthyProject> getUnhealthyProjects(@Define("age") long staleAgeSeconds);
+
+    @RegisterBeanMapper(value = UserProjectRolesTable.class, prefix = "pr")
+    @SqlQuery("SELECT upr.id pr_id, upr.created_at pr_created_at, upr.user_id pr_user_id, upr.role_type pr_role_type, upr.project_id pr_project_id, upr.is_accepted pr_is_accepted, " +
+            "p.* FROM user_project_roles upr JOIN projects p ON p.id = upr.project_id WHERE upr.user_id = :userId")
+    Map<UserProjectRolesTable, ProjectsTable> getProjectRoles(long userId);
 }

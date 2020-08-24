@@ -13,9 +13,11 @@
 @import views.html.utils.userAvatar
 @(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)])(
         implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)-->
+<#assign Permission=@helper["io.papermc.hangar.model.Permission"] />
+<#assign Role=@helper["io.papermc.hangar.model.Role"] />
 
 <#function canEditOrgMembers>
-    <#return u.isOrga() && o?? && o.scopedData.permissions.has(Permissions.ManageOrganizationMembers)>
+    <#return u.isOrga() && o?? && so.permissions.has(Permission.ManageOrganizationMembers)>
 </#function>
 
 <#assign scriptsVar>
@@ -40,23 +42,23 @@
                     </div>
                     <table class="table panel-body">
                         <tbody>
-                            @o._1.projectRoles.map { case (role, project) =>
-                            <tr>
-                                <td>
-                                    <a href="${routes.getRouteUrl("projects.show", project.ownerName, project.slug)}">${project.ownerName}/${project.slug}</a>
-                                    <span class="minor">${role.role.title}</span>
-                                </td>
-                                <td>
-                                    <#if role.role != Role.ProjectOwner>
-                                        <#if role.isAccepted>
-                                            <button class="btn btn-sm btn-danger pull-right btn-invite" data-invite-id="${role.id}" data-invite-behalf="${u.user.name}" data-invite-accepted="decline">Leave</button>
-                                        <#else>
-                                            <button class="btn btn-sm btn-info pull-right btn-invite" data-invite-id="${role.id}" data-invite-behalf="${u.user.name}" data-invite-accepted="accept">Join</button>
+                            <#list o.projectRoles as role, project>
+                                <tr>
+                                    <td>
+                                        <a href="${routes.getRouteUrl("projects.show", project.ownerName, project.slug)}">${project.ownerName}/${project.slug}</a>
+                                        <span class="minor">${role.role.title}</span>
+                                    </td>
+                                    <td>
+                                        <#if role.role != Role.ProjectOwner>
+                                            <#if role.isAccepted>
+                                                <button class="btn btn-sm btn-danger pull-right btn-invite" data-invite-id="${role.id}" data-invite-behalf="${u.user.name}" data-invite-accepted="decline">Leave</button>
+                                            <#else>
+                                                <button class="btn btn-sm btn-info pull-right btn-invite" data-invite-id="${role.id}" data-invite-behalf="${u.user.name}" data-invite-accepted="accept">Join</button>
+                                            </#if>
                                         </#if>
-                                    </#if>
-                                </td>
-                            </tr>
-                            }
+                                    </td>
+                                </tr>
+                            </#list>
                         </tbody>
                     </table>
                 </div>
@@ -131,9 +133,9 @@
                 </div>
             <#else>
                 <#assign orgData=o> <#-- todo fix scopeddata -->
-                <@memberList.memberList project=orgData editable=true perms=scopedData.permissions
-                saveCall=routes.getRouteUrl("org.updateMembers", orgData.orga.name)
-                removeCall=routes.getRouteUrl("org.removeMember", orgData.orga.name) />
+                <@memberList.memberList project=orgData editable=true perms=so.permissions
+                saveCall=routes.getRouteUrl("org.updateMembers", orgData.org.name)
+                removeCall=routes.getRouteUrl("org.removeMember", orgData.org.name) />
             </#if>
         </div>
     </div>

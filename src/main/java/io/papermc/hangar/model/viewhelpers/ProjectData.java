@@ -4,42 +4,34 @@ import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.db.model.ProjectVisibilityChangesTable;
 import io.papermc.hangar.db.model.ProjectsTable;
+import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.service.MarkdownService;
-import io.papermc.hangar.model.Permission;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
-public class ProjectData {
+public class ProjectData extends JoinableData<UserProjectRolesTable, ProjectsTable> {
 
-    private ProjectsTable joinable;
-    private UsersTable projectOwner;
-    private int publicVersions;
-    private Map<ProjectMember, UsersTable> members;
-    private List<ProjectFlag> flags;
-    private int noteCount;
-    private ProjectVisibilityChangesTable lastVisibilityChange;
-    private String lastVisibilityChangeUser;
-    private ProjectVersionsTable recommendedVersion;
-    private String iconUrl;
-    private long starCount;
-    private long watcherCount;
-    private String namespace;
-    private ProjectViewSettings settings;
+    private final UsersTable projectOwner;
+    private final int publicVersions;
+    private final List<ProjectFlag> flags;
+    private final int noteCount;
+    private final ProjectVisibilityChangesTable lastVisibilityChange;
+    private final String lastVisibilityChangeUser;
+    private final ProjectVersionsTable recommendedVersion;
+    private final String iconUrl;
+    private final long starCount;
+    private final long watcherCount;
+    private final String namespace;
+    private final ProjectViewSettings settings;
 
-    public ProjectData() {
-        //
-    }
 
-    public ProjectData(ProjectsTable joinable, UsersTable projectOwner, int publicVersions, Map<ProjectMember, UsersTable> members, List<ProjectFlag> flags, int noteCount, ProjectVisibilityChangesTable lastVisibilityChange, String lastVisibilityChangeUser, ProjectVersionsTable recommendedVersion, String iconUrl, long starCount, long watcherCount, ProjectViewSettings settings) {
-        this.joinable = joinable;
+    public ProjectData(ProjectsTable joinable, UsersTable projectOwner, int publicVersions, Map<UserProjectRolesTable, UsersTable> members, List<ProjectFlag> flags, int noteCount, ProjectVisibilityChangesTable lastVisibilityChange, String lastVisibilityChangeUser, ProjectVersionsTable recommendedVersion, String iconUrl, long starCount, long watcherCount, ProjectViewSettings settings) {
+        super(joinable, projectOwner.getId(), members, RoleCategory.PROJECT);
         this.projectOwner = projectOwner;
         this.publicVersions = publicVersions;
-        this.members = members;
         this.flags = flags;
         this.noteCount = noteCount;
         this.lastVisibilityChange = lastVisibilityChange;
@@ -57,7 +49,7 @@ public class ProjectData {
     }
 
     public ProjectsTable getProject() {
-        return joinable;
+        return this.joinable;
     }
 
     public boolean isOwner(UsersTable usersTable) {
@@ -72,24 +64,12 @@ public class ProjectData {
         return "/" + getProject().getOwnerName() + "/" + getProject().getSlug();
     }
 
-    public RoleCategory getRoleCategory() {
-        return RoleCategory.PROJECT;
-    }
-
-    public ProjectsTable getJoinable() {
-        return joinable;
-    }
-
     public UsersTable getProjectOwner() {
         return projectOwner;
     }
 
     public int getPublicVersions() {
         return publicVersions;
-    }
-
-    public Map<ProjectMember, UsersTable> getMembers() {
-        return members;
     }
 
     public List<ProjectFlag> getFlags() {
@@ -130,13 +110,6 @@ public class ProjectData {
 
     public ProjectViewSettings getSettings() {
         return settings;
-    }
-
-    public Map<ProjectMember, UsersTable> filteredMembers(HeaderData headerData) {
-        boolean hasEditMembers = headerData.globalPerm(Permission.ManageSubjectMembers);
-        boolean userIsOwner = headerData.isAuthenticated() && headerData.getCurrentUser().getId() == projectOwner.getId();
-        if (hasEditMembers || userIsOwner) return members;
-        else return members.entrySet().stream().filter(member -> member.getKey().getIsAccepted()).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
     }
 
     public String renderVisibilityChange(MarkdownService markdownService, String fallback) {

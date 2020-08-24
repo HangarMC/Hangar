@@ -10,6 +10,7 @@ import io.papermc.hangar.db.model.ProjectVisibilityChangesTable;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.ProjectFlag;
@@ -24,7 +25,6 @@ import io.papermc.hangar.model.generated.ProjectSortingStrategy;
 import io.papermc.hangar.model.generated.Tag;
 import io.papermc.hangar.model.generated.UserActions;
 import io.papermc.hangar.model.viewhelpers.ProjectApprovalData;
-import io.papermc.hangar.model.viewhelpers.ProjectMember;
 import io.papermc.hangar.model.viewhelpers.ProjectViewSettings;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.model.viewhelpers.UnhealthyProject;
@@ -38,7 +38,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,8 +84,7 @@ public class ProjectService {
         }
 
         int publicVersions = 0;
-        Map<ProjectMember, UsersTable> projectMembers = projectDao.get().getProjectMembers(projectsTable.getId());
-        projectMembers.forEach(ProjectMember::setUser); // I don't know why the SQL query isn't doing this automatically...
+        Map<UserProjectRolesTable, UsersTable> projectMembers = projectDao.get().getProjectMembers(projectsTable.getId());
         List<ProjectFlag> flags = flagService.getProjectFlags(projectsTable.getId());
         int noteCount = 0; // TODO a whole lot
         Map.Entry<String, ProjectVisibilityChangesTable> latestProjectVisibilityChangeWithUser = visibilityDao.get().getLatestProjectVisibilityChange(projectsTable.getId());

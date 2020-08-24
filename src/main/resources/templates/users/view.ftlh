@@ -11,7 +11,7 @@
 <#-- @ftlvariable name="Permission" type="io.papermc.hangar.model.Permission" -->
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
 <#function canEditOrgSettings u o={}>
-    <#return u.isOrga() && o?? && o.scopedData.permissions.has(Permission.EditOrganizationSettings)>
+    <#return u.isOrga() && o?? && so.permissions.has(Permission.EditOrganizationSettings)>
 </#function>
 
 <#macro view u o={} additionalScripts="">
@@ -55,9 +55,10 @@
                             <a href="${routes.getRouteUrl("org.updateAvatar", u.user.name)}"><i class="fas fa-edit"></i> <@spring.message "user.editAvatar" /></a>
                         </div>
 
-                        <#if !u.headerData.currentUser.readPrompts.contains(Prompt.ChangeAvatar)>
+                        <#--TODO prompts -->
+                        <#--<#if !u.headerData.currentUser.readPrompts.contains(Prompt.ChangeAvatar)>
                             <@prompt.prompt prompt=Prompt.ChangeAvatar id="popover-avatar" />
-                        </#if>
+                        </#if>-->
                     </#if>
 
                     <span class="user-title">

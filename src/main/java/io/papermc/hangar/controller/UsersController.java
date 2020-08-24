@@ -4,10 +4,12 @@ import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.model.NotificationsTable;
+import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.InviteFilter;
 import io.papermc.hangar.model.NotificationFilter;
 import io.papermc.hangar.service.NotificationService;
+import io.papermc.hangar.service.OrgService;
 import io.papermc.hangar.service.SitemapService;
 import io.papermc.hangar.service.SsoService;
 import io.papermc.hangar.service.UserService;
@@ -56,6 +58,7 @@ public class UsersController extends HangarController {
     private final RouteHelper routeHelper;
     private final AuthenticationService authenticationService;
     private final UserService userService;
+    private final OrgService orgService;
     private final RoleService roleService;
     private final ApiKeyService apiKeyService;
     private final PermissionService permissionService;
@@ -70,11 +73,12 @@ public class UsersController extends HangarController {
 
 
     @Autowired
-    public UsersController(HangarConfig hangarConfig, RouteHelper routeHelper, AuthenticationService authenticationService, UserService userService, RoleService roleService, ApiKeyService apiKeyService, PermissionService permissionService, NotificationService notificationService, SsoService ssoService, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, SitemapService sitemapService, HttpServletRequest request, HttpServletResponse response) {
+    public UsersController(HangarConfig hangarConfig, RouteHelper routeHelper, AuthenticationService authenticationService, UserService userService, OrgService orgService, RoleService roleService, ApiKeyService apiKeyService, PermissionService permissionService, NotificationService notificationService, SsoService ssoService, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, SitemapService sitemapService, HttpServletRequest request, HttpServletResponse response) {
         this.hangarConfig = hangarConfig;
         this.routeHelper = routeHelper;
         this.authenticationService = authenticationService;
         this.userService = userService;
+        this.orgService = orgService;
         this.roleService = roleService;
         this.apiKeyService = apiKeyService;
         this.permissionService = permissionService;
@@ -211,8 +215,10 @@ public class UsersController extends HangarController {
     @RequestMapping("/{user}")
     public ModelAndView showProjects(@PathVariable String user) {
         ModelAndView mav = new ModelAndView("users/projects");
+        OrganizationsTable organizationsTable = orgService.getOrganization(user);
         mav.addObject("u", userService.getUserData(user));
-        mav.addObject("o", null); // TODO organization
+        mav.addObject("o", orgService.getOrganizationData(organizationsTable));
+        mav.addObject("so", orgService.getScopedOrganizationData(organizationsTable));
         return fillModel(mav);
     }
 

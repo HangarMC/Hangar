@@ -170,8 +170,8 @@ public class UserService {
             organizations.put(organization, new UserRole<>(userOrganizationRolesTable));
         });
         List<Role> globalRoles = roleService.getGlobalRolesForUser(user.getId(), null);
-        Permission userPerm = Permission.All;
-        Permission orgaPerm = Permission.None;
+        Permission userPerm = Permission.All; // TODO perms here
+        Permission orgaPerm = Permission.None; // TODO perms here
         return new UserData(getHeaderData(), user, isOrga, projectCount, organizations, globalRoles, userPerm, orgaPerm);
     }
 

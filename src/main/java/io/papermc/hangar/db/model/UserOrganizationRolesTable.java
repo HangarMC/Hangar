@@ -1,6 +1,8 @@
 package io.papermc.hangar.db.model;
 
 
+import io.papermc.hangar.model.Role;
+
 import java.time.OffsetDateTime;
 
 public class UserOrganizationRolesTable implements RoleTable {
@@ -11,6 +13,7 @@ public class UserOrganizationRolesTable implements RoleTable {
     private String roleType;
     private long organizationId;
     private boolean isAccepted;
+    private Role role;
 
     public UserOrganizationRolesTable(long userId, String roleType, long organizationId, boolean isAccepted) {
         this.userId = userId;
@@ -74,4 +77,9 @@ public class UserOrganizationRolesTable implements RoleTable {
         this.isAccepted = isAccepted;
     }
 
+    @Override
+    public Role getRole() {
+        if (this.role == null) role = Role.fromValue(roleType);
+        return role;
+    }
 }

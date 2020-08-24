@@ -104,7 +104,7 @@ public class RoleService {
 
     public void addOrgMemberRole(long orgId, long userId, Role role, boolean accepted) {
         OrgMember orgMember = orgService.getOrganizationMember(orgId, userId);
-        if (orgMember == null) { // add org member
+        if (orgMember == null || orgMember.getRoles().size() == 0) { // add org member
             orgMember = orgService.addOrgMember(orgId, userId);
         }
         for (Role userRole : orgMember.getRoles()) {
