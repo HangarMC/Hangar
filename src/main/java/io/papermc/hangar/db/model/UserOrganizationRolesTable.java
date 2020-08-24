@@ -79,7 +79,9 @@ public class UserOrganizationRolesTable implements RoleTable {
 
     @Override
     public Role getRole() {
-        if (this.role == null) role = Role.fromValue(roleType);
+        if (this.role == null) {
+            role = Role.fromValue(roleType);
+        }
         return role;
     }
 }

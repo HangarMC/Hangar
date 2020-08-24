@@ -22,6 +22,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Locale;
 import java.util.Map;
 
 @Component
@@ -51,21 +52,26 @@ public class OrgFactory {
     public OrganizationsTable createOrganization(String name, long ownerId, Map<Long, Role> members) {
         // TODO logging
         String dummyEmail = name.replaceAll("[^a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]", "") + '@' + hangarConfig.org.getDummyEmailDomain();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("api-key", hangarConfig.sso.getApiKey());
-        map.add("username", name);
-        map.add("email", dummyEmail);
-        map.add("verified", Boolean.TRUE.toString());
-        map.add("dummy", Boolean.TRUE.toString());
         AuthUser authOrgUser;
-        try {
-            authOrgUser = mapper.treeToValue(restTemplate.postForObject(hangarConfig.security.api.getUrl() + "/api/users", new HttpEntity<>(map, headers), ObjectNode.class), AuthUser.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new HangarException("error.org.cannotCreate");
+        if (!hangarConfig.fakeUser.isEnabled()) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+            map.add("api-key", hangarConfig.sso.getApiKey());
+            map.add("username", name);
+            map.add("email", dummyEmail);
+            map.add("verified", Boolean.TRUE.toString());
+            map.add("dummy", Boolean.TRUE.toString());
+            try {
+                authOrgUser = mapper.treeToValue(restTemplate.postForObject(hangarConfig.security.api.getUrl() + "/api/users", new HttpEntity<>(map, headers), ObjectNode.class), AuthUser.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new HangarException("error.org.cannotCreate");
+            }
+        } else {
+            authOrgUser = new AuthUser(-100, name, dummyEmail, "", Locale.ENGLISH, null);
         }
+
         // TODO this will happen via /api/sync_sso, but I have no idea how to get that whole system working with Docker
         userDao.get().insert(new UsersTable(authOrgUser.getId(), null, name, dummyEmail, null, new int[0], false, authOrgUser.getLang().toLanguageTag()));
         OrganizationsTable org = new OrganizationsTable(name, ownerId, authOrgUser.getId());

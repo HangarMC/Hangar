@@ -38,7 +38,9 @@ public class JoinableData<R extends RoleTable, T> {
     public Map<R, UsersTable> filteredMembers(HeaderData headerData) {
         boolean hasEditMembers = headerData.globalPerm(Permission.ManageSubjectMembers);
         boolean userIsOwner = headerData.isAuthenticated() && headerData.getCurrentUser().getId() == ownerId;
-        if (hasEditMembers || userIsOwner) return members;
+        if (hasEditMembers || userIsOwner) {
+            return members;
+        }
         else return members.entrySet().stream().filter(member -> member.getKey().getIsAccepted()).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
     }
 }

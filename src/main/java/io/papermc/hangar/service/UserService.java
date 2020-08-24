@@ -162,7 +162,6 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         // TODO getUserData
-        boolean isOrga = organizationDao.get().getByUserId(user.getId()) != null;
         int projectCount = projectDao.get().getProjectCountByUserId(user.getId());
         Map<OrganizationsTable, UserOrganizationRolesTable> dbOrgs = orgDao.get().getUserOrganizationsAndRoles(user.getId());
         Map<OrganizationsTable, UserRole<UserOrganizationRolesTable>> organizations = new HashMap<>();
@@ -170,6 +169,7 @@ public class UserService {
             organizations.put(organization, new UserRole<>(userOrganizationRolesTable));
         });
         List<Role> globalRoles = roleService.getGlobalRolesForUser(user.getId(), null);
+        boolean isOrga = globalRoles.contains(Role.ORGANIZATION);
         Permission userPerm = Permission.All; // TODO perms here
         Permission orgaPerm = Permission.None; // TODO perms here
         return new UserData(getHeaderData(), user, isOrga, projectCount, organizations, globalRoles, userPerm, orgaPerm);

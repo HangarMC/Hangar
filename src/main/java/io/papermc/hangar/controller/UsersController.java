@@ -217,8 +217,10 @@ public class UsersController extends HangarController {
         ModelAndView mav = new ModelAndView("users/projects");
         OrganizationsTable organizationsTable = orgService.getOrganization(user);
         mav.addObject("u", userService.getUserData(user));
-        mav.addObject("o", orgService.getOrganizationData(organizationsTable));
-        mav.addObject("so", orgService.getScopedOrganizationData(organizationsTable));
+        if (organizationsTable != null) {
+            mav.addObject("o", orgService.getOrganizationData(organizationsTable));
+            mav.addObject("so", orgService.getScopedOrganizationData(organizationsTable));
+        }
         return fillModel(mav);
     }
 
