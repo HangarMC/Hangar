@@ -11,7 +11,7 @@
         <ul class="dropdown-menu" aria-labelledby="visibility-actions">
             <#list Visibility.values() as visibility>
                 <li>
-                    <a href="#" class="btn-visibility-change" data-project="${namespace}" data-level="${visibility.value}" data-modal="${visibility.showModal?string('true', 'false')}" >
+                    <a href="#" class="btn-visibility-change" data-project="${namespace}" data-level="${visibility.getName()}" data-modal="${visibility.showModal?string('true', 'false')}" >
                         <@spring.message "visibility.name." + visibility.getName() /> <#if projectVisibility == visibility>  <i class="fa fa-check" style="color: black" aria-hidden="true"></i> </#if>
                     </a>
                 </li>
