@@ -170,7 +170,7 @@ public class UserService {
         });
         List<Role> globalRoles = roleService.getGlobalRolesForUser(user.getId(), null);
         boolean isOrga = globalRoles.contains(Role.ORGANIZATION);
-        Permission userPerm = Permission.All; // TODO perms here
+        Permission userPerm = permissionService.getGlobalPermissions(user.getId());
         Permission orgaPerm = Permission.None; // TODO perms here
         return new UserData(getHeaderData(), user, isOrga, projectCount, organizations, globalRoles, userPerm, orgaPerm);
     }

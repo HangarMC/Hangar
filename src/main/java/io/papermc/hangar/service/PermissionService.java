@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 public class PermissionService {
 
@@ -43,7 +45,7 @@ public class PermissionService {
             else return Permission.None;
         }
         if (includeGlobal) return addDefaults(permissionsDao.get().getProjectPermission(usersTable.getId(), pluginId));
-        return permissionsDao.get().getProjectPermission(usersTable.getId(), pluginId);
+        return orNone(permissionsDao.get().getProjectPermission(usersTable.getId(), pluginId));
     }
 
     public Permission getOrganizationPermissions(UsersTable usersTable, String orgName) {
@@ -56,7 +58,7 @@ public class PermissionService {
             else return Permission.None;
         }
         if (includeGlobal) return addDefaults(permissionsDao.get().getOrgPermission(usersTable.getId(), orgName));
-        else return permissionsDao.get().getOrgPermission(usersTable.getId(), orgName);
+        else return orNone(permissionsDao.get().getOrgPermission(usersTable.getId(), orgName));
     }
 
     public Permission getPossibleProjectPermissions(long userId) {
@@ -65,6 +67,10 @@ public class PermissionService {
 
     public Permission getPossibleOrganizationPermissions(long userId) {
         return addDefaults(permissionsDao.get().getPossibleOrganizationPermissions(userId));
+    }
+
+    private Permission orNone(@Nullable Permission permission) {
+        return Objects.requireNonNullElse(permission, Permission.None);
     }
 
     private Permission addDefaults(@Nullable Permission permission) {
