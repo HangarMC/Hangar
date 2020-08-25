@@ -47,13 +47,13 @@ public class OrgController extends HangarController {
         this.routeHelper = routeHelper;
     }
 
-    @RequestMapping("/organisations/invite/{id}/{status}")
+    @RequestMapping("/organizations/invite/{id}/{status}")
     public Object setInviteStatus(@PathVariable Object id, @PathVariable Object status) {
         return null; // TODO implement setInviteStatus request controller
     }
 
     @Secured("ROLE_USER")
-    @GetMapping("/organisations/new")
+    @GetMapping("/organizations/new")
     public ModelAndView showCreator(RedirectAttributes attributes, ModelMap modelMap) {
         if (orgService.getUserOwnedOrgs(userService.getCurrentUser().getId()).size() >= hangarConfig.org.getCreateLimit()) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.org.createLimit", String.valueOf(hangarConfig.org.getCreateLimit()));
@@ -63,7 +63,7 @@ public class OrgController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @PostMapping(value = "/organisations/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/organizations/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView create(@RequestParam String name, @RequestParam(required = false) List<Long> users, @RequestParam(required = false) List<Role> roles, RedirectAttributes attributes) {
         if (orgService.getUserOwnedOrgs(userService.getCurrentUser().getId()).size() >= hangarConfig.org.getCreateLimit()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "at create limit");
@@ -93,20 +93,20 @@ public class OrgController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/organisations/{organisations}/settings/avatar")
-    public Object updateAvatar(@PathVariable Object organisations) {
+    @RequestMapping("/organizations/{organization}/settings/avatar")
+    public Object updateAvatar(@PathVariable Object organization) {
         return null; // TODO implement updateAvatar request controller
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/organisations/{organisations}/settings/members")
-    public Object updateMembers(@PathVariable Object organisations) {
+    @RequestMapping("/organizations/{organization}/settings/members")
+    public Object updateMembers(@PathVariable Object organization) {
         return null; // TODO implement updateMembers request controller
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/organisations/{organisations}/settings/members/remove")
-    public Object removeMember(@PathVariable Object organisations) {
+    @RequestMapping("/organizations/{organization}/settings/members/remove")
+    public Object removeMember(@PathVariable Object organization) {
         return null; // TODO implement removeMember request controller
     }
 

@@ -18,7 +18,7 @@ class RouteHelperTest {
     @Test
     void testSomeShit() throws Exception {
         assertEquals("/", classUnderTest.getRouteUrl("showHome"));
-        assertEquals("/organisations/new", classUnderTest.getRouteUrl("org.showCreator"));
+        assertEquals("/organizations/new", classUnderTest.getRouteUrl("org.showCreator"));
         assertEquals("/linkout", classUnderTest.getRouteUrl("linkOut", ""));
         assertEquals("/linkout?remoteUrl=TestUrl", classUnderTest.getRouteUrl("linkOut", "TestUrl"));
         assertEquals("/staff", classUnderTest.getRouteUrl("users.showStaff", "", ""));

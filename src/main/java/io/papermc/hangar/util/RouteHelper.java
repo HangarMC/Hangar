@@ -108,12 +108,12 @@ public class RouteHelper {
         register("users.userSitemap", "/{user}/sitemap.xml", of("user"), of());
         register("users.editApiKeys", "/{user}/settings/apiKeys", of("user"), of());
 
-        register("org.updateMembers", "/organisations/{organisations}/settings/members", of("organisations"), of());
-        register("org.updateAvatar", "/organisations/{organisations}/settings/avatar", of("organisations"), of());
-        register("org.setInviteStatus", "/organisations/invite/{id}/{status}", of("id", "status"), of());
-        register("org.showCreator", "/organisations/new", of(), of());
-        register("org.create", "/organisations/new", of(), of());
-        register("org.removeMember", "/organisations/{organisations}/settings/members/remove", of("organisations"), of());
+        register("org.updateMembers", "/organizations/{organization}/settings/members", of("organization"), of());
+        register("org.updateAvatar", "/organizations/{organization}/settings/avatar", of("organization"), of());
+        register("org.setInviteStatus", "/organizations/invite/{id}/{status}", of("id", "status"), of());
+        register("org.showCreator", "/organizations/new", of(), of());
+        register("org.create", "/organizations/new", of(), of());
+        register("org.removeMember", "/organizations/{organization}/settings/members/remove", of("organization"), of());
 
         register("reviews.addMessage", "/{author}/{slug}/versions/{version}/reviews/addmessage", of("author", "slug", "version"), of());
         register("reviews.backlogToggle", "/{author}/{slug}/versions/{version}/reviews/reviewtoggle", of("author", "slug", "version"), of());
