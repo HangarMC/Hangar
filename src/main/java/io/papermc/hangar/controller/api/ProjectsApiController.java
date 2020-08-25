@@ -74,7 +74,11 @@ public class ProjectsApiController implements ProjectsApi {
         boolean seeHidden = currentUser != null && permissionService.getGlobalPermissions(currentUser.getId()).has(Permission.SeeHidden);
         Long requesterId = currentUser == null ? null : currentUser.getId();
 
+        seeHidden = true; //TODO for testing
+
+        String sqlQuery = projectSelectFrag(null, categories, tags, q, owner, seeHidden, requesterId);
         List<Project> projects = projectService.getProjects(
+                sqlQuery,
                 null,
                 categories,
                 parsedTags,
@@ -138,6 +142,74 @@ public class ProjectsApiController implements ProjectsApi {
             log.error("Couldn't serialize response for content type application/json", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    //Same name as in 'APIV2Queries' from ore
+    public String projectSelectFrag(String pluginId, List<Category> categories, List<String> tags, String query, String owner, boolean canSeeHidden, Long currentUserId){
+
+        String base = "SELECT p.created_at," +
+                "       p.plugin_id," +
+                "       p.name," +
+                "       p.owner_name," +
+                "       p.slug," +
+                "       p.promoted_versions," +
+                "       p.views," +
+                "       p.downloads," +
+                "       p.recent_views," +
+                "       p.recent_downloads," +
+                "       p.stars," +
+                "       p.watchers," +
+                "       p.category," +
+                "       p.description," +
+                "       COALESCE(p.last_updated, p.created_at) AS last_updated," +
+                "       p.visibility, " +
+                        getSQLStatementForStarsAndWatchers(currentUserId) +
+                "       ps.homepage," +
+                "       ps.issues," +
+                "       ps.source," +
+                "       ps.support," +
+                "       ps.license_name," +
+                "       ps.license_url," +
+                "       ps.forum_sync" +
+                "  FROM home_projects p" +
+                "         JOIN projects ps ON p.id = ps.id ";
+
+
+        String visibilityFrag = "";
+        boolean notAllowedToSeeAllProjects = !canSeeHidden;
+        if(notAllowedToSeeAllProjects) {
+            visibilityFrag = "(p.visibility = 1 OR (:currentUserId = ANY(p.project_members) AND p.visibility != 5))";
+        }
+
+        return whereAndOpt(base, visibilityFrag);
+    }
+
+    private String getSQLStatementForStarsAndWatchers(Long currentUserId){
+        if(currentUserId == null){
+            return "'FALSE', 'FALSE', ";
+        }
+        return "EXISTS(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS user_stared, " +
+            "EXISTS(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS user_watching, ";
+    }
+
+    private String whereAndOpt(String baseStatement, String ... optionalWhereStatements){
+        StringBuilder sqlStatement = new StringBuilder(baseStatement);
+        List<String> whereConditions = getNonEmptyWhereConditions(optionalWhereStatements);
+        if(whereConditions.size() > 0) {
+            sqlStatement.append(" WHERE ");
+            for(String whereCondition : whereConditions){
+                sqlStatement.append(whereCondition);
+            }
+        }
+        return sqlStatement.toString();
+    }
+
+    private List<String> getNonEmptyWhereConditions(String[] optionalWhereConditions){
+        List<String> whereConditions = new ArrayList<>();
+        for(String condition : optionalWhereConditions){
+            if(!condition.isEmpty()) { whereConditions.add(condition); }
+        }
+        return whereConditions;
     }
 
 

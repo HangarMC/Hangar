@@ -30,6 +30,9 @@ import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.model.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.model.viewhelpers.UserRole;
 
+import org.jdbi.v3.core.Handle;
+import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.statement.SqlStatements;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,9 +56,10 @@ public class ProjectService {
     private final HangarDao<ProjectApiDao> projectApiDao;
     private final UserService userService;
     private final FlagService flagService;
+    private final Jdbi jdbi;
 
     @Autowired
-    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectApiDao> projectApiDao, UserService userService, FlagService flagService) {
+    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectApiDao> projectApiDao, UserService userService, FlagService flagService, Jdbi jdbi) {
         this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
         this.userDao = userDao;
@@ -63,6 +67,7 @@ public class ProjectService {
         this.projectApiDao = projectApiDao;
         this.userService = userService;
         this.flagService = flagService;
+        this.jdbi = jdbi;
     }
 
     public ProjectData getProjectData(String author, String slug) {
@@ -194,7 +199,7 @@ public class ProjectService {
     }
 
     // TODO move to API daos
-    public List<Project> getProjects(String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean seeHidden, Long requesterId, ProjectSortingStrategy sort, boolean relevance, long limit, long offset) {
+    public List<Project> getProjects(String sqlStatement, String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean seeHidden, Long requesterId, ProjectSortingStrategy sort, boolean relevance, long limit, long offset) {
         String ordering;
         if (relevance && query != null && !query.isEmpty()) {
             // TODO implement ordering by relevance, see APIVV2Queries#199
@@ -203,7 +208,17 @@ public class ProjectService {
             ordering = sort.getSql();
         }
 
-        return projectApiDao.get().listProjects(pluginId, categories, tags, query, owner, seeHidden, requesterId, ordering, limit, offset);
+        List<Project> projects;
+        try(Handle handle = jdbi.open()){
+            projects = handle.configure(SqlStatements.class, s-> s.setUnusedBindingAllowed(true))
+                    .createQuery(sqlStatement)
+                    .bind("currentUserId", requesterId)
+                    .mapToBean(Project.class)
+                    .collect(Collectors.toList());
+        }
+
+//        List<Project> projects = projectApiDao.get().listProjects(pluginId, categories, tags, query, owner, seeHidden, requesterId, ordering, limit, offset);
+        return projects;
     }
 
     public long countProjects(String pluginId, List<Category> categories, List<Tag> parsedTags, String query, String owner, boolean seeHidden, Long requesterId) {
