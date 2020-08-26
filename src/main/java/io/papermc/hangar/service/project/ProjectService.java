@@ -218,6 +218,7 @@ public class ProjectService {
                     .bind("currentUserId", requesterId)
                     .bind("pluginId", pluginId)
                     .bind("owner", owner)
+                    .bind("query", query)
                     .bindList(EmptyHandling.NULL_KEYWORD, "categories", categoriesNumbers) //The NULL_KEYWORD is necessary for when the list is empty or null
                     .mapToBean(Project.class)
                     .collect(Collectors.toList());
@@ -237,6 +238,7 @@ public class ProjectService {
                     .bind("currentUserId", requesterId)
                     .bind("pluginId", pluginId)
                     .bind("owner", owner)
+                    .bind("query", query)
                     .bindList(EmptyHandling.NULL_KEYWORD, "categories", categoriesNumbers) //The NULL_KEYWORD is necessary for when the list is empty or null
                     .mapTo(Long.class)
                     .one();

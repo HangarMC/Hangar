@@ -82,13 +82,18 @@ public class ProjectsApiController implements ProjectsApi {
             categories = List.of();
         }
 
+        owner = "";
+        String trimmedQuery = "";
+        if(q != null && !q.isBlank()) {
+            trimmedQuery = q.trim(); //Ore#APIV2Queries line 169
+        }
         String sqlQuery = projectSelectFrag(pluginId, categories, tags, q, owner, seeHidden, requesterId);
         List<Project> projects = projectService.getProjects(
                 sqlQuery,
                 pluginId,
                 categories,
                 parsedTags,
-                q,
+                trimmedQuery,
                 owner,
                 seeHidden,
                 requesterId,
@@ -103,7 +108,7 @@ public class ProjectsApiController implements ProjectsApi {
                 pluginId,
                 categories,
                 parsedTags,
-                q,
+                trimmedQuery,
                 owner,
                 seeHidden,
                 requesterId
@@ -208,8 +213,17 @@ public class ProjectsApiController implements ProjectsApi {
             ownerCondition = " p.owner_name = :owner ";
         }
 
+        String queryCondition = "";
+        if(query != null && !query.isBlank()){
+            if(query.endsWith(" ")) {
+                queryCondition = "p.search_words @@ websearch_to_tsquery('english', :query)";
+            } else {
+                queryCondition = "p.search_words @@ websearch_to_tsquery_postfix('english', :query)";
+            }
+        }
 
-        String filters = whereAndOpt(visibilityFrag, pluginIdCondition, categoryCondition, tagsCondition, ownerCondition);
+
+        String filters = whereAndOpt(visibilityFrag, pluginIdCondition, categoryCondition, tagsCondition, ownerCondition, queryCondition);
         return base + filters;
     }
 
