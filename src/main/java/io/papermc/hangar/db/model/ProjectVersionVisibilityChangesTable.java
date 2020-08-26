@@ -14,7 +14,7 @@ public class ProjectVersionVisibilityChangesTable {
     private long versionId;
     private String comment;
     private OffsetDateTime resolvedAt;
-    private long resolvedBy;
+    private Long resolvedBy;
     private Visibility visibility;
 
     public ProjectVersionVisibilityChangesTable(long createdBy, long versionId, String comment, Visibility visibility) {
@@ -80,11 +80,11 @@ public class ProjectVersionVisibilityChangesTable {
     }
 
 
-    public long getResolvedBy() {
+    public Long getResolvedBy() {
         return resolvedBy;
     }
 
-    public void setResolvedBy(long resolvedBy) {
+    public void setResolvedBy(Long resolvedBy) {
         this.resolvedBy = resolvedBy;
     }
 
