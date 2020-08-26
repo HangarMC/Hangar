@@ -77,15 +77,15 @@ public class ProjectsApiController implements ProjectsApi {
         Long requesterId = currentUser == null ? null : currentUser.getId();
 
         seeHidden = true; //TODO for testing
-
+        String pluginId = "";
         if(categories == null){
             categories = List.of();
         }
 
-        String sqlQuery = projectSelectFrag(null, categories, tags, q, owner, seeHidden, requesterId);
+        String sqlQuery = projectSelectFrag(pluginId, categories, tags, q, owner, seeHidden, requesterId);
         List<Project> projects = projectService.getProjects(
                 sqlQuery,
-                null,
+                pluginId,
                 categories,
                 parsedTags,
                 q,
@@ -99,7 +99,8 @@ public class ProjectsApiController implements ProjectsApi {
         );
 
         long count = projectService.countProjects(
-                null,
+                sqlQuery,
+                pluginId,
                 categories,
                 parsedTags,
                 q,
@@ -184,28 +185,56 @@ public class ProjectsApiController implements ProjectsApi {
         String visibilityFrag = "";
         boolean notAllowedToSeeAllProjects = !canSeeHidden;
         if(notAllowedToSeeAllProjects) {
-            visibilityFrag = "(p.visibility = 1 OR (:currentUserId = ANY(p.project_members) AND p.visibility != 5))";
+            visibilityFrag = " (p.visibility = 1 OR (:currentUserId = ANY(p.project_members) AND p.visibility != 5)) ";
+        }
+
+        String pluginIdCondition = "";
+        if(pluginId != null && !pluginId.isBlank()){
+            pluginIdCondition = " (p.plugin_id = :pluginId) ";
         }
 
         String categoryCondition = "";
         if(categories.size() > 0){
-            categoryCondition = " ( p.category in (<categories>) ) ";
+            categoryCondition = " (p.category in (<categories>)) ";
+        }
+
+        String tagsCondition = "";
+        if(tags != null){
+            String jsSelect = getSqlStatementForTags(tags);
+        }
+
+        String ownerCondition = "";
+        if(owner != null && !owner.isBlank()){
+            ownerCondition = " p.owner_name = :owner ";
         }
 
 
-        return whereAndOpt(base, visibilityFrag, categoryCondition);
+        String filters = whereAndOpt(visibilityFrag, pluginIdCondition, categoryCondition, tagsCondition, ownerCondition);
+        return base + filters;
     }
 
     private String getSQLStatementForStarsAndWatchers(Long currentUserId){
         if(currentUserId == null){
-            return "'FALSE', 'FALSE', ";
+            return "FALSE, FALSE, ";
         }
         return "EXISTS(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS user_stared, " +
             "EXISTS(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS user_watching, ";
     }
 
-    private String whereAndOpt(String baseStatement, String ... optionalWhereStatements){
-        StringBuilder sqlStatement = new StringBuilder(baseStatement);
+    //TODO: Tags seems to exist in ore as an combination of <tag_name, tag_version>, we have only a single string here not
+    // clear yet how this string looks like and or we need to preprocess it.
+    private String getSqlStatementForTags(List<String> tags){
+        String baseStatement = " SELECT pv.tag_name FROM jsonb_to_recordset(p.promoted_versions) AS pv(tag_name TEXT, tag_version TEXT) ";
+//        String whereWithData = " (pv.tag_name, pv.tag_version) in (<tags>) "; //TODO add data option to tags?
+        String whereWithoutData = " (pv.tag_name) in (<tags>) ";
+        String condition = baseStatement + whereAndOpt(whereWithoutData); //whereAndOpt(whereWithData, whereWithoutData);
+
+        return " EXISTS ( " + condition + " ) ";
+    }
+
+
+    private String whereAndOpt(String ... optionalWhereStatements){
+        StringBuilder sqlStatement = new StringBuilder();
         List<String> whereConditions = Arrays.stream(optionalWhereStatements)
                 .filter((text) -> !text.isEmpty())
                 .collect(Collectors.toList());

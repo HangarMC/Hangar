@@ -216,7 +216,9 @@ public class ProjectService {
             projects = handle.configure(SqlStatements.class, s-> s.setUnusedBindingAllowed(true))
                     .createQuery(sqlStatement)
                     .bind("currentUserId", requesterId)
-                    .bindList(EmptyHandling.NULL_KEYWORD, "categories", categoriesNumbers)
+                    .bind("pluginId", pluginId)
+                    .bind("owner", owner)
+                    .bindList(EmptyHandling.NULL_KEYWORD, "categories", categoriesNumbers) //The NULL_KEYWORD is necessary for when the list is empty or null
                     .mapToBean(Project.class)
                     .collect(Collectors.toList());
         }
@@ -225,7 +227,19 @@ public class ProjectService {
         return projects;
     }
 
-    public long countProjects(String pluginId, List<Category> categories, List<Tag> parsedTags, String query, String owner, boolean seeHidden, Long requesterId) {
-        return 1; // TODO count projects query
+    public long countProjects(String sqlStatement, String pluginId, List<Category> categories, List<Tag> parsedTags, String query, String owner, boolean seeHidden, Long requesterId) {
+        List<Integer> categoriesNumbers = categories.stream().map(Enum::ordinal).collect(Collectors.toList());
+        String countStatement = "SELECT COUNT(*) FROM ( " + sqlStatement + " ) sq";
+
+        try(Handle handle = jdbi.open()){
+            return handle.configure(SqlStatements.class, s-> s.setUnusedBindingAllowed(true))
+                    .createQuery(countStatement)
+                    .bind("currentUserId", requesterId)
+                    .bind("pluginId", pluginId)
+                    .bind("owner", owner)
+                    .bindList(EmptyHandling.NULL_KEYWORD, "categories", categoriesNumbers) //The NULL_KEYWORD is necessary for when the list is empty or null
+                    .mapTo(Long.class)
+                    .one();
+        }
     }
 }
