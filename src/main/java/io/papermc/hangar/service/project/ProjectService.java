@@ -32,6 +32,7 @@ import io.papermc.hangar.model.viewhelpers.UserRole;
 
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.statement.EmptyHandling;
 import org.jdbi.v3.core.statement.SqlStatements;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -208,11 +209,14 @@ public class ProjectService {
             ordering = sort.getSql();
         }
 
+        List<Integer> categoriesNumbers = categories.stream().map(Enum::ordinal).collect(Collectors.toList());
+
         List<Project> projects;
         try(Handle handle = jdbi.open()){
             projects = handle.configure(SqlStatements.class, s-> s.setUnusedBindingAllowed(true))
                     .createQuery(sqlStatement)
                     .bind("currentUserId", requesterId)
+                    .bindList(EmptyHandling.NULL_KEYWORD, "categories", categoriesNumbers)
                     .mapToBean(Project.class)
                     .collect(Collectors.toList());
         }

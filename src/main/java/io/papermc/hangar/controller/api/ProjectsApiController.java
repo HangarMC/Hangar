@@ -29,8 +29,10 @@ import org.springframework.stereotype.Controller;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class ProjectsApiController implements ProjectsApi {
@@ -75,6 +77,10 @@ public class ProjectsApiController implements ProjectsApi {
         Long requesterId = currentUser == null ? null : currentUser.getId();
 
         seeHidden = true; //TODO for testing
+
+        if(categories == null){
+            categories = List.of();
+        }
 
         String sqlQuery = projectSelectFrag(null, categories, tags, q, owner, seeHidden, requesterId);
         List<Project> projects = projectService.getProjects(
@@ -181,7 +187,13 @@ public class ProjectsApiController implements ProjectsApi {
             visibilityFrag = "(p.visibility = 1 OR (:currentUserId = ANY(p.project_members) AND p.visibility != 5))";
         }
 
-        return whereAndOpt(base, visibilityFrag);
+        String categoryCondition = "";
+        if(categories.size() > 0){
+            categoryCondition = " ( p.category in (<categories>) ) ";
+        }
+
+
+        return whereAndOpt(base, visibilityFrag, categoryCondition);
     }
 
     private String getSQLStatementForStarsAndWatchers(Long currentUserId){
@@ -194,23 +206,20 @@ public class ProjectsApiController implements ProjectsApi {
 
     private String whereAndOpt(String baseStatement, String ... optionalWhereStatements){
         StringBuilder sqlStatement = new StringBuilder(baseStatement);
-        List<String> whereConditions = getNonEmptyWhereConditions(optionalWhereStatements);
+        List<String> whereConditions = Arrays.stream(optionalWhereStatements)
+                .filter((text) -> !text.isEmpty())
+                .collect(Collectors.toList());
+
         if(whereConditions.size() > 0) {
             sqlStatement.append(" WHERE ");
-            for(String whereCondition : whereConditions){
-                sqlStatement.append(whereCondition);
+            for (int i = 0; i < whereConditions.size(); i++) {
+                sqlStatement.append(whereConditions.get(i));
+                if((whereConditions.size()-1) > i ) { //As long as the size of it -1, is large than the i. It needs to add " AND "
+                    sqlStatement.append(" AND ");
+                }
             }
         }
         return sqlStatement.toString();
     }
-
-    private List<String> getNonEmptyWhereConditions(String[] optionalWhereConditions){
-        List<String> whereConditions = new ArrayList<>();
-        for(String condition : optionalWhereConditions){
-            if(!condition.isEmpty()) { whereConditions.add(condition); }
-        }
-        return whereConditions;
-    }
-
 
 }
