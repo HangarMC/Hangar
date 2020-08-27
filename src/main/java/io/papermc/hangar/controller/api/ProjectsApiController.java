@@ -76,20 +76,9 @@ public class ProjectsApiController implements ProjectsApi {
         boolean seeHidden = currentUser != null && permissionService.getGlobalPermissions(currentUser.getId()).has(Permission.SeeHidden);
         Long requesterId = currentUser == null ? null : currentUser.getId();
 
-        seeHidden = true; //TODO for testing
-        String pluginId = "";
-        if(categories == null){
-            categories = List.of();
-        }
+        String pluginId = null;
 
-        owner = "";
-        String trimmedQuery = "";
-        if(q != null && !q.isBlank()) {
-            trimmedQuery = q.trim(); //Ore#APIV2Queries line 169
-        }
-        String sqlQuery = projectSelectFrag(pluginId, categories, parsedTags, q, owner, seeHidden, requesterId);
         List<Project> projects = projectService.getProjects(
-                sqlQuery,
                 pluginId,
                 categories,
                 parsedTags,
@@ -104,11 +93,10 @@ public class ProjectsApiController implements ProjectsApi {
         );
 
         long count = projectService.countProjects(
-                sqlQuery,
                 pluginId,
                 categories,
                 parsedTags,
-                trimmedQuery,
+                q,
                 owner,
                 seeHidden,
                 requesterId
@@ -154,122 +142,6 @@ public class ProjectsApiController implements ProjectsApi {
             log.error("Couldn't serialize response for content type application/json", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    //Same name as in 'APIV2Queries' from ore
-    public String projectSelectFrag(String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean canSeeHidden, Long currentUserId){
-
-        String base = "SELECT p.created_at," +
-                "       p.plugin_id," +
-                "       p.name," +
-                "       p.owner_name," +
-                "       p.slug," +
-                "       p.promoted_versions," +
-                "       p.views," +
-                "       p.downloads," +
-                "       p.recent_views," +
-                "       p.recent_downloads," +
-                "       p.stars," +
-                "       p.watchers," +
-                "       p.category," +
-                "       p.description," +
-                "       COALESCE(p.last_updated, p.created_at) AS last_updated," +
-                "       p.visibility, " +
-                        getSQLStatementForStarsAndWatchers(currentUserId) +
-                "       ps.homepage," +
-                "       ps.issues," +
-                "       ps.source," +
-                "       ps.support," +
-                "       ps.license_name," +
-                "       ps.license_url," +
-                "       ps.forum_sync" +
-                "  FROM home_projects p" +
-                "         JOIN projects ps ON p.id = ps.id ";
-
-
-        String visibilityFrag = "";
-        boolean notAllowedToSeeAllProjects = !canSeeHidden;
-        if(notAllowedToSeeAllProjects) {
-            visibilityFrag = " (p.visibility = 1 OR (:currentUserId = ANY(p.project_members) AND p.visibility != 5)) ";
-        }
-
-        String pluginIdCondition = "";
-        if(pluginId != null && !pluginId.isBlank()){
-            pluginIdCondition = " (p.plugin_id = :pluginId) ";
-        }
-
-        String categoryCondition = "";
-        if(categories.size() > 0){
-            categoryCondition = " (p.category in (<categories>)) ";
-        }
-
-        String tagsCondition = "";
-        if(tags.size() > 0){
-            tagsCondition = getSqlStatementForTags(tags);
-        }
-
-        String ownerCondition = "";
-        if(owner != null && !owner.isBlank()){
-            ownerCondition = " p.owner_name = :owner ";
-        }
-
-        String queryCondition = "";
-        if(query != null && !query.isBlank()){
-            if(query.endsWith(" ")) {
-                queryCondition = "p.search_words @@ websearch_to_tsquery('english', :query)";
-            } else {
-                //TODO: Fix websearch_to_tsquery_postfix function in init.sql so that it gets added to the database on init
-                queryCondition = "p.search_words @@ websearch_to_tsquery_postfix('english', :query)";
-            }
-        }
-
-
-        String filters = whereAndOpt(visibilityFrag, pluginIdCondition, categoryCondition, tagsCondition, ownerCondition, queryCondition);
-        return base + filters;
-    }
-
-    private String getSQLStatementForStarsAndWatchers(Long currentUserId){
-        if(currentUserId == null){
-            return "FALSE, FALSE, ";
-        }
-        return "EXISTS(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS user_stared, " +
-            "EXISTS(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS user_watching, ";
-    }
-
-    private String getSqlStatementForTags(List<Tag> tags){
-        String baseStatement = " SELECT pv.tag_name FROM jsonb_to_recordset(p.promoted_versions) AS pv(tag_name TEXT, tag_version TEXT) ";
-        boolean doesAnyTagContainData = tags.stream().anyMatch(tag -> tag.getData() != null);
-        boolean doesAnyTagContainNoData = tags.stream().anyMatch(tag -> tag.getData() == null);
-        String whereWithData = "";
-        String whereWithoutData = "";
-        if(doesAnyTagContainData){
-            whereWithData = " (pv.tag_name, pv.tag_version) in (<tags_names_version>) ";
-        }
-        if(doesAnyTagContainNoData){
-            whereWithoutData = " (pv.tag_name) in (<tags_names>) ";
-        }
-        String condition = baseStatement + whereAndOpt(whereWithData, whereWithoutData);
-
-        return " EXISTS ( " + condition + " ) ";
-    }
-
-
-    private String whereAndOpt(String ... optionalWhereStatements){
-        StringBuilder sqlStatement = new StringBuilder();
-        List<String> whereConditions = Arrays.stream(optionalWhereStatements)
-                .filter((text) -> !text.isEmpty())
-                .collect(Collectors.toList());
-
-        if(whereConditions.size() > 0) {
-            sqlStatement.append(" WHERE ");
-            for (int i = 0; i < whereConditions.size(); i++) {
-                sqlStatement.append(whereConditions.get(i));
-                if((whereConditions.size()-1) > i ) { //As long as the size of it -1, is large than the i. It needs to add " AND "
-                    sqlStatement.append(" AND ");
-                }
-            }
-        }
-        return sqlStatement.toString();
     }
 
 }

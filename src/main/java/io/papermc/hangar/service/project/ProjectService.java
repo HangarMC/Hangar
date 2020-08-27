@@ -30,10 +30,7 @@ import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.model.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.model.viewhelpers.UserRole;
 
-import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.statement.EmptyHandling;
-import org.jdbi.v3.core.statement.SqlStatements;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -200,11 +197,7 @@ public class ProjectService {
     }
 
     // TODO move to API daos
-    public List<Project> getProjects(String sqlStatement, String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean seeHidden, Long requesterId, ProjectSortingStrategy sort, boolean orderWithRelevance, long limit, long offset) {
-        String trimmedQuery = "";
-        if(query != null && !query.isBlank()) {
-            trimmedQuery = query.trim(); //Ore#APIV2Queries line 169 && 200
-        }
+    public List<Project> getProjects(String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean seeHidden, Long requesterId, ProjectSortingStrategy sort, boolean orderWithRelevance, long limit, long offset) {
         String ordering = sort.getSql();
         if (orderWithRelevance && query != null && !query.isEmpty()) {
             String relevance = "ts_rank(p.search_words, websearch_to_tsquery_postfix('english', :query)) DESC";
@@ -229,56 +222,44 @@ public class ProjectService {
             }
             ordering = orderingFirstHalf + relevance;
         }
-
-        String projectSQLQuery = sqlStatement + " ORDER BY " + ordering + " LIMIT :limit OFFSET :offset ";
-        List<Project> projects;
-        try(Handle handle = jdbi.open()){
-            projects = handle.configure(SqlStatements.class, s-> s.setUnusedBindingAllowed(true))
-                    .createQuery(projectSQLQuery)
-                    .bind("currentUserId", requesterId)
-                    .bind("pluginId", pluginId)
-                    .bind("owner", owner)
-                    .bind("query", trimmedQuery)
-                    .bind("limit", limit)
-                    .bind("offset", offset)
-                    .bindList(EmptyHandling.NULL_KEYWORD, "categories", getCategorieNumbers(categories)) //The NULL_KEYWORD is necessary for when the list is empty or null
-                    .bindList(EmptyHandling.NULL_KEYWORD, "tags_names_version", getTagsNamesAndVersion(tags)) //The NULL_KEYWORD is necessary for when the list is empty or null
-                    .bindList(EmptyHandling.NULL_KEYWORD, "tags_names", getTagsNames(tags)) //The NULL_KEYWORD is necessary for when the list is empty or null
-                    .mapToBean(Project.class)
-                    .collect(Collectors.toList());
-        }
-
-//        List<Project> projects = projectApiDao.get().listProjects(pluginId, categories, tags, query, owner, seeHidden, requesterId, ordering, limit, offset);
-        return projects;
+        return projectApiDao.get().listProjects(pluginId, owner, seeHidden, requesterId, ordering, getCategoryNumbers(categories), getTagsNames(tags), trimQuery(query), getQueryStatement(query), limit, offset);
     }
 
-    public long countProjects(String sqlStatement, String pluginId, List<Category> categories, List<Tag> parsedTags, String query, String owner, boolean seeHidden, Long requesterId) {
-        String countStatement = "SELECT COUNT(*) FROM ( " + sqlStatement + " ) sq";
-
-        try(Handle handle = jdbi.open()){
-            return handle.configure(SqlStatements.class, s-> s.setUnusedBindingAllowed(true))
-                    .createQuery(countStatement)
-                    .bind("currentUserId", requesterId)
-                    .bind("pluginId", pluginId)
-                    .bind("owner", owner)
-                    .bind("query", query) //Query is already trimmed in the method caller
-                    .bindList(EmptyHandling.NULL_KEYWORD, "categories", getCategorieNumbers(categories)) //The NULL_KEYWORD is necessary for when the list is empty or null
-                    .bindList(EmptyHandling.NULL_KEYWORD, "tags_names_version", getTagsNamesAndVersion(parsedTags)) //The NULL_KEYWORD is necessary for when the list is empty or null
-                    .bindList(EmptyHandling.NULL_KEYWORD, "tags_names", getTagsNames(parsedTags)) //The NULL_KEYWORD is necessary for when the list is empty or null
-                    .mapTo(Long.class)
-                    .one();
-        }
+    public long countProjects(String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean seeHidden, Long requesterId) {
+        return projectApiDao.get().countProjects(pluginId, owner, seeHidden, requesterId, getCategoryNumbers(categories), getTagsNames(tags), trimQuery(query), getQueryStatement(query));
     }
 
-    private List<Integer> getCategorieNumbers(List<Category> categories){
-        return categories.stream().map(Enum::ordinal).collect(Collectors.toList());
+    private String trimQuery(String query){
+        String trimmedQuery = null;
+        if(query != null && !query.isBlank()) {
+            trimmedQuery = query.trim(); //Ore#APIV2Queries line 169 && 200
+        }
+        return trimmedQuery;
+    }
+
+    private String getQueryStatement(String query){
+        String queryStatement = null;
+        if(query != null && !query.isBlank()){
+            if(query.endsWith(" ")) {
+                queryStatement = "p.search_words @@ websearch_to_tsquery('english', :query)";
+            } else {
+                //TODO: Fix websearch_to_tsquery_postfix function in init.sql so that it gets added to the database on init
+                queryStatement =  "p.search_words @@ websearch_to_tsquery_postfix('english', :query)";
+            }
+        }
+        return queryStatement;
+    }
+
+    private List<Integer> getCategoryNumbers(List<Category> categories){
+
+        return categories == null ? null : categories.stream().map(Enum::ordinal).collect(Collectors.toList());
     }
 
     private List<String> getTagsNames(List<Tag> tags){
-        return tags.stream().filter(tag -> tag.getData() == null).map(Tag::getName).collect(Collectors.toList());
+        return tags == null ? null : tags.stream().filter(tag -> tag.getData() == null).map(Tag::getName).collect(Collectors.toList());
     }
 
     private List<String> getTagsNamesAndVersion(List<Tag> tags){
-        return tags.stream().filter(tag -> tag.getData() != null).map(tag -> " (" + tag.getName() + "," +  tag.getData() + ") ").collect(Collectors.toList());
+        return tags == null ? null :  tags.stream().filter(tag -> tag.getData() != null).map(tag -> " (" + tag.getName() + "," +  tag.getData() + ") ").collect(Collectors.toList());
     }
 }
