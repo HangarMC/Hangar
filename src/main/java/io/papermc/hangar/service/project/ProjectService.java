@@ -200,25 +200,46 @@ public class ProjectService {
     }
 
     // TODO move to API daos
-    public List<Project> getProjects(String sqlStatement, String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean seeHidden, Long requesterId, ProjectSortingStrategy sort, boolean relevance, long limit, long offset) {
-        String ordering;
-        if (relevance && query != null && !query.isEmpty()) {
-            // TODO implement ordering by relevance, see APIVV2Queries#199
-            ordering = sort.getSql();
-        } else {
-            ordering = sort.getSql();
+    public List<Project> getProjects(String sqlStatement, String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean seeHidden, Long requesterId, ProjectSortingStrategy sort, boolean orderWithRelevance, long limit, long offset) {
+        String trimmedQuery = "";
+        if(query != null && !query.isBlank()) {
+            trimmedQuery = query.trim(); //Ore#APIV2Queries line 169 && 200
+        }
+        String ordering = sort.getSql();
+        if (orderWithRelevance && query != null && !query.isEmpty()) {
+            String relevance = "ts_rank(p.search_words, websearch_to_tsquery_postfix('english', :query)) DESC";
+            if(query.endsWith(" ")) {
+                relevance = "ts_rank(p.search_words, websearch_to_tsquery('english', :query)) DESC";
+            }
+            String orderingFirstHalf;
+            switch(sort){
+                case STARS: orderingFirstHalf = "p.starts * "; break;
+                case DOWNLOADS: orderingFirstHalf ="(p.downloads / 100) * "; break;
+                case VIEWS: orderingFirstHalf ="(p.views / 200) *"; break;
+                case NEWEST: orderingFirstHalf ="((EXTRACT(EPOCH FROM p.created_at) - 1483056000) / 86400) *"; break;
+                case UPDATED: orderingFirstHalf ="((EXTRACT(EPOCH FROM p.last_updated) - 1483056000) / 604800) *"; break;
+                case ONLY_RELEVANCE: orderingFirstHalf =""; break;
+                case RECENT_DOWNLOADS : orderingFirstHalf ="p.recent_views *"; break;
+                case RECENT_VIEWS: orderingFirstHalf ="p.recent_downloads*"; break;
+                default:
+                    orderingFirstHalf = " "; //Just in case and so that the ide doesnt complain
+            }
+            ordering = orderingFirstHalf + relevance;
         }
 
-        List<Integer> categoriesNumbers = categories.stream().map(Enum::ordinal).collect(Collectors.toList());
+        String projectSQLQuery = sqlStatement + " ORDER BY " + ordering + " LIMIT :limit OFFSET :offset ";
 
+        List<Integer> categoriesNumbers = categories.stream().map(Enum::ordinal).collect(Collectors.toList());
         List<Project> projects;
         try(Handle handle = jdbi.open()){
             projects = handle.configure(SqlStatements.class, s-> s.setUnusedBindingAllowed(true))
-                    .createQuery(sqlStatement)
+                    .createQuery(projectSQLQuery)
                     .bind("currentUserId", requesterId)
                     .bind("pluginId", pluginId)
                     .bind("owner", owner)
-                    .bind("query", query)
+                    .bind("query", trimmedQuery)
+                    .bind("limit", limit)
+                    .bind("offset", offset)
                     .bindList(EmptyHandling.NULL_KEYWORD, "categories", categoriesNumbers) //The NULL_KEYWORD is necessary for when the list is empty or null
                     .mapToBean(Project.class)
                     .collect(Collectors.toList());
@@ -232,13 +253,14 @@ public class ProjectService {
         List<Integer> categoriesNumbers = categories.stream().map(Enum::ordinal).collect(Collectors.toList());
         String countStatement = "SELECT COUNT(*) FROM ( " + sqlStatement + " ) sq";
 
+
         try(Handle handle = jdbi.open()){
             return handle.configure(SqlStatements.class, s-> s.setUnusedBindingAllowed(true))
                     .createQuery(countStatement)
                     .bind("currentUserId", requesterId)
                     .bind("pluginId", pluginId)
                     .bind("owner", owner)
-                    .bind("query", query)
+                    .bind("query", query) //Query is already trimmed in the method caller
                     .bindList(EmptyHandling.NULL_KEYWORD, "categories", categoriesNumbers) //The NULL_KEYWORD is necessary for when the list is empty or null
                     .mapTo(Long.class)
                     .one();

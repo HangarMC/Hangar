@@ -56,7 +56,7 @@ public class ProjectsApiController implements ProjectsApi {
 
     @Override
     @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.util.ApiScope).forGlobal())")
-    public ResponseEntity<PaginatedProjectResult> listProjects(String q, List<Category> categories, List<String> tags, String owner, ProjectSortingStrategy sort, boolean relevance, Long inLimit, Long inOffset, ApiAuthInfo apiAuthInfo) {
+    public ResponseEntity<PaginatedProjectResult> listProjects(String q, List<Category> categories, List<String> tags, String owner, ProjectSortingStrategy sort, boolean orderWithRelevance, Long inLimit, Long inOffset, ApiAuthInfo apiAuthInfo) {
         // handle input
         long limit = ApiUtil.limitOrDefault(inLimit, hangarConfig.getProjects().getInitLoad());
         long offset = ApiUtil.offsetOrZero(inOffset);
@@ -93,12 +93,12 @@ public class ProjectsApiController implements ProjectsApi {
                 pluginId,
                 categories,
                 parsedTags,
-                trimmedQuery,
+                q,
                 owner,
                 seeHidden,
                 requesterId,
                 sort,
-                relevance,
+                orderWithRelevance,
                 limit,
                 offset
         );
