@@ -87,7 +87,7 @@ public class ProjectsApiController implements ProjectsApi {
         if(q != null && !q.isBlank()) {
             trimmedQuery = q.trim(); //Ore#APIV2Queries line 169
         }
-        String sqlQuery = projectSelectFrag(pluginId, categories, tags, q, owner, seeHidden, requesterId);
+        String sqlQuery = projectSelectFrag(pluginId, categories, parsedTags, q, owner, seeHidden, requesterId);
         List<Project> projects = projectService.getProjects(
                 sqlQuery,
                 pluginId,
@@ -157,7 +157,7 @@ public class ProjectsApiController implements ProjectsApi {
     }
 
     //Same name as in 'APIV2Queries' from ore
-    public String projectSelectFrag(String pluginId, List<Category> categories, List<String> tags, String query, String owner, boolean canSeeHidden, Long currentUserId){
+    public String projectSelectFrag(String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean canSeeHidden, Long currentUserId){
 
         String base = "SELECT p.created_at," +
                 "       p.plugin_id," +
@@ -204,8 +204,8 @@ public class ProjectsApiController implements ProjectsApi {
         }
 
         String tagsCondition = "";
-        if(tags != null){
-            String jsSelect = getSqlStatementForTags(tags);
+        if(tags.size() > 0){
+            tagsCondition = getSqlStatementForTags(tags);
         }
 
         String ownerCondition = "";
@@ -218,7 +218,7 @@ public class ProjectsApiController implements ProjectsApi {
             if(query.endsWith(" ")) {
                 queryCondition = "p.search_words @@ websearch_to_tsquery('english', :query)";
             } else {
-                //TODO: Fix websearch_to_tsquery_postfix function in init.sql
+                //TODO: Fix websearch_to_tsquery_postfix function in init.sql so that it gets added to the database on init
                 queryCondition = "p.search_words @@ websearch_to_tsquery_postfix('english', :query)";
             }
         }
@@ -236,13 +236,19 @@ public class ProjectsApiController implements ProjectsApi {
             "EXISTS(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS user_watching, ";
     }
 
-    //TODO: Tags seems to exist in ore as an combination of <tag_name, tag_version>, we have only a single string here not
-    // clear yet how this string looks like and or we need to preprocess it.
-    private String getSqlStatementForTags(List<String> tags){
+    private String getSqlStatementForTags(List<Tag> tags){
         String baseStatement = " SELECT pv.tag_name FROM jsonb_to_recordset(p.promoted_versions) AS pv(tag_name TEXT, tag_version TEXT) ";
-//        String whereWithData = " (pv.tag_name, pv.tag_version) in (<tags>) "; //TODO add data option to tags?
-        String whereWithoutData = " (pv.tag_name) in (<tags>) ";
-        String condition = baseStatement + whereAndOpt(whereWithoutData); //whereAndOpt(whereWithData, whereWithoutData);
+        boolean doesAnyTagContainData = tags.stream().anyMatch(tag -> tag.getData() != null);
+        boolean doesAnyTagContainNoData = tags.stream().anyMatch(tag -> tag.getData() == null);
+        String whereWithData = "";
+        String whereWithoutData = "";
+        if(doesAnyTagContainData){
+            whereWithData = " (pv.tag_name, pv.tag_version) in (<tags_names_version>) ";
+        }
+        if(doesAnyTagContainNoData){
+            whereWithoutData = " (pv.tag_name) in (<tags_names>) ";
+        }
+        String condition = baseStatement + whereAndOpt(whereWithData, whereWithoutData);
 
         return " EXISTS ( " + condition + " ) ";
     }

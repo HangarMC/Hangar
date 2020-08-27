@@ -212,6 +212,9 @@ public class ProjectService {
                 relevance = "ts_rank(p.search_words, websearch_to_tsquery('english', :query)) DESC";
             }
             String orderingFirstHalf;
+            // 1483056000 is the Ore epoch
+            // 86400 seconds to days
+            // 604800‬ seconds to weeks
             switch(sort){
                 case STARS: orderingFirstHalf = "p.starts * "; break;
                 case DOWNLOADS: orderingFirstHalf ="(p.downloads / 100) * "; break;
@@ -228,8 +231,6 @@ public class ProjectService {
         }
 
         String projectSQLQuery = sqlStatement + " ORDER BY " + ordering + " LIMIT :limit OFFSET :offset ";
-
-        List<Integer> categoriesNumbers = categories.stream().map(Enum::ordinal).collect(Collectors.toList());
         List<Project> projects;
         try(Handle handle = jdbi.open()){
             projects = handle.configure(SqlStatements.class, s-> s.setUnusedBindingAllowed(true))
@@ -240,7 +241,9 @@ public class ProjectService {
                     .bind("query", trimmedQuery)
                     .bind("limit", limit)
                     .bind("offset", offset)
-                    .bindList(EmptyHandling.NULL_KEYWORD, "categories", categoriesNumbers) //The NULL_KEYWORD is necessary for when the list is empty or null
+                    .bindList(EmptyHandling.NULL_KEYWORD, "categories", getCategorieNumbers(categories)) //The NULL_KEYWORD is necessary for when the list is empty or null
+                    .bindList(EmptyHandling.NULL_KEYWORD, "tags_names_version", getTagsNamesAndVersion(tags)) //The NULL_KEYWORD is necessary for when the list is empty or null
+                    .bindList(EmptyHandling.NULL_KEYWORD, "tags_names", getTagsNames(tags)) //The NULL_KEYWORD is necessary for when the list is empty or null
                     .mapToBean(Project.class)
                     .collect(Collectors.toList());
         }
@@ -250,9 +253,7 @@ public class ProjectService {
     }
 
     public long countProjects(String sqlStatement, String pluginId, List<Category> categories, List<Tag> parsedTags, String query, String owner, boolean seeHidden, Long requesterId) {
-        List<Integer> categoriesNumbers = categories.stream().map(Enum::ordinal).collect(Collectors.toList());
         String countStatement = "SELECT COUNT(*) FROM ( " + sqlStatement + " ) sq";
-
 
         try(Handle handle = jdbi.open()){
             return handle.configure(SqlStatements.class, s-> s.setUnusedBindingAllowed(true))
@@ -261,9 +262,23 @@ public class ProjectService {
                     .bind("pluginId", pluginId)
                     .bind("owner", owner)
                     .bind("query", query) //Query is already trimmed in the method caller
-                    .bindList(EmptyHandling.NULL_KEYWORD, "categories", categoriesNumbers) //The NULL_KEYWORD is necessary for when the list is empty or null
+                    .bindList(EmptyHandling.NULL_KEYWORD, "categories", getCategorieNumbers(categories)) //The NULL_KEYWORD is necessary for when the list is empty or null
+                    .bindList(EmptyHandling.NULL_KEYWORD, "tags_names_version", getTagsNamesAndVersion(parsedTags)) //The NULL_KEYWORD is necessary for when the list is empty or null
+                    .bindList(EmptyHandling.NULL_KEYWORD, "tags_names", getTagsNames(parsedTags)) //The NULL_KEYWORD is necessary for when the list is empty or null
                     .mapTo(Long.class)
                     .one();
         }
+    }
+
+    private List<Integer> getCategorieNumbers(List<Category> categories){
+        return categories.stream().map(Enum::ordinal).collect(Collectors.toList());
+    }
+
+    private List<String> getTagsNames(List<Tag> tags){
+        return tags.stream().filter(tag -> tag.getData() == null).map(Tag::getName).collect(Collectors.toList());
+    }
+
+    private List<String> getTagsNamesAndVersion(List<Tag> tags){
+        return tags.stream().filter(tag -> tag.getData() != null).map(tag -> " (" + tag.getName() + "," +  tag.getData() + ") ").collect(Collectors.toList());
     }
 }
