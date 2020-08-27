@@ -1207,3 +1207,28 @@ END;
 $$;
 
 alter function logged_action_type_from_int(integer) owner to hangar;
+
+create function websearch_to_tsquery_postfix(dictionary regconfig, query text) returns tsquery
+    immutable
+    strict
+    language plpgsql
+as $$
+DECLARE
+    arr  TEXT[]  := regexp_split_to_array(query, '\s+');
+    last TEXT    := websearch_to_tsquery('simple', arr[array_length(arr, 1)])::TEXT;
+    init TSQUERY := websearch_to_tsquery(dictionary, regexp_replace(query, '\S+$', ''));
+BEGIN
+    IF last = '' THEN
+        BEGIN
+            RETURN init && $2::TSQUERY;
+        EXCEPTION
+            WHEN SYNTAX_ERROR THEN
+                RETURN init && websearch_to_tsquery('');
+        END;
+    END IF;
+
+    RETURN init && (websearch_to_tsquery(dictionary, last) || to_tsquery('simple', last || ':*'));
+END;
+$$;
+
+alter function websearch_to_tsquery_postfix(regconfig, text) owner to hangar;

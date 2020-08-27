@@ -218,6 +218,7 @@ public class ProjectsApiController implements ProjectsApi {
             if(query.endsWith(" ")) {
                 queryCondition = "p.search_words @@ websearch_to_tsquery('english', :query)";
             } else {
+                //TODO: Fix websearch_to_tsquery_postfix function in init.sql
                 queryCondition = "p.search_words @@ websearch_to_tsquery_postfix('english', :query)";
             }
         }
