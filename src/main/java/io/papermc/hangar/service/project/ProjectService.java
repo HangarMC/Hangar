@@ -30,7 +30,6 @@ import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.model.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.model.viewhelpers.UserRole;
 
-import org.jdbi.v3.core.Jdbi;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,10 +53,9 @@ public class ProjectService {
     private final HangarDao<ProjectApiDao> projectApiDao;
     private final UserService userService;
     private final FlagService flagService;
-    private final Jdbi jdbi;
 
     @Autowired
-    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectApiDao> projectApiDao, UserService userService, FlagService flagService, Jdbi jdbi) {
+    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectApiDao> projectApiDao, UserService userService, FlagService flagService) {
         this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
         this.userDao = userDao;
@@ -65,7 +63,6 @@ public class ProjectService {
         this.projectApiDao = projectApiDao;
         this.userService = userService;
         this.flagService = flagService;
-        this.jdbi = jdbi;
     }
 
     public ProjectData getProjectData(String author, String slug) {
