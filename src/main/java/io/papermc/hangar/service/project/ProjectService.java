@@ -222,11 +222,11 @@ public class ProjectService {
             }
             ordering = orderingFirstHalf + relevance;
         }
-        return projectApiDao.get().listProjects(pluginId, owner, seeHidden, requesterId, ordering, getCategoryNumbers(categories), getTagsNames(tags), trimQuery(query), getQueryStatement(query), limit, offset);
+        return projectApiDao.get().listProjects(pluginId, owner, seeHidden, requesterId, ordering, categories, getTagsNames(tags), trimQuery(query), getQueryStatement(query), limit, offset);
     }
 
     public long countProjects(String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean seeHidden, Long requesterId) {
-        return projectApiDao.get().countProjects(pluginId, owner, seeHidden, requesterId, getCategoryNumbers(categories), getTagsNames(tags), trimQuery(query), getQueryStatement(query));
+        return projectApiDao.get().countProjects(pluginId, owner, seeHidden, requesterId, categories, getTagsNames(tags), trimQuery(query), getQueryStatement(query));
     }
 
     private String trimQuery(String query){
@@ -243,16 +243,10 @@ public class ProjectService {
             if(query.endsWith(" ")) {
                 queryStatement = "p.search_words @@ websearch_to_tsquery('english', :query)";
             } else {
-                //TODO: Fix websearch_to_tsquery_postfix function in init.sql so that it gets added to the database on init
                 queryStatement =  "p.search_words @@ websearch_to_tsquery_postfix('english', :query)";
             }
         }
         return queryStatement;
-    }
-
-    private List<Integer> getCategoryNumbers(List<Category> categories){
-
-        return categories == null ? null : categories.stream().map(Enum::ordinal).collect(Collectors.toList());
     }
 
     private List<String> getTagsNames(List<Tag> tags){

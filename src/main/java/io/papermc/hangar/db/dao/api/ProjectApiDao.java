@@ -2,11 +2,9 @@ package io.papermc.hangar.db.dao.api;
 
 import io.papermc.hangar.model.Category;
 import io.papermc.hangar.model.generated.Project;
-import io.papermc.hangar.model.generated.Tag;
 
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
-import org.jdbi.v3.sqlobject.customizer.AllowUnusedBindings;
 import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.customizer.DefineNamedBindings;
@@ -63,7 +61,7 @@ public interface ProjectApiDao {
             "         OFFSET :offset")
     @DefineNamedBindings
     List<Project> listProjects(String pluginId, String owner, boolean seeHidden, Long requesterId, @Define String orderBy,
-                                  @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<Integer> categories,
+                                  @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) @EnumByOrdinal List<Category> categories,
                                   @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<String> tags, //TODO: implement tags with mc_version('data')
                                   String query, @Define String queryStatement, long limit, long offset);
 
@@ -107,9 +105,8 @@ public interface ProjectApiDao {
             "           AS pv(tag_name TEXT, tag_version TEXT) WHERE (pv.tag_name) in (<tags>) ) <endif> " +
             "         ) sq")
     @DefineNamedBindings
-    @AllowUnusedBindings //TODO: for some reason he complains about superfluous names parameters provided, but everything is used...
-    long countProjects(String pluginId, String owner, boolean seeHidden, Long requesterId,
-                       @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<Integer> categories,
+    long countProjects(String pluginId, String owner, @Define boolean seeHidden, Long requesterId,
+                       @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) @EnumByOrdinal List<Category> categories,
                        @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<String> tags, //TODO: implement tags with mc_version('data')
                        String query, @Define String queryStatement);
 }
