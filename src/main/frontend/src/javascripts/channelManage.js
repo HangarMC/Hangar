@@ -125,6 +125,7 @@ function initColorPicker() {
         trigger: 'manual',
         container: $(this).attr('id'),
         placement: 'right',
+        sanitize: false,
         content: function() {
             return getModal().find(".popover-color-picker").html();
         }
