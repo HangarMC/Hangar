@@ -21,30 +21,30 @@
             </tr>
             <tr>
                 <td style="padding: 3px;">
-                    <i class="fas fa-circle channel-id" style="color: ${Color.getById(4).getHex()}"></i>
-                </td>
-                <td style="padding: 3px;">
-                    <i class="fas fa-circle channel-id" style="color: ${Color.getById(5).getHex()}"></i>
-                </td>
-                <td style="padding: 3px;">
                     <i class="fas fa-circle channel-id" style="color: ${Color.getById(6).getHex()}"></i>
                 </td>
                 <td style="padding: 3px;">
                     <i class="fas fa-circle channel-id" style="color: ${Color.getById(7).getHex()}"></i>
                 </td>
-            </tr>
-            <tr>
                 <td style="padding: 3px;">
                     <i class="fas fa-circle channel-id" style="color: ${Color.getById(8).getHex()}"></i>
                 </td>
                 <td style="padding: 3px;">
                     <i class="fas fa-circle channel-id" style="color: ${Color.getById(9).getHex()}"></i>
                 </td>
+            </tr>
+            <tr>
                 <td style="padding: 3px;">
                     <i class="fas fa-circle channel-id" style="color: ${Color.getById(10).getHex()}"></i>
                 </td>
                 <td style="padding: 3px;">
                     <i class="fas fa-circle channel-id" style="color: ${Color.getById(11).getHex()}"></i>
+                </td>
+                <td style="padding: 3px;">
+                    <i class="fas fa-circle channel-id" style="color: ${Color.getById(13).getHex()}"></i>
+                </td>
+                <td style="padding: 3px;">
+                    <i class="fas fa-circle channel-id" style="color: ${Color.getById(14).getHex()}"></i>
                 </td>
             </tr>
         </tbody>

@@ -44,7 +44,6 @@ public class ChannelsController extends HangarController {
     public ModelAndView create(@PathVariable String author, @PathVariable String slug, @RequestParam("channel-input") String channelId, @RequestParam("channel-color-input") String channelHex) {
         ProjectData projectData = projectService.getProjectData(author, slug);
         channelService.addProjectChannel(projectData.getProject().getId(), channelId, Color.getByHexStr(channelHex));
-        //TODO fix popoverColorPicker to select the color
         return new ModelAndView("redirect:" + routeHelper.getRouteUrl("channels.showList", author, slug));
     }
 
