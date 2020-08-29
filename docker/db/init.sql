@@ -935,12 +935,12 @@ FROM projects p
          LEFT JOIN project_versions lv ON p.id = lv.project_id
          JOIN project_members_all pm ON p.id = pm.id
          LEFT JOIN (SELECT p_1.id,
-                           count(*) AS stars
+                           COUNT(ps_1.user_id) AS stars
                     FROM projects p_1
                              LEFT JOIN project_stars ps_1 ON p_1.id = ps_1.project_id
                     GROUP BY p_1.id) ps ON p.id = ps.id
          LEFT JOIN (SELECT p_1.id,
-                           count(*) AS watchers
+                           count(pw_1.user_id) AS watchers
                     FROM projects p_1
                              LEFT JOIN project_watchers pw_1 ON p_1.id = pw_1.project_id
                     GROUP BY p_1.id) pw ON p.id = pw.id
