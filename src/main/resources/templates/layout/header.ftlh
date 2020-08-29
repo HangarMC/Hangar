@@ -6,10 +6,12 @@
         <div class="container">
             <#-- Left navbar -->
             <div id="sp-logo-container">
-                <a class="logo" href="${routes.getRouteUrl("showHome")}">
-                    <img src="https://papermc.io/images/logo-marker.svg" alt="Paper logo">
+                <div class="logo">
+                    <a href="${routes.getRouteUrl("showHome")}">
+                        <img src="https://papermc.io/images/logo-marker.svg" alt="Paper logo">
+                    </a>
                     <i class="fas fa-fw fa-chevron-down"></i>
-                </a>
+                </div>
 
                 <div id="sp-logo-menu">
                     <ul id="sp-logo-dropdown">
