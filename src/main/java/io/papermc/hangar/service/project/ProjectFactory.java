@@ -230,7 +230,9 @@ public class ProjectFactory {
         if (projectVersions.stream().filter(p -> p.getVisibility() == Visibility.PUBLIC).count() <= 1) {
             throw new HangarException("error.version.onlyOnePublic");
         }
-        if (versionData.getV().getId() == versionData.getP().getRecommendedVersion().getId()) { // pick new recommended
+
+        ProjectVersionsTable recommended = versionData.getP().getRecommendedVersion();
+        if (recommended != null && versionData.getV().getId() == recommended.getId()) { // pick new recommended
             Optional<ProjectVersionsTable> tableOptional = projectVersions.stream().filter(v -> v.getId() != versionData.getV().getId() && v.getVisibility() != Visibility.SOFTDELETE).findFirst();
             tableOptional.ifPresent(projectVersionsTable -> {
                 versionData.getP().getProject().setRecommendedVersionId(projectVersionsTable.getId());

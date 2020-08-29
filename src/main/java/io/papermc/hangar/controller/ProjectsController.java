@@ -509,7 +509,9 @@ public class ProjectsController extends HangarController {
         ObjectNode note = messages.addObject();
         note.put("message", content);
         note.put("user", userService.getCurrentUser().getId());
-        projectDao.get().update(projectData.getProject()); // TODO check why this doesn't update notes
+
+        String json = projectData.getProject().getNotes().getJson().toString();
+        projectDao.get().updateNotes(json, projectData.getProject().getId());
         return null;
     }
 

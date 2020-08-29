@@ -1,5 +1,6 @@
 package io.papermc.hangar.db.dao.api;
 
+import io.papermc.hangar.db.mappers.PromotedVersionMapper;
 import io.papermc.hangar.model.Category;
 import io.papermc.hangar.model.generated.Project;
 
@@ -8,6 +9,8 @@ import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.customizer.DefineNamedBindings;
+import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
+import org.jdbi.v3.sqlobject.customizer.AllowUnusedBindings;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 import org.springframework.stereotype.Repository;

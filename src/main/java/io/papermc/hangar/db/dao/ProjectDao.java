@@ -1,5 +1,6 @@
 package io.papermc.hangar.db.dao;
 
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
@@ -37,6 +38,9 @@ public interface ProjectDao {
             "license_name = :licenseName, license_url = :licenseUrl, forum_sync = :forumSync, description = :description, visibility = :visibility, " +
             "recommended_version_id = :recommendedVersionId, notes = :notes WHERE id = :id")
     void update(@BindBean ProjectsTable project);
+
+    @SqlUpdate("UPDATE projects SET notes = cast(:notes as jsonb) WHERE id = :id") //TODO check why we have to cast and can't just update (this works tho)
+    void updateNotes(String notes, long id);
 
     @SqlUpdate("DELETE FROM projects WHERE id = :id")
     void delete(@BindBean ProjectsTable project);
