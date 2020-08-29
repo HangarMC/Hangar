@@ -6,8 +6,8 @@
 ### Projects
 * [x] admin\flags
 * [x] admin\notes
-* [ ] channels\helper\modalManage
-* [ ] channels\helper\popoverColorPicker
+* [x] channels\helper\modalManage
+* [x] channels\helper\popoverColorPicker
 * [x] channels\list
 * [x] helper\alertFile
 * [x] helper\btnHide
