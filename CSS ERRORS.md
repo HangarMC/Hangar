@@ -1,5 +1,5 @@
 #### General
-Main dropdown menu doesn't work on mobile
+~~Main dropdown menu doesn't work on mobile~~
 
 #### Project Settings
 Hovering over Visibility Actions makes background look bad
