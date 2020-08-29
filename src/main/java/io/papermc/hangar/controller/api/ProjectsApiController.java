@@ -29,8 +29,10 @@ import org.springframework.stereotype.Controller;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class ProjectsApiController implements ProjectsApi {
@@ -54,7 +56,7 @@ public class ProjectsApiController implements ProjectsApi {
 
     @Override
     @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.util.ApiScope).forGlobal())")
-    public ResponseEntity<PaginatedProjectResult> listProjects(String q, List<Category> categories, List<String> tags, String owner, ProjectSortingStrategy sort, boolean relevance, Long inLimit, Long inOffset, ApiAuthInfo apiAuthInfo) {
+    public ResponseEntity<PaginatedProjectResult> listProjects(String q, List<Category> categories, List<String> tags, String owner, ProjectSortingStrategy sort, boolean orderWithRelevance, Long inLimit, Long inOffset, ApiAuthInfo apiAuthInfo) {
         // handle input
         long limit = ApiUtil.limitOrDefault(inLimit, hangarConfig.getProjects().getInitLoad());
         long offset = ApiUtil.offsetOrZero(inOffset);
@@ -74,8 +76,10 @@ public class ProjectsApiController implements ProjectsApi {
         boolean seeHidden = currentUser != null && permissionService.getGlobalPermissions(currentUser.getId()).has(Permission.SeeHidden);
         Long requesterId = currentUser == null ? null : currentUser.getId();
 
+        String pluginId = null;
+
         List<Project> projects = projectService.getProjects(
-                null,
+                pluginId,
                 categories,
                 parsedTags,
                 q,
@@ -83,13 +87,13 @@ public class ProjectsApiController implements ProjectsApi {
                 seeHidden,
                 requesterId,
                 sort,
-                relevance,
+                orderWithRelevance,
                 limit,
                 offset
         );
 
         long count = projectService.countProjects(
-                null,
+                pluginId,
                 categories,
                 parsedTags,
                 q,
@@ -139,6 +143,5 @@ public class ProjectsApiController implements ProjectsApi {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
 }

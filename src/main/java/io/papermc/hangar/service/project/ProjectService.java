@@ -194,19 +194,63 @@ public class ProjectService {
     }
 
     // TODO move to API daos
-    public List<Project> getProjects(String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean seeHidden, Long requesterId, ProjectSortingStrategy sort, boolean relevance, long limit, long offset) {
-        String ordering;
-        if (relevance && query != null && !query.isEmpty()) {
-            // TODO implement ordering by relevance, see APIVV2Queries#199
-            ordering = sort.getSql();
-        } else {
-            ordering = sort.getSql();
+    public List<Project> getProjects(String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean seeHidden, Long requesterId, ProjectSortingStrategy sort, boolean orderWithRelevance, long limit, long offset) {
+        String ordering = sort.getSql();
+        if (orderWithRelevance && query != null && !query.isEmpty()) {
+            String relevance = "ts_rank(p.search_words, websearch_to_tsquery_postfix('english', :query)) DESC";
+            if(query.endsWith(" ")) {
+                relevance = "ts_rank(p.search_words, websearch_to_tsquery('english', :query)) DESC";
+            }
+            String orderingFirstHalf;
+            // 1483056000 is the Ore epoch
+            // 86400 seconds to days
+            // 604800‬ seconds to weeks
+            switch(sort){
+                case STARS: orderingFirstHalf = "p.starts * "; break;
+                case DOWNLOADS: orderingFirstHalf ="(p.downloads / 100) * "; break;
+                case VIEWS: orderingFirstHalf ="(p.views / 200) *"; break;
+                case NEWEST: orderingFirstHalf ="((EXTRACT(EPOCH FROM p.created_at) - 1483056000) / 86400) *"; break;
+                case UPDATED: orderingFirstHalf ="((EXTRACT(EPOCH FROM p.last_updated) - 1483056000) / 604800) *"; break;
+                case ONLY_RELEVANCE: orderingFirstHalf =""; break;
+                case RECENT_DOWNLOADS : orderingFirstHalf ="p.recent_views *"; break;
+                case RECENT_VIEWS: orderingFirstHalf ="p.recent_downloads*"; break;
+                default:
+                    orderingFirstHalf = " "; //Just in case and so that the ide doesnt complain
+            }
+            ordering = orderingFirstHalf + relevance;
         }
-
-        return projectApiDao.get().listProjects(pluginId, categories, tags, query, owner, seeHidden, requesterId, ordering, limit, offset);
+        return projectApiDao.get().listProjects(pluginId, owner, seeHidden, requesterId, ordering, categories, getTagsNames(tags), trimQuery(query), getQueryStatement(query), limit, offset);
     }
 
-    public long countProjects(String pluginId, List<Category> categories, List<Tag> parsedTags, String query, String owner, boolean seeHidden, Long requesterId) {
-        return 1; // TODO count projects query
+    public long countProjects(String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean seeHidden, Long requesterId) {
+        return projectApiDao.get().countProjects(pluginId, owner, seeHidden, requesterId, categories, getTagsNames(tags), trimQuery(query), getQueryStatement(query));
+    }
+
+    private String trimQuery(String query){
+        String trimmedQuery = null;
+        if(query != null && !query.isBlank()) {
+            trimmedQuery = query.trim(); //Ore#APIV2Queries line 169 && 200
+        }
+        return trimmedQuery;
+    }
+
+    private String getQueryStatement(String query){
+        String queryStatement = null;
+        if(query != null && !query.isBlank()){
+            if(query.endsWith(" ")) {
+                queryStatement = "p.search_words @@ websearch_to_tsquery('english', :query)";
+            } else {
+                queryStatement =  "p.search_words @@ websearch_to_tsquery_postfix('english', :query)";
+            }
+        }
+        return queryStatement;
+    }
+
+    private List<String> getTagsNames(List<Tag> tags){
+        return tags == null ? null : tags.stream().filter(tag -> tag.getData() == null).map(Tag::getName).collect(Collectors.toList());
+    }
+
+    private List<String> getTagsNamesAndVersion(List<Tag> tags){
+        return tags == null ? null :  tags.stream().filter(tag -> tag.getData() != null).map(tag -> " (" + tag.getName() + "," +  tag.getData() + ") ").collect(Collectors.toList());
     }
 }
