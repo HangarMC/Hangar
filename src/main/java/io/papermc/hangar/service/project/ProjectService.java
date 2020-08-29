@@ -4,6 +4,7 @@ import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.ProjectDao;
 import io.papermc.hangar.db.dao.UserDao;
+import io.papermc.hangar.db.dao.ProjectViewDao;
 import io.papermc.hangar.db.dao.api.ProjectApiDao;
 import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.db.model.ProjectVisibilityChangesTable;
@@ -46,16 +47,18 @@ public class ProjectService {
     private final HangarDao<UserDao> userDao;
     private final HangarDao<VisibilityDao> visibilityDao;
     private final HangarDao<ProjectApiDao> projectApiDao;
+    private final HangarDao<ProjectViewDao> projectViewDao;
     private final UserService userService;
     private final FlagService flagService;
 
     @Autowired
-    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectApiDao> projectApiDao, UserService userService, FlagService flagService) {
+    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectApiDao> projectApiDao, HangarDao<ProjectViewDao> projectViewDao, UserService userService, FlagService flagService) {
         this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
         this.userDao = userDao;
         this.visibilityDao = visibilityDao;
         this.projectApiDao = projectApiDao;
+        this.projectViewDao = projectViewDao;
         this.userService = userService;
         this.flagService = flagService;
     }
@@ -155,6 +158,9 @@ public class ProjectService {
     public Project getProjectApi(String pluginId) { // TODO still probably have to work out a standard for how to handle the api models
         ProjectsTable projectsTable = projectDao.get().getByPluginId(pluginId);
         if (projectsTable == null) return null;
+        //Increasing the view count by one for this project
+        projectViewDao.get().increaseView(projectsTable.getId()); //Refresh home_project view?
+
         Project project = new Project();
         project.setCreatedAt(projectsTable.getCreatedAt());
         project.setPluginId(projectsTable.getPluginId());

@@ -806,12 +806,12 @@ alter table project_views_individual owner to hangar;
 
 create table project_views
 (
-    day date not null,
+    day date not null default current_date,
     project_id bigint not null
         constraint project_views_project_id_fkey
             references projects
             on delete cascade,
-    views integer not null,
+    views integer not null default 1,
     constraint project_views_pkey
         primary key (project_id, day)
 );
