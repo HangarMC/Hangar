@@ -541,8 +541,9 @@ public class ProjectsController extends HangarController {
                            @PathVariable Visibility visibility,
                            @RequestParam(required = false) String comment) {
         ProjectData projectData = projectService.getProjectData(author, slug);
+        Visibility oldVisibility = projectData.getVisibility();
         projectService.changeVisibility(projectData.getProject(), visibility, comment);
-        // TODO user action logging
+        userActionLogService.project(request, LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(projectData.getProject().getId())), visibility.getName(), oldVisibility.getName());
     }
 
     @GetMapping("/{author}/{slug}/watchers")
