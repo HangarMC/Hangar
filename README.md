@@ -22,13 +22,13 @@ This project currently uses java 11.
 
 ## Deployment
 
-Deployment happens via docker, checkout the stack in the docker folder. You will want to modify the application.properties in the hangar folder.
+Deployment happens via Docker, checkout the stack in the docker folder. You will want to modify the application.properties in the hangar folder.
 
 ## Contributing
 
-There is a bunch of stuff to do, some of that is noted in the [status](STATUS.md) and [to-port](TO-PORT.md) files.  
+There is a bunch of stuff to do, some of that is noted in the [**Roadmap Project**](https://github.com/PaperMC/Hangar/projects/1). 
 Your best bet is joining #hangar-dev on the paper discord and just discussing with us.
-All contributions are very welcome, I will not be able to finish this alone!
+All contributions are very welcome, we will not be able to finish this alone!
 
 ## Licence
 
