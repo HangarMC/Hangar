@@ -11,8 +11,7 @@ import java.time.LocalDate;
 
 @Repository
 @RegisterBeanMapper(ProjectViewsTable.class)
-// TODO: decide where we do count it as a view and where we dont
-//  For now i will add it to the ProjectService
+// TODO: decide where we do count it as a view and where we don't
 public interface ProjectViewDao {
 
     // The db will automatically get the current_date from itself (if you dont provide any date)
