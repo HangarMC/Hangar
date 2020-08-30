@@ -216,7 +216,7 @@ public class Apiv1Controller extends HangarController {
             projectObj.set("href", mapper.valueToTree(project.getOwnerName() + "/" + project.getSlug()));
             projectObj.set("members", writeMembers(members.getOrDefault(project.getId(), new ArrayList<>())));
             projectObj.set("channels", mapper.valueToTree( projectChannels.getOrDefault(project.getId(), new ArrayList<>())));
-            projectObj.set("recommended", writeVersion(recommendedVersions.get(project.getId()), project, recommendedVersionChannels.get(project.getId()), vTags.getOrDefault(recommendedVersions.get(project.getId()).getId(), new ArrayList<>())));
+            projectObj.set("recommended", writeVersion(recommendedVersions.get(project.getId()), project, recommendedVersionChannels.get(project.getId()), vTags.getOrDefault(recommendedVersions.getOrDefault(project.getId(), new ProjectVersionsTable()).getId(), new ArrayList<>())));
             ObjectNode projectCategoryObj = mapper.createObjectNode();
             projectCategoryObj.set("title", mapper.valueToTree(project.getCategory().getTitle()));
             projectCategoryObj.set("icon", mapper.valueToTree(project.getCategory().getIcon()));
