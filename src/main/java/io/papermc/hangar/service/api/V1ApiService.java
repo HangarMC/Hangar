@@ -12,6 +12,8 @@ import io.papermc.hangar.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -35,44 +37,29 @@ public class V1ApiService {
         return v1ApiDao.get().getUsers(offset, limit);
     }
 
+    public <V> Map<Long, List<V>> mapListToMap(List<Map.Entry<Long, V>> map){
+        Map<Long, List<V>> returnMap = new HashMap<>();
+        map.forEach(entry -> {
+            returnMap.computeIfAbsent(entry.getKey(), userId ->new ArrayList<>()).add(entry.getValue());
+        });
+        return returnMap;
+    }
 
-    // TODO better way for this?
     public Map<Long, List<String>> getStarredPlugins(List<Long> userIds) {
-        return v1ApiDao.get().getStarredPlugins(userIds).stream()
-                .collect(
-                        Collectors.groupingBy(Entry::getKey)
-                ).entrySet().stream()
-                .collect(
-                        Collectors.toMap(
-                                Entry::getKey,
-                                longListEntry -> longListEntry.getValue().stream().map(Entry::getValue).collect(Collectors.toList()))
-                        );
+        return mapListToMap(v1ApiDao.get().getStarredPlugins(userIds));
     }
 
     public Map<Long, List<Role>> getUsersGlobalRoles(List<Long> userIds) {
-        return v1ApiDao.get().getUsersGlobalRoles(userIds).stream()
-                .collect(
-                        Collectors.groupingBy(Entry::getKey)
-                ).entrySet().stream()
-                .collect(
-                        Collectors.toMap(
-                                Entry::getKey,
-                                listEntry -> listEntry.getValue().stream().map(entry -> Role.fromId(entry.getValue().getId())).collect(Collectors.toList())
-                        )
-                );
+        Map<Long, List<Role>> returnMap = new HashMap<>();
+        v1ApiDao.get().getUsersGlobalRoles(userIds).forEach(entry -> {
+            returnMap.computeIfAbsent(entry.getKey(), userId -> new ArrayList<>())
+                    .add(Role.fromId(entry.getValue().getId()));
+        });
+        return returnMap;
     }
 
     public Map<Long, List<ProjectChannelsTable>> getProjectsChannels(List<Long> projectIds) {
-        return v1ApiDao.get().getProjectsChannels(projectIds).stream()
-                .collect(
-                        Collectors.groupingBy(Entry::getKey)
-                ).entrySet().stream()
-                .collect(
-                        Collectors.toMap(
-                                Entry::getKey,
-                                listEntry -> listEntry.getValue().stream().map(Entry::getValue).collect(Collectors.toList())
-                        )
-                );
+        return mapListToMap(v1ApiDao.get().getProjectsChannels(projectIds));
     }
 
     public Map<Long, ProjectVersionsTable> getProjectsRecommendedVersion(List<Long> projectIds) {
@@ -91,15 +78,6 @@ public class V1ApiService {
     }
 
     public Map<Long, List<ProjectVersionTagsTable>> getVersionsTags(List<Long> versionIds) {
-        return v1ApiDao.get().getVersionsTags(versionIds).stream()
-                .collect(
-                        Collectors.groupingBy(Entry::getKey)
-                ).entrySet().stream()
-                .collect(
-                        Collectors.toMap(
-                                Entry::getKey,
-                                listEntry -> listEntry.getValue().stream().map(Entry::getValue).collect(Collectors.toList())
-                        )
-                );
+        return mapListToMap(v1ApiDao.get().getVersionsTags(versionIds));
     }
 }
