@@ -15,7 +15,7 @@ import java.time.LocalDate;
 // For now i will add it to the ProjectService
 public interface ProjectViewDao {
 
-    @SqlUpdate("insert into project_views (project_id) values (:projectId)" +
+    @SqlUpdate("insert into project_views (day, project_id, views) values (current_date , :projectId, 1)" +
             "on conflict (day, project_id) " +
             "do update set views = project_views.views + 1 ")
     //The db will automatically get the current_date from itself (if you dont provide any date)
