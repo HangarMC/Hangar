@@ -216,7 +216,7 @@ public class Apiv1Controller extends HangarController {
             projectObj.set("href", mapper.valueToTree(project.getOwnerName() + "/" + project.getSlug()));
             projectObj.set("members", writeMembers(members.getOrDefault(project.getId(), new ArrayList<>())));
             projectObj.set("channels", mapper.valueToTree( projectChannels.getOrDefault(project.getId(), new ArrayList<>())));
-            projectObj.set("recommended", writeVersion(recommendedVersions.get(project.getId()), project, recommendedVersionChannels.get(project.getId()), vTags.getOrDefault(recommendedVersions.getOrDefault(project.getId(), new ProjectVersionsTable()).getId(), new ArrayList<>())));
+            projectObj.set("recommended", writeVersion(project, recommendedVersions, recommendedVersionChannels, vTags));
             ObjectNode projectCategoryObj = mapper.createObjectNode();
             projectCategoryObj.set("title", mapper.valueToTree(project.getCategory().getTitle()));
             projectCategoryObj.set("icon", mapper.valueToTree(project.getCategory().getIcon()));
@@ -229,9 +229,12 @@ public class Apiv1Controller extends HangarController {
         return projectsArray;
     }
 
-    private ObjectNode writeVersion(ProjectVersionsTable version, ProjectsTable project, ProjectChannelsTable channel, List<ProjectVersionTagsTable> tags) {
+    private ObjectNode writeVersion(ProjectsTable project, Map<Long, ProjectVersionsTable> recommendedVersions, Map<Long, ProjectChannelsTable> recommendedVersionChannels,  Map<Long, List<ProjectVersionTagsTable>> vTags) {
+        ProjectVersionsTable version = recommendedVersions.get(project.getId());
         ObjectNode objectNode = mapper.createObjectNode();
         if (version == null) return objectNode;
+        ProjectChannelsTable channel = recommendedVersionChannels.get(project.getId());
+        List<ProjectVersionTagsTable> tags = vTags.getOrDefault(version.getId(), new ArrayList<>());
 
         objectNode.set("id", mapper.valueToTree(version.getId()));
         objectNode.set("createdAt", mapper.valueToTree(version.getCreatedAt().toString()));

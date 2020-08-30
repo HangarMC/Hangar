@@ -11,14 +11,14 @@ import java.time.LocalDate;
 
 @Repository
 @RegisterBeanMapper(ProjectViewsTable.class)
-//TODO: decide where we do count it as a view and where we dont
-// For now i will add it to the ProjectService
+// TODO: decide where we do count it as a view and where we dont
+//  For now i will add it to the ProjectService
 public interface ProjectViewDao {
 
+    // The db will automatically get the current_date from itself (if you dont provide any date)
     @SqlUpdate("insert into project_views (day, project_id, views) values (current_date , :projectId, 1)" +
             "on conflict (day, project_id) " +
             "do update set views = project_views.views + 1 ")
-    //The db will automatically get the current_date from itself (if you dont provide any date)
     void increaseView(long projectId);
 
     @SqlQuery("select views from project_views " +

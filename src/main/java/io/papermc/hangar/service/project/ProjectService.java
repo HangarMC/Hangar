@@ -158,8 +158,8 @@ public class ProjectService {
     public Project getProjectApi(String pluginId) { // TODO still probably have to work out a standard for how to handle the api models
         ProjectsTable projectsTable = projectDao.get().getByPluginId(pluginId);
         if (projectsTable == null) return null;
-        //Increasing the view count by one for this project
-        projectViewDao.get().increaseView(projectsTable.getId()); //Refresh home_project view?
+        // Increasing the view count by one for this project
+        projectViewDao.get().increaseView(projectsTable.getId()); // Refresh home_project view?
 
         Project project = new Project();
         project.setCreatedAt(projectsTable.getCreatedAt());
@@ -228,7 +228,7 @@ public class ProjectService {
                 case RECENT_DOWNLOADS : orderingFirstHalf ="p.recent_views *"; break;
                 case RECENT_VIEWS: orderingFirstHalf ="p.recent_downloads*"; break;
                 default:
-                    orderingFirstHalf = " "; //Just in case and so that the ide doesnt complain
+                    orderingFirstHalf = " "; // Just in case and so that the ide doesnt complain
             }
             ordering = orderingFirstHalf + relevance;
         }
@@ -242,7 +242,7 @@ public class ProjectService {
     private String trimQuery(String query){
         String trimmedQuery = null;
         if(query != null && !query.isBlank()) {
-            trimmedQuery = query.trim(); //Ore#APIV2Queries line 169 && 200
+            trimmedQuery = query.trim(); // Ore#APIV2Queries line 169 && 200
         }
         return trimmedQuery;
     }
