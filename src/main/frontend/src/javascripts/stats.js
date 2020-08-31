@@ -7,6 +7,7 @@ $(function() {
 
         function removeTime(date) {
             date.setHours(0, 0, 0, 0)
+            date.setDate(date.getDate() +1);
         }
 
         if(!to) {
@@ -33,7 +34,7 @@ $(function() {
 
         if(from > to) {
             from = new Date();
-            from.setDate(to.getDate() - 1)
+            from.setDate(to.getDate() - 2)
         }
 
         var url = '/admin/stats?from=' + from.toISOString().substr(0, 10) + '&to=' + to.toISOString().substr(0, 10);

@@ -20,88 +20,89 @@
 <#assign scriptsVar>
     <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "lib/chart.js/dist/Chart.min.js" />"></script>
     <script @CSPNonce.attr>
-            $(function(){
-                var domChartReview = document.getElementById("chart-reviews");
-                var chartReviews = new Chart(domChartReview, {
-                    responsive: true,
-                    type: 'line',
-                    data: {
-                        labels: @Html(Json.stringify(Json.toJson(stats.map(_.day.toString)))),
-                        datasets: [{
-                            label: "Reviews",
-                            backgroundColor: "cornflowerblue",
-                            borderColor: "dodgerblue",
-                            fill: false,
-                            data: @Html(Json.stringify(Json.toJson(stats.map(_.reviews))))
-                        }, {
-                            label: "Uploads",
-                            backgroundColor: "lightseagreen",
-                            borderColor: "darkseagreen",
-                            fill: false,
-                            data: @Html(Json.stringify(Json.toJson(stats.map(_.uploads))))
-                        }]
-                    },
-                    options: {
-                        title: {
-                            text: "Reviews"
-                        }
+        $(function(){
+            var timeFrame = ${days}
+            var domChartReview = document.getElementById("chart-reviews");
+            var chartReviews = new Chart(domChartReview, {
+                responsive: true,
+                type: 'line',
+                data: {
+                    labels: timeFrame, //stats.map(_.day.toString),
+                    datasets: [{
+                        label: "Reviews",
+                        backgroundColor: "cornflowerblue",
+                        borderColor: "dodgerblue",
+                        fill: false,
+                        data: [10, 20, 30, 40, 50, 60] //Json.stringify(Json.toJson(stats.map(_.reviews)))
+                    }, {
+                        label: "Uploads",
+                        backgroundColor: "lightseagreen",
+                        borderColor: "darkseagreen",
+                        fill: false,
+                        data: [60, 50, 40, 30, 20, 10] //Json.stringify(Json.toJson(stats.map(_.uploads)))
+                    }]
+                },
+                options: {
+                    title: {
+                        text: "Reviews"
                     }
-                });
-
-                var domChartDownload = document.getElementById("chart-downloads");
-                var chartDownloads = new Chart(domChartDownload, {
-                    responsive: true,
-                    type: 'line',
-                    data: {
-                        labels: @Html(Json.stringify(Json.toJson(stats.map(_.day.toString).takeRight(30)))),
-                        datasets: [{
-                            label: "Total Downloads",
-                            backgroundColor: "cornflowerblue",
-                            borderColor: "dodgerblue",
-                            fill: false,
-                            data: @Html(Json.stringify(Json.toJson(stats.map(_.totalDownloads).takeRight(30))))
-                        }, {
-                            label: "Unsafe Downloads",
-                            backgroundColor: "lightseagreen",
-                            borderColor: "darkseagreen",
-                            fill: false,
-                            data: @Html(Json.stringify(Json.toJson(stats.map(_.unsafeDownloads).takeRight(30))))
-                        }]
-                    },
-                    options: {
-                        title: {
-                            text: "Downloads"
-                        }
-                    }
-                });
-
-                var domChartFlags = document.getElementById("chart-flags");
-                var chartFlags = new Chart(domChartFlags, {
-                    responsive: true,
-                    type: 'line',
-                    data: {
-                        labels: @Html(Json.stringify(Json.toJson(stats.map(_.day.toString)))),
-                        datasets: [{
-                            label: "Open flags",
-                            backgroundColor: "cornflowerblue",
-                            borderColor: "dodgerblue",
-                            fill: false,
-                            data: @Html(Json.stringify(Json.toJson(stats.map(_.flagsOpened))))
-                        }, {
-                            label: "Closed flags",
-                            backgroundColor: "lightseagreen",
-                            borderColor: "darkseagreen",
-                            fill: false,
-                            data: @Html(Json.stringify(Json.toJson(stats.map(_.flagsClosed))))
-                        }]
-                    },
-                    options: {
-                        title: {
-                            text: "Flags"
-                        }
-                    }
-                });
+                }
             });
+
+            var domChartDownload = document.getElementById("chart-downloads");
+            var chartDownloads = new Chart(domChartDownload, {
+                responsive: true,
+                type: 'line',
+                data: {
+                    labels: timeFrame, //Json.stringify(Json.toJson(stats.map(_.day.toString).takeRight(30))),
+                    datasets: [{
+                        label: "Total Downloads",
+                        backgroundColor: "cornflowerblue",
+                        borderColor: "dodgerblue",
+                        fill: false,
+                        data: []// Json.stringify(Json.toJson(stats.map(_.totalDownloads).takeRight(30)))
+                    }, {
+                        label: "Unsafe Downloads",
+                        backgroundColor: "lightseagreen",
+                        borderColor: "darkseagreen",
+                        fill: false,
+                        data: [] //Json.stringify(Json.toJson(stats.map(_.unsafeDownloads).takeRight(30)))
+                    }]
+                },
+                options: {
+                    title: {
+                        text: "Downloads"
+                    }
+                }
+            });
+
+            var domChartFlags = document.getElementById("chart-flags");
+            var chartFlags = new Chart(domChartFlags, {
+                responsive: true,
+                type: 'line',
+                data: {
+                    labels: timeFrame,// Json.stringify(Json.toJson(stats.map(_.day.toString))),
+                    datasets: [{
+                        label: "Open flags",
+                        backgroundColor: "cornflowerblue",
+                        borderColor: "dodgerblue",
+                        fill: false,
+                        data: []// Json.stringify(Json.toJson(stats.map(_.flagsOpened)))
+                    }, {
+                        label: "Closed flags",
+                        backgroundColor: "lightseagreen",
+                        borderColor: "darkseagreen",
+                        fill: false,
+                        data: [] // Json.stringify(Json.toJson(stats.map(_.flagsClosed)))
+                    }]
+                },
+                options: {
+                    title: {
+                        text: "Flags"
+                    }
+                }
+            });
+        });
     </script>
     <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "javascripts/stats.js" />"></script>
 </#assign>
@@ -113,11 +114,11 @@
             <div class="form-inline">
                 <div class="form-group">
                     <label for="fromDate">From:</label>
-                    <input id="fromDate" type="date" class="form-control" value="@fromTime.toString" max="@LocalDate.now().minus(1, ChronoUnit.DAYS)">
+                    <input id="fromDate" type="date" class="form-control" max="@LocalDate.now().minus(1, ChronoUnit.DAYS)" <#if fromDate??> value="${fromDate}"</#if>>
                 </div>
                 <div class="form-group">
                     <label for="toDate">To:</label>
-                    <input id="toDate" type="date" class="form-control" value="@toTime.toString" max="@LocalDate.now().toString">
+                    <input id="toDate" type="date" class="form-control" max="@LocalDate.now().toString" <#if toDate??> value="${toDate}"</#if>>
                 </div>
             <button id="dateGoButton" class="btn btn-default">Go</button>
             </div>

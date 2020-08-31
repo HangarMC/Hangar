@@ -2,6 +2,7 @@ package io.papermc.hangar.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -179,8 +183,26 @@ public class ApplicationController extends HangarController {
 
     @Secured("ROLE_USER")
     @RequestMapping("/admin/stats")
-    public ModelAndView showStats(@RequestParam(required = false) Object from, @RequestParam(required = false) Object to) {
-        return fillModel(new ModelAndView("users/admin/stats")); // TODO implement showStats request controller
+    public ModelAndView showStats(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        ModelAndView mav = new ModelAndView("users/admin/stats");
+        if(from == null){
+            from = LocalDate.now().minus(30, ChronoUnit.DAYS);
+        }
+        if(to == null){
+            to = LocalDate.now();
+        }
+        if(to.isBefore(from)){
+            to = from;
+        }
+
+        List<String> days = from.datesUntil(to.plusDays(1))
+                .map(date -> "\"" + date.format(DateTimeFormatter.ofPattern("MM-dd-yyyy")) + "\"")
+                .collect(Collectors.toList());
+        mav.addObject("days", days.toString());
+        mav.addObject("fromDate", from.toString());
+        mav.addObject("toDate", to.toString());
+
+        return fillModel(mav); // TODO implement showStats request controller
     }
 
     @GlobalPermission(NamedPermission.EDIT_ALL_USER_SETTINGS)
