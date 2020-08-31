@@ -22,19 +22,38 @@ public class StatsService {
         this.projectStatsDao = projectStatsDao;
     }
 
-    public List<String> getReviewStats(LocalDate from, LocalDate to){
-        Map<LocalDate, Integer> databaseData = projectStatsDao.get().getNumberOfReviewPerDay(from, to);
-        return getDaysBetween(from, to).map(date -> databaseData.getOrDefault(date, 0))
-                .map(count -> "\"" + count + "\"").collect(Collectors.toList());
+    public Stream<LocalDate> getDaysBetween(LocalDate from, LocalDate to){
+        return from.datesUntil(to.plusDays(1));
     }
 
-    private Stream<LocalDate> getDaysBetween(LocalDate from, LocalDate to){
-        return from.datesUntil(to.plusDays(1));
+    public List<String> getReviewStats(LocalDate from, LocalDate to){
+        Map<LocalDate, Integer> databaseData = projectStatsDao.get().getNumberOfReviewPerDay(from, to);
+        return mapStatsToStringList(databaseData, from, to);
+    }
+
+    public List<String> getUploadStats(LocalDate from, LocalDate to){
+        Map<LocalDate, Integer> databaseData = projectStatsDao.get().getNumberOfReviewPerDay(from, to);
+        return mapStatsToStringList(databaseData, from, to);
     }
 
     public List<String> getStringListOfDates(LocalDate from, LocalDate to){
         return getDaysBetween(from, to)
                 .map(date -> "\"" + date.format(DateTimeFormatter.ofPattern("MM-dd-yyyy")) + "\"")
                 .collect(Collectors.toList());
+    }
+
+    public List<String> getSafeDownloadStats(LocalDate from, LocalDate to) {
+        Map<LocalDate, Integer> databaseData = projectStatsDao.get().getNumberOfSafeDownloadsPerDay(from, to);
+        return mapStatsToStringList(databaseData, from, to);
+    }
+
+    public List<String> getUnsafeDownloadStats(LocalDate from, LocalDate to) {
+        Map<LocalDate, Integer> databaseData = projectStatsDao.get().getNumberOfUnsafeDownloadsPerDay(from, to);
+        return mapStatsToStringList(databaseData, from, to);
+    }
+
+    private List<String> mapStatsToStringList(Map<LocalDate, Integer> stats, LocalDate from, LocalDate to){
+        return getDaysBetween(from, to).map(date -> stats.getOrDefault(date, 0))
+                .map(count -> "\"" + count + "\"").collect(Collectors.toList());
     }
 }

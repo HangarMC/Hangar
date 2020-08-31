@@ -27,19 +27,19 @@
                 responsive: true,
                 type: 'line',
                 data: {
-                    labels: timeFrame, //stats.map(_.day.toString),
+                    labels: timeFrame,
                     datasets: [{
                         label: "Reviews",
                         backgroundColor: "cornflowerblue",
                         borderColor: "dodgerblue",
                         fill: false,
-                        data: ${reviewData} //Json.stringify(Json.toJson(stats.map(_.reviews)))
+                        data: ${reviewData}
                     }, {
                         label: "Uploads",
                         backgroundColor: "lightseagreen",
                         borderColor: "darkseagreen",
                         fill: false,
-                        data: [60, 50, 40, 30, 20, 10] //Json.stringify(Json.toJson(stats.map(_.uploads)))
+                        data: ${uploadData}
                     }]
                 },
                 options: {
@@ -54,19 +54,19 @@
                 responsive: true,
                 type: 'line',
                 data: {
-                    labels: timeFrame, //Json.stringify(Json.toJson(stats.map(_.day.toString).takeRight(30))),
+                    labels: timeFrame,
                     datasets: [{
                         label: "Total Downloads",
                         backgroundColor: "cornflowerblue",
                         borderColor: "dodgerblue",
                         fill: false,
-                        data: []// Json.stringify(Json.toJson(stats.map(_.totalDownloads).takeRight(30)))
+                        data: ${safeDownloadData}
                     }, {
                         label: "Unsafe Downloads",
                         backgroundColor: "lightseagreen",
                         borderColor: "darkseagreen",
                         fill: false,
-                        data: [] //Json.stringify(Json.toJson(stats.map(_.unsafeDownloads).takeRight(30)))
+                        data: ${unsafeDownloadData}
                     }]
                 },
                 options: {

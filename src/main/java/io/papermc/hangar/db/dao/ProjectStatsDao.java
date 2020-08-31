@@ -21,4 +21,29 @@ public interface ProjectStatsDao {
     @RegisterRowMapper(ReviewIdMapper.class)
     Map<LocalDate, Integer> getNumberOfReviewPerDay(LocalDate from, LocalDate to);
 
+    @SqlQuery("select date(created_at), count(id) as count " +
+            "from logged_actions_project " +
+            "where (date(created_at)" +
+            "between :from and :to) and " +
+            "action = 'version_uploaded'::logged_action_type " +
+            "group by date(created_at); ")
+    @RegisterRowMapper(CreatedAtMapper.class)
+    @RegisterRowMapper(ReviewIdMapper.class)
+    Map<LocalDate, Integer> getNumberOfUploadsPerDay(LocalDate from, LocalDate to);
+
+    @SqlQuery("select day as date, sum(downloads) as count " +
+            "from project_versions_downloads " +
+            "where day between :from and :to " +
+            "group by day; ")
+    @RegisterRowMapper(CreatedAtMapper.class)
+    @RegisterRowMapper(ReviewIdMapper.class)
+    Map<LocalDate, Integer> getNumberOfSafeDownloadsPerDay(LocalDate from, LocalDate to);
+
+    @SqlQuery("select date(created_at), count(id) as count " +
+            "from project_version_unsafe_downloads " +
+            "where date(created_at) between :from and :to " +
+            "group by date(created_at); ")
+    @RegisterRowMapper(CreatedAtMapper.class)
+    @RegisterRowMapper(ReviewIdMapper.class)
+    Map<LocalDate, Integer> getNumberOfUnsafeDownloadsPerDay(LocalDate from, LocalDate to);
 }

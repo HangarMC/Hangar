@@ -22,6 +22,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
 
 import io.papermc.hangar.db.customtypes.LoggedActionType;
@@ -196,12 +197,13 @@ public class ApplicationController extends HangarController {
         if(to.isBefore(from)){
             to = from;
         }
-        List<String> days = statsService.getStringListOfDates(from, to);
-        List<String> reviewCounts = statsService.getReviewStats(from, to);
-        mav.addObject("days", days.toString());
         mav.addObject("fromDate", from.toString());
         mav.addObject("toDate", to.toString());
-        mav.addObject("reviewData", reviewCounts.toString());
+        mav.addObject("days", statsService.getStringListOfDates(from, to).toString());
+        mav.addObject("reviewData", statsService.getReviewStats(from, to).toString());
+        mav.addObject("uploadData", statsService.getUploadStats(from, to).toString());
+        mav.addObject("safeDownloadData", statsService.getSafeDownloadStats(from, to).toString());
+        mav.addObject("unsafeDownloadData", statsService.getUnsafeDownloadStats(from, to).toString());
 
         return fillModel(mav); // TODO implement showStats request controller
     }
