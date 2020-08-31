@@ -33,7 +33,7 @@
                         backgroundColor: "cornflowerblue",
                         borderColor: "dodgerblue",
                         fill: false,
-                        data: [10, 20, 30, 40, 50, 60] //Json.stringify(Json.toJson(stats.map(_.reviews)))
+                        data: ${reviewData} //Json.stringify(Json.toJson(stats.map(_.reviews)))
                     }, {
                         label: "Uploads",
                         backgroundColor: "lightseagreen",

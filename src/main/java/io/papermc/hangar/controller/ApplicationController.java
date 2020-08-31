@@ -18,7 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +41,7 @@ import io.papermc.hangar.service.SitemapService;
 import io.papermc.hangar.service.UserActionLogService;
 import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.VersionService;
+import io.papermc.hangar.service.StatsService;
 import io.papermc.hangar.service.project.FlagService;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.AlertUtil;
@@ -56,11 +56,12 @@ public class ApplicationController extends HangarController {
     private final VersionService versionService;
     private final JobService jobService;
     private final SitemapService sitemapService;
+    private final StatsService statsService;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public ApplicationController(UserService userService, ProjectService projectService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, HttpServletRequest request) {
+    public ApplicationController(UserService userService, ProjectService projectService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, HttpServletRequest request) {
         this.userService = userService;
         this.projectService = projectService;
         this.flagService = flagService;
@@ -69,6 +70,7 @@ public class ApplicationController extends HangarController {
         this.jobService = jobService;
         this.sitemapService = sitemapService;
         this.request = request;
+        this.statsService = statsService;
     }
 
     @RequestMapping("/")
@@ -194,13 +196,12 @@ public class ApplicationController extends HangarController {
         if(to.isBefore(from)){
             to = from;
         }
-
-        List<String> days = from.datesUntil(to.plusDays(1))
-                .map(date -> "\"" + date.format(DateTimeFormatter.ofPattern("MM-dd-yyyy")) + "\"")
-                .collect(Collectors.toList());
+        List<String> days = statsService.getStringListOfDates(from, to);
+        List<String> reviewCounts = statsService.getReviewStats(from, to);
         mav.addObject("days", days.toString());
         mav.addObject("fromDate", from.toString());
         mav.addObject("toDate", to.toString());
+        mav.addObject("reviewData", reviewCounts.toString());
 
         return fillModel(mav); // TODO implement showStats request controller
     }
