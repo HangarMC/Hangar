@@ -6,6 +6,7 @@
 <#import "*/utils/userAvatar.ftlh" as userAvatar />
 <#import "*/utils/form.ftlh" as form>
 <#import "*/utils/csrf.ftlh" as csrf>
+<#import "*/utils/prompt.ftlh" as promptView>
 
 <#-- @ftlvariable name="u" type="io.papermc.hangar.model.viewhelpers.UserData" -->
 <#-- @ftlvariable name="Permission" type="io.papermc.hangar.model.Permission" -->
@@ -55,10 +56,11 @@
                             <a href="${routes.getRouteUrl("org.updateAvatar", u.user.name)}"><i class="fas fa-edit"></i> <@spring.message "user.editAvatar" /></a>
                         </div>
 
-                        <#--TODO prompts -->
-                        <#--<#if !u.headerData.currentUser.readPrompts.contains(Prompt.ChangeAvatar)>
-                            <@prompt.prompt prompt=Prompt.ChangeAvatar id="popover-avatar" />
-                        </#if>-->
+                        <#assign Prompt=@helper["io.papermc.hangar.model.Prompt"] />
+                        <#-- @ftlvariable name="Prompt" type="io.papermc.hangar.model.Prompt" -->
+                        <#if !u.headerData.currentUser.readPrompts?seq_contains(Prompt.CHANGE_AVATAR)>
+                            <@promptView.prompt prompt=Prompt.CHANGE_AVATAR id="popover-avatar" />
+                        </#if>
                     </#if>
 
                     <span class="user-title">

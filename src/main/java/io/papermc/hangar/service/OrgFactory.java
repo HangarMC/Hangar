@@ -7,6 +7,7 @@ import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.NotificationType;
+import io.papermc.hangar.model.Prompt;
 import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.viewhelpers.UserData;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +23,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -73,7 +75,7 @@ public class OrgFactory {
         }
 
         // TODO this will happen via /api/sync_sso, but I have no idea how to get that whole system working with Docker
-        userDao.get().insert(new UsersTable(authOrgUser.getId(), null, name, dummyEmail, null, new int[0], false, authOrgUser.getLang().toLanguageTag()));
+        userDao.get().insert(new UsersTable(authOrgUser.getId(), null, name, dummyEmail, null, List.of(), false, authOrgUser.getLang().toLanguageTag()));
         OrganizationsTable org = new OrganizationsTable(name, ownerId, authOrgUser.getId());
         org = organizationDao.get().insert(org);
         long orgId = org.getId();

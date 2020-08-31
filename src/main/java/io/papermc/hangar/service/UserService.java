@@ -6,6 +6,7 @@ import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.UserOrganizationRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.model.Prompt;
 import io.papermc.hangar.model.SsoSyncData;
 import io.papermc.hangar.model.viewhelpers.FlagActivity;
 import io.papermc.hangar.model.viewhelpers.ReviewActivity;
@@ -188,7 +189,7 @@ public class UserService {
                     authUser.getUsername(),
                     authUser.getEmail(),
                     null,
-                    new int[0],
+                    List.of(),
                     false,
                     authUser.getLang().toLanguageTag()
             );
@@ -206,7 +207,7 @@ public class UserService {
                     syncData.getUsername(),
                     syncData.getEmail(),
                     null,
-                    new int[0],
+                    List.of(),
                     false,
                     null
             );
@@ -239,5 +240,15 @@ public class UserService {
 
     public List<FlagActivity> getFlagActivity(String username) {
         return userDao.get().getFlagActivity(username);
+    }
+
+    public void markPromptAsRead(Prompt prompt) {
+        UsersTable currentUser = getCurrentUser();
+        if (currentUser != null) {
+            if (!currentUser.getReadPrompts().contains(prompt.ordinal())) {
+                currentUser.getReadPrompts().add(prompt.ordinal());
+            }
+            userDao.get().update(currentUser);
+        }
     }
 }

@@ -8,6 +8,7 @@ import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.InviteFilter;
 import io.papermc.hangar.model.NotificationFilter;
+import io.papermc.hangar.model.Prompt;
 import io.papermc.hangar.service.NotificationService;
 import io.papermc.hangar.service.OrgService;
 import io.papermc.hangar.service.SitemapService;
@@ -40,6 +41,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -178,8 +181,12 @@ public class UsersController extends HangarController {
 
     @Secured("ROLE_USER")
     @RequestMapping("/prompts/read/{id}")
-    public Object markPromptRead(@PathVariable Object id) {
-        return null; // TODO implement markPromptRead request controller
+    @ResponseStatus(HttpStatus.OK)
+    public void markPromptRead(@PathVariable("id") Prompt prompt) {
+        if (prompt == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid prompt id");
+        }
+        userService.markPromptAsRead(prompt);
     }
 
     @RequestMapping("/signup")

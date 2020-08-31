@@ -6,6 +6,7 @@ import org.jdbi.v3.core.annotation.Unmappable;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.StringJoiner;
 
 public class UsersTable implements Serializable {
@@ -17,7 +18,7 @@ public class UsersTable implements Serializable {
     private String email;
     private String tagline;
     private OffsetDateTime joinDate;
-    private int[] readPrompts;
+    private List<Integer> readPrompts;
     private boolean isLocked;
     private String language;
 
@@ -26,7 +27,7 @@ public class UsersTable implements Serializable {
 
     }
 
-    public UsersTable(long id, String fullName, String name, String email, String tagline, int[] readPrompts, boolean isLocked, String language) {
+    public UsersTable(long id, String fullName, String name, String email, String tagline, List<Integer> readPrompts, boolean isLocked, String language) {
         this.id = id;
         this.fullName = fullName;
         this.name = name;
@@ -37,7 +38,7 @@ public class UsersTable implements Serializable {
         this.language = language;
     }
 
-    public UsersTable(String fullName, String name, String email, String tagline, int[] readPrompts, boolean isLocked, String language) {
+    public UsersTable(String fullName, String name, String email, String tagline, List<Integer> readPrompts, boolean isLocked, String language) {
         this.fullName = fullName;
         this.name = name;
         this.email = email;
@@ -116,11 +117,11 @@ public class UsersTable implements Serializable {
     }
 
 
-    public int[] getReadPrompts() {
+    public List<Integer> getReadPrompts() {
         return readPrompts;
     }
 
-    public void setReadPrompts(int[] readPrompts) {
+    public void setReadPrompts(List<Integer> readPrompts) {
         this.readPrompts = readPrompts;
     }
 

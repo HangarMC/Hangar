@@ -193,7 +193,7 @@ public class AuthenticationService {
             userEntry.setFullName(hangarConfig.fakeUser.getName());
             userEntry.setName(hangarConfig.fakeUser.getUsername());
             userEntry.setId(hangarConfig.fakeUser.getId());
-            userEntry.setReadPrompts(new int[0]);
+            userEntry.setReadPrompts(List.of());
 
             userEntry = userDao.get().insert(userEntry);
 
