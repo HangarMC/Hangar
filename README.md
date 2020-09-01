@@ -20,6 +20,15 @@ Additionally, you will need a postgresql database. For your convenience, this re
 
 This project currently uses java 11.
 
+### Building with Docker
+If you want to build both Hangar and [HangarAuth](https://github.com/MiniDigger/HangarAuth)
+to run together (without a fakeuser), clone both this repo, and [this](https://github.com/MiniDigger/HangarAuth)
+(or if [this pr](https://github.com/MiniDigger/HangarAuth/pull/1) hasn't been merged, clone [this](https://github.com/Machine-Maker/HangarAuth/tree/machines-hangarauth)).
+Make sure both Hangar and HangarAuth directories are siblings in your file system. cd into Hangar/docker and run `docker-compose up -d`. That should set everything up for you. You can view the logs via Intellij's docker integration.
+I find its better to view the logs there, so that the Hangar logs and HangarAuth logs are separated. 
+Note that when using docker, a different spring configuration file is used, `Hangar/docker/hangar/application.yml`. To reload changes to Hangar, just CTRL+F9 (rebuild) in Intellij. To rebuild changes to HangarAuth, just run `docker-compose up -d --build` 
+and that will rebuild if there were any changes.
+
 ## Deployment
 
 Deployment happens via Docker, checkout the stack in the docker folder. You will want to modify the application.properties in the hangar folder.
