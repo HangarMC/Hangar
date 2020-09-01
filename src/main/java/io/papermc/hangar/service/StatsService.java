@@ -21,43 +21,43 @@ public class StatsService {
         this.projectStatsDao = projectStatsDao;
     }
 
-    public Stream<LocalDate> getDaysBetween(LocalDate from, LocalDate to){
+    public Stream<LocalDate> getDaysBetween(LocalDate from, LocalDate to) {
         return from.datesUntil(to.plusDays(1));
     }
 
-    public List<Stats> getStats(LocalDate from, LocalDate to){
+    public List<Stats> getStats(LocalDate from, LocalDate to) {
         return projectStatsDao.get().getStats(from, to);
     }
 
-    public String getStatDays(List<Stats> stats){
+    public String getStatDays(List<Stats> stats) {
         return getJsonListAsString(stats.stream().map(Stats::getDay));
     }
 
-    public String getReviewStats(List<Stats> stats){
-        return getJsonListAsString(stats.stream().map(Stats::getReview));
+    public String getReviewStats(List<Stats> stats) {
+        return getJsonListAsString(stats.stream().map(Stats::getReviews));
     }
 
-    public String getUploadStats(List<Stats> stats){
+    public String getUploadStats(List<Stats> stats) {
         return getJsonListAsString(stats.stream().map(Stats::getUploads));
     }
 
-    public String getTotalDownloadStats(List<Stats> stats){
+    public String getTotalDownloadStats(List<Stats> stats) {
         return getJsonListAsString(stats.stream().map(Stats::getTotalDownloads));
     }
 
-    public String getUnsafeDownloadsStats(List<Stats> stats){
+    public String getUnsafeDownloadsStats(List<Stats> stats) {
         return getJsonListAsString(stats.stream().map(Stats::getUnsafeDownloads));
     }
 
-    public String getFlagsOpenedStats(List<Stats> stats){
+    public String getFlagsOpenedStats(List<Stats> stats) {
         return getJsonListAsString(stats.stream().map(Stats::getFlagsOpened));
     }
 
-    public String getFlagsClosedStats(List<Stats> stats){
+    public String getFlagsClosedStats(List<Stats> stats) {
         return getJsonListAsString(stats.stream().map(Stats::getFlagsClosed));
     }
 
-    public <T> String getJsonListAsString(Stream<T> stream){
-        return stream.map(count -> "\"" + count + "\"").collect(Collectors.toList()).toString();
+    public <T> String getJsonListAsString(Stream<T> stream) {
+        return stream.map(count -> "\"" + count + "\"").collect(Collectors.joining(", ", "[", "]"));
     }
 }

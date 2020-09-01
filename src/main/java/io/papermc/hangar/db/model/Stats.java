@@ -3,59 +3,60 @@ package io.papermc.hangar.db.model;
 import java.time.LocalDate;
 
 public class Stats {
-    private Long review;
-    private Long uploads;
-    private Long totalDownloads;
-    private Long unsafeDownloads;
-    private Long flagsOpened;
-    private Long flagsClosed;
+
+    private long reviews;
+    private long uploads;
+    private long totalDownloads;
+    private long unsafeDownloads;
+    private long flagsOpened;
+    private long flagsClosed;
     private LocalDate day;
 
-    public Long getReview() {
-        return review;
+    public long getReviews() {
+        return reviews;
     }
 
-    public void setReview(Long review) {
-        this.review = review;
+    public void setReviews(long review) {
+        this.reviews = review;
     }
 
-    public Long getUploads() {
+    public long getUploads() {
         return uploads;
     }
 
-    public void setUploads(Long uploads) {
+    public void setUploads(long uploads) {
         this.uploads = uploads;
     }
 
-    public Long getTotalDownloads() {
+    public long getTotalDownloads() {
         return totalDownloads;
     }
 
-    public void setTotalDownloads(Long totalDownloads) {
+    public void setTotalDownloads(long totalDownloads) {
         this.totalDownloads = totalDownloads;
     }
 
-    public Long getUnsafeDownloads() {
+    public long getUnsafeDownloads() {
         return unsafeDownloads;
     }
 
-    public void setUnsafeDownloads(Long unsafeDownloads) {
+    public void setUnsafeDownloads(long unsafeDownloads) {
         this.unsafeDownloads = unsafeDownloads;
     }
 
-    public Long getFlagsOpened() {
+    public long getFlagsOpened() {
         return flagsOpened;
     }
 
-    public void setFlagsOpened(Long flagsOpened) {
+    public void setFlagsOpened(long flagsOpened) {
         this.flagsOpened = flagsOpened;
     }
 
-    public Long getFlagsClosed() {
+    public long getFlagsClosed() {
         return flagsClosed;
     }
 
-    public void setFlagsClosed(Long flagsClosed) {
+    public void setFlagsClosed(long flagsClosed) {
         this.flagsClosed = flagsClosed;
     }
 
