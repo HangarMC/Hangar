@@ -60,7 +60,7 @@
                         backgroundColor: "cornflowerblue",
                         borderColor: "dodgerblue",
                         fill: false,
-                        data: ${safeDownloadData}
+                        data: ${totalDownloadData}
                     }, {
                         label: "Unsafe Downloads",
                         backgroundColor: "lightseagreen",
@@ -81,19 +81,19 @@
                 responsive: true,
                 type: 'line',
                 data: {
-                    labels: timeFrame,// Json.stringify(Json.toJson(stats.map(_.day.toString))),
+                    labels: timeFrame,
                     datasets: [{
-                        label: "Open flags",
+                        label: "Opened flags", // 'Open flags' is a bit of a misleading name
                         backgroundColor: "cornflowerblue",
                         borderColor: "dodgerblue",
                         fill: false,
-                        data: []// Json.stringify(Json.toJson(stats.map(_.flagsOpened)))
+                        data: ${openFlagsData}
                     }, {
                         label: "Closed flags",
                         backgroundColor: "lightseagreen",
                         borderColor: "darkseagreen",
                         fill: false,
-                        data: [] // Json.stringify(Json.toJson(stats.map(_.flagsClosed)))
+                        data: ${closedFlagsData}
                     }]
                 },
                 options: {

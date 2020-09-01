@@ -1,49 +1,31 @@
 package io.papermc.hangar.db.dao;
 
-import io.papermc.hangar.db.mappers.CreatedAtMapper;
-import io.papermc.hangar.db.mappers.ReviewIdMapper;
+import io.papermc.hangar.db.mappers.StatsMapper;
+import io.papermc.hangar.db.model.Stats;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.util.Map;
+import java.util.List;
 
 @Repository
 public interface ProjectStatsDao {
 
-    @SqlQuery("select date(created_at), count(id) as count " +
-            "from project_version_reviews " +
-            "where date(created_at)" +
-            "between :from and :to " +
-            "group by date(created_at); ")
-    @RegisterRowMapper(CreatedAtMapper.class)
-    @RegisterRowMapper(ReviewIdMapper.class)
-    Map<LocalDate, Integer> getNumberOfReviewPerDay(LocalDate from, LocalDate to);
+    @SqlQuery("SELECT (SELECT COUNT(*) FROM project_version_reviews WHERE CAST(ended_at AS DATE) = day) AS review_count, " +
+            "(SELECT COUNT(*) FROM project_versions WHERE CAST(created_at AS DATE) = day) AS created_projects, " +
+            "(SELECT COUNT(*) FROM project_versions_downloads_individual WHERE CAST(created_at AS DATE) = day) AS download_count, " +
+            "(SELECT COUNT(*) FROM project_version_unsafe_downloads " +
+            "   WHERE CAST(created_at AS DATE) = day) AS unsafe_download_count, " +
+            "(SELECT COUNT(*) FROM project_flags " +
+            "   WHERE CAST(created_at AS DATE) <= day " +
+            "   AND (CAST(resolved_at AS DATE) >= day OR resolved_at IS NULL)) AS flags_created, " +
+            "(SELECT COUNT(*) FROM project_flags WHERE CAST(resolved_at AS DATE) = day) AS flags_resolved, " +
+            "CAST(day AS DATE) " +
+            "FROM (SELECT generate_series(:startDate, :endDate, INTERVAL '1 DAY') AS day) dates " +
+            "ORDER BY day ASC; ")
+    @RegisterRowMapper(StatsMapper.class)
+    List<Stats> getStats(LocalDate startDate, LocalDate endDate);
 
-    @SqlQuery("select date(created_at), count(id) as count " +
-            "from logged_actions_project " +
-            "where (date(created_at)" +
-            "between :from and :to) and " +
-            "action = 'version_uploaded'::logged_action_type " +
-            "group by date(created_at); ")
-    @RegisterRowMapper(CreatedAtMapper.class)
-    @RegisterRowMapper(ReviewIdMapper.class)
-    Map<LocalDate, Integer> getNumberOfUploadsPerDay(LocalDate from, LocalDate to);
 
-    @SqlQuery("select day as date, sum(downloads) as count " +
-            "from project_versions_downloads " +
-            "where day between :from and :to " +
-            "group by day; ")
-    @RegisterRowMapper(CreatedAtMapper.class)
-    @RegisterRowMapper(ReviewIdMapper.class)
-    Map<LocalDate, Integer> getNumberOfSafeDownloadsPerDay(LocalDate from, LocalDate to);
-
-    @SqlQuery("select date(created_at), count(id) as count " +
-            "from project_version_unsafe_downloads " +
-            "where date(created_at) between :from and :to " +
-            "group by date(created_at); ")
-    @RegisterRowMapper(CreatedAtMapper.class)
-    @RegisterRowMapper(ReviewIdMapper.class)
-    Map<LocalDate, Integer> getNumberOfUnsafeDownloadsPerDay(LocalDate from, LocalDate to);
 }

@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller;
 
+import io.papermc.hangar.db.model.Stats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,7 +23,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
 
 import io.papermc.hangar.db.customtypes.LoggedActionType;
@@ -197,15 +197,18 @@ public class ApplicationController extends HangarController {
         if(to.isBefore(from)){
             to = from;
         }
+        List<Stats> stats = statsService.getStats(from, to);
         mav.addObject("fromDate", from.toString());
         mav.addObject("toDate", to.toString());
-        mav.addObject("days", statsService.getStringListOfDates(from, to).toString());
-        mav.addObject("reviewData", statsService.getReviewStats(from, to).toString());
-        mav.addObject("uploadData", statsService.getUploadStats(from, to).toString());
-        mav.addObject("safeDownloadData", statsService.getSafeDownloadStats(from, to).toString());
-        mav.addObject("unsafeDownloadData", statsService.getUnsafeDownloadStats(from, to).toString());
+        mav.addObject("days", statsService.getStatDays(stats));
+        mav.addObject("reviewData", statsService.getReviewStats(stats));
+        mav.addObject("uploadData", statsService.getUploadStats(stats));
+        mav.addObject("totalDownloadData", statsService.getTotalDownloadStats(stats));
+        mav.addObject("unsafeDownloadData", statsService.getUnsafeDownloadsStats(stats));
+        mav.addObject("openFlagsData", statsService.getFlagsOpenedStats(stats));
+        mav.addObject("closedFlagsData", statsService.getFlagsClosedStats(stats));
 
-        return fillModel(mav); // TODO implement showStats request controller
+        return fillModel(mav);
     }
 
     @GlobalPermission(NamedPermission.EDIT_ALL_USER_SETTINGS)
