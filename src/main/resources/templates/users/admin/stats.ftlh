@@ -2,24 +2,9 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
-<#--
-@import java.time.LocalDate
-@import java.time.temporal.ChronoUnit
-
-@import play.api.libs.json.Json
-
-@import controllers.sugar.Requests.OreRequest
-@import models.querymodels.Stats
-@import ore.OreConfig
-@import views.html.helper.CSPNonce
-
-@(stats: List[Stats], fromTime: LocalDate, toTime: LocalDate)(implicit messages: Messages,
-        request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
--->
-
 <#assign scriptsVar>
-    <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "lib/chart.js/dist/Chart.min.js" />"></script>
-    <script @CSPNonce.attr>
+    <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "lib/chart.js/dist/Chart.min.js" />"></script>
+    <script <#--@CSPNonce.attr-->>
         $(function(){
             var timeFrame = ${days}
             var domChartReview = document.getElementById("chart-reviews");
@@ -104,7 +89,7 @@
             });
         });
     </script>
-    <script @CSPNonce.attr type="text/javascript" src="<@hangar.url "javascripts/stats.js" />"></script>
+    <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "javascripts/stats.js" />"></script>
 </#assign>
 
 <@base.base title="Stats" additionalScripts=scriptsVar>
@@ -114,11 +99,11 @@
             <div class="form-inline">
                 <div class="form-group">
                     <label for="fromDate">From:</label>
-                    <input id="fromDate" type="date" class="form-control" max="@LocalDate.now().minus(1, ChronoUnit.DAYS)" <#if fromDate??> value="${fromDate}"</#if>>
+                    <input id="fromDate" type="date" class="form-control" max="${@helper["java.time.LocalDate"].now().minus(1, @helper["java.time.temporal.ChronoUnit"].DAYS)}" <#if fromDate??> value="${fromDate}"</#if>>
                 </div>
                 <div class="form-group">
                     <label for="toDate">To:</label>
-                    <input id="toDate" type="date" class="form-control" max="@LocalDate.now().toString" <#if toDate??> value="${toDate}"</#if>>
+                    <input id="toDate" type="date" class="form-control" max="${@helper["java.time.LocalDate"].now()}" <#if toDate??> value="${toDate}"</#if>>
                 </div>
             <button id="dateGoButton" class="btn btn-default">Go</button>
             </div>
