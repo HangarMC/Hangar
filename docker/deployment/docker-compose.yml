@@ -6,11 +6,6 @@ services:
     build:
       context: ..
       dockerfile: docker/hangar/Dockerfile
-    ports:
-    - "8080:8080"
-    volumes:
-    - ../:/app
-    working_dir: /app
     depends_on:
       - 'db'
       - 'auth'
@@ -28,15 +23,13 @@ services:
       - "traefik.http.routers.hangarnew.tls.domains[0].sans=*.minidigger.me"
     networks:
       - web
-    user: appuser
-    command: './mvnw spring-boot:run -Dspring-boot.run.arguments=--spring.config.location="./docker/hangar/application.yml"'
   db:
     image: registry.gitlab.com/minidigger/hangar2/db:latest
     build: ./db
     environment:
-      POSTGRES_MULTIPLE_DATABASES: hangar,hangarauth
-      POSTGRES_USER: "user"
-      POSTGRES_PASSWORD: "password"
+      POSTGRES_USER: hangar
+      POSTGRES_PASSWORD: 'hangar'
+      POSTGRES_DB: hangar
     ports:
       - "2345:5432" # pls dont abuse open port :/
     volumes:
@@ -62,15 +55,8 @@ services:
       - web
   auth:
     image: registry.gitlab.com/minidigger/hangarauth
-    build:
-      context: ../../HangarAuth
-      dockerfile: Dockerfile
-    ports:
-    - "8000:8000"
     depends_on:
-      - "db"
-      - "redis"
-      - "mail"
+      - 'db'
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.hangar-auth.loadbalancer.server.port=8000"
@@ -82,7 +68,6 @@ services:
       - "traefik.http.routers.hangar-auth.tls.domains[0].main=minidigger.me"
       - "traefik.http.routers.hangar-auth.tls.domains[0].sans=*.minidigger.me"
     environment:
-      PYTHONUNBUFFERED: 1
       SECRET_KEY: "TzNc3RTpfVn1xxNV90PPGEfs7SZhy5"
       EMAIL_HOST: "mail"
       EMAIL_PORT: "1025"
@@ -90,17 +75,13 @@ services:
       EMAIL_TLS: "false"
       EMAIL_HOST_USER: "dum"
       EMAIL_HOST_PASSWORD: "dum"
-      DB_NAME: "hangarauth"
-      DB_USER: "hangarauth"
-      DB_PASSWORD: "hangarauth"
-      DB_HOST: "db"
-      SSO_ENDPOINT_hangar: "{ 'sync_sso_endpoint': ('http://app:8080/api/sync_sso'), 'sso_secret': 'changeme', 'api_key': 'changeme' }"
-      DEBUG: "true"
+      DB_NAME: "spongeauth"
+      DB_USER: "spongeauth"
+      DB_PASSWORD: "spongeauth"
+      DB_HOST: "hangar_db"
+      SSO_ENDPOINT_ore: "{ 'sync_sso_endpoint': ('http://hangar_app:9000/api/sync_sso'), 'sso_secret': 'changeme', 'api_key': 'changeme' }"
+      DEBUG: "false"
       DJANGO_SETTINGS_MODULE: "spongeauth.settings.prod"
-    networks:
-      - web
-  redis:
-    image: redis:6.0.6
     networks:
       - web
 

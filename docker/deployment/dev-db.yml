@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  db:
+    build: ./db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 'changeme'
+      POSTGRES_DB: hangar
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+volumes:
+  db_data:
