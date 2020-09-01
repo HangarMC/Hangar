@@ -1,7 +1,9 @@
 package io.papermc.hangar.controller;
 
+import io.papermc.hangar.db.model.Stats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,6 +42,7 @@ import io.papermc.hangar.service.SitemapService;
 import io.papermc.hangar.service.UserActionLogService;
 import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.VersionService;
+import io.papermc.hangar.service.StatsService;
 import io.papermc.hangar.service.project.FlagService;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.AlertUtil;
@@ -52,11 +57,12 @@ public class ApplicationController extends HangarController {
     private final VersionService versionService;
     private final JobService jobService;
     private final SitemapService sitemapService;
+    private final StatsService statsService;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public ApplicationController(UserService userService, ProjectService projectService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, HttpServletRequest request) {
+    public ApplicationController(UserService userService, ProjectService projectService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, HttpServletRequest request) {
         this.userService = userService;
         this.projectService = projectService;
         this.flagService = flagService;
@@ -65,6 +71,7 @@ public class ApplicationController extends HangarController {
         this.jobService = jobService;
         this.sitemapService = sitemapService;
         this.request = request;
+        this.statsService = statsService;
     }
 
     @RequestMapping("/")
@@ -179,8 +186,29 @@ public class ApplicationController extends HangarController {
 
     @Secured("ROLE_USER")
     @RequestMapping("/admin/stats")
-    public ModelAndView showStats(@RequestParam(required = false) Object from, @RequestParam(required = false) Object to) {
-        return fillModel(new ModelAndView("users/admin/stats")); // TODO implement showStats request controller
+    public ModelAndView showStats(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        ModelAndView mav = new ModelAndView("users/admin/stats");
+        if(from == null){
+            from = LocalDate.now().minus(30, ChronoUnit.DAYS);
+        }
+        if(to == null){
+            to = LocalDate.now();
+        }
+        if(to.isBefore(from)){
+            to = from;
+        }
+        List<Stats> stats = statsService.getStats(from, to);
+        mav.addObject("fromDate", from.toString());
+        mav.addObject("toDate", to.toString());
+        mav.addObject("days", statsService.getStatDays(stats));
+        mav.addObject("reviewData", statsService.getReviewStats(stats));
+        mav.addObject("uploadData", statsService.getUploadStats(stats));
+        mav.addObject("totalDownloadData", statsService.getTotalDownloadStats(stats));
+        mav.addObject("unsafeDownloadData", statsService.getUnsafeDownloadsStats(stats));
+        mav.addObject("openFlagsData", statsService.getFlagsOpenedStats(stats));
+        mav.addObject("closedFlagsData", statsService.getFlagsClosedStats(stats));
+
+        return fillModel(mav);
     }
 
     @GlobalPermission(NamedPermission.EDIT_ALL_USER_SETTINGS)
