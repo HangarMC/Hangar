@@ -2,6 +2,9 @@ package io.papermc.hangar.db.dao.api;
 
 import io.papermc.hangar.db.mappers.PromotedVersionMapper;
 import io.papermc.hangar.model.generated.Project;
+import io.papermc.hangar.model.generated.ProjectMember;
+import io.papermc.hangar.model.generated.ProjectStatsDay;
+import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.customizer.BindList;
@@ -11,7 +14,9 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @RegisterBeanMapper(Project.class)
@@ -109,4 +114,26 @@ public interface ProjectApiDao {
                        @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<Integer> categories,
                        @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<String> tags, //TODO: implement tags with mc_version('data')
                        String query, @Define String queryStatement);
+
+    @RegisterBeanMapper(ProjectMember.class)
+    @SqlQuery("SELECT u.name AS user, array_agg(r.name) roles " +
+              " FROM projects p " +
+              "     JOIN user_project_roles upr ON p.id = upr.project_id " +
+              "     JOIN users u ON upr.user_id = u.id " +
+              "     JOIN roles r ON upr.role_type = r.name " +
+              " WHERE p.plugin_id = :pluginId" +
+              " GROUP BY u.name ORDER BY max(r.permission::BIGINT) DESC " +
+              " LIMIT :limit OFFSET :offset")
+    List<ProjectMember> projectMembers(String pluginId, long limit, long offset);
+
+    @KeyColumn("dateKey")
+    @RegisterBeanMapper(ProjectStatsDay.class)
+    @SqlQuery("SELECT CAST(dates.day AS date) dateKey, coalesce(sum(pvd.downloads), 0) AS downloads, coalesce(pv.views, 0) AS views" +
+              " FROM projects p," +
+              "     (SELECT generate_series(:startDate::DATE, :endDate::DATE, INTERVAL '1 DAY') AS day) dates" +
+              "     LEFT JOIN project_versions_downloads pvd ON dates.day = pvd.day" +
+              "     LEFT JOIN project_views pv ON dates.day = pv.day AND pvd.project_id = pv.project_id" +
+              " WHERE p.plugin_id = :pluginId AND (pvd IS NULL OR pvd.project_id = p.id)" +
+              " GROUP BY pv.views, dates.day")
+    Map<String, ProjectStatsDay> projectStats(String pluginId, LocalDate startDate, LocalDate endDate);
 }

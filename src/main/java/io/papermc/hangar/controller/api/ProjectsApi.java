@@ -1,6 +1,5 @@
 package io.papermc.hangar.controller.api;
 
-import io.papermc.hangar.model.ApiAuthInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -45,8 +44,7 @@ public interface ProjectsApi {
             , @ApiParam(value = "How to sort the projects") @Valid @RequestParam(value = "sort", required = false, defaultValue = "updated") ProjectSortingStrategy sort
             , @ApiParam(value = "If how relevant the project is to the given query should be used when sorting the projects") @RequestParam(value = "relevance", required = false, defaultValue = "true") boolean relevance
             , @ApiParam(value = "The maximum amount of projects to return") @Valid @RequestParam(value = "limit", required = false) Long limit
-            , @ApiParam(value = "Where to start searching", defaultValue = "0") @Valid @RequestParam(value = "offset", required = false, defaultValue = "0") Long offset,
-                                                        ApiAuthInfo apiAuthInfo);
+            , @ApiParam(value = "Where to start searching", defaultValue = "0") @Valid @RequestParam(value = "offset", required = false, defaultValue = "0") Long offset);
 
     @ApiOperation(value = "Returns the members of a project", nickname = "showMembers", notes = "Returns the members of a project. Requires the `view_public_info` permission.", response = ProjectMember.class, authorizations = {
             @Authorization(value = "Session")}, tags = "Projects")
@@ -56,7 +54,7 @@ public interface ProjectsApi {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")})
     @GetMapping(value = "/projects/{pluginId}/members",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<ProjectMember> showMembers(@ApiParam(value = "The plugin id of the project to return members for", required = true) @PathVariable("pluginId") String pluginId
+    ResponseEntity<List<ProjectMember>> showMembers(@ApiParam(value = "The plugin id of the project to return members for", required = true) @PathVariable("pluginId") String pluginId
             , @ApiParam(value = "The maximum amount of members to return") @Valid @RequestParam(value = "limit", required = false) Long limit
             , @ApiParam(value = "Where to start returning", defaultValue = "0") @Valid @RequestParam(value = "offset", required = false, defaultValue = "0") Long offset
     );
@@ -81,7 +79,7 @@ public interface ProjectsApi {
     @GetMapping(value = "/projects/{pluginId}/stats",
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Map<String, ProjectStatsDay>> showProjectStats(@ApiParam(value = "The plugin id of the project to return the stats for", required = true) @PathVariable("pluginId") String pluginId
-            , @NotNull @ApiParam(value = "The first date to include in the result", required = true) @Valid @RequestParam(value = "fromDate", required = true) LocalDate fromDate
-            , @NotNull @ApiParam(value = "The last date to include in the result", required = true) @Valid @RequestParam(value = "toDate", required = true) LocalDate toDate
+            , @NotNull @ApiParam(value = "The first date to include in the result", required = true) @Valid @RequestParam(value = "fromDate", required = true) String fromDate
+            , @NotNull @ApiParam(value = "The last date to include in the result", required = true) @Valid @RequestParam(value = "toDate", required = true) String toDate
     );
 }

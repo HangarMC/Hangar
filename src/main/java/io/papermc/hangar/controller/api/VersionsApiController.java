@@ -85,8 +85,8 @@ public class VersionsApiController implements VersionsApi {
     @Override
     @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).IsProjectMember, T(io.papermc.hangar.controller.util.ApiScope).forProject(#pluginId))")
     public ResponseEntity<Map<String, VersionStatsDay>> showVersionStats(String pluginId, String version, @NotNull @Valid String fromDate, @NotNull @Valid String toDate) {
-        LocalDate from = parseDate(fromDate);
-        LocalDate to = parseDate(toDate);
+        LocalDate from = ApiUtil.parseDate(fromDate);
+        LocalDate to = ApiUtil.parseDate(toDate);
         if (from.isAfter(to)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "From date is after to date");
         }
@@ -95,13 +95,5 @@ public class VersionsApiController implements VersionsApi {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND); // TODO Not found might not be right here?
         }
         return ResponseEntity.ok(versionStats);
-    }
-
-    private LocalDate parseDate(String date) {
-        try {
-            return LocalDate.parse(date);
-        } catch (DateTimeParseException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Badly formatted date " + date);
-        }
     }
 }
