@@ -72,7 +72,7 @@ public class SsoService {
         String payload = generatePayload( returnUrl, generatedNonce);
         String sig = sign(payload);
         String urlEncoded = URLEncoder.encode(payload, StandardCharsets.UTF_8);
-        return new UrlWithNonce(String.format("%s?sso=%s&sig=%s", hangarConfig.security.api.getUrl() + baseUrl, urlEncoded, sig), generatedNonce);
+        return new UrlWithNonce(String.format("%s?sso=%s&sig=%s", hangarConfig.getAuthUrl() + baseUrl, urlEncoded, sig), generatedNonce);
     }
 
     private String nonce() {
