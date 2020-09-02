@@ -12,12 +12,12 @@ import io.papermc.hangar.db.model.ProjectVisibilityChangesTable;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
-import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.generated.*;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.ProjectFlag;
 import io.papermc.hangar.service.UserService;
+import io.papermc.hangar.service.pluginupload.ProjectFiles;
 import io.papermc.hangar.util.StringUtils;
 import io.papermc.hangar.db.dao.VisibilityDao;
 import io.papermc.hangar.model.Category;
@@ -35,8 +35,8 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.file.Path;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,9 +54,10 @@ public class ProjectService {
     private final HangarDao<GeneralDao> generalDao;
     private final UserService userService;
     private final FlagService flagService;
+    private final ProjectFiles projectFiles;
 
     @Autowired
-    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectApiDao> projectApiDao, HangarDao<ProjectViewDao> projectViewDao, HangarDao<GeneralDao> generalDao, UserService userService, FlagService flagService) {
+    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectApiDao> projectApiDao, HangarDao<ProjectViewDao> projectViewDao, HangarDao<GeneralDao> generalDao, ProjectFiles projectFiles, UserService userService, FlagService flagService) {
         this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
         this.userDao = userDao;
@@ -64,6 +65,7 @@ public class ProjectService {
         this.projectApiDao = projectApiDao;
         this.projectViewDao = projectViewDao;
         this.generalDao = generalDao;
+        this.projectFiles = projectFiles;
         this.userService = userService;
         this.flagService = flagService;
     }
@@ -279,7 +281,10 @@ public class ProjectService {
 
     public List<ProjectMissingFile> getPluginsWithMissingFiles() {
         List<ProjectMissingFile> projectMissingFiles = projectDao.get().allProjectsForMissingFiles();
-
-        return projectMissingFiles;
+        return projectMissingFiles.stream()
+                .filter(project -> {
+                    Path path = projectFiles.getVersionDir(project.getOwner(), project.getSlug(), project.getVersionString());
+                    return !path.resolve(project.getFileName()).toFile().exists();
+                }).collect(Collectors.toList());
     }
 }

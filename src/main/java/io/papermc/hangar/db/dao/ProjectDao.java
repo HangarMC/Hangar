@@ -170,8 +170,8 @@ public interface ProjectDao {
             "p.* FROM user_project_roles upr JOIN projects p ON p.id = upr.project_id WHERE upr.user_id = :userId")
     Map<UserProjectRolesTable, ProjectsTable> getProjectRoles(long userId);
 
-    @SqlQuery("SELECT p.owner_name pn_owner, p.slug pn_slug, v.version_string AS version, v.file_name AS fileName " +
-            "FROM projects p JOIN project_versions v on v.project_id = p.id ")
+    @SqlQuery("SELECT v.version_string version_versionString, v.file_name version_fileName, p.owner_name pn_owner, p.slug pn_slug " +
+            "FROM project_versions v JOIN projects p on v.project_id = p.id ")
     @RegisterBeanMapper(value = ProjectMissingFile.class)
     List<ProjectMissingFile> allProjectsForMissingFiles();
 }
