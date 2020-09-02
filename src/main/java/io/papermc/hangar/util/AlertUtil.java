@@ -17,28 +17,30 @@ public class AlertUtil {
     }
 
     public static final String TYPE = "alertType";
-    public static final String MSG = "alertMsg";
-    public static final String ARGS = "alertArgs";
+    public static final String MSG = "message";
+    public static final String ARGS = "args";
 
     public static ModelAndView showAlert(ModelAndView mav, AlertType alertType, String alertMessage, Object...args) {
         Map<String, Object> alerts = (Map<String, Object>) mav.getModelMap().getAttribute("alerts");
+        mav.addObject("alerts", createAlert(alerts, alertType, alertMessage, args));
+        return mav;
+    }
+
+    public static void showAlert(RedirectAttributes attributes, AlertType alertType, String alertMsg, Object...args) {
+        Map<String, Object> alerts =  (Map<String, Object>) attributes.getFlashAttributes().get("alerts");
+        attributes.addFlashAttribute("alerts", createAlert(alerts, alertType, alertMsg, args));
+    }
+
+    private static Map<String, Object> createAlert(Map<String, Object> alerts, AlertType alertType, String alertMessage, Object...args){
         if (alerts == null) {
             alerts = new HashMap<>();
         }
         Map<String, Object> thisAlert = new HashMap<>();
-        thisAlert.put("message", alertMessage);
-        thisAlert.put("args", args);
-        alerts.put(alertType.name().toLowerCase(), thisAlert);
-        mav.addObject("alerts", alerts);
-        return mav;
+        thisAlert.put(MSG, alertMessage);
+        thisAlert.put(ARGS, args);
+        return Map.of(alertType.name().toLowerCase(), thisAlert);
     }
 
-    public static RedirectAttributes showAlert(RedirectAttributes attributes, AlertType alertType, String alertMsg, String...args) {
-        attributes.addFlashAttribute(TYPE, alertType);
-        attributes.addFlashAttribute(MSG, alertMsg);
-        attributes.addFlashAttribute(ARGS, args);
-        return attributes;
-    }
     // TODO alert args in alert.ftlh
     public static ModelAndView transferAlerts(ModelAndView mav, ModelMap modelMap) {
         if (modelMap.containsAttribute(TYPE) && modelMap.containsAttribute(MSG)) {

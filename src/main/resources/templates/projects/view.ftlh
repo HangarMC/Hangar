@@ -79,13 +79,11 @@ Base template for Project overview.
                     <#if !noButtons>
                         <div class="pull-right project-controls">
 
-                            <#-- TODO
-                            @flash.get("reported").map { _ =>
-                            <span class="flag-msg">
+<#--                            @flash.get("reported").map { _ =>-->
+                            <#if reported!false> <span class="flag-msg">
                                 <i class="fas fa-thumbs-up"></i> Flag submitted for review
-                            </span>
-                            }
-                            -->
+                            </span> </#if>
+<#--                            }-->
 
                             <#if p.visibility != Visibility.SOFTDELETE>
                                 <#if headerData.hasUser() && p.isOwner(headerData.getCurrentUser())>

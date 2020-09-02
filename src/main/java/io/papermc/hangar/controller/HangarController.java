@@ -41,10 +41,10 @@ public abstract class HangarController {
         mav.addObject("rand", ThreadLocalRandom.current());
         mav.addObject("utils", templateHelper);
 
-        // alerts
-        if (mav.getModelMap().getAttribute("alerts") == null) {
-            mav.addObject("alerts", new HashMap<>());
-        }
+        // alerts // commented it out for now, so that it doesnt override the redirect's alerts
+//        if (mav.getModelMap().getAttribute("alerts") == null) {
+//            mav.addObject("alerts", new HashMap<>());
+//        }
 
         // user data
         mav.addObject("user", userService.getCurrentUser()); // TODO this is wrong

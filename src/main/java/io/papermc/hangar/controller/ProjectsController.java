@@ -225,17 +225,20 @@ public class ProjectsController extends HangarController {
 
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/flag", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ModelAndView flag(@PathVariable String author, @PathVariable String slug, @RequestParam("flag-reason") FlagReason flagReason, @RequestParam String comment) {
+    public ModelAndView flag(@PathVariable String author, @PathVariable String slug, @RequestParam("flag-reason") FlagReason flagReason, @RequestParam String comment, RedirectAttributes redirectAttributes) {
+        ModelAndView mav = new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.show", author, slug));
         ProjectData projectData = projectService.getProjectData(author, slug);
         if (flagService.hasUnresolvedFlag(projectData.getProject().getId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only 1 flag at a time per project per user");
+            AlertUtil.showAlert(redirectAttributes, AlertUtil.AlertType.ERROR, "error.flag.rateLimit");
         } else if (comment.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Comment must not be blank");
+            AlertUtil.showAlert(redirectAttributes, AlertUtil.AlertType.ERROR, "error.required.comment");
+        } else {
+            flagService.flagProject(projectData.getProject().getId(), flagReason, comment);
+            String userName = userService.getCurrentUser().getName();
+            userActionLogService.project(request, LoggedActionType.PROJECT_FLAGGED.with(ProjectContext.of(projectData.getProject().getId())), "Flagged by " + userName, "Not flagged by " + userName);
+            redirectAttributes.addFlashAttribute("reported", true);
         }
-        flagService.flagProject(projectData.getProject().getId(), flagReason, comment);
-        String userName = userService.getCurrentUser().getName();
-        userActionLogService.project(request, LoggedActionType.PROJECT_FLAGGED.with(ProjectContext.of(projectData.getProject().getId())), "Flagged by " + userName, "Not flagged by " + userName);
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.show", author, slug)); // TODO flashing
+        return mav;
     }
 
     @Secured("ROLE_USER")

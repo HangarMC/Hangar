@@ -2,7 +2,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 
 <#macro alert alertType>
-    <#if alerts[alertType]?? || alerts[alertType + "-num"]??>
+    <#if (alerts[alertType])?? || (alerts[alertType + "-num"])??>
         <div class="alert alert-fade <@bootstrapName type=alertType/> alert-dismissable"
              role="alert" style="display: none;">
             <button type="button" class="close" data-dismiss="alert" aria-label="<@spring.message "general.close" />">
