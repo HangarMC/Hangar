@@ -1,6 +1,7 @@
 package io.papermc.hangar.db.dao;
 
 import io.papermc.hangar.db.model.ApiKeysTable;
+import io.papermc.hangar.db.model.ProjectApiKeysTable;
 import io.papermc.hangar.model.ApiAuthInfo;
 import io.papermc.hangar.model.viewhelpers.ApiKey;
 
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Repository
 @RegisterBeanMapper(ApiKeysTable.class)
+@RegisterBeanMapper(ProjectApiKeysTable.class)
 public interface ApiKeyDao {
 
     @Timestamped
@@ -33,6 +35,9 @@ public interface ApiKeyDao {
 
     @SqlQuery("SELECT *, raw_key_permissions::BIGINT perm_value FROM api_keys k WHERE k.token_identifier = :identifier AND k.token = crypt(:token, k.token)")
     ApiKeysTable findApiKey(String identifier, String token);
+
+    @SqlQuery("SELECT * FROM project_api_keys pak WHERE pak.project_id = :projectId")
+    List<ProjectApiKeysTable> getByProjectId(long projectId);
 
     @RegisterBeanMapper(ApiAuthInfo.class)
     @SqlQuery("SELECT u.id u_id," +

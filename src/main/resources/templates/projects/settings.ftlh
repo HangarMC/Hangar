@@ -130,27 +130,27 @@
                                 <h4><@spring.message "project.settings.deployKey" /></h4>
                                 <p>
                                     <@spring.message "project.settings.deployKey.info" />
+                                    <#--TODO I think this link is supposed to show some info or something-->
                                     <a href="#"><i class="fas fa-question-circle"></i></a>
                                 </p>
-                                <#-- TODO project api keys -->
-                                @deploymentKey.map { key =>
-                                <input class="form-control input-key" type="text" value="@key.value" readonly />
-                                }.getOrElse {
+                                <#if deploymentKey??>
+                                    <input class="form-control input-key" type="text" value="${deploymentKey.value}" readonly />
+                                <#else>
                                     <input class="form-control input-key" type="text" value="" readonly />
-                                }
+                                </#if>
                             </div>
                             <div class="setting-content">
-                            @deploymentKey.map { key =>
-                            <button class="btn btn-danger btn-block btn-key-revoke" data-key-id="@key.id">
-                                <span class="spinner" style="display: none;"><i class="fas fa-spinner fa-spin"></i></span>
-                                <span class="text"><@spring.message "project.settings.revokeKey" /></span>
-                            </button>
-                            }.getOrElse {
-                                <button class="btn btn-info btn-block btn-key-gen">
-                                    <span class="spinner" style="display: none;"><i class="fas fa-spinner fa-spin"></i></span>
-                                    <span class="text"><@spring.message "project.settings.genKey" /></span>
-                                </button>
-                            }
+                                <#if deploymentKey??>
+                                    <button class="btn btn-danger btn-block btn-key-revoke" data-key-id="${deploymentKey.id}">
+                                        <span class="spinner" style="display: none;"><i class="fas fa-spinner fa-spin"></i></span>
+                                        <span class="text"><@spring.message "project.settings.revokeKey" /></span>
+                                    </button>
+                                <#else>
+                                    <button class="btn btn-info btn-block btn-key-gen">
+                                        <span class="spinner" style="display: none;"><i class="fas fa-spinner fa-spin"></i></span>
+                                        <span class="text"><@spring.message "project.settings.genKey" /></span>
+                                    </button>
+                                </#if>
                             </div>
                             <div class="clearfix"></div>
                         </div>

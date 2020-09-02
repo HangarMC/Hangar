@@ -25,6 +25,7 @@ import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.model.viewhelpers.UserData;
 import io.papermc.hangar.security.annotations.GlobalPermission;
 import io.papermc.hangar.security.annotations.ProjectPermission;
+import io.papermc.hangar.service.ApiKeyService;
 import io.papermc.hangar.service.NotificationService;
 import io.papermc.hangar.service.OrgService;
 import io.papermc.hangar.service.RoleService;
@@ -90,6 +91,7 @@ public class ProjectsController extends HangarController {
     private final ProjectService projectService;
     private final ProjectFactory projectFactory;
     private final PagesSerivce pagesSerivce;
+    private final ApiKeyService apiKeyService;
     private final RoleService roleService;
     private final NotificationService notificationService;
     private final UserActionLogService userActionLogService;
@@ -102,7 +104,7 @@ public class ProjectsController extends HangarController {
     private final HttpServletRequest request;
 
     @Autowired
-    public ProjectsController(HangarConfig hangarConfig, RouteHelper routeHelper, UserService userService, OrgService orgService, FlagService flagService, ProjectService projectService, ProjectFactory projectFactory, PagesSerivce pagesSerivce, RoleService roleService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles, TemplateHelper templateHelper, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao, HangarDao<GeneralDao> generalDao, HttpServletRequest request) {
+    public ProjectsController(HangarConfig hangarConfig, RouteHelper routeHelper, UserService userService, OrgService orgService, FlagService flagService, ProjectService projectService, ProjectFactory projectFactory, PagesSerivce pagesSerivce, ApiKeyService apiKeyService, RoleService roleService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles, TemplateHelper templateHelper, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao, HangarDao<GeneralDao> generalDao, HttpServletRequest request) {
         this.hangarConfig = hangarConfig;
         this.routeHelper = routeHelper;
         this.userService = userService;
@@ -111,6 +113,7 @@ public class ProjectsController extends HangarController {
         this.projectService = projectService;
         this.projectFactory = projectFactory;
         this.pagesSerivce = pagesSerivce;
+        this.apiKeyService = apiKeyService;
         this.roleService = roleService;
         this.notificationService = notificationService;
         this.userActionLogService = userActionLogService;
@@ -325,7 +328,7 @@ public class ProjectsController extends HangarController {
         ScopedProjectData scopedProjectData = projectService.getScopedProjectData(projectData.getProject().getId());
         mav.addObject("sp", scopedProjectData);
         mav.addObject("iconUrl", templateHelper.projectAvatarUrl(projectData.getProject()));
-        // TODO add deploymentKey
+        mav.addObject("deploymentKey", apiKeyService.getProjectKeys(projectData.getProject().getId()).stream().findFirst().orElse(null));
         return fillModel(mav);
     }
 
