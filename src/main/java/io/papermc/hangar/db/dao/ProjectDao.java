@@ -7,6 +7,7 @@ import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.generated.ProjectStatsAll;
 import io.papermc.hangar.model.viewhelpers.ProjectApprovalData;
+import io.papermc.hangar.model.viewhelpers.ProjectMissingFile;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.model.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.service.project.ProjectFactory.InvalidProjectReason;
@@ -156,7 +157,7 @@ public interface ProjectDao {
 
     @RegisterBeanMapper(UnhealthyProject.class)
     @UseStringTemplateEngine
-    @SqlQuery("SELECT p.owner_name, p.slug, p.topic_id, p.post_id, coalesce(hp.last_updated, p.created_at), p.visibility" +
+    @SqlQuery("SELECT p.owner_name pn_owner, p.slug pn_slug, p.topic_id, p.post_id, coalesce(hp.last_updated, p.created_at), p.visibility" +
             "  FROM projects p JOIN home_projects hp ON p.id = hp.id" +
             "  WHERE p.topic_id IS NULL" +
             "     OR p.post_id IS NULL" +
@@ -168,4 +169,9 @@ public interface ProjectDao {
     @SqlQuery("SELECT upr.id pr_id, upr.created_at pr_created_at, upr.user_id pr_user_id, upr.role_type pr_role_type, upr.project_id pr_project_id, upr.is_accepted pr_is_accepted, " +
             "p.* FROM user_project_roles upr JOIN projects p ON p.id = upr.project_id WHERE upr.user_id = :userId")
     Map<UserProjectRolesTable, ProjectsTable> getProjectRoles(long userId);
+
+    @SqlQuery("SELECT p.owner_name pn_owner, p.slug pn_slug, v.version_string AS version, v.file_name AS fileName " +
+            "FROM projects p JOIN project_versions v on v.project_id = p.id ")
+    @RegisterBeanMapper(value = ProjectMissingFile.class)
+    List<ProjectMissingFile> allProjectsForMissingFiles();
 }

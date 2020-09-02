@@ -149,8 +149,7 @@ public class ApplicationController extends HangarController {
         mav.addObject("noTopicProjects", unhealthyProjects.stream().filter(p -> p.getTopicId() == null || p.getPostId() == null).collect(Collectors.toList()));
         mav.addObject("staleProjects", unhealthyProjects);
         mav.addObject("notPublicProjects", unhealthyProjects.stream().filter(p -> p.getVisibility() != Visibility.PUBLIC).collect(Collectors.toList()));
-        // TODO missingFiles
-        mav.addObject("missingFileProjects");
+        mav.addObject("missingFileProjects", projectService.getPluginsWithMissingFiles());
         mav.addObject("erroredJobs", jobService.getErroredJobs());
         return fillModel(mav);
     }

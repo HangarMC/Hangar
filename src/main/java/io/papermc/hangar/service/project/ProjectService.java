@@ -26,6 +26,7 @@ import io.papermc.hangar.model.viewhelpers.ProjectViewSettings;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.model.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.model.viewhelpers.UserRole;
+import io.papermc.hangar.model.viewhelpers.ProjectMissingFile;
 
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -273,5 +275,11 @@ public class ProjectService {
 
     private List<String> getTagsNamesAndVersion(List<Tag> tags){
         return tags == null ? null :  tags.stream().filter(tag -> tag.getData() != null).map(tag -> " (" + tag.getName() + "," +  tag.getData() + ") ").collect(Collectors.toList());
+    }
+
+    public List<ProjectMissingFile> getPluginsWithMissingFiles() {
+        List<ProjectMissingFile> projectMissingFiles = projectDao.get().allProjectsForMissingFiles();
+
+        return projectMissingFiles;
     }
 }
