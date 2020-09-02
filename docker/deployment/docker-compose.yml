@@ -4,8 +4,8 @@ services:
   app:
     image: registry.gitlab.com/minidigger/hangar2/app:latest
     build:
-      context: ..
-      dockerfile: docker/hangar/Dockerfile
+      context: ../..
+      dockerfile: docker/deployment/hangar/Dockerfile
     depends_on:
       - 'db'
       - 'auth'

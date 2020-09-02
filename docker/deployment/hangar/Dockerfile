@@ -3,7 +3,7 @@ FROM openjdk:14-jdk-alpine
 LABEL maintainer="Yannick Lamprecht <yannicklamprecht@live.de>"
 
 ADD target/hangar-*.jar app.jar
-ADD docker/hangar/application.yml application.yml
+ADD docker/deployment/hangar/application.yml application.yml
 
 ENV TERM xterm-256color
 
