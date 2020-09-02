@@ -58,7 +58,7 @@
 
                         <#assign Prompt=@helper["io.papermc.hangar.model.Prompt"] />
                         <#-- @ftlvariable name="Prompt" type="io.papermc.hangar.model.Prompt" -->
-                        <#if !u.headerData.currentUser.readPrompts?seq_contains(Prompt.CHANGE_AVATAR)>
+                        <#if !u.headerData.currentUser.readPrompts?seq_contains(Prompt.CHANGE_AVATAR.ordinal())>
                             <@promptView.prompt prompt=Prompt.CHANGE_AVATAR id="popover-avatar" />
                         </#if>
                     </#if>
