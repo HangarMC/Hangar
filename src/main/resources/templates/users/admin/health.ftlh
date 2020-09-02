@@ -83,7 +83,7 @@
                     <#list notPublicProjects as project>
                         <div class="list-group-item">
                             <a href="${routes.getRouteUrl("projects.show", project.getNamespace().getOwner(), project.getNamespace().getSlug())}">
-                                <strong>${project.namespace}</strong> <small><@spring.message "visibility.name." + project.visibility.name /></small>
+                                <strong>${project.namespace}</strong> <small><@spring.message "visibility.name." + project.getVisibility().getName() /></small>
                             </a>
                         </div>
                     </#list>
@@ -108,13 +108,13 @@
                     <h4 class="panel-title"><@spring.message "admin.health.missingFile" /></h4>
                 </div>
                 <div class="panel-body list-group list-group-health">
-                <#--@missingFileProjects.map { case (version, project) =>
-                <div class="list-group-item">
-                    <a href="${routes.getRouteUrl("versions.show", project.ownerName, project.slug, version.name)}">
-                        <strong>${project.namespace}/${version.name}</strong>
-                </a>
-                </div>
-                }--> <#--TODO missinFileProjects -->
+                    <#list missingFileProjects as missingFileProject>
+                        <div class="list-group-item">
+                            <a href="${routes.getRouteUrl("versions.show", missingFileProject.owner, missingFileProject.name, missingFileProject.getVersion().getVersionString())}">
+                                <strong>${missingFileProject.displayText}</strong>
+                            </a>
+                        </div>
+                    </#list>
                 </div>
             </div>
         </div>
