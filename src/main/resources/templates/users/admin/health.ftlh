@@ -110,7 +110,7 @@
                 <div class="panel-body list-group list-group-health">
                     <#list missingFileProjects as missingFileProject>
                         <div class="list-group-item">
-                            <a href="${routes.getRouteUrl("versions.show", missingFileProject.getNamespace().getOwner(), missingFileProject.getNamespace().getSlug(), missingFileProject.getVersion().getVersionString())}">
+                            <a href="${routes.getRouteUrl("versions.show", missingFileProject.getOwner(), missingFileProject.getName(), missingFileProject.getVersion().getVersionString())}">
                                 <strong>${missingFileProject.displayText}</strong>
                             </a>
                         </div>

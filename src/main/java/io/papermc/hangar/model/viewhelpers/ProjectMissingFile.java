@@ -1,12 +1,12 @@
 package io.papermc.hangar.model.viewhelpers;
 
 import io.papermc.hangar.db.model.ProjectVersionsTable;
-import io.papermc.hangar.model.generated.ProjectNamespace;
 import org.jdbi.v3.core.mapper.Nested;
 
 public class ProjectMissingFile {
 
-    private ProjectNamespace namespace;
+    private String owner;
+    private String name;
     private ProjectVersionsTable version;
 
     public ProjectVersionsTable getVersion() {
@@ -18,25 +18,24 @@ public class ProjectMissingFile {
         this.version = version;
     }
 
-    public ProjectNamespace getNamespace() {
-        return namespace;
-    }
-
-    @Nested("pn")
-    public void setNamespace(ProjectNamespace namespace) {
-        this.namespace = namespace;
-    }
-
     public String getDisplayText(){
-        return namespace.toString() + "/" + version.getVersionString();
+        return owner + "/" + name + "/" + version.getVersionString();
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     public String getOwner(){
-        return getNamespace().getOwner();
+        return owner;
     }
 
-    public String getSlug(){
-        return getNamespace().getSlug();
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName(){
+        return name;
     }
 
     public String getVersionString(){

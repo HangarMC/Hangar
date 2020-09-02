@@ -283,7 +283,7 @@ public class ProjectService {
         List<ProjectMissingFile> projectMissingFiles = projectDao.get().allProjectsForMissingFiles();
         return projectMissingFiles.stream()
                 .filter(project -> {
-                    Path path = projectFiles.getVersionDir(project.getOwner(), project.getSlug(), project.getVersionString());
+                    Path path = projectFiles.getVersionDir(project.getOwner(), project.getName(), project.getVersionString());
                     return !path.resolve(project.getFileName()).toFile().exists();
                 }).collect(Collectors.toList());
     }
