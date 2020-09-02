@@ -34,6 +34,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -300,7 +302,7 @@ public class Apiv1Controller extends HangarController {
     }
 
     @PostMapping(value = "/sync_sso")
-    public ResponseEntity<ObjectNode> syncSso(@RequestParam String sso, @RequestParam String sig, @RequestParam String apiKey) {
+    public ResponseEntity<MultiValueMap<String, String>> syncSso(@RequestParam String sso, @RequestParam String sig, @RequestParam("api_key") String apiKey) {
         if (!apiKey.equals(hangarConfig.sso.getApiKey())) {
             log.warn("SSO sync failed: bad API key (" + apiKey + " provided, " + hangarConfig.sso.getApiKey() + " expected)");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -310,7 +312,9 @@ public class Apiv1Controller extends HangarController {
             SsoSyncData data = SsoSyncData.fromSignedPayload(map);
             userService.ssoSyncUser(data);
             log.debug("SSO sync successful: " + map.toString());
-            return new ResponseEntity<>(mapper.createObjectNode().set("status", mapper.valueToTree("success")), HttpStatus.OK);
+            MultiValueMap<String, String> ssoResponse = new LinkedMultiValueMap<>();
+            ssoResponse.set("status", "success");
+            return new ResponseEntity<>(ssoResponse, HttpStatus.OK);
         } catch (SignatureException e) {
             log.warn("SSO sync failed: invalid signature (" + sig + " for data " + sso + ")");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

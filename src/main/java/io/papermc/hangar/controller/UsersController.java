@@ -153,7 +153,7 @@ public class UsersController extends HangarController {
     public ModelAndView logout(HttpSession session) {
         // TODO flash
         session.invalidate();
-        return new ModelAndView("redirect:" + hangarConfig.security.api.getUrl() + "/accounts/logout/");
+        return new ModelAndView("redirect:" + hangarConfig.getAuthUrl() + "/accounts/logout/");
     }
 
     @Secured("ROLE_USER")

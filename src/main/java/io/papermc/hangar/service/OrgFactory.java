@@ -1,17 +1,15 @@
 package io.papermc.hangar.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.OrganizationDao;
 import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.model.OrganizationsTable;
-import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.NotificationType;
-import io.papermc.hangar.model.Prompt;
 import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.viewhelpers.UserData;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.service.sso.AuthUser;
 import io.papermc.hangar.util.HangarException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -73,9 +70,7 @@ public class OrgFactory {
         } else {
             authOrgUser = new AuthUser(-100, name, dummyEmail, "", Locale.ENGLISH, null);
         }
-
-        // TODO this will happen via /api/sync_sso, but I have no idea how to get that whole system working with Docker
-        userDao.get().insert(new UsersTable(authOrgUser.getId(), null, name, dummyEmail, null, List.of(), false, authOrgUser.getLang().toLanguageTag()));
+        // Just a note, the /api/sync_sso creates the org user here, so it will already be created when the above response is returned
         OrganizationsTable org = new OrganizationsTable(name, ownerId, authOrgUser.getId());
         org = organizationDao.get().insert(org);
         long orgId = org.getId();
