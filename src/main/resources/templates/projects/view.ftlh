@@ -88,7 +88,7 @@ Base template for Project overview.
                             -->
 
                             <#if p.visibility != Visibility.SOFTDELETE>
-                                <#if headerData.hasUser() && p.isOwner(headerData.getCurrentUser())>
+                                <#if !p.isOwner(headerData.getCurrentUser())>
                                     <button class="btn btn-default btn-star">
                                         <i id="icon-star" <#if sp.starred>
                                            class="fas fa-star"

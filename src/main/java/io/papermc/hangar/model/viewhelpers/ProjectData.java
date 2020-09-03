@@ -53,6 +53,7 @@ public class ProjectData extends JoinableData<UserProjectRolesTable, ProjectsTab
     }
 
     public boolean isOwner(UsersTable usersTable) {
+        if (usersTable == null) return false;
         return projectOwner.getId() == usersTable.getId();
     }
 
