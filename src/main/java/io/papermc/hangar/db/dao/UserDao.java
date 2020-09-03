@@ -109,7 +109,7 @@ public interface UserDao {
     void removeStargazing(long projectId, long userId);
 
 
-    @SqlQuery("SELECT pvr.ended_at, pvr.id, p.owner_name, p.slug" +
+    @SqlQuery("SELECT pvr.ended_at, pv.version_string, p.owner_name \"owner\", p.slug" +
             "  FROM users u" +
             "         JOIN project_version_reviews pvr ON u.id = pvr.user_id" +
             "         JOIN project_versions pv ON pvr.version_id = pv.id" +

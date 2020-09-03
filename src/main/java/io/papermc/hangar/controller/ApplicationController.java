@@ -90,7 +90,7 @@ public class ApplicationController extends HangarController {
         activities.addAll(userService.getFlagActivity(user));
         activities.addAll(userService.getReviewActivity(user));
         mv.addObject("activities", activities);
-        return mv;
+        return fillModel(mv);
     }
 
     @GlobalPermission(NamedPermission.REVIEWER)
