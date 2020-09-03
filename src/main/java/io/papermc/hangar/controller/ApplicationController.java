@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -74,7 +75,7 @@ public class ApplicationController extends HangarController {
         this.statsService = statsService;
     }
 
-    @RequestMapping("/")
+    @GetMapping("/")
     public ModelAndView showHome(ModelMap modelMap) {
         ModelAndView mav = new ModelAndView("home");
         AlertUtil.transferAlerts(mav, modelMap);
@@ -95,7 +96,7 @@ public class ApplicationController extends HangarController {
 
     @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
-    @RequestMapping("/admin/approval/projects")
+    @GetMapping("/admin/approval/projects")
     public Object showProjectVisibility() {
         ModelAndView mv = new ModelAndView("users/admin/visibility");
         mv.addObject("needsApproval", projectService.getProjectsNeedingApproval());
@@ -104,7 +105,7 @@ public class ApplicationController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/admin/approval/versions")
+    @GetMapping("/admin/approval/versions")
     public ModelAndView showQueue() {
         ModelAndView mv = new ModelAndView("users/admin/queue");
         List<ReviewQueueEntry> reviewQueueEntries = new ArrayList<>();
@@ -142,7 +143,7 @@ public class ApplicationController extends HangarController {
 
     @GlobalPermission(NamedPermission.VIEW_HEALTH)
     @Secured("ROLE_USER")
-    @RequestMapping("/admin/health")
+    @GetMapping("/admin/health")
     public ModelAndView showHealth() {
         ModelAndView mav = new ModelAndView("users/admin/health");
         List<UnhealthyProject> unhealthyProjects = projectService.getUnhealthyProjects();
@@ -155,7 +156,7 @@ public class ApplicationController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/admin/log")
+    @GetMapping("/admin/log")
     public ModelAndView showLog(@RequestParam(required = false) Integer oPage,
                                 @RequestParam(required = false) Object userFilter,
                                 @RequestParam(required = false) Object projectFilter,
@@ -184,7 +185,7 @@ public class ApplicationController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/admin/stats")
+    @GetMapping("/admin/stats")
     public ModelAndView showStats(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
         ModelAndView mav = new ModelAndView("users/admin/stats");
         if(from == null){
@@ -212,7 +213,7 @@ public class ApplicationController extends HangarController {
 
     @GlobalPermission(NamedPermission.EDIT_ALL_USER_SETTINGS)
     @Secured("ROLE_USER")
-    @RequestMapping("/admin/user/{user}")
+    @GetMapping("/admin/user/{user}")
     public ModelAndView userAdmin(@PathVariable String user) {
         ModelAndView mav = new ModelAndView("users/admin/userAdmin");
         UserData userData = userService.getUserData(user);
@@ -223,23 +224,23 @@ public class ApplicationController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/admin/user/{user}/update")
+    @PostMapping("/admin/user/{user}/update")
     public Object updateUser(@PathVariable Object user) {
         return null; // TODO implement updateUser request controller
     }
 
-    @RequestMapping("/api")
+    @GetMapping("/api") // TODO move to Apiv1Controller maybe
     public ModelAndView swagger() {
         return fillModel(new ModelAndView("swagger"));
     }
 
-    @RequestMapping(value = "/favicon.ico", produces = "images/x-icon")
+    @GetMapping(value = "/favicon.ico", produces = "images/x-icon")
     @ResponseBody
     public ClassPathResource faviconRedirect() {
         return new ClassPathResource("public/images/favicon.ico");
     }
 
-    @RequestMapping(value = "/global-sitemap.xml", produces =  MediaType.APPLICATION_XML_VALUE)
+    @GetMapping(value = "/global-sitemap.xml", produces =  MediaType.APPLICATION_XML_VALUE)
     @ResponseBody
     public String globalSitemap() {
         return sitemapService.getGlobalSitemap();
@@ -277,7 +278,7 @@ public class ApplicationController extends HangarController {
                "})(jsRoutes)"; // TODO implement javaScriptRoutes request controller
     }
 
-    @RequestMapping("/linkout")
+    @GetMapping("/linkout")
     public ModelAndView linkOut(@RequestParam(defaultValue = "") String remoteUrl) {
         ModelAndView view = new ModelAndView("linkout");
         view.addObject("remoteUrl", remoteUrl);
@@ -285,24 +286,24 @@ public class ApplicationController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/pantopticon/actor-count")
+    @GetMapping("/pantopticon/actor-count")
     public Object actorCount(@RequestParam Object timeoutMs) {
         return null; // TODO implement actorCount request controller
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/pantopticon/actor-tree")
+    @GetMapping("/pantopticon/actor-tree")
     public Object actorTree(@RequestParam Object timeoutMs) {
         return null; // TODO implement actorTree request controller
     }
 
-    @RequestMapping(value = "/robots.txt", produces = MediaType.TEXT_PLAIN_VALUE)
+    @GetMapping(value = "/robots.txt", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public Object robots() {
         return new ClassPathResource("public/robots.txt");
     }
 
-    @RequestMapping(value = "/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
+    @GetMapping(value = "/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
     @ResponseBody
     public String sitemapIndex() {
         return sitemapService.getSitemap();

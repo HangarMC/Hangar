@@ -177,13 +177,13 @@ public class ProjectsController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/invite/{id}/{status}")
+    @PostMapping("/invite/{id}/{status}")
     public Object setInviteStatus(@PathVariable Object id, @PathVariable Object status) {
         return null; // TODO implement setInviteStatus request controller
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/invite/{id}/{status}/{behalf}")
+    @PostMapping("/invite/{id}/{status}/{behalf}")
     public Object setInviteStatusOnBehalf(@PathVariable Object id, @PathVariable Object status, @PathVariable Object behalf) {
         return null; // TODO implement setInviteStatusOnBehalf request controller
     }
@@ -210,7 +210,7 @@ public class ProjectsController extends HangarController {
         return fillModel(mav);
     }
 
-    @RequestMapping("/{author}/{slug}/discuss")
+    @GetMapping("/{author}/{slug}/discuss")
     public ModelAndView showDiscussion(@PathVariable String author, @PathVariable String slug) {
         ModelAndView mv = new ModelAndView("projects/discuss");
         ProjectData projectData = projectService.getProjectData(author, slug);
@@ -221,7 +221,7 @@ public class ProjectsController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/discuss/reply")
+    @PostMapping("/{author}/{slug}/discuss/reply")
     public Object postDiscussionReply(@PathVariable Object author, @PathVariable Object slug) {
         return null; // TODO implement postDiscussionReply request controller
     }
@@ -320,7 +320,7 @@ public class ProjectsController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/manage")
+    @GetMapping("/{author}/{slug}/manage")
     public ModelAndView showSettings(@PathVariable String author, @PathVariable String slug) {
         ModelAndView mav = new ModelAndView("projects/settings");
         ProjectData projectData = projectService.getProjectData(author, slug);
@@ -345,7 +345,7 @@ public class ProjectsController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/manage/hardDelete")
+    @PostMapping("/{author}/{slug}/manage/hardDelete")
     public RedirectView delete(@PathVariable String author, @PathVariable String slug, RedirectAttributes ra) {
         ProjectData projectData = projectService.getProjectData(author, slug);
         projectFactory.hardDeleteProject(projectData);
@@ -356,7 +356,7 @@ public class ProjectsController extends HangarController {
 
     @Secured("ROLE_USER")
     @ProjectPermission(NamedPermission.MANAGE_SUBJECT_MEMBERS)
-    @RequestMapping("/{author}/{slug}/manage/members/remove")
+    @PostMapping("/{author}/{slug}/manage/members/remove")
     public ModelAndView removeMember(@PathVariable String author, @PathVariable String slug, @RequestParam String username) {
         ProjectData projectData = projectService.getProjectData(author, slug);
         UserData user = userService.getUserData(username);
@@ -470,7 +470,7 @@ public class ProjectsController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/manage/sendforapproval")
+    @GetMapping("/{author}/{slug}/manage/sendforapproval")
     public ModelAndView sendForApproval(@PathVariable String author, @PathVariable String slug) {
         ProjectData projectData = projectService.getProjectData(author, slug);
         if (projectData.getVisibility() == Visibility.NEEDSCHANGES) {
@@ -482,7 +482,7 @@ public class ProjectsController extends HangarController {
 
     @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/notes")
+    @GetMapping("/{author}/{slug}/notes")
     public ModelAndView showNotes(@PathVariable String author, @PathVariable String slug) {
         ModelAndView mv = new ModelAndView("projects/admin/notes");
         ProjectData projectData = projectService.getProjectData(author, slug);
@@ -505,7 +505,7 @@ public class ProjectsController extends HangarController {
 
     @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/notes/addmessage")
+    @PostMapping("/{author}/{slug}/notes/addmessage")
     public ModelAndView addMessage(@PathVariable String author, @PathVariable String slug, @RequestParam String content) {
         ProjectData projectData = projectService.getProjectData(author, slug);
         ArrayNode messages = projectData.getProject().getNotes().getJson().withArray("messages");

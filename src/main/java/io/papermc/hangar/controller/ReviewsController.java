@@ -105,7 +105,7 @@ public class ReviewsController extends HangarController {
 
     @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/versions/{version}/reviews/edit/{review}") // Pretty sure this isn't implemented
+    @PostMapping("/{author}/{slug}/versions/{version}/reviews/edit/{review}") // Pretty sure this isn't implemented
     public ResponseEntity<String> editReview(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @PathVariable("review") long reviewId, @RequestParam String content) {
         ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
         VersionReview review = reviewService.getById(reviewId);
@@ -132,7 +132,7 @@ public class ReviewsController extends HangarController {
 
     @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/versions/{version}/reviews/reopen")
+    @PostMapping("/{author}/{slug}/versions/{version}/reviews/reopen")
     public ModelAndView reopenReview(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
         ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
         VersionReview review = reviewService.getRecentReviews(versionsTable.getId()).stream().findFirst().orElse(null);
@@ -152,7 +152,7 @@ public class ReviewsController extends HangarController {
 
     @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/versions/{version}/reviews/reviewtoggle")
+    @PostMapping("/{author}/{slug}/versions/{version}/reviews/reviewtoggle")
     public ModelAndView backlogToggle(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
         ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
         if (versionsTable.getReviewState() != ReviewState.BACKLOG && versionsTable.getReviewState() != ReviewState.UNREVIEWED) {
@@ -184,7 +184,7 @@ public class ReviewsController extends HangarController {
 
     @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/versions/{version}/reviews/takeover")
+    @PostMapping("/{author}/{slug}/versions/{version}/reviews/takeover")
     public ModelAndView takeoverReview(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String content) {
         ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
         VersionReview oldReview = reviewService.getMostRecentUnfinishedReview(versionsTable.getId());

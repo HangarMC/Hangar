@@ -47,7 +47,7 @@ public class OrgController extends HangarController {
         this.routeHelper = routeHelper;
     }
 
-    @RequestMapping("/organizations/invite/{id}/{status}")
+    @PostMapping("/organizations/invite/{id}/{status}")
     public Object setInviteStatus(@PathVariable Object id, @PathVariable Object status) {
         return null; // TODO implement setInviteStatus request controller
     }
@@ -93,19 +93,19 @@ public class OrgController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/organizations/{organization}/settings/avatar")
+    @GetMapping("/organizations/{organization}/settings/avatar")
     public Object updateAvatar(@PathVariable Object organization) {
         return null; // TODO implement updateAvatar request controller
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/organizations/{organization}/settings/members")
+    @PostMapping("/organizations/{organization}/settings/members")
     public Object updateMembers(@PathVariable Object organization) {
         return null; // TODO implement updateMembers request controller
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/organizations/{organization}/settings/members/remove")
+    @PostMapping("/organizations/{organization}/settings/members/remove")
     public Object removeMember(@PathVariable Object organization) {
         return null; // TODO implement removeMember request controller
     }

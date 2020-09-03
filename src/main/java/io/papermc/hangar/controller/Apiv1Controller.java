@@ -81,24 +81,24 @@ public class Apiv1Controller extends HangarController {
         this.v1ApiService = v1ApiService;
     }
 
-    @RequestMapping("/v1/projects")
+    @GetMapping("/v1/projects")
     public Object listProjects(@RequestParam Object categories, @RequestParam Object sort, @RequestParam Object q, @RequestParam Object limit, @RequestParam Object offset) {
         return null; // TODO implement listProjects request controller
     }
 
-    @RequestMapping("/v1/projects/{pluginId}")
+    @GetMapping("/v1/projects/{pluginId}")
     public Object showProject(@PathVariable Object pluginId) {
         return null; // TODO implement showProject request controller
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/v1/projects/{pluginId}/keys/new")
+    @PostMapping("/v1/projects/{pluginId}/keys/new")
     public Object createKey(@PathVariable Object pluginId) {
         return null; // TODO implement createKey request controller
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/v1/projects/{pluginId}/keys/revoke")
+    @PostMapping("/v1/projects/{pluginId}/keys/revoke")
     public Object revokeKey(@PathVariable Object pluginId) {
         return null; // TODO implement revokeKey request controller
     }
@@ -126,12 +126,12 @@ public class Apiv1Controller extends HangarController {
         return ResponseEntity.ok(pagesArray);
     }
 
-    @RequestMapping("/v1/projects/{pluginId}/versions")
+    @GetMapping("/v1/projects/{pluginId}/versions")
     public Object listVersions(@PathVariable Object pluginId, @RequestParam Object channels, @RequestParam Object limit, @RequestParam Object offset) {
         return null; // TODO implement listVersions request controller
     }
 
-    @RequestMapping("/v1/projects/{pluginId}/versions/{name}")
+    @GetMapping("/v1/projects/{pluginId}/versions/{name}")
     public Object showVersion(@PathVariable Object pluginId, @PathVariable Object name) {
         return null; // TODO implement showVersion request controller
     }
@@ -142,12 +142,12 @@ public class Apiv1Controller extends HangarController {
         return null; // TODO implement deployVersion request controller
     }
 
-    @RequestMapping("/v1/projects/{plugin}/tags/{versionName}")
+    @GetMapping("/v1/projects/{plugin}/tags/{versionName}")
     public Object listTags(@PathVariable Object plugin, @PathVariable Object versionName) {
         return null; // TODO implement listTags request controller
     }
 
-    @RequestMapping("/v1/tags/{tagId}")
+    @GetMapping("/v1/tags/{tagId}")
     public ResponseEntity<ObjectNode> tagColor(@PathVariable("tagId") TagColor tag) {
         ObjectNode tagColor = mapper.createObjectNode();
         tagColor.set("id", mapper.valueToTree(tag.ordinal()));
@@ -156,12 +156,12 @@ public class Apiv1Controller extends HangarController {
         return ResponseEntity.of(Optional.of(tagColor));
     }
 
-    @RequestMapping("/v1/users")
+    @GetMapping("/v1/users")
     public ResponseEntity<ArrayNode> listUsers(@RequestParam(defaultValue = "0") int offset, @RequestParam(required = false) Integer limit) {
         return ResponseEntity.of(Optional.of(writeUsers(v1ApiService.getUsers(offset, limit))));
     }
 
-    @RequestMapping("/v1/users/{user}")
+    @GetMapping("/v1/users/{user}")
     @ResponseBody
     public ResponseEntity<ObjectNode> showUser(@PathVariable String user) {
         UserData userData = userService.getUserData(user);

@@ -103,7 +103,7 @@ public class VersionsController extends HangarController {
         this.response = response;
     }
 
-    @RequestMapping(value = "/api/project/{pluginId}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping(value = "/api/project/{pluginId}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object downloadRecommendedJarById(@PathVariable String pluginId, @RequestParam(required = false) String token) {
         ProjectsTable project = projectDao.get().getByPluginId(pluginId);
@@ -117,7 +117,7 @@ public class VersionsController extends HangarController {
         }
     }
 
-    @RequestMapping(value = "/api/project/{pluginId}/versions/{name}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping(value = "/api/project/{pluginId}/versions/{name}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object downloadJarById(@PathVariable String pluginId, @PathVariable String name, @RequestParam(required = false) String token) {
         ProjectsTable project = projectDao.get().getByPluginId(pluginId);
@@ -132,7 +132,7 @@ public class VersionsController extends HangarController {
 
     @GlobalPermission(NamedPermission.VIEW_LOGS)
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/versionLog")
+    @GetMapping("/{author}/{slug}/versionLog")
     public ModelAndView showLog(@PathVariable String author, @PathVariable String slug, @RequestParam String versionString) {
         ModelAndView mv = new ModelAndView("projects/versions/log");
         ProjectData projectData = projectService.getProjectData(author, slug);
@@ -218,7 +218,7 @@ public class VersionsController extends HangarController {
         return fillModel(mav);
     }
 
-    @RequestMapping(value = "/{author}/{slug}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping(value = "/{author}/{slug}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object downloadRecommended(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String token) {
         ProjectsTable project = projectDao.get().getBySlug(author, slug);
@@ -232,7 +232,7 @@ public class VersionsController extends HangarController {
         }
     }
 
-    @RequestMapping(value = "/{author}/{slug}/versions/recommended/jar", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping(value = "/{author}/{slug}/versions/recommended/jar", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object downloadRecommendedJar(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String token) {
         ProjectsTable project = projectDao.get().getBySlug(author, slug);
@@ -341,7 +341,7 @@ public class VersionsController extends HangarController {
         return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.show", author, slug, version));
     }
 
-    @RequestMapping("/{author}/{slug}/versions/{version}/confirm")
+    @GetMapping("/{author}/{slug}/versions/{version}/confirm")
     public Object showDownloadConfirm(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version, @RequestParam Object downloadType, @RequestParam Object api, @RequestParam Object dummy) {
         return null; // TODO implement showDownloadConfirm request controller
     }
@@ -369,7 +369,7 @@ public class VersionsController extends HangarController {
         return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.showList", author, slug));
     }
 
-    @RequestMapping(value = "/{author}/{slug}/versions/{version}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping(value = "/{author}/{slug}/versions/{version}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object download(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(required = false) String token, @RequestParam(defaultValue = "false") boolean confirm) {
         ProjectsTable project = projectDao.get().getBySlug(author, slug);
@@ -424,12 +424,12 @@ public class VersionsController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{author}/{slug}/versions/{version}/hardDelete")
+    @PostMapping("/{author}/{slug}/versions/{version}/hardDelete")
     public Object delete(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
         return null; // TODO implement delete request controller
     }
 
-    @RequestMapping(value = "/{author}/{slug}/versions/{version}/jar", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping(value = "/{author}/{slug}/versions/{version}/jar", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object downloadJar(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(required = false) String token) {
         ProjectsTable project = projectDao.get().getBySlug(author, slug);

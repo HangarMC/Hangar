@@ -94,7 +94,7 @@ public class UsersController extends HangarController {
         this.response = response;
     }
 
-    @RequestMapping("/authors")
+    @GetMapping("/authors")
     public ModelAndView showAuthors(@RequestParam(required = false, defaultValue = "projects") String sort, @RequestParam(required = false, defaultValue = "1") int page) {
         ModelAndView mav = new ModelAndView("users/authors");
         mav.addObject("authors", userService.getAuthors(page, sort));
@@ -104,7 +104,7 @@ public class UsersController extends HangarController {
         return fillModel(mav);
     }
 
-    @RequestMapping("/login")
+    @GetMapping("/login")
     public ModelAndView login(@RequestParam(defaultValue = "") String sso, @RequestParam(defaultValue = "") String sig, @RequestParam(defaultValue = "") String returnUrl, @CookieValue(value = "url", required = false) String redirectUrl, RedirectAttributes attributes) {
         if (hangarConfig.fakeUser.isEnabled()) {
             hangarConfig.checkDebug();
@@ -149,7 +149,7 @@ public class UsersController extends HangarController {
     }
 
 
-    @RequestMapping("/logout")
+    @GetMapping("/logout")
     public ModelAndView logout(HttpSession session) {
         // TODO flash
         session.invalidate();
@@ -180,7 +180,7 @@ public class UsersController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/prompts/read/{id}")
+    @PostMapping("/prompts/read/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void markPromptRead(@PathVariable("id") Prompt prompt) {
         if (prompt == null) {
@@ -189,7 +189,7 @@ public class UsersController extends HangarController {
         userService.markPromptAsRead(prompt);
     }
 
-    @RequestMapping("/signup")
+    @GetMapping("/signup")
     public ModelAndView signUp(@RequestParam(defaultValue = "") String returnUrl, RedirectAttributes attributes) {
         try {
             return redirectToSso(ssoService.getSignupUrl(returnUrl), attributes);
@@ -209,7 +209,7 @@ public class UsersController extends HangarController {
         return fillModel(mav);
     }
 
-    @RequestMapping("/verify")
+    @PostMapping("/verify")
     public ModelAndView verify(@RequestParam String returnPath, RedirectAttributes attributes) {
         try {
             return redirectToSso(ssoService.getVerifyUrl(returnPath), attributes);
@@ -219,7 +219,7 @@ public class UsersController extends HangarController {
         }
     }
 
-    @RequestMapping("/{user}")
+    @GetMapping("/{user}")
     public ModelAndView showProjects(@PathVariable String user) {
         ModelAndView mav = new ModelAndView("users/projects");
         OrganizationsTable organizationsTable = orgService.getOrganization(user);
@@ -244,7 +244,7 @@ public class UsersController extends HangarController {
     }
 
     @Secured("ROLE_USER")
-    @RequestMapping("/{user}/settings/lock/{locked}")
+    @PostMapping("/{user}/settings/lock/{locked}")
     public RedirectView setLocked(@PathVariable String user, @PathVariable boolean locked, @RequestParam String sso, @RequestParam String sig) {
         // TODO auth
         userService.setLocked(user, locked);
@@ -266,7 +266,7 @@ public class UsersController extends HangarController {
         return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", user));
     }
 
-    @RequestMapping(value = "/{user}/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
+    @GetMapping(value = "/{user}/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
     @ResponseBody
     public String userSitemap(@PathVariable String user) {
         UsersTable usersTable = userDao.get().getByName(user);
