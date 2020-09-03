@@ -888,7 +888,7 @@ WITH tags AS (
                          WHERE (pvti.name::text = ANY
                                 (ARRAY ['Sponge'::character varying, 'SpongeForge'::character varying, 'SpongeVanilla'::character varying, 'Forge'::character varying, 'Lantern'::character varying, 'Paper'::character varying, 'Waterfall'::character varying, 'Velocity'::character varying]::text[]))
                            AND pvti.data IS NOT NULL) pvt ON pv.id = pvt.version_id
-          WHERE pv.visibility = 1
+          WHERE pv.visibility = 0
             AND (pvt.name::text = ANY
                  (ARRAY ['Sponge'::character varying, 'SpongeForge'::character varying, 'SpongeVanilla'::character varying, 'Forge'::character varying, 'Lantern'::character varying, 'Paper'::character varying, 'Waterfall'::character varying, 'Velocity'::character varying]::text[]))
             AND pvt.platform_version IS NOT NULL) sq

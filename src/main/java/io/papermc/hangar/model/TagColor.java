@@ -23,4 +23,6 @@ public enum TagColor { // remember, once we push to production, the order of the
     public String getForeground() {
         return foreground;
     }
+
+    public static final TagColor[] VALUES = TagColor.values();
 }

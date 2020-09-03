@@ -143,13 +143,6 @@
                 return Visibility.fromName(name);
             },
             tagsFromPromoted(promotedVersions) {
-                // TODO fix project return type stuff
-                if (true) {
-                  return [{
-                    name: "test", versions: [1.0], color: { background: "#F7Cf0D", foreground: "#333333" }
-                  }];
-                }
-
                 let tagsArray = [];
                 promotedVersions
                     .map(version => version.tags)
