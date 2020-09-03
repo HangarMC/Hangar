@@ -12,7 +12,6 @@ import io.papermc.hangar.model.generated.ProjectSortingStrategy;
 import io.papermc.hangar.model.generated.ProjectStatsDay;
 import io.papermc.hangar.model.generated.Tag;
 import io.papermc.hangar.service.api.ProjectApiService;
-import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.ApiUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,14 +36,12 @@ public class ProjectsApiController implements ProjectsApi {
 
     private final HangarConfig hangarConfig;
     private final ApiAuthInfo apiAuthInfo;
-    private final ProjectService projectService;
     private final ProjectApiService projectApiService;
 
     @Autowired
-    public ProjectsApiController(HangarConfig hangarConfig, ApiAuthInfo apiAuthInfo, ProjectService projectService, ProjectApiService projectApiService) {
+    public ProjectsApiController(HangarConfig hangarConfig, ApiAuthInfo apiAuthInfo, ProjectApiService projectApiService) {
         this.hangarConfig = hangarConfig;
         this.apiAuthInfo = apiAuthInfo;
-        this.projectService = projectService;
         this.projectApiService = projectApiService;
     }
 
@@ -68,7 +65,7 @@ public class ProjectsApiController implements ProjectsApi {
         boolean seeHidden = apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden);
         Long requesterId = apiAuthInfo.getUser() == null ? null : apiAuthInfo.getUser().getId();
 
-        List<Project> projects = projectService.getProjects(
+        List<Project> projects = projectApiService.getProjects(
                 null,
                 categories,
                 parsedTags,
@@ -82,7 +79,7 @@ public class ProjectsApiController implements ProjectsApi {
                 offset
         );
 
-        long count = projectService.countProjects(
+        long count = projectApiService.countProjects(
                 null,
                 categories,
                 parsedTags,
@@ -116,7 +113,8 @@ public class ProjectsApiController implements ProjectsApi {
     @Override
     @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.util.ApiScope).forProject(#pluginId))")
     public ResponseEntity<Project> showProject(String pluginId) {
-        Project project = projectService.getProjectApi(pluginId);
+        boolean seeHidden = apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden);
+        Project project = projectApiService.getProject(pluginId, seeHidden, apiAuthInfo.getUserId());
         if (project == null) {
             log.error("Couldn't find a project for that pluginId");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

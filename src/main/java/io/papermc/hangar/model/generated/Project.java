@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.jdbi.v3.core.enums.EnumByOrdinal;
+import org.jdbi.v3.core.mapper.Nested;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.OffsetDateTime;
@@ -111,6 +112,7 @@ public class Project {
         return namespace;
     }
 
+    @Nested
     public void setNamespace(ProjectNamespace namespace) {
         this.namespace = namespace;
     }
@@ -130,6 +132,7 @@ public class Project {
         return stats;
     }
 
+    @Nested
     public void setStats(ProjectStatsAll stats) {
         this.stats = stats;
     }
@@ -174,6 +177,7 @@ public class Project {
         return userActions;
     }
 
+    @Nested("user")
     public void setUserActions(UserActions userActions) {
         this.userActions = userActions;
     }
@@ -182,6 +186,7 @@ public class Project {
         return settings;
     }
 
+    @Nested
     public void setSettings(ProjectSettings settings) {
         this.settings = settings;
     }

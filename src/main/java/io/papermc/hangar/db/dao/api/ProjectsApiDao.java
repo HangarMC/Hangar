@@ -26,7 +26,7 @@ public interface ProjectsApiDao {
     @SqlQuery("SELECT p.created_at," +
             "       p.plugin_id," +
             "       p.name," +
-            "       p.owner_name," +
+            "       p.owner_name \"owner\"," +
             "       p.slug," +
             "       p.promoted_versions," +
             "       p.views," +
@@ -40,7 +40,7 @@ public interface ProjectsApiDao {
             "       COALESCE(p.last_updated, p.created_at) AS last_updated," +
             "       p.visibility, " +
             "       <if(requesterId)> " +
-            "         EXISTS(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS user_stared, " +
+            "         EXISTS(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS user_starred, " +
             "         EXISTS(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS user_watching, " +
             "       <endif>" +
             "       ps.homepage," +
@@ -60,7 +60,7 @@ public interface ProjectsApiDao {
             "         <if(query)> AND ( <queryStatement> ) <endif> " +
             "         <if(tags)> AND EXISTS ( SELECT pv.tag_name FROM jsonb_to_recordset(p.promoted_versions) " +
             "           AS pv(tag_name TEXT, tag_version TEXT) WHERE (pv.tag_name) in (<tags>) ) <endif> " +
-            "         ORDER BY <orderBy> " +
+            "         <if(orderBy)>ORDER BY <orderBy><endif> " +
             "         LIMIT :limit" +
             "         OFFSET :offset")
     @RegisterColumnMapper(PromotedVersionMapper.class)

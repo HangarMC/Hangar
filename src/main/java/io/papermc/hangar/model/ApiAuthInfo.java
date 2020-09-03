@@ -18,6 +18,10 @@ public class ApiAuthInfo {
         return user;
     }
 
+    public Long getUserId() {
+        return user == null ? null : user.getId();
+    }
+
     @Nested("u")
     public void setUser(UsersTable user) {
         this.user = user.getName() == null ? null : user;
