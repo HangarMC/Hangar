@@ -24,6 +24,7 @@ public class UserOrganizationRolesTable implements RoleTable {
 
     public UserOrganizationRolesTable() { }
 
+    @Override
     public long getId() {
         return id;
     }

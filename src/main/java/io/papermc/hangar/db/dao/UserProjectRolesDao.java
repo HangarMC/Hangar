@@ -16,9 +16,6 @@ import java.util.Map;
 @RegisterBeanMapper(UserProjectRolesTable.class)
 public interface UserProjectRolesDao {
 
-    @SqlQuery("SELECT * FROM user_project_roles WHERE project_id = :projectId AND user_id = :userId")
-    UserProjectRolesTable getByProjectAndUser(long projectId, long userId);
-
     @Timestamped
     @SqlUpdate("INSERT INTO user_project_roles (created_at, user_id, role_type, project_id, is_accepted) " +
                "VALUES (:now, :userId, :roleType, :projectId, :isAccepted)")
@@ -29,6 +26,12 @@ public interface UserProjectRolesDao {
 
     @SqlUpdate("DELETE FROM user_project_roles WHERE project_id = :projectId AND user_id = :userId")
     void delete(long projectId, long userId);
+
+    @SqlQuery("SELECT * FROM user_project_roles WHERE id = :id")
+    UserProjectRolesTable getById(long id);
+
+    @SqlQuery("SELECT * FROM user_project_roles WHERE project_id = :projectId AND user_id = :userId")
+    UserProjectRolesTable getByProjectAndUser(long projectId, long userId);
 
     @RegisterBeanMapper(ProjectsTable.class)
     @RegisterBeanMapper(value = UserProjectRolesTable.class, prefix = "upr")

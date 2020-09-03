@@ -118,18 +118,17 @@
                     <#assign i = i + 1>
 
                     <div class="invite col-xs-12 col-md-6">
-                        <div class="invite-content" data-id="@invite.id"
-                        data-type="@subject.getClass.getSimpleName.toLowerCase">
+                        <div class="invite-content" data-id="${invite.userRole.id}"
+                        data-type="${subject.type}">
                             <span class="minor">
                                 <i class="dismiss pull-left fas fa-times" style="display: none;"></i>
-                                <span class="pull-right"><i class="fas fa-tag"></i> ${subject.type}</span>
+                                <span class="pull-right"><i class="fas fa-tag"></i> ${subject.type?capitalize}</span>
                             </span>
                             <br/>
 
                             <div class="invite-message invite-choice" style="display: auto;">
                                 <p>
-                                    <#assign args=[subject.type] />
-                                    <@spring.messageArgs "notification.invite" args />
+                                    <@spring.messageArgs code="notification.invite" args=[subject.type] />
                                 <a href=${subject.url}>${subject.name}</a>.
                                 </p>
                                 <button class="btn btn-invite btn-accept btn-sm btn-success">
@@ -142,8 +141,7 @@
 
                             <div class="invite-message invite-accepted" style="display: none;">
                                 <i class="minor fas fa-3x fa-birthday-cake"></i><br/>
-                                <#assign args=[subject.name] />
-                                <@spring.messageArgs "notification.invite.joined" args /><br/>
+                                <@spring.messageArgs code="notification.invite.joined" args=[subject.name] /><br/>
                                 <a href="${subject.url}" class="btn btn-sm btn-primary">
                                     <@spring.message "notification.invite.visit" />
                                 </a>

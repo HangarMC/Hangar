@@ -61,9 +61,15 @@ public class RoleService {
         }
     }
 
+    public UserProjectRolesTable getUserProjectRole(long id) {
+        return userProjectRolesDao.get().getById(id);
+    }
+
     public void addRole(ProjectsTable projectsTable, long userId, Role role, boolean isAccepted) {
         boolean exists = userProjectRolesDao.get().getByProjectAndUser(projectsTable.getId(), userId) != null;
+        System.out.println(exists);
         if (!exists) {
+            System.out.println("add member");
             addMember(projectsTable.getId(), userId);
         }
         userProjectRolesDao.get().insert(new UserProjectRolesTable(userId, role.getValue(), projectsTable.getId(), isAccepted));
@@ -76,8 +82,16 @@ public class RoleService {
         userProjectRolesDao.get().update(userProjectRole);
     }
 
+    public void updateRole(UserProjectRolesTable userProjectRolesTable) {
+        userProjectRolesDao.get().update(userProjectRolesTable);
+    }
+
     public void removeRole(ProjectsTable projectsTable, long userId) {
         userProjectRolesDao.get().delete(projectsTable.getId(), userId);
+    }
+
+    public void removeRole(UserProjectRolesTable userProjectRolesTable) {
+        userProjectRolesDao.get().delete(userProjectRolesTable.getProjectId(), userProjectRolesTable.getUserId());
     }
 
     public void addMember(long projectId, long userId) {

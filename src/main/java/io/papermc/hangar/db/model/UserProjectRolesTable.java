@@ -24,6 +24,7 @@ public class UserProjectRolesTable implements RoleTable {
 
     public UserProjectRolesTable() { }
 
+    @Override
     public long getId() {
         return id;
     }

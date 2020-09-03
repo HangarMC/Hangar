@@ -11,6 +11,7 @@ import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.ProjectDao;
 import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.model.ProjectsTable;
+import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.Category;
 import io.papermc.hangar.model.FlagReason;
@@ -176,10 +177,33 @@ public class ProjectsController extends HangarController {
         return new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.show", project.getOwnerName(), project.getSlug()));
     }
 
+    private final String STATUS_DECLINE = "decline";
+    private final String STATUS_ACCEPT = "accept";
+    private final String STATUS_UNACCEPT = "unaccept";
+
     @Secured("ROLE_USER")
     @PostMapping("/invite/{id}/{status}")
-    public Object setInviteStatus(@PathVariable Object id, @PathVariable Object status) {
-        return null; // TODO implement setInviteStatus request controller
+    @ResponseStatus(HttpStatus.OK)
+    public void setInviteStatus(@PathVariable long id, @PathVariable String status) {
+        UserProjectRolesTable projectRole = roleService.getUserProjectRole(id);
+        if (projectRole == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        switch (status) {
+            case STATUS_DECLINE:
+                roleService.removeRole(projectRole);
+                break;
+            case STATUS_ACCEPT:
+                projectRole.setIsAccepted(true);
+                roleService.updateRole(projectRole);
+                break;
+            case STATUS_UNACCEPT:
+                projectRole.setIsAccepted(false);
+                roleService.updateRole(projectRole);
+                break;
+            default:
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Secured("ROLE_USER")
