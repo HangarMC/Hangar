@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Validated
 public class PromotedVersion {
-    @JsonProperty("version_string")
+    @JsonProperty("version")
     private String version = null;
 
     @JsonProperty("tags")

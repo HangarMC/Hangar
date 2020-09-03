@@ -55,7 +55,7 @@
                             <#if headerData.globalPerm(Permission.Reviewer)>
                                 <#if v.approvedBy?has_content>
                                     <i class="minor">
-                                        <@spring.messageArgs code="version.approed.info" args=[v.approvedBy, utils.prettifyDateTime(v.v.approvedAt)] />
+                                        <@spring.messageArgs code="version.approved.info" args=[v.approvedBy, utils.prettifyDateTime(v.v.approvedAt)] />
                                     </i>
                                 </#if>
                             </#if>
