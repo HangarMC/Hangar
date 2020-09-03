@@ -13,7 +13,7 @@
                     </h3>
                 </div>
                 <div class="panel-body">
-                    <p><@spring.messageArgs "general.linkout.warning", [remoteUrl] /></p>
+                    <p><@spring.messageArgs code="general.linkout.warning" args=[remoteUrl] /></p>
                     <a class="pull-left link-go-back">
                         <i class="fas fa-arrow-left"></i> <@spring.message "project.back" />
                     </a>

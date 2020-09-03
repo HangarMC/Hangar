@@ -26,8 +26,8 @@
                     CATEGORY_TITLE['${category.apiName}'] = '${category.title}';
                     CATEGORY_ICON['${category.apiName}'] = '${category.icon}';
                 </#list>
-                NO_ACTION_MESSAGE.starred = '<@spring.messageArgs "user.noStars" u.user.name />';
-                NO_ACTION_MESSAGE.watching = '<@spring.messageArgs "user.noWatching" u.user.name />';
+                NO_ACTION_MESSAGE.starred = '<@spring.messageArgs code="user.noStars" args=[u.user.name] />';
+                NO_ACTION_MESSAGE.watching = '<@spring.messageArgs code="user.noWatching" args=[u.user.name] />';
         </script>
         ${additionalScripts}
     </#assign>

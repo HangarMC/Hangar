@@ -2,7 +2,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
-<#assign message><@spring.messageArgs "version.log.logger.title" project.namespace /></#assign>
+<#assign message><@spring.messageArgs code="version.log.logger.title" args=[project.namespace] /></#assign>
 <@base.base title=message>
     <div class="row">
         <div class="col-md-12">

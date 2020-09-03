@@ -278,7 +278,7 @@
                         <textarea name="comment" class="textarea-delete-comment form-control" rows="3"></textarea>
                         <br>
                         <div class="alert alert-warning">
-                        <@spring.messageArgs "project.delete.info.uniqueid", p.project.name />
+                        <@spring.messageArgs code="project.delete.info.uniqueid" args=[p.project.name] />
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -48,7 +48,7 @@ Base template for Project overview.
                                 ${p.renderVisibilityChange(markdownService, "Unknown")}
                             <#else>
                                 <#if p.visibility == Visibility.SOFTDELETE>
-                                    <@spring.messageArgs "visibility.notice." + p.visibility.getName(), [p.lastVisibilityChangeUser] />
+                                    <@spring.messageArgs code="visibility.notice." + p.visibility.getName() args=[p.lastVisibilityChangeUser] />
                                 <#else>
                                     <@spring.message "visibility.notice." + p.visibility.getName() />
                                     ${p.renderVisibilityChange(markdownService, "")}

@@ -177,7 +177,7 @@
 
                 </div>
             </div>
-            <span class="pull-left tos"><i><@spring.messageArgs "version.create.tos" "#" /></i></span>
+            <span class="pull-left tos"><i><@spring.messageArgs code="version.create.tos" args=["#"] /></i></span>
         </div>
 
         <#import "*/projects/helper/createSteps.ftlh" as createSteps>
