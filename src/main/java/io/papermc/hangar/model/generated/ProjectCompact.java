@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import org.jdbi.v3.core.enums.EnumByOrdinal;
+import org.jdbi.v3.core.mapper.Nested;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
@@ -139,6 +141,7 @@ public class ProjectCompact {
         return namespace;
     }
 
+    @Nested
     public void setNamespace(ProjectNamespace namespace) {
         this.namespace = namespace;
     }
@@ -187,6 +190,7 @@ public class ProjectCompact {
         return stats;
     }
 
+    @Nested
     public void setStats(ProjectStatsAll stats) {
         this.stats = stats;
     }
@@ -209,6 +213,7 @@ public class ProjectCompact {
         return category;
     }
 
+    @EnumByOrdinal
     public void setCategory(Category category) {
         this.category = category;
     }
@@ -230,6 +235,7 @@ public class ProjectCompact {
         return visibility;
     }
 
+    @EnumByOrdinal
     public void setVisibility(VisibilityEnum visibility) {
         this.visibility = visibility;
     }

@@ -1,7 +1,7 @@
 package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.api.ProjectApiDao;
+import io.papermc.hangar.db.dao.api.ProjectsApiDao;
 import io.papermc.hangar.model.generated.ProjectMember;
 import io.papermc.hangar.model.generated.ProjectStatsDay;
 import org.springframework.stereotype.Service;
@@ -13,9 +13,9 @@ import java.util.Map;
 @Service
 public class ProjectApiService {
 
-    private final HangarDao<ProjectApiDao> projectApiDao;
+    private final HangarDao<ProjectsApiDao> projectApiDao;
 
-    public ProjectApiService(HangarDao<ProjectApiDao> projectApiDao) {
+    public ProjectApiService(HangarDao<ProjectsApiDao> projectApiDao) {
         this.projectApiDao = projectApiDao;
     }
 

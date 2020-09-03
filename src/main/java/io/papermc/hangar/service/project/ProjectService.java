@@ -6,7 +6,7 @@ import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.ProjectDao;
 import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.dao.ProjectViewDao;
-import io.papermc.hangar.db.dao.api.ProjectApiDao;
+import io.papermc.hangar.db.dao.api.ProjectsApiDao;
 import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.db.model.ProjectVisibilityChangesTable;
 import io.papermc.hangar.db.model.ProjectsTable;
@@ -49,7 +49,7 @@ public class ProjectService {
     private final HangarDao<ProjectDao> projectDao;
     private final HangarDao<UserDao> userDao;
     private final HangarDao<VisibilityDao> visibilityDao;
-    private final HangarDao<ProjectApiDao> projectApiDao;
+    private final HangarDao<ProjectsApiDao> projectApiDao;
     private final HangarDao<ProjectViewDao> projectViewDao;
     private final HangarDao<GeneralDao> generalDao;
     private final UserService userService;
@@ -57,7 +57,7 @@ public class ProjectService {
     private final ProjectFiles projectFiles;
 
     @Autowired
-    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectApiDao> projectApiDao, HangarDao<ProjectViewDao> projectViewDao, HangarDao<GeneralDao> generalDao, ProjectFiles projectFiles, UserService userService, FlagService flagService) {
+    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectsApiDao> projectApiDao, HangarDao<ProjectViewDao> projectViewDao, HangarDao<GeneralDao> generalDao, ProjectFiles projectFiles, UserService userService, FlagService flagService) {
         this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
         this.userDao = userDao;

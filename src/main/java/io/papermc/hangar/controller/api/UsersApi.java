@@ -1,5 +1,15 @@
 package io.papermc.hangar.controller.api;
 
+import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.model.generated.PaginatedCompactProjectResult;
+import io.papermc.hangar.model.generated.ProjectSortingStrategy;
+import io.papermc.hangar.model.generated.User;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,16 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
-
-import io.papermc.hangar.db.model.UsersTable;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
-import io.papermc.hangar.model.generated.PaginatedCompactProjectResult;
-import io.papermc.hangar.model.generated.ProjectSortingStrategy;
 
 @Api(value = "users", description = "the users API", tags = {"Users"})
 @RequestMapping("/api/v2/")
@@ -47,7 +47,7 @@ public interface UsersApi {
     @RequestMapping(value = "/users/{user}",
             produces = {"application/json"},
             method = RequestMethod.GET)
-    ResponseEntity<UsersTable> showUser(@ApiParam(value = "The user to return", required = true) @PathVariable("user") String user
+    ResponseEntity<User> showUser(@ApiParam(value = "The user to return", required = true) @PathVariable("user") String user
     );
 
 

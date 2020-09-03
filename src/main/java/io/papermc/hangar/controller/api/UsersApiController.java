@@ -1,67 +1,78 @@
 package io.papermc.hangar.controller.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.model.ApiAuthInfo;
+import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.generated.PaginatedCompactProjectResult;
+import io.papermc.hangar.model.generated.Pagination;
+import io.papermc.hangar.model.generated.ProjectCompact;
+import io.papermc.hangar.model.generated.ProjectSortingStrategy;
+import io.papermc.hangar.model.generated.User;
+import io.papermc.hangar.service.api.UserApiService;
+import io.papermc.hangar.util.ApiUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
-
-import io.papermc.hangar.db.model.UsersTable;
-import io.papermc.hangar.model.generated.PaginatedCompactProjectResult;
-import io.papermc.hangar.model.generated.ProjectSortingStrategy;
+import java.util.List;
 
 @Controller
 public class UsersApiController implements UsersApi {
 
     private static final Logger log = LoggerFactory.getLogger(UsersApiController.class);
 
-    private final ObjectMapper objectMapper;
-
-    private final HttpServletRequest request;
+    private final HangarConfig hangarConfig;
+    private final ApiAuthInfo apiAuthInfo;
+    private final UserApiService userApiService;
 
     @Autowired
-    public UsersApiController(ObjectMapper objectMapper, HttpServletRequest request) {
-        this.objectMapper = objectMapper;
-        this.request = request;
+    public UsersApiController(HangarConfig hangarConfig, ApiAuthInfo apiAuthInfo, UserApiService userApiService) {
+        this.hangarConfig = hangarConfig;
+        this.apiAuthInfo = apiAuthInfo;
+        this.userApiService = userApiService;
     }
 
     @Override
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.util.ApiScope).forGlobal())")
     public ResponseEntity<PaginatedCompactProjectResult> showStarred(String user, ProjectSortingStrategy sort, Long limit, Long offset) {
-        try {
-            return new ResponseEntity<>(objectMapper.readValue("{\n  \"result\" : [ {\n    \"plugin_id\" : \"plugin_id\",\n    \"promoted_versions\" : [ {\n      \"version\" : \"version\",\n      \"tags\" : [ {\n        \"data\" : \"data\",\n        \"color\" : {\n          \"background\" : \"background\",\n          \"foreground\" : \"foreground\"\n        },\n        \"name\" : \"name\",\n        \"display_data\" : \"display_data\",\n        \"minecraft_version\" : \"minecraft_version\"\n      }, {\n        \"data\" : \"data\",\n        \"color\" : {\n          \"background\" : \"background\",\n          \"foreground\" : \"foreground\"\n        },\n        \"name\" : \"name\",\n        \"display_data\" : \"display_data\",\n        \"minecraft_version\" : \"minecraft_version\"\n      } ]\n    }, {\n      \"version\" : \"version\",\n      \"tags\" : [ {\n        \"data\" : \"data\",\n        \"color\" : {\n          \"background\" : \"background\",\n          \"foreground\" : \"foreground\"\n        },\n        \"name\" : \"name\",\n        \"display_data\" : \"display_data\",\n        \"minecraft_version\" : \"minecraft_version\"\n      }, {\n        \"data\" : \"data\",\n        \"color\" : {\n          \"background\" : \"background\",\n          \"foreground\" : \"foreground\"\n        },\n        \"name\" : \"name\",\n        \"display_data\" : \"display_data\",\n        \"minecraft_version\" : \"minecraft_version\"\n      } ]\n    } ],\n    \"visibility\" : \"public\",\n    \"stats\" : {\n      \"downloads\" : 5,\n      \"recent_downloads\" : 7,\n      \"recent_views\" : 2,\n      \"watchers\" : 3,\n      \"stars\" : 9,\n      \"views\" : 5\n    },\n    \"name\" : \"name\",\n    \"namespace\" : {\n      \"owner\" : \"owner\",\n      \"slug\" : \"slug\"\n    },\n    \"category\" : \"admin_tools\"\n  }, {\n    \"plugin_id\" : \"plugin_id\",\n    \"promoted_versions\" : [ {\n      \"version\" : \"version\",\n      \"tags\" : [ {\n        \"data\" : \"data\",\n        \"color\" : {\n          \"background\" : \"background\",\n          \"foreground\" : \"foreground\"\n        },\n        \"name\" : \"name\",\n        \"display_data\" : \"display_data\",\n        \"minecraft_version\" : \"minecraft_version\"\n      }, {\n        \"data\" : \"data\",\n        \"color\" : {\n          \"background\" : \"background\",\n          \"foreground\" : \"foreground\"\n        },\n        \"name\" : \"name\",\n        \"display_data\" : \"display_data\",\n        \"minecraft_version\" : \"minecraft_version\"\n      } ]\n    }, {\n      \"version\" : \"version\",\n      \"tags\" : [ {\n        \"data\" : \"data\",\n        \"color\" : {\n          \"background\" : \"background\",\n          \"foreground\" : \"foreground\"\n        },\n        \"name\" : \"name\",\n        \"display_data\" : \"display_data\",\n        \"minecraft_version\" : \"minecraft_version\"\n      }, {\n        \"data\" : \"data\",\n        \"color\" : {\n          \"background\" : \"background\",\n          \"foreground\" : \"foreground\"\n        },\n        \"name\" : \"name\",\n        \"display_data\" : \"display_data\",\n        \"minecraft_version\" : \"minecraft_version\"\n      } ]\n    } ],\n    \"visibility\" : \"public\",\n    \"stats\" : {\n      \"downloads\" : 5,\n      \"recent_downloads\" : 7,\n      \"recent_views\" : 2,\n      \"watchers\" : 3,\n      \"stars\" : 9,\n      \"views\" : 5\n    },\n    \"name\" : \"name\",\n    \"namespace\" : {\n      \"owner\" : \"owner\",\n      \"slug\" : \"slug\"\n    },\n    \"category\" : \"admin_tools\"\n  } ],\n  \"pagination\" : {\n    \"offset\" : 6,\n    \"limit\" : 0,\n    \"count\" : 1\n  }\n}", PaginatedCompactProjectResult.class), HttpStatus.OK); // TODO Implement me
-        } catch (IOException e) {
-            log.error("Couldn't serialize response for content type application/json", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        long realLimit = ApiUtil.limitOrDefault(limit, hangarConfig.projects.getInitLoad());
+        long realOffset = ApiUtil.offsetOrZero(offset);
+
+        boolean seeHidden = apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden);
+        Long userId = apiAuthInfo.getUser() != null ? apiAuthInfo.getUser().getId() : null;
+
+        List<ProjectCompact> projectCompactList = userApiService.getStarredProjects(user, seeHidden, userId, sort, realLimit, realOffset);
+        long projectCount = userApiService.getStarredProjectsCount(user, seeHidden, userId);
+        return ResponseEntity.ok(new PaginatedCompactProjectResult().result(projectCompactList).pagination(new Pagination().limit(realLimit).offset(realOffset).count(projectCount)));
     }
 
     @Override
-    public ResponseEntity<UsersTable> showUser(String user) {
-
-//            try {
-//                return new ResponseEntity<>(objectMapper.readValue("{\n  \"join_date\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"roles\" : [ {\n    \"color\" : \"color\",\n    \"name\" : \"name\",\n    \"title\" : \"title\"\n  }, {\n    \"color\" : \"color\",\n    \"name\" : \"name\",\n    \"title\" : \"title\"\n  } ],\n  \"name\" : \"name\",\n  \"created_at\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"tagline\" : \"tagline\"\n}", User.class), HttpStatus.OK); // TODO Implement me
-//            } catch (IOException e) {
-//                log.error("Couldn't serialize response for content type application/json", e);
-//                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//            }
-
-        return new ResponseEntity<>(HttpStatus.OK); // TODO Implement me
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.util.ApiScope).forGlobal())")
+    public ResponseEntity<User> showUser(String user) {
+        User userObj = userApiService.getUser(user);
+        if (userObj == null) {
+            log.error("Couldn't find a user with " + user + " name!");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(userObj);
     }
 
     @Override
-    public ResponseEntity<PaginatedCompactProjectResult> showWatching(@PathVariable("user") String user, ProjectSortingStrategy sort, Long limit, Long offset) {
-        try {
-            return new ResponseEntity<>(objectMapper.readValue("{\n  \"result\" : [ {\n    \"plugin_id\" : \"plugin_id\",\n    \"promoted_versions\" : [ {\n      \"version\" : \"version\",\n      \"tags\" : [ {\n        \"data\" : \"data\",\n        \"color\" : {\n          \"background\" : \"background\",\n          \"foreground\" : \"foreground\"\n        },\n        \"name\" : \"name\",\n        \"display_data\" : \"display_data\",\n        \"minecraft_version\" : \"minecraft_version\"\n      }, {\n        \"data\" : \"data\",\n        \"color\" : {\n          \"background\" : \"background\",\n          \"foreground\" : \"foreground\"\n        },\n        \"name\" : \"name\",\n        \"display_data\" : \"display_data\",\n        \"minecraft_version\" : \"minecraft_version\"\n      } ]\n    }, {\n      \"version\" : \"version\",\n      \"tags\" : [ {\n        \"data\" : \"data\",\n        \"color\" : {\n          \"background\" : \"background\",\n          \"foreground\" : \"foreground\"\n        },\n        \"name\" : \"name\",\n        \"display_data\" : \"display_data\",\n        \"minecraft_version\" : \"minecraft_version\"\n      }, {\n        \"data\" : \"data\",\n        \"color\" : {\n          \"background\" : \"background\",\n          \"foreground\" : \"foreground\"\n        },\n        \"name\" : \"name\",\n        \"display_data\" : \"display_data\",\n        \"minecraft_version\" : \"minecraft_version\"\n      } ]\n    } ],\n    \"visibility\" : \"public\",\n    \"stats\" : {\n      \"downloads\" : 5,\n      \"recent_downloads\" : 7,\n      \"recent_views\" : 2,\n      \"watchers\" : 3,\n      \"stars\" : 9,\n      \"views\" : 5\n    },\n    \"name\" : \"name\",\n    \"namespace\" : {\n      \"owner\" : \"owner\",\n      \"slug\" : \"slug\"\n    },\n    \"category\" : \"admin_tools\"\n  }, {\n    \"plugin_id\" : \"plugin_id\",\n    \"promoted_versions\" : [ {\n      \"version\" : \"version\",\n      \"tags\" : [ {\n        \"data\" : \"data\",\n        \"color\" : {\n          \"background\" : \"background\",\n          \"foreground\" : \"foreground\"\n        },\n        \"name\" : \"name\",\n        \"display_data\" : \"display_data\",\n        \"minecraft_version\" : \"minecraft_version\"\n      }, {\n        \"data\" : \"data\",\n        \"color\" : {\n          \"background\" : \"background\",\n          \"foreground\" : \"foreground\"\n        },\n        \"name\" : \"name\",\n        \"display_data\" : \"display_data\",\n        \"minecraft_version\" : \"minecraft_version\"\n      } ]\n    }, {\n      \"version\" : \"version\",\n      \"tags\" : [ {\n        \"data\" : \"data\",\n        \"color\" : {\n          \"background\" : \"background\",\n          \"foreground\" : \"foreground\"\n        },\n        \"name\" : \"name\",\n        \"display_data\" : \"display_data\",\n        \"minecraft_version\" : \"minecraft_version\"\n      }, {\n        \"data\" : \"data\",\n        \"color\" : {\n          \"background\" : \"background\",\n          \"foreground\" : \"foreground\"\n        },\n        \"name\" : \"name\",\n        \"display_data\" : \"display_data\",\n        \"minecraft_version\" : \"minecraft_version\"\n      } ]\n    } ],\n    \"visibility\" : \"public\",\n    \"stats\" : {\n      \"downloads\" : 5,\n      \"recent_downloads\" : 7,\n      \"recent_views\" : 2,\n      \"watchers\" : 3,\n      \"stars\" : 9,\n      \"views\" : 5\n    },\n    \"name\" : \"name\",\n    \"namespace\" : {\n      \"owner\" : \"owner\",\n      \"slug\" : \"slug\"\n    },\n    \"category\" : \"admin_tools\"\n  } ],\n  \"pagination\" : {\n    \"offset\" : 6,\n    \"limit\" : 0,\n    \"count\" : 1\n  }\n}", PaginatedCompactProjectResult.class), HttpStatus.OK); // TODO Implement me
-        } catch (IOException e) {
-            log.error("Couldn't serialize response for content type application/json", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.util.ApiScope).forGlobal())")
+    public ResponseEntity<PaginatedCompactProjectResult> showWatching(String user, ProjectSortingStrategy sort, Long limit, Long offset) {
+        long realLimit = ApiUtil.limitOrDefault(limit, hangarConfig.projects.getInitLoad());
+        long realOffset = ApiUtil.offsetOrZero(offset);
+
+        boolean seeHidden = apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden);
+        Long userId = apiAuthInfo.getUser() != null ? apiAuthInfo.getUser().getId() : null;
+
+        List<ProjectCompact> projectCompactList = userApiService.getWatchedProjects(user, seeHidden, userId, sort, realLimit, realOffset);
+        long projectCount = userApiService.getWatchedProjectsCount(user, seeHidden, userId);
+        return ResponseEntity.ok(new PaginatedCompactProjectResult().result(projectCompactList).pagination(new Pagination().limit(realLimit).offset(realOffset).count(projectCount)));
     }
 }

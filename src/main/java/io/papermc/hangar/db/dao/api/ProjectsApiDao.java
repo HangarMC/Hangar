@@ -20,7 +20,7 @@ import java.util.Map;
 
 @Repository
 @RegisterBeanMapper(Project.class)
-public interface ProjectApiDao {
+public interface ProjectsApiDao {
 
     @UseStringTemplateEngine
     @SqlQuery("SELECT p.created_at," +
