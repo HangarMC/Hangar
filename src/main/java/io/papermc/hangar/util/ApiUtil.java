@@ -1,6 +1,8 @@
 package io.papermc.hangar.util;
 
 import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.model.generated.ProjectSortingStrategy;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -30,5 +32,9 @@ public class ApiUtil {
         } catch (DateTimeParseException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Badly formatted date " + date);
         }
+    }
+
+    public static ProjectSortingStrategy strategyOrDefault(@Nullable ProjectSortingStrategy strategy) {
+        return strategy == null ? ProjectSortingStrategy.Default : strategy;
     }
 }

@@ -10,6 +10,7 @@ import io.papermc.hangar.model.generated.ProjectSortingStrategy;
 import io.papermc.hangar.model.generated.ProjectStatsDay;
 import io.papermc.hangar.model.generated.Tag;
 import io.papermc.hangar.service.pluginupload.ProjectFiles;
+import io.papermc.hangar.util.ApiUtil;
 import io.papermc.hangar.util.RouteHelper;
 import io.papermc.hangar.util.TemplateHelper;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,7 @@ public class ProjectApiService {
     }
 
     public List<Project> getProjects(String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean seeHidden, Long requesterId, ProjectSortingStrategy sort, boolean orderWithRelevance, long limit, long offset) {
-        String ordering = sort.getSql();
+        String ordering = ApiUtil.strategyOrDefault(sort).getSql();
         if (orderWithRelevance && query != null && !query.isEmpty()) {
             String relevance = "ts_rank(p.search_words, websearch_to_tsquery_postfix('english', :query)) DESC";
             if(query.endsWith(" ")) {
@@ -56,7 +57,7 @@ public class ProjectApiService {
             // 1483056000 is the Ore epoch
             // 86400 seconds to days
             // 604800‬ seconds to weeks
-            switch(sort){
+            switch(ApiUtil.strategyOrDefault(sort)){
                 case STARS: orderingFirstHalf = "p.starts * "; break;
                 case DOWNLOADS: orderingFirstHalf ="(p.downloads / 100) * "; break;
                 case VIEWS: orderingFirstHalf ="(p.views / 200) *"; break;

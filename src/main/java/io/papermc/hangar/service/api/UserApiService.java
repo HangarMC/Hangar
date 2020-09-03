@@ -7,6 +7,7 @@ import io.papermc.hangar.model.generated.PaginatedCompactProjectResult;
 import io.papermc.hangar.model.generated.ProjectCompact;
 import io.papermc.hangar.model.generated.ProjectSortingStrategy;
 import io.papermc.hangar.model.generated.User;
+import io.papermc.hangar.util.ApiUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,18 +26,18 @@ public class UserApiService {
     }
 
     public List<ProjectCompact> getWatchedProjects(String user, boolean seeHidden, Long userId, ProjectSortingStrategy strategy, long limit, long offset) {
-        return usersApiDao.get().watchersQuery(user, seeHidden, userId, strategy.getSql(), limit, offset);
+        return usersApiDao.get().watchersQuery(user, seeHidden, userId, ApiUtil.strategyOrDefault(strategy).getSql(), limit, offset);
     }
 
     public long getWatchedProjectsCount(String user, boolean seeHidden, Long userId) {
-        return usersApiDao.get().watchersQuery(user, seeHidden, userId, ProjectSortingStrategy.VIEWS.getSql(), null, 0).size();
+        return usersApiDao.get().watchersQuery(user, seeHidden, userId, ProjectSortingStrategy.Default.getSql(), null, 0).size();
     }
 
     public List<ProjectCompact> getStarredProjects(String user, boolean seeHidden, Long userId, ProjectSortingStrategy strategy, long limit, long offset) {
-        return usersApiDao.get().starredQuery(user, seeHidden, userId, strategy.getSql(), limit, offset);
+        return usersApiDao.get().starredQuery(user, seeHidden, userId, ApiUtil.strategyOrDefault(strategy).getSql(), limit, offset);
     }
 
     public long getStarredProjectsCount(String user, boolean seeHidden, Long userId) {
-        return usersApiDao.get().starredQuery(user, seeHidden, userId, ProjectSortingStrategy.VIEWS.getSql(), null, 0).size();
+        return usersApiDao.get().starredQuery(user, seeHidden, userId, ProjectSortingStrategy.Default.getSql(), null, 0).size();
     }
 }
