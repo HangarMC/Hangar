@@ -66,10 +66,7 @@ public class RoleService {
     }
 
     public void addRole(ProjectsTable projectsTable, long userId, Role role, boolean isAccepted) {
-        boolean exists = userProjectRolesDao.get().getByProjectAndUser(projectsTable.getId(), userId) != null;
-        System.out.println(exists);
-        if (!exists) {
-            System.out.println("add member");
+        if (userProjectRolesDao.get().getByProjectAndUser(projectsTable.getId(), userId) == null) {
             addMember(projectsTable.getId(), userId);
         }
         userProjectRolesDao.get().insert(new UserProjectRolesTable(userId, role.getValue(), projectsTable.getId(), isAccepted));
