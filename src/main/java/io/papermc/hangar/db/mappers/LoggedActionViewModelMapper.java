@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.time.OffsetDateTime;
 
 public class LoggedActionViewModelMapper implements RowMapper<LoggedActionViewModel<?>> {
+
     @Override
     public LoggedActionViewModel<?> map(ResultSet rs, StatementContext ctx) throws SQLException {
         long userId = rs.getLong("user_id");
@@ -31,6 +32,13 @@ public class LoggedActionViewModelMapper implements RowMapper<LoggedActionViewMo
         OffsetDateTime createdAt = ctx.findColumnMapperFor(OffsetDateTime.class).get().map(rs, "created_at", ctx);
 
         int contextType = rs.getInt("context_type");
+        final LoggedProject project = new LoggedProject(
+                rs.getLong("p_id"),
+                rs.getString("p_plugin_id"),
+                rs.getString("p_slug"),
+                rs.getString("p_owner_name")
+        );
+
         switch (contextType) {
             case 0:
                 return new LoggedActionViewModel<>(userId,
@@ -40,12 +48,7 @@ public class LoggedActionViewModelMapper implements RowMapper<LoggedActionViewMo
                         ProjectContext.of(rs.getLong("p_id")),
                         newState,
                         oldState,
-                        new LoggedProject(
-                                rs.getLong("p_id"),
-                                rs.getString("p_plugin_id"),
-                                rs.getString("p_slug"),
-                                rs.getString("p_owner_name")
-                        ),
+                        project,
                         null,
                         null,
                         null,
@@ -59,7 +62,7 @@ public class LoggedActionViewModelMapper implements RowMapper<LoggedActionViewMo
                         VersionContext.of(rs.getLong("p_id"), rs.getLong("pv_id")),
                         newState,
                         oldState,
-                        null,
+                        project,
                         new LoggedProjectVersion(
                                 rs.getLong("pv_id"),
                                 rs.getString("pv_version_string")
@@ -77,7 +80,7 @@ public class LoggedActionViewModelMapper implements RowMapper<LoggedActionViewMo
                         ProjectPageContext.of(rs.getLong("p_id"), rs.getLong("pp_id")),
                         newState,
                         oldState,
-                        null,
+                        project,
                         null,
                         new LoggedProjectPage(
                                 rs.getLong("pp_id"),
@@ -96,7 +99,7 @@ public class LoggedActionViewModelMapper implements RowMapper<LoggedActionViewMo
                         UserContext.of(rs.getLong("s_id")),
                         newState,
                         oldState,
-                        null,
+                        project,
                         null,
                         null,
                         new LoggedSubject(
@@ -114,7 +117,7 @@ public class LoggedActionViewModelMapper implements RowMapper<LoggedActionViewMo
                         OrganizationContext.of(rs.getLong("s_id")),
                         newState,
                         oldState,
-                        null,
+                        project,
                         null,
                         null,
                         new LoggedSubject(

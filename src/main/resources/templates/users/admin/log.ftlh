@@ -78,7 +78,7 @@
                                         <a href="${routes.getRouteUrl("users.showProjects", action.subject.username!"Unknown")}">${action.subject.username}</a>
                                         <small class="filter-subject">(<a href="${routes.getRouteUrl("showLog", page?string, userFilter, projectFilter, versionFilter, pageFilter, actionFilter, action.subject.username)}">${action.subject.username}</a>)</small>
                                     </td>
-                                <#elseif !action.project?? || !action.project.id??>
+                                <#elseif !action.project.id??>
                                     <td>
                                         Resource deleted
                                         <#if action.actionContext.class.simpleName == "ProjectContext" || action.actionContext.class.simpleName == "ProjectPageContext">
@@ -96,7 +96,7 @@
                                     <td>
                                         <a href="${routes.getRouteUrl("pages.show", action.project.owner!"Unknown", action.project.slug!"Unknown", action.page.slug!"Unknown")}">${action.project.owner!"Unknown"}/${action.project.slug!"Unknown"}/${action.page.slug!"Unknown"}</a>
                                         <small class="filter-project">(<a href="${routes.getRouteUrl("showLog", page?string, userFilter, action.project.pluginId, versionFilter, pageFilter, actionFilter, subjectFilter)}">${action.project.pluginId}</a>)</small>
-                                        <small class="filter-page">(<a href="${routes.getRouteUrl("showLog", page?string, userFilter, projectFilter, versionFilter, action.page.id, actionFilter, subjectFilter)}">${action.page.id}</a>)</small>
+                                        <small class="filter-page">(<a href="${routes.getRouteUrl("showLog", page?string, userFilter, projectFilter, versionFilter, action.page.id?string, actionFilter, subjectFilter)}">${action.page.id}</a>)</small>
                                     </td>
                                 <#elseif action.actionContext.class.simpleName == "VersionContext">
                                     <td>
