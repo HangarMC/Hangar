@@ -24,6 +24,8 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -267,9 +269,31 @@ public class VersionsController extends HangarController {
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.showCreator", author, slug));
         }
 
+        List<ProjectChannelsTable> projectChannels = channelService.getProjectChannels(projectData.getProject().getId());
+        String alertMsg = null;
+        String[] alertArgs = new String[0];
+        Optional<ProjectChannelsTable> channelOptional = projectChannels.stream().filter(ch -> ch.getName().equals(channelInput.trim())).findAny();
+        ProjectChannelsTable channel;
+        if (channelOptional.isEmpty()) {
+            if (projectChannels.size() >= hangarConfig.projects.getMaxChannels()) {
+                alertMsg = "error.channel.maxChannels";
+                alertArgs = new String[] {String.valueOf(hangarConfig.projects.getMaxChannels())};
+            }
+            else if (projectChannels.stream().anyMatch(ch -> ch.getColor() == channelColor)) {
+                alertMsg = "error.channel.duplicateColor";
+            }
+            if (alertMsg != null) {
+                AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, alertMsg, alertArgs);
+                return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.showCreator", author, slug));
+            }
+            channel = channelService.addProjectChannel(projectData.getProject().getId(), channelInput.trim(), channelColor);
+        } else {
+            channel = channelOptional.get();
+        }
+
         PendingVersion newPendingVersion = pendingVersion.copy(
-                channelInput.trim(),
-                channelColor,
+                channel.getName(),
+                channel.getColor(),
                 forumPost,
                 content
         );
@@ -279,10 +303,8 @@ public class VersionsController extends HangarController {
             return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.showCreator", author, slug));
         }
 
-        ProjectChannelsTable channel = channelService.getProjectChannel(projectData.getProject().getId(), channelInput);
         ProjectVersionsTable version;
         try {
-            if (channel == null) throw new HangarException("error.channel.invalidName", channelInput);
             version = newPendingVersion.complete(request, projectData, projectFactory);
         } catch (HangarException e) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, e.getMessage(), e.getArgs());
