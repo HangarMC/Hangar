@@ -41,17 +41,16 @@
                 <#if !u.isOrga()>
                     <@panel "Organizations">
                         <@roleTable keyName="Organization" tableType="orgRole" withOwner=true roles=u.orgas roleTypes=orgRoles ; org, role>
-                        <#-- @ftlvariable name="org" type="io.papermc.hangar.db.model.OrganizationsTable" -->
-                            <a href="${routes.getRouteUrl("userAdmin", org.name)}">
-                                ${org.name}
+                        <#-- @ftlvariable name="org" type="io.papermc.hangar.model.viewhelpers.OrganizationData" -->
+                            <a href="${routes.getRouteUrl("userAdmin", org.org.name)}">
+                                ${org.org.name}
                             </a>
                         </@roleTable>
                     </@panel>
                 <#else>
                     <@panel "Members">
-                        TODO organization members map
-                        <@roleTable keyName="User" tableType="memberRole" withOwner=false roles={} roleTypes=orgRoles ; member, role>
-                        <#-- @ftlvariable name="member" type="io.papermc.hangar.model.viewhelpers.UserData" -->
+                        <#-- TODO organization members map-->
+                        <@roleTable keyName="User" tableType="memberRole" withOwner=false roles=orga.adminTable() roleTypes=orgRoles ; member, role>
                             <a href="${routes.getRouteUrl("userAdmin", member.user.name)}">
                                 ${member.user.name}
                             </a>
@@ -97,7 +96,8 @@
             <tr data-role-type="${tableType}" data-role-id="${role.role.roleId}">
                 <td><#nested object, role /></td>
                 <#if withOwner>
-                    <td><a href="${routes.getRouteUrl("userAdmin", object.projectOwner.name)}">${object.projectOwner.name}</a></td>
+                    <#-- @ftlvariable name="object" type="io.papermc.hangar.model.viewhelpers.JoinableData" -->
+                    <td><a href="${routes.getRouteUrl("userAdmin", object.ownerName)}">${object.ownerName}</a></td>
                 </#if>
                 <#if !role.role.assignable>
                     <td>

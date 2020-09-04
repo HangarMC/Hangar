@@ -1,6 +1,5 @@
 package io.papermc.hangar.model.viewhelpers;
 
-import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.UserOrganizationRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.Permission;
@@ -17,7 +16,7 @@ public class UserData {
     private UsersTable user;
     private boolean isOrga = false;
     private int projectCount;
-    private Map<OrganizationsTable, UserRole<UserOrganizationRolesTable>> orgas;
+    private Map<OrganizationData, UserRole<UserOrganizationRolesTable>> orgas;
     private List<Role> globalRoles;
     private Permission userPerm;
     private Permission orgaPerm;
@@ -26,7 +25,7 @@ public class UserData {
         return new UserData(headerData, user, false, 0, new HashMap<>(), new ArrayList<>(), Permission.None, Permission.None);
     }
 
-    public UserData(HeaderData headerData, UsersTable user, boolean isOrga, int projectCount, Map<OrganizationsTable, UserRole<UserOrganizationRolesTable>> orgas, List<Role> globalRoles, Permission userPerm, Permission orgaPerm) {
+    public UserData(HeaderData headerData, UsersTable user, boolean isOrga, int projectCount, Map<OrganizationData, UserRole<UserOrganizationRolesTable>> orgas, List<Role> globalRoles, Permission userPerm, Permission orgaPerm) {
         this.headerData = headerData;
         this.user = user;
         this.isOrga = isOrga;
@@ -81,11 +80,11 @@ public class UserData {
         this.projectCount = projectCount;
     }
 
-    public Map<OrganizationsTable, UserRole<UserOrganizationRolesTable>> getOrgas() {
+    public Map<OrganizationData, UserRole<UserOrganizationRolesTable>> getOrgas() {
         return orgas;
     }
 
-    public void setOrgas(Map<OrganizationsTable, UserRole<UserOrganizationRolesTable>> orgas) {
+    public void setOrgas(Map<OrganizationData, UserRole<UserOrganizationRolesTable>> orgas) {
         this.orgas = orgas;
     }
 

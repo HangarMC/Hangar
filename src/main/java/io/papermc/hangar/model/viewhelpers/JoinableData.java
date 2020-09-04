@@ -13,11 +13,13 @@ public class JoinableData<R extends RoleTable, T> {
 
     protected T joinable;
     protected long ownerId;
+    protected String ownerName;
     protected Map<R, UsersTable> members;
     protected RoleCategory roleCategory;
 
-    public JoinableData(T joinable, long ownerId, Map<R, UsersTable> members, RoleCategory roleCategory) {
+    public JoinableData(T joinable, long ownerId, String ownerName, Map<R, UsersTable> members, RoleCategory roleCategory) {
         this.joinable = joinable;
+        this.ownerName = ownerName;
         this.ownerId = ownerId;
         this.members = members;
         this.roleCategory = roleCategory;
@@ -25,6 +27,14 @@ public class JoinableData<R extends RoleTable, T> {
 
     public T getJoinable() {
         return joinable;
+    }
+
+    public long getOwnerId() {
+        return ownerId;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
     }
 
     public Map<R, UsersTable> getMembers() {

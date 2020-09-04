@@ -1,6 +1,29 @@
 package io.papermc.hangar.controller;
 
+import io.papermc.hangar.db.customtypes.LoggedActionType;
+import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.model.Stats;
+import io.papermc.hangar.model.NamedPermission;
+import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.model.viewhelpers.Activity;
+import io.papermc.hangar.model.viewhelpers.LoggedActionViewModel;
+import io.papermc.hangar.model.viewhelpers.OrganizationData;
+import io.papermc.hangar.model.viewhelpers.ProjectFlag;
+import io.papermc.hangar.model.viewhelpers.ReviewQueueEntry;
+import io.papermc.hangar.model.viewhelpers.UnhealthyProject;
+import io.papermc.hangar.model.viewhelpers.UserData;
+import io.papermc.hangar.security.annotations.GlobalPermission;
+import io.papermc.hangar.service.JobService;
+import io.papermc.hangar.service.OrgService;
+import io.papermc.hangar.service.SitemapService;
+import io.papermc.hangar.service.StatsService;
+import io.papermc.hangar.service.UserActionLogService;
+import io.papermc.hangar.service.UserService;
+import io.papermc.hangar.service.VersionService;
+import io.papermc.hangar.service.project.FlagService;
+import io.papermc.hangar.service.project.ProjectService;
+import io.papermc.hangar.util.AlertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,41 +35,18 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-
-import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
-import io.papermc.hangar.model.NamedPermission;
-import io.papermc.hangar.model.Permission;
-import io.papermc.hangar.model.Visibility;
-import io.papermc.hangar.model.viewhelpers.Activity;
-import io.papermc.hangar.model.viewhelpers.LoggedActionViewModel;
-import io.papermc.hangar.model.viewhelpers.ProjectFlag;
-import io.papermc.hangar.model.viewhelpers.ReviewQueueEntry;
-import io.papermc.hangar.model.viewhelpers.UnhealthyProject;
-import io.papermc.hangar.model.viewhelpers.UserData;
-import io.papermc.hangar.security.annotations.GlobalPermission;
-import io.papermc.hangar.service.JobService;
-import io.papermc.hangar.service.SitemapService;
-import io.papermc.hangar.service.UserActionLogService;
-import io.papermc.hangar.service.UserService;
-import io.papermc.hangar.service.VersionService;
-import io.papermc.hangar.service.StatsService;
-import io.papermc.hangar.service.project.FlagService;
-import io.papermc.hangar.service.project.ProjectService;
-import io.papermc.hangar.util.AlertUtil;
 
 @Controller
 public class ApplicationController extends HangarController {
@@ -54,6 +54,7 @@ public class ApplicationController extends HangarController {
     private final UserService userService;
     private final ProjectService projectService;
     private final FlagService flagService;
+    private final OrgService orgService;
     private final UserActionLogService userActionLogService;
     private final VersionService versionService;
     private final JobService jobService;
@@ -63,9 +64,10 @@ public class ApplicationController extends HangarController {
     private final HttpServletRequest request;
 
     @Autowired
-    public ApplicationController(UserService userService, ProjectService projectService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, HttpServletRequest request) {
+    public ApplicationController(UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, HttpServletRequest request) {
         this.userService = userService;
         this.projectService = projectService;
+        this.orgService = orgService;
         this.flagService = flagService;
         this.userActionLogService = userActionLogService;
         this.versionService = versionService;
@@ -218,7 +220,8 @@ public class ApplicationController extends HangarController {
         ModelAndView mav = new ModelAndView("users/admin/userAdmin");
         UserData userData = userService.getUserData(user);
         mav.addObject("u", userData);
-        // TODO organization
+        OrganizationData organizationData = orgService.getOrganizationData(userData.getUser());
+        mav.addObject("orga", organizationData);
         mav.addObject("userProjectRoles", projectService.getProjectsAndRoles(userData.getUser().getId()));
         return fillModel(mav);
     }

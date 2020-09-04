@@ -14,6 +14,7 @@ import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.viewhelpers.OrgMember;
 import io.papermc.hangar.model.viewhelpers.OrganizationData;
 import io.papermc.hangar.model.viewhelpers.ScopedOrganizationData;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -82,7 +83,17 @@ public class OrgService {
         return new ScopedOrganizationData();
     }
 
-    public OrganizationData getOrganizationData(OrganizationsTable org) {
-        return new OrganizationData(org, organizationDao.get().getOrgMembers(org.getId()), projectDao.get().getProjectRoles(org.getUserId()));
+    public OrganizationData getOrganizationData(UsersTable potentialOrg) {
+        OrganizationsTable org = organizationDao.get().getByUserId(potentialOrg.getId());
+        if (org == null) return null;
+        return getOrganizationData(org, potentialOrg);
+    }
+
+    public OrganizationData getOrganizationData(OrganizationsTable org, @Nullable UsersTable orgUser) {
+        UsersTable user = orgUser;
+        if (orgUser == null) {
+            user = userDao.get().getById(org.getUserId());
+        }
+        return new OrganizationData(org, user,organizationDao.get().getOrgMembers(org.getId()), projectDao.get().getProjectRoles(org.getUserId()));
     }
 }

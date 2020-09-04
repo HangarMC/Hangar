@@ -17,6 +17,7 @@ import io.papermc.hangar.model.UserOrdering;
 import io.papermc.hangar.model.viewhelpers.Author;
 import io.papermc.hangar.model.viewhelpers.FlagActivity;
 import io.papermc.hangar.model.viewhelpers.HeaderData;
+import io.papermc.hangar.model.viewhelpers.OrganizationData;
 import io.papermc.hangar.model.viewhelpers.ReviewActivity;
 import io.papermc.hangar.model.viewhelpers.Staff;
 import io.papermc.hangar.model.viewhelpers.UserData;
@@ -46,10 +47,11 @@ public class UserService {
     private final HangarDao<OrganizationDao> organizationDao;
     private final RoleService roleService;
     private final PermissionService permissionService;
+    private final OrgService orgService;
     private final HangarConfig config;
 
     @Autowired
-    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, HangarDao<OrganizationDao> organizationDao, RoleService roleService, PermissionService permissionService) {
+    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, HangarDao<OrganizationDao> organizationDao, RoleService roleService, PermissionService permissionService, OrgService orgService) {
         this.userDao = userDao;
         this.config = config;
         this.orgDao = orgDao;
@@ -57,6 +59,7 @@ public class UserService {
         this.organizationDao = organizationDao;
         this.roleService = roleService;
         this.permissionService = permissionService;
+        this.orgService = orgService;
     }
 
     public UsersTable getCurrentUser() {
@@ -163,9 +166,9 @@ public class UserService {
         // TODO getUserData
         int projectCount = projectDao.get().getProjectCountByUserId(user.getId());
         Map<OrganizationsTable, UserOrganizationRolesTable> dbOrgs = orgDao.get().getUserOrganizationsAndRoles(user.getId());
-        Map<OrganizationsTable, UserRole<UserOrganizationRolesTable>> organizations = new HashMap<>();
+        Map<OrganizationData, UserRole<UserOrganizationRolesTable>> organizations = new HashMap<>();
         dbOrgs.forEach((organization, userOrganizationRolesTable) -> {
-            organizations.put(organization, new UserRole<>(userOrganizationRolesTable));
+            organizations.put(orgService.getOrganizationData(organization, null), new UserRole<>(userOrganizationRolesTable));
         });
         List<Role> globalRoles = roleService.getGlobalRolesForUser(user.getId(), null);
         boolean isOrga = globalRoles.contains(Role.ORGANIZATION);

@@ -77,9 +77,9 @@
                             <tr>
                                 <td>
                                     <#import "*/utils/userAvatar.ftlh" as userAvatar>
-                                    <@userAvatar.userAvatar userName=organization.name avatarUrl=utils.avatarUrl(organization.name) clazz="user-avatar-xxs"></@userAvatar.userAvatar>
-                                <a href="${routes.getRouteUrl("users.showProjects", organization.name)}">
-                                ${organization.name}
+                                    <@userAvatar.userAvatar userName=organization.org.name avatarUrl=utils.avatarUrl(organization.org.name) clazz="user-avatar-xxs"></@userAvatar.userAvatar>
+                                <a href="${routes.getRouteUrl("users.showProjects", organization.org.name)}">
+                                ${organization.org.name}
                                 </a>
                                 <div class="pull-right">
                                 ${role.role.title}

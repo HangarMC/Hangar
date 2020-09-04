@@ -29,7 +29,7 @@ public class ProjectData extends JoinableData<UserProjectRolesTable, ProjectsTab
 
 
     public ProjectData(ProjectsTable joinable, UsersTable projectOwner, int publicVersions, Map<UserProjectRolesTable, UsersTable> members, List<ProjectFlag> flags, int noteCount, ProjectVisibilityChangesTable lastVisibilityChange, String lastVisibilityChangeUser, ProjectVersionsTable recommendedVersion, String iconUrl, long starCount, long watcherCount, ProjectViewSettings settings) {
-        super(joinable, projectOwner.getId(), members, RoleCategory.PROJECT);
+        super(joinable, projectOwner.getId(), projectOwner.getName(), members, RoleCategory.PROJECT);
         this.projectOwner = projectOwner;
         this.publicVersions = publicVersions;
         this.flags = flags;
