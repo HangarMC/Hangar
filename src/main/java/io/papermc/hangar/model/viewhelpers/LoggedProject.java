@@ -1,39 +1,44 @@
 package io.papermc.hangar.model.viewhelpers;
 
-import io.papermc.hangar.model.generated.Project;
 import org.jetbrains.annotations.Nullable;
 
 public class LoggedProject {
 
-    private Project project;
-    private String pluginId;
-    private String slug;
-    private String owner;
+    private final Long id;
+    private final String pluginId;
+    private final String slug;
+    private final String owner;
 
-    public LoggedProject(@Nullable Project project, @Nullable String pluginId, @Nullable String slug, @Nullable String owner) {
-        this.project = project;
+    public LoggedProject(@Nullable Long id, @Nullable String pluginId, @Nullable String slug, @Nullable String owner) {
+        this.id = id;
         this.pluginId = pluginId;
         this.slug = slug;
         this.owner = owner;
     }
 
-    @Nullable
-    public Project getProject() {
-        return project;
+    public Long getId() {
+        return id;
     }
 
-    @Nullable
     public String getPluginId() {
         return pluginId;
     }
 
-    @Nullable
     public String getSlug() {
         return slug;
     }
 
-    @Nullable
     public String getOwner() {
         return owner;
+    }
+
+    @Override
+    public String toString() {
+        return "LoggedProject{" +
+                "id=" + id +
+                ", pluginId='" + pluginId + '\'' +
+                ", slug='" + slug + '\'' +
+                ", owner='" + owner + '\'' +
+                '}';
     }
 }

@@ -314,7 +314,7 @@ public class VersionsController extends HangarController {
             versionService.addUnstableTag(version.getId());
         }
 
-        userActionLogService.version(request, LoggedActionType.VERSION_UPLOADED.with(VersionContext.of(projectData.getProject().getId(), version.getId())), "published", "null");
+        userActionLogService.version(request, LoggedActionType.VERSION_UPLOADED.with(VersionContext.of(projectData.getProject().getId(), version.getId())), "published", "");
 
         return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.show", author, slug, versionName));
     }

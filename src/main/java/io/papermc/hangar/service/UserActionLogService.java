@@ -94,8 +94,15 @@ public class UserActionLogService {
         actionsDao.get().insertOrganizationLog(log);
     }
 
-    public List<LoggedActionViewModel> getLog(Integer oPage, Object userFilter, Object projectFilter, Object versionFilter, Object pageFilter, Object actionFilter, Object subjectFilter) {
-        return new ArrayList<>(); //TODO See AppQueries.getLog(...)
+    public List<LoggedActionViewModel<?>> getLog(Integer oPage, String userFilter, String projectFilter, String versionFilter, String pageFilter, String actionFilter, String subjectFilter) {
+        long pageSize = 50L;
+        long offset;
+        if (oPage == null) {
+            offset = 0;
+        } else {
+            offset = oPage * pageSize;
+        }
+        return actionsDao.get().getLog(userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter, offset, pageSize);
     }
 
     private InetAddress getInetAddress(HttpServletRequest request) {

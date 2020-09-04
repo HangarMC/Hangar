@@ -34,6 +34,7 @@ public class LoggedActionType<C extends AbstractContext<C>> {
         this.value = value;
         this.name = name;
         this.description = description;
+        loggedActionTypes.put(value.getValue(), this);
     }
 
     private LoggedActionType(LoggedActionType<C> actionType, C actionContext) {

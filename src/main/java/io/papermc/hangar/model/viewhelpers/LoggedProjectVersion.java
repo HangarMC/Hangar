@@ -1,25 +1,30 @@
 package io.papermc.hangar.model.viewhelpers;
 
-import io.papermc.hangar.model.generated.Version;
 import org.jetbrains.annotations.Nullable;
 
 public class LoggedProjectVersion {
 
-    private Version version;
-    private String versionString;
+    private final Long id;
+    private final String versionString;
 
-    public LoggedProjectVersion(@Nullable Version version, @Nullable String versionString) {
-        this.version = version;
+    public LoggedProjectVersion(@Nullable Long id, @Nullable String versionString) {
+        this.id = id;
         this.versionString = versionString;
     }
 
-    @Nullable
-    public Version getVersion() {
-        return version;
+    public Long getId() {
+        return id;
     }
 
-    @Nullable
     public String getVersionString() {
         return versionString;
+    }
+
+    @Override
+    public String toString() {
+        return "LoggedProjectVersion{" +
+                "id=" + id +
+                ", versionString='" + versionString + '\'' +
+                '}';
     }
 }

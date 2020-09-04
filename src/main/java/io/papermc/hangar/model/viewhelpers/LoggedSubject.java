@@ -4,22 +4,28 @@ import org.jetbrains.annotations.Nullable;
 
 public class LoggedSubject {
 
-    private Long id;
-    private String username;
+    private final Long id;
+    private final String username;
 
     public LoggedSubject(@Nullable Long id, @Nullable String username) {
         this.id = id;
         this.username = username;
     }
 
-    @Nullable
     public Long getId() {
         return id;
     }
 
-    @Nullable
     public String getUsername() {
         return username;
+    }
+
+    @Override
+    public String toString() {
+        return "LoggedSubject{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                '}';
     }
 }
 

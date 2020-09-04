@@ -160,17 +160,17 @@ public class ApplicationController extends HangarController {
     @Secured("ROLE_USER")
     @GetMapping("/admin/log")
     public ModelAndView showLog(@RequestParam(required = false) Integer oPage,
-                                @RequestParam(required = false) Object userFilter,
-                                @RequestParam(required = false) Object projectFilter,
-                                @RequestParam(required = false) Object versionFilter,
-                                @RequestParam(required = false) Object pageFilter,
-                                @RequestParam(required = false) Object actionFilter,
-                                @RequestParam(required = false) Object subjectFilter) {
+                                @RequestParam(required = false) String userFilter,
+                                @RequestParam(required = false) String projectFilter,
+                                @RequestParam(required = false) String versionFilter,
+                                @RequestParam(required = false) String pageFilter,
+                                @RequestParam(required = false) String actionFilter,
+                                @RequestParam(required = false) String subjectFilter) {
         ModelAndView mv = new ModelAndView("users/admin/log");
         int pageSize = 50;
         int page = oPage != null ? oPage : 1;
         int offset = (page - 1) * pageSize;
-        List<LoggedActionViewModel> log = userActionLogService.getLog(oPage, userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter);
+        List<LoggedActionViewModel<?>> log = userActionLogService.getLog(oPage, userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter);
         mv.addObject("actions", log);
         mv.addObject("limit", pageSize);
         mv.addObject("offset", offset);

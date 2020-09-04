@@ -1,25 +1,26 @@
 package io.papermc.hangar.model.viewhelpers;
 
 import io.papermc.hangar.db.customtypes.LoggedActionType;
+import io.papermc.hangar.db.customtypes.LoggedActionType.AbstractContext;
 
 import java.time.OffsetDateTime;
 
-public class LoggedActionViewModel {
+public class LoggedActionViewModel<C extends AbstractContext<C>> {
 
-    private long userId;
-    private String userName;
-    private String address;
-    private LoggedActionType action;
-    private LoggedActionType.AbstractContext actionContext;
-    private String newState;
-    private String oldState;
-    private LoggedProject project;
-    private LoggedProjectVersion version;
-    private LoggedProjectPage page;
-    private LoggedSubject subject;
-    private OffsetDateTime createdAt;
+    private final long userId;
+    private final String userName;
+    private final String address;
+    private final LoggedActionType<C> action;
+    private final C actionContext;
+    private final String newState;
+    private final String oldState;
+    private final LoggedProject project;
+    private final LoggedProjectVersion version;
+    private final LoggedProjectPage page;
+    private final LoggedSubject subject;
+    private final OffsetDateTime createdAt;
 
-    public LoggedActionViewModel(long userId, String userName, String address, LoggedActionType action, LoggedActionType.AbstractContext actionContext, String newState, String oldState, LoggedProject project, LoggedProjectVersion version, LoggedProjectPage page, LoggedSubject subject, OffsetDateTime createdAt) {
+    public LoggedActionViewModel(long userId, String userName, String address, LoggedActionType<C> action, C actionContext, String newState, String oldState, LoggedProject project, LoggedProjectVersion version, LoggedProjectPage page, LoggedSubject subject, OffsetDateTime createdAt) {
         this.userId = userId;
         this.userName = userName;
         this.address = address;
@@ -46,11 +47,11 @@ public class LoggedActionViewModel {
         return address;
     }
 
-    public LoggedActionType getAction() {
+    public LoggedActionType<C> getAction() {
         return action;
     }
 
-    public LoggedActionType.AbstractContext getActionContext() {
+    public C getActionContext() {
         return actionContext;
     }
 
@@ -80,5 +81,23 @@ public class LoggedActionViewModel {
 
     public OffsetDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    @Override
+    public String toString() {
+        return "LoggedActionViewModel{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", address='" + address + '\'' +
+                ", action=" + action +
+                ", actionContext=" + actionContext +
+                ", newState='" + newState + '\'' +
+                ", oldState='" + oldState + '\'' +
+                ", project=" + project +
+                ", version=" + version +
+                ", page=" + page +
+                ", subject=" + subject +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }

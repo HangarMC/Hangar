@@ -4,28 +4,34 @@ import org.jetbrains.annotations.Nullable;
 
 public class LoggedProjectPage {
 
-    private ProjectPage page;
-    private String name;
-    private String slug;
+    private final Long id;
+    private final String name;
+    private final String slug;
 
-    public LoggedProjectPage(@Nullable ProjectPage page, @Nullable String name, @Nullable String slug) {
-        this.page = page;
+    public LoggedProjectPage(@Nullable Long id, @Nullable String name, @Nullable String slug) {
+        this.id = id;
         this.name = name;
         this.slug = slug;
     }
 
-    @Nullable
-    public ProjectPage getPage() {
-        return page;
+    public Long getId() {
+        return id;
     }
 
-    @Nullable
     public String getName() {
         return name;
     }
 
-    @Nullable
     public String getSlug() {
         return slug;
+    }
+
+    @Override
+    public String toString() {
+        return "LoggedProjectPage{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", slug='" + slug + '\'' +
+                '}';
     }
 }

@@ -8,6 +8,11 @@
 </#assign>
 
 <#assign message><@spring.message "admin.log.title" /></#assign>
+<#-- @ftlvariable name="canViewIP" type="java.lang.Boolean" -->
+<#-- @ftlvariable name="limit" type="java.lang.Integer" -->
+<#-- @ftlvariable name="offset" type="java.lang.Integer" -->
+<#-- @ftlvariable name="page" type="java.lang.Integer" -->
+<#-- @ftlvariable name="size" type="java.lang.Integer" -->
 <@base.base title="${message}" additionalScripts=scriptsVar>
     <div class="row">
         <div class="col-md-12  header-flags">
@@ -22,8 +27,7 @@
                 <tr><td class="filter-project">Project</td> <td>${projectFilter!"-"}</td></tr>
                 <tr><td class="filter-version">Version</td> <td>${versionFilter!"-"}</td></tr>
                 <tr><td class="filter-page">Page</td><td>${pageFilter!"-"} </td></tr>
-                <#assign LoggedActionType=@helper["io.papermc.hangar.db.customtypes.LoggedActionType"] />
-                <tr><td class="filter-action">Action</td><td>${LoggedActionType.getLoggedActionType(actionFilter!"")!"-"}</td></tr>
+                <tr><td class="filter-action">Action</td><td>${actionFilter!"-"}</td></tr>
                 <tr><td class="filter-subject">Subject</td><td>${subjectFilter!"-"}</td></tr>
             </table>
         </div>
@@ -74,7 +78,7 @@
                                         <a href="${routes.getRouteUrl("users.showProjects", action.subject.username!"Unknown")}">${action.subject.username}</a>
                                         <small class="filter-subject">(<a href="${routes.getRouteUrl("showLog", page?string, userFilter, projectFilter, versionFilter, pageFilter, actionFilter, action.subject.username)}">${action.subject.username}</a>)</small>
                                     </td>
-                                <#elseif action.project.project??>
+                                <#elseif !action.project?? || !action.project.id??>
                                     <td>
                                         Resource deleted
                                         <#if action.actionContext.class.simpleName == "ProjectContext" || action.actionContext.class.simpleName == "ProjectPageContext">
@@ -112,8 +116,8 @@
                                         <textarea style="display: none" data-newstate="${offset + action?index}">${action.newState}</textarea>
                                     </td>
                                 <#else>
-                                    <td>${action.oldState}</td>
-                                    <td>${action.newState}</td>
+                                    <td>${action.oldState?has_content?string(action.oldState, "<i>none</i>")}</td>
+                                    <td>${action.newState?has_content?string(action.newState, "<i>none</i>")}</td>
                                 </#if>
                             </tr>
                             </#list>
