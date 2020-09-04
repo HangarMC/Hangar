@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.UserOrganizationRolesTable;
@@ -7,6 +8,7 @@ import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.NotificationType;
 import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.viewhelpers.UserData;
+import io.papermc.hangar.service.AuthenticationService;
 import io.papermc.hangar.service.NotificationService;
 import io.papermc.hangar.service.OrgFactory;
 import io.papermc.hangar.service.OrgService;
@@ -32,6 +34,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +42,7 @@ import java.util.Map;
 @Controller
 public class OrgController extends HangarController {
 
+    private final AuthenticationService authenticationService;
     private final OrgService orgService;
     private final OrgFactory orgFactory;
     private final UserService userService;
@@ -48,7 +52,8 @@ public class OrgController extends HangarController {
     private final RouteHelper routeHelper;
 
     @Autowired
-    public OrgController(OrgService orgService, OrgFactory orgFactory, UserService userService, RoleService roleService, NotificationService notificationService, HangarConfig hangarConfig, RouteHelper routeHelper) {
+    public OrgController(AuthenticationService authenticationService, OrgService orgService, OrgFactory orgFactory, UserService userService, RoleService roleService, NotificationService notificationService, HangarConfig hangarConfig, RouteHelper routeHelper) {
+        this.authenticationService = authenticationService;
         this.orgService = orgService;
         this.orgFactory = orgFactory;
         this.userService = userService;
@@ -123,8 +128,16 @@ public class OrgController extends HangarController {
 
     @Secured("ROLE_USER")
     @GetMapping("/organizations/{organization}/settings/avatar")
-    public Object updateAvatar(@PathVariable Object organization) {
-        return null; // TODO implement updateAvatar request controller
+    @PreAuthorize("@authenticationService.authOrgRequest(T(io.papermc.hangar.model.Permission).EditOrganizationSettings, #organization, true)")
+    public ModelAndView updateAvatar(@PathVariable String organization) {
+        try {
+            URI uri = authenticationService.changeAvatarUri(userService.getCurrentUser().getName(), organization);
+            return new ModelAndView("redirect:" + uri.toString());
+        } catch (JsonProcessingException e) {
+            ModelAndView mav = new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", organization));
+            AlertUtil.showAlert(mav, AlertType.ERROR, "organization.avatarFailed");
+            return mav;
+        }
     }
 
     @Secured("ROLE_USER")

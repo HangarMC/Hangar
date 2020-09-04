@@ -1,5 +1,8 @@
 package io.papermc.hangar.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controller.util.ApiScope;
 import io.papermc.hangar.db.dao.ApiKeyDao;
@@ -16,19 +19,28 @@ import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.generated.ApiSessionResponse;
 import io.papermc.hangar.model.generated.SessionType;
 import io.papermc.hangar.security.HangarAuthentication;
+import io.papermc.hangar.service.sso.ChangeAvatarToken;
 import io.papermc.hangar.util.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -48,12 +60,14 @@ public class AuthenticationService {
     private final PermissionService permissionService;
     private final OrgService orgService;
     private final UserService userService;
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
     private static final String UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
     private static final Pattern API_KEY_PATTERN = Pattern.compile("(" + UUID_REGEX + ").(" + UUID_REGEX + ")");
 
     @Autowired
-    public AuthenticationService(HttpServletRequest request, ApiAuthInfo apiAuthInfo, HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService, OrgService orgService, UserService userService) {
+    public AuthenticationService(HttpServletRequest request, ApiAuthInfo apiAuthInfo, HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService, OrgService orgService, UserService userService, RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.request = request;
         this.apiAuthInfo = apiAuthInfo;
         this.hangarConfig = hangarConfig;
@@ -65,6 +79,8 @@ public class AuthenticationService {
         this.permissionService = permissionService;
         this.orgService = orgService;
         this.userService = userService;
+        this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
     }
 
     public ApiAuthInfo getApiAuthInfo(String token) {
@@ -217,6 +233,24 @@ public class AuthenticationService {
         Authentication auth = new HangarAuthentication(List.of(new SimpleGrantedAuthority("ROLE_USER")), user.getName(), user.getId(), user);
         authenticationManager.authenticate(auth);
         SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+
+    public URI changeAvatarUri(String requester, String organization) throws JsonProcessingException {
+        ChangeAvatarToken token = getChangeAvatarToken(requester, organization);
+        UriComponentsBuilder uriComponents = UriComponentsBuilder.fromHttpUrl(hangarConfig.getAuthUrl());
+        uriComponents.path("/accounts/user/{organization}/change-avatar/").queryParam("key", token.getSignedData());
+        return uriComponents.build(organization);
+    }
+
+    public ChangeAvatarToken getChangeAvatarToken(String requester, String organization) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        MultiValueMap<String, String> bodyMap = new LinkedMultiValueMap<>();
+        bodyMap.add("api-key", hangarConfig.sso.getApiKey());
+        bodyMap.add("request_username", requester);
+        ChangeAvatarToken token;
+        token = objectMapper.treeToValue(restTemplate.postForObject(hangarConfig.security.api.getUrl() + "/api/users/" + organization + "/change-avatar-token/", new HttpEntity<>(bodyMap, headers), ObjectNode.class), ChangeAvatarToken.class);
+        return token;
     }
 
 }
