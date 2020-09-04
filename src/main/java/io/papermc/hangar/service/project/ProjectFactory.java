@@ -58,7 +58,6 @@ public class ProjectFactory {
     private final RoleService roleService;
     private final UserService userService;
     private final ProjectService projectService;
-    private final ChannelService channelService;
     private final VersionService versionService;
     private final NotificationService notificationService;
     private final UserActionLogService userActionLogService;
@@ -75,7 +74,6 @@ public class ProjectFactory {
         this.userService = userService;
         this.projectPagesDao = projectPagesDao;
         this.projectService = projectService;
-        this.channelService = channelService;
         this.versionService = versionService;
         this.notificationService = notificationService;
         this.userActionLogService = userActionLogService;

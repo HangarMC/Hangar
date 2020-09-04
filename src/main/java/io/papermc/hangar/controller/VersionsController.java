@@ -1,34 +1,5 @@
 package io.papermc.hangar.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
-
-import java.nio.file.Path;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
@@ -52,7 +23,6 @@ import io.papermc.hangar.security.annotations.GlobalPermission;
 import io.papermc.hangar.service.UserActionLogService;
 import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.VersionService;
-import io.papermc.hangar.service.plugindata.PluginDataService;
 import io.papermc.hangar.service.pluginupload.PendingVersion;
 import io.papermc.hangar.service.pluginupload.PluginUploadService;
 import io.papermc.hangar.service.pluginupload.ProjectFiles;
@@ -63,6 +33,32 @@ import io.papermc.hangar.util.AlertUtil;
 import io.papermc.hangar.util.HangarException;
 import io.papermc.hangar.util.RequestUtil;
 import io.papermc.hangar.util.RouteHelper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.nio.file.Path;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class VersionsController extends HangarController {
@@ -80,13 +76,12 @@ public class VersionsController extends HangarController {
     private final HangarDao<ProjectDao> projectDao;
     private final ProjectFiles projectFiles;
     private final HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao;
-    private final PluginDataService pluginDataService;
 
     private final HttpServletRequest request;
     private final HttpServletResponse response;
 
     @Autowired
-    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService, ChannelService channelService, UserActionLogService userActionLogService, CacheManager cacheManager, RouteHelper routeHelper, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, PluginDataService pluginDataService, HttpServletRequest request, HttpServletResponse response) {
+    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService, ChannelService channelService, UserActionLogService userActionLogService, CacheManager cacheManager, RouteHelper routeHelper, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, HttpServletRequest request, HttpServletResponse response) {
         this.projectService = projectService;
         this.versionService = versionService;
         this.projectFactory = projectFactory;
@@ -100,7 +95,6 @@ public class VersionsController extends HangarController {
         this.projectDao = projectDao;
         this.projectFiles = projectFiles;
         this.downloadWarningDao = downloadWarningDao;
-        this.pluginDataService = pluginDataService;
         this.request = request;
         this.response = response;
     }

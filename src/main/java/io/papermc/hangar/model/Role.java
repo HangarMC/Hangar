@@ -30,7 +30,7 @@ public enum Role {
 
     PROJECT_SUPPORT("Project_Support", 22, RoleCategory.PROJECT, Permission.IsProjectMember, "Support", Color.TRANSPARENT),
     PROJECT_EDITOR("Project_Editor", 21, RoleCategory.PROJECT, Permission.EditPage.add(PROJECT_SUPPORT.getPermissions()), "Editor", Color.TRANSPARENT),
-    PROJECT_DEVELOPER("Project_Developer", 20, RoleCategory.PROJECT, Permission.CreateVersion.add(Permission.EditVersion).add(PROJECT_EDITOR.getPermissions()), "Developer", Color.TRANSPARENT),
+    PROJECT_DEVELOPER("Project_Developer", 20, RoleCategory.PROJECT, Permission.CreateVersion.add(Permission.EditVersion).add(Permission.EditTags).add(PROJECT_EDITOR.getPermissions()), "Developer", Color.TRANSPARENT),
     PROJECT_OWNER("Project_Owner", 19, RoleCategory.PROJECT, Permission.IsProjectOwner.add(Permission.EditApiKeys).add(Permission.DeleteProject).add(Permission.DeleteVersion).add(PROJECT_DEVELOPER.getPermissions()), "Owner", Color.TRANSPARENT, false),
 
     ORGANIZATION_SUPPORT("Organization_Support", 28, RoleCategory.ORGANIZATION, Permission.PostAsOrganization.add(Permission.IsOrganizationMember), "Support", Color.TRANSPARENT),
