@@ -8,7 +8,7 @@
     <h1 class="minor">Hangar is experiencing difficulties.</h1>
     <p class="minor">
         If you suspect this is a bug, please take a minute to report it to
-        <a target="_blank" rel="noopener" href="https://github.com/MiniDigger/Hangar/issues">the issue tracker.</a>
+        <a target="_blank" rel="noopener" href="https://github.com/PaperMC/Hangar/issues">the issue tracker.</a>
     </p>
     </div>
 </@base.base>

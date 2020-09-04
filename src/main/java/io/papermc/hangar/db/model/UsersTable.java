@@ -9,7 +9,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.StringJoiner;
 
-public class UsersTable implements Serializable {
+public class UsersTable implements Serializable, ProjectOwner {
 
     private long id;
     private OffsetDateTime createdAt;
@@ -54,6 +54,7 @@ public class UsersTable implements Serializable {
         return this; // TODO dummy to fix frontend
     }
 
+    @Override
     public long getId() {
         return id;
     }
@@ -80,7 +81,7 @@ public class UsersTable implements Serializable {
         this.fullName = fullName;
     }
 
-
+    @Override
     public String getName() {
         return name;
     }
@@ -145,6 +146,11 @@ public class UsersTable implements Serializable {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    @Override
+    public long getUserId() {
+        return id;
     }
 
     @Override

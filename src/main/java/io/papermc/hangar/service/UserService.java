@@ -2,16 +2,27 @@ package io.papermc.hangar.service;
 
 import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.dao.OrganizationDao;
+import io.papermc.hangar.db.dao.ProjectDao;
 import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.UserOrganizationRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.Prompt;
+import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.SsoSyncData;
+import io.papermc.hangar.model.UserOrdering;
+import io.papermc.hangar.model.viewhelpers.Author;
 import io.papermc.hangar.model.viewhelpers.FlagActivity;
+import io.papermc.hangar.model.viewhelpers.HeaderData;
 import io.papermc.hangar.model.viewhelpers.ReviewActivity;
+import io.papermc.hangar.model.viewhelpers.Staff;
+import io.papermc.hangar.model.viewhelpers.UserData;
+import io.papermc.hangar.model.viewhelpers.UserRole;
+import io.papermc.hangar.security.HangarAuthentication;
 import io.papermc.hangar.service.sso.AuthUser;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -25,19 +36,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.OrganizationDao;
-import io.papermc.hangar.db.dao.ProjectDao;
-import io.papermc.hangar.model.Permission;
-import io.papermc.hangar.model.Role;
-import io.papermc.hangar.model.UserOrdering;
-import io.papermc.hangar.model.viewhelpers.Author;
-import io.papermc.hangar.model.viewhelpers.HeaderData;
-import io.papermc.hangar.model.viewhelpers.Staff;
-import io.papermc.hangar.model.viewhelpers.UserData;
-import io.papermc.hangar.model.viewhelpers.UserRole;
-import io.papermc.hangar.security.HangarAuthentication;
 
 @Service
 public class UserService {
@@ -250,5 +248,9 @@ public class UserService {
             }
             userDao.get().update(currentUser);
         }
+    }
+
+    public List<OrganizationsTable> getOrganizationsUserCanUploadTo(UsersTable usersTable) {
+        return organizationDao.get().getOrgsUserCanUploadTo(usersTable.getId());
     }
 }

@@ -10,6 +10,8 @@ import io.papermc.hangar.db.dao.GeneralDao;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.ProjectDao;
 import io.papermc.hangar.db.dao.UserDao;
+import io.papermc.hangar.db.model.OrganizationsTable;
+import io.papermc.hangar.db.model.ProjectOwner;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
@@ -38,6 +40,7 @@ import io.papermc.hangar.service.project.PagesSerivce;
 import io.papermc.hangar.service.project.ProjectFactory;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.AlertUtil;
+import io.papermc.hangar.util.AlertUtil.AlertType;
 import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.HangarException;
 import io.papermc.hangar.util.RouteHelper;
@@ -54,7 +57,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
@@ -126,6 +128,7 @@ public class ProjectsController extends HangarController {
         this.request = request;
     }
 
+    @Secured("ROLE_USER")
     @PostMapping(value = "/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public Object createProject(@RequestParam("name") String name,
                                 @RequestParam("pluginId") String pluginId,
@@ -152,12 +155,12 @@ public class ProjectsController extends HangarController {
             AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, "error.project.invalidPluginId");
             return fillModel(mav);
         }
-        // TODO check that currentUser can upload to owner
+        List<OrganizationsTable> orgs = userService.getOrganizationsUserCanUploadTo(userService.getCurrentUser());
+        ProjectOwner ownerUser = orgs.stream().filter(org -> org.getId() == owner).map(ProjectOwner.class::cast).findAny().orElse(userService.getCurrentUser());
         // find owner
-        UsersTable ownerUser = userDao.get().getById(owner);
         if (ownerUser == null) {
             ModelAndView mav = showCreator();
-            AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, "error.project.ownerNotFound");
+            AlertUtil.showAlert(mav, AlertType.ERROR, "error.project.ownerNotFound");
             return fillModel(mav);
         }
 
@@ -229,7 +232,6 @@ public class ProjectsController extends HangarController {
         mav.addObject("sp", sp);
         mav.addObject("projectPage", pagesSerivce.getPage(projectData.getProject().getId(), hangarConfig.pages.home.getName()));
         mav.addObject("editorOpen", false);
-
         pagesSerivce.fillPages(mav, projectData.getProject().getId());
         return fillModel(mav);
     }

@@ -49,7 +49,7 @@
                                         <span class="minor">${role.role.title}</span>
                                     </td>
                                     <td>
-                                        <#if role.role != Role.ProjectOwner>
+                                        <#if role.role != Role.PROJECT_OWNER>
                                             <#if role.isAccepted>
                                                 <button class="btn btn-sm btn-danger pull-right btn-invite" data-invite-id="${role.id}" data-invite-behalf="${u.user.name}" data-invite-accepted="decline">Leave</button>
                                             <#else>

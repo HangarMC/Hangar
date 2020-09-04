@@ -77,12 +77,12 @@ public class OrgService {
 
     public ScopedOrganizationData getScopedOrganizationData(OrganizationsTable org) {
         if (userService.getCurrentUser() != null) {
-            return new ScopedOrganizationData(permissionService.getOrganizationPermissions(userService.getCurrentUser(), org.getName(), false));
+            return new ScopedOrganizationData(permissionService.getOrganizationPermissions(userService.getCurrentUser(), org.getName()));
         }
         return new ScopedOrganizationData();
     }
 
     public OrganizationData getOrganizationData(OrganizationsTable org) {
-        return new OrganizationData(org, organizationDao.get().getOrgMembers(org.getId()), projectDao.get().getProjectRoles(org.getId()));
+        return new OrganizationData(org, organizationDao.get().getOrgMembers(org.getId()), projectDao.get().getProjectRoles(org.getUserId()));
     }
 }

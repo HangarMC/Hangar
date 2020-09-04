@@ -286,7 +286,7 @@ alter table project_watchers owner to hangar;
 
 create table organizations
 (
-    id bigserial not null
+    id bigint not null
         constraint organizations_pkey
             primary key,
     created_at timestamp with time zone not null,

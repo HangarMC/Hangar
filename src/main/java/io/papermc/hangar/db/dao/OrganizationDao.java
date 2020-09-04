@@ -2,7 +2,6 @@ package io.papermc.hangar.db.dao;
 
 import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.UserOrganizationRolesTable;
-
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.Permission;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
@@ -20,7 +19,7 @@ import java.util.Map;
 @RegisterBeanMapper(OrganizationsTable.class)
 public interface OrganizationDao {
 
-    @SqlUpdate("insert into organizations (created_at, name, owner_id, user_id) values (:now, :name, :ownerId, :userId)")
+    @SqlUpdate("insert into organizations (id, created_at, name, owner_id, user_id) values (:id, :now, :name, :ownerId, :userId)")
     @Timestamped
     @GetGeneratedKeys
     OrganizationsTable insert(@BindBean OrganizationsTable organization);
@@ -63,4 +62,10 @@ public interface OrganizationDao {
 
     @SqlQuery("SELECT * FROM organizations WHERE owner_id = :userId")
     List<OrganizationsTable> getUserOwnedOrgs(long userId);
+
+    @SqlQuery("SELECT o.* FROM organizations o" +
+              "     JOIN organization_trust ot ON o.id = ot.organization_id" +
+              " WHERE ot.\"permission\" & (1::BIT(64) << 8) = (1::BIT(64) << 8) AND " +
+              " ot.user_id = :userId")
+    List<OrganizationsTable> getOrgsUserCanUploadTo(long userId);
 }

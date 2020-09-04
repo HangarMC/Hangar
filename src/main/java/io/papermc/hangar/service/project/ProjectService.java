@@ -4,30 +4,32 @@ import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.dao.GeneralDao;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.ProjectDao;
-import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.dao.ProjectViewDao;
-import io.papermc.hangar.db.dao.api.ProjectsApiDao;
+import io.papermc.hangar.db.dao.UserDao;
+import io.papermc.hangar.db.dao.VisibilityDao;
 import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.db.model.ProjectVisibilityChangesTable;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.Visibility;
-import io.papermc.hangar.model.generated.*;
+import io.papermc.hangar.model.generated.Project;
+import io.papermc.hangar.model.generated.ProjectLicense;
+import io.papermc.hangar.model.generated.ProjectNamespace;
+import io.papermc.hangar.model.generated.ProjectSettings;
+import io.papermc.hangar.model.generated.UserActions;
+import io.papermc.hangar.model.viewhelpers.ProjectApprovalData;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.ProjectFlag;
-import io.papermc.hangar.service.UserService;
-import io.papermc.hangar.service.pluginupload.ProjectFiles;
-import io.papermc.hangar.util.StringUtils;
-import io.papermc.hangar.db.dao.VisibilityDao;
-import io.papermc.hangar.model.Category;
-import io.papermc.hangar.model.viewhelpers.ProjectApprovalData;
+import io.papermc.hangar.model.viewhelpers.ProjectMissingFile;
 import io.papermc.hangar.model.viewhelpers.ProjectViewSettings;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.model.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.model.viewhelpers.UserRole;
-import io.papermc.hangar.model.viewhelpers.ProjectMissingFile;
-
+import io.papermc.hangar.service.PermissionService;
+import io.papermc.hangar.service.UserService;
+import io.papermc.hangar.service.pluginupload.ProjectFiles;
+import io.papermc.hangar.util.StringUtils;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,25 +51,25 @@ public class ProjectService {
     private final HangarDao<ProjectDao> projectDao;
     private final HangarDao<UserDao> userDao;
     private final HangarDao<VisibilityDao> visibilityDao;
-    private final HangarDao<ProjectsApiDao> projectApiDao;
     private final HangarDao<ProjectViewDao> projectViewDao;
     private final HangarDao<GeneralDao> generalDao;
     private final UserService userService;
     private final FlagService flagService;
+    private final PermissionService permissionService;
     private final ProjectFiles projectFiles;
 
     @Autowired
-    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectsApiDao> projectApiDao, HangarDao<ProjectViewDao> projectViewDao, HangarDao<GeneralDao> generalDao, ProjectFiles projectFiles, UserService userService, FlagService flagService) {
+    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectViewDao> projectViewDao, HangarDao<GeneralDao> generalDao, ProjectFiles projectFiles, UserService userService, FlagService flagService, PermissionService permissionService) {
         this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
         this.userDao = userDao;
         this.visibilityDao = visibilityDao;
-        this.projectApiDao = projectApiDao;
         this.projectViewDao = projectViewDao;
         this.generalDao = generalDao;
         this.projectFiles = projectFiles;
         this.userService = userService;
         this.flagService = flagService;
+        this.permissionService = permissionService;
     }
 
     public ProjectData getProjectData(String author, String slug) {
@@ -93,7 +95,7 @@ public class ProjectService {
         List<ProjectFlag> flags = flagService.getProjectFlags(projectsTable.getId());
         int noteCount = 0; // TODO a whole lot
         Map.Entry<String, ProjectVisibilityChangesTable> latestProjectVisibilityChangeWithUser = visibilityDao.get().getLatestProjectVisibilityChange(projectsTable.getId());
-        ProjectVersionsTable recommendedVersion = null;
+        ProjectVersionsTable recommendedVersion = null; // TODO
         String iconUrl = "";
         long starCount = userDao.get().getProjectStargazers(projectsTable.getId(), 0, null).size();
         long watcherCount = userDao.get().getProjectWatchers(projectsTable.getId(), 0, null).size();
@@ -129,7 +131,11 @@ public class ProjectService {
             return new ScopedProjectData();
         } else {
             ScopedProjectData sp = projectDao.get().getScopedProjectData(projectId, currentUser.getId());
-            return sp == null ? new ScopedProjectData() : sp;
+            if (sp == null) {
+                return new ScopedProjectData();
+            }
+            sp.setPermissions(permissionService.getProjectPermissions(currentUser.getId(), projectId));
+            return sp;
         }
     }
 

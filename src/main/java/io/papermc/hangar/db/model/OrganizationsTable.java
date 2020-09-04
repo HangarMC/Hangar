@@ -5,7 +5,7 @@ import org.jdbi.v3.core.annotation.Unmappable;
 
 import java.time.OffsetDateTime;
 
-public class OrganizationsTable implements Visitable {
+public class OrganizationsTable implements Visitable, ProjectOwner {
 
     private long id;
     private OffsetDateTime createdAt;
@@ -13,7 +13,8 @@ public class OrganizationsTable implements Visitable {
     private long ownerId;
     private long userId;
 
-    public OrganizationsTable(String name, long ownerId, long userId) {
+    public OrganizationsTable(long id, String name, long ownerId, long userId) {
+        this.id = id;
         this.name = name;
         this.ownerId = ownerId;
         this.userId = userId;
@@ -21,6 +22,7 @@ public class OrganizationsTable implements Visitable {
 
     public OrganizationsTable() { }
 
+    @Override
     public long getId() {
         return id;
     }
@@ -38,7 +40,7 @@ public class OrganizationsTable implements Visitable {
         this.createdAt = createdAt;
     }
 
-
+    @Override
     public String getName() {
         return name;
     }
@@ -56,7 +58,7 @@ public class OrganizationsTable implements Visitable {
         this.ownerId = ownerId;
     }
 
-
+    @Override
     public long getUserId() {
         return userId;
     }
@@ -69,5 +71,16 @@ public class OrganizationsTable implements Visitable {
     @Override
     public String getUrl() {
         return "/" + getName();
+    }
+
+    @Override
+    public String toString() {
+        return "OrganizationsTable{" +
+                "id=" + id +
+                ", createdAt=" + createdAt +
+                ", name='" + name + '\'' +
+                ", ownerId=" + ownerId +
+                ", userId=" + userId +
+                '}';
     }
 }

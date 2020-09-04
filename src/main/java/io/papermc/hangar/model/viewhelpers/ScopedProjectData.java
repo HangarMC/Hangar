@@ -2,7 +2,6 @@ package io.papermc.hangar.model.viewhelpers;
 
 import io.papermc.hangar.model.Permission;
 import org.jdbi.v3.core.annotation.Unmappable;
-import org.jdbi.v3.core.mapper.Nested;
 
 public class ScopedProjectData {
 
@@ -11,16 +10,6 @@ public class ScopedProjectData {
     private boolean starred = false;
     private boolean watching = false;
     private Permission permissions = Permission.None;
-
-    public ScopedProjectData(boolean canPostAsOwnerOrga, boolean uprojectFlags, boolean starred, boolean watching, Permission permissions) {
-        this.canPostAsOwnerOrga = canPostAsOwnerOrga;
-        this.uprojectFlags = uprojectFlags;
-        this.starred = starred;
-        this.watching = watching;
-        this.permissions = permissions;
-    }
-
-    public ScopedProjectData() { }
 
     public boolean perms(Permission perm) {
         return permissions.has(perm);
@@ -64,9 +53,20 @@ public class ScopedProjectData {
         return permissions;
     }
 
-    @Nested("perm")
+    @Unmappable
     public void setPermissions(Permission permissions) {
         this.permissions = permissions;
         this.canPostAsOwnerOrga = permissions.has(Permission.PostAsOrganization);
+    }
+
+    @Override
+    public String toString() {
+        return "ScopedProjectData{" +
+                "canPostAsOwnerOrga=" + canPostAsOwnerOrga +
+                ", uprojectFlags=" + uprojectFlags +
+                ", starred=" + starred +
+                ", watching=" + watching +
+                ", permissions=" + permissions +
+                '}';
     }
 }

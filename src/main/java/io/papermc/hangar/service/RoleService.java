@@ -1,17 +1,20 @@
 package io.papermc.hangar.service;
 
 import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.dao.OrganizationMembersDao;
 import io.papermc.hangar.db.dao.ProjectMembersDao;
 import io.papermc.hangar.db.dao.RoleDao;
 import io.papermc.hangar.db.dao.UserGlobalRolesDao;
 import io.papermc.hangar.db.dao.UserOrganizationRolesDao;
 import io.papermc.hangar.db.dao.UserProjectRolesDao;
+import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.ProjectMembersTable;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.RolesTable;
 import io.papermc.hangar.db.model.UserGlobalRolesTable;
 import io.papermc.hangar.db.model.UserOrganizationRolesTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
+import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.viewhelpers.OrgMember;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.slf4j.Logger;
@@ -19,8 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
-
-import io.papermc.hangar.model.Role;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,15 +36,17 @@ public class RoleService {
     private final HangarDao<ProjectMembersDao> projectMembersDao;
     private final HangarDao<UserGlobalRolesDao> userGlobalRolesDao;
     private final HangarDao<UserOrganizationRolesDao> userOrganizationRolesDao;
+    private final HangarDao<OrganizationMembersDao> organizationMembersDao;
     private final OrgService orgService;
 
     @Autowired
-    public RoleService(HangarDao<RoleDao> roleDao, HangarDao<UserProjectRolesDao> userProjectRolesDao, HangarDao<ProjectMembersDao> projectMembersDao, HangarDao<UserGlobalRolesDao> userGlobalRolesDao, HangarDao<UserOrganizationRolesDao> userOrganizationRolesDao, OrgService orgService) {
+    public RoleService(HangarDao<RoleDao> roleDao, HangarDao<UserProjectRolesDao> userProjectRolesDao, HangarDao<ProjectMembersDao> projectMembersDao, HangarDao<UserGlobalRolesDao> userGlobalRolesDao, HangarDao<UserOrganizationRolesDao> userOrganizationRolesDao, HangarDao<OrganizationMembersDao> organizationMembersDao, OrgService orgService) {
         this.roleDao = roleDao;
         this.userProjectRolesDao = userProjectRolesDao;
         this.projectMembersDao = projectMembersDao;
         this.userGlobalRolesDao = userGlobalRolesDao;
         this.userOrganizationRolesDao = userOrganizationRolesDao;
+        this.organizationMembersDao = organizationMembersDao;
         this.orgService = orgService;
         init();
     }
@@ -65,6 +68,10 @@ public class RoleService {
         return userProjectRolesDao.get().getById(id);
     }
 
+    public UserOrganizationRolesTable getUserOrgRole(long id) {
+        return userOrganizationRolesDao.get().getById(id);
+    }
+
     public void addRole(ProjectsTable projectsTable, long userId, Role role, boolean isAccepted) {
         if (userProjectRolesDao.get().getByProjectAndUser(projectsTable.getId(), userId) == null) {
             addMember(projectsTable.getId(), userId);
@@ -83,12 +90,27 @@ public class RoleService {
         userProjectRolesDao.get().update(userProjectRolesTable);
     }
 
+    public void updateRole(OrganizationsTable organizationsTable, long userId, Role role) {
+        UserOrganizationRolesTable userOrganizationRoles = userOrganizationRolesDao.get().getByOrgAndUser(organizationsTable.getId(), userId);
+        if (userOrganizationRoles == null) return;
+        userOrganizationRoles.setRoleType(role.getValue());
+        userOrganizationRolesDao.get().update(userOrganizationRoles);
+    }
+
+    public void updateRole(UserOrganizationRolesTable userOrganizationRolesTable) {
+        userOrganizationRolesDao.get().update(userOrganizationRolesTable);
+    }
+
     public void removeRole(ProjectsTable projectsTable, long userId) {
         userProjectRolesDao.get().delete(projectsTable.getId(), userId);
     }
 
     public void removeRole(UserProjectRolesTable userProjectRolesTable) {
         userProjectRolesDao.get().delete(userProjectRolesTable.getProjectId(), userProjectRolesTable.getUserId());
+    }
+
+    public void removeRole(long orgId, long userId) {
+        userOrganizationRolesDao.get().delete(orgId, userId);
     }
 
     public void addMember(long projectId, long userId) {
@@ -98,6 +120,11 @@ public class RoleService {
     public int removeMember(ProjectsTable projectsTable, long userId) {
         removeRole(projectsTable, userId);
         return projectMembersDao.get().delete(projectsTable.getId(), userId);
+    }
+
+    public int removeMember(OrganizationsTable organizationsTable, long userId) {
+        removeRole(organizationsTable.getId(), userId);
+        return organizationMembersDao.get().delete(organizationsTable.getId(), userId);
     }
 
     public void addGlobalRole(long userId, long roleId) {

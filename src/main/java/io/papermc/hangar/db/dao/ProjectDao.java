@@ -1,6 +1,5 @@
 package io.papermc.hangar.db.dao;
 
-import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
@@ -88,11 +87,10 @@ public interface ProjectDao {
 
     @RegisterBeanMapper(value = ScopedProjectData.class)
     @RegisterBeanMapper(value = Permission.class, prefix = "perm")
-    @SqlQuery("SELECT watching, starred, uproject_flags, coalesce(perm_value, B'0'::BIT(64))::BIGINT perm_value FROM" +
-              "(SELECT exists(SELECT 1 FROM project_watchers WHERE project_id = :projectId AND user_id = :userId) as watching) as is_watching," +
-              "(SELECT exists(SELECT 1 FROM project_stars WHERE project_id = :projectId AND user_id = :userId) as starred) as is_starred," +
-              "(SELECT exists(SELECT 1 FROM project_flags WHERE project_id = :projectId AND user_id = :userId AND is_resolved IS FALSE) as uproject_flags) as is_flagged," +
-              "(SELECT permission perm_value FROM project_trust WHERE project_id = :projectId AND user_id = :userId) as perm_table")
+    @SqlQuery("SELECT sq1.watching, sq2.starred, sq3.uproject_flags FROM" +
+              "(SELECT exists(SELECT 1 FROM project_watchers WHERE project_id = :projectId AND user_id = :userId) as watching) as sq1," +
+              "(SELECT exists(SELECT 1 FROM project_stars WHERE project_id = :projectId AND user_id = :userId) as starred) as sq2," +
+              "(SELECT exists(SELECT 1 FROM project_flags WHERE project_id = :projectId AND user_id = :userId AND is_resolved IS FALSE) as uproject_flags) as sq3")
     ScopedProjectData getScopedProjectData(long projectId, long userId);
 
 

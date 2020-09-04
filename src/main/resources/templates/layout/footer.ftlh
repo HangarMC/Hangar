@@ -36,7 +36,7 @@
                     <div class="col-sm-2 col-xs-12">
                         <h5>Found an Issue?</h5>
                         <a class="btn dark" target="_blank" rel="noopener"
-                           href="https://github.com/MiniDigger/Hangar/issues"><@spring.message "general.issues" /></a>
+                           href="https://github.com/PaperMC/Hangar/issues"><@spring.message "general.issues" /></a>
                     </div>
                     <div class="col-sm-2 col-xs-12">
                         <h5>Our Sponsors</h5>

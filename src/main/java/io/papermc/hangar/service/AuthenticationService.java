@@ -2,21 +2,21 @@ package io.papermc.hangar.service;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controller.util.ApiScope;
+import io.papermc.hangar.db.dao.ApiKeyDao;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.dao.api.SessionsDao;
 import io.papermc.hangar.db.model.ApiKeysTable;
 import io.papermc.hangar.db.model.ApiSessionsTable;
+import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.ApiAuthInfo;
 import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.Role;
+import io.papermc.hangar.model.generated.ApiSessionResponse;
 import io.papermc.hangar.model.generated.SessionType;
 import io.papermc.hangar.security.HangarAuthentication;
 import io.papermc.hangar.util.AuthUtils;
-import io.papermc.hangar.db.dao.ApiKeyDao;
-import io.papermc.hangar.model.Role;
-import io.papermc.hangar.model.generated.ApiSessionResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
@@ -34,8 +34,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import static io.papermc.hangar.util.AuthUtils.unAuth;
-
 @Service
 public class AuthenticationService {
 
@@ -48,12 +46,14 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final RoleService roleService;
     private final PermissionService permissionService;
+    private final OrgService orgService;
+    private final UserService userService;
 
     private static final String UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
     private static final Pattern API_KEY_PATTERN = Pattern.compile("(" + UUID_REGEX + ").(" + UUID_REGEX + ")");
 
     @Autowired
-    public AuthenticationService(HttpServletRequest request, ApiAuthInfo apiAuthInfo, HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService) {
+    public AuthenticationService(HttpServletRequest request, ApiAuthInfo apiAuthInfo, HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService, OrgService orgService, UserService userService) {
         this.request = request;
         this.apiAuthInfo = apiAuthInfo;
         this.hangarConfig = hangarConfig;
@@ -63,6 +63,8 @@ public class AuthenticationService {
         this.authenticationManager = authenticationManager;
         this.roleService = roleService;
         this.permissionService = permissionService;
+        this.orgService = orgService;
+        this.userService = userService;
     }
 
     public ApiAuthInfo getApiAuthInfo(String token) {
@@ -116,6 +118,14 @@ public class AuthenticationService {
             default:
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+    }
+
+    public boolean authOrgRequest(Permission permission, String organizationName, boolean requireUnlock) {
+        if (requireUnlock) { } // TODO ensure unlocked
+        OrganizationsTable org = orgService.getOrganization(organizationName);
+        if (org == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        Permission orgPerms = permissionService.getOrganizationPermissions(userService.getCurrentUser(), organizationName);
+        return orgPerms.has(permission);
     }
 
     public ApiSessionResponse authenticateDev() {

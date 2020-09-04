@@ -1,44 +1,42 @@
 package io.papermc.hangar.service.project;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.db.customtypes.LoggedActionType;
+import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.dao.GeneralDao;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.ProjectChannelDao;
 import io.papermc.hangar.db.dao.ProjectDao;
+import io.papermc.hangar.db.dao.ProjectPageDao;
+import io.papermc.hangar.db.dao.ProjectVersionDao;
 import io.papermc.hangar.db.model.ProjectChannelsTable;
+import io.papermc.hangar.db.model.ProjectOwner;
 import io.papermc.hangar.db.model.ProjectPagesTable;
 import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.model.Category;
 import io.papermc.hangar.model.NotificationType;
 import io.papermc.hangar.model.Platform;
+import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.Visibility;
-import io.papermc.hangar.service.NotificationService;
-import io.papermc.hangar.service.UserService;
-import io.papermc.hangar.service.plugindata.PluginFileWithData;
-import io.papermc.hangar.util.StringUtils;
-import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
-import io.papermc.hangar.db.dao.ProjectPageDao;
-import io.papermc.hangar.db.dao.ProjectVersionDao;
 import io.papermc.hangar.model.generated.Dependency;
+import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.ProjectPage;
 import io.papermc.hangar.model.viewhelpers.VersionData;
-import io.papermc.hangar.service.UserActionLogService;
-import io.papermc.hangar.service.VersionService;
-import io.papermc.hangar.service.pluginupload.ProjectFiles;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-
-import io.papermc.hangar.model.Category;
-import io.papermc.hangar.model.Role;
-import io.papermc.hangar.model.viewhelpers.ProjectData;
+import io.papermc.hangar.service.NotificationService;
 import io.papermc.hangar.service.RoleService;
+import io.papermc.hangar.service.UserActionLogService;
+import io.papermc.hangar.service.UserService;
+import io.papermc.hangar.service.VersionService;
+import io.papermc.hangar.service.plugindata.PluginFileWithData;
 import io.papermc.hangar.service.pluginupload.PendingVersion;
+import io.papermc.hangar.service.pluginupload.ProjectFiles;
 import io.papermc.hangar.util.HangarException;
-
+import io.papermc.hangar.util.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -93,9 +91,9 @@ public class ProjectFactory {
         }
     }
 
-    public ProjectsTable createProject(UsersTable ownerUser, String name, String pluginId, Category category, String description) throws HangarException {
+    public ProjectsTable createProject(ProjectOwner ownerUser, String name, String pluginId, Category category, String description) {
         String slug = StringUtils.slugify(name);
-        ProjectsTable projectsTable = new ProjectsTable(pluginId, name, slug, ownerUser.getName(), ownerUser.getId(), category, description, Visibility.NEW);
+        ProjectsTable projectsTable = new ProjectsTable(pluginId, name, slug, ownerUser.getName(), ownerUser.getUserId(), category, description, Visibility.NEW);
 
         ProjectChannelsTable channelsTable = new ProjectChannelsTable(hangarConfig.channels.getNameDefault(), hangarConfig.channels.getColorDefault(), -1);
 
@@ -111,7 +109,7 @@ public class ProjectFactory {
         pagesTable.setProjectId(projectsTable.getId());
         projectPagesDao.get().insert(pagesTable);
 
-        roleService.addRole(projectsTable, ownerUser.getId(), Role.PROJECT_OWNER, true);
+        roleService.addRole(projectsTable, ownerUser.getUserId(), Role.PROJECT_OWNER, true);
 
         userService.clearAuthorsCache();
         generalDao.get().refreshHomeProjects();
@@ -132,15 +130,15 @@ public class ProjectFactory {
         projectDao.get().delete(projectData.getProject());
     }
 
-    public void checkProjectAvailability(UsersTable author, String page) throws HangarException {
+    public void checkProjectAvailability(UsersTable author, String page) {
         checkProjectAvailability(author, page, null);
     }
 
-    public void checkProjectAvailability(UsersTable author, String page, @Nullable String pluginId) throws HangarException {
+    public void checkProjectAvailability(ProjectOwner author, String page, @Nullable String pluginId) {
         InvalidProjectReason invalidProjectReason;
         if (!hangarConfig.isValidProjectName(page)) invalidProjectReason = InvalidProjectReason.INVALID_NAME;
-        else if (pluginId != null) invalidProjectReason = projectDao.get().checkValidProject(author.getId(), pluginId, page, StringUtils.slugify(page));
-        else invalidProjectReason = projectDao.get().checkNamespace(author.getId(), page, StringUtils.slugify(page));
+        else if (pluginId != null) invalidProjectReason = projectDao.get().checkValidProject(author.getUserId(), pluginId, page, StringUtils.slugify(page));
+        else invalidProjectReason = projectDao.get().checkNamespace(author.getUserId(), page, StringUtils.slugify(page));
         if (invalidProjectReason != null) throw new HangarException(invalidProjectReason.key);
     }
 
