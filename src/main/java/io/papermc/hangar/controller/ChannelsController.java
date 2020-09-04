@@ -1,8 +1,8 @@
 package io.papermc.hangar.controller;
 
 import io.papermc.hangar.model.Color;
-import io.papermc.hangar.service.project.ChannelService;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
+import io.papermc.hangar.service.project.ChannelService;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.RouteHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +34,7 @@ public class ChannelsController extends HangarController {
         ModelAndView mv = new ModelAndView("projects/channels/list");
         ProjectData projectData = projectService.getProjectData(author, slug);
         mv.addObject("p", projectData);
-        mv.addObject("channels", channelService.getProjectChannels(projectData.getProject().getId()));
-        mv.addObject("versions", projectData.getPublicVersions());
+        mv.addObject("channels", channelService.getChannelsWithVersionCount(projectData.getProject().getId()));
         return fillModel(mv);
     }
 

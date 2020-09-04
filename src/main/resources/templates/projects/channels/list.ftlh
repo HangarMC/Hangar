@@ -35,7 +35,7 @@
 
                     <table class="table no-border centered">
                         <tbody>
-                        <#list channels as channel>
+                        <#list channels as channel, versions>
                         <tr>
                             <td>
                                 <div class="channel"
@@ -50,15 +50,15 @@
                                 <td>
                                     <div class="btn btn-sm yellow"
                                             <#if versions gt 0>
-                                         id="channel-delete-${channel.id}" data-toggle="modal"
-                                         data-target="#modal-delete">
-                                        <#else>
-                                            id="channel-delete-${channel.id}" data-channel-delete="safe-delete"
-                                            data-channel-id="${channel.id}">
-
-                                            <@form.form method="POST" action=routes.getRouteUrl("channels.delete", p.project.ownerName, p.project.slug, channel.name)
-                                            id="form-delete-${channel.id}"
-                                            class="form-channel-delete">
+                                                id="channel-delete-${channel.id}" data-toggle="modal"
+                                                data-target="#modal-delete">
+                                            <#else>
+                                                id="channel-delete-${channel.id}" data-channel-delete="safe-delete"
+                                                data-channel-id="${channel.id}"
+                                            >
+                                                <@form.form method="POST" action=routes.getRouteUrl("channels.delete", p.project.ownerName, p.project.slug, channel.name)
+                                                    id="form-delete-${channel.id}"
+                                                    class="form-channel-delete">
                                                 <@csrf.formField />
                                             </@form.form>
                                         </#if>
@@ -100,32 +100,32 @@
             </div>
         </div>
     </div>
-    </div>
 
     <div class="modal fade" id="modal-delete" tabindex="-1" role="dialog" aria-labelledby="label-delete">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"
-                        aria-label="<@spring.message "general.close" />">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" id="label-delete"><@spring.message "channel.delete" /></h4>
-            </div>
-            <div class="modal-body">
-                <p><@spring.message "channel.delete.info" /></p>
-                <p class="minor">
-                    <strong class="version-count"></strong> <i><@spring.message "channel.delete.info.versions" /></i>
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">
-                    <@spring.message "general.cancel" />
-                </button>
-                <form method="post" action="#" class="form-channel-delete">
-                    <@csrf.formField />
-                    <button type="submit" class="btn btn-danger"><@spring.message "channel.delete" /></button>
-                </form>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="<@spring.message "general.close" />">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="label-delete"><@spring.message "channel.delete" /></h4>
+                </div>
+                <div class="modal-body">
+                    <p><@spring.message "channel.delete.info" /></p>
+                    <p class="minor">
+                        <strong class="version-count"></strong> <i><@spring.message "channel.delete.info.versions" /></i>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        <@spring.message "general.cancel" />
+                    </button>
+                    <form method="post" action="#" class="form-channel-delete">
+                        <@csrf.formField />
+                        <button type="submit" class="btn btn-danger"><@spring.message "channel.delete" /></button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

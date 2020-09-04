@@ -1,11 +1,11 @@
 package io.papermc.hangar.db.dao;
 
 import io.papermc.hangar.db.model.ProjectChannelsTable;
-import io.papermc.hangar.service.project.ChannelService;
 import io.papermc.hangar.model.Color;
-
+import io.papermc.hangar.service.project.ChannelService;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
+import org.jdbi.v3.sqlobject.config.ValueColumn;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
@@ -16,6 +16,7 @@ import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @RegisterBeanMapper(ProjectChannelsTable.class)
@@ -53,4 +54,11 @@ public interface ProjectChannelDao {
 
     @SqlQuery("SELECT * FROM project_channels WHERE project_id = :projectId AND (name = :channelName OR id = :channelId)")
     ProjectChannelsTable getProjectChannel(long projectId, String channelName, Long channelId);
+
+    @ValueColumn("version_count")
+    @SqlQuery("SELECT pc.*, COUNT(pv.id) as version_count FROM project_channels pc" +
+              "     LEFT JOIN project_versions pv ON pc.id = pv.channel_id" +
+              " WHERE pc.project_id = :projectId" +
+              " GROUP BY pc.id")
+    Map<ProjectChannelsTable, Integer> getChannelsWithVersionCount(long projectId);
 }

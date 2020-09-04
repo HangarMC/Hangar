@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ChannelService {
@@ -41,6 +42,10 @@ public class ChannelService {
 
     public List<ProjectChannelsTable> getProjectChannels(long projectId) {
         return channelDao.get().getProjectChannels(projectId);
+    }
+
+    public Map<ProjectChannelsTable, Integer> getChannelsWithVersionCount(long projectId) {
+        return channelDao.get().getChannelsWithVersionCount(projectId);
     }
 
     public ProjectChannelsTable addProjectChannel(long projectId, String channelName, Color color) {
