@@ -1,6 +1,5 @@
 package io.papermc.hangar.service;
 
-import io.papermc.hangar.model.InviteFilter;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.NotificationsDao;
 import io.papermc.hangar.db.dao.UserOrganizationRolesDao;
@@ -10,10 +9,11 @@ import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UserOrganizationRolesTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
+import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.model.InviteFilter;
 import io.papermc.hangar.model.NotificationFilter;
 import io.papermc.hangar.model.NotificationType;
 import io.papermc.hangar.model.viewhelpers.InviteSubject;
-import io.papermc.hangar.model.viewhelpers.UserData;
 import io.papermc.hangar.model.viewhelpers.UserRole;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 @Service
 public class NotificationService {
@@ -40,11 +39,11 @@ public class NotificationService {
         this.userOrganizationRolesTable = userOrganizationRolesTable;
     }
 
-    public NotificationsTable sendNotification(long userId, long originId, NotificationType type, String[] messageArgs) {
+    public NotificationsTable sendNotification(long userId, Long originId, NotificationType type, String[] messageArgs) {
         return sendNotification(userId, originId, type, messageArgs, null);
     }
 
-    public NotificationsTable sendNotification(long userId, long originId, NotificationType type, String[] messageArgs, String action) {
+    public NotificationsTable sendNotification(long userId, Long originId, NotificationType type, String[] messageArgs, String action) {
         Preconditions.checkArgument(messageArgs.length != 0, "messageArgs must be non-empty");
         NotificationsTable notification = new NotificationsTable(userId, type, action, originId, messageArgs);
         notificationsDao.get().insert(notification);
@@ -55,8 +54,15 @@ public class NotificationService {
         return notificationsDao.get().markAsRead(notificationId, userService.getCurrentUser().getId());
     }
 
-    public Map<NotificationsTable, UserData> getNotifications(NotificationFilter filter) {
-        return notificationsDao.get().getUserNotifications(userService.getCurrentUser().getId(), filter.getFilter()).entrySet().stream().collect(Collectors.toMap(Entry::getKey, entry -> userService.getUserData(entry.getValue())));
+    public Map<NotificationsTable, UsersTable> getNotifications(NotificationFilter filter) {
+        return notificationsDao.get().getUserNotifications(userService.getCurrentUser().getId(), filter.getFilter())
+                .entrySet().stream().collect(HashMap::new, (m, v) -> {
+                    if (v.getValue() == null || v.getValue().getName() == null) {
+                        m.put(v.getKey(), null);
+                    } else {
+                        m.put(v.getKey(), v.getValue());
+                    }
+                }, HashMap::putAll);
     }
 
     public Map<UserRole<?>, InviteSubject<?>> getInvites(InviteFilter inviteFilter) {

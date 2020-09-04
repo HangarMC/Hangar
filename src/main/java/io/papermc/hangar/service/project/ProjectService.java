@@ -12,6 +12,7 @@ import io.papermc.hangar.db.model.ProjectVisibilityChangesTable;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.generated.Project;
 import io.papermc.hangar.model.generated.ProjectLicense;
@@ -227,5 +228,9 @@ public class ProjectService {
                     Path path = projectFiles.getVersionDir(project.getOwner(), project.getName(), project.getVersionString());
                     return !path.resolve(project.getFileName()).toFile().exists();
                 }).collect(Collectors.toList());
+    }
+
+    public Map<UsersTable, Permission> getUsersPermissions(long projectId) {
+        return projectDao.get().getAllUsersPermissions(projectId);
     }
 }

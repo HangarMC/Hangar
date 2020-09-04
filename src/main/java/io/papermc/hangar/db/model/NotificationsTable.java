@@ -15,10 +15,10 @@ public class NotificationsTable {
     private NotificationType notificationType;
     private String action;
     private boolean read;
-    private long originId;
+    private Long originId;
     private String[] messageArgs;
 
-    public NotificationsTable(long userId, NotificationType notificationType, String action, long originId, String[] messageArgs) {
+    public NotificationsTable(long userId, NotificationType notificationType, String action, Long originId, String[] messageArgs) {
         this.userId = userId;
         this.notificationType = notificationType;
         this.action = action;
@@ -84,11 +84,11 @@ public class NotificationsTable {
     }
 
 
-    public long getOriginId() {
+    public Long getOriginId() {
         return originId;
     }
 
-    public void setOriginId(long originId) {
+    public void setOriginId(Long originId) {
         this.originId = originId;
     }
 

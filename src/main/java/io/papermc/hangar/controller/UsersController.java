@@ -38,7 +38,6 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -162,7 +161,7 @@ public class UsersController extends HangarController {
         ModelAndView mav = new ModelAndView("users/notifications");
         mav.addObject("notificationFilter", notificationFilter);
         mav.addObject("inviteFilter", inviteFilter);
-        Map<NotificationsTable, UserData> notifications = notificationService.getNotifications(notificationFilter);
+        Map<NotificationsTable, UsersTable> notifications = notificationService.getNotifications(notificationFilter);
         mav.addObject("notifications", notifications);
         Map<UserRole<?>, InviteSubject<?>> invites = notificationService.getInvites(inviteFilter);
         mav.addObject("invites", invites);

@@ -1,20 +1,25 @@
 package io.papermc.hangar.controller;
 
 import io.papermc.hangar.db.customtypes.JSONB;
-import io.papermc.hangar.db.model.ProjectVersionReviewsTable;
-import io.papermc.hangar.db.model.ProjectVersionsTable;
-import io.papermc.hangar.model.generated.ReviewState;
-import io.papermc.hangar.model.viewhelpers.VersionReview;
-import io.papermc.hangar.model.viewhelpers.VersionReviewMessage;
-import io.papermc.hangar.service.ReviewService;
-import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.VersionContext;
+import io.papermc.hangar.db.model.ProjectVersionReviewsTable;
+import io.papermc.hangar.db.model.ProjectVersionsTable;
+import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.NamedPermission;
+import io.papermc.hangar.model.NotificationType;
+import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.generated.ReviewState;
 import io.papermc.hangar.model.viewhelpers.VersionData;
+import io.papermc.hangar.model.viewhelpers.VersionReview;
+import io.papermc.hangar.model.viewhelpers.VersionReviewMessage;
 import io.papermc.hangar.security.annotations.GlobalPermission;
+import io.papermc.hangar.service.NotificationService;
+import io.papermc.hangar.service.ReviewService;
 import io.papermc.hangar.service.UserActionLogService;
+import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.VersionService;
+import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.RouteHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +30,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
@@ -33,12 +37,15 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ReviewsController extends HangarController {
 
+    private final ProjectService projectService;
     private final VersionService versionService;
     private final ReviewService reviewService;
+    private final NotificationService notificationService;
     private final UserActionLogService userActionLogService;
     private final UserService userService;
     private final RouteHelper routeHelper;
@@ -46,9 +53,11 @@ public class ReviewsController extends HangarController {
     private final HttpServletRequest request;
 
     @Autowired
-    public ReviewsController(VersionService versionService, ReviewService reviewService, UserActionLogService userActionLogService, UserService userService, RouteHelper routeHelper, HttpServletRequest request) {
+    public ReviewsController(ProjectService projectService, VersionService versionService, ReviewService reviewService, NotificationService notificationService, UserActionLogService userActionLogService, UserService userService, RouteHelper routeHelper, HttpServletRequest request) {
+        this.projectService = projectService;
         this.versionService = versionService;
         this.reviewService = reviewService;
+        this.notificationService = notificationService;
         this.userActionLogService = userActionLogService;
         this.userService = userService;
         this.routeHelper = routeHelper;
@@ -98,8 +107,13 @@ public class ReviewsController extends HangarController {
         }
         review.setEndedAt(OffsetDateTime.now());
         reviewService.update(review);
-        // TODO notifications
-
+        Map<UsersTable, Permission> users = projectService.getUsersPermissions(versionsTable.getProjectId());
+        // TODO bulk insert
+        users.forEach((user, perm) -> {
+            if (perm.has(Permission.EditVersion)) {
+                notificationService.sendNotification(user.getId(), null, NotificationType.VERSION_REVIEWED, new String[]{"notification.project.reviewed", slug, version});
+            }
+        });
         return new ModelAndView("redirect:" + routeHelper.getRouteUrl("reviews.showReviews", author, slug, version));
     }
 

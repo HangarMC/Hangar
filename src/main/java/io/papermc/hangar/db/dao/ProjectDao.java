@@ -172,4 +172,20 @@ public interface ProjectDao {
             "FROM project_versions v JOIN projects p on v.project_id = p.id ")
     @RegisterBeanMapper(value = ProjectMissingFile.class)
     List<ProjectMissingFile> allProjectsForMissingFiles();
+
+    @RegisterBeanMapper(value = Permission.class, prefix = "perm")
+    @RegisterBeanMapper(UsersTable.class)
+    @SqlQuery("SELECT u.*, (coalesce(gt.permission, B'0'::BIT(64)) | coalesce(pt.permission, B'0'::BIT(64)) | coalesce(ot.permission, B'0'::BIT(64)))::BIGINT AS perm_value" +
+            " FROM users u " +
+            "     LEFT JOIN global_trust gt ON u.id = gt.user_id" +
+            "     LEFT JOIN projects p ON p.id = :projectId" +
+            "     LEFT JOIN project_trust pt ON u.id = pt.user_id AND pt.project_id = p.id" +
+            "     LEFT JOIN organization_trust ot ON u.id = ot.user_id AND ot.organization_id = p.owner_id" +
+            " WHERE " +
+            "     (" +
+            "         u.id IN (SELECT pm.user_id FROM project_members pm WHERE pm.project_id = p.id) OR " +
+            "         u.id IN (SELECT om.user_id FROM organization_members om WHERE om.organization_id = ot.organization_id)" +
+            "     ) AND " +
+            "     u.id NOT IN (SELECT o.user_id FROM organizations o)")
+    Map<UsersTable, Permission> getAllUsersPermissions(long projectId);
 }

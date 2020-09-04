@@ -2,7 +2,6 @@ package io.papermc.hangar.db.dao;
 
 import io.papermc.hangar.db.model.NotificationsTable;
 import io.papermc.hangar.db.model.UsersTable;
-
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Define;
