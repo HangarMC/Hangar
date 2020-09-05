@@ -288,18 +288,6 @@ public class ApplicationController extends HangarController {
         return fillModel(view);
     }
 
-    @Secured("ROLE_USER")
-    @GetMapping("/pantopticon/actor-count")
-    public Object actorCount(@RequestParam Object timeoutMs) {
-        return null; // TODO implement actorCount request controller
-    }
-
-    @Secured("ROLE_USER")
-    @GetMapping("/pantopticon/actor-tree")
-    public Object actorTree(@RequestParam Object timeoutMs) {
-        return null; // TODO implement actorTree request controller
-    }
-
     @GetMapping(value = "/robots.txt", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public Object robots() {

@@ -15,8 +15,6 @@ public class RouteHelper {
 
     public RouteHelper() {
         register("showProjectVisibility", "/admin/approval/projects", of(), of());
-        register("actorCount", "/pantopticon/actor-count", of(), of("timeoutMs"));
-        register("actorTree", "/pantopticon/actor-tree", of(), of("timeoutMs"));
         register("updateUser", "/admin/user/{user}/update", of("user"), of());
         register("showQueue", "/admin/approval/versions", of(), of());
         register("showLog", "/admin/log", of(), of("page", "userFilter", "projectFilter", "versionFilter", "pageFilter", "actionFilter", "subjectFilter"));
