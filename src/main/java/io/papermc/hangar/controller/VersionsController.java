@@ -556,9 +556,12 @@ public class VersionsController extends HangarController {
         if (version.getReviewState() == ReviewState.REVIEWED) {
             return true;
         } else {
-            String cookie = Optional.ofNullable(WebUtils.getCookie(request, ProjectVersionDownloadWarningsTable.cookieKey(version.getId()))).map(Cookie::getValue).orElse("");
-            boolean hasSessionConfirm = "confirmed".equals(cookie);
+            Optional<Cookie> cookie = Optional.ofNullable(WebUtils.getCookie(request, ProjectVersionDownloadWarningsTable.cookieKey(version.getId())));
+            boolean hasSessionConfirm = "confirmed".equals(cookie.map(Cookie::getValue).orElse(""));
             if (hasSessionConfirm) {
+                Cookie newCookie = cookie.get();
+                newCookie.setMaxAge(0);
+                response.addCookie(newCookie);
                 return true;
             } else {
                 ProjectVersionDownloadWarningsTable warning = downloadWarningDao.get().find(token, version.getId(), RequestUtil.getRemoteInetAddress(request));
