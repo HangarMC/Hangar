@@ -95,6 +95,7 @@ services:
       DB_PASSWORD: "hangarauth"
       DB_HOST: "db"
       SSO_ENDPOINT_hangar: "{ 'sync_sso_endpoint': ('http://app:8080/api/sync_sso'), 'sso_secret': 'changeme', 'api_key': 'changeme' }"
+      SSO_ENDPOINT_discourse: "{ 'sync_sso_endpoint': ('http://host.docker.internal:9292/admin/users/sync_sso'), 'sso_secret': 'changeme', 'api_key': 'changeme' }"
       DEBUG: "true"
       DJANGO_SETTINGS_MODULE: "spongeauth.settings.prod"
     networks:

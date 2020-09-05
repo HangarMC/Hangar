@@ -52,6 +52,8 @@ public class HangarConfig {
     public HangarSecurityConfig security;
     @NestedConfigurationProperty
     public QueueConfig queue;
+    @NestedConfigurationProperty
+    public DiscourseConfig discourse;
 
     @Component
     public static class Sponsor {
@@ -85,7 +87,7 @@ public class HangarConfig {
     }
 
     @Autowired
-    public HangarConfig(FakeUserConfig fakeUser, HomepageConfig homepage, ChannelsConfig channels, PagesConfig pages, ProjectsConfig projects, UserConfig user, OrgConfig org, ApiConfig api, SsoConfig sso, HangarSecurityConfig security, QueueConfig queue) {
+    public HangarConfig(FakeUserConfig fakeUser, HomepageConfig homepage, ChannelsConfig channels, PagesConfig pages, ProjectsConfig projects, UserConfig user, OrgConfig org, ApiConfig api, SsoConfig sso, HangarSecurityConfig security, QueueConfig queue, DiscourseConfig discourse) {
         this.fakeUser = fakeUser;
         this.homepage = homepage;
         this.channels = channels;
@@ -97,6 +99,7 @@ public class HangarConfig {
         this.sso = sso;
         this.security = security;
         this.queue = queue;
+        this.discourse = discourse;
     }
 
     public String getLogo() {
@@ -233,5 +236,9 @@ public class HangarConfig {
 
     public QueueConfig getQueue() {
         return queue;
+    }
+
+    public DiscourseConfig getDiscourse() {
+        return discourse;
     }
 }

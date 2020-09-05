@@ -119,6 +119,10 @@ hangar:
         timeout: 10s
         reset: 5m
 
+  discourse:
+    enabled: false
+    url: "http://localhost:9292"
+
 
 ################
 # Spring Debug #

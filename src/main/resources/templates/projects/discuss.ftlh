@@ -2,6 +2,8 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/projects/view.ftlh" as view/>
 <#import "*/utils/editor.ftlh" as editor/>
+<#-- @ftlvariable name="p" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
+<#-- @ftlvariable name="sp" type="io.papermc.hangar.model.viewhelpers.ScopedProjectData" -->
 
 <#--
 Discussion page within Project overview.
@@ -11,7 +13,7 @@ Discussion page within Project overview.
 <#assign scriptsVar>
     <script <#--@CSPNonce.attr-->>
         DiscourseEmbed = {
-            discourseUrl: '${config.app.discourseUrl}/',
+            discourseUrl: '${config.discourse.url}/',
             topicId: ${p.project.topicId}
         };
     </script>
@@ -42,7 +44,7 @@ Discussion page within Project overview.
             </div>
             <div class="reply-controls">
                 <a class="forums" target="_blank" rel="noopener"
-                href="${config.app.discourseUrl}/t/${p.project.topicId}">
+                href="${config.discourse.url}/t/${p.project.topicId}">
                 <@spring.message "general.viewOnForums" />
                 </a>
             </div>
