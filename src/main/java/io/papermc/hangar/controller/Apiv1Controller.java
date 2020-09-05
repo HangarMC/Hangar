@@ -172,11 +172,6 @@ public class Apiv1Controller extends HangarController {
         return ResponseEntity.ok((ObjectNode) userObj);
     }
 
-    @RequestMapping("/statusz")
-    public Object showStatusZ() {
-        return null; // TODO implement showStatusZ request controller
-    }
-
     private ArrayNode writeUsers(List<UsersTable> usersTables) {
         ArrayNode usersArray = mapper.createArrayNode();
         List<Long> userIds = usersTables.stream().map(UsersTable::getId).collect(Collectors.toList());

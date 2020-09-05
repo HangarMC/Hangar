@@ -1,5 +1,7 @@
 package io.papermc.hangar.controller;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.papermc.hangar.controller.util.StatusZ;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.model.Stats;
@@ -29,12 +31,14 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -60,11 +64,12 @@ public class ApplicationController extends HangarController {
     private final JobService jobService;
     private final SitemapService sitemapService;
     private final StatsService statsService;
+    private final StatusZ statusZ;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public ApplicationController(UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, HttpServletRequest request) {
+    public ApplicationController(UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, StatusZ statusZ, HttpServletRequest request) {
         this.userService = userService;
         this.projectService = projectService;
         this.orgService = orgService;
@@ -73,6 +78,7 @@ public class ApplicationController extends HangarController {
         this.versionService = versionService;
         this.jobService = jobService;
         this.sitemapService = sitemapService;
+        this.statusZ = statusZ;
         this.request = request;
         this.statsService = statsService;
     }
@@ -82,6 +88,11 @@ public class ApplicationController extends HangarController {
         ModelAndView mav = new ModelAndView("home");
         AlertUtil.transferAlerts(mav, modelMap);
         return fillModel(mav);
+    }
+
+    @RequestMapping("/statusz")
+    public ResponseEntity<ObjectNode> showStatusZ() {
+        return ResponseEntity.ok(statusZ.getStatus());
     }
 
     @Secured("ROLE_USER")
