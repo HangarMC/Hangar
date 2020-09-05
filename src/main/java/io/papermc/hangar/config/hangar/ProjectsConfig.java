@@ -20,6 +20,7 @@ public class ProjectsConfig {
     private String checkInterval = "1h";
     private String draftExpire = "1d";
     private int userGridPageSize = 30;
+    private Duration unsafeDownloadMaxAge = Duration.ofMinutes(10);
 
     public int getMaxNameLen() {
         return maxNameLen;
@@ -115,5 +116,13 @@ public class ProjectsConfig {
 
     public void setMaxKeywords(int maxKeywords) {
         this.maxKeywords = maxKeywords;
+    }
+
+    public Duration getUnsafeDownloadMaxAge() {
+        return unsafeDownloadMaxAge;
+    }
+
+    public void setUnsafeDownloadMaxAge(Duration unsafeDownloadMaxAage) {
+        this.unsafeDownloadMaxAge = unsafeDownloadMaxAage;
     }
 }

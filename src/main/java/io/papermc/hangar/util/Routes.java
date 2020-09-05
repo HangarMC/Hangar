@@ -81,7 +81,7 @@ public enum Routes {
     VERSIONS_SHOW_CREATOR("versions.showCreator", "/{author}/{slug}/versions/new", of("author", "slug"), of()),
     VERSIONS_DELETE("versions.delete", "/{author}/{slug}/versions/{version}/hardDelete", of("author", "slug", "version"), of()),
     VERSIONS_SHOW_CREATOR_WITH_META("versions.showCreatorWithMeta", "/{author}/{slug}/versions/new/{version}", of("author", "slug", "version"), of()),
-    VERSIONS_CONFIRM_DOWNLOAD("versions.confirmDownload", "/{author}/{slug}/versions/{version}/confirm", of("author", "slug", "version"), of("downloadType", "api", "dummy")),
+    VERSIONS_CONFIRM_DOWNLOAD("versions.confirmDownload", "/{author}/{slug}/versions/{version}/confirm", of("author", "slug", "version"), of("downloadType", "token", "dummy")),
 
     PAGES_SHOW_PREVIEW("pages.showPreview", "/pages/preview", of(), of()),
     PAGES_SAVE("pages.save", "/{author}/{slug}/pages/{page}/edit", of("author", "slug", "page"), of()),

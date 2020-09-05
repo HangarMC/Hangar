@@ -140,6 +140,10 @@ public class ProjectService {
         }
     }
 
+    public ProjectsTable getProjectsTable(String author, String name) {
+        return projectDao.get().getBySlug(author, name);
+    }
+
     @Secured("ROLE_USER")
     public void changeVisibility(ProjectsTable project, Visibility newVisibility, String comment) {
         Preconditions.checkNotNull(project, "project");

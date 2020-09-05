@@ -1,5 +1,7 @@
 package io.papermc.hangar.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
@@ -9,8 +11,10 @@ import io.papermc.hangar.db.dao.ProjectDao;
 import io.papermc.hangar.db.dao.ProjectVersionDownloadWarningDao;
 import io.papermc.hangar.db.model.ProjectChannelsTable;
 import io.papermc.hangar.db.model.ProjectVersionDownloadWarningsTable;
+import io.papermc.hangar.db.model.ProjectVersionUnsafeDownloadsTable;
 import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.db.model.ProjectsTable;
+import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.Color;
 import io.papermc.hangar.model.DownloadType;
 import io.papermc.hangar.model.NamedPermission;
@@ -20,6 +24,7 @@ import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.model.viewhelpers.VersionData;
 import io.papermc.hangar.security.annotations.GlobalPermission;
+import io.papermc.hangar.service.DownloadsService;
 import io.papermc.hangar.service.UserActionLogService;
 import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.VersionService;
@@ -30,16 +35,23 @@ import io.papermc.hangar.service.project.ChannelService;
 import io.papermc.hangar.service.project.ProjectFactory;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.AlertUtil;
+import io.papermc.hangar.util.AlertUtil.AlertType;
 import io.papermc.hangar.util.HangarException;
 import io.papermc.hangar.util.RequestUtil;
 import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,18 +59,26 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.util.WebUtils;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 @Controller
 public class VersionsController extends HangarController {
@@ -69,32 +89,58 @@ public class VersionsController extends HangarController {
     private final UserService userService;
     private final PluginUploadService pluginUploadService;
     private final ChannelService channelService;
+    private final DownloadsService downloadsService;
     private final UserActionLogService userActionLogService;
     private final CacheManager cacheManager;
     private final HangarConfig hangarConfig;
     private final HangarDao<ProjectDao> projectDao;
     private final ProjectFiles projectFiles;
     private final HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao;
+    private final MessageSource messageSource;
+    private final ObjectMapper mapper;
 
     private final HttpServletRequest request;
     private final HttpServletResponse response;
 
-    @Autowired
-    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService, ChannelService channelService, UserActionLogService userActionLogService, CacheManager cacheManager, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, HttpServletRequest request, HttpServletResponse response) {
+    private final ProjectVersionsTable projectVersionsTable;
+    private final ProjectsTable projectsTable;
+
+    @Autowired(required = false)
+    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService, ChannelService channelService, DownloadsService downloadsService, UserActionLogService userActionLogService, CacheManager cacheManager, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, MessageSource messageSource, ObjectMapper mapper, HttpServletRequest request, HttpServletResponse response, ProjectVersionsTable projectVersionsTable, ProjectsTable projectsTable) {
         this.projectService = projectService;
         this.versionService = versionService;
         this.projectFactory = projectFactory;
         this.userService = userService;
         this.pluginUploadService = pluginUploadService;
         this.channelService = channelService;
+        this.downloadsService = downloadsService;
         this.userActionLogService = userActionLogService;
         this.cacheManager = cacheManager;
         this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
         this.projectFiles = projectFiles;
         this.downloadWarningDao = downloadWarningDao;
+        this.messageSource = messageSource;
+        this.mapper = mapper;
         this.request = request;
         this.response = response;
+        this.projectVersionsTable = projectVersionsTable;
+        this.projectsTable = projectsTable;
+    }
+
+    @Bean
+    @RequestScope
+    ProjectVersionsTable projectVersionsTable() {
+        Map<String, String> pathParams = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+        if (!pathParams.keySet().containsAll(Set.of("author", "slug", "version"))) {
+            return null;
+        } else {
+            ProjectVersionsTable projectVersionsTable = versionService.getVersion(pathParams.get("author"), pathParams.get("slug"), pathParams.get("version"));
+            if (projectVersionsTable == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+            return projectVersionsTable;
+        }
     }
 
     @GetMapping(value = "/api/project/{pluginId}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -356,14 +402,114 @@ public class VersionsController extends HangarController {
     }
 
     @GetMapping("/{author}/{slug}/versions/{version}/confirm")
-    public Object showDownloadConfirm(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version, @RequestParam Object downloadType, @RequestParam Object api, @RequestParam Object dummy) {
-        return null; // TODO implement showDownloadConfirm request controller
+    public Object showDownloadConfirm(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(defaultValue = "0") DownloadType downloadType, @RequestParam Optional<Boolean> api, @RequestParam(required = false) String dummy) {
+        if (projectVersionsTable.getReviewState() == ReviewState.REVIEWED) {
+            return AlertUtil.showAlert(Routes.PROJECTS_SHOW.getRedirect(author, slug), AlertType.ERROR, "error.plugin.stateChanged");
+        }
+        OffsetDateTime expiration = OffsetDateTime.now().plus(hangarConfig.projects.getUnsafeDownloadMaxAge().toMillis(), ChronoUnit.MILLIS);
+        String token = UUID.randomUUID().toString();
+        String address = RequestUtil.getRemoteAddress(request);
+
+        String apiMsgKey = "version.download.confirm.body.api";
+        if (projectVersionsTable.getReviewState() == ReviewState.PARTIALLY_REVIEWED) {
+            apiMsgKey = "version.download.confirmPartial.api";
+        }
+        String apiMsg = messageSource.getMessage(apiMsgKey, null, LocaleContextHolder.getLocale());
+        String curlInstruction;
+        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+        if (csrfToken == null) {
+            curlInstruction = messageSource.getMessage("version.download.confirm.curl.nocsrf", new String[] {Routes.VERSIONS_CONFIRM_DOWNLOAD.getRouteUrl(author, slug, version, downloadType.ordinal() + "", token, null)}, LocaleContextHolder.getLocale());
+        } else {
+            curlInstruction = messageSource.getMessage("version.download.confirm.curl", new String[] {Routes.VERSIONS_CONFIRM_DOWNLOAD.getRouteUrl(author, slug, version, downloadType.ordinal() + "", token, null), csrfToken.getToken()}, LocaleContextHolder.getLocale());
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"README.txt\"");
+        if (api.orElse(false)) {
+            removeAddWarnings(address, expiration, token);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("message", apiMsg);
+            objectNode.put("post", Routes.VERSIONS_CONFIRM_DOWNLOAD.getRouteUrl(author, slug, version, downloadType.ordinal() + "", token, null));
+            objectNode.put("url", Routes.VERSIONS_DOWNLOAD_JAR_BY_ID.getRouteUrl(projectsTable.getPluginId(), projectVersionsTable.getVersionString(), token));
+            objectNode.put("curl", curlInstruction);
+            objectNode.put("token", token);
+            return new ResponseEntity<>(objectNode.toPrettyString(), headers, HttpStatus.MULTIPLE_CHOICES);
+        } else {
+            Optional<String> userAgent = Optional.ofNullable(request.getHeader(HttpHeaders.USER_AGENT)).map(String::toLowerCase);
+            if (userAgent.isPresent() && userAgent.get().startsWith("wget/")) {
+                return new ResponseEntity<>(messageSource.getMessage("version.download.confirm.wget", null, LocaleContextHolder.getLocale()), headers, HttpStatus.MULTIPLE_CHOICES);
+            } else if (userAgent.isPresent() && userAgent.get().startsWith("curl/")) {
+                removeAddWarnings(address, expiration, token);
+                return new ResponseEntity<>(apiMsg + "\n" + curlInstruction + "\n", headers, HttpStatus.MULTIPLE_CHOICES);
+            } else {
+                ProjectChannelsTable channelsTable = channelService.getVersionsChannel(projectVersionsTable.getProjectId(), projectVersionsTable.getId());
+                response.addCookie(new Cookie(ProjectVersionDownloadWarningsTable.cookieKey(projectVersionsTable.getId()), "set"));
+                ModelAndView mav = new ModelAndView("projects/versions/unsafeDownload");
+                mav.addObject("project", projectsTable);
+                mav.addObject("target", projectVersionsTable);
+                mav.addObject("isTargetChannelNonReviewed", channelsTable.getIsNonReviewed());
+                mav.addObject("downloadType", downloadType);
+                return fillModel(mav);
+            }
+        }
+    }
+
+    private void removeAddWarnings(String address, OffsetDateTime expiration, String token) {
+        downloadWarningDao.get().deleteInvalid(address, projectVersionsTable.getId());
+        downloadWarningDao.get().insert(new ProjectVersionDownloadWarningsTable(
+                expiration,
+                token,
+                projectVersionsTable.getId(),
+                RequestUtil.getRemoteInetAddress(request)
+        ));
     }
 
     @PostMapping(value = "/{author}/{slug}/versions/{version}/confirm", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
-    public Object confirmDownload(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version, @RequestParam Object downloadType, @RequestParam Object api, @RequestParam Object dummy) {
-        return null; // TODO implement confirmDownload request controller
+    public Object confirmDownload(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(defaultValue = "0") DownloadType downloadType, @RequestParam Optional<String> token, @RequestParam(required = false) String dummy) {
+        if (projectVersionsTable.getReviewState() == ReviewState.REVIEWED) {
+            return Routes.PROJECTS_SHOW.getRedirect(author, slug);
+        }
+        ProjectVersionUnsafeDownloadsTable download;
+        try {
+            download = confirmDownload0(downloadType, token);
+        } catch (HangarException e) {
+            return AlertUtil.showAlert(Routes.PROJECTS_SHOW.getRedirect(author, slug), AlertType.ERROR, e.getMessageKey(), e.getArgs());
+        }
+        switch (download.getDownloadType()) {
+            case UPLOADED_FILE:
+                return Routes.VERSIONS_DOWNLOAD.getRedirect(author, slug, version, token.orElse(null), "");
+            case JAR_FILE:
+                return Routes.VERSIONS_DOWNLOAD_JAR.getRedirect(author, slug, version, token.orElse(null), "");
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    private ProjectVersionUnsafeDownloadsTable confirmDownload0(DownloadType downloadType, Optional<String> token) {
+        if (token.isPresent()) {
+            ProjectVersionDownloadWarningsTable warning = downloadsService.findUnconfirmedWarning(RequestUtil.getRemoteInetAddress(request), token.get(), projectVersionsTable.getId());
+            if (warning == null) {
+                throw new HangarException("error.plugin.noConfirmDownload");
+            } else if (warning.hasExpired()) {
+                downloadsService.deleteWarning(warning);
+                throw new HangarException("error.plugin.noConfirmDownload");
+            } else {
+                ProjectVersionUnsafeDownloadsTable download = downloadsService.addUnsafeDownload(new ProjectVersionUnsafeDownloadsTable(userService.currentUser().map(UsersTable::getId).orElse(null), RequestUtil.getRemoteInetAddress(request), downloadType));
+                downloadsService.confirmWarning(warning, download.getId());
+                return download;
+            }
+        } else {
+            String cookieKey = ProjectVersionDownloadWarningsTable.cookieKey(projectVersionsTable.getId());
+            Cookie cookie = WebUtils.getCookie(request, cookieKey);
+            if (cookie != null && cookie.getValue().contains("set")) {
+                cookie.setValue("confirmed");
+                response.addCookie(cookie);
+                return downloadsService.addUnsafeDownload(new ProjectVersionUnsafeDownloadsTable(userService.currentUser().map(UsersTable::getId).orElse(null), RequestUtil.getRemoteInetAddress(request), downloadType));
+            } else {
+                throw new HangarException("error.plugin.noConfirmDownload");
+            }
+        }
     }
 
     @Secured("ROLE_USER")
@@ -410,14 +556,16 @@ public class VersionsController extends HangarController {
         if (version.getReviewState() == ReviewState.REVIEWED) {
             return true;
         } else {
-            boolean hasSessionConfirm = "confirmed".equals(request.getSession().getAttribute(ProjectVersionDownloadWarningsTable.cookieKey(version.getId())));
-
+            String cookie = Optional.ofNullable(WebUtils.getCookie(request, ProjectVersionDownloadWarningsTable.cookieKey(version.getId()))).map(Cookie::getValue).orElse("");
+            boolean hasSessionConfirm = "confirmed".equals(cookie);
             if (hasSessionConfirm) {
                 return true;
             } else {
-                ProjectVersionDownloadWarningsTable warning = downloadWarningDao.get().find(token, version.getId(), RequestUtil.getRemoteAddress(request));
+                ProjectVersionDownloadWarningsTable warning = downloadWarningDao.get().find(token, version.getId(), RequestUtil.getRemoteInetAddress(request));
 
-                if (warning.hasExpired()) {
+                if (warning == null) {
+                    return false;
+                } else if (warning.hasExpired()) {
                     downloadWarningDao.get().delete(warning);
                     return false;
                 } else {

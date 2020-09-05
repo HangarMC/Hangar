@@ -1,6 +1,9 @@
 package io.papermc.hangar.db.model;
 
 
+import io.papermc.hangar.model.DownloadType;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
+
 import java.net.InetAddress;
 import java.time.OffsetDateTime;
 
@@ -8,10 +11,17 @@ public class ProjectVersionUnsafeDownloadsTable {
 
     private long id;
     private OffsetDateTime createdAt;
-    private long userId;
+    private Long userId;
     private InetAddress address;
-    private long downloadType;
+    private DownloadType downloadType;
 
+    public ProjectVersionUnsafeDownloadsTable(Long userId, InetAddress address, DownloadType downloadType) {
+        this.userId = userId;
+        this.address = address;
+        this.downloadType = downloadType;
+    }
+
+    public ProjectVersionUnsafeDownloadsTable() { }
 
     public long getId() {
         return id;
@@ -31,11 +41,11 @@ public class ProjectVersionUnsafeDownloadsTable {
     }
 
 
-    public long getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -48,12 +58,13 @@ public class ProjectVersionUnsafeDownloadsTable {
         this.address = address;
     }
 
-
-    public long getDownloadType() {
+    @EnumByOrdinal
+    public DownloadType getDownloadType() {
         return downloadType;
     }
 
-    public void setDownloadType(long downloadType) {
+    @EnumByOrdinal
+    public void setDownloadType(DownloadType downloadType) {
         this.downloadType = downloadType;
     }
 

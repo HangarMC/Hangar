@@ -71,6 +71,7 @@ hangar:
     draft-expire: 1d
     user-grid-page-size: 30
     max-keywords: 5
+    unsafe-download-max-age: 10
 
   users:
     stars-per-page: 5

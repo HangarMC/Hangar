@@ -12,6 +12,7 @@ import io.papermc.hangar.db.dao.ProjectDao;
 import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.ProjectOwner;
+import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
@@ -48,6 +49,7 @@ import io.papermc.hangar.util.StringUtils;
 import io.papermc.hangar.util.TemplateHelper;
 import io.papermc.hangar.util.TriFunction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -59,8 +61,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -127,6 +131,21 @@ public class ProjectsController extends HangarController {
         this.projectDao = projectDao;
         this.generalDao = generalDao;
         this.request = request;
+    }
+
+    @Bean
+    @RequestScope
+    ProjectsTable projectsTable() {
+        Map<String, String> pathParams = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+        if (!pathParams.keySet().containsAll(Set.of("author", "slug"))) {
+            return null;
+        } else {
+            ProjectsTable projectsTable = projectService.getProjectsTable(pathParams.get("author"), pathParams.get("slug"));
+            if (projectsTable == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+            return projectsTable;
+        }
     }
 
     @Secured("ROLE_USER")

@@ -40,6 +40,10 @@ public class ChannelService {
         return channelDao.get().getProjectChannel(projectId, null, channelId);
     }
 
+    public ProjectChannelsTable getVersionsChannel(long projectId, long versionId) {
+        return channelDao.get().getVersionsChannel(projectId, versionId);
+    }
+
     public List<ProjectChannelsTable> getProjectChannels(long projectId) {
         return channelDao.get().getProjectChannels(projectId);
     }

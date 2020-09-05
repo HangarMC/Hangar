@@ -3,17 +3,9 @@
 <#import "*/layout/base.ftlh" as base />
 <#import "*/utils/csrf.ftlh" as csrf>
 
-@import controllers.sugar.Requests.OreRequest
-@import ore.OreConfig
-@import ore.data.DownloadType
-@import ore.models.project.{Project, ReviewState, Version}
-@import views.html.helper.CSRF
-@(project: Project,
-        target: Version,
-        isTargetChannelNonReviewed: Boolean,
-        downloadType: DownloadType)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
 
-<#assign message><@spring.message "general.linkout.title" /> +  " " + <@spring.messageArgs code="general.linkout.title" args=[project.ownerName, project.name, target.name] /></#assign> <#-- todo: gud? -->
+<#-- @ftlvariable name="isTargetChannelNonReviewed" type="java.lang.Boolean" -->
+<#assign message><@spring.message "version.download.confirm.title" /> <@spring.messageArgs code="version.download.confirm.header" args=[project.ownerName, project.name, target.versionString] /></#assign>
 <@base.base title=message>
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
@@ -23,14 +15,16 @@
                         <h4 class="panel-title"><i class="fas fa-exclamation-triangle"></i>&ensp;<@spring.message "general.warning" /></h4>
                     </div>
                     <div class="col-xs-12 col-sm-8 no-padding">
-                        <span class="pull-right"><@spring.messageArgs code="version.download.confirm.header" args=[project.ownerName, project.name, target.name] /></span>
+                        <span class="pull-right"><@spring.messageArgs code="version.download.confirm.header" args=[project.ownerName, project.name, target.versionString] /></span>
                     </div>
                 </div>
                 <div class="panel-body">
                     <div class="alert alert-danger" style="margin-bottom: 10px">
-                    <#if isTargetChannelNonReviewed || target.reviewState == ReviewState.Backlog>
+                        <#assign ReviewState=@helper["io.papermc.hangar.model.generated.ReviewState"] />
+                        <#-- @ftlvariable name="ReviewState" type="io.papermc.hangar.model.generated.ReviewState" -->
+                    <#if isTargetChannelNonReviewed || target.reviewState == ReviewState.BACKLOG>
                         <@spring.message "version.download.confirm.nonReviewedChannel" />
-                    <#elseif target.reviewState != ReviewState.PartiallyReviewed>
+                    <#elseif target.reviewState != ReviewState.PARTIALLY_REVIEWED>
                         <@spring.message "version.download.confirm.reviewedChannel" />
                     <#else>
                         <@spring.message "version.download.confirmPartial.reviewedChannel" />
@@ -49,7 +43,7 @@
                         </div>
 
                         <div class="col-xs-12 col-sm-6">
-                            <form action="${Routes.VERSIONS_CONFIRM_DOWNLOAD.getRouteUrl(project.ownerName, project.slug, target.name, Some(downloadType.value), "", "dummy")}" method="post" id="form-download">
+                            <form action="${Routes.VERSIONS_CONFIRM_DOWNLOAD.getRouteUrl(project.ownerName, project.slug, target.versionString, downloadType.ordinal() + "", "", "dummy")}" method="post" id="form-download">
                                 <@csrf.formField />
 
                                 <button type="submit" form="form-download" class="btn btn-danger pull-right-sm">

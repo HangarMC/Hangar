@@ -37,6 +37,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -60,6 +61,15 @@ public class UserService {
         this.roleService = roleService;
         this.permissionService = permissionService;
         this.orgService = orgService;
+    }
+
+    public Optional<UsersTable> currentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
+            HangarAuthentication auth = (HangarAuthentication) authentication;
+            return Optional.ofNullable(auth.getTable());
+        }
+        return Optional.empty();
     }
 
     public UsersTable getCurrentUser() {

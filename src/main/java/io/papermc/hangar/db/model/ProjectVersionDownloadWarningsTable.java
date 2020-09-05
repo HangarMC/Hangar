@@ -1,6 +1,9 @@
 package io.papermc.hangar.db.model;
 
 
+import org.jdbi.v3.core.annotation.Unmappable;
+
+import java.net.InetAddress;
 import java.time.OffsetDateTime;
 
 public class ProjectVersionDownloadWarningsTable {
@@ -10,10 +13,18 @@ public class ProjectVersionDownloadWarningsTable {
     private OffsetDateTime expiration;
     private String token;
     private long versionId;
-    private String address; // inet
+    private InetAddress address; // inet
     private boolean isConfirmed;
     private Long downloadId;
 
+    public ProjectVersionDownloadWarningsTable(OffsetDateTime expiration, String token, long versionId, InetAddress address) {
+        this.expiration = expiration;
+        this.token = token;
+        this.versionId = versionId;
+        this.address = address;
+    }
+
+    public ProjectVersionDownloadWarningsTable() { }
 
     public long getId() {
         return id;
@@ -60,11 +71,11 @@ public class ProjectVersionDownloadWarningsTable {
     }
 
 
-    public String getAddress() {
+    public InetAddress getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(InetAddress address) {
         this.address = address;
     }
 
@@ -86,10 +97,12 @@ public class ProjectVersionDownloadWarningsTable {
         this.downloadId = downloadId;
     }
 
+    @Unmappable
     public static String cookieKey(long versionId) {
         return "_warning_" + versionId;
     }
 
+    @Unmappable
     public boolean hasExpired() {
         return expiration.isBefore(OffsetDateTime.now());
     }

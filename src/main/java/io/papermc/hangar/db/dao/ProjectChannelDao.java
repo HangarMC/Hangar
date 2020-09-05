@@ -55,6 +55,11 @@ public interface ProjectChannelDao {
     @SqlQuery("SELECT * FROM project_channels WHERE project_id = :projectId AND (name = :channelName OR id = :channelId)")
     ProjectChannelsTable getProjectChannel(long projectId, String channelName, Long channelId);
 
+    @SqlQuery("SELECT pc.* FROM project_channels pc" +
+              "     JOIN project_versions pv ON pc.id = pv.channel_id" +
+              " WHERE pv.id = :versionId AND pv.project_id = :projectId")
+    ProjectChannelsTable getVersionsChannel(long projectId, long versionId);
+
     @ValueColumn("version_count")
     @SqlQuery("SELECT pc.*, COUNT(pv.id) as version_count FROM project_channels pc" +
               "     LEFT JOIN project_versions pv ON pc.id = pv.channel_id" +
