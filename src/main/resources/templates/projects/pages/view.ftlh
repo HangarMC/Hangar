@@ -36,8 +36,8 @@ Documentation page within Project overview.
             <div class="row">
                 <div class="col-md-12">
                     <@editor.editor
-                        saveCall=routes.getRouteUrl("pages.save", p.project.ownerName, p.project.slug, projectPage.slug)
-                        deleteCall=routes.getRouteUrl("pages.delete", p.project.ownerName, p.project.slug, projectPage.slug)
+                        saveCall=Routes.PAGES_SAVE.getRouteUrl(p.project.ownerName, p.project.slug, projectPage.slug)
+                        deleteCall=Routes.PAGES_DELETE.getRouteUrl(p.project.ownerName, p.project.slug, projectPage.slug)
                         deletable=projectPage.isDeletable
                         enabled=canEditPages()
                         raw=projectPage.contents
@@ -51,7 +51,7 @@ Documentation page within Project overview.
 
             <#if p.project.recommendedVersionId??>
             <div class="btn-group btn-download">
-                <a href="${routes.getRouteUrl("versions.downloadRecommended", p.project.ownerName, p.project.slug, "")}"
+                <a href="${Routes.VERSIONS_DOWNLOAD_RECOMMENDED.getRouteUrl(p.project.ownerName, p.project.slug, "")}"
                    title="<@spring.message "project.download.recommend" />" data-toggle="tooltip"
                    data-placement="bottom" class="btn btn-primary">
                     <i class="fas fa-download"></i> <@spring.message "general.download" />
@@ -61,8 +61,8 @@ Documentation page within Project overview.
                     <span class="sr-only">Toggle Dropdown</span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a href="${routes.getRouteUrl("versions.downloadRecommended", p.project.ownerName, p.project.slug, "")}"><@spring.message "general.download" /></a></li>
-                    <li><a href="#" class="copy-url" data-clipboard-text="${config.baseUrl}${routes.getRouteUrl("versions.downloadRecommended", p.project.ownerName, p.project.slug, "")}">Copy URL</a></li>
+                    <li><a href="${Routes.VERSIONS_DOWNLOAD_RECOMMENDED.getRouteUrl(p.project.ownerName, p.project.slug, "")}"><@spring.message "general.download" /></a></li>
+                    <li><a href="#" class="copy-url" data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD_RECOMMENDED.getRouteUrl(p.project.ownerName, p.project.slug, "")}">Copy URL</a></li>
                 </ul>
             </div>
             </#if>
@@ -71,8 +71,8 @@ Documentation page within Project overview.
                 <p><@spring.messageArgs code="project.category.info" args=[p.project.category.title] /></p>
                 <p><@spring.messageArgs code="project.publishDate" args=[utils.prettifyDate(p.project.createdAt)] /></p>
                 <p><span id="view-count"></span> views</p>
-                <p><span id="star-count"></span> <a href="${routes.getRouteUrl("projects.showStargazers", p.project.ownerName, p.project.slug, "")}">star<#if p.starCount != 1>s</#if></a></p>
-                <p><span id="watcher-count"></span> <a href="${routes.getRouteUrl("projects.showWatchers", p.project.ownerName, p.project.slug, "")}">watcher<#if p.watcherCount != 1>s</#if></a></p>
+                <p><span id="star-count"></span> <a href="${Routes.PROJECTS_SHOW_STARGAZERS.getRouteUrl(p.project.ownerName, p.project.slug, "")}">star<#if p.starCount != 1>s</#if></a></p>
+                <p><span id="watcher-count"></span> <a href="${Routes.PROJECTS_SHOW_WATCHERS.getRouteUrl(p.project.ownerName, p.project.slug, "")}">watcher<#if p.watcherCount != 1>s</#if></a></p>
                 <p><span id="download-count"></span> total downloads</p>
                 <#if p.project.licenseName?has_content && p.project.licenseUrl?has_content>
                     <p>
@@ -104,7 +104,7 @@ Documentation page within Project overview.
                 </div>
                 <ul class="list-group">
 <#--                    <li class="list-group-item">-->
-<#--                        <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, config.pages.home.name)}">-->
+<#--                        <a href="${Routes.PAGES_SHOW.getRouteUrl(p.project.ownerName, p.project.slug, config.pages.home.name)}">-->
 <#--                        ${"Home"}-->
 <#--                        </a>-->
 <#--                    </li>-->
@@ -123,7 +123,7 @@ Documentation page within Project overview.
                                     </a>
                                 </#if>
                             </#if>
-                            <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, pg.slug)}" class="href">
+                            <a href="${Routes.PAGES_SHOW.getRouteUrl(p.project.ownerName, p.project.slug, pg.slug)}" class="href">
                                 ${pg.name}
                             </a>
                         </li>
@@ -132,7 +132,7 @@ Documentation page within Project overview.
                                 <#-- @ftlvariable name="childPage" type="io.papermc.hangar.model.viewhelpers.ProjectPage" -->
                                 <#list children as childPage>
                                     <li class="list-group-item page-item-child">
-                                        <a href="${routes.getRouteUrl("pages.show", p.project.ownerName, p.project.slug, childPage.slug)}">
+                                        <a href="${Routes.PAGES_SHOW.getRouteUrl(p.project.ownerName, p.project.slug, childPage.slug)}">
                                             ${childPage.name}
                                         </a>
                                     </li>
@@ -144,7 +144,7 @@ Documentation page within Project overview.
             </div>
 
                 <!-- Member list -->
-            <@memberList.memberList project=p perms=sp.permissions settingsCall=routes.getRouteUrl("projects.showSettings", p.project.ownerName, p.project.slug) />
+            <@memberList.memberList project=p perms=sp.permissions settingsCall=Routes.PROJECTS_SHOW_SETTINGS.getRouteUrl(p.project.ownerName, p.project.slug) />
         </div>
     </div>
 </@projectView.view>

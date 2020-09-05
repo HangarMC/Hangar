@@ -34,7 +34,7 @@
                             <@userAvatar.userAvatar userName=gridUser.name avatarUrl=utils.avatarUrl(gridUser.name) clazz="user-avatar-sm media-object" />
                         </div>
                         <div class="media-body center-vertically">
-                            <a class="media-heading mb-0" href="${routes.getRouteUrl("users.showProjects", gridUser.name)}">${gridUser.name}</a>
+                            <a class="media-heading mb-0" href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(gridUser.name)}">${gridUser.name}</a>
                         </div>
                     </div>
                 </#list>

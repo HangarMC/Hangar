@@ -13,7 +13,7 @@
         $(function () {
             initChannelManager(
                 "#channel-new", "", "${config.channels.colorDefault.hex}", "New channel",
-                "${routes.getRouteUrl("channels.create", p.project.ownerName, p.project.slug)}",
+                "${Routes.CHANNELS_CREATE.getRouteUrl(p.project.ownerName, p.project.slug)}",
                 "post", "Create channel", false
             );
         });
@@ -56,7 +56,7 @@
                                                 id="channel-delete-${channel.id}" data-channel-delete="safe-delete"
                                                 data-channel-id="${channel.id}"
                                             >
-                                                <@form.form method="POST" action=routes.getRouteUrl("channels.delete", p.project.ownerName, p.project.slug, channel.name)
+                                                <@form.form method="POST" action=Routes.CHANNELS_DELETE.getRouteUrl(p.project.ownerName, p.project.slug, channel.name)
                                                     id="form-delete-${channel.id}"
                                                     class="form-channel-delete">
                                                 <@csrf.formField />
@@ -71,7 +71,7 @@
                                     initChannelDelete('#channel-delete-${channel.id}', '${channel.name}', ${versions});
                                     initChannelManager(
                                         "#channel-edit-${channel.id}", "${channel.name}", "${channel.color.hex}",
-                                        "Edit channel", "${routes.getRouteUrl("channels.save"
+                                        "Edit channel", "${Routes.CHANNELS_SAVE.getRouteUrl(
                                                         p.project.ownerName, p.project.slug, channel.name)}",
                                         "post", "Save changes", ${channel.isNonReviewed?string('true', 'false')}
                                     );
@@ -81,7 +81,7 @@
                         </#list>
                         </tbody>
                     </table>
-                    <a href="${routes.getRouteUrl("versions.showList", p.project.ownerName, p.project.slug)}"
+                    <a href="${Routes.VERSIONS_SHOW_LIST.getRouteUrl(p.project.ownerName, p.project.slug)}"
                        class="pull-left btn btn-default">
                         <i class="fas fa-arrow-left"></i>
                     </a>

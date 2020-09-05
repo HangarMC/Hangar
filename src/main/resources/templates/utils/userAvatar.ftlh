@@ -21,7 +21,7 @@
             <#if href?has_content>
                 ${href}
             <#elseif userName?has_content>
-                ${routes.getRouteUrl("users.showProjects", userName)}
+                ${Routes.USERS_SHOW_PROJECTS.getRouteUrl(userName)}
             <#else>
                 #
             </#if>

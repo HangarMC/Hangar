@@ -11,7 +11,7 @@ import io.papermc.hangar.model.generated.ProjectStatsDay;
 import io.papermc.hangar.model.generated.Tag;
 import io.papermc.hangar.service.pluginupload.ProjectFiles;
 import io.papermc.hangar.util.ApiUtil;
-import io.papermc.hangar.util.RouteHelper;
+import io.papermc.hangar.util.Routes;
 import io.papermc.hangar.util.TemplateHelper;
 import org.springframework.stereotype.Service;
 
@@ -27,14 +27,12 @@ public class ProjectApiService {
     private final HangarConfig hangarConfig;
     private final HangarDao<ProjectsApiDao> projectApiDao;
     private final ProjectFiles projectFiles;
-    private final RouteHelper routeHelper;
     private final TemplateHelper templateHelper;
 
-    public ProjectApiService(HangarConfig hangarConfig, HangarDao<ProjectsApiDao> projectApiDao, ProjectFiles projectFiles, RouteHelper routeHelper, TemplateHelper templateHelper) {
+    public ProjectApiService(HangarConfig hangarConfig, HangarDao<ProjectsApiDao> projectApiDao, ProjectFiles projectFiles, TemplateHelper templateHelper) {
         this.hangarConfig = hangarConfig;
         this.projectApiDao = projectApiDao;
         this.projectFiles = projectFiles;
-        this.routeHelper = routeHelper;
         this.templateHelper = templateHelper;
     }
 
@@ -79,7 +77,7 @@ public class ProjectApiService {
     private void setProjectIconUrl(Project project) {
         Path iconPath = projectFiles.getIconPath(project.getNamespace().getOwner(), project.getNamespace().getSlug());
         if (iconPath != null) {
-            project.setIconUrl(hangarConfig.getBaseUrl() + routeHelper.getRouteUrl("projects.showIcon", project.getNamespace().getOwner(), project.getNamespace().getSlug()));
+            project.setIconUrl(hangarConfig.getBaseUrl() + Routes.getRouteUrlOf("projects.showIcon", project.getNamespace().getOwner(), project.getNamespace().getSlug()));
         } else {
             project.setIconUrl(templateHelper.avatarUrl(project.getNamespace().getOwner()));
         }

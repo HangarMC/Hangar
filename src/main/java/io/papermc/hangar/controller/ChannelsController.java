@@ -4,7 +4,7 @@ import io.papermc.hangar.model.Color;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.service.project.ChannelService;
 import io.papermc.hangar.service.project.ProjectService;
-import io.papermc.hangar.util.RouteHelper;
+import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -19,13 +19,11 @@ public class ChannelsController extends HangarController {
 
     private final ProjectService projectService;
     private final ChannelService channelService;
-    private final RouteHelper routeHelper;
 
     @Autowired
-    public ChannelsController(ProjectService projectService, ChannelService channelService, RouteHelper routeHelper) {
+    public ChannelsController(ProjectService projectService, ChannelService channelService) {
         this.projectService = projectService;
         this.channelService = channelService;
-        this.routeHelper = routeHelper;
     }
 
     @Secured("ROLE_USER")
@@ -43,7 +41,7 @@ public class ChannelsController extends HangarController {
     public ModelAndView create(@PathVariable String author, @PathVariable String slug, @RequestParam("channel-input") String channelId, @RequestParam("channel-color-input") String channelHex) {
         ProjectData projectData = projectService.getProjectData(author, slug);
         channelService.addProjectChannel(projectData.getProject().getId(), channelId, Color.getByHexStr(channelHex));
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("channels.showList", author, slug));
+        return Routes.CHANNELS_SHOW_LIST.getRedirect(author, slug);
     }
 
     @Secured("ROLE_USER")
@@ -52,14 +50,14 @@ public class ChannelsController extends HangarController {
                              @RequestParam("channel-input") String newChannelName, @RequestParam("channel-color-input") String newChannelHex) {
         ProjectData projectData = projectService.getProjectData(author, slug);
         channelService.updateProjectChannel(projectData.getProject().getId(), channel, newChannelName, Color.getByHexStr(newChannelHex));
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("channels.showList", author, slug));
+        return Routes.CHANNELS_SHOW_LIST.getRedirect(author, slug);
     }
 
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/channels/{channel}/delete")
     public ModelAndView delete(@PathVariable String author, @PathVariable String slug, @PathVariable String channel) {
         // TODO implement delete request controller
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("channels.showList", author, slug));
+        return Routes.CHANNELS_SHOW_LIST.getRedirect(author, slug);
     }
 
 }

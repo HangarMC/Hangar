@@ -18,7 +18,7 @@
                         <span class="description">
                             <strong>${project.changeRequester}</strong>
                             <span class="minor"> requested changes on </span>
-                            <a href="${routes.getRouteUrl("projects.show", project.getNamespace().getOwner(), project.getNamespace().getSlug())}">
+                            <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.getNamespace().getOwner(), project.getNamespace().getSlug())}">
                             ${project.namespace}
                             </a>
                         </span>

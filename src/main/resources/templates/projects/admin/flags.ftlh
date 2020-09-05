@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-md-12  header-flags">
             <div class="clearfix">
-                <h1 class="pull-left"><@spring.message "project.flag.plural" /> for <a href="${routes.getRouteUrl("projects.show", p.project.ownerName, p.project.slug)}">${p.project.ownerName}/${p.project.slug}</a></h1>
+                <h1 class="pull-left"><@spring.message "project.flag.plural" /> for <a href="${Routes.PROJECTS_SHOW.getRouteUrl(p.project.ownerName, p.project.slug)}">${p.project.ownerName}/${p.project.slug}</a></h1>
             </div>
         </div>
     </div>

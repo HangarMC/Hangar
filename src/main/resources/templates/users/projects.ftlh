@@ -3,8 +3,7 @@
 <#import "*/users/view.ftlh" as users />
 <#import "*/users/memberList.ftlh" as memberList />
 
-<#--@import controllers.routes.{Users => userRoutes}
-@import controllers.sugar.Requests.OreRequest
+<#--@import controllers.Routes.IO_PAPERMC_HANGAR_MODEL__PERMISSION.getRouteUrl(.Requests.OreRequest
 @import models.viewhelper.{OrganizationData, ScopedOrganizationData, UserData}
 @import ore.OreConfig
 @import ore.permission.Permission
@@ -45,7 +44,7 @@
                             <#list o.projectRoles as role, project>
                                 <tr>
                                     <td>
-                                        <a href="${routes.getRouteUrl("projects.show", project.ownerName, project.slug)}">${project.ownerName}/${project.slug}</a>
+                                        <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.ownerName, project.slug)}">${project.ownerName}/${project.slug}</a>
                                         <span class="minor">${role.role.title}</span>
                                     </td>
                                     <td>
@@ -78,7 +77,7 @@
                                 <td>
                                     <#import "*/utils/userAvatar.ftlh" as userAvatar>
                                     <@userAvatar.userAvatar userName=organization.org.name avatarUrl=utils.avatarUrl(organization.org.name) clazz="user-avatar-xxs"></@userAvatar.userAvatar>
-                                <a href="${routes.getRouteUrl("users.showProjects", organization.org.name)}">
+                                <a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(organization.org.name)}">
                                 ${organization.org.name}
                                 </a>
                                 <div class="pull-right">
@@ -134,8 +133,8 @@
             <#else>
                 <#assign orgData=o> <#-- todo fix scopeddata -->
                 <@memberList.memberList project=orgData editable=true perms=so.permissions
-                saveCall=routes.getRouteUrl("org.updateMembers", orgData.org.name)
-                removeCall=routes.getRouteUrl("org.removeMember", orgData.org.name) />
+                saveCall=Routes.ORG_UPDATE_MEMBERS.getRouteUrl(orgData.org.name)
+                removeCall=Routes.ORG_REMOVE_MEMBER.getRouteUrl(orgData.org.name) />
             </#if>
         </div>
     </div>

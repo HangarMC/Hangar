@@ -103,7 +103,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
             </script>
         </#if>
 
-        <script type="text/javascript" src="${routes.getRouteUrl("javaScriptRoutes")}"></script>
+        <script type="text/javascript" src="${Routes.JAVA_SCRIPT_ROUTES.getRouteUrl()}"></script>
         <script type="text/javascript" src="<@hangar.url "build/vendors.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "build/font-awesome.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "build/commons.js" />"></script>

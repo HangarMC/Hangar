@@ -6,7 +6,7 @@ import io.papermc.hangar.controller.converters.StringToEnumConverterFactory;
 import io.papermc.hangar.controller.interceptors.ProjectsInterceptor;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.project.ProjectService;
-import io.papermc.hangar.util.RouteHelper;
+import io.papermc.hangar.util.Routes;
 import no.api.freemarker.java8.Java8ObjectWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
@@ -37,13 +37,11 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
-    private final RouteHelper routeHelper;
     private final ProjectService projectService;
     private final PermissionService permissionService;
 
     @Autowired
-    public MvcConfig(RouteHelper routeHelper, ProjectService projectService, PermissionService permissionService) {
-        this.routeHelper = routeHelper;
+    public MvcConfig(ProjectService projectService, PermissionService permissionService) {
         this.projectService = projectService;
         this.permissionService = permissionService;
     }
@@ -108,7 +106,7 @@ public class MvcConfig implements WebMvcConfigurer {
             } else if (status == HttpStatus.NOT_FOUND) {
                 return new ModelAndView("errors/notFound");
             } else if (status == HttpStatus.FORBIDDEN) {
-                return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.login", "", "", request.getRequestURI()));
+                return Routes.USERS_LOGIN.getRedirect("", "", request.getRequestURI());
             } else {
                 return new ModelAndView("errors/error");
             }

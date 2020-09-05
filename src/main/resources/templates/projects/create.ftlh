@@ -30,7 +30,7 @@ Page used for uploading and creating new projects.
 
                     <div>
                         <#import "*/utils/form.ftlh" as form>
-                        <@form.form action=routes.getRouteUrl("projects.createProject") method="POST">
+                        <@form.form action=Routes.PROJECTS_CREATE_PROJECT.getRouteUrl() method="POST">
                             <#import "*/utils/csrf.ftlh" as csrf>
                             <@csrf.formField />
                             <div class="form-group">

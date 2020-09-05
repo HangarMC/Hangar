@@ -27,7 +27,7 @@ Base template for Project overview.
     <#assign metaVar>
         <meta property="og:title" content="${p.project.ownerName} / ${p.project.name}" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="${routes.getRouteUrl("projects.show", p.project.ownerName, p.project.slug)}" />
+        <meta property="og:url" content="${Routes.PROJECTS_SHOW.getRouteUrl(p.project.ownerName, p.project.slug)}" />
         <meta property="og:image" content="${p.iconUrl}" />
         <meta property="og:site_name" content="<@spring.message "general.appName" />" />
         <meta property="og:description" content="${p.project.description!}" />
@@ -64,9 +64,9 @@ Base template for Project overview.
                 <div class="col-md-6">
                     <div class="project-header">
                         <div class="project-path">
-                            <a href="${routes.getRouteUrl("users.showProjects", p.project.ownerName)}">${p.project.ownerName}</a>
+                            <a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(p.project.ownerName)}">${p.project.ownerName}</a>
                             /
-                            <a class="project-name" href="${routes.getRouteUrl("projects.show", p.project.ownerName, p.project.slug)}">${p.project.name}</a>
+                            <a class="project-name" href="${Routes.PROJECTS_SHOW.getRouteUrl(p.project.ownerName, p.project.slug)}">${p.project.name}</a>
                         </div>
                         <div>
                             <#if p.project.description??>
@@ -128,7 +128,7 @@ Base template for Project overview.
                                                 <h4 class="modal-title" id="label-flag">Flag project</h4>
                                             </div>
                                             <#import "*/utils/form.ftlh" as form>
-                                            <@form.form action=routes.getRouteUrl("projects.flag", p.project.ownerName, p.project.slug) method="POST">
+                                            <@form.form action=Routes.PROJECTS_FLAG.getRouteUrl(p.project.ownerName, p.project.slug) method="POST">
                                                 <#import "*/utils/csrf.ftlh" as csrf>
                                                 <@csrf.formField />
                                                 <div class="modal-body">
@@ -166,15 +166,15 @@ Base template for Project overview.
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="admin-actions">
                                 <#if headerData.globalPerm(Permission.ModNotesAndFlags)>
-                                    <li><a href="${routes.getRouteUrl("projects.showFlags", p.project.ownerName, p.project.slug)}">
+                                    <li><a href="${Routes.PROJECTS_SHOW_FLAGS.getRouteUrl(p.project.ownerName, p.project.slug)}">
                                         Flag history (${p.flagCount}) </a></li>
                                 </#if>
                                 <#if headerData.globalPerm(Permission.ModNotesAndFlags)>
-                                <li><a href="${routes.getRouteUrl("projects.showNotes", p.project.ownerName, p.project.slug)}">
+                                <li><a href="${Routes.PROJECTS_SHOW_NOTES.getRouteUrl(p.project.ownerName, p.project.slug)}">
                                         Staff notes (${p.noteCount}) </a></li>
                                 </#if>
                                 <#if headerData.globalPerm(Permission.ViewLogs)>
-                                <li><a href="${routes.getRouteUrl("showLog", "", "", p.project.pluginId, "", "", "", "")}">
+                                <li><a href="${Routes.SHOW_LOG.getRouteUrl("", "", p.project.pluginId, "", "", "", "")}">
                                         User Action Logs</a></li>
                                 </#if>
                                 <li><a href="https://papermc.io/forums/${p.project.ownerName}">Owner on forum <i class="fas fa-external-link-alt" aria-hidden="true"></i></a></li>
@@ -193,19 +193,19 @@ Base template for Project overview.
                             <ul class="nav navbar-nav">
                                 <!-- Tabs -->
                                 <li id="docs" class="">
-                                    <a href="${routes.getRouteUrl("projects.show", p.project.ownerName, p.project.slug)}">
+                                    <a href="${Routes.PROJECTS_SHOW.getRouteUrl(p.project.ownerName, p.project.slug)}">
                                         <i class="fas fa-book"></i> <@spring.message "project.docs" /></a>
                                 </li>
 
                                 <li id="versions" class="">
-                                    <a href="${routes.getRouteUrl("versions.showList", p.project.ownerName, p.project.slug)}">
+                                    <a href="${Routes.VERSIONS_SHOW_LIST.getRouteUrl(p.project.ownerName, p.project.slug)}">
                                         <i class="fas fa-download"></i> <@spring.message "project.versions" />
                                     </a>
                                 </li>
 
                                 <#if p.project.topicId??>
                                     <li id="discussion" class="">
-                                        <a href="${routes.getRouteUrl("projects.showDiscussion", p.project.ownerName, p.project.slug)}">
+                                        <a href="${Routes.PROJECTS_SHOW_DISCUSSION.getRouteUrl(p.project.ownerName, p.project.slug)}">
                                             <i class="fas fa-users"></i> <@spring.message "project.discuss" />
                                         </a>
                                     </li>
@@ -214,7 +214,7 @@ Base template for Project overview.
                                 <#if sp.perms(Permission.EditProjectSettings)>
                                     <#-- Show manager if permitted -->
                                     <li id="settings" class="">
-                                        <a href="${routes.getRouteUrl("projects.showSettings", p.project.ownerName, p.project.slug)}">
+                                        <a href="${Routes.PROJECTS_SHOW_SETTINGS.getRouteUrl(p.project.ownerName, p.project.slug)}">
                                             <i class="fas fa-cog"></i> <@spring.message "project.settings" />
                                         </a>
                                     </li>

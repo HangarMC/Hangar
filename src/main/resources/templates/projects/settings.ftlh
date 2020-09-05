@@ -205,7 +205,7 @@
                         </div>
                     </#if>
 
-                    <@form.form action=routes.getRouteUrl("projects.save", p.project.ownerName, p.project.slug) method="POST" id="save" class="pull-right">
+                    <@form.form action=Routes.PROJECTS_SAVE.getRouteUrl(p.project.ownerName, p.project.slug) method="POST" id="save" class="pull-right">
                         <@csrf.formField />
                         <input type="hidden" id="update-icon" name="update-icon" value="false" />
                         <button type="submit" name="save" class="btn btn-success btn-spinner" data-icon="fa-check">
@@ -229,7 +229,7 @@
 
             <!-- Side panel -->
         <div class="col-md-4">
-            <@memberList.memberList project=p perms=sp.permissions editable=true removeCall=routes.getRouteUrl("projects.removeMember", p.project.ownerName, p.project.slug) settingsCall=routes.getRouteUrl("projects.showSettings", p.project.ownerName, p.project.slug) />
+            <@memberList.memberList project=p perms=sp.permissions editable=true removeCall=Routes.PROJECTS_REMOVE_MEMBER.getRouteUrl(p.project.ownerName, p.project.slug) settingsCall=Routes.PROJECTS_SHOW_SETTINGS.getRouteUrl(p.project.ownerName, p.project.slug) />
         </div>
     </div>
     </div>
@@ -249,7 +249,7 @@
                 </div>
                 <div class="modal-footer">
                     <div class="form-inline">
-                        <@form.form action=routes.getRouteUrl("projects.rename", p.project.ownerName, p.project.slug) method="POST" id="rename">
+                        <@form.form action=Routes.PROJECTS_RENAME.getRouteUrl(p.project.ownerName, p.project.slug) method="POST" id="rename">
                             <@csrf.formField />
                             <button type="button" class="btn btn-default" data-dismiss="modal">
                                 <@spring.message "channel.edit.close" />
@@ -271,7 +271,7 @@
                     </button>
                     <h4 class="modal-title" id="label-delete"><@spring.message "project.delete.title" /></h4>
                 </div>
-                <@form.form action=routes.getRouteUrl("projects.softDelete", p.project.ownerName, p.project.slug) method="POST">
+                <@form.form action=Routes.PROJECTS_SOFT_DELETE.getRouteUrl(p.project.ownerName, p.project.slug) method="POST">
                     <div class="modal-body">
                         <@spring.message "project.delete.info" />
                         <br>

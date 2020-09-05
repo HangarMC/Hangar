@@ -32,7 +32,7 @@
                 <div class="panel-body list-group list-group-health">
                     <#list noTopicProjects as project>
                         <div class="list-group-item">
-                            <a class="pull-left" href="${routes.getRouteUrl("projects.show", project.getNamespace().getOwner(), project.getNamespace().getSlug())}">
+                            <a class="pull-left" href="${Routes.PROJECTS_SHOW.getRouteUrl(project.getNamespace().getOwner(), project.getNamespace().getSlug())}">
                                 <strong>${project.namespace}</strong>
                             </a>
                             <div class="clearfix"></div>
@@ -66,7 +66,7 @@
                 <div class="panel-body list-group list-group-health">
                     <#list staleProjects as project>
                         <div class="list-group-item">
-                            <a href="${routes.getRouteUrl("projects.show", project.getNamespace().getOwner(), project.getNamespace().getSlug())}">
+                            <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.getNamespace().getOwner(), project.getNamespace().getSlug())}">
                                 <strong>${project.namespace}</strong>
                             </a>
                         </div>
@@ -82,7 +82,7 @@
                 <div class="panel-body list-group list-group-health">
                     <#list notPublicProjects as project>
                         <div class="list-group-item">
-                            <a href="${routes.getRouteUrl("projects.show", project.getNamespace().getOwner(), project.getNamespace().getSlug())}">
+                            <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.getNamespace().getOwner(), project.getNamespace().getSlug())}">
                                 <strong>${project.namespace}</strong> <small><@spring.message "visibility.name." + project.getVisibility().getName() /></small>
                             </a>
                         </div>
@@ -110,7 +110,7 @@
                 <div class="panel-body list-group list-group-health">
                     <#list missingFileProjects as missingFileProject>
                         <div class="list-group-item">
-                            <a href="${routes.getRouteUrl("versions.show", missingFileProject.owner, missingFileProject.name, missingFileProject.getVersion().getVersionString())}">
+                            <a href="${Routes.VERSIONS_SHOW.getRouteUrl(missingFileProject.owner, missingFileProject.name, missingFileProject.getVersion().getVersionString())}">
                                 <strong>${missingFileProject.displayText}</strong>
                             </a>
                         </div>

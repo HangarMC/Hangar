@@ -27,7 +27,7 @@ import io.papermc.hangar.service.sso.AuthUser;
 import io.papermc.hangar.service.sso.UrlWithNonce;
 import io.papermc.hangar.util.AlertUtil;
 import io.papermc.hangar.util.HangarException;
-import io.papermc.hangar.util.RouteHelper;
+import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -57,7 +57,6 @@ import java.util.Optional;
 public class UsersController extends HangarController {
 
     private final HangarConfig hangarConfig;
-    private final RouteHelper routeHelper;
     private final AuthenticationService authenticationService;
     private final UserService userService;
     private final OrgService orgService;
@@ -75,9 +74,8 @@ public class UsersController extends HangarController {
 
 
     @Autowired
-    public UsersController(HangarConfig hangarConfig, RouteHelper routeHelper, AuthenticationService authenticationService, UserService userService, OrgService orgService, RoleService roleService, ApiKeyService apiKeyService, PermissionService permissionService, NotificationService notificationService, SsoService ssoService, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, SitemapService sitemapService, HttpServletRequest request, HttpServletResponse response) {
+    public UsersController(HangarConfig hangarConfig, AuthenticationService authenticationService, UserService userService, OrgService orgService, RoleService roleService, ApiKeyService apiKeyService, PermissionService permissionService, NotificationService notificationService, SsoService ssoService, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, SitemapService sitemapService, HttpServletRequest request, HttpServletResponse response) {
         this.hangarConfig = hangarConfig;
-        this.routeHelper = routeHelper;
         this.authenticationService = authenticationService;
         this.userService = userService;
         this.orgService = orgService;
@@ -118,14 +116,14 @@ public class UsersController extends HangarController {
                 return redirectToSso(ssoService.getLoginUrl(hangarConfig.getBaseUrl() + "/login"), attributes);
             } catch (HangarException e) {
                 AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, e.getMessageKey(), e.getArgs());
-                return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
+                return Routes.SHOW_HOME.getRedirect();
             }
 
         } else {
             AuthUser authUser = ssoService.authenticate(sso, sig);
             if (authUser == null) {
                 AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.loginFailed");
-                return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
+                return Routes.SHOW_HOME.getRedirect();
             }
 
             UsersTable user = userService.getOrCreate(authUser.getUsername(), authUser);
@@ -133,7 +131,7 @@ public class UsersController extends HangarController {
             authUser.getGlobalRoles().forEach(role -> roleService.addGlobalRole(user.getId(), role.getRoleId()));
             authenticationService.setAuthenticatedUser(user);
 
-            String redirectPath = redirectUrl != null ? redirectUrl : routeHelper.getRouteUrl("showHome");
+            String redirectPath = redirectUrl != null ? redirectUrl : Routes.getRouteUrlOf("showHome");
             return new ModelAndView("redirect:" + redirectPath);
         }
     }
@@ -141,7 +139,7 @@ public class UsersController extends HangarController {
     private ModelAndView redirectToSso(UrlWithNonce urlWithNonce, RedirectAttributes attributes) {
         if (!hangarConfig.sso.isEnabled()) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.noLogin");
-            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
+            return Routes.SHOW_HOME.getRedirect();
         }
         ssoService.insert(urlWithNonce.getNonce());
         return new ModelAndView("redirect:" + urlWithNonce.getUrl());
@@ -194,7 +192,7 @@ public class UsersController extends HangarController {
             return redirectToSso(ssoService.getSignupUrl(returnUrl), attributes);
         } catch (HangarException e) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, e.getMessageKey(), e.getArgs());
-            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
+            return Routes.SHOW_HOME.getRedirect();
         }
     }
 
@@ -214,7 +212,7 @@ public class UsersController extends HangarController {
             return redirectToSso(ssoService.getVerifyUrl(returnPath), attributes);
         } catch (HangarException e) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, e.getMessageKey(), e.getArgs());
-            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
+            return Routes.SHOW_HOME.getRedirect();
         }
     }
 
@@ -247,7 +245,7 @@ public class UsersController extends HangarController {
     public RedirectView setLocked(@PathVariable String user, @PathVariable boolean locked, @RequestParam String sso, @RequestParam String sig) {
         // TODO auth
         userService.setLocked(user, locked);
-        return new RedirectView(routeHelper.getRouteUrl("users.showProjects", user));
+        return new RedirectView(Routes.getRouteUrlOf("users.showProjects", user));
     }
 
     @Secured("ROLE_USER")
@@ -256,13 +254,13 @@ public class UsersController extends HangarController {
         if (tagline.length() > hangarConfig.user.getMaxTaglineLen()) {
             ModelAndView mav = showProjects(user);
             AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, "error.tagline.tooLong", String.valueOf(hangarConfig.user.getMaxTaglineLen()));
-            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", user));
+            return Routes.USERS_SHOW_PROJECTS.getRedirect(user);
         }
         UsersTable usersTable = userDao.get().getByName(user);
         userActionLogService.user(request, LoggedActionType.USER_TAGLINE_CHANGED.with(LoggedActionType.UserContext.of(usersTable.getId())), tagline, Optional.ofNullable(usersTable.getTagline()).orElse(""));
         usersTable.setTagline(tagline);
         userDao.get().update(usersTable);
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", user));
+        return Routes.USERS_SHOW_PROJECTS.getRedirect(user);
     }
 
     @GetMapping(value = "/{user}/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)

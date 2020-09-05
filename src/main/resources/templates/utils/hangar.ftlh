@@ -12,7 +12,7 @@
 
 <#macro linkout url>
 <#--noinspection FtlReferencesInspection-->
-    ${routes.getRouteUrl("linkOut", url)}
+    ${Routes.LINK_OUT.getRouteUrl(url)}
 </#macro>
 
 <#macro url path>

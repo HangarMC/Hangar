@@ -15,12 +15,10 @@ import java.time.format.FormatStyle;
 @Component
 public class TemplateHelper {
 
-    private final RouteHelper routeHelper;
     private final HangarConfig hangarConfig;
 
     @Autowired
-    public TemplateHelper(RouteHelper routeHelper, HangarConfig hangarConfig) {
-        this.routeHelper = routeHelper;
+    public TemplateHelper(HangarConfig hangarConfig) {
         this.hangarConfig = hangarConfig;
     }
 
@@ -37,7 +35,7 @@ public class TemplateHelper {
     }
 
     public String projectAvatarUrl(ProjectsTable table) {
-        return routeHelper.getRouteUrl("projects.showIcon", table.getOwnerName(), table.getSlug());
+        return Routes.getRouteUrlOf("projects.showIcon", table.getOwnerName(), table.getSlug());
     }
 
     public String formatFileSize(Long size) {

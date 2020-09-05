@@ -74,7 +74,7 @@
                     <#import "*/utils/userAvatar.ftlh" as userAvatar>
                     <td><@userAvatar.userAvatar userName=author.name avatarUrl=utils.avatarUrl(author.name) clazz="user-avatar-xs"></@userAvatar.userAvatar></td>
                     <td>
-                        <a href="${routes.getRouteUrl("users.showProjects", author.name)}">${author.name}</a>
+                        <a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(author.name)}">${author.name}</a>
                     </td>
                     <td>
                         <#if author.donatorRole??>
@@ -101,13 +101,13 @@
                         <td></td>
                         <td>
                             <#if authors?size gte pageSize>
-                                <a href="${routes.getRouteUrl("users.showAuthors", ordering, page + 1)}" class="btn btn-default">
+                                <a href="${Routes.USERS_SHOW_AUTHORS.getRouteUrl(ordering, page + 1)}" class="btn btn-default">
                                     <i class="fas fa-arrow-right"></i>
                                 </a>
                             </#if>
 
                             <#if page gt 1>
-                                <a href="${routes.getRouteUrl("users.showAuthors", ordering, page - 1)}" class="btn btn-default">
+                                <a href="${Routes.USERS_SHOW_AUTHORS.getRouteUrl(ordering, page - 1)}" class="btn btn-default">
                                     <i class="fas fa-arrow-left"></i>
                                 </a>
                             </#if>

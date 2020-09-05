@@ -20,7 +20,7 @@ import io.papermc.hangar.service.UserActionLogService;
 import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.VersionService;
 import io.papermc.hangar.service.project.ProjectService;
-import io.papermc.hangar.util.RouteHelper;
+import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -48,19 +48,17 @@ public class ReviewsController extends HangarController {
     private final NotificationService notificationService;
     private final UserActionLogService userActionLogService;
     private final UserService userService;
-    private final RouteHelper routeHelper;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public ReviewsController(ProjectService projectService, VersionService versionService, ReviewService reviewService, NotificationService notificationService, UserActionLogService userActionLogService, UserService userService, RouteHelper routeHelper, HttpServletRequest request) {
+    public ReviewsController(ProjectService projectService, VersionService versionService, ReviewService reviewService, NotificationService notificationService, UserActionLogService userActionLogService, UserService userService, HttpServletRequest request) {
         this.projectService = projectService;
         this.versionService = versionService;
         this.reviewService = reviewService;
         this.notificationService = notificationService;
         this.userActionLogService = userActionLogService;
         this.userService = userService;
-        this.routeHelper = routeHelper;
         this.request = request;
     }
 
@@ -114,7 +112,7 @@ public class ReviewsController extends HangarController {
                 notificationService.sendNotification(user.getId(), null, NotificationType.VERSION_REVIEWED, new String[]{"notification.project.reviewed", slug, version});
             }
         });
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("reviews.showReviews", author, slug, version));
+        return Routes.REVIEWS_SHOW_REVIEWS.getRedirect(author, slug, version);
     }
 
     @GlobalPermission(NamedPermission.REVIEWER)
@@ -141,7 +139,7 @@ public class ReviewsController extends HangarController {
                 new JSONB("{}")
         );
         reviewService.insert(review);
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("reviews.showReviews", author, slug, version));
+        return Routes.REVIEWS_SHOW_REVIEWS.getRedirect(author, slug, version);
     }
 
     @GlobalPermission(NamedPermission.REVIEWER)
@@ -161,7 +159,7 @@ public class ReviewsController extends HangarController {
 
         review.addMessage(new VersionReviewMessage("Reopened the review", System.currentTimeMillis(), "start"), reviewService);
         reviewService.update(review);
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("reviews.showReviews", author, slug, version));
+        return Routes.REVIEWS_SHOW_REVIEWS.getRedirect(author, slug, version);
     }
 
     @GlobalPermission(NamedPermission.REVIEWER)
@@ -178,7 +176,7 @@ public class ReviewsController extends HangarController {
 
         userActionLogService.version(request, LoggedActionType.VERSION_REVIEW_STATE_CHANGED.with(VersionContext.of(versionsTable.getProjectId(), versionsTable.getId())), newState.name(), oldState.name());
         versionService.update(versionsTable);
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("reviews.showReviews", author, slug, version));
+        return Routes.REVIEWS_SHOW_REVIEWS.getRedirect(author, slug, version);
     }
 
     @GlobalPermission(NamedPermission.REVIEWER)
@@ -193,7 +191,7 @@ public class ReviewsController extends HangarController {
         review.setEndedAt(OffsetDateTime.now());
         review.addMessage(new VersionReviewMessage(content, System.currentTimeMillis(), "stop"), reviewService);
         reviewService.update(review);
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("reviews.showReviews", author, slug, version));
+        return Routes.REVIEWS_SHOW_REVIEWS.getRedirect(author, slug, version);
     }
 
     @GlobalPermission(NamedPermission.REVIEWER)
@@ -213,7 +211,7 @@ public class ReviewsController extends HangarController {
                 userService.getCurrentUser().getId(),
                 new JSONB("{}")
         ));
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("reviews.showReviews", author, slug, version));
+        return Routes.REVIEWS_SHOW_REVIEWS.getRedirect(author, slug, version);
     }
 
 }

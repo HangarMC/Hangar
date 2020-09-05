@@ -110,7 +110,8 @@ public class Apiv1Controller extends HangarController {
         pages.stream().filter(p -> {
             if (parentId != null) {
                 return parentId.equals(p.getParentId());
-            } else return true;
+            }
+            return true;
         }).forEach(page -> {
             ObjectNode pageObj = mapper.createObjectNode();
             pageObj.set("createdAt", mapper.valueToTree(page.getCreatedAt()));
@@ -201,7 +202,7 @@ public class Apiv1Controller extends HangarController {
         Map<Long, ProjectVersionsTable> recommendedVersions = v1ApiService.getProjectsRecommendedVersion(projectIds);
         Map<Long, ProjectChannelsTable> recommendedVersionChannels = v1ApiService.getProjectsRecommendedVersionChannel(projectIds);
 
-        Map<Long, List<ProjectVersionTagsTable>> vTags = v1ApiService.getVersionsTags(recommendedVersions.entrySet().stream().map(entry -> entry.getValue().getId()).collect(Collectors.toList()));
+        Map<Long, List<ProjectVersionTagsTable>> vTags = v1ApiService.getVersionsTags(recommendedVersions.values().stream().map(ProjectVersionsTable::getId).collect(Collectors.toList()));
 
         projectsTables.forEach(project -> {
             ObjectNode projectObj = mapper.createObjectNode();
@@ -296,22 +297,22 @@ public class Apiv1Controller extends HangarController {
         return membersArray;
     }
 
-    @PostMapping(value = "/sync_sso")
+    @PostMapping("/sync_sso")
     public ResponseEntity<MultiValueMap<String, String>> syncSso(@RequestParam String sso, @RequestParam String sig, @RequestParam("api_key") String apiKey) {
         if (!apiKey.equals(hangarConfig.sso.getApiKey())) {
-            log.warn("SSO sync failed: bad API key (" + apiKey + " provided, " + hangarConfig.sso.getApiKey() + " expected)");
+            log.warn("SSO sync failed: bad API key ({} provided, {} expected)", apiKey, hangarConfig.sso.getApiKey());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try {
             Map<String, String> map = ssoService.decode(sso, sig);
             SsoSyncData data = SsoSyncData.fromSignedPayload(map);
             userService.ssoSyncUser(data);
-            log.debug("SSO sync successful: " + map.toString());
+            log.debug("SSO sync successful: {}", map.toString());
             MultiValueMap<String, String> ssoResponse = new LinkedMultiValueMap<>();
             ssoResponse.set("status", "success");
             return new ResponseEntity<>(ssoResponse, HttpStatus.OK);
         } catch (SignatureException e) {
-            log.warn("SSO sync failed: invalid signature (" + sig + " for data " + sso + ")");
+            log.warn("SSO sync failed: invalid signature ({} for data {})", sig, sso);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

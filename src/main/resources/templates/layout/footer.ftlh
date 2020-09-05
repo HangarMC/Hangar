@@ -20,7 +20,7 @@
                     <div class="col-sm-2 col-xs-12">
                         <h5>Hangar API</h5>
                         <a class="btn dark"
-                           href="${routes.getRouteUrl("swagger")}"><@spring.message "general.api" /></a>
+                           href="${Routes.SWAGGER.getRouteUrl()}"><@spring.message "general.api" /></a>
                     </div>
                     <div class="col-sm-2 col-xs-12">
                         <h5>Help Needed?</h5>

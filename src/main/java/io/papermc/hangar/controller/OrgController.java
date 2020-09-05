@@ -17,7 +17,7 @@ import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.util.AlertUtil;
 import io.papermc.hangar.util.AlertUtil.AlertType;
 import io.papermc.hangar.util.HangarException;
-import io.papermc.hangar.util.RouteHelper;
+import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -42,6 +42,10 @@ import java.util.Map;
 @Controller
 public class OrgController extends HangarController {
 
+    private static final String STATUS_DECLINE = "decline";
+    private static final String STATUS_ACCEPT = "accept";
+    private static final String STATUS_UNACCEPT = "unaccept";
+
     private final AuthenticationService authenticationService;
     private final OrgService orgService;
     private final OrgFactory orgFactory;
@@ -49,10 +53,9 @@ public class OrgController extends HangarController {
     private final RoleService roleService;
     private final NotificationService notificationService;
     private final HangarConfig hangarConfig;
-    private final RouteHelper routeHelper;
 
     @Autowired
-    public OrgController(AuthenticationService authenticationService, OrgService orgService, OrgFactory orgFactory, UserService userService, RoleService roleService, NotificationService notificationService, HangarConfig hangarConfig, RouteHelper routeHelper) {
+    public OrgController(AuthenticationService authenticationService, OrgService orgService, OrgFactory orgFactory, UserService userService, RoleService roleService, NotificationService notificationService, HangarConfig hangarConfig) {
         this.authenticationService = authenticationService;
         this.orgService = orgService;
         this.orgFactory = orgFactory;
@@ -60,12 +63,7 @@ public class OrgController extends HangarController {
         this.roleService = roleService;
         this.notificationService = notificationService;
         this.hangarConfig = hangarConfig;
-        this.routeHelper = routeHelper;
     }
-
-    private final String STATUS_DECLINE = "decline";
-    private final String STATUS_ACCEPT = "accept";
-    private final String STATUS_UNACCEPT = "unaccept";
 
     @Secured("ROLE_USER")
     @PostMapping("/organizations/invite/{id}/{status}")
@@ -97,7 +95,7 @@ public class OrgController extends HangarController {
     public ModelAndView showCreator(RedirectAttributes attributes, ModelMap modelMap) {
         if (orgService.getUserOwnedOrgs(userService.getCurrentUser().getId()).size() >= hangarConfig.org.getCreateLimit()) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.org.createLimit", String.valueOf(hangarConfig.org.getCreateLimit()));
-            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("showHome"));
+            return Routes.SHOW_HOME.getRedirect();
         }
         return fillModel(AlertUtil.transferAlerts(new ModelAndView("createOrganization"), modelMap));
     }
@@ -111,7 +109,7 @@ public class OrgController extends HangarController {
         if (userService.getCurrentUser().isLocked()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         if (!hangarConfig.org.isEnabled()) {
             AlertUtil.showAlert(attributes, AlertType.ERROR, "error.org.disabled");
-            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("org.showCreator"));
+            return Routes.ORG_SHOW_CREATOR.getRedirect();
         } else {
             Map<Long, Role> userRoles = zip(users, roles);
 
@@ -120,9 +118,9 @@ public class OrgController extends HangarController {
                 org = orgFactory.createOrganization(name, userService.getCurrentUser().getId(), userRoles);
             } catch (HangarException e) {
                 AlertUtil.showAlert(attributes, AlertType.ERROR, e.getMessageKey(), e.getArgs());
-                return new ModelAndView("redirect:" + routeHelper.getRouteUrl("org.showCreator"));
+                return Routes.ORG_SHOW_CREATOR.getRedirect();
             }
-            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", org.getName()));
+            return Routes.USERS_SHOW_PROJECTS.getRedirect(org.getName());
         }
     }
 
@@ -134,7 +132,7 @@ public class OrgController extends HangarController {
             URI uri = authenticationService.changeAvatarUri(userService.getCurrentUser().getName(), organization);
             return new ModelAndView("redirect:" + uri.toString());
         } catch (JsonProcessingException e) {
-            ModelAndView mav = new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", organization));
+            ModelAndView mav = Routes.USERS_SHOW_PROJECTS.getRedirect(organization);
             AlertUtil.showAlert(mav, AlertType.ERROR, "organization.avatarFailed");
             return mav;
         }
@@ -160,7 +158,7 @@ public class OrgController extends HangarController {
             roleService.updateRole(org, user.getId(), role);
         });
         // TODO user action logging for orgs
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", organization));
+        return Routes.USERS_SHOW_PROJECTS.getRedirect(organization);
     }
 
     @Secured("ROLE_USER")
@@ -172,7 +170,7 @@ public class OrgController extends HangarController {
         if (roleService.removeMember(org, user.getUser().getId()) != 0) {
             // TODO org logging
         }
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("users.showProjects", organization));
+        return Routes.USERS_SHOW_PROJECTS.getRedirect(organization);
     }
 
     private <K, V> Map<K, V> zip(List<K> keys, List<V> values) {

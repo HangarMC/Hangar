@@ -24,7 +24,7 @@
                     <li data-flag-id="${flag.flag.id}" class="list-group-item">
                         <div class="row">
                             <div class="col-xs-12 col-md-1" style="width: 40px;">
-                                <a href="${routes.getRouteUrl("users.showProjects", flag.reportedBy)}">
+                                <a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(flag.reportedBy)}">
                                     <#import "*/utils/userAvatar.ftlh" as userAvatar>
                                     <@userAvatar.userAvatar userName=flag.reportedBy avatarUrl=utils.format(config.security.api.avatarUrl, flag.reportedBy) clazz="user-avatar-xs"></@userAvatar.userAvatar>
                                 </a>
@@ -33,7 +33,7 @@
                             <span class="description">
                                 <strong>${flag.reportedBy}</strong>
                                 <span class="minor"> reported </span>
-                                <a href="${routes.getRouteUrl("projects.show", flag.projectOwnerName, flag.projectSlug)}">
+                                <a href="${Routes.PROJECTS_SHOW.getRouteUrl(flag.projectOwnerName, flag.projectSlug)}">
                                     ${flag.projectNamespace}
                                 </a>
                                 <span class="minor"> for </span>

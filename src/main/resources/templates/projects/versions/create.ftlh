@@ -148,7 +148,7 @@
                             <script <#--@CSPNonce.attr-->>$(function () { $('.btn-edit').click() });</script>
                     </#if>
 
-                    <@form.form action=routes.getRouteUrl("versions.upload", ownerName, projectSlug) method="POST"
+                    <@form.form action=Routes.VERSIONS_UPLOAD.getRouteUrl(ownerName, projectSlug) method="POST"
                         enctype="multipart/form-data" id="form-upload">
                         <@csrf.formField />
                             <label class="btn btn-default pull-left" for="pluginFile">
@@ -162,7 +162,7 @@
                     <#if pending??>
                         <#-- Ready to go! -->
                         <#assign version = pending>
-                        <@form.form method="POST" action=routes.getRouteUrl("versions.publish", ownerName, projectSlug, version.versionString)
+                        <@form.form method="POST" action=Routes.VERSIONS_PUBLISH.getRouteUrl(ownerName, projectSlug, version.versionString)
                             id="form-publish" class="pull-right">
                             <@csrf.formField />
                             <input type="hidden" class="channel-color-input" name="channel-color-input"

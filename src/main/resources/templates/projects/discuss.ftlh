@@ -37,7 +37,7 @@ Discussion page within Project overview.
                 </#if>
 
                 <div class="push-down">
-                    <@editor.editor saveCall=routes.getRouteUrl("projects.postDiscussionReply", p.project.ownerName, p.project.slug) cancellable=false enabled=true/>
+                    <@editor.editor saveCall=Routes.PROJECTS_POST_DISCUSSION_REPLY.getRouteUrl(p.project.ownerName, p.project.slug) cancellable=false enabled=true/>
                 </div>
             </div>
             <div class="reply-controls">
@@ -49,7 +49,7 @@ Discussion page within Project overview.
         </div>
     <#else>
         <div class="pull-right">
-            <a href="${routes.getRouteUrl("users.login", "", "", request.path)}"><@spring.message "general.login" /></a>
+            <a href="${Routes.USERS_LOGIN.getRouteUrl("", "", request.path)}"><@spring.message "general.login" /></a>
             <span class="minor"> <@spring.message "general.toReply" /></span>
         </div>
     </#if>

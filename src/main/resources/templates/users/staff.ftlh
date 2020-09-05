@@ -51,7 +51,7 @@
                     <#import "*/utils/userAvatar.ftlh" as userAvatar>
 					<td><@userAvatar.userAvatar userName=staffUser.name avatarUrl=utils.avatarUrl(staffUser.name) clazz="user-avatar-xs"></@userAvatar.userAvatar></td>
 					<td>
-						<a href="${routes.getRouteUrl("showActivities", staffUser.name)}">${staffUser.name}</a>
+						<a href="${Routes.SHOW_ACTIVITIES.getRouteUrl(staffUser.name)}">${staffUser.name}</a>
 					</td>
 					<td>
 						<span class="user-role channel" style="background-color: ${staffUser.role.color.hex}">
@@ -70,13 +70,13 @@
 						<td></td>
 						<td>
 							<#if staff?size gte pageSize>
-								<a href="${routes.getRouteUrl("users.showStaff", ordering, page + 1)}" class="btn btn-default">
+								<a href="${Routes.USERS_SHOW_STAFF.getRouteUrl(ordering, page + 1)}" class="btn btn-default">
 									<i class="fas fa-arrow-right"></i>
 								</a>
 							</#if>
 
 							<#if page gt 1>
-								<a href="${routes.getRouteUrl("users.showStaff", ordering, page - 1)}" class="btn btn-default">
+								<a href="${Routes.USERS_SHOW_STAFF.getRouteUrl(ordering, page - 1)}" class="btn btn-default">
 									<i class="fas fa-arrow-left"></i>
 								</a>
 							</#if>

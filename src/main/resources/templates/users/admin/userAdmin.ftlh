@@ -31,7 +31,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <h1>${prefix}<a href="${routes.getRouteUrl("users.showProjects", u.user.name)}">${u.user.name}</a></h1>
+            <h1>${prefix}<a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(u.user.name)}">${u.user.name}</a></h1>
         </div>
     </div>
 
@@ -42,7 +42,7 @@
                     <@panel "Organizations">
                         <@roleTable keyName="Organization" tableType="orgRole" withOwner=true roles=u.orgas roleTypes=orgRoles ; org, role>
                         <#-- @ftlvariable name="org" type="io.papermc.hangar.model.viewhelpers.OrganizationData" -->
-                            <a href="${routes.getRouteUrl("userAdmin", org.org.name)}">
+                            <a href="${Routes.USER_ADMIN.getRouteUrl(org.org.name)}">
                                 ${org.org.name}
                             </a>
                         </@roleTable>
@@ -51,7 +51,7 @@
                     <@panel "Members">
                         <#-- TODO organization members map-->
                         <@roleTable keyName="User" tableType="memberRole" withOwner=false roles=orga.adminTable() roleTypes=orgRoles ; member, role>
-                            <a href="${routes.getRouteUrl("userAdmin", member.user.name)}">
+                            <a href="${Routes.USER_ADMIN.getRouteUrl(member.user.name)}">
                                 ${member.user.name}
                             </a>
                         </@roleTable>
@@ -63,7 +63,7 @@
                     <@panel "Projects">
                         <@roleTable keyName="Project" tableType="projectRole" withOwner=true roles=userProjectRoles roleTypes=projectRoles ; project, role>
                         <#-- @ftlvariable name="project" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
-                            <a href="${routes.getRouteUrl("projects.show", project.projectOwner.name, project.project.slug)}">
+                            <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.projectOwner.name, project.project.slug)}">
                                 ${project.project.name}
                             </a>
                         </@roleTable>
@@ -97,7 +97,7 @@
                 <td><#nested object, role /></td>
                 <#if withOwner>
                     <#-- @ftlvariable name="object" type="io.papermc.hangar.model.viewhelpers.JoinableData" -->
-                    <td><a href="${routes.getRouteUrl("userAdmin", object.ownerName)}">${object.ownerName}</a></td>
+                    <td><a href="${Routes.USER_ADMIN.getRouteUrl(object.ownerName)}">${object.ownerName}</a></td>
                 </#if>
                 <#if !role.role.assignable>
                     <td>

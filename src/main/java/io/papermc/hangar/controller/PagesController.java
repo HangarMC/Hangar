@@ -14,7 +14,7 @@ import io.papermc.hangar.service.UserActionLogService;
 import io.papermc.hangar.service.project.PagesFactory;
 import io.papermc.hangar.service.project.PagesSerivce;
 import io.papermc.hangar.service.project.ProjectService;
-import io.papermc.hangar.util.RouteHelper;
+import io.papermc.hangar.util.Routes;
 
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -38,7 +38,6 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class PagesController extends HangarController {
 
-    private final RouteHelper routeHelper;
     private final UserActionLogService userActionLogService;
     private final ProjectService projectService;
     private final MarkdownService markdownService;
@@ -48,8 +47,7 @@ public class PagesController extends HangarController {
 
     private final HttpServletRequest request;
 
-    public PagesController(RouteHelper routeHelper, UserActionLogService userActionLogService, ProjectService projectService, MarkdownService markdownService, PagesSerivce pagesSerivce, PagesFactory pagesFactory, HangarDao<ProjectPageDao> projectPageDao, HttpServletRequest request) {
-        this.routeHelper = routeHelper;
+    public PagesController(UserActionLogService userActionLogService, ProjectService projectService, MarkdownService markdownService, PagesSerivce pagesSerivce, PagesFactory pagesFactory, HangarDao<ProjectPageDao> projectPageDao, HttpServletRequest request) {
         this.userActionLogService = userActionLogService;
         this.projectService = projectService;
         this.markdownService = markdownService;
@@ -102,7 +100,7 @@ public class PagesController extends HangarController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot delete this page");
         }
         projectPageDao.get().delete(projectPage);
-        return new RedirectView(routeHelper.getRouteUrl("projects.show", author, slug));
+        return new RedirectView(Routes.getRouteUrlOf("projects.show", author, slug));
     }
 
     @Secured("ROLE_USER")
@@ -136,7 +134,7 @@ public class PagesController extends HangarController {
             oldContents = projectPage.getContents();
             projectPage.setContents(pageContent);
             projectPageDao.get().update(projectPage);
-            toReturn = new RedirectView(routeHelper.getRouteUrl("pages.show", author, slug, StringUtils.slugify(pageName)));
+            toReturn = new RedirectView(Routes.getRouteUrlOf("pages.show", author, slug, StringUtils.slugify(pageName)));
         }
         userActionLogService.projectPage(request, LoggedActionType.PROJECT_PAGE_EDITED.with(ProjectPageContext.of(projectData.getProject().getId(), projectPage.getId())), pageContent, oldContents);
         return toReturn;

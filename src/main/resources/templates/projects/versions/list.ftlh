@@ -46,7 +46,7 @@ Versions page within Project overview.
                     <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
                     <#if sp.perms(Permission.EditTags)>
                         <li class="list-group-item text-right">
-                            <a class="btn yellow btn-xs" href="${routes.getRouteUrl("channels.showList", p.project.ownerName, p.project.slug)}">
+                            <a class="btn yellow btn-xs" href="${Routes.CHANNELS_SHOW_LIST.getRouteUrl(p.project.ownerName, p.project.slug)}">
                                 Edit
                             </a>
                         </li>
@@ -54,7 +54,7 @@ Versions page within Project overview.
                 </ul>
             </div>
             <#import "*/users/memberList.ftlh" as users>
-            <@users.memberList project=p perms=sp.permissions settingsCall=routes.getRouteUrl("projects.showSettings", p.project.ownerName, p.project.slug) />
+            <@users.memberList project=p perms=sp.permissions settingsCall=Routes.PROJECTS_SHOW_SETTINGS.getRouteUrl(p.project.ownerName, p.project.slug) />
         </div>
     </div>
 </@projects.view>

@@ -23,7 +23,7 @@
                     <p class="minor"> <@spring.message "org.info" /></p>
 
                     <#import "*/utils/form.ftlh" as form>
-                    <@form.form action=routes.getRouteUrl("org.create") method="POST" id="form-continue">
+                    <@form.form action=Routes.ORG_CREATE.getRouteUrl() method="POST" id="form-continue">
                         <#import "*/utils/csrf.ftlh" as csrf>
                         <@csrf.formField />
                         <div class="setting">

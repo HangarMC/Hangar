@@ -53,7 +53,7 @@
 
                     <#if canEditOrgSettings(u, o)>
                         <div class="edit-avatar" style="display: none;">
-                            <a href="${routes.getRouteUrl("org.updateAvatar", u.user.name)}"><i class="fas fa-edit"></i> <@spring.message "user.editAvatar" /></a>
+                            <a href="${Routes.ORG_UPDATE_AVATAR.getRouteUrl(u.user.name)}"><i class="fas fa-edit"></i> <@spring.message "user.editAvatar" /></a>
                         </div>
 
                         <#assign Prompt=@helper["io.papermc.hangar.model.Prompt"] />
@@ -78,14 +78,14 @@
                                     data-placement="top" title="<@spring.message "user.lock" />"></i>
                                 </span>
 
-                                <a class="action-api" href="${routes.getRouteUrl("users.editApiKeys", u.user.name)}">
+                                <a class="action-api" href="${Routes.USERS_EDIT_API_KEYS.getRouteUrl(u.user.name)}">
                                     <i class="fas fa-key" data-toggle="tooltip" data-placement="top" title="API Keys"></i>
                                 </a>
                             </#if>
 
                             <#if u.hasUser()>
                                 <#if u.userPerm.has(Permission.ModNotesAndFlags) || u.userPerm.has(Permission.Reviewer)>
-                                    <a class="user-settings" href="${routes.getRouteUrl("showActivities", u.user.name)}">
+                                    <a class="user-settings" href="${Routes.SHOW_ACTIVITIES.getRouteUrl(u.user.name)}">
                                         <i class="fas fa-calendar" data-toggle="tooltip"
                                         data-placement="top" title="Activity"></i>
                                     </a>
@@ -93,7 +93,7 @@
                             </#if>
 
                             <#if u.headerData.globalPerm(Permission.EditAllUserSettings)>
-                                <a class="user-settings" href="${routes.getRouteUrl("userAdmin", u.user.name)}">
+                                <a class="user-settings" href="${Routes.USER_ADMIN.getRouteUrl(u.user.name)}">
                                     <i class="fas fa-wrench" data-toggle="tooltip"
                                     data-placement="top" title="User Admin"></i>
                                 </a>
@@ -161,7 +161,7 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><@spring.message "general.close" /></button>
-                <@form.form method="POST" action=routes.getRouteUrl("users.verify", routes.getRouteUrl("users.setLocked", u.user.name, (!u.user.isLocked())?string, "", "")) class="form-inline">
+                <@form.form method="POST" action=Routes.USERS_VERIFY.getRouteUrl(Routes.USERS_SET_LOCKED.getRouteUrl(u.user.name, (!u.user.isLocked())?string, "", "")) class="form-inline">
                     <@csrf.formField />
                     <button type="submit" class="btn btn-primary"><@spring.message "general.continue" /></button>
                 </@form.form>
@@ -169,7 +169,7 @@
         </@modal.modal>
 
         <@modal.modal "user.tagline.edit" "modal-tagline" "label-tagline">
-            <@form.form action=routes.getRouteUrl("users.saveTagline", u.user.name) method="POST">
+            <@form.form action=Routes.USERS_SAVE_TAGLINE.getRouteUrl(u.user.name) method="POST">
                 <@csrf.formField />
                 <div class="modal-body">
                     <div class="setting setting-no-border">

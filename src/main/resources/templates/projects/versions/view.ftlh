@@ -34,7 +34,7 @@
 
                 <!-- User info -->
             <p class="user date pull-left">
-                <a href="${routes.getRouteUrl("users.showProjects", v.p.project.ownerName)}">
+                <a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(v.p.project.ownerName)}">
                     <strong>${v.p.project.ownerName}</strong>
                 </a>
                 released this version on ${utils.prettifyDateTime(v.v.createdAt)}
@@ -76,7 +76,7 @@
                     <div>
 
                         <#if !v.recommended && sp.perms(Permission.EditVersion) && v.v.visibility != Visibility.SOFTDELETE>
-                            <@form.form method="POST" action=routes.getRouteUrl("versions.setRecommended", v.p.project.ownerName, v.p.project.slug, v.v.versionString) class="form-inline">
+                            <@form.form method="POST" action=Routes.VERSIONS_SET_RECOMMENDED.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString) class="form-inline">
                                 <@csrf.formField />
                                 <button type="submit" class="btn btn-info">
                                     <i class="fas fa-gem"></i> Set recommended
@@ -86,9 +86,9 @@
 
                         <#if headerData.globalPerm(Permission.Reviewer)>
                             <#if v.v.reviewState.checked>
-                                <a href="${routes.getRouteUrl("reviews.showReviews", v.p.project.ownerName, v.p.project.slug, v.v.versionString)}" class="btn btn-info"><@spring.message "review.log" /></a>
+                                <a href="${Routes.REVIEWS_SHOW_REVIEWS.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString)}" class="btn btn-info"><@spring.message "review.log" /></a>
                             <#else>
-                                <a href="${routes.getRouteUrl("reviews.showReviews", v.p.project.ownerName, v.p.project.slug, v.v.versionString)}" class="btn btn-success">
+                                <a href="${Routes.REVIEWS_SHOW_REVIEWS.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString)}" class="btn btn-success">
                                     <i class="fas fa-play"></i> <@spring.message "review.start" />
                                 </a>
                             </#if>
@@ -115,7 +115,7 @@
                         </#if>
 
                         <div class="btn-group btn-download">
-                            <a href="${routes.getRouteUrl("versions.download", v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}"
+                            <a href="${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}"
                             title="<@spring.message "project.download.recommend" />" data-toggle="tooltip"
                             data-placement="bottom" class="btn btn-primary">
                                 <i class="fas fa-download"></i> <@spring.message "general.download" />
@@ -125,8 +125,8 @@
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right">
-                                <li><a href="${routes.getRouteUrl("versions.download", v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}"><@spring.message "general.download" /></a></li>
-                                <li><a href="#" class="copy-url" data-clipboard-text="${config.baseUrl}${routes.getRouteUrl("versions.download", v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}">Copy URL</a></li>
+                                <li><a href="${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}"><@spring.message "general.download" /></a></li>
+                                <li><a href="#" class="copy-url" data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}">Copy URL</a></li>
                             </ul>
                         </div>
 
@@ -137,7 +137,7 @@
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="admin-version-actions">
-                                    <li><a href="${routes.getRouteUrl("showLog", "", "", "", v.v.versionString, "", "", "")}">User Action Logs</a></li>
+                                    <li><a href="${Routes.SHOW_LOG.getRouteUrl("", "", "", v.v.versionString, "", "", "")}">User Action Logs</a></li>
                                     <#if headerData.globalPerm(Permission.Reviewer)>
                                         <#if v.v.visibility == Visibility.SOFTDELETE>
                                             <li><a href="#" data-toggle="modal" data-target="#modal-restore">Undo delete</a></li>
@@ -171,7 +171,7 @@
                 </#if>
                 <div class="col-md-12">
                 <@editor.editor
-                    saveCall=routes.getRouteUrl("versions.saveDescription", v.p.project.ownerName, v.p.project.slug, v.v.versionString)
+                    saveCall=Routes.VERSIONS_SAVE_DESCRIPTION.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString)
                     enabled=sp.perms(Permission.EditPage)
                     raw=v.v.description!""
                     cooked=markdownService.render(v.v.description)
@@ -212,7 +212,7 @@
                         <#list v.filteredDependencies as depend, project>
                             <li class="list-group-item">
                                 <#if project??>
-                                    <a href="${routes.getRouteUrl("projects.show", project.ownerName, project.slug)}">
+                                    <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.ownerName, project.slug)}">
                                         <strong>${project.name}</strong>
                                     </a>
                                 <#else>
@@ -246,7 +246,7 @@
                         </button>
                         <h4 class="modal-title" id="label-delete"><@spring.message "version.delete.title" /></h4>
                     </div>
-                    <@form.form method="POST" action=routes.getRouteUrl("versions.softDelete", v.p.project.ownerName, v.p.project.slug, v.v.versionString)>
+                    <@form.form method="POST" action=Routes.VERSIONS_SOFT_DELETE.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString)>
                         <div class="modal-body">
                             <@spring.message "version.delete.info" />
                             <textarea name="comment" class="textarea-delete-comment form-control" rows="3"></textarea>
@@ -277,7 +277,7 @@
                             </button>
                             <h4 class="modal-title" id="label-delete"><@spring.message "general.restore" /></h4>
                         </div>
-                        <@form.form method="POST" action=routes.getRouteUrl("versions.restore", v.p.project.ownerName, v.p.project.slug, v.v.versionString)>
+                        <@form.form method="POST" action=Routes.VERSIONS_RESTORE.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString)>
                             <div class="modal-body">
                                 <textarea name="comment" class="textarea-delete-comment form-control" rows="3"></textarea>
                             </div>
@@ -305,7 +305,7 @@
                             </button>
                             <h4 class="modal-title" id="label-delete"><@spring.message "general.harddelete" /></h4>
                         </div>
-                        <@form.form method="POST" action=routes.getRouteUrl("versions.delete", v.p.project.ownerName, v.p.project.slug, v.v.versionString)>
+                        <@form.form method="POST" action=Routes.VERSIONS_DELETE.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString)>
                             <div class="modal-body">
                                 <textarea name="comment" class="textarea-delete-comment form-control" rows="3"></textarea>
                             </div>

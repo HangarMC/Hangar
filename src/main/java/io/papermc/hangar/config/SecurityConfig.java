@@ -4,7 +4,7 @@ import io.papermc.hangar.filter.HangarAuthenticationFilter;
 import io.papermc.hangar.security.HangarAuthenticationProvider;
 import io.papermc.hangar.security.voters.GlobalPermissionVoter;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.util.RouteHelper;
+import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,13 +28,11 @@ import java.util.List;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final HangarAuthenticationProvider authProvider;
-    private final RouteHelper routeHelper;
     private final PermissionService permissionService;
 
     @Autowired
-    public SecurityConfig(HangarAuthenticationProvider authProvider, RouteHelper routeHelper, PermissionService permissionService) {
+    public SecurityConfig(HangarAuthenticationProvider authProvider, PermissionService permissionService) {
         this.authProvider = authProvider;
-        this.routeHelper = routeHelper;
         this.permissionService = permissionService;
     }
 
@@ -46,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilter(new HangarAuthenticationFilter());
 
-        http.exceptionHandling().authenticationEntryPoint((request, response, e) -> response.sendRedirect(routeHelper.getRouteUrl("users.login", "", "", request.getRequestURI())));
+        http.exceptionHandling().authenticationEntryPoint((request, response, e) -> response.sendRedirect(Routes.getRouteUrlOf("users.login", "", "", request.getRequestURI())));
 
         http.authorizeRequests().anyRequest().permitAll().accessDecisionManager(accessDecisionManager()); // we use method security
     }

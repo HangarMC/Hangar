@@ -48,7 +48,7 @@
                     <td>
                         <input form="form-continue" type="hidden" value="${user.id}"/>
                         <@userAvatar.userAvatar userName=user.name avatarUrl=user.avatarUrl clazz="user-avatar-xs" />
-                        <a target="_blank" rel="noopener" href="${routes.getRouteUrl("users.showProjects", user.name)}">
+                        <a target="_blank" rel="noopener" href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(user.name)}">
                             ${user.name}
                         </a>
                         <span><@roleSelect.roleSelect  roleCategory=roleCategory /></span>

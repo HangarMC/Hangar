@@ -43,7 +43,7 @@ import io.papermc.hangar.util.AlertUtil;
 import io.papermc.hangar.util.AlertUtil.AlertType;
 import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.HangarException;
-import io.papermc.hangar.util.RouteHelper;
+import io.papermc.hangar.util.Routes;
 import io.papermc.hangar.util.StringUtils;
 import io.papermc.hangar.util.TemplateHelper;
 import io.papermc.hangar.util.TriFunction;
@@ -85,9 +85,11 @@ import java.util.stream.Collectors;
 public class ProjectsController extends HangarController {
 
     public static final Pattern ID_PATTERN = Pattern.compile("[a-z][a-z0-9-_]{0,63}");
+    private static final String STATUS_DECLINE = "decline";
+    private static final String STATUS_ACCEPT = "accept";
+    private static final String STATUS_UNACCEPT = "unaccept";
 
     private final HangarConfig hangarConfig;
-    private final RouteHelper routeHelper;
     private final UserService userService;
     private final OrgService orgService;
     private final FlagService flagService;
@@ -107,9 +109,8 @@ public class ProjectsController extends HangarController {
     private final HttpServletRequest request;
 
     @Autowired
-    public ProjectsController(HangarConfig hangarConfig, RouteHelper routeHelper, UserService userService, OrgService orgService, FlagService flagService, ProjectService projectService, ProjectFactory projectFactory, PagesSerivce pagesSerivce, ApiKeyService apiKeyService, RoleService roleService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles, TemplateHelper templateHelper, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao, HangarDao<GeneralDao> generalDao, HttpServletRequest request) {
+    public ProjectsController(HangarConfig hangarConfig, UserService userService, OrgService orgService, FlagService flagService, ProjectService projectService, ProjectFactory projectFactory, PagesSerivce pagesSerivce, ApiKeyService apiKeyService, RoleService roleService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles, TemplateHelper templateHelper, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao, HangarDao<GeneralDao> generalDao, HttpServletRequest request) {
         this.hangarConfig = hangarConfig;
-        this.routeHelper = routeHelper;
         this.userService = userService;
         this.orgService = orgService;
         this.flagService = flagService;
@@ -177,12 +178,8 @@ public class ProjectsController extends HangarController {
         // refresh home page
         generalDao.get().refreshHomeProjects();
 
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.show", project.getOwnerName(), project.getSlug()));
+        return Routes.PROJECTS_SHOW.getRedirect(project.getOwnerName(), project.getSlug());
     }
-
-    private final String STATUS_DECLINE = "decline";
-    private final String STATUS_ACCEPT = "accept";
-    private final String STATUS_UNACCEPT = "unaccept";
 
     @Secured("ROLE_USER")
     @PostMapping("/invite/{id}/{status}")
@@ -264,7 +261,7 @@ public class ProjectsController extends HangarController {
         flagService.flagProject(projectData.getProject().getId(), flagReason, comment);
         String userName = userService.getCurrentUser().getName();
         userActionLogService.project(request, LoggedActionType.PROJECT_FLAGGED.with(ProjectContext.of(projectData.getProject().getId())), "Flagged by " + userName, "Not flagged by " + userName);
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.show", author, slug)); // TODO flashing
+        return Routes.PROJECTS_SHOW.getRedirect(author, slug); // TODO flashing
     }
 
     @Secured("ROLE_USER")
@@ -282,11 +279,11 @@ public class ProjectsController extends HangarController {
         ProjectsTable project = projectService.getProjectData(author, slug).getProject();
         if (icon.getContentType() == null || (!icon.getContentType().equals(MediaType.IMAGE_PNG_VALUE) && !icon.getContentType().equals(MediaType.IMAGE_JPEG_VALUE))) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.invalidFile");
-            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.showSettings", author, slug));
+            return Routes.PROJECTS_SHOW_SETTINGS.getRedirect(author, slug);
         }
         if (icon.getOriginalFilename() == null || icon.getOriginalFilename().isBlank()) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.noFile");
-            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.showSettings", author, slug));
+            return Routes.PROJECTS_SHOW_SETTINGS.getRedirect(author, slug);
         }
         try {
             Path pendingDir = projectFiles.getPendingIconDir(author, slug);
@@ -367,7 +364,7 @@ public class ProjectsController extends HangarController {
         userActionLogService.project(request, LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(projectData.getProject().getId())), Visibility.SOFTDELETE.getName(), oldVisibility.getName());
         projectFactory.softDeleteProject(projectData, comment);
         AlertUtil.showAlert(ra, AlertUtil.AlertType.SUCCESS, "project.deleted", projectData.getProject().getName());
-        return new RedirectView(routeHelper.getRouteUrl("showHome"));
+        return new RedirectView(Routes.getRouteUrlOf("showHome"));
     }
 
     @Secured("ROLE_USER")
@@ -377,7 +374,7 @@ public class ProjectsController extends HangarController {
         projectFactory.hardDeleteProject(projectData);
         userActionLogService.project(request, LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(projectData.getProject().getId())), "deleted", projectData.getVisibility().getName());
         AlertUtil.showAlert(ra, AlertUtil.AlertType.SUCCESS, "project.deleted", projectData.getProject().getName());
-        return new RedirectView(routeHelper.getRouteUrl("showHome"));
+        return new RedirectView(Routes.getRouteUrlOf("showHome"));
     }
 
     @Secured("ROLE_USER")
@@ -394,7 +391,7 @@ public class ProjectsController extends HangarController {
                     user.getUser().getName() + " is not a member of " + projectData.getNamespace(),
                     user.getUser().getName() + " is a member of " + projectData.getNamespace());
         }
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.showSettings", author, slug));
+        return Routes.PROJECTS_SHOW_SETTINGS.getRedirect(author, slug);
     }
 
     @Secured("ROLE_USER")
@@ -417,7 +414,7 @@ public class ProjectsController extends HangarController {
         projectData.getProject().setSlug(StringUtils.slugify(compactNewName));
         projectDao.get().update(projectData.getProject());
         userActionLogService.project(request, LoggedActionType.PROJECT_RENAMED.with(ProjectContext.of(projectData.getProject().getId())), author + "/" + compactNewName, author + "/" + oldName);
-        return new RedirectView(routeHelper.getRouteUrl("projects.show", author, newName));
+        return new RedirectView(Routes.getRouteUrlOf("projects.show", author, newName));
     }
 
     @Secured("ROLE_USER")
@@ -492,7 +489,7 @@ public class ProjectsController extends HangarController {
 
         userActionLogService.project(request, LoggedActionType.PROJECT_SETTINGS_CHANGED.with(ProjectContext.of(projectsTable.getId())), "", "");
 
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.show", author, slug));
+        return Routes.PROJECTS_SHOW.getRedirect(author, slug);
     }
 
     @Secured("ROLE_USER")
@@ -503,7 +500,7 @@ public class ProjectsController extends HangarController {
             projectService.changeVisibility(projectData.getProject(), Visibility.NEEDSAPPROVAL, "");
             userActionLogService.project(request, LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(projectData.getProject().getId())), Visibility.NEEDSAPPROVAL.getName(), Visibility.NEEDSCHANGES.getName());
         }
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("projects.show", author, slug));
+        return Routes.PROJECTS_SHOW.getRedirect(author, slug);
     }
 
     @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)

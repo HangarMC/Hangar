@@ -3,6 +3,8 @@ package io.papermc.hangar.controller;
 import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.Configuration;
 
+import freemarker.template.TemplateHashModel;
+import freemarker.template.TemplateModelException;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.service.MarkdownService;
 import io.papermc.hangar.service.UserService;
@@ -14,12 +16,10 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-import io.papermc.hangar.util.RouteHelper;
+import io.papermc.hangar.util.Routes;
 
 public abstract class HangarController {
 
-    @Autowired
-    private RouteHelper routeHelper;
     @Autowired
     private UserService userService;
     @Autowired
@@ -31,15 +31,21 @@ public abstract class HangarController {
 
     protected ModelAndView fillModel(ModelAndView mav) {
         // helpers
-        mav.addObject("routes", routeHelper);
         BeansWrapperBuilder builder = new BeansWrapperBuilder(Configuration.VERSION_2_3_30);
         builder.setExposeFields(true);
         builder.setUseModelCache(true);
-        mav.addObject("@helper", builder.build().getStaticModels());
+        TemplateHashModel staticModels = builder.build().getStaticModels();
+        mav.addObject("@helper", staticModels);
         mav.addObject("config", hangarConfig);
         mav.addObject("markdownService", markdownService);
         mav.addObject("rand", ThreadLocalRandom.current());
         mav.addObject("utils", templateHelper);
+
+        try {
+            mav.addObject("Routes", staticModels.get("io.papermc.hangar.util.Routes"));
+        } catch (TemplateModelException e) {
+            e.printStackTrace();
+        }
 
         // alerts
         if (mav.getModelMap().getAttribute("alerts") == null) {

@@ -17,7 +17,7 @@
                 <h1 class="pull-left">${project.project.name} <i>${version.v.versionString}</i></h1>
             </div>
             <p class="user date pull-left">
-                <a href="${routes.getRouteUrl("users.showProjects", project.project.ownerName)}">
+                <a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(project.project.ownerName)}">
                     <strong>${project.project.ownerName}</strong>
                 </a>
                 released this version on ${utils.prettifyDateTime(version.v.createdAt)}
@@ -26,8 +26,8 @@
                 <div class="pull-right">
                     <span class="btn-group-sm">
                         <a href="#" class="btn btn-info btn-skip-review"><#if version.v.reviewState != ReviewState.BACKLOG> Remove from queue <#else> Add to queue </#if></a>
-                        <a href="${routes.getRouteUrl("projects.show", project.project.ownerName, project.project.slug)}" class="btn btn-info">Project Page</a>
-                        <a href="${routes.getRouteUrl("versions.downloadJar", project.project.ownerName, project.project.slug, version.v.versionString, "")}" class="btn btn-info">Download File</a>
+                        <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.project.ownerName, project.project.slug)}" class="btn btn-info">Project Page</a>
+                        <a href="${Routes.VERSIONS_DOWNLOAD_JAR.getRouteUrl(project.project.ownerName, project.project.slug, version.v.versionString, "")}" class="btn btn-info">Download File</a>
                     </span>
                     <span class="btn-group-sm">
                     <#if mostRecentUnfinishedReview??>

@@ -61,8 +61,8 @@
                             <tr>
                                 <td><b>${offset + action?index + 1}</b></td>
                                 <td>
-                                    <a href="${routes.getRouteUrl("users.showProjects", action.userName)}">${action.userName}</a>
-                                    <small class="filter-user">(<a href="${routes.getRouteUrl("showLog", page?string, action.userName, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter)}">${action.userName}</a>)</small>
+                                    <a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(action.userName)}">${action.userName}</a>
+                                    <small class="filter-user">(<a href="${Routes.SHOW_LOG.getRouteUrl(page?string, action.userName, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter)}">${action.userName}</a>)</small>
                                 </td>
 
                                 <#if canViewIP>
@@ -71,38 +71,38 @@
                                 <td>${utils.prettifyDateTime(action.createdAt)}</td>
                                 <td>
                                     ${action.action.description}
-                                <small class="filter-action">(<a href="${routes.getRouteUrl("showLog", page?string, userFilter, projectFilter, versionFilter, pageFilter, action.action.value, subjectFilter)}">${action.action.value}</a>)</small>
+                                <small class="filter-action">(<a href="${Routes.SHOW_LOG.getRouteUrl(page?string, userFilter, projectFilter, versionFilter, pageFilter, action.action.value, subjectFilter)}">${action.action.value}</a>)</small>
                                 </td>
                                 <#if action.actionContext.class.simpleName == "UserContext" || action.actionContext.class.simpleName == "OrganizationContext">
                                     <td>
-                                        <a href="${routes.getRouteUrl("users.showProjects", action.subject.username!"Unknown")}">${action.subject.username}</a>
-                                        <small class="filter-subject">(<a href="${routes.getRouteUrl("showLog", page?string, userFilter, projectFilter, versionFilter, pageFilter, actionFilter, action.subject.username)}">${action.subject.username}</a>)</small>
+                                        <a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(action.subject.username!"Unknown")}">${action.subject.username}</a>
+                                        <small class="filter-subject">(<a href="${Routes.SHOW_LOG.getRouteUrl(page?string, userFilter, projectFilter, versionFilter, pageFilter, actionFilter, action.subject.username)}">${action.subject.username}</a>)</small>
                                     </td>
                                 <#elseif !action.project.id??>
                                     <td>
                                         Resource deleted
                                         <#if action.actionContext.class.simpleName == "ProjectContext" || action.actionContext.class.simpleName == "ProjectPageContext">
-                                            <small class="filter-project">(<a href="${routes.getRouteUrl("showLog", page?string, userFilter, action.project.pluginId, versionFilter, pageFilter, actionFilter, subjectFilter)}">${action.project.pluginId}</a>)</small>
+                                            <small class="filter-project">(<a href="${Routes.SHOW_LOG.getRouteUrl(page?string, userFilter, action.project.pluginId, versionFilter, pageFilter, actionFilter, subjectFilter)}">${action.project.pluginId}</a>)</small>
                                         <#else>
-                                            <small class="filter-version">(<a href="${routes.getRouteUrl("showLog", page?string, userFilter, projectFilter, action.version.versionString, pageFilter, actionFilter, subjectFilter)}">${action.version.versionString}</a>)</small>
+                                            <small class="filter-version">(<a href="${Routes.SHOW_LOG.getRouteUrl(page?string, userFilter, projectFilter, action.version.versionString, pageFilter, actionFilter, subjectFilter)}">${action.version.versionString}</a>)</small>
                                         </#if>
                                     </td>
                                 <#elseif action.actionContext.class.simpleName == "ProjectContext">
                                     <td>
-                                        <a href="${routes.getRouteUrl("projects.show", action.project.owner!"Unknown", action.project.slug!"Unknown")}">${action.project.owner}/${action.project.slug!"Unknown"}</a>
-                                        <small class="filter-project">(<a href="${routes.getRouteUrl("showLog", page?string, userFilter, action.project.pluginId, versionFilter, pageFilter, actionFilter, subjectFilter)}">${action.project.pluginId}</a>)</small>
+                                        <a href="${Routes.PROJECTS_SHOW.getRouteUrl(action.project.owner!"Unknown", action.project.slug!"Unknown")}">${action.project.owner}/${action.project.slug!"Unknown"}</a>
+                                        <small class="filter-project">(<a href="${Routes.SHOW_LOG.getRouteUrl(page?string, userFilter, action.project.pluginId, versionFilter, pageFilter, actionFilter, subjectFilter)}">${action.project.pluginId}</a>)</small>
                                     </td>
                                 <#elseif action.actionContext.class.simpleName == "ProjectPageContext">
                                     <td>
-                                        <a href="${routes.getRouteUrl("pages.show", action.project.owner!"Unknown", action.project.slug!"Unknown", action.page.slug!"Unknown")}">${action.project.owner!"Unknown"}/${action.project.slug!"Unknown"}/${action.page.slug!"Unknown"}</a>
-                                        <small class="filter-project">(<a href="${routes.getRouteUrl("showLog", page?string, userFilter, action.project.pluginId, versionFilter, pageFilter, actionFilter, subjectFilter)}">${action.project.pluginId}</a>)</small>
-                                        <small class="filter-page">(<a href="${routes.getRouteUrl("showLog", page?string, userFilter, projectFilter, versionFilter, action.page.id?string, actionFilter, subjectFilter)}">${action.page.id}</a>)</small>
+                                        <a href="${Routes.PAGES_SHOW.getRouteUrl(action.project.owner!"Unknown", action.project.slug!"Unknown", action.page.slug!"Unknown")}">${action.project.owner!"Unknown"}/${action.project.slug!"Unknown"}/${action.page.slug!"Unknown"}</a>
+                                        <small class="filter-project">(<a href="${Routes.SHOW_LOG.getRouteUrl(page?string, userFilter, action.project.pluginId, versionFilter, pageFilter, actionFilter, subjectFilter)}">${action.project.pluginId}</a>)</small>
+                                        <small class="filter-page">(<a href="${Routes.SHOW_LOG.getRouteUrl(page?string, userFilter, projectFilter, versionFilter, action.page.id?string, actionFilter, subjectFilter)}">${action.page.id}</a>)</small>
                                     </td>
                                 <#elseif action.actionContext.class.simpleName == "VersionContext">
                                     <td>
-                                        <a href="${routes.getRouteUrl("versions.show", action.project.owner!"Unknown", action.project.slug!"Unknown", action.version.versionString!"Unknown")}">${action.project.owner!"Unknown"}/${action.project.slug!"Unknown"}/${action.version.versionString!"Unknown"}</a>
-                                        <small class="filter-project">(<a href="${routes.getRouteUrl("showLog", page?string, userFilter, action.project.pluginId, versionFilter, pageFilter, actionFilter, subjectFilter)}">${action.project.pluginId}</a>)</small>
-                                        <small class="filter-version">(<a href="${routes.getRouteUrl("showLog", page?string, userFilter, projectFilter, action.version.versionString, pageFilter, actionFilter, subjectFilter)}">${action.version.versionString}</a>)</small>
+                                        <a href="${Routes.VERSIONS_SHOW.getRouteUrl(action.project.owner!"Unknown", action.project.slug!"Unknown", action.version.versionString!"Unknown")}">${action.project.owner!"Unknown"}/${action.project.slug!"Unknown"}/${action.version.versionString!"Unknown"}</a>
+                                        <small class="filter-project">(<a href="${Routes.SHOW_LOG.getRouteUrl(page?string, userFilter, action.project.pluginId, versionFilter, pageFilter, actionFilter, subjectFilter)}">${action.project.pluginId}</a>)</small>
+                                        <small class="filter-version">(<a href="${Routes.SHOW_LOG.getRouteUrl(page?string, userFilter, projectFilter, action.version.versionString, pageFilter, actionFilter, subjectFilter)}">${action.version.versionString}</a>)</small>
                                     </td>
                                 </#if>
                                 <#-- Show diff only when page edit -->
@@ -126,10 +126,10 @@
                 </div>
                 <div class="panel-heading" style="display:block">
                     <#if page gt 1>
-                        <h4 class="panel-title pull-left"><a href="${routes.getRouteUrl("showLog", (page-1)?string, userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter)}">&leftarrow; ${page - 1}</a></h4>
+                        <h4 class="panel-title pull-left"><a href="${Routes.SHOW_LOG.getRouteUrl((page-1)?string, userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter)}">&leftarrow; ${page - 1}</a></h4>
                     </#if>
                     <#if offset + limit < size>
-                        <h4 class="panel-title pull-right"><a href="${routes.getRouteUrl("showLog", (page+1)?string, userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter)}">${page + 1} &rightarrow;</a></h4>
+                        <h4 class="panel-title pull-right"><a href="${Routes.SHOW_LOG.getRouteUrl((page+1)?string, userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter)}">${page + 1} &rightarrow;</a></h4>
                     </#if>
                     <div class="clearfix"></div>
                 </div>

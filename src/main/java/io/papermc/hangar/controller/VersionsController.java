@@ -32,7 +32,7 @@ import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.AlertUtil;
 import io.papermc.hangar.util.HangarException;
 import io.papermc.hangar.util.RequestUtil;
-import io.papermc.hangar.util.RouteHelper;
+import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.core.io.FileSystemResource;
@@ -71,7 +71,6 @@ public class VersionsController extends HangarController {
     private final ChannelService channelService;
     private final UserActionLogService userActionLogService;
     private final CacheManager cacheManager;
-    private final RouteHelper routeHelper;
     private final HangarConfig hangarConfig;
     private final HangarDao<ProjectDao> projectDao;
     private final ProjectFiles projectFiles;
@@ -81,7 +80,7 @@ public class VersionsController extends HangarController {
     private final HttpServletResponse response;
 
     @Autowired
-    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService, ChannelService channelService, UserActionLogService userActionLogService, CacheManager cacheManager, RouteHelper routeHelper, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, HttpServletRequest request, HttpServletResponse response) {
+    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService, ChannelService channelService, UserActionLogService userActionLogService, CacheManager cacheManager, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, HttpServletRequest request, HttpServletResponse response) {
         this.projectService = projectService;
         this.versionService = versionService;
         this.projectFactory = projectFactory;
@@ -90,7 +89,6 @@ public class VersionsController extends HangarController {
         this.channelService = channelService;
         this.userActionLogService = userActionLogService;
         this.cacheManager = cacheManager;
-        this.routeHelper = routeHelper;
         this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
         this.projectFiles = projectFiles;
@@ -260,7 +258,7 @@ public class VersionsController extends HangarController {
         PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(projectData.getProject().getId() + "/" + versionName, PendingVersion.class);
         if (pendingVersion == null) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.plugin.timeout");
-            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.showCreator", author, slug));
+            return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
         }
 
         List<ProjectChannelsTable> projectChannels = channelService.getProjectChannels(projectData.getProject().getId());
@@ -278,7 +276,7 @@ public class VersionsController extends HangarController {
             }
             if (alertMsg != null) {
                 AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, alertMsg, alertArgs);
-                return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.showCreator", author, slug));
+                return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
             }
             channel = channelService.addProjectChannel(projectData.getProject().getId(), channelInput.trim(), channelColor);
         } else {
@@ -294,7 +292,7 @@ public class VersionsController extends HangarController {
 
         if (versionService.exists(newPendingVersion)) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.plugin.versionExists");
-            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.showCreator", author, slug));
+            return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
         }
 
         ProjectVersionsTable version;
@@ -302,7 +300,7 @@ public class VersionsController extends HangarController {
             version = newPendingVersion.complete(request, projectData, projectFactory);
         } catch (HangarException e) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, e.getMessage(), e.getArgs());
-            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.showCreator", author, slug));
+            return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
         }
 
         if (recommended) {
@@ -316,7 +314,7 @@ public class VersionsController extends HangarController {
 
         userActionLogService.version(request, LoggedActionType.VERSION_UPLOADED.with(VersionContext.of(projectData.getProject().getId(), version.getId())), "published", "");
 
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.show", author, slug, versionName));
+        return Routes.VERSIONS_SHOW.getRedirect(author, slug, versionName);
     }
 
     @GetMapping("/{author}/{slug}/versions/{version:.*}")
@@ -354,7 +352,7 @@ public class VersionsController extends HangarController {
         versionsTable.setVisibility(Visibility.PUBLIC);
         versionService.update(versionsTable);
         userActionLogService.version(request, LoggedActionType.VERSION_REVIEW_STATE_CHANGED.with(VersionContext.of(versionsTable.getProjectId(), versionsTable.getId())), newState.name(), oldState.name());
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.show", author, slug, version));
+        return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
     }
 
     @GetMapping("/{author}/{slug}/versions/{version}/confirm")
@@ -376,13 +374,13 @@ public class VersionsController extends HangarController {
             projectFactory.prepareDeleteVersion(versionData);
         } catch (HangarException e) {
             AlertUtil.showAlert(ra, AlertUtil.AlertType.ERROR, e.getMessage());
-            return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.show", author, slug, version));
+            return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
         }
 
         Visibility oldVisibility = versionData.getV().getVisibility();
         versionService.changeVisibility(versionData, Visibility.SOFTDELETE, comment, userService.getCurrentUser().getId());
         userActionLogService.version(request, LoggedActionType.VERSION_DELETED.with(VersionContext.of(versionData.getP().getProject().getId(), versionData.getV().getId())), "SoftDelete: " + comment, oldVisibility.getName());
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.showList", author, slug));
+        return Routes.VERSIONS_SHOW_LIST.getRedirect(author, slug);
     }
 
     @GetMapping(value = "/{author}/{slug}/versions/{version}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -398,7 +396,7 @@ public class VersionsController extends HangarController {
         if (passed || confirm) {
             return _sendVersion(project, version);
         } else {
-            return new RedirectView(routeHelper.getRouteUrl("versions.showDownloadConfirm",
+            return new RedirectView(Routes.getRouteUrlOf("versions.showDownloadConfirm",
                     project.getOwnerName(),
                     project.getSlug(),
                     version.getVersionString(),
@@ -460,7 +458,7 @@ public class VersionsController extends HangarController {
             boolean passed = checkConfirmation(version, token);
 
             if (!passed) {
-                return new RedirectView(routeHelper.getRouteUrl("versions.showDownloadConfirm",
+                return new RedirectView(Routes.getRouteUrlOf("versions.showDownloadConfirm",
                         project.getOwnerName(),
                         project.getSlug(),
                         version.getVersionString(),
@@ -492,7 +490,7 @@ public class VersionsController extends HangarController {
         VersionData versionData = versionService.getVersionData(author, slug, version);
         versionData.getP().getProject().setRecommendedVersionId(versionData.getV().getId());
         projectDao.get().update(versionData.getP().getProject());
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.show", author, slug, version));
+        return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
     }
 
     @GlobalPermission(NamedPermission.REVIEWER)
@@ -502,7 +500,7 @@ public class VersionsController extends HangarController {
         VersionData versionData = versionService.getVersionData(author, slug, version);
         versionService.changeVisibility(versionData, Visibility.PUBLIC, comment, userService.getCurrentUser().getId());
         userActionLogService.version(request, LoggedActionType.VERSION_DELETED.with(VersionContext.of(versionData.getP().getProject().getId(), versionData.getV().getId())), "Restore: " + comment, "");
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.show", author, slug, version));
+        return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
     }
 
     @Secured("ROLE_USER")
@@ -514,7 +512,7 @@ public class VersionsController extends HangarController {
         versionData.getV().setDescription(newDesc);
         versionService.update(versionData.getV());
         userActionLogService.version(request, LoggedActionType.VERSION_DESCRIPTION_CHANGED.with(VersionContext.of(versionData.getP().getProject().getId(), versionData.getV().getId())), newDesc, oldDesc);
-        return new ModelAndView("redirect:" + routeHelper.getRouteUrl("versions.show", author, slug, version));
+        return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
     }
 
 }

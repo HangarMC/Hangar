@@ -91,7 +91,7 @@
                     <#-- @ftlvariable name="user" type="io.papermc.hangar.db.model.UsersTable" -->
                     <li class="list-group-item">
                         <@userAvatar.userAvatar userName=user.name avatarUrl=utils.avatarUrl(user.name) clazz="user-avatar-xs"></@userAvatar.userAvatar>
-                        <a class="username" href="${routes.getRouteUrl("users.showProjects", user.name)}">
+                        <a class="username" href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(user.name)}">
                             ${user.name}
                         </a>
                         <p style="display: none;" class="role-id">${subjectRole.role.roleId}</p>

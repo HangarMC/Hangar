@@ -14,7 +14,7 @@
                     </button>
                     <h4 class="modal-title"></h4>
                 </div>
-                <@form.form action=routes.getRouteUrl("showHome") method="GET">
+                <@form.form action=Routes.SHOW_HOME.getRouteUrl() method="GET">
                     <@csrf.formField />
                     <div class="modal-body">
                         <div class="form-inline">
