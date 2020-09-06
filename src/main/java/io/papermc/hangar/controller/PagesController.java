@@ -1,11 +1,11 @@
 package io.papermc.hangar.controller;
 
-import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.model.ProjectPagesTable;
-import io.papermc.hangar.util.StringUtils;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectPageContext;
+import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.ProjectPageDao;
+import io.papermc.hangar.db.model.ProjectPagesTable;
+import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.ProjectPage;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
@@ -15,7 +15,7 @@ import io.papermc.hangar.service.project.PagesFactory;
 import io.papermc.hangar.service.project.PagesSerivce;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.Routes;
-
+import io.papermc.hangar.util.StringUtils;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -31,9 +31,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.function.Supplier;
 
 @Controller
 public class PagesController extends HangarController {
@@ -46,8 +46,10 @@ public class PagesController extends HangarController {
     private final HangarDao<ProjectPageDao> projectPageDao;
 
     private final HttpServletRequest request;
+    private final Supplier<ProjectsTable> projectsTable;
+    private final Supplier<ProjectData> projectData;
 
-    public PagesController(UserActionLogService userActionLogService, ProjectService projectService, MarkdownService markdownService, PagesSerivce pagesSerivce, PagesFactory pagesFactory, HangarDao<ProjectPageDao> projectPageDao, HttpServletRequest request) {
+    public PagesController(UserActionLogService userActionLogService, ProjectService projectService, MarkdownService markdownService, PagesSerivce pagesSerivce, PagesFactory pagesFactory, HangarDao<ProjectPageDao> projectPageDao, HttpServletRequest request, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
         this.userActionLogService = userActionLogService;
         this.projectService = projectService;
         this.markdownService = markdownService;
@@ -55,6 +57,8 @@ public class PagesController extends HangarController {
         this.pagesFactory = pagesFactory;
         this.projectPageDao = projectPageDao;
         this.request = request;
+        this.projectsTable = projectsTable;
+        this.projectData = projectData;
     }
 
     @PostMapping(value = "/pages/preview", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -71,28 +75,24 @@ public class PagesController extends HangarController {
 
     @GetMapping({"/{author}/{slug}/pages/{page}", "/{author}/{slug}/pages/{page}/{subPage}"})
     public ModelAndView show(@PathVariable String author, @PathVariable String slug, @PathVariable String page, @PathVariable(required = false) String subPage) {
+        ProjectData projData = projectData.get();
         String pageName = getPageName(page, subPage);
         ModelAndView mav = new ModelAndView("projects/pages/view");
-        ProjectData projectData = projectService.getProjectData(author, slug);
-        ProjectPage projectPage = pagesSerivce.getPage(projectData.getProject().getId(), pageName);
-        mav.addObject("p", projectData);
-        ScopedProjectData sp = projectService.getScopedProjectData(projectData.getProject().getId());
+        ProjectPage projectPage = pagesSerivce.getPage(projData.getProject().getId(), pageName);
+        mav.addObject("p", projData);
+        ScopedProjectData sp = projectService.getScopedProjectData(projData.getProject().getId());
         mav.addObject("sp", sp);
         mav.addObject("projectPage", projectPage);
         mav.addObject("editorOpen", false);
-        pagesSerivce.fillPages(mav, projectData.getProject().getId());
+        pagesSerivce.fillPages(mav, projData.getProject().getId());
         return fillModel(mav);
     }
 
     @Secured("ROLE_USER")
     @PostMapping({"/{author}/{slug}/pages/{page}/delete", "/{author}/{slug}/pages/{page}/{subPage}/delete"})
-    public RedirectView delete(@PathVariable String author, @PathVariable String slug, @PathVariable String page, @PathVariable(required = false) String subPage) {
+    public ModelAndView delete(@PathVariable String author, @PathVariable String slug, @PathVariable String page, @PathVariable(required = false) String subPage) {
         String pageName = page + (subPage != null && !subPage.isEmpty() ? "/" + subPage : "");
-        ProjectData projectData = projectService.getProjectData(author, slug);
-        if (projectData == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        ProjectPagesTable projectPage = pagesSerivce.getPage(projectData.getProject().getId(), pageName);
+        ProjectPagesTable projectPage = pagesSerivce.getPage(projectsTable.get().getId(), pageName);
         if (projectPage == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -100,7 +100,7 @@ public class PagesController extends HangarController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot delete this page");
         }
         projectPageDao.get().delete(projectPage);
-        return new RedirectView(Routes.getRouteUrlOf("projects.show", author, slug));
+        return Routes.PROJECTS_SHOW.getRedirect(author, slug);
     }
 
     @Secured("ROLE_USER")
@@ -112,14 +112,10 @@ public class PagesController extends HangarController {
                        @RequestParam(value = "parent-id", required = false) String parentId,
                        @RequestParam("content") String pageContent,
                        @RequestParam("name") String newPageName) {
+        ProjectsTable project = projectsTable.get();
         String pageName = getPageName(page, subPage);
-
-        ProjectData projectData = projectService.getProjectData(author, slug);
-        if (projectData == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
         String oldContents = null;
-        ProjectPagesTable projectPage = pagesSerivce.getPage(projectData.getProject().getId(), pageName);
+        ProjectPagesTable projectPage = pagesSerivce.getPage(project.getId(), pageName);
         Object toReturn;
         if (projectPage == null) { // new page
             Long parentIdLong;
@@ -128,32 +124,32 @@ public class PagesController extends HangarController {
             } catch (NumberFormatException e) {
                 parentIdLong = null;
             }
-            projectPage = pagesFactory.createPage(pageContent, newPageName, pageName, parentIdLong, projectData.getProject().getId());
+            projectPage = pagesFactory.createPage(pageContent, newPageName, pageName, parentIdLong, project.getId());
             toReturn = new ResponseEntity<>(HttpStatus.OK); // redirect handled by pageEdit.js
         } else {
             oldContents = projectPage.getContents();
             projectPage.setContents(pageContent);
             projectPageDao.get().update(projectPage);
-            toReturn = new RedirectView(Routes.getRouteUrlOf("pages.show", author, slug, StringUtils.slugify(pageName)));
+            toReturn = Routes.PAGES_SHOW.getRedirect(author, slug, StringUtils.slugify(pageName));
         }
-        userActionLogService.projectPage(request, LoggedActionType.PROJECT_PAGE_EDITED.with(ProjectPageContext.of(projectData.getProject().getId(), projectPage.getId())), pageContent, oldContents);
+        userActionLogService.projectPage(request, LoggedActionType.PROJECT_PAGE_EDITED.with(ProjectPageContext.of(project.getId(), projectPage.getId())), pageContent, oldContents);
         return toReturn;
     }
 
     @Secured("ROLE_USER")
     @GetMapping({"/{author}/{slug}/pages/{page}/edit", "/{author}/{slug}/pages/{page}/{subPage}/edit"})
     public ModelAndView showEditor(@PathVariable String author, @PathVariable String slug, @PathVariable String page, @PathVariable(required = false) String subPage) {
+        ProjectData projData = projectData.get();
         String pageName = getPageName(page, subPage);
         ModelAndView mav = new ModelAndView("projects/pages/view");
-        ProjectData projectData = projectService.getProjectData(author, slug);
-        ProjectPage projectPage = pagesSerivce.getPage(projectData.getProject().getId(), pageName);
+        ProjectPage projectPage = pagesSerivce.getPage(projData.getProject().getId(), pageName);
         if (projectPage == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        mav.addObject("p", projectData);
-        ScopedProjectData sp = projectService.getScopedProjectData(projectData.getProject().getId());
+        mav.addObject("p", projData);
+        ScopedProjectData sp = projectService.getScopedProjectData(projData.getProject().getId());
         mav.addObject("sp", sp);
         mav.addObject("projectPage", projectPage);
         mav.addObject("editorOpen", true);
-        pagesSerivce.fillPages(mav, projectData.getProject().getId());
+        pagesSerivce.fillPages(mav, projData.getProject().getId());
         return fillModel(mav);
     }
 

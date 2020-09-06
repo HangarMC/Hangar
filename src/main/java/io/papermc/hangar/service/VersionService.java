@@ -141,12 +141,6 @@ public class VersionService {
         ));
     }
 
-    public VersionData getVersionData(String author, String slug, String versionString) {
-        ProjectData projectData = projectService.getProjectData(author, slug);
-        ProjectVersionsTable projectVersion = getVersion(projectData.getProject().getId(), versionString);
-        return getVersionData(projectData, projectVersion);
-    }
-
     public VersionData getVersionData(ProjectData projectData, ProjectVersionsTable projectVersion) {
         ProjectChannelsTable projectChannel = channelService.getProjectChannel(projectData.getProject().getId(), projectVersion.getChannelId());
         String approvedBy = null;

@@ -54,7 +54,7 @@ public class ProjectsInterceptor extends HandlerInterceptorAdapter {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             }
             long userId = ((HangarAuthentication) SecurityContextHolder.getContext().getAuthentication()).getUserId();
-            Collection<NamedPermission> userProjectPermissions = permissionService.getProjectPermissions(userId, projectService.getProjectData(pathParamMap.get("author"), pathParamMap.get("slug")).getProject().getId()).toNamed();
+            Collection<NamedPermission> userProjectPermissions = permissionService.getProjectPermissions(userId, projectService.getProjectData(pathParamMap.get("author"), pathParamMap.get("slug")).getProject().getId()).toNamed(); // TODO maybe remove call to getProjectData here and switch to bean
             Collection<NamedPermission> requirePermissions = Arrays.asList(AnnotationUtils.getAnnotation(method.getMethod(), ProjectPermission.class).value());
             if (!userProjectPermissions.containsAll(requirePermissions)) {
                 System.out.println("Required perms: " + requirePermissions.toString());

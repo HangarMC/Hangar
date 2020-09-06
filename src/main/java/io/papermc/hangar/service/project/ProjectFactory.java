@@ -115,17 +115,16 @@ public class ProjectFactory {
         return projectsTable;
     }
 
-    public void softDeleteProject(ProjectData projectData, String comment) {
-        ProjectsTable project = projectData.getProject();
-        if (project.getVisibility() == Visibility.NEW) {
-            hardDeleteProject(projectData);
+    public void softDeleteProject(ProjectsTable projectsTable, String comment) {
+        if (projectsTable.getVisibility() == Visibility.NEW) {
+            hardDeleteProject(projectsTable);
             return;
         }
-        projectService.changeVisibility(project, Visibility.SOFTDELETE, comment);
+        projectService.changeVisibility(projectsTable, Visibility.SOFTDELETE, comment);
     }
 
-    public void hardDeleteProject(ProjectData projectData) {
-        projectDao.get().delete(projectData.getProject());
+    public void hardDeleteProject(ProjectsTable projectsTable) {
+        projectDao.get().delete(projectsTable);
     }
 
     public void checkProjectAvailability(UsersTable author, String page) {

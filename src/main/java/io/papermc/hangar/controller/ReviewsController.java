@@ -10,6 +10,7 @@ import io.papermc.hangar.model.NamedPermission;
 import io.papermc.hangar.model.NotificationType;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.generated.ReviewState;
+import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.VersionData;
 import io.papermc.hangar.model.viewhelpers.VersionReview;
 import io.papermc.hangar.model.viewhelpers.VersionReviewMessage;
@@ -17,7 +18,6 @@ import io.papermc.hangar.security.annotations.GlobalPermission;
 import io.papermc.hangar.service.NotificationService;
 import io.papermc.hangar.service.ReviewService;
 import io.papermc.hangar.service.UserActionLogService;
-import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.VersionService;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.Routes;
@@ -49,19 +49,21 @@ public class ReviewsController extends HangarController {
     private final ReviewService reviewService;
     private final NotificationService notificationService;
     private final UserActionLogService userActionLogService;
-    private final UserService userService;
 
     private final HttpServletRequest request;
+    private final Supplier<ProjectData> projectData;
+    private final Supplier<ProjectVersionsTable> projectVersionsTable;
 
     @Autowired
-    public ReviewsController(ProjectService projectService, VersionService versionService, ReviewService reviewService, NotificationService notificationService, UserActionLogService userActionLogService, UserService userService, HttpServletRequest request, Supplier<Optional<UsersTable>> currentUser) {
+    public ReviewsController(ProjectService projectService, VersionService versionService, ReviewService reviewService, NotificationService notificationService, UserActionLogService userActionLogService, HttpServletRequest request, Supplier<Optional<UsersTable>> currentUser, Supplier<ProjectData> projectData, Supplier<ProjectVersionsTable> projectVersionsTable) {
         this.projectService = projectService;
         this.versionService = versionService;
         this.reviewService = reviewService;
         this.notificationService = notificationService;
         this.userActionLogService = userActionLogService;
-        this.userService = userService;
         this.request = request;
+        this.projectData = projectData;
+        this.projectVersionsTable = projectVersionsTable;
         this.currentUser = currentUser;
     }
 
@@ -70,7 +72,7 @@ public class ReviewsController extends HangarController {
     @GetMapping("/{author}/{slug}/versions/{version}/reviews")
     public ModelAndView showReviews(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
         ModelAndView mav = new ModelAndView("users/admin/reviews");
-        VersionData versionData = versionService.getVersionData(author, slug, version);
+        VersionData versionData = versionService.getVersionData(projectData.get(), projectVersionsTable.get());
         mav.addObject("version", versionData);
         mav.addObject("project", versionData.getP());
         List<VersionReview> rv = reviewService.getRecentReviews(versionData.getV().getId());
