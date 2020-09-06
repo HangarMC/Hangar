@@ -365,14 +365,14 @@ public class VersionsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/approve")
     public ModelAndView approve(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
-        return _approve(projectVersionsTable.clone(), author, slug, version, false);
+        return _approve(new ProjectVersionsTable(projectVersionsTable), author, slug, version, false);
     }
 
     @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/approvePartial")
     public ModelAndView approvePartial(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
-        return _approve(projectVersionsTable.clone(), author, slug, version, true);
+        return _approve(new ProjectVersionsTable(projectVersionsTable), author, slug, version, true);
     }
 
     private ModelAndView _approve(ProjectVersionsTable projectVersion, String author, String slug, String version, boolean partial) {
