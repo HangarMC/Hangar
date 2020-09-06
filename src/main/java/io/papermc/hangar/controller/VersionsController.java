@@ -78,6 +78,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Controller
 public class VersionsController extends HangarController {
@@ -101,12 +102,12 @@ public class VersionsController extends HangarController {
     private final HttpServletRequest request;
     private final HttpServletResponse response;
 
-    private final ProjectVersionsTable projectVersionsTable;
+    private final Supplier<ProjectVersionsTable> projectVersionsTable;
     private final ProjectsTable projectsTable;
     private final ProjectData projectData;
 
     @Autowired(required = false)
-    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService, ChannelService channelService, DownloadsService downloadsService, UserActionLogService userActionLogService, CacheManager cacheManager, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, MessageSource messageSource, ObjectMapper mapper, HttpServletRequest request, HttpServletResponse response, ProjectVersionsTable projectVersionsTable, ProjectsTable projectsTable, ProjectData projectData) {
+    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService, ChannelService channelService, DownloadsService downloadsService, UserActionLogService userActionLogService, CacheManager cacheManager, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, MessageSource messageSource, ObjectMapper mapper, HttpServletRequest request, HttpServletResponse response, Supplier<ProjectVersionsTable> projectVersionsTable, ProjectsTable projectsTable, ProjectData projectData) {
         this.projectService = projectService;
         this.versionService = versionService;
         this.projectFactory = projectFactory;
@@ -131,16 +132,16 @@ public class VersionsController extends HangarController {
 
     @Bean
     @RequestScope
-    ProjectVersionsTable projectVersionsTable() {
+    Supplier<ProjectVersionsTable> projectVersionsTable() {
         Map<String, String> pathParams = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
         if (!pathParams.keySet().containsAll(Set.of("author", "slug", "version"))) {
-            return null;
+            return () -> null;
         } else {
-            ProjectVersionsTable projectVersionsTable = versionService.getVersion(pathParams.get("author"), pathParams.get("slug"), pathParams.get("version"));
-            if (projectVersionsTable == null) {
+            ProjectVersionsTable pvt = versionService.getVersion(pathParams.get("author"), pathParams.get("slug"), pathParams.get("version"));
+            if (pvt == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
-            return projectVersionsTable;
+            return () -> pvt;
         }
     }
 
@@ -174,8 +175,8 @@ public class VersionsController extends HangarController {
     public ModelAndView showLog(@PathVariable String author, @PathVariable String slug, @RequestParam String versionString) {
         ModelAndView mv = new ModelAndView("projects/versions/log");
         mv.addObject("project", projectData);
-        mv.addObject("version", projectVersionsTable);
-        mv.addObject("visibilityChanges", versionService.getVersionVisibilityChanges(projectVersionsTable.getId()));
+        mv.addObject("version", projectVersionsTable.get());
+        mv.addObject("visibilityChanges", versionService.getVersionVisibilityChanges(projectVersionsTable.get().getId()));
         return fillModel(mv);
     }
 
@@ -365,14 +366,14 @@ public class VersionsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/approve")
     public ModelAndView approve(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
-        return _approve(new ProjectVersionsTable(projectVersionsTable), author, slug, version, false);
+        return _approve(projectVersionsTable.get(), author, slug, version, false);
     }
 
     @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/approvePartial")
     public ModelAndView approvePartial(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
-        return _approve(new ProjectVersionsTable(projectVersionsTable), author, slug, version, true);
+        return _approve(projectVersionsTable.get(), author, slug, version, true);
     }
 
     private ModelAndView _approve(ProjectVersionsTable projectVersion, String author, String slug, String version, boolean partial) {
@@ -392,7 +393,7 @@ public class VersionsController extends HangarController {
 
     @GetMapping("/{author}/{slug}/versions/{version}/confirm")
     public Object showDownloadConfirm(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(defaultValue = "0") DownloadType downloadType, @RequestParam Optional<Boolean> api, @RequestParam(required = false) String dummy) {
-        if (projectVersionsTable.getReviewState() == ReviewState.REVIEWED) {
+        if (projectVersionsTable.get().getReviewState() == ReviewState.REVIEWED) {
             return AlertUtil.showAlert(Routes.PROJECTS_SHOW.getRedirect(author, slug), AlertType.ERROR, "error.plugin.stateChanged");
         }
         OffsetDateTime expiration = OffsetDateTime.now().plus(hangarConfig.projects.getUnsafeDownloadMaxAge().toMillis(), ChronoUnit.MILLIS);
@@ -400,7 +401,7 @@ public class VersionsController extends HangarController {
         String address = RequestUtil.getRemoteAddress(request);
 
         String apiMsgKey = "version.download.confirm.body.api";
-        if (projectVersionsTable.getReviewState() == ReviewState.PARTIALLY_REVIEWED) {
+        if (projectVersionsTable.get().getReviewState() == ReviewState.PARTIALLY_REVIEWED) {
             apiMsgKey = "version.download.confirmPartial.api";
         }
         String apiMsg = messageSource.getMessage(apiMsgKey, null, LocaleContextHolder.getLocale());
@@ -419,7 +420,7 @@ public class VersionsController extends HangarController {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("message", apiMsg);
             objectNode.put("post", Routes.VERSIONS_CONFIRM_DOWNLOAD.getRouteUrl(author, slug, version, downloadType.ordinal() + "", token, null));
-            objectNode.put("url", Routes.VERSIONS_DOWNLOAD_JAR_BY_ID.getRouteUrl(projectsTable.getPluginId(), projectVersionsTable.getVersionString(), token));
+            objectNode.put("url", Routes.VERSIONS_DOWNLOAD_JAR_BY_ID.getRouteUrl(projectsTable.getPluginId(), projectVersionsTable.get().getVersionString(), token));
             objectNode.put("curl", curlInstruction);
             objectNode.put("token", token);
             return new ResponseEntity<>(objectNode.toPrettyString(), headers, HttpStatus.MULTIPLE_CHOICES);
@@ -431,11 +432,11 @@ public class VersionsController extends HangarController {
                 removeAddWarnings(address, expiration, token);
                 return new ResponseEntity<>(apiMsg + "\n" + curlInstruction + "\n", headers, HttpStatus.MULTIPLE_CHOICES);
             } else {
-                ProjectChannelsTable channelsTable = channelService.getVersionsChannel(projectVersionsTable.getProjectId(), projectVersionsTable.getId());
-                response.addCookie(new Cookie(ProjectVersionDownloadWarningsTable.cookieKey(projectVersionsTable.getId()), "set"));
+                ProjectChannelsTable channelsTable = channelService.getVersionsChannel(projectVersionsTable.get().getProjectId(), projectVersionsTable.get().getId());
+                response.addCookie(new Cookie(ProjectVersionDownloadWarningsTable.cookieKey(projectVersionsTable.get().getId()), "set"));
                 ModelAndView mav = new ModelAndView("projects/versions/unsafeDownload");
                 mav.addObject("project", projectsTable);
-                mav.addObject("target", projectVersionsTable);
+                mav.addObject("target", projectVersionsTable.get());
                 mav.addObject("isTargetChannelNonReviewed", channelsTable.getIsNonReviewed());
                 mav.addObject("downloadType", downloadType);
                 return fillModel(mav);
@@ -444,11 +445,11 @@ public class VersionsController extends HangarController {
     }
 
     private void removeAddWarnings(String address, OffsetDateTime expiration, String token) {
-        downloadWarningDao.get().deleteInvalid(address, projectVersionsTable.getId());
+        downloadWarningDao.get().deleteInvalid(address, projectVersionsTable.get().getId());
         downloadWarningDao.get().insert(new ProjectVersionDownloadWarningsTable(
                 expiration,
                 token,
-                projectVersionsTable.getId(),
+                projectVersionsTable.get().getId(),
                 RequestUtil.getRemoteInetAddress(request)
         ));
     }
@@ -456,7 +457,7 @@ public class VersionsController extends HangarController {
     @PostMapping(value = "/{author}/{slug}/versions/{version}/confirm", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object confirmDownload(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(defaultValue = "0") DownloadType downloadType, @RequestParam Optional<String> token, @RequestParam(required = false) String dummy) {
-        if (projectVersionsTable.getReviewState() == ReviewState.REVIEWED) {
+        if (projectVersionsTable.get().getReviewState() == ReviewState.REVIEWED) {
             return Routes.PROJECTS_SHOW.getRedirect(author, slug);
         }
         ProjectVersionUnsafeDownloadsTable download;
@@ -477,7 +478,7 @@ public class VersionsController extends HangarController {
 
     private ProjectVersionUnsafeDownloadsTable confirmDownload0(DownloadType downloadType, Optional<String> token) {
         if (token.isPresent()) {
-            ProjectVersionDownloadWarningsTable warning = downloadsService.findUnconfirmedWarning(RequestUtil.getRemoteInetAddress(request), token.get(), projectVersionsTable.getId());
+            ProjectVersionDownloadWarningsTable warning = downloadsService.findUnconfirmedWarning(RequestUtil.getRemoteInetAddress(request), token.get(), projectVersionsTable.get().getId());
             if (warning == null) {
                 throw new HangarException("error.plugin.noConfirmDownload");
             } else if (warning.hasExpired()) {
@@ -489,7 +490,7 @@ public class VersionsController extends HangarController {
                 return download;
             }
         } else {
-            String cookieKey = ProjectVersionDownloadWarningsTable.cookieKey(projectVersionsTable.getId());
+            String cookieKey = ProjectVersionDownloadWarningsTable.cookieKey(projectVersionsTable.get().getId());
             Cookie cookie = WebUtils.getCookie(request, cookieKey);
             if (cookie != null && cookie.getValue().contains("set")) {
                 cookie.setValue("confirmed");

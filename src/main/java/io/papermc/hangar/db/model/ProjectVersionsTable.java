@@ -28,26 +28,6 @@ public class ProjectVersionsTable {
     private boolean createForumPost = true;
     private Long postId;
 
-    public ProjectVersionsTable(ProjectVersionsTable other) {
-        this.id = other.id;
-        this.createdAt = other.createdAt;
-        this.versionString = other.versionString;
-        this.dependencies = other.dependencies;
-        this.description = other.description;
-        this.projectId = other.projectId;
-        this.channelId = other.channelId;
-        this.fileSize = other.fileSize;
-        this.hash = other.hash;
-        this.fileName = other.fileName;
-        this.reviewerId = other.reviewerId;
-        this.approvedAt = other.approvedAt;
-        this.authorId = other.authorId;
-        this.visibility = other.visibility;
-        this.reviewState = other.reviewState;
-        this.createForumPost = other.createForumPost;
-        this.postId = other.postId;
-    }
-
     public ProjectVersionsTable(String versionString, List<String> dependencies, String description, long projectId, long channelId, long fileSize, String hash, String fileName, long authorId, boolean createForumPost) {
         this.versionString = versionString;
         this.dependencies = dependencies;
