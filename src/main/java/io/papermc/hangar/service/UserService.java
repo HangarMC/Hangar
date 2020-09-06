@@ -27,20 +27,23 @@ import io.papermc.hangar.service.sso.AuthUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @Service
-public class UserService {
+public class UserService extends HangarService {
 
     private final HangarDao<UserDao> userDao;
     private final HangarDao<OrganizationDao> orgDao;
@@ -63,42 +66,32 @@ public class UserService {
         this.orgService = orgService;
     }
 
-    public Optional<UsersTable> currentUser() {
+    @Bean
+    @RequestScope
+    public Supplier<Optional<UsersTable>> currentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
             HangarAuthentication auth = (HangarAuthentication) authentication;
-            return Optional.ofNullable(auth.getTable());
+            return () -> Optional.ofNullable(auth.getTable());
         }
-        return Optional.empty();
-    }
-
-    public UsersTable getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
-            HangarAuthentication auth = (HangarAuthentication) authentication;
-//            User user = new User();
-//            user.setName((String) authentication.getPrincipal());
-//            user.setAvatarUrl("https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png");
-//            user.setId("dummyid");
-            return auth.getTable();
-        }
-
-        return null;
+        return Optional::empty;
     }
 
     public HeaderData getHeaderData() {
-        boolean hasCurrentUser = getCurrentUser() != null;
-        HeaderData headerData = new HeaderData(
-                getCurrentUser(),
-                hasCurrentUser ? permissionService.getGlobalPermissions(getCurrentUser().getId()) : PermissionService.DEFAULT_GLOBAL_PERMISSIONS,
+        if (currentUser.get().isEmpty()) {
+            return HeaderData.UNAUTHENTICATED;
+        }
+        UsersTable curUser = currentUser.get().get();
+        // TODO fill headerData
+        return new HeaderData(
+                curUser,
+                permissionService.getGlobalPermissions(curUser.getId()),
                 false,
                 false,
                 false,
                 false,
                 false
         );
-        // TODO fill header data
-        return headerData;
     }
 
     @CacheEvict(value = CacheConfig.AUTHORS_CACHE,  allEntries = true)
@@ -254,12 +247,11 @@ public class UserService {
     }
 
     public void markPromptAsRead(Prompt prompt) {
-        UsersTable currentUser = getCurrentUser();
-        if (currentUser != null) {
-            if (!currentUser.getReadPrompts().contains(prompt.ordinal())) {
-                currentUser.getReadPrompts().add(prompt.ordinal());
+        if (currentUser.get().isPresent()) {
+            if (!currentUser.get().get().getReadPrompts().contains(prompt.ordinal())) {
+                currentUser.get().get().getReadPrompts().add(prompt.ordinal());
             }
-            userDao.get().update(currentUser);
+            userDao.get().update(currentUser.get().get());
         }
     }
 

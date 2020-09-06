@@ -9,19 +9,17 @@ import io.papermc.hangar.db.model.LoggedActionsProjectTable;
 import io.papermc.hangar.db.model.LoggedActionsUserTable;
 import io.papermc.hangar.db.model.LoggedActionsVersionTable;
 import io.papermc.hangar.model.viewhelpers.LoggedActionViewModel;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Service
-public class UserActionLogService {
+public class UserActionLogService extends HangarService {
 
     private final HangarDao<ActionsDao> actionsDao;
     private final UserService userService;
@@ -34,7 +32,7 @@ public class UserActionLogService {
 
     public void project(HttpServletRequest request, LoggedActionType<LoggedActionType.ProjectContext> loggedActionType, String newState, String oldState) {
         LoggedActionsProjectTable log = new LoggedActionsProjectTable(
-                userService.getCurrentUser().getId(),
+                getCurrentUser().getId(),
                 getInetAddress(request),
                 loggedActionType.getValue(),
                 loggedActionType.getActionContext().getProjectId(),
@@ -46,7 +44,7 @@ public class UserActionLogService {
 
     public void projectPage(HttpServletRequest request, LoggedActionType<LoggedActionType.ProjectPageContext> loggedActionType, String newState, String oldState) {
         LoggedActionsPageTable log = new LoggedActionsPageTable(
-                userService.getCurrentUser().getId(),
+                getCurrentUser().getId(),
                 getInetAddress(request),
                 loggedActionType.getValue(),
                 loggedActionType.getActionContext().getProjectId(),
@@ -59,7 +57,7 @@ public class UserActionLogService {
 
     public void version(HttpServletRequest request, LoggedActionType<LoggedActionType.VersionContext> loggedActionType, String newState, String oldState) {
         LoggedActionsVersionTable log = new LoggedActionsVersionTable(
-                userService.getCurrentUser().getId(),
+                getCurrentUser().getId(),
                 getInetAddress(request),
                 loggedActionType.getValue(),
                 loggedActionType.getActionContext().getProjectId(),
@@ -72,7 +70,7 @@ public class UserActionLogService {
 
     public void user(HttpServletRequest request, LoggedActionType<LoggedActionType.UserContext> loggedActionType, String newState, String oldState) {
         LoggedActionsUserTable log = new LoggedActionsUserTable(
-                userService.getCurrentUser().getId(),
+                getCurrentUser().getId(),
                 getInetAddress(request),
                 loggedActionType.getValue(),
                 loggedActionType.getActionContext().getUserId(),
@@ -84,7 +82,7 @@ public class UserActionLogService {
 
     public void organization(HttpServletRequest request, LoggedActionType<LoggedActionType.OrganizationContext> loggedActionType, String newState, String oldState) {
         LoggedActionsOrganizationTable log = new LoggedActionsOrganizationTable(
-                userService.getCurrentUser().getId(),
+                getCurrentUser().getId(),
                 getInetAddress(request),
                 loggedActionType.getValue(),
                 loggedActionType.getActionContext().getOrganizationLog(),

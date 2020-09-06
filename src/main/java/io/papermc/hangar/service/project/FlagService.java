@@ -5,6 +5,7 @@ import io.papermc.hangar.model.viewhelpers.ProjectFlag;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.model.ProjectFlagsTable;
 import io.papermc.hangar.model.FlagReason;
+import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class FlagService {
+public class FlagService extends HangarService {
 
     private final UserService userService;
     private final HangarDao<FlagDao> flagDao;
@@ -26,13 +27,13 @@ public class FlagService {
     }
 
     public boolean hasUnresolvedFlag(long projectId) {
-        return flagDao.get().getUnresolvedFlag(projectId, userService.getCurrentUser().getId()) != null;
+        return flagDao.get().getUnresolvedFlag(projectId, getCurrentUser().getId()) != null;
     }
 
     public void flagProject(long projectId, FlagReason flagReason, String comment) {
         ProjectFlagsTable flag = new ProjectFlagsTable(
                 projectId,
-                userService.getCurrentUser().getId(),
+                getCurrentUser().getId(),
                 flagReason,
                 comment
         );
@@ -40,7 +41,7 @@ public class FlagService {
     }
 
     public ProjectFlagsTable markAsResolved(long flagId, boolean resolved) {
-        Long resolvedBy = resolved ? userService.getCurrentUser().getId() : null;
+        Long resolvedBy = resolved ? getCurrentUser().getId() : null;
         OffsetDateTime resolvedAt = resolved ? OffsetDateTime.now() : null;
         return flagDao.get().markAsResolved(flagId, resolved, resolvedBy, resolvedAt);
     }

@@ -48,7 +48,6 @@ import io.papermc.hangar.util.StringUtils;
 import io.papermc.hangar.util.TemplateHelper;
 import io.papermc.hangar.util.TriFunction;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -60,10 +59,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -80,8 +77,8 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -133,31 +130,6 @@ public class ProjectsController extends HangarController {
         this.request = request;
     }
 
-    @Bean
-    @RequestScope
-    Supplier<ProjectsTable> projectsTable() {
-        Map<String, String> pathParams = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        ProjectsTable pt;
-        if (pathParams.keySet().containsAll(Set.of("author", "slug"))) {
-            pt = projectService.getProjectsTable(pathParams.get("author"), pathParams.get("slug"));
-        } else if (pathParams.containsKey("pluginId")) {
-            pt = projectService.getProjectsTable(pathParams.get("pluginId"));
-        } else {
-            return () -> null;
-        }
-        if (pt == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return () -> pt;
-    }
-
-    @Bean
-    @RequestScope
-    Supplier<ProjectData> projectData() {
-        //noinspection SpringConfigurationProxyMethods
-        return () -> projectService.getProjectData(projectsTable().get());
-    }
-
     @Secured("ROLE_USER")
     @PostMapping(value = "/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public Object createProject(@RequestParam("name") String name,
@@ -165,9 +137,9 @@ public class ProjectsController extends HangarController {
                                 @RequestParam("category") String cat,
                                 @RequestParam("description") String description,
                                 @RequestParam("owner") long owner) {
-        UsersTable currentUser = userService.getCurrentUser();
         // check if creation should be prevented
-        String uploadError = projectFactory.getUploadError(currentUser);
+        UsersTable curUser = getCurrentUser();
+        String uploadError = projectFactory.getUploadError(curUser);
         if (uploadError != null) {
             ModelAndView mav = showCreator();
             AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, uploadError);
@@ -185,13 +157,17 @@ public class ProjectsController extends HangarController {
             AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, "error.project.invalidPluginId");
             return fillModel(mav);
         }
-        List<OrganizationsTable> orgs = userService.getOrganizationsUserCanUploadTo(userService.getCurrentUser());
-        ProjectOwner ownerUser = orgs.stream().filter(org -> org.getId() == owner).map(ProjectOwner.class::cast).findAny().orElse(userService.getCurrentUser());
-        // find owner
-        if (ownerUser == null) {
-            ModelAndView mav = showCreator();
-            AlertUtil.showAlert(mav, AlertType.ERROR, "error.project.ownerNotFound");
-            return fillModel(mav);
+        ProjectOwner ownerUser;
+        if (owner != curUser.getId()) {
+            List<OrganizationsTable> orgs = userService.getOrganizationsUserCanUploadTo(curUser);
+            Optional<ProjectOwner> ownerOptional = orgs.stream().filter(org -> org.getId() == owner).map(ProjectOwner.class::cast).findAny();
+            if (ownerOptional.isEmpty()) {
+                return AlertUtil.showAlert(Routes.PROJECTS_SHOW_CREATOR.getRedirect(), AlertType.ERROR, "error.project.ownerNotFound");
+            } else {
+                ownerUser = ownerOptional.get();
+            }
+        } else {
+            ownerUser = curUser;
         }
 
         // create project
@@ -245,7 +221,7 @@ public class ProjectsController extends HangarController {
     @GetMapping("/new")
     public ModelAndView showCreator() {
         ModelAndView mav = new ModelAndView("projects/create");
-        mav.addObject("createProjectOrgas", orgService.getOrgsWithPerm(userService.getCurrentUser(), Permission.CreateProject));
+        mav.addObject("createProjectOrgas", orgService.getOrgsWithPerm(getCurrentUser(), Permission.CreateProject));
         return fillModel(mav);
     }
 
@@ -288,7 +264,7 @@ public class ProjectsController extends HangarController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Comment must not be blank");
         }
         flagService.flagProject(projectData.getProject().getId(), flagReason, comment);
-        String userName = userService.getCurrentUser().getName();
+        String userName = getCurrentUser().getName();
         userActionLogService.project(request, LoggedActionType.PROJECT_FLAGGED.with(ProjectContext.of(projectData.getProject().getId())), "Flagged by " + userName, "Not flagged by " + userName);
         return Routes.PROJECTS_SHOW.getRedirect(author, slug); // TODO flashing
     }
@@ -558,16 +534,16 @@ public class ProjectsController extends HangarController {
     @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/notes/addmessage")
-    public ModelAndView addMessage(@PathVariable String author, @PathVariable String slug, @RequestParam String content) {
+    public ResponseEntity<String> addMessage(@PathVariable String author, @PathVariable String slug, @RequestParam String content) {
         ProjectData projectData = projectService.getProjectData(author, slug);
         ArrayNode messages = projectData.getProject().getNotes().getJson().withArray("messages");
         ObjectNode note = messages.addObject();
         note.put("message", content);
-        note.put("user", userService.getCurrentUser().getId());
+        note.put("user", getCurrentUser().getId());
 
         String json = projectData.getProject().getNotes().getJson().toString();
         projectDao.get().updateNotes(json, projectData.getProject().getId());
-        return null;
+        return ResponseEntity.ok("Review");
     }
 
     @GetMapping("/{author}/{slug}/stars")
@@ -579,12 +555,13 @@ public class ProjectsController extends HangarController {
     @PostMapping("/{author}/{slug}/stars/toggle")
     @ResponseStatus(HttpStatus.OK)
     public void toggleStarred(@PathVariable String author, @PathVariable String slug) {
+        UsersTable curUser = getCurrentUser();
         ProjectData projectData = projectService.getProjectData(author, slug);
         ScopedProjectData scopedProjectData = projectService.getScopedProjectData(projectData.getProject().getId());
         if (scopedProjectData.isStarred()) {
-            userDao.get().removeStargazing(projectData.getProject().getId(), userService.getCurrentUser().getId());
+            userDao.get().removeStargazing(projectData.getProject().getId(), curUser.getId());
         } else {
-            userDao.get().setStargazing(projectData.getProject().getId(), userService.getCurrentUser().getId());
+            userDao.get().setStargazing(projectData.getProject().getId(), curUser.getId());
         }
     }
 
@@ -610,13 +587,14 @@ public class ProjectsController extends HangarController {
     @PostMapping("/{author}/{slug}/watchers/{watching}")
     @ResponseStatus(HttpStatus.OK)
     public void setWatching(@PathVariable String author, @PathVariable String slug, @PathVariable boolean watching) {
+        UsersTable curUser = getCurrentUser();
         ProjectData projectData = projectService.getProjectData(author, slug);
         ScopedProjectData scopedProjectData = projectService.getScopedProjectData(projectData.getProject().getId());
         if (scopedProjectData.isWatching() == watching) return; // No change
         if (watching) {
-            userDao.get().setWatching(projectData.getProject().getId(), userService.getCurrentUser().getId());
+            userDao.get().setWatching(projectData.getProject().getId(), curUser.getId());
         } else {
-            userDao.get().removeWatching(projectData.getProject().getId(), userService.getCurrentUser().getId());
+            userDao.get().removeWatching(projectData.getProject().getId(), curUser.getId());
         }
     }
 

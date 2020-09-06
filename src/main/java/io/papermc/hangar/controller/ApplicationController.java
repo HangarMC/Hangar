@@ -5,6 +5,7 @@ import io.papermc.hangar.controller.util.StatusZ;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.model.Stats;
+import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.NamedPermission;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.Visibility;
@@ -50,6 +51,8 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Controller
@@ -150,7 +153,7 @@ public class ApplicationController extends HangarController {
         if (flag.getFlag().getIsResolved() == resolved) return; // No change
 
         flagService.markAsResolved(id, resolved);
-        String userName = userService.getCurrentUser().getName();
+        String userName = getCurrentUser().getName();
         userActionLogService.project(request, LoggedActionType.PROJECT_FLAG_RESOLVED.with(ProjectContext.of(flag.getFlag().getProjectId())), "Flag resovled by " + userName, "Flagged by " + flag.getReportedBy());
     }
 

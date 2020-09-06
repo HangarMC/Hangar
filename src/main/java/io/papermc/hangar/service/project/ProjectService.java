@@ -27,26 +27,34 @@ import io.papermc.hangar.model.viewhelpers.ProjectViewSettings;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.model.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.model.viewhelpers.UserRole;
+import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.pluginupload.ProjectFiles;
+import io.papermc.hangar.util.RequestUtil;
 import io.papermc.hangar.util.StringUtils;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
-public class ProjectService {
+public class ProjectService extends HangarService {
 
     private final HangarConfig hangarConfig;
     private final HangarDao<ProjectDao> projectDao;
@@ -59,8 +67,10 @@ public class ProjectService {
     private final PermissionService permissionService;
     private final ProjectFiles projectFiles;
 
+    private final HttpServletRequest request;
+
     @Autowired
-    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectViewDao> projectViewDao, HangarDao<GeneralDao> generalDao, ProjectFiles projectFiles, UserService userService, FlagService flagService, PermissionService permissionService) {
+    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectViewDao> projectViewDao, HangarDao<GeneralDao> generalDao, ProjectFiles projectFiles, UserService userService, FlagService flagService, PermissionService permissionService, HttpServletRequest request) {
         this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
         this.userDao = userDao;
@@ -71,6 +81,32 @@ public class ProjectService {
         this.userService = userService;
         this.flagService = flagService;
         this.permissionService = permissionService;
+        this.request = request;
+    }
+
+    @Bean
+    @RequestScope
+    public Supplier<ProjectsTable> projectsTable() {
+        Map<String, String> pathParams = RequestUtil.getPathParams(request);
+        ProjectsTable pt;
+        if (pathParams.keySet().containsAll(Set.of("author", "slug"))) {
+            pt = this.getProjectsTable(pathParams.get("author"), pathParams.get("slug"));
+        } else if (pathParams.containsKey("pluginId")) {
+            pt = this.getProjectsTable(pathParams.get("pluginId"));
+        } else {
+            return () -> null;
+        }
+        if (pt == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return () -> pt;
+    }
+
+    @Bean
+    @RequestScope
+    public Supplier<ProjectData> projectData() {
+        //noinspection SpringConfigurationProxyMethods
+        return () -> this.getProjectData(projectsTable().get());
     }
 
     public ProjectData getProjectData(String author, String slug) {
@@ -127,15 +163,15 @@ public class ProjectService {
     }
 
     public ScopedProjectData getScopedProjectData(long projectId) {
-        UsersTable currentUser = userService.getCurrentUser();
-        if (currentUser == null) {
+        Optional<UsersTable> curUser = currentUser.get();
+        if (curUser.isEmpty()) {
             return new ScopedProjectData();
         } else {
-            ScopedProjectData sp = projectDao.get().getScopedProjectData(projectId, currentUser.getId());
+            ScopedProjectData sp = projectDao.get().getScopedProjectData(projectId, curUser.get().getId());
             if (sp == null) {
                 return new ScopedProjectData();
             }
-            sp.setPermissions(permissionService.getProjectPermissions(currentUser.getId(), projectId));
+            sp.setPermissions(permissionService.getProjectPermissions(curUser.get().getId(), projectId));
             return sp;
         }
     }
@@ -148,13 +184,12 @@ public class ProjectService {
         return projectDao.get().getByPluginId(pluginId);
     }
 
-    @Secured("ROLE_USER")
     public void changeVisibility(ProjectsTable project, Visibility newVisibility, String comment) {
         Preconditions.checkNotNull(project, "project");
         Preconditions.checkNotNull(newVisibility, "newVisibility");
         if (project.getVisibility() == newVisibility) return; // No change
 
-        visibilityDao.get().updateLatestProjectChange(userService.getCurrentUser().getId(), project.getId());
+        visibilityDao.get().updateLatestProjectChange(getCurrentUser().getId(), project.getId());
 
         visibilityDao.get().insert(new ProjectVisibilityChangesTable(project.getOwnerId(), project.getId(), comment, null, null, newVisibility));
 

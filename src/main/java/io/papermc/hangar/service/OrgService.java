@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 @Service
-public class OrgService {
+public class OrgService extends HangarService {
 
     private final PermissionService permissionService;
     private final UserService userService;
@@ -77,8 +77,8 @@ public class OrgService {
     }
 
     public ScopedOrganizationData getScopedOrganizationData(OrganizationsTable org) {
-        if (userService.getCurrentUser() != null) {
-            return new ScopedOrganizationData(permissionService.getOrganizationPermissions(userService.getCurrentUser(), org.getName()));
+        if (currentUser.get().isPresent()) {
+            return new ScopedOrganizationData(permissionService.getOrganizationPermissions(currentUser.get().get(), org.getName()));
         }
         return new ScopedOrganizationData();
     }

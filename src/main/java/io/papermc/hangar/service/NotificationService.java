@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 @Service
-public class NotificationService {
+public class NotificationService extends HangarService {
 
     private final HangarDao<NotificationsDao> notificationsDao;
     private final HangarDao<UserProjectRolesDao> userProjectRolesDao;
@@ -51,11 +51,11 @@ public class NotificationService {
     }
 
     public boolean markAsRead(long notificationId) {
-        return notificationsDao.get().markAsRead(notificationId, userService.getCurrentUser().getId());
+        return notificationsDao.get().markAsRead(notificationId, getCurrentUser().getId());
     }
 
     public Map<NotificationsTable, UsersTable> getNotifications(NotificationFilter filter) {
-        return notificationsDao.get().getUserNotifications(userService.getCurrentUser().getId(), filter.getFilter())
+        return notificationsDao.get().getUserNotifications(getCurrentUser().getId(), filter.getFilter())
                 .entrySet().stream().collect(HashMap::new, (m, v) -> {
                     if (v.getValue() == null || v.getValue().getName() == null) {
                         m.put(v.getKey(), null);
@@ -66,7 +66,7 @@ public class NotificationService {
     }
 
     public Map<UserRole<?>, InviteSubject<?>> getInvites(InviteFilter inviteFilter) {
-        long userId = userService.getCurrentUser().getId();
+        long userId = getCurrentUser().getId();
         Map<UserRole<?>, InviteSubject<?>> result = new HashMap<>();
         switch (inviteFilter) {
             case PROJECTS:

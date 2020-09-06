@@ -13,6 +13,8 @@ public class HeaderData {
     private final boolean hasProjectApprovals;
     private final boolean hasReviewQueue;
 
+    public static final HeaderData UNAUTHENTICATED = new HeaderData();
+
     public HeaderData(UsersTable currentUser, Permission globalPermission, boolean hasNotice, boolean hasUnreadNotifications, boolean unresolvedFlags, boolean hasProjectApprovals, boolean hasReviewQueue) {
         this.currentUser = currentUser;
         this.globalPermission = globalPermission;
@@ -21,6 +23,16 @@ public class HeaderData {
         this.unresolvedFlags = unresolvedFlags;
         this.hasProjectApprovals = hasProjectApprovals;
         this.hasReviewQueue = hasReviewQueue;
+    }
+
+    private HeaderData() {
+        currentUser = null;
+        globalPermission = Permission.None;
+        hasNotice = false;
+        hasUnreadNotifications = false;
+        unresolvedFlags = false;
+        hasProjectApprovals = false;
+        hasReviewQueue = false;
     }
 
     public boolean isAuthenticated() {

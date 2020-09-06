@@ -42,7 +42,6 @@ import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
@@ -58,10 +57,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -74,9 +71,7 @@ import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -101,13 +96,13 @@ public class VersionsController extends HangarController {
 
     private final HttpServletRequest request;
     private final HttpServletResponse response;
-
     private final Supplier<ProjectVersionsTable> projectVersionsTable;
     private final Supplier<VersionData> versionData;
     private final Supplier<ProjectsTable> projectsTable;
     private final Supplier<ProjectData> projectData;
 
-    @Autowired(required = false)
+
+    @Autowired
     public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService, ChannelService channelService, DownloadsService downloadsService, UserActionLogService userActionLogService, CacheManager cacheManager, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, MessageSource messageSource, ObjectMapper mapper, HttpServletRequest request, HttpServletResponse response, Supplier<ProjectVersionsTable> projectVersionsTable, Supplier<VersionData> versionData, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
         this.projectService = projectService;
         this.versionService = versionService;
@@ -130,28 +125,6 @@ public class VersionsController extends HangarController {
         this.versionData = versionData;
         this.projectsTable = projectsTable;
         this.projectData = projectData;
-    }
-
-    @Bean
-    @RequestScope
-    Supplier<ProjectVersionsTable> projectVersionsTable() {
-        Map<String, String> pathParams = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        if (!pathParams.keySet().containsAll(Set.of("author", "slug", "version"))) {
-            return () -> null;
-        } else {
-            ProjectVersionsTable pvt = versionService.getVersion(pathParams.get("author"), pathParams.get("slug"), pathParams.get("version"));
-            if (pvt == null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            }
-            return () -> pvt;
-        }
-    }
-
-    @Bean
-    @RequestScope
-    Supplier<VersionData> versionData() {
-        //noinspection SpringConfigurationProxyMethods
-        return () -> versionService.getVersionData(projectData.get(), projectVersionsTable().get());
     }
 
     @GetMapping(value = "/api/project/{pluginId}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -210,7 +183,7 @@ public class VersionsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/new/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ModelAndView upload(@PathVariable String author, @PathVariable String slug, @RequestParam("pluginFile") MultipartFile file) {
-        String uploadError = projectFactory.getUploadError(userService.getCurrentUser());
+        String uploadError = projectFactory.getUploadError(getCurrentUser());
         if (uploadError != null) {
             if (file == null) {
                 uploadError = "error.noFile";
@@ -391,7 +364,7 @@ public class VersionsController extends HangarController {
         ReviewState newState = partial ? ReviewState.PARTIALLY_REVIEWED : ReviewState.REVIEWED;
         ReviewState oldState = projectVersion.getReviewState();
         projectVersion.setReviewState(newState);
-        projectVersion.setReviewerId(userService.getCurrentUser().getId());
+        projectVersion.setReviewerId(getCurrentUser().getId());
         projectVersion.setApprovedAt(OffsetDateTime.now());
         projectVersion.setVisibility(Visibility.PUBLIC);
         versionService.update(projectVersion);
@@ -493,7 +466,7 @@ public class VersionsController extends HangarController {
                 downloadsService.deleteWarning(warning);
                 throw new HangarException("error.plugin.noConfirmDownload");
             } else {
-                ProjectVersionUnsafeDownloadsTable download = downloadsService.addUnsafeDownload(new ProjectVersionUnsafeDownloadsTable(userService.currentUser().map(UsersTable::getId).orElse(null), RequestUtil.getRemoteInetAddress(request), downloadType));
+                ProjectVersionUnsafeDownloadsTable download = downloadsService.addUnsafeDownload(new ProjectVersionUnsafeDownloadsTable(currentUser.get().map(UsersTable::getId).orElse(null), RequestUtil.getRemoteInetAddress(request), downloadType));
                 downloadsService.confirmWarning(warning, download.getId());
                 return download;
             }
@@ -503,7 +476,7 @@ public class VersionsController extends HangarController {
             if (cookie != null && cookie.getValue().contains("set")) {
                 cookie.setValue("confirmed");
                 response.addCookie(cookie);
-                return downloadsService.addUnsafeDownload(new ProjectVersionUnsafeDownloadsTable(userService.currentUser().map(UsersTable::getId).orElse(null), RequestUtil.getRemoteInetAddress(request), downloadType));
+                return downloadsService.addUnsafeDownload(new ProjectVersionUnsafeDownloadsTable(currentUser.get().map(UsersTable::getId).orElse(null), RequestUtil.getRemoteInetAddress(request), downloadType));
             } else {
                 throw new HangarException("error.plugin.noConfirmDownload");
             }
@@ -513,17 +486,16 @@ public class VersionsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version}/delete", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView softDelete(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String comment, RedirectAttributes ra) {
-        VersionData versionData = versionService.getVersionData(author, slug, version);
         try {
-            projectFactory.prepareDeleteVersion(versionData);
+            projectFactory.prepareDeleteVersion(versionData.get());
         } catch (HangarException e) {
             AlertUtil.showAlert(ra, AlertUtil.AlertType.ERROR, e.getMessage());
             return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
         }
 
-        Visibility oldVisibility = versionData.getV().getVisibility();
-        versionService.changeVisibility(versionData, Visibility.SOFTDELETE, comment, userService.getCurrentUser().getId());
-        userActionLogService.version(request, LoggedActionType.VERSION_DELETED.with(VersionContext.of(versionData.getP().getProject().getId(), versionData.getV().getId())), "SoftDelete: " + comment, oldVisibility.getName());
+        Visibility oldVisibility = versionData.get().getV().getVisibility();
+        versionService.changeVisibility(versionData.get(), Visibility.SOFTDELETE, comment, getCurrentUser().getId());
+        userActionLogService.version(request, LoggedActionType.VERSION_DELETED.with(VersionContext.of(versionData.get().getP().getProject().getId(), versionData.get().getV().getId())), "SoftDelete: " + comment, oldVisibility.getName());
         return Routes.VERSIONS_SHOW_LIST.getRedirect(author, slug);
     }
 
@@ -539,13 +511,14 @@ public class VersionsController extends HangarController {
         if (passed || confirm) {
             return _sendVersion(project, version);
         } else {
-            return new RedirectView(Routes.getRouteUrlOf("versions.showDownloadConfirm",
+            return Routes.VERSIONS_SHOW_DOWNLOAD_CONFIRM.getRedirect(
                     project.getOwnerName(),
                     project.getSlug(),
                     version.getVersionString(),
                     DownloadType.UPLOADED_FILE.ordinal() + "",
                     false + "",
-                    "dummy"));
+                    "dummy"
+            );
         }
     }
 
@@ -634,9 +607,8 @@ public class VersionsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/recommended")
     public ModelAndView setRecommended(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
-        VersionData versionData = versionService.getVersionData(author, slug, version);
-        versionData.getP().getProject().setRecommendedVersionId(versionData.getV().getId());
-        projectDao.get().update(versionData.getP().getProject());
+        versionData.get().getP().getProject().setRecommendedVersionId(versionData.get().getV().getId());
+        projectDao.get().update(versionData.get().getP().getProject());
         return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
     }
 
@@ -644,21 +616,19 @@ public class VersionsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version}/restore", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView restore(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String comment) {
-        VersionData versionData = versionService.getVersionData(author, slug, version);
-        versionService.changeVisibility(versionData, Visibility.PUBLIC, comment, userService.getCurrentUser().getId());
-        userActionLogService.version(request, LoggedActionType.VERSION_DELETED.with(VersionContext.of(versionData.getP().getProject().getId(), versionData.getV().getId())), "Restore: " + comment, "");
+        versionService.changeVisibility(versionData.get(), Visibility.PUBLIC, comment, getCurrentUser().getId());
+        userActionLogService.version(request, LoggedActionType.VERSION_DELETED.with(VersionContext.of(versionData.get().getP().getProject().getId(), versionData.get().getV().getId())), "Restore: " + comment, "");
         return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
     }
 
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version}/save", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView saveDescription(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String content) {
-        VersionData versionData = versionService.getVersionData(author, slug, version);
-        String oldDesc = versionData.getV().getDescription();
+        String oldDesc = versionData.get().getV().getDescription();
         String newDesc = content.trim();
-        versionData.getV().setDescription(newDesc);
-        versionService.update(versionData.getV());
-        userActionLogService.version(request, LoggedActionType.VERSION_DESCRIPTION_CHANGED.with(VersionContext.of(versionData.getP().getProject().getId(), versionData.getV().getId())), newDesc, oldDesc);
+        versionData.get().getV().setDescription(newDesc);
+        versionService.update(versionData.get().getV());
+        userActionLogService.version(request, LoggedActionType.VERSION_DESCRIPTION_CHANGED.with(VersionContext.of(versionData.get().getP().getProject().getId(), versionData.get().getV().getId())), newDesc, oldDesc);
         return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
     }
 

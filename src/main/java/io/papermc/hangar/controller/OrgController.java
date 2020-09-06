@@ -93,7 +93,7 @@ public class OrgController extends HangarController {
     @Secured("ROLE_USER")
     @GetMapping("/organizations/new")
     public ModelAndView showCreator(RedirectAttributes attributes, ModelMap modelMap) {
-        if (orgService.getUserOwnedOrgs(userService.getCurrentUser().getId()).size() >= hangarConfig.org.getCreateLimit()) {
+        if (orgService.getUserOwnedOrgs(getCurrentUser().getId()).size() >= hangarConfig.org.getCreateLimit()) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.org.createLimit", String.valueOf(hangarConfig.org.getCreateLimit()));
             return Routes.SHOW_HOME.getRedirect();
         }
@@ -103,10 +103,10 @@ public class OrgController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping(value = "/organizations/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView create(@RequestParam String name, @RequestParam(required = false) List<Long> users, @RequestParam(required = false) List<Role> roles, RedirectAttributes attributes) {
-        if (orgService.getUserOwnedOrgs(userService.getCurrentUser().getId()).size() >= hangarConfig.org.getCreateLimit()) {
+        if (orgService.getUserOwnedOrgs(getCurrentUser().getId()).size() >= hangarConfig.org.getCreateLimit()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "at create limit");
         }
-        if (userService.getCurrentUser().isLocked()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        if (currentUser.get().get().isLocked()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         if (!hangarConfig.org.isEnabled()) {
             AlertUtil.showAlert(attributes, AlertType.ERROR, "error.org.disabled");
             return Routes.ORG_SHOW_CREATOR.getRedirect();
@@ -115,7 +115,7 @@ public class OrgController extends HangarController {
 
             OrganizationsTable org;
             try {
-                org = orgFactory.createOrganization(name, userService.getCurrentUser().getId(), userRoles);
+                org = orgFactory.createOrganization(name, currentUser.get().get().getId(), userRoles);
             } catch (HangarException e) {
                 AlertUtil.showAlert(attributes, AlertType.ERROR, e.getMessageKey(), e.getArgs());
                 return Routes.ORG_SHOW_CREATOR.getRedirect();
@@ -129,7 +129,7 @@ public class OrgController extends HangarController {
     @PreAuthorize("@authenticationService.authOrgRequest(T(io.papermc.hangar.model.Permission).EditOrganizationSettings, #organization, true)")
     public ModelAndView updateAvatar(@PathVariable String organization) {
         try {
-            URI uri = authenticationService.changeAvatarUri(userService.getCurrentUser().getName(), organization);
+            URI uri = authenticationService.changeAvatarUri(getCurrentUser().getName(), organization);
             return new ModelAndView("redirect:" + uri.toString());
         } catch (JsonProcessingException e) {
             ModelAndView mav = Routes.USERS_SHOW_PROJECTS.getRedirect(organization);

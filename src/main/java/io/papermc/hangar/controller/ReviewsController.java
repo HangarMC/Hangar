@@ -38,6 +38,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 @Controller
 public class ReviewsController extends HangarController {
@@ -52,7 +54,7 @@ public class ReviewsController extends HangarController {
     private final HttpServletRequest request;
 
     @Autowired
-    public ReviewsController(ProjectService projectService, VersionService versionService, ReviewService reviewService, NotificationService notificationService, UserActionLogService userActionLogService, UserService userService, HttpServletRequest request) {
+    public ReviewsController(ProjectService projectService, VersionService versionService, ReviewService reviewService, NotificationService notificationService, UserActionLogService userActionLogService, UserService userService, HttpServletRequest request, Supplier<Optional<UsersTable>> currentUser) {
         this.projectService = projectService;
         this.versionService = versionService;
         this.reviewService = reviewService;
@@ -60,6 +62,7 @@ public class ReviewsController extends HangarController {
         this.userActionLogService = userActionLogService;
         this.userService = userService;
         this.request = request;
+        this.currentUser = currentUser;
     }
 
     @GlobalPermission(NamedPermission.REVIEWER)
@@ -81,12 +84,13 @@ public class ReviewsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version}/reviews/addmessage", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<String> addMessage(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String content) {
+        UsersTable curUser = currentUser.get().orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
         ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
         VersionReview recentReview = reviewService.getMostRecentUnfinishedReview(versionsTable.getId());
         if (recentReview == null) {
             return new ResponseEntity<>("Review", HttpStatus.OK);
         }
-        if (recentReview.getUserId() == userService.getCurrentUser().getId()) {
+        if (recentReview.getUserId() == curUser.getId()) {
             recentReview.addMessage(new VersionReviewMessage(content), reviewService);
         } else {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -135,7 +139,7 @@ public class ReviewsController extends HangarController {
         ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
         ProjectVersionReviewsTable review = new ProjectVersionReviewsTable(
                 versionsTable.getId(),
-                userService.getCurrentUser().getId(),
+                getCurrentUser().getId(),
                 new JSONB("{}")
         );
         reviewService.insert(review);
@@ -208,7 +212,7 @@ public class ReviewsController extends HangarController {
 
         reviewService.insert(new ProjectVersionReviewsTable(
                 versionsTable.getId(),
-                userService.getCurrentUser().getId(),
+                getCurrentUser().getId(),
                 new JSONB("{}")
         ));
         return Routes.REVIEWS_SHOW_REVIEWS.getRedirect(author, slug, version);

@@ -27,6 +27,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -36,6 +37,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -43,11 +45,13 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 @Service
-public class AuthenticationService {
+public class AuthenticationService extends HangarService {
 
     private final HttpServletRequest request;
     private final ApiAuthInfo apiAuthInfo;
@@ -59,7 +63,6 @@ public class AuthenticationService {
     private final RoleService roleService;
     private final PermissionService permissionService;
     private final OrgService orgService;
-    private final UserService userService;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
@@ -67,7 +70,7 @@ public class AuthenticationService {
     private static final Pattern API_KEY_PATTERN = Pattern.compile("(" + UUID_REGEX + ").(" + UUID_REGEX + ")");
 
     @Autowired
-    public AuthenticationService(HttpServletRequest request, ApiAuthInfo apiAuthInfo, HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService, OrgService orgService, UserService userService, RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public AuthenticationService(HttpServletRequest request, ApiAuthInfo apiAuthInfo, HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService, OrgService orgService, RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.request = request;
         this.apiAuthInfo = apiAuthInfo;
         this.hangarConfig = hangarConfig;
@@ -78,7 +81,6 @@ public class AuthenticationService {
         this.roleService = roleService;
         this.permissionService = permissionService;
         this.orgService = orgService;
-        this.userService = userService;
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
     }
@@ -140,7 +142,7 @@ public class AuthenticationService {
         if (requireUnlock) { } // TODO ensure unlocked
         OrganizationsTable org = orgService.getOrganization(organizationName);
         if (org == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        Permission orgPerms = permissionService.getOrganizationPermissions(userService.getCurrentUser(), organizationName);
+        Permission orgPerms = permissionService.getOrganizationPermissions(getCurrentUser(), organizationName);
         return orgPerms.has(permission);
     }
 

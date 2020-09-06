@@ -22,12 +22,21 @@ import io.papermc.hangar.model.generated.Dependency;
 import io.papermc.hangar.model.viewhelpers.ReviewQueueEntry;
 import io.papermc.hangar.service.pluginupload.PendingVersion;
 
+import io.papermc.hangar.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.HandlerMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Supplier;
 
 @Service
 public class VersionService {
@@ -39,14 +48,39 @@ public class VersionService {
     private final ChannelService channelService;
     private final UserService userService;
 
+    private final HttpServletRequest request;
+
     @Autowired
-    public VersionService(HangarDao<ProjectVersionDao> versionDao, HangarDao<ProjectDao> projectDao, HangarDao<VisibilityDao> visibilityDao, ProjectService projectService, ChannelService channelService, UserService userService) {
+    public VersionService(HangarDao<ProjectVersionDao> versionDao, HangarDao<ProjectDao> projectDao, HangarDao<VisibilityDao> visibilityDao, ProjectService projectService, ChannelService channelService, UserService userService, HttpServletRequest request) {
         this.versionDao = versionDao;
         this.projectDao = projectDao;
         this.visibilityDao = visibilityDao;
         this.projectService = projectService;
         this.channelService = channelService;
         this.userService = userService;
+        this.request = request;
+    }
+
+    @Bean
+    @RequestScope
+    public Supplier<ProjectVersionsTable> projectVersionsTable() {
+        Map<String, String> pathParams = RequestUtil.getPathParams(request);
+        if (!pathParams.keySet().containsAll(Set.of("author", "slug", "version"))) {
+            return () -> null;
+        } else {
+            ProjectVersionsTable pvt = this.getVersion(pathParams.get("author"), pathParams.get("slug"), pathParams.get("version"));
+            if (pvt == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+            return () -> pvt;
+        }
+    }
+
+    @Bean
+    @RequestScope
+    public Supplier<VersionData> versionData() {
+        //noinspection SpringConfigurationProxyMethods
+        return () -> this.getVersionData(projectService.projectData().get(), projectVersionsTable().get());
     }
 
     public ProjectVersionsTable getVersion(long projectId, String versionString) {
