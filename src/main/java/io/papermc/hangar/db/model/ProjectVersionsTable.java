@@ -5,10 +5,11 @@ import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.generated.ReviewState;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-public class ProjectVersionsTable {
+public class ProjectVersionsTable implements Cloneable {
 
     private long id;
     private OffsetDateTime createdAt;
@@ -27,6 +28,26 @@ public class ProjectVersionsTable {
     private ReviewState reviewState = ReviewState.UNREVIEWED;
     private boolean createForumPost = true;
     private Long postId;
+
+    public ProjectVersionsTable(long id, OffsetDateTime createdAt, String versionString, List<String> dependencies, String description, long projectId, long channelId, long fileSize, String hash, String fileName, Long reviewerId, OffsetDateTime approvedAt, long authorId, Visibility visibility, ReviewState reviewState, boolean createForumPost, Long postId) {
+        this.id = id;
+        this.createdAt = createdAt;
+        this.versionString = versionString;
+        this.dependencies = dependencies;
+        this.description = description;
+        this.projectId = projectId;
+        this.channelId = channelId;
+        this.fileSize = fileSize;
+        this.hash = hash;
+        this.fileName = fileName;
+        this.reviewerId = reviewerId;
+        this.approvedAt = approvedAt;
+        this.authorId = authorId;
+        this.visibility = visibility;
+        this.reviewState = reviewState;
+        this.createForumPost = createForumPost;
+        this.postId = postId;
+    }
 
     public ProjectVersionsTable(String versionString, List<String> dependencies, String description, long projectId, long channelId, long fileSize, String hash, String fileName, long authorId, boolean createForumPost) {
         this.versionString = versionString;
@@ -199,4 +220,49 @@ public class ProjectVersionsTable {
         this.postId = postId;
     }
 
+    @Override
+    public String toString() {
+        return "ProjectVersionsTable{" +
+                "id=" + id +
+                ", createdAt=" + createdAt +
+                ", versionString='" + versionString + '\'' +
+                ", dependencies=" + dependencies +
+                ", description='" + description + '\'' +
+                ", projectId=" + projectId +
+                ", channelId=" + channelId +
+                ", fileSize=" + fileSize +
+                ", hash='" + hash + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", reviewerId=" + reviewerId +
+                ", approvedAt=" + approvedAt +
+                ", authorId=" + authorId +
+                ", visibility=" + visibility +
+                ", reviewState=" + reviewState +
+                ", createForumPost=" + createForumPost +
+                ", postId=" + postId +
+                '}';
+    }
+
+    @Override
+    public ProjectVersionsTable clone() {
+        return new ProjectVersionsTable(
+                id,
+                createdAt,
+                versionString,
+                dependencies,
+                description,
+                projectId,
+                channelId,
+                fileSize,
+                hash,
+                fileName,
+                reviewerId,
+                approvedAt,
+                authorId,
+                visibility,
+                reviewState,
+                createForumPost,
+                postId
+        );
+    }
 }

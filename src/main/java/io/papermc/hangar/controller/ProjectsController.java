@@ -12,7 +12,6 @@ import io.papermc.hangar.db.dao.ProjectDao;
 import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.ProjectOwner;
-import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
@@ -137,15 +136,25 @@ public class ProjectsController extends HangarController {
     @RequestScope
     ProjectsTable projectsTable() {
         Map<String, String> pathParams = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        if (!pathParams.keySet().containsAll(Set.of("author", "slug"))) {
-            return null;
+        ProjectsTable projectsTable;
+        if (pathParams.keySet().containsAll(Set.of("author", "slug"))) {
+            projectsTable = projectService.getProjectsTable(pathParams.get("author"), pathParams.get("slug"));
+        } else if (pathParams.keySet().contains("pluginId")) {
+            projectsTable = projectService.getProjectsTable(pathParams.get("pluginId"));
         } else {
-            ProjectsTable projectsTable = projectService.getProjectsTable(pathParams.get("author"), pathParams.get("slug"));
-            if (projectsTable == null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            }
-            return projectsTable;
+            return null;
         }
+        if (projectsTable == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return projectsTable;
+    }
+
+    @Bean
+    @RequestScope
+    ProjectData projectData() {
+        //noinspection SpringConfigurationProxyMethods
+        return projectService.getProjectData(projectsTable());
     }
 
     @Secured("ROLE_USER")

@@ -144,6 +144,10 @@ public class ProjectService {
         return projectDao.get().getBySlug(author, name);
     }
 
+    public ProjectsTable getProjectsTable(String pluginId) {
+        return projectDao.get().getByPluginId(pluginId);
+    }
+
     @Secured("ROLE_USER")
     public void changeVisibility(ProjectsTable project, Visibility newVisibility, String comment) {
         Preconditions.checkNotNull(project, "project");
