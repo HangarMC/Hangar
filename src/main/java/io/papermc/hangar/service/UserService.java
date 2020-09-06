@@ -3,6 +3,7 @@ package io.papermc.hangar.service;
 import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.dao.NotificationsDao;
 import io.papermc.hangar.db.dao.OrganizationDao;
 import io.papermc.hangar.db.dao.ProjectDao;
 import io.papermc.hangar.db.dao.UserDao;
@@ -49,18 +50,20 @@ public class UserService extends HangarService {
     private final HangarDao<OrganizationDao> orgDao;
     private final HangarDao<ProjectDao> projectDao;
     private final HangarDao<OrganizationDao> organizationDao;
+    private final HangarDao<NotificationsDao> notificationsDao;
     private final RoleService roleService;
     private final PermissionService permissionService;
     private final OrgService orgService;
     private final HangarConfig config;
 
     @Autowired
-    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, HangarDao<OrganizationDao> organizationDao, RoleService roleService, PermissionService permissionService, OrgService orgService) {
+    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, HangarDao<OrganizationDao> organizationDao, HangarDao<NotificationsDao> notificationsDao, RoleService roleService, PermissionService permissionService, OrgService orgService) {
         this.userDao = userDao;
         this.config = config;
         this.orgDao = orgDao;
         this.projectDao = projectDao;
         this.organizationDao = organizationDao;
+        this.notificationsDao = notificationsDao;
         this.roleService = roleService;
         this.permissionService = permissionService;
         this.orgService = orgService;
@@ -82,15 +85,20 @@ public class UserService extends HangarService {
             return HeaderData.UNAUTHENTICATED;
         }
         UsersTable curUser = currentUser.get().get();
-        // TODO fill headerData
+        Permission perms = permissionService.getGlobalPermissions(curUser.getId());
+
+        boolean hasUnreadNotifs = notificationsDao.get().hasUnreadNotifications(curUser.getId());
+        boolean hasUnresolvedFlags = perms.has(Permission.ModNotesAndFlags) && notificationsDao.get().hasUnresolvedFlags();
+        boolean hasProjectApprovals = perms.has(Permission.ModNotesAndFlags.add(Permission.SeeHidden)) && notificationsDao.get().hasProjectApprovals(curUser.getId());
+        boolean hasReviewQueue = perms.has(Permission.Reviewer) && notificationsDao.get().hasReviewQueue();
         return new HeaderData(
                 curUser,
                 permissionService.getGlobalPermissions(curUser.getId()),
-                false,
-                false,
-                false,
-                false,
-                false
+                hasUnreadNotifs || hasUnresolvedFlags || hasProjectApprovals || hasReviewQueue,
+                hasUnreadNotifs,
+                hasUnresolvedFlags,
+                hasProjectApprovals,
+                hasReviewQueue
         );
     }
 
