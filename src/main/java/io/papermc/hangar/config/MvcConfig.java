@@ -3,7 +3,6 @@ package io.papermc.hangar.config;
 import freemarker.template.TemplateException;
 import io.papermc.hangar.controller.converters.ColorHexConverter;
 import io.papermc.hangar.controller.converters.StringToEnumConverterFactory;
-import io.papermc.hangar.controller.interceptors.ProjectsInterceptor;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.Routes;
@@ -22,7 +21,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.VersionResourceResolver;
@@ -127,11 +125,6 @@ public class MvcConfig implements WebMvcConfigurer {
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverterFactory(new StringToEnumConverterFactory());
         registry.addConverter(new ColorHexConverter());
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new ProjectsInterceptor(projectService, permissionService));
     }
 
     @Bean

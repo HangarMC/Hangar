@@ -33,6 +33,15 @@ public interface PermissionsDao {
             " WHERE u.id = :userId")
     Permission getProjectPermission(long userId, String pluginId);
 
+    @SqlQuery("SELECT (coalesce(gt.permission, B'0'::BIT(64)) | coalesce(pt.permission, B'0'::BIT(64)) | coalesce(ot.permission, B'0'::BIT(64)))::BIGINT AS perm_value" +
+            " FROM users u " +
+            "     LEFT JOIN global_trust gt ON u.id = gt.user_id" +
+            "     LEFT JOIN projects p ON lower(p.owner_name) = lower(:author) AND p.slug = :slug" +
+            "     LEFT JOIN project_trust pt ON u.id = pt.user_id AND pt.project_id = p.id" +
+            "     LEFT JOIN organization_trust ot ON u.id = ot.user_id AND ot.organization_id = p.owner_id" +
+            " WHERE u.id = :userId")
+    Permission getProjectPermission(long userId, String author, String slug);
+
     @SqlQuery("SELECT (coalesce(gt.permission, B'0'::BIT(64)) | coalesce(ot.permission, B'0'::BIT(64)))::BIGINT AS perm_value" +
               " FROM users u " +
               "     LEFT JOIN global_trust gt ON u.id = gt.user_id" +

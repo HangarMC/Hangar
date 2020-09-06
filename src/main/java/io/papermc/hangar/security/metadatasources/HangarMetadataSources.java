@@ -34,7 +34,7 @@ public class HangarMetadataSources extends AbstractFallbackMethodSecurityMetadat
 
         annotationMetadataExtractors.forEach(annotationMetadataExtractor -> {
             Class<? extends Annotation> annotationType = (Class<? extends Annotation>) GenericTypeResolver.resolveTypeArgument(annotationMetadataExtractor.getClass(), AnnotationMetadataExtractor.class);
-            Assert.notNull(annotationType, () -> annotationMetadataExtractor.getClass().getName() + " must supply a generic parameter for AnnotationMetadataExtracto");
+            Assert.notNull(annotationType, () -> annotationMetadataExtractor.getClass().getName() + " must supply a generic parameter for AnnotationMetadataExtractor");
             annotationExtractors.put(annotationType, annotationMetadataExtractor);
         });
     }

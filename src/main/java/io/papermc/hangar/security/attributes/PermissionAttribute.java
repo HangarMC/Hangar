@@ -1,17 +1,16 @@
-package io.papermc.hangar.security;
+package io.papermc.hangar.security.attributes;
 
 import io.papermc.hangar.model.NamedPermission;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class PermissionAttribute implements ConfigAttribute {
+public abstract class PermissionAttribute implements ConfigAttribute {
 
     private final NamedPermission permission;
+    private final String type;
 
-    public PermissionAttribute(NamedPermission permission) {
+    public PermissionAttribute(NamedPermission permission, String type) {
+        this.type = type;
         Assert.notNull(permission, "You must provide a NamedPermission");
         this.permission = permission;
     }
@@ -34,6 +33,10 @@ public class PermissionAttribute implements ConfigAttribute {
         return null;
     }
 
+    public String getType() {
+        return type;
+    }
+
     @Override
     public int hashCode() {
         return this.permission.hashCode();
@@ -44,12 +47,6 @@ public class PermissionAttribute implements ConfigAttribute {
         return this.permission.toString();
     }
 
-    public static List<ConfigAttribute> createList(NamedPermission...permissions) {
-        Assert.notNull(permissions, "You must supply an array of permissions");
-        List<ConfigAttribute> attributes = new ArrayList<>(permissions.length);
-        for (NamedPermission permission : permissions) {
-            attributes.add(new PermissionAttribute(permission));
-        }
-        return attributes;
-    }
+    public static final String GLOBAL_TYPE = "GLOBAL";
+    public static final String PROJECT_TYPE = "PROJECT";
 }

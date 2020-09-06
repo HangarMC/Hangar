@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller;
 
+import io.papermc.hangar.util.Routes;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,8 @@ public class HangarErrorController extends HangarController implements ErrorCont
 
     @RequestMapping("/error")
     public ModelAndView handleError(HttpServletRequest request) {
-        Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+        Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE); // TODO redirect to sign on if not signed in
+        String errorRequestUri = (String) request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI);
 
         ModelAndView mav = new ModelAndView("errors/error"); // TODO show custom message with error if applicable
         if (status != null) {
@@ -24,6 +26,8 @@ public class HangarErrorController extends HangarController implements ErrorCont
                 mav = new ModelAndView("errors/notFound");
             } else if (statusCode == HttpStatus.GATEWAY_TIMEOUT.value() || statusCode == HttpStatus.REQUEST_TIMEOUT.value()) {
                 mav = new ModelAndView("errors/timeout");
+            } else if ((statusCode == HttpStatus.FORBIDDEN.value() || statusCode == HttpStatus.UNAUTHORIZED.value()) && currentUser.get().isEmpty() && errorRequestUri != null) {
+                return Routes.USERS_LOGIN.getRedirect("", "", errorRequestUri);
             }
         }
         return fillModel(mav);

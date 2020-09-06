@@ -352,6 +352,7 @@ public class ProjectsController extends HangarController {
         userActionLogService.project(request, LoggedActionType.PROJECT_ICON_CHANGED.with(ProjectContext.of(project.getId())), "", "");
     }
 
+    @ProjectPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)
     @Secured("ROLE_USER")
     @GetMapping("/{author}/{slug}/manage")
     public ModelAndView showSettings(@PathVariable String author, @PathVariable String slug) {

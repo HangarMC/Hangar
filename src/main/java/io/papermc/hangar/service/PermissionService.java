@@ -32,6 +32,10 @@ public class PermissionService {
         return addDefaults(permissionsDao.get().getProjectPermission(userId, projectId));
     }
 
+    public Permission getProjectPermissions(long userId, String author, String slug) {
+        return addDefaults(permissionsDao.get().getProjectPermission(userId, author, slug));
+    }
+
     public Permission getProjectPermissions(UsersTable usersTable, String pluginId) {
         if (usersTable == null) {
             return Permission.None;
