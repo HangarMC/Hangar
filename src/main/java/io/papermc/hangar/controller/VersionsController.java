@@ -103,11 +103,12 @@ public class VersionsController extends HangarController {
     private final HttpServletResponse response;
 
     private final Supplier<ProjectVersionsTable> projectVersionsTable;
-    private final ProjectsTable projectsTable;
-    private final ProjectData projectData;
+    private final Supplier<VersionData> versionData;
+    private final Supplier<ProjectsTable> projectsTable;
+    private final Supplier<ProjectData> projectData;
 
     @Autowired(required = false)
-    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService, ChannelService channelService, DownloadsService downloadsService, UserActionLogService userActionLogService, CacheManager cacheManager, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, MessageSource messageSource, ObjectMapper mapper, HttpServletRequest request, HttpServletResponse response, Supplier<ProjectVersionsTable> projectVersionsTable, ProjectsTable projectsTable, ProjectData projectData) {
+    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService, ChannelService channelService, DownloadsService downloadsService, UserActionLogService userActionLogService, CacheManager cacheManager, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, MessageSource messageSource, ObjectMapper mapper, HttpServletRequest request, HttpServletResponse response, Supplier<ProjectVersionsTable> projectVersionsTable, Supplier<VersionData> versionData, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
         this.projectService = projectService;
         this.versionService = versionService;
         this.projectFactory = projectFactory;
@@ -126,6 +127,7 @@ public class VersionsController extends HangarController {
         this.request = request;
         this.response = response;
         this.projectVersionsTable = projectVersionsTable;
+        this.versionData = versionData;
         this.projectsTable = projectsTable;
         this.projectData = projectData;
     }
@@ -145,27 +147,34 @@ public class VersionsController extends HangarController {
         }
     }
 
+    @Bean
+    @RequestScope
+    Supplier<VersionData> versionData() {
+        //noinspection SpringConfigurationProxyMethods
+        return () -> versionService.getVersionData(projectData.get(), projectVersionsTable().get());
+    }
+
     @GetMapping(value = "/api/project/{pluginId}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object downloadRecommendedJarById(@PathVariable String pluginId, @RequestParam(required = false) String token) {
-        Long recommendedVersionId = projectsTable.getRecommendedVersionId();
+        Long recommendedVersionId = projectsTable.get().getRecommendedVersionId();
         if (recommendedVersionId == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
-            ProjectVersionsTable versionsTable = versionService.getVersion(projectsTable.getId(), recommendedVersionId);// TODO we need to check visibility here, the query currently doesnt do that
-            return sendVersion(projectsTable, versionsTable, token, true);
+            ProjectVersionsTable versionsTable = versionService.getVersion(projectsTable.get().getId(), recommendedVersionId);// TODO we need to check visibility here, the query currently doesnt do that
+            return sendVersion(projectsTable.get(), versionsTable, token, true);
         }
     }
 
     @GetMapping(value = "/api/project/{pluginId}/versions/{name}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object downloadJarById(@PathVariable String pluginId, @PathVariable String name, @RequestParam(required = false) String token) {
-        ProjectVersionsTable versionsTable = versionService.getVersion(projectsTable.getId(), name);// TODO we need to check visibility here, the query currently doesnt do that
+        ProjectVersionsTable versionsTable = versionService.getVersion(projectsTable.get().getId(), name);// TODO we need to check visibility here, the query currently doesnt do that
         if (token != null) {
             // TODO  confirmDownload0(version.id, Some(DownloadType.JarFile.value), Some(token)).orElseFail(notFound) *>
-            return sendJar(projectsTable, versionsTable, token, true);
+            return sendJar(projectsTable.get(), versionsTable, token, true);
         } else {
-            return sendJar(projectsTable, versionsTable, null, true);
+            return sendJar(projectsTable.get(), versionsTable, null, true);
         }
     }
 
@@ -174,7 +183,7 @@ public class VersionsController extends HangarController {
     @GetMapping("/{author}/{slug}/versionLog")
     public ModelAndView showLog(@PathVariable String author, @PathVariable String slug, @RequestParam String versionString) {
         ModelAndView mv = new ModelAndView("projects/versions/log");
-        mv.addObject("project", projectData);
+        mv.addObject("project", projectData.get());
         mv.addObject("version", projectVersionsTable.get());
         mv.addObject("visibilityChanges", versionService.getVersionVisibilityChanges(projectVersionsTable.get().getId()));
         return fillModel(mv);
@@ -183,10 +192,10 @@ public class VersionsController extends HangarController {
     @GetMapping("/{author}/{slug}/versions")
     public ModelAndView showList(@PathVariable String author, @PathVariable String slug) {
         ModelAndView mav = new ModelAndView("projects/versions/list");
-        ScopedProjectData sp = projectService.getScopedProjectData(projectData.getProject().getId());
+        ScopedProjectData sp = projectService.getScopedProjectData(projectData.get().getProject().getId());
         mav.addObject("sp", sp);
-        mav.addObject("p", projectData);
-        mav.addObject("channels", channelService.getProjectChannels(projectData.getProject().getId()));
+        mav.addObject("p", projectData.get());
+        mav.addObject("channels", channelService.getProjectChannels(projectData.get().getProject().getId()));
         return fillModel(mav);
     }
 
@@ -215,7 +224,7 @@ public class VersionsController extends HangarController {
 
         PendingVersion pendingVersion;
         try {
-            pendingVersion = pluginUploadService.processSubsequentPluginUpload(file, projectData.getProjectOwner(), projectData.getProject());
+            pendingVersion = pluginUploadService.processSubsequentPluginUpload(file, projectData.get().getProjectOwner(), projectData.get().getProject());
         } catch (HangarException e) {
             ModelAndView mav = _showCreator(author, slug, null);
             AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, e.getMessageKey(), e.getArgs());
@@ -227,7 +236,7 @@ public class VersionsController extends HangarController {
     @Secured("ROLE_USER")
     @GetMapping("/{author}/{slug}/versions/new/{versionName}")
     public ModelAndView showCreatorWithMeta(@PathVariable String author, @PathVariable String slug, @PathVariable String versionName) {
-        PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(projectData.getProject().getId() + "/" + versionName, PendingVersion.class);
+        PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(projectData.get().getProject().getId() + "/" + versionName, PendingVersion.class);
 
         if (pendingVersion == null) {
             ModelAndView mav = _showCreator(author, slug, null);
@@ -240,38 +249,38 @@ public class VersionsController extends HangarController {
 
     private ModelAndView _showCreator(String author, String slug, PendingVersion pendingVersion) {
         ModelAndView mav = new ModelAndView("projects/versions/create");
-        mav.addObject("projectName", projectData.getProject().getName());
-        mav.addObject("pluginId", projectData.getProject().getPluginId());
+        mav.addObject("projectName", projectData.get().getProject().getName());
+        mav.addObject("pluginId", projectData.get().getProject().getPluginId());
         mav.addObject("projectSlug", slug);
         mav.addObject("ownerName", author);
-        mav.addObject("projectDescription", projectData.getProject().getDescription());
-        mav.addObject("forumSync", projectData.getProject().getForumSync());
+        mav.addObject("projectDescription", projectData.get().getProject().getDescription());
+        mav.addObject("forumSync", projectData.get().getProject().getForumSync());
         mav.addObject("pending", pendingVersion);
-        mav.addObject("channels", channelService.getProjectChannels(projectData.getProject().getId()));
+        mav.addObject("channels", channelService.getProjectChannels(projectData.get().getProject().getId()));
         return fillModel(mav);
     }
 
     @GetMapping(value = "/{author}/{slug}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object downloadRecommended(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String token) {
-        Long recommendedVersionId = projectsTable.getRecommendedVersionId();
+        Long recommendedVersionId = projectsTable.get().getRecommendedVersionId();
         if (recommendedVersionId == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
-            ProjectVersionsTable versionsTable = versionService.getVersion(projectsTable.getId(), recommendedVersionId);// TODO we need to check visibility here, the query currently doesnt do that
-            return sendVersion(projectsTable, versionsTable, token, false);
+            ProjectVersionsTable versionsTable = versionService.getVersion(projectsTable.get().getId(), recommendedVersionId);// TODO we need to check visibility here, the query currently doesnt do that
+            return sendVersion(projectsTable.get(), versionsTable, token, false);
         }
     }
 
     @GetMapping(value = "/{author}/{slug}/versions/recommended/jar", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object downloadRecommendedJar(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String token) {
-        Long recommendedVersionId = projectsTable.getRecommendedVersionId();
+        Long recommendedVersionId = projectsTable.get().getRecommendedVersionId();
         if (recommendedVersionId == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
-            ProjectVersionsTable versionsTable = versionService.getVersion(projectsTable.getId(), recommendedVersionId);// TODO we need to check visibility here, the query currently doesnt do that
-            return sendJar(projectsTable, versionsTable, token, false);
+            ProjectVersionsTable versionsTable = versionService.getVersion(projectsTable.get().getId(), recommendedVersionId);// TODO we need to check visibility here, the query currently doesnt do that
+            return sendJar(projectsTable.get(), versionsTable, token, false);
         }
     }
 
@@ -289,13 +298,13 @@ public class VersionsController extends HangarController {
                                 @RequestParam(required = false) String content,
                                 RedirectAttributes attributes) {
         Color channelColor = channelColorInput == null ? hangarConfig.channels.getColorDefault() : channelColorInput;
-        PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(projectData.getProject().getId() + "/" + versionName, PendingVersion.class);
+        PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(projectData.get().getProject().getId() + "/" + versionName, PendingVersion.class);
         if (pendingVersion == null) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.plugin.timeout");
             return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
         }
 
-        List<ProjectChannelsTable> projectChannels = channelService.getProjectChannels(projectData.getProject().getId());
+        List<ProjectChannelsTable> projectChannels = channelService.getProjectChannels(projectData.get().getProject().getId());
         String alertMsg = null;
         String[] alertArgs = new String[0];
         Optional<ProjectChannelsTable> channelOptional = projectChannels.stream().filter(ch -> ch.getName().equals(channelInput.trim())).findAny();
@@ -312,7 +321,7 @@ public class VersionsController extends HangarController {
                 AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, alertMsg, alertArgs);
                 return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
             }
-            channel = channelService.addProjectChannel(projectData.getProject().getId(), channelInput.trim(), channelColor);
+            channel = channelService.addProjectChannel(projectData.get().getProject().getId(), channelInput.trim(), channelColor);
         } else {
             channel = channelOptional.get();
         }
@@ -331,22 +340,22 @@ public class VersionsController extends HangarController {
 
         ProjectVersionsTable version;
         try {
-            version = newPendingVersion.complete(request, projectData, projectFactory);
+            version = newPendingVersion.complete(request, projectData.get(), projectFactory);
         } catch (HangarException e) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, e.getMessage(), e.getArgs());
             return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
         }
 
         if (recommended) {
-            projectData.getProject().setRecommendedVersionId(version.getId());
-            projectDao.get().update(projectData.getProject());
+            projectData.get().getProject().setRecommendedVersionId(version.getId());
+            projectDao.get().update(projectData.get().getProject());
         }
 
         if (unstable) {
             versionService.addUnstableTag(version.getId());
         }
 
-        userActionLogService.version(request, LoggedActionType.VERSION_UPLOADED.with(VersionContext.of(projectData.getProject().getId(), version.getId())), "published", "");
+        userActionLogService.version(request, LoggedActionType.VERSION_UPLOADED.with(VersionContext.of(projectData.get().getProject().getId(), version.getId())), "published", "");
 
         return Routes.VERSIONS_SHOW.getRedirect(author, slug, versionName);
     }
@@ -355,9 +364,8 @@ public class VersionsController extends HangarController {
     public ModelAndView show(@PathVariable String author, @PathVariable String slug, @PathVariable String version, ModelMap modelMap) {
         ModelAndView mav = new ModelAndView("projects/versions/view");
         AlertUtil.transferAlerts(mav, modelMap);
-        VersionData v = versionService.getVersionData(author, slug, version);
-        ScopedProjectData sp = projectService.getScopedProjectData(v.getP().getProject().getId());
-        mav.addObject("v", v);
+        ScopedProjectData sp = projectService.getScopedProjectData(versionData.get().getP().getProject().getId());
+        mav.addObject("v", versionData.get());
         mav.addObject("sp", sp);
         return fillModel(mav);
     }
@@ -420,7 +428,7 @@ public class VersionsController extends HangarController {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("message", apiMsg);
             objectNode.put("post", Routes.VERSIONS_CONFIRM_DOWNLOAD.getRouteUrl(author, slug, version, downloadType.ordinal() + "", token, null));
-            objectNode.put("url", Routes.VERSIONS_DOWNLOAD_JAR_BY_ID.getRouteUrl(projectsTable.getPluginId(), projectVersionsTable.get().getVersionString(), token));
+            objectNode.put("url", Routes.VERSIONS_DOWNLOAD_JAR_BY_ID.getRouteUrl(projectsTable.get().getPluginId(), projectVersionsTable.get().getVersionString(), token));
             objectNode.put("curl", curlInstruction);
             objectNode.put("token", token);
             return new ResponseEntity<>(objectNode.toPrettyString(), headers, HttpStatus.MULTIPLE_CHOICES);
@@ -435,7 +443,7 @@ public class VersionsController extends HangarController {
                 ProjectChannelsTable channelsTable = channelService.getVersionsChannel(projectVersionsTable.get().getProjectId(), projectVersionsTable.get().getId());
                 response.addCookie(new Cookie(ProjectVersionDownloadWarningsTable.cookieKey(projectVersionsTable.get().getId()), "set"));
                 ModelAndView mav = new ModelAndView("projects/versions/unsafeDownload");
-                mav.addObject("project", projectsTable);
+                mav.addObject("project", projectsTable.get());
                 mav.addObject("target", projectVersionsTable.get());
                 mav.addObject("isTargetChannelNonReviewed", channelsTable.getIsNonReviewed());
                 mav.addObject("downloadType", downloadType);
@@ -522,8 +530,8 @@ public class VersionsController extends HangarController {
     @GetMapping(value = "/{author}/{slug}/versions/{version}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object download(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(required = false) String token, @RequestParam(defaultValue = "false") boolean confirm) {
-        ProjectVersionsTable versionsTable = versionService.getVersion(projectsTable.getId(), version);// TODO we need to check visibility here, the query currently doesnt do that
-        return sendVersion(projectsTable, versionsTable, token, confirm);
+        ProjectVersionsTable versionsTable = versionService.getVersion(projectsTable.get().getId(), version);// TODO we need to check visibility here, the query currently doesnt do that
+        return sendVersion(projectsTable.get(), versionsTable, token, confirm);
     }
 
     private Object sendVersion(ProjectsTable project, ProjectVersionsTable version, String token, boolean confirm) {
@@ -586,8 +594,8 @@ public class VersionsController extends HangarController {
     @GetMapping(value = "/{author}/{slug}/versions/{version}/jar", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object downloadJar(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(required = false) String token) {
-        ProjectVersionsTable versionsTable = versionService.getVersion(projectsTable.getId(), version);// TODO we need to check visibility here, the query currently doesnt do that
-        return sendJar(projectsTable, versionsTable, token, false);
+        ProjectVersionsTable versionsTable = versionService.getVersion(projectsTable.get().getId(), version);// TODO we need to check visibility here, the query currently doesnt do that
+        return sendJar(projectsTable.get(), versionsTable, token, false);
     }
 
     private Object sendJar(ProjectsTable project, ProjectVersionsTable version, String token, boolean api) {

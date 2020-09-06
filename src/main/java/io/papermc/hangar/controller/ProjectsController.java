@@ -81,6 +81,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -134,27 +135,27 @@ public class ProjectsController extends HangarController {
 
     @Bean
     @RequestScope
-    ProjectsTable projectsTable() {
+    Supplier<ProjectsTable> projectsTable() {
         Map<String, String> pathParams = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        ProjectsTable projectsTable;
+        ProjectsTable pt;
         if (pathParams.keySet().containsAll(Set.of("author", "slug"))) {
-            projectsTable = projectService.getProjectsTable(pathParams.get("author"), pathParams.get("slug"));
-        } else if (pathParams.keySet().contains("pluginId")) {
-            projectsTable = projectService.getProjectsTable(pathParams.get("pluginId"));
+            pt = projectService.getProjectsTable(pathParams.get("author"), pathParams.get("slug"));
+        } else if (pathParams.containsKey("pluginId")) {
+            pt = projectService.getProjectsTable(pathParams.get("pluginId"));
         } else {
-            return null;
+            return () -> null;
         }
-        if (projectsTable == null) {
+        if (pt == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return projectsTable;
+        return () -> pt;
     }
 
     @Bean
     @RequestScope
-    ProjectData projectData() {
+    Supplier<ProjectData> projectData() {
         //noinspection SpringConfigurationProxyMethods
-        return projectService.getProjectData(projectsTable());
+        return () -> projectService.getProjectData(projectsTable().get());
     }
 
     @Secured("ROLE_USER")
