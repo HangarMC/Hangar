@@ -12,7 +12,6 @@ import io.papermc.hangar.db.dao.ProjectDao;
 import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.ProjectOwner;
-import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
@@ -82,6 +81,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -135,17 +135,27 @@ public class ProjectsController extends HangarController {
 
     @Bean
     @RequestScope
-    ProjectsTable projectsTable() {
+    Supplier<ProjectsTable> projectsTable() {
         Map<String, String> pathParams = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        if (!pathParams.keySet().containsAll(Set.of("author", "slug"))) {
-            return null;
+        ProjectsTable pt;
+        if (pathParams.keySet().containsAll(Set.of("author", "slug"))) {
+            pt = projectService.getProjectsTable(pathParams.get("author"), pathParams.get("slug"));
+        } else if (pathParams.containsKey("pluginId")) {
+            pt = projectService.getProjectsTable(pathParams.get("pluginId"));
         } else {
-            ProjectsTable projectsTable = projectService.getProjectsTable(pathParams.get("author"), pathParams.get("slug"));
-            if (projectsTable == null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            }
-            return projectsTable;
+            return () -> null;
         }
+        if (pt == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return () -> pt;
+    }
+
+    @Bean
+    @RequestScope
+    Supplier<ProjectData> projectData() {
+        //noinspection SpringConfigurationProxyMethods
+        return () -> projectService.getProjectData(projectsTable().get());
     }
 
     @Secured("ROLE_USER")

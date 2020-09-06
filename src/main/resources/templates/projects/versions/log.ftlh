@@ -2,13 +2,15 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
-<#assign message><@spring.messageArgs code="version.log.logger.title" args=[project.namespace] /></#assign>
+<#assign message><@spring.message "version.log.logger.title"/></#assign>
 <@base.base title=message>
     <div class="row">
         <div class="col-md-12">
-            <h1><@spring.message "version.log.visibility.title" /> <a
-                        href="${Routes.VERSIONS_SHOW.getRouteUrl(project.project.name, project.project.slug, version.versionString)}">${project.project.name}
-                    /${project.project.slug}/versions/${version.versionString}</a></h1>
+            <h1><@spring.message "version.log.visibility.title" />
+                <a href="${Routes.VERSIONS_SHOW.getRouteUrl(project.ownerName, project.project.slug, version.versionString)}">
+                    ${project.ownerName}/${project.project.slug}/versions/${version.versionString}
+                </a>
+            </h1>
         </div>
     </div>
     <div class="row">

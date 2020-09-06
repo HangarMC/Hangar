@@ -199,4 +199,26 @@ public class ProjectVersionsTable {
         this.postId = postId;
     }
 
+    @Override
+    public String toString() {
+        return "ProjectVersionsTable{" +
+                "id=" + id +
+                ", createdAt=" + createdAt +
+                ", versionString='" + versionString + '\'' +
+                ", dependencies=" + dependencies +
+                ", description='" + description + '\'' +
+                ", projectId=" + projectId +
+                ", channelId=" + channelId +
+                ", fileSize=" + fileSize +
+                ", hash='" + hash + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", reviewerId=" + reviewerId +
+                ", approvedAt=" + approvedAt +
+                ", authorId=" + authorId +
+                ", visibility=" + visibility +
+                ", reviewState=" + reviewState +
+                ", createForumPost=" + createForumPost +
+                ", postId=" + postId +
+                '}';
+    }
 }
