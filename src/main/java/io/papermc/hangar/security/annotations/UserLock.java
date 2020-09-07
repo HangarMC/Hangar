@@ -16,5 +16,5 @@ public @interface UserLock {
     @AliasFor("value")
     Routes route() default Routes.SHOW_HOME;
 
-    String args() default "";
+    String args() default "{}";
 }
