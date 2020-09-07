@@ -632,8 +632,10 @@ public class VersionsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/recommended")
     public ModelAndView setRecommended(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
-        versionData.get().getP().getProject().setRecommendedVersionId(versionData.get().getV().getId());
-        projectDao.get().update(versionData.get().getP().getProject());
+        ProjectsTable project = projectsTable.get();
+        ProjectVersionsTable versionsTable = projectVersionsTable.get();
+        project.setRecommendedVersionId(versionsTable.getId());
+        projectDao.get().update(project);
         return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
     }
 

@@ -5,7 +5,6 @@ import io.papermc.hangar.controller.util.StatusZ;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.model.Stats;
-import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.NamedPermission;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.Visibility;
@@ -51,8 +50,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Controller
@@ -98,6 +95,7 @@ public class ApplicationController extends HangarController {
         return ResponseEntity.ok(statusZ.getStatus());
     }
 
+    @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
     @GetMapping("/admin/activities/{user}")
     public ModelAndView showActivities(@PathVariable String user) {
@@ -120,6 +118,7 @@ public class ApplicationController extends HangarController {
         return fillModel(mv);
     }
 
+    @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
     @GetMapping("/admin/approval/versions")
     public ModelAndView showQueue() {
@@ -171,6 +170,7 @@ public class ApplicationController extends HangarController {
         return fillModel(mav);
     }
 
+    @GlobalPermission(NamedPermission.VIEW_LOGS)
     @Secured("ROLE_USER")
     @GetMapping("/admin/log")
     public ModelAndView showLog(@RequestParam(required = false) Integer oPage,
@@ -200,6 +200,7 @@ public class ApplicationController extends HangarController {
         return fillModel(mv);
     }
 
+    @GlobalPermission(NamedPermission.VIEW_STATS)
     @Secured("ROLE_USER")
     @GetMapping("/admin/stats")
     public ModelAndView showStats(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
@@ -240,6 +241,7 @@ public class ApplicationController extends HangarController {
         return fillModel(mav);
     }
 
+    @GlobalPermission(NamedPermission.EDIT_ALL_USER_SETTINGS)
     @Secured("ROLE_USER")
     @PostMapping("/admin/user/{user}/update")
     public Object updateUser(@PathVariable Object user) {

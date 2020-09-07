@@ -19,7 +19,7 @@ public interface ProjectStatsTrackerDao {
     @SqlQuery("SELECT pvdi.cookie " +
               "     FROM project_versions_downloads_individual pvdi" +
               "     WHERE pvdi.address = :address OR " +
-              "     (:userId IS NOT NULL AND :userId = pvdi.user_id)")
+              "     (:userId IS NOT NULL AND :userId = pvdi.user_id) LIMIT 1")
     Optional<String> getIndividualDownloadCookie(Long userId, InetAddress address);
 
     @Timestamped
@@ -29,7 +29,7 @@ public interface ProjectStatsTrackerDao {
     @SqlQuery("SELECT pvi.cookie " +
               "     FROM project_views_individual pvi" +
               "     WHERE pvi.address = :address OR " +
-              "     (:userId IS NOT NULL AND :userId = pvi.user_id)")
+              "     (:userId IS NOT NULL AND :userId = pvi.user_id) LIMIT 1")
     Optional<String> getIndividualViewCookie(Long userId, InetAddress address);
 
     @Timestamped

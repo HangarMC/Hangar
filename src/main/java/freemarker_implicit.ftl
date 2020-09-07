@@ -1,5 +1,6 @@
 [#ftl]
 [#-- @implicitly included --]
+[#-- @ftlvariable name="cu" type="io.papermc.hangar.db.model.UsersTable" --]
 [#-- @ftlvariable name="markdownService" type="io.papermc.hangar.service.MarkdownService" --]
 [#-- @ftlvariable name="utils" type="io.papermc.hangar.util.TemplateHelper" --]
 [#-- @ftlvariable name="@helper" type="freemarker.template.TemplateHashModel" --]

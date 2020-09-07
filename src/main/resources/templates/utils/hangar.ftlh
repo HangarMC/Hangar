@@ -1,15 +1,3 @@
-<#-- todo implement config lookup -->
-<#macro config path>
-    ${path}
-</#macro>
-
-<#-- todo implement perm check -->
-<#macro hasPerm perm>
-    <#if true>
-        <#nested>
-    </#if>
-</#macro>
-
 <#macro linkout url>
 <#--noinspection FtlReferencesInspection-->
     ${Routes.LINK_OUT.getRouteUrl(url)}

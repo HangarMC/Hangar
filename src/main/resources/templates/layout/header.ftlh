@@ -46,6 +46,8 @@
             </div>
 
             <#-- Right navbar -->
+            <#assign Permission=@helper["io.papermc.hangar.model.Permission"] />
+            <#-- @ftlvariable name="Permission" type="io.papermc.hangar.model.Permission" -->
             <#if authEnabled>
                 <ul class="nav navbar-nav navbar-collapse collapse navbar-right">
                     <#if cu??>
@@ -75,14 +77,14 @@
                             </a>
                         </li>
 
-                        <@hangar.hasPerm "IsStaff">
+                        <#if headerData.globalPerm(Permission.IsStaff)>
                             <#assign title><@spring.message "project.viewStaff"/></#assign>
                             <li class="nav-icon staff-icon" <@tooltip title=title />>
                                 <a href="${Routes.USERS_SHOW_STAFF.getRouteUrl("", "")}">
                                     <i class="icon fas fa-user-tie"></i>
                                 </a>
                             </li>
-                        </@hangar.hasPerm>
+                        </#if>
 
                     <#-- Show user controls -->
                         <li class="dropdown user-controls nav-icon">
@@ -113,8 +115,7 @@
                                     </span>
                                     </a>
                                 </li>
-
-                                <@hangar.hasPerm "ModNotesAndFlags">
+                                <#if headerData.globalPerm(Permission.ModNotesAndFlags)>
                                     <li>
                                         <a href="${Routes.SHOW_FLAGS.getRouteUrl()}">
                                             <i class="fas fa-flag mr-1"></i>
@@ -126,9 +127,6 @@
                                             </span>
                                         </a>
                                     </li>
-                                </@hangar.hasPerm>
-
-                                <@hangar.hasPerm "ModNotesAndFlags">
                                     <li>
                                         <a href="${Routes.SHOW_PROJECT_VISIBILITY.getRouteUrl()}">
                                             <i class="fas fa-thumbs-up mr-1"></i>
@@ -140,9 +138,8 @@
                                             </span>
                                         </a>
                                     </li>
-                                </@hangar.hasPerm>
-
-                                <@hangar.hasPerm "Reviewer">
+                                </#if>
+                                <#if headerData.globalPerm(Permission.Reviewer)>
                                     <li>
                                         <a href="${Routes.SHOW_QUEUE.getRouteUrl()}">
                                             <i class="far fa-thumbs-up mr-1"></i>
@@ -154,34 +151,31 @@
                                             </span>
                                         </a>
                                     </li>
-                                </@hangar.hasPerm>
-
-                                <@hangar.hasPerm "ViewStats">
+                                </#if>
+                                <#if headerData.globalPerm(Permission.ViewStats)>
                                     <li>
                                         <a href="${Routes.SHOW_STATS.getRouteUrl("", "")}">
                                             <i class="fas fa-chart-area mr-1"></i>
                                             <span><@spring.message "user.stats" /></span>
                                         </a>
                                     </li>
-                                </@hangar.hasPerm>
-
-                                <@hangar.hasPerm "ViewHealth">
+                                </#if>
+                                <#if headerData.globalPerm(Permission.ViewHealth)>
                                     <li>
                                         <a href="${Routes.SHOW_HEALTH.getRouteUrl()}">
                                             <i class="fas fa-heartbeat mr-1"></i>
                                             <span><@spring.message "admin.health.title" /></span>
                                         </a>
                                     </li>
-                                </@hangar.hasPerm>
-
-                                <@hangar.hasPerm "ViewLogs">
+                                </#if>
+                                <#if headerData.globalPerm(Permission.ViewLogs)>
                                     <li>
                                         <a href="${Routes.SHOW_LOG.getRouteUrl("", "", "", "", "", "", "")}">
                                             <i class="fas fa-list mr-1"></i>
                                             <span><@spring.message "admin.log.title" /></span>
                                         </a>
                                     </li>
-                                </@hangar.hasPerm>
+                                </#if>
 
                                 <li role="separator" class="divider"></li>
                                 <li>

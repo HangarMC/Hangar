@@ -12,10 +12,11 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
     <!DOCTYPE html>
     <html lang="<@spring.message "general.language" />">
     <head>
-        <link href="<@hangar.config "security.api.url" />" rel="preconnect" crossorigin>
-        <link href="<@hangar.config "app.discourseCdnUrl" />" rel="preconnect" crossorigin>
-        <link href="<@hangar.config "security.api.url" />" rel="dns-prefetch">
-        <link href="<@hangar.config "app.discourseCdnUrl" />" rel="dns-prefetch">
+        <link href="${config.security.api.url}">
+        <link href="${config.security.api.url}" rel="preconnect" crossorigin>
+<#--        <link href="<@hangar.config "app.discourseCdnUrl" />" rel="preconnect" crossorigin>--><#--TODO this-->
+        <link href="${config.security.api.url}" rel="dns-prefetch">
+<#--        <link href="<@hangar.config "app.discourseCdnUrl" />" rel="dns-prefetch">--><#--TODO this-->
 
         <link rel="prefetch" href="<@hangar.url "images/favicon.ico" />">
         <link rel="prefetch" href="https://fonts.googleapis.com/css?family=Montserrat:400,700">
@@ -65,8 +66,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
             <#nested>
         <#else>
             <div class="container<#if showHeader> site-header-margin</#if>">
-                <#assign var><@hangar.config "ore.staging" /></#assign>
-                <#if var == "true">
+                <#if config.staging>
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="staging-warning"><@spring.message "general.stagingWarning" /></div>
