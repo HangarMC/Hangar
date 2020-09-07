@@ -8,11 +8,13 @@ import io.papermc.hangar.db.model.NotificationsTable;
 import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.InviteFilter;
+import io.papermc.hangar.model.NamedPermission;
 import io.papermc.hangar.model.NotificationFilter;
 import io.papermc.hangar.model.Prompt;
 import io.papermc.hangar.model.viewhelpers.InviteSubject;
 import io.papermc.hangar.model.viewhelpers.UserData;
 import io.papermc.hangar.model.viewhelpers.UserRole;
+import io.papermc.hangar.security.annotations.GlobalPermission;
 import io.papermc.hangar.service.ApiKeyService;
 import io.papermc.hangar.service.AuthenticationService;
 import io.papermc.hangar.service.NotificationService;
@@ -21,6 +23,7 @@ import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.RoleService;
 import io.papermc.hangar.service.SitemapService;
 import io.papermc.hangar.service.SsoService;
+import io.papermc.hangar.service.SsoService.SignatureException;
 import io.papermc.hangar.service.UserActionLogService;
 import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.sso.AuthUser;
@@ -44,7 +47,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -240,12 +242,27 @@ public class UsersController extends HangarController {
         return fillModel(mav);
     }
 
+    @GlobalPermission(NamedPermission.EDIT_OWN_USER_SETTINGS)
     @Secured("ROLE_USER")
-    @PostMapping("/{user}/settings/lock/{locked}")
-    public RedirectView setLocked(@PathVariable String user, @PathVariable boolean locked, @RequestParam String sso, @RequestParam String sig) {
-        // TODO auth
-        userService.setLocked(user, locked);
-        return new RedirectView(Routes.getRouteUrlOf("users.showProjects", user));
+    @GetMapping("/{user}/settings/lock/{locked}")
+    public ModelAndView setLocked(@PathVariable String user, @PathVariable boolean locked, @RequestParam(required = false) String sso, @RequestParam(required = false) String sig) {
+        UsersTable curUser = getCurrentUser();
+        if (!hangarConfig.fakeUser.isEnabled()) {
+            try {
+                AuthUser authUser = ssoService.authenticate(sso, sig);
+                if (authUser == null || authUser.getId() != curUser.getId()) {
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+                }
+            } catch (SignatureException e) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            }
+        }
+
+        if (!locked) {
+            // TODO email!
+        }
+        userService.setLocked(curUser, locked);
+        return Routes.USERS_SHOW_PROJECTS.getRedirect(user);
     }
 
     @Secured("ROLE_USER")

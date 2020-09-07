@@ -156,8 +156,7 @@ public class UserService extends HangarService {
         }
     }
 
-    public void setLocked(String userName, boolean locked) {
-        UsersTable user = userDao.get().getByName(userName);
+    public void setLocked(UsersTable user, boolean locked) {
         user.setIsLocked(locked);
         userDao.get().update(user);
     }

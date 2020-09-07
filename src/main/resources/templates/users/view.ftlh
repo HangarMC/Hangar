@@ -75,7 +75,7 @@
 
                                 <span data-toggle="modal" data-target="#modal-lock">
                                     <i class="fas <#if u.user.isLocked()>fa-lock<#else>fa-unlock-alt</#if> action-lock-account" data-toggle="tooltip"
-                                    data-placement="top" title="<@spring.message "user.lock" />"></i>
+                                    data-placement="top" title="<#if !u.user.isLocked()><@spring.message "user.lock" /><#else><@spring.message "user.unlock" /></#if>"></i>
                                 </span>
 
                                 <a class="action-api" href="${Routes.USERS_EDIT_API_KEYS.getRouteUrl(u.user.name)}">
