@@ -21,6 +21,7 @@ function initMember(memberRow) {
     // Replace title with select on click
     memberRow.find('.fa-edit').parent().click(function(event) {
         event.preventDefault();
+        var currentRole = getItemContainer($(this)).find("span.minor.pull-right").text().replace(/(\r\n|\n|\r|\s)/gm, "");
 
         var saveBtn = $('.btn-members-save');
         if (!saveBtn.is(':visible'))
@@ -30,8 +31,11 @@ function initMember(memberRow) {
         var container = getItemContainer($(this)).addClass('user-changed');
         var input = $('#select-role').clone().removeAttr('id').attr('form', 'save');
 
-        var roleId = container.find('.role-id').text();
-        input.find('option:eq(' + roleId + ')').attr('selected', '');
+        input.find('option').each(function(i, el) {
+            if($(el).val().endsWith(currentRole)) {
+                $(el).attr('selected', '')
+            }
+        })
 
         // Add input
         container.find('span').replaceWith(input.show());
