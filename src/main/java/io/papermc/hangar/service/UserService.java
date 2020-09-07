@@ -75,7 +75,7 @@ public class UserService extends HangarService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
             HangarAuthentication auth = (HangarAuthentication) authentication;
-            return () -> Optional.ofNullable(auth.getTable());
+            return () -> Optional.ofNullable(userDao.get().getById(auth.getUserId()));
         }
         return Optional::empty;
     }
@@ -186,6 +186,10 @@ public class UserService extends HangarService {
         Permission userPerm = permissionService.getGlobalPermissions(user.getId());
         Permission orgaPerm = Permission.None; // TODO perms here
         return new UserData(getHeaderData(), user, isOrga, projectCount, organizations, globalRoles, userPerm, orgaPerm);
+    }
+
+    public UsersTable getUsersTable(long userId) {
+        return userDao.get().getById(userId);
     }
 
     public List<UsersTable> getUsers(List<String> userNames) {

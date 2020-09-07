@@ -15,9 +15,10 @@ public class HangarErrorController extends HangarController implements ErrorCont
 
     @RequestMapping("/error")
     public ModelAndView handleError(HttpServletRequest request) {
-        Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE); // TODO redirect to sign on if not signed in
+        Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         String errorRequestUri = (String) request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI);
 
+//        request.getAttributeNames().asIterator().forEachRemaining(s -> System.out.println(s + ": " + request.getAttribute(s))); // TODO for logging attributes to see what's there
         ModelAndView mav = new ModelAndView("errors/error"); // TODO show custom message with error if applicable
         if (status != null) {
             int statusCode = Integer.parseInt(status.toString());

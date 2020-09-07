@@ -20,16 +20,21 @@ public class AlertUtil {
     public static final String MSG = "alertMsg";
     public static final String ARGS = "alertArgs";
 
-    public static ModelAndView showAlert(ModelAndView mav, AlertType alertType, String alertMessage, Object...args) {
-        Map<String, Object> alerts = (Map<String, Object>) mav.getModelMap().getAttribute("alerts");
+    public static Map<String, Object> applyAlert(HashMap<String, Object> input, AlertType alertType, String alertMsg, Object...args) {
+        Map<String, Object> alerts = (Map<String, Object>) input.get("alerts");
         if (alerts == null) {
             alerts = new HashMap<>();
         }
         Map<String, Object> thisAlert = new HashMap<>();
-        thisAlert.put("message", alertMessage);
+        thisAlert.put("message", alertMsg);
         thisAlert.put("args", args);
         alerts.put(alertType.name().toLowerCase(), thisAlert);
-        mav.addObject("alerts", alerts);
+        input.put("alerts", alerts);
+        return input;
+    }
+
+    public static ModelAndView showAlert(ModelAndView mav, AlertType alertType, String alertMessage, Object...args) {
+        applyAlert(mav.getModelMap(), alertType, alertMessage, args);
         return mav;
     }
 
@@ -49,6 +54,8 @@ public class AlertUtil {
                 args = (String[]) modelMap.getAttribute(ARGS);
             }
             return showAlert(mav, type, msg, args);
+        } else if (modelMap.containsAttribute("alerts")) {
+            mav.addObject("alerts", modelMap.getAttribute("alerts"));
         }
         return mav;
     }

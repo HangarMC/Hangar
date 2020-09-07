@@ -75,10 +75,10 @@
         <@panel title="Other Administration" size=3>
             <div class="list-group">
                 <div class="list-group-item">
-                    <a href="${config.authUrl}/admin/accounts/user/${user.user.id}/change/">HangarAuth Profile</a>
+                    <a href="${config.authUrl}/admin/accounts/user/${u.user.id}/change/">HangarAuth Profile</a>
                 </div>
                 <div class="list-group-item">
-                    <a href="https://papermc.io/forums${user.user.name}">Forum Profile</a>
+                    <a href="https://papermc.io/forums${u.user.name}">Forum Profile</a>
                 </div>
             </div>
         </@panel>

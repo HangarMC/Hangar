@@ -4,7 +4,9 @@ import io.papermc.hangar.filter.HangarAuthenticationFilter;
 import io.papermc.hangar.security.HangarAuthenticationProvider;
 import io.papermc.hangar.security.voters.GlobalPermissionVoter;
 import io.papermc.hangar.security.voters.ProjectPermissionVoter;
+import io.papermc.hangar.security.voters.UserLockVoter;
 import io.papermc.hangar.service.PermissionService;
+import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,11 +32,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final HangarAuthenticationProvider authProvider;
     private final PermissionService permissionService;
+    private final UserService userService;
 
     @Autowired
-    public SecurityConfig(HangarAuthenticationProvider authProvider, PermissionService permissionService) {
+    public SecurityConfig(HangarAuthenticationProvider authProvider, PermissionService permissionService, UserService userService) {
         this.authProvider = authProvider;
         this.permissionService = permissionService;
+        this.userService = userService;
     }
 
     @Override
@@ -68,7 +72,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 new RoleVoter(),
                 new AuthenticatedVoter(),
                 new ProjectPermissionVoter(permissionService),
-                new GlobalPermissionVoter(permissionService)
+                new GlobalPermissionVoter(permissionService),
+                new UserLockVoter(userService)
         );
         return new UnanimousBased(decisionVoters);
     }

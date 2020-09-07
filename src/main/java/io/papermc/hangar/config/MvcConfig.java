@@ -3,6 +3,7 @@ package io.papermc.hangar.config;
 import freemarker.template.TemplateException;
 import io.papermc.hangar.controller.converters.ColorHexConverter;
 import io.papermc.hangar.controller.converters.StringToEnumConverterFactory;
+import io.papermc.hangar.security.UserLockExceptionResolver;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.Routes;
@@ -119,9 +120,7 @@ public class MvcConfig implements WebMvcConfigurer {
         return messageSource;
     }
 
-    // yeah, idk
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverterFactory(new StringToEnumConverterFactory());
         registry.addConverter(new ColorHexConverter());
@@ -135,5 +134,10 @@ public class MvcConfig implements WebMvcConfigurer {
         messageConverters.add(converter);
         restTemplate.setMessageConverters(messageConverters);
         return restTemplate;
+    }
+
+    @Bean
+    public UserLockExceptionResolver userLockExceptionResolver() {
+        return new UserLockExceptionResolver();
     }
 }
