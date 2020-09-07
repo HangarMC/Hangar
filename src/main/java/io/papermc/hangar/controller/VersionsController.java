@@ -24,6 +24,7 @@ import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.model.viewhelpers.VersionData;
 import io.papermc.hangar.security.annotations.GlobalPermission;
+import io.papermc.hangar.security.annotations.UserLock;
 import io.papermc.hangar.service.DownloadsService;
 import io.papermc.hangar.service.UserActionLogService;
 import io.papermc.hangar.service.UserService;
@@ -172,6 +173,7 @@ public class VersionsController extends HangarController {
         return fillModel(mav);
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @GetMapping("/{author}/{slug}/versions/new")
     public ModelAndView showCreator(@PathVariable String author, @PathVariable String slug, ModelMap modelMap) {
@@ -180,6 +182,7 @@ public class VersionsController extends HangarController {
         return mav;
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/new/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ModelAndView upload(@PathVariable String author, @PathVariable String slug, @RequestParam("pluginFile") MultipartFile file) {
@@ -206,6 +209,7 @@ public class VersionsController extends HangarController {
         return _showCreator(author, slug, pendingVersion);
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @GetMapping("/{author}/{slug}/versions/new/{versionName}")
     public ModelAndView showCreatorWithMeta(@PathVariable String author, @PathVariable String slug, @PathVariable String versionName) {
@@ -257,6 +261,7 @@ public class VersionsController extends HangarController {
         }
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version:.+}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView publish(@PathVariable String author,
@@ -343,6 +348,7 @@ public class VersionsController extends HangarController {
         return fillModel(mav);
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/approve")
@@ -350,6 +356,7 @@ public class VersionsController extends HangarController {
         return _approve(projectVersionsTable.get(), author, slug, version, false);
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/approvePartial")
@@ -483,6 +490,7 @@ public class VersionsController extends HangarController {
         }
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version}/delete", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView softDelete(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String comment, RedirectAttributes ra) {
@@ -604,6 +612,7 @@ public class VersionsController extends HangarController {
         }
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/recommended")
     public ModelAndView setRecommended(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
@@ -621,6 +630,7 @@ public class VersionsController extends HangarController {
         return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version}/save", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView saveDescription(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String content) {

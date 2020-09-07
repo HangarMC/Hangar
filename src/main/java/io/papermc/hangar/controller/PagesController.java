@@ -9,6 +9,7 @@ import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.ProjectPage;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
+import io.papermc.hangar.security.annotations.UserLock;
 import io.papermc.hangar.service.MarkdownService;
 import io.papermc.hangar.service.UserActionLogService;
 import io.papermc.hangar.service.project.PagesFactory;
@@ -88,6 +89,7 @@ public class PagesController extends HangarController {
         return fillModel(mav);
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping({"/{author}/{slug}/pages/{page}/delete", "/{author}/{slug}/pages/{page}/{subPage}/delete"})
     public ModelAndView delete(@PathVariable String author, @PathVariable String slug, @PathVariable String page, @PathVariable(required = false) String subPage) {
@@ -103,6 +105,7 @@ public class PagesController extends HangarController {
         return Routes.PROJECTS_SHOW.getRedirect(author, slug);
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping(value = {"/{author}/{slug}/pages/{page}/edit", "/{author}/{slug}/pages/{page}/{subPage}/edit"}, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public Object save(@PathVariable String author,
@@ -136,6 +139,7 @@ public class PagesController extends HangarController {
         return toReturn;
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @GetMapping({"/{author}/{slug}/pages/{page}/edit", "/{author}/{slug}/pages/{page}/{subPage}/edit"})
     public ModelAndView showEditor(@PathVariable String author, @PathVariable String slug, @PathVariable String page, @PathVariable(required = false) String subPage) {

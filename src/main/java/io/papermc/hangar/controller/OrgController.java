@@ -8,6 +8,7 @@ import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.NotificationType;
 import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.viewhelpers.UserData;
+import io.papermc.hangar.security.annotations.UserLock;
 import io.papermc.hangar.service.AuthenticationService;
 import io.papermc.hangar.service.NotificationService;
 import io.papermc.hangar.service.OrgFactory;
@@ -90,6 +91,7 @@ public class OrgController extends HangarController {
         }
     }
 
+    @UserLock
     @Secured("ROLE_USER")
     @GetMapping("/organizations/new")
     public ModelAndView showCreator(RedirectAttributes attributes, ModelMap modelMap) {
@@ -100,6 +102,7 @@ public class OrgController extends HangarController {
         return fillModel(AlertUtil.transferAlerts(new ModelAndView("createOrganization"), modelMap));
     }
 
+    @UserLock
     @Secured("ROLE_USER")
     @PostMapping(value = "/organizations/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView create(@RequestParam String name, @RequestParam(required = false) List<Long> users, @RequestParam(required = false) List<Role> roles, RedirectAttributes attributes) {

@@ -3,6 +3,7 @@ package io.papermc.hangar.controller;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.model.Color;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
+import io.papermc.hangar.security.annotations.UserLock;
 import io.papermc.hangar.service.project.ChannelService;
 import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class ChannelsController extends HangarController {
         this.projectData = projectData;
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @GetMapping("/{author}/{slug}/channels")
     public ModelAndView showList(@PathVariable String author, @PathVariable String slug) {
@@ -40,6 +42,7 @@ public class ChannelsController extends HangarController {
         return fillModel(mv);
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/channels")
     public ModelAndView create(@PathVariable String author, @PathVariable String slug, @RequestParam("channel-input") String channelId, @RequestParam("channel-color-input") Color channelColor) {
@@ -47,6 +50,7 @@ public class ChannelsController extends HangarController {
         return Routes.CHANNELS_SHOW_LIST.getRedirect(author, slug);
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/channels/{channel}")
     public ModelAndView save(@PathVariable String author, @PathVariable String slug, @PathVariable String channel,
@@ -55,6 +59,7 @@ public class ChannelsController extends HangarController {
         return Routes.CHANNELS_SHOW_LIST.getRedirect(author, slug);
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/channels/{channel}/delete")
     public ModelAndView delete(@PathVariable String author, @PathVariable String slug, @PathVariable String channel) {

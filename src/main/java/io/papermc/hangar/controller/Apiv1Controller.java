@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.model.ProjectChannelsTable;
 import io.papermc.hangar.db.model.ProjectVersionTagsTable;
@@ -12,20 +11,20 @@ import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
-import io.papermc.hangar.model.TagColor;
+import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.SsoSyncData;
+import io.papermc.hangar.model.TagColor;
 import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.model.generated.Dependency;
+import io.papermc.hangar.model.viewhelpers.ProjectPage;
+import io.papermc.hangar.model.viewhelpers.UserData;
+import io.papermc.hangar.security.annotations.UserLock;
 import io.papermc.hangar.service.SsoService;
 import io.papermc.hangar.service.SsoService.SignatureException;
 import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.api.V1ApiService;
-import io.papermc.hangar.util.TemplateHelper;
-import io.papermc.hangar.model.Role;
-import io.papermc.hangar.model.generated.Dependency;
-import io.papermc.hangar.model.viewhelpers.ProjectPage;
-import io.papermc.hangar.model.viewhelpers.UserData;
 import io.papermc.hangar.service.project.PagesSerivce;
-
+import io.papermc.hangar.util.TemplateHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,12 +90,14 @@ public class Apiv1Controller extends HangarController {
         return null; // TODO implement showProject request controller
     }
 
+    @UserLock
     @Secured("ROLE_USER")
     @PostMapping("/v1/projects/{pluginId}/keys/new")
     public Object createKey(@PathVariable Object pluginId) {
         return null; // TODO implement createKey request controller
     }
 
+    @UserLock
     @Secured("ROLE_USER")
     @PostMapping("/v1/projects/{pluginId}/keys/revoke")
     public Object revokeKey(@PathVariable Object pluginId) {

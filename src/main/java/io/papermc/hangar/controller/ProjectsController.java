@@ -28,6 +28,7 @@ import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.model.viewhelpers.UserData;
 import io.papermc.hangar.security.annotations.GlobalPermission;
 import io.papermc.hangar.security.annotations.ProjectPermission;
+import io.papermc.hangar.security.annotations.UserLock;
 import io.papermc.hangar.service.ApiKeyService;
 import io.papermc.hangar.service.NotificationService;
 import io.papermc.hangar.service.OrgService;
@@ -135,6 +136,7 @@ public class ProjectsController extends HangarController {
         this.projectData = projectData;
     }
 
+    @UserLock
     @Secured("ROLE_USER")
     @PostMapping(value = "/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public Object createProject(@RequestParam("name") String name,
@@ -222,6 +224,7 @@ public class ProjectsController extends HangarController {
         return null; // TODO implement setInviteStatusOnBehalf request controller
     }
 
+    @UserLock
     @Secured("ROLE_USER")
     @GetMapping("/new")
     public ModelAndView showCreator() {
@@ -255,7 +258,7 @@ public class ProjectsController extends HangarController {
 
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/discuss/reply")
-    public Object postDiscussionReply(@PathVariable Object author, @PathVariable Object slug) {
+    public Object postDiscussionReply(@PathVariable String author, @PathVariable String slug) {
         return null; // TODO implement postDiscussionReply request controller
     }
 
@@ -282,6 +285,7 @@ public class ProjectsController extends HangarController {
         return fillModel(mav);
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @ProjectPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)
     @PostMapping(value = "/{author}/{slug}/icon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -338,6 +342,7 @@ public class ProjectsController extends HangarController {
         }
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/icon/reset")
     @ResponseStatus(HttpStatus.OK)
@@ -352,6 +357,7 @@ public class ProjectsController extends HangarController {
         userActionLogService.project(request, LoggedActionType.PROJECT_ICON_CHANGED.with(ProjectContext.of(project.getId())), "", "");
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @ProjectPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)
     @Secured("ROLE_USER")
     @GetMapping("/{author}/{slug}/manage")
@@ -366,6 +372,7 @@ public class ProjectsController extends HangarController {
         return fillModel(mav);
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/manage/delete", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public RedirectView softDelete(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String comment, RedirectAttributes ra) {
@@ -388,6 +395,7 @@ public class ProjectsController extends HangarController {
         return new RedirectView(Routes.getRouteUrlOf("showHome"));
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @ProjectPermission(NamedPermission.MANAGE_SUBJECT_MEMBERS)
     @PostMapping("/{author}/{slug}/manage/members/remove")
@@ -405,6 +413,7 @@ public class ProjectsController extends HangarController {
         return Routes.PROJECTS_SHOW_SETTINGS.getRedirect(author, slug);
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/manage/rename", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public Object rename(@PathVariable String author, @PathVariable String slug, @RequestParam("name") String newName) {
@@ -428,6 +437,7 @@ public class ProjectsController extends HangarController {
         return new RedirectView(Routes.getRouteUrlOf("projects.show", author, newName));
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/manage/save", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView save(@PathVariable String author,
@@ -503,6 +513,7 @@ public class ProjectsController extends HangarController {
         return Routes.PROJECTS_SHOW.getRedirect(author, slug);
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @GetMapping("/{author}/{slug}/manage/sendforapproval")
     public ModelAndView sendForApproval(@PathVariable String author, @PathVariable String slug) {
@@ -571,6 +582,7 @@ public class ProjectsController extends HangarController {
         }
     }
 
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/visible/{visibility}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @ResponseStatus(HttpStatus.OK)
