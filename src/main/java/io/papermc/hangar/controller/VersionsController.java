@@ -26,8 +26,8 @@ import io.papermc.hangar.model.viewhelpers.VersionData;
 import io.papermc.hangar.security.annotations.GlobalPermission;
 import io.papermc.hangar.security.annotations.UserLock;
 import io.papermc.hangar.service.DownloadsService;
+import io.papermc.hangar.service.StatsService;
 import io.papermc.hangar.service.UserActionLogService;
-import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.VersionService;
 import io.papermc.hangar.service.pluginupload.PendingVersion;
 import io.papermc.hangar.service.pluginupload.PluginUploadService;
@@ -83,7 +83,7 @@ public class VersionsController extends HangarController {
     private final ProjectService projectService;
     private final VersionService versionService;
     private final ProjectFactory projectFactory;
-    private final UserService userService;
+    private final StatsService statsService;
     private final PluginUploadService pluginUploadService;
     private final ChannelService channelService;
     private final DownloadsService downloadsService;
@@ -105,11 +105,11 @@ public class VersionsController extends HangarController {
 
 
     @Autowired
-    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, UserService userService, PluginUploadService pluginUploadService, ChannelService channelService, DownloadsService downloadsService, UserActionLogService userActionLogService, CacheManager cacheManager, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, MessageSource messageSource, ObjectMapper mapper, HttpServletRequest request, HttpServletResponse response, Supplier<ProjectVersionsTable> projectVersionsTable, Supplier<VersionData> versionData, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
+    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, StatsService statsService, PluginUploadService pluginUploadService, ChannelService channelService, DownloadsService downloadsService, UserActionLogService userActionLogService, CacheManager cacheManager, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, MessageSource messageSource, ObjectMapper mapper, HttpServletRequest request, HttpServletResponse response, Supplier<ProjectVersionsTable> projectVersionsTable, Supplier<VersionData> versionData, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
         this.projectService = projectService;
         this.versionService = versionService;
         this.projectFactory = projectFactory;
-        this.userService = userService;
+        this.statsService = statsService;
         this.pluginUploadService = pluginUploadService;
         this.channelService = channelService;
         this.downloadsService = downloadsService;
@@ -558,12 +558,11 @@ public class VersionsController extends HangarController {
     }
 
     private FileSystemResource _sendVersion(ProjectsTable project, ProjectVersionsTable version) {
-        // TODO version download stat
 
         Path path = projectFiles.getVersionDir(project.getOwnerName(), project.getName(), version.getVersionString()).resolve(version.getFileName());
-
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + version.getFileName() + "\"");
 
+        statsService.addVersionDownloaded(version);
         return new FileSystemResource(path);
     }
 
@@ -611,8 +610,7 @@ public class VersionsController extends HangarController {
                 String fileName = version.getFileName();
                 Path path = projectFiles.getVersionDir(project.getOwnerName(), project.getName(), version.getVersionString()).resolve(fileName);
 
-                // TODO download stats
-
+                statsService.addVersionDownloaded(version);
                 if (fileName.endsWith(".jar")) {
                     response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + version.getFileName() + "\"");
 

@@ -1,24 +1,42 @@
 package io.papermc.hangar.service;
 
 import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.dao.ProjectDownloadCountDao;
 import io.papermc.hangar.db.dao.ProjectStatsDao;
+import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.db.model.Stats;
+import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.WebUtils;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.net.InetAddress;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-public class StatsService {
+public class StatsService extends HangarService {
 
     private final HangarDao<ProjectStatsDao> projectStatsDao;
+    private final HangarDao<ProjectDownloadCountDao> projectDownloadCountDao;
+
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
 
     @Autowired
-    public StatsService(HangarDao<ProjectStatsDao> projectStatsDao) {
+    public StatsService(HangarDao<ProjectStatsDao> projectStatsDao, HangarDao<ProjectDownloadCountDao> projectDownloadCountDao, HttpServletRequest request, HttpServletResponse response) {
         this.projectStatsDao = projectStatsDao;
+        this.projectDownloadCountDao = projectDownloadCountDao;
+        this.request = request;
+        this.response = response;
     }
 
     public Stream<LocalDate> getDaysBetween(LocalDate from, LocalDate to) {
@@ -59,5 +77,19 @@ public class StatsService {
 
     public <T> String getJsonListAsString(Stream<T> stream) {
         return stream.map(count -> "\"" + count + "\"").collect(Collectors.joining(", ", "[", "]"));
+    }
+
+    public static final String COOKIE_NAME = "_stat";
+
+    public void addVersionDownloaded(ProjectVersionsTable versionsTable) {
+        Long userId = currentUser.get().map(UsersTable::getId).orElse(null);
+        InetAddress address = RequestUtil.getRemoteInetAddress(request);
+        Optional<String> existingCookie = projectDownloadCountDao.get().getIndividualDownloadCookie(userId, address);
+        String cookie = existingCookie.orElse(Optional.ofNullable(WebUtils.getCookie(request, COOKIE_NAME)).map(Cookie::getValue).orElse(UUID.randomUUID().toString()));
+        projectDownloadCountDao.get().addVersionDownload(versionsTable.getProjectId(), versionsTable.getId(), address, cookie, userId);
+        // TODO maybe secure?
+        Cookie newCookie = new Cookie(COOKIE_NAME, cookie);
+        newCookie.setMaxAge(Integer.MAX_VALUE);
+        response.addCookie(newCookie);
     }
 }
