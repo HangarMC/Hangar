@@ -33,6 +33,7 @@ import io.papermc.hangar.service.ApiKeyService;
 import io.papermc.hangar.service.NotificationService;
 import io.papermc.hangar.service.OrgService;
 import io.papermc.hangar.service.RoleService;
+import io.papermc.hangar.service.StatsService;
 import io.papermc.hangar.service.UserActionLogService;
 import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.pluginupload.ProjectFiles;
@@ -103,6 +104,7 @@ public class ProjectsController extends HangarController {
     private final RoleService roleService;
     private final NotificationService notificationService;
     private final UserActionLogService userActionLogService;
+    private final StatsService statsService;
     private final ProjectFiles projectFiles;
     private final TemplateHelper templateHelper;
     private final HangarDao<UserDao> userDao;
@@ -114,7 +116,7 @@ public class ProjectsController extends HangarController {
     private final Supplier<ProjectData> projectData;
 
     @Autowired
-    public ProjectsController(HangarConfig hangarConfig, UserService userService, OrgService orgService, FlagService flagService, ProjectService projectService, ProjectFactory projectFactory, PagesSerivce pagesSerivce, ApiKeyService apiKeyService, RoleService roleService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles, TemplateHelper templateHelper, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao, HangarDao<GeneralDao> generalDao, HttpServletRequest request, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
+    public ProjectsController(HangarConfig hangarConfig, UserService userService, OrgService orgService, FlagService flagService, ProjectService projectService, ProjectFactory projectFactory, PagesSerivce pagesSerivce, ApiKeyService apiKeyService, RoleService roleService, NotificationService notificationService, UserActionLogService userActionLogService, StatsService statsService, ProjectFiles projectFiles, TemplateHelper templateHelper, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao, HangarDao<GeneralDao> generalDao, HttpServletRequest request, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
         this.hangarConfig = hangarConfig;
         this.userService = userService;
         this.orgService = orgService;
@@ -126,6 +128,7 @@ public class ProjectsController extends HangarController {
         this.roleService = roleService;
         this.notificationService = notificationService;
         this.userActionLogService = userActionLogService;
+        this.statsService = statsService;
         this.projectFiles = projectFiles;
         this.templateHelper = templateHelper;
         this.userDao = userDao;
@@ -243,6 +246,7 @@ public class ProjectsController extends HangarController {
         mav.addObject("projectPage", pagesSerivce.getPage(projData.getProject().getId(), hangarConfig.pages.home.getName()));
         mav.addObject("editorOpen", false);
         pagesSerivce.fillPages(mav, projData.getProject().getId());
+        statsService.addProjectView(projData.getProject());
         return fillModel(mav);
     }
 
@@ -253,6 +257,7 @@ public class ProjectsController extends HangarController {
         ScopedProjectData scopedProjectData = projectService.getScopedProjectData(projData.getProject().getId());
         mv.addObject("p", projData);
         mv.addObject("sp", scopedProjectData);
+        statsService.addProjectView(projData.getProject()); // TODO this is in ore, but I'm not sure why
         return fillModel(mv);
     }
 

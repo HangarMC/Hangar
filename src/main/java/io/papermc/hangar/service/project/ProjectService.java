@@ -1,10 +1,8 @@
 package io.papermc.hangar.service.project;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.db.dao.GeneralDao;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.ProjectDao;
-import io.papermc.hangar.db.dao.ProjectViewDao;
 import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.dao.VisibilityDao;
 import io.papermc.hangar.db.model.ProjectVersionsTable;
@@ -14,11 +12,6 @@ import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.Visibility;
-import io.papermc.hangar.model.generated.Project;
-import io.papermc.hangar.model.generated.ProjectLicense;
-import io.papermc.hangar.model.generated.ProjectNamespace;
-import io.papermc.hangar.model.generated.ProjectSettings;
-import io.papermc.hangar.model.generated.UserActions;
 import io.papermc.hangar.model.viewhelpers.ProjectApprovalData;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.ProjectFlag;
@@ -29,7 +22,6 @@ import io.papermc.hangar.model.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.model.viewhelpers.UserRole;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.pluginupload.ProjectFiles;
 import io.papermc.hangar.util.RequestUtil;
 import io.papermc.hangar.util.StringUtils;
@@ -37,14 +29,12 @@ import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.file.Path;
-import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,9 +50,6 @@ public class ProjectService extends HangarService {
     private final HangarDao<ProjectDao> projectDao;
     private final HangarDao<UserDao> userDao;
     private final HangarDao<VisibilityDao> visibilityDao;
-    private final HangarDao<ProjectViewDao> projectViewDao;
-    private final HangarDao<GeneralDao> generalDao;
-    private final UserService userService;
     private final FlagService flagService;
     private final PermissionService permissionService;
     private final ProjectFiles projectFiles;
@@ -70,15 +57,12 @@ public class ProjectService extends HangarService {
     private final HttpServletRequest request;
 
     @Autowired
-    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectViewDao> projectViewDao, HangarDao<GeneralDao> generalDao, ProjectFiles projectFiles, UserService userService, FlagService flagService, PermissionService permissionService, HttpServletRequest request) {
+    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, ProjectFiles projectFiles, FlagService flagService, PermissionService permissionService, HttpServletRequest request) {
         this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
         this.userDao = userDao;
         this.visibilityDao = visibilityDao;
-        this.projectViewDao = projectViewDao;
-        this.generalDao = generalDao;
         this.projectFiles = projectFiles;
-        this.userService = userService;
         this.flagService = flagService;
         this.permissionService = permissionService;
         this.request = request;
@@ -210,46 +194,6 @@ public class ProjectService extends HangarService {
         Map<ProjectData, UserRole<UserProjectRolesTable>> map = new HashMap<>();
         dbMap.forEach((projectsTable, role) -> map.put(getProjectData(projectsTable), new UserRole<>(role)));
         return map;
-    }
-
-    public Project getProjectApi(String pluginId) { // TODO still probably have to work out a standard for how to handle the api models
-        ProjectsTable projectsTable = projectDao.get().getByPluginId(pluginId);
-        if (projectsTable == null) return null;
-
-        projectViewDao.get().increaseView(projectsTable.getId()); //TODO don't increase every time here
-        generalDao.get().refreshHomeProjects();
-
-        Project project = new Project();
-        project.setCreatedAt(projectsTable.getCreatedAt());
-        project.setPluginId(projectsTable.getPluginId());
-        project.setName(projectsTable.getName());
-        ProjectNamespace projectNamespace = new ProjectNamespace();
-        projectNamespace.setOwner(userDao.get().getById(projectsTable.getOwnerId()).getName());
-        projectNamespace.setSlug(projectsTable.getSlug());
-        project.setNamespace(projectNamespace);
-
-//        project.setPromotedVersions(new ArrayList<>()); // TODO implement
-        project.setStats(projectDao.get().getProjectStats(projectsTable.getId()));
-        project.setCategory(projectsTable.getCategory());
-        project.setDescription(projectsTable.getDescription());
-        project.setLastUpdated(OffsetDateTime.now()); // TODO implement
-        project.setVisibility(projectsTable.getVisibility());
-        project.setUserActions(new UserActions()); // TODO implement
-        project.setIconUrl(""); // TODO implement
-
-        ProjectSettings projectSettings = new ProjectSettings();
-        projectSettings.setHomepage(projectsTable.getHomepage());
-        projectSettings.setIssues(projectsTable.getIssues());
-        projectSettings.setSources(projectsTable.getSource());
-        projectSettings.setSupport(projectsTable.getSupport());
-        projectSettings.setForumSync(projectsTable.getForumSync());
-
-        ProjectLicense projectLicense = new ProjectLicense();
-        projectLicense.setName(projectsTable.getLicenseName());
-        projectLicense.setUrl(projectsTable.getLicenseUrl());
-        projectSettings.setLicense(projectLicense);
-        project.setSettings(projectSettings);
-        return project;
     }
 
     public List<ProjectApprovalData> getProjectsNeedingApproval() {

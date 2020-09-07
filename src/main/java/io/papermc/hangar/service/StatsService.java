@@ -1,9 +1,10 @@
 package io.papermc.hangar.service;
 
 import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.ProjectDownloadCountDao;
 import io.papermc.hangar.db.dao.ProjectStatsDao;
+import io.papermc.hangar.db.dao.ProjectStatsTrackerDao;
 import io.papermc.hangar.db.model.ProjectVersionsTable;
+import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.Stats;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.util.RequestUtil;
@@ -26,15 +27,15 @@ import java.util.stream.Stream;
 public class StatsService extends HangarService {
 
     private final HangarDao<ProjectStatsDao> projectStatsDao;
-    private final HangarDao<ProjectDownloadCountDao> projectDownloadCountDao;
+    private final HangarDao<ProjectStatsTrackerDao> projectStatsTrackerDao;
 
     private final HttpServletRequest request;
     private final HttpServletResponse response;
 
     @Autowired
-    public StatsService(HangarDao<ProjectStatsDao> projectStatsDao, HangarDao<ProjectDownloadCountDao> projectDownloadCountDao, HttpServletRequest request, HttpServletResponse response) {
+    public StatsService(HangarDao<ProjectStatsDao> projectStatsDao, HangarDao<ProjectStatsTrackerDao> projectStatsTrackerDao, HttpServletRequest request, HttpServletResponse response) {
         this.projectStatsDao = projectStatsDao;
-        this.projectDownloadCountDao = projectDownloadCountDao;
+        this.projectStatsTrackerDao = projectStatsTrackerDao;
         this.request = request;
         this.response = response;
     }
@@ -81,12 +82,25 @@ public class StatsService extends HangarService {
 
     public static final String COOKIE_NAME = "_stat";
 
+    public void addProjectView(ProjectsTable project) {
+        Long userId = currentUser.get().map(UsersTable::getId).orElse(null);
+        InetAddress address = RequestUtil.getRemoteInetAddress(request);
+        Optional<String> existingCookie = projectStatsTrackerDao.get().getIndividualViewCookie(userId, address);
+        String cookie = existingCookie.orElse(Optional.ofNullable(WebUtils.getCookie(request, COOKIE_NAME)).map(Cookie::getValue).orElse(UUID.randomUUID().toString()));
+        projectStatsTrackerDao.get().addProjectView(project.getId(), address, cookie, userId);
+        setCookie(cookie);
+    }
+
     public void addVersionDownloaded(ProjectVersionsTable versionsTable) {
         Long userId = currentUser.get().map(UsersTable::getId).orElse(null);
         InetAddress address = RequestUtil.getRemoteInetAddress(request);
-        Optional<String> existingCookie = projectDownloadCountDao.get().getIndividualDownloadCookie(userId, address);
+        Optional<String> existingCookie = projectStatsTrackerDao.get().getIndividualDownloadCookie(userId, address);
         String cookie = existingCookie.orElse(Optional.ofNullable(WebUtils.getCookie(request, COOKIE_NAME)).map(Cookie::getValue).orElse(UUID.randomUUID().toString()));
-        projectDownloadCountDao.get().addVersionDownload(versionsTable.getProjectId(), versionsTable.getId(), address, cookie, userId);
+        projectStatsTrackerDao.get().addVersionDownload(versionsTable.getProjectId(), versionsTable.getId(), address, cookie, userId);
+        setCookie(cookie);
+    }
+
+    private void setCookie(String cookie) {
         // TODO maybe secure?
         Cookie newCookie = new Cookie(COOKIE_NAME, cookie);
         newCookie.setMaxAge(Integer.MAX_VALUE);

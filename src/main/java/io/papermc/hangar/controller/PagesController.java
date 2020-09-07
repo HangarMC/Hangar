@@ -11,6 +11,7 @@ import io.papermc.hangar.model.viewhelpers.ProjectPage;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.security.annotations.UserLock;
 import io.papermc.hangar.service.MarkdownService;
+import io.papermc.hangar.service.StatsService;
 import io.papermc.hangar.service.UserActionLogService;
 import io.papermc.hangar.service.project.PagesFactory;
 import io.papermc.hangar.service.project.PagesSerivce;
@@ -43,6 +44,7 @@ public class PagesController extends HangarController {
     private final ProjectService projectService;
     private final MarkdownService markdownService;
     private final PagesSerivce pagesSerivce;
+    private final StatsService statsService;
     private final PagesFactory pagesFactory;
     private final HangarDao<ProjectPageDao> projectPageDao;
 
@@ -50,11 +52,12 @@ public class PagesController extends HangarController {
     private final Supplier<ProjectsTable> projectsTable;
     private final Supplier<ProjectData> projectData;
 
-    public PagesController(UserActionLogService userActionLogService, ProjectService projectService, MarkdownService markdownService, PagesSerivce pagesSerivce, PagesFactory pagesFactory, HangarDao<ProjectPageDao> projectPageDao, HttpServletRequest request, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
+    public PagesController(UserActionLogService userActionLogService, ProjectService projectService, MarkdownService markdownService, PagesSerivce pagesSerivce, StatsService statsService, PagesFactory pagesFactory, HangarDao<ProjectPageDao> projectPageDao, HttpServletRequest request, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
         this.userActionLogService = userActionLogService;
         this.projectService = projectService;
         this.markdownService = markdownService;
         this.pagesSerivce = pagesSerivce;
+        this.statsService = statsService;
         this.pagesFactory = pagesFactory;
         this.projectPageDao = projectPageDao;
         this.request = request;
@@ -86,6 +89,7 @@ public class PagesController extends HangarController {
         mav.addObject("projectPage", projectPage);
         mav.addObject("editorOpen", false);
         pagesSerivce.fillPages(mav, projData.getProject().getId());
+        statsService.addProjectView(projData.getProject());
         return fillModel(mav);
     }
 

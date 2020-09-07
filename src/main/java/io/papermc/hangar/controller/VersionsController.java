@@ -168,10 +168,12 @@ public class VersionsController extends HangarController {
     @GetMapping("/{author}/{slug}/versions")
     public ModelAndView showList(@PathVariable String author, @PathVariable String slug) {
         ModelAndView mav = new ModelAndView("projects/versions/list");
-        ScopedProjectData sp = projectService.getScopedProjectData(projectData.get().getProject().getId());
+        ProjectData projData = projectData.get();
+        ScopedProjectData sp = projectService.getScopedProjectData(projData.getProject().getId());
         mav.addObject("sp", sp);
         mav.addObject("p", projectData.get());
-        mav.addObject("channels", channelService.getProjectChannels(projectData.get().getProject().getId()));
+        mav.addObject("channels", channelService.getProjectChannels(projData.getProject().getId()));
+        statsService.addProjectView(projData.getProject());
         return fillModel(mav);
     }
 
@@ -343,10 +345,12 @@ public class VersionsController extends HangarController {
     @GetMapping("/{author}/{slug}/versions/{version:.*}")
     public ModelAndView show(@PathVariable String author, @PathVariable String slug, @PathVariable String version, ModelMap modelMap) {
         ModelAndView mav = new ModelAndView("projects/versions/view");
+        VersionData vData = versionData.get();
         AlertUtil.transferAlerts(mav, modelMap);
-        ScopedProjectData sp = projectService.getScopedProjectData(versionData.get().getP().getProject().getId());
-        mav.addObject("v", versionData.get());
+        ScopedProjectData sp = projectService.getScopedProjectData(vData.getP().getProject().getId());
+        mav.addObject("v", vData);
         mav.addObject("sp", sp);
+        statsService.addProjectView(vData.getP().getProject());
         return fillModel(mav);
     }
 
