@@ -2,6 +2,7 @@ package io.papermc.hangar.service;
 
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.ProjectDao;
+import io.papermc.hangar.db.dao.ProjectVersionDao;
 import io.papermc.hangar.db.dao.VisibilityDao;
 import io.papermc.hangar.db.model.ProjectChannelsTable;
 import io.papermc.hangar.db.model.ProjectVersionTagsTable;
@@ -10,18 +11,16 @@ import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.model.TagColor;
 import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.model.generated.Dependency;
 import io.papermc.hangar.model.generated.ReviewState;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
+import io.papermc.hangar.model.viewhelpers.ReviewQueueEntry;
 import io.papermc.hangar.model.viewhelpers.UserData;
 import io.papermc.hangar.model.viewhelpers.VersionData;
+import io.papermc.hangar.service.pluginupload.PendingVersion;
 import io.papermc.hangar.service.project.ChannelService;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.HangarException;
-import io.papermc.hangar.db.dao.ProjectVersionDao;
-import io.papermc.hangar.model.generated.Dependency;
-import io.papermc.hangar.model.viewhelpers.ReviewQueueEntry;
-import io.papermc.hangar.service.pluginupload.PendingVersion;
-
 import io.papermc.hangar.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +28,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -103,6 +101,7 @@ public class VersionService {
     public void deleteVersion(long versionId) {
         versionDao.get().deleteVersion(versionId);
     }
+
 
     public void changeVisibility(VersionData versionData, Visibility visibility, String comment, long userId) {
         if (versionData.getV().getVisibility() == visibility) return; // No change

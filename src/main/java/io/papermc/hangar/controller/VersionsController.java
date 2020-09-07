@@ -37,6 +37,7 @@ import io.papermc.hangar.service.project.ProjectFactory;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.AlertUtil;
 import io.papermc.hangar.util.AlertUtil.AlertType;
+import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.HangarException;
 import io.papermc.hangar.util.RequestUtil;
 import io.papermc.hangar.util.Routes;
@@ -56,6 +57,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -566,10 +568,23 @@ public class VersionsController extends HangarController {
         return new FileSystemResource(path);
     }
 
+    @GlobalPermission(NamedPermission.HARD_DELETE_PROJECT)
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/hardDelete")
-    public Object delete(@PathVariable Object author, @PathVariable Object slug, @PathVariable Object version) {
-        return null; // TODO implement delete request controller
+    public ModelAndView delete(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestBody String comment, RedirectAttributes ra) {
+        VersionData vData = versionData.get();
+        userActionLogService.version(request, LoggedActionType.VERSION_DELETED.with(VersionContext.of(vData.getV().getProjectId(), vData.getV().getId())), "Deleted: " + comment, vData.getV().getVisibility().getName());
+        try {
+            projectFactory.prepareDeleteVersion(vData);
+        } catch (HangarException e) {
+            AlertUtil.showAlert(ra, AlertUtil.AlertType.ERROR, e.getMessage());
+            return Routes.VERSIONS_SHOW_LIST.getRedirect(author, slug);
+        }
+        Path versionDir = projectFiles.getVersionDir(vData.getP().getOwnerName(), vData.getP().getProject().getSlug(), vData.getV().getVersionString());
+        FileUtils.deleteDirectory(versionDir);
+        versionService.deleteVersion(vData.getV().getId());
+        // Ore deletes the channel if no more versions are left, I don't think that is a good idea, easy enough to delete the channel manually.
+        return Routes.VERSIONS_SHOW_LIST.getRedirect(author, slug);
     }
 
     @GetMapping(value = "/{author}/{slug}/versions/{version}/jar", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
