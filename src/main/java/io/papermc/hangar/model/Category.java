@@ -3,7 +3,9 @@ package io.papermc.hangar.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,6 +27,8 @@ public enum Category {
     private final String icon;
     private final boolean isVisible;
     private final String apiName;
+
+    public static final Category[] VALUES = values();
 
     Category(int value, String title, String icon, String apiName) {
         this(value, title, icon, apiName, true);
@@ -81,6 +85,17 @@ public enum Category {
             }
         }
         return null;
+    }
+
+    public static List<Category> fromString(String str) {
+        List<Category> categories = new ArrayList<>();
+        Arrays.stream(str.split(",")).forEach(s -> {
+            try {
+                int id = Integer.parseInt(s);
+                categories.add(Category.VALUES[id]);
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) { }
+        });
+        return categories;
     }
 
     public static Set<Category> visible() {

@@ -10,6 +10,12 @@ public class ProjectApiKeysTable {
     private long projectId;
     private String value;
 
+    public ProjectApiKeysTable(long projectId, String value) {
+        this.projectId = projectId;
+        this.value = value;
+    }
+
+    public ProjectApiKeysTable() { }
 
     public long getId() {
         return id;

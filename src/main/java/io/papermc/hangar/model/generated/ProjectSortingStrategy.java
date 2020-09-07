@@ -24,6 +24,8 @@ public enum ProjectSortingStrategy {
     private final String sql;
     private final String apiName;
 
+    public static final ProjectSortingStrategy[] VALUES = values();
+
     ProjectSortingStrategy(int value, String title, String sql, String apiName) {
         this.value = value;
         this.title = title;

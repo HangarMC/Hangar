@@ -12,7 +12,9 @@ import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.config.ValueColumn;
 import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.customizer.BindList.EmptyHandling;
+import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,9 +23,43 @@ import java.util.Map;
 @Repository
 public interface V1ApiDao {
 
+    @UseStringTemplateEngine
+    @SqlQuery("SELECT p.id " +
+              "     FROM home_projects p" +
+              "     WHERE true" +
+              "         <if(q)>AND p.name ILIKE '<q>' OR p.description ILIKE '<q>' OR p.owner_name ILIKE '<q>' OR p.plugin_id ILIKE '<q>' <endif>" +
+              "         <if(categories)>AND p.category IN (<categories>) <endif>" +
+              "     ORDER BY :strategyFragment" +
+              "     LIMIT :limit OFFSET :offset")
+    List<Long> apiIdSearch(@Define String q, @BindList(onEmpty = EmptyHandling.NULL_VALUE) List<Integer> categories, String strategyFragment, long limit, long offset);
+
+    @UseStringTemplateEngine
+    @RegisterBeanMapper(ProjectsTable.class)
+    @SqlQuery("SELECT pr.* " +
+            "     FROM home_projects p" +
+            "     JOIN projects pr ON p.plugin_id = pr.plugin_id" +
+            "     WHERE true" +
+            "         <if(q)>AND p.name ILIKE '<q>' OR p.description ILIKE '<q>' OR p.owner_name ILIKE '<q>' OR p.plugin_id ILIKE '<q>' <endif>" +
+            "         <if(categories)>AND p.category IN (<categories>) <endif>" +
+            "     ORDER BY :strategyFragment" +
+            "     LIMIT :limit OFFSET :offset")
+    List<ProjectsTable> getProjects(@Define String q, @BindList(onEmpty = EmptyHandling.NULL_VALUE) List<Integer> categories, String strategyFragment, long limit, long offset);
+
     @RegisterBeanMapper(ProjectsTable.class)
     @SqlQuery("SELECT * FROM projects WHERE owner_id IN (<userIds>)")
     List<ProjectsTable> getProjectsForUsers(@BindList(onEmpty = EmptyHandling.NULL_STRING) List<Long> userIds);
+
+    @UseStringTemplateEngine
+    @RegisterBeanMapper(ProjectVersionsTable.class)
+    @SqlQuery("SELECT pv.* " +
+              "     FROM project_versions pv" +
+              "         JOIN projects p ON pv.project_id = p.id" +
+              "         JOIN project_channels pc ON pv.channel_id = pc.id" +
+              "     WHERE p.plugin_id = :pluginId" +
+              "     <if(channels)>AND lower(pc.name) IN (<channels>)<endif>" +
+              "     <if(onlyPublic)>AND pv.visibility = 0<endif>" +
+              "     ORDER BY pv.created_at DESC ")
+    List<ProjectVersionsTable> getProjectVersions(@BindList(onEmpty = EmptyHandling.NULL_VALUE) List<String> channels, String pluginId, long limit, long offset, @Define boolean onlyPublic);
 
     @KeyColumn("owner_id")
     @ValueColumn("plugin_id")
@@ -45,10 +81,17 @@ public interface V1ApiDao {
     @SqlQuery("SELECT p.id p_id, pv.* FROM project_versions pv JOIN projects p ON pv.project_id = p.id WHERE p.recommended_version_id = pv.id AND p.id IN (<projectIds>)")
     Map<Long, ProjectVersionsTable> getProjectsRecommendedVersion(@BindList(onEmpty = EmptyHandling.NULL_STRING) List<Long> projectIds);
 
+    @UseStringTemplateEngine
     @KeyColumn("p_id")
     @RegisterBeanMapper(ProjectChannelsTable.class)
     @SqlQuery("SELECT p.id p_id, pc.* FROM project_channels pc JOIN project_versions pv ON pc.id = pv.channel_id JOIN projects p ON p.id = pc.project_id WHERE p.id IN (<projectIds>) AND p.recommended_version_id = pv.id")
     Map<Long, ProjectChannelsTable> getProjectsRecommendedVersionChannel(@BindList(onEmpty = EmptyHandling.NULL_STRING) List<Long> projectIds);
+
+    @UseStringTemplateEngine
+    @KeyColumn("p_id")
+    @RegisterBeanMapper(ProjectChannelsTable.class)
+    @SqlQuery("SELECT pv.id p_id, pc.* FROM project_versions pv JOIN project_channels pc ON pv.channel_id = pc.id WHERE pv.id IN (<versionIds>)")
+    Map<Long, ProjectChannelsTable> getProjectVersionChannels(@BindList(onEmpty = EmptyHandling.NULL_STRING) List<Long> versionIds);
 
     @RegisterBeanMapper(value = UserProjectRolesTable.class, prefix = "upr")
     @RegisterBeanMapper(UsersTable.class)

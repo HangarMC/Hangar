@@ -20,8 +20,11 @@ public class PermissionService {
         this.permissionsDao = permissionsDao;
     }
 
-    public Permission getGlobalPermissions(long userid) {
-        return addDefaults(permissionsDao.get().getGlobalPermission(userid, null));
+    public Permission getGlobalPermissions(Long userId) {
+        if (userId == null) {
+            return Permission.ViewPublicInfo;
+        }
+        return addDefaults(permissionsDao.get().getGlobalPermission(userId, null));
     }
 
     public Permission getGlobalPermissions(String userName) {
@@ -36,7 +39,10 @@ public class PermissionService {
         return addDefaults(permissionsDao.get().getProjectPermission(userId, author, slug));
     }
 
-    public Permission getProjectPermissions(long userId, String pluginId) {
+    public Permission getProjectPermissions(Long userId, String pluginId) {
+        if (userId == null) {
+            return Permission.None;
+        }
         return addDefaults(permissionsDao.get().getProjectPermission(userId, pluginId));
     }
 

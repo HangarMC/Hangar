@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.controller.UsersController;
 import io.papermc.hangar.controller.util.ApiScope;
 import io.papermc.hangar.db.dao.ApiKeyDao;
 import io.papermc.hangar.db.dao.HangarDao;
@@ -11,7 +12,6 @@ import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.dao.api.SessionsDao;
 import io.papermc.hangar.db.model.ApiKeysTable;
 import io.papermc.hangar.db.model.ApiSessionsTable;
-import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.ApiAuthInfo;
 import io.papermc.hangar.model.Permission;
@@ -21,13 +21,13 @@ import io.papermc.hangar.model.generated.SessionType;
 import io.papermc.hangar.security.HangarAuthentication;
 import io.papermc.hangar.service.sso.ChangeAvatarToken;
 import io.papermc.hangar.util.AuthUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -37,10 +37,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.annotation.RequestScope;
-import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.util.WebUtils;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -61,16 +62,18 @@ public class AuthenticationService extends HangarService {
     private final HangarDao<ApiKeyDao> apiKeyDao;
     private final AuthenticationManager authenticationManager;
     private final RoleService roleService;
+    private final SessionService sessionService;
     private final PermissionService permissionService;
-    private final OrgService orgService;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+
+    private final Supplier<Optional<UsersTable>> currentUser;
 
     private static final String UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
     private static final Pattern API_KEY_PATTERN = Pattern.compile("(" + UUID_REGEX + ").(" + UUID_REGEX + ")");
 
     @Autowired
-    public AuthenticationService(HttpServletRequest request, ApiAuthInfo apiAuthInfo, HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService, OrgService orgService, RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public AuthenticationService(HttpServletRequest request, ApiAuthInfo apiAuthInfo, HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, AuthenticationManager authenticationManager, RoleService roleService, SessionService sessionService, PermissionService permissionService, RestTemplate restTemplate, ObjectMapper objectMapper, Supplier<Optional<UsersTable>> currentUser) {
         this.request = request;
         this.apiAuthInfo = apiAuthInfo;
         this.hangarConfig = hangarConfig;
@@ -79,14 +82,11 @@ public class AuthenticationService extends HangarService {
         this.apiKeyDao = apiKeyDao;
         this.authenticationManager = authenticationManager;
         this.roleService = roleService;
+        this.sessionService = sessionService;
         this.permissionService = permissionService;
-        this.orgService = orgService;
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
-    }
-
-    public ApiAuthInfo getApiAuthInfo(String token) {
-        return apiKeyDao.get().getApiAuthInfo(token);
+        this.currentUser = currentUser;
     }
 
     @Bean
@@ -110,40 +110,39 @@ public class AuthenticationService extends HangarService {
         return null;
     }
 
-    public boolean authApiRequest(Permission perms, ApiScope apiScope) {
-        switch (apiScope.getType()) {
-            case GLOBAL:
-                if (!apiAuthInfo.getGlobalPerms().has(perms)) {
-                    throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-                }
-                return true;
-            case PROJECT:
-                if (apiScope.getValue() == null || apiScope.getValue().isBlank()) {
-                    throw new IllegalStateException("Must have passed the pluginId to apiAction");
-                }
-                if (!permissionService.getProjectPermissions(apiAuthInfo.getUser(), apiScope.getValue()).has(perms)) {
-                    throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-                }
-                return true;
-            case ORGANIZATION:
-                if (apiScope.getValue() == null || apiScope.getValue().isBlank()) {
-                    throw new IllegalStateException("Must have passed the org name to apiAction");
-                }
-                if (!permissionService.getOrganizationPermissions(apiAuthInfo.getUser(), apiScope.getValue()).has(perms)) {
-                    throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-                }
-                return true;
-            default:
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    public boolean authV1ApiRequest(Permission perms, ApiScope apiScope) {
+        Cookie sessionCookie = WebUtils.getCookie(request, UsersController.AUTH_TOKEN_NAME);
+        if (sessionCookie == null) {
+            return false;
+        } else {
+            if (currentUser.get().isEmpty()) {
+                return false;
+            }
+            return checkPerms(perms, apiScope, currentUser.get().get().getId());
         }
     }
 
-    public boolean authOrgRequest(Permission permission, String organizationName, boolean requireUnlock) {
-        if (requireUnlock) { } // TODO ensure unlocked
-        OrganizationsTable org = orgService.getOrganization(organizationName);
-        if (org == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        Permission orgPerms = permissionService.getOrganizationPermissions(getCurrentUser(), organizationName);
-        return orgPerms.has(permission);
+    public boolean authApiRequest(Permission perms, ApiScope apiScope) {
+        return checkPerms(perms, apiScope, apiAuthInfo.getUserId());
+    }
+
+    private boolean checkPerms(Permission perms, ApiScope apiScope, Long userId) {
+        switch (apiScope.getType()) {
+            case GLOBAL:
+                return permissionService.getGlobalPermissions(userId).has(perms);
+            case PROJECT:
+                if (StringUtils.isEmpty(apiScope.getValue())) {
+                    throw new IllegalArgumentException("Must have passed the pluginId to apiAction");
+                }
+                return permissionService.getProjectPermissions(userId, apiScope.getValue()).has(perms);
+            case ORGANIZATION:
+                if (StringUtils.isEmpty(apiScope.getValue())) {
+                    throw new IllegalArgumentException("Must have passed the pluginId to apiAction");
+                }
+                return permissionService.getOrganizationPermissions(userId, apiScope.getValue()).has(perms);
+            default:
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 
     public ApiSessionResponse authenticateDev() {
@@ -212,7 +211,7 @@ public class AuthenticationService extends HangarService {
         return sessionsDao.get().insert(apiSession);
     }
 
-    public void loginAsFakeUser() {
+    public UsersTable loginAsFakeUser() {
         String username = hangarConfig.fakeUser.getUsername();
         UsersTable userEntry = userDao.get().getByName(username);
         if (userEntry == null) {
@@ -228,6 +227,7 @@ public class AuthenticationService extends HangarService {
             roleService.addGlobalRole(userEntry.getId(), Role.HANGAR_ADMIN.getRoleId());
         }
         setAuthenticatedUser(userEntry);
+        return userEntry;
     }
 
     public void setAuthenticatedUser(UsersTable user) {

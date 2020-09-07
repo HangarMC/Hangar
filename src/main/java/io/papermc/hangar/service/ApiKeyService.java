@@ -1,12 +1,11 @@
 package io.papermc.hangar.service;
 
+import io.papermc.hangar.db.dao.ApiKeyDao;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.model.ApiKeysTable;
 import io.papermc.hangar.db.model.ProjectApiKeysTable;
-import io.papermc.hangar.model.viewhelpers.ApiKey;
-import io.papermc.hangar.db.dao.ApiKeyDao;
 import io.papermc.hangar.model.Permission;
-
+import io.papermc.hangar.model.viewhelpers.ApiKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +33,10 @@ public class ApiKeyService {
         return apiKeyDao.get().getByOwner(userId);
     }
 
+    public ProjectApiKeysTable getProjectKey(long keyId) {
+        return apiKeyDao.get().getById(keyId);
+    }
+
     public List<ProjectApiKeysTable> getProjectKeys(long projectId) {
         return apiKeyDao.get().getByProjectId(projectId);
     }
@@ -42,4 +45,11 @@ public class ApiKeyService {
         return apiKeyDao.get().getKey(keyName, userId);
     }
 
+    public ProjectApiKeysTable createProjectApiKey(ProjectApiKeysTable projectApiKeysTable) {
+        return apiKeyDao.get().insert(projectApiKeysTable);
+    }
+
+    public void deleteProjectApiKey(ProjectApiKeysTable projectApiKeysTable) {
+        apiKeyDao.get().delete(projectApiKeysTable);
+    }
 }

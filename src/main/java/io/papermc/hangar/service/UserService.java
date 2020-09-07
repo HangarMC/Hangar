@@ -2,6 +2,7 @@ package io.papermc.hangar.service;
 
 import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.controller.UsersController;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.NotificationsDao;
 import io.papermc.hangar.db.dao.OrganizationDao;
@@ -9,6 +10,7 @@ import io.papermc.hangar.db.dao.ProjectDao;
 import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.UserOrganizationRolesTable;
+import io.papermc.hangar.db.model.UserSessionsTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.Prompt;
@@ -36,7 +38,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.WebUtils;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,10 +59,13 @@ public class UserService extends HangarService {
     private final RoleService roleService;
     private final PermissionService permissionService;
     private final OrgService orgService;
+    private final SessionService sessionService;
     private final HangarConfig config;
 
+    private final HttpServletRequest request;
+
     @Autowired
-    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, HangarDao<OrganizationDao> organizationDao, HangarDao<NotificationsDao> notificationsDao, RoleService roleService, PermissionService permissionService, OrgService orgService) {
+    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, HangarDao<OrganizationDao> organizationDao, HangarDao<NotificationsDao> notificationsDao, RoleService roleService, PermissionService permissionService, OrgService orgService, SessionService sessionService, HttpServletRequest request) {
         this.userDao = userDao;
         this.config = config;
         this.orgDao = orgDao;
@@ -67,17 +75,35 @@ public class UserService extends HangarService {
         this.roleService = roleService;
         this.permissionService = permissionService;
         this.orgService = orgService;
+        this.sessionService = sessionService;
+        this.request = request;
     }
 
     @Bean
     @RequestScope
     public Supplier<Optional<UsersTable>> currentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
-            HangarAuthentication auth = (HangarAuthentication) authentication;
-            return () -> Optional.ofNullable(userDao.get().getById(auth.getUserId()));
+        if (request.getRequestURI().startsWith("/api/v1")) {
+            Cookie sessionCookie = WebUtils.getCookie(request, UsersController.AUTH_TOKEN_NAME);
+            if (sessionCookie == null) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            } else {
+                UserSessionsTable session = sessionService.getSession(sessionCookie.getValue());
+                if (session.hasExpired()) {
+                    sessionService.deleteSession(session);
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+                }
+                Optional<UsersTable> usersTableOptional = Optional.ofNullable(userDao.get().getById(session.getUserId()));
+                return () -> usersTableOptional;
+            }
+        } else {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
+                HangarAuthentication auth = (HangarAuthentication) authentication;
+                return () -> Optional.ofNullable(userDao.get().getById(auth.getUserId()));
+            }
+            return Optional::empty;
         }
-        return Optional::empty;
+
     }
 
     public HeaderData getHeaderData() {

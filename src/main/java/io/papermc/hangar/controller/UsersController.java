@@ -6,6 +6,7 @@ import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.model.NotificationsTable;
 import io.papermc.hangar.db.model.OrganizationsTable;
+import io.papermc.hangar.db.model.UserSessionsTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.InviteFilter;
 import io.papermc.hangar.model.NamedPermission;
@@ -21,6 +22,7 @@ import io.papermc.hangar.service.NotificationService;
 import io.papermc.hangar.service.OrgService;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.RoleService;
+import io.papermc.hangar.service.SessionService;
 import io.papermc.hangar.service.SitemapService;
 import io.papermc.hangar.service.SsoService;
 import io.papermc.hangar.service.SsoService.SignatureException;
@@ -65,6 +67,7 @@ public class UsersController extends HangarController {
     private final RoleService roleService;
     private final ApiKeyService apiKeyService;
     private final PermissionService permissionService;
+    private final SessionService sessionService;
     private final NotificationService notificationService;
     private final SsoService ssoService;
     private final UserActionLogService userActionLogService;
@@ -76,7 +79,7 @@ public class UsersController extends HangarController {
 
 
     @Autowired
-    public UsersController(HangarConfig hangarConfig, AuthenticationService authenticationService, UserService userService, OrgService orgService, RoleService roleService, ApiKeyService apiKeyService, PermissionService permissionService, NotificationService notificationService, SsoService ssoService, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, SitemapService sitemapService, HttpServletRequest request, HttpServletResponse response) {
+    public UsersController(HangarConfig hangarConfig, AuthenticationService authenticationService, UserService userService, OrgService orgService, RoleService roleService, ApiKeyService apiKeyService, PermissionService permissionService, SessionService sessionService, NotificationService notificationService, SsoService ssoService, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, SitemapService sitemapService, HttpServletRequest request, HttpServletResponse response) {
         this.hangarConfig = hangarConfig;
         this.authenticationService = authenticationService;
         this.userService = userService;
@@ -84,6 +87,7 @@ public class UsersController extends HangarController {
         this.roleService = roleService;
         this.apiKeyService = apiKeyService;
         this.permissionService = permissionService;
+        this.sessionService = sessionService;
         this.notificationService = notificationService;
         this.ssoService = ssoService;
         this.userActionLogService = userActionLogService;
@@ -108,9 +112,9 @@ public class UsersController extends HangarController {
         if (hangarConfig.fakeUser.isEnabled()) {
             hangarConfig.checkDebug();
 
-            authenticationService.loginAsFakeUser();
+            UsersTable fakeUser = authenticationService.loginAsFakeUser();
 
-            return new ModelAndView("redirect:" + returnUrl);
+            return redirectBack(returnUrl, fakeUser);
         } else if (sso.isEmpty()) {
             String returnPath = returnUrl.isBlank() ? request.getRequestURI() : returnUrl;
             try {
@@ -134,8 +138,17 @@ public class UsersController extends HangarController {
             authenticationService.setAuthenticatedUser(user);
 
             String redirectPath = redirectUrl != null ? redirectUrl : Routes.getRouteUrlOf("showHome");
-            return new ModelAndView("redirect:" + redirectPath);
+            return redirectBack(redirectPath, user);
         }
+    }
+
+    public static final String AUTH_TOKEN_NAME = "_hangartoken";
+
+    private ModelAndView redirectBack(String url, UsersTable user) {
+        UserSessionsTable session = sessionService.createSession(user);
+        Cookie sessionCookie = new Cookie(AUTH_TOKEN_NAME, session.getToken());
+        response.addCookie(sessionCookie);
+        return new ModelAndView("redirect:" + url);
     }
 
     private ModelAndView redirectToSso(UrlWithNonce urlWithNonce, RedirectAttributes attributes) {

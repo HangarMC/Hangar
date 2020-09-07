@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -132,7 +131,6 @@ public class OrgController extends HangarController {
     @OrganizationPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)
     @Secured("ROLE_USER")
     @GetMapping("/organizations/{organization}/settings/avatar")
-    @PreAuthorize("@authenticationService.authOrgRequest(T(io.papermc.hangar.model.Permission).EditOrganizationSettings, #organization, true)")
     public ModelAndView updateAvatar(@PathVariable String organization) {
         try {
             URI uri = authenticationService.changeAvatarUri(getCurrentUser().getName(), organization);
@@ -147,7 +145,6 @@ public class OrgController extends HangarController {
     @OrganizationPermission(NamedPermission.MANAGE_SUBJECT_MEMBERS)
     @Secured("ROLE_USER")
     @PostMapping("/organizations/{organization}/settings/members")
-    @PreAuthorize("@authenticationService.authOrgRequest(T(io.papermc.hangar.model.Permission).ManageOrganizationMembers, #organization, true)")
     public ModelAndView updateMembers(@PathVariable String organization,
                                       @RequestParam(required = false) List<Long> users,
                                       @RequestParam(required = false) List<Role> roles,
@@ -171,7 +168,6 @@ public class OrgController extends HangarController {
     @OrganizationPermission(NamedPermission.MANAGE_SUBJECT_MEMBERS)
     @Secured("ROLE_USER")
     @PostMapping("/organizations/{organization}/settings/members/remove")
-    @PreAuthorize("@authenticationService.authOrgRequest(T(io.papermc.hangar.model.Permission).ManageOrganizationMembers, #organization, true)")
     public ModelAndView removeMember(@PathVariable String organization, @RequestParam String username) {
         OrganizationsTable org = orgService.getOrganization(organization);
         UserData user = userService.getUserData(username);

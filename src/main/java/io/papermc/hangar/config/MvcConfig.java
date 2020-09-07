@@ -1,14 +1,12 @@
 package io.papermc.hangar.config;
 
 import freemarker.template.TemplateException;
+import io.papermc.hangar.controller.converters.CategoryConverter;
 import io.papermc.hangar.controller.converters.ColorHexConverter;
 import io.papermc.hangar.controller.converters.StringToEnumConverterFactory;
 import io.papermc.hangar.security.UserLockExceptionResolver;
-import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.Routes;
 import no.api.freemarker.java8.Java8ObjectWrapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -35,15 +33,6 @@ import java.util.concurrent.TimeUnit;
 @EnableWebMvc
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
-
-    private final ProjectService projectService;
-    private final PermissionService permissionService;
-
-    @Autowired
-    public MvcConfig(ProjectService projectService, PermissionService permissionService) {
-        this.projectService = projectService;
-        this.permissionService = permissionService;
-    }
 
     @Bean
     public FreeMarkerViewResolver freemarkerViewResolver() {
@@ -122,6 +111,7 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new CategoryConverter());
         registry.addConverterFactory(new StringToEnumConverterFactory());
         registry.addConverter(new ColorHexConverter());
     }

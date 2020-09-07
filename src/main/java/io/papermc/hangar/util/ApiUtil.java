@@ -14,7 +14,7 @@ public class ApiUtil {
     private ApiUtil() { }
 
     public static long limitOrDefault(Long limit, long defaultValue) {
-        if (limit < 1) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Limit should be greater than 0");
+        if (limit != null && limit < 1) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Limit should be greater than 0");
         return Math.min(limit == null ? defaultValue : limit, defaultValue);
     }
 

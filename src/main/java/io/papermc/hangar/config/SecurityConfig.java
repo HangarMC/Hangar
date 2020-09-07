@@ -1,6 +1,7 @@
 package io.papermc.hangar.config;
 
 import io.papermc.hangar.filter.HangarAuthenticationFilter;
+import io.papermc.hangar.security.HangarAuthenticationEntryPoint;
 import io.papermc.hangar.security.HangarAuthenticationProvider;
 import io.papermc.hangar.security.voters.GlobalPermissionVoter;
 import io.papermc.hangar.security.voters.OrganizationPermissionVoter;
@@ -8,7 +9,6 @@ import io.papermc.hangar.security.voters.ProjectPermissionVoter;
 import io.papermc.hangar.security.voters.UserLockVoter;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.UserService;
-import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilter(new HangarAuthenticationFilter());
 
-        http.exceptionHandling().authenticationEntryPoint((request, response, e) -> response.sendRedirect(Routes.getRouteUrlOf("users.login", "", "", request.getRequestURI())));
+        http.exceptionHandling().authenticationEntryPoint(new HangarAuthenticationEntryPoint());
 
         http.authorizeRequests().anyRequest().permitAll().accessDecisionManager(accessDecisionManager()); // we use method security
     }

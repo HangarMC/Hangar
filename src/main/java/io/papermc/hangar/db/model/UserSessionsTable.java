@@ -1,6 +1,8 @@
 package io.papermc.hangar.db.model;
 
 
+import org.jdbi.v3.core.annotation.Unmappable;
+
 import java.time.OffsetDateTime;
 
 public class UserSessionsTable {
@@ -11,6 +13,13 @@ public class UserSessionsTable {
     private String token;
     private long userId;
 
+    public UserSessionsTable(OffsetDateTime expiration, String token, long userId) {
+        this.expiration = expiration;
+        this.token = token;
+        this.userId = userId;
+    }
+
+    public UserSessionsTable() { }
 
     public long getId() {
         return id;
@@ -54,6 +63,11 @@ public class UserSessionsTable {
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    @Unmappable
+    public boolean hasExpired() {
+        return this.expiration.isBefore(OffsetDateTime.now());
     }
 
 }

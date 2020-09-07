@@ -5,25 +5,33 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.db.customtypes.LoggedActionType;
+import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
+import io.papermc.hangar.db.model.ProjectApiKeysTable;
 import io.papermc.hangar.db.model.ProjectChannelsTable;
 import io.papermc.hangar.db.model.ProjectVersionTagsTable;
 import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.model.Category;
 import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.SsoSyncData;
 import io.papermc.hangar.model.TagColor;
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.generated.Dependency;
+import io.papermc.hangar.model.generated.ProjectSortingStrategy;
 import io.papermc.hangar.model.viewhelpers.ProjectPage;
 import io.papermc.hangar.model.viewhelpers.UserData;
 import io.papermc.hangar.security.annotations.UserLock;
+import io.papermc.hangar.service.ApiKeyService;
 import io.papermc.hangar.service.SsoService;
 import io.papermc.hangar.service.SsoService.SignatureException;
+import io.papermc.hangar.service.UserActionLogService;
 import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.api.V1ApiService;
 import io.papermc.hangar.service.project.PagesSerivce;
+import io.papermc.hangar.util.ApiUtil;
 import io.papermc.hangar.util.TemplateHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +40,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -41,8 +50,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -51,6 +62,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -66,11 +79,15 @@ public class Apiv1Controller extends HangarController {
     private final PagesSerivce pagesSerivce;
     private final UserService userService;
     private final SsoService ssoService;
-
     private final V1ApiService v1ApiService;
+    private final ApiKeyService apiKeyService;
+    private final UserActionLogService userActionLogService;
+
+    private final HttpServletRequest request;
+    private final Supplier<ProjectsTable> projectsTable;
 
     @Autowired
-    public Apiv1Controller(HangarConfig hangarConfig, ObjectMapper mapper, TemplateHelper templateHelper, PagesSerivce pagesSerivce, UserService userService, SsoService ssoService, V1ApiService v1ApiService) {
+    public Apiv1Controller(HangarConfig hangarConfig, ObjectMapper mapper, TemplateHelper templateHelper, PagesSerivce pagesSerivce, UserService userService, SsoService ssoService, V1ApiService v1ApiService, ApiKeyService apiKeyService, UserActionLogService userActionLogService, HttpServletRequest request, Supplier<ProjectsTable> projectsTable) {
         this.hangarConfig = hangarConfig;
         this.mapper = mapper;
         this.templateHelper = templateHelper;
@@ -78,30 +95,67 @@ public class Apiv1Controller extends HangarController {
         this.userService = userService;
         this.ssoService = ssoService;
         this.v1ApiService = v1ApiService;
+        this.apiKeyService = apiKeyService;
+        this.userActionLogService = userActionLogService;
+        this.request = request;
+        this.projectsTable = projectsTable;
     }
 
     @GetMapping("/v1/projects")
-    public Object listProjects(@RequestParam Object categories, @RequestParam Object sort, @RequestParam Object q, @RequestParam Object limit, @RequestParam Object offset) {
-        return null; // TODO implement listProjects request controller
+    public ResponseEntity<ArrayNode> listProjects(@RequestParam(defaultValue = "") List<Category> categories, @RequestParam(defaultValue = "4") int sort, @RequestParam(required = false) String q, @RequestParam(required = false) Long limit, @RequestParam(required = false) Long offset) {
+        int maxLoad = hangarConfig.projects.getInitLoad();
+        long realLimit = ApiUtil.limitOrDefault(limit, maxLoad);
+        long realOffset = ApiUtil.offsetOrZero(offset);
+        ProjectSortingStrategy strategy;
+        try {
+            strategy = ProjectSortingStrategy.VALUES[sort];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        List<ProjectsTable> sortedProjects = v1ApiService.getProjects(q, categories.stream().map(Category::getValue).collect(Collectors.toList()), strategy, realLimit, realOffset);
+        return ResponseEntity.ok(writeProjects(sortedProjects));
     }
 
     @GetMapping("/v1/projects/{pluginId}")
-    public Object showProject(@PathVariable Object pluginId) {
-        return null; // TODO implement showProject request controller
+    public ResponseEntity<ObjectNode> showProject(@PathVariable String pluginId) {
+        ProjectsTable project = projectsTable.get();
+        return ResponseEntity.ok((ObjectNode) writeProjects(List.of(project)).get(0));
     }
 
+    @PreAuthorize("@authenticationService.authV1ApiRequest(T(io.papermc.hangar.model.Permission).EditApiKeys, T(io.papermc.hangar.controller.util.ApiScope).forProject(#pluginId))")
     @UserLock
     @Secured("ROLE_USER")
     @PostMapping("/v1/projects/{pluginId}/keys/new")
-    public Object createKey(@PathVariable Object pluginId) {
-        return null; // TODO implement createKey request controller
+    public ResponseEntity<ObjectNode> createKey(@PathVariable String pluginId) {
+        ProjectsTable project = projectsTable.get();
+        ProjectApiKeysTable projectApiKeysTable = apiKeyService.createProjectApiKey(new ProjectApiKeysTable(
+                project.getId(),
+                UUID.randomUUID().toString().replace("-", "")
+        ));
+        userActionLogService.project(request, LoggedActionType.PROJECT_SETTINGS_CHANGED.with(ProjectContext.of(project.getId())), getCurrentUser().getName() + " created a new ApiKey", "");
+        ObjectNode apiKeyObj = mapper.createObjectNode();
+        apiKeyObj
+                .put("id", projectApiKeysTable.getId())
+                .put("createdAt", projectApiKeysTable.getCreatedAt().toString())
+                .put("projectId", projectApiKeysTable.getProjectId())
+                .put("value", projectApiKeysTable.getValue());
+        return ResponseEntity.ok(apiKeyObj);
     }
 
+    @PreAuthorize("@authenticationService.authV1ApiRequest(T(io.papermc.hangar.model.Permission).EditApiKeys, T(io.papermc.hangar.controller.util.ApiScope).forProject(#pluginId))")
     @UserLock
     @Secured("ROLE_USER")
     @PostMapping("/v1/projects/{pluginId}/keys/revoke")
-    public Object revokeKey(@PathVariable Object pluginId) {
-        return null; // TODO implement revokeKey request controller
+    @ResponseStatus(HttpStatus.OK)
+    public void revokeKey(@PathVariable String pluginId, @RequestParam long id) {
+        ProjectApiKeysTable projectApiKey = apiKeyService.getProjectKey(id);
+        ProjectsTable project = projectsTable.get();
+        if (projectApiKey == null || project.getId() != projectApiKey.getId()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        apiKeyService.deleteProjectApiKey(projectApiKey);
+        userActionLogService.project(request, LoggedActionType.PROJECT_SETTINGS_CHANGED.with(ProjectContext.of(project.getId())), getCurrentUser().getName() + " removed an ApiKey", "");
     }
 
     @GetMapping(value = "/v1/projects/{pluginId}/pages", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -115,13 +169,14 @@ public class Apiv1Controller extends HangarController {
             return true;
         }).forEach(page -> {
             ObjectNode pageObj = mapper.createObjectNode();
-            pageObj.set("createdAt", mapper.valueToTree(page.getCreatedAt()));
-            pageObj.set("id", mapper.valueToTree(page.getId()));
-            pageObj.set("name", mapper.valueToTree(page.getName()));
-            pageObj.set("parentId", mapper.valueToTree(page.getParentId()));
             String[] slug = page.getSlug().split("/");
-            pageObj.set("slug", mapper.valueToTree(slug[slug.length - 1]));
-            pageObj.set("fullSlug", mapper.valueToTree(page.getSlug()));
+            pageObj
+                    .put("createdAt", page.getCreatedAt().toString())
+                    .put("id", page.getId())
+                    .put("name", page.getName())
+                    .put("parentId", page.getParentId())
+                    .put("slug", slug[slug.length - 1])
+                    .put("fullSlug", page.getSlug());
             pagesArray.add(pageObj);
         });
         if (pagesArray.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -129,24 +184,27 @@ public class Apiv1Controller extends HangarController {
     }
 
     @GetMapping("/v1/projects/{pluginId}/versions")
-    public Object listVersions(@PathVariable Object pluginId, @RequestParam Object channels, @RequestParam Object limit, @RequestParam Object offset) {
-        return null; // TODO implement listVersions request controller
+    public ResponseEntity<ArrayNode> listVersions(@PathVariable String pluginId, @RequestParam(required = false) String channels, @RequestParam(required = false) Long limit, @RequestParam(required = false) Long offset) {
+        long realLimit = ApiUtil.limitOrDefault(limit, hangarConfig.projects.getInitLoad());
+        long realOffset = ApiUtil.offsetOrZero(offset);
+
+        return ResponseEntity.ok(v1ApiService.getVersionList(channels, realLimit, realOffset, true));
     }
 
-    @GetMapping("/v1/projects/{pluginId}/versions/{name}")
-    public Object showVersion(@PathVariable Object pluginId, @PathVariable Object name) {
-        return null; // TODO implement showVersion request controller
+    @GetMapping("/v1/projects/{pluginId}/versions/{name:.*}")
+    public ResponseEntity<ObjectNode> showVersion(@PathVariable String pluginId, @PathVariable String name) {
+        return ResponseEntity.ok(v1ApiService.getVersion());
     }
 
     @Secured("ROLE_USER")
-    @PostMapping("/v1/projects/{pluginId}/versions/{name}")
+    @PostMapping("/v1/projects/{pluginId}/versions/{name:.*}")
     public Object deployVersion(@PathVariable Object pluginId, @PathVariable Object name) {
-        return null; // TODO implement deployVersion request controller
+        return null; // TODO implement deployVersion request controller.
     }
 
-    @GetMapping("/v1/projects/{plugin}/tags/{versionName}")
-    public Object listTags(@PathVariable Object plugin, @PathVariable Object versionName) {
-        return null; // TODO implement listTags request controller
+    @GetMapping("/v1/projects/{pluginId}/tags/{name:.*}")
+    public ResponseEntity<ObjectNode> listTags(@PathVariable String pluginId, @PathVariable String name) {
+        return ResponseEntity.ok(v1ApiService.getVersionTags(pluginId));
     }
 
     @GetMapping("/v1/tags/{tagId}")
@@ -181,13 +239,13 @@ public class Apiv1Controller extends HangarController {
         Map<Long, List<String>> projectStars = v1ApiService.getStarredPlugins(userIds);
         Map<Long, List<Role>> globalRoles = v1ApiService.getUsersGlobalRoles(userIds);
         usersTables.forEach(user -> {
-            ObjectNode userObj = mapper.createObjectNode();
-            userObj.set("id", mapper.valueToTree(user.getId()));
-            userObj.set("createdAt", mapper.valueToTree(user.getCreatedAt()));
-            userObj.set("username", mapper.valueToTree(user.getName()));
+            ObjectNode userObj = mapper.createObjectNode()
+                    .put("id", user.getId())
+                    .put("createdAt", user.getCreatedAt().toString())
+                    .put("username", user.getName())
+                    .put("avatarUrl", templateHelper.avatarUrl(user.getName()));
             userObj.set("roles", mapper.valueToTree(globalRoles.getOrDefault(user.getId(), new ArrayList<>()).stream().map(Role::getTitle)));
             userObj.set("starred", mapper.valueToTree(projectStars.getOrDefault(user.getId(), new ArrayList<>())));
-            userObj.set("avatarUrl", mapper.valueToTree(templateHelper.avatarUrl(user.getName())));
             userObj.set("projects", writeProjects(usersProjects.getOrDefault(user.getId(), new ArrayList<>())));
             usersArray.add(userObj);
         });
@@ -207,22 +265,23 @@ public class Apiv1Controller extends HangarController {
 
         projectsTables.forEach(project -> {
             ObjectNode projectObj = mapper.createObjectNode();
-            projectObj.set("pluginId", mapper.valueToTree(project.getPluginId()));
-            projectObj.set("createdAt", mapper.valueToTree(project.getCreatedAt().toString()));
-            projectObj.set("name", mapper.valueToTree(project.getName()));
-            projectObj.set("owner", mapper.valueToTree(project.getOwnerName()));
-            projectObj.set("description", mapper.valueToTree(project.getDescription()));
-            projectObj.set("href", mapper.valueToTree(project.getOwnerName() + "/" + project.getSlug()));
+            projectObj.put("pluginId", project.getPluginId())
+                    .put("createdAt", project.getCreatedAt().toString())
+                    .put("name", project.getName())
+                    .put("owner", project.getOwnerName())
+                    .put("description", project.getDescription())
+                    .put("href", project.getOwnerName() + "/" + project.getSlug())
+                    .put("views", 0)
+                    .put("downloads", 0)
+                    .put("stars", 0);
             projectObj.set("members", writeMembers(members.getOrDefault(project.getId(), new ArrayList<>())));
             projectObj.set("channels", mapper.valueToTree( projectChannels.getOrDefault(project.getId(), new ArrayList<>())));
             projectObj.set("recommended", writeVersion(project, recommendedVersions, recommendedVersionChannels, vTags));
-            ObjectNode projectCategoryObj = mapper.createObjectNode();
-            projectCategoryObj.set("title", mapper.valueToTree(project.getCategory().getTitle()));
-            projectCategoryObj.set("icon", mapper.valueToTree(project.getCategory().getIcon()));
+            ObjectNode projectCategoryObj = mapper.createObjectNode()
+                    .put("title", project.getCategory().getTitle())
+                    .put("icon", project.getCategory().getIcon());
             projectObj.set("category", projectCategoryObj);
-            projectObj.set("views", mapper.valueToTree(0));
-            projectObj.set("downloads", mapper.valueToTree(0));
-            projectObj.set("stars", mapper.valueToTree(0));
+
             projectsArray.add(projectObj);
         });
         return projectsArray;
@@ -235,34 +294,34 @@ public class Apiv1Controller extends HangarController {
         ProjectChannelsTable channel = recommendedVersionChannels.get(project.getId());
         List<ProjectVersionTagsTable> tags = vTags.getOrDefault(version.getId(), new ArrayList<>());
 
-        objectNode.set("id", mapper.valueToTree(version.getId()));
-        objectNode.set("createdAt", mapper.valueToTree(version.getCreatedAt().toString()));
-        objectNode.set("name", mapper.valueToTree(version.getVersionString()));
+        objectNode.put("id", version.getId())
+                .put("createdAt", version.getCreatedAt().toString())
+                .put("name", version.getVersionString())
+                .put("pluginId", project.getPluginId())
+                .put("fileSize", version.getFileSize())
+                .put("md5", version.getHash())
+                .put("staffApproved", version.getReviewState().isChecked())
+                .put("reviewState", version.getReviewState().toString())
+                .put("href", "/" + project.getOwnerName() + "/" + project.getSlug() + "/versions/" + version.getVersionString())
+                .put("downloads", 0)
+                .put("description", version.getDescription());
+        objectNode.set("channel", mapper.valueToTree(channel));
         objectNode.set("dependencies", Dependency.from(version.getDependencies()).stream().collect(Collector.of(mapper::createArrayNode, (array, dep) -> {
-            ObjectNode depObj = mapper.createObjectNode();
-            depObj.set("pluginId", mapper.valueToTree(dep.getPluginId()));
-            depObj.set("version", mapper.valueToTree(dep.getVersion()));
+            ObjectNode depObj = mapper.createObjectNode()
+                    .put("pluginId", dep.getPluginId())
+                    .put("version", dep.getVersion());
             array.add(depObj);
         }, (ignored1, ignored2) -> {
             throw new UnsupportedOperationException();
         })));
-        objectNode.set("pluginId", mapper.valueToTree(project.getPluginId()));
-        objectNode.set("channel", mapper.valueToTree(channel));
-        objectNode.set("fileSize", mapper.valueToTree(version.getFileSize()));
-        objectNode.set("md5", mapper.valueToTree(version.getHash()));
-        objectNode.set("staffApproved", mapper.valueToTree(version.getReviewState().isChecked()));
-        objectNode.set("reviewState", mapper.valueToTree(version.getReviewState().toString()));
-        objectNode.set("href", mapper.valueToTree("/" + project.getOwnerName() + "/" + project.getSlug() + "/versions/" + version.getVersionString()));
         objectNode.set("tags", tags.stream().collect(Collector.of(mapper::createArrayNode, (array, tag) -> array.add(mapper.valueToTree(tag)), (t1, t2) -> {
             throw new UnsupportedOperationException();
         })));
-        objectNode.set("downloads", mapper.valueToTree(0));
-        objectNode.set("description", mapper.valueToTree(version.getDescription()));
 
         if (version.getVisibility() != Visibility.PUBLIC) {
-            ObjectNode visObj = mapper.createObjectNode();
-            visObj.set("type", mapper.valueToTree(version.getVisibility().getName()));
-            visObj.set("css", mapper.valueToTree(version.getVisibility().getCssClass()));
+            ObjectNode visObj = mapper.createObjectNode()
+                    .put("type", version.getVisibility().getName())
+                    .put("css", version.getVisibility().getCssClass());
             objectNode.set("visibility", visObj);
         }
 
@@ -284,9 +343,9 @@ public class Apiv1Controller extends HangarController {
         members.forEach(member -> {
             List<Role> roles = allRoles.getOrDefault(member.getValue().getId(), new ArrayList<>());
 
-            ObjectNode memberObj = mapper.createObjectNode();
-            memberObj.set("userId", mapper.valueToTree(member.getValue().getId()));
-            memberObj.set("name", mapper.valueToTree(member.getValue().getName()));
+            ObjectNode memberObj = mapper.createObjectNode()
+                    .put("userId", member.getValue().getId())
+                    .put("name", member.getValue().getName());
             memberObj.set("roles", mapper.valueToTree(roles.stream().map(Role::getTitle).collect(Collectors.toList())));
             if (roles.isEmpty()) {
                 memberObj.set("headRole", mapper.valueToTree(null));
