@@ -2,7 +2,9 @@ package io.papermc.hangar.controller;
 
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.model.Color;
+import io.papermc.hangar.model.NamedPermission;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
+import io.papermc.hangar.security.annotations.ProjectPermission;
 import io.papermc.hangar.security.annotations.UserLock;
 import io.papermc.hangar.service.project.ChannelService;
 import io.papermc.hangar.util.Routes;
@@ -32,6 +34,7 @@ public class ChannelsController extends HangarController {
         this.projectData = projectData;
     }
 
+    @ProjectPermission(NamedPermission.EDIT_TAGS)
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @GetMapping("/{author}/{slug}/channels")
@@ -42,6 +45,7 @@ public class ChannelsController extends HangarController {
         return fillModel(mv);
     }
 
+    @ProjectPermission(NamedPermission.EDIT_TAGS)
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/channels")
@@ -50,6 +54,7 @@ public class ChannelsController extends HangarController {
         return Routes.CHANNELS_SHOW_LIST.getRedirect(author, slug);
     }
 
+    @ProjectPermission(NamedPermission.EDIT_TAGS)
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/channels/{channel}")
@@ -59,6 +64,7 @@ public class ChannelsController extends HangarController {
         return Routes.CHANNELS_SHOW_LIST.getRedirect(author, slug);
     }
 
+    @ProjectPermission(NamedPermission.EDIT_TAGS)
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/channels/{channel}/delete")

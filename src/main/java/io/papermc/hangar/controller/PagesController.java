@@ -6,9 +6,11 @@ import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.ProjectPageDao;
 import io.papermc.hangar.db.model.ProjectPagesTable;
 import io.papermc.hangar.db.model.ProjectsTable;
+import io.papermc.hangar.model.NamedPermission;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.ProjectPage;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
+import io.papermc.hangar.security.annotations.ProjectPermission;
 import io.papermc.hangar.security.annotations.UserLock;
 import io.papermc.hangar.service.MarkdownService;
 import io.papermc.hangar.service.StatsService;
@@ -93,6 +95,7 @@ public class PagesController extends HangarController {
         return fillModel(mav);
     }
 
+    @ProjectPermission(NamedPermission.EDIT_PAGE)
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping({"/{author}/{slug}/pages/{page}/delete", "/{author}/{slug}/pages/{page}/{subPage}/delete"})
@@ -109,6 +112,7 @@ public class PagesController extends HangarController {
         return Routes.PROJECTS_SHOW.getRedirect(author, slug);
     }
 
+    @ProjectPermission(NamedPermission.EDIT_PAGE)
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping(value = {"/{author}/{slug}/pages/{page}/edit", "/{author}/{slug}/pages/{page}/{subPage}/edit"}, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -143,6 +147,7 @@ public class PagesController extends HangarController {
         return toReturn;
     }
 
+    @ProjectPermission(NamedPermission.EDIT_PAGE)
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @GetMapping({"/{author}/{slug}/pages/{page}/edit", "/{author}/{slug}/pages/{page}/{subPage}/edit"})

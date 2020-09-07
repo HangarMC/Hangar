@@ -24,6 +24,7 @@ import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.model.viewhelpers.VersionData;
 import io.papermc.hangar.security.annotations.GlobalPermission;
+import io.papermc.hangar.security.annotations.ProjectPermission;
 import io.papermc.hangar.security.annotations.UserLock;
 import io.papermc.hangar.service.DownloadsService;
 import io.papermc.hangar.service.StatsService;
@@ -177,6 +178,7 @@ public class VersionsController extends HangarController {
         return fillModel(mav);
     }
 
+    @ProjectPermission(NamedPermission.CREATE_VERSION)
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @GetMapping("/{author}/{slug}/versions/new")
@@ -186,6 +188,7 @@ public class VersionsController extends HangarController {
         return mav;
     }
 
+    @ProjectPermission(NamedPermission.CREATE_VERSION)
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/new/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -213,6 +216,7 @@ public class VersionsController extends HangarController {
         return _showCreator(author, slug, pendingVersion);
     }
 
+    @ProjectPermission(NamedPermission.CREATE_VERSION)
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @GetMapping("/{author}/{slug}/versions/new/{versionName}")
@@ -265,6 +269,7 @@ public class VersionsController extends HangarController {
         }
     }
 
+    @ProjectPermission(NamedPermission.CREATE_VERSION)
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version:.+}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -496,6 +501,7 @@ public class VersionsController extends HangarController {
         }
     }
 
+    @ProjectPermission(NamedPermission.DELETE_VERSION)
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version}/delete", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -628,6 +634,7 @@ public class VersionsController extends HangarController {
         }
     }
 
+    @ProjectPermission(NamedPermission.EDIT_VERSION)
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/recommended")
@@ -648,6 +655,7 @@ public class VersionsController extends HangarController {
         return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
     }
 
+    @ProjectPermission(NamedPermission.EDIT_VERSION)
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version}/save", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)

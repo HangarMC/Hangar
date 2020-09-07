@@ -5,9 +5,11 @@ import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.UserOrganizationRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.model.NamedPermission;
 import io.papermc.hangar.model.NotificationType;
 import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.viewhelpers.UserData;
+import io.papermc.hangar.security.annotations.OrganizationPermission;
 import io.papermc.hangar.security.annotations.UserLock;
 import io.papermc.hangar.service.AuthenticationService;
 import io.papermc.hangar.service.NotificationService;
@@ -127,6 +129,7 @@ public class OrgController extends HangarController {
         }
     }
 
+    @OrganizationPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)
     @Secured("ROLE_USER")
     @GetMapping("/organizations/{organization}/settings/avatar")
     @PreAuthorize("@authenticationService.authOrgRequest(T(io.papermc.hangar.model.Permission).EditOrganizationSettings, #organization, true)")
@@ -141,6 +144,7 @@ public class OrgController extends HangarController {
         }
     }
 
+    @OrganizationPermission(NamedPermission.MANAGE_SUBJECT_MEMBERS)
     @Secured("ROLE_USER")
     @PostMapping("/organizations/{organization}/settings/members")
     @PreAuthorize("@authenticationService.authOrgRequest(T(io.papermc.hangar.model.Permission).ManageOrganizationMembers, #organization, true)")
@@ -164,6 +168,7 @@ public class OrgController extends HangarController {
         return Routes.USERS_SHOW_PROJECTS.getRedirect(organization);
     }
 
+    @OrganizationPermission(NamedPermission.MANAGE_SUBJECT_MEMBERS)
     @Secured("ROLE_USER")
     @PostMapping("/organizations/{organization}/settings/members/remove")
     @PreAuthorize("@authenticationService.authOrgRequest(T(io.papermc.hangar.model.Permission).ManageOrganizationMembers, #organization, true)")

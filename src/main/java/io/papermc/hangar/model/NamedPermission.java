@@ -26,7 +26,7 @@ public enum NamedPermission {
     CREATE_VERSION("create_version", Permission.CreateVersion, "CreateVersion"),
     EDIT_VERSION("edit_version", Permission.EditVersion, "EditVersion"),
     DELETE_VERSION("delete_version", Permission.DeleteVersion, "DeleteVersion"),
-    EDIT_TAGS("edit_tags", Permission.EditTags, "EditTags"),
+    EDIT_TAGS("edit_tags", Permission.EditTags, "EditTags"), // EDIT_CHANNELS
 
     CREATE_ORGANIZATION("create_organization", Permission.CreateOrganization, "CreateOrganization"),
     POST_AS_ORGANIZATION("post_as_organization", Permission.PostAsOrganization, "PostAsOrganization"),

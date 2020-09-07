@@ -198,6 +198,7 @@ public class UsersController extends HangarController {
         }
     }
 
+    @GlobalPermission(NamedPermission.IS_STAFF)
     @GetMapping("/staff")
     public Object showStaff(@RequestParam(required = false, defaultValue = "roles") String sort, @RequestParam(required = false, defaultValue = "1") int page) {
         ModelAndView mav = new ModelAndView("users/staff");
@@ -230,6 +231,7 @@ public class UsersController extends HangarController {
         return fillModel(mav);
     }
 
+    @GlobalPermission(NamedPermission.EDIT_API_KEYS)
     @Secured("ROLE_USER")
     @GetMapping("/{user}/settings/apiKeys")
     public ModelAndView editApiKeys(@PathVariable String user) {
@@ -265,6 +267,7 @@ public class UsersController extends HangarController {
         return Routes.USERS_SHOW_PROJECTS.getRedirect(user);
     }
 
+    @GlobalPermission(NamedPermission.EDIT_OWN_USER_SETTINGS)
     @Secured("ROLE_USER")
     @PostMapping(value = "/{user}/settings/tagline")
     public ModelAndView saveTagline(@PathVariable String user, @RequestParam("tagline") String tagline) {
