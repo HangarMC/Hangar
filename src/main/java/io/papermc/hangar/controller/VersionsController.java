@@ -64,7 +64,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
@@ -133,24 +132,25 @@ public class VersionsController extends HangarController {
     @GetMapping(value = "/api/project/{pluginId}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object downloadRecommendedJarById(@PathVariable String pluginId, @RequestParam(required = false) String token) {
-        Long recommendedVersionId = projectsTable.get().getRecommendedVersionId();
-        if (recommendedVersionId == null) {
+        ProjectsTable project = projectsTable.get();
+        ProjectVersionsTable recommendedVersion = versionService.getRecommendedVersion(project);
+        if (recommendedVersion == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
-            ProjectVersionsTable versionsTable = versionService.getVersion(projectsTable.get().getId(), recommendedVersionId);// TODO we need to check visibility here, the query currently doesnt do that
-            return sendVersion(projectsTable.get(), versionsTable, token, true);
+            return sendJar(project, recommendedVersion, token, true);
         }
     }
 
     @GetMapping(value = "/api/project/{pluginId}/versions/{name}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
-    public Object downloadJarById(@PathVariable String pluginId, @PathVariable String name, @RequestParam(required = false) String token) {
-        ProjectVersionsTable versionsTable = versionService.getVersion(projectsTable.get().getId(), name);// TODO we need to check visibility here, the query currently doesnt do that
-        if (token != null) {
-            // TODO  confirmDownload0(version.id, Some(DownloadType.JarFile.value), Some(token)).orElseFail(notFound) *>
-            return sendJar(projectsTable.get(), versionsTable, token, true);
+    public Object downloadJarById(@PathVariable String pluginId, @PathVariable String name, @RequestParam Optional<String> token) {
+        ProjectsTable project = projectsTable.get();
+        ProjectVersionsTable pvt = projectVersionsTable.get();
+        if (token.isPresent()) {
+            confirmDownload0(DownloadType.JAR_FILE, token);
+            return sendJar(project, pvt, token.get(), true);
         } else {
-            return sendJar(projectsTable.get(), versionsTable, null, true);
+            return sendJar(project, pvt, token.orElse(null), true);
         }
     }
 
@@ -242,24 +242,24 @@ public class VersionsController extends HangarController {
     @GetMapping(value = "/{author}/{slug}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object downloadRecommended(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String token) {
-        Long recommendedVersionId = projectsTable.get().getRecommendedVersionId();
-        if (recommendedVersionId == null) {
+        ProjectsTable project = projectsTable.get();
+        ProjectVersionsTable recommendedVersion = versionService.getRecommendedVersion(project);
+        if (recommendedVersion == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
-            ProjectVersionsTable versionsTable = versionService.getVersion(projectsTable.get().getId(), recommendedVersionId);// TODO we need to check visibility here, the query currently doesnt do that
-            return sendVersion(projectsTable.get(), versionsTable, token, false);
+            return sendVersion(project, recommendedVersion, token, false);
         }
     }
 
     @GetMapping(value = "/{author}/{slug}/versions/recommended/jar", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object downloadRecommendedJar(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String token) {
-        Long recommendedVersionId = projectsTable.get().getRecommendedVersionId();
-        if (recommendedVersionId == null) {
+        ProjectsTable project = projectsTable.get();
+        ProjectVersionsTable recommendedVersion = versionService.getRecommendedVersion(project);
+        if (recommendedVersion == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
-            ProjectVersionsTable versionsTable = versionService.getVersion(projectsTable.get().getId(), recommendedVersionId);// TODO we need to check visibility here, the query currently doesnt do that
-            return sendJar(projectsTable.get(), versionsTable, token, false);
+            return sendJar(project, recommendedVersion, token, false);
         }
     }
 
@@ -512,8 +512,7 @@ public class VersionsController extends HangarController {
     @GetMapping(value = "/{author}/{slug}/versions/{version}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object download(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(required = false) String token, @RequestParam(defaultValue = "false") boolean confirm) {
-        ProjectVersionsTable versionsTable = versionService.getVersion(projectsTable.get().getId(), version);// TODO we need to check visibility here, the query currently doesnt do that
-        return sendVersion(projectsTable.get(), versionsTable, token, confirm);
+        return sendVersion(projectsTable.get(), projectVersionsTable.get(), token, confirm);
     }
 
     private Object sendVersion(ProjectsTable project, ProjectVersionsTable version, String token, boolean confirm) {
@@ -590,8 +589,7 @@ public class VersionsController extends HangarController {
     @GetMapping(value = "/{author}/{slug}/versions/{version}/jar", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object downloadJar(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(required = false) String token) {
-        ProjectVersionsTable versionsTable = versionService.getVersion(projectsTable.get().getId(), version);// TODO we need to check visibility here, the query currently doesnt do that
-        return sendJar(projectsTable.get(), versionsTable, token, false);
+        return sendJar(projectsTable.get(), projectVersionsTable.get(), token, false);
     }
 
     private Object sendJar(ProjectsTable project, ProjectVersionsTable version, String token, boolean api) {
@@ -601,13 +599,14 @@ public class VersionsController extends HangarController {
             boolean passed = checkConfirmation(version, token);
 
             if (!passed) {
-                return new RedirectView(Routes.getRouteUrlOf("versions.showDownloadConfirm",
+                return Routes.VERSIONS_SHOW_DOWNLOAD_CONFIRM.getRedirect(
                         project.getOwnerName(),
                         project.getSlug(),
                         version.getVersionString(),
                         DownloadType.JAR_FILE.ordinal() + "",
                         api + "",
-                        null));
+                        null
+                );
             } else {
                 String fileName = version.getFileName();
                 Path path = projectFiles.getVersionDir(project.getOwnerName(), project.getName(), version.getVersionString()).resolve(fileName);

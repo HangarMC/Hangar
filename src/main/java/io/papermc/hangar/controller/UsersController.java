@@ -211,7 +211,7 @@ public class UsersController extends HangarController {
     @PostMapping("/verify")
     public ModelAndView verify(@RequestParam String returnPath, RedirectAttributes attributes) {
         try {
-            return redirectToSso(ssoService.getVerifyUrl(returnPath), attributes);
+            return redirectToSso(ssoService.getVerifyUrl(hangarConfig.getBaseUrl() + returnPath), attributes);
         } catch (HangarException e) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, e.getMessageKey(), e.getArgs());
             return Routes.SHOW_HOME.getRedirect();

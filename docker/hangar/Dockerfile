@@ -4,9 +4,10 @@ LABEL maintainer="Yannick Lamprecht <yannicklamprecht@live.de>"
 
 RUN set -x && \
     addgroup -g 1000 appuser && \
-    adduser -u 1000 -D -G appuser appuser
-
-RUN apk add yarn
+    adduser -u 1000 -D -G appuser appuser && \
+    mkdir /uploads && \
+    chown appuser:appuser /uploads && \
+    apk add yarn
 
 ENV TERM xterm-256color
 #

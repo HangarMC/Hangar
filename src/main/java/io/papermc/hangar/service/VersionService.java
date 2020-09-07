@@ -9,6 +9,8 @@ import io.papermc.hangar.db.model.ProjectVersionTagsTable;
 import io.papermc.hangar.db.model.ProjectVersionVisibilityChangesTable;
 import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.db.model.ProjectsTable;
+import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.TagColor;
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.generated.Dependency;
@@ -37,7 +39,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 @Service
-public class VersionService {
+public class VersionService extends HangarService {
 
     private final HangarDao<ProjectVersionDao> versionDao;
     private final HangarDao<ProjectDao> projectDao;
@@ -45,17 +47,19 @@ public class VersionService {
     private final ProjectService projectService;
     private final ChannelService channelService;
     private final UserService userService;
+    private final PermissionService permissionService;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public VersionService(HangarDao<ProjectVersionDao> versionDao, HangarDao<ProjectDao> projectDao, HangarDao<VisibilityDao> visibilityDao, ProjectService projectService, ChannelService channelService, UserService userService, HttpServletRequest request) {
+    public VersionService(HangarDao<ProjectVersionDao> versionDao, HangarDao<ProjectDao> projectDao, HangarDao<VisibilityDao> visibilityDao, ProjectService projectService, ChannelService channelService, UserService userService, PermissionService permissionService, HttpServletRequest request) {
         this.versionDao = versionDao;
         this.projectDao = projectDao;
         this.visibilityDao = visibilityDao;
         this.projectService = projectService;
         this.channelService = channelService;
         this.userService = userService;
+        this.permissionService = permissionService;
         this.request = request;
     }
 
@@ -63,14 +67,21 @@ public class VersionService {
     @RequestScope
     public Supplier<ProjectVersionsTable> projectVersionsTable() {
         Map<String, String> pathParams = RequestUtil.getPathParams(request);
-        if (!pathParams.keySet().containsAll(Set.of("author", "slug", "version"))) {
-            return () -> null;
-        } else {
+        if (pathParams.keySet().containsAll(Set.of("pluginId", "name"))) {
+            ProjectsTable project = projectService.projectsTable().get();
+            ProjectVersionsTable pvt = this.getVersion(project.getId(), pathParams.get("name"));
+            if (pvt == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+            return () -> pvt;
+        } else if (pathParams.keySet().containsAll(Set.of("author", "slug", "version"))) {
             ProjectVersionsTable pvt = this.getVersion(pathParams.get("author"), pathParams.get("slug"), pathParams.get("version"));
             if (pvt == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
             return () -> pvt;
+        } else {
+            return () -> null;
         }
     }
 
@@ -81,17 +92,25 @@ public class VersionService {
         return () -> this.getVersionData(projectService.projectData().get(), projectVersionsTable().get());
     }
 
-    public ProjectVersionsTable getVersion(long projectId, String versionString) {
-        return versionDao.get().getProjectVersion(projectId, "", versionString);
+    public ProjectVersionsTable getRecommendedVersion(ProjectsTable project) {
+        if (project.getRecommendedVersionId() == null) {
+            return null;
+        }
+        return versionDao.get().getProjectVersion(project.getId(), "", project.getRecommendedVersionId());
     }
 
-    public ProjectVersionsTable getVersion(long projectId, long versionId) {
-        return versionDao.get().getProjectVersion(projectId, "", versionId);
+    public ProjectVersionsTable getVersion(long projectId, String versionString) {
+        Permission perms = permissionService.getProjectPermissions(currentUser.get().map(UsersTable::getId).orElse(-10L), projectId);
+        ProjectVersionsTable pvt = versionDao.get().getProjectVersion(projectId, "", versionString);
+        if (!perms.has(Permission.SeeHidden) && !perms.has(Permission.IsProjectMember) && pvt.getVisibility() != Visibility.PUBLIC) {
+            return null;
+        }
+        return pvt;
     }
 
     public ProjectVersionsTable getVersion(String author, String slug, String versionString) {
         ProjectsTable projectsTable = projectDao.get().getBySlug(author, slug);
-        return versionDao.get().getProjectVersion(projectsTable.getId(), null, versionString);
+        return getVersion(projectsTable.getId(), versionString);
     }
 
     public void update(ProjectVersionsTable projectVersionsTable) {
