@@ -49,4 +49,5 @@ public abstract class PermissionAttribute implements ConfigAttribute {
 
     public static final String GLOBAL_TYPE = "GLOBAL";
     public static final String PROJECT_TYPE = "PROJECT";
+    public static final String ORG_TYPE = "ORGANIZATION";
 }

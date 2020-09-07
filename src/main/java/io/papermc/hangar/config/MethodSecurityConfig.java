@@ -2,9 +2,11 @@ package io.papermc.hangar.config;
 
 import io.papermc.hangar.security.metadatasources.GlobalPermissionSource;
 import io.papermc.hangar.security.metadatasources.HangarMetadataSources;
+import io.papermc.hangar.security.metadatasources.OrganizationPermissionSource;
 import io.papermc.hangar.security.metadatasources.ProjectPermissionSource;
 import io.papermc.hangar.security.metadatasources.UserLockSource;
 import io.papermc.hangar.security.voters.GlobalPermissionVoter;
+import io.papermc.hangar.security.voters.OrganizationPermissionVoter;
 import io.papermc.hangar.security.voters.ProjectPermissionVoter;
 import io.papermc.hangar.security.voters.UserLockVoter;
 import io.papermc.hangar.service.PermissionService;
@@ -48,7 +50,7 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
 
     @Override
     protected MethodSecurityMetadataSource customMethodSecurityMetadataSource() {
-        return new HangarMetadataSources(new GlobalPermissionSource(), new ProjectPermissionSource(), new UserLockSource());
+        return new HangarMetadataSources(new GlobalPermissionSource(), new ProjectPermissionSource(), new UserLockSource(), new OrganizationPermissionSource());
     }
 
     @Override
@@ -67,6 +69,7 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
         decisionVoters.add(roleVoter);
         decisionVoters.add(new AuthenticatedVoter());
         decisionVoters.add(new ProjectPermissionVoter(permissionService));
+        decisionVoters.add(new OrganizationPermissionVoter(permissionService));
         decisionVoters.add(new GlobalPermissionVoter(permissionService));
         decisionVoters.add(new UserLockVoter(userService));
         return new UnanimousBased(decisionVoters);

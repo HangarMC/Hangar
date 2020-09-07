@@ -45,6 +45,9 @@ public class ProjectPermissionVoter extends HangarPermissionVoter {
                             }
                         }
                     }
+                    if (author == null || slug == null) {
+                        return Set.of();
+                    }
                     return permissionService.getProjectPermissions(hangarAuthentication.getUserId(), author, slug).toNamed();
                 },
                 hangarAuthentication -> true,
