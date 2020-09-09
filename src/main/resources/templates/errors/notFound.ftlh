@@ -3,7 +3,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 
 <#assign message><@spring.message "error.notFound.title" /></#assign>
-<@base.base title="${message}" authEnabled=false noContainer=true>
+<@base.base title="${message}" authEnabled=true noContainer=true>
     <div class="container-error container">
         <img src="<@hangar.url "images/ore-dark.png" />" alt="Hangar logo"/>
         <h1 class="minor"><@spring.message "error.notFound.title" /></h1>

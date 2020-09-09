@@ -210,4 +210,8 @@ public enum Routes {
     public ModelAndView getRedirect(String... args) {
         return new ModelAndView("redirect:" + getRouteUrl(args));
     }
+
+    public static ModelAndView getRedirectToUrl(String url) {
+        return new ModelAndView("redirect:" + url);
+    }
 }

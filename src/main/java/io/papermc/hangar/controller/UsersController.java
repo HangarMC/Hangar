@@ -148,7 +148,7 @@ public class UsersController extends HangarController {
         UserSessionsTable session = sessionService.createSession(user);
         Cookie sessionCookie = new Cookie(AUTH_TOKEN_NAME, session.getToken());
         response.addCookie(sessionCookie);
-        return new ModelAndView("redirect:" + url);
+        return Routes.getRedirectToUrl(url);
     }
 
     private ModelAndView redirectToSso(UrlWithNonce urlWithNonce, RedirectAttributes attributes) {
@@ -157,7 +157,7 @@ public class UsersController extends HangarController {
             return Routes.SHOW_HOME.getRedirect();
         }
         ssoService.insert(urlWithNonce.getNonce());
-        return new ModelAndView("redirect:" + urlWithNonce.getUrl());
+        return Routes.getRedirectToUrl(urlWithNonce.getUrl());
     }
 
 
@@ -165,7 +165,7 @@ public class UsersController extends HangarController {
     public ModelAndView logout(HttpSession session) {
         // TODO flash
         session.invalidate();
-        return new ModelAndView("redirect:" + hangarConfig.getAuthUrl() + "/accounts/logout/");
+        return Routes.getRedirectToUrl(hangarConfig.getAuthUrl() + "/accounts/logout/");
     }
 
     @Secured("ROLE_USER")

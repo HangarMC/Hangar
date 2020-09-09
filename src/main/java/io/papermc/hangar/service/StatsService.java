@@ -103,6 +103,7 @@ public class StatsService extends HangarService {
     private void setCookie(String cookie) {
         // TODO maybe secure?
         Cookie newCookie = new Cookie(COOKIE_NAME, cookie);
+        newCookie.setPath("/");
         newCookie.setMaxAge(Integer.MAX_VALUE);
         response.addCookie(newCookie);
     }
