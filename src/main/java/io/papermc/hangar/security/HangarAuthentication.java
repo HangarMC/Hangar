@@ -1,7 +1,5 @@
 package io.papermc.hangar.security;
 
-import io.papermc.hangar.db.model.UsersTable;
-
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -13,7 +11,6 @@ public class HangarAuthentication extends AbstractAuthenticationToken {
 
     private final String username;
     private final Long userId;
-    private UsersTable table; // todo replace me
 
     public HangarAuthentication(String username) {
         super(null);
@@ -22,11 +19,10 @@ public class HangarAuthentication extends AbstractAuthenticationToken {
         setAuthenticated(false);
     }
 
-    public HangarAuthentication(Collection<? extends GrantedAuthority> authorities, String username, long userId, UsersTable table) {
+    public HangarAuthentication(Collection<? extends GrantedAuthority> authorities, String username, long userId) {
         super(authorities);
         this.username = username;
         this.userId = userId;
-        this.table = table;
         super.setAuthenticated(true);
     }
 
@@ -40,10 +36,6 @@ public class HangarAuthentication extends AbstractAuthenticationToken {
         return this.username;
     }
 
-    public UsersTable getTable() {
-        return table;
-    }
-
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
         if (isAuthenticated) {
             throw new IllegalArgumentException("Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
@@ -53,6 +45,6 @@ public class HangarAuthentication extends AbstractAuthenticationToken {
     }
 
     public long getUserId() {
-        return table.getId();
+        return userId;
     }
 }

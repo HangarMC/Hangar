@@ -232,7 +232,7 @@ public class AuthenticationService extends HangarService {
 
     public void setAuthenticatedUser(UsersTable user) {
         // TODO properly do auth, remember me shit too
-        Authentication auth = new HangarAuthentication(List.of(new SimpleGrantedAuthority("ROLE_USER")), user.getName(), user.getId(), user);
+        Authentication auth = new HangarAuthentication(List.of(new SimpleGrantedAuthority("ROLE_USER")), user.getName(), user.getId());
         authenticationManager.authenticate(auth);
         SecurityContextHolder.getContext().setAuthentication(auth);
     }

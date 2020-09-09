@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GeneralDao {
 
-    @SqlUpdate("refresh materialized view home_projects;")
+    @SqlUpdate("REFRESH MATERIALIZED VIEW home_projects;")
     void refreshHomeProjects();
 }

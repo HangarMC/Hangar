@@ -391,6 +391,7 @@ public class ProjectsController extends HangarController {
         userActionLogService.project(request, LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(project.getId())), Visibility.SOFTDELETE.getName(), oldVisibility.getName());
         projectFactory.softDeleteProject(project, comment);
         AlertUtil.showAlert(ra, AlertUtil.AlertType.SUCCESS, "project.deleted", project.getName());
+        projectService.refreshHomePage();
         return new RedirectView(Routes.getRouteUrlOf("showHome"));
     }
 
@@ -402,6 +403,7 @@ public class ProjectsController extends HangarController {
         projectFactory.hardDeleteProject(project);
         userActionLogService.project(request, LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(project.getId())), "deleted", project.getVisibility().getName());
         AlertUtil.showAlert(ra, AlertUtil.AlertType.SUCCESS, "project.deleted", project.getName());
+        projectService.refreshHomePage();
         return new RedirectView(Routes.getRouteUrlOf("showHome"));
     }
 
@@ -445,6 +447,7 @@ public class ProjectsController extends HangarController {
         projData.getProject().setSlug(StringUtils.slugify(compactNewName));
         projectDao.get().update(projData.getProject());
         userActionLogService.project(request, LoggedActionType.PROJECT_RENAMED.with(ProjectContext.of(projData.getProject().getId())), author + "/" + compactNewName, author + "/" + oldName);
+        projectService.refreshHomePage();
         return new RedirectView(Routes.getRouteUrlOf("projects.show", author, newName));
     }
 
@@ -519,7 +522,7 @@ public class ProjectsController extends HangarController {
             }
         }
 
-
+        projectService.refreshHomePage();
         userActionLogService.project(request, LoggedActionType.PROJECT_SETTINGS_CHANGED.with(ProjectContext.of(project.getId())), "", "");
 
         return Routes.PROJECTS_SHOW.getRedirect(author, slug);
@@ -608,6 +611,7 @@ public class ProjectsController extends HangarController {
         Visibility oldVisibility = project.getVisibility();
         projectService.changeVisibility(project, visibility, comment);
         userActionLogService.project(request, LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(project.getId())), visibility.getName(), oldVisibility.getName());
+        projectService.refreshHomePage();
     }
 
     @GetMapping("/{author}/{slug}/watchers")

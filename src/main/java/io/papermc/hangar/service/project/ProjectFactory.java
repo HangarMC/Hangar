@@ -110,7 +110,7 @@ public class ProjectFactory {
         roleService.addRole(projectsTable, ownerUser.getUserId(), Role.PROJECT_OWNER, true);
 
         userService.clearAuthorsCache();
-        generalDao.get().refreshHomeProjects();
+        projectService.refreshHomePage();
 
         return projectsTable;
     }
@@ -194,7 +194,7 @@ public class ProjectFactory {
 
         }
 
-        generalDao.get().refreshHomeProjects();
+        projectService.refreshHomePage();
         userService.clearAuthorsCache();
 
         return version;

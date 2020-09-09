@@ -40,8 +40,8 @@ public interface ProjectsApiDao {
             "       COALESCE(p.last_updated, p.created_at) AS last_updated," +
             "       p.visibility, " +
             "       <if(requesterId)> " +
-            "         EXISTS(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS user_starred, " +
-            "         EXISTS(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS user_watching, " +
+            "         EXISTS(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = <requesterId>) AS user_starred, " +
+            "         EXISTS(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = <requesterId>) AS user_watching, " +
             "       <endif>" +
             "       ps.homepage," +
             "       ps.issues," +
@@ -53,9 +53,9 @@ public interface ProjectsApiDao {
             "  FROM home_projects p" +
             "         JOIN projects ps ON p.id = ps.id" +
             "         WHERE true " + //Not sure how else to get here a single Where
-            "         <if(pluginId)> AND (p.plugin_id = :pluginId) <endif> " +
+            "         <if(pluginId)> AND (p.plugin_id = '<pluginId>') <endif> " +
             "         <if(owner)> AND (p.owner_name = :owner) <endif> " +
-            "         <if(!seeHidden)> AND (p.visibility = 1 OR (:requesterId = ANY(p.project_members) AND p.visibility != 5)) <endif> " +
+            "         <if(!seeHidden)> AND (p.visibility = 0 <if(requesterId)>OR (<requesterId> = ANY(p.project_members) AND p.visibility != 4)<endif>) <endif> " +
             "         <if(categories)> AND (p.category in (<categories>)) <endif> " +
             "         <if(query)> AND ( <queryStatement> ) <endif> " +
             "         <if(tags)> AND EXISTS ( SELECT pv.tag_name FROM jsonb_to_recordset(p.promoted_versions) " +
@@ -64,11 +64,11 @@ public interface ProjectsApiDao {
             "         LIMIT :limit" +
             "         OFFSET :offset")
     @RegisterColumnMapper(PromotedVersionMapper.class)
-    @DefineNamedBindings
-    List<Project> listProjects(String pluginId, String owner, boolean seeHidden, Long requesterId, @Define String orderBy,
+//    @DefineNamedBindings
+    List<Project> listProjects(@Define String pluginId, @Define String owner, @Define boolean seeHidden, @Define Long requesterId, @Define String orderBy,
                                @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<Integer> categories,
                                @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<String> tags, //TODO: implement tags with mc_version('data')
-                               String query, @Define String queryStatement, long limit, long offset);
+                               @Define String query, @Define String queryStatement, long limit, long offset);
 
     @UseStringTemplateEngine
     @SqlQuery("SELECT COUNT(*) FROM ( SELECT p.created_at," +

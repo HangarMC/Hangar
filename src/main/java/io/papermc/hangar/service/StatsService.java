@@ -106,4 +106,19 @@ public class StatsService extends HangarService {
         newCookie.setMaxAge(Integer.MAX_VALUE);
         response.addCookie(newCookie);
     }
+
+    private void processStats(String individualTable, String dayTable, String statColumn, boolean includeVersionId) {
+        projectStatsTrackerDao.get().fillStatsUserIdsFromOthers(individualTable);
+        projectStatsTrackerDao.get().processStatsMain(individualTable, dayTable, statColumn, true, includeVersionId);
+        projectStatsTrackerDao.get().processStatsMain(individualTable, dayTable, statColumn, false, includeVersionId);
+        projectStatsTrackerDao.get().deleteOldIndividual(individualTable);
+    }
+
+    public void processVersionDownloads() {
+        processStats("project_versions_downloads_individual", "project_versions_downloads", "downloads", true);
+    }
+
+    public void processProjectViews() {
+        processStats("project_views_individual", "project_views", "views", false);
+    }
 }
