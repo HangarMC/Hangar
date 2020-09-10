@@ -106,7 +106,7 @@
                                     </td>
                                 </#if>
                                 <#-- Show diff only when page edit -->
-                                <#if action.action.name == "ProjectPageEdited" || action.action == "VersionDescriptionEdited">
+                                <#if action.action.name == "ProjectPageEdited" || action.action.name == "ProjectPageDeleted" || action.action.name == "ProjectPageCreated" || action.action.name == "VersionDescriptionEdited">
                                     <td>
                                         <a href="#" class="data-view-old" data-view="${offset + action?index}">View</a>
                                         <textarea style="display: none" data-oldstate="${offset + action?index}">${action.oldState}</textarea>

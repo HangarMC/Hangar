@@ -56,6 +56,10 @@ public enum NamedPermission {
         this.frontendName = frontendName;
     }
 
+    public String getFrontendName() {
+        return frontendName;
+    }
+
     @Override
     @JsonValue
     public String toString() {

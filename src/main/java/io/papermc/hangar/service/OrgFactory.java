@@ -3,6 +3,8 @@ package io.papermc.hangar.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.db.customtypes.LoggedActionType;
+import io.papermc.hangar.db.customtypes.LoggedActionType.OrganizationContext;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.OrganizationDao;
 import io.papermc.hangar.db.dao.UserDao;
@@ -22,6 +24,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -35,19 +39,24 @@ public class OrgFactory {
     private final UserService userService;
     private final RoleService roleService;
     private final NotificationService notificationService;
+    private final UserActionLogService userActionLogService;
     private final RestTemplate restTemplate;
     private final ObjectMapper mapper;
 
+    private final HttpServletRequest request;
+
     @Autowired
-    public OrgFactory(HangarDao<OrganizationDao> organizationDao, HangarDao<UserDao> userDao, HangarConfig hangarConfig, UserService userService, RoleService roleService, NotificationService notificationService, RestTemplate restTemplate, ObjectMapper mapper) {
+    public OrgFactory(HangarDao<OrganizationDao> organizationDao, HangarDao<UserDao> userDao, HangarConfig hangarConfig, UserService userService, RoleService roleService, NotificationService notificationService, UserActionLogService userActionLogService, RestTemplate restTemplate, ObjectMapper mapper, HttpServletRequest request) {
         this.organizationDao = organizationDao;
         this.userDao = userDao;
         this.hangarConfig = hangarConfig;
         this.userService = userService;
         this.roleService = roleService;
         this.notificationService = notificationService;
+        this.userActionLogService = userActionLogService;
         this.restTemplate = restTemplate;
         this.mapper = mapper;
+        this.request = request;
     }
 
     public OrganizationsTable createOrganization(String name, long ownerId, Map<Long, Role> members) {
@@ -83,11 +92,15 @@ public class OrgFactory {
         UserData orgUser = userService.getUserData(authOrgUser.getId());
         roleService.addGlobalRole(orgUser.getUser().getId(), Role.ORGANIZATION.getRoleId());
         roleService.addOrgMemberRole(orgId, ownerId, Role.ORGANIZATION_OWNER, true);
+        List<String> newState = new ArrayList<>();
         // TODO user action logging for org members
         members.forEach((memberId, role) -> {
+            UsersTable memberUser = userDao.get().getById(memberId);
+            newState.add(memberUser.getName() + ": " + role.getTitle());
             roleService.addOrgMemberRole(orgId, memberId, role, false);
             notificationService.sendNotification(memberId, orgId, NotificationType.ORGANIZATION_INVITE, new String[]{"notification.organization.invite", role.getTitle(), name});
         });
+        userActionLogService.organization(request, LoggedActionType.ORG_MEMBERS_ADDED.with(OrganizationContext.of(orgId)), String.join("<br>", newState), "<i>No Members</i>");
         return org;
     }
 }

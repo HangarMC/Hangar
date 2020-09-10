@@ -12,13 +12,26 @@ public class LoggedAction extends PGobject {
     public static final LoggedAction PROJECT_SETTINGS_CHANGED = new LoggedAction("project_settings_changed");
     public static final LoggedAction PROJECT_MEMBER_REMOVED = new LoggedAction("project_member_removed");
     public static final LoggedAction PROJECT_ICON_CHANGED = new LoggedAction("project_icon_changed");
-    public static final LoggedAction PROJECT_PAGE_EDITED = new LoggedAction("project_page_edited");
     public static final LoggedAction PROJECT_FLAG_RESOLVED = new LoggedAction("project_flag_resolved");
+
+    public static final LoggedAction PROJECT_PAGE_CREATED = new LoggedAction("project_page_created");
+    public static final LoggedAction PROJECT_PAGE_DELETED = new LoggedAction("project_page_deleted");
+    public static final LoggedAction PROJECT_PAGE_EDITED = new LoggedAction("project_page_edited");
+
     public static final LoggedAction VERSION_DELETED = new LoggedAction("version_deleted");
     public static final LoggedAction VERSION_UPLOADED = new LoggedAction("version_uploaded");
     public static final LoggedAction VERSION_DESCRIPTION_CHANGED = new LoggedAction("version_description_changed");
     public static final LoggedAction VERSION_REVIEW_STATE_CHANGED = new LoggedAction("version_review_state_changed");
+
     public static final LoggedAction USER_TAGLINE_CHANGED = new LoggedAction("user_tagline_changed");
+    public static final LoggedAction USER_LOCKED = new LoggedAction("user_locked");
+    public static final LoggedAction USER_UNLOCKED = new LoggedAction("user_unlocked");
+    public static final LoggedAction USER_APIKEY_CREATE = new LoggedAction("user_apikey_create");
+    public static final LoggedAction USER_APIKEY_DELETE = new LoggedAction("user_apikey_delete");
+
+    public static final LoggedAction ORG_MEMBERS_ADDED = new LoggedAction("org_members_added");
+    public static final LoggedAction ORG_MEMBER_REMOVED = new LoggedAction("org_member_removed");
+    public static final LoggedAction ORG_MEMBER_ROLES_UPDATED = new LoggedAction("org_member_roles_updated");
 
     private String value;
 

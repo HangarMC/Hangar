@@ -108,6 +108,7 @@ public class PagesController extends HangarController {
         if (!projectPage.getIsDeletable()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot delete this page");
         }
+        userActionLogService.projectPage(request, LoggedActionType.PROJECT_PAGE_DELETED.with(ProjectPageContext.of(projectPage.getProjectId(), projectPage.getId())), "", projectPage.getContents());
         projectPageDao.get().delete(projectPage);
         return Routes.PROJECTS_SHOW.getRedirect(author, slug);
     }
@@ -136,14 +137,15 @@ public class PagesController extends HangarController {
                 parentIdLong = null;
             }
             projectPage = pagesFactory.createPage(pageContent, newPageName, pageName, parentIdLong, project.getId());
+            userActionLogService.projectPage(request, LoggedActionType.PROJECT_PAGE_CREATED.with(ProjectPageContext.of(project.getId(), projectPage.getId())), pageContent, "");
             toReturn = new ResponseEntity<>(HttpStatus.OK); // redirect handled by pageEdit.js
         } else {
             oldContents = projectPage.getContents();
             projectPage.setContents(pageContent);
             projectPageDao.get().update(projectPage);
+            userActionLogService.projectPage(request, LoggedActionType.PROJECT_PAGE_EDITED.with(ProjectPageContext.of(project.getId(), projectPage.getId())), pageContent, oldContents);
             toReturn = Routes.PAGES_SHOW.getRedirect(author, slug, StringUtils.slugify(pageName));
         }
-        userActionLogService.projectPage(request, LoggedActionType.PROJECT_PAGE_EDITED.with(ProjectPageContext.of(project.getId(), projectPage.getId())), pageContent, oldContents);
         return toReturn;
     }
 

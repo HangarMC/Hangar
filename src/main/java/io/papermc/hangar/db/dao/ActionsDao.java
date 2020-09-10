@@ -6,13 +6,10 @@ import io.papermc.hangar.db.model.LoggedActionsPageTable;
 import io.papermc.hangar.db.model.LoggedActionsProjectTable;
 import io.papermc.hangar.db.model.LoggedActionsUserTable;
 import io.papermc.hangar.db.model.LoggedActionsVersionTable;
-
 import io.papermc.hangar.model.viewhelpers.LoggedActionViewModel;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
-import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
-import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.customizer.DefineNamedBindings;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -54,12 +51,13 @@ public interface ActionsDao {
     @RegisterRowMapper(LoggedActionViewModelMapper.class)
     @SqlQuery("SELECT * FROM v_logged_actions la " +
               " WHERE true " +
-              "<if(userFilter)>AND la.user_name = '<userFilter>'<endif> " +
-              "<if(projectFilter)>AND la.p_plugin_id = '<projectFilter>'<endif> " +
-              "<if(versionFilter)>AND la.pv_version_string = '<versionFilter>'<endif> " +
-              "<if(pageFilter)>AND la.pp_id = '<pageFilter>'<endif> " +
-              "<if(actionFilter)>AND la.action = '<actionFilter>'::LOGGED_ACTION_TYPE<endif> " +
-              "<if(subjectFilter)>AND la.s_name = '<subjectFilter>'<endif> " +
-              "ORDER BY la.created_at DESC OFFSET <offset> LIMIT <pageSize>")
-    List<LoggedActionViewModel<?>> getLog(@Define String userFilter, @Define String projectFilter, @Define String versionFilter, @Define String pageFilter, @Define String actionFilter, @Define String subjectFilter, @Define long offset, @Define long pageSize);
+              "<if(userFilter)>AND la.user_name = :userFilter<endif> " +
+              "<if(projectFilter)>AND la.p_plugin_id = :projectFilter<endif> " +
+              "<if(versionFilter)>AND la.pv_version_string = :versionFilter<endif> " +
+              "<if(pageFilter)>AND la.pp_id = :pageFilter<endif> " +
+              "<if(actionFilter)>AND la.action = :actionFilter::LOGGED_ACTION_TYPE<endif> " +
+              "<if(subjectFilter)>AND la.s_name = :subjectFilter<endif> " +
+              "ORDER BY la.created_at DESC OFFSET :offset LIMIT :pageSize")
+    @DefineNamedBindings
+    List<LoggedActionViewModel<?>> getLog(String userFilter, String projectFilter, String versionFilter, String pageFilter, String actionFilter, String subjectFilter, long offset, long pageSize);
 }

@@ -3,6 +3,8 @@ package io.papermc.hangar.service;
 import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controller.UsersController;
+import io.papermc.hangar.db.customtypes.LoggedActionType;
+import io.papermc.hangar.db.customtypes.LoggedActionType.UserContext;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.NotificationsDao;
 import io.papermc.hangar.db.dao.OrganizationDao;
@@ -60,12 +62,13 @@ public class UserService extends HangarService {
     private final PermissionService permissionService;
     private final OrgService orgService;
     private final SessionService sessionService;
+    private final UserActionLogService userActionLogService;
     private final HangarConfig config;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, HangarDao<OrganizationDao> organizationDao, HangarDao<NotificationsDao> notificationsDao, RoleService roleService, PermissionService permissionService, OrgService orgService, SessionService sessionService, HttpServletRequest request) {
+    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, HangarDao<OrganizationDao> organizationDao, HangarDao<NotificationsDao> notificationsDao, RoleService roleService, PermissionService permissionService, OrgService orgService, SessionService sessionService, UserActionLogService userActionLogService, HttpServletRequest request) {
         this.userDao = userDao;
         this.config = config;
         this.orgDao = orgDao;
@@ -76,6 +79,7 @@ public class UserService extends HangarService {
         this.permissionService = permissionService;
         this.orgService = orgService;
         this.sessionService = sessionService;
+        this.userActionLogService = userActionLogService;
         this.request = request;
     }
 
@@ -184,6 +188,11 @@ public class UserService extends HangarService {
 
     public void setLocked(UsersTable user, boolean locked) {
         user.setIsLocked(locked);
+        if (locked) {
+            userActionLogService.user(request, LoggedActionType.USER_LOCKED.with(UserContext.of(user.getId())), user.getName() + " is now locked", user.getName() + " was unlocked");
+        } else {
+            userActionLogService.user(request, LoggedActionType.USER_UNLOCKED.with(UserContext.of(user.getId())), user.getName() + " is now unlocked", user.getName() + " was locked");
+        }
         userDao.get().update(user);
     }
 

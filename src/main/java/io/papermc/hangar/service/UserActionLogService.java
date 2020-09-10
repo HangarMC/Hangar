@@ -9,12 +9,11 @@ import io.papermc.hangar.db.model.LoggedActionsProjectTable;
 import io.papermc.hangar.db.model.LoggedActionsUserTable;
 import io.papermc.hangar.db.model.LoggedActionsVersionTable;
 import io.papermc.hangar.model.viewhelpers.LoggedActionViewModel;
+import io.papermc.hangar.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,18 +21,16 @@ import java.util.Objects;
 public class UserActionLogService extends HangarService {
 
     private final HangarDao<ActionsDao> actionsDao;
-    private final UserService userService;
 
     @Autowired
-    public UserActionLogService(HangarDao<ActionsDao> actionsDao, UserService userService) {
+    public UserActionLogService(HangarDao<ActionsDao> actionsDao) {
         this.actionsDao = actionsDao;
-        this.userService = userService;
     }
 
     public void project(HttpServletRequest request, LoggedActionType<LoggedActionType.ProjectContext> loggedActionType, String newState, String oldState) {
         LoggedActionsProjectTable log = new LoggedActionsProjectTable(
                 getCurrentUser().getId(),
-                getInetAddress(request),
+                RequestUtil.getRemoteInetAddress(request),
                 loggedActionType.getValue(),
                 loggedActionType.getActionContext().getProjectId(),
                 newState,
@@ -45,7 +42,7 @@ public class UserActionLogService extends HangarService {
     public void projectPage(HttpServletRequest request, LoggedActionType<LoggedActionType.ProjectPageContext> loggedActionType, String newState, String oldState) {
         LoggedActionsPageTable log = new LoggedActionsPageTable(
                 getCurrentUser().getId(),
-                getInetAddress(request),
+                RequestUtil.getRemoteInetAddress(request),
                 loggedActionType.getValue(),
                 loggedActionType.getActionContext().getProjectId(),
                 loggedActionType.getActionContext().getPageId(),
@@ -58,7 +55,7 @@ public class UserActionLogService extends HangarService {
     public void version(HttpServletRequest request, LoggedActionType<LoggedActionType.VersionContext> loggedActionType, String newState, String oldState) {
         LoggedActionsVersionTable log = new LoggedActionsVersionTable(
                 getCurrentUser().getId(),
-                getInetAddress(request),
+                RequestUtil.getRemoteInetAddress(request),
                 loggedActionType.getValue(),
                 loggedActionType.getActionContext().getProjectId(),
                 loggedActionType.getActionContext().getVersionId(),
@@ -71,7 +68,7 @@ public class UserActionLogService extends HangarService {
     public void user(HttpServletRequest request, LoggedActionType<LoggedActionType.UserContext> loggedActionType, String newState, String oldState) {
         LoggedActionsUserTable log = new LoggedActionsUserTable(
                 getCurrentUser().getId(),
-                getInetAddress(request),
+                RequestUtil.getRemoteInetAddress(request),
                 loggedActionType.getValue(),
                 loggedActionType.getActionContext().getUserId(),
                 Objects.toString(newState, ""),
@@ -83,9 +80,9 @@ public class UserActionLogService extends HangarService {
     public void organization(HttpServletRequest request, LoggedActionType<LoggedActionType.OrganizationContext> loggedActionType, String newState, String oldState) {
         LoggedActionsOrganizationTable log = new LoggedActionsOrganizationTable(
                 getCurrentUser().getId(),
-                getInetAddress(request),
+                RequestUtil.getRemoteInetAddress(request),
                 loggedActionType.getValue(),
-                loggedActionType.getActionContext().getOrganizationLog(),
+                loggedActionType.getActionContext().getOrganizationId(),
                 Objects.toString(newState, ""),
                 Objects.toString(oldState, "")
         );
@@ -101,16 +98,6 @@ public class UserActionLogService extends HangarService {
             offset = oPage * pageSize;
         }
         return actionsDao.get().getLog(userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter, offset, pageSize);
-    }
-
-    private InetAddress getInetAddress(HttpServletRequest request) {
-        String host = request.getHeader("X-Forwarded-For");
-        if (host == null) host = request.getRemoteHost();
-        try {
-            return InetAddress.getByName(host);
-        } catch (UnknownHostException e) {
-            return null;
-        }
     }
 }
 

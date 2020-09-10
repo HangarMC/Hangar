@@ -650,8 +650,9 @@ public class VersionsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version}/restore", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView restore(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String comment) {
-        versionService.changeVisibility(versionData.get(), Visibility.PUBLIC, comment, getCurrentUser().getId());
-        userActionLogService.version(request, LoggedActionType.VERSION_DELETED.with(VersionContext.of(versionData.get().getP().getProject().getId(), versionData.get().getV().getId())), "Restore: " + comment, "");
+        VersionData vData = versionData.get();
+        versionService.changeVisibility(vData, Visibility.PUBLIC, comment, getCurrentUser().getId());
+        userActionLogService.version(request, LoggedActionType.VERSION_DELETED.with(VersionContext.of(vData.getP().getProject().getId(), vData.getV().getId())), "Restore: " + comment, "");
         return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
     }
 
@@ -660,11 +661,12 @@ public class VersionsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version}/save", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView saveDescription(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String content) {
-        String oldDesc = versionData.get().getV().getDescription();
+        VersionData vData = versionData.get();
+        String oldDesc = vData.getV().getDescription();
         String newDesc = content.trim();
-        versionData.get().getV().setDescription(newDesc);
-        versionService.update(versionData.get().getV());
-        userActionLogService.version(request, LoggedActionType.VERSION_DESCRIPTION_CHANGED.with(VersionContext.of(versionData.get().getP().getProject().getId(), versionData.get().getV().getId())), newDesc, oldDesc);
+        vData.getV().setDescription(newDesc);
+        versionService.update(vData.getV());
+        userActionLogService.version(request, LoggedActionType.VERSION_DESCRIPTION_CHANGED.with(VersionContext.of(vData.getP().getProject().getId(), vData.getV().getId())), newDesc, oldDesc);
         return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
     }
 

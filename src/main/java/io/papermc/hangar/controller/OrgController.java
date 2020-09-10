@@ -2,6 +2,8 @@ package io.papermc.hangar.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.db.customtypes.LoggedActionType;
+import io.papermc.hangar.db.customtypes.LoggedActionType.OrganizationContext;
 import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.UserOrganizationRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
@@ -16,6 +18,7 @@ import io.papermc.hangar.service.NotificationService;
 import io.papermc.hangar.service.OrgFactory;
 import io.papermc.hangar.service.OrgService;
 import io.papermc.hangar.service.RoleService;
+import io.papermc.hangar.service.UserActionLogService;
 import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.util.AlertUtil;
 import io.papermc.hangar.util.AlertUtil.AlertType;
@@ -36,7 +39,9 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,18 +58,23 @@ public class OrgController extends HangarController {
     private final OrgFactory orgFactory;
     private final UserService userService;
     private final RoleService roleService;
+    private final UserActionLogService userActionLogService;
     private final NotificationService notificationService;
     private final HangarConfig hangarConfig;
 
+    private final HttpServletRequest request;
+
     @Autowired
-    public OrgController(AuthenticationService authenticationService, OrgService orgService, OrgFactory orgFactory, UserService userService, RoleService roleService, NotificationService notificationService, HangarConfig hangarConfig) {
+    public OrgController(AuthenticationService authenticationService, OrgService orgService, OrgFactory orgFactory, UserService userService, RoleService roleService, UserActionLogService userActionLogService, NotificationService notificationService, HangarConfig hangarConfig, HttpServletRequest request) {
         this.authenticationService = authenticationService;
         this.orgService = orgService;
         this.orgFactory = orgFactory;
         this.userService = userService;
         this.roleService = roleService;
+        this.userActionLogService = userActionLogService;
         this.notificationService = notificationService;
         this.hangarConfig = hangarConfig;
+        this.request = request;
     }
 
     @Secured("ROLE_USER")
@@ -107,10 +117,11 @@ public class OrgController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping(value = "/organizations/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView create(@RequestParam String name, @RequestParam(required = false) List<Long> users, @RequestParam(required = false) List<Role> roles, RedirectAttributes attributes) {
+        UsersTable currUser = getCurrentUser();
         if (orgService.getUserOwnedOrgs(getCurrentUser().getId()).size() >= hangarConfig.org.getCreateLimit()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "at create limit");
         }
-        if (currentUser.get().get().isLocked()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        if (currUser.isLocked()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         if (!hangarConfig.org.isEnabled()) {
             AlertUtil.showAlert(attributes, AlertType.ERROR, "error.org.disabled");
             return Routes.ORG_SHOW_CREATOR.getRedirect();
@@ -119,7 +130,7 @@ public class OrgController extends HangarController {
 
             OrganizationsTable org;
             try {
-                org = orgFactory.createOrganization(name, currentUser.get().get().getId(), userRoles);
+                org = orgFactory.createOrganization(name, currUser.getId(), userRoles);
             } catch (HangarException e) {
                 AlertUtil.showAlert(attributes, AlertType.ERROR, e.getMessageKey(), e.getArgs());
                 return Routes.ORG_SHOW_CREATOR.getRedirect();
@@ -134,7 +145,7 @@ public class OrgController extends HangarController {
     public ModelAndView updateAvatar(@PathVariable String organization) {
         try {
             URI uri = authenticationService.changeAvatarUri(getCurrentUser().getName(), organization);
-            return new ModelAndView("redirect:" + uri.toString());
+            return Routes.getRedirectToUrl(uri.toString());
         } catch (JsonProcessingException e) {
             ModelAndView mav = Routes.USERS_SHOW_PROJECTS.getRedirect(organization);
             AlertUtil.showAlert(mav, AlertType.ERROR, "organization.avatarFailed");
@@ -152,16 +163,26 @@ public class OrgController extends HangarController {
                                       @RequestParam(required = false) List<Role> roleUps) {
         OrganizationsTable org = orgService.getOrganization(organization); // Won't be null because the PreAuth check should catch that
         Map<Long, Role> userRoles = zip(users, roles);
+        List<String> newState = new ArrayList<>();
         userRoles.forEach((memberId, role) -> {
+            UsersTable memberUser = userService.getUsersTable(memberId);
+            newState.add(memberUser.getName() + ": " + role.getTitle());
             roleService.addOrgMemberRole(org.getId(), memberId, role, false);
             notificationService.sendNotification(memberId, org.getId(), NotificationType.ORGANIZATION_INVITE, new String[]{"notification.organization.invite", role.getTitle(), org.getName()});
         });
+        if (!newState.isEmpty()) {
+            userActionLogService.organization(request, LoggedActionType.ORG_MEMBERS_ADDED.with(OrganizationContext.of(org.getId())), String.join("<br>", newState), "");
+            newState.clear();
+        }
 
         Map<UsersTable, Role> userRoleUpdates = zip(userService.getUsers(userUps), roleUps);
         userRoleUpdates.forEach((user, role) -> {
+            newState.add(user.getName() + ": " + role.getTitle());
             roleService.updateRole(org, user.getId(), role);
         });
-        // TODO user action logging for orgs
+        if (!newState.isEmpty()) {
+            userActionLogService.organization(request, LoggedActionType.ORG_MEMBER_ROLES_UPDATED.with(OrganizationContext.of(org.getId())), String.join("<br>", newState), "");
+        }
         return Routes.USERS_SHOW_PROJECTS.getRedirect(organization);
     }
 
@@ -172,7 +193,7 @@ public class OrgController extends HangarController {
         OrganizationsTable org = orgService.getOrganization(organization);
         UserData user = userService.getUserData(username);
         if (roleService.removeMember(org, user.getUser().getId()) != 0) {
-            // TODO org logging
+            userActionLogService.organization(request, LoggedActionType.ORG_MEMBER_REMOVED.with(OrganizationContext.of(org.getId())), "Removed " + user.getUser().getName(), "");
         }
         return Routes.USERS_SHOW_PROJECTS.getRedirect(organization);
     }

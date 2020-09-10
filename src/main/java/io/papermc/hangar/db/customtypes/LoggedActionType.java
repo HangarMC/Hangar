@@ -16,14 +16,26 @@ public class LoggedActionType<C extends AbstractContext<C>> {
     public static final LoggedActionType<ProjectContext> PROJECT_SETTINGS_CHANGED = new LoggedActionType<>(LoggedAction.PROJECT_SETTINGS_CHANGED, "ProjectSettingsChanged", "The project settings were changed");
     public static final LoggedActionType<ProjectContext> PROJECT_MEMBER_REMOVED = new LoggedActionType<>(LoggedAction.PROJECT_MEMBER_REMOVED, "ProjectMemberRemoved", "A Member was removed from the project");
     public static final LoggedActionType<ProjectContext> PROJECT_ICON_CHANGED = new LoggedActionType<>(LoggedAction.PROJECT_ICON_CHANGED, "ProjectIconChanged", "The project icon was changed");
-    public static final LoggedActionType<ProjectPageContext> PROJECT_PAGE_EDITED = new LoggedActionType<>(LoggedAction.PROJECT_PAGE_EDITED, "ProjectPageEdited", "A project page got edited");
     public static final LoggedActionType<ProjectContext> PROJECT_FLAG_RESOLVED = new LoggedActionType<>(LoggedAction.PROJECT_FLAG_RESOLVED, "ProjectFlagResolved", "The flag was resolved");
+
+    public static final LoggedActionType<ProjectPageContext> PROJECT_PAGE_CREATED = new LoggedActionType<>(LoggedAction.PROJECT_PAGE_CREATED, "ProjectPageCreated", "A project page was created");
+    public static final LoggedActionType<ProjectPageContext> PROJECT_PAGE_DELETED = new LoggedActionType<>(LoggedAction.PROJECT_PAGE_DELETED, "ProjectPageDeleted", "A project page was deleted");
+    public static final LoggedActionType<ProjectPageContext> PROJECT_PAGE_EDITED = new LoggedActionType<>(LoggedAction.PROJECT_PAGE_EDITED, "ProjectPageEdited", "A project page was edited");
+
     public static final LoggedActionType<VersionContext> VERSION_DELETED = new LoggedActionType<>(LoggedAction.VERSION_DELETED, "VersionDeleted", "The version was deleted");
     public static final LoggedActionType<VersionContext> VERSION_UPLOADED = new LoggedActionType<>(LoggedAction.VERSION_UPLOADED, "VersionUploaded", "A new version was uploaded");
     public static final LoggedActionType<VersionContext> VERSION_DESCRIPTION_CHANGED = new LoggedActionType<>(LoggedAction.VERSION_DESCRIPTION_CHANGED, "VersionDescriptionEdited", "The version description was edited");
-    public static final LoggedActionType<VersionContext> VERSION_REVIEW_STATE_CHANGED = new LoggedActionType<>(LoggedAction.VERSION_REVIEW_STATE_CHANGED, "VersionReviewStateChanged", "If the review state changed");
-    public static final LoggedActionType<UserContext> USER_TAGLINE_CHANGED = new LoggedActionType<>(LoggedAction.USER_TAGLINE_CHANGED, "UserTaglineChanged", "The user tagline changed");
+    public static final LoggedActionType<VersionContext> VERSION_REVIEW_STATE_CHANGED = new LoggedActionType<>(LoggedAction.VERSION_REVIEW_STATE_CHANGED, "VersionReviewStateChanged", "The versions review state was changed");
 
+    public static final LoggedActionType<UserContext> USER_TAGLINE_CHANGED = new LoggedActionType<>(LoggedAction.USER_TAGLINE_CHANGED, "UserTaglineChanged", "The user tagline changed");
+    public static final LoggedActionType<UserContext> USER_LOCKED = new LoggedActionType<>(LoggedAction.USER_LOCKED, "UserLocked", "This user is locked");
+    public static final LoggedActionType<UserContext> USER_UNLOCKED = new LoggedActionType<>(LoggedAction.USER_UNLOCKED, "UserUnlocked", "This use is unlocked");
+    public static final LoggedActionType<UserContext> USER_APIKEY_CREATE = new LoggedActionType<>(LoggedAction.USER_APIKEY_CREATE, "UserApikeyCreate", "An apikey was created");
+    public static final LoggedActionType<UserContext> USER_APIKEY_DELETE = new LoggedActionType<>(LoggedAction.USER_APIKEY_DELETE, "UserApikeyDelete", "An apikey was deleted");
+
+    public static final LoggedActionType<OrganizationContext> ORG_MEMBERS_ADDED = new LoggedActionType<>(LoggedAction.ORG_MEMBERS_ADDED, "OrganizationMembersAdded", "Users were added to an organization");
+    public static final LoggedActionType<OrganizationContext> ORG_MEMBER_REMOVED = new LoggedActionType<>(LoggedAction.ORG_MEMBER_REMOVED, "OrganizationMemberRemoved", "User was removed from an organization");
+    public static final LoggedActionType<OrganizationContext> ORG_MEMBER_ROLES_UPDATED = new LoggedActionType<>(LoggedAction.ORG_MEMBER_ROLES_UPDATED, "OrganizationMemberRolesUpdated", "Organization members roles were updated");
 
     private final LoggedAction value;
     private final String name;
@@ -157,7 +169,7 @@ public class LoggedActionType<C extends AbstractContext<C>> {
             this.orgId = orgId;
         }
 
-        public long getOrganizationLog() {
+        public long getOrganizationId() {
             return orgId;
         }
 

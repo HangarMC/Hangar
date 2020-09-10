@@ -1,11 +1,14 @@
 package io.papermc.hangar.controller.api;
 
+import io.papermc.hangar.db.customtypes.LoggedActionType;
+import io.papermc.hangar.db.customtypes.LoggedActionType.UserContext;
 import io.papermc.hangar.model.ApiAuthInfo;
 import io.papermc.hangar.model.NamedPermission;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.generated.ApiKeyRequest;
 import io.papermc.hangar.model.generated.ApiKeyResponse;
 import io.papermc.hangar.service.ApiKeyService;
+import io.papermc.hangar.service.UserActionLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,20 +16,26 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Controller
 public class KeysApiController implements KeysApi {
 
     private final ApiKeyService apiKeyService;
+    private final UserActionLogService userActionLogService;
 
     private final ApiAuthInfo apiAuthInfo;
+    private final HttpServletRequest request;
 
     @Autowired
-    public KeysApiController(ApiKeyService apiKeyService, ApiAuthInfo apiAuthInfo) {
+    public KeysApiController(ApiKeyService apiKeyService, UserActionLogService userActionLogService, ApiAuthInfo apiAuthInfo, HttpServletRequest request) {
         this.apiKeyService = apiKeyService;
+        this.userActionLogService = userActionLogService;
         this.apiAuthInfo = apiAuthInfo;
+        this.request = request;
     }
 
     @Override
@@ -58,6 +67,7 @@ public class KeysApiController implements KeysApi {
         }
 
         apiKeyService.createApiKey(body.getName(), userId, tokenIdentifier, token, perm);
+        userActionLogService.user(request, LoggedActionType.USER_APIKEY_CREATE.with(UserContext.of(apiAuthInfo.getUserId())), "Key Name: " + body.getName() + "<br>" + perms.stream().map(NamedPermission::getFrontendName).collect(Collectors.joining(",<br>")), "");
         return ResponseEntity.ok(new ApiKeyResponse().perms(perm.toNamed()).key(tokenIdentifier + "." + token));
     }
 
@@ -71,6 +81,7 @@ public class KeysApiController implements KeysApi {
         if (rowsAffected == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
+            userActionLogService.user(request, LoggedActionType.USER_APIKEY_DELETE.with(UserContext.of(apiAuthInfo.getUserId())), "", "Key Name: " + name);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }

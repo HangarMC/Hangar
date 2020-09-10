@@ -6,7 +6,30 @@ create type role_category as enum ('global', 'project', 'organization');
 
 alter type role_category owner to hangar;
 
-create type logged_action_type as enum ('project_visibility_change', 'project_renamed', 'project_flagged', 'project_settings_changed', 'project_member_removed', 'project_icon_changed', 'project_page_edited', 'project_flag_resolved', 'version_deleted', 'version_uploaded', 'version_description_changed', 'version_review_state_changed', 'user_tagline_changed');
+create type logged_action_type as enum (
+    'project_visibility_change',
+    'project_renamed',
+    'project_flagged',
+    'project_settings_changed',
+    'project_member_removed',
+    'project_icon_changed',
+    'project_flag_resolved',
+    'project_page_created',
+    'project_page_deleted',
+    'project_page_edited',
+    'version_deleted',
+    'version_uploaded',
+    'version_description_changed',
+    'version_review_state_changed',
+    'user_tagline_changed',
+    'user_locked',
+    'user_unlocked',
+    'user_apikey_create',
+    'user_apikey_delete',
+    'org_members_added',
+    'org_member_removed',
+    'org_member_roles_updated'
+    );
 
 alter type logged_action_type owner to hangar;
 
