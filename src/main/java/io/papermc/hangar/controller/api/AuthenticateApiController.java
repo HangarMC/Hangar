@@ -1,8 +1,8 @@
 package io.papermc.hangar.controller.api;
 
-import io.papermc.hangar.security.HangarAuthentication;
 import io.papermc.hangar.model.generated.ApiSessionResponse;
 import io.papermc.hangar.model.generated.SessionProperties;
+import io.papermc.hangar.security.HangarAuthentication;
 import io.papermc.hangar.service.AuthenticationService;
 import io.papermc.hangar.util.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
+@ApiController
 @Controller
 public class AuthenticateApiController implements AuthenticateApi {
 

@@ -1,11 +1,11 @@
 package io.papermc.hangar.util;
 
+import io.papermc.hangar.exceptions.HangarApiException;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
@@ -23,13 +23,13 @@ public class AuthUtils {
     public static RuntimeException unAuth() {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.WWW_AUTHENTICATE, "HangarApi");
-        return new HeaderResponseStatusException(HttpStatus.UNAUTHORIZED, headers);
+        return new HangarApiException(HttpStatus.UNAUTHORIZED, headers);
     }
 
     public static RuntimeException unAuth(String message) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.WWW_AUTHENTICATE, "HangarApi");
-        return new HeaderResponseStatusException(HttpStatus.UNAUTHORIZED, message, headers);
+        return new HangarApiException(HttpStatus.UNAUTHORIZED, message, headers);
     }
 
     public static OffsetDateTime expiration(Duration expirationDuration, Long userChoice) {
@@ -52,7 +52,7 @@ public class AuthUtils {
         String authHeader = request == null ? ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getHeader(HttpHeaders.AUTHORIZATION) : request.getHeader(HttpHeaders.AUTHORIZATION);
         boolean missingAuthHeader = authHeader == null || authHeader.isBlank() || !authHeader.startsWith("HangarApi");
         if (missingAuthHeader && requireHeader) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new HangarApiException(HttpStatus.UNAUTHORIZED);
         } else if (missingAuthHeader) {
             return new AuthCredentials(null, null);
         }
@@ -86,7 +86,7 @@ public class AuthUtils {
             } else if (sessionMatcher.find()) {
                 sessionKey = sessionMatcher.group();
             } else {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Authorization header format");
+                throw new HangarApiException(HttpStatus.UNAUTHORIZED, "Invalid Authorization header format");
             }
             return new AuthCredentials(apiKey, sessionKey);
         }

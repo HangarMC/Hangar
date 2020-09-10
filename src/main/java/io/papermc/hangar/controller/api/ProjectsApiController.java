@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller.api;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.ApiAuthInfo;
 import io.papermc.hangar.model.Category;
 import io.papermc.hangar.model.Permission;
@@ -20,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@ApiController
 @Controller
 public class ProjectsApiController implements ProjectsApi {
 
@@ -104,7 +105,7 @@ public class ProjectsApiController implements ProjectsApi {
         List<ProjectMember> projectMembers = projectApiService.getProjectMembers(pluginId, limit, offset);
         if (projectMembers == null || projectMembers.isEmpty()) { // TODO this will also happen when the offset is too high
             log.error("Couldn't find a project for that pluginId");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "Couldn't find a project for pluginId: " + pluginId);
         }
         return ResponseEntity.ok(projectMembers);
     }
@@ -117,7 +118,7 @@ public class ProjectsApiController implements ProjectsApi {
         Project project = projectApiService.getProject(pluginId, seeHidden, apiAuthInfo.getUserId());
         if (project == null) {
             log.error("Couldn't find a project for that pluginId");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "Couldn't find a project for pluginId: " + pluginId);
         }
         return ResponseEntity.ok(project);
     }
@@ -129,12 +130,12 @@ public class ProjectsApiController implements ProjectsApi {
         LocalDate from = ApiUtil.parseDate(fromDate);
         LocalDate to = ApiUtil.parseDate(toDate);
         if (from.isAfter(to)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "From date is after to date");
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "From date is after to date");
         }
         Map<String, ProjectStatsDay> projectStats = projectApiService.getProjectStats(pluginId, from, to);
         if (projectStats == null || projectStats.size() == 0) {
             log.error("Couldn't find a project for that pluginId");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "Couldn't find a project for pluginId: " + pluginId);
         }
         return ResponseEntity.ok(projectStats);
     }

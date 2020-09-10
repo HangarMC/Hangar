@@ -13,6 +13,7 @@ import io.papermc.hangar.db.dao.api.SessionsDao;
 import io.papermc.hangar.db.model.ApiKeysTable;
 import io.papermc.hangar.db.model.ApiSessionsTable;
 import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.ApiAuthInfo;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.Role;
@@ -156,7 +157,7 @@ public class AuthenticationService extends HangarService {
 
             return new ApiSessionResponse(apiSession.getToken(), apiSession.getExpires(), SessionType.DEV);
         } else {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new HangarApiException(HttpStatus.FORBIDDEN);
         }
     }
 
@@ -173,7 +174,7 @@ public class AuthenticationService extends HangarService {
                 throw AuthUtils.unAuth("No valid apikey parameter found in Authorization");
             }
             if (sessionExpiration == null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The requested expiration can't be used");
+                throw new HangarApiException(HttpStatus.BAD_REQUEST, "The requested expiration can't be used");
             }
             // I THINK that is how its setup, couldn't really figure it out via ore
             String identifier = credentials.getApiKey().split("\\.")[0];
@@ -186,7 +187,7 @@ public class AuthenticationService extends HangarService {
             sessionType = SessionType.KEY;
         } else {
             if (publicSessionExpiration == null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The requested expiration can't be used");
+                throw new HangarApiException(HttpStatus.BAD_REQUEST, "The requested expiration can't be used");
             }
             apiSession = new ApiSessionsTable(uuidToken, null, null, publicSessionExpiration);
             sessionType = SessionType.PUBLIC;

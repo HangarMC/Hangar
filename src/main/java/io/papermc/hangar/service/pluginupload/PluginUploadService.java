@@ -5,11 +5,13 @@ import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.model.ProjectChannelsTable;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.exceptions.HangarException;
+import io.papermc.hangar.service.VersionService;
+import io.papermc.hangar.service.plugindata.PluginDataService;
+import io.papermc.hangar.service.plugindata.PluginFileData;
 import io.papermc.hangar.service.plugindata.PluginFileWithData;
 import io.papermc.hangar.service.project.ChannelService;
 import io.papermc.hangar.util.StringUtils;
-import io.papermc.hangar.service.VersionService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import io.papermc.hangar.service.plugindata.PluginDataService;
-import io.papermc.hangar.service.plugindata.PluginFileData;
-import io.papermc.hangar.util.HangarException;
 
 @Service
 public class PluginUploadService {

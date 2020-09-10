@@ -1,6 +1,6 @@
 package io.papermc.hangar.security;
 
-import io.papermc.hangar.util.HangarException;
+import io.papermc.hangar.exceptions.HangarException;
 import io.papermc.hangar.util.Routes;
 import org.springframework.web.servlet.ModelAndView;
 

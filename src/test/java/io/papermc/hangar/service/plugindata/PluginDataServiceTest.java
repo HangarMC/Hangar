@@ -1,5 +1,9 @@
 package io.papermc.hangar.service.plugindata;
 
+import io.papermc.hangar.exceptions.HangarException;
+import io.papermc.hangar.service.plugindata.handler.PaperPluginFileHandler;
+import io.papermc.hangar.service.plugindata.handler.VelocityFileHandler;
+import io.papermc.hangar.service.plugindata.handler.WaterfallPluginFileHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +12,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.nio.file.Path;
 import java.util.List;
-
-import io.papermc.hangar.service.plugindata.handler.VelocityFileHandler;
-import io.papermc.hangar.service.plugindata.handler.WaterfallPluginFileHandler;
-import io.papermc.hangar.util.HangarException;
-import io.papermc.hangar.service.plugindata.handler.PaperPluginFileHandler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

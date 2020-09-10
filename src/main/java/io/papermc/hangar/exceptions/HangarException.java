@@ -1,4 +1,4 @@
-package io.papermc.hangar.util;
+package io.papermc.hangar.exceptions;
 
 public class HangarException extends RuntimeException {
 

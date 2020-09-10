@@ -1,4 +1,4 @@
-package io.papermc.hangar.util;
+package io.papermc.hangar.exceptions;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

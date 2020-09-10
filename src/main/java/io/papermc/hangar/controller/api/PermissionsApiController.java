@@ -1,7 +1,7 @@
 package io.papermc.hangar.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.ApiAuthInfo;
 import io.papermc.hangar.model.NamedPermission;
 import io.papermc.hangar.model.Permission;
@@ -16,12 +16,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.function.BiPredicate;
 
+@ApiController
 @Controller
 public class PermissionsApiController implements PermissionsApi {
 
@@ -65,7 +65,7 @@ public class PermissionsApiController implements PermissionsApi {
             Permission perms = permissionService.getOrganizationPermissions(apiAuthInfo.getUser(), organizationName);
             return new ImmutablePair<>(PermissionType.ORGANIZATION, perms);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "You must specify either a pluginId or an organizationName");
         }
     }
 

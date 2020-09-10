@@ -1,13 +1,14 @@
 package io.papermc.hangar.controller.api;
 
+import io.papermc.hangar.config.hangar.SsoConfig;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.SsoSyncData;
 import io.papermc.hangar.service.SsoService;
 import io.papermc.hangar.service.UserService;
-import io.papermc.hangar.config.hangar.SsoConfig;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.constraints.NotEmpty;
 import java.util.Map;
 
+@ApiController
 @Controller
 public class SsoApiController implements SsoApi {
 
@@ -35,7 +37,7 @@ public class SsoApiController implements SsoApi {
     public ResponseEntity<Void> syncSso(@NotEmpty String sso, @NotEmpty String sig, @RequestParam(name = "api_key") @NotEmpty String apiKey) {
         if (!apiKey.equals(ssoConfig.getApiKey())) {
             log.warn("SSO sync failed: bad API key (" + apiKey + " provided, " + ssoConfig.getApiKey() + " expected)");
-            return ResponseEntity.badRequest().build();
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "SSO sync failed: bad API key (" + apiKey + " provided, " + ssoConfig.getApiKey() + " expected)");
         }
 
         try {
@@ -46,7 +48,7 @@ public class SsoApiController implements SsoApi {
             return ResponseEntity.ok().build();
         } catch (SsoService.SignatureException e) {
             log.warn("SSO sync failed: invalid signature (" + sig + " for data " + sso + ")");
-            return ResponseEntity.badRequest().build();
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "SSO sync failed: invalid signature (" + sig + " for data " + sso + ")");
         }
     }
 }

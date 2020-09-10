@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller.api;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.ApiAuthInfo;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.generated.PaginatedCompactProjectResult;
@@ -17,10 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@ApiController
 @Controller
 public class UsersApiController implements UsersApi {
 
@@ -57,7 +58,7 @@ public class UsersApiController implements UsersApi {
         User userObj = userApiService.getUser(user);
         if (userObj == null) {
             log.error("Couldn't find a user with " + user + " name!");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "Couldn't find a user with " + user + " name!");
         }
         return ResponseEntity.ok(userObj);
     }

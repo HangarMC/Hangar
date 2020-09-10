@@ -2,12 +2,11 @@ package io.papermc.hangar.service.project;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.model.ProjectPagesTable;
-import io.papermc.hangar.util.StringUtils;
 import io.papermc.hangar.db.dao.ProjectPageDao;
+import io.papermc.hangar.db.model.ProjectPagesTable;
+import io.papermc.hangar.exceptions.HangarException;
 import io.papermc.hangar.model.viewhelpers.ProjectPage;
-import io.papermc.hangar.util.HangarException;
-
+import io.papermc.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;

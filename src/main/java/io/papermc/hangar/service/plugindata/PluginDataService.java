@@ -1,5 +1,7 @@
 package io.papermc.hangar.service.plugindata;
 
+import io.papermc.hangar.exceptions.HangarException;
+import io.papermc.hangar.service.plugindata.handler.FileTypeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +21,7 @@ import java.util.jar.JarInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import io.papermc.hangar.util.HangarException;
-import io.papermc.hangar.service.plugindata.handler.FileTypeHandler;
-
-import static io.papermc.hangar.service.plugindata.DataValue.*;
+import static io.papermc.hangar.service.plugindata.DataValue.UUIDDataValue;
 
 @Service
 public class PluginDataService {
