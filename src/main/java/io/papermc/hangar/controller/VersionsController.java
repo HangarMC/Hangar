@@ -193,6 +193,7 @@ public class VersionsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/new/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ModelAndView upload(@PathVariable String author, @PathVariable String slug, @RequestParam("pluginFile") MultipartFile file) {
+        ProjectData projData = projectData.get();
         String uploadError = projectFactory.getUploadError(getCurrentUser());
         if (uploadError != null) {
             if (file == null) {
@@ -207,7 +208,7 @@ public class VersionsController extends HangarController {
 
         PendingVersion pendingVersion;
         try {
-            pendingVersion = pluginUploadService.processSubsequentPluginUpload(file, projectData.get().getProjectOwner(), projectData.get().getProject());
+            pendingVersion = pluginUploadService.processSubsequentPluginUpload(file, projData.getProjectOwner(), projData.getProject());
         } catch (HangarException e) {
             ModelAndView mav = _showCreator(author, slug, null);
             AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, e.getMessageKey(), e.getArgs());
@@ -221,7 +222,7 @@ public class VersionsController extends HangarController {
     @Secured("ROLE_USER")
     @GetMapping("/{author}/{slug}/versions/new/{versionName}")
     public ModelAndView showCreatorWithMeta(@PathVariable String author, @PathVariable String slug, @PathVariable String versionName) {
-        PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(projectData.get().getProject().getId() + "/" + versionName, PendingVersion.class);
+        PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(projectsTable.get().getId() + "/" + versionName, PendingVersion.class);
 
         if (pendingVersion == null) {
             ModelAndView mav = _showCreator(author, slug, null);
@@ -233,15 +234,16 @@ public class VersionsController extends HangarController {
     }
 
     private ModelAndView _showCreator(String author, String slug, PendingVersion pendingVersion) {
+        ProjectData projData = projectData.get();
         ModelAndView mav = new ModelAndView("projects/versions/create");
-        mav.addObject("projectName", projectData.get().getProject().getName());
-        mav.addObject("pluginId", projectData.get().getProject().getPluginId());
+        mav.addObject("projectName", projData.getProject().getName());
+        mav.addObject("pluginId", projData.getProject().getPluginId());
         mav.addObject("projectSlug", slug);
         mav.addObject("ownerName", author);
-        mav.addObject("projectDescription", projectData.get().getProject().getDescription());
-        mav.addObject("forumSync", projectData.get().getProject().getForumSync());
+        mav.addObject("projectDescription", projData.getProject().getDescription());
+        mav.addObject("forumSync", projData.getProject().getForumSync());
         mav.addObject("pending", pendingVersion);
-        mav.addObject("channels", channelService.getProjectChannels(projectData.get().getProject().getId()));
+        mav.addObject("channels", channelService.getProjectChannels(projData.getProject().getId()));
         return fillModel(mav);
     }
 
@@ -284,14 +286,15 @@ public class VersionsController extends HangarController {
                                 @RequestParam(value = "forum-post", defaultValue = "false") boolean forumPost,
                                 @RequestParam(required = false) String content,
                                 RedirectAttributes attributes) {
+        ProjectData projData = projectData.get();
         Color channelColor = channelColorInput == null ? hangarConfig.channels.getColorDefault() : channelColorInput;
-        PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(projectData.get().getProject().getId() + "/" + versionName, PendingVersion.class);
+        PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(projData.getProject().getId() + "/" + versionName, PendingVersion.class);
         if (pendingVersion == null) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.plugin.timeout");
             return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
         }
 
-        List<ProjectChannelsTable> projectChannels = channelService.getProjectChannels(projectData.get().getProject().getId());
+        List<ProjectChannelsTable> projectChannels = channelService.getProjectChannels(projData.getProject().getId());
         String alertMsg = null;
         String[] alertArgs = new String[0];
         Optional<ProjectChannelsTable> channelOptional = projectChannels.stream().filter(ch -> ch.getName().equals(channelInput.trim())).findAny();
@@ -308,7 +311,7 @@ public class VersionsController extends HangarController {
                 AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, alertMsg, alertArgs);
                 return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
             }
-            channel = channelService.addProjectChannel(projectData.get().getProject().getId(), channelInput.trim(), channelColor);
+            channel = channelService.addProjectChannel(projData.getProject().getId(), channelInput.trim(), channelColor);
         } else {
             channel = channelOptional.get();
         }
@@ -327,22 +330,22 @@ public class VersionsController extends HangarController {
 
         ProjectVersionsTable version;
         try {
-            version = newPendingVersion.complete(request, projectData.get(), projectFactory);
+            version = newPendingVersion.complete(request, projData, projectFactory);
         } catch (HangarException e) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, e.getMessage(), e.getArgs());
             return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
         }
 
         if (recommended) {
-            projectData.get().getProject().setRecommendedVersionId(version.getId());
-            projectDao.get().update(projectData.get().getProject());
+            projData.getProject().setRecommendedVersionId(version.getId());
+            projectDao.get().update(projData.getProject());
         }
 
         if (unstable) {
             versionService.addUnstableTag(version.getId());
         }
 
-        userActionLogService.version(request, LoggedActionType.VERSION_UPLOADED.with(VersionContext.of(projectData.get().getProject().getId(), version.getId())), "published", "");
+        userActionLogService.version(request, LoggedActionType.VERSION_UPLOADED.with(VersionContext.of(projData.getProject().getId(), version.getId())), "published", "");
 
         return Routes.VERSIONS_SHOW.getRedirect(author, slug, versionName);
     }
@@ -392,7 +395,9 @@ public class VersionsController extends HangarController {
 
     @GetMapping("/{author}/{slug}/versions/{version}/confirm")
     public Object showDownloadConfirm(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(defaultValue = "0") DownloadType downloadType, @RequestParam Optional<Boolean> api, @RequestParam(required = false) String dummy) {
-        if (projectVersionsTable.get().getReviewState() == ReviewState.REVIEWED) {
+        ProjectVersionsTable versionsTable = projectVersionsTable.get();
+        ProjectsTable project = projectsTable.get();
+        if (versionsTable.getReviewState() == ReviewState.REVIEWED) {
             return AlertUtil.showAlert(Routes.PROJECTS_SHOW.getRedirect(author, slug), AlertType.ERROR, "error.plugin.stateChanged");
         }
         OffsetDateTime expiration = OffsetDateTime.now().plus(hangarConfig.projects.getUnsafeDownloadMaxAge().toMillis(), ChronoUnit.MILLIS);
@@ -400,7 +405,7 @@ public class VersionsController extends HangarController {
         String address = RequestUtil.getRemoteAddress(request);
 
         String apiMsgKey = "version.download.confirm.body.api";
-        if (projectVersionsTable.get().getReviewState() == ReviewState.PARTIALLY_REVIEWED) {
+        if (versionsTable.getReviewState() == ReviewState.PARTIALLY_REVIEWED) {
             apiMsgKey = "version.download.confirmPartial.api";
         }
         String apiMsg = messageSource.getMessage(apiMsgKey, null, LocaleContextHolder.getLocale());
@@ -419,7 +424,7 @@ public class VersionsController extends HangarController {
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("message", apiMsg);
             objectNode.put("post", Routes.VERSIONS_CONFIRM_DOWNLOAD.getRouteUrl(author, slug, version, downloadType.ordinal() + "", token, null));
-            objectNode.put("url", Routes.VERSIONS_DOWNLOAD_JAR_BY_ID.getRouteUrl(projectsTable.get().getPluginId(), projectVersionsTable.get().getVersionString(), token));
+            objectNode.put("url", Routes.VERSIONS_DOWNLOAD_JAR_BY_ID.getRouteUrl(project.getPluginId(), versionsTable.getVersionString(), token));
             objectNode.put("curl", curlInstruction);
             objectNode.put("token", token);
             return new ResponseEntity<>(objectNode.toPrettyString(), headers, HttpStatus.MULTIPLE_CHOICES);
@@ -431,11 +436,11 @@ public class VersionsController extends HangarController {
                 removeAddWarnings(address, expiration, token);
                 return new ResponseEntity<>(apiMsg + "\n" + curlInstruction + "\n", headers, HttpStatus.MULTIPLE_CHOICES);
             } else {
-                ProjectChannelsTable channelsTable = channelService.getVersionsChannel(projectVersionsTable.get().getProjectId(), projectVersionsTable.get().getId());
-                response.addCookie(new Cookie(ProjectVersionDownloadWarningsTable.cookieKey(projectVersionsTable.get().getId()), "set"));
+                ProjectChannelsTable channelsTable = channelService.getVersionsChannel(versionsTable.getProjectId(), versionsTable.getId());
+                response.addCookie(new Cookie(ProjectVersionDownloadWarningsTable.cookieKey(versionsTable.getId()), "set"));
                 ModelAndView mav = new ModelAndView("projects/versions/unsafeDownload");
-                mav.addObject("project", projectsTable.get());
-                mav.addObject("target", projectVersionsTable.get());
+                mav.addObject("project", project);
+                mav.addObject("target", versionsTable);
                 mav.addObject("isTargetChannelNonReviewed", channelsTable.getIsNonReviewed());
                 mav.addObject("downloadType", downloadType);
                 return fillModel(mav);
@@ -444,11 +449,12 @@ public class VersionsController extends HangarController {
     }
 
     private void removeAddWarnings(String address, OffsetDateTime expiration, String token) {
-        downloadWarningDao.get().deleteInvalid(address, projectVersionsTable.get().getId());
+        ProjectVersionsTable versionsTable = projectVersionsTable.get();
+        downloadWarningDao.get().deleteInvalid(address, versionsTable.getId());
         downloadWarningDao.get().insert(new ProjectVersionDownloadWarningsTable(
                 expiration,
                 token,
-                projectVersionsTable.get().getId(),
+                versionsTable.getId(),
                 RequestUtil.getRemoteInetAddress(request)
         ));
     }
@@ -506,16 +512,17 @@ public class VersionsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version}/delete", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView softDelete(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String comment, RedirectAttributes ra) {
+        VersionData vData = versionData.get();
         try {
-            projectFactory.prepareDeleteVersion(versionData.get());
+            projectFactory.prepareDeleteVersion(vData);
         } catch (HangarException e) {
             AlertUtil.showAlert(ra, AlertUtil.AlertType.ERROR, e.getMessage());
             return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
         }
 
-        Visibility oldVisibility = versionData.get().getV().getVisibility();
-        versionService.changeVisibility(versionData.get(), Visibility.SOFTDELETE, comment, getCurrentUser().getId());
-        userActionLogService.version(request, LoggedActionType.VERSION_DELETED.with(VersionContext.of(versionData.get().getP().getProject().getId(), versionData.get().getV().getId())), "SoftDelete: " + comment, oldVisibility.getName());
+        Visibility oldVisibility = vData.getV().getVisibility();
+        versionService.changeVisibility(vData, Visibility.SOFTDELETE, comment, getCurrentUser().getId());
+        userActionLogService.version(request, LoggedActionType.VERSION_DELETED.with(VersionContext.of(vData.getP().getProject().getId(), vData.getV().getId())), "SoftDelete: " + comment, oldVisibility.getName());
         return Routes.VERSIONS_SHOW_LIST.getRedirect(author, slug);
     }
 

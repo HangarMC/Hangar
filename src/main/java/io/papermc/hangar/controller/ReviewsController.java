@@ -10,7 +10,6 @@ import io.papermc.hangar.model.NamedPermission;
 import io.papermc.hangar.model.NotificationType;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.generated.ReviewState;
-import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.VersionData;
 import io.papermc.hangar.model.viewhelpers.VersionReview;
 import io.papermc.hangar.model.viewhelpers.VersionReviewMessage;
@@ -51,19 +50,19 @@ public class ReviewsController extends HangarController {
     private final UserActionLogService userActionLogService;
 
     private final HttpServletRequest request;
-    private final Supplier<ProjectData> projectData;
     private final Supplier<ProjectVersionsTable> projectVersionsTable;
+    private final Supplier<VersionData> versionData;
 
     @Autowired
-    public ReviewsController(ProjectService projectService, VersionService versionService, ReviewService reviewService, NotificationService notificationService, UserActionLogService userActionLogService, HttpServletRequest request, Supplier<Optional<UsersTable>> currentUser, Supplier<ProjectData> projectData, Supplier<ProjectVersionsTable> projectVersionsTable) {
+    public ReviewsController(ProjectService projectService, VersionService versionService, ReviewService reviewService, NotificationService notificationService, UserActionLogService userActionLogService, HttpServletRequest request, Supplier<Optional<UsersTable>> currentUser, Supplier<ProjectVersionsTable> projectVersionsTable, Supplier<VersionData> versionData) {
         this.projectService = projectService;
         this.versionService = versionService;
         this.reviewService = reviewService;
         this.notificationService = notificationService;
         this.userActionLogService = userActionLogService;
         this.request = request;
-        this.projectData = projectData;
         this.projectVersionsTable = projectVersionsTable;
+        this.versionData = versionData;
         this.currentUser = currentUser;
     }
 
@@ -72,10 +71,10 @@ public class ReviewsController extends HangarController {
     @GetMapping("/{author}/{slug}/versions/{version}/reviews")
     public ModelAndView showReviews(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
         ModelAndView mav = new ModelAndView("users/admin/reviews");
-        VersionData versionData = versionService.getVersionData(projectData.get(), projectVersionsTable.get());
-        mav.addObject("version", versionData);
-        mav.addObject("project", versionData.getP());
-        List<VersionReview> rv = reviewService.getRecentReviews(versionData.getV().getId());
+        VersionData vData = versionData.get();
+        mav.addObject("version", vData);
+        mav.addObject("project", vData.getP());
+        List<VersionReview> rv = reviewService.getRecentReviews(vData.getV().getId());
         mav.addObject("reviews", rv);
         ProjectVersionReviewsTable unfinished = rv.stream().filter(review -> review.getEndedAt() == null).findFirst().orElse(null);
         mav.addObject("mostRecentUnfinishedReview", unfinished);
@@ -86,8 +85,8 @@ public class ReviewsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version}/reviews/addmessage", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<String> addMessage(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String content) {
-        UsersTable curUser = currentUser.get().orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
-        ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
+        UsersTable curUser = getCurrentUser();
+        ProjectVersionsTable versionsTable = projectVersionsTable.get();
         VersionReview recentReview = reviewService.getMostRecentUnfinishedReview(versionsTable.getId());
         if (recentReview == null) {
             return new ResponseEntity<>("Review", HttpStatus.OK);
@@ -104,7 +103,7 @@ public class ReviewsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/reviews/approve")
     public ModelAndView approveReview(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
-        ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
+        ProjectVersionsTable versionsTable = projectVersionsTable.get();
         VersionReview review = reviewService.getMostRecentUnfinishedReview(versionsTable.getId());
         if (review == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -125,7 +124,6 @@ public class ReviewsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/reviews/edit/{review}") // Pretty sure this isn't implemented
     public ResponseEntity<String> editReview(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @PathVariable("review") long reviewId, @RequestParam String content) {
-        ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
         VersionReview review = reviewService.getById(reviewId);
         if (review == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -138,7 +136,7 @@ public class ReviewsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/reviews/init")
     public ModelAndView createReview(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
-        ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
+        ProjectVersionsTable versionsTable = projectVersionsTable.get();
         ProjectVersionReviewsTable review = new ProjectVersionReviewsTable(
                 versionsTable.getId(),
                 getCurrentUser().getId(),
@@ -152,7 +150,7 @@ public class ReviewsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/reviews/reopen")
     public ModelAndView reopenReview(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
-        ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
+        ProjectVersionsTable versionsTable = projectVersionsTable.get();
         VersionReview review = reviewService.getRecentReviews(versionsTable.getId()).stream().findFirst().orElse(null);
         if (review == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -172,7 +170,7 @@ public class ReviewsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/reviews/reviewtoggle")
     public ModelAndView backlogToggle(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
-        ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
+        ProjectVersionsTable versionsTable = projectVersionsTable.get();
         if (versionsTable.getReviewState() != ReviewState.BACKLOG && versionsTable.getReviewState() != ReviewState.UNREVIEWED) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid state for toggle backlog");
         }
@@ -189,7 +187,7 @@ public class ReviewsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/versions/{version}/reviews/stop", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView stopReview(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String content) {
-        ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
+        ProjectVersionsTable versionsTable = projectVersionsTable.get();
         VersionReview review = reviewService.getMostRecentUnfinishedReview(versionsTable.getId());
         if (review == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -204,7 +202,7 @@ public class ReviewsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/versions/{version}/reviews/takeover")
     public ModelAndView takeoverReview(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String content) {
-        ProjectVersionsTable versionsTable = versionService.getVersion(author, slug, version);
+        ProjectVersionsTable versionsTable = projectVersionsTable.get();
         VersionReview oldReview = reviewService.getMostRecentUnfinishedReview(versionsTable.getId());
         if (oldReview == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);

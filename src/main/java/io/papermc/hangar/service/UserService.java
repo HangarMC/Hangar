@@ -29,6 +29,7 @@ import io.papermc.hangar.model.viewhelpers.UserData;
 import io.papermc.hangar.model.viewhelpers.UserRole;
 import io.papermc.hangar.security.HangarAuthentication;
 import io.papermc.hangar.service.sso.AuthUser;
+import io.papermc.hangar.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -108,6 +109,21 @@ public class UserService extends HangarService {
             return Optional::empty;
         }
 
+    }
+
+    @Bean
+    @RequestScope
+    public Supplier<UsersTable> usersTable() {
+        Map<String, String> pathParams = RequestUtil.getPathParams(request);
+        if (pathParams.containsKey("user")) {
+            UsersTable user = userDao.get().getByName(pathParams.get("user"));
+            if (user == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+            return () -> user;
+        } else {
+            return () -> null;
+        }
     }
 
     public HeaderData getHeaderData() {

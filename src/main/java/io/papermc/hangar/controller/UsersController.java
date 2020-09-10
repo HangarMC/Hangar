@@ -56,6 +56,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @Controller
 public class UsersController extends HangarController {
@@ -76,10 +77,11 @@ public class UsersController extends HangarController {
 
     private final HttpServletRequest request;
     private final HttpServletResponse response;
+    private final Supplier<UsersTable> usersTable;
 
 
     @Autowired
-    public UsersController(HangarConfig hangarConfig, AuthenticationService authenticationService, UserService userService, OrgService orgService, RoleService roleService, ApiKeyService apiKeyService, PermissionService permissionService, SessionService sessionService, NotificationService notificationService, SsoService ssoService, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, SitemapService sitemapService, HttpServletRequest request, HttpServletResponse response) {
+    public UsersController(HangarConfig hangarConfig, AuthenticationService authenticationService, UserService userService, OrgService orgService, RoleService roleService, ApiKeyService apiKeyService, PermissionService permissionService, SessionService sessionService, NotificationService notificationService, SsoService ssoService, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, SitemapService sitemapService, HttpServletRequest request, HttpServletResponse response, Supplier<UsersTable> usersTable) {
         this.hangarConfig = hangarConfig;
         this.authenticationService = authenticationService;
         this.userService = userService;
@@ -95,6 +97,7 @@ public class UsersController extends HangarController {
         this.sitemapService = sitemapService;
         this.request = request;
         this.response = response;
+        this.usersTable = usersTable;
     }
 
     @GetMapping("/authors")
@@ -283,28 +286,24 @@ public class UsersController extends HangarController {
     @GlobalPermission(NamedPermission.EDIT_OWN_USER_SETTINGS)
     @Secured("ROLE_USER")
     @PostMapping(value = "/{user}/settings/tagline")
-    public ModelAndView saveTagline(@PathVariable String user, @RequestParam("tagline") String tagline) {
+    public ModelAndView saveTagline(@PathVariable("user") String username, @RequestParam("tagline") String tagline) {
         if (tagline.length() > hangarConfig.user.getMaxTaglineLen()) {
-            ModelAndView mav = showProjects(user);
+            ModelAndView mav = showProjects(username);
             AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, "error.tagline.tooLong", String.valueOf(hangarConfig.user.getMaxTaglineLen()));
-            return Routes.USERS_SHOW_PROJECTS.getRedirect(user);
+            return Routes.USERS_SHOW_PROJECTS.getRedirect(username);
         }
-        UsersTable usersTable = userDao.get().getByName(user);
-        userActionLogService.user(request, LoggedActionType.USER_TAGLINE_CHANGED.with(LoggedActionType.UserContext.of(usersTable.getId())), tagline, Optional.ofNullable(usersTable.getTagline()).orElse(""));
-        usersTable.setTagline(tagline);
-        userDao.get().update(usersTable);
-        return Routes.USERS_SHOW_PROJECTS.getRedirect(user);
+        UsersTable user = usersTable.get();
+        userActionLogService.user(request, LoggedActionType.USER_TAGLINE_CHANGED.with(LoggedActionType.UserContext.of(user.getId())), tagline, Optional.ofNullable(user.getTagline()).orElse(""));
+        user.setTagline(tagline);
+        userDao.get().update(user);
+        return Routes.USERS_SHOW_PROJECTS.getRedirect(username);
     }
 
     @GetMapping(value = "/{user}/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
     @ResponseBody
-    public String userSitemap(@PathVariable String user) {
-        UsersTable usersTable = userDao.get().getByName(user);
-        if (usersTable == null) {
-            response.setStatus(404);
-            return null;
-        }
-        return sitemapService.getUserSitemap(usersTable);
+    public String userSitemap(@PathVariable("user") String username) {
+        UsersTable user = usersTable.get();
+        return sitemapService.getUserSitemap(user);
     }
 
 }
