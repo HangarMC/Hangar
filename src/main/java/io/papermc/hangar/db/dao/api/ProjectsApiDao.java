@@ -52,12 +52,12 @@ public interface ProjectsApiDao {
             "       ps.forum_sync" +
             "  FROM home_projects p" +
             "         JOIN projects ps ON p.id = ps.id" +
-            "         WHERE true " + //Not sure how else to get here a single Where
+            "         WHERE true " + // Not sure how else to get here a single Where
             "         <if(pluginId)> AND (p.plugin_id = :pluginId) <endif> " +
             "         <if(owner)> AND (p.owner_name = :owner) <endif> " +
             "         <if(!seeHidden)> AND (p.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(p.project_members) AND p.visibility != 4)<endif>) <endif> " +
             "         <if(categories)> AND (p.category in (<categories>)) <endif> " +
-            "         <if(query)> AND ( :queryStatement ) <endif> " +
+            "         <if(query)> AND ( <queryStatement> ) <endif> " + // This needs to be in <> because template engine needs to modify the query text
             "         <if(tags)> AND EXISTS ( SELECT pv.tag_name FROM jsonb_to_recordset(p.promoted_versions) " +
             "           AS pv(tag_name TEXT, tag_version TEXT) WHERE (pv.tag_name) in (<tags>) ) <endif> " +
             "         <if(orderBy)>ORDER BY :orderBy<endif> " +
@@ -68,52 +68,26 @@ public interface ProjectsApiDao {
     List<Project> listProjects(String pluginId, String owner, @Define boolean seeHidden, Long requesterId, String orderBy,
                                @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<Integer> categories,
                                @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<String> tags, //TODO: implement tags with mc_version('data')
-                               @Define String query, String queryStatement, long limit, long offset);
+                               @Define String query, @Define String queryStatement, long limit, long offset);
 
+    // This query can be shorter because it doesnt need all those column values as above does, just a single column for the amount of rows to be counted
     @UseStringTemplateEngine
-    @SqlQuery("SELECT COUNT(*) FROM ( SELECT p.created_at," +
-            "       p.plugin_id," +
-            "       p.name," +
-            "       p.owner_name," +
-            "       p.slug," +
-            "       p.promoted_versions," +
-            "       p.views," +
-            "       p.downloads," +
-            "       p.recent_views," +
-            "       p.recent_downloads," +
-            "       p.stars," +
-            "       p.watchers," +
-            "       p.category," +
-            "       p.description," +
-            "       COALESCE(p.last_updated, p.created_at) AS last_updated," +
-            "       p.visibility, " +
-            "       <if(requesterId)> " +
-            "         EXISTS(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS user_stared, " +
-            "         EXISTS(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS user_watching, " +
-            "       <endif> " +
-            "       ps.homepage," +
-            "       ps.issues," +
-            "       ps.source," +
-            "       ps.support," +
-            "       ps.license_name," +
-            "       ps.license_url," +
-            "       ps.forum_sync" +
+    @SqlQuery("SELECT COUNT(p.plugin_id) " +
             "  FROM home_projects p" +
             "         JOIN projects ps ON p.id = ps.id" +
-            "         WHERE true " + //Not sure how else to get here a single Where
+            "         WHERE true " + // Not sure how else to get here a single Where
             "         <if(pluginId)> AND (p.plugin_id = :pluginId) <endif> " +
             "         <if(owner)> AND (p.owner_name = :owner) <endif> " +
-            "         <if(!seeHidden)> AND (p.visibility = 1 OR (:requesterId = ANY(p.project_members) AND p.visibility != 5)) <endif> " +
+            "         <if(!seeHidden)> AND (p.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(p.project_members) AND p.visibility != 4)<endif>) <endif> " +
             "         <if(categories)> AND (p.category in (<categories>)) <endif> " +
-            "         <if(query)> AND ( <queryStatement> ) <endif> " +
+            "         <if(query)> AND ( <queryStatement> ) <endif> " + // This needs to be in <> because template engine needs to modify the query text
             "         <if(tags)> AND EXISTS ( SELECT pv.tag_name FROM jsonb_to_recordset(p.promoted_versions) " +
-            "           AS pv(tag_name TEXT, tag_version TEXT) WHERE (pv.tag_name) in (<tags>) ) <endif> " +
-            "         ) sq")
+            "           AS pv(tag_name TEXT, tag_version TEXT) WHERE (pv.tag_name) in (<tags>) ) <endif> ")
     @DefineNamedBindings
-    long countProjects(String pluginId, String owner, @Define boolean seeHidden, Long requesterId,
+    long countProjects(@Define String pluginId, @Define String owner, @Define boolean seeHidden, @Define Long requesterId,
                        @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<Integer> categories,
                        @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<String> tags, //TODO: implement tags with mc_version('data')
-                       String query, @Define String queryStatement);
+                       @Define String query, @Define String queryStatement);
 
     @RegisterBeanMapper(ProjectMember.class)
     @SqlQuery("SELECT u.name AS user, array_agg(r.name) roles " +
