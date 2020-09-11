@@ -27,9 +27,10 @@ public class PendingVersion {
     private final String channelName;
     private final Color channelColor;
     private final PluginFileWithData plugin;
+    private final String externalUrl;
     private final boolean createForumPost;
 
-    public PendingVersion(String versionString, List<Dependency> dependencies, String description, long projectId, long fileSize, String hash, String fileName, long authorId, String channelName, Color channelColor, PluginFileWithData plugin, boolean createForumPost) {
+    public PendingVersion(String versionString, List<Dependency> dependencies, String description, long projectId, long fileSize, String hash, String fileName, long authorId, String channelName, Color channelColor, PluginFileWithData plugin, String externalUrl, boolean createForumPost) {
         this.versionString = versionString;
         this.dependencies = dependencies;
         this.description = description;
@@ -41,6 +42,7 @@ public class PendingVersion {
         this.channelName = channelName;
         this.channelColor = channelColor;
         this.plugin = plugin;
+        this.externalUrl = externalUrl;
         this.createForumPost = createForumPost;
     }
 
@@ -88,6 +90,10 @@ public class PendingVersion {
         return plugin;
     }
 
+    public String getExternalUrl() {
+        return externalUrl;
+    }
+
     public boolean isCreateForumPost() {
         return createForumPost;
     }
@@ -111,7 +117,7 @@ public class PendingVersion {
                 channelName,
                 channelColor,
                 plugin,
-                createForumPost
+                externalUrl, createForumPost
         );
     }
 

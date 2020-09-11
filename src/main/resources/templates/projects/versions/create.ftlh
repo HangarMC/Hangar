@@ -149,14 +149,22 @@
                     </#if>
 
                     <@form.form action=Routes.VERSIONS_UPLOAD.getRouteUrl(ownerName, projectSlug) method="POST"
-                        enctype="multipart/form-data" id="form-upload">
+                        enctype="multipart/form-data" id="form-upload" class="form-inline">
                         <@csrf.formField />
-                            <label class="btn btn-default float-left" for="pluginFile">
+                            <label class="btn btn-info float-left" for="pluginFile">
                                 <input id="pluginFile" name="pluginFile" type="file" style="display: none;" accept=".jar,.zip">
                                 <@spring.message "version.create.selectFile" />
                             </label>
 
                             <@alertFile.alertFile />
+                    </@form.form>
+
+                    <@form.form action=Routes.VERSIONS_CREATE_EXTERNAL_URL.getRouteUrl(ownerName, projectSlug) method="POST" id="form-url-upload" class="form-inline">
+                        <@csrf.formField />
+                        <div class="form-group pull-right" style="width: 50%">
+                            <input type="text" class="form-control" id="externalUrl" name="externalUrl" placeholder="<@spring.message "version.create.externalUrl" />" style="width: 70%">
+                            <button class="btn btn-info" type="submit">Create Version</button>
+                        </div>
                     </@form.form>
 
                     <#if pending??>

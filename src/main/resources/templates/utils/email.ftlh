@@ -2,10 +2,9 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
-@import controllers.sugar.Requests.OreRequest
-@import ore.OreConfig
-@(title: String, recipient: String, body: String)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
-
+<#-- @ftlvariable name="title" type="java.lang.String" -->
+<#-- @ftlvariable name="recipient" type="java.lang.String" -->
+<#-- @ftlvariable name="body" type="java.lang.String" -->
 <#assign message><@spring.message title /></#assign>
 <@base.base title=message scriptsEnabled=false showHeader=false showFooter=false>
     <div class="container">

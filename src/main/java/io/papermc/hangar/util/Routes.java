@@ -78,6 +78,7 @@ public enum Routes {
     VERSIONS_DOWNLOAD_JAR_BY_ID("versions.downloadJarById", "/api/project/{pluginId}/versions/{name}/download", of("pluginId", "name"), of("token")),
     VERSIONS_DOWNLOAD_RECOMMENDED_JAR_BY_ID("versions.downloadRecommendedJarById", "/api/project/{pluginId}/versions/recommended/download", of("pluginId"), of("token")),
     VERSIONS_UPLOAD("versions.upload", "/{author}/{slug}/versions/new/upload", of("author", "slug"), of()),
+    VERSIONS_CREATE_EXTERNAL_URL("versions.createExternalUrl", "/{author}/{slug}/versions/new/create", of("author", "slug"), of()),
     VERSIONS_SOFT_DELETE("versions.softDelete", "/{author}/{slug}/versions/{version}/delete", of("author", "slug", "version"), of()),
     VERSIONS_SHOW_DOWNLOAD_CONFIRM("versions.showDownloadConfirm", "/{author}/{slug}/versions/{version}/confirm", of("author", "slug", "version"), of("downloadType", "api", "dummy")),
     VERSIONS_SHOW_CREATOR("versions.showCreator", "/{author}/{slug}/versions/new", of("author", "slug"), of()),

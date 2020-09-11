@@ -77,6 +77,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 @Controller
 public class VersionsController extends HangarController {
@@ -215,6 +216,33 @@ public class VersionsController extends HangarController {
             return fillModel(mav);
         }
         return _showCreator(author, slug, pendingVersion);
+    }
+
+    private final Pattern URL_PATTERN = Pattern.compile("^https?://[^\\s$.?#].[^\\s]*$");
+
+    @ProjectPermission(NamedPermission.CREATE_VERSION)
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
+    @Secured("ROLE_USER")
+    @PostMapping(value = "/{author}/{slug}/versions/new/create", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ModelAndView create(@PathVariable String author, @PathVariable String slug, @RequestParam String externalUrl) {
+        ProjectData projData = projectData.get();
+        if (!URL_PATTERN.matcher(externalUrl).matches()) { // TODO check list of allowed hosts
+            ModelAndView mav = _showCreator(author, slug, null);
+            return fillModel(AlertUtil.showAlert(mav, AlertType.ERROR, "error.invalidUrl"));
+        }
+
+        PendingVersion pendingVersion = new PendingVersion(
+                null,
+                null,
+                null,
+                projData.getProject().getId(),
+                0,
+                null,
+                null,
+
+        )
+
+        return null; // TODO
     }
 
     @ProjectPermission(NamedPermission.CREATE_VERSION)

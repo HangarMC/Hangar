@@ -5,20 +5,6 @@
 <#import "*/projects/view.ftlh" as projects />
 <#import "*/utils/editor.ftlh" as editor />
 
-<#--
-@import controllers.sugar.Requests.OreRequest
-@import models.viewhelper.{ScopedProjectData, VersionData}
-@import ore.OreConfig
-@import ore.data.Platform
-@import ore.markdown.MarkdownRenderer
-@import ore.models.project.{ReviewState, Visibility}
-@import ore.permission.Permission
-@import util.StringFormatterUtils._
-@import util.syntax._
-@import views.html.helper.{CSRF, form}
-@import views.html.utils.editor
-@(v: VersionData, sp: ScopedProjectData)(implicit messages: Messages, request: OreRequest[_], flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)-->
-
 <#assign ReviewState=@helper["io.papermc.hangar.model.generated.ReviewState"] />
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"] />
 <#assign Visibility=@helper["io.papermc.hangar.model.Visibility"] />

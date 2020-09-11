@@ -27,6 +27,7 @@ public class ProjectVersionsTable {
     private ReviewState reviewState = ReviewState.UNREVIEWED;
     private boolean createForumPost = true;
     private Long postId;
+    private String externalUrl;
 
     public ProjectVersionsTable(String versionString, List<String> dependencies, String description, long projectId, long channelId, long fileSize, String hash, String fileName, long authorId, boolean createForumPost) {
         this.versionString = versionString;
@@ -197,6 +198,15 @@ public class ProjectVersionsTable {
 
     public void setPostId(Long postId) {
         this.postId = postId;
+    }
+
+
+    public String getExternalUrl() {
+        return externalUrl;
+    }
+
+    public void setExternalUrl(String externalUrl) {
+        this.externalUrl = externalUrl;
     }
 
     @Override
