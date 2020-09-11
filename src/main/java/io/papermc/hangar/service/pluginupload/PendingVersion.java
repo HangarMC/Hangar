@@ -8,9 +8,11 @@ import io.papermc.hangar.model.generated.Dependency;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.service.plugindata.PluginFileWithData;
 import io.papermc.hangar.service.project.ProjectFactory;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 public class PendingVersion {
 
@@ -90,11 +92,13 @@ public class PendingVersion {
         return createForumPost;
     }
 
-    public List<ProjectVersionTagsTable> getDependenciesAsGhostTags() {
+    public List<Pair<Platform, ProjectVersionTagsTable>> getDependenciesAsGhostTags() {
         return Platform.getGhostTags(-1L, dependencies);
     }
 
-    public PendingVersion copy(String channelName, Color channelColor, boolean createForumPost, String description) {
+    public PendingVersion copy(String channelName, Color channelColor, boolean createForumPost, String description, List<String> versions) {
+        Optional<Dependency> optional = dependencies.stream().filter(d -> d.getPluginId().equals(plugin.getPlatform().getDependencyId())).findAny();
+        optional.ifPresent(dependency -> dependency.setVersion(String.join(",", versions))); // Should always be present, if not, there are other problems
         return new PendingVersion(
                 versionString,
                 dependencies,

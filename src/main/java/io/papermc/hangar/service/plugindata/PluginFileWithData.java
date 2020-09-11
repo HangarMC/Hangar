@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.plugindata;
 
+import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.util.CryptoUtils;
 
 import java.io.IOException;
@@ -10,11 +11,13 @@ public class PluginFileWithData {
     private final Path path;
     private final PluginFileData data;
     private final long userId;
+    private final Platform platform;
 
-    public PluginFileWithData(Path path, PluginFileData data, long userId) {
+    public PluginFileWithData(Path path, PluginFileData data, long userId, Platform platform) {
         this.path = path;
         this.data = data;
         this.userId = userId;
+        this.platform = platform;
     }
 
     public Path getPath() {
@@ -27,6 +30,10 @@ public class PluginFileWithData {
 
     public long getUserId() {
         return userId;
+    }
+
+    public Platform getPlatform() {
+        return platform;
     }
 
     public String getMd5() {

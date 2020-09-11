@@ -3,6 +3,8 @@ package io.papermc.hangar.model;
 import io.papermc.hangar.db.model.ProjectVersionTagsTable;
 import io.papermc.hangar.model.generated.Dependency;
 import io.papermc.hangar.service.VersionService;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -15,9 +17,9 @@ import java.util.stream.Collectors;
 
 public enum Platform {
 
-    PAPER("Paper", PlatformCategory.SERVER_CATEGORY, 0, "paperapi", TagColor.PAPER, "https://papermc.io/downloads"),
-    WATERFALL("Waterfall", PlatformCategory.PROXY_CATEGORY, 1, "waterfall", TagColor.WATERFALL, "https://papermc.io/downloads#Waterfall"),
-    VELOCITY("Velocity", PlatformCategory.PROXY_CATEGORY, 1, "velocity", TagColor.VELOCITY, "https://www.velocitypowered.com/downloads");
+    PAPER("Paper", PlatformCategory.SERVER_CATEGORY, 0, "paperapi", TagColor.PAPER, "https://papermc.io/downloads", List.of("1.8", "1.9", "1.10", "1.11", "1.12", "1.13", "1.14", "1.15", "1.16")),
+    WATERFALL("Waterfall", PlatformCategory.PROXY_CATEGORY, 1, "waterfall", TagColor.WATERFALL, "https://papermc.io/downloads#Waterfall", List.of()),
+    VELOCITY("Velocity", PlatformCategory.PROXY_CATEGORY, 1, "velocity", TagColor.VELOCITY, "https://www.velocitypowered.com/downloads", List.of());
 
     private static final Map<String, Platform> PLATFORMS_BY_DEPENDENDY = new HashMap<>();
 
@@ -33,14 +35,16 @@ public enum Platform {
     private final String dependencyId;
     private final TagColor tagColor;
     private final String url;
+    private final List<String> possibleVersions;
 
-    Platform(String name, PlatformCategory platformCategory, int priority, String dependencyId, TagColor tagColor, String url) {
+    Platform(String name, PlatformCategory platformCategory, int priority, String dependencyId, TagColor tagColor, String url, List<String> possibleVersions) {
         this.name = name;
         this.platformCategory = platformCategory;
         this.priority = priority;
         this.dependencyId = dependencyId;
         this.tagColor = tagColor;
         this.url = url;
+        this.possibleVersions = possibleVersions;
     }
 
     public String getName() {
@@ -65,6 +69,10 @@ public enum Platform {
 
     public String getUrl() {
         return url;
+    }
+
+    public List<String> getPossibleVersions() {
+        return possibleVersions;
     }
 
     public ProjectVersionTagsTable createGhostTag(long versionId, String version) {
@@ -94,23 +102,24 @@ public enum Platform {
                 .collect(Collectors.toList());
     }
 
-    public static List<ProjectVersionTagsTable> getGhostTags(long versionId, List<Dependency> dependencies) {
+    public static List<Pair<Platform, ProjectVersionTagsTable>> getGhostTags(long versionId, List<Dependency> dependencies) {
         return getPlatforms(
                 dependencies
-                        .stream()
-                        .map(Dependency::getPluginId)
-                        .collect(Collectors.toList())
-        ).stream()
-                .map(p -> p.createGhostTag(
+                .stream()
+                .map(Dependency::getPluginId)
+                .collect(Collectors.toList())
+        ).stream().map(p -> new ImmutablePair<>(
+                p,
+                p.createGhostTag(
                         versionId,
                         dependencies
-                                .stream()
-                                .filter(d -> d.getPluginId().equals(p.dependencyId))
-                                .findFirst()
-                                .get()
-                                .getVersion()
-                ))
-                .collect(Collectors.toList());
+                        .stream()
+                        .filter(d -> d.getPluginId().equalsIgnoreCase(p.dependencyId))
+                        .findFirst()
+                        .get()
+                        .getVersion()
+                )
+        )).collect(Collectors.toList());
     }
 
     @Nullable
@@ -119,7 +128,7 @@ public enum Platform {
     }
 
     public static List<ProjectVersionTagsTable> createPlatformTags(VersionService versionService, long versionId, List<Dependency> dependencies) {
-        return versionService.insertTags(getGhostTags(versionId, dependencies));
+        return versionService.insertTags(getGhostTags(versionId, dependencies).stream().map(Pair::getRight).collect(Collectors.toList()));
     }
 
     public enum PlatformCategory {

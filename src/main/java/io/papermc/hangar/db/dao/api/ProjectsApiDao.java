@@ -66,7 +66,6 @@ public interface ProjectsApiDao {
             "         OFFSET :offset")
     @RegisterColumnMapper(PromotedVersionMapper.class)
     @DefineNamedBindings
-    @AllowUnusedBindings
     List<Project> listProjects(String pluginId, String owner, @Define boolean seeHidden, Long requesterId, String orderBy,
                                @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<Integer> categories,
                                @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<String> tags, //TODO: implement tags with mc_version('data')

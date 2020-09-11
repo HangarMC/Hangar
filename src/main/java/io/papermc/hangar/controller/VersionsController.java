@@ -285,12 +285,17 @@ public class VersionsController extends HangarController {
                                 @RequestParam(value = "non-reviewed", defaultValue = "false") boolean nonReviewed,
                                 @RequestParam(value = "forum-post", defaultValue = "false") boolean forumPost,
                                 @RequestParam(required = false) String content,
+                                @RequestParam List<String> versions,
                                 RedirectAttributes attributes) {
         ProjectData projData = projectData.get();
         Color channelColor = channelColorInput == null ? hangarConfig.channels.getColorDefault() : channelColorInput;
         PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(projData.getProject().getId() + "/" + versionName, PendingVersion.class);
         if (pendingVersion == null) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.plugin.timeout");
+            return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
+        }
+        if (versions.stream().anyMatch(s -> !pendingVersion.getPlugin().getPlatform().getPossibleVersions().contains(s))) {
+            AlertUtil.showAlert(attributes, AlertType.ERROR, "error.plugin.invalidVersion");
             return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
         }
 
@@ -320,7 +325,8 @@ public class VersionsController extends HangarController {
                 channel.getName(),
                 channel.getColor(),
                 forumPost,
-                content
+                content,
+                versions
         );
 
         if (versionService.exists(newPendingVersion)) {
