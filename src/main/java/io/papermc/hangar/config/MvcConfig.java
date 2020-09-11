@@ -1,7 +1,6 @@
 package io.papermc.hangar.config;
 
 import freemarker.template.TemplateException;
-import io.papermc.hangar.controller.converters.CategoryConverter;
 import io.papermc.hangar.controller.converters.ColorHexConverter;
 import io.papermc.hangar.controller.converters.StringToEnumConverterFactory;
 import io.papermc.hangar.security.UserLockExceptionResolver;
@@ -111,7 +110,6 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new CategoryConverter());
         registry.addConverterFactory(new StringToEnumConverterFactory());
         registry.addConverter(new ColorHexConverter());
     }
