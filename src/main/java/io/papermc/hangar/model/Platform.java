@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public enum Platform {
 
     PAPER("Paper", PlatformCategory.SERVER_CATEGORY, 0, "paperapi", TagColor.PAPER, "https://papermc.io/downloads", List.of("1.8", "1.9", "1.10", "1.11", "1.12", "1.13", "1.14", "1.15", "1.16")),
-    WATERFALL("Waterfall", PlatformCategory.PROXY_CATEGORY, 1, "waterfall", TagColor.WATERFALL, "https://papermc.io/downloads#Waterfall", List.of()),
+    WATERFALL("Waterfall", PlatformCategory.PROXY_CATEGORY, 1, "waterfall", TagColor.WATERFALL, "https://papermc.io/downloads#Waterfall", List.of("1.11", "1.12", "1.13", "1.14", "1.15", "1.16", "1.17")),
     VELOCITY("Velocity", PlatformCategory.PROXY_CATEGORY, 1, "velocity", TagColor.VELOCITY, "https://www.velocitypowered.com/downloads", List.of());
 
     private static final Map<String, Platform> PLATFORMS_BY_DEPENDENDY = new HashMap<>();
