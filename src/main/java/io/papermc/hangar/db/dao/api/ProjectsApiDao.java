@@ -7,6 +7,7 @@ import io.papermc.hangar.model.generated.ProjectStatsDay;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
+import org.jdbi.v3.sqlobject.customizer.AllowUnusedBindings;
 import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.customizer.DefineNamedBindings;
@@ -65,6 +66,7 @@ public interface ProjectsApiDao {
             "         OFFSET :offset")
     @RegisterColumnMapper(PromotedVersionMapper.class)
     @DefineNamedBindings
+    @AllowUnusedBindings
     List<Project> listProjects(String pluginId, String owner, @Define boolean seeHidden, Long requesterId, String orderBy,
                                @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<Integer> categories,
                                @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<String> tags, //TODO: implement tags with mc_version('data')
@@ -84,7 +86,8 @@ public interface ProjectsApiDao {
             "         <if(tags)> AND EXISTS ( SELECT pv.tag_name FROM jsonb_to_recordset(p.promoted_versions) " +
             "           AS pv(tag_name TEXT, tag_version TEXT) WHERE (pv.tag_name) in (<tags>) ) <endif> ")
     @DefineNamedBindings
-    long countProjects(@Define String pluginId, @Define String owner, @Define boolean seeHidden, @Define Long requesterId,
+    @AllowUnusedBindings
+    long countProjects(String pluginId, String owner, @Define boolean seeHidden, Long requesterId,
                        @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<Integer> categories,
                        @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<String> tags, //TODO: implement tags with mc_version('data')
                        @Define String query, @Define String queryStatement);
