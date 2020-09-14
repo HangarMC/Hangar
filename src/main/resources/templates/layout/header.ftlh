@@ -179,7 +179,7 @@
                                 <#if headerData.globalPerm(Permission.ManualValueChanges)>
                                     <li>
                                         <a href="${Routes.SHOW_PLATFORM_VERSIONS.getRouteUrl()}">
-                                            <i class="fas fa-list mr-1"></i>
+                                            <i class="fas fa-tags mr-1"></i>
                                             <span><@spring.message "admin.platformVersions.title" /></span>
                                         </a>
                                     </li>
