@@ -1,0 +1,1 @@
+ALTER TABLE platform_versions ADD CONSTRAINT platform_version_unique UNIQUE (platform, version);
