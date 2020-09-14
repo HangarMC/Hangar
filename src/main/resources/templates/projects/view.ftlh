@@ -8,6 +8,7 @@ Base template for Project overview.
 <#assign Visibility=@helper["io.papermc.hangar.model.Visibility"]>
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
 <#assign FlagReason=@helper["io.papermc.hangar.model.FlagReason"]>
+<#-- @ftlvariable name="FlagReason" type="io.papermc.hangar.model.FlagReason" -->
 <#macro view p sp active noButtons=false additionalScripts="" additionalStyling="">
 <#-- @ftlvariable name="p" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
 <#-- @ftlvariable name="sp" type="io.papermc.hangar.model.viewhelpers.ScopedProjectData" -->
@@ -133,7 +134,7 @@ Base template for Project overview.
                                                 <@csrf.formField />
                                                 <div class="modal-body">
                                                     <ul class="list-group list-flags">
-                                                        <#list FlagReason.values() as reason>
+                                                        <#list FlagReason.getValues() as reason>
                                                         <#-- @ftlvariable name="reason" type="io.papermc.hangar.model.FlagReason" -->
                                                             <li class="list-group-item">
                                                                 <span>${reason.title}</span>

@@ -23,4 +23,10 @@ public enum FlagReason {
     public String getTitle() {
         return title;
     }
+
+    private static final FlagReason[] VALUES = values();
+
+    public static FlagReason[] getValues() {
+        return VALUES;
+    }
 }

@@ -1,12 +1,11 @@
 package io.papermc.hangar.service.project;
 
 import io.papermc.hangar.db.dao.FlagDao;
-import io.papermc.hangar.model.viewhelpers.ProjectFlag;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.model.ProjectFlagsTable;
 import io.papermc.hangar.model.FlagReason;
+import io.papermc.hangar.model.viewhelpers.ProjectFlag;
 import io.papermc.hangar.service.HangarService;
-import io.papermc.hangar.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +16,10 @@ import java.util.stream.Collectors;
 @Service
 public class FlagService extends HangarService {
 
-    private final UserService userService;
     private final HangarDao<FlagDao> flagDao;
 
     @Autowired
-    public FlagService(UserService userService, HangarDao<FlagDao> flagDao) {
-        this.userService = userService;
+    public FlagService(HangarDao<FlagDao> flagDao) {
         this.flagDao = flagDao;
     }
 
