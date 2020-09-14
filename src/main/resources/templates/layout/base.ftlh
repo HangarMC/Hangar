@@ -27,6 +27,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <link rel="prefetch" href="<@hangar.url "build/font-awesome.css" />">
         <link rel="prefetch" href="<@hangar.url "manifest/manifest.json" />">
         <link rel="prefetch" href="<@hangar.url "lib/jquery/dist/jquery.min.js" />">
+        <link rel="prefetch" href="<@hangar.url "CSSescape/css.escape.js" />">
 
         <title>${title} | Hangar</title>
 

@@ -441,3 +441,12 @@ select.form-control, input.form-control {
 .link-go-back {
   cursor: pointer;
 }
+.table-platform-versions {
+  border-collapse: collapse;
+  width: 150px;
+}
+
+.table-platform-versions .table-shrink {
+  width: 1px;
+  white-space: nowrap;
+}

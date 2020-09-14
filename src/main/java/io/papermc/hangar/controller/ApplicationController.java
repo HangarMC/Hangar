@@ -241,17 +241,7 @@ public class ApplicationController extends HangarController {
     @GetMapping("/admin/versions")
     public ModelAndView showPlatformVersions() {
         ModelAndView mav = new ModelAndView("users/admin/platformVersions");
-        Map<Platform, List<String>> versions = platformVersionsDao.get().getVersions()
-                .stream()
-                .collect(
-                        Collectors.groupingBy(
-                                PlatformVersionsTable::getPlatform,
-                                Collectors.mapping(
-                                        PlatformVersionsTable::getVersion,
-                                        Collectors.toList()
-                                )
-                        )
-                );
+        Map<Platform, List<String>> versions = platformVersionsDao.get().getVersions();
         for (Platform p : Platform.getValues()) {
             versions.putIfAbsent(p, new ArrayList<>());
         }
