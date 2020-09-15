@@ -1,6 +1,7 @@
 package io.papermc.hangar.service.plugindata;
 
 import io.papermc.hangar.exceptions.HangarException;
+import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.service.plugindata.handler.FileTypeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,20 +42,22 @@ public class PluginDataService {
             List<DataValue> dataValues = new ArrayList<>();
 
             JarEntry jarEntry;
+            Platform platform = null;
             while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
                 FileTypeHandler fileTypeHandler = fileTypeHandlers.get(jarEntry.getName());
                 if (fileTypeHandler != null) {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(jarInputStream));
                     List<DataValue> data = fileTypeHandler.getData(reader);
                     dataValues.addAll(data);
+                    platform = fileTypeHandler.getPlatform();
                 }
             }
 
-            if (dataValues.isEmpty() || dataValues.size() == 1) { // 1 = only dep was found = useless
+            if (dataValues.isEmpty() || dataValues.size() == 1 || platform == null) { // 1 = only dep was found = useless
                 throw new HangarException("error.plugin.metaNotFound");
             } else {
                 dataValues.add(new UUIDDataValue("id", UUID.randomUUID()));
-                PluginFileWithData fileData = new PluginFileWithData(file, new PluginFileData(dataValues), userId);
+                PluginFileWithData fileData = new PluginFileWithData(file, new PluginFileData(dataValues), userId, platform);
                 if (!fileData.getData().validate()) {
                     throw new HangarException("error.plugin.incomplete", "id or version");
                 }

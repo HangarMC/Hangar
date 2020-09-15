@@ -4,9 +4,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.controller.util.StatusZ;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
+import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.dao.PlatformVersionsDao;
+import io.papermc.hangar.db.model.PlatformVersionsTable;
 import io.papermc.hangar.db.model.Stats;
 import io.papermc.hangar.model.NamedPermission;
 import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.viewhelpers.Activity;
 import io.papermc.hangar.model.viewhelpers.LoggedActionViewModel;
@@ -26,6 +30,7 @@ import io.papermc.hangar.service.VersionService;
 import io.papermc.hangar.service.project.FlagService;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.AlertUtil;
+import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -50,11 +55,13 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
 public class ApplicationController extends HangarController {
 
+    private final HangarDao<PlatformVersionsDao> platformVersionsDao;
     private final UserService userService;
     private final ProjectService projectService;
     private final FlagService flagService;
@@ -69,7 +76,8 @@ public class ApplicationController extends HangarController {
     private final HttpServletRequest request;
 
     @Autowired
-    public ApplicationController(UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, StatusZ statusZ, HttpServletRequest request) {
+    public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, StatusZ statusZ, HttpServletRequest request) {
+        this.platformVersionsDao = platformVersionsDao;
         this.userService = userService;
         this.projectService = projectService;
         this.orgService = orgService;
@@ -226,6 +234,32 @@ public class ApplicationController extends HangarController {
         mav.addObject("closedFlagsData", statsService.getFlagsClosedStats(stats));
 
         return fillModel(mav);
+    }
+
+    @GlobalPermission(NamedPermission.MANUAL_VALUE_CHANGES)
+    @Secured("ROLE_USER")
+    @GetMapping("/admin/versions")
+    public ModelAndView showPlatformVersions() {
+        ModelAndView mav = new ModelAndView("users/admin/platformVersions");
+        Map<Platform, List<String>> versions = platformVersionsDao.get().getVersions();
+        for (Platform p : Platform.getValues()) {
+            versions.putIfAbsent(p, new ArrayList<>());
+        }
+        mav.addObject("platformVersions", versions);
+        return fillModel(mav);
+    }
+
+    @GlobalPermission(NamedPermission.MANUAL_VALUE_CHANGES)
+    @Secured("ROLE_USER")
+    @PostMapping("/admin/versions/{platform}")
+    public ModelAndView updatePlatformVersions(@PathVariable Platform platform, @RequestParam(required = false) List<String> versions, @RequestParam(required = false) List<String> removedVersions) {
+        if (versions != null) {
+            platformVersionsDao.get().insert(versions.stream().map(s -> new PlatformVersionsTable(platform, s)).collect(Collectors.toList()));
+        }
+        if (removedVersions != null) {
+            platformVersionsDao.get().delete(removedVersions, platform.ordinal());
+        }
+        return Routes.SHOW_PLATFORM_VERSIONS.getRedirect();
     }
 
     @GlobalPermission(NamedPermission.EDIT_ALL_USER_SETTINGS)

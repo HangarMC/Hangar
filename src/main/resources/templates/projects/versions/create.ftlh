@@ -89,8 +89,8 @@
                                         <td><strong>Platform</strong></td>
                                         <td>
                                             <div class="pull-right" id="upload-platform-tags">
-                                            <#list version.dependenciesAsGhostTags as t>
-                                                <@projectTag.tagTemplate @helper["io.papermc.hangar.model.viewhelpers.ViewTag"].fromVersionTag(t) />
+                                            <#list version.dependenciesAsGhostTags as pair>
+                                                <@projectTag.tagTemplate @helper["io.papermc.hangar.model.viewhelpers.ViewTag"].fromVersionTag(pair.right) pair.left "form-publish" />
                                             </#list>
                                             </div>
                                         </td>

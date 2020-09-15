@@ -1,9 +1,10 @@
 package io.papermc.hangar.service.plugindata.handler;
 
+import io.papermc.hangar.model.Platform;
+import io.papermc.hangar.service.plugindata.DataValue;
+
 import java.io.BufferedReader;
 import java.util.List;
-
-import io.papermc.hangar.service.plugindata.DataValue;
 
 public abstract class FileTypeHandler {
 
@@ -18,4 +19,6 @@ public abstract class FileTypeHandler {
     }
 
     public abstract List<DataValue> getData(BufferedReader reader);
+
+    public abstract Platform getPlatform();
 }

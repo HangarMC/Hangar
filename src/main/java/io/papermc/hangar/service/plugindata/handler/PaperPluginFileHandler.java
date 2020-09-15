@@ -1,5 +1,8 @@
 package io.papermc.hangar.service.plugindata.handler;
 
+import io.papermc.hangar.model.Platform;
+import io.papermc.hangar.model.generated.Dependency;
+import io.papermc.hangar.service.plugindata.DataValue;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
 
@@ -8,9 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import io.papermc.hangar.model.generated.Dependency;
-import io.papermc.hangar.service.plugindata.DataValue;
 
 @Component
 public class PaperPluginFileHandler extends FileTypeHandler {
@@ -72,5 +72,10 @@ public class PaperPluginFileHandler extends FileTypeHandler {
         result.add(new DataValue.DependencyDataValue("dependencies", dependencies));
 
         return result;
+    }
+
+    @Override
+    public Platform getPlatform() {
+        return Platform.PAPER;
     }
 }

@@ -16,6 +16,8 @@ public enum Routes {
     UPDATE_USER("updateUser", "/admin/user/{user}/update", of("user"), of()),
     SHOW_QUEUE("showQueue", "/admin/approval/versions", of(), of()),
     SHOW_LOG("showLog", "/admin/log", of(), of("page", "userFilter", "projectFilter", "versionFilter", "pageFilter", "actionFilter", "subjectFilter")),
+    SHOW_PLATFORM_VERSIONS("showPlatformVersions", "/admin/versions", of(), of()),
+    UPDATE_PLATFORM_VERSIONS("updatePlatformVersions", "/admin/versions/{platform}", of("platform"), of()),
     REMOVE_TRAIL("removeTrail", "/{path}/", of("path"), of()),
     FAVICON_REDIRECT("faviconRedirect", "/favicon.ico", of(), of()),
     SHOW_FLAGS("showFlags", "/admin/flags", of(), of()),
