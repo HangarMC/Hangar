@@ -80,10 +80,6 @@ public class PluginUploadService {
         }
     }
 
-    public PendingVersion processSubsequentVersionCreating(String url, UsersTable owner, ProjectsTable project) {
-        ProjectChannelsTable channelsTable = channelService.getFirstChannel(project);
-        PendingVersion pendingVersion =
-    }
 
     public PendingVersion processSubsequentPluginUpload(MultipartFile file, UsersTable owner, ProjectsTable project) throws HangarException {
         PluginFileWithData plugin = processPluginUpload(file, owner);
@@ -132,7 +128,8 @@ public class PluginUploadService {
                 channelName,
                 config.getChannels().getColorDefault(),
                 plugin,
-                externalUrl, forumSync
+                null,
+                forumSync
         );
     }
 }

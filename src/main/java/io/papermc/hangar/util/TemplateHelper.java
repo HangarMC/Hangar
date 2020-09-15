@@ -2,7 +2,6 @@ package io.papermc.hangar.util;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.model.ProjectsTable;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,6 +38,7 @@ public class TemplateHelper {
     }
 
     public String formatFileSize(Long size) {
+        if (size == null) return "";
         if (size < 1024) {
             return size + "B";
         }

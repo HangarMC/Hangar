@@ -19,7 +19,9 @@ import io.papermc.hangar.exceptions.HangarException;
 import io.papermc.hangar.model.Color;
 import io.papermc.hangar.model.DownloadType;
 import io.papermc.hangar.model.NamedPermission;
+import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.model.generated.Dependency;
 import io.papermc.hangar.model.generated.ReviewState;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
@@ -31,6 +33,7 @@ import io.papermc.hangar.service.DownloadsService;
 import io.papermc.hangar.service.StatsService;
 import io.papermc.hangar.service.UserActionLogService;
 import io.papermc.hangar.service.VersionService;
+import io.papermc.hangar.service.plugindata.PluginFileWithData;
 import io.papermc.hangar.service.pluginupload.PendingVersion;
 import io.papermc.hangar.service.pluginupload.PluginUploadService;
 import io.papermc.hangar.service.pluginupload.ProjectFiles;
@@ -231,18 +234,23 @@ public class VersionsController extends HangarController {
             return fillModel(AlertUtil.showAlert(mav, AlertType.ERROR, "error.invalidUrl"));
         }
 
+        ProjectChannelsTable channel = channelService.getFirstChannel(projData.getProject());
         PendingVersion pendingVersion = new PendingVersion(
                 null,
                 null,
                 null,
                 projData.getProject().getId(),
-                0,
                 null,
                 null,
-
-        )
-
-        return null; // TODO
+                null,
+                projData.getProjectOwner().getId(),
+                channel.getName(),
+                channel.getColor(),
+                null,
+                externalUrl,
+                false
+        );
+        return _showCreator(author, slug, pendingVersion);
     }
 
     @ProjectPermission(NamedPermission.CREATE_VERSION)
@@ -302,10 +310,13 @@ public class VersionsController extends HangarController {
     @ProjectPermission(NamedPermission.CREATE_VERSION)
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
-    @PostMapping(value = "/{author}/{slug}/versions/{version:.+}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/{author}/{slug}/versions/publish", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ModelAndView publish(@PathVariable String author,
                                 @PathVariable String slug,
-                                @PathVariable("version") String versionName,
+                                @RequestParam String versionString,
+                                @RequestParam String externalUrl,
+                                @RequestParam Platform platform,
+                                @RequestParam(required = false) String versionDescription,
                                 @RequestParam(defaultValue = "false") boolean unstable,
                                 @RequestParam(defaultValue = "false") boolean recommended,
                                 @RequestParam("channel-input") String channelInput,
@@ -315,14 +326,35 @@ public class VersionsController extends HangarController {
                                 @RequestParam(required = false) String content,
                                 @RequestParam List<String> versions,
                                 RedirectAttributes attributes) {
+        ProjectsTable project = projectsTable.get();
+        PendingVersion pendingVersion = new PendingVersion(
+                versionString,
+                List.of(new Dependency(platform.getDependencyId(), String.join(",", versions), true)),
+                versionDescription,
+                project.getId(),
+                null,
+                null,
+                null,
+                project.getOwnerId(),
+                channelInput,
+                channelColorInput,
+                null,
+                externalUrl,
+                forumPost
+        );
+        return _publish(author, slug, versionString, unstable, recommended, channelInput, channelColorInput, versions, forumPost, nonReviewed,content, pendingVersion, platform, attributes);
+    }
+
+    private ModelAndView _publish(String author, String slug, String versionName, boolean unstable, boolean recommended, String channelInput, Color channelColorInput, List<String> versions, boolean forumPost, boolean isNonReviewed, String content, PendingVersion pendingVersion, Platform platform, RedirectAttributes attributes) {
         ProjectData projData = projectData.get();
         Color channelColor = channelColorInput == null ? hangarConfig.channels.getColorDefault() : channelColorInput;
-        PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(projData.getProject().getId() + "/" + versionName, PendingVersion.class);
+
         if (pendingVersion == null) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.plugin.timeout");
             return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
         }
-        if (versions.stream().anyMatch(s -> !pendingVersion.getPlugin().getPlatform().getPossibleVersions().contains(s))) {
+
+        if (versions.stream().anyMatch(s -> !platform.getPossibleVersions().contains(s))) {
             AlertUtil.showAlert(attributes, AlertType.ERROR, "error.plugin.invalidVersion");
             return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
         }
@@ -344,7 +376,7 @@ public class VersionsController extends HangarController {
                 AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, alertMsg, alertArgs);
                 return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
             }
-            channel = channelService.addProjectChannel(projData.getProject().getId(), channelInput.trim(), channelColor);
+            channel = channelService.addProjectChannel(projData.getProject().getId(), channelInput.trim(), channelColor, isNonReviewed);
         } else {
             channel = channelOptional.get();
         }
@@ -354,7 +386,8 @@ public class VersionsController extends HangarController {
                 channel.getColor(),
                 forumPost,
                 content,
-                versions
+                versions,
+                platform
         );
 
         if (versionService.exists(newPendingVersion)) {
@@ -382,6 +415,42 @@ public class VersionsController extends HangarController {
         userActionLogService.version(request, LoggedActionType.VERSION_UPLOADED.with(VersionContext.of(projData.getProject().getId(), version.getId())), "published", "");
 
         return Routes.VERSIONS_SHOW.getRedirect(author, slug, versionName);
+
+    }
+
+    @ProjectPermission(NamedPermission.CREATE_VERSION)
+    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
+    @Secured("ROLE_USER")
+    @PostMapping(value = "/{author}/{slug}/versions/{version:.+}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ModelAndView publish(@PathVariable String author,
+                                @PathVariable String slug,
+                                @PathVariable("version") String versionName,
+                                @RequestParam(defaultValue = "false") boolean unstable,
+                                @RequestParam(defaultValue = "false") boolean recommended,
+                                @RequestParam("channel-input") String channelInput,
+                                @RequestParam(value = "channel-color-input", required = false) Color channelColorInput,
+                                @RequestParam(value = "non-reviewed", defaultValue = "false") boolean nonReviewed,
+                                @RequestParam(value = "forum-post", defaultValue = "false") boolean forumPost,
+                                @RequestParam(required = false) String content,
+                                @RequestParam List<String> versions,
+                                RedirectAttributes attributes) {
+        ProjectsTable project = projectsTable.get();
+        PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(project.getId() + "/" + versionName, PendingVersion.class);
+        return _publish(author,
+                slug,
+                versionName,
+                unstable,
+                recommended,
+                channelInput,
+                channelColorInput,
+                versions,
+                forumPost,
+                nonReviewed,
+                content,
+                pendingVersion,
+                Optional.ofNullable(pendingVersion).map(PendingVersion::getPlugin).map(PluginFileWithData::getPlatform).orElse(null),
+                attributes
+        );
     }
 
     @GetMapping("/{author}/{slug}/versions/{version:.*}")

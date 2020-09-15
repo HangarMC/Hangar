@@ -50,7 +50,7 @@ public class ChannelsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/channels")
     public ModelAndView create(@PathVariable String author, @PathVariable String slug, @RequestParam("channel-input") String channelId, @RequestParam("channel-color-input") Color channelColor) {
-        channelService.addProjectChannel(projectsTable.get().getId(), channelId, channelColor);
+        channelService.addProjectChannel(projectsTable.get().getId(), channelId, channelColor, false);
         return Routes.CHANNELS_SHOW_LIST.getRedirect(author, slug);
     }
 

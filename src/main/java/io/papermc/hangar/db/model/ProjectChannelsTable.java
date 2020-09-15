@@ -19,11 +19,11 @@ public class ProjectChannelsTable {
         //
     }
 
-    public ProjectChannelsTable(String name, Color color, long projectId) {
+    public ProjectChannelsTable(String name, Color color, long projectId, boolean isNonReviewed) {
         this.name = name;
         this.color = color;
         this.projectId = projectId;
-        this.isNonReviewed = false;
+        this.isNonReviewed = isNonReviewed;
     }
 
     public long getId() {

@@ -22,7 +22,7 @@ import java.util.Map;
 @RegisterBeanMapper(ProjectChannelsTable.class)
 public interface ProjectChannelDao {
 
-    @SqlUpdate("insert into project_channels (created_at, name, color, project_id) values (:now, :name, :color, :projectId)")
+    @SqlUpdate("insert into project_channels (created_at, name, color, project_id, is_non_reviewed) values (:now, :name, :color, :projectId, :isNonReviewed)")
     @Timestamped
     @GetGeneratedKeys
     ProjectChannelsTable insert(@BindBean ProjectChannelsTable projectChannel);

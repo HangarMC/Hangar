@@ -93,7 +93,7 @@ public class ProjectFactory {
         String slug = StringUtils.slugify(name);
         ProjectsTable projectsTable = new ProjectsTable(pluginId, name, slug, ownerUser.getName(), ownerUser.getUserId(), category, description, Visibility.NEW);
 
-        ProjectChannelsTable channelsTable = new ProjectChannelsTable(hangarConfig.channels.getNameDefault(), hangarConfig.channels.getColorDefault(), -1);
+        ProjectChannelsTable channelsTable = new ProjectChannelsTable(hangarConfig.channels.getNameDefault(), hangarConfig.channels.getColorDefault(), -1, false);
 
         String content = "# " + name + "\n\n" + hangarConfig.pages.home.getMessage();
         ProjectPagesTable pagesTable = new ProjectPage( -1, hangarConfig.pages.home.getName(), StringUtils.slugify(hangarConfig.pages.home.getName()), content, false, null);
@@ -163,10 +163,13 @@ public class ProjectFactory {
                 pendingVersion.getHash(),
                 pendingVersion.getFileName(),
                 pendingVersion.getAuthorId(),
-                pendingVersion.isCreateForumPost()
+                pendingVersion.isCreateForumPost(),
+                pendingVersion.getExternalUrl()
         ));
+        if (pendingVersion.getPlugin() != null) {
+            pendingVersion.getPlugin().getData().createTags(version.getId(), versionService); // TODO not sure what this is for
+        }
 
-        pendingVersion.getPlugin().getData().createTags(version.getId(), versionService); // TODO not sure what this is for
         Platform.createPlatformTags(versionService, version.getId(), Dependency.from(version.getDependencies()));
 
         List<UsersTable> watchers = projectService.getProjectWatchers(project.getProject().getId(), 0, null);
@@ -178,11 +181,13 @@ public class ProjectFactory {
                 new String[]{"notification.project.newVersion", project.getProject().getName(), version.getVersionString()},
                 project.getNamespace() + "/versions/" + version.getVersionString()
                 ));
-        try {
-            uploadPlugin(project, pendingVersion.getPlugin(), version);
-        } catch (IOException e) {
-            versionService.deleteVersion(version.getId());
-            throw new HangarException("error.version.fileIOError");
+        if (pendingVersion.getPlugin() != null) {
+            try {
+                uploadPlugin(project, pendingVersion.getPlugin(), version);
+            } catch (IOException e) {
+                versionService.deleteVersion(version.getId());
+                throw new HangarException("error.version.fileIOError");
+            }
         }
 
 

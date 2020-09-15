@@ -52,10 +52,10 @@ public class ChannelService {
         return channelDao.get().getChannelsWithVersionCount(projectId);
     }
 
-    public ProjectChannelsTable addProjectChannel(long projectId, String channelName, Color color) {
+    public ProjectChannelsTable addProjectChannel(long projectId, String channelName, Color color, boolean isNonReviewed) {
         InvalidChannelCreationReason reason = channelDao.get().validateChannelCreation(projectId, channelName, color.getValue(), hangarConfig.projects.getMaxChannels());
         checkInvalidChannelCreationReason(reason);
-        return channelFactory.createChannel(projectId, channelName, color);
+        return channelFactory.createChannel(projectId, channelName, color, isNonReviewed);
     }
 
     public void updateProjectChannel(long projectId, String oldChannel, String channelName, Color color) {

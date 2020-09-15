@@ -65,6 +65,7 @@ public enum Routes {
     VERSIONS_RESTORE("versions.restore", "/{author}/{slug}/versions/{version}/restore", of("author", "slug", "version"), of()),
     VERSIONS_DOWNLOAD_RECOMMENDED_JAR("versions.downloadRecommendedJar", "/{author}/{slug}/versions/recommended/jar", of("author", "slug"), of("token")),
     VERSIONS_PUBLISH("versions.publish", "/{author}/{slug}/versions/{version}", of("author", "slug", "version"), of()),
+    VERSIONS_PUBLISH_URL("versions.publishUrl", "/{author}/{slug}/versions/publish", of("author", "slug"), of()),
     VERSIONS_SET_RECOMMENDED("versions.setRecommended", "/{author}/{slug}/versions/{version}/recommended", of("author", "slug", "version"), of()),
     VERSIONS_DOWNLOAD("versions.download", "/{author}/{slug}/versions/{version}/download", of("author", "slug", "version"), of("token", "confirm")),
     VERSIONS_SHOW_LOG("versions.showLog", "/{author}/{slug}/versionLog", of("author", "slug"), of("versionString")),
@@ -142,7 +143,8 @@ public enum Routes {
     APIV1_SHOW_USER("apiv1.showUser", "/api/v1/users/{user}", of("user"), of()),
     APIV1_LIST_PAGES("apiv1.listPages", "/api/v1/projects/{pluginId}/pages", of("pluginId"), of("parentId")),
     APIV1_DEPLOY_VERSION("apiv1.deployVersion", "/api/v1/projects/{pluginId}/versions/{name}", of("pluginId", "name"), of()),
-    APIV1_LIST_TAGS("apiv1.listTags", "/api/v1/projects/{plugin}/tags/{versionName}", of("plugin", "versionName"), of());
+    APIV1_LIST_TAGS("apiv1.listTags", "/api/v1/projects/{plugin}/tags/{versionName}", of("plugin", "versionName"), of()),
+    APIV1_LIST_PLATFORMS("apiv1.listPlatforms", "/api/v1/platforms", of(), of());
 
     private static final Map<String, Routes> ROUTES = new HashMap<>();
 
