@@ -5,14 +5,20 @@
 <#import "*/layout/base.ftlh" as base />
 
 <#assign scriptsVar>
+    <link rel="stylesheet" href="<@hangar.url "build/platform-version-table.css" />">
     <script type="text/javascript" src="<@hangar.url "javascripts/platformVersions.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "CSSescape/css.escape.js" />"></script>
+    <script>
+        PLATFORMS = ${platformVersions}
+    </script>
+    <script type="text/javascript" src="<@hangar.url "build/platform-version-table.js" />"></script>
 </#assign>
 
 <#assign message><@spring.message "admin.platformVersions.title" /></#assign>
 <@base.base title="${message}" additionalScripts=scriptsVar>
-    <#assign Platform=@helper["io.papermc.hangar.model.Platform"] />
-    <#-- @ftlvariable name="Platform" type="io.papermc.hangar.model.Platform" -->
+    <div id="platform-version-table"></div>
+    <#--<#assign Platform=@helper["io.papermc.hangar.model.Platform"] />
+    &lt;#&ndash; @ftlvariable name="Platform" type="io.papermc.hangar.model.Platform" &ndash;&gt;
     <#list platformVersions as platform, versions>
         <@form.form action="${Routes.UPDATE_PLATFORM_VERSIONS.getRouteUrl(platform.ordinal()?string)}" method="POST" id="${platform.getName()?lower_case}-form" class="form-inline">
             <@csrf.formField />
@@ -49,5 +55,5 @@
             </button>
             <div style="width: 80%; border-top: #555555 solid 1px; margin-top: 10px;"></div>
         </@form.form>
-    </#list>
+    </#list>-->
 </@base.base>

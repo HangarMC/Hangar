@@ -5,19 +5,22 @@ const CopyPlugin = require('copy-webpack-plugin');
 //const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const Path = require('path');
+const fs = require('fs');
 const sourceDir = Path.resolve(__dirname, 'src');
 const entryDir = Path.resolve(sourceDir, 'entries');
 const modulesDir = Path.resolve(__dirname, 'node_modules');
 const outputDir = Path.resolve(__dirname, '..', '..', '..', 'target', 'classes', 'public', 'build');
 const javascriptDir = Path.resolve(__dirname, '..', '..', '..', 'target', 'classes', 'public', 'javascripts');
 
+const entries = {}
+for (const file of fs.readdirSync(entryDir)) {
+    entries[file.replace('.js', "")] = Path.resolve(entryDir, file);
+}
+
 module.exports = {
     entry: {
         main: Path.resolve(sourceDir, 'scss', 'main.scss'),
-        home: Path.resolve(entryDir, 'home.js'),
-        'font-awesome': Path.resolve(entryDir, 'font-awesome.js'),
-        'user-profile': Path.resolve(entryDir, 'user-profile.js'),
-        'version-list': Path.resolve(entryDir, 'version-list.js'),
+        ...entries
     },
     output: {
         path: outputDir,

@@ -1,5 +1,7 @@
 package io.papermc.hangar.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.controller.util.StatusZ;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
@@ -30,7 +32,6 @@ import io.papermc.hangar.service.VersionService;
 import io.papermc.hangar.service.project.FlagService;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.AlertUtil;
-import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -43,6 +44,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -72,11 +74,12 @@ public class ApplicationController extends HangarController {
     private final SitemapService sitemapService;
     private final StatsService statsService;
     private final StatusZ statusZ;
+    private final ObjectMapper mapper;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, StatusZ statusZ, HttpServletRequest request) {
+    public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, StatusZ statusZ, ObjectMapper mapper, HttpServletRequest request) {
         this.platformVersionsDao = platformVersionsDao;
         this.userService = userService;
         this.projectService = projectService;
@@ -87,6 +90,7 @@ public class ApplicationController extends HangarController {
         this.jobService = jobService;
         this.sitemapService = sitemapService;
         this.statusZ = statusZ;
+        this.mapper = mapper;
         this.request = request;
         this.statsService = statsService;
     }
@@ -245,21 +249,31 @@ public class ApplicationController extends HangarController {
         for (Platform p : Platform.getValues()) {
             versions.putIfAbsent(p, new ArrayList<>());
         }
-        mav.addObject("platformVersions", versions);
+        mav.addObject("platformVersions", mapper.valueToTree(versions));
         return fillModel(mav);
     }
 
+//    @SuppressWarnings("unchecked")
     @GlobalPermission(NamedPermission.MANUAL_VALUE_CHANGES)
     @Secured("ROLE_USER")
-    @PostMapping("/admin/versions/{platform}")
-    public ModelAndView updatePlatformVersions(@PathVariable Platform platform, @RequestParam(required = false) List<String> versions, @RequestParam(required = false) List<String> removedVersions) {
-        if (versions != null) {
-            platformVersionsDao.get().insert(versions.stream().map(s -> new PlatformVersionsTable(platform, s)).collect(Collectors.toList()));
+    @PostMapping("/admin/versions/")
+    @ResponseStatus(HttpStatus.OK)
+    public void updatePlatformVersions(@RequestBody ObjectNode object) {
+        Map<String, List<String>> additions;
+        Map<String, List<String>> removals;
+        try {
+            additions = mapper.treeToValue(object.get("additions"), (Class<Map<String,List<String>>>)(Class)Map.class);
+            removals = mapper.treeToValue(object.get("removals"), (Class<Map<String,List<String>>>)(Class)Map.class);
+        } catch (JsonProcessingException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad formatting", e);
         }
-        if (removedVersions != null) {
-            platformVersionsDao.get().delete(removedVersions, platform.ordinal());
+        if (additions == null || removals == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad formatting");
         }
-        return Routes.SHOW_PLATFORM_VERSIONS.getRedirect();
+        additions.forEach((platform, versions) -> {
+            platformVersionsDao.get().insert(versions.stream().map(v -> new PlatformVersionsTable(Platform.valueOf(platform), v)).collect(Collectors.toList()));
+        });
+        removals.forEach((platform, versions) -> platformVersionsDao.get().delete(versions, Platform.valueOf(platform).ordinal()));
     }
 
     @GlobalPermission(NamedPermission.EDIT_ALL_USER_SETTINGS)
