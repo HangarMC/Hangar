@@ -3,6 +3,7 @@ package io.papermc.hangar.db.model;
 
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.generated.ReviewState;
+import org.jdbi.v3.core.annotation.Unmappable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 import java.time.OffsetDateTime;
@@ -208,6 +209,11 @@ public class ProjectVersionsTable {
 
     public void setExternalUrl(String externalUrl) {
         this.externalUrl = externalUrl;
+    }
+
+    @Unmappable
+    public boolean isExternal() {
+        return this.externalUrl != null && this.fileName == null;
     }
 
     @Override

@@ -141,6 +141,8 @@ public class VersionsController extends HangarController {
         ProjectVersionsTable recommendedVersion = versionService.getRecommendedVersion(project);
         if (recommendedVersion == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } else if (recommendedVersion.getExternalUrl() != null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This plugin uses an external download.");
         } else {
             return sendJar(project, recommendedVersion, token, true);
         }
@@ -151,6 +153,9 @@ public class VersionsController extends HangarController {
     public Object downloadJarById(@PathVariable String pluginId, @PathVariable String name, @RequestParam Optional<String> token) {
         ProjectsTable project = projectsTable.get();
         ProjectVersionsTable pvt = projectVersionsTable.get();
+        if (pvt.isExternal()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No jar for this version found");
+        }
         if (token.isPresent()) {
             confirmDownload0(DownloadType.JAR_FILE, token);
             return sendJar(project, pvt, token.get(), true);
@@ -524,12 +529,13 @@ public class VersionsController extends HangarController {
         if (api.orElse(false)) {
             removeAddWarnings(address, expiration, token);
             headers.setContentType(MediaType.APPLICATION_JSON);
-            ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("message", apiMsg);
-            objectNode.put("post", Routes.VERSIONS_CONFIRM_DOWNLOAD.getRouteUrl(author, slug, version, downloadType.ordinal() + "", token, null));
-            objectNode.put("url", Routes.VERSIONS_DOWNLOAD_JAR_BY_ID.getRouteUrl(project.getPluginId(), versionsTable.getVersionString(), token));
-            objectNode.put("curl", curlInstruction);
-            objectNode.put("token", token);
+            String downloadUrl = versionsTable.getExternalUrl() != null ? versionsTable.getExternalUrl() : Routes.VERSIONS_DOWNLOAD_JAR_BY_ID.getRouteUrl(project.getPluginId(), versionsTable.getVersionString(), token);
+            ObjectNode objectNode = mapper.createObjectNode()
+                    .put("message", apiMsg)
+                    .put("post", Routes.VERSIONS_CONFIRM_DOWNLOAD.getRouteUrl(author, slug, version, downloadType.ordinal() + "", token, null))
+                    .put("url", downloadUrl)
+                    .put("curl", curlInstruction)
+                    .put("token", token);
             return new ResponseEntity<>(objectNode.toPrettyString(), headers, HttpStatus.MULTIPLE_CHOICES);
         } else {
             Optional<String> userAgent = Optional.ofNullable(request.getHeader(HttpHeaders.USER_AGENT)).map(String::toLowerCase);
@@ -644,7 +650,7 @@ public class VersionsController extends HangarController {
                     project.getOwnerName(),
                     project.getSlug(),
                     version.getVersionString(),
-                    DownloadType.UPLOADED_FILE.ordinal() + "",
+                    (version.getExternalUrl() != null ? DownloadType.EXTERNAL_DOWNLOAD.ordinal() : DownloadType.UPLOADED_FILE.ordinal()) + "",
                     false + "",
                     "dummy"
             );
