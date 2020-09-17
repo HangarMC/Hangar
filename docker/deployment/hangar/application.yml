@@ -5,7 +5,7 @@ spring:
     password: hangar
 
 fake-user:
-  enabled: false
+  enabled: true
 
 hangar:
   debug: true
