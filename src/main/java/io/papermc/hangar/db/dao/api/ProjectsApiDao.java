@@ -69,7 +69,7 @@ public interface ProjectsApiDao {
     List<Project> listProjects(String pluginId, String owner, @Define boolean seeHidden, Long requesterId, String orderBy,
                                @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<Integer> categories,
                                @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<String> tags, //TODO: implement tags with mc_version('data')
-                               @Define String query, @Define String queryStatement, long limit, long offset);
+                               String query, @Define String queryStatement, long limit, long offset);
 
     // This query can be shorter because it doesnt need all those column values as above does, just a single column for the amount of rows to be counted
     @UseStringTemplateEngine
@@ -89,7 +89,7 @@ public interface ProjectsApiDao {
     long countProjects(String pluginId, String owner, @Define boolean seeHidden, Long requesterId,
                        @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<Integer> categories,
                        @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<String> tags, //TODO: implement tags with mc_version('data')
-                       @Define String query, @Define String queryStatement);
+                       String query, @Define String queryStatement);
 
     @RegisterBeanMapper(ProjectMember.class)
     @SqlQuery("SELECT u.name AS user, array_agg(r.name) roles " +
