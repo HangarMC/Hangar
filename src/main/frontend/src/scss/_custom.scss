@@ -5,6 +5,7 @@ $brand-warning: #f0ad4e;
 $brand-danger: #d9534f;
 
 $body-bg: #fff;
+$body-color: $sponge_dark_grey;
 //$body-color: $gray-800;
 $link-color: $brand-primary;
 $link-hover-color: darken($link-color, 15%);
@@ -12,7 +13,10 @@ $link-hover-decoration: underline;
 $font-family-sans-serif: "Helvetica Neue", Helvetica, Arial, sans-serif;
 $font-family-monospace: Menlo, Monaco, Consolas, "Courier New", monospace;
 $font-family-base: $font-family-sans-serif;
-$font-size-base: 1rem;
+
+$font-size-base: 0.9rem;
+
+$input-font-size: 14px;
 $font-size-lg: ceil(($font-size-base * 1.25));
 $font-size-sm: ceil(($font-size-base * .85));
 $h1-font-size: floor(($font-size-base * 2.6));
@@ -31,6 +35,14 @@ $headings-color: inherit;
 
 $line-height-lg: 1.3333333;
 $line-height-sm: 1.5;
-//$border-radius: 4px;
-//$border-radius-lg: 6px;
-//$border-
+
+
+$input-btn-padding-x-sm: 0.5rem;
+$input-btn-padding-y-sm: 0.1rem;
+$input-btn-font-size-lg: 16px;
+$input-btn-font-size: 14px;
+$input-btn-font-size-sm: 12px;
+
+$navbar-nav-link-padding-x: 1rem;
+
+$dropdown-link-hover-bg: #f5f5f5;

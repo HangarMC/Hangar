@@ -28,7 +28,7 @@
                                 </span>
                             </a>
                             <@popoverColorPicker.popoverColorPicker />
-                            <span class="pull-right channel preview" style="display: none;"></span>
+                            <span class="float-right channel preview" style="display: none;"></span>
                             <p class="help-block"><@spring.message "channel.nameRequirements" /></p>
                             <br/>
                             <span class="minor"><@spring.message "channel.nonReviewed" /></span>

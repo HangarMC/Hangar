@@ -35,11 +35,11 @@
         </div>
         <div class="col-md-4">
             <#if u.isOrga() && o?? && canEditOrgMembers()>
-                <div class="panel-user-info panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title"><@spring.message "project.manager" /></h3>
+                <div class="panel-user-info card">
+                    <div class="card-header">
+                        <h3 class="card-title"><@spring.message "project.manager" /></h3>
                     </div>
-                    <table class="table panel-body">
+                    <table class="table card-body">
                         <tbody>
                             <#list o.projectRoles as role, project>
                                 <tr>
@@ -50,9 +50,9 @@
                                     <td>
                                         <#if role.role != Role.PROJECT_OWNER>
                                             <#if role.isAccepted>
-                                                <button class="btn btn-sm btn-danger pull-right btn-invite" data-invite-id="${role.id}" data-invite-behalf="${u.user.name}" data-invite-accepted="decline">Leave</button>
+                                                <button class="btn btn-sm btn-danger float-right btn-invite" data-invite-id="${role.id}" data-invite-behalf="${u.user.name}" data-invite-accepted="decline">Leave</button>
                                             <#else>
-                                                <button class="btn btn-sm btn-info pull-right btn-invite" data-invite-id="${role.id}" data-invite-behalf="${u.user.name}" data-invite-accepted="accept">Join</button>
+                                                <button class="btn btn-sm btn-info float-right btn-invite" data-invite-id="${role.id}" data-invite-behalf="${u.user.name}" data-invite-accepted="accept">Join</button>
                                             </#if>
                                         </#if>
                                     </td>
@@ -63,11 +63,11 @@
                 </div>
             </#if>
             <#if !u.isOrga()>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title"> <@spring.message "org.plural" /></h3>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"> <@spring.message "org.plural" /></h3>
                     </div>
-                    <table class="table panel-body">
+                    <table class="table card-body">
                         <tbody>
                         <#if u.orgas?size == 0>
                             <tr><td><i class="minor"><i class="fas fa-star"></i> <@spring.messageArgs code="user.noOrganizations" args=[u.user.name] /></i></td></tr>
@@ -80,7 +80,7 @@
                                 <a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(organization.org.name)}">
                                 ${organization.org.name}
                                 </a>
-                                <div class="pull-right">
+                                <div class="float-right">
                                 ${role.role.title}
                             </div>
                             </td>
@@ -90,22 +90,22 @@
                         </tbody>
                     </table>
 
-                    <div class="panel-footer">
+                    <div class="card-footer">
                         <div class="clearfix"></div>
                     </div>
                 </div>
 
-                <div class="panel-user-info panel panel-default" data-action="starred">
-                    <div class="panel-heading">
-                        <h3 class="panel-title"><i class="fas fa-star"></i> <@spring.message "project.starred" /></h3>
+                <div class="panel-user-info card" data-action="starred">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-star"></i> <@spring.message "project.starred" /></h3>
                     </div>
-                    <table class="table panel-body">
+                    <table class="table card-body">
                         <tbody>
                         </tbody>
                     </table>
 
-                    <div class="panel-footer">
-                        <div class="pull-right">
+                    <div class="card-footer">
+                        <div class="float-right">
                             <a class="prev" href="#" style="display: none;">&laquo;</a>
                             <a class="next" href="#" >&raquo;</a>
                         </div>
@@ -113,17 +113,17 @@
                     </div>
                 </div>
 
-                <div class="panel-user-info panel panel-default" data-action="watching">
-                    <div class="panel-heading">
-                        <h3 class="panel-title"><i class="fas fa-eye"></i> <@spring.message "project.watching" /></h3>
+                <div class="panel-user-info card" data-action="watching">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-eye"></i> <@spring.message "project.watching" /></h3>
                     </div>
-                    <table class="table panel-body">
+                    <table class="table card-body">
                         <tbody>
                         </tbody>
                     </table>
 
-                    <div class="panel-footer">
-                        <div class="pull-right">
+                    <div class="card-footer">
+                        <div class="float-right">
                             <a class="prev" href="#" style="display: none;">&laquo;</a>
                             <a class="next" href="#" >&raquo;</a>
                         </div>

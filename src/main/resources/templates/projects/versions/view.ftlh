@@ -28,12 +28,12 @@
         <div class="col-md-12 version-header">
                 <!-- Title -->
             <div class="clearfix">
-                <h1 class="pull-left">${v.v.versionString}</h1>
+                <h1 class="float-left">${v.v.versionString}</h1>
                 <span class="channel channel-head" style="background-color: ${v.c.color.hex};">${v.c.name}</span>
             </div>
 
                 <!-- User info -->
-            <p class="user date pull-left">
+            <p class="user date float-left">
                 <a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(v.p.project.ownerName)}">
                     <strong>${v.p.project.ownerName}</strong>
                 </a>
@@ -42,13 +42,13 @@
 
                 <!-- Buttons -->
 
-            <div class="pull-right version-actions">
+            <div class="float-right version-actions">
                 <div class="version-icons">
                     <div>
                     <#if v.recommended>
                             <i data-toggle="tooltip" data-placement="left"
                             title="<@spring.message "version.recommended" />"
-                            class="recommended far fa-lg fa-gem pull-right"></i>
+                            class="recommended far fa-lg fa-gem float-right"></i>
                     </#if>
 
                     <#if v.v.reviewState.checked>
@@ -70,7 +70,7 @@
                     </div>
                 </div>
 
-                <div class="version-buttons pull-right">
+                <div class="version-buttons float-right">
                     <div><span class="date">${utils.formatFileSize(v.v.fileSize)}</span></div>
 
                     <div>
@@ -185,9 +185,9 @@
         <#if v.v.dependencies?has_content>
                 <!-- Dependencies -->
             <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Dependencies</h3>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Dependencies</h3>
                     </div>
                     <ul class="list-group">
                         <#assign Platform=@helper["io.papermc.hangar.model.Platform"] />

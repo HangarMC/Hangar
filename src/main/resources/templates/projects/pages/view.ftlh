@@ -82,21 +82,21 @@ Documentation page within Project overview.
                 </#if>
             </div>
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title"><@spring.message "project.promotedVersions" /></h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><@spring.message "project.promotedVersions" /></h3>
                 </div>
                 <ul class="list-group promoted-list">
 
                 </ul>
             </div>
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="pull-left panel-title"><@spring.message "page.plural" /></h3>
+            <div class="card \">
+                <div class="card-header">
+                    <h3 class="float-left card-title"><@spring.message "page.plural" /></h3>
                     <#if canEditPages() && pageCount < config.projects.maxPages>
                         <button data-toggle="modal" data-target="#new-page" title="New"
-                        class="new-page btn yellow btn-xs pull-right">
+                        class="new-page btn yellow btn-sm float-right">
                             <i class="fas fa-plus"></i>
                         </button>
                         <@pageCreate.pageCreate p.project rootPages />

@@ -184,7 +184,7 @@
                                         </li>
                                     </#if>
 
-                                    <li role="separator" class="divider"></li>
+                                    <li class="dropdown-divider"></li>
                                     <li>
                                         <a href="${Routes.USERS_LOGOUT.getRouteUrl()}" class="list-group-item-action dropdown-item">
                                             <i class="fas fa-sign-out-alt mr-1"></i>

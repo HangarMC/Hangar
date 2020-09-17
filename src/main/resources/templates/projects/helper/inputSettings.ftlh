@@ -87,24 +87,23 @@
             <h4><@spring.message "project.settings.license" /> <i>(<@spring.message "general.optional" />)</i></h4>
             <p><@spring.message "project.settings.license.info" /></p>
         </div>
-        <div class="input-group pull-left">
-            <div class="input-group-btn">
+        <div class="input-group float-left">
+            <div class="input-group-prepend input-group-btn">
                 <button type="button" class="btn btn-default btn-license dropdown-toggle" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                     <span class="license"><#if licenseName?has_content>${licenseName}<#else><@spring.message "licenses.mit" /></#if></span>
-                    <span class="caret"></span>
                 </button>
-                <input type="text" class="form-control" style="display: none;" name="license-name" form="${form}"
-                       value="<#if licenseName?has_content>${licenseName}<#else><@spring.message "licenses.mit" /></#if>" />
-                <ul class="dropdown-menu dropdown-license">
-                    <li><a><@spring.message "licenses.mit" /></a></li>
-                    <li><a><@spring.message "licenses.apache2.0" /></a></li>
-                    <li><a><@spring.message "licenses.gpl" /></a></li>
-                    <li><a><@spring.message "licenses.lgpl" /></a></li>
-                    <li role="separator" class="divider"></li>
-                    <li><a class="license-custom"><@spring.message "licenses.custom" />&hellip;</a></li>
-                </ul>
+                <div class="dropdown-menu dropdown-license">
+                    <a class="dropdown-item"><@spring.message "licenses.mit" /></a>
+                    <a class="dropdown-item"><@spring.message "licenses.apache2.0" /></a>
+                    <a class="dropdown-item"><@spring.message "licenses.gpl" /></a>
+                    <a class="dropdown-item"><@spring.message "licenses.lgpl" /></a>
+                    <div class="dropdown-divider"></div>
+                    <a class="license-custom dropdown-item"><@spring.message "licenses.custom" />&hellip;</a></li>
+                </div>
             </div>
+            <input type="text" class="form-control" style="display: none;" name="license-name" form="${form}"
+                   value="<#if licenseName?has_content>${licenseName}<#else><@spring.message "licenses.mit" /></#if>" />
             <input type="text" name="license-url" class="form-control" form="${form}"
                    placeholder="https://github.com/MiniDigger/Hangar/LICENSE.txt" value="${licenseUrl}">
         </div>

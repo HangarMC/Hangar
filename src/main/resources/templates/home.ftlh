@@ -36,12 +36,12 @@ sorted according to different criteria.
     <#-- Header -->
     <div class="index-header">
         <div class="row centered-content-row">
-            <div class="col-md-9 ore-banner">
+            <div class="col-md-9 hangar-banner">
                 <div class="row aligned-row">
-                    <div class="col-xs-2 ore-logo">
+                    <div class="col-auto ore-logo">
                         <img src="<@hangar.url "images/ore-colored.svg" />" alt="Ore logo" />
                     </div>
-                    <div class="col-xs-10 text">
+                    <div class="col-10 text">
                         <div class="headline">Hangar</div>
                         <div>A Minecraft package repository</div>
                     </div>

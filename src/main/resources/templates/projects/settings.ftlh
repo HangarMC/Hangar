@@ -36,9 +36,9 @@
         <div class="col-md-8">
 
             <!-- Main settings -->
-            <div class="panel panel-default panel-settings">
-                <div class="panel-heading">
-                    <h3 class="panel-title pull-left"><@spring.message "project.settings" /></h3>
+            <div class="card card-settings">
+                <div class="card-header">
+                    <h3 class="card-title float-left"><@spring.message "project.settings" /></h3>
                     <#if headerData.globalPerm(Permission.SeeHidden)>
                         <@btnHide.btnHide p.namespace, p.visibility />
 
@@ -64,7 +64,7 @@
                     </#if>
                 </div>
 
-                <div class="panel-body">
+                <div class="card-body">
                     <@inputSettings.inputSettings
                         "save"
                         p.settings.homepage
@@ -112,9 +112,9 @@
                             <div class="setting-content">
                                 <div class="icon-description">
                                     <p>Upload an image representative of your project.</p>
-                                    <div class="btn-group pull-right">
+                                    <div class="btn-group float-right">
                                         <button class="btn btn-default btn-reset">Reset</button>
-                                        <button class="btn btn-info btn-upload pull-right" disabled>
+                                        <button class="btn btn-info btn-upload float-right" disabled>
                                             <i class="fas fa-upload"></i> Upload
                                         </button>
                                     </div>
@@ -205,7 +205,7 @@
                         </div>
                     </#if>
 
-                    <@form.form action=Routes.PROJECTS_SAVE.getRouteUrl(p.project.ownerName, p.project.slug) method="POST" id="save" class="pull-right">
+                    <@form.form action=Routes.PROJECTS_SAVE.getRouteUrl(p.project.ownerName, p.project.slug) method="POST" id="save" class="float-right">
                         <@csrf.formField />
                         <input type="hidden" id="update-icon" name="update-icon" value="false" />
                         <button type="submit" name="save" class="btn btn-success btn-spinner" data-icon="fa-check">

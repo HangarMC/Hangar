@@ -34,14 +34,14 @@
 <@base.base title=message additionalScripts=scriptsVar>
 
     <div class="row">
-        <div class="col-xs-12 col-md-8 header-flags">
+        <div class="col-12 col-md-8 header-flags">
                 <!-- Notifications header -->
             <div class="row">
-                <div class="col-xs-12 header-flags">
-                    <div class="pull-left">
+                <div class="col-12 header-flags">
+                    <div class="float-left">
                         <h2><@spring.message "notification.plural" /></h2>
                     </div>
-                    <div class="pull-right form-inline notification-controls">
+                    <div class="float-right form-inline notification-controls">
                         <select class="form-control select-notifications">
                             <option <@notificationFilterOption NotificationFilter.UNREAD />>
                             <@spring.message NotificationFilter.UNREAD.title />
@@ -64,7 +64,7 @@
 
                 <!-- Notifications content -->
             <div class="row">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <div class="list-group-item no-notifications" <#if notifications?size gt 0>
                         style="display: none; </#if>">
                         <h3 class="minor">
@@ -79,7 +79,7 @@
                                 <@formatNotification notification />
                                 <#if !notification.read>
                                     <span class="btn-mark-read">
-                                        <i class="minor pull-right fas fa- sm fa-check"></i>
+                                        <i class="minor float-right fas fa- sm fa-check"></i>
                                     </span>
                                 </#if>
                             </li>
@@ -88,12 +88,12 @@
                 </div>
             </div>
         </div>
-        <div class="col-xs-12 col-md-4">
+        <div class="col-12 col-md-4">
                 <!-- Invites header -->
             <div class="row">
-                <div class="col-xs-12 form-inline">
-                    <h2 class="pull-left"><@spring.message "notification.invites" /></h2>
-                    <select class="pull-right form-control notification-controls select-invites">
+                <div class="col-12 form-inline">
+                    <h2 class="float-left"><@spring.message "notification.invites" /></h2>
+                    <select class="float-right form-control notification-controls select-invites">
                         <option <@inviteFilterOption InviteFilter.ALL />>
                         <@spring.message InviteFilter.ALL.title />
                         </option>
@@ -108,7 +108,7 @@
             </div>
             <div class="row">
                 <!-- Invites content -->
-                <div class="col-xs-12">
+                <div class="col-12">
 
                 <#assign i = 0>
                 <#list invites as invite, subject>
@@ -117,12 +117,12 @@
                     </#if>
                     <#assign i = i + 1>
 
-                    <div class="invite col-xs-12 col-md-6">
+                    <div class="invite col-12 col-md-6">
                         <div class="invite-content" data-id="${invite.userRole.id}"
                         data-type="${subject.type}">
                             <span class="minor">
-                                <i class="dismiss pull-left fas fa-times" style="display: none;"></i>
-                                <span class="pull-right"><i class="fas fa-tag"></i> ${subject.type?capitalize}</span>
+                                <i class="dismiss float-left fas fa-times" style="display: none;"></i>
+                                <span class="float-right"><i class="fas fa-tag"></i> ${subject.type?capitalize}</span>
                             </span>
                             <br/>
 

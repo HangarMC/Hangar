@@ -2,11 +2,11 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 
 <#macro userSearch>
-    <div class="input-group input-group-sm user-search">
-        <input type="text" class="form-control" placeholder="<@spring.message "org.users.add" />&hellip;" />
-        <span class="input-group-btn">
+    <div class="input-group input-group user-search">
+        <input type="text" class="form-control" placeholder="<@spring.message "org.users.add" />&hellip;">
+        <div class="input-group-append input-group-btn">
             <button disabled class="btn btn-default btn-search"><i class="fas fa-search"></i></button>
-        </span>
+        </div>
     </div>
 </#macro>
 

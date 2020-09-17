@@ -28,10 +28,10 @@ Versions page within Project overview.
         </div>
 
         <div class="col-md-3">
-            <div class="panel panel-default channels">
-                <div class="panel-heading">
-                    <h3 class="panel-title pull-left">Channels</h3>
-                    <input type="checkbox" class="pull-right channels-all" { checked } />
+            <div class="card channels">
+                <div class="card-header">
+                    <h3 class="card-title float-left">Channels</h3>
+                    <input type="checkbox" class="float-right channels-all" { checked } />
                 </div>
 
                     <!-- Channel list -->
@@ -39,14 +39,14 @@ Versions page within Project overview.
                     <#list channels as channel>
                         <li class="list-group-item">
                             <span class="channel" style="background-color: ${channel.color.hex}">${channel.name}</span>
-                            <input type="checkbox" class="pull-right"/>
+                            <input type="checkbox" class="float-right"/>
                         </li>
                     </#list>
 
                     <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
                     <#if sp.perms(Permission.EditTags)>
                         <li class="list-group-item text-right">
-                            <a class="btn yellow btn-xs" href="${Routes.CHANNELS_SHOW_LIST.getRouteUrl(p.project.ownerName, p.project.slug)}">
+                            <a class="btn yellow btn-sm" href="${Routes.CHANNELS_SHOW_LIST.getRouteUrl(p.project.ownerName, p.project.slug)}">
                                 Edit
                             </a>
                         </li>

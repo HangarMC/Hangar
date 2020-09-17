@@ -14,7 +14,7 @@
     <#if project.members?size != 0>
 
         <#if editable && perms.has(Permission.ManageSubjectMembers)>
-            <@roleSelect.roleSelect roleCategory=project.roleCategory id="select-role" classes="pull-right" hidden=true />
+            <@roleSelect.roleSelect roleCategory=project.roleCategory id="select-role" classes="float-right" hidden=true />
 
             <!-- Row template -->
             <ul style="display: none;">
@@ -23,7 +23,7 @@
                     <@userAvatar.userAvatar clazz="user-avatar-xs"></@userAvatar.userAvatar>
                     <a class="username"></a>
                     <i class="fas fa-times user-cancel"></i>
-                    <@roleSelect.roleSelect roleCategory=project.roleCategory classes="pull-right" />
+                    <@roleSelect.roleSelect roleCategory=project.roleCategory classes="float-right" />
                 </li>
             </ul>
 
@@ -58,15 +58,15 @@
             <span>error</span>
         </div>
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="pull-left panel-title"><@spring.message "project.settings.members" /></h3>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="float-left card-title"><@spring.message "project.settings.members" /></h3>
 
                 <#if perms.has(Permission.ManageSubjectMembers)>
-                    <div class="pull-right">
+                    <div class="float-right">
                         <#if !editable && settingsCall?has_content>
                             <a href="${settingsCall}"
-                               class="btn yellow btn-xs">
+                               class="btn yellow btn-sm">
                                 <i class="fas fa-pencil-alt"></i>
                             </a>
                         </#if>
@@ -74,7 +74,7 @@
                         <#if saveCall?has_content>
                             <@form.form action=saveCall method="POST" id="save">
                                 <@csrf.formField />
-                                <button class="btn-members-save btn btn-default btn-panel btn-xs" data-toggle="tooltip"
+                                <button class="btn-members-save btn btn-default btn-card btn-sm" data-toggle="tooltip"
                                         data-placement="top" data-title="<@spring.message "org.users.save" />" style="display: none;">
                                     <i class="fas fa-paper-plane"></i>
                                 </button>
@@ -102,7 +102,7 @@
                             <a href="#"><i style="padding-left:5px" class="fas fa-edit"></i></a>
                         </#if>
 
-                        <span class="minor pull-right">
+                        <span class="minor float-right">
                             <#if !subjectRole.isAccepted>
                                 <span class="minor">(Invited as ${subjectRole.role.title})</span>
                             <#else>

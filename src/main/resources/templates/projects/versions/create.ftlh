@@ -88,7 +88,7 @@
                                     <tr>
                                         <td><strong>Platform</strong></td>
                                         <td>
-                                            <div class="pull-right" id="upload-platform-tags">
+                                            <div class="float-right" id="upload-platform-tags">
                                             <#list version.dependenciesAsGhostTags as pair>
                                                 <@projectTag.tagTemplate @helper["io.papermc.hangar.model.viewhelpers.ViewTag"].fromVersionTag(pair.right) pair.left "form-publish" />
                                             </#list>
@@ -151,7 +151,7 @@
                     <@form.form action=Routes.VERSIONS_UPLOAD.getRouteUrl(ownerName, projectSlug) method="POST"
                         enctype="multipart/form-data" id="form-upload">
                         <@csrf.formField />
-                            <label class="btn btn-default pull-left" for="pluginFile">
+                            <label class="btn btn-default float-left" for="pluginFile">
                                 <input id="pluginFile" name="pluginFile" type="file" style="display: none;" accept=".jar,.zip">
                                 <@spring.message "version.create.selectFile" />
                             </label>
@@ -163,7 +163,7 @@
                         <#-- Ready to go! -->
                         <#assign version = pending>
                         <@form.form method="POST" action=Routes.VERSIONS_PUBLISH.getRouteUrl(ownerName, projectSlug, version.versionString)
-                            id="form-publish" class="pull-right">
+                            id="form-publish" class="float-right">
                             <@csrf.formField />
                             <input type="hidden" class="channel-color-input" name="channel-color-input"
                             value="${config.channels.colorDefault.hex}" />
@@ -177,7 +177,7 @@
 
                 </div>
             </div>
-            <span class="pull-left tos"><i><@spring.messageArgs code="version.create.tos" args=["#"] /></i></span>
+            <span class="float-left tos"><i><@spring.messageArgs code="version.create.tos" args=["#"] /></i></span>
         </div>
 
         <#import "*/projects/helper/createSteps.ftlh" as createSteps>

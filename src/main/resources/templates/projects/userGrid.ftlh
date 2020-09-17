@@ -18,7 +18,7 @@
 <#-- @ftlvariable name="page" type="java.lang.Integer" -->
 <@projects.view p=p sp=sp active="">
     <div class="row user-grid">
-        <div class="col-xs-12">
+        <div class="col-12">
             <#-- @ftlvariable name="title" type="java.lang.String" -->
             <h3 class="text-bold mb-0">${title}</h3>
             <div class="extra-divider"></div>
@@ -42,8 +42,8 @@
         </#list>
 
         <#if p.starCount gte pageSize || page gt 1>
-            <div class="col-xs-12">
-                <div class="pull-right next-back">
+            <div class="col-12">
+                <div class="float-right next-back">
                     <#if page gt 1>
                         <a href="@call(page - 1)" class="btn btn-default"><i class="fa fa-arrow-left"></i></a>
                     </#if>

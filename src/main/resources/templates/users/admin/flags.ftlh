@@ -23,13 +23,13 @@
                 <#list flags as flag>
                     <li data-flag-id="${flag.flag.id}" class="list-group-item">
                         <div class="row">
-                            <div class="col-xs-12 col-md-1" style="width: 40px;">
+                            <div class="col-12 col-md-1" style="width: 40px;">
                                 <a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(flag.reportedBy)}">
                                     <#import "*/utils/userAvatar.ftlh" as userAvatar>
                                     <@userAvatar.userAvatar userName=flag.reportedBy avatarUrl=utils.format(config.security.api.avatarUrl, flag.reportedBy) clazz="user-avatar-xs"></@userAvatar.userAvatar>
                                 </a>
                             </div>
-                            <div class="col-xs-12 col-md-11">
+                            <div class="col-12 col-md-11">
                             <span class="description">
                                 <strong>${flag.reportedBy}</strong>
                                 <span class="minor"> reported </span>
@@ -43,8 +43,8 @@
                                 <br><i class="minor">${flag.flag.comment}</i>
                             </span>
                         </div>
-                            <div class="col-xs-12">
-                                <span class="pull-right btn-group-sm">
+                            <div class="col-12">
+                                <span class="float-right btn-group-sm">
                                     <a target="_blank" rel="noopener" href="https://papermc.io/forums/users/${flag.reportedBy}" class="btn btn-default">
                                         <i class="fas fa-reply"></i> <@spring.message "user.flags.messageUser" />
                                     </a>

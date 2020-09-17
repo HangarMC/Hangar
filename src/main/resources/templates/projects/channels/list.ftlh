@@ -82,10 +82,10 @@
                         </tbody>
                     </table>
                     <a href="${Routes.VERSIONS_SHOW_LIST.getRouteUrl(p.project.ownerName, p.project.slug)}"
-                       class="pull-left btn btn-default">
+                       class="float-left btn btn-default">
                         <i class="fas fa-arrow-left"></i>
                     </a>
-                    <a href="#" id="channel-new" class="pull-right btn btn-primary"
+                    <a href="#" id="channel-new" class="float-right btn btn-primary"
                             <#if channels?size gte config.projects.maxChannels>
                                 disabled data-toggle="tooltip" data-placement="left"
                                 title="<@spring.message "channel.edit.maxReached" />"

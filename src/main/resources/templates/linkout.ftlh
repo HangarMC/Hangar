@@ -14,11 +14,11 @@
                 </div>
                 <div class="panel-body">
                     <p><@spring.messageArgs code="general.linkout.warning" args=[remoteUrl] /></p>
-                    <a class="pull-left link-go-back">
+                    <a class="float-left link-go-back">
                         <i class="fas fa-arrow-left"></i> <@spring.message "project.back" />
                     </a>
                     <a href="${remoteUrl}">
-                        <button class="pull-right btn btn-primary">
+                        <button class="float-right btn btn-primary">
                         <@spring.message "general.continue" />
                         </button>
                     </a>

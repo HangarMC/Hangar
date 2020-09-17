@@ -26,7 +26,7 @@ Discussion page within Project overview.
         <div class="col-md-8">
             <div class="reply-box">
                 <#if sp.canPostAsOwnerOrga>
-                <div class="pull-right push-down">
+                <div class="float-right push-down">
                     <i class="minor"><@spring.message "project.discuss.postAs" /></i>
                     <select name="poster" form="form-editor-save">
                         <option selected>${cu.name}</option>
@@ -48,7 +48,7 @@ Discussion page within Project overview.
             </div>
         </div>
     <#else>
-        <div class="pull-right">
+        <div class="float-right">
             <a href="${Routes.USERS_LOGIN.getRouteUrl("", "", request.path)}"><@spring.message "general.login" /></a>
             <span class="minor"> <@spring.message "general.toReply" /></span>
         </div>

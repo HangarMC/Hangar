@@ -69,13 +69,13 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
             <div class="container<#if showHeader> site-header-margin</#if>">
                 <#if config.staging>
                     <div class="row">
-                        <div class="col-xs-12">
+                        <div class="col-12">
                             <div class="staging-warning"><@spring.message "general.stagingWarning" /></div>
                         </div>
                     </div>
                 </#if>
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         <#import "../utils/alert.ftlh" as alert>
                         <@alert.alert "success" />
                         <@alert.alert "error" />

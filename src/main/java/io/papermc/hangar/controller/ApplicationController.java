@@ -250,7 +250,7 @@ public class ApplicationController extends HangarController {
             versions.putIfAbsent(p, new ArrayList<>());
         }
         mav.addObject("platformVersions", mapper.valueToTree(versions));
-        return fillModel(mav);//
+        return fillModel(mav);
     }
 
     @SuppressWarnings("unchecked")

@@ -14,7 +14,7 @@
         <#list projectSeq as project>
             <li class="list-group-item">
                 <div class="row">
-                    <div class="col-xs-12 col-md-8">
+                    <div class="col-12 col-md-8">
                         <span class="description">
                             <strong>${project.changeRequester}</strong>
                             <span class="minor"> requested changes on </span>
@@ -27,8 +27,8 @@
                             ${markdownService.render(project.comment)}
                         </p>
                     </div>
-                    <div class="col-xs-12 col-md-4">
-                        <span class="pull-right btn-group-sm">
+                    <div class="col-12 col-md-4">
+                        <span class="float-right btn-group-sm">
                         <@btnHide.btnHide project.namespace, project.visibility/>
                         </span>
                     </div>
@@ -53,7 +53,7 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title pull-left">Needs Approval</h4>
+                    <h4 class="panel-title float-left">Needs Approval</h4>
                     <div class="clearfix"></div>
                 </div>
                 <@renderApprovalList needsApproval />
@@ -68,7 +68,7 @@
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h4 class="panel-title pull-left">Awaiting Changes</h4>
+                        <h4 class="panel-title float-left">Awaiting Changes</h4>
                         <div class="clearfix"></div>
                     </div>
                     <@renderApprovalList waitingProjects />

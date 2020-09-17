@@ -38,11 +38,11 @@ Base template for Project overview.
         <div class="project-header-container">
             <#if p.visibility != Visibility.PUBLIC>
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         <div class="alert alert-danger" role="alert" style="margin: 0.2em 0 0 0">
                             <#if p.visibility == Visibility.NEEDSCHANGES>
                                 <#if sp.perms(Permission.EditPage)>
-                                    <a class="btn btn-success pull-right" href="${p.fullSlug}/manage/sendforapproval">Send for approval</a>
+                                    <a class="btn btn-success float-right" href="${p.fullSlug}/manage/sendforapproval">Send for approval</a>
                                 </#if>
                                 <strong><@spring.message "visibility.notice." + p.visibility.getName() /></strong>
                                 <br>
@@ -78,7 +78,7 @@ Base template for Project overview.
                 </div>
                 <div class="col-md-6">
                     <#if !noButtons>
-                        <div class="pull-right project-controls">
+                        <div class="float-right project-controls">
 
                             <#-- TODO
                             @flash.get("reported").map { _ =>
@@ -138,7 +138,7 @@ Base template for Project overview.
                                                         <#-- @ftlvariable name="reason" type="io.papermc.hangar.model.FlagReason" -->
                                                             <li class="list-group-item">
                                                                 <span>${reason.title}</span>
-                                                                <span class="pull-right">
+                                                                <span class="float-right">
                                                                     <input type="radio" required value="${reason.name()}" name="flag-reason" />
                                                                 </span>
                                                             </li>
@@ -161,14 +161,37 @@ Base template for Project overview.
                             </#if>
 
                             <#if headerData.hasUser() && (headerData.globalPerm(Permission.ModNotesAndFlags) || headerData.globalPerm(Permission.ViewLogs))>
-                            <button class="btn btn-alert dropdown-toggle" type="button" id="admin-actions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                Admin actions
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="admin-actions">
+                                <button class="btn btn-alert dropdown-toggle" type="button" id="admin-actions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Admin actions
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="admin-actions">
+                                    <#if headerData.globalPerm(Permission.ModNotesAndFlags)>
+                                        <a href="${Routes.PROJECTS_SHOW_FLAGS.getRouteUrl(p.project.ownerName, p.project.slug)}" class="dropdown-item">
+                                            Flag history (${p.flagCount})
+                                        </a>
+                                    </#if>
+                                    <#if headerData.globalPerm(Permission.ModNotesAndFlags)>
+                                        <a href="${Routes.PROJECTS_SHOW_NOTES.getRouteUrl(p.project.ownerName, p.project.slug)}" class="dropdown-item">
+                                                Staff notes (${p.noteCount})
+                                        </a>
+                                    </#if>
+                                    <#if headerData.globalPerm(Permission.ViewLogs)>
+                                        <a href="${Routes.SHOW_LOG.getRouteUrl("", "", p.project.pluginId, "", "", "", "")}" class="dropdown-item">
+                                                User Action Logs
+                                        </a>
+                                    </#if>
+                                    <a href="https://papermc.io/forums/${p.project.ownerName}" class="dropdown-item">
+                                        Owner on forum <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+
+                            <#--<ul class="dropdown-menu" aria-labelledby="admin-actions">
                                 <#if headerData.globalPerm(Permission.ModNotesAndFlags)>
-                                    <li><a href="${Routes.PROJECTS_SHOW_FLAGS.getRouteUrl(p.project.ownerName, p.project.slug)}">
-                                        Flag history (${p.flagCount}) </a></li>
+                                    <li class="dropdown-item">
+                                        <a href="${Routes.PROJECTS_SHOW_FLAGS.getRouteUrl(p.project.ownerName, p.project.slug)}">
+                                            Flag history (${p.flagCount})
+                                        </a>
+                                    </li>
                                 </#if>
                                 <#if headerData.globalPerm(Permission.ModNotesAndFlags)>
                                 <li><a href="${Routes.PROJECTS_SHOW_NOTES.getRouteUrl(p.project.ownerName, p.project.slug)}">
@@ -179,7 +202,7 @@ Base template for Project overview.
                                         User Action Logs</a></li>
                                 </#if>
                                 <li><a href="https://papermc.io/forums/${p.project.ownerName}">Owner on forum <i class="fas fa-external-link-alt" aria-hidden="true"></i></a></li>
-                            </ul>
+                            </ul>-->
                             </#if>
                         </div>
                     </#if>
@@ -189,24 +212,24 @@ Base template for Project overview.
                 <!-- Nav -->
             <div class="row row-nav">
                 <div class="col-md-12">
-                    <div class="navbar navbar-default project-navbar pull-left">
+                    <div class="navbar navbar-light project-navbar float-left navbar-expand-lg">
                         <div class="navbar-inner">
                             <ul class="nav navbar-nav">
                                 <!-- Tabs -->
-                                <li id="docs" class="">
-                                    <a href="${Routes.PROJECTS_SHOW.getRouteUrl(p.project.ownerName, p.project.slug)}">
+                                <li id="docs" class="nav-item">
+                                    <a href="${Routes.PROJECTS_SHOW.getRouteUrl(p.project.ownerName, p.project.slug)}" class="nav-link">
                                         <i class="fas fa-book"></i> <@spring.message "project.docs" /></a>
                                 </li>
 
-                                <li id="versions" class="">
-                                    <a href="${Routes.VERSIONS_SHOW_LIST.getRouteUrl(p.project.ownerName, p.project.slug)}">
+                                <li id="versions" class="nav-item">
+                                    <a href="${Routes.VERSIONS_SHOW_LIST.getRouteUrl(p.project.ownerName, p.project.slug)}" class="nav-link">
                                         <i class="fas fa-download"></i> <@spring.message "project.versions" />
                                     </a>
                                 </li>
 
                                 <#if p.project.topicId??>
-                                    <li id="discussion" class="">
-                                        <a href="${Routes.PROJECTS_SHOW_DISCUSSION.getRouteUrl(p.project.ownerName, p.project.slug)}">
+                                    <li id="discussion" class="nav-item">
+                                        <a href="${Routes.PROJECTS_SHOW_DISCUSSION.getRouteUrl(p.project.ownerName, p.project.slug)}" class="nav-link">
                                             <i class="fas fa-users"></i> <@spring.message "project.discuss" />
                                         </a>
                                     </li>
@@ -214,8 +237,8 @@ Base template for Project overview.
 
                                 <#if sp.perms(Permission.EditProjectSettings)>
                                     <#-- Show manager if permitted -->
-                                    <li id="settings" class="">
-                                        <a href="${Routes.PROJECTS_SHOW_SETTINGS.getRouteUrl(p.project.ownerName, p.project.slug)}">
+                                    <li id="settings" class="nav-item">
+                                        <a href="${Routes.PROJECTS_SHOW_SETTINGS.getRouteUrl(p.project.ownerName, p.project.slug)}" class="nav-link">
                                             <i class="fas fa-cog"></i> <@spring.message "project.settings" />
                                         </a>
                                     </li>
@@ -223,27 +246,27 @@ Base template for Project overview.
 
                                 <#if p.project.homepage??>
                                     <#assign homepage>${p.project.homepage}</#assign> <#-- move these assigns? -->
-                                    <li id="homepage">
+                                    <li id="homepage" class="nav-item">
                                         <a title="${homepage}" target="_blank" rel="noopener"
-                                           href="<@hangar.linkout homepage/>">
+                                           href="<@hangar.linkout homepage/>" class="nav-link">
                                             <i class="fas fa-home"></i> Homepage <i class="fas fa-external-link-alt"></i></a>
                                     </li>
                                 </#if>
 
                                 <#if p.project.issues??>
                                     <#assign issues>${p.project.issues}</#assign>
-                                    <li id="issues">
+                                    <li id="issues" class="nav-item">
                                         <a title="${issues}" target="_blank" rel="noopener"
-                                        href="<@hangar.linkout issues/>">
+                                        href="<@hangar.linkout issues/>" class="nav-link">
                                             <i class="fas fa-bug"></i> Issues <i class="fas fa-external-link-alt"></i></a>
                                     </li>
                                 </#if>
 
                                 <#if p.project.source??>
                                     <#assign source>${p.project.source}</#assign>
-                                    <li id="source">
+                                    <li id="source" class="nav-item">
                                         <a title="${source}" target="_blank" rel="noopener"
-                                        href="<@hangar.linkout source/>">
+                                        href="<@hangar.linkout source/>" class="nav-link">
                                             <i class="fas fa-code"></i> Source <i class="fas fa-external-link-alt"></i>
                                         </a>
                                     </li>
@@ -251,9 +274,9 @@ Base template for Project overview.
 
                                 <#if p.project.support??>
                                     <#assign support>${p.project.support}</#assign>
-                                    <li id="support">
+                                    <li id="support" class="nav-item">
                                         <a title="${support}" target="_blank" rel="noopener"
-                                        href="<@hangar.linkout support/>">
+                                        href="<@hangar.linkout support/>" class="nav-link">
                                             <i class="fas fa-question-circle"></i> Support <i class="fas fa-external-link-alt"></i>
                                         </a>
                                     </li>

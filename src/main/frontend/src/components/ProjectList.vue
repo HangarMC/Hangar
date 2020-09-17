@@ -10,11 +10,11 @@
                     <li class="list-group-item project" v-for="project in projects" :class="visibilityFromName(project.visibility).class">
                         <div class="container-fluid">
                             <div class="row">
-                                <div class="col-xs-12 col-sm-1">
+                                <div class="col-12 col-sm-1">
                                     <Icon :name="project.namespace.owner" :src="project.icon_url"
                                           extra-classes="user-avatar-sm"></Icon>
                                 </div>
-                                <div class="col-xs-12 col-sm-11">
+                                <div class="col-12 col-sm-11">
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <a :href="routes.Projects.show(project.namespace.owner, project.namespace.slug).absoluteURL()"
@@ -45,7 +45,7 @@
                                         <div class="col-sm-7 description-column">
                                             <div class="description">{{ project.description }}</div>
                                         </div>
-                                        <div class="col-xs-12 col-sm-5 tags-line" v-if="project.promoted_versions">
+                                        <div class="col-12 col-sm-5 tags-line" v-if="project.promoted_versions">
                                             <Tag v-bind:name="tag.name" v-bind:data="tag.versions.join(' | ')" v-bind:color="tag.color"
                                                  v-bind:key="project.name + '-' + tag.name" v-for="tag in tagsFromPromoted(project.promoted_versions)"></Tag>
                                         </div>
@@ -210,7 +210,7 @@ export default {
         }
 
         .title {
-            font-size: 2rem;
+            font-size: 1.2rem;
             color: $sponge_grey;
             font-weight: bold;
         }

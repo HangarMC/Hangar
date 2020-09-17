@@ -17,7 +17,7 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title pull-left"><@spring.message "version.log.visibility.title" /></h4>
+                    <h4 class="panel-title float-left"><@spring.message "version.log.visibility.title" /></h4>
                     <div class="clearfix"></div>
                 </div>
                 <table class="table table-condensed setting-no-border table-review-log">

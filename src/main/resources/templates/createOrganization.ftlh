@@ -42,7 +42,7 @@
 
                     <button title="Continue" type="submit" name="create" form="form-continue"
                     value="<@spring.message "general.continue" />"
-                    class="push-down pull-right continue-btn btn btn-primary" disabled>
+                    class="push-down float-right continue-btn btn btn-primary" disabled>
                     <@spring.message "general.create" />
                     </button>
                 </div>

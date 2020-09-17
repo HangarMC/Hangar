@@ -1,6 +1,11 @@
 .card {
   border: 1px solid $lighter;
 
+  .card-body.table {
+    margin-bottom: 0;
+    padding: 15px;
+  }
+
   > .panel-pagination {
     background: $sponge_grey;
     text-align: center;

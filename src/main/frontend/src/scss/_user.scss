@@ -91,7 +91,7 @@
   }
 
   .user-badge > h1 { float: left; }
-  .pull-right { @include size(20%, 100%); }
+  .float-right { @include size(20%, 100%); }
   .user-roles li { display: inline; }
 
   .header-body {
@@ -121,12 +121,12 @@
 }
 
 .panel-user-info {
-  .panel-footer > .pull-right { font-size: 16px; }
-  .panel-user-info .panel-footer > .pull-left { margin-top: 2px; }
+  .panel-footer > .float-right { font-size: 16px; }
+  .panel-user-info .panel-footer > .float-left { margin-top: 2px; }
   tr { height: 42px; }
-  td > .pull-left { margin-right: 5px; }
-  td > .pull-right > span { font-size: 12px; }
-  td > .pull-right > i { font-size: 18px; }
+  td > .float-left { margin-right: 5px; }
+  td > .float-right > span { font-size: 12px; }
+  td > .float-right > i { font-size: 18px; }
 
   .panel-footer {
     height: 34px;
