@@ -15,3 +15,7 @@
   border-color: #adadad;
   text-decoration: none;
 }
+
+button:disabled {
+  cursor: not-allowed;
+}

@@ -51,9 +51,9 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title float-left">Needs Approval</h4>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title float-left">Needs Approval</h4>
                     <div class="clearfix"></div>
                 </div>
                 <@renderApprovalList needsApproval />
@@ -66,9 +66,9 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title float-left">Awaiting Changes</h4>
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title float-left">Awaiting Changes</h4>
                         <div class="clearfix"></div>
                     </div>
                     <@renderApprovalList waitingProjects />

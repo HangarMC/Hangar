@@ -34,9 +34,9 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title float-left"><@spring.message "admin.log.title" /> &middot; Page #${page}</h4>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title float-left"><@spring.message "admin.log.title" /> &middot; Page #${page}</h4>
                     <div class="clearfix"></div>
                 </div>
                 <div class="table-responsive">
@@ -124,12 +124,12 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="panel-heading" style="display:block">
+                <div class="card-header" style="display:block">
                     <#if page gt 1>
-                        <h4 class="panel-title float-left"><a href="${Routes.SHOW_LOG.getRouteUrl((page-1)?string, userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter)}">&leftarrow; ${page - 1}</a></h4>
+                        <h4 class="card-title float-left"><a href="${Routes.SHOW_LOG.getRouteUrl((page-1)?string, userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter)}">&leftarrow; ${page - 1}</a></h4>
                     </#if>
                     <#if offset + limit < size>
-                        <h4 class="panel-title float-right"><a href="${Routes.SHOW_LOG.getRouteUrl((page+1)?string, userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter)}">${page + 1} &rightarrow;</a></h4>
+                        <h4 class="card-title float-right"><a href="${Routes.SHOW_LOG.getRouteUrl((page+1)?string, userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter)}">${page + 1} &rightarrow;</a></h4>
                     </#if>
                     <div class="clearfix"></div>
                 </div>

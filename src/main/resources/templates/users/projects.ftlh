@@ -35,7 +35,7 @@
         </div>
         <div class="col-md-4">
             <#if u.isOrga() && o?? && canEditOrgMembers()>
-                <div class="panel-user-info card">
+                <div class="card-user-info card">
                     <div class="card-header">
                         <h3 class="card-title"><@spring.message "project.manager" /></h3>
                     </div>
@@ -95,7 +95,7 @@
                     </div>
                 </div>
 
-                <div class="panel-user-info card" data-action="starred">
+                <div class="card-user-info card" data-action="starred">
                     <div class="card-header">
                         <h3 class="card-title"><i class="fas fa-star"></i> <@spring.message "project.starred" /></h3>
                     </div>
@@ -113,7 +113,7 @@
                     </div>
                 </div>
 
-                <div class="panel-user-info card" data-action="watching">
+                <div class="card-user-info card" data-action="watching">
                     <div class="card-header">
                         <h3 class="card-title"><i class="fas fa-eye"></i> <@spring.message "project.watching" /></h3>
                     </div>

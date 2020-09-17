@@ -120,15 +120,15 @@
   }
 }
 
-.panel-user-info {
-  .panel-footer > .float-right { font-size: 16px; }
-  .panel-user-info .panel-footer > .float-left { margin-top: 2px; }
+.card-user-info {
+  .card-footer > .float-right { font-size: 16px; }
+  .card-user-info .card-footer > .float-left { margin-top: 2px; }
   tr { height: 42px; }
   td > .float-left { margin-right: 5px; }
   td > .float-right > span { font-size: 12px; }
   td > .float-right > i { font-size: 18px; }
 
-  .panel-footer {
+  .card-footer {
     height: 34px;
     padding: 5px 10px;
   }

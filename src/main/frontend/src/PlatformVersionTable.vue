@@ -10,16 +10,18 @@
                 </div>
             </div>
             <div slot="actions-slot" slot-scope="props">
-                <div class="form-group form-inline">
+                <div class="input-group float-left">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Version Identifier</span>
+                    </div>
                     <label for="add-version-input" class="sr-only">Add Version</label>
-                    <div class="input-group">
-                        <div class="input-group-addon">Version Identifier</div>
-                        <input type="text" id="add-version-input" class="form-control" v-model="inputs[props.rowData.platform]">
+                    <input type="text" id="add-version-input" class="form-control" v-model="inputs[props.rowData.platform]">
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-primary" @click="addVersion(props.rowData.platform)" :disabled="!inputs[props.rowData.platform]">
+                            <i class="fas fa-plus"></i>
+                        </button>
                     </div>
                 </div>
-                <button type="button" class="btn btn-primary" @click="addVersion(props.rowData.platform)" :disabled="!inputs[props.rowData.platform]">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                </button>
             </div>
         </vuetable>
         <button v-if="!loading" type="button" class="btn btn-success" @click="save" :disabled="!changesMade">

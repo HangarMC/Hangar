@@ -25,14 +25,14 @@
 
     <div class="row">
         <div class="${mainWidth}">
-            <div class="panel panel-default panel-create">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
+            <div class="card card-create">
+                <div class="card-header">
+                    <h3 class="card-title">
                     <@spring.message "version.create.title" />
                     </h3>
                 </div>
 
-                <div class="create-body panel-body">
+                <div class="create-body card-body">
                     <div class="minor create-blurb">
                         <span><@spring.messageArgs code="version.create.info" args=[projectName, pluginId] /></span>
                     </div>

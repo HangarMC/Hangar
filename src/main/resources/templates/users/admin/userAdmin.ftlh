@@ -39,40 +39,40 @@
         <div class="col-md-9">
             <div class="row">
                 <#if !u.isOrga()>
-                    <@panel "Organizations">
+                    <@card "Organizations">
                         <@roleTable keyName="Organization" tableType="orgRole" withOwner=true roles=u.orgas roleTypes=orgRoles ; org, role>
                         <#-- @ftlvariable name="org" type="io.papermc.hangar.model.viewhelpers.OrganizationData" -->
                             <a href="${Routes.USER_ADMIN.getRouteUrl(org.org.name)}">
                                 ${org.org.name}
                             </a>
                         </@roleTable>
-                    </@panel>
+                    </@card>
                 <#else>
-                    <@panel "Members">
+                    <@card "Members">
                         <#-- TODO organization members map-->
                         <@roleTable keyName="User" tableType="memberRole" withOwner=false roles=orga.adminTable() roleTypes=orgRoles ; member, role>
                             <a href="${Routes.USER_ADMIN.getRouteUrl(member.user.name)}">
                                 ${member.user.name}
                             </a>
                         </@roleTable>
-                    </@panel>
+                    </@card>
                 </#if>
             </div>
             <#if !u.isOrga()>
                 <div class="row">
-                    <@panel "Projects">
+                    <@card "Projects">
                         <@roleTable keyName="Project" tableType="projectRole" withOwner=true roles=userProjectRoles roleTypes=projectRoles ; project, role>
                         <#-- @ftlvariable name="project" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
                             <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.projectOwner.name, project.project.slug)}">
                                 ${project.project.name}
                             </a>
                         </@roleTable>
-                    </@panel>
+                    </@card>
                 </div>
             </#if>
         </div>
 
-        <@panel title="Other Administration" size=3>
+        <@card title="Other Administration" size=3>
             <div class="list-group">
                 <div class="list-group-item">
                     <a href="${config.authUrl}/admin/accounts/user/${u.user.id}/change/">HangarAuth Profile</a>
@@ -81,7 +81,7 @@
                     <a href="https://papermc.io/forums${u.user.name}">Forum Profile</a>
                 </div>
             </div>
-        </@panel>
+        </@card>
 
     </div>
 
@@ -119,11 +119,11 @@
     </table>
 </#macro>
 
-<#macro panel title size=12>
+<#macro card title size=12>
     <div class="col-md-${size}">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">${title}</h4>
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">${title}</h4>
             </div>
             <#nested />
         </div>

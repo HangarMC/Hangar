@@ -10,16 +10,16 @@
 
 <#assign message><@spring.message "org.create.title" /></#assign>
 <@base.base title="${message}" additionalScripts=scripts>
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
                     <@spring.message "org.create.title" />
                     </h3>
                 </div>
 
-                <div class="project-body panel-body">
+                <div class="project-body card-body">
                     <p class="minor"> <@spring.message "org.info" /></p>
 
                     <#import "*/utils/form.ftlh" as form>
@@ -40,10 +40,8 @@
                     <#import "*/users/invite/form.ftlh" as userForm>
                     <@userForm.form owner=cu roleCategory=@helper["io.papermc.hangar.db.customtypes.RoleCategory"].ORGANIZATION />
 
-                    <button title="Continue" type="submit" name="create" form="form-continue"
-                    value="<@spring.message "general.continue" />"
-                    class="push-down float-right continue-btn btn btn-primary" disabled>
-                    <@spring.message "general.create" />
+                    <button title="Continue" type="submit" name="create" form="form-continue" value="<@spring.message "general.continue" />" class="push-down float-right continue-btn btn btn-primary" disabled>
+                        <@spring.message "general.create" />
                     </button>
                 </div>
             </div>

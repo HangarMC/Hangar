@@ -16,7 +16,7 @@ var pages = {
 //=====> HELPER FUNCTIONS
 
 function getStarsPanel(action) {
-    return $('.panel-user-info[data-action=' + action + ']');
+    return $('.card-user-info[data-action=' + action + ']');
 }
 
 function getStarsFooter(action) {

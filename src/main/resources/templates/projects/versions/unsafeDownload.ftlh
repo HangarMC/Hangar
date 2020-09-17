@@ -9,16 +9,16 @@
 <@base.base title=message>
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                     <div class="col-12 col-sm-4 no-padding">
-                        <h4 class="panel-title"><i class="fas fa-exclamation-triangle"></i>&ensp;<@spring.message "general.warning" /></h4>
+                        <h4 class="card-title"><i class="fas fa-exclamation-triangle"></i>&ensp;<@spring.message "general.warning" /></h4>
                     </div>
                     <div class="col-12 col-sm-8 no-padding">
                         <span class="float-right"><@spring.messageArgs code="version.download.confirm.header" args=[project.ownerName, project.name, target.versionString] /></span>
                     </div>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <div class="alert alert-danger" style="margin-bottom: 10px">
                         <#assign ReviewState=@helper["io.papermc.hangar.model.generated.ReviewState"] />
                         <#-- @ftlvariable name="ReviewState" type="io.papermc.hangar.model.generated.ReviewState" -->
