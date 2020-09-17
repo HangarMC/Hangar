@@ -49,20 +49,20 @@
             <#assign Permission=@helper["io.papermc.hangar.model.Permission"] />
             <#-- @ftlvariable name="Permission" type="io.papermc.hangar.model.Permission" -->
             <#if authEnabled>
-                <div class="collapse navbar-collapse float-right">
+                <div class="collapse navbar-collapse float-right navbar-right">
                     <ul class="nav navbar-nav">
                         <#if cu??>
                             <li class="dropdown nav-icon new-controls">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" id="creatorDropDown" aria-expanded="false">
                                     <i class="icon fas fa-plus"></i>
                                 </a>
-                                <ul class="user-dropdown dropdown-menu" aria-label="Create new&hellip;" aria-labelledby="creatorDropDown">
+                                <ul class="user-dropdown dropdown-menu dropdown-menu-right" aria-label="Create new&hellip;" aria-labelledby="creatorDropDown">
                                     <li>
-                                        <a href="${Routes.PROJECTS_SHOW_CREATOR.getRouteUrl()}" class="list-group-item-action list-group-item">
+                                        <a href="${Routes.PROJECTS_SHOW_CREATOR.getRouteUrl()}" class="list-group-item-action dropdown-item">
                                             <i class="fas fa-book fa-fw mr-1"></i>
                                             <span><@spring.message "project.create"/></span>
                                         </a>
-                                        <a href="${Routes.ORG_SHOW_CREATOR.getRouteUrl()}"  class="list-group-item-action list-group-item">
+                                        <a href="${Routes.ORG_SHOW_CREATOR.getRouteUrl()}"  class="list-group-item-action dropdown-item">
                                             <i class="fas fa-users fa-fw mr-1"></i>
                                             <span><@spring.message "org.create" /></span>
                                         </a>
@@ -94,17 +94,17 @@
                                     </#if>
                                     <img height="32" width="32" class="user-avatar" src="${utils.avatarUrl(cu.name)}" alt="${cu.name}"/>
                                 </a>
-                                <ul class="user-dropdown dropdown-menu"
+                                <ul class="user-dropdown dropdown-menu dropdown-menu-right"
                                     aria-label="<@spring.messageArgs code="aria.dropdown.menu" args=[1] />" aria-labelledby="userDropDown">
                                     <li>
-                                        <a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl("")}${cu.name}">
+                                        <a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl("")}${cu.name}" class="list-group-item-action dropdown-item">
                                             <i class="fas fa-user mr-1"></i>
                                             <span>${cu.name}</span>
                                         </a>
                                     </li>
 
                                     <li>
-                                        <a href="${Routes.USERS_SHOW_NOTIFICATIONS.getRouteUrl("", "")}">
+                                        <a href="${Routes.USERS_SHOW_NOTIFICATIONS.getRouteUrl("", "")}" class="list-group-item-action dropdown-item">
                                             <i class="fas fa-bell mr-1"></i>
                                             <span>
                                         <@spring.message "notification.plural" />
@@ -116,7 +116,7 @@
                                     </li>
                                     <#if headerData.globalPerm(Permission.ModNotesAndFlags)>
                                         <li>
-                                            <a href="${Routes.SHOW_FLAGS.getRouteUrl()}">
+                                            <a href="${Routes.SHOW_FLAGS.getRouteUrl()}" class="list-group-item-action dropdown-item">
                                                 <i class="fas fa-flag mr-1"></i>
                                                 <span>
                                                 <@spring.message "project.flag.plural" />
@@ -127,7 +127,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="${Routes.SHOW_PROJECT_VISIBILITY.getRouteUrl()}">
+                                            <a href="${Routes.SHOW_PROJECT_VISIBILITY.getRouteUrl()}" class="list-group-item-action dropdown-item">
                                                 <i class="fas fa-thumbs-up mr-1"></i>
                                                 <span>
                                                 Project approvals
@@ -140,7 +140,7 @@
                                     </#if>
                                     <#if headerData.globalPerm(Permission.Reviewer)>
                                         <li>
-                                            <a href="${Routes.SHOW_QUEUE.getRouteUrl()}">
+                                            <a href="${Routes.SHOW_QUEUE.getRouteUrl()}" class="list-group-item-action dropdown-item">
                                                 <i class="far fa-thumbs-up mr-1"></i>
                                                 <span>
                                                 <@spring.message "user.queue" />
@@ -153,7 +153,7 @@
                                     </#if>
                                     <#if headerData.globalPerm(Permission.ViewStats)>
                                         <li>
-                                            <a href="${Routes.SHOW_STATS.getRouteUrl("", "")}">
+                                            <a href="${Routes.SHOW_STATS.getRouteUrl("", "")}" class="list-group-item-action dropdown-item">
                                                 <i class="fas fa-chart-area mr-1"></i>
                                                 <span><@spring.message "user.stats" /></span>
                                             </a>
@@ -161,7 +161,7 @@
                                     </#if>
                                     <#if headerData.globalPerm(Permission.ViewHealth)>
                                         <li>
-                                            <a href="${Routes.SHOW_HEALTH.getRouteUrl()}">
+                                            <a href="${Routes.SHOW_HEALTH.getRouteUrl()}" class="list-group-item-action dropdown-item">
                                                 <i class="fas fa-heartbeat mr-1"></i>
                                                 <span><@spring.message "admin.health.title" /></span>
                                             </a>
@@ -169,7 +169,7 @@
                                     </#if>
                                     <#if headerData.globalPerm(Permission.ViewLogs)>
                                         <li>
-                                            <a href="${Routes.SHOW_LOG.getRouteUrl("", "", "", "", "", "", "")}">
+                                            <a href="${Routes.SHOW_LOG.getRouteUrl("", "", "", "", "", "", "")}" class="list-group-item-action dropdown-item">
                                                 <i class="fas fa-list mr-1"></i>
                                                 <span><@spring.message "admin.log.title" /></span>
                                             </a>
@@ -177,7 +177,7 @@
                                     </#if>
                                     <#if headerData.globalPerm(Permission.ManualValueChanges)>
                                         <li>
-                                            <a href="${Routes.SHOW_PLATFORM_VERSIONS.getRouteUrl()}">
+                                            <a href="${Routes.SHOW_PLATFORM_VERSIONS.getRouteUrl()}" class="list-group-item-action dropdown-item">
                                                 <i class="fas fa-tags mr-1"></i>
                                                 <span><@spring.message "admin.platformVersions.title" /></span>
                                             </a>
@@ -186,7 +186,7 @@
 
                                     <li role="separator" class="divider"></li>
                                     <li>
-                                        <a href="${Routes.USERS_LOGOUT.getRouteUrl()}">
+                                        <a href="${Routes.USERS_LOGOUT.getRouteUrl()}" class="list-group-item-action dropdown-item">
                                             <i class="fas fa-sign-out-alt mr-1"></i>
                                             <span><@spring.message "general.signout" /></span>
                                         </a>

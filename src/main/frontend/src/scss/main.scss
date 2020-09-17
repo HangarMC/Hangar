@@ -1,5 +1,4 @@
 @import "variables";
-
 @import "custom";
 @import "~bootstrap/scss/bootstrap";
 
@@ -14,6 +13,7 @@
 @import "card";
 @import 'utils';
 @import "list";
+@import "dropdowns";
 
 html {
   position: relative;

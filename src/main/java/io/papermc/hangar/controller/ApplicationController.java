@@ -250,10 +250,10 @@ public class ApplicationController extends HangarController {
             versions.putIfAbsent(p, new ArrayList<>());
         }
         mav.addObject("platformVersions", mapper.valueToTree(versions));
-        return fillModel(mav);
+        return fillModel(mav);//
     }
 
-//    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     @GlobalPermission(NamedPermission.MANUAL_VALUE_CHANGES)
     @Secured("ROLE_USER")
     @PostMapping("/admin/versions/")
@@ -284,7 +284,7 @@ public class ApplicationController extends HangarController {
         OrganizationData organizationData = orgService.getOrganizationData(userData.getUser());
         mav.addObject("orga", organizationData);
         mav.addObject("userProjectRoles", projectService.getProjectsAndRoles(userData.getUser().getId()));
-        return fillModel(mav);//
+        return fillModel(mav);
     }
 
     @GlobalPermission(NamedPermission.EDIT_ALL_USER_SETTINGS)
