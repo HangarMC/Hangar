@@ -248,7 +248,7 @@ $(function() {
                 let html = "";
                 response.promoted_versions.forEach((version) => {
                     const href = jsRoutes.controllers.project.Versions.show(projectOwner, projectSlug, version.version).absoluteURL();
-                    html = html + "<li class='list-group-item'><a href='" + href + "'>" + version.version +  "</a></li>";
+                    html = html + "<li class='list-group-item-action'><a href='" + href + "'>" + version.version +  "</a></li>";
                 });
                 $(".promoted-list").html(html);
             }

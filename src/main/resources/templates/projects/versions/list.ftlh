@@ -37,7 +37,7 @@ Versions page within Project overview.
                     <!-- Channel list -->
                 <ul class="list-group list-channel">
                     <#list channels as channel>
-                        <li class="list-group-item">
+                        <li class="list-group-item-action">
                             <span class="channel" style="background-color: ${channel.color.hex}">${channel.name}</span>
                             <input type="checkbox" class="pull-right"/>
                         </li>
@@ -45,7 +45,7 @@ Versions page within Project overview.
 
                     <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
                     <#if sp.perms(Permission.EditTags)>
-                        <li class="list-group-item text-right">
+                        <li class="list-group-item-action text-right">
                             <a class="btn yellow btn-xs" href="${Routes.CHANNELS_SHOW_LIST.getRouteUrl(p.project.ownerName, p.project.slug)}">
                                 Edit
                             </a>

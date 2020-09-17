@@ -21,32 +21,32 @@
             <div>
                 <input type="checkbox" id="relevanceBox" v-model="relevance">
                 <label for="relevanceBox">Sort with relevance</label>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Categories</h3>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Categories</h3>
                         <a class="category-reset" @click="categories = []" v-if="categories.length > 0">
                             <i class="fas fa-times white"></i>
                         </a>
                     </div>
 
                     <div class="list-group category-list">
-                        <a v-for="(category, index) in availableOptions.category" :key="index" class="list-group-item" @click="changeCategory(category)"
+                        <a v-for="(category, index) in availableOptions.category" :key="index" class="list-group-item-action" @click="changeCategory(category)"
                            v-bind:class="{ active: categories.includes(category.id) }">
                             <i class="fas fa-fw" :class="'fa-' + category.icon"></i>
                             <strong>{{ category.name }}</strong>
                         </a>
                     </div>
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Platforms</h3>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Platforms</h3>
                     </div>
 
                     <div class="list-group platform-list">
-                        <a class="list-group-item" @click="tags = []" v-bind:class="{ active: tags.length === 0 }">
+                        <a class="list-group-item-action" @click="tags = []" v-bind:class="{ active: tags.length === 0 }">
                             <span class="parent">Any</span>
                         </a>
-                        <a v-for="(platform, index) in availableOptions.platform" :key="index" class="list-group-item" @click="tags = [platform.id]"
+                        <a v-for="(platform, index) in availableOptions.platform" :key="index" class="list-group-item-action" @click="tags = [platform.id]"
                            v-bind:class="{ active: tags.includes(platform.id) }">
                             <span :class="{parent: platform.parent}">{{ platform.name }}</span>
                         </a>
@@ -58,13 +58,13 @@
 </template>
 
 <script>
-    import ProjectList from "./components/ProjectList"
-    import queryString from "query-string"
-    import {clearFromDefaults} from "./utils"
-    import {Category, Platform, SortOptions} from "./enums";
-    import debounce from "lodash/debounce"
+import ProjectList from "./components/ProjectList"
+import queryString from "query-string"
+import {clearFromDefaults} from "./utils"
+import {Category, Platform, SortOptions} from "./enums";
+import debounce from "lodash/debounce"
 
-    function defaultData() {
+function defaultData() {
         return {
             q: "",
             sort: "updated",
@@ -170,7 +170,7 @@
         cursor: pointer;
     }
     .category-list {
-        a.list-group-item {
+        a.list-group-item-action {
             svg {
                 margin-right: 0.5rem;
             }
@@ -190,7 +190,7 @@
         }
     }
     .platform-list {
-        .list-group-item {
+        .list-group-item-action {
             cursor: pointer;
         }
         .parent {

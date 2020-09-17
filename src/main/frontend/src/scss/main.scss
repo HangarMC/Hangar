@@ -7,8 +7,11 @@
 @import 'nav';
 @import 'project';
 @import 'user';
-@import "panel";
+@import "card";
 @import 'utils';
+
+@import "custom";
+@import "~bootstrap/scss/bootstrap";
 
 html {
   position: relative;
@@ -75,11 +78,11 @@ body {
     font-weight: bold;
   }
 
-  .panel.sponsor-panel {
+  .card.sponsor-panel {
     margin-bottom: 0;
     text-align: center;
 
-    > .panel-body {
+    > .card-body {
       padding-top: 25px;
     }
   }
@@ -194,28 +197,6 @@ form {
     &:hover {
       background: darken($sponge_yellow, 2);
     }
-  }
-}
-
-.panel > .panel-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: $sponge_grey;
-  color: #ffffff;
-  font-weight: 600;
-  border: none;
-
-  &:last-child {
-    margin-left: auto;
-  }
-
-  .btn i {
-    color: inherit;
-  }
-
-  i {
-    color: #ffffff;
   }
 }
 

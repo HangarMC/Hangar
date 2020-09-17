@@ -11,7 +11,7 @@
         </div>
         <div v-show="!loading">
             <div class="list-group">
-                <a v-for="version in versions" :href="routes.Versions.show(htmlDecode(projectOwner), htmlDecode(projectSlug), version.name).absoluteURL()" class="list-group-item"
+                <a v-for="version in versions" :href="routes.Versions.show(htmlDecode(projectOwner), htmlDecode(projectSlug), version.name).absoluteURL()" class="list-group-item-action"
                    :class="[classForVisibility(version.visibility)]">
                     <div class="container-fluid">
                         <div class="row">
@@ -63,11 +63,11 @@
 </template>
 
 <script>
-    import Tag from "./components/Tag";
-    import Pagination from "./components/Pagination";
-    import {Visibility} from "./enums";
+import Tag from "./components/Tag";
+import Pagination from "./components/Pagination";
+import {Visibility} from "./enums";
 
-    export default {
+export default {
         components: {
             Tag,
             Pagination
@@ -139,7 +139,7 @@
 
 <style lang="scss">
     .version-list {
-        .list-group > .list-group-item > .container-fluid > .row {
+        .list-group > .list-group-item-action > .container-fluid > .row {
             display: flex;
             align-items: center;
         }

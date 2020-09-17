@@ -8,6 +8,7 @@ const Path = require('path');
 const fs = require('fs');
 const sourceDir = Path.resolve(__dirname, 'src');
 const entryDir = Path.resolve(sourceDir, 'entries');
+const pluginsDir = Path.resolve(sourceDir, 'plugins');
 const modulesDir = Path.resolve(__dirname, 'node_modules');
 const outputDir = Path.resolve(__dirname, '..', '..', '..', 'target', 'classes', 'public', 'build');
 const javascriptDir = Path.resolve(__dirname, '..', '..', '..', 'target', 'classes', 'public', 'javascripts');
@@ -17,6 +18,9 @@ for (const file of fs.readdirSync(entryDir)) {
     entries[file.replace('.js', "")] = Path.resolve(entryDir, file);
 }
 
+for (const file of fs.readdirSync(pluginsDir)) {
+    entries[file.replace('.js', '')] = Path.resolve(pluginsDir, file);
+}
 module.exports = {
     entry: {
         main: Path.resolve(sourceDir, 'scss', 'main.scss'),

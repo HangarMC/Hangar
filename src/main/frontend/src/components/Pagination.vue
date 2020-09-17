@@ -82,6 +82,7 @@
     .pagination {
         display: flex;
         justify-content: center;
+        padding-top: 0.5rem;
 
         > li {
             margin-right: 1rem;
@@ -98,6 +99,7 @@
             }
 
             a {
+                display: block;
                 border: 1px solid #ddd;
                 padding: 0.85rem 1.6rem;
                 background: #ffffff;

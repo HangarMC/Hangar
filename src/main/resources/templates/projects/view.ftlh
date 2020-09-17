@@ -136,7 +136,7 @@ Base template for Project overview.
                                                     <ul class="list-group list-flags">
                                                         <#list FlagReason.getValues() as reason>
                                                         <#-- @ftlvariable name="reason" type="io.papermc.hangar.model.FlagReason" -->
-                                                            <li class="list-group-item">
+                                                            <li class="list-group-item-action">
                                                                 <span>${reason.title}</span>
                                                                 <span class="pull-right">
                                                                     <input type="radio" required value="${reason.name()}" name="flag-reason" />

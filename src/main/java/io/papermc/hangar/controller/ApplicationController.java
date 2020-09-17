@@ -286,7 +286,7 @@ public class ApplicationController extends HangarController {
         OrganizationData organizationData = orgService.getOrganizationData(userData.getUser());
         mav.addObject("orga", organizationData);
         mav.addObject("userProjectRoles", projectService.getProjectsAndRoles(userData.getUser().getId()));
-        return fillModel(mav);
+        return fillModel(mav); //
     }
 
     @GlobalPermission(NamedPermission.EDIT_ALL_USER_SETTINGS)

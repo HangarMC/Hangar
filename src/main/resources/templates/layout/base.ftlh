@@ -21,7 +21,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <link rel="prefetch" href="<@hangar.url "images/favicon.ico" />">
         <link rel="prefetch" href="https://fonts.googleapis.com/css?family=Montserrat:400,700">
         <link rel="prefetch" href="<@hangar.url "highlight/styles/default.css" />">
-        <link rel="prefetch" href="<@hangar.url "bootstrap/css/bootstrap.min.css" />">
+<#--        <link rel="prefetch" href="<@hangar.url "bootstrap/css/bootstrap.min.css" />">-->
         <link rel="prefetch" href="<@hangar.url "build/commons.css" />">
         <link rel="prefetch" href="<@hangar.url "build/main.css" />">
         <link rel="prefetch" href="<@hangar.url "build/font-awesome.css" />">
@@ -43,7 +43,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
               href="https://papermc.io/favicons/favicon-16x16.png?v=BG70oBaPzN">
         <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="<@hangar.url "highlight/styles/default.css" />"/>
-        <link rel="stylesheet" type="text/css" href="<@hangar.url "bootstrap/css/bootstrap.min.css" />"/>
+<#--        <link rel="stylesheet" type="text/css" href="<@hangar.url "bootstrap/css/bootstrap.min.css" />"/>-->
         <link rel="stylesheet" type="text/css" href="<@hangar.url "build/font-awesome.css" />"/>
         <link rel="stylesheet" type="text/css" href="<@hangar.url "build/commons.css" />"/>
         <link rel="stylesheet" type="text/css" href="<@hangar.url "build/main.css" />"/>
@@ -52,6 +52,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <#-- See https://goo.gl/OOhYW5 and https://goo.gl/qRE0vM -->
         <link rel="manifest" href="<@hangar.url "manifest/manifest.json" />">
         <meta name="theme-color" content="#333">
+
 
         <script type="text/javascript" src="<@hangar.url "lib/jquery/dist/jquery.min.js" />"></script>
     </head>
@@ -112,7 +113,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <script type="text/javascript" src="<@hangar.url "build/font-awesome.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "build/commons.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "lib/moment/min/moment.min.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "bootstrap/js/bootstrap.min.js" />"></script>
+<#--        <script type="text/javascript" src="<@hangar.url "bootstrap/js/bootstrap.bundle.min.js" />"></script>-->
         <script type="text/javascript" src="<@hangar.url "lib/filesize/lib/filesize.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "lib/clipboard/dist/clipboard.min.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "highlight/highlight.pack.js" />"></script>

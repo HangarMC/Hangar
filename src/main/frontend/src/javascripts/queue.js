@@ -2,7 +2,7 @@
 
 $(function() {
     $('.btn-approve').click(function() {
-        var listItem = $(this).closest('.list-group-item');
+        var listItem = $(this).closest('.list-group-item-action');
         var versionPath = listItem.data('version');
         var icon = toggleSpinner($(this).find('[data-fa-i2svg]').removeClass('fa-thumbs-up'));
         $.ajax({

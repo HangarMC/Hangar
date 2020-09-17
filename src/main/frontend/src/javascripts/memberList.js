@@ -14,7 +14,7 @@ function updateIndices() {
 }
 
 function getItemContainer(element) {
-    return element.closest('.list-group-item');
+    return element.closest('.list-group-item-action');
 }
 
 function initMember(memberRow) {
@@ -58,7 +58,7 @@ function initMember(memberRow) {
 //=====> DOCUMENT READY
 
 $(function() {
-    initMember($('.list-members').find('.list-group-item'));
+    initMember($('.list-members').find('.list-group-item-action'));
 
     initUserSearch(function(result) {
         var alert = $('.member-error');

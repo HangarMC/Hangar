@@ -9,7 +9,7 @@ var namespace = null;
 function bindExpand(e) {
     e.click(function() {
         var pageId = $(this).data('page-id');
-        var listItem = $(this).closest('.list-group-item');
+        var listItem = $(this).closest('.list-group-item-action');
         var $this = $(this);
         $.ajax({
             method: 'get',
@@ -22,7 +22,7 @@ function bindExpand(e) {
                 for (var i = 0; i < childPages.length; i++) {
                     var page = childPages[i];
                     var childPage = $(
-                        '<li class="list-group-item page-item-child">' +
+                        '<li class="list-group-item-action page-item-child">' +
                         '<a href=""></a>' +
                         '</li>'
                     );

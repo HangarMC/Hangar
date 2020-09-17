@@ -111,7 +111,7 @@ Documentation page within Project overview.
                     <#-- @ftlvariable name="pg" type="io.papermc.hangar.model.viewhelpers.ProjectPage" -->
                     <#-- @ftlvariable name="children" type="java.util.List<ProjectPage>" -->
                     <#list rootPages as pg, children>
-                        <li class="list-group-item">
+                        <li class="list-group-item-action">
                             <#if children?size gt 0>
                                 <#if projectPage.parentId?? && projectPage.parentId = pg.id>
                                     <a class="page-collapse" data-page-id="${pg.id}">
@@ -131,7 +131,7 @@ Documentation page within Project overview.
                             <div class="page-children" data-page-id="${pg.id}">
                                 <#-- @ftlvariable name="childPage" type="io.papermc.hangar.model.viewhelpers.ProjectPage" -->
                                 <#list children as childPage>
-                                    <li class="list-group-item page-item-child">
+                                    <li class="list-group-item-action page-item-child">
                                         <a href="${Routes.PAGES_SHOW.getRouteUrl(p.project.ownerName, p.project.slug, childPage.slug)}">
                                             ${childPage.name}
                                         </a>
