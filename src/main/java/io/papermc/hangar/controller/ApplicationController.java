@@ -270,9 +270,7 @@ public class ApplicationController extends HangarController {
         if (additions == null || removals == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad formatting");
         }
-        additions.forEach((platform, versions) -> {
-            platformVersionsDao.get().insert(versions.stream().map(v -> new PlatformVersionsTable(Platform.valueOf(platform), v)).collect(Collectors.toList()));
-        });
+        additions.forEach((platform, versions) -> platformVersionsDao.get().insert(versions.stream().map(v -> new PlatformVersionsTable(Platform.valueOf(platform), v)).collect(Collectors.toList())));
         removals.forEach((platform, versions) -> platformVersionsDao.get().delete(versions, Platform.valueOf(platform).ordinal()));
     }
 
@@ -286,7 +284,7 @@ public class ApplicationController extends HangarController {
         OrganizationData organizationData = orgService.getOrganizationData(userData.getUser());
         mav.addObject("orga", organizationData);
         mav.addObject("userProjectRoles", projectService.getProjectsAndRoles(userData.getUser().getId()));
-        return fillModel(mav); //
+        return fillModel(mav);//
     }
 
     @GlobalPermission(NamedPermission.EDIT_ALL_USER_SETTINGS)

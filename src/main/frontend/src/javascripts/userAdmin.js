@@ -37,7 +37,7 @@ $(function() {
         update('globalRole', 'add', { role: parseInt(selected.val()) })
             .done(function () {
                 // Add role to list
-                var newItem = $('<div class="list-group-item-action"></div>');
+                var newItem = $('<div class="list-group-item"></div>');
                 newItem.data({role: selected.val()});
                 newItem.text(selected.text());
                 newItem.append($('<span class="pull-right"><a href="#" class="global-role-delete"><i class="fa fa-trash"></i></a></span>'));
@@ -51,7 +51,7 @@ $(function() {
 
     globalRoleList.on('click', '.global-role-delete', function(event) {
         event.preventDefault();
-        var item = $(event.target).closest('.list-group-item-action');
+        var item = $(event.target).closest('.list-group-item');
 
         var finishLoading = loadingButton($(event.target).parent());
 

@@ -48,7 +48,7 @@ sorted according to different criteria.
                 </div>
             </div>
             <div class="col-md-3 sponsor">
-                <div class=".card sponsor-panel">
+                <div class="card sponsor-panel">
                     <span>Sponsored by</span>
                     <div class="card-body">
                         <#-- @ftlvariable name="sponsor" type="io.papermc.hangar.config.hangar.HangarConfig.Sponsor" -->

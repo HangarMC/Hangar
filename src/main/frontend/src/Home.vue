@@ -30,7 +30,7 @@
                     </div>
 
                     <div class="list-group category-list">
-                        <a v-for="(category, index) in availableOptions.category" :key="index" class="list-group-item-action" @click="changeCategory(category)"
+                        <a v-for="(category, index) in availableOptions.category" :key="index" class="list-group-item list-group-item-action" @click="changeCategory(category)"
                            v-bind:class="{ active: categories.includes(category.id) }">
                             <i class="fas fa-fw" :class="'fa-' + category.icon"></i>
                             <strong>{{ category.name }}</strong>
@@ -43,10 +43,10 @@
                     </div>
 
                     <div class="list-group platform-list">
-                        <a class="list-group-item-action" @click="tags = []" v-bind:class="{ active: tags.length === 0 }">
+                        <a class="list-group-item list-group-item-action" @click="tags = []" v-bind:class="{ active: tags.length === 0 }">
                             <span class="parent">Any</span>
                         </a>
-                        <a v-for="(platform, index) in availableOptions.platform" :key="index" class="list-group-item-action" @click="tags = [platform.id]"
+                        <a v-for="(platform, index) in availableOptions.platform" :key="index" class="list-group-item list-group-item-action" @click="tags = [platform.id]"
                            v-bind:class="{ active: tags.includes(platform.id) }">
                             <span :class="{parent: platform.parent}">{{ platform.name }}</span>
                         </a>
@@ -159,7 +159,7 @@ function defaultData() {
     }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
     @import "./scss/variables";
 
     .select-sort {
@@ -169,8 +169,11 @@ function defaultData() {
         display: flex;
         cursor: pointer;
     }
+    .list-group-item-action {
+        padding: 10px 15px;
+    }
     .category-list {
-        a.list-group-item-action {
+        a.list-group-item {
             svg {
                 margin-right: 0.5rem;
             }
@@ -190,7 +193,7 @@ function defaultData() {
         }
     }
     .platform-list {
-        .list-group-item-action {
+        .list-group-item {
             cursor: pointer;
         }
         .parent {

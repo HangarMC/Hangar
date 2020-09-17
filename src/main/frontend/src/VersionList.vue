@@ -11,7 +11,7 @@
         </div>
         <div v-show="!loading">
             <div class="list-group">
-                <a v-for="version in versions" :href="routes.Versions.show(htmlDecode(projectOwner), htmlDecode(projectSlug), version.name).absoluteURL()" class="list-group-item-action"
+                <a v-for="version in versions" :href="routes.Versions.show(htmlDecode(projectOwner), htmlDecode(projectSlug), version.name).absoluteURL()" class="list-group-item"
                    :class="[classForVisibility(version.visibility)]">
                     <div class="container-fluid">
                         <div class="row">
@@ -139,7 +139,7 @@ export default {
 
 <style lang="scss">
     .version-list {
-        .list-group > .list-group-item-action > .container-fluid > .row {
+        .list-group > .list-group-item > .container-fluid > .row {
             display: flex;
             align-items: center;
         }

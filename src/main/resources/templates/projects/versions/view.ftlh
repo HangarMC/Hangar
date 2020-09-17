@@ -195,7 +195,7 @@
                         <#list Platform.getPlatforms(v.dependencies?map(d -> d.pluginId)) as platform>
                             <#assign dependency=v.dependencies?filter(d -> d.pluginId == platform.dependencyId)?first />
                             <#if dependency?has_content>
-                                <li class="list-group-item-action">
+                                <li class="list-group-item">
                                     <a href="${platform.url}">
                                         <strong>${platform.getName()}</strong>
                                     </a>
@@ -210,7 +210,7 @@
                         </#list>
 
                         <#list v.filteredDependencies as depend, project>
-                            <li class="list-group-item-action">
+                            <li class="list-group-item">
                                 <#if project??>
                                     <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.ownerName, project.slug)}">
                                         <strong>${project.name}</strong>

@@ -1,4 +1,8 @@
 @import "variables";
+
+@import "custom";
+@import "~bootstrap/scss/bootstrap";
+
 @import 'admin';
 @import 'creator';
 @import 'discuss';
@@ -9,9 +13,7 @@
 @import 'user';
 @import "card";
 @import 'utils';
-
-@import "custom";
-@import "~bootstrap/scss/bootstrap";
+@import "list";
 
 html {
   position: relative;
@@ -73,7 +75,7 @@ body {
   span {
     position: absolute;
     left: 20px;
-    font-size: 1rem;
+    font-size: 0.7rem;
     top: 5px;
     font-weight: bold;
   }

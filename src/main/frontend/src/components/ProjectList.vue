@@ -7,7 +7,7 @@
         <div v-show="!loading">
             <div v-if="projects.length > 0">
                 <ul class="list-group project-list">
-                    <li class="list-group-item-action project" v-for="project in projects" :class="visibilityFromName(project.visibility).class">
+                    <li class="list-group-item project" v-for="project in projects" :class="visibilityFromName(project.visibility).class">
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-xs-12 col-sm-1">
@@ -58,7 +58,7 @@
                 <Pagination :current="current" :total="total" @jumpTo="$emit('jumpToPage', $event)" @next="$emit('nextPage')"
                             @prev="$emit('prevPage')"></Pagination>
             </div>
-            <div v-else class="list-group-item-action empty-project-list">
+            <div v-else class="list-group-item empty-project-list">
                 <i class="far fa-2x fa-sad-tear"></i>
                 <span>Oops! No projects found...</span>
             </div>

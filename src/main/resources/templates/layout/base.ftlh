@@ -113,7 +113,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <script type="text/javascript" src="<@hangar.url "build/font-awesome.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "build/commons.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "lib/moment/min/moment.min.js" />"></script>
-<#--        <script type="text/javascript" src="<@hangar.url "bootstrap/js/bootstrap.bundle.min.js" />"></script>-->
+        <script type="text/javascript" src="<@hangar.url "build/bootstrap.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "lib/filesize/lib/filesize.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "lib/clipboard/dist/clipboard.min.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "highlight/highlight.pack.js" />"></script>

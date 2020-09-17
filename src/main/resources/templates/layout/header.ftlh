@@ -53,17 +53,16 @@
                     <ul class="nav navbar-nav">
                         <#if cu??>
                             <li class="dropdown nav-icon new-controls">
-                                <a href="#" class="drop-down-toggle" data-toggle="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" id="creatorDropDown" aria-expanded="false">
                                     <i class="icon fas fa-plus"></i>
-                                    <span class="caret"></span>
                                 </a>
-                                <ul class="user-dropdown dropdown-menu" aria-label="Create new&hellip;">
+                                <ul class="user-dropdown dropdown-menu" aria-label="Create new&hellip;" aria-labelledby="creatorDropDown">
                                     <li>
-                                        <a href="${Routes.PROJECTS_SHOW_CREATOR.getRouteUrl()}">
+                                        <a href="${Routes.PROJECTS_SHOW_CREATOR.getRouteUrl()}" class="list-group-item-action list-group-item">
                                             <i class="fas fa-book fa-fw mr-1"></i>
                                             <span><@spring.message "project.create"/></span>
                                         </a>
-                                        <a href="${Routes.ORG_SHOW_CREATOR.getRouteUrl()}">
+                                        <a href="${Routes.ORG_SHOW_CREATOR.getRouteUrl()}"  class="list-group-item-action list-group-item">
                                             <i class="fas fa-users fa-fw mr-1"></i>
                                             <span><@spring.message "org.create" /></span>
                                         </a>
@@ -89,15 +88,14 @@
 
                         <#-- Show user controls -->
                             <li class="dropdown user-controls nav-icon">
-                                <a href="#" class="drop-down-toggle user-toggle" data-toggle="dropdown">
+                                <a href="#" class="dropdown-toggle user-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" id="userDropDown" aria-expanded="false">
                                     <#if headerData.hasNotice()>
                                         <span class="unread"></span>
                                     </#if>
                                     <img height="32" width="32" class="user-avatar" src="${utils.avatarUrl(cu.name)}" alt="${cu.name}"/>
-                                    <span class="caret"></span>
                                 </a>
                                 <ul class="user-dropdown dropdown-menu"
-                                    aria-label="<@spring.messageArgs code="aria.dropdown.menu" args=[1] />">
+                                    aria-label="<@spring.messageArgs code="aria.dropdown.menu" args=[1] />" aria-labelledby="userDropDown">
                                     <li>
                                         <a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl("")}${cu.name}">
                                             <i class="fas fa-user mr-1"></i>
