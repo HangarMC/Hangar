@@ -110,27 +110,27 @@
         </div>
 
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title pull-left">Plugins</h4>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title float-left">Plugins</h4>
                     <div class="clearfix"></div>
                 </div>
                 <canvas id="chart-reviews" height="40vh" width="100%"></canvas>
             </div>
         </div>
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title pull-left">Downloads</h4>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title float-left">Downloads</h4>
                     <div class="clearfix"></div>
                 </div>
                 <canvas id="chart-downloads" height="40vh" width="100%"></canvas>
             </div>
         </div>
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title pull-left">Flags</h4>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title float-left">Flags</h4>
                     <div class="clearfix"></div>
                 </div>
                 <canvas id="chart-flags" height="40vh" width="100%"></canvas>

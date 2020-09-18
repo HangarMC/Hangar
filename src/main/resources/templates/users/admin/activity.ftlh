@@ -8,18 +8,18 @@
     <div class="row">
         <div class="col-md-12  header-flags">
             <div class="clearfix">
-                <h1 class="pull-left"><@spring.message "activity.title" /> <i>${username}</i></h1>
+                <h1 class="float-left"><@spring.message "activity.title" /> <i>${username}</i></h1>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title pull-left"><@spring.message "activity.title" /></h4>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title float-left"><@spring.message "activity.title" /></h4>
                     <div class="clearfix"></div>
                 </div>
-                <table class="table table-condensed setting-no-border table-review-log">
+                <table class="table table-sm setting-no-border table-review-log">
                     <tbody>
                         <#if !activities?has_content>
                             <tr><td>No activities founds</td></tr>

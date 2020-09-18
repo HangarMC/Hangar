@@ -8,15 +8,23 @@ const Path = require('path');
 const fs = require('fs');
 const sourceDir = Path.resolve(__dirname, 'src');
 const entryDir = Path.resolve(sourceDir, 'entries');
+const pluginsDir = Path.resolve(sourceDir, 'plugins');
 const modulesDir = Path.resolve(__dirname, 'node_modules');
 const outputDir = Path.resolve(__dirname, '..', '..', '..', 'target', 'classes', 'public', 'build');
 const javascriptDir = Path.resolve(__dirname, '..', '..', '..', 'target', 'classes', 'public', 'javascripts');
-
+// const javascriptDir = Path.resolve(sourceDir, 'javascripts');
 const entries = {}
 for (const file of fs.readdirSync(entryDir)) {
     entries[file.replace('.js', "")] = Path.resolve(entryDir, file);
 }
 
+for (const file of fs.readdirSync(pluginsDir)) {
+    entries[file.replace('.js', '')] = Path.resolve(pluginsDir, file);
+}
+
+// for (const file of fs.readdirSync(javascriptDir)) { // These can't really be entries. Cause they bork out when included in pages as scripts. Doesn't really matter. they'll be replaced with vue stuff soon enough.
+//     entries[file.replace(".js", "")] = Path.resolve(javascriptDir, file);
+// }
 module.exports = {
     entry: {
         main: Path.resolve(sourceDir, 'scss', 'main.scss'),
@@ -46,7 +54,9 @@ module.exports = {
         ),
         new ProvidePlugin({
             $: 'jquery',
-            jQuery: 'jquery'
+            jQuery: 'jquery',
+            'window.jQuery': 'jquery',
+            'window.$': 'jquery'
         })
         //new BundleAnalyzerPlugin()
     ],

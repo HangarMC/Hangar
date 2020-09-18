@@ -36,21 +36,21 @@ sorted according to different criteria.
     <#-- Header -->
     <div class="index-header">
         <div class="row centered-content-row">
-            <div class="col-md-9 ore-banner">
+            <div class="col-md-9 hangar-banner">
                 <div class="row aligned-row">
-                    <div class="col-xs-2 ore-logo">
+                    <div class="col-auto ore-logo">
                         <img src="<@hangar.url "images/ore-colored.svg" />" alt="Ore logo" />
                     </div>
-                    <div class="col-xs-10 text">
+                    <div class="col-10 text">
                         <div class="headline">Hangar</div>
                         <div>A Minecraft package repository</div>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 sponsor">
-                <div class="panel sponsor-panel">
+                <div class="card sponsor-card">
                     <span>Sponsored by</span>
-                    <div class="panel-body">
+                    <div class="card-body">
                         <#-- @ftlvariable name="sponsor" type="io.papermc.hangar.config.hangar.HangarConfig.Sponsor" -->
                         <#assign sponsor=randomSponsor() />
                         <a href="${sponsor.link}">

@@ -25,14 +25,14 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title"><@spring.message "admin.health.discuss" /></h4>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title"><@spring.message "admin.health.discuss" /></h4>
                 </div>
-                <div class="panel-body list-group list-group-health">
+                <div class="card-body list-group list-group-health">
                     <#list noTopicProjects as project>
                         <div class="list-group-item">
-                            <a class="pull-left" href="${Routes.PROJECTS_SHOW.getRouteUrl(project.getNamespace().getOwner(), project.getNamespace().getSlug())}">
+                            <a class="float-left" href="${Routes.PROJECTS_SHOW.getRouteUrl(project.getNamespace().getOwner(), project.getNamespace().getSlug())}">
                                 <strong>${project.namespace}</strong>
                             </a>
                             <div class="clearfix"></div>
@@ -42,11 +42,11 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title"><@spring.message "admin.health.jobs" /></h4>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title"><@spring.message "admin.health.jobs" /></h4>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <#list erroredJobs as job>
                         <div class="list-group-item">
                             Job type: ${job.jobType} Error type: ${job.lastErrorDescriptor} Happened: ${utils.prettifyDateTime(job.lastUpdated)}
@@ -59,11 +59,11 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title"><@spring.message "admin.health.stale" /></h4>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title"><@spring.message "admin.health.stale" /></h4>
                 </div>
-                <div class="panel-body list-group list-group-health">
+                <div class="card-body list-group list-group-health">
                     <#list staleProjects as project>
                         <div class="list-group-item">
                             <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.getNamespace().getOwner(), project.getNamespace().getSlug())}">
@@ -75,11 +75,11 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title"><@spring.message "admin.health.hidden" /></h4>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title"><@spring.message "admin.health.hidden" /></h4>
                 </div>
-                <div class="panel-body list-group list-group-health">
+                <div class="card-body list-group list-group-health">
                     <#list notPublicProjects as project>
                         <div class="list-group-item">
                             <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.getNamespace().getOwner(), project.getNamespace().getSlug())}">
@@ -93,21 +93,21 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title"><@spring.message "admin.health.platform" /></h4>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title"><@spring.message "admin.health.platform" /></h4>
                 </div>
-                <div class="panel-body list-group list-group-health">
+                <div class="card-body list-group list-group-health">
                     <div>TODO: Filters?</div>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title"><@spring.message "admin.health.missingFile" /></h4>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title"><@spring.message "admin.health.missingFile" /></h4>
                 </div>
-                <div class="panel-body list-group list-group-health">
+                <div class="card-body list-group list-group-health">
                     <#list missingFileProjects as missingFileProject>
                         <div class="list-group-item">
                             <a href="${Routes.VERSIONS_SHOW.getRouteUrl(missingFileProject.owner, missingFileProject.name, missingFileProject.getVersion().getVersionString())}">

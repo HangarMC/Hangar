@@ -7,7 +7,7 @@
     <script <#--@CSPNonce.attr-->>
         $(function(){
             var momentNow = moment();
-            var maxDifference = ${config.queue.maxReviewTime};
+            var maxDifference = "${config.queue.maxReviewTime}";
             $('span[data-ago]').each(function() {
                 var momentAgo = moment($(this).data('ago'))
                 $(this).text($(this).data('title') + momentAgo.fromNow());
@@ -30,9 +30,9 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title pull-left"><@spring.message "user.queue.progress" /></h4>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title float-left"><@spring.message "user.queue.progress" /></h4>
                     <div class="clearfix"></div>
                 </div>
                 <table class="table table-hover">
@@ -114,9 +114,9 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title pull-left"><@spring.message "user.queue.open" /></h4>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title float-left"><@spring.message "user.queue.open" /></h4>
                     <div class="clearfix"></div>
                 </div>
                 <table class="table table-hover">

@@ -49,10 +49,10 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
+                            <h4 class="modal-title" id="label-page-delete">Delete ${subject?lower_case}</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title" id="label-page-delete">Delete ${subject?lower_case}</h4>
                         </div>
                         <div class="modal-body">
                             Are you sure you want to delete this ${subject?lower_case}? This cannot be undone.

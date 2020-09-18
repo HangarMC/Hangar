@@ -253,7 +253,7 @@ public class ApplicationController extends HangarController {
         return fillModel(mav);
     }
 
-//    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     @GlobalPermission(NamedPermission.MANUAL_VALUE_CHANGES)
     @Secured("ROLE_USER")
     @PostMapping("/admin/versions/")
@@ -270,9 +270,7 @@ public class ApplicationController extends HangarController {
         if (additions == null || removals == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad formatting");
         }
-        additions.forEach((platform, versions) -> {
-            platformVersionsDao.get().insert(versions.stream().map(v -> new PlatformVersionsTable(Platform.valueOf(platform), v)).collect(Collectors.toList()));
-        });
+        additions.forEach((platform, versions) -> platformVersionsDao.get().insert(versions.stream().map(v -> new PlatformVersionsTable(Platform.valueOf(platform), v)).collect(Collectors.toList())));
         removals.forEach((platform, versions) -> platformVersionsDao.get().delete(versions, Platform.valueOf(platform).ordinal()));
     }
 

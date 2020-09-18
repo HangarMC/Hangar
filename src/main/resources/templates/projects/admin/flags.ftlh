@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-md-12  header-flags">
             <div class="clearfix">
-                <h1 class="pull-left"><@spring.message "project.flag.plural" /> for <a href="${Routes.PROJECTS_SHOW.getRouteUrl(p.project.ownerName, p.project.slug)}">${p.project.ownerName}/${p.project.slug}</a></h1>
+                <h1 class="float-left"><@spring.message "project.flag.plural" /> for <a href="${Routes.PROJECTS_SHOW.getRouteUrl(p.project.ownerName, p.project.slug)}">${p.project.ownerName}/${p.project.slug}</a></h1>
             </div>
         </div>
     </div>
@@ -19,12 +19,12 @@
                     No flags found
                 </div>
             <#else>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title pull-left"><@spring.message "project.flag.plural" /></h4>
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title float-left"><@spring.message "project.flag.plural" /></h4>
                         <div class="clearfix"></div>
                     </div>
-                    <table class="table table-condensed setting-no-border table-review-log">
+                    <table class="table table-sm setting-no-border table-review-log">
                         <thead>
                             <tr>
                                 <th>Submitter</th>

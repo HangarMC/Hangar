@@ -40,7 +40,7 @@ $(function() {
                 var newItem = $('<div class="list-group-item"></div>');
                 newItem.data({role: selected.val()});
                 newItem.text(selected.text());
-                newItem.append($('<span class="pull-right"><a href="#" class="global-role-delete"><i class="fa fa-trash"></i></a></span>'));
+                newItem.append($('<span class="float-right"><a href="#" class="global-role-delete"><i class="fa fa-trash"></i></a></span>'));
                 newItem.insertBefore(globalRoleList.children().last());
                 // Remove from select
                 selected.remove();

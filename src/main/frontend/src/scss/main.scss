@@ -1,4 +1,7 @@
 @import "variables";
+@import "custom";
+@import "~bootstrap/scss/bootstrap";
+
 @import 'admin';
 @import 'creator';
 @import 'discuss';
@@ -7,8 +10,11 @@
 @import 'nav';
 @import 'project';
 @import 'user';
-@import "panel";
+@import "card";
 @import 'utils';
+@import "list";
+@import "dropdowns";
+@import "buttons";
 
 html {
   position: relative;
@@ -70,16 +76,16 @@ body {
   span {
     position: absolute;
     left: 20px;
-    font-size: 1rem;
+    font-size: 0.7rem;
     top: 5px;
     font-weight: bold;
   }
 
-  .panel.sponsor-panel {
+  .card.sponsor-card {
     margin-bottom: 0;
     text-align: center;
 
-    > .panel-body {
+    > .card-body {
       padding-top: 25px;
     }
   }
@@ -114,6 +120,8 @@ form {
   border-bottom: 1px solid $light;
   padding: 20px;
   position: relative;
+  width: 100%;
+
   form { margin: 0; }
   .danger { color: #B34D4D; }
 
@@ -194,28 +202,6 @@ form {
     &:hover {
       background: darken($sponge_yellow, 2);
     }
-  }
-}
-
-.panel > .panel-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: $sponge_grey;
-  color: #ffffff;
-  font-weight: 600;
-  border: none;
-
-  &:last-child {
-    margin-left: auto;
-  }
-
-  .btn i {
-    color: inherit;
-  }
-
-  i {
-    color: #ffffff;
   }
 }
 
@@ -352,15 +338,15 @@ select.form-control, input.form-control {
   }
 }
 
-.ore-banner {
+.hangar-banner {
   .ore-logo {
     max-width: 100%;
     max-height: 100%;
     width: auto;
 
     img {
-      height: 6rem;
-      width: 6rem;
+      height: 4rem;
+      width: 4rem;
     }
   }
 
@@ -372,7 +358,7 @@ select.form-control, input.form-control {
 
     .headline {
       font-weight: bold;
-      font-size: 2.75rem;
+      font-size: 1.8rem;
     }
   }
 }
@@ -390,7 +376,7 @@ select.form-control, input.form-control {
 }
 
 @media(min-width: 768px) {
-  .pull-right-sm {
+  .float-right-sm {
     float: right;
   }
 }

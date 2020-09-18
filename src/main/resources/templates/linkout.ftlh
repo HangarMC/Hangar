@@ -6,19 +6,19 @@
 <@base.base title="${message}">
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
                     <@spring.message "general.linkout.title" />
                     </h3>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <p><@spring.messageArgs code="general.linkout.warning" args=[remoteUrl] /></p>
-                    <a class="pull-left link-go-back">
+                    <a class="float-left link-go-back">
                         <i class="fas fa-arrow-left"></i> <@spring.message "project.back" />
                     </a>
                     <a href="${remoteUrl}">
-                        <button class="pull-right btn btn-primary">
+                        <button class="float-right btn btn-primary">
                         <@spring.message "general.continue" />
                         </button>
                     </a>

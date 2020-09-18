@@ -1,7 +1,7 @@
 <template>
     <div class="version-list">
         <div class="row text-center">
-            <div class="col-xs-12">
+            <div class="col-12">
                 <a v-if="canUpload" class="btn yellow" :href="routes.Versions.showCreator(htmlDecode(projectOwner), htmlDecode(projectSlug)).absoluteURL()">Upload a New Version</a>
             </div>
         </div>
@@ -15,39 +15,39 @@
                    :class="[classForVisibility(version.visibility)]">
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="col-xs-6 col-sm-3" :set="channel = version.tags.find(filterTag => filterTag.name === 'Channel')">
+                            <div class="col-6 col-sm-3" :set="channel = version.tags.find(filterTag => filterTag.name === 'Channel')">
                                 <div class="row">
-                                    <div class="col-xs-12">
+                                    <div class="col-12">
                                         <span class="text-bold">{{ version.name }}</span>
                                     </div>
-                                    <div class="col-xs-12">
+                                    <div class="col-12">
                                         <span v-if="channel" class="channel" v-bind:style="{ background: channel.color.background }">{{ channel.data }}</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xs-6 col-sm-3">
+                            <div class="col-6 col-sm-3">
                                 <Tag v-for="tag in version.tags.filter(filterTag => filterTag.name !== 'Channel')"
                                      v-bind:key="tag.name + ':' + tag.data" v-bind="tag"></Tag>
                             </div>
-                            <div class="col-xs-3 hidden-xs">
+                            <div class="col-3 hidden-xs">
                                 <div class="row">
-                                    <div class="col-xs-12">
+                                    <div class="col-12">
                                         <i class="fas fa-fw fa-calendar"></i>
                                         {{ formatDate(version.created_at) }}
                                     </div>
-                                    <div class="col-xs-12">
+                                    <div class="col-12">
                                         <i class="far fa-fw fa-file"></i>
                                         {{ formatSize(version.file_info.size_bytes) }}
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xs-3 hidden-xs">
+                            <div class="col-3 hidden-xs">
                                 <div class="row">
-                                    <div class="col-xs-12">
+                                    <div class="col-12">
                                         <i class="fas fa-fw fa-user-tag"></i>
                                         {{ version.author }}
                                     </div>
-                                    <div class="col-xs-12">
+                                    <div class="col-12">
                                         <i class="fas fa-fw fa-download"></i>
                                         {{ version.stats.downloads }} Downloads
                                     </div>
@@ -63,11 +63,11 @@
 </template>
 
 <script>
-    import Tag from "./components/Tag";
-    import Pagination from "./components/Pagination";
-    import {Visibility} from "./enums";
+import Tag from "./components/Tag";
+import Pagination from "./components/Pagination";
+import {Visibility} from "./enums";
 
-    export default {
+export default {
         components: {
             Tag,
             Pagination

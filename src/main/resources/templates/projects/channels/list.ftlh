@@ -24,11 +24,11 @@
 <@base.base title=message additionalScripts=scriptsVar>
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title"><@spring.message "channel.list.title" /></h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><@spring.message "channel.list.title" /></h3>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <p class="minor create-blurb">
                         <@spring.message "channel.list.description" />
                     </p>
@@ -82,10 +82,10 @@
                         </tbody>
                     </table>
                     <a href="${Routes.VERSIONS_SHOW_LIST.getRouteUrl(p.project.ownerName, p.project.slug)}"
-                       class="pull-left btn btn-default">
+                       class="float-left btn btn-default">
                         <i class="fas fa-arrow-left"></i>
                     </a>
-                    <a href="#" id="channel-new" class="pull-right btn btn-primary"
+                    <a href="#" id="channel-new" class="float-right btn btn-primary"
                             <#if channels?size gte config.projects.maxChannels>
                                 disabled data-toggle="tooltip" data-placement="left"
                                 title="<@spring.message "channel.edit.maxReached" />"
@@ -105,11 +105,11 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
+                    <h4 class="modal-title" id="label-delete"><@spring.message "channel.delete" /></h4>
                     <button type="button" class="close" data-dismiss="modal"
                             aria-label="<@spring.message "general.close" />">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="label-delete"><@spring.message "channel.delete" /></h4>
                 </div>
                 <div class="modal-body">
                     <p><@spring.message "channel.delete.info" /></p>

@@ -36,9 +36,9 @@
         <div class="col-md-8">
 
             <!-- Main settings -->
-            <div class="panel panel-default panel-settings">
-                <div class="panel-heading">
-                    <h3 class="panel-title pull-left"><@spring.message "project.settings" /></h3>
+            <div class="card card-settings">
+                <div class="card-header">
+                    <h3 class="card-title float-left"><@spring.message "project.settings" /></h3>
                     <#if headerData.globalPerm(Permission.SeeHidden)>
                         <@btnHide.btnHide p.namespace, p.visibility />
 
@@ -46,10 +46,10 @@
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
+                                        <h4 class="modal-title" style="color:black;">Comment</h4>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="<@spring.message "general.close" />">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
-                                        <h4 class="modal-title" style="color:black;">Comment</h4>
                                     </div>
                                     <div class="modal-body">
                                         <textarea class="textarea-visibility-comment form-control" rows="3"></textarea>
@@ -64,7 +64,7 @@
                     </#if>
                 </div>
 
-                <div class="panel-body">
+                <div class="card-body">
                     <@inputSettings.inputSettings
                         "save"
                         p.settings.homepage
@@ -112,9 +112,9 @@
                             <div class="setting-content">
                                 <div class="icon-description">
                                     <p>Upload an image representative of your project.</p>
-                                    <div class="btn-group pull-right">
+                                    <div class="btn-group float-right">
                                         <button class="btn btn-default btn-reset">Reset</button>
-                                        <button class="btn btn-info btn-upload pull-right" disabled>
+                                        <button class="btn btn-info btn-upload float-right" disabled>
                                             <i class="fas fa-upload"></i> Upload
                                         </button>
                                     </div>
@@ -163,9 +163,7 @@
                             <p><@spring.message "project.rename.info" /></p>
                         </div>
                         <div class="setting-content">
-                            <input form="rename" id="name" name="name" class="form-control" type="text"
-                            value="${p.project.name}"
-                            maxlength="@config.ore.projects.maxNameLen">
+                            <input form="rename" id="name" name="name" class="form-control" type="text" value="${p.project.name}" maxlength="@config.ore.projects.maxNameLen">
                             <button id="btn-rename" data-toggle="modal" data-target="#modal-rename" class="btn btn-warning" disabled>
                                 <@spring.message "project.rename" />
                             </button>
@@ -205,7 +203,7 @@
                         </div>
                     </#if>
 
-                    <@form.form action=Routes.PROJECTS_SAVE.getRouteUrl(p.project.ownerName, p.project.slug) method="POST" id="save" class="pull-right">
+                    <@form.form action=Routes.PROJECTS_SAVE.getRouteUrl(p.project.ownerName, p.project.slug) method="POST" id="save" class="float-right">
                         <@csrf.formField />
                         <input type="hidden" id="update-icon" name="update-icon" value="false" />
                         <button type="submit" name="save" class="btn btn-success btn-spinner" data-icon="fa-check">
@@ -238,11 +236,10 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"
-                    aria-label="<@spring.message "general.cancel" />">
+                    <h4 class="modal-title" id="label-rename"><@spring.message "project.rename.title" /></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="<@spring.message "general.cancel" />">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="label-rename"><@spring.message "project.rename.title" /></h4>
                 </div>
                 <div class="modal-body">
                 <@spring.message "project.rename.info" />
@@ -266,10 +263,10 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
+                    <h4 class="modal-title" id="label-delete"><@spring.message "project.delete.title" /></h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="label-delete"><@spring.message "project.delete.title" /></h4>
                 </div>
                 <@form.form action=Routes.PROJECTS_SOFT_DELETE.getRouteUrl(p.project.ownerName, p.project.slug) method="POST">
                     <div class="modal-body">

@@ -21,7 +21,7 @@ function initMember(memberRow) {
     // Replace title with select on click
     memberRow.find('.fa-edit').parent().click(function(event) {
         event.preventDefault();
-        var currentRole = getItemContainer($(this)).find("span.minor.pull-right").text().replace(/(\r\n|\n|\r|\s)/gm, "");
+        var currentRole = getItemContainer($(this)).find("span.minor.float-right").text().replace(/(\r\n|\n|\r|\s)/gm, "");
 
         var saveBtn = $('.btn-members-save');
         if (!saveBtn.is(':visible'))

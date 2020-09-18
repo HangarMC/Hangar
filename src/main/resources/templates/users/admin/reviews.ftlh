@@ -14,16 +14,16 @@
     <div class="row">
         <div class="col-md-12  header-flags">
             <div class="clearfix">
-                <h1 class="pull-left">${project.project.name} <i>${version.v.versionString}</i></h1>
+                <h1 class="float-left">${project.project.name} <i>${version.v.versionString}</i></h1>
             </div>
-            <p class="user date pull-left">
+            <p class="user date float-left">
                 <a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(project.project.ownerName)}">
                     <strong>${project.project.ownerName}</strong>
                 </a>
                 released this version on ${utils.prettifyDateTime(version.v.createdAt)}
             </p>
             <#if !version.v.reviewState.checked>
-                <div class="pull-right">
+                <div class="float-right">
                     <span class="btn-group-sm">
                         <a href="#" class="btn btn-info btn-skip-review"><#if version.v.reviewState != ReviewState.BACKLOG> Remove from queue <#else> Add to queue </#if></a>
                         <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.project.ownerName, project.project.slug)}" class="btn btn-info">Project Page</a>
@@ -44,7 +44,7 @@
                     </span>
                 </div>
             <#else>
-                <div class="pull-right">
+                <div class="float-right">
                     <span class="btn-group-sm">
                         <a href="" class="btn btn-danger btn-review-reopen">Undo approval</a>
                     </span>
@@ -79,7 +79,7 @@
         </#if>
 
         <div class="col-md-12">
-            <table class="table table-condensed setting-no-border table-review-log">
+            <table class="table table-sm setting-no-border table-review-log">
                 <tbody>
                 <#-- @ftlvariable name="review" type="io.papermc.hangar.model.viewhelpers.VersionReview" -->
                 <#list reviews as review>

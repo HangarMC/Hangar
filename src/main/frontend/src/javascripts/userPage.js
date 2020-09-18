@@ -16,11 +16,11 @@ var pages = {
 //=====> HELPER FUNCTIONS
 
 function getStarsPanel(action) {
-    return $('.panel-user-info[data-action=' + action + ']');
+    return $('.card-user-info[data-action=' + action + ']');
 }
 
 function getStarsFooter(action) {
-    return getStarsPanel(action).find('.panel-footer');
+    return getStarsPanel(action).find('.card-footer');
 }
 
 function loadActions(increment, action) {
@@ -29,7 +29,7 @@ function loadActions(increment, action) {
 
     apiV2Request('users/' + USERNAME + '/' + action + '?offset=' + offset + '&limit=' + CONTENT_PER_PAGE).then(function (result) {
         //TODO: Use pagination info
-        var tbody = getStarsPanel(action).find('.panel-body').find('tbody');
+        var tbody = getStarsPanel(action).find('.card-body').find('tbody');
 
         var content = [];
 
@@ -40,7 +40,7 @@ function loadActions(increment, action) {
             for (var project of result.result) {
 
                 var link = $("<a>").attr("href", '/' + project.namespace.owner + '/' + project.namespace.slug).text(project.namespace.owner + '/').append($("<strong>").text(project.namespace.slug));
-                var versionDiv = $("<div class='pull-right'>");
+                var versionDiv = $("<div class='float-right'>");
                 if (project.recommended_version) {
                     versionDiv.append($("<span class='minor'>").text(project.recommended_version.version));
                 }

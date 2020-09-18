@@ -60,10 +60,10 @@ Documentation page within Project overview.
                     <span class="caret"></span>
                     <span class="sr-only">Toggle Dropdown</span>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a href="${Routes.VERSIONS_DOWNLOAD_RECOMMENDED.getRouteUrl(p.project.ownerName, p.project.slug, "")}"><@spring.message "general.download" /></a></li>
-                    <li><a href="#" class="copy-url" data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD_RECOMMENDED.getRouteUrl(p.project.ownerName, p.project.slug, "")}">Copy URL</a></li>
-                </ul>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a href="${Routes.VERSIONS_DOWNLOAD_RECOMMENDED.getRouteUrl(p.project.ownerName, p.project.slug, "")}" class="dropdown-item"><@spring.message "general.download" /></a>
+                    <a href="#" class="copy-url dropdown-item" data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD_RECOMMENDED.getRouteUrl(p.project.ownerName, p.project.slug, "")}">Copy URL</a>
+                </div>
             </div>
             </#if>
 
@@ -82,21 +82,21 @@ Documentation page within Project overview.
                 </#if>
             </div>
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title"><@spring.message "project.promotedVersions" /></h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><@spring.message "project.promotedVersions" /></h3>
                 </div>
                 <ul class="list-group promoted-list">
 
                 </ul>
             </div>
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="pull-left panel-title"><@spring.message "page.plural" /></h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="float-left card-title"><@spring.message "page.plural" /></h3>
                     <#if canEditPages() && pageCount < config.projects.maxPages>
                         <button data-toggle="modal" data-target="#new-page" title="New"
-                        class="new-page btn yellow btn-xs pull-right">
+                        class="new-page btn yellow btn-sm float-right">
                             <i class="fas fa-plus"></i>
                         </button>
                         <@pageCreate.pageCreate p.project rootPages />
