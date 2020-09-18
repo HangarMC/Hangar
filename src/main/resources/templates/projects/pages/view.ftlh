@@ -60,10 +60,10 @@ Documentation page within Project overview.
                     <span class="caret"></span>
                     <span class="sr-only">Toggle Dropdown</span>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a href="${Routes.VERSIONS_DOWNLOAD_RECOMMENDED.getRouteUrl(p.project.ownerName, p.project.slug, "")}"><@spring.message "general.download" /></a></li>
-                    <li><a href="#" class="copy-url" data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD_RECOMMENDED.getRouteUrl(p.project.ownerName, p.project.slug, "")}">Copy URL</a></li>
-                </ul>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a href="${Routes.VERSIONS_DOWNLOAD_RECOMMENDED.getRouteUrl(p.project.ownerName, p.project.slug, "")}" class="dropdown-item"><@spring.message "general.download" /></a>
+                    <a href="#" class="copy-url dropdown-item" data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD_RECOMMENDED.getRouteUrl(p.project.ownerName, p.project.slug, "")}">Copy URL</a>
+                </div>
             </div>
             </#if>
 

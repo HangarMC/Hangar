@@ -24,7 +24,7 @@
                         <h4 class="card-title float-left"><@spring.message "project.flag.plural" /></h4>
                         <div class="clearfix"></div>
                     </div>
-                    <table class="table table-condensed setting-no-border table-review-log">
+                    <table class="table table-sm setting-no-border table-review-log">
                         <thead>
                             <tr>
                                 <th>Submitter</th>

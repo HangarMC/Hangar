@@ -56,18 +56,16 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" id="creatorDropDown" aria-expanded="false">
                                     <i class="icon fas fa-plus"></i>
                                 </a>
-                                <ul class="user-dropdown dropdown-menu dropdown-menu-right" aria-label="Create new&hellip;" aria-labelledby="creatorDropDown">
-                                    <li>
-                                        <a href="${Routes.PROJECTS_SHOW_CREATOR.getRouteUrl()}" class="list-group-item-action dropdown-item">
-                                            <i class="fas fa-book fa-fw mr-1"></i>
-                                            <span><@spring.message "project.create"/></span>
-                                        </a>
-                                        <a href="${Routes.ORG_SHOW_CREATOR.getRouteUrl()}"  class="list-group-item-action dropdown-item">
-                                            <i class="fas fa-users fa-fw mr-1"></i>
-                                            <span><@spring.message "org.create" /></span>
-                                        </a>
-                                    </li>
-                                </ul>
+                                <div class="user-dropdown dropdown-menu dropdown-menu-right" aria-label="Create new &hellip;" aria-labelledby="creatorDropDown">
+                                    <a href="${Routes.PROJECTS_SHOW_CREATOR.getRouteUrl()}" class="list-group-item-action dropdown-item">
+                                        <i class="fas fa-book fa-fw mr-1"></i>
+                                        <span><@spring.message "project.create"/></span>
+                                    </a>
+                                    <a href="${Routes.ORG_SHOW_CREATOR.getRouteUrl()}"  class="list-group-item-action dropdown-item">
+                                        <i class="fas fa-users fa-fw mr-1"></i>
+                                        <span><@spring.message "org.create" /></span>
+                                    </a>
+                                </div>
                             </li>
 
                             <#assign title><@spring.message "project.viewAuthors"/></#assign>

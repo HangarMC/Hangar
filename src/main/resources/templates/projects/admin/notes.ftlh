@@ -39,7 +39,7 @@
         </#if>
 
         <div class="col-md-12">
-            <table class="table table-condensed setting-no-border table-notes-log">
+            <table class="table table-sm setting-no-border table-notes-log">
                 <tbody>
                 <#list notes as note>
                 <tr>

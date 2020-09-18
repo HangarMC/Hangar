@@ -177,6 +177,9 @@ public class ProjectService extends HangarService {
     }
 
     public ProjectsTable checkVisibility(ProjectsTable projectsTable) {
+        if (projectsTable == null) {
+            return null;
+        }
         Permission permission = permissionService.getProjectPermissions(currentUser.get().map(UsersTable::getId).orElse(-10L), projectsTable.getId());
         if (!permission.has(Permission.SeeHidden) && !permission.has(Permission.IsProjectMember) && projectsTable.getVisibility() != Visibility.PUBLIC) {
             return null;

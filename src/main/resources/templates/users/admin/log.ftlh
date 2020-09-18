@@ -40,7 +40,7 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-condensed setting-no-border">
+                    <table class="table table-sm setting-no-border">
                         <tbody>
                             <tr>
                                 <td><b>#</b></td>

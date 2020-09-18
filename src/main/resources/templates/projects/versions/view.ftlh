@@ -124,10 +124,10 @@
                                 <span class="caret"></span>
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                                <li><a href="${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}"><@spring.message "general.download" /></a></li>
-                                <li><a href="#" class="copy-url" data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}">Copy URL</a></li>
-                            </ul>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a href="${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}" class="dropdown-item"><@spring.message "general.download" /></a>
+                                <a href="#" class="copy-url dropdown-item" data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}">Copy URL</a>
+                            </div>
                         </div>
 
                         <#if cu?? && headerData.globalPerm(Permission.ViewLogs)>

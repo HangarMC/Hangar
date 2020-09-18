@@ -79,7 +79,7 @@
         </#if>
 
         <div class="col-md-12">
-            <table class="table table-condensed setting-no-border table-review-log">
+            <table class="table table-sm setting-no-border table-review-log">
                 <tbody>
                 <#-- @ftlvariable name="review" type="io.papermc.hangar.model.viewhelpers.VersionReview" -->
                 <#list reviews as review>
