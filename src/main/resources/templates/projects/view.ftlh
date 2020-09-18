@@ -122,11 +122,10 @@ Base template for Project overview.
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                        aria-label="Close">
+                                                <h4 class="modal-title" id="label-flag">Flag project</h4>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
-                                                <h4 class="modal-title" id="label-flag">Flag project</h4>
                                             </div>
                                             <#import "*/utils/form.ftlh" as form>
                                             <@form.form action=Routes.PROJECTS_FLAG.getRouteUrl(p.project.ownerName, p.project.slug) method="POST">

@@ -46,10 +46,10 @@
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
+                                        <h4 class="modal-title" style="color:black;">Comment</h4>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="<@spring.message "general.close" />">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
-                                        <h4 class="modal-title" style="color:black;">Comment</h4>
                                     </div>
                                     <div class="modal-body">
                                         <textarea class="textarea-visibility-comment form-control" rows="3"></textarea>
@@ -163,9 +163,7 @@
                             <p><@spring.message "project.rename.info" /></p>
                         </div>
                         <div class="setting-content">
-                            <input form="rename" id="name" name="name" class="form-control" type="text"
-                            value="${p.project.name}"
-                            maxlength="@config.ore.projects.maxNameLen">
+                            <input form="rename" id="name" name="name" class="form-control" type="text" value="${p.project.name}" maxlength="@config.ore.projects.maxNameLen">
                             <button id="btn-rename" data-toggle="modal" data-target="#modal-rename" class="btn btn-warning" disabled>
                                 <@spring.message "project.rename" />
                             </button>
@@ -238,11 +236,10 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"
-                    aria-label="<@spring.message "general.cancel" />">
+                    <h4 class="modal-title" id="label-rename"><@spring.message "project.rename.title" /></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="<@spring.message "general.cancel" />">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="label-rename"><@spring.message "project.rename.title" /></h4>
                 </div>
                 <div class="modal-body">
                 <@spring.message "project.rename.info" />
@@ -266,10 +263,10 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
+                    <h4 class="modal-title" id="label-delete"><@spring.message "project.delete.title" /></h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="label-delete"><@spring.message "project.delete.title" /></h4>
                 </div>
                 <@form.form action=Routes.PROJECTS_SOFT_DELETE.getRouteUrl(p.project.ownerName, p.project.slug) method="POST">
                     <div class="modal-body">

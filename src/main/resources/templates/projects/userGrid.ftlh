@@ -3,17 +3,7 @@
 <#import "*/utils/userAvatar.ftlh" as userAvatar />
 <#import "*/projects/view.ftlh" as projects />
 
-<#--@import controllers.sugar.Requests.OreRequest-->
-<#--@import models.viewhelper.{ProjectData, ScopedProjectData}-->
-<#--@import ore.OreConfig-->
-<#--@import ore.markdown.MarkdownRenderer-->
-<#--@import ore.models.user.User-->
-<#--@import util.syntax._-->
-<#--@(title: String, call: Int => Call, p: ProjectData, sp: ScopedProjectData, users: Seq[User], page: Int, pageSize: Int)(implicit messages: Messages, request: OreRequest[_], flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)-->
-
 <#assign columns = 3>
-
-
 <#-- @ftlvariable name="pageSize" type="java.lang.Integer" -->
 <#-- @ftlvariable name="page" type="java.lang.Integer" -->
 <@projects.view p=p sp=sp active="">
@@ -31,10 +21,10 @@
                 <#list users?filter(u -> (users?seq_index_of(u) + 1) % columns == div) as gridUser>
                     <div class="media">
                         <div class="media-left">
-                            <@userAvatar.userAvatar userName=gridUser.name avatarUrl=utils.avatarUrl(gridUser.name) clazz="user-avatar-sm media-object" />
+                            <@userAvatar.userAvatar userName=gridUser.name avatarUrl=utils.avatarUrl(gridUser.name) clazz="user-avatar-sm mr-3" />
                         </div>
-                        <div class="media-body center-vertically">
-                            <a class="media-heading mb-0" href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(gridUser.name)}">${gridUser.name}</a>
+                        <div class="media-body align-self-center">
+                            <a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(gridUser.name)}">${gridUser.name}</a>
                         </div>
                     </div>
                 </#list>

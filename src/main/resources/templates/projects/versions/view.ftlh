@@ -241,10 +241,10 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
+                        <h4 class="modal-title" id="label-delete"><@spring.message "version.delete.title" /></h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h4 class="modal-title" id="label-delete"><@spring.message "version.delete.title" /></h4>
                     </div>
                     <@form.form method="POST" action=Routes.VERSIONS_SOFT_DELETE.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString)>
                         <div class="modal-body">
@@ -272,10 +272,10 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
+                            <h4 class="modal-title" id="label-delete"><@spring.message "general.restore" /></h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title" id="label-delete"><@spring.message "general.restore" /></h4>
                         </div>
                         <@form.form method="POST" action=Routes.VERSIONS_RESTORE.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString)>
                             <div class="modal-body">
@@ -300,10 +300,10 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
+                            <h4 class="modal-title" id="label-delete"><@spring.message "general.harddelete" /></h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title" id="label-delete"><@spring.message "general.harddelete" /></h4>
                         </div>
                         <@form.form method="POST" action=Routes.VERSIONS_DELETE.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString)>
                             <div class="modal-body">

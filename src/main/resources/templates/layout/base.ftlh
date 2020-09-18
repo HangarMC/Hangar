@@ -26,6 +26,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <link rel="prefetch" href="<@hangar.url "build/main.css" />">
         <link rel="prefetch" href="<@hangar.url "build/font-awesome.css" />">
         <link rel="prefetch" href="<@hangar.url "manifest/manifest.json" />">
+        <link rel="prefetch" href="<@hangar.url "bootstrap/bootstrap.bundle.min.js" />">
         <link rel="prefetch" href="<@hangar.url "lib/jquery/dist/jquery.min.js" />">
         <link rel="prefetch" href="<@hangar.url "jquery-ui/jquery-ui.min.js" />">
         <link rel="prefetch" href="<@hangar.url "jquery-ui/jquery-ui.css" />">
@@ -116,7 +117,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <script type="text/javascript" src="<@hangar.url "build/font-awesome.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "build/commons.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "lib/moment/min/moment.min.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "build/bootstrap.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "bootstrap/bootstrap.bundle.min.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "lib/filesize/lib/filesize.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "lib/clipboard/dist/clipboard.min.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "highlight/highlight.pack.js" />"></script>

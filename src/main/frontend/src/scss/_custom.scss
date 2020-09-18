@@ -17,14 +17,14 @@ $font-family-base: $font-family-sans-serif;
 $font-size-base: 0.9rem;
 
 $input-font-size: 14px;
-$font-size-lg: ceil(($font-size-base * 1.25));
-$font-size-sm: ceil(($font-size-base * .85));
-$h1-font-size: floor(($font-size-base * 2.6));
-$h2-font-size: floor(($font-size-base * 2.15));
-$h3-font-size: floor(($font-size-base * 1.7));
-$h4-font-size: floor(($font-size-base * 1.25));
-$h5-font-size: floor($font-size-base);
-$h6-font-size: floor(($font-size-base * .85));
+$font-size-lg: $font-size-base * 1.25;
+$font-size-sm: $font-size-base * .85;
+$h1-font-size: $font-size-base * 2.6;
+$h2-font-size: $font-size-base * 2.15;
+$h3-font-size: $font-size-base * 1.7;
+$h4-font-size: $font-size-base * 1.25;
+$h5-font-size: $font-size-base;
+$h6-font-size: $font-size-base * .85;
 $line-height-base: 1.428571429;
 
 

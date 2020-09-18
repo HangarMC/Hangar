@@ -91,7 +91,7 @@ Documentation page within Project overview.
                 </ul>
             </div>
 
-            <div class="card \">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="float-left card-title"><@spring.message "page.plural" /></h3>
                     <#if canEditPages() && pageCount < config.projects.maxPages>

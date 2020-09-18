@@ -105,11 +105,11 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
+                    <h4 class="modal-title" id="label-delete"><@spring.message "channel.delete" /></h4>
                     <button type="button" class="close" data-dismiss="modal"
                             aria-label="<@spring.message "general.close" />">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="label-delete"><@spring.message "channel.delete" /></h4>
                 </div>
                 <div class="modal-body">
                     <p><@spring.message "channel.delete.info" /></p>

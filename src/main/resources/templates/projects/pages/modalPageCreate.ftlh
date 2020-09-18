@@ -17,17 +17,17 @@
     </script>
 
     <div class="modal fade" id="new-page" tabindex="-1" role="dialog" aria-labelledby="new-page-label">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="<@spring.message "general.close" />">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                     <h4 class="modal-title" id="new-page-label"><@spring.message "page.new.title" /></h4>
                     <h4 class="modal-title" id="new-page-label-error" style="display: none;
                         color: red">
                         <@spring.message "page.new.error" />
                     </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="<@spring.message "general.close" />">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body input-group">
                     <div class="setting">
@@ -36,6 +36,7 @@
                             <p><@spring.message "project.page.name.info" /></p>
                         </div>
                         <div class="setting-content">
+                            <label for="page-name" class="sr-only">Page Name</label>
                             <input class="form-control" type="text" id="page-name" name="page-name">
                         </div>
                         <div class="clearfix"></div>
@@ -46,7 +47,8 @@
                             <p><@spring.message "project.page.parent.info" /></p>
                         </div>
                         <div class="setting-content">
-                            <select class="form-control select-parent">
+                            <label for="new-page-parent-select" class="sr-only"></label>
+                            <select class="form-control select-parent" id="new-page-parent-select">
                                 <option selected value="-1">&lt;none&gt;</option>
                                 <#list rootPages?keys?filter(x -> x.name != config.pages.home.name) as singlePage>
                                     <option value="${singlePage.id}" data-slug="${singlePage.slug}">${singlePage.name}</option>

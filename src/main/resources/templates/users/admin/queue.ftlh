@@ -7,7 +7,7 @@
     <script <#--@CSPNonce.attr-->>
         $(function(){
             var momentNow = moment();
-            var maxDifference = ${config.queue.maxReviewTime};
+            var maxDifference = "${config.queue.maxReviewTime}";
             $('span[data-ago]').each(function() {
                 var momentAgo = moment($(this).data('ago'))
                 $(this).text($(this).data('title') + momentAgo.fromNow());
