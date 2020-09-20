@@ -15,7 +15,10 @@
     <script type="text/javascript" src="<@hangar.url "javascripts/pluginUpload.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/projectDetail.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/versionCreateChannelNew.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "build/platform-choice.js" />"></script>
+    <#if pending?? && !pending.dependencies??>
+        <script type="text/javascript" src="<@hangar.url "build/platform-choice.js" />"></script>
+    </#if>
+
     <script>
              DEFAULT_COLOR = '${config.channels.colorDefault.hex}';
     </script>
@@ -128,33 +131,40 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><strong><@spring.message "version.create.unstable" /></strong></td>
+                                        <td>
+                                            <label for="is-unstable-version" class="form-check-label">
+                                                <strong><@spring.message "version.create.unstable" /></strong>
+                                            </label>
+                                        </td>
                                         <td class="rv">
-                                            <div class="checkbox-inline">
-                                                <input form="form-publish" name="unstable" type="checkbox" value="true"/>
+                                            <div class="form-check">
+                                                <input id="is-unstable-version" class="form-check-input" form="form-publish" name="unstable" type="checkbox" value="true">
                                             </div>
                                             <div class="clearfix"></div>
                                         </td>
                                     </tr>
-
                                     <tr>
-                                        <td><strong>Recommended</strong></td>
+                                        <td>
+                                            <label for="is-recommended-version" class="form-check-label">
+                                                <strong>Recommended</strong>
+                                            </label>
+                                        </td>
                                         <td class="rv">
-                                            <div class="checkbox-inline">
-                                                <input form="form-publish" name="recommended" type="checkbox" checked
-                                                value="true"/>
+                                            <div class="form-check">
+                                                <input id="is-recommended-version" class="form-check-input" form="form-publish" name="recommended" type="checkbox" checked value="true">
                                             </div>
                                             <div class="clearfix"></div>
                                         </td>
                                     </tr>
-
                                     <tr>
-                                        <td><strong>Create forum post</strong></td>
+                                        <td>
+                                            <label for="create-forum-post-version" class="form-check-label"></label>
+                                            <strong>Create forum post</strong>
+                                        </td>
                                         <td class="rv">
-                                            <div class="checkbox-inline">
+                                            <div class="form-check">
                                                 <#-- @ftlvariable name="forumSync" type="java.lang.Boolean" -->
-                                                <input form="form-publish" name="forum-post" type="checkbox"
-                                                <#if forumSync> checked </#if> value="true"/>
+                                                <input id="create-forum-post-version" class="form-check-input" form="form-publish" name="forum-post" type="checkbox" <#if forumSync> checked </#if> value="true">
                                             </div>
                                             <div class="clearfix"></div>
                                         </td>
@@ -193,9 +203,12 @@
                     <#if !pending??>
                         <@form.form action=Routes.VERSIONS_CREATE_EXTERNAL_URL.getRouteUrl(ownerName, projectSlug) method="POST" id="form-url-upload" class="form-inline">
                             <@csrf.formField />
-                            <div class="form-group pull-right" style="width: 50%">
+                            <div class="input-group float-right" style="width: 50%">
                                 <input type="text" class="form-control" id="externalUrl" name="externalUrl" placeholder="<@spring.message "version.create.externalUrl" />" style="width: 70%">
-                                <button class="btn btn-info" type="submit">Create Version</button>
+                                <div class="input-group-append">
+                                    <button class="btn btn-info" type="submit">Create Version</button>
+                                </div>
+
                             </div>
                         </@form.form>
                     <#else>

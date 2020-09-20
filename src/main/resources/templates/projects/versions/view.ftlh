@@ -112,39 +112,13 @@
                                 </#if>
                             </a>
                             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="caret"></span>
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                                <li><a href="${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}"><@spring.message "general.download" /></a></li>
-                                <li><a href="#" class="copy-url" data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}">Copy URL</a></li>
-                            </ul>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}"><@spring.message "general.download" /></a>
+                                <a href="#" class="copy-url dropdown-item" data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}">Copy URL</a>
+                            </div>
                         </div>
-
-<#--                        <#if v.v.externalUrl?has_content>
-                            <div class="btn-group btn-download">
-                                <a href="${v.v.externalUrl}" title="<@spring.message "project.download.external" />" data-toggle="tooltip" data-placement="bottom" class="btn btn-primary"  target="_blank">
-                                    <i class="fas fa-download"></i>
-                                    <@spring.message "general.downloadExternal" />
-                                </a>
-                            </div>
-                        <#else>
-                            <div class="btn-group btn-download">
-                                <a href="${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}"
-                                   title="<@spring.message "project.download.recommend" />" data-toggle="tooltip"
-                                   data-placement="bottom" class="btn btn-primary">
-                                    <i class="fas fa-download"></i> <@spring.message "general.download" />
-                                </a>
-                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-right">
-                                    <li><a class="dropdown-item" href="${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}"><@spring.message "general.download" /></a></li>
-                                    <li><a href="#" class="copy-url dropdown-item" data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}">Copy URL</a></li>
-                                </ul>
-                            </div>
-                        </#if>-->
 
                         <#if cu?? && headerData.globalPerm(Permission.ViewLogs)>
                             <div class="dropdown dropdown-menu-right" style="display: inline-block">

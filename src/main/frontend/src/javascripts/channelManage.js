@@ -120,10 +120,11 @@ function initModal() {
 function initColorPicker() {
     var modal = getModal();
     // Initialize popover to stay opened when hovered over
-    modal.find(".color-picker").popover({
+    var colorPicker = modal.find(".color-picker");
+    colorPicker.popover({
         html: true,
         trigger: 'manual',
-        container: $(this).attr('id'),
+        container: colorPicker.attr('id'),
         placement: 'right',
         sanitize: false,
         content: function() {

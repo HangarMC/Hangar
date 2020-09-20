@@ -141,8 +141,6 @@ public class VersionsController extends HangarController {
         ProjectVersionsTable recommendedVersion = versionService.getRecommendedVersion(project);
         if (recommendedVersion == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } else if (recommendedVersion.getExternalUrl() != null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This plugin uses an external download.");
         } else {
             return sendJar(project, recommendedVersion, token, true);
         }
@@ -502,7 +500,7 @@ public class VersionsController extends HangarController {
     }
 
     @GetMapping("/{author}/{slug}/versions/{version}/confirm")
-    public Object showDownloadConfirm(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(defaultValue = "0") DownloadType downloadType, @RequestParam Optional<Boolean> api, @RequestParam(required = false) String dummy) {
+    public Object showDownloadConfirm(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(defaultValue = "0") DownloadType downloadType, @RequestParam(defaultValue = "false") boolean api, @RequestParam(required = false) String dummy) {
         ProjectVersionsTable versionsTable = projectVersionsTable.get();
         ProjectsTable project = projectsTable.get();
         if (versionsTable.getReviewState() == ReviewState.REVIEWED) {
@@ -526,7 +524,7 @@ public class VersionsController extends HangarController {
         }
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"README.txt\"");
-        if (api.orElse(false)) {
+        if (api) {
             removeAddWarnings(address, expiration, token);
             headers.setContentType(MediaType.APPLICATION_JSON);
             String downloadUrl = versionsTable.getExternalUrl() != null ? versionsTable.getExternalUrl() : Routes.VERSIONS_DOWNLOAD_JAR_BY_ID.getRouteUrl(project.getPluginId(), versionsTable.getVersionString(), token);
@@ -570,8 +568,9 @@ public class VersionsController extends HangarController {
 
     @PostMapping(value = "/{author}/{slug}/versions/{version}/confirm", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
-    public Object confirmDownload(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(defaultValue = "0") DownloadType downloadType, @RequestParam Optional<String> token, @RequestParam(required = false) String dummy) {
-        if (projectVersionsTable.get().getReviewState() == ReviewState.REVIEWED) {
+    public ModelAndView confirmDownload(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(defaultValue = "0") DownloadType downloadType, @RequestParam Optional<String> token, @RequestParam(required = false) String dummy) {
+        ProjectVersionsTable pvt = projectVersionsTable.get();
+        if (pvt.getReviewState() == ReviewState.REVIEWED) {
             return Routes.PROJECTS_SHOW.getRedirect(author, slug);
         }
         ProjectVersionUnsafeDownloadsTable download;
@@ -585,6 +584,8 @@ public class VersionsController extends HangarController {
                 return Routes.VERSIONS_DOWNLOAD.getRedirect(author, slug, version, token.orElse(null), "");
             case JAR_FILE:
                 return Routes.VERSIONS_DOWNLOAD_JAR.getRedirect(author, slug, version, token.orElse(null), "");
+            case EXTERNAL_DOWNLOAD:
+                return new ModelAndView("redirect:" + pvt.getExternalUrl());
             default:
                 throw new IllegalArgumentException();
         }
@@ -669,7 +670,7 @@ public class VersionsController extends HangarController {
                 response.addCookie(newCookie);
                 return true;
             } else {
-                ProjectVersionDownloadWarningsTable warning = downloadWarningDao.get().find(token, version.getId(), RequestUtil.getRemoteInetAddress(request));
+                ProjectVersionDownloadWarningsTable warning = downloadWarningDao.get().findConfirmedWarning(token, version.getId(), RequestUtil.getRemoteInetAddress(request));
 
                 if (warning == null) {
                     return false;
@@ -720,7 +721,7 @@ public class VersionsController extends HangarController {
     }
 
     private Object sendJar(ProjectsTable project, ProjectVersionsTable version, String token, boolean api) {
-        if (project.getVisibility() == Visibility.SOFTDELETE) {
+        if (project.getVisibility() == Visibility.SOFTDELETE || version.isExternal()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
             boolean passed = checkConfirmation(version, token);

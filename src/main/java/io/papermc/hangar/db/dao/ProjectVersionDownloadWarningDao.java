@@ -25,7 +25,7 @@ public interface ProjectVersionDownloadWarningDao {
               "    AND version_id = :versionId" +
               "    AND address = :address" +
               "    AND is_confirmed IS TRUE")
-    ProjectVersionDownloadWarningsTable find(String token, long versionId, InetAddress address);
+    ProjectVersionDownloadWarningsTable findConfirmedWarning(String token, long versionId, InetAddress address);
 
     @SqlQuery("SELECT pvdw.* FROM project_version_download_warnings pvdw " +
               "WHERE pvdw.address = :address" +
