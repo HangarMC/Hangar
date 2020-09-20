@@ -3,8 +3,8 @@ package io.papermc.hangar.model;
 public enum TagColor { // remember, once we push to production, the order of these enums cannot change
 
     PAPER("#F7CF0D", "#333333"),
-    WATERFALL("#F7CF0D", "#FFFFFF"),
-    VELOCITY("#039BE5","#FFFFFF"),
+    WATERFALL("#F7CF0D", "#333333"),
+    VELOCITY("#039BE5","#333333"),
 
     UNSTABLE("#FFDAB9", "#333333");
 

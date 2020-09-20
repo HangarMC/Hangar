@@ -23,7 +23,7 @@
                                    maxlength="${config.channels.maxNameLen}"/>
                             <input type="hidden" name="channel-color-input" class="channel-color-input" value="" />
                             <a href="#">
-                                <span class="color-picker" data-toggle="popover" data-placement="right" data-trigger="hover">
+                                <span id="channel-color-picker" class="color-picker" data-toggle="popover" data-placement="right" data-trigger="hover">
                                     <i class="fas fa-circle channel-id" style=""></i>
                                 </span>
                             </a>

@@ -20,16 +20,17 @@ public class PendingVersion {
     private final List<Dependency> dependencies;
     private final String description;
     private final long projectId;
-    private final long fileSize;
+    private final Long fileSize;
     private final String hash;
     private final String fileName;
     private final long authorId;
     private final String channelName;
     private final Color channelColor;
     private final PluginFileWithData plugin;
+    private final String externalUrl;
     private final boolean createForumPost;
 
-    public PendingVersion(String versionString, List<Dependency> dependencies, String description, long projectId, long fileSize, String hash, String fileName, long authorId, String channelName, Color channelColor, PluginFileWithData plugin, boolean createForumPost) {
+    public PendingVersion(String versionString, List<Dependency> dependencies, String description, long projectId, Long fileSize, String hash, String fileName, long authorId, String channelName, Color channelColor, PluginFileWithData plugin, String externalUrl, boolean createForumPost) {
         this.versionString = versionString;
         this.dependencies = dependencies;
         this.description = description;
@@ -41,6 +42,7 @@ public class PendingVersion {
         this.channelName = channelName;
         this.channelColor = channelColor;
         this.plugin = plugin;
+        this.externalUrl = externalUrl;
         this.createForumPost = createForumPost;
     }
 
@@ -60,7 +62,7 @@ public class PendingVersion {
         return projectId;
     }
 
-    public long getFileSize() {
+    public Long getFileSize() {
         return fileSize;
     }
 
@@ -88,6 +90,10 @@ public class PendingVersion {
         return plugin;
     }
 
+    public String getExternalUrl() {
+        return externalUrl;
+    }
+
     public boolean isCreateForumPost() {
         return createForumPost;
     }
@@ -96,8 +102,8 @@ public class PendingVersion {
         return Platform.getGhostTags(-1L, dependencies);
     }
 
-    public PendingVersion copy(String channelName, Color channelColor, boolean createForumPost, String description, List<String> versions) {
-        Optional<Dependency> optional = dependencies.stream().filter(d -> d.getPluginId().equals(plugin.getPlatform().getDependencyId())).findAny();
+    public PendingVersion copy(String channelName, Color channelColor, boolean createForumPost, String description, List<String> versions, Platform platform) {
+        Optional<Dependency> optional = dependencies.stream().filter(d -> d.getPluginId().equals(platform.getDependencyId())).findAny();
         optional.ifPresent(dependency -> dependency.setVersion(String.join(",", versions))); // Should always be present, if not, there are other problems
         return new PendingVersion(
                 versionString,
@@ -111,7 +117,7 @@ public class PendingVersion {
                 channelName,
                 channelColor,
                 plugin,
-                createForumPost
+                externalUrl, createForumPost
         );
     }
 

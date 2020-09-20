@@ -21,12 +21,12 @@ public class ChannelFactory {
         this.channelDao = channelDao;
     }
 
-    public ProjectChannelsTable createChannel(long projectId, String channelName, Color color) {
+    public ProjectChannelsTable createChannel(long projectId, String channelName, Color color, boolean isNonReviewed) {
         if (!hangarConfig.channels.isValidChannelName(channelName)) {
             throw new HangarException("error.channel.invalidName", channelName);
         }
 
-        ProjectChannelsTable channel = new ProjectChannelsTable(channelName, color, projectId);
+        ProjectChannelsTable channel = new ProjectChannelsTable(channelName, color, projectId, isNonReviewed);
         channelDao.get().insert(channel);
         return channel;
     }

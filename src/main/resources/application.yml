@@ -122,6 +122,8 @@ hangar:
         max-failures: 5
         timeout: 10s
         reset: 5m
+    safe-download-hosts:
+      - "github.com"
 
 
 ################

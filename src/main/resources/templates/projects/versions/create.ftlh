@@ -15,6 +15,10 @@
     <script type="text/javascript" src="<@hangar.url "javascripts/pluginUpload.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/projectDetail.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "javascripts/versionCreateChannelNew.js" />"></script>
+    <#if pending?? && !pending.dependencies??>
+        <script type="text/javascript" src="<@hangar.url "build/platform-choice.js" />"></script>
+    </#if>
+
     <script>
              DEFAULT_COLOR = '${config.channels.colorDefault.hex}';
     </script>
@@ -44,30 +48,58 @@
                                 <table class="plugin-meta-table">
                                     <tr>
                                         <td><strong><@spring.message "version" /></strong></td>
-                                        <td>${version.versionString}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong><@spring.message "version.description" /></strong></td>
                                         <td>
-                                            <#if version.description?has_content>
-                                                ${version.description}
+                                            <#if version.versionString??>
+                                                ${version.versionString}
                                             <#else>
-                                                <#if projectDescription?has_content>
-                                                    ${projectDescription}
-                                                <#else>
-                                                    <@spring.message "version.create.noDescription" />
-                                                </#if>
+                                                <div class="form-group">
+                                                    <label for="version-string-input" class="sr-only">Version String</label>
+                                                    <input id="version-string-input" class="form-control" type="text" form="form-publish" name="versionString" required placeholder="Version">
+                                                </div>
                                             </#if>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><strong><@spring.message "version.filename" /></strong></td>
-                                        <td>${version.fileName}</td>
+                                        <td><strong><@spring.message "version.description" /></strong></td>
+                                        <td>
+                                            <#if version.versionString??>
+                                                <#if version.description?has_content>
+                                                    ${version.description}
+                                                <#else>
+                                                    <#if projectDescription?has_content>
+                                                        ${projectDescription}
+                                                    <#else>
+                                                        <@spring.message "version.create.noDescription" />
+                                                    </#if>
+                                                </#if>
+                                            <#else>
+                                                <div class="form-group">
+                                                    <label for="version-description-input" class="sr-only">Version Description</label>
+                                                    <input type="text" form="form-publish" name="versionDescription" class="form-control" id="version-description-input">
+                                                </div>
+                                            </#if>
+                                        </td>
                                     </tr>
-                                    <tr>
-                                        <td><strong><@spring.message "version.fileSize" /></strong></td>
-                                        <td>${utils.formatFileSize(version.fileSize)}</td>
-                                    </tr>
+                                    <#if version.fileName?? && !version.externalUrl??>
+                                        <tr>
+                                            <td><strong><@spring.message "version.filename" /></strong></td>
+                                            <td>${version.fileName}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong><@spring.message "version.fileSize" /></strong></td>
+                                            <td>${utils.formatFileSize(version.fileSize)}</td>
+                                        </tr>
+                                    <#else>
+                                        <tr>
+                                            <td><strong><@spring.message "version.externalUrl" /></strong></td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <label for="external-url-input" class="sr-only"></label>
+                                                    <input id="external-url-input" class="form-control" type="text" value="${version.externalUrl}" name="externalUrl" form="form-publish" required>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </#if>
                                     <tr>
                                         <td><strong>Channel</strong></td>
                                         <td class="form-inline">
@@ -80,49 +112,59 @@
                                             </#list>
                                             </select>
                                             <a href="#">
-                                                <i id="channel-new" class="fas fa-plus" data-toggle="modal"
-                                                data-target="#channel-settings"></i>
+                                                <i id="channel-new" class="fas fa-plus" data-toggle="modal" data-target="#channel-settings"></i>
                                             </a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><strong>Platform</strong></td>
                                         <td>
-                                            <div class="float-right" id="upload-platform-tags">
-                                            <#list version.dependenciesAsGhostTags as pair>
-                                                <@projectTag.tagTemplate @helper["io.papermc.hangar.model.viewhelpers.ViewTag"].fromVersionTag(pair.right) pair.left "form-publish" />
-                                            </#list>
-                                            </div>
+                                            <#if version.dependencies??>
+                                                <div class="float-right" id="upload-platform-tags">
+                                                    <#list version.dependenciesAsGhostTags as pair>
+                                                        <@projectTag.tagTemplate @helper["io.papermc.hangar.model.viewhelpers.ViewTag"].fromVersionTag(pair.right) pair.left "form-publish" />
+                                                    </#list>
+                                                </div>
+                                            <#else>
+                                                <div id="platform-choice"></div>
+                                            </#if>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><strong><@spring.message "version.create.unstable" /></strong></td>
-                                        <td class="rv">
-                                            <div class="checkbox-inline">
-                                                <input form="form-publish" name="unstable" type="checkbox" value="true"/>
-                                            </div>
-                                            <div class="clearfix"></div>
+                                        <td>
+                                            <label for="is-unstable-version" class="form-check-label">
+                                                <strong><@spring.message "version.create.unstable" /></strong>
+                                            </label>
                                         </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td><strong>Recommended</strong></td>
                                         <td class="rv">
-                                            <div class="checkbox-inline">
-                                                <input form="form-publish" name="recommended" type="checkbox" checked
-                                                value="true"/>
+                                            <div class="form-check">
+                                                <input id="is-unstable-version" class="form-check-input" form="form-publish" name="unstable" type="checkbox" value="true">
                                             </div>
                                             <div class="clearfix"></div>
                                         </td>
                                     </tr>
-
                                     <tr>
-                                        <td><strong>Create forum post</strong></td>
+                                        <td>
+                                            <label for="is-recommended-version" class="form-check-label">
+                                                <strong>Recommended</strong>
+                                            </label>
+                                        </td>
                                         <td class="rv">
-                                            <div class="checkbox-inline">
+                                            <div class="form-check">
+                                                <input id="is-recommended-version" class="form-check-input" form="form-publish" name="recommended" type="checkbox" checked value="true">
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="create-forum-post-version" class="form-check-label"></label>
+                                            <strong>Create forum post</strong>
+                                        </td>
+                                        <td class="rv">
+                                            <div class="form-check">
                                                 <#-- @ftlvariable name="forumSync" type="java.lang.Boolean" -->
-                                                <input form="form-publish" name="forum-post" type="checkbox"
-                                                <#if forumSync> checked </#if> value="true"/>
+                                                <input id="create-forum-post-version" class="form-check-input" form="form-publish" name="forum-post" type="checkbox" <#if forumSync> checked </#if> value="true">
                                             </div>
                                             <div class="clearfix"></div>
                                         </td>
@@ -149,29 +191,35 @@
                     </#if>
 
                     <@form.form action=Routes.VERSIONS_UPLOAD.getRouteUrl(ownerName, projectSlug) method="POST"
-                        enctype="multipart/form-data" id="form-upload">
+                        enctype="multipart/form-data" id="form-upload" class="form-inline">
                         <@csrf.formField />
-                            <label class="btn btn-default float-left" for="pluginFile">
+                            <label class="btn btn-info float-left" for="pluginFile">
                                 <input id="pluginFile" name="pluginFile" type="file" style="display: none;" accept=".jar,.zip">
                                 <@spring.message "version.create.selectFile" />
                             </label>
-
                             <@alertFile.alertFile />
                     </@form.form>
 
-                    <#if pending??>
-                        <#-- Ready to go! -->
-                        <#assign version = pending>
-                        <@form.form method="POST" action=Routes.VERSIONS_PUBLISH.getRouteUrl(ownerName, projectSlug, version.versionString)
-                            id="form-publish" class="float-right">
+                    <#if !pending??>
+                        <@form.form action=Routes.VERSIONS_CREATE_EXTERNAL_URL.getRouteUrl(ownerName, projectSlug) method="POST" id="form-url-upload" class="form-inline">
                             <@csrf.formField />
-                            <input type="hidden" class="channel-color-input" name="channel-color-input"
-                            value="${config.channels.colorDefault.hex}" />
+                            <div class="input-group float-right" style="width: 50%">
+                                <input type="text" class="form-control" id="externalUrl" name="externalUrl" placeholder="<@spring.message "version.create.externalUrl" />" style="width: 70%">
+                                <div class="input-group-append">
+                                    <button class="btn btn-info" type="submit">Create Version</button>
+                                </div>
 
-                            <div>
-                                <input type="submit" name="create" value="<@spring.message "version.create.publish" />"
-                                class="btn btn-primary" />
                             </div>
+                        </@form.form>
+                    <#else>
+                        <#assign version = pending>
+                        <#assign formAction>
+                            <#if version.versionString??>${Routes.VERSIONS_PUBLISH.getRouteUrl(ownerName, projectSlug, version.versionString)}<#else>${Routes.VERSIONS_PUBLISH_URL.getRouteUrl(ownerName, projectSlug)}</#if>
+                        </#assign>
+                        <@form.form method="POST" action=formAction id="form-publish" class="float-right">
+                            <@csrf.formField />
+                            <input type="hidden" class="channel-color-input" name="channel-color-input" value="${config.channels.colorDefault.hex}">
+                            <div><input type="submit" name="create" value="<@spring.message "version.create.publish" />" class="btn btn-primary"></div>
                         </@form.form>
                     </#if>
 

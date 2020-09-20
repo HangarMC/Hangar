@@ -80,6 +80,7 @@ public class PluginUploadService {
         }
     }
 
+
     public PendingVersion processSubsequentPluginUpload(MultipartFile file, UsersTable owner, ProjectsTable project) throws HangarException {
         PluginFileWithData plugin = processPluginUpload(file, owner);
         // TODO not sure what to do w/plugin id, that isn't stored in the metadata for the file
@@ -127,6 +128,7 @@ public class PluginUploadService {
                 channelName,
                 config.getChannels().getColorDefault(),
                 plugin,
+                null,
                 forumSync
         );
     }

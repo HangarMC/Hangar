@@ -5,12 +5,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @ConfigurationProperties(prefix = "hangar.security")
 public class HangarSecurityConfig {
 
     private boolean secure = false;
     private long unsafeDownloadMaxAge = 600000;
+    private List<String> safeDownloadHosts = List.of();
     @NestedConfigurationProperty
     public SecurityApiConfig api;
 
@@ -123,6 +126,14 @@ public class HangarSecurityConfig {
 
     public void setUnsafeDownloadMaxAge(long unsafeDownloadMaxAge) {
         this.unsafeDownloadMaxAge = unsafeDownloadMaxAge;
+    }
+
+    public List<String> getSafeDownloadHosts() {
+        return safeDownloadHosts;
+    }
+
+    public void setSafeDownloadHosts(List<String> safeDownloadHosts) {
+        this.safeDownloadHosts = safeDownloadHosts;
     }
 
     public SecurityApiConfig getApi() {

@@ -24,12 +24,12 @@ public interface ProjectVersionDao {
     @Timestamped
     @GetGeneratedKeys
     @SqlUpdate("INSERT INTO project_versions " +
-            "(created_at, version_string, dependencies, description, project_id, channel_id, file_size, hash, file_name, author_id, create_forum_post) VALUES " +
-            "(:now, :versionString, :dependencies, :description, :projectId, :channelId, :fileSize, :hash, :fileName, :authorId, :createForumPost)")
+            "(created_at, version_string, dependencies, description, project_id, channel_id, file_size, hash, file_name, author_id, create_forum_post, external_url) VALUES " +
+            "(:now, :versionString, :dependencies, :description, :projectId, :channelId, :fileSize, :hash, :fileName, :authorId, :createForumPost, :externalUrl)")
     ProjectVersionsTable insert(@BindBean ProjectVersionsTable projectVersionsTable);
 
     @SqlUpdate("UPDATE project_versions SET visibility = :visibility, reviewer_id = :reviewerId, approved_at = :approvedAt, description = :description, " +
-               "review_state = :reviewState " +
+               "review_state = :reviewState, external_url = :externalUrl " +
                "WHERE id = :id")
     void update(@BindBean ProjectVersionsTable projectVersionsTable);
 

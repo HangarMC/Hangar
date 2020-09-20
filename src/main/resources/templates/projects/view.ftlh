@@ -26,7 +26,7 @@ Base template for Project overview.
     </#assign>
 
     <#assign metaVar>
-        <meta property="og:title" content="${p.project.ownerName} / ${p.project.name}" />
+        <meta property="og:title" content="${p.project.ownerName}/${p.project.name}" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="${Routes.PROJECTS_SHOW.getRouteUrl(p.project.ownerName, p.project.slug)}" />
         <meta property="og:image" content="${p.iconUrl}" />

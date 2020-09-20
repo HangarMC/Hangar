@@ -3,6 +3,7 @@ package io.papermc.hangar.db.model;
 
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.generated.ReviewState;
+import org.jdbi.v3.core.annotation.Unmappable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 import java.time.OffsetDateTime;
@@ -17,7 +18,7 @@ public class ProjectVersionsTable {
     private String description;
     private long projectId;
     private long channelId;
-    private long fileSize;
+    private Long fileSize;
     private String hash;
     private String fileName;
     private Long reviewerId;
@@ -27,8 +28,9 @@ public class ProjectVersionsTable {
     private ReviewState reviewState = ReviewState.UNREVIEWED;
     private boolean createForumPost = true;
     private Long postId;
+    private String externalUrl;
 
-    public ProjectVersionsTable(String versionString, List<String> dependencies, String description, long projectId, long channelId, long fileSize, String hash, String fileName, long authorId, boolean createForumPost) {
+    public ProjectVersionsTable(String versionString, List<String> dependencies, String description, long projectId, long channelId, Long fileSize, String hash, String fileName, long authorId, boolean createForumPost, String externalUrl) {
         this.versionString = versionString;
         this.dependencies = dependencies;
         this.description = description;
@@ -39,6 +41,7 @@ public class ProjectVersionsTable {
         this.fileName = fileName;
         this.authorId = authorId;
         this.createForumPost = createForumPost;
+        this.externalUrl = externalUrl;
     }
 
     public ProjectVersionsTable() { }
@@ -106,11 +109,11 @@ public class ProjectVersionsTable {
     }
 
 
-    public long getFileSize() {
+    public Long getFileSize() {
         return fileSize;
     }
 
-    public void setFileSize(long fileSize) {
+    public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
     }
 
@@ -197,6 +200,20 @@ public class ProjectVersionsTable {
 
     public void setPostId(Long postId) {
         this.postId = postId;
+    }
+
+
+    public String getExternalUrl() {
+        return externalUrl;
+    }
+
+    public void setExternalUrl(String externalUrl) {
+        this.externalUrl = externalUrl;
+    }
+
+    @Unmappable
+    public boolean isExternal() {
+        return this.externalUrl != null && this.fileName == null;
     }
 
     @Override

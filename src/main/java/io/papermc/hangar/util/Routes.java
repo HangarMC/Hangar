@@ -10,138 +10,134 @@ import static java.util.List.of;
 
 public enum Routes {
 
-    SHOW_PROJECT_VISIBILITY("showProjectVisibility", "/admin/approval/projects", of(), of()),
-    ACTOR_COUNT("actorCount", "/pantopticon/actor-count", of(), of("timeoutMs")),
-    ACTOR_TREE("actorTree", "/pantopticon/actor-tree", of(), of("timeoutMs")),
-    UPDATE_USER("updateUser", "/admin/user/{user}/update", of("user"), of()),
-    SHOW_QUEUE("showQueue", "/admin/approval/versions", of(), of()),
-    SHOW_LOG("showLog", "/admin/log", of(), of("page", "userFilter", "projectFilter", "versionFilter", "pageFilter", "actionFilter", "subjectFilter")),
-    SHOW_PLATFORM_VERSIONS("showPlatformVersions", "/admin/versions", of(), of()),
-    UPDATE_PLATFORM_VERSIONS("updatePlatformVersions", "/admin/versions/{platform}", of("platform"), of()),
-    REMOVE_TRAIL("removeTrail", "/{path}/", of("path"), of()),
-    FAVICON_REDIRECT("faviconRedirect", "/favicon.ico", of(), of()),
-    SHOW_FLAGS("showFlags", "/admin/flags", of(), of()),
-    SITEMAP_INDEX("sitemapIndex", "/sitemap.xml", of(), of()),
-    GLOBAL_SITEMAP("globalSitemap", "/global-sitemap.xml", of(), of()),
-    SHOW_STATS("showStats", "/admin/stats", of(), of("from", "to")),
-    LINK_OUT("linkOut", "/linkout", of(), of("remoteUrl")),
-    SHOW_HEALTH("showHealth", "/admin/health", of(), of()),
-    SHOW_HOME("showHome", "/", of(), of()),
-    ROBOTS("robots", "/robots.txt", of(), of()),
-    SET_FLAG_RESOLVED("setFlagResolved", "/admin/flags/{id}/resolve/{resolved}", of("id", "resolved"), of()),
-    SWAGGER("swagger", "/api", of(), of()),
-    SHOW_ACTIVITIES("showActivities", "/admin/activities/{user}", of("user"), of()),
-    USER_ADMIN("userAdmin", "/admin/user/{user}", of("user"), of()),
-    JAVA_SCRIPT_ROUTES("javaScriptRoutes", "/javascriptRoutes", of(), of()),
+    SHOW_PROJECT_VISIBILITY("showProjectVisibility", Paths.SHOW_PROJECT_VISIBILITY, of(), of()),
+    ACTOR_COUNT("actorCount", Paths.ACTOR_COUNT, of(), of("timeoutMs")),
+    ACTOR_TREE("actorTree", Paths.ACTOR_TREE, of(), of("timeoutMs")),
+    UPDATE_USER("updateUser", Paths.UPDATE_USER, of("user"), of()),
+    SHOW_QUEUE("showQueue", Paths.SHOW_QUEUE, of(), of()),
+    SHOW_LOG("showLog", Paths.SHOW_LOG, of(), of("page", "userFilter", "projectFilter", "versionFilter", "pageFilter", "actionFilter", "subjectFilter")),
+    SHOW_PLATFORM_VERSIONS("showPlatformVersions", Paths.SHOW_PLATFORM_VERSIONS, of(), of()),
+    UPDATE_PLATFORM_VERSIONS("updatePlatformVersions", Paths.UPDATE_PLATFORM_VERSIONS, of("platform"), of()),
+    REMOVE_TRAIL("removeTrail", Paths.REMOVE_TRAIL, of("path"), of()),
+    FAVICON_REDIRECT("faviconRedirect", Paths.FAVICON_REDIRECT, of(), of()),
+    SHOW_FLAGS("showFlags", Paths.SHOW_FLAGS, of(), of()),
+    SITEMAP_INDEX("sitemapIndex", Paths.SITEMAP_INDEX, of(), of()),
+    GLOBAL_SITEMAP("globalSitemap", Paths.GLOBAL_SITEMAP, of(), of()),
+    SHOW_STATS("showStats", Paths.SHOW_STATS, of(), of("from", "to")),
+    LINK_OUT("linkOut", Paths.LINK_OUT, of(), of("remoteUrl")),
+    SHOW_HEALTH("showHealth", Paths.SHOW_HEALTH, of(), of()),
+    SHOW_HOME("showHome", Paths.SHOW_HOME, of(), of()),
+    ROBOTS("robots", Paths.ROBOTS, of(), of()),
+    SET_FLAG_RESOLVED("setFlagResolved", Paths.SET_FLAG_RESOLVED, of("id", "resolved"), of()),
+    SWAGGER("swagger", Paths.SWAGGER, of(), of()),
+    SHOW_ACTIVITIES("showActivities", Paths.SHOW_ACTIVITIES, of("user"), of()),
+    USER_ADMIN("userAdmin", Paths.USER_ADMIN, of("user"), of()),
+    JAVA_SCRIPT_ROUTES("javaScriptRoutes", Paths.JAVA_SCRIPT_ROUTES, of(), of()),
 
-    PROJECTS_RENAME("projects.rename", "/{author}/{slug}/manage/rename", of("author", "slug"), of()),
-    PROJECTS_SET_WATCHING("projects.setWatching", "/{author}/{slug}/watchers/{watching}", of("author", "slug", "watching"), of()),
-    PROJECTS_SHOW_SETTINGS("projects.showSettings", "/{author}/{slug}/manage", of("author", "slug"), of()),
-    PROJECTS_SET_INVITE_STATUS("projects.setInviteStatus", "/invite/{id}/{status}", of("id", "status"), of()),
-    PROJECTS_TOGGLE_STARRED("projects.toggleStarred", "/{author}/{slug}/stars/toggle", of("author", "slug"), of()),
-    PROJECTS_SHOW_CREATOR("projects.showCreator", "/new", of(), of()),
-    PROJECTS_SHOW_STARGAZERS("projects.showStargazers", "/{author}/{slug}/stars", of("author", "slug"), of("page")),
-    PROJECTS_SHOW_WATCHERS("projects.showWatchers", "/{author}/{slug}/watchers", of("author", "slug"), of("page")),
-    PROJECTS_UPLOAD_ICON("projects.uploadIcon", "/{author}/{slug}/icon", of("author", "slug"), of()),
-    PROJECTS_SHOW_ICON("projects.showIcon", "/{author}/{slug}/icon", of("author", "slug"), of()),
-    PROJECTS_SEND_FOR_APPROVAL("projects.sendForApproval", "/{author}/{slug}/manage/sendforapproval", of("author", "slug"), of()),
-    PROJECTS_SET_INVITE_STATUS_ON_BEHALF("projects.setInviteStatusOnBehalf", "/invite/{id}/{status}/{behalf}", of("id", "status", "behalf"), of()),
-    PROJECTS_DELETE("projects.delete", "/{author}/{slug}/manage/hardDelete", of("author", "slug"), of()),
-    PROJECTS_ADD_MESSAGE("projects.addMessage", "/{author}/{slug}/notes/addmessage", of("author", "slug"), of()),
-    PROJECTS_SHOW_PENDING_ICON("projects.showPendingIcon", "/{author}/{slug}/icon/pending", of("author", "slug"), of()),
-    PROJECTS_POST_DISCUSSION_REPLY("projects.postDiscussionReply", "/{author}/{slug}/discuss/reply", of("author", "slug"), of()),
-    PROJECTS_SHOW("projects.show", "/{author}/{slug}", of("author", "slug"), of()),
-    PROJECTS_SHOW_DISCUSSION("projects.showDiscussion", "/{author}/{slug}/discuss", of("author", "slug"), of()),
-    PROJECTS_SOFT_DELETE("projects.softDelete", "/{author}/{slug}/manage/delete", of("author", "slug"), of()),
-    PROJECTS_SHOW_FLAGS("projects.showFlags", "/{author}/{slug}/flags", of("author", "slug"), of()),
-    PROJECTS_FLAG("projects.flag", "/{author}/{slug}/flag", of("author", "slug"), of()),
-    PROJECTS_CREATE_PROJECT("projects.createProject", "/new", of(), of()),
-    PROJECTS_RESET_ICON("projects.resetIcon", "/{author}/{slug}/icon/reset", of("author", "slug"), of()),
-    PROJECTS_SAVE("projects.save", "/{author}/{slug}/manage/save", of("author", "slug"), of()),
-    PROJECTS_SHOW_NOTES("projects.showNotes", "/{author}/{slug}/notes", of("author", "slug"), of()),
-    PROJECTS_SET_VISIBLE("projects.setVisible", "/{author}/{slug}/visible/{visibility}", of("author", "slug", "visibility"), of()),
-    PROJECTS_REMOVE_MEMBER("projects.removeMember", "/{author}/{slug}/manage/members/remove", of("author", "slug"), of()),
-
-    VERSIONS_RESTORE("versions.restore", "/{author}/{slug}/versions/{version}/restore", of("author", "slug", "version"), of()),
-    VERSIONS_DOWNLOAD_RECOMMENDED_JAR("versions.downloadRecommendedJar", "/{author}/{slug}/versions/recommended/jar", of("author", "slug"), of("token")),
-    VERSIONS_PUBLISH("versions.publish", "/{author}/{slug}/versions/{version}", of("author", "slug", "version"), of()),
-    VERSIONS_SET_RECOMMENDED("versions.setRecommended", "/{author}/{slug}/versions/{version}/recommended", of("author", "slug", "version"), of()),
-    VERSIONS_DOWNLOAD("versions.download", "/{author}/{slug}/versions/{version}/download", of("author", "slug", "version"), of("token", "confirm")),
-    VERSIONS_SHOW_LOG("versions.showLog", "/{author}/{slug}/versionLog", of("author", "slug"), of("versionString")),
-    VERSIONS_SHOW("versions.show", "/{author}/{slug}/versions/{version}", of("author", "slug", "version"), of()),
-    VERSIONS_DOWNLOAD_JAR("versions.downloadJar", "/{author}/{slug}/versions/{version}/jar", of("author", "slug", "version"), of("token")),
-    VERSIONS_APPROVE("versions.approve", "/{author}/{slug}/versions/{version}/approve", of("author", "slug", "version"), of()),
-    VERSIONS_APPROVE_PARTIAL("versions.approvePartial", "/{author}/{slug}/versions/{version}/approvePartial", of("author", "slug", "version"), of()),
-    VERSIONS_SAVE_DESCRIPTION("versions.saveDescription", "/{author}/{slug}/versions/{version}/save", of("author", "slug", "version"), of()),
-    VERSIONS_DOWNLOAD_RECOMMENDED("versions.downloadRecommended", "/{author}/{slug}/versions/recommended/download", of("author", "slug"), of("token")),
-    VERSIONS_SHOW_LIST("versions.showList", "/{author}/{slug}/versions", of("author", "slug"), of()),
-    VERSIONS_DOWNLOAD_JAR_BY_ID("versions.downloadJarById", "/api/project/{pluginId}/versions/{name}/download", of("pluginId", "name"), of("token")),
-    VERSIONS_DOWNLOAD_RECOMMENDED_JAR_BY_ID("versions.downloadRecommendedJarById", "/api/project/{pluginId}/versions/recommended/download", of("pluginId"), of("token")),
-    VERSIONS_UPLOAD("versions.upload", "/{author}/{slug}/versions/new/upload", of("author", "slug"), of()),
-    VERSIONS_SOFT_DELETE("versions.softDelete", "/{author}/{slug}/versions/{version}/delete", of("author", "slug", "version"), of()),
-    VERSIONS_SHOW_DOWNLOAD_CONFIRM("versions.showDownloadConfirm", "/{author}/{slug}/versions/{version}/confirm", of("author", "slug", "version"), of("downloadType", "api", "dummy")),
-    VERSIONS_SHOW_CREATOR("versions.showCreator", "/{author}/{slug}/versions/new", of("author", "slug"), of()),
-    VERSIONS_DELETE("versions.delete", "/{author}/{slug}/versions/{version}/hardDelete", of("author", "slug", "version"), of()),
-    VERSIONS_SHOW_CREATOR_WITH_META("versions.showCreatorWithMeta", "/{author}/{slug}/versions/new/{version}", of("author", "slug", "version"), of()),
-    VERSIONS_CONFIRM_DOWNLOAD("versions.confirmDownload", "/{author}/{slug}/versions/{version}/confirm", of("author", "slug", "version"), of("downloadType", "token", "dummy")),
-
-    PAGES_SHOW_PREVIEW("pages.showPreview", "/pages/preview", of(), of()),
-    PAGES_SAVE("pages.save", "/{author}/{slug}/pages/{page}/edit", of("author", "slug", "page"), of()),
-    PAGES_SHOW_EDITOR("pages.showEditor", "/{author}/{slug}/pages/{page}/edit", of("author", "slug", "page"), of()),
-    PAGES_SHOW("pages.show", "/{author}/{slug}/pages/{page}", of("author", "slug", "page"), of()),
-    PAGES_DELETE("pages.delete", "/{author}/{slug}/pages/{page}/delete", of("author", "slug", "page"), of()),
-
-    USERS_SHOW_AUTHORS("users.showAuthors", "/authors", of(), of("sort", "page")),
-    USERS_SAVE_TAGLINE("users.saveTagline", "/{user}/settings/tagline", of("user"), of()),
-    USERS_SIGN_UP("users.signUp", "/signup", of(), of()),
-    USERS_SHOW_NOTIFICATIONS("users.showNotifications", "/notifications", of(), of("notificationFilter", "inviteFilter")),
-    USERS_SHOW_PROJECTS("users.showProjects", "/{user}", of("user"), of()),
-    USERS_VERIFY("users.verify", "/verify", of(), of("returnPath")),
-    USERS_MARK_NOTIFICATION_READ("users.markNotificationRead", "/notifications/read/{id}", of("id"), of()),
-    USERS_LOGIN("users.login", "/login", of(), of("sso", "sig", "returnUrl")),
-    USERS_SHOW_STAFF("users.showStaff", "/staff", of(), of("sort", "page")),
-    USERS_SET_LOCKED("users.setLocked", "/{user}/settings/lock/{locked}", of("user", "locked"), of("sso", "sig")),
-    USERS_MARK_PROMPT_READ("users.markPromptRead", "/prompts/read/{id}", of("id"), of()),
-    USERS_LOGOUT("users.logout", "/logout", of(), of()),
-    USERS_USER_SITEMAP("users.userSitemap", "/{user}/sitemap.xml", of("user"), of()),
-    USERS_EDIT_API_KEYS("users.editApiKeys", "/{user}/settings/apiKeys", of("user"), of()),
-
-    ORG_UPDATE_MEMBERS("org.updateMembers", "/organizations/{organization}/settings/members", of("organization"), of()),
-    ORG_UPDATE_AVATAR("org.updateAvatar", "/organizations/{organization}/settings/avatar", of("organization"), of()),
-    ORG_SET_INVITE_STATUS("org.setInviteStatus", "/organizations/invite/{id}/{status}", of("id", "status"), of()),
-    ORG_SHOW_CREATOR("org.showCreator", "/organizations/new", of(), of()),
-    ORG_CREATE("org.create", "/organizations/new", of(), of()),
-    ORG_REMOVE_MEMBER("org.removeMember", "/organizations/{organization}/settings/members/remove", of("organization"), of()),
-
-    REVIEWS_ADD_MESSAGE("reviews.addMessage", "/{author}/{slug}/versions/{version}/reviews/addmessage", of("author", "slug", "version"), of()),
-    REVIEWS_BACKLOG_TOGGLE("reviews.backlogToggle", "/{author}/{slug}/versions/{version}/reviews/reviewtoggle", of("author", "slug", "version"), of()),
-    REVIEWS_SHOW_REVIEWS("reviews.showReviews", "/{author}/{slug}/versions/{version}/reviews", of("author", "slug", "version"), of()),
-    REVIEWS_APPROVE_REVIEW("reviews.approveReview", "/{author}/{slug}/versions/{version}/reviews/approve", of("author", "slug", "version"), of()),
-    REVIEWS_EDIT_REVIEW("reviews.editReview", "/{author}/{slug}/versions/{version}/reviews/edit/{review}", of("author", "slug", "version", "review"), of()),
-    REVIEWS_STOP_REVIEW("reviews.stopReview", "/{author}/{slug}/versions/{version}/reviews/stop", of("author", "slug", "version"), of()),
-    REVIEWS_CREATE_REVIEW("reviews.createReview", "/{author}/{slug}/versions/{version}/reviews/init", of("author", "slug", "version"), of()),
-    REVIEWS_TAKEOVER_REVIEW("reviews.takeoverReview", "/{author}/{slug}/versions/{version}/reviews/takeover", of("author", "slug", "version"), of()),
-    REVIEWS_REOPEN_REVIEW("reviews.reopenReview", "/{author}/{slug}/versions/{version}/reviews/reopen", of("author", "slug", "version"), of()),
-
-    CHANNELS_DELETE("channels.delete", "/{author}/{slug}/channels/{channel}/delete", of("author", "slug", "channel"), of()),
-    CHANNELS_SAVE("channels.save", "/{author}/{slug}/channels/{channel}", of("author", "slug", "channel"), of()),
-    CHANNELS_SHOW_LIST("channels.showList", "/{author}/{slug}/channels", of("author", "slug"), of()),
-    CHANNELS_CREATE("channels.create", "/{author}/{slug}/channels", of("author", "slug"), of()),
-
-    APIV1_SHOW_VERSION("apiv1.showVersion", "/api/v1/projects/{pluginId}/versions/{name}", of("pluginId", "name"), of()),
-    APIV1_LIST_PROJECTS("apiv1.listProjects", "/api/v1/projects", of(), of("categories", "sort", "q", "limit", "offset")),
-    APIV1_LIST_USERS("apiv1.listUsers", "/api/v1/users", of(), of("limit", "offset")),
-    APIV1_LIST_VERSIONS("apiv1.listVersions", "/api/v1/projects/{pluginId}/versions", of("pluginId"), of("channels", "limit", "offset")),
-    APIV1_REVOKE_KEY("apiv1.revokeKey", "/api/v1/projects/{pluginId}/keys/revoke", of("pluginId"), of()),
-    APIV1_CREATE_KEY("apiv1.createKey", "/api/v1/projects/{pluginId}/keys/new", of("pluginId"), of()),
-    APIV1_SHOW_PROJECT("apiv1.showProject", "/api/v1/projects/{pluginId}", of("pluginId"), of()),
-    APIV1_SYNC_SSO("apiv1.syncSso", "/api/sync_sso", of(), of()),
-    APIV1_TAG_COLOR("apiv1.tagColor", "/api/v1/tags/{tagId}", of("tagId"), of()),
-    APIV1_SHOW_STATUS_Z("apiv1.showStatusZ", "/statusz", of(), of()),
-    APIV1_SHOW_USER("apiv1.showUser", "/api/v1/users/{user}", of("user"), of()),
-    APIV1_LIST_PAGES("apiv1.listPages", "/api/v1/projects/{pluginId}/pages", of("pluginId"), of("parentId")),
-    APIV1_DEPLOY_VERSION("apiv1.deployVersion", "/api/v1/projects/{pluginId}/versions/{name}", of("pluginId", "name"), of()),
-    APIV1_LIST_TAGS("apiv1.listTags", "/api/v1/projects/{plugin}/tags/{versionName}", of("plugin", "versionName"), of());
+    PROJECTS_RENAME("projects.rename", Paths.PROJECTS_RENAME, of("author", "slug"), of()),
+    PROJECTS_SET_WATCHING("projects.setWatching", Paths.PROJECTS_SET_WATCHING, of("author", "slug", "watching"), of()),
+    PROJECTS_SHOW_SETTINGS("projects.showSettings", Paths.PROJECTS_SHOW_SETTINGS, of("author", "slug"), of()),
+    PROJECTS_SET_INVITE_STATUS("projects.setInviteStatus", Paths.PROJECTS_SET_INVITE_STATUS, of("id", "status"), of()),
+    PROJECTS_TOGGLE_STARRED("projects.toggleStarred", Paths.PROJECTS_TOGGLE_STARRED, of("author", "slug"), of()),
+    PROJECTS_SHOW_CREATOR("projects.showCreator", Paths.PROJECTS_SHOW_CREATOR, of(), of()),
+    PROJECTS_SHOW_STARGAZERS("projects.showStargazers", Paths.PROJECTS_SHOW_STARGAZERS, of("author", "slug"), of("page")),
+    PROJECTS_SHOW_WATCHERS("projects.showWatchers", Paths.PROJECTS_SHOW_WATCHERS, of("author", "slug"), of("page")),
+    PROJECTS_UPLOAD_ICON("projects.uploadIcon", Paths.PROJECTS_UPLOAD_ICON, of("author", "slug"), of()),
+    PROJECTS_SHOW_ICON("projects.showIcon", Paths.PROJECTS_SHOW_ICON, of("author", "slug"), of()),
+    PROJECTS_SEND_FOR_APPROVAL("projects.sendForApproval", Paths.PROJECTS_SEND_FOR_APPROVAL, of("author", "slug"), of()),
+    PROJECTS_SET_INVITE_STATUS_ON_BEHALF("projects.setInviteStatusOnBehalf", Paths.PROJECTS_SET_INVITE_STATUS_ON_BEHALF, of("id", "status", "behalf"), of()),
+    PROJECTS_DELETE("projects.delete", Paths.PROJECTS_DELETE, of("author", "slug"), of()),
+    PROJECTS_ADD_MESSAGE("projects.addMessage", Paths.PROJECTS_ADD_MESSAGE, of("author", "slug"), of()),
+    PROJECTS_SHOW_PENDING_ICON("projects.showPendingIcon", Paths.PROJECTS_SHOW_PENDING_ICON, of("author", "slug"), of()),
+    PROJECTS_POST_DISCUSSION_REPLY("projects.postDiscussionReply", Paths.PROJECTS_POST_DISCUSSION_REPLY, of("author", "slug"), of()),
+    PROJECTS_SHOW("projects.show", Paths.PROJECTS_SHOW, of("author", "slug"), of()),
+    PROJECTS_SHOW_DISCUSSION("projects.showDiscussion", Paths.PROJECTS_SHOW_DISCUSSION, of("author", "slug"), of()),
+    PROJECTS_SOFT_DELETE("projects.softDelete", Paths.PROJECTS_SOFT_DELETE, of("author", "slug"), of()),
+    PROJECTS_SHOW_FLAGS("projects.showFlags", Paths.PROJECTS_SHOW_FLAGS, of("author", "slug"), of()),
+    PROJECTS_FLAG("projects.flag", Paths.PROJECTS_FLAG, of("author", "slug"), of()),
+    PROJECTS_CREATE_PROJECT("projects.createProject", Paths.PROJECTS_CREATE_PROJECT, of(), of()),
+    PROJECTS_RESET_ICON("projects.resetIcon", Paths.PROJECTS_RESET_ICON, of("author", "slug"), of()),
+    PROJECTS_SAVE("projects.save", Paths.PROJECTS_SAVE, of("author", "slug"), of()),
+    PROJECTS_SHOW_NOTES("projects.showNotes", Paths.PROJECTS_SHOW_NOTES, of("author", "slug"), of()),
+    PROJECTS_SET_VISIBLE("projects.setVisible", Paths.PROJECTS_SET_VISIBLE, of("author", "slug", "visibility"), of()),
+    PROJECTS_REMOVE_MEMBER("projects.removeMember", Paths.PROJECTS_REMOVE_MEMBER, of("author", "slug"), of()),
+    VERSIONS_RESTORE("versions.restore", Paths.VERSIONS_RESTORE, of("author", "slug", "version"), of()),
+    VERSIONS_DOWNLOAD_RECOMMENDED_JAR("versions.downloadRecommendedJar", Paths.VERSIONS_DOWNLOAD_RECOMMENDED_JAR, of("author", "slug"), of("token")),
+    VERSIONS_PUBLISH("versions.publish", Paths.VERSIONS_PUBLISH, of("author", "slug", "version"), of()),
+    VERSIONS_PUBLISH_URL("versions.publishUrl", Paths.VERSIONS_PUBLISH_URL, of("author", "slug"), of()),
+    VERSIONS_SET_RECOMMENDED("versions.setRecommended", Paths.VERSIONS_SET_RECOMMENDED, of("author", "slug", "version"), of()),
+    VERSIONS_DOWNLOAD("versions.download", Paths.VERSIONS_DOWNLOAD, of("author", "slug", "version"), of("token", "confirm")),
+    VERSIONS_SHOW_LOG("versions.showLog", Paths.VERSIONS_SHOW_LOG, of("author", "slug"), of("versionString")),
+    VERSIONS_SHOW("versions.show", Paths.VERSIONS_SHOW, of("author", "slug", "version"), of()),
+    VERSIONS_DOWNLOAD_JAR("versions.downloadJar", Paths.VERSIONS_DOWNLOAD_JAR, of("author", "slug", "version"), of("token")),
+    VERSIONS_APPROVE("versions.approve", Paths.VERSIONS_APPROVE, of("author", "slug", "version"), of()),
+    VERSIONS_APPROVE_PARTIAL("versions.approvePartial", Paths.VERSIONS_APPROVE_PARTIAL, of("author", "slug", "version"), of()),
+    VERSIONS_SAVE_DESCRIPTION("versions.saveDescription", Paths.VERSIONS_SAVE_DESCRIPTION, of("author", "slug", "version"), of()),
+    VERSIONS_DOWNLOAD_RECOMMENDED("versions.downloadRecommended", Paths.VERSIONS_DOWNLOAD_RECOMMENDED, of("author", "slug"), of("token")),
+    VERSIONS_SHOW_LIST("versions.showList", Paths.VERSIONS_SHOW_LIST, of("author", "slug"), of()),
+    VERSIONS_DOWNLOAD_JAR_BY_ID("versions.downloadJarById", Paths.VERSIONS_DOWNLOAD_JAR_BY_ID, of("pluginId", "name"), of("token")),
+    VERSIONS_DOWNLOAD_RECOMMENDED_JAR_BY_ID("versions.downloadRecommendedJarById", Paths.VERSIONS_DOWNLOAD_RECOMMENDED_JAR_BY_ID, of("pluginId"), of("token")),
+    VERSIONS_UPLOAD("versions.upload", Paths.VERSIONS_UPLOAD, of("author", "slug"), of()),
+    VERSIONS_CREATE_EXTERNAL_URL("versions.createExternalUrl", Paths.VERSIONS_CREATE_EXTERNAL_URL, of("author", "slug"), of()),
+    VERSIONS_SOFT_DELETE("versions.softDelete", Paths.VERSIONS_SOFT_DELETE, of("author", "slug", "version"), of()),
+    VERSIONS_SHOW_DOWNLOAD_CONFIRM("versions.showDownloadConfirm", Paths.VERSIONS_SHOW_DOWNLOAD_CONFIRM, of("author", "slug", "version"), of("downloadType", "api", "dummy")),
+    VERSIONS_SHOW_CREATOR("versions.showCreator", Paths.VERSIONS_SHOW_CREATOR, of("author", "slug"), of()),
+    VERSIONS_DELETE("versions.delete", Paths.VERSIONS_DELETE, of("author", "slug", "version"), of()),
+    VERSIONS_SHOW_CREATOR_WITH_META("versions.showCreatorWithMeta", Paths.VERSIONS_SHOW_CREATOR_WITH_META, of("author", "slug", "version"), of()),
+    VERSIONS_CONFIRM_DOWNLOAD("versions.confirmDownload", Paths.VERSIONS_CONFIRM_DOWNLOAD, of("author", "slug", "version"), of("downloadType", "token", "dummy")),
+    PAGES_SHOW_PREVIEW("pages.showPreview", Paths.PAGES_SHOW_PREVIEW, of(), of()),
+    PAGES_SAVE("pages.save", Paths.PAGES_SAVE, of("author", "slug", "page"), of()),
+    PAGES_SHOW_EDITOR("pages.showEditor", Paths.PAGES_SHOW_EDITOR, of("author", "slug", "page"), of()),
+    PAGES_SHOW("pages.show", Paths.PAGES_SHOW, of("author", "slug", "page"), of()),
+    PAGES_DELETE("pages.delete", Paths.PAGES_DELETE, of("author", "slug", "page"), of()),
+    USERS_SHOW_AUTHORS("users.showAuthors", Paths.USERS_SHOW_AUTHORS, of(), of("sort", "page")),
+    USERS_SAVE_TAGLINE("users.saveTagline", Paths.USERS_SAVE_TAGLINE, of("user"), of()),
+    USERS_SIGN_UP("users.signUp", Paths.USERS_SIGN_UP, of(), of()),
+    USERS_SHOW_NOTIFICATIONS("users.showNotifications", Paths.USERS_SHOW_NOTIFICATIONS, of(), of("notificationFilter", "inviteFilter")),
+    USERS_SHOW_PROJECTS("users.showProjects", Paths.USERS_SHOW_PROJECTS, of("user"), of()),
+    USERS_VERIFY("users.verify", Paths.USERS_VERIFY, of(), of("returnPath")),
+    USERS_MARK_NOTIFICATION_READ("users.markNotificationRead", Paths.USERS_MARK_NOTIFICATION_READ, of("id"), of()),
+    USERS_LOGIN("users.login", Paths.USERS_LOGIN, of(), of("sso", "sig", "returnUrl")),
+    USERS_SHOW_STAFF("users.showStaff", Paths.USERS_SHOW_STAFF, of(), of("sort", "page")),
+    USERS_SET_LOCKED("users.setLocked", Paths.USERS_SET_LOCKED, of("user", "locked"), of("sso", "sig")),
+    USERS_MARK_PROMPT_READ("users.markPromptRead", Paths.USERS_MARK_PROMPT_READ, of("id"), of()),
+    USERS_LOGOUT("users.logout", Paths.USERS_LOGOUT, of(), of()),
+    USERS_USER_SITEMAP("users.userSitemap", Paths.USERS_USER_SITEMAP, of("user"), of()),
+    USERS_EDIT_API_KEYS("users.editApiKeys", Paths.USERS_EDIT_API_KEYS, of("user"), of()),
+    ORG_UPDATE_MEMBERS("org.updateMembers", Paths.ORG_UPDATE_MEMBERS, of("organization"), of()),
+    ORG_UPDATE_AVATAR("org.updateAvatar", Paths.ORG_UPDATE_AVATAR, of("organization"), of()),
+    ORG_SET_INVITE_STATUS("org.setInviteStatus", Paths.ORG_SET_INVITE_STATUS, of("id", "status"), of()),
+    ORG_SHOW_CREATOR("org.showCreator", Paths.ORG_SHOW_CREATOR, of(), of()),
+    ORG_CREATE("org.create", Paths.ORG_CREATE, of(), of()),
+    ORG_REMOVE_MEMBER("org.removeMember", Paths.ORG_REMOVE_MEMBER, of("organization"), of()),
+    REVIEWS_ADD_MESSAGE("reviews.addMessage", Paths.REVIEWS_ADD_MESSAGE, of("author", "slug", "version"), of()),
+    REVIEWS_BACKLOG_TOGGLE("reviews.backlogToggle", Paths.REVIEWS_BACKLOG_TOGGLE, of("author", "slug", "version"), of()),
+    REVIEWS_SHOW_REVIEWS("reviews.showReviews", Paths.REVIEWS_SHOW_REVIEWS, of("author", "slug", "version"), of()),
+    REVIEWS_APPROVE_REVIEW("reviews.approveReview", Paths.REVIEWS_APPROVE_REVIEW, of("author", "slug", "version"), of()),
+    REVIEWS_EDIT_REVIEW("reviews.editReview", Paths.REVIEWS_EDIT_REVIEW, of("author", "slug", "version", "review"), of()),
+    REVIEWS_STOP_REVIEW("reviews.stopReview", Paths.REVIEWS_STOP_REVIEW, of("author", "slug", "version"), of()),
+    REVIEWS_CREATE_REVIEW("reviews.createReview", Paths.REVIEWS_CREATE_REVIEW, of("author", "slug", "version"), of()),
+    REVIEWS_TAKEOVER_REVIEW("reviews.takeoverReview", Paths.REVIEWS_TAKEOVER_REVIEW, of("author", "slug", "version"), of()),
+    REVIEWS_REOPEN_REVIEW("reviews.reopenReview", Paths.REVIEWS_REOPEN_REVIEW, of("author", "slug", "version"), of()),
+    CHANNELS_DELETE("channels.delete", Paths.CHANNELS_DELETE, of("author", "slug", "channel"), of()),
+    CHANNELS_SAVE("channels.save", Paths.CHANNELS_SAVE, of("author", "slug", "channel"), of()),
+    CHANNELS_SHOW_LIST("channels.showList", Paths.CHANNELS_SHOW_LIST, of("author", "slug"), of()),
+    CHANNELS_CREATE("channels.create", Paths.CHANNELS_CREATE, of("author", "slug"), of()),
+    APIV1_SHOW_VERSION("apiv1.showVersion", Paths.APIV1_SHOW_VERSION, of("pluginId", "name"), of()),
+    APIV1_LIST_PROJECTS("apiv1.listProjects", Paths.APIV1_LIST_PROJECTS, of(), of("categories", "sort", "q", "limit", "offset")),
+    APIV1_LIST_USERS("apiv1.listUsers", Paths.APIV1_LIST_USERS, of(), of("limit", "offset")),
+    APIV1_LIST_VERSIONS("apiv1.listVersions", Paths.APIV1_LIST_VERSIONS, of("pluginId"), of("channels", "limit", "offset")),
+    APIV1_REVOKE_KEY("apiv1.revokeKey", Paths.APIV1_REVOKE_KEY, of("pluginId"), of()),
+    APIV1_CREATE_KEY("apiv1.createKey", Paths.APIV1_CREATE_KEY, of("pluginId"), of()),
+    APIV1_SHOW_PROJECT("apiv1.showProject", Paths.APIV1_SHOW_PROJECT, of("pluginId"), of()),
+    APIV1_SYNC_SSO("apiv1.syncSso", Paths.APIV1_SYNC_SSO, of(), of()),
+    APIV1_TAG_COLOR("apiv1.tagColor", Paths.APIV1_TAG_COLOR, of("tagId"), of()),
+    APIV1_SHOW_STATUS_Z("apiv1.showStatusZ", Paths.APIV1_SHOW_STATUS_Z, of(), of()),
+    APIV1_SHOW_USER("apiv1.showUser", Paths.APIV1_SHOW_USER, of("user"), of()),
+    APIV1_LIST_PAGES("apiv1.listPages", Paths.APIV1_LIST_PAGES, of("pluginId"), of("parentId")),
+    APIV1_DEPLOY_VERSION("apiv1.deployVersion", Paths.APIV1_DEPLOY_VERSION, of("pluginId", "name"), of()),
+    APIV1_LIST_TAGS("apiv1.listTags", Paths.APIV1_LIST_TAGS, of("plugin", "versionName"), of()),
+    APIV1_LIST_PLATFORMS("apiv1.listPlatforms", Paths.APIV1_LIST_PLATFORMS, of(), of());
 
     private static final Map<String, Routes> ROUTES = new HashMap<>();
 
@@ -170,6 +166,10 @@ public enum Routes {
         this.url = url;
         this.pathParams = pathParams.toArray(new String[0]);
         this.queryParams = queryParams.toArray(new String[0]);
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public String getRouteUrl(String... args) {
@@ -215,5 +215,145 @@ public enum Routes {
 
     public static ModelAndView getRedirectToUrl(String url) {
         return new ModelAndView("redirect:" + url);
+    }
+
+    public static class Paths {
+        public static final String SHOW_PROJECT_VISIBILITY = "/admin/approval/projects";
+        public static final String ACTOR_COUNT = "/pantopticon/actor-count";
+        public static final String ACTOR_TREE = "/pantopticon/actor-tree";
+        public static final String UPDATE_USER = "/admin/user/{user}/update";
+        public static final String SHOW_QUEUE = "/admin/approval/versions";
+        public static final String SHOW_LOG = "/admin/log";
+        public static final String SHOW_PLATFORM_VERSIONS = "/admin/versions";
+        public static final String UPDATE_PLATFORM_VERSIONS = "/admin/versions/{platform}";
+        public static final String REMOVE_TRAIL = "/{path}/";
+        public static final String FAVICON_REDIRECT = "/favicon.ico";
+        public static final String SHOW_FLAGS = "/admin/flags";
+        public static final String SITEMAP_INDEX = "/sitemap.xml";
+        public static final String GLOBAL_SITEMAP = "/global-sitemap.xml";
+        public static final String SHOW_STATS = "/admin/stats";
+        public static final String LINK_OUT = "/linkout";
+        public static final String SHOW_HEALTH = "/admin/health";
+        public static final String SHOW_HOME = "/";
+        public static final String ROBOTS = "/robots.txt";
+        public static final String SET_FLAG_RESOLVED = "/admin/flags/{id}/resolve/{resolved}";
+        public static final String SWAGGER = "/api";
+        public static final String SHOW_ACTIVITIES = "/admin/activities/{user}";
+        public static final String USER_ADMIN = "/admin/user/{user}";
+        public static final String JAVA_SCRIPT_ROUTES = "/javascriptRoutes";
+
+        public static final String PROJECTS_RENAME = "/{author}/{slug}/manage/rename";
+        public static final String PROJECTS_SET_WATCHING = "/{author}/{slug}/watchers/{watching}";
+        public static final String PROJECTS_SHOW_SETTINGS = "/{author}/{slug}/manage";
+        public static final String PROJECTS_SET_INVITE_STATUS = "/invite/{id}/{status}";
+        public static final String PROJECTS_TOGGLE_STARRED = "/{author}/{slug}/stars/toggle";
+        public static final String PROJECTS_SHOW_CREATOR = "/new";
+        public static final String PROJECTS_SHOW_STARGAZERS = "/{author}/{slug}/stars";
+        public static final String PROJECTS_SHOW_WATCHERS = "/{author}/{slug}/watchers";
+        public static final String PROJECTS_UPLOAD_ICON = "/{author}/{slug}/icon";
+        public static final String PROJECTS_SHOW_ICON = "/{author}/{slug}/icon";
+        public static final String PROJECTS_SEND_FOR_APPROVAL = "/{author}/{slug}/manage/sendforapproval";
+        public static final String PROJECTS_SET_INVITE_STATUS_ON_BEHALF = "/invite/{id}/{status}/{behalf}";
+        public static final String PROJECTS_DELETE = "/{author}/{slug}/manage/hardDelete";
+        public static final String PROJECTS_ADD_MESSAGE = "/{author}/{slug}/notes/addmessage";
+        public static final String PROJECTS_SHOW_PENDING_ICON = "/{author}/{slug}/icon/pending";
+        public static final String PROJECTS_POST_DISCUSSION_REPLY = "/{author}/{slug}/discuss/reply";
+        public static final String PROJECTS_SHOW = "/{author}/{slug}";
+        public static final String PROJECTS_SHOW_DISCUSSION = "/{author}/{slug}/discuss";
+        public static final String PROJECTS_SOFT_DELETE = "/{author}/{slug}/manage/delete";
+        public static final String PROJECTS_SHOW_FLAGS = "/{author}/{slug}/flags";
+        public static final String PROJECTS_FLAG = "/{author}/{slug}/flag";
+        public static final String PROJECTS_CREATE_PROJECT = "/new";
+        public static final String PROJECTS_RESET_ICON = "/{author}/{slug}/icon/reset";
+        public static final String PROJECTS_SAVE = "/{author}/{slug}/manage/save";
+        public static final String PROJECTS_SHOW_NOTES = "/{author}/{slug}/notes";
+        public static final String PROJECTS_SET_VISIBLE = "/{author}/{slug}/visible/{visibility}";
+        public static final String PROJECTS_REMOVE_MEMBER = "/{author}/{slug}/manage/members/remove";
+
+        public static final String VERSIONS_RESTORE = "/{author}/{slug}/versions/{version}/restore";
+        public static final String VERSIONS_DOWNLOAD_RECOMMENDED_JAR = "/{author}/{slug}/versions/recommended/jar";
+        public static final String VERSIONS_PUBLISH = "/{author}/{slug}/versions/{version}";
+        public static final String VERSIONS_PUBLISH_URL = "/{author}/{slug}/versions/publish";
+        public static final String VERSIONS_SET_RECOMMENDED = "/{author}/{slug}/versions/{version}/recommended";
+        public static final String VERSIONS_DOWNLOAD = "/{author}/{slug}/versions/{version}/download";
+        public static final String VERSIONS_SHOW_LOG = "/{author}/{slug}/versionLog";
+        public static final String VERSIONS_SHOW = "/{author}/{slug}/versions/{version}";
+        public static final String VERSIONS_DOWNLOAD_JAR = "/{author}/{slug}/versions/{version}/jar";
+        public static final String VERSIONS_APPROVE = "/{author}/{slug}/versions/{version}/approve";
+        public static final String VERSIONS_APPROVE_PARTIAL = "/{author}/{slug}/versions/{version}/approvePartial";
+        public static final String VERSIONS_SAVE_DESCRIPTION = "/{author}/{slug}/versions/{version}/save";
+        public static final String VERSIONS_DOWNLOAD_RECOMMENDED = "/{author}/{slug}/versions/recommended/download";
+        public static final String VERSIONS_SHOW_LIST = "/{author}/{slug}/versions";
+        public static final String VERSIONS_DOWNLOAD_JAR_BY_ID = "/api/project/{pluginId}/versions/{name}/download";
+        public static final String VERSIONS_DOWNLOAD_RECOMMENDED_JAR_BY_ID = "/api/project/{pluginId}/versions/recommended/download";
+        public static final String VERSIONS_UPLOAD = "/{author}/{slug}/versions/new/upload";
+        public static final String VERSIONS_CREATE_EXTERNAL_URL = "/{author}/{slug}/versions/new/create";
+        public static final String VERSIONS_SOFT_DELETE = "/{author}/{slug}/versions/{version}/delete";
+        public static final String VERSIONS_SHOW_DOWNLOAD_CONFIRM = "/{author}/{slug}/versions/{version}/confirm";
+        public static final String VERSIONS_SHOW_CREATOR = "/{author}/{slug}/versions/new";
+        public static final String VERSIONS_DELETE = "/{author}/{slug}/versions/{version}/hardDelete";
+        public static final String VERSIONS_SHOW_CREATOR_WITH_META = "/{author}/{slug}/versions/new/{version}";
+        public static final String VERSIONS_CONFIRM_DOWNLOAD = "/{author}/{slug}/versions/{version}/confirm";
+
+        public static final String PAGES_SHOW_PREVIEW = "/pages/preview";
+        public static final String PAGES_SAVE = "/{author}/{slug}/pages/{page}/edit";
+        public static final String PAGES_SHOW_EDITOR = "/{author}/{slug}/pages/{page}/edit";
+        public static final String PAGES_SHOW = "/{author}/{slug}/pages/{page}";
+        public static final String PAGES_DELETE = "/{author}/{slug}/pages/{page}/delete";
+
+        public static final String USERS_SHOW_AUTHORS = "/authors";
+        public static final String USERS_SAVE_TAGLINE = "/{user}/settings/tagline";
+        public static final String USERS_SIGN_UP = "/signup";
+        public static final String USERS_SHOW_NOTIFICATIONS = "/notifications";
+        public static final String USERS_SHOW_PROJECTS = "/{user}";
+        public static final String USERS_VERIFY = "/verify";
+        public static final String USERS_MARK_NOTIFICATION_READ = "/notifications/read/{id}";
+        public static final String USERS_LOGIN = "/login";
+        public static final String USERS_SHOW_STAFF = "/staff";
+        public static final String USERS_SET_LOCKED = "/{user}/settings/lock/{locked}";
+        public static final String USERS_MARK_PROMPT_READ = "/prompts/read/{id}";
+        public static final String USERS_LOGOUT = "/logout";
+        public static final String USERS_USER_SITEMAP = "/{user}/sitemap.xml";
+        public static final String USERS_EDIT_API_KEYS = "/{user}/settings/apiKeys";
+
+        public static final String ORG_UPDATE_MEMBERS = "/organizations/{organization}/settings/members";
+        public static final String ORG_UPDATE_AVATAR = "/organizations/{organization}/settings/avatar";
+        public static final String ORG_SET_INVITE_STATUS = "/organizations/invite/{id}/{status}";
+        public static final String ORG_SHOW_CREATOR = "/organizations/new";
+        public static final String ORG_CREATE = "/organizations/new";
+        public static final String ORG_REMOVE_MEMBER = "/organizations/{organization}/settings/members/remove";
+
+        public static final String REVIEWS_ADD_MESSAGE = "/{author}/{slug}/versions/{version}/reviews/addmessage";
+        public static final String REVIEWS_BACKLOG_TOGGLE = "/{author}/{slug}/versions/{version}/reviews/reviewtoggle";
+        public static final String REVIEWS_SHOW_REVIEWS = "/{author}/{slug}/versions/{version}/reviews";
+        public static final String REVIEWS_APPROVE_REVIEW = "/{author}/{slug}/versions/{version}/reviews/approve";
+        public static final String REVIEWS_EDIT_REVIEW = "/{author}/{slug}/versions/{version}/reviews/edit/{review}";
+        public static final String REVIEWS_STOP_REVIEW = "/{author}/{slug}/versions/{version}/reviews/stop";
+        public static final String REVIEWS_CREATE_REVIEW = "/{author}/{slug}/versions/{version}/reviews/init";
+        public static final String REVIEWS_TAKEOVER_REVIEW = "/{author}/{slug}/versions/{version}/reviews/takeover";
+        public static final String REVIEWS_REOPEN_REVIEW = "/{author}/{slug}/versions/{version}/reviews/reopen";
+
+        public static final String CHANNELS_DELETE = "/{author}/{slug}/channels/{channel}/delete";
+        public static final String CHANNELS_SAVE = "/{author}/{slug}/channels/{channel}";
+        public static final String CHANNELS_SHOW_LIST = "/{author}/{slug}/channels";
+        public static final String CHANNELS_CREATE = "/{author}/{slug}/channels";
+
+        public static final String APIV1_SHOW_VERSION = "/api/v1/projects/{pluginId}/versions/{name}";
+        public static final String APIV1_LIST_PROJECTS = "/api/v1/projects";
+        public static final String APIV1_LIST_USERS = "/api/v1/users";
+        public static final String APIV1_LIST_VERSIONS = "/api/v1/projects/{pluginId}/versions";
+        public static final String APIV1_REVOKE_KEY = "/api/v1/projects/{pluginId}/keys/revoke";
+        public static final String APIV1_CREATE_KEY = "/api/v1/projects/{pluginId}/keys/new";
+        public static final String APIV1_SHOW_PROJECT = "/api/v1/projects/{pluginId}";
+        public static final String APIV1_SYNC_SSO = "/api/sync_sso";
+        public static final String APIV1_TAG_COLOR = "/api/v1/tags/{tagId}";
+        public static final String APIV1_SHOW_STATUS_Z = "/statusz";
+        public static final String APIV1_SHOW_USER = "/api/v1/users/{user}";
+        public static final String APIV1_LIST_PAGES = "/api/v1/projects/{pluginId}/pages";
+        public static final String APIV1_DEPLOY_VERSION = "/api/v1/projects/{pluginId}/versions/{name}";
+        public static final String APIV1_LIST_TAGS = "/api/v1/projects/{plugin}/tags/{versionName}";
+        public static final String APIV1_LIST_PLATFORMS = "/api/v1/platforms";
+
+        private Paths() { }
     }
 }

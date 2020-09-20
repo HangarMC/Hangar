@@ -63,8 +63,9 @@ function reset() {
     var bs = alert.find('.alert');
     bs.removeClass('alert-danger').addClass('alert-info');
     bs.find('[data-fa-i2svg]').attr('data-prefix', 'far');
-    bs.find('[data-fa-i2svg]').removeClass('fa-exclamation-circle').addClass('fa-file-archive').tooltip('destroy');
-
+    if (bs.find('[data-fa-i2svg]').data('ui-tooltip')) {
+        bs.find('[data-fa-i2svg]').removeClass('fa-exclamation-circle').addClass('fa-file-archive').tooltip('destroy');
+    }
     return alert;
 }
 
@@ -78,6 +79,7 @@ $(function() {
     }
 
     $('#pluginFile').on('change', function() {
+
         var alert = reset();
         if (this.files.length === 0) {
             $('#form-upload')[0].reset();
@@ -104,6 +106,8 @@ $(function() {
         alert.find('.file-size').text(filesize(this.files[0].size));
         alert.fadeIn('slow');
 
+        $("#form-url-upload").css('display', 'none');
+
         if(success) {
             var alertInner = alert.find('.alert');
             var button = alert.find('button');
@@ -115,9 +119,10 @@ $(function() {
             icon.addClass('fa-upload');
 
             var newTitle = 'Upload plugin';
-            button.tooltip('hide')
-                .attr('data-original-title', newTitle)
-                .tooltip('fixTitle');
+            button
+                .tooltip('option', 'hide', false)
+                .data('original-title', newTitle)
+                .tooltip();
         }
     });
 });

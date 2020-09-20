@@ -21,6 +21,7 @@ import {
     faDownload,
     faEdit,
     faExclamationCircle,
+    faExclamationTriangle,
     faExternalLinkAlt,
     faEye,
     faEyeSlash,
@@ -92,6 +93,6 @@ library.add(fasStar, fasGem, faEye, faDownload, faServer, faComment, faWrench, f
     faCheck, faReply, faSave, faTimes, faPencilAlt, faArrowLeft, faCog, faPlayCircle, faEdit, faKey, faCalendar, faFile,
     faUpload, faPaperPlane, faPlusSquare, faSearch, farStar, faExternalLinkAlt, faMinusSquare, faBug, faFileArchive,
     faTerminal, faStopCircle, faClipboard, faWindowClose, faSadTear, faUnlockAlt, farGem, faLink, farCheckCircle, faClock,
-    faInfo, fasCheckCircle, faTimesCircle, faEyeSlash, faUserTag, faTags);
+    faInfo, fasCheckCircle, faTimesCircle, faEyeSlash, faUserTag, faTags, faExclamationTriangle);
 
 dom.watch();

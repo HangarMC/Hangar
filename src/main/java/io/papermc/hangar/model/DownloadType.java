@@ -10,5 +10,10 @@ public enum DownloadType {
     /**
      * The download was for just the JAR file of the upload.
      */
-    JAR_FILE
+    JAR_FILE,
+
+    /**
+     * The download is on an external site.
+     */
+    EXTERNAL_DOWNLOAD
 }

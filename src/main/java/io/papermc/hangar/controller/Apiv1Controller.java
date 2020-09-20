@@ -15,6 +15,7 @@ import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.Category;
+import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.SsoSyncData;
 import io.papermc.hangar.model.TagColor;
@@ -209,11 +210,22 @@ public class Apiv1Controller extends HangarController {
 
     @GetMapping("/v1/tags/{tagId}")
     public ResponseEntity<ObjectNode> tagColor(@PathVariable("tagId") TagColor tag) {
-        ObjectNode tagColor = mapper.createObjectNode();
-        tagColor.set("id", mapper.valueToTree(tag.ordinal()));
-        tagColor.set("backgroundColor", mapper.valueToTree(tag.getBackground()));
-        tagColor.set("foregroundColor", mapper.valueToTree(tag.getForeground()));
-        return ResponseEntity.of(Optional.of(tagColor));
+        return ResponseEntity.of(Optional.of(writeTagColor(tag)));
+    }
+
+    @GetMapping("/v1/platforms")
+    public ResponseEntity<ArrayNode> platformList() {
+        ArrayNode platforms = mapper.createArrayNode();
+        for (Platform pl : Platform.getValues()) {
+            ObjectNode platformObj = mapper.createObjectNode()
+                    .put("id", pl.ordinal())
+                    .put("name", pl.getName())
+                    .put("category", pl.getPlatformCategory().getName());
+            platformObj.set("possibleVersions", mapper.valueToTree(pl.getPossibleVersions()));
+            platformObj.set("tag", writeTagColor(pl.getTagColor()));
+            platforms.add(platformObj);
+        }
+        return ResponseEntity.ok(platforms);
     }
 
     @GetMapping("/v1/users")
@@ -230,6 +242,13 @@ public class Apiv1Controller extends HangarController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok((ObjectNode) userObj);
+    }
+
+    private ObjectNode writeTagColor(TagColor tagColor) {
+        return mapper.createObjectNode()
+                .put("id", tagColor.ordinal())
+                .put("background", tagColor.getBackground())
+                .put("foreground", tagColor.getForeground());
     }
 
     private ArrayNode writeUsers(List<UsersTable> usersTables) {

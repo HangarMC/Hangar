@@ -5,20 +5,6 @@
 <#import "*/projects/view.ftlh" as projects />
 <#import "*/utils/editor.ftlh" as editor />
 
-<#--
-@import controllers.sugar.Requests.OreRequest
-@import models.viewhelper.{ScopedProjectData, VersionData}
-@import ore.OreConfig
-@import ore.data.Platform
-@import ore.markdown.MarkdownRenderer
-@import ore.models.project.{ReviewState, Visibility}
-@import ore.permission.Permission
-@import util.StringFormatterUtils._
-@import util.syntax._
-@import views.html.helper.{CSRF, form}
-@import views.html.utils.editor
-@(v: VersionData, sp: ScopedProjectData)(implicit messages: Messages, request: OreRequest[_], flash: Flash, config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)-->
-
 <#assign ReviewState=@helper["io.papermc.hangar.model.generated.ReviewState"] />
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"] />
 <#assign Visibility=@helper["io.papermc.hangar.model.Visibility"] />
@@ -116,16 +102,20 @@
 
                         <div class="btn-group btn-download">
                             <a href="${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}"
-                            title="<@spring.message "project.download.recommend" />" data-toggle="tooltip"
-                            data-placement="bottom" class="btn btn-primary">
-                                <i class="fas fa-download"></i> <@spring.message "general.download" />
+                               title="<@spring.message "project.download.recommend" />" data-toggle="tooltip"
+                               data-placement="bottom" class="btn btn-primary">
+                                <i class="fas fa-download"></i>
+                                <#if v.v.externalUrl??>
+                                    <@spring.message "general.downloadExternal" />
+                                <#else>
+                                    <@spring.message "general.download" />
+                                </#if>
                             </a>
                             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="caret"></span>
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right">
-                                <a href="${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}" class="dropdown-item"><@spring.message "general.download" /></a>
+                                <a class="dropdown-item" href="${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}"><@spring.message "general.download" /></a>
                                 <a href="#" class="copy-url dropdown-item" data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}">Copy URL</a>
                             </div>
                         </div>
