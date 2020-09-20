@@ -687,13 +687,13 @@ public class VersionsController extends HangarController {
     }
 
     private Object _sendVersion(ProjectsTable project, ProjectVersionsTable version) {
+        statsService.addVersionDownloaded(version);
         if (version.getExternalUrl() != null) {
             return new ModelAndView("redirect:" + version.getExternalUrl());
         }
         Path path = projectFiles.getVersionDir(project.getOwnerName(), project.getName(), version.getVersionString()).resolve(version.getFileName());
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + version.getFileName() + "\"");
 
-        statsService.addVersionDownloaded(version);
         return new FileSystemResource(path);
     }
 

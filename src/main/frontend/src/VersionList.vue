@@ -11,7 +11,7 @@
         </div>
         <div v-show="!loading">
             <div class="list-group">
-                <a v-for="version in versions" :href="routes.Versions.show(htmlDecode(projectOwner), htmlDecode(projectSlug), version.name).absoluteURL()" class="list-group-item"
+                <a v-for="version in versions" :href="routes.Versions.show(htmlDecode(projectOwner), htmlDecode(projectSlug), version.name).absoluteURL()" class="list-group-item list-group-item-action"
                    :class="[classForVisibility(version.visibility)]">
                     <div class="container-fluid">
                         <div class="row">
@@ -37,7 +37,12 @@
                                     </div>
                                     <div class="col-12">
                                         <i class="far fa-fw fa-file"></i>
-                                        {{ formatSize(version.file_info.size_bytes) }}
+                                        <span v-if="version.file_info.size_bytes">
+                                            {{ formatSize(version.file_info.size_bytes) }}
+                                        </span>
+                                        <span v-else>
+                                            (external)
+                                        </span>
                                     </div>
                                 </div>
                             </div>
