@@ -73,6 +73,7 @@ import org.springframework.web.util.WebUtils;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URI;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
@@ -643,8 +644,9 @@ public class VersionsController extends HangarController {
     }
 
     private Object sendVersion(ProjectsTable project, ProjectVersionsTable version, String token, boolean confirm) {
+        boolean isSafeExternalHost = version.isExternal() && hangarConfig.security.getSafeDownloadHosts().contains(URI.create(version.getExternalUrl()).getHost());
         boolean passed = checkConfirmation(version, token);
-        if (passed || confirm) {
+        if (passed || confirm || isSafeExternalHost) {
             return _sendVersion(project, version);
         } else {
             return Routes.VERSIONS_SHOW_DOWNLOAD_CONFIRM.getRedirect(
