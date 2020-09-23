@@ -315,7 +315,7 @@ public class ApplicationController extends HangarController {
     @ResponseBody
     public String javaScriptRoutes() {
         // yeah, dont even ask wtf is happening here, I dont have an answer
-        return "var jsRoutes = {}; (function(_root){\n" +
+        return "window.jsRoutes = {}; (function(_root){\n" +
                "var _nS = function(c,f,b){var e=c.split(f||\".\"),g=b||_root,d,a;for(d=0,a=e.length;d<a;d++){g=g[e[d]]=g[e[d]]||{}}return g}\n" +
                "var _qS = function(items){var qs = ''; for(var i=0;i<items.length;i++) {if(items[i]) qs += (qs ? '&' : '') + items[i]}; return qs ? ('?' + qs) : ''}\n" +
                "var _s = function(p,s){return p+((s===true||(s&&s.secure))?'s':'')+'://'}\n" +

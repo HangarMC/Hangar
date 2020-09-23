@@ -4,7 +4,7 @@
 
 <#assign scripts>
     <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "javascripts/review.js" />"></script>
-    <script <#--@CSPNonce.attr-->>versionPath = '${utils.urlEncode(project.project.ownerName)}/${utils.urlEncode(project.project.slug)}/versions/${utils.urlEncode(version.v.versionString)}'</script>
+    <script <#--@CSPNonce.attr-->>window.versionPath = '${utils.urlEncode(project.project.ownerName)}/${utils.urlEncode(project.project.slug)}/versions/${utils.urlEncode(version.v.versionString)}'</script>
 </#assign>
 
 <#assign ReviewState=@helper["io.papermc.hangar.model.generated.ReviewState"] />

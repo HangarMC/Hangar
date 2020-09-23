@@ -22,9 +22,9 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <link rel="prefetch" href="https://fonts.googleapis.com/css?family=Montserrat:400,700">
         <link rel="prefetch" href="<@hangar.url "highlight/styles/default.css" />">
 <#--        <link rel="prefetch" href="<@hangar.url "bootstrap/css/bootstrap.min.css" />">-->
-        <link rel="prefetch" href="<@hangar.url "build/commons.css" />">
-        <link rel="prefetch" href="<@hangar.url "build/main.css" />">
-        <link rel="prefetch" href="<@hangar.url "build/font-awesome.css" />">
+        <link rel="prefetch" href="<@hangar.url "build/css/commons.css" />">
+        <link rel="prefetch" href="<@hangar.url "build/css/main.css" />">
+        <link rel="prefetch" href="<@hangar.url "build/css/font-awesome.css" />">
         <link rel="prefetch" href="<@hangar.url "manifest/manifest.json" />">
         <link rel="prefetch" href="<@hangar.url "bootstrap/bootstrap.bundle.min.js" />">
         <link rel="prefetch" href="<@hangar.url "lib/jquery/dist/jquery.min.js" />">
@@ -47,9 +47,9 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="<@hangar.url "highlight/styles/default.css" />"/>
 <#--        <link rel="stylesheet" type="text/css" href="<@hangar.url "bootstrap/css/bootstrap.min.css" />"/>-->
-        <link rel="stylesheet" type="text/css" href="<@hangar.url "build/font-awesome.css" />"/>
-        <link rel="stylesheet" type="text/css" href="<@hangar.url "build/commons.css" />"/>
-        <link rel="stylesheet" type="text/css" href="<@hangar.url "build/main.css" />"/>
+        <link rel="stylesheet" type="text/css" href="<@hangar.url "build/css/font-awesome.css" />"/>
+        <link rel="stylesheet" type="text/css" href="<@hangar.url "build/css/commons.css" />"/>
+        <link rel="stylesheet" type="text/css" href="<@hangar.url "build/css/main.css" />"/>
         <link rel="stylesheet" type="text/css" href="<@hangar.url "jquery-ui/jquery-ui.css" />">
         ${additionalStyling}
 

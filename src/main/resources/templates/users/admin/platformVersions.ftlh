@@ -7,7 +7,7 @@
 <#assign scriptsVar>
     <link rel="stylesheet" href="<@hangar.url "build/platform-version-table.css" />">
     <script>
-        PLATFORMS = ${platformVersions}
+        window.PLATFORMS = ${platformVersions}
     </script>
     <script type="text/javascript" src="<@hangar.url "build/platform-version-table.js" />"></script>
 </#assign>
