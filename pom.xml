@@ -42,7 +42,6 @@
         <font-awesome.version>5.14.0</font-awesome.version>
         <filesize.version>6.0.1</filesize.version>
         <moment.version>2.27.0</moment.version>
-        <clipboard.version>2.0.6</clipboard.version>
         <chart.js.version>2.9.3</chart.js.version>
         <swagger-ui.version>3.31.1</swagger-ui.version>
 
@@ -203,18 +202,8 @@
         </dependency>
         <dependency>
             <groupId>org.webjars.npm</groupId>
-            <artifactId>filesize</artifactId>
-            <version>${filesize.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars.npm</groupId>
             <artifactId>moment</artifactId>
             <version>${moment.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars.npm</groupId>
-            <artifactId>clipboard</artifactId>
-            <version>${clipboard.version}</version>
         </dependency>
         <dependency>
             <groupId>org.webjars.npm</groupId>

@@ -32,6 +32,7 @@ public class MarkdownService {
     private final MutableDataSet options;
 
     public MarkdownService() {
+        System.out.println("test");
         options = new MutableDataSet()
                 .set(HtmlRenderer.SUPPRESS_HTML, true)
                 .set(AnchorLinkExtension.ANCHORLINKS_TEXT_PREFIX, "<i class=\"fas fa-link\"></i>")

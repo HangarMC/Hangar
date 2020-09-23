@@ -10,7 +10,7 @@ Discussion page within Project overview.
 <#-- todo: Bridge to Paper Discourse page? Directly save discussion in Hangar? -->
 <#assign scriptsVar>
     <script <#--@CSPNonce.attr-->>
-        DiscourseEmbed = {
+        window.DiscourseEmbed = {
             discourseUrl: '${config.app.discourseUrl}/',
             topicId: ${p.project.topicId}
         };
