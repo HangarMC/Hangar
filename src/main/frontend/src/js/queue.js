@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { clearUnread, toggleSpinner } from "@/js/main";
+import {clearUnread, toggleSpinner} from "@/utils";
 
 //=====> DOCUMENT READY
 

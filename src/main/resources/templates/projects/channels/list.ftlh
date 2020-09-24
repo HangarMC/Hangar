@@ -6,7 +6,7 @@
 <#import "*/utils/csrf.ftlh" as csrf>
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "javascripts/channelManage.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/channelManage.js" />"></script>
     <script <#--@CSPNonce.attr-->>
         PROJECT_OWNER = '${p.project.ownerName}';
         PROJECT_SLUG = '${p.project.slug}';

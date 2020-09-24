@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { toggleSpinner } from "@/js/main";
+import {toggleSpinner} from "@/utils";
 
 //=====> CONSTANTS
 
@@ -45,9 +45,8 @@ $(function() {
     );
   });
 
+  // eslint-disable-next-line no-unused-vars
   function sendVisibilityRequest(project, level, comment, spinner) {
-    // eslint-disable-line no-unused-vars
-    // eslint-disable-line no-unused-vars
     var _url =
       "/" +
       project +

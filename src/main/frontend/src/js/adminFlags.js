@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { clearUnread, toggleSpinner } from "@/js/main";
+import {clearUnread, toggleSpinner} from "@/utils";
 
 //=====> DOCUMENT READY
 
@@ -26,7 +26,7 @@ $(function() {
         $.when(listItem.fadeOut("slow")).done(function() {
           listItem.remove();
           if (!$(".list-flags-admin").find("li").length) {
-            resolveAll.fadeOut(); // eslint-disable-line no-undef // TODO idk where the fuck this var comes from, does this even work?
+            resolveAll.fadeOut(); // eslint-disable-line no-undef
             $(".no-flags").fadeIn();
             clearUnread($('a[href="/admin/flags"]'));
           }

@@ -125,10 +125,3 @@ hangar:
     safe-download-hosts:
       - "github.com"
 
-
-################
-# Spring Debug #
-################
-#debug=true
-#logging.level.org.springframework.security=DEBUG
-

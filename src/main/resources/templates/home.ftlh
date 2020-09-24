@@ -8,11 +8,11 @@ sorted according to different criteria.
 <#import "*/layout/base.ftlh" as base>
 
 <#macro scripts>
-    <script src="<@hangar.url "build/home.js" />"></script>
+    <script src="<@hangar.url "build/js/home.js" />"></script>
 </#macro>
 
 <#macro stylesheets>
-    <link rel="stylesheet" type="text/css" href="<@hangar.url "build/home.css" />" />
+    <link rel="stylesheet" type="text/css" href="<@hangar.url "build/css/home.css" />" />
 </#macro>
 
 <#macro meta>

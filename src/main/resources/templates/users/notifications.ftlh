@@ -25,7 +25,7 @@
 </#macro>
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "javascripts/notifications.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/notifications.js" />"></script>
 </#assign>
 
 <#assign NotificationFilter=@helper["io.papermc.hangar.model.NotificationFilter"] />

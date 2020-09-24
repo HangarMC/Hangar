@@ -3,9 +3,9 @@
 <#import "*/layout/base.ftlh" as base />
 
 <#assign scripts>
-    <script type="text/javascript" src="<@hangar.url "javascripts/orgCreate.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "javascripts/membersConfig.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/orgCreate.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/userSearch.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/membersConfig.js" />"></script>
 </#assign>
 
 <#assign message><@spring.message "org.create.title" /></#assign>

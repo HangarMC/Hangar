@@ -3,7 +3,7 @@
 <#import "*/layout/base.ftlh" as base />
 
 <#assign scriptsVar>
-    <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "javascripts/showNotes.js" />"></script>
+    <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "build/js/showNotes.js" />"></script>
     <script<#--@CSPNonce.attr-->> window.resourcePath = '${project.ownerName}/${project.slug}'</script>
 </#assign>
 

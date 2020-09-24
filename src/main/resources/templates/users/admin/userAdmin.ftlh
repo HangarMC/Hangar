@@ -24,7 +24,7 @@
 <#assign projectRoles=Role.values()?filter(role -> role.category == RoleCategory.PROJECT) />
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "javascripts/userAdmin.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/userAdmin.js" />"></script>
 </#assign>
 
 <@base.base title=(prefix + u.user.name) additionalScripts=scriptsVar>

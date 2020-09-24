@@ -1,6 +1,6 @@
 import $ from "jquery";
-import { decodeHtml, numberWithCommas, toggleSpinner } from "@/js/main";
-import { apiV2Request } from "@/js/apiRequests";
+import {apiV2Request} from "@/js/apiRequests";
+import {decodeHtml, numberWithCommas, toggleSpinner} from "@/utils";
 
 //=====> EXTERNAL CONSTANTS
 

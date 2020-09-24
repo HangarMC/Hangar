@@ -1,5 +1,6 @@
+/* global projectOwner, projectSlug */
 import $ from "jquery";
-import { go, KEY_ENTER, slugify } from "@/js/main";
+import {go, KEY_ENTER, slugify} from "@/utils";
 
 //=====> DOCUMENT READY
 

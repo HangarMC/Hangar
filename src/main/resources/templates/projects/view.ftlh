@@ -13,8 +13,8 @@ Base template for Project overview.
 <#-- @ftlvariable name="p" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
 <#-- @ftlvariable name="sp" type="io.papermc.hangar.model.viewhelpers.ScopedProjectData" -->
     <#assign scriptsVar>
-        <script type="text/javascript" src="<@hangar.url "javascripts/projectDetail.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "javascripts/pageEdit.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "build/js/projectDetail.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "build/js/pageEdit.js" />"></script>
         ${additionalScripts}
         <script <#-- @CSPNonce.attr -->>
                 var projectOwner = "${p.project.ownerName}";

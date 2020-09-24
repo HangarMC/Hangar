@@ -18,7 +18,7 @@
 <#macro view u o={} additionalScripts="">
 <#-- @ftlvariable name="u" type="io.papermc.hangar.model.viewhelpers.UserData" -->
     <#assign scriptsVar>
-        <script type="text/javascript" src="<@hangar.url "javascripts/userPage.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "build/js/userPage.js" />"></script>
         <script <#-- @CSPNonce.attr -->>
                 window.USERNAME ='${u.user.name}';
                 <#assign Category=@helper["io.papermc.hangar.model.Category"]>
