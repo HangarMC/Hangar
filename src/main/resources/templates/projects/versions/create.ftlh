@@ -11,12 +11,12 @@
 <#assign mainWidth = "col-md-10">
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "javascripts/channelManage.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "javascripts/pluginUpload.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "javascripts/projectDetail.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "javascripts/versionCreateChannelNew.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/channelManage.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/pluginUpload.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/projectDetail.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/versionCreateChannelNew.js" />"></script>
     <#if pending?? && !pending.dependencies??>
-        <script type="text/javascript" src="<@hangar.url "build/platform-choice.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "build/js/platform-choice.js" />"></script>
     </#if>
 
     <script>

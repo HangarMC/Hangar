@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { KEY_ENTER, toggleSpinner } from "@/js/main";
+import {KEY_ENTER, toggleSpinner} from "@/utils";
 
 //=====> HELPER FUNCTIONS
 

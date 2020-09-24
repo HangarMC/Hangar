@@ -6,8 +6,8 @@
 Page used for uploading and creating new projects.
 -->
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "javascripts/projectCreateValidate.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "javascripts/pluginUpload.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/projectCreateValidate.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/pluginUpload.js" />"></script>
 </#assign>
 
 <#assign message><@spring.message "project.create" /></#assign>

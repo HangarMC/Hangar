@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { go } from "@/js/main";
+import {go} from "@/utils";
 
 //=====> DOCUMENT READY
 

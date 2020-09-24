@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { toggleSpinner } from "@/js/main";
+import {toggleSpinner} from "@/utils";
 
 //=====> HELPER FUNCTIONS
 
@@ -25,6 +25,7 @@ function failed(selector, message) {
   tooltip(selector, message);
 }
 
+// eslint-disable-next-line no-unused-vars
 function checkId(pluginId, name, owner, slug) {
   $.ajax({
     url: "/api/v1/projects/" + pluginId,

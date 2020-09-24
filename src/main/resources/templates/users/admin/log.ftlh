@@ -4,7 +4,7 @@
 
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "diff-match-patch/javascript/diff_match_patch.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "javascripts/actionLog.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/actionLog.js" />"></script>
 </#assign>
 
 <#assign message><@spring.message "admin.log.title" /></#assign>

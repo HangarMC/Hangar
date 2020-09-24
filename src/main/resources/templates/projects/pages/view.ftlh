@@ -18,9 +18,9 @@ Documentation page within Project overview.
 </#function>
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "javascripts/pageCollapse.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "javascripts/memberList.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/pageCollapse.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/userSearch.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/memberList.js" />"></script>
     <script> <#--@CSPNonce.attr-->
             pluginId = '${p.getProject().pluginId}';
             namespace = '${p.getFullSlug()}';

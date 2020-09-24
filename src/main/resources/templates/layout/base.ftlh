@@ -22,9 +22,9 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <link rel="prefetch" href="https://fonts.googleapis.com/css?family=Montserrat:400,700">
         <link rel="prefetch" href="<@hangar.url "highlight/styles/default.css" />">
 <#--        <link rel="prefetch" href="<@hangar.url "bootstrap/css/bootstrap.min.css" />">-->
-        <link rel="prefetch" href="<@hangar.url "build/css/commons.css" />">
+        <link rel="prefetch" href="<@hangar.url "build/css/chunk-common.css" />">
+        <link rel="prefetch" href="<@hangar.url "build/css/chunk-vendors.css" />">
         <link rel="prefetch" href="<@hangar.url "build/css/main.css" />">
-        <link rel="prefetch" href="<@hangar.url "build/css/font-awesome.css" />">
         <link rel="prefetch" href="<@hangar.url "manifest/manifest.json" />">
         <link rel="prefetch" href="<@hangar.url "bootstrap/bootstrap.bundle.min.js" />">
         <link rel="prefetch" href="<@hangar.url "lib/jquery/dist/jquery.min.js" />">
@@ -47,8 +47,8 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="<@hangar.url "highlight/styles/default.css" />"/>
 <#--        <link rel="stylesheet" type="text/css" href="<@hangar.url "bootstrap/css/bootstrap.min.css" />"/>-->
-        <link rel="stylesheet" type="text/css" href="<@hangar.url "build/css/font-awesome.css" />"/>
-        <link rel="stylesheet" type="text/css" href="<@hangar.url "build/css/commons.css" />"/>
+        <link rel="stylesheet" type="text/css" href="<@hangar.url "build/css/chunk-common.css" />"/>
+        <link rel="stylesheet" type="text/css" href="<@hangar.url "build/css/chunk-vendors.css" />">
         <link rel="stylesheet" type="text/css" href="<@hangar.url "build/css/main.css" />"/>
         <link rel="stylesheet" type="text/css" href="<@hangar.url "jquery-ui/jquery-ui.css" />">
         ${additionalStyling}
@@ -113,17 +113,17 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         </#if>
 
         <script type="text/javascript" src="${Routes.JAVA_SCRIPT_ROUTES.getRouteUrl()}"></script>
-        <script type="text/javascript" src="<@hangar.url "build/vendors.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "build/font-awesome.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "build/commons.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "build/js/chunk-vendors.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "build/js/font-awesome.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "build/js/chunk-common.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "lib/moment/min/moment.min.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "bootstrap/bootstrap.bundle.min.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "lib/filesize/lib/filesize.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "lib/clipboard/dist/clipboard.min.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "highlight/highlight.pack.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "jquery-ui/jquery-ui.min.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "javascripts/main.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "javascripts/apiRequests.js" />"></script>
+<#--        <script type="text/javascript" src="<@hangar.url "lib/filesize/lib/filesize.js" />"></script>-->
+<#--        <script type="text/javascript" src="<@hangar.url "lib/clipboard/dist/clipboard.min.js" />"></script>-->
+<#--        <script type="text/javascript" src="<@hangar.url "highlight/highlight.pack.js" />"></script>-->
+<#--        <script type="text/javascript" src="<@hangar.url "jquery-ui/jquery-ui.min.js" />"></script>-->
+<#--        <script type="text/javascript" src="<@hangar.url "build/js/main.js" />"></script>-->
+<#--        <script type="text/javascript" src="<@hangar.url "build/js/apiRequests.js" />"></script>-->
 
         ${additionalScripts}
     </#if>

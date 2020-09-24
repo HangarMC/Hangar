@@ -112,10 +112,12 @@
 </template>
 
 <script>
+import fileSize from "filesize";
+
 import Tag from "./components/Tag";
 import Pagination from "./components/Pagination";
-import { Visibility } from "./enums";
-import { apiV2Request } from "@/js/apiRequests";
+import {Visibility} from "./enums";
+import {apiV2Request} from "@/js/apiRequests";
 
 export default {
   components: {
@@ -162,7 +164,7 @@ export default {
       });
     },
     formatSize(size) {
-      return window.filesize(size);
+      return fileSize(size);
     },
     formatDate(date) {
       return window.moment(date).format("MMM D, YYYY");

@@ -7,18 +7,18 @@ Versions page within Project overview.
 -->
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "javascripts/userSearch.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "javascripts/memberList.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/userSearch.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/memberList.js" />"></script>
     <script>
             window.PLUGIN_ID = '${p.project.pluginId}';
             window.PROJECT_OWNER = '${p.project.ownerName}';
             window.PROJECT_SLUG = '${p.project.slug}';
     </script>
-    <script type="text/javascript" src="<@hangar.url "build/version-list.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/version-list.js" />"></script>
 </#assign>
 
 <#assign stylesheetsVar>
-    <link rel="stylesheet" type="text/css" href="<@hangar.url "build/version-list.css" />" />
+    <link rel="stylesheet" type="text/css" href="<@hangar.url "build/css/version-list.css" />" />
 </#assign>
 
 <@projects.view p=p sp=sp active="#versions" additionalScripts=scriptsVar additionalStyling=stylesheetsVar>

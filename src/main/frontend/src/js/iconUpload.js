@@ -1,6 +1,5 @@
 import $ from "jquery";
-import sanitize from "./main";
-import { toggleSpinner } from "@/js/main";
+import {sanitize, toggleSpinner} from "@/utils";
 
 //=====> EXTERNAL CONSTANTS
 

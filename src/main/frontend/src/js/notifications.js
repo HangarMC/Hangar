@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { toggleSpinner } from "@/js/main";
+import {toggleSpinner} from "@/utils";
 
 //=====> HELPER FUNCTIONS
 

@@ -15,7 +15,7 @@ Discussion page within Project overview.
             topicId: ${p.project.topicId}
         };
     </script>
-    <script type="text/javascript" src="<@hangar.url "javascripts/projectDiscuss.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "build/js/projectDiscuss.js" />"></script>
     <script <#--@CSPNonce.attr-->>$(function() { $('.btn-edit').click(); });</script>
 </#assign>
 

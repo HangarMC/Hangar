@@ -19,7 +19,7 @@
 </#function>
 
 <#assign scriptsVar>
-	<script type="text/javascript" src="<@hangar.url "javascripts/userList.js" />"></script>
+	<script type="text/javascript" src="<@hangar.url "build/js/userList.js" />"></script>
 	<script <#--@CSPNonce.attr-->>CURRENT_PAGE = ${page};</script>
 </#assign>
 

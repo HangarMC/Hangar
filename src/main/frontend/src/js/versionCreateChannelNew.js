@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { initChannelManager } from "@/js/channelManage";
+import {initChannelManager} from "@/js/channelManage";
 
 //=====> EXTERNAL CONSTANTS
 
@@ -49,7 +49,8 @@ $(function() {
     );
   });
 
-  onCustomSubmit = function(
+  // eslint-disable-next-line no-unused-vars
+  var onCustomSubmit = function(
     toggle,
     channelName,
     channelHex,
