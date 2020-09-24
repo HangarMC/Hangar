@@ -145,7 +145,7 @@ export default {
       }
     );
     this.$watch(
-      vm => vm.page,
+      () => this.page,
       () => {
         this.update();
         window.scrollTo(0, 0);

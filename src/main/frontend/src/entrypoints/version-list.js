@@ -1,7 +1,4 @@
-import Vue from "vue";
+import {createApp} from "vue";
+import VersionList from "@/VersionList";
 
-const root = require("../VersionList.vue").default;
-new Vue({
-  el: "#version-list",
-  render: createElement => createElement(root)
-});
+createApp(VersionList).mount("#version-list");

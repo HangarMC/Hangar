@@ -1,7 +1,4 @@
-import Vue from "vue";
+import {createApp} from "vue";
+import UserProfile from "@/UserProfile";
 
-const root = require("../UserProfile.vue").default;
-new Vue({
-  el: "#user-profile",
-  render: createElement => createElement(root)
-});
+createApp(UserProfile).mount("#user-profile");

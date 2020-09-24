@@ -27,7 +27,7 @@
         @prevPage="page--"
         @nextPage="page++"
         @jumpToPage="page = $event"
-        v-bind:projectCount.sync="projectCount"
+        v-model:projectCount="projectCount"
       ></project-list>
     </div>
     <div class="col-md-3">
@@ -106,8 +106,8 @@
 <script>
 import ProjectList from "./components/ProjectList";
 import queryString from "query-string";
-import { clearFromDefaults } from "./utils";
-import { Category, Platform, SortOptions } from "./enums";
+import {clearFromDefaults} from "./utils";
+import {Category, Platform, SortOptions} from "./enums";
 import debounce from "lodash/debounce";
 
 function defaultData() {
@@ -219,8 +219,8 @@ export default {
 
     this.debouncedUpdateProps = debounce(this.updateQuery, 500);
     this.$watch(
-      vm =>
-        [vm.q, vm.sort, vm.relevance, vm.categories, vm.tags, vm.page].join(),
+      () =>
+        [this.q, this.sort, this.relevance, this.categories, this.tags, this.page].join(),
       () => {
         const query = queryString.stringify(this.urlBinding, {
           arrayFormat: "bracket"
@@ -229,7 +229,7 @@ export default {
       }
     );
     this.$watch(
-      vm => [vm.q, vm.sort, vm.relevance, vm.categories, vm.tags].join(),
+      () => [this.q, this.sort, this.relevance, this.categories, this.tags].join(),
       () => {
         this.resetPage();
       }

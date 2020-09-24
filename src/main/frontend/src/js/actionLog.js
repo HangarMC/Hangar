@@ -1,5 +1,5 @@
 import $ from "jquery";
-import "bootstrap/js/dist/modal"
+import "bootstrap/js/dist/modal";
 import diff_match_patch from "diff-match-patch";
 
 //=====> DOCUMENT READY

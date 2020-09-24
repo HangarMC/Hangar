@@ -38,6 +38,7 @@
 
 <script>
 export default {
+  emits: ["prev", "next", "jump-to"],
   props: {
     current: {
       type: Number,
@@ -69,7 +70,7 @@ export default {
     },
     jump: function(page) {
       if (page > 0 <= this.total) {
-        this.$emit("jumpTo", page);
+        this.$emit("jump-to", page);
       }
     }
   }

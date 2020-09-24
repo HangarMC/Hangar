@@ -21,6 +21,7 @@ public class HangarConfig {
     private String service = "Hangar";
     private List<Sponsor> sponsors;
 
+    private boolean useWebpack = false;
     private boolean debug = false;
     private int debugLevel = 3;
     private boolean staging = true;
@@ -124,6 +125,14 @@ public class HangarConfig {
 
     public void setSponsors(List<Sponsor> sponsors) {
         this.sponsors = sponsors;
+    }
+
+    public boolean isUseWebpack() {
+        return useWebpack;
+    }
+
+    public void setUseWebpack(boolean useWebpack) {
+        this.useWebpack = useWebpack;
     }
 
     public boolean isDebug() {
