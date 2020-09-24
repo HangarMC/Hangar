@@ -1,4 +1,5 @@
 import $ from "jquery";
+import "bootstrap/js/dist/modal"
 import {initChannelManager} from "@/js/channelManage";
 
 //=====> EXTERNAL CONSTANTS
