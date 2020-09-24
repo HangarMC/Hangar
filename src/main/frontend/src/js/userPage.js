@@ -1,14 +1,14 @@
 import $ from "jquery";
-import { apiV2Request } from "@/js/apiRequests";
+import {apiV2Request} from "@/js/apiRequests";
 
 //=====> EXTERNAL CONSTANTS
 
-var USERNAME = window.USERNAME;
-var NO_ACTION_MESSAGE = {};
-var CATEGORY_TITLE = {};
-var CATEGORY_ICON = {};
+const USERNAME = window.USERNAME;
+const NO_ACTION_MESSAGE = window.NO_ACTION_MESSAGE;
+const CATEGORY_TITLE = window.CATEGORY_TITLE;
+const CATEGORY_ICON = window.CATEGORY_ICON;
 
-var CONTENT_PER_PAGE = 5;
+const CONTENT_PER_PAGE = 5;
 
 var pages = {
   starred: 1,

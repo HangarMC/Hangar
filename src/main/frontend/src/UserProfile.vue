@@ -16,7 +16,7 @@ export default {
   components: {
     ProjectList
   },
-  data: function() {
+  data() {
     return {
       page: 1,
       limit: 5,

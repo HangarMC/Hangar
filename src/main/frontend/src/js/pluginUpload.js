@@ -1,5 +1,5 @@
 import $ from "jquery";
-import "bootstrap/js/dist/tooltip"
+import "bootstrap/js/dist/tooltip";
 import filesize from "filesize";
 
 //=====> CONSTANTS

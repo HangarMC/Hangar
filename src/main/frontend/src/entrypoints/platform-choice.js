@@ -1,7 +1,4 @@
-import Vue from "vue";
+import {createApp} from "vue";
+import PlatformChoice from "@/PlatformChoice";
 
-const root = require("../PlatformChoice.vue").default;
-new Vue({
-  el: "#platform-choice",
-  render: createElement => createElement(root)
-});
+createApp(PlatformChoice).mount("#platform-choice");

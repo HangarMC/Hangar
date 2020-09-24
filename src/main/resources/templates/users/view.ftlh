@@ -18,17 +18,20 @@
 <#macro view u o={} additionalScripts="">
 <#-- @ftlvariable name="u" type="io.papermc.hangar.model.viewhelpers.UserData" -->
     <#assign scriptsVar>
-        <script type="text/javascript" src="<@hangar.url "build/js/userPage.js" />"></script>
         <script <#-- @CSPNonce.attr -->>
                 window.USERNAME ='${u.user.name}';
+                window.NO_ACTION_MESSAGE = {};
+                window.CATEGORY_TITLE = {};
+                window.CATEGORY_ICON = {};
                 <#assign Category=@helper["io.papermc.hangar.model.Category"]>
                 <#list Category.values() as category>
-                    CATEGORY_TITLE['${category.apiName}'] = '${category.title}';
-                    CATEGORY_ICON['${category.apiName}'] = '${category.icon}';
+                    window.CATEGORY_TITLE['${category.apiName}'] = '${category.title}';
+                    window.CATEGORY_ICON['${category.apiName}'] = '${category.icon}';
                 </#list>
-                NO_ACTION_MESSAGE.starred = '<@spring.messageArgs code="user.noStars" args=[u.user.name] />';
-                NO_ACTION_MESSAGE.watching = '<@spring.messageArgs code="user.noWatching" args=[u.user.name] />';
+                window.NO_ACTION_MESSAGE.starred = '<@spring.messageArgs code="user.noStars" args=[u.user.name] />';
+                window.NO_ACTION_MESSAGE.watching = '<@spring.messageArgs code="user.noWatching" args=[u.user.name] />';
         </script>
+        <script type="text/javascript" src="<@hangar.url "build/js/userPage.js" />"></script>
         ${additionalScripts}
     </#assign>
 

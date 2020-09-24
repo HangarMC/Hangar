@@ -68,7 +68,7 @@ export default {
     }
   },
   created() {
-    var self = this;
+    const self = this;
     $.ajax({
       url: "/api/v1/platforms",
       dataType: "json",

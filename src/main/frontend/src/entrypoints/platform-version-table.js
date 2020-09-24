@@ -1,16 +1,9 @@
-import Vue from "vue";
+import {createApp} from "vue";
 import axios from "axios";
-
-import PlatformVersionTable from "../PlatformVersionTable.vue";
+import PlatformVersionTable from "@/PlatformVersionTable";
 
 axios.defaults.headers.post[window.csrfInfo.headerName] = window.csrfInfo.token;
 
-new Vue({
-  el: "#platform-version-table",
-  render: createElement =>
-    createElement(PlatformVersionTable, {
-      props: {
-        platforms: window.PLATFORMS
-      }
-    })
-});
+createApp(PlatformVersionTable, {
+    platforms: window.PLATFORMS
+}).mount("#platform-version-table");

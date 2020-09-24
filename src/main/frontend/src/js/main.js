@@ -2,7 +2,7 @@ import $ from "jquery";
 import ClipboardJS from "clipboard";
 import hljs from "highlight.js";
 import {initTooltips, scrollToAnchor, toggleSpinner} from "@/utils";
-import "bootstrap/js/dist/tooltip"
+import "bootstrap/js/dist/tooltip";
 
 //=====> CONSTANTS
 

@@ -112,9 +112,9 @@
         <Pagination
           :current="current"
           :total="total"
-          @jumpTo="$emit('jumpToPage', $event)"
-          @next="$emit('nextPage')"
-          @prev="$emit('prevPage')"
+          @jumpTo="$emit('jump-to-page', $event)"
+          @next="$emit('next-page')"
+          @prev="$emit('prev-page')"
         ></Pagination>
       </div>
       <div v-else class="list-group-item empty-project-list">
@@ -140,6 +140,7 @@ export default {
     Pagination,
     Icon
   },
+  emits: ["jump-to-page", "next-page", "prev-page", "update:projectCount"],
   props: {
     q: String,
     categories: {
@@ -183,16 +184,16 @@ export default {
     this.update();
     this.debouncedUpdateProps = debounce(this.update, 500);
     this.$watch(
-      vm =>
+      () =>
         [
-          vm.q,
-          vm.categories,
-          vm.tags,
-          vm.owner,
-          vm.sort,
-          vm.relevance,
-          vm.limit,
-          vm.offset
+          this.q,
+          this.categories,
+          this.tags,
+          this.owner,
+          this.sort,
+          this.relevance,
+          this.limit,
+          this.offset
         ].join(),
       () => {
         this.debouncedUpdateProps();

@@ -35,6 +35,7 @@ hangar:
   auth-url: "http://localhost:8000"
   base-url: "http://localhost:8080"
   plugin-upload-dir: "/uploads"
+  use-webpack: true
 
   sponsors:
     - name: Beer

@@ -7,7 +7,7 @@
       :fields="fields"
       class="platform-versions"
     >
-      <div slot="versions-slot" slot-scope="props">
+      <template v-slot:versions-slot="props">
         <div
           class="platform-version"
           v-for="(v, index) in props.rowData.versions"
@@ -21,8 +21,8 @@
           </span>
           {{ v }}
         </div>
-      </div>
-      <div slot="actions-slot" slot-scope="props">
+      </template>
+      <template v-slot:actions-slot="props">
         <div class="input-group float-left">
           <div class="input-group-prepend">
             <span class="input-group-text">Version Identifier</span>
@@ -45,7 +45,7 @@
             </button>
           </div>
         </div>
-      </div>
+      </template>
     </vuetable>
     <button
       v-if="!loading"
@@ -168,6 +168,7 @@ export default {
 .platform-versions {
   display: inherit;
 }
+
 .platform-version {
   display: inline-block;
   padding: 1px 4px 0 4px;

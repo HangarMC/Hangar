@@ -1,10 +1,7 @@
-import Vue from "vue";
+import {createApp} from "vue";
 import $ from "jquery";
+import Home from "../Home"
 
 $.ajaxSetup(window.ajaxSettings);
 
-const root = require("../Home.vue").default;
-new Vue({
-  el: "#home",
-  render: createElement => createElement(root)
-});
+createApp(Home).mount("#home")
