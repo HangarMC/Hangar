@@ -20,16 +20,15 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
 
         <link rel="prefetch" href="<@hangar.url "images/favicon.ico" />">
         <link rel="prefetch" href="https://fonts.googleapis.com/css?family=Montserrat:400,700">
-        <link rel="prefetch" href="<@hangar.url "highlight/styles/default.css" />">
-<#--        <link rel="prefetch" href="<@hangar.url "bootstrap/css/bootstrap.min.css" />">-->
         <link rel="prefetch" href="<@hangar.url "build/css/chunk-common.css" />">
         <link rel="prefetch" href="<@hangar.url "build/css/chunk-vendors.css" />">
         <link rel="prefetch" href="<@hangar.url "build/css/main.css" />">
+
+
         <link rel="prefetch" href="<@hangar.url "manifest/manifest.json" />">
         <link rel="prefetch" href="<@hangar.url "bootstrap/bootstrap.bundle.min.js" />">
-        <link rel="prefetch" href="<@hangar.url "lib/jquery/dist/jquery.min.js" />">
-        <link rel="prefetch" href="<@hangar.url "jquery-ui/jquery-ui.min.js" />">
-        <link rel="prefetch" href="<@hangar.url "jquery-ui/jquery-ui.css" />">
+
+        <link rel="prefetch" href="<@hangar.url "lib/jquery/dist/jquery.min.js" />"> <#--TODO this to go away-->
 
         <title>${title} | Hangar</title>
 
@@ -44,21 +43,21 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
               href="https://papermc.io/favicons/favicon-32x32.png?v=BG70oBaPzN">
         <link rel="icon" type="image/png" sizes="16x16"
               href="https://papermc.io/favicons/favicon-16x16.png?v=BG70oBaPzN">
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="<@hangar.url "highlight/styles/default.css" />"/>
-<#--        <link rel="stylesheet" type="text/css" href="<@hangar.url "bootstrap/css/bootstrap.min.css" />"/>-->
+
+
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Montserrat:400,700" >
         <link rel="stylesheet" type="text/css" href="<@hangar.url "build/css/chunk-common.css" />"/>
         <link rel="stylesheet" type="text/css" href="<@hangar.url "build/css/chunk-vendors.css" />">
         <link rel="stylesheet" type="text/css" href="<@hangar.url "build/css/main.css" />"/>
-        <link rel="stylesheet" type="text/css" href="<@hangar.url "jquery-ui/jquery-ui.css" />">
+
         ${additionalStyling}
 
         <#-- See https://goo.gl/OOhYW5 and https://goo.gl/qRE0vM -->
         <link rel="manifest" href="<@hangar.url "manifest/manifest.json" />">
-        <meta name="theme-color" content="#333">
+        <meta name="theme-color" content="#2980B9">
 
 
-        <script type="text/javascript" src="<@hangar.url "lib/jquery/dist/jquery.min.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "lib/jquery/dist/jquery.min.js" />"></script> <#--TODO this to go away-->
     </head>
     <body class="site">
     <#if showHeader>
@@ -116,15 +115,9 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <script type="text/javascript" src="<@hangar.url "build/js/chunk-vendors.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "build/js/font-awesome.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "build/js/chunk-common.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "lib/moment/min/moment.min.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "lib/moment/min/moment.min.js" />"></script> <#-- TODO this to go away -->
         <script type="text/javascript" src="<@hangar.url "bootstrap/bootstrap.bundle.min.js" />"></script>
-<#--        <script type="text/javascript" src="<@hangar.url "lib/filesize/lib/filesize.js" />"></script>-->
-<#--        <script type="text/javascript" src="<@hangar.url "lib/clipboard/dist/clipboard.min.js" />"></script>-->
-<#--        <script type="text/javascript" src="<@hangar.url "highlight/highlight.pack.js" />"></script>-->
-<#--        <script type="text/javascript" src="<@hangar.url "jquery-ui/jquery-ui.min.js" />"></script>-->
         <script type="text/javascript" src="<@hangar.url "build/js/main.js" />"></script>
-<#--        <script type="text/javascript" src="<@hangar.url "build/js/apiRequests.js" />"></script>-->
-
         ${additionalScripts}
     </#if>
 
