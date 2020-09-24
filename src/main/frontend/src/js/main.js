@@ -2,7 +2,7 @@ import $ from "jquery";
 import ClipboardJS from "clipboard";
 import hljs from "highlight.js";
 import {initTooltips, scrollToAnchor, toggleSpinner} from "@/utils";
-import "webpack-jquery-ui/tooltip";
+import "bootstrap/js/dist/tooltip"
 
 //=====> CONSTANTS
 
@@ -14,7 +14,7 @@ clipboardManager.on("success", function() {
     .tooltip({ title: "Copied!", placement: "bottom", trigger: "manual" })
     .tooltip("show");
   setTimeout(function() {
-    element.tooltip("destroy");
+    element.tooltip("dispose");
   }, 2200);
 });
 

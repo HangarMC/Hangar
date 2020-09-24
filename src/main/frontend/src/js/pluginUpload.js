@@ -1,4 +1,5 @@
 import $ from "jquery";
+import "bootstrap/js/dist/tooltip"
 import filesize from "filesize";
 
 //=====> CONSTANTS
@@ -79,7 +80,7 @@ function reset() {
     bs.find("[data-fa-i2svg]")
       .removeClass("fa-exclamation-circle")
       .addClass("fa-file-archive")
-      .tooltip("destroy");
+      .tooltip("dispose");
   }
   return alert;
 }
@@ -143,7 +144,7 @@ $(function() {
 
       var newTitle = "Upload plugin";
       button
-        .tooltip("option", "hide", false)
+        .tooltip("hide")
         .data("original-title", newTitle)
         .tooltip();
     }

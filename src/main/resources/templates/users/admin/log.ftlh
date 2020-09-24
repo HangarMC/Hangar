@@ -3,7 +3,6 @@
 <#import "*/layout/base.ftlh" as base />
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "diff-match-patch/javascript/diff_match_patch.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "build/js/actionLog.js" />"></script>
 </#assign>
 

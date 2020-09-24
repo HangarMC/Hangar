@@ -1,7 +1,6 @@
 const path = require("path");
 const fs = require("fs");
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const autoprefixer = require('autoprefixer')
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const sourceDir = path.resolve(__dirname, "src");
 const entryDir = path.resolve(sourceDir, "entrypoints");
@@ -33,23 +32,33 @@ module.exports = {
       config.entry(file.replace(".js", "")).add(path.resolve(jsDir, file));
     }
 
-    config.module.rules.delete('css')
-    config.module.rules.delete('scss')
+    config.module.rules.delete("css");
+    config.module.rules.delete("scss");
 
-    config.plugin('mini-css-extract').use(MiniCssExtractPlugin, [{filename: 'css/[name].css'}])
+    config
+      .plugin("mini-css-extract")
+      .use(MiniCssExtractPlugin, [{ filename: "css/[name].css" }]);
 
-    config.module.rule('css')
-        .test(/\.(s?)css$/i)
-        .use('mini-css-extract')
-        .loader(MiniCssExtractPlugin.loader)
-        .options({
-          hmr: process.env.NODE_ENV === 'development',
-          reloadAll: true,
-          publicPath: '/css/'
-        }).end()
-        .use('css-loader').loader('css-loader').end()
-        .use('postcss-loader').loader('postcss-loader').end()
-        .use('sass-loader').loader('sass-loader').end()
+    config.module
+      .rule("css")
+      .test(/\.(s?)css$/i)
+      .use("mini-css-extract")
+      .loader(MiniCssExtractPlugin.loader)
+      .options({
+        hmr: process.env.NODE_ENV === "development",
+        reloadAll: true,
+        publicPath: "/css/"
+      })
+      .end()
+      .use("css-loader")
+      .loader("css-loader")
+      .end()
+      .use("postcss-loader")
+      .loader("postcss-loader")
+      .end()
+      .use("sass-loader")
+      .loader("sass-loader")
+      .end();
   },
 
   outputDir: outputDir,

@@ -122,7 +122,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
 <#--        <script type="text/javascript" src="<@hangar.url "lib/clipboard/dist/clipboard.min.js" />"></script>-->
 <#--        <script type="text/javascript" src="<@hangar.url "highlight/highlight.pack.js" />"></script>-->
 <#--        <script type="text/javascript" src="<@hangar.url "jquery-ui/jquery-ui.min.js" />"></script>-->
-<#--        <script type="text/javascript" src="<@hangar.url "build/js/main.js" />"></script>-->
+        <script type="text/javascript" src="<@hangar.url "build/js/main.js" />"></script>
 <#--        <script type="text/javascript" src="<@hangar.url "build/js/apiRequests.js" />"></script>-->
 
         ${additionalScripts}
