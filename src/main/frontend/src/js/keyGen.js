@@ -2,9 +2,9 @@ import $ from 'jquery';
 
 //=====> EXTERNAL CONSTANTS
 
-var pluginId = null;
-var keyGenText = null;
-var keyRevokeText = null;
+var pluginId = window.pluginId;
+var keyGenText = window.keyGenText;
+var keyRevokeText = window.keyRevokeText;
 
 var KEY_TYPE_DEPLOYMENT = 0;
 

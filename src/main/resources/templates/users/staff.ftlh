@@ -19,8 +19,8 @@
 </#function>
 
 <#assign scriptsVar>
+	<script <#--@CSPNonce.attr-->>window.CURRENT_PAGE = ${page};</script>
 	<script type="text/javascript" src="<@hangar.url "build/js/userList.js" />"></script>
-	<script <#--@CSPNonce.attr-->>CURRENT_PAGE = ${page};</script>
 </#assign>
 
 <@base.base title="Staff - Hangar" additionalScripts=scriptsVar>

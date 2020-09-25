@@ -6,7 +6,7 @@ var KEY_RETURN = 13;
 
 //=====> EXTERNAL CONSTANTS
 
-var projectName = null;
+var PROJECT_NAME = window.PROJECT_NAME;
 
 //=====> DOCUMENT READY
 
@@ -14,7 +14,7 @@ $(function() {
   var name = $('#name');
   name.on('input', function() {
     var val = $(this).val();
-    $('#btn-rename').prop('disabled', val.length === 0 || val === projectName);
+    $('#btn-rename').prop('disabled', val.length === 0 || val === PROJECT_NAME);
   });
 
   name.keydown(function(e) {

@@ -4,6 +4,8 @@ import $ from 'jquery';
 
 var PROJECT_OWNER = null;
 var PROJECT_SLUG = null;
+const DEFAULT_HEX = window.DEFAULT_HEX;
+const CHANNEL_CREATE_ROUTE = window.CHANNEL_CREATE_ROUTE;
 
 //=====> HELPER FUNCTIONS
 
@@ -178,4 +180,16 @@ function initColorPicker() {
 
 $(function() {
   initModal();
+  if (window.initChannelManager) {
+    initChannelManager(
+      '#channel-new',
+      '',
+      DEFAULT_HEX,
+      'New channel',
+      CHANNEL_CREATE_ROUTE,
+      'post',
+      'Create channel',
+      false
+    );
+  }
 });

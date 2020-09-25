@@ -6,18 +6,14 @@
 <#import "*/utils/csrf.ftlh" as csrf>
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "build/js/channelManage.js" />"></script>
     <script <#--@CSPNonce.attr-->>
-        PROJECT_OWNER = '${p.project.ownerName}';
-        PROJECT_SLUG = '${p.project.slug}';
-        $(function () {
-            initChannelManager(
-                "#channel-new", "", "${config.channels.colorDefault.hex}", "New channel",
-                "${Routes.CHANNELS_CREATE.getRouteUrl(p.project.ownerName, p.project.slug)}",
-                "post", "Create channel", false
-            );
-        });
+      PROJECT_OWNER = '${p.project.ownerName}';
+      PROJECT_SLUG = '${p.project.slug}';
+      window.initChannelManager = true;
+      window.DEFAULT_HEX = '${config.channels.colorDefault.hex}';
+      window.CHANNEL_CREATE_ROUTE = '${Routes.CHANNELS_CREATE.getRouteUrl(p.project.ownerName, p.project.slug)}';
     </script>
+    <script type="text/javascript" src="<@hangar.url "build/js/channelManage.js" />"></script>
 </#assign>
 
 <#assign message><@spring.messageArgs code="channel.list.title" args=[p.project.ownerName, p.project.slug] /></#assign>

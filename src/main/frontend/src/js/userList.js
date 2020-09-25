@@ -3,7 +3,7 @@ import { go } from '@/utils';
 
 //=====> EXTERNAL CONSTANTS
 
-var CURRENT_PAGE = 0;
+const CURRENT_PAGE = window.CURRENT_PAGE || 0;
 
 //=====> DOCUMENT READY
 

@@ -14,14 +14,13 @@
     <script type="text/javascript" src="<@hangar.url "build/js/channelManage.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "build/js/pluginUpload.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "build/js/projectDetail.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "build/js/versionCreateChannelNew.js" />"></script>
     <#if pending?? && !pending.dependencies??>
         <script type="text/javascript" src="<@hangar.url "build/js/platform-choice.js" />"></script>
     </#if>
-
     <script>
-             DEFAULT_COLOR = '${config.channels.colorDefault.hex}';
+             window.DEFAULT_COLOR = '${config.channels.colorDefault.hex}';
     </script>
+    <script type="text/javascript" src="<@hangar.url "build/js/versionCreateChannelNew.js" />"></script>
 </#assign>
 
 <#assign message><@spring.message "version.create.pageTitle" /></#assign>

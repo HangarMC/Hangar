@@ -2,8 +2,8 @@ import $ from 'jquery';
 
 //=====> EXTERNAL CONSTANTS
 
-var pluginId = null;
-var namespace = null;
+var PLUGIN_ID = window.PLUGIN_ID;
+var NAMESPACE = window.NAMESPACE;
 
 //=====> HELPER FUNCTIONS
 
@@ -14,7 +14,7 @@ function bindExpand(e) {
     var $this = $(this);
     $.ajax({
       method: 'get',
-      url: '/api/v1/projects/' + pluginId + '/pages?parentId=' + pageId,
+      url: '/api/v1/projects/' + PLUGIN_ID + '/pages?parentId=' + pageId,
       dataType: 'json',
       success: function(childPages) {
         console.log(childPages);
@@ -24,7 +24,7 @@ function bindExpand(e) {
           var page = childPages[i];
           var childPage = $('<li class="list-group-item page-item-child">' + '<a href=""></a>' + '</li>');
           var link = childPage.find('a');
-          link.attr('href', namespace + '/pages/' + page.fullSlug);
+          link.attr('href', NAMESPACE + '/pages/' + page.fullSlug);
           link.text(page.name); // this will sanitize the input
           div.append(childPage);
         }

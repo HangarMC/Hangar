@@ -13,20 +13,20 @@
         request: OreRequest[_], config: OreConfig, renderer: MarkdownRenderer, assetsFinder: AssetsFinder)-->
 
 <#assign scriptsVar>
+    <script <#--@CSPNonce.attr -->>
+      window.PROJECT_NAME = "${p.project.name}";
+      window.PROJECT_OWNER = "${p.project.ownerName}";
+      window.PROJECT_SLUG = "${p.project.slug}";
+      window.pluginId = "${p.project.pluginId}";
+      window.keyGenText = "<@spring.message "project.settings.genKey" />";
+      window.keyRevokeText = "<@spring.message "project.settings.revokeKey" />";
+    </script>
     <script type="text/javascript" src="<@hangar.url "build/js/projectManage.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "build/js/hideProject.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "build/js/iconUpload.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "build/js/keyGen.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "build/js/userSearch.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "build/js/memberList.js" />"></script>
-    <script <#--@CSPNonce.attr -->>
-        projectName = "${p.project.name}";
-        PROJECT_OWNER = "${p.project.ownerName}";
-        PROJECT_SLUG = "${p.project.slug}";
-        pluginId = "${p.project.pluginId}";
-        keyGenText = "<@spring.message "project.settings.genKey" />";
-        keyRevokeText = "<@spring.message "project.settings.revokeKey" />";
-    </script>
 </#assign>
 
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>

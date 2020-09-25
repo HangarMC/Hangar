@@ -3,11 +3,11 @@ import { apiV2Request } from '@/js/apiRequests';
 
 //=====> EXTERNAL CONSTANTS
 
-var NO_PERMS_SET = null;
-var NO_NAME_SET = null;
-var TOO_LONG_NAME = null;
-var NAMED_USED = null;
-var DELETE_KEY = null;
+var NO_PERMS_SET = window.NO_PERMS_SET;
+var NO_NAME_SET = window.NO_NAME_SET;
+var TOO_LONG_NAME = window.TOO_LONG_NAME;
+var NAMED_USED = window.NAMED_USED;
+var DELETE_KEY = window.DELETE_KEY;
 
 //=====> HELPER FUNCTIONS
 

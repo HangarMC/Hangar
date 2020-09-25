@@ -4,10 +4,10 @@ import { decodeHtml, numberWithCommas, toggleSpinner } from '@/utils';
 
 //=====> EXTERNAL CONSTANTS
 
-var projectOwner = null;
-var projectSlug = null;
-var projectId = null;
-var alreadyStarred = false;
+const PROJECT_OWNER = PROJECT_OWNER;
+const PROJECT_SLUG = PROJECT_SLUG;
+const PROJECT_ID = PROJECT_ID;
+const ALREADY_STARRED = window.ALREADY_STARRED;
 
 //=====> HELPER FUNCTIONS
 
@@ -236,18 +236,18 @@ $(function() {
 
     $.ajax({
       type: 'post',
-      url: decodeHtml('/' + projectOwner + '/' + projectSlug) + '/watchers/' + !watching
+      url: decodeHtml('/' + PROJECT_OWNER + '/' + PROJECT_SLUG) + '/watchers/' + !watching
     });
   });
 
   // setup star button
-  var increment = alreadyStarred ? -1 : 1;
+  var increment = ALREADY_STARRED ? -1 : 1;
   $('.btn-star').click(function() {
     var starred = $(this).find('.starred');
     starred.html(' ' + (parseInt(starred.text()) + increment).toString());
     $.ajax({
       type: 'post',
-      url: decodeHtml('/' + projectOwner + '/' + projectSlug) + '/stars/toggle'
+      url: decodeHtml('/' + PROJECT_OWNER + '/' + PROJECT_SLUG) + '/stars/toggle'
     });
 
     if (increment > 0) {
@@ -263,14 +263,14 @@ $(function() {
     increment *= -1;
   });
 
-  if (projectId) {
-    apiV2Request('projects/' + projectId).then(response => {
+  if (PROJECT_ID) {
+    apiV2Request('projects/' + PROJECT_ID).then(response => {
       if (response.promoted_versions) {
         let html = '';
         response.promoted_versions.forEach(version => {
           const href = window.jsRoutes.controllers.project.Versions.show(
-            projectOwner,
-            projectSlug,
+            PROJECT_OWNER,
+            PROJECT_SLUG,
             version.version
           ).absoluteURL();
           html = html + "<li class='list-group-item'><a href='" + href + "'>" + version.version + '</a></li>';
