@@ -18,13 +18,13 @@ Documentation page within Project overview.
 </#function>
 
 <#assign scriptsVar>
+    <script> <#--@CSPNonce.attr-->
+      window.PLUGIN_ID = '${p.getProject().pluginId}';
+      window.NAMESPACE = '${p.getFullSlug()}';
+    </script>
     <script type="text/javascript" src="<@hangar.url "build/js/pageCollapse.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "build/js/userSearch.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "build/js/memberList.js" />"></script>
-    <script> <#--@CSPNonce.attr-->
-            pluginId = '${p.getProject().pluginId}';
-            namespace = '${p.getFullSlug()}';
-    </script>
     <#if editorOpen>
         <script <#--@CSPNonce.attr-->>$(function() { $('.btn-edit').click(); });</script>
     </#if>

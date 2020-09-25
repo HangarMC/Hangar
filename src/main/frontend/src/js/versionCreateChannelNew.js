@@ -4,7 +4,7 @@ import { initChannelManager } from '@/js/channelManage';
 
 //=====> EXTERNAL CONSTANTS
 
-var DEFAULT_COLOR = null;
+var DEFAULT_COLOR = window.DEFAULT_COLOR;
 
 //=====> HELPER FUNCTIONS
 

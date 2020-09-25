@@ -4,14 +4,14 @@
 
 <#--@(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)], keys: Seq[ApiKey], perms: Seq[NamedPermission])(implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)-->
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "build/js/apiKeysManagement.js" />"></script>
     <script <#--@CSPNonce.attr-->>
-        NO_PERMS_SET = '<@spring.message "user.apiKeys.error.noPermsSet" />';
-        NO_NAME_SET = '<@spring.message "user.apiKeys.error.noNameSet" />';
-        TOO_LONG_NAME = '<@spring.message "user.apiKeys.error.tooLongName" />';
-        NAMED_USED = '<@spring.message "user.apiKeys.error.nameAlreadyUsed" />';
-        DELETE_KEY = '<@spring.message "user.apiKeys.keyDeleteButton" />';
+      window.NO_PERMS_SET = '<@spring.message "user.apiKeys.error.noPermsSet" />';
+      window.NO_NAME_SET = '<@spring.message "user.apiKeys.error.noNameSet" />';
+      window.TOO_LONG_NAME = '<@spring.message "user.apiKeys.error.tooLongName" />';
+      window.NAMED_USED = '<@spring.message "user.apiKeys.error.nameAlreadyUsed" />';
+      window.DELETE_KEY = '<@spring.message "user.apiKeys.keyDeleteButton" />';
     </script>
+    <script type="text/javascript" src="<@hangar.url "build/js/apiKeysManagement.js" />"></script>
 </#assign>
 
 <#assign NamedPermission=@helper["io.papermc.hangar.model.NamedPermission"] />

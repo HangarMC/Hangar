@@ -13,16 +13,16 @@ Base template for Project overview.
 <#-- @ftlvariable name="p" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
 <#-- @ftlvariable name="sp" type="io.papermc.hangar.model.viewhelpers.ScopedProjectData" -->
     <#assign scriptsVar>
+        <script <#-- @CSPNonce.attr -->>
+          window.PROJECT_OWNER = "${p.project.ownerName}";
+          window.PROJECT_SLUG = "${p.project.slug}";
+          window.PROJECT_ID = "${p.project.pluginId}";
+          window.ALREADY_STARRED = ${sp.starred?c};
+          $(function() { $(".nav").find("${active}").addClass("active"); });
+        </script>
         <script type="text/javascript" src="<@hangar.url "build/js/projectDetail.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "build/js/pageEdit.js" />"></script>
         ${additionalScripts}
-        <script <#-- @CSPNonce.attr -->>
-                var projectOwner = "${p.project.ownerName}";
-                var projectSlug = "${p.project.slug}";
-                var projectId = "${p.project.pluginId}";
-                var alreadyStarred = ${sp.starred?c};
-                $(function() { $(".nav").find("${active}").addClass("active"); });
-        </script>
     </#assign>
 
     <#assign metaVar>

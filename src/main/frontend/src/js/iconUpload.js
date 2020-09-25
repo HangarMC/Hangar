@@ -3,8 +3,8 @@ import { sanitize, toggleSpinner } from '@/utils';
 
 //=====> EXTERNAL CONSTANTS
 
-var PROJECT_OWNER = null;
-var PROJECT_SLUG = null;
+var PROJECT_OWNER = window.PROJECT_OWNER;
+var PROJECT_SLUG = window.PROJECT_SLUG;
 
 //=====> DOCUMENT READY
 
