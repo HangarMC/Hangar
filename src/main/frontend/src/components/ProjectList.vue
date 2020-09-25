@@ -16,22 +16,13 @@
             <div class="container-fluid">
               <div class="row">
                 <div class="col-12 col-sm-1">
-                  <Icon
-                    :name="project.namespace.owner"
-                    :src="project.icon_url"
-                    extra-classes="user-avatar-sm"
-                  ></Icon>
+                  <Icon :name="project.namespace.owner" :src="project.icon_url" extra-classes="user-avatar-sm"></Icon>
                 </div>
                 <div class="col-12 col-sm-11">
                   <div class="row">
                     <div class="col-sm-6">
                       <a
-                        :href="
-                          routes.Projects.show(
-                            project.namespace.owner,
-                            project.namespace.slug
-                          ).absoluteURL()
-                        "
+                        :href="routes.Projects.show(project.namespace.owner, project.namespace.slug).absoluteURL()"
                         class="title"
                       >
                         {{ project.name }}
@@ -59,28 +50,17 @@
                         </span>
 
                         <span class="stat" title="Views"
-                          ><i class="fas fa-eye"></i>
-                          {{ formatStats(project.stats.views) }}</span
+                          ><i class="fas fa-eye"></i> {{ formatStats(project.stats.views) }}</span
                         >
                         <span class="stat" title="Download"
-                          ><i class="fas fa-download"></i>
-                          {{ formatStats(project.stats.downloads) }}</span
+                          ><i class="fas fa-download"></i> {{ formatStats(project.stats.downloads) }}</span
                         >
                         <span class="stat" title="Stars"
-                          ><i class="fas fa-star"></i>
-                          {{ formatStats(project.stats.stars) }}</span
+                          ><i class="fas fa-star"></i> {{ formatStats(project.stats.stars) }}</span
                         >
 
-                        <span
-                          :title="categoryFromId(project.category).name"
-                          class="stat"
-                        >
-                          <i
-                            :class="
-                              'fa-' + categoryFromId(project.category).icon
-                            "
-                            class="fas"
-                          ></i>
+                        <span :title="categoryFromId(project.category).name" class="stat">
+                          <i :class="'fa-' + categoryFromId(project.category).icon" class="fas"></i>
                         </span>
                       </div>
                     </div>
@@ -89,18 +69,13 @@
                     <div class="col-sm-7 description-column">
                       <div class="description">{{ project.description }}</div>
                     </div>
-                    <div
-                      class="col-12 col-sm-5 tags-line"
-                      v-if="project.promoted_versions"
-                    >
+                    <div class="col-12 col-sm-5 tags-line" v-if="project.promoted_versions">
                       <Tag
                         v-bind:name="tag.name"
                         v-bind:data="tag.versions.join(' | ')"
                         v-bind:color="tag.color"
                         v-bind:key="project.name + '-' + tag.name"
-                        v-for="tag in tagsFromPromoted(
-                          project.promoted_versions
-                        )"
+                        v-for="tag in tagsFromPromoted(project.promoted_versions)"
                       ></Tag>
                     </div>
                   </div>
@@ -126,13 +101,13 @@
 </template>
 
 <script>
-import Tag from "./Tag";
-import {clearFromEmpty, numberWithCommas} from "./../utils";
-import {Category, Platform, Visibility} from "../enums";
-import Pagination from "./Pagination";
-import Icon from "./Icon";
-import debounce from "lodash/debounce";
-import {API} from "../api";
+import Tag from './Tag';
+import { clearFromEmpty, numberWithCommas } from './../utils';
+import { Category, Platform, Visibility } from '../enums';
+import Pagination from './Pagination';
+import Icon from './Icon';
+import debounce from 'lodash/debounce';
+import { API } from '../api';
 
 export default {
   components: {
@@ -140,7 +115,7 @@ export default {
     Pagination,
     Icon
   },
-  emits: ["jump-to-page", "next-page", "prev-page", "update:projectCount"],
+  emits: ['jump-to-page', 'next-page', 'prev-page', 'update:projectCount'],
   props: {
     q: String,
     categories: {
@@ -184,17 +159,7 @@ export default {
     this.update();
     this.debouncedUpdateProps = debounce(this.update, 500);
     this.$watch(
-      () =>
-        [
-          this.q,
-          this.categories,
-          this.tags,
-          this.owner,
-          this.sort,
-          this.relevance,
-          this.limit,
-          this.offset
-        ].join(),
+      () => [this.q, this.categories, this.tags, this.owner, this.sort, this.relevance, this.limit, this.offset].join(),
       () => {
         this.debouncedUpdateProps();
       }
@@ -202,14 +167,12 @@ export default {
   },
   methods: {
     update() {
-      API.request("projects", "GET", clearFromEmpty(this.$props)).then(
-        response => {
-          this.projects = response.result;
-          this.totalProjects = response.pagination.count;
-          this.loading = false;
-          this.$emit("update:projectCount", this.totalProjects);
-        }
-      );
+      API.request('projects', 'GET', clearFromEmpty(this.$props)).then(response => {
+        this.projects = response.result;
+        this.totalProjects = response.pagination.count;
+        this.loading = false;
+        this.$emit('update:projectCount', this.totalProjects);
+      });
     },
     categoryFromId(id) {
       return Category.fromId(id);
@@ -221,12 +184,7 @@ export default {
       let tagsArray = [];
       promotedVersions
         .map(version => version.tags)
-        .forEach(
-          tags =>
-            (tagsArray = tags
-              .filter(tag => Platform.isPlatformTag(tag))
-              .concat(tagsArray))
-        );
+        .forEach(tags => (tagsArray = tags.filter(tag => Platform.isPlatformTag(tag)).concat(tagsArray)));
 
       const reducedTags = [];
 
@@ -258,7 +216,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "./../scss/variables";
+@import './../scss/variables';
 
 .empty-project-list {
   display: flex;

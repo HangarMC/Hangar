@@ -1,4 +1,4 @@
-import {createApp} from "vue";
-import UserProfile from "@/UserProfile";
+import { createApp } from 'vue';
+import UserProfile from '@/UserProfile';
 
-createApp(UserProfile).mount("#user-profile");
+createApp(UserProfile).mount('#user-profile');

@@ -1,59 +1,47 @@
 <template>
   <div>
-    <vuetable
-      ref="platform-table"
-      :api-mode="false"
-      :data="data"
-      :fields="fields"
-      class="platform-versions"
-    >
-      <template v-slot:versions-slot="props">
-        <div
-          class="platform-version"
-          v-for="(v, index) in props.rowData.versions"
-          :key="index"
-        >
-          <span
-            @click="removeVersion(props.rowData.platform, v)"
-            style="cursor:pointer;"
-          >
-            <i class="fas fa-times" style="color: #bb0400"></i>
-          </span>
-          {{ v }}
-        </div>
-      </template>
-      <template v-slot:actions-slot="props">
-        <div class="input-group float-left">
-          <div class="input-group-prepend">
-            <span class="input-group-text">Version Identifier</span>
-          </div>
-          <label for="add-version-input" class="sr-only">Add Version</label>
-          <input
-            type="text"
-            id="add-version-input"
-            class="form-control"
-            v-model="inputs[props.rowData.platform]"
-          />
-          <div class="input-group-append">
-            <button
-              type="button"
-              class="btn btn-primary"
-              @click="addVersion(props.rowData.platform)"
-              :disabled="!inputs[props.rowData.platform]"
-            >
-              <i class="fas fa-plus"></i>
-            </button>
-          </div>
-        </div>
-      </template>
-    </vuetable>
-    <button
-      v-if="!loading"
-      type="button"
-      class="btn btn-success"
-      @click="save"
-      :disabled="!changesMade"
-    >
+    <table class="table table-bordered">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Platform</th>
+          <th scope="col"><i class="fas fa-tags"></i>Versions</th>
+          <th scope="col"><i class="fas fa-plus"></i>Add Version</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="{ platform, versions } in data" :key="`${platform}-row`">
+          <td>{{ platform }}</td>
+          <td>
+            <div class="platform-version" v-for="(v, index) in versions" :key="index">
+              <span @click="removeVersion(versions, v)" style="cursor:pointer;">
+                <i class="fas fa-times" style="color: #bb0400"></i>
+              </span>
+              {{ v }}
+            </div>
+          </td>
+          <td>
+            <div class="input-group float-left">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Version Identifier</span>
+              </div>
+              <label for="add-version-input" class="sr-only">Add Version</label>
+              <input type="text" id="add-version-input" class="form-control" v-model="inputs[platform]" />
+              <div class="input-group-append">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  @click="addVersion(platform)"
+                  :disabled="!inputs[platform]"
+                >
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button v-if="!loading" type="button" class="btn btn-success" @click="save" :disabled="!changesMade">
       <span class="glyphicon glyphicon-floppy-disk"></span>
       Save Changes
     </button>
@@ -64,15 +52,11 @@
   </div>
 </template>
 <script>
-import _ from "lodash";
-import axios from "axios";
-import Vuetable from "vuetable-2";
+import _ from 'lodash';
+import axios from 'axios';
 
 export default {
-  name: "PlatformVersionTable",
-  components: {
-    Vuetable
-  },
+  name: 'PlatformVersionTable',
   props: {
     platforms: {
       type: Object,
@@ -84,24 +68,7 @@ export default {
       loading: false,
       changesMade: false,
       data: [],
-      inputs: {},
-      fields: [
-        {
-          name: "platform",
-          width: "40px",
-          formatter(value) {
-            return value.charAt(0).toUpperCase() + value.slice(1);
-          }
-        },
-        {
-          name: "versions-slot",
-          title: '<i class="fas fa-tags"></i> Versions'
-        },
-        {
-          name: "actions-slot",
-          title: '<i class="fas fa-plus"></i> Add Version'
-        }
-      ]
+      inputs: {}
     };
   },
   methods: {
@@ -111,20 +78,17 @@ export default {
         versions.push(this.inputs[platform]);
         this.changesMade = true;
       }
-      this.inputs[platform] = "";
+      this.inputs[platform] = '';
     },
-    removeVersion(platform, version) {
-      const versions = this.data.find(o => o.platform === platform).versions;
-      this.$delete(versions, versions.indexOf(version));
+    removeVersion(versions, version) {
+      _.remove(versions, v => v === version);
       this.changesMade = true;
     },
     save() {
       const additions = {};
       const removals = {};
       for (const platform in this.platforms) {
-        const versions = this.data.find(
-          o => o.platform === platform.toLowerCase()
-        ).versions;
+        const versions = this.data.find(o => o.platform === platform.toLowerCase()).versions;
         additions[platform] = _.difference(versions, this.platforms[platform]);
         removals[platform] = _.difference(this.platforms[platform], versions);
       }
@@ -141,7 +105,7 @@ export default {
       }
       this.loading = true;
       axios
-        .post("/admin/versions/", {
+        .post('/admin/versions/', {
           additions,
           removals
         })
@@ -155,25 +119,33 @@ export default {
   },
   created() {
     for (const platform in this.platforms) {
-      this.inputs[platform] = "";
+      this.inputs[platform] = '';
       this.data.push({
-        platform: platform.toLowerCase(),
-        versions: [...this.platforms[platform]]
-      });
+            platform: platform.toLowerCase(),
+            versions: [...this.platforms[platform]]
+          }
+      );
     }
   }
 };
 </script>
-<style lang="scss">
-.platform-versions {
-  display: inherit;
-}
+<style lang="scss" scoped>
+.table {
+  th svg {
+    margin-right: 4px;
+  }
 
-.platform-version {
-  display: inline-block;
-  padding: 1px 4px 0 4px;
-  margin-right: 5px;
-  background-color: #cdcdcd;
-  border-radius: 2px;
+  tr th:first-child,
+  tr td:first-child {
+    width: 40px;
+  }
+
+  .platform-version {
+    display: inline-block;
+    padding: 1px 4px 0 4px;
+    margin-right: 5px;
+    background-color: #cdcdcd;
+    border-radius: 2px;
+  }
 }
 </style>

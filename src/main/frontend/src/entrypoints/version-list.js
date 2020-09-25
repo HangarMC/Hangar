@@ -1,4 +1,4 @@
-import {createApp} from "vue";
-import VersionList from "@/VersionList";
+import { createApp } from 'vue';
+import VersionList from '@/VersionList';
 
-createApp(VersionList).mount("#version-list");
+createApp(VersionList).mount('#version-list');

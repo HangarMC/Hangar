@@ -1,60 +1,45 @@
 /* global projectOwner, projectSlug */
-import $ from "jquery";
-import {go, KEY_ENTER, slugify} from "@/utils";
+import $ from 'jquery';
+import { go, KEY_ENTER, slugify } from '@/utils';
 
 //=====> DOCUMENT READY
 
 $(function() {
-  var modal = $("#new-page");
-  modal.on("shown.bs.modal", function() {
+  var modal = $('#new-page');
+  modal.on('shown.bs.modal', function() {
     $(this)
-      .find("input")
+      .find('input')
       .focus();
   });
 
-  modal.find("input").keydown(function(event) {
+  modal.find('input').keydown(function(event) {
     if (event.keyCode === KEY_ENTER) {
       event.preventDefault();
-      $("#continue-page").click();
+      $('#continue-page').click();
     }
   });
 
-  $("#continue-page").click(function() {
-    var pageName = $("#page-name")
+  $('#continue-page').click(function() {
+    var pageName = $('#page-name')
       .val()
       .trim();
-    var url =
-      "/" +
-      projectOwner +
-      "/" +
-      projectSlug +
-      "/pages/" +
-      slugify(pageName) +
-      "/edit";
-    var parent = $(".select-parent").find(":selected");
+    var url = '/' + projectOwner + '/' + projectSlug + '/pages/' + slugify(pageName) + '/edit';
+    var parent = $('.select-parent').find(':selected');
     var parentId = null;
 
     if (parent.length) {
-      parentId = parent.val() === "-1" ? null : parent.val();
+      parentId = parent.val() === '-1' ? null : parent.val();
 
       if (parentId !== null)
         url =
-          "/" +
-          projectOwner +
-          "/" +
-          projectSlug +
-          "/pages/" +
-          parent.data("slug") +
-          "/" +
-          slugify(pageName) +
-          "/edit";
+          '/' + projectOwner + '/' + projectSlug + '/pages/' + parent.data('slug') + '/' + slugify(pageName) + '/edit';
     }
     $.ajax({
-      method: "post",
+      method: 'post',
       url: url,
       data: {
-        "parent-id": parentId,
-        content: "# " + pageName + "\n",
+        'parent-id': parentId,
+        content: '# ' + pageName + '\n',
         name: pageName
       },
       success: function() {
@@ -62,8 +47,8 @@ $(function() {
       },
       error: function(err) {
         console.log(err);
-        console.log("error");
-        $("#new-page-label-error")
+        console.log('error');
+        $('#new-page-label-error')
           .show()
           .delay(2000)
           .fadeOut();

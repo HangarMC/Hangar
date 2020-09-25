@@ -1,12 +1,12 @@
-import $ from "jquery";
-import {go} from "@/utils";
+import $ from 'jquery';
+import { go } from '@/utils';
 
 //=====> DOCUMENT READY
 
 $(function() {
-  $("#dateGoButton").click(function() {
-    var from = $("#fromDate").val();
-    var to = $("#toDate").val();
+  $('#dateGoButton').click(function() {
+    var from = $('#fromDate').val();
+    var to = $('#toDate').val();
 
     function removeTime(date) {
       date.setHours(0, 0, 0, 0);
@@ -38,11 +38,7 @@ $(function() {
       from.setDate(to.getDate() - 2);
     }
 
-    var url =
-      "/admin/stats?from=" +
-      from.toISOString().substr(0, 10) +
-      "&to=" +
-      to.toISOString().substr(0, 10);
+    var url = '/admin/stats?from=' + from.toISOString().substr(0, 10) + '&to=' + to.toISOString().substr(0, 10);
     go(url);
   });
 });
