@@ -26,7 +26,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
 
 
         <link rel="prefetch" href="<@hangar.url "manifest/manifest.json" />">
-        <link rel="prefetch" href="<@hangar.url "bootstrap/bootstrap.bundle.min.js" />">
+        <link rel="prefetch" href="<@hangar.url "build/js/bootstrap.js" />">
 
         <link rel="prefetch" href="<@hangar.url "lib/jquery/dist/jquery.min.js" />"> <#--TODO this to go away-->
 
@@ -116,7 +116,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <script type="text/javascript" src="<@hangar.url "build/js/font-awesome.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "build/js/chunk-common.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "lib/moment/min/moment.min.js" />"></script> <#-- TODO this to go away -->
-        <script type="text/javascript" src="<@hangar.url "bootstrap/bootstrap.bundle.min.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "build/js/bootstrap.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "build/js/main.js" />"></script>
         ${additionalScripts}
     </#if>
