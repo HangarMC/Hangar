@@ -38,7 +38,7 @@
 
 <script>
 export default {
-  emits: ["prev", "next", "jump-to"],
+  emits: ['prev', 'next', 'jump-to'],
   props: {
     current: {
       type: Number,
@@ -60,17 +60,17 @@ export default {
   methods: {
     previous: function() {
       if (this.hasPrevious) {
-        this.$emit("prev");
+        this.$emit('prev');
       }
     },
     next: function() {
       if (this.hasNext) {
-        this.$emit("next");
+        this.$emit('next');
       }
     },
     jump: function(page) {
       if (page > 0 <= this.total) {
-        this.$emit("jump-to", page);
+        this.$emit('jump-to', page);
       }
     }
   }
@@ -78,7 +78,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "./../scss/variables";
+@import './../scss/variables';
 
 .pagination {
   display: flex;

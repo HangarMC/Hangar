@@ -2,13 +2,7 @@
   <div class="row">
     <div class="col-md-9">
       <div class="project-search" :class="{ 'input-group': q.length > 0 }">
-        <input
-          type="text"
-          class="form-control"
-          v-model="q"
-          @keydown="resetPage"
-          :placeholder="queryPlaceholder"
-        />
+        <input type="text" class="form-control" v-model="q" @keydown="resetPage" :placeholder="queryPlaceholder" />
         <span class="input-group-btn" v-if="q.length > 0">
           <button class="btn btn-default" type="button" @click="q = ''">
             <i class="fas fa-times"></i>
@@ -17,8 +11,7 @@
       </div>
       <div v-if="!isDefault" class="clearSelection">
         <a @click="reset"
-          ><i class="fa fa-window-close"></i> Clear current search query,
-          categories, platform, and sort</a
+          ><i class="fa fa-window-close"></i> Clear current search query, categories, platform, and sort</a
         >
       </div>
       <project-list
@@ -31,17 +24,10 @@
       ></project-list>
     </div>
     <div class="col-md-3">
-      <select
-        class="form-control select-sort"
-        v-model="sort"
-        @change="resetPage"
-      >
-        <option
-          v-for="(option, index) in availableOptions.sort"
-          :key="index"
-          :value="option.id"
-          >{{ option.name }}</option
-        >
+      <select class="form-control select-sort" v-model="sort" @change="resetPage">
+        <option v-for="(option, index) in availableOptions.sort" :key="index" :value="option.id">{{
+          option.name
+        }}</option>
       </select>
 
       <div>
@@ -50,11 +36,7 @@
         <div class="card">
           <div class="card-header">
             <h3 class="card-title">Categories</h3>
-            <a
-              class="category-reset"
-              @click="categories = []"
-              v-if="categories.length > 0"
-            >
+            <a class="category-reset" @click="categories = []" v-if="categories.length > 0">
               <i class="fas fa-times white"></i>
             </a>
           </div>
@@ -92,9 +74,7 @@
               @click="tags = [platform.id]"
               v-bind:class="{ active: tags.includes(platform.id) }"
             >
-              <span :class="{ parent: platform.parent }">{{
-                platform.name
-              }}</span>
+              <span :class="{ parent: platform.parent }">{{ platform.name }}</span>
             </a>
           </div>
         </div>
@@ -104,16 +84,16 @@
 </template>
 
 <script>
-import ProjectList from "./components/ProjectList";
-import queryString from "query-string";
-import {clearFromDefaults} from "./utils";
-import {Category, Platform, SortOptions} from "./enums";
-import debounce from "lodash/debounce";
+import ProjectList from './components/ProjectList';
+import queryString from 'query-string';
+import { clearFromDefaults } from './utils';
+import { Category, Platform, SortOptions } from './enums';
+import debounce from 'lodash/debounce';
 
 function defaultData() {
   return {
-    q: "",
-    sort: "updated",
+    q: '',
+    sort: 'updated',
     relevance: true,
     categories: [],
     tags: [],
@@ -136,10 +116,7 @@ export default {
   data: defaultData,
   computed: {
     isDefault: function() {
-      return (
-        Object.keys(clearFromDefaults(this.baseBinding, defaultData()))
-          .length === 0
-      );
+      return Object.keys(clearFromDefaults(this.baseBinding, defaultData())).length === 0;
     },
     baseBinding: function() {
       return {
@@ -160,26 +137,19 @@ export default {
       );
     },
     urlBinding: function() {
-      return clearFromDefaults(
-        Object.assign({}, this.baseBinding, { page: this.page }),
-        defaultData()
-      );
+      return clearFromDefaults(Object.assign({}, this.baseBinding, { page: this.page }), defaultData());
     },
     queryPlaceholder: function() {
       return (
-        `Search in ${
-          this.projectCount === null ? "all" : this.projectCount
-        } projects` +
-        `${!this.isDefault ? " matching your filters" : ""}` +
-        ", proudly made by the community..."
+        `Search in ${this.projectCount === null ? 'all' : this.projectCount} projects` +
+        `${!this.isDefault ? ' matching your filters' : ''}` +
+        ', proudly made by the community...'
       );
     }
   },
   methods: {
     reset: function() {
-      Object.entries(defaultData()).forEach(
-        ([key, value]) => (this.$data[key] = value)
-      );
+      Object.entries(defaultData()).forEach(([key, value]) => (this.$data[key] = value));
     },
     resetPage: function() {
       this.page = 1;
@@ -194,36 +164,29 @@ export default {
       }
     },
     updateQuery(newQuery) {
-      window.history.pushState(
-        null,
-        null,
-        newQuery !== "" ? "?" + newQuery : "/"
-      );
+      window.history.pushState(null, null, newQuery !== '' ? '?' + newQuery : '/');
     },
     updateData() {
       Object.entries(
         queryString.parse(location.search, {
-          arrayFormat: "bracket",
+          arrayFormat: 'bracket',
           parseBooleans: true
         })
       )
-        .filter(([key]) =>
-          Object.prototype.hasOwnProperty.call(defaultData(), key)
-        )
+        .filter(([key]) => Object.prototype.hasOwnProperty.call(defaultData(), key))
         .forEach(([key, value]) => (this.$data[key] = value));
     }
   },
   created() {
     this.updateData();
-    window.addEventListener("popstate", this.updateData);
+    window.addEventListener('popstate', this.updateData);
 
     this.debouncedUpdateProps = debounce(this.updateQuery, 500);
     this.$watch(
-      () =>
-        [this.q, this.sort, this.relevance, this.categories, this.tags, this.page].join(),
+      () => [this.q, this.sort, this.relevance, this.categories, this.tags, this.page].join(),
       () => {
         const query = queryString.stringify(this.urlBinding, {
-          arrayFormat: "bracket"
+          arrayFormat: 'bracket'
         });
         this.debouncedUpdateProps(query);
       }
@@ -244,7 +207,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "./scss/variables";
+@import './scss/variables';
 
 .select-sort {
   margin-bottom: 10px;

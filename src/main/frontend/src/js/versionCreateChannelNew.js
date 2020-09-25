@@ -1,6 +1,6 @@
-import $ from "jquery";
-import "bootstrap/js/dist/modal";
-import {initChannelManager} from "@/js/channelManage";
+import $ from 'jquery';
+import 'bootstrap/js/dist/modal';
+import { initChannelManager } from '@/js/channelManage';
 
 //=====> EXTERNAL CONSTANTS
 
@@ -9,29 +9,20 @@ var DEFAULT_COLOR = null;
 //=====> HELPER FUNCTIONS
 
 function initChannelNew(color) {
-  initChannelManager(
-    "#channel-new",
-    "",
-    color,
-    "New channel",
-    null,
-    null,
-    "Create channel",
-    false
-  );
+  initChannelManager('#channel-new', '', color, 'New channel', null, null, 'Create channel', false);
 }
 
 function getForm() {
-  return $("#form-publish");
+  return $('#form-publish');
 }
 
 function getSelect() {
-  return $("#select-channel");
+  return $('#select-channel');
 }
 
 function setColorInput(val) {
   getForm()
-    .find(".channel-color-input")
+    .find('.channel-color-input')
     .val(val);
 }
 
@@ -45,8 +36,8 @@ $(function() {
   getSelect().change(function() {
     setColorInput(
       $(this)
-        .find(":selected")
-        .data("color")
+        .find(':selected')
+        .data('color')
     );
   });
 
@@ -62,7 +53,7 @@ $(function() {
     // Add new name to select
     var select = getSelect();
     var exists =
-      select.find("option").find(function() {
+      select.find('option').find(function() {
         return (
           $(this)
             .val()
@@ -72,7 +63,7 @@ $(function() {
 
     if (!exists) {
       setColorInput(channelHex);
-      select.find(":selected").removeAttr("selected");
+      select.find(':selected').removeAttr('selected');
       select.append(
         '<option data-color="' +
           channelHex +
@@ -80,13 +71,13 @@ $(function() {
           'value="' +
           channelName +
           '" ' +
-          "selected>" +
+          'selected>' +
           channelName +
-          "</option>"
+          '</option>'
       );
     }
 
-    $("#channel-settings").modal("hide");
+    $('#channel-settings').modal('hide');
     initChannelNew(DEFAULT_COLOR);
   };
 });

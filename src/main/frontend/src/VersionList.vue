@@ -5,12 +5,7 @@
         <a
           v-if="canUpload"
           class="btn yellow"
-          :href="
-            routes.Versions.showCreator(
-              htmlDecode(projectOwner),
-              htmlDecode(projectSlug)
-            ).absoluteURL()
-          "
+          :href="routes.Versions.showCreator(htmlDecode(projectOwner), htmlDecode(projectSlug)).absoluteURL()"
           >Upload a New Version</a
         >
       </div>
@@ -23,13 +18,7 @@
       <div class="list-group">
         <a
           v-for="(version, index) in versions"
-          :href="
-            routes.Versions.show(
-              htmlDecode(projectOwner),
-              htmlDecode(projectSlug),
-              version.name
-            ).absoluteURL()
-          "
+          :href="routes.Versions.show(htmlDecode(projectOwner), htmlDecode(projectSlug), version.name).absoluteURL()"
           class="list-group-item list-group-item-action"
           :class="[classForVisibility(version.visibility)]"
           :key="index"
@@ -38,31 +27,22 @@
             <div class="row">
               <div
                 class="col-6 col-sm-3"
-                :set="
-                  (channel = version.tags.find(
-                    filterTag => filterTag.name === 'Channel'
-                  ))
-                "
+                :set="(channel = version.tags.find(filterTag => filterTag.name === 'Channel'))"
               >
                 <div class="row">
                   <div class="col-12">
                     <span class="text-bold">{{ version.name }}</span>
                   </div>
                   <div class="col-12">
-                    <span
-                      v-if="channel"
-                      class="channel"
-                      v-bind:style="{ background: channel.color.background }"
-                      >{{ channel.data }}</span
-                    >
+                    <span v-if="channel" class="channel" v-bind:style="{ background: channel.color.background }">{{
+                      channel.data
+                    }}</span>
                   </div>
                 </div>
               </div>
               <div class="col-6 col-sm-3">
                 <Tag
-                  v-for="tag in version.tags.filter(
-                    filterTag => filterTag.name !== 'Channel'
-                  )"
+                  v-for="tag in version.tags.filter(filterTag => filterTag.name !== 'Channel')"
                   v-bind:key="tag.name + ':' + tag.data"
                   v-bind="tag"
                 ></Tag>
@@ -100,24 +80,18 @@
           </div>
         </a>
       </div>
-      <Pagination
-        :current="current"
-        :total="total"
-        @prev="page--"
-        @next="page++"
-        @jumpTo="page = $event"
-      ></Pagination>
+      <Pagination :current="current" :total="total" @prev="page--" @next="page++" @jumpTo="page = $event"></Pagination>
     </div>
   </div>
 </template>
 
 <script>
-import fileSize from "filesize";
+import fileSize from 'filesize';
 
-import Tag from "./components/Tag";
-import Pagination from "./components/Pagination";
-import {Visibility} from "./enums";
-import {apiV2Request} from "@/js/apiRequests";
+import Tag from './components/Tag';
+import Pagination from './components/Pagination';
+import { Visibility } from './enums';
+import { apiV2Request } from '@/js/apiRequests';
 
 export default {
   components: {
@@ -139,11 +113,9 @@ export default {
   },
   created() {
     this.update();
-    apiV2Request("permissions", "GET", { pluginId: window.PLUGIN_ID }).then(
-      response => {
-        this.canUpload = response.permissions.includes("create_version");
-      }
-    );
+    apiV2Request('permissions', 'GET', { pluginId: window.PLUGIN_ID }).then(response => {
+      this.canUpload = response.permissions.includes('create_version');
+    });
     this.$watch(
       () => this.page,
       () => {
@@ -154,7 +126,7 @@ export default {
   },
   methods: {
     update() {
-      apiV2Request("projects/" + this.pluginId + "/versions", "GET", {
+      apiV2Request('projects/' + this.pluginId + '/versions', 'GET', {
         limit: this.limit,
         offset: this.offset
       }).then(response => {
@@ -167,17 +139,14 @@ export default {
       return fileSize(size);
     },
     formatDate(date) {
-      return window.moment(date).format("MMM D, YYYY");
+      return window.moment(date).format('MMM D, YYYY');
     },
     classForVisibility(visibility) {
       return Visibility.fromName(visibility).class;
     },
     htmlDecode(htmlEncoded) {
       const parser = new DOMParser();
-      const dom = parser.parseFromString(
-        "<!doctype html><body>" + htmlEncoded,
-        "text/html"
-      );
+      const dom = parser.parseFromString('<!doctype html><body>' + htmlEncoded, 'text/html');
       return dom.body.textContent;
     }
   },

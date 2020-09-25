@@ -1,55 +1,51 @@
-import $ from "jquery";
-import {KEY_ENTER, toggleSpinner} from "@/utils";
+import $ from 'jquery';
+import { KEY_ENTER, toggleSpinner } from '@/utils';
 
 //=====> HELPER FUNCTIONS
 
 export function initUserSearch(callback) {
-  var search = $(".user-search");
-  var input = search.find("input");
+  var search = $('.user-search');
+  var input = search.find('input');
 
   // Disable button with no input
-  input.on("input", function() {
+  input.on('input', function() {
     $(this)
       .next()
-      .find(".btn")
-      .prop("disabled", $(this).val().length === 0);
+      .find('.btn')
+      .prop('disabled', $(this).val().length === 0);
   });
 
   // Catch enter key
-  input.on("keypress", function(event) {
+  input.on('keypress', function(event) {
     if (event.keyCode === KEY_ENTER) {
       event.preventDefault();
       $(this)
         .next()
-        .find(".btn")
+        .find('.btn')
         .click();
     }
   });
 
   // Search for user
-  search.find(".btn-search").click(function() {
+  search.find('.btn-search').click(function() {
     const input = $(this)
-      .closest(".user-search")
-      .find("input");
+      .closest('.user-search')
+      .find('input');
     const username = input.val().trim();
-    if (username !== "") {
+    if (username !== '') {
       toggleSpinner(
         $(this)
-          .find("[data-fa-i2svg]")
-          .toggleClass("fa-search")
+          .find('[data-fa-i2svg]')
+          .toggleClass('fa-search')
       );
       $.ajax({
-        url: "/api/v1/users/" + username,
-        dataType: "json",
+        url: '/api/v1/users/' + username,
+        dataType: 'json',
 
         complete: function() {
-          input.val("");
-          toggleSpinner(
-            $(".user-search .btn-search [data-fa-i2svg]").toggleClass(
-              "fa-search"
-            )
-          );
-          $(".user-search .btn-search").prop("disabled", true);
+          input.val('');
+          toggleSpinner($('.user-search .btn-search [data-fa-i2svg]').toggleClass('fa-search'));
+          $('.user-search .btn-search').prop('disabled', true);
         },
 
         error: function() {

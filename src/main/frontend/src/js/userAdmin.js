@@ -1,11 +1,11 @@
-import $ from "jquery";
+import $ from 'jquery';
 
 //=====> HELPER FUNCTIONS
 
 function update(thing, action, data) {
   return $.ajax({
-    url: window.location.pathname + "/update",
-    method: "post",
+    url: window.location.pathname + '/update',
+    method: 'post',
     data: {
       thing: thing,
       action: action,
@@ -27,24 +27,22 @@ function loadingButton(button) {
 //=====> DOCUMENT READY
 
 $(function() {
-  var globalRoleSelect = $("#add-global-role-select");
-  var globalRoleList = $("#global-roles-list");
+  var globalRoleSelect = $('#add-global-role-select');
+  var globalRoleList = $('#global-roles-list');
 
-  $("#add-global-role").click(function() {
-    var finishLoading = loadingButton($("#add-global-role"));
+  $('#add-global-role').click(function() {
+    var finishLoading = loadingButton($('#add-global-role'));
 
-    var selected = $("option:selected", globalRoleSelect);
+    var selected = $('option:selected', globalRoleSelect);
 
-    update("globalRole", "add", { role: parseInt(selected.val()) })
+    update('globalRole', 'add', { role: parseInt(selected.val()) })
       .done(function() {
         // Add role to list
         var newItem = $('<div class="list-group-item"></div>');
         newItem.data({ role: selected.val() });
         newItem.text(selected.text());
         newItem.append(
-          $(
-            '<span class="float-right"><a href="#" class="global-role-delete"><i class="fa fa-trash"></i></a></span>'
-          )
+          $('<span class="float-right"><a href="#" class="global-role-delete"><i class="fa fa-trash"></i></a></span>')
         );
         newItem.insertBefore(globalRoleList.children().last());
         // Remove from select
@@ -53,18 +51,18 @@ $(function() {
       .always(finishLoading);
   });
 
-  globalRoleList.on("click", ".global-role-delete", function(event) {
+  globalRoleList.on('click', '.global-role-delete', function(event) {
     event.preventDefault();
-    var item = $(event.target).closest(".list-group-item");
+    var item = $(event.target).closest('.list-group-item');
 
     var finishLoading = loadingButton($(event.target).parent());
 
-    var role = parseInt(item.data("role"));
+    var role = parseInt(item.data('role'));
     var title = item.text();
 
-    update("globalRole", "remove", { role: role })
+    update('globalRole', 'remove', { role: role })
       .done(function() {
-        var option = $("<option></option>");
+        var option = $('<option></option>');
         option.text(title);
         option.val(role);
         globalRoleSelect.append(option);
@@ -75,45 +73,41 @@ $(function() {
 
   function rowChange(action, data, element) {
     element.disabled = true;
-    var row = $(element).closest("tr");
-    var id = parseInt(row.data("role-id"));
-    var type = row.data("role-type");
+    var row = $(element).closest('tr');
+    var id = parseInt(row.data('role-id'));
+    var type = row.data('role-type');
     return update(type, action, $.extend({ id: id }, data)).always(function() {
       element.disabled = false;
     });
   }
 
-  var roleTables = $(".role-table");
+  var roleTables = $('.role-table');
 
-  roleTables.on("change", ".select-role", function(event) {
-    rowChange("setRole", { role: parseInt(event.target.value) }, event.target)
+  roleTables.on('change', '.select-role', function(event) {
+    rowChange('setRole', { role: parseInt(event.target.value) }, event.target)
       .fail(function() {
         event.target.selectedIndex = event.target.defaultValue;
       })
       .done(function() {
         event.target.defaultValue = event.target.selectedIndex;
-        if ($("option:selected", event.target).data("refresh")) {
+        if ($('option:selected', event.target).data('refresh')) {
           history.go(0);
         }
       });
   });
 
-  roleTables.find(".select-role").each(function(i, element) {
+  roleTables.find('.select-role').each(function(i, element) {
     element.defaultValue = element.selectedIndex;
   });
 
-  roleTables.on("change", ".role-accepted", function(event) {
-    rowChange(
-      "setAccepted",
-      { accepted: event.target.checked },
-      event.target
-    ).fail(function() {
+  roleTables.on('change', '.role-accepted', function(event) {
+    rowChange('setAccepted', { accepted: event.target.checked }, event.target).fail(function() {
       event.target.checked = !event.target.checked;
     });
   });
-  roleTables.on("click", ".delete-role", function(event) {
+  roleTables.on('click', '.delete-role', function(event) {
     event.preventDefault();
-    var row = $(event.target).closest("tr");
-    rowChange("deleteRole", {}, event.target).done(row.remove);
+    var row = $(event.target).closest('tr');
+    rowChange('deleteRole', {}, event.target).done(row.remove);
   });
 });
