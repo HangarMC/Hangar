@@ -251,8 +251,8 @@
 
                 <configuration>
                     <workingDirectory>src/main/frontend</workingDirectory>
-                    <nodeVersion>v12.18.2</nodeVersion>
-                    <yarnVersion>v1.22.0</yarnVersion>
+                    <nodeVersion>v12.18.4</nodeVersion> <!-- latest LTS -->
+                    <yarnVersion>v1.22.5</yarnVersion> <!-- latest stable -->
                 </configuration>
 
                 <executions>
@@ -271,6 +271,7 @@
                         <configuration>
                             <arguments>install</arguments>
                         </configuration>
+                        <phase>generate-resources</phase>
                     </execution>
                     <execution>
                         <id>yarn build</id>
@@ -280,6 +281,7 @@
                         <configuration>
                             <arguments>run build</arguments>
                         </configuration>
+                        <phase>generate-resources</phase>
                     </execution>
                 </executions>
             </plugin>
