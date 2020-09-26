@@ -5,9 +5,7 @@
 
 <#macro url path>
     <#compress>
-        <#if path?starts_with("lib")>
-            /${path}
-        <#elseif config.useWebpack>
+        <#if config.useWebpack>
             http://localhost:8081/${path}
         <#else>
             /assets/${path}

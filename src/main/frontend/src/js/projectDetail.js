@@ -214,6 +214,10 @@ $(function() {
     initFlagList();
     initBtnEdit();
 
+    if (window.buttonClick) {
+        window.buttonClick();
+    }
+
     // flag button alert
     var flagMsg = $('.flag-msg');
     if (flagMsg.length) {

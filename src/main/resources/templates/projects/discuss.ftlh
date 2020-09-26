@@ -15,8 +15,12 @@ Discussion page within Project overview.
             topicId: ${p.project.topicId}
         };
     </script>
+    <script <#--@CSPNonce.attr-->>
+        window.buttonClick = function() {
+            document.getElementsByClassName('btn.edit')[0].click();
+        }
+    </script>
     <script type="text/javascript" src="<@hangar.url "js/projectDiscuss.js" />"></script>
-    <#--<script>$(function() { $('.btn-edit').click(); });</script>--> <#-- TODO jquery was removed from this scope -->
 </#assign>
 
 <@view.view p=p sp=sp active="#discussion" additionalScripts=scriptsVar>

@@ -22,12 +22,16 @@ Documentation page within Project overview.
       window.PLUGIN_ID = '${p.getProject().pluginId}';
       window.NAMESPACE = '${p.getFullSlug()}';
     </script>
+    <#if editorOpen>
+        <script <#--@CSPNonce.attr-->>
+            window.buttonClick = function() {
+                document.getElementsByClassName('btn-edit')[0].click();
+            }
+        </script>
+    </#if>
     <script type="text/javascript" src="<@hangar.url "js/pageCollapse.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "js/userSearch.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "js/memberList.js" />"></script>
-    <#if editorOpen>
-        <script <#--@CSPNonce.attr-->>$(function() { $('.btn-edit').click(); });</script>
-    </#if>
 </#assign>
 
 <@projectView.view p=p sp=sp active="#docs" additionalScripts=scriptsVar>

@@ -117,12 +117,12 @@
 
 <script>
 import Tag from './Tag';
-import { clearFromEmpty, numberWithCommas } from './../utils';
-import { Category, Platform, Visibility } from '../enums';
+import { clearFromEmpty, numberWithCommas } from '@/utils';
+import { Category, Platform, Visibility } from '@/enums';
 import Pagination from './Pagination';
 import Icon from './Icon';
 import debounce from 'lodash/debounce';
-import { API } from '../api';
+import { API } from '@/api';
 
 export default {
     components: {
