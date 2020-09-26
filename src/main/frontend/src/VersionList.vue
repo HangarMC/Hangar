@@ -87,6 +87,7 @@
 
 <script>
 import fileSize from 'filesize';
+import moment from 'moment';
 
 import Tag from './components/Tag';
 import Pagination from './components/Pagination';
@@ -139,7 +140,7 @@ export default {
       return fileSize(size);
     },
     formatDate(date) {
-      return window.moment(date).format('MMM D, YYYY');
+      return moment(date).format('MMM D, YYYY');
     },
     classForVisibility(visibility) {
       return Visibility.fromName(visibility).class;

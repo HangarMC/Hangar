@@ -63,7 +63,7 @@
                                 </td>
                             </#if>
                             <script <#--@CSPNonce.attr-->>
-                                $(function () {
+                                /*$(function () {
                                     initChannelDelete('#channel-delete-${channel.id}', '${channel.name}', ${versions});
                                     initChannelManager(
                                         "#channel-edit-${channel.id}", "${channel.name}", "${channel.color.hex}",
@@ -71,7 +71,7 @@
                                                         p.project.ownerName, p.project.slug, channel.name)}",
                                         "post", "Save changes", ${channel.isNonReviewed?string('true', 'false')}
                                     );
-                                });
+                                });*/
                             </script>
                         </tr>
                         </#list>

@@ -18,7 +18,8 @@ Base template for Project overview.
           window.PROJECT_SLUG = "${p.project.slug}";
           window.PROJECT_ID = "${p.project.pluginId}";
           window.ALREADY_STARRED = ${sp.starred?c};
-          $(function() { $(".nav").find("${active}").addClass("active"); });
+
+          window.ACTIVE_NAV = "${active}";
         </script>
         <script type="text/javascript" src="<@hangar.url "js/projectDetail.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "js/pageEdit.js" />"></script>

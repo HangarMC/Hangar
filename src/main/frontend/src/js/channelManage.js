@@ -177,7 +177,6 @@ function initColorPicker() {
 }
 
 //=====> DOCUMENT READY
-
 $(function() {
   initModal();
   if (window.initChannelManager) {

@@ -39,7 +39,6 @@
         <!-- webjars dependencies -->
         <webjars-locator.version>0.40</webjars-locator.version>
         <jquery.version>3.5.1</jquery.version>
-        <chart.js.version>2.9.3</chart.js.version>
 
         <!-- plugins -->
         <frontend-maven-plugin.version>1.10.0</frontend-maven-plugin.version>
@@ -190,11 +189,6 @@
             <groupId>org.webjars.npm</groupId>
             <artifactId>jquery</artifactId>
             <version>${jquery.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars.npm</groupId>
-            <artifactId>chart.js</artifactId>
-            <version>${chart.js.version}</version>
         </dependency>
 
         <!-- runtime -->

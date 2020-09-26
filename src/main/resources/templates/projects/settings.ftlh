@@ -210,17 +210,6 @@
                             <i class="fas fa-check"></i> Save changes
                         </button>
                     </@form.form>
-
-                    <script>
-                        // Basically, hides the form value if its empty. Makes the controller simpler
-                        $("#save").submit(function() {
-                            $(":input[form=save]").filter(function () {
-                                return !this.value;
-                            }).attr("disabled", true);
-
-                            return true;
-                        });
-                    </script>
                 </div>
             </div>
         </div>
