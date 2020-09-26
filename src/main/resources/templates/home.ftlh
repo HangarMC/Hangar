@@ -8,11 +8,11 @@ sorted according to different criteria.
 <#import "*/layout/base.ftlh" as base>
 
 <#macro scripts>
-    <script src="<@hangar.url "build/js/home.js" />"></script>
+    <script src="<@hangar.url "js/home.js" />"></script>
 </#macro>
 
 <#macro stylesheets>
-    <link rel="stylesheet" type="text/css" href="<@hangar.url "build/css/home.css" />" />
+    <link rel="stylesheet" type="text/css" href="<@hangar.url "css/home.css" />" />
 </#macro>
 
 <#macro meta>
@@ -54,7 +54,7 @@ sorted according to different criteria.
                         <#-- @ftlvariable name="sponsor" type="io.papermc.hangar.config.hangar.HangarConfig.Sponsor" -->
                         <#assign sponsor=randomSponsor() />
                         <a href="${sponsor.link}">
-                            <img class="logo" src="${sponsor.image}" alt="${sponsor.name}" />
+                            <img class="logo" src="<@hangar.url sponsor.image />" alt="${sponsor.name}" />
                         </a>
                     </div>
                 </div>

@@ -5,9 +5,12 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const sourceDir = path.resolve(__dirname, 'src');
 const entryDir = path.resolve(sourceDir, 'entrypoints');
 const jsDir = path.resolve(sourceDir, 'js');
-const outputDir = path.resolve(__dirname, '..', '..', '..', 'target', 'classes', 'public', 'build');
+const outputDir = path.resolve(__dirname, '..', '..', '..', 'target', 'classes', 'public');
 
 module.exports = {
+  devServer: {
+    port: 8081
+  },
   chainWebpack: config => {
     // clear default
     config.entry('app').clear();

@@ -21,12 +21,12 @@
       window.keyGenText = "<@spring.message "project.settings.genKey" />";
       window.keyRevokeText = "<@spring.message "project.settings.revokeKey" />";
     </script>
-    <script type="text/javascript" src="<@hangar.url "build/js/projectManage.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "build/js/hideProject.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "build/js/iconUpload.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "build/js/keyGen.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "build/js/userSearch.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "build/js/memberList.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/projectManage.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/hideProject.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/iconUpload.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/keyGen.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/userSearch.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/memberList.js" />"></script>
 </#assign>
 
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>

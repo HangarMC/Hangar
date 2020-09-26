@@ -22,9 +22,9 @@ Documentation page within Project overview.
       window.PLUGIN_ID = '${p.getProject().pluginId}';
       window.NAMESPACE = '${p.getFullSlug()}';
     </script>
-    <script type="text/javascript" src="<@hangar.url "build/js/pageCollapse.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "build/js/userSearch.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "build/js/memberList.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/pageCollapse.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/userSearch.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/memberList.js" />"></script>
     <#if editorOpen>
         <script <#--@CSPNonce.attr-->>$(function() { $('.btn-edit').click(); });</script>
     </#if>

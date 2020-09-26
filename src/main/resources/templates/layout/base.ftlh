@@ -20,13 +20,13 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
 
         <link rel="prefetch" href="<@hangar.url "images/favicon.ico" />">
         <link rel="prefetch" href="https://fonts.googleapis.com/css?family=Montserrat:400,700">
-        <link rel="prefetch" href="<@hangar.url "build/css/chunk-common.css" />">
-        <link rel="prefetch" href="<@hangar.url "build/css/chunk-vendors.css" />">
-        <link rel="prefetch" href="<@hangar.url "build/css/main.css" />">
+        <link rel="prefetch" href="<@hangar.url "css/chunk-common.css" />">
+        <link rel="prefetch" href="<@hangar.url "css/chunk-vendors.css" />">
+        <link rel="prefetch" href="<@hangar.url "css/main.css" />">
 
 
         <link rel="prefetch" href="<@hangar.url "manifest/manifest.json" />">
-        <link rel="prefetch" href="<@hangar.url "build/js/bootstrap.js" />">
+        <link rel="prefetch" href="<@hangar.url "js/bootstrap.js" />">
 
         <link rel="prefetch" href="<@hangar.url "lib/jquery/dist/jquery.min.js" />"> <#--TODO this to go away-->
 
@@ -46,9 +46,9 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
 
 
         <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Montserrat:400,700" >
-        <link rel="stylesheet" type="text/css" href="<@hangar.url "build/css/chunk-common.css" />"/>
-        <link rel="stylesheet" type="text/css" href="<@hangar.url "build/css/chunk-vendors.css" />">
-        <link rel="stylesheet" type="text/css" href="<@hangar.url "build/css/main.css" />"/>
+        <link rel="stylesheet" type="text/css" href="<@hangar.url "css/chunk-common.css" />"/>
+        <link rel="stylesheet" type="text/css" href="<@hangar.url "css/chunk-vendors.css" />">
+        <link rel="stylesheet" type="text/css" href="<@hangar.url "css/main.css" />"/>
 
         ${additionalStyling}
 
@@ -112,12 +112,12 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         </#if>
 
         <script type="text/javascript" src="${Routes.JAVA_SCRIPT_ROUTES.getRouteUrl()}"></script>
-        <script type="text/javascript" src="<@hangar.url "build/js/chunk-vendors.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "build/js/font-awesome.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "build/js/chunk-common.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "js/chunk-vendors.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "js/font-awesome.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "js/chunk-common.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "lib/moment/min/moment.min.js" />"></script> <#-- TODO this to go away -->
-        <script type="text/javascript" src="<@hangar.url "build/js/bootstrap.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "build/js/main.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "js/bootstrap.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "js/main.js" />"></script>
         ${additionalScripts}
     </#if>
 

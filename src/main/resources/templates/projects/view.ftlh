@@ -20,8 +20,8 @@ Base template for Project overview.
           window.ALREADY_STARRED = ${sp.starred?c};
           $(function() { $(".nav").find("${active}").addClass("active"); });
         </script>
-        <script type="text/javascript" src="<@hangar.url "build/js/projectDetail.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "build/js/pageEdit.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "js/projectDetail.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "js/pageEdit.js" />"></script>
         ${additionalScripts}
     </#assign>
 

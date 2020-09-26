@@ -39,7 +39,7 @@
 </#macro>
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "build/js/hideProject.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/hideProject.js" />"></script>
 </#assign>
 
 <@base.base title="Project Visibility" additionalScripts=scriptsVar>

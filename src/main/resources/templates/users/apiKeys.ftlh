@@ -11,7 +11,7 @@
       window.NAMED_USED = '<@spring.message "user.apiKeys.error.nameAlreadyUsed" />';
       window.DELETE_KEY = '<@spring.message "user.apiKeys.keyDeleteButton" />';
     </script>
-    <script type="text/javascript" src="<@hangar.url "build/js/apiKeysManagement.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/apiKeysManagement.js" />"></script>
 </#assign>
 
 <#assign NamedPermission=@helper["io.papermc.hangar.model.NamedPermission"] />

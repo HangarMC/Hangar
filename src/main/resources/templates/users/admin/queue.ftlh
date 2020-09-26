@@ -3,7 +3,7 @@
 <#import "*/layout/base.ftlh" as base />
 
 <#assign scriptsVar>
-    <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "build/js/queue.js" />"></script>
+    <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "js/queue.js" />"></script>
     <script <#--@CSPNonce.attr-->>
         $(function(){
             var momentNow = moment();

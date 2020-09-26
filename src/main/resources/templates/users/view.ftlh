@@ -31,7 +31,7 @@
                 window.NO_ACTION_MESSAGE.starred = '<@spring.messageArgs code="user.noStars" args=[u.user.name] />';
                 window.NO_ACTION_MESSAGE.watching = '<@spring.messageArgs code="user.noWatching" args=[u.user.name] />';
         </script>
-        <script type="text/javascript" src="<@hangar.url "build/js/userPage.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "js/userPage.js" />"></script>
         ${additionalScripts}
     </#assign>
 

@@ -13,7 +13,7 @@
       window.DEFAULT_HEX = '${config.channels.colorDefault.hex}';
       window.CHANNEL_CREATE_ROUTE = '${Routes.CHANNELS_CREATE.getRouteUrl(p.project.ownerName, p.project.slug)}';
     </script>
-    <script type="text/javascript" src="<@hangar.url "build/js/channelManage.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/channelManage.js" />"></script>
 </#assign>
 
 <#assign message><@spring.messageArgs code="channel.list.title" args=[p.project.ownerName, p.project.slug] /></#assign>
