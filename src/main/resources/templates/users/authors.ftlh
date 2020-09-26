@@ -38,7 +38,7 @@
 
 <#assign scriptsVar>
     <script <#--@CSPNonce.attr-->>window.CURRENT_PAGE = ${page};</script>
-	<script type="text/javascript" src="<@hangar.url "build/js/userList.js" />"></script>
+	<script type="text/javascript" src="<@hangar.url "js/userList.js" />"></script>
 </#assign>
 
 <#-- @ftlvariable name="page" type="java.lang.Integer" -->

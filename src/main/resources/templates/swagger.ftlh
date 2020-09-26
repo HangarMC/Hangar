@@ -10,8 +10,8 @@ Mostly copied from swagger-ui's index file
     <script type="text/javascript" src="<@hangar.url "lib/jquery/dist/jquery.min.js" />"></script>
     <script src="<@hangar.url "lib/swagger-ui/swagger-ui-bundle.js" />"></script>
     <script src="<@hangar.url "lib/swagger-ui/swagger-ui-standalone-preset.js" />"></script>
-    <script src="<@hangar.url "build/js/apiRequests.js" />"></script>
-    <script @CSPNonce.attr>
+    <script src="<@hangar.url "js/apiRequests.js" />"></script>
+    <script <#--@CSPNonce.attr-->>
         window.onload = () => {
             window.ui = SwaggerUIBundle({
                 url: "/v2/api-docs",
@@ -43,7 +43,7 @@ Mostly copied from swagger-ui's index file
         }
     </script>
     <#if request??>
-        <script @CSPNonce.attr>
+        <script <#--@CSPNonce.attr-->>
             csrf = '@play.filters.csrf.CSRF.getToken.get.value';
             isLoggedIn = ${request.hasUser};
         </script>

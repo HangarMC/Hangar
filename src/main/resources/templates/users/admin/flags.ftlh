@@ -4,8 +4,8 @@
 <#import "*/projects/helper/btnHide.ftlh" as hide />
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "build/js/adminFlags.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "build/js/hideProject.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/adminFlags.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/hideProject.js" />"></script>
 </#assign>
 
 <@base.base title="Flags" additionalScripts=scriptsVar>

@@ -51,10 +51,10 @@ hangar:
 
   sponsors:
     - name: Beer
-      image: /assets/images/sponsors/beer.jpg
+      image: images/sponsors/beer.jpg
       link: https://minidigger.me
     - name: MiniDigger
-      image: https://avatars2.githubusercontent.com/u/2185527?s=400&v=4
+      image: images/sponsors/minidigger.png
       link: https://minidigger.me
 
   homepage:

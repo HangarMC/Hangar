@@ -20,12 +20,12 @@
 </#function>
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "build/js/user-profile.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/user-profile.js" />"></script>
     <#if u.isOrga() && o?? && canEditOrgMembers()>
-    <script type="text/javascript" src="<@hangar.url "build/js/orgInvites.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/orgInvites.js" />"></script>
     </#if>
-    <script type="text/javascript" src="<@hangar.url "build/js/userSearch.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "build/js/memberList.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/userSearch.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/memberList.js" />"></script>
 </#assign>
 
 <@users.view u=u o=o additionalScripts=scriptsVar>

@@ -89,7 +89,7 @@
             });
         });
     </script>
-    <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "build/js/stats.js" />"></script>
+    <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "js/stats.js" />"></script>
 </#assign>
 
 <@base.base title="Stats" additionalScripts=scriptsVar>

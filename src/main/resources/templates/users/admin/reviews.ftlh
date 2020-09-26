@@ -3,7 +3,7 @@
 <#import "*/layout/base.ftlh" as base />
 
 <#assign scripts>
-    <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "build/js/review.js" />"></script>
+    <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "js/review.js" />"></script>
     <script <#--@CSPNonce.attr-->>window.versionPath = '${utils.urlEncode(project.project.ownerName)}/${utils.urlEncode(project.project.slug)}/versions/${utils.urlEncode(version.v.versionString)}'</script>
 </#assign>
 

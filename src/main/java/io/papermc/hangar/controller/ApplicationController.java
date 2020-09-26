@@ -3,6 +3,7 @@ package io.papermc.hangar.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controller.util.StatusZ;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
@@ -51,6 +52,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
@@ -75,11 +77,12 @@ public class ApplicationController extends HangarController {
     private final StatsService statsService;
     private final StatusZ statusZ;
     private final ObjectMapper mapper;
+    private final HangarConfig hangarConfig;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, StatusZ statusZ, ObjectMapper mapper, HttpServletRequest request) {
+    public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, StatusZ statusZ, ObjectMapper mapper, HangarConfig hangarConfig, HttpServletRequest request) {
         this.platformVersionsDao = platformVersionsDao;
         this.userService = userService;
         this.projectService = projectService;
@@ -91,6 +94,7 @@ public class ApplicationController extends HangarController {
         this.sitemapService = sitemapService;
         this.statusZ = statusZ;
         this.mapper = mapper;
+        this.hangarConfig = hangarConfig;
         this.request = request;
         this.statsService = statsService;
     }
@@ -353,7 +357,12 @@ public class ApplicationController extends HangarController {
     @GetMapping(value = "/robots.txt", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public Object robots() {
-        return new ClassPathResource("public/robots.txt");
+        if (hangarConfig.isUseWebpack()) {
+            request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.MOVED_PERMANENTLY);
+            return new ModelAndView("redirect:http://localhost:8081/robots.txt");
+        } else {
+            return new ClassPathResource("public/robots.txt");
+        }
     }
 
     @GetMapping(value = "/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
