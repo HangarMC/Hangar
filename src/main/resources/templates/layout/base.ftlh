@@ -115,7 +115,6 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <script type="text/javascript" src="<@hangar.url "js/chunk-vendors.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "js/font-awesome.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "js/chunk-common.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "lib/moment/min/moment.min.js" />"></script> <#-- TODO this to go away -->
         <script type="text/javascript" src="<@hangar.url "js/bootstrap.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "js/main.js" />"></script>
         ${additionalScripts}

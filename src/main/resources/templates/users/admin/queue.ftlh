@@ -3,21 +3,10 @@
 <#import "*/layout/base.ftlh" as base />
 
 <#assign scriptsVar>
-    <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "js/queue.js" />"></script>
-    <script <#--@CSPNonce.attr-->>
-        $(function(){
-            var momentNow = moment();
-            var maxDifference = "${config.queue.maxReviewTime}";
-            $('span[data-ago]').each(function() {
-                var momentAgo = moment($(this).data('ago'))
-                $(this).text($(this).data('title') + momentAgo.fromNow());
-                if (momentNow.diff(momentAgo) >= maxDifference) {
-                    $(this).text('pastdue ' + momentAgo.fromNow()).css('color', 'darkred');
-                    $(this).parent().parent().find('.status').removeClass().addClass('status far fa-fw fa-clock fa-2x').css('color', 'darkred');
-                }
-            });
-        });
+    <script>
+        window.MAX_REVIEW_TIME = ${config.queue.maxReviewTime.toMillis()};
     </script>
+    <script type="text/javascript" src="<@hangar.url "js/queue.js" />"></script>
 </#assign>
 
 <#assign message><@spring.message "user.queue" /></#assign>

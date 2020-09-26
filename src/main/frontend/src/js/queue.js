@@ -1,9 +1,32 @@
 import $ from 'jquery';
+import moment from 'moment';
 import { clearUnread, toggleSpinner } from '@/utils';
+
+//=====> EXTERNAL CONSTANTS
+const MAX_REVIEW_TIME = window.MAX_REVIEW_TIME;
 
 //=====> DOCUMENT READY
 
 $(function() {
+  var momentNow = moment();
+  var maxDifference = MAX_REVIEW_TIME;
+  $('span[data-ago]').each(function() {
+    var momentAgo = moment($(this).data('ago'));
+    $(this).text($(this).data('title') + momentAgo.fromNow());
+    if (momentNow.diff(momentAgo) >= maxDifference) {
+      $(this)
+        .text('pastdue ' + momentAgo.fromNow())
+        .css('color', 'darkred');
+      $(this)
+        .parent()
+        .parent()
+        .find('.status')
+        .removeClass()
+        .addClass('status far fa-fw fa-clock fa-2x')
+        .css('color', 'darkred');
+    }
+  });
+
   $('.btn-approve').click(function() {
     var listItem = $(this).closest('.list-group-item');
     var versionPath = listItem.data('version');

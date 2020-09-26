@@ -9,6 +9,7 @@ import io.papermc.hangar.security.voters.ProjectPermissionVoter;
 import io.papermc.hangar.security.voters.UserLockVoter;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.UserService;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,9 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private static final String CSP = "script-src 'self'{nonce}";
+    public String CSP_NONCE;
+
     private final HangarAuthenticationProvider authProvider;
     private final PermissionService permissionService;
     private final UserService userService;
@@ -44,6 +48,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        CSP_NONCE = RandomStringUtils.randomAlphanumeric(64);
+
+        // TODO CSP nonce
+//        http.headers().contentSecurityPolicy(CSP.replace("{nonce}", " 'nonce-" + CSP_NONCE + "'"));
+
         http.csrf().ignoringAntMatchers(
                 "/api/v2/authenticate", "/api/v2/sessions/current", "/api/v2/keys", "/api/sync_sso"
         );
