@@ -1,4 +1,4 @@
-FROM openjdk:14-jdk-alpine
+FROM openjdk:16-jdk-alpine
 
 LABEL maintainer="Yannick Lamprecht <yannicklamprecht@live.de>"
 
