@@ -37,7 +37,7 @@
 
                 <div class="create-body card-body">
                     <div class="minor create-blurb">
-                        <span><@spring.messageArgs code="version.create.info" args=[projectName, pluginId] /></span>
+                        <span><@spring.messageArgs code="version.create.info" args=[projectName, projectSlug] /></span>
                     </div>
 
                     <#if pending??>

@@ -16,6 +16,8 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Validated
 public class Dependency {
+
+    //TODO dependency identification
     @JsonProperty("plugin_id")
     private String pluginId = null;
 
@@ -39,14 +41,10 @@ public class Dependency {
         //
     }
 
-    /**
-     * Get pluginId
-     *
-     * @return pluginId
-     **/
     @ApiModelProperty(required = true, value = "")
     @NotNull
 
+    @Deprecated
     public String getPluginId() {
         return pluginId;
     }

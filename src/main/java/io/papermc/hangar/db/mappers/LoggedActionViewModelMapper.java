@@ -34,7 +34,6 @@ public class LoggedActionViewModelMapper implements RowMapper<LoggedActionViewMo
         int contextType = rs.getInt("context_type");
         final LoggedProject project = new LoggedProject(
                 rs.getLong("p_id"),
-                rs.getString("p_plugin_id"),
                 rs.getString("p_slug"),
                 rs.getString("p_owner_name")
         );

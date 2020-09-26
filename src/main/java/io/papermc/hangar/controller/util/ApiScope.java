@@ -1,29 +1,43 @@
 package io.papermc.hangar.controller.util;
 
+import org.jetbrains.annotations.Nullable;
+
 public class ApiScope {
 
     private final ApiScopeType type;
-    private final String value;
+    private final String owner;
+    private final String slug;
 
-    private ApiScope(ApiScopeType apiScopeType, String value) {
+    private ApiScope(ApiScopeType apiScopeType, String owner, @Nullable String slug) {
         this.type = apiScopeType;
-        this.value = value;
+        this.owner = owner;
+        this.slug = slug;
+    }
+
+    private ApiScope(ApiScopeType apiScopeType, String owner) {
+        this(apiScopeType, owner, null);
     }
 
     public ApiScopeType getType() {
         return type;
     }
 
-    public String getValue() {
-        return value;
+    @Nullable
+    public String getOwner() {
+        return owner;
+    }
+
+    @Nullable
+    public String getSlug() {
+        return slug;
     }
 
     public static ApiScope forGlobal() {
         return new ApiScope(ApiScopeType.GLOBAL, null);
     }
 
-    public static ApiScope forProject(String pluginId) {
-        return new ApiScope(ApiScopeType.PROJECT, pluginId);
+    public static ApiScope forProject(String author, String slug) {
+        return new ApiScope(ApiScopeType.PROJECT, author, slug);
     }
 
     public static ApiScope forOrg(String organizationName) {

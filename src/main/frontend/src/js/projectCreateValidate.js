@@ -26,9 +26,9 @@ function failed(selector, message) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function checkId(pluginId, name, owner, slug) {
+function checkId(name, owner, slug) {
     $.ajax({
-        url: '/api/v1/projects/' + pluginId,
+        url: '/api/v1/projects/' + owner + '/' + slug,
         statusCode: {
             404: function() {
                 success('.id-status', function() {

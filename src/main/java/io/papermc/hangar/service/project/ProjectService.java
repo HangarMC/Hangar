@@ -81,8 +81,6 @@ public class ProjectService extends HangarService {
         ProjectsTable pt;
         if (pathParams.keySet().containsAll(Set.of("author", "slug"))) {
             pt = this.getProjectsTable(pathParams.get("author"), pathParams.get("slug"));
-        } else if (pathParams.containsKey("pluginId")) {
-            pt = this.getProjectsTable(pathParams.get("pluginId"));
         } else {
             return () -> null;
         }
@@ -170,10 +168,6 @@ public class ProjectService extends HangarService {
 
     public ProjectsTable getProjectsTable(String author, String name) {
         return checkVisibility(projectDao.get().getBySlug(author, name));
-    }
-
-    public ProjectsTable getProjectsTable(String pluginId) {
-        return checkVisibility(projectDao.get().getByPluginId(pluginId));
     }
 
     public ProjectsTable checkVisibility(ProjectsTable projectsTable) {

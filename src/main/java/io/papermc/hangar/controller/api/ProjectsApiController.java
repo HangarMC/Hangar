@@ -67,11 +67,11 @@ public class ProjectsApiController implements ProjectsApi {
         Long requesterId = apiAuthInfo.getUser() == null ? null : apiAuthInfo.getUser().getId();
 
         List<Project> projects = projectApiService.getProjects(
+                owner,
                 null,
                 categories,
                 parsedTags,
                 q,
-                owner,
                 seeHidden,
                 requesterId,
                 sort,
@@ -81,11 +81,11 @@ public class ProjectsApiController implements ProjectsApi {
         );
 
         long count = projectApiService.countProjects(
+                owner,
                 null,
                 categories,
                 parsedTags,
                 q,
-                owner,
                 seeHidden,
                 requesterId
         );
@@ -98,44 +98,44 @@ public class ProjectsApiController implements ProjectsApi {
     }
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.util.ApiScope).forProject(#pluginId))")
-    public ResponseEntity<List<ProjectMember>> showMembers(String pluginId, Long inLimit, Long inOffset) {
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.util.ApiScope).forProject(#author, #slug))")
+    public ResponseEntity<List<ProjectMember>> showMembers(String author, String slug, Long inLimit, Long inOffset) {
         long limit = ApiUtil.limitOrDefault(inLimit, hangarConfig.getProjects().getInitLoad());
         long offset = ApiUtil.offsetOrZero(inOffset);
-        List<ProjectMember> projectMembers = projectApiService.getProjectMembers(pluginId, limit, offset);
+        List<ProjectMember> projectMembers = projectApiService.getProjectMembers(author, slug, limit, offset);
         if (projectMembers == null || projectMembers.isEmpty()) { // TODO this will also happen when the offset is too high
-            log.error("Couldn't find a project for that pluginId");
-            throw new HangarApiException(HttpStatus.NOT_FOUND, "Couldn't find a project for pluginId: " + pluginId);
+            log.error("Couldn't find a project for that author/slug");
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "Couldn't find a project for: " + author + "/" + slug);
         }
         return ResponseEntity.ok(projectMembers);
     }
 
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.util.ApiScope).forProject(#pluginId))")
-    public ResponseEntity<Project> showProject(String pluginId) {
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.util.ApiScope).forProject(#author, #slug))")
+    public ResponseEntity<Project> showProject(String author, String slug) {
         boolean seeHidden = apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden);
-        Project project = projectApiService.getProject(pluginId, seeHidden, apiAuthInfo.getUserId());
+        Project project = projectApiService.getProject(author, slug, seeHidden, apiAuthInfo.getUserId());
         if (project == null) {
-            log.error("Couldn't find a project for that pluginId");
-            throw new HangarApiException(HttpStatus.NOT_FOUND, "Couldn't find a project for pluginId: " + pluginId);
+            log.error("Couldn't find a project for that author/slug");
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "Couldn't find a project for: " + author + "/" + slug);
         }
         return ResponseEntity.ok(project);
     }
 
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).IsProjectMember, T(io.papermc.hangar.controller.util.ApiScope).forProject(#pluginId))")
-    public ResponseEntity<Map<String, ProjectStatsDay>> showProjectStats(String pluginId, @NotNull @Valid String fromDate, @NotNull @Valid String toDate) {
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).IsProjectMember, T(io.papermc.hangar.controller.util.ApiScope).forProject(#author, #slug))")
+    public ResponseEntity<Map<String, ProjectStatsDay>> showProjectStats(String author, String slug, @NotNull @Valid String fromDate, @NotNull @Valid String toDate) {
         LocalDate from = ApiUtil.parseDate(fromDate);
         LocalDate to = ApiUtil.parseDate(toDate);
         if (from.isAfter(to)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "From date is after to date");
         }
-        Map<String, ProjectStatsDay> projectStats = projectApiService.getProjectStats(pluginId, from, to);
-        if (projectStats == null || projectStats.size() == 0) {
-            log.error("Couldn't find a project for that pluginId");
-            throw new HangarApiException(HttpStatus.NOT_FOUND, "Couldn't find a project for pluginId: " + pluginId);
+        Map<String, ProjectStatsDay> projectStats = projectApiService.getProjectStats(author, slug, from, to);
+        if (projectStats == null || projectStats.isEmpty()) {
+            log.error("Couldn't find a project for that author/slug");
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "Couldn't find a project for: " + author + "/" + slug);
         }
         return ResponseEntity.ok(projectStats);
     }

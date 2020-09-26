@@ -27,8 +27,8 @@ import java.util.Map;
 @RegisterBeanMapper(ProjectsTable.class)
 public interface ProjectDao {
 
-    @SqlUpdate("insert into projects (created_at, plugin_id, name, slug, owner_name, owner_id, category, description, visibility) " +
-               "values (:now, :pluginId, :name, :slug, :ownerName,:ownerId, :category, :description, :visibility)")
+    @SqlUpdate("insert into projects (created_at, name, slug, owner_name, owner_id, category, description, visibility) " +
+               "values (:now, :name, :slug, :ownerName,:ownerId, :category, :description, :visibility)")
     @Timestamped
     @GetGeneratedKeys
     ProjectsTable insert(@BindBean ProjectsTable project);
@@ -46,15 +46,6 @@ public interface ProjectDao {
     void delete(@BindBean ProjectsTable project);
 
     @SqlQuery("SELECT CASE " +
-              "WHEN owner_id = :ownerId AND name = :name THEN 'OWNER_NAME' " +
-              "WHEN owner_id = :ownerId AND slug = :slug THEN 'OWNER_SLUG' " +
-              "WHEN plugin_id = :pluginId THEN 'PLUGIN_ID' " +
-              "END " +
-              "FROM projects"
-    )
-    InvalidProjectReason checkValidProject(long ownerId, String pluginId, String name, String slug);
-
-    @SqlQuery("SELECT CASE " +
             "WHEN owner_id = :ownerId AND name = :name THEN 'OWNER_NAME' " +
             "WHEN owner_id = :ownerId AND slug = :slug THEN 'OWNER_SLUG' " +
             "END " +
@@ -63,9 +54,6 @@ public interface ProjectDao {
 
     @SqlQuery("select * from projects where lower(owner_name) = lower(:author) AND lower(slug) = lower(:slug)")
     ProjectsTable getBySlug(String author, String slug);
-
-    @SqlQuery("SELECT * FROM projects WHERE plugin_id = :pluginId")
-    ProjectsTable getByPluginId(String pluginId);
 
     @SqlQuery("SELECT * FROM projects WHERE id = :projectId")
     ProjectsTable getById(long projectId);

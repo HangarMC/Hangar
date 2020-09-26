@@ -207,6 +207,7 @@ public class ApplicationController extends HangarController {
         mv.addObject("page", page);
         mv.addObject("size", 10); //TODO sum of table sizes of all LoggedAction tables (I think)
         mv.addObject("userFilter", userFilter);
+        //TODO filter slug and author, not just slug
         mv.addObject("projectFilter", projectFilter);
         mv.addObject("versionFilter", versionFilter);
         mv.addObject("pageFilter", pageFilter);

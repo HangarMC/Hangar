@@ -14,7 +14,6 @@ public class ProjectsTable implements Visitable {
 
     private long id;
     private OffsetDateTime createdAt;
-    private String pluginId;
     private String name;
     private String slug;
     private String ownerName;
@@ -39,8 +38,7 @@ public class ProjectsTable implements Visitable {
         //
     }
 
-    public ProjectsTable(String pluginId, String name, String slug, String ownerName, long ownerId, Category category, String description, Visibility visibility) {
-        this.pluginId = pluginId;
+    public ProjectsTable(String name, String slug, String ownerName, long ownerId, Category category, String description, Visibility visibility) {
         this.name = name;
         this.slug = slug;
         this.ownerName = ownerName;
@@ -65,15 +63,6 @@ public class ProjectsTable implements Visitable {
 
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-
-    public String getPluginId() {
-        return pluginId;
-    }
-
-    public void setPluginId(String pluginId) {
-        this.pluginId = pluginId;
     }
 
 

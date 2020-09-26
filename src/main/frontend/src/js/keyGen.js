@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 //=====> EXTERNAL CONSTANTS
 
-var pluginId = window.pluginId;
+var namespace = window.namespace;
 var keyGenText = window.keyGenText;
 var keyRevokeText = window.keyRevokeText;
 
@@ -17,7 +17,7 @@ function bindKeyGen(e) {
             .toggle();
         var $this = $(this);
         $.ajax({
-            url: '/api/v1/projects/' + pluginId + '/keys/new',
+            url: '/api/v1/projects/' + namespace + '/keys/new',
             method: 'post',
             data: { 'key-type': KEY_TYPE_DEPLOYMENT },
             dataType: 'json',
@@ -47,7 +47,7 @@ function bindKeyRevoke(e) {
             .toggle();
         var $this = $(this);
         $.ajax({
-            url: '/api/v1/projects/' + pluginId + '/keys/revoke',
+            url: '/api/v1/projects/' + namespace + '/keys/revoke',
             method: 'post',
             data: { id: $(this).data('key-id') },
             success: function() {

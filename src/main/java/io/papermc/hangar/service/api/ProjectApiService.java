@@ -36,15 +36,15 @@ public class ProjectApiService {
         this.templateHelper = templateHelper;
     }
 
-    public Project getProject(String pluginId, boolean seeHidden, Long requesterId) {
-        Project project = projectApiDao.get().listProjects(pluginId, null, seeHidden, requesterId, null, null, null, null, null, 1, 0).stream().findFirst().orElse(null);
+    public Project getProject(String author, String slug, boolean seeHidden, Long requesterId) {
+        Project project = projectApiDao.get().listProjects(author, slug, seeHidden, requesterId, null, null, null, null, null, 1, 0).stream().findFirst().orElse(null);
         if (project != null) {
             setProjectIconUrl(project);
         }
         return project;
     }
 
-    public List<Project> getProjects(String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean seeHidden, Long requesterId, ProjectSortingStrategy sort, boolean orderWithRelevance, long limit, long offset) {
+    public List<Project> getProjects(String owner, String slug, List<Category> categories, List<Tag> tags, String query, boolean seeHidden, Long requesterId, ProjectSortingStrategy sort, boolean orderWithRelevance, long limit, long offset) {
         String ordering = ApiUtil.strategyOrDefault(sort).getSql();
         if (orderWithRelevance && query != null && !query.isEmpty()) {
             String relevance = "ts_rank(p.search_words, websearch_to_tsquery_postfix('english', :query)) DESC";
@@ -69,7 +69,7 @@ public class ProjectApiService {
             }
             ordering = orderingFirstHalf + relevance;
         }
-        List<Project> projects = projectApiDao.get().listProjects(pluginId, owner, seeHidden, requesterId, ordering, getCategoryNumbers(categories), getTagsNames(tags), trimQuery(query), getQueryStatement(query), limit, offset);
+        List<Project> projects = projectApiDao.get().listProjects(owner, slug, seeHidden, requesterId, ordering, getCategoryNumbers(categories), getTagsNames(tags), trimQuery(query), getQueryStatement(query), limit, offset);
         projects.forEach(this::setProjectIconUrl);
         return projects;
     }
@@ -83,16 +83,16 @@ public class ProjectApiService {
         }
     }
 
-    public long countProjects(String pluginId, List<Category> categories, List<Tag> tags, String query, String owner, boolean seeHidden, Long requesterId) {
-        return projectApiDao.get().countProjects(pluginId, owner, seeHidden, requesterId, getCategoryNumbers(categories), getTagsNames(tags), trimQuery(query), getQueryStatement(query));
+    public long countProjects(String owner, String slug, List<Category> categories, List<Tag> tags, String query, boolean seeHidden, Long requesterId) {
+        return projectApiDao.get().countProjects(owner, slug, seeHidden, requesterId, getCategoryNumbers(categories), getTagsNames(tags), trimQuery(query), getQueryStatement(query));
     }
 
-    public List<ProjectMember> getProjectMembers(String pluginId, long limit, long offset) {
-        return projectApiDao.get().projectMembers(pluginId, limit, offset);
+    public List<ProjectMember> getProjectMembers(String author, String slug, long limit, long offset) {
+        return projectApiDao.get().projectMembers(author, slug, limit, offset);
     }
 
-    public Map<String, ProjectStatsDay> getProjectStats(String pluginId, LocalDate fromDate, LocalDate toDate) {
-        return projectApiDao.get().projectStats(pluginId, fromDate, toDate);
+    public Map<String, ProjectStatsDay> getProjectStats(String author, String slug, LocalDate fromDate, LocalDate toDate) {
+        return projectApiDao.get().projectStats(author, slug, fromDate, toDate);
     }
 
     private String trimQuery(String query){

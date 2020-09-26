@@ -73,7 +73,7 @@ public class SitemapService {
 
         // add all pages of said projects
         projects.forEach(project -> {
-            List<ProjectPage> pages = pageDao.get().getPages(project.getPluginId());
+            List<ProjectPage> pages = pageDao.get().getPages(project.getOwnerName(), project.getSlug());
             pages.forEach(page -> generator.addPage(user.getName() + "/" + project.getSlug() + "/" + page.getSlug()));
         });
 

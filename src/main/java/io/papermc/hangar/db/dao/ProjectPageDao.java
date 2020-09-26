@@ -35,8 +35,8 @@ public interface ProjectPageDao {
     @SqlQuery("SELECT * FROM project_pages WHERE project_id = :projectId AND (lower(slug) = lower(:pageName) OR id = :pageId)")
     ProjectPage getPage(long projectId, String pageName, Long pageId);
 
-    @SqlQuery("SELECT pp.* FROM project_pages pp JOIN projects p ON pp.project_id = p.id WHERE p.plugin_id = :pluginId")
-    List<ProjectPage> getPages(String pluginId);
+    @SqlQuery("SELECT pp.* FROM project_pages pp JOIN projects p ON pp.project_id = p.id WHERE p.slug = :slug AND p.owner_name = :author")
+    List<ProjectPage> getPages(String author, String slug);
 
     @SqlQuery("WITH RECURSIVE parents AS (SELECT * FROM project_pages WHERE project_id = :projectId AND (name = :pageName OR id = :pageId) UNION SELECT pp.* FROM project_pages pp INNER JOIN parents par ON par.id = pp.parent_id) SELECT * FROM parents")
     List<ProjectPage> getPageParents(long projectId, String pageName, Long pageId);

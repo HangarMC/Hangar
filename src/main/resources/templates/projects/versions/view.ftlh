@@ -182,6 +182,7 @@
                     <ul class="list-group">
                         <#assign Platform=@helper["io.papermc.hangar.model.Platform"] />
                         <#-- @ftlvariable name="Platform" type="io.papermc.hangar.model.Platform" -->
+                        <#-- todo: dependency identification -->
                         <#list Platform.getPlatforms(v.dependencies?map(d -> d.pluginId)) as platform>
                             <#assign dependency=v.dependencies?filter(d -> d.pluginId == platform.dependencyId)?first />
                             <#if dependency?has_content>
@@ -207,6 +208,7 @@
                                     </a>
                                 <#else>
                                     <div class="minor">
+                                        <#-- todo: dependency identification -->
                                         ${depend.pluginId}
                                         <i class="fas fa-question-circle"
                                            title="<@spring.message "version.dependency.notOnOre" />"

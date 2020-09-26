@@ -2,23 +2,17 @@ package io.papermc.hangar.model.generated;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import io.papermc.hangar.model.Category;
+import io.papermc.hangar.model.Visibility;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
-import io.papermc.hangar.db.customtypes.JSONB;
-import io.papermc.hangar.model.Visibility;
-import io.swagger.annotations.ApiModelProperty;
-import io.papermc.hangar.model.Category;
 
 /**
  * ModelsProtocolsAPIV2Project
@@ -27,9 +21,6 @@ import io.papermc.hangar.model.Category;
 public class Project {
     @JsonProperty("created_at")
     private OffsetDateTime createdAt = null;
-
-    @JsonProperty("plugin_id")
-    private String pluginId = null;
 
     @JsonProperty("name")
     private String name = null;
@@ -87,14 +78,6 @@ public class Project {
 
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public String getPluginId() {
-        return pluginId;
-    }
-
-    public void setPluginId(String pluginId) {
-        this.pluginId = pluginId;
     }
 
     public String getName() {
@@ -265,7 +248,6 @@ public class Project {
         Project project = (Project) o;
 
         if (!Objects.equals(createdAt, project.createdAt)) return false;
-        if (!Objects.equals(pluginId, project.pluginId)) return false;
         if (!Objects.equals(name, project.name)) return false;
         if (!Objects.equals(namespace, project.namespace)) return false;
         if (!Objects.equals(promotedVersions, project.promotedVersions)) return false;
@@ -282,7 +264,6 @@ public class Project {
     @Override
     public int hashCode() {
         int result = createdAt != null ? createdAt.hashCode() : 0;
-        result = 31 * result + (pluginId != null ? pluginId.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (namespace != null ? namespace.hashCode() : 0);
         result = 31 * result + (promotedVersions != null ? promotedVersions.hashCode() : 0);
@@ -301,7 +282,6 @@ public class Project {
     public String toString() {
         return new StringJoiner(", ", Project.class.getSimpleName() + "[", "]")
                 .add("createdAt=" + createdAt)
-                .add("pluginId='" + pluginId + "'")
                 .add("name='" + name + "'")
                 .add("namespace=" + namespace)
                 .add("promotedVersions=" + promotedVersions)

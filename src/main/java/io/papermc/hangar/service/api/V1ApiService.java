@@ -69,11 +69,13 @@ public class V1ApiService {
         if (channels != null) {
             channelList = Arrays.asList(channels.split(","));
         }
-        List<ProjectVersionsTable> versions = v1ApiDao.get().getProjectVersions(channelList, projectsTable.get().getPluginId(), limit, offset, onlyPublic);
+
+        ProjectsTable projectsTable = this.projectsTable.get();
+        List<ProjectVersionsTable> versions = v1ApiDao.get().getProjectVersions(channelList, projectsTable.getOwnerName(), projectsTable.getSlug(), limit, offset, onlyPublic);
         List<Long> versionIds = versions.stream().map(ProjectVersionsTable::getId).collect(Collectors.toList());
         Map<Long, ProjectChannelsTable> versionChannels = v1ApiDao.get().getProjectVersionChannels(versionIds);
         Map<Long, List<ProjectVersionTagsTable>> versionTags = mapListToMap(v1ApiDao.get().getVersionsTags(versionIds));
-        return writeVersions(projectsTable.get(), versions, versionChannels, versionTags);
+        return writeVersions(projectsTable, versions, versionChannels, versionTags);
     }
 
     public ObjectNode getVersion() {
@@ -84,10 +86,10 @@ public class V1ApiService {
         return writeVersion(project, versionsTable, channelsTable, tags);
     }
 
-    public <V> Map<Long, List<V>> mapListToMap(List<Map.Entry<Long, V>> map){
+    public <V> Map<Long, List<V>> mapListToMap(List<Map.Entry<Long, V>> map) {
         Map<Long, List<V>> returnMap = new HashMap<>();
         map.forEach(entry -> {
-            returnMap.computeIfAbsent(entry.getKey(), userId ->new ArrayList<>()).add(entry.getValue());
+            returnMap.computeIfAbsent(entry.getKey(), userId -> new ArrayList<>()).add(entry.getValue());
         });
         return returnMap;
     }
@@ -128,11 +130,12 @@ public class V1ApiService {
         return mapListToMap(v1ApiDao.get().getVersionsTags(versionIds));
     }
 
-    public ObjectNode getVersionTags(String pluginId) {
+    public ObjectNode getVersionTags(String author, String slug) {
         ProjectVersionsTable projectVersion = projectVersionsTable.get();
         List<ProjectVersionTagsTable> tags = mapListToMap(v1ApiDao.get().getVersionsTags(List.of(projectVersion.getId()))).get(projectVersion.getId());
         ObjectNode obj = mapper.createObjectNode()
-                .put("pluginId", pluginId)
+                .put("author", author)
+                .put("slug", slug)
                 .put("version", projectVersion.getVersionString());
 
         ArrayNode tagsArray = mapper.createArrayNode();
@@ -143,9 +146,8 @@ public class V1ApiService {
 
     private ArrayNode writeVersions(ProjectsTable project, List<ProjectVersionsTable> projectVersions, Map<Long, ProjectChannelsTable> projectChannels, Map<Long, List<ProjectVersionTagsTable>> tags) {
         ArrayNode arrayNode = mapper.createArrayNode();
-        for (int i = 0; i < projectVersions.size(); i++) {
-            ProjectVersionsTable pvt = projectVersions.get(i);
-            arrayNode.add(writeVersion(project, projectVersions.get(i), projectChannels.get(pvt.getId()), tags.get(pvt.getId())));
+        for (ProjectVersionsTable pvt : projectVersions) {
+            arrayNode.add(writeVersion(project, pvt, projectChannels.get(pvt.getId()), tags.get(pvt.getId())));
         }
         return arrayNode;
     }
@@ -155,7 +157,8 @@ public class V1ApiService {
                 .put("id", v.getId())
                 .put("createdAt", v.getCreatedAt().toString())
                 .put("name", v.getVersionString())
-                .put("pluginId", project.getPluginId())
+                .put("author", project.getOwnerName())
+                .put("slug", project.getSlug())
                 .put("fileSize", v.getFileSize())
                 .put("md5", v.getHash())
                 .put("staffApproved", v.getReviewState().isChecked())
@@ -166,6 +169,7 @@ public class V1ApiService {
         objectNode.set("channel", mapper.valueToTree(channel));
         objectNode.set("dependencies", Dependency.from(v.getDependencies()).stream().collect(Collector.of(mapper::createArrayNode, (array, dep) -> {
             ObjectNode depObj = mapper.createObjectNode()
+                    //TODO dependency identification
                     .put("pluginId", dep.getPluginId())
                     .put("version", dep.getVersion());
             array.add(depObj);

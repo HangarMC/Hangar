@@ -19,7 +19,6 @@ Documentation page within Project overview.
 
 <#assign scriptsVar>
     <script> <#--@CSPNonce.attr-->
-      window.PLUGIN_ID = '${p.getProject().pluginId}';
       window.NAMESPACE = '${p.getFullSlug()}';
     </script>
     <#if editorOpen>

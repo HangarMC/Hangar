@@ -19,21 +19,21 @@ public class VersionApiService {
         this.apiVersionsDao = apiVersionsDao;
     }
 
-    public Version getVersion(String pluginId, String versionString, boolean canSeeHidden, Long userId) {
-        return apiVersionsDao.get().getVersion(pluginId, versionString, canSeeHidden, userId);
+    public Version getVersion(String author, String slug, String versionString, boolean canSeeHidden, Long userId) {
+        return apiVersionsDao.get().getVersion(author, slug, versionString, canSeeHidden, userId);
     }
 
-    public List<Version> getVersionList(String pluginId, List<String> tags, boolean canSeeHidden, Long limit, long offset, Long userId) {
-        return apiVersionsDao.get().listVersions(pluginId, tags, canSeeHidden, limit, offset, userId);
+    public List<Version> getVersionList(String author, String slug, List<String> tags, boolean canSeeHidden, Long limit, long offset, Long userId) {
+        return apiVersionsDao.get().listVersions(author, slug, tags, canSeeHidden, limit, offset, userId);
     }
 
-    public long getVersionCount(String pluginId, List<String> tags, boolean canSeeHidden, Long userId) {
-        Long count = apiVersionsDao.get().versionCount(pluginId, tags, canSeeHidden, userId);
+    public long getVersionCount(String author, String slug, List<String> tags, boolean canSeeHidden, Long userId) {
+        Long count = apiVersionsDao.get().versionCount(author, slug, tags, canSeeHidden, userId);
         return count == null ? 0 : count;
     }
 
-    public Map<String, VersionStatsDay> getVersionStats(String pluginId, String versionString, LocalDate fromDate, LocalDate toDate) {
-        return apiVersionsDao.get().versionStats(pluginId, versionString, fromDate, toDate);
+    public Map<String, VersionStatsDay> getVersionStats(String author, String slug, String versionString, LocalDate fromDate, LocalDate toDate) {
+        return apiVersionsDao.get().versionStats(author, slug, versionString, fromDate, toDate);
     }
 
 }

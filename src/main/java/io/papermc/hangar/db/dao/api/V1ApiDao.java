@@ -23,6 +23,7 @@ import java.util.Map;
 @Repository
 public interface V1ApiDao {
 
+    //TODO plugin_id
     @UseStringTemplateEngine
     @SqlQuery("SELECT p.id " +
               "     FROM home_projects p" +
@@ -55,15 +56,15 @@ public interface V1ApiDao {
               "     FROM project_versions pv" +
               "         JOIN projects p ON pv.project_id = p.id" +
               "         JOIN project_channels pc ON pv.channel_id = pc.id" +
-              "     WHERE p.plugin_id = :pluginId" +
+              "     WHERE p.slug = :slug AND p.owner_name = :author" +
               "     <if(channels)>AND lower(pc.name) IN (<channels>)<endif>" +
               "     <if(onlyPublic)>AND pv.visibility = 0<endif>" +
               "     ORDER BY pv.created_at DESC ")
-    List<ProjectVersionsTable> getProjectVersions(@BindList(onEmpty = EmptyHandling.NULL_VALUE) List<String> channels, String pluginId, long limit, long offset, @Define boolean onlyPublic);
+    List<ProjectVersionsTable> getProjectVersions(@BindList(onEmpty = EmptyHandling.NULL_VALUE) List<String> channels, String author, String slug, long limit, long offset, @Define boolean onlyPublic);
 
     @KeyColumn("owner_id")
-    @ValueColumn("plugin_id")
-    @SqlQuery("SELECT p.owner_id owner_id, p.plugin_id plugin_id FROM project_stars JOIN projects p ON p.id = project_stars.project_id WHERE p.owner_id in (<userIds>)")
+    @ValueColumn("slug")
+    @SqlQuery("SELECT p.owner_id owner_id, p.slug slug FROM project_stars JOIN projects p ON p.id = project_stars.project_id WHERE p.owner_id in (<userIds>)")
     List<Map.Entry<Long, String>> getStarredPlugins(@BindList(onEmpty = EmptyHandling.NULL_STRING) List<Long> userIds);
 
     @KeyColumn("user_id")
