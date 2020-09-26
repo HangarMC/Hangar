@@ -36,9 +36,7 @@
         <snakeyaml.version>1.26</snakeyaml.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
 
-        <!-- webjars dependencies -->
-        <webjars-locator.version>0.40</webjars-locator.version>
-        <jquery.version>3.5.1</jquery.version>
+        <apache-commons-lang.version>3.11</apache-commons-lang.version>
 
         <!-- plugins -->
         <frontend-maven-plugin.version>1.10.0</frontend-maven-plugin.version>
@@ -91,6 +89,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${apache-commons-lang.version}</version>
         </dependency>
 
         <!--SpringFox dependencies -->
@@ -177,18 +181,6 @@
             <groupId>cz.jiripinkas</groupId>
             <artifactId>jsitemapgenerator</artifactId>
             <version>${jsitemapgenerator.version}</version>
-        </dependency>
-
-        <!-- webjars -->
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>webjars-locator</artifactId>
-            <version>${webjars-locator.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars.npm</groupId>
-            <artifactId>jquery</artifactId>
-            <version>${jquery.version}</version>
         </dependency>
 
         <!-- runtime -->

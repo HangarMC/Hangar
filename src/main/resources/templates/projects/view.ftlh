@@ -21,9 +21,9 @@ Base template for Project overview.
 
           window.ACTIVE_NAV = "${active}";
         </script>
+        ${additionalScripts}
         <script type="text/javascript" src="<@hangar.url "js/projectDetail.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "js/pageEdit.js" />"></script>
-        ${additionalScripts}
     </#assign>
 
     <#assign metaVar>

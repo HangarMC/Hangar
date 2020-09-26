@@ -194,4 +194,8 @@ $(function() {
             false
         );
     }
+
+    if (window.loadDeleteManager) {
+        window.loadDeleteManager();
+    }
 });

@@ -24,11 +24,8 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <link rel="prefetch" href="<@hangar.url "css/chunk-vendors.css" />">
         <link rel="prefetch" href="<@hangar.url "css/main.css" />">
 
-
         <link rel="prefetch" href="<@hangar.url "manifest/manifest.json" />">
         <link rel="prefetch" href="<@hangar.url "js/bootstrap.js" />">
-
-        <link rel="prefetch" href="<@hangar.url "lib/jquery/dist/jquery.min.js" />"> <#--TODO this to go away-->
 
         <title>${title} | Hangar</title>
 
@@ -55,9 +52,6 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <#-- See https://goo.gl/OOhYW5 and https://goo.gl/qRE0vM -->
         <link rel="manifest" href="<@hangar.url "manifest/manifest.json" />">
         <meta name="theme-color" content="#2980B9">
-
-
-        <script type="text/javascript" src="<@hangar.url "lib/jquery/dist/jquery.min.js" />"></script> <#--TODO this to go away-->
     </head>
     <body class="site">
     <#if showHeader>
@@ -107,7 +101,6 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
                 };
                 window.ajaxSettings = {"headers": { '${_csrf.headerName}': window.csrf}};
                 window.isLoggedIn = ${headerData.hasUser()?c};
-                $.ajaxSetup(window.ajaxSettings);
             </script>
         </#if>
 
