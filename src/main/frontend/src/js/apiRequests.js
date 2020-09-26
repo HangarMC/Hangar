@@ -42,7 +42,7 @@ export function apiV2Request(url, method = 'GET', data = {}) {
   });
 }
 
-function getApiSession() {
+export function getApiSession() {
   return new Promise(function(resolve, reject) {
     let session;
     const date = new Date();

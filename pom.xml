@@ -203,11 +203,6 @@
             <artifactId>chart.js</artifactId>
             <version>${chart.js.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>swagger-ui</artifactId>
-            <version>${swagger-ui.version}</version>
-        </dependency>
 
         <!-- runtime -->
         <dependency>
