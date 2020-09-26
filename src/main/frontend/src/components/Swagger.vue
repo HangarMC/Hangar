@@ -37,7 +37,7 @@ export default {
 };
 </script>
 <style lang="scss">
-@import '~swagger-ui/dist/swagger-ui.css';
+@use '~swagger-ui/dist/swagger-ui';
 
 html {
   box-sizing: border-box;

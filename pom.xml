@@ -39,9 +39,7 @@
         <!-- webjars dependencies -->
         <webjars-locator.version>0.40</webjars-locator.version>
         <jquery.version>3.5.1</jquery.version>
-        <moment.version>2.27.0</moment.version>
         <chart.js.version>2.9.3</chart.js.version>
-        <swagger-ui.version>3.31.1</swagger-ui.version>
 
         <!-- plugins -->
         <frontend-maven-plugin.version>1.10.0</frontend-maven-plugin.version>
@@ -192,11 +190,6 @@
             <groupId>org.webjars.npm</groupId>
             <artifactId>jquery</artifactId>
             <version>${jquery.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars.npm</groupId>
-            <artifactId>moment</artifactId>
-            <version>${moment.version}</version>
         </dependency>
         <dependency>
             <groupId>org.webjars.npm</groupId>
