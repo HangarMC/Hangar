@@ -3,27 +3,23 @@ package io.papermc.hangar.model.generated;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
-
+import io.papermc.hangar.model.Category;
+import io.swagger.annotations.ApiModelProperty;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
-import io.swagger.annotations.ApiModelProperty;
-import io.papermc.hangar.model.Category;
 
 /**
  * ModelsProtocolsAPIV2CompactProject
  */
 @Validated
 public class ProjectCompact {
-    @JsonProperty("plugin_id")
-    private String pluginId = null;
 
     @JsonProperty("name")
     private String name = null;
@@ -80,27 +76,6 @@ public class ProjectCompact {
 
     @JsonProperty("visibility")
     private VisibilityEnum visibility = null;
-
-    public ProjectCompact pluginId(String pluginId) {
-        this.pluginId = pluginId;
-        return this;
-    }
-
-    /**
-     * Get pluginId
-     *
-     * @return pluginId
-     **/
-    @ApiModelProperty(required = true, value = "")
-    @NotNull
-
-    public String getPluginId() {
-        return pluginId;
-    }
-
-    public void setPluginId(String pluginId) {
-        this.pluginId = pluginId;
-    }
 
     public ProjectCompact name(String name) {
         this.name = name;
@@ -250,18 +225,17 @@ public class ProjectCompact {
             return false;
         }
         ProjectCompact projectCompact = (ProjectCompact) o;
-        return Objects.equals(this.pluginId, projectCompact.pluginId) &&
-               Objects.equals(this.name, projectCompact.name) &&
-               Objects.equals(this.namespace, projectCompact.namespace) &&
-               Objects.equals(this.promotedVersions, projectCompact.promotedVersions) &&
-               Objects.equals(this.stats, projectCompact.stats) &&
-               Objects.equals(this.category, projectCompact.category) &&
-               Objects.equals(this.visibility, projectCompact.visibility);
+        return Objects.equals(this.name, projectCompact.name) &&
+                Objects.equals(this.namespace, projectCompact.namespace) &&
+                Objects.equals(this.promotedVersions, projectCompact.promotedVersions) &&
+                Objects.equals(this.stats, projectCompact.stats) &&
+                Objects.equals(this.category, projectCompact.category) &&
+                Objects.equals(this.visibility, projectCompact.visibility);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pluginId, name, namespace, promotedVersions, stats, category, visibility);
+        return Objects.hash(name, namespace, promotedVersions, stats, category, visibility);
     }
 
     @Override
@@ -269,7 +243,6 @@ public class ProjectCompact {
         StringBuilder sb = new StringBuilder();
         sb.append("class ModelsProtocolsAPIV2CompactProject {\n");
 
-        sb.append("    pluginId: ").append(toIndentedString(pluginId)).append("\n");
         sb.append("    name: ").append(toIndentedString(name)).append("\n");
         sb.append("    namespace: ").append(toIndentedString(namespace)).append("\n");
         sb.append("    promotedVersions: ").append(toIndentedString(promotedVersions)).append("\n");

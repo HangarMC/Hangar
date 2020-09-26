@@ -39,11 +39,6 @@ Page used for uploading and creating new projects.
                             </div>
 
                             <div class="form-group">
-                                <label for="projectPluginId"><@spring.message "project.create.input.pluginId" /></label>
-                                <input type="text" id="projectPluginId" name="pluginId" class="form-control">
-                            </div>
-
-                            <div class="form-group">
                                 <label for="projectCategory"><@spring.message "project.create.input.category" /></label>
                                 <select id="projectCategory" name="category" class="form-control">
                                 <#assign Category=@helper["io.papermc.hangar.model.Category"]>

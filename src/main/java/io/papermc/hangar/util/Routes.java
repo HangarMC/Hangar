@@ -75,8 +75,8 @@ public enum Routes {
     VERSIONS_SAVE_DESCRIPTION("versions.saveDescription", Paths.VERSIONS_SAVE_DESCRIPTION, of("author", "slug", "version"), of()),
     VERSIONS_DOWNLOAD_RECOMMENDED("versions.downloadRecommended", Paths.VERSIONS_DOWNLOAD_RECOMMENDED, of("author", "slug"), of("token")),
     VERSIONS_SHOW_LIST("versions.showList", Paths.VERSIONS_SHOW_LIST, of("author", "slug"), of()),
-    VERSIONS_DOWNLOAD_JAR_BY_ID("versions.downloadJarById", Paths.VERSIONS_DOWNLOAD_JAR_BY_ID, of("pluginId", "name"), of("token")),
-    VERSIONS_DOWNLOAD_RECOMMENDED_JAR_BY_ID("versions.downloadRecommendedJarById", Paths.VERSIONS_DOWNLOAD_RECOMMENDED_JAR_BY_ID, of("pluginId"), of("token")),
+    VERSIONS_DOWNLOAD_JAR_BY_ID("versions.downloadJarById", Paths.VERSIONS_DOWNLOAD_JAR_BY_ID, of("author", "slug", "name"), of("token")),
+    VERSIONS_DOWNLOAD_RECOMMENDED_JAR_BY_ID("versions.downloadRecommendedJarById", Paths.VERSIONS_DOWNLOAD_RECOMMENDED_JAR_BY_ID, of("author", "slug"), of("token")),
     VERSIONS_UPLOAD("versions.upload", Paths.VERSIONS_UPLOAD, of("author", "slug"), of()),
     VERSIONS_CREATE_EXTERNAL_URL("versions.createExternalUrl", Paths.VERSIONS_CREATE_EXTERNAL_URL, of("author", "slug"), of()),
     VERSIONS_SOFT_DELETE("versions.softDelete", Paths.VERSIONS_SOFT_DELETE, of("author", "slug", "version"), of()),
@@ -123,19 +123,19 @@ public enum Routes {
     CHANNELS_SAVE("channels.save", Paths.CHANNELS_SAVE, of("author", "slug", "channel"), of()),
     CHANNELS_SHOW_LIST("channels.showList", Paths.CHANNELS_SHOW_LIST, of("author", "slug"), of()),
     CHANNELS_CREATE("channels.create", Paths.CHANNELS_CREATE, of("author", "slug"), of()),
-    APIV1_SHOW_VERSION("apiv1.showVersion", Paths.APIV1_SHOW_VERSION, of("pluginId", "name"), of()),
+    APIV1_SHOW_VERSION("apiv1.showVersion", Paths.APIV1_SHOW_VERSION, of("author", "slug", "name"), of()),
     APIV1_LIST_PROJECTS("apiv1.listProjects", Paths.APIV1_LIST_PROJECTS, of(), of("categories", "sort", "q", "limit", "offset")),
     APIV1_LIST_USERS("apiv1.listUsers", Paths.APIV1_LIST_USERS, of(), of("limit", "offset")),
-    APIV1_LIST_VERSIONS("apiv1.listVersions", Paths.APIV1_LIST_VERSIONS, of("pluginId"), of("channels", "limit", "offset")),
-    APIV1_REVOKE_KEY("apiv1.revokeKey", Paths.APIV1_REVOKE_KEY, of("pluginId"), of()),
-    APIV1_CREATE_KEY("apiv1.createKey", Paths.APIV1_CREATE_KEY, of("pluginId"), of()),
-    APIV1_SHOW_PROJECT("apiv1.showProject", Paths.APIV1_SHOW_PROJECT, of("pluginId"), of()),
+    APIV1_LIST_VERSIONS("apiv1.listVersions", Paths.APIV1_LIST_VERSIONS, of("author", "slug"), of("channels", "limit", "offset")),
+    APIV1_REVOKE_KEY("apiv1.revokeKey", Paths.APIV1_REVOKE_KEY, of("author", "slug"), of()),
+    APIV1_CREATE_KEY("apiv1.createKey", Paths.APIV1_CREATE_KEY, of("author", "slug"), of()),
+    APIV1_SHOW_PROJECT("apiv1.showProject", Paths.APIV1_SHOW_PROJECT, of("author", "slug"), of()),
     APIV1_SYNC_SSO("apiv1.syncSso", Paths.APIV1_SYNC_SSO, of(), of()),
     APIV1_TAG_COLOR("apiv1.tagColor", Paths.APIV1_TAG_COLOR, of("tagId"), of()),
     APIV1_SHOW_STATUS_Z("apiv1.showStatusZ", Paths.APIV1_SHOW_STATUS_Z, of(), of()),
     APIV1_SHOW_USER("apiv1.showUser", Paths.APIV1_SHOW_USER, of("user"), of()),
-    APIV1_LIST_PAGES("apiv1.listPages", Paths.APIV1_LIST_PAGES, of("pluginId"), of("parentId")),
-    APIV1_DEPLOY_VERSION("apiv1.deployVersion", Paths.APIV1_DEPLOY_VERSION, of("pluginId", "name"), of()),
+    APIV1_LIST_PAGES("apiv1.listPages", Paths.APIV1_LIST_PAGES, of("author", "slug"), of("parentId")),
+    APIV1_DEPLOY_VERSION("apiv1.deployVersion", Paths.APIV1_DEPLOY_VERSION, of("author", "slugt", "name"), of()),
     APIV1_LIST_TAGS("apiv1.listTags", Paths.APIV1_LIST_TAGS, of("plugin", "versionName"), of()),
     APIV1_LIST_PLATFORMS("apiv1.listPlatforms", Paths.APIV1_LIST_PLATFORMS, of(), of());
 
@@ -284,8 +284,8 @@ public enum Routes {
         public static final String VERSIONS_SAVE_DESCRIPTION = "/{author}/{slug}/versions/{version}/save";
         public static final String VERSIONS_DOWNLOAD_RECOMMENDED = "/{author}/{slug}/versions/recommended/download";
         public static final String VERSIONS_SHOW_LIST = "/{author}/{slug}/versions";
-        public static final String VERSIONS_DOWNLOAD_JAR_BY_ID = "/api/project/{pluginId}/versions/{name}/download";
-        public static final String VERSIONS_DOWNLOAD_RECOMMENDED_JAR_BY_ID = "/api/project/{pluginId}/versions/recommended/download";
+        public static final String VERSIONS_DOWNLOAD_JAR_BY_ID = "/api/project/{author}/{slug}/versions/{name}/download";
+        public static final String VERSIONS_DOWNLOAD_RECOMMENDED_JAR_BY_ID = "/api/project/{author}/{slug}/versions/recommended/download";
         public static final String VERSIONS_UPLOAD = "/{author}/{slug}/versions/new/upload";
         public static final String VERSIONS_CREATE_EXTERNAL_URL = "/{author}/{slug}/versions/new/create";
         public static final String VERSIONS_SOFT_DELETE = "/{author}/{slug}/versions/{version}/delete";
@@ -338,20 +338,20 @@ public enum Routes {
         public static final String CHANNELS_SHOW_LIST = "/{author}/{slug}/channels";
         public static final String CHANNELS_CREATE = "/{author}/{slug}/channels";
 
-        public static final String APIV1_SHOW_VERSION = "/api/v1/projects/{pluginId}/versions/{name}";
+        public static final String APIV1_SHOW_VERSION = "/api/v1/projects/{author}/{slug}/versions/{name}";
         public static final String APIV1_LIST_PROJECTS = "/api/v1/projects";
         public static final String APIV1_LIST_USERS = "/api/v1/users";
-        public static final String APIV1_LIST_VERSIONS = "/api/v1/projects/{pluginId}/versions";
-        public static final String APIV1_REVOKE_KEY = "/api/v1/projects/{pluginId}/keys/revoke";
-        public static final String APIV1_CREATE_KEY = "/api/v1/projects/{pluginId}/keys/new";
-        public static final String APIV1_SHOW_PROJECT = "/api/v1/projects/{pluginId}";
+        public static final String APIV1_LIST_VERSIONS = "/api/v1/projects/{author}/{slug}/versions";
+        public static final String APIV1_REVOKE_KEY = "/api/v1/projects/{author}/{slug}/keys/revoke";
+        public static final String APIV1_CREATE_KEY = "/api/v1/projects/{author}/{slug}/keys/new";
+        public static final String APIV1_SHOW_PROJECT = "/api/v1/projects/{author}/{slug}";
         public static final String APIV1_SYNC_SSO = "/api/sync_sso";
         public static final String APIV1_TAG_COLOR = "/api/v1/tags/{tagId}";
         public static final String APIV1_SHOW_STATUS_Z = "/statusz";
         public static final String APIV1_SHOW_USER = "/api/v1/users/{user}";
-        public static final String APIV1_LIST_PAGES = "/api/v1/projects/{pluginId}/pages";
-        public static final String APIV1_DEPLOY_VERSION = "/api/v1/projects/{pluginId}/versions/{name}";
-        public static final String APIV1_LIST_TAGS = "/api/v1/projects/{plugin}/tags/{versionName}";
+        public static final String APIV1_LIST_PAGES = "/api/v1/projects/{author}/{slug}/pages";
+        public static final String APIV1_DEPLOY_VERSION = "/api/v1/projects/{author}/{slug}/versions/{name}";
+        public static final String APIV1_LIST_TAGS = "/api/v1/projects/{author}/{slug}/tags/{versionName}";
         public static final String APIV1_LIST_PLATFORMS = "/api/v1/platforms";
 
         private Paths() { }

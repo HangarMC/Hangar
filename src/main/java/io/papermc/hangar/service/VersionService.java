@@ -67,14 +67,7 @@ public class VersionService extends HangarService {
     @RequestScope
     public Supplier<ProjectVersionsTable> projectVersionsTable() {
         Map<String, String> pathParams = RequestUtil.getPathParams(request);
-        if (pathParams.keySet().containsAll(Set.of("pluginId", "name"))) {
-            ProjectsTable project = projectService.projectsTable().get();
-            ProjectVersionsTable pvt = this.getVersion(project.getId(), pathParams.get("name"));
-            if (pvt == null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            }
-            return () -> pvt;
-        } else if (pathParams.keySet().containsAll(Set.of("author", "slug", "version"))) {
+        if (pathParams.keySet().containsAll(Set.of("author", "slug", "version"))) {
             ProjectVersionsTable pvt = this.getVersion(pathParams.get("author"), pathParams.get("slug"), pathParams.get("version"));
             if (pvt == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -171,16 +164,17 @@ public class VersionService extends HangarService {
             }
         }
 
-        Map<Dependency, ProjectsTable> dependencies = Dependency.from(projectVersion.getDependencies()).stream().collect(HashMap::new, (m, v) -> {
+        //TODO dependency identification
+        /*Map<Dependency, ProjectsTable> dependencies = Dependency.from(projectVersion.getDependencies()).stream().collect(HashMap::new, (m, v) -> {
             ProjectsTable project = projectDao.get().getByPluginId(v.getPluginId());
             m.put(v, project);
-        }, HashMap::putAll);
+        }, HashMap::putAll);*/
         return new VersionData(
                 projectData,
                 projectVersion,
                 projectChannel,
                 approvedBy,
-                dependencies
+                Map.of() //TODO
         );
     }
 

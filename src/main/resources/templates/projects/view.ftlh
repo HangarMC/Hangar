@@ -176,7 +176,7 @@ Base template for Project overview.
                                         </a>
                                     </#if>
                                     <#if headerData.globalPerm(Permission.ViewLogs)>
-                                        <a href="${Routes.SHOW_LOG.getRouteUrl("", "", p.project.pluginId, "", "", "", "")}" class="dropdown-item">
+                                        <a href="${Routes.SHOW_LOG.getRouteUrl("", "", p.project.slug, "", "", "", "")}" class="dropdown-item">
                                                 User Action Logs
                                         </a>
                                     </#if>

@@ -83,10 +83,6 @@ public class PluginUploadService {
 
     public PendingVersion processSubsequentPluginUpload(MultipartFile file, UsersTable owner, ProjectsTable project) throws HangarException {
         PluginFileWithData plugin = processPluginUpload(file, owner);
-        // TODO not sure what to do w/plugin id, that isn't stored in the metadata for the file
-//        if (!plugin.getData().getId().equals(project.getPluginId())) {
-//            throw new HangarException("error.version.invalidPluginId");
-//        }
         if (plugin.getData().getVersion() != null && plugin.getData().getVersion().contains("recommended")) {
             throw new HangarException("error.version.illegalVersion");
         }
@@ -94,7 +90,7 @@ public class PluginUploadService {
 
         ProjectChannelsTable channel = channelService.getFirstChannel(project);
 
-        PendingVersion pendingVersion = startVersion(plugin, project.getPluginId(), project.getId(), project.getForumSync(), channel.getName());
+        PendingVersion pendingVersion = startVersion(plugin, project.getId(), project.getForumSync(), channel.getName());
 
         boolean exists = versionService.exists(pendingVersion);
         if (exists && hangarConfig.projects.isFileValidate()) {
@@ -104,12 +100,8 @@ public class PluginUploadService {
         return pendingVersion;
     }
 
-    private PendingVersion startVersion(PluginFileWithData plugin, String pluginId, long projectId, boolean forumSync, String channelName) {
+    private PendingVersion startVersion(PluginFileWithData plugin, long projectId, boolean forumSync, String channelName) {
         PluginFileData metaData = plugin.getData();
-        // TODO same issue here w/plugin id, its not stored in metadata
-//        if (!metaData.getId().equals(pluginId)) {
-//            throw new HangarException("error.plugin.invalidPluginId");
-//        }
         if (metaData.getVersion() == null || metaData.getVersion().isBlank()) {
             throw new HangarException("error.plugin.noVersion");
         }

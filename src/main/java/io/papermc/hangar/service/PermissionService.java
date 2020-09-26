@@ -39,18 +39,18 @@ public class PermissionService {
         return addDefaults(permissionsDao.get().getProjectPermission(userId, author, slug));
     }
 
-    public Permission getProjectPermissions(Long userId, String pluginId) {
+    public Permission getProjectPermissions(Long userId, String author, String slug) {
         if (userId == null) {
             return Permission.None;
         }
-        return addDefaults(permissionsDao.get().getProjectPermission(userId, pluginId));
+        return addDefaults(permissionsDao.get().getProjectPermission(userId, author, slug));
     }
 
-    public Permission getProjectPermissions(UsersTable usersTable, String pluginId) {
+    public Permission getProjectPermissions(UsersTable usersTable, String author, String slug) {
         if (usersTable == null) {
             return Permission.None;
         }
-        return addDefaults(permissionsDao.get().getProjectPermission(usersTable.getId(), pluginId));
+        return addDefaults(permissionsDao.get().getProjectPermission(usersTable.getId(), author, slug));
     }
 
     public Permission getOrganizationPermissions(long userId, String orgName) {

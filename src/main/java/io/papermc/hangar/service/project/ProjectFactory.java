@@ -3,7 +3,6 @@ package io.papermc.hangar.service.project;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
-import io.papermc.hangar.db.dao.GeneralDao;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.ProjectChannelDao;
 import io.papermc.hangar.db.dao.ProjectDao;
@@ -35,7 +34,6 @@ import io.papermc.hangar.service.pluginupload.PendingVersion;
 import io.papermc.hangar.service.pluginupload.ProjectFiles;
 import io.papermc.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,10 +60,9 @@ public class ProjectFactory {
     private final NotificationService notificationService;
     private final UserActionLogService userActionLogService;
     private final ProjectFiles projectFiles;
-    private final HangarDao<GeneralDao> generalDao;
 
     @Autowired
-    public ProjectFactory(HangarConfig hangarConfig, HangarDao<ProjectChannelDao> projectChannelDao, HangarDao<ProjectDao> projectDao, HangarDao<ProjectPageDao> projectPagesDao, HangarDao<ProjectVersionDao> projectVersionDao, RoleService roleService, UserService userService, ProjectService projectService, ChannelService channelService, VersionService versionService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles, HangarDao<GeneralDao> generalDao) {
+    public ProjectFactory(HangarConfig hangarConfig, HangarDao<ProjectChannelDao> projectChannelDao, HangarDao<ProjectDao> projectDao, HangarDao<ProjectPageDao> projectPagesDao, HangarDao<ProjectVersionDao> projectVersionDao, RoleService roleService, UserService userService, ProjectService projectService, ChannelService channelService, VersionService versionService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles) {
         this.hangarConfig = hangarConfig;
         this.projectChannelDao = projectChannelDao;
         this.projectDao = projectDao;
@@ -78,7 +75,6 @@ public class ProjectFactory {
         this.notificationService = notificationService;
         this.userActionLogService = userActionLogService;
         this.projectFiles = projectFiles;
-        this.generalDao = generalDao;
     }
 
     public String getUploadError(UsersTable user) {
@@ -89,16 +85,16 @@ public class ProjectFactory {
         }
     }
 
-    public ProjectsTable createProject(ProjectOwner ownerUser, String name, String pluginId, Category category, String description) {
+    public ProjectsTable createProject(ProjectOwner ownerUser, String name, Category category, String description) {
         String slug = StringUtils.slugify(name);
-        ProjectsTable projectsTable = new ProjectsTable(pluginId, name, slug, ownerUser.getName(), ownerUser.getUserId(), category, description, Visibility.NEW);
+        ProjectsTable projectsTable = new ProjectsTable(name, slug, ownerUser.getName(), ownerUser.getUserId(), category, description, Visibility.NEW);
 
         ProjectChannelsTable channelsTable = new ProjectChannelsTable(hangarConfig.channels.getNameDefault(), hangarConfig.channels.getColorDefault(), -1, false);
 
         String content = "# " + name + "\n\n" + hangarConfig.pages.home.getMessage();
-        ProjectPagesTable pagesTable = new ProjectPage( -1, hangarConfig.pages.home.getName(), StringUtils.slugify(hangarConfig.pages.home.getName()), content, false, null);
+        ProjectPagesTable pagesTable = new ProjectPage(-1, hangarConfig.pages.home.getName(), StringUtils.slugify(hangarConfig.pages.home.getName()), content, false, null);
 
-        checkProjectAvailability(ownerUser, name, pluginId);
+        checkProjectAvailability(ownerUser, name);
 
         projectsTable = projectDao.get().insert(projectsTable);
         channelsTable.setProjectId(projectsTable.getId());
@@ -127,20 +123,20 @@ public class ProjectFactory {
         projectDao.get().delete(projectsTable);
     }
 
-    public void checkProjectAvailability(UsersTable author, String page) {
-        checkProjectAvailability(author, page, null);
-    }
-
-    public void checkProjectAvailability(ProjectOwner author, String page, @Nullable String pluginId) {
+    public void checkProjectAvailability(ProjectOwner author, String page) {
         InvalidProjectReason invalidProjectReason;
-        if (!hangarConfig.isValidProjectName(page)) invalidProjectReason = InvalidProjectReason.INVALID_NAME;
-        else if (pluginId != null) invalidProjectReason = projectDao.get().checkValidProject(author.getUserId(), pluginId, page, StringUtils.slugify(page));
-        else invalidProjectReason = projectDao.get().checkNamespace(author.getUserId(), page, StringUtils.slugify(page));
-        if (invalidProjectReason != null) throw new HangarException(invalidProjectReason.key);
+        if (!hangarConfig.isValidProjectName(page)) {
+            invalidProjectReason = InvalidProjectReason.INVALID_NAME;
+        } else {
+            invalidProjectReason = projectDao.get().checkNamespace(author.getUserId(), page, StringUtils.slugify(page));
+        }
+
+        if (invalidProjectReason != null) {
+            throw new HangarException(invalidProjectReason.key);
+        }
     }
 
     public ProjectVersionsTable createVersion(HttpServletRequest request, ProjectData project, PendingVersion pendingVersion) {
-
         ProjectChannelsTable channel = projectChannelDao.get().getProjectChannel(project.getProject().getId(), pendingVersion.getChannelName(), null);
 
         if (versionService.exists(pendingVersion) && hangarConfig.projects.isFileValidate()) {
@@ -149,6 +145,7 @@ public class ProjectFactory {
 
         ProjectVersionsTable version = projectVersionDao.get().insert(new ProjectVersionsTable(
                 pendingVersion.getVersionString(),
+                //TODO dependency identification
                 pendingVersion.getDependencies().stream().map(d -> {
                     if (d.getVersion() == null || d.getVersion().isBlank()) {
                         return d.getPluginId();
@@ -180,7 +177,7 @@ public class ProjectFactory {
                 NotificationType.NEW_PROJECT_VERSION,
                 new String[]{"notification.project.newVersion", project.getProject().getName(), version.getVersionString()},
                 project.getNamespace() + "/versions/" + version.getVersionString()
-                ));
+        ));
         if (pendingVersion.getPlugin() != null) {
             try {
                 uploadPlugin(project, pendingVersion.getPlugin(), version);
@@ -239,7 +236,6 @@ public class ProjectFactory {
     }
 
     public enum InvalidProjectReason {
-        PLUGIN_ID("error.project.invalidPluginId"),
         OWNER_NAME("error.project.nameExists"),
         OWNER_SLUG("error.project.slugExists"),
         INVALID_NAME("error.project.invalidName");

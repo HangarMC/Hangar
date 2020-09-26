@@ -64,11 +64,9 @@ create table projects
         constraint projects_pkey
             primary key,
     created_at timestamp with time zone not null,
-    plugin_id varchar(255) not null
-        constraint projects_plugin_id_key
-            unique,
     name varchar(255) not null,
     slug varchar(255) not null,
+        CONSTRAINT projects_namespace_unique UNIQUE (name, slug),
     owner_name varchar(255) not null
         constraint projects_owner_name_fkey
             references users (name)
@@ -188,11 +186,12 @@ create table project_versions
         constraint versions_channel_id_fkey
             references project_channels
             on delete cascade,
-    file_size bigint default 1 not null
+    file_size bigint default 1
         constraint versions_file_size_check
             check (file_size > 0),
-    hash varchar(32) not null,
-    file_name varchar(255) not null,
+    hash varchar(32),
+    file_name varchar(255),
+    external_url varchar(255),
     reviewer_id bigint
         constraint project_versions_reviewer_id_fkey
             references users
@@ -209,6 +208,18 @@ create table project_versions
 );
 
 alter table project_versions owner to hangar;
+
+create table platform_versions
+(
+    id         BIGSERIAL                NOT NULL
+        CONSTRAINT platform_versions_pkey PRIMARY KEY,
+    created_at timestamp with time zone NOT NULL,
+    platform   bigint                   NOT NULL,
+    version    varchar(255)             NOT NULL,
+        CONSTRAINT platform_version_unique UNIQUE (platform, version)
+);
+
+alter table platform_versions owner to hangar;
 
 alter table projects
     add constraint projects_recommended_version_id_fkey
@@ -931,7 +942,6 @@ SELECT p.id,
        p.category,
        p.description,
        p.name,
-       p.plugin_id,
        p.created_at,
        max(lv.created_at)                        AS last_updated,
        to_jsonb(ARRAY(SELECT jsonb_build_object('version_string', tags.version_string, 'tag_name', tags.tag_name,
@@ -942,8 +952,7 @@ SELECT p.id,
                       LIMIT 5))                  AS promoted_versions,
        ((setweight((to_tsvector('english'::regconfig, p.name::text) ||
                     to_tsvector('english'::regconfig, regexp_replace(p.name::text, '([a-z])([A-Z]+)'::text,
-                                                                     '\1_\2'::text, 'g'::text))) ||
-                   to_tsvector('english'::regconfig, p.plugin_id::text), 'A'::"char") ||
+                                                                     '\1_\2'::text, 'g'::text)))) ||
          setweight(to_tsvector('english'::regconfig, p.description::text), 'B'::"char")) ||
         setweight(to_tsvector('english'::regconfig, array_to_string(p.keywords, ' '::text)), 'C'::"char")) || setweight(
                    to_tsvector('english'::regconfig, p.owner_name::text) || to_tsvector('english'::regconfig,
@@ -1022,7 +1031,7 @@ GROUP BY om.organization_id, om.user_id;
 
 alter table organization_trust owner to hangar;
 
-create view v_logged_actions(id, created_at, user_id, user_name, address, action, context_type, new_state, old_state, p_id, p_plugin_id, p_slug, p_owner_name, pv_id, pv_version_string, pp_id, pp_name, pp_slug, s_id, s_name) as
+create view v_logged_actions(id, created_at, user_id, user_name, address, action, context_type, new_state, old_state, p_id, p_slug, p_owner_name, pv_id, pv_version_string, pp_id, pp_name, pp_slug, s_id, s_name) as
 SELECT a.id,
        a.created_at,
        a.user_id,
@@ -1033,7 +1042,6 @@ SELECT a.id,
        a.new_state,
        a.old_state,
        p.id                         AS p_id,
-       p.plugin_id                  AS p_plugin_id,
        p.slug                       AS p_slug,
        ou.name                      AS p_owner_name,
        NULL::bigint                 AS pv_id,
@@ -1058,7 +1066,6 @@ SELECT a.id,
        a.new_state,
        a.old_state,
        p.id                    AS p_id,
-       p.plugin_id             AS p_plugin_id,
        p.slug                  AS p_slug,
        ou.name                 AS p_owner_name,
        pv.id                   AS pv_id,
@@ -1084,7 +1091,6 @@ SELECT a.id,
        a.new_state,
        a.old_state,
        p.id                    AS p_id,
-       p.plugin_id             AS p_plugin_id,
        p.slug                  AS p_slug,
        ou.name                 AS p_owner_name,
        NULL::bigint            AS pv_id,
@@ -1110,7 +1116,6 @@ SELECT a.id,
        a.new_state,
        a.old_state,
        NULL::bigint            AS p_id,
-       NULL::character varying AS p_plugin_id,
        NULL::character varying AS p_slug,
        NULL::character varying AS p_owner_name,
        NULL::bigint            AS pv_id,
@@ -1134,7 +1139,6 @@ SELECT a.id,
        a.new_state,
        a.old_state,
        NULL::bigint            AS p_id,
-       NULL::character varying AS p_plugin_id,
        NULL::character varying AS p_slug,
        NULL::character varying AS p_owner_name,
        NULL::bigint            AS pv_id,

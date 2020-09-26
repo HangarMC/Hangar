@@ -1,1 +1,0 @@
-ALTER TABLE project_versions ADD COLUMN external_url varchar(255);

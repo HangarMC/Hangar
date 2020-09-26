@@ -10,7 +10,6 @@ Versions page within Project overview.
     <script type="text/javascript" src="<@hangar.url "js/userSearch.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "js/memberList.js" />"></script>
     <script>
-            window.PLUGIN_ID = '${p.project.pluginId}';
             window.PROJECT_OWNER = '${p.project.ownerName}';
             window.PROJECT_SLUG = '${p.project.slug}';
     </script>

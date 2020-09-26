@@ -135,9 +135,9 @@ public class VersionsController extends HangarController {
         this.projectData = projectData;
     }
 
-    @GetMapping(value = "/api/project/{pluginId}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping(value = "/api/project/{author}/{slug}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
-    public Object downloadRecommendedJarById(@PathVariable String pluginId, @RequestParam(required = false) String token) {
+    public Object downloadRecommendedJarById(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String token) {
         ProjectsTable project = projectsTable.get();
         ProjectVersionsTable recommendedVersion = versionService.getRecommendedVersion(project);
         if (recommendedVersion == null) {
@@ -147,9 +147,9 @@ public class VersionsController extends HangarController {
         }
     }
 
-    @GetMapping(value = "/api/project/{pluginId}/versions/{name}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping(value = "/api/project/{author}/{slug}/versions/{name}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
-    public Object downloadJarById(@PathVariable String pluginId, @PathVariable String name, @RequestParam Optional<String> token) {
+    public Object downloadJarById(@PathVariable String author, @PathVariable String slug, @PathVariable String name, @RequestParam Optional<String> token) {
         ProjectsTable project = projectsTable.get();
         ProjectVersionsTable pvt = projectVersionsTable.get();
         if (pvt.isExternal()) {
@@ -277,7 +277,6 @@ public class VersionsController extends HangarController {
         ProjectData projData = projectData.get();
         ModelAndView mav = new ModelAndView("projects/versions/create");
         mav.addObject("projectName", projData.getProject().getName());
-        mav.addObject("pluginId", projData.getProject().getPluginId());
         mav.addObject("projectSlug", slug);
         mav.addObject("ownerName", author);
         mav.addObject("projectDescription", projData.getProject().getDescription());
@@ -528,7 +527,7 @@ public class VersionsController extends HangarController {
         if (api) {
             removeAddWarnings(address, expiration, token);
             headers.setContentType(MediaType.APPLICATION_JSON);
-            String downloadUrl = versionsTable.getExternalUrl() != null ? versionsTable.getExternalUrl() : Routes.VERSIONS_DOWNLOAD_JAR_BY_ID.getRouteUrl(project.getPluginId(), versionsTable.getVersionString(), token);
+            String downloadUrl = versionsTable.getExternalUrl() != null ? versionsTable.getExternalUrl() : Routes.VERSIONS_DOWNLOAD_JAR_BY_ID.getRouteUrl(project.getOwnerName(), project.getSlug(), versionsTable.getVersionString(), token);
             ObjectNode objectNode = mapper.createObjectNode()
                     .put("message", apiMsg)
                     .put("post", Routes.VERSIONS_CONFIRM_DOWNLOAD.getRouteUrl(author, slug, version, downloadType.ordinal() + "", token, null))

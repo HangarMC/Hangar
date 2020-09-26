@@ -27,8 +27,7 @@ public interface UsersApiDao {
     @UseStringTemplateEngine
     @RegisterBeanMapper(ProjectCompact.class)
     @RegisterColumnMapper(PromotedVersionMapper.class)
-    @SqlQuery("SELECT p.plugin_id," +
-              " p.name," +
+    @SqlQuery("SELECT p.name," +
               " p.owner_name \"owner\"," +
               " p.slug," +
               " p.promoted_versions," +
@@ -53,8 +52,7 @@ public interface UsersApiDao {
     @UseStringTemplateEngine
     @RegisterBeanMapper(ProjectCompact.class)
     @RegisterColumnMapper(PromotedVersionMapper.class)
-    @SqlQuery("SELECT p.plugin_id," +
-            " p.name," +
+    @SqlQuery("SELECT p.name," +
             " p.owner_name \"owner\"," +
             " p.slug," +
             " p.promoted_versions," +

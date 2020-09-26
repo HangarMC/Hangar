@@ -118,17 +118,17 @@ public class Apiv1Controller extends HangarController {
         return ResponseEntity.ok(writeProjects(sortedProjects));
     }
 
-    @GetMapping("/v1/projects/{pluginId}")
-    public ResponseEntity<ObjectNode> showProject(@PathVariable String pluginId) {
+    @GetMapping("/v1/projects/{author}/{slug}")
+    public ResponseEntity<ObjectNode> showProject(@PathVariable String author, @PathVariable String slug) {
         ProjectsTable project = projectsTable.get();
         return ResponseEntity.ok((ObjectNode) writeProjects(List.of(project)).get(0));
     }
 
-    @PreAuthorize("@authenticationService.authV1ApiRequest(T(io.papermc.hangar.model.Permission).EditApiKeys, T(io.papermc.hangar.controller.util.ApiScope).forProject(#pluginId))")
+    @PreAuthorize("@authenticationService.authV1ApiRequest(T(io.papermc.hangar.model.Permission).EditApiKeys, T(io.papermc.hangar.controller.util.ApiScope).forProject(#author, #slug))")
     @UserLock
     @Secured("ROLE_USER")
-    @PostMapping("/v1/projects/{pluginId}/keys/new")
-    public ResponseEntity<ObjectNode> createKey(@PathVariable String pluginId) {
+    @PostMapping("/v1/projects/{author}/{slug}/keys/new")
+    public ResponseEntity<ObjectNode> createKey(@PathVariable String author, @PathVariable String slug) {
         ProjectsTable project = projectsTable.get();
         ProjectApiKeysTable projectApiKeysTable = apiKeyService.createProjectApiKey(new ProjectApiKeysTable(
                 project.getId(),
@@ -144,12 +144,12 @@ public class Apiv1Controller extends HangarController {
         return ResponseEntity.ok(apiKeyObj);
     }
 
-    @PreAuthorize("@authenticationService.authV1ApiRequest(T(io.papermc.hangar.model.Permission).EditApiKeys, T(io.papermc.hangar.controller.util.ApiScope).forProject(#pluginId))")
+    @PreAuthorize("@authenticationService.authV1ApiRequest(T(io.papermc.hangar.model.Permission).EditApiKeys, T(io.papermc.hangar.controller.util.ApiScope).forProject(#author, #slug))")
     @UserLock
     @Secured("ROLE_USER")
-    @PostMapping("/v1/projects/{pluginId}/keys/revoke")
+    @PostMapping("/v1/projects/{author}/{slug}/keys/revoke")
     @ResponseStatus(HttpStatus.OK)
-    public void revokeKey(@PathVariable String pluginId, @RequestParam long id) {
+    public void revokeKey(@PathVariable String author, @PathVariable String slug, @RequestParam long id) {
         ProjectApiKeysTable projectApiKey = apiKeyService.getProjectKey(id);
         ProjectsTable project = projectsTable.get();
         if (projectApiKey == null || project.getId() != projectApiKey.getId()) {
@@ -159,9 +159,9 @@ public class Apiv1Controller extends HangarController {
         userActionLogService.project(request, LoggedActionType.PROJECT_SETTINGS_CHANGED.with(ProjectContext.of(project.getId())), getCurrentUser().getName() + " removed an ApiKey", "");
     }
 
-    @GetMapping(value = "/v1/projects/{pluginId}/pages", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ArrayNode> listPages(@PathVariable String pluginId, @RequestParam(required = false) Long parentId) {
-        List<ProjectPage> pages = pagesSerivce.getPages(pluginId);
+    @GetMapping(value = "/v1/projects/{author}/{slug}/pages", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ArrayNode> listPages(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) Long parentId) {
+        List<ProjectPage> pages = pagesSerivce.getPages(author, slug);
         ArrayNode pagesArray = mapper.createArrayNode();
         pages.stream().filter(p -> {
             if (parentId != null) {
@@ -170,13 +170,13 @@ public class Apiv1Controller extends HangarController {
             return true;
         }).forEach(page -> {
             ObjectNode pageObj = mapper.createObjectNode();
-            String[] slug = page.getSlug().split("/");
+            String[] pageSlug = page.getSlug().split("/");
             pageObj
                     .put("createdAt", page.getCreatedAt().toString())
                     .put("id", page.getId())
                     .put("name", page.getName())
                     .put("parentId", page.getParentId())
-                    .put("slug", slug[slug.length - 1])
+                    .put("slug", pageSlug[pageSlug.length - 1])
                     .put("fullSlug", page.getSlug());
             pagesArray.add(pageObj);
         });
@@ -184,28 +184,28 @@ public class Apiv1Controller extends HangarController {
         return ResponseEntity.ok(pagesArray);
     }
 
-    @GetMapping("/v1/projects/{pluginId}/versions")
-    public ResponseEntity<ArrayNode> listVersions(@PathVariable String pluginId, @RequestParam(required = false) String channels, @RequestParam(required = false) Long limit, @RequestParam(required = false) Long offset) {
+    @GetMapping("/v1/projects/{author}/{slug}/versions")
+    public ResponseEntity<ArrayNode> listVersions(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String channels, @RequestParam(required = false) Long limit, @RequestParam(required = false) Long offset) {
         long realLimit = ApiUtil.limitOrDefault(limit, hangarConfig.projects.getInitLoad());
         long realOffset = ApiUtil.offsetOrZero(offset);
 
         return ResponseEntity.ok(v1ApiService.getVersionList(channels, realLimit, realOffset, true));
     }
 
-    @GetMapping("/v1/projects/{pluginId}/versions/{name:.*}")
-    public ResponseEntity<ObjectNode> showVersion(@PathVariable String pluginId, @PathVariable String name) {
+    @GetMapping("/v1/projects/{author}/{slug}/versions/{name:.*}")
+    public ResponseEntity<ObjectNode> showVersion(@PathVariable String author, @PathVariable String slug, @PathVariable String name) {
         return ResponseEntity.ok(v1ApiService.getVersion());
     }
 
     @Secured("ROLE_USER")
-    @PostMapping("/v1/projects/{pluginId}/versions/{name:.*}")
-    public Object deployVersion(@PathVariable Object pluginId, @PathVariable Object name) {
+    @PostMapping("/v1/projects/{author}/{slug}/versions/{name:.*}")
+    public Object deployVersion(@PathVariable String author, @PathVariable String slug, @PathVariable String name) {
         return null; // TODO implement deployVersion request controller.
     }
 
-    @GetMapping("/v1/projects/{pluginId}/tags/{name:.*}")
-    public ResponseEntity<ObjectNode> listTags(@PathVariable String pluginId, @PathVariable String name) {
-        return ResponseEntity.ok(v1ApiService.getVersionTags(pluginId));
+    @GetMapping("/v1/projects/{author}/{slug}/tags/{name:.*}")
+    public ResponseEntity<ObjectNode> listTags(@PathVariable String author, @PathVariable String slug, @PathVariable String name) {
+        return ResponseEntity.ok(v1ApiService.getVersionTags(author, slug));
     }
 
     @GetMapping("/v1/tags/{tagId}")
@@ -284,10 +284,10 @@ public class Apiv1Controller extends HangarController {
 
         projectsTables.forEach(project -> {
             ObjectNode projectObj = mapper.createObjectNode();
-            projectObj.put("pluginId", project.getPluginId())
+            projectObj.put("author", project.getOwnerName())
+                    .put("slug", project.getSlug())
                     .put("createdAt", project.getCreatedAt().toString())
                     .put("name", project.getName())
-                    .put("owner", project.getOwnerName())
                     .put("description", project.getDescription())
                     .put("href", project.getOwnerName() + "/" + project.getSlug())
                     .put("views", 0)
@@ -314,9 +314,10 @@ public class Apiv1Controller extends HangarController {
         List<ProjectVersionTagsTable> tags = vTags.getOrDefault(version.getId(), new ArrayList<>());
 
         objectNode.put("id", version.getId())
+                .put("author", project.getOwnerName())
+                .put("slug", project.getSlug())
                 .put("createdAt", version.getCreatedAt().toString())
                 .put("name", version.getVersionString())
-                .put("pluginId", project.getPluginId())
                 .put("fileSize", version.getFileSize())
                 .put("md5", version.getHash())
                 .put("staffApproved", version.getReviewState().isChecked())
@@ -327,7 +328,8 @@ public class Apiv1Controller extends HangarController {
         objectNode.set("channel", mapper.valueToTree(channel));
         objectNode.set("dependencies", Dependency.from(version.getDependencies()).stream().collect(Collector.of(mapper::createArrayNode, (array, dep) -> {
             ObjectNode depObj = mapper.createObjectNode()
-                    .put("pluginId", dep.getPluginId())
+                    // TODO dependency identification
+                    .put("author", dep.getPluginId())
                     .put("version", dep.getVersion());
             array.add(depObj);
         }, (ignored1, ignored2) -> {

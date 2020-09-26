@@ -118,7 +118,6 @@ export default {
         return {
             page: 1,
             limit: 10,
-            pluginId: window.PLUGIN_ID,
             projectOwner: window.PROJECT_OWNER,
             projectSlug: window.PROJECT_SLUG,
             versions: [],
@@ -129,7 +128,7 @@ export default {
     },
     created() {
         this.update();
-        apiV2Request('permissions', 'GET', { pluginId: window.PLUGIN_ID }).then(response => {
+        apiV2Request('permissions', 'GET', { author: window.PROJECT_OWNER, slug: window.PROJECT_SLUG }).then(response => {
             this.canUpload = response.permissions.includes('create_version');
         });
         this.$watch(
@@ -142,7 +141,7 @@ export default {
     },
     methods: {
         update() {
-            apiV2Request('projects/' + this.pluginId + '/versions', 'GET', {
+            apiV2Request('projects/' + this.projectOwner + '/' + this.projectSlug + '/versions', 'GET', {
                 limit: this.limit,
                 offset: this.offset
             }).then(response => {

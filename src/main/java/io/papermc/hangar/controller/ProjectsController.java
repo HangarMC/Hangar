@@ -143,7 +143,6 @@ public class ProjectsController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping(value = "/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public Object createProject(@RequestParam("name") String name,
-                                @RequestParam("pluginId") String pluginId,
                                 @RequestParam("category") String cat,
                                 @RequestParam("description") String description,
                                 @RequestParam("owner") long owner) {
@@ -162,11 +161,7 @@ public class ProjectsController extends HangarController {
             AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, "error.project.categoryNotFound");
             return fillModel(mav);
         }
-        if (!ID_PATTERN.matcher(pluginId).matches()) {
-            ModelAndView mav = showCreator();
-            AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, "error.project.invalidPluginId");
-            return fillModel(mav);
-        }
+
         ProjectOwner ownerUser;
         if (owner != curUser.getId()) {
             List<OrganizationsTable> orgs = userService.getOrganizationsUserCanUploadTo(curUser);
@@ -183,7 +178,7 @@ public class ProjectsController extends HangarController {
         // create project
         ProjectsTable project;
         try {
-            project = projectFactory.createProject(ownerUser, name, pluginId, category, description);
+            project = projectFactory.createProject(ownerUser, name, category, description);
         } catch (HangarException ex) {
             ModelAndView mav = showCreator();
             AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, ex.getMessageKey());

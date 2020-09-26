@@ -14,6 +14,7 @@
 
 <#assign scriptsVar>
     <script <#--@CSPNonce.attr -->>
+      window.NAMESPACE = "${p.getFullSlug()}";
       window.PROJECT_NAME = "${p.project.name}";
       window.PROJECT_OWNER = "${p.project.ownerName}";
       window.PROJECT_SLUG = "${p.project.slug}";

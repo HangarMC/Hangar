@@ -30,8 +30,8 @@ public class PagesSerivce {
         return projectPageDao.get().getPage(projectId, StringUtils.slugify(pageName), null);
     }
 
-    public List<ProjectPage> getPages(String pluginId) {
-        return projectPageDao.get().getPages(pluginId);
+    public List<ProjectPage> getPages(String author, String slug) {
+        return projectPageDao.get().getPages(author, slug);
     }
 
     /**

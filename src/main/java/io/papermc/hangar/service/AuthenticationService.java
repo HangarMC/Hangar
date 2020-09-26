@@ -132,15 +132,15 @@ public class AuthenticationService extends HangarService {
             case GLOBAL:
                 return permissionService.getGlobalPermissions(userId).has(perms);
             case PROJECT:
-                if (StringUtils.isEmpty(apiScope.getValue())) {
-                    throw new IllegalArgumentException("Must have passed the pluginId to apiAction");
+                if (StringUtils.isEmpty(apiScope.getOwner()) || StringUtils.isEmpty(apiScope.getSlug())) {
+                    throw new IllegalArgumentException("Must have passed the owner and slug to apiAction");
                 }
-                return permissionService.getProjectPermissions(userId, apiScope.getValue()).has(perms);
+                return permissionService.getProjectPermissions(userId, apiScope.getOwner(), apiScope.getSlug()).has(perms);
             case ORGANIZATION:
-                if (StringUtils.isEmpty(apiScope.getValue())) {
-                    throw new IllegalArgumentException("Must have passed the pluginId to apiAction");
+                if (StringUtils.isEmpty(apiScope.getOwner())) {
+                    throw new IllegalArgumentException("Must have passed the owner to apiAction");
                 }
-                return permissionService.getOrganizationPermissions(userId, apiScope.getValue()).has(perms);
+                return permissionService.getOrganizationPermissions(userId, apiScope.getOwner()).has(perms);
             default:
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -199,7 +199,7 @@ public class AuthenticationService extends HangarService {
     }
 
     public ApiSessionResponse authenticateUser(long userId) {
-        OffsetDateTime sessionExpiration = AuthUtils.expiration( hangarConfig.api.session.getExpiration(), null);
+        OffsetDateTime sessionExpiration = AuthUtils.expiration(hangarConfig.api.session.getExpiration(), null);
         String uuidToken = UUID.randomUUID().toString();
 
         ApiSessionsTable apiSession = new ApiSessionsTable(uuidToken, null, userId, sessionExpiration);

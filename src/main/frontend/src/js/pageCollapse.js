@@ -14,7 +14,7 @@ function bindExpand(e) {
         var $this = $(this);
         $.ajax({
             method: 'get',
-            url: '/api/v1/projects/' + PLUGIN_ID + '/pages?parentId=' + pageId,
+            url: '/api/v1/projects/' + namespace + '/pages?parentId=' + pageId,
             dataType: 'json',
             success: function(childPages) {
                 console.log(childPages);

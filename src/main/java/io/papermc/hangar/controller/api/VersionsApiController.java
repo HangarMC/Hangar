@@ -49,7 +49,7 @@ public class VersionsApiController implements VersionsApi {
     }
 
     @Override
-    public ResponseEntity<Version> deployVersion(DeployVersionInfo pluginInfo, MultipartFile pluginFile, String pluginId) {
+    public ResponseEntity<Version> deployVersion(DeployVersionInfo pluginInfo, MultipartFile pluginFile, String author, String slug) {
         try {
             return new ResponseEntity<>(objectMapper.readValue("{\n  \"visibility\" : \"public\",\n  \"stats\" : {\n    \"downloads\" : 0\n  },\n  \"author\" : \"author\",\n  \"file_info\" : {\n    \"size_bytes\" : 6,\n    \"md_5_hash\" : \"md_5_hash\",\n    \"name\" : \"name\"\n  },\n  \"name\" : \"name\",\n  \"created_at\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"description\" : \"description\",\n  \"dependencies\" : [ {\n    \"plugin_id\" : \"plugin_id\",\n    \"version\" : \"version\"\n  }, {\n    \"plugin_id\" : \"plugin_id\",\n    \"version\" : \"version\"\n  } ],\n  \"review_state\" : \"unreviewed\",\n  \"tags\" : [ {\n    \"data\" : \"data\",\n    \"color\" : {\n      \"background\" : \"background\",\n      \"foreground\" : \"foreground\"\n    },\n    \"name\" : \"name\"\n  }, {\n    \"data\" : \"data\",\n    \"color\" : {\n      \"background\" : \"background\",\n      \"foreground\" : \"foreground\"\n    },\n    \"name\" : \"name\"\n  } ]\n}", Version.class), HttpStatus.OK); // TODO Implement me
         } catch (IOException e) {
@@ -59,19 +59,19 @@ public class VersionsApiController implements VersionsApi {
     }
 
 
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.util.ApiScope).forProject(#pluginId))")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.util.ApiScope).forProject(#author, #slug))")
     @Override
-    public ResponseEntity<PaginatedVersionResult> listVersions(String pluginId, List<String> tags, Long limit, Long offset) {
-        List<Version> versions = versionApiService.getVersionList(pluginId, tags, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), ApiUtil.limitOrDefault(limit, hangarConfig.projects.getInitVersionLoad()), ApiUtil.offsetOrZero(offset), ApiUtil.userIdOrNull(apiAuthInfo.getUser()));
-        long versionCount = versionApiService.getVersionCount(pluginId, tags, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), ApiUtil.userIdOrNull(apiAuthInfo.getUser()));
+    public ResponseEntity<PaginatedVersionResult> listVersions(String author, String slug, List<String> tags, Long limit, Long offset) {
+        List<Version> versions = versionApiService.getVersionList(author, slug, tags, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), ApiUtil.limitOrDefault(limit, hangarConfig.projects.getInitVersionLoad()), ApiUtil.offsetOrZero(offset), ApiUtil.userIdOrNull(apiAuthInfo.getUser()));
+        long versionCount = versionApiService.getVersionCount(author, slug, tags, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), ApiUtil.userIdOrNull(apiAuthInfo.getUser()));
         return new ResponseEntity<>(new PaginatedVersionResult().result(versions).pagination(new Pagination().limit(limit).offset(offset).count(versionCount)), HttpStatus.OK);
     }
 
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.util.ApiScope).forProject(#pluginId))")
-    public ResponseEntity<Version> showVersion(String pluginId, String name) {
-        Version version = versionApiService.getVersion(pluginId, name, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), ApiUtil.userIdOrNull(apiAuthInfo.getUser()));
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.util.ApiScope).forProject(#author, #slug))")
+    public ResponseEntity<Version> showVersion(String author, String slug, String name) {
+        Version version = versionApiService.getVersion(author, slug, name, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), ApiUtil.userIdOrNull(apiAuthInfo.getUser()));
         if (version == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         } else {
@@ -81,14 +81,14 @@ public class VersionsApiController implements VersionsApi {
 
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).IsProjectMember, T(io.papermc.hangar.controller.util.ApiScope).forProject(#pluginId))")
-    public ResponseEntity<Map<String, VersionStatsDay>> showVersionStats(String pluginId, String version, @NotNull @Valid String fromDate, @NotNull @Valid String toDate) {
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).IsProjectMember, T(io.papermc.hangar.controller.util.ApiScope).forProject(#author, #slug))")
+    public ResponseEntity<Map<String, VersionStatsDay>> showVersionStats(String author, String slug, String version, @NotNull @Valid String fromDate, @NotNull @Valid String toDate) {
         LocalDate from = ApiUtil.parseDate(fromDate);
         LocalDate to = ApiUtil.parseDate(toDate);
         if (from.isAfter(to)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "From date is after to date");
         }
-        Map<String, VersionStatsDay> versionStats = versionApiService.getVersionStats(pluginId, version, from, to);
+        Map<String, VersionStatsDay> versionStats = versionApiService.getVersionStats(author, slug, version, from, to);
         if (versionStats.isEmpty()) {
             throw new HangarApiException(HttpStatus.NOT_FOUND); // TODO Not found might not be right here?
         }
