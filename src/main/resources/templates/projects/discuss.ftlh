@@ -16,7 +16,7 @@ Discussion page within Project overview.
         };
     </script>
     <script type="text/javascript" src="<@hangar.url "js/projectDiscuss.js" />"></script>
-    <script <#--@CSPNonce.attr-->>$(function() { $('.btn-edit').click(); });</script>
+    <#--<script>$(function() { $('.btn-edit').click(); });</script>--> <#-- TODO jquery was removed from this scope -->
 </#assign>
 
 <@view.view p=p sp=sp active="#discussion" additionalScripts=scriptsVar>

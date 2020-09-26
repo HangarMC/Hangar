@@ -39,4 +39,15 @@ $(function() {
         name.val(text);
       }
     });
+
+  // Basically, hides the form value if its empty. Makes the controller simpler
+  $('#save').submit(function() {
+    $(':input[form=save]')
+      .filter(function() {
+        return !this.value;
+      })
+      .attr('disabled', true);
+
+    return true;
+  });
 });

@@ -4,10 +4,12 @@ import { decodeHtml, numberWithCommas, toggleSpinner } from '@/utils';
 
 //=====> EXTERNAL CONSTANTS
 
-const PROJECT_OWNER = PROJECT_OWNER;
-const PROJECT_SLUG = PROJECT_SLUG;
-const PROJECT_ID = PROJECT_ID;
+const PROJECT_OWNER = window.PROJECT_OWNER;
+const PROJECT_SLUG = window.PROJECT_SLUG;
+const PROJECT_ID = window.PROJECT_ID;
 const ALREADY_STARRED = window.ALREADY_STARRED;
+
+const ACTIVE_NAV = window.ACTIVE_NAV;
 
 //=====> HELPER FUNCTIONS
 
@@ -202,6 +204,11 @@ function initBtnEdit() {
 }
 
 //=====> DOCUMENT READY
+if (ACTIVE_NAV) {
+  $('.nav')
+    .find(ACTIVE_NAV)
+    .addClass('active');
+}
 
 $(function() {
   initFlagList();
