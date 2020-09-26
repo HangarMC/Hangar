@@ -5,5 +5,5 @@ import PlatformVersionTable from '@/PlatformVersionTable';
 axios.defaults.headers.post[window.csrfInfo.headerName] = window.csrfInfo.token;
 
 createApp(PlatformVersionTable, {
-  platforms: window.PLATFORMS
+    platforms: window.PLATFORMS
 }).mount('#platform-version-table');
