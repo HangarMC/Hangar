@@ -7,9 +7,8 @@
 
 <#assign scriptsVar>
     <script <#--@CSPNonce.attr-->>
-      PROJECT_OWNER = '${p.project.ownerName}';
-      PROJECT_SLUG = '${p.project.slug}';
-      window.initChannelManager = true;
+      window.PROJECT_OWNER = '${p.project.ownerName}';
+      window.PROJECT_SLUG = '${p.project.slug}';
       window.DEFAULT_HEX = '${config.channels.colorDefault.hex}';
       window.CHANNEL_CREATE_ROUTE = '${Routes.CHANNELS_CREATE.getRouteUrl(p.project.ownerName, p.project.slug)}';
     </script>
@@ -63,7 +62,7 @@
                                 </td>
                             </#if>
                             <script <#--@CSPNonce.attr-->>
-                                /*$(function () {
+                                $(function () {
                                     initChannelDelete('#channel-delete-${channel.id}', '${channel.name}', ${versions});
                                     initChannelManager(
                                         "#channel-edit-${channel.id}", "${channel.name}", "${channel.color.hex}",
@@ -71,7 +70,7 @@
                                                         p.project.ownerName, p.project.slug, channel.name)}",
                                         "post", "Save changes", ${channel.isNonReviewed?string('true', 'false')}
                                     );
-                                });*/
+                                });
                             </script>
                         </tr>
                         </#list>
