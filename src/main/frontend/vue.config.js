@@ -13,8 +13,7 @@ module.exports = {
     },
     chainWebpack: config => {
         // clear default
-        config.entry('app').clear();
-        config.entry('app').add(path.resolve(entryDir, 'dummy.js'));
+        config.entryPoints.delete('app');
 
         config.entry('main').add(path.resolve(sourceDir, 'scss', 'main.scss'));
         // iterate thru entry points and add them to webpack
