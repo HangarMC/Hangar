@@ -4,6 +4,7 @@ services:
   db:
     build: ./db
     environment:
+      POSTGRES_MULTIPLE_DATABASES: hangar,hangarauth
       POSTGRES_USER: root
       POSTGRES_PASSWORD: 'changeme'
       POSTGRES_DB: hangar
