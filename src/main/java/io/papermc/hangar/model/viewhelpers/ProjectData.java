@@ -62,7 +62,7 @@ public class ProjectData extends JoinableData<UserProjectRolesTable, ProjectsTab
     }
 
     public String getFullSlug() {
-        return "/" + getProject().getOwnerName() + "/" + getProject().getSlug();
+        return getProject().getOwnerName() + "/" + getProject().getSlug();
     }
 
     public UsersTable getProjectOwner() {

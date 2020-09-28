@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 //=====> EXTERNAL CONSTANTS
 
-var namespace = window.namespace;
+var namespace = window.NAMESPACE;
 var keyGenText = window.keyGenText;
 var keyRevokeText = window.keyRevokeText;
 

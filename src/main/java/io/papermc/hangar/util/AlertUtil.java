@@ -38,6 +38,11 @@ public class AlertUtil {
         return mav;
     }
 
+    public static ModelAndView showAlert(ModelAndView mav, AlertType alertType, String alertMessage, String... args) {
+        applyAlert(mav.getModelMap(), alertType, alertMessage, (Object[]) args);
+        return mav;
+    }
+
     public static RedirectAttributes showAlert(RedirectAttributes attributes, AlertType alertType, String alertMsg, String...args) {
         attributes.addFlashAttribute(TYPE, alertType);
         attributes.addFlashAttribute(MSG, alertMsg);

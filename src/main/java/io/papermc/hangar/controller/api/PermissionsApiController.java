@@ -1,6 +1,5 @@
 package io.papermc.hangar.controller.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.papermc.hangar.model.ApiAuthInfo;
 import io.papermc.hangar.model.NamedPermission;
 import io.papermc.hangar.model.Permission;
@@ -15,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.function.BiPredicate;
 
@@ -24,17 +22,12 @@ import java.util.function.BiPredicate;
 public class PermissionsApiController implements PermissionsApi {
 
     private final PermissionService permissionService;
-    private final ObjectMapper objectMapper;
-
     private final ApiAuthInfo apiAuthInfo;
-    private final HttpServletRequest request;
 
     @Autowired
-    public PermissionsApiController(PermissionService permissionService, ObjectMapper objectMapper, ApiAuthInfo apiAuthInfo, HttpServletRequest request) {
+    public PermissionsApiController(PermissionService permissionService, ApiAuthInfo apiAuthInfo) {
         this.permissionService = permissionService;
-        this.objectMapper = objectMapper;
         this.apiAuthInfo = apiAuthInfo;
-        this.request = request;
     }
 
     @Override
@@ -60,7 +53,7 @@ public class PermissionsApiController implements PermissionsApi {
             Permission perms = permissionService.getProjectPermissions(apiAuthInfo.getUser(), author, slug);
             return new ImmutablePair<>(PermissionType.PROJECT, perms);
         } else {
-            Permission perms = permissionService.getOrganizationPermissions(apiAuthInfo.getUser(), slug);
+            Permission perms = permissionService.getOrganizationPermissions(apiAuthInfo.getUser(), author);
             return new ImmutablePair<>(PermissionType.ORGANIZATION, perms);
         }
     }

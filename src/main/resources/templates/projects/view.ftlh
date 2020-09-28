@@ -43,7 +43,7 @@ Base template for Project overview.
                         <div class="alert alert-danger" role="alert" style="margin: 0.2em 0 0 0">
                             <#if p.visibility == Visibility.NEEDSCHANGES>
                                 <#if sp.perms(Permission.EditPage)>
-                                    <a class="btn btn-success float-right" href="${p.fullSlug}/manage/sendforapproval">Send for approval</a>
+                                    <a class="btn btn-success float-right" href="/${p.fullSlug}/manage/sendforapproval">Send for approval</a>
                                 </#if>
                                 <strong><@spring.message "visibility.notice." + p.visibility.getName() /></strong>
                                 <br>

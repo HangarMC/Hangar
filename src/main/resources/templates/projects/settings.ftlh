@@ -18,7 +18,6 @@
       window.PROJECT_NAME = "${p.project.name}";
       window.PROJECT_OWNER = "${p.project.ownerName}";
       window.PROJECT_SLUG = "${p.project.slug}";
-      window.pluginId = "${p.project.pluginId}";
       window.keyGenText = "<@spring.message "project.settings.genKey" />";
       window.keyRevokeText = "<@spring.message "project.settings.revokeKey" />";
     </script>

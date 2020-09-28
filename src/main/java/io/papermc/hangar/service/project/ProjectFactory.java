@@ -138,7 +138,6 @@ public class ProjectFactory {
 
     public ProjectVersionsTable createVersion(HttpServletRequest request, ProjectData project, PendingVersion pendingVersion) {
         ProjectChannelsTable channel = projectChannelDao.get().getProjectChannel(project.getProject().getId(), pendingVersion.getChannelName(), null);
-
         if (versionService.exists(pendingVersion) && hangarConfig.projects.isFileValidate()) {
             throw new HangarException("error.version.duplicate");
         }
@@ -163,6 +162,7 @@ public class ProjectFactory {
                 pendingVersion.isCreateForumPost(),
                 pendingVersion.getExternalUrl()
         ));
+
         if (pendingVersion.getPlugin() != null) {
             pendingVersion.getPlugin().getData().createTags(version.getId(), versionService); // TODO not sure what this is for
         }
@@ -178,6 +178,7 @@ public class ProjectFactory {
                 new String[]{"notification.project.newVersion", project.getProject().getName(), version.getVersionString()},
                 project.getNamespace() + "/versions/" + version.getVersionString()
         ));
+
         if (pendingVersion.getPlugin() != null) {
             try {
                 uploadPlugin(project, pendingVersion.getPlugin(), version);
@@ -187,13 +188,11 @@ public class ProjectFactory {
             }
         }
 
-
         // first project upload
         if (project.getVisibility() == Visibility.NEW) {
             projectService.changeVisibility(project.getProject(), Visibility.PUBLIC, "First upload");
             userActionLogService.project(request, LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(project.getProject().getId())), Visibility.PUBLIC.getName(), Visibility.NEW.getName());
             // TODO Add forum job
-
         }
 
         projectService.refreshHomePage();
@@ -206,13 +205,12 @@ public class ProjectFactory {
         Path oldPath = plugin.getPath();
         Path versionDir = projectFiles.getVersionDir(project.getProjectOwner().getName(), project.getProject().getName(), version.getVersionString());
         Path newPath = versionDir.resolve(oldPath.getFileName());
-
         if (Files.notExists(newPath)) {
             Files.createDirectories(newPath.getParent());
         }
+
         Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING); // TODO maybe remove the replace_existing in prod?
         Files.deleteIfExists(oldPath);
-
         if (Files.notExists(newPath)) {
             throw new HangarException("error.plugin.fileName");
         }

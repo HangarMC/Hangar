@@ -19,9 +19,8 @@ class RouteHelperTest {
         assertEquals("/staff?sort=ASC&page=1", Routes.getRouteUrlOf("users.showStaff", "ASC", "1"));
         assertEquals("/staff?page=1", Routes.getRouteUrlOf("users.showStaff", "", "1"));
         assertEquals("/staff?sort=ASC", Routes.getRouteUrlOf("users.showStaff", "ASC", ""));
-        assertEquals("/api/v1/projects/Essentials/tags/1.33.7", Routes.getRouteUrlOf("apiv1.listTags", "Essentials", "1.33.7"));
-        assertEquals("/api/v1/projects/Essentials/pages?parentId=2", Routes.getRouteUrlOf("apiv1.listPages", "Essentials", "2"));
-        assertEquals("/api/v1/projects/Essentials/pages", Routes.getRouteUrlOf("apiv1.listPages", "Essentials", ""));
-
+        assertEquals("/api/v1/projects/Essentials/EssentialsX/tags/1.33.7", Routes.getRouteUrlOf("apiv1.listTags", "Essentials", "EssentialsX", "1.33.7"));
+        assertEquals("/api/v1/projects/Essentials/EssentialsX/pages?parentId=2", Routes.getRouteUrlOf("apiv1.listPages", "Essentials", "EssentialsX", "2"));
+        assertEquals("/api/v1/projects/Essentials/EssentialsX/pages", Routes.getRouteUrlOf("apiv1.listPages", "Essentials", "EssentialsX", ""));
     }
 }
