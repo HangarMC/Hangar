@@ -2,7 +2,6 @@ import $ from 'jquery';
 
 //=====> EXTERNAL CONSTANTS
 
-var PLUGIN_ID = window.PLUGIN_ID;
 var NAMESPACE = window.NAMESPACE;
 
 //=====> HELPER FUNCTIONS
@@ -14,7 +13,7 @@ function bindExpand(e) {
         var $this = $(this);
         $.ajax({
             method: 'get',
-            url: '/api/v1/projects/' + namespace + '/pages?parentId=' + pageId,
+            url: '/api/v1/projects/' + NAMESPACE + '/pages?parentId=' + pageId,
             dataType: 'json',
             success: function(childPages) {
                 console.log(childPages);

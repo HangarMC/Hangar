@@ -23,12 +23,11 @@ import java.util.Map;
 @Repository
 public interface V1ApiDao {
 
-    //TODO plugin_id
     @UseStringTemplateEngine
     @SqlQuery("SELECT p.id " +
               "     FROM home_projects p" +
               "     WHERE true" +
-              "         <if(q)>AND p.name ILIKE '<q>' OR p.description ILIKE '<q>' OR p.owner_name ILIKE '<q>' OR p.plugin_id ILIKE '<q>' <endif>" +
+              "         <if(q)>AND p.name ILIKE '<q>' OR p.description ILIKE '<q>' OR p.owner_name ILIKE '<q>' <endif>" +
               "         <if(categories)>AND p.category IN (<categories>) <endif>" +
               "     ORDER BY :strategyFragment" +
               "     LIMIT :limit OFFSET :offset")
@@ -38,9 +37,9 @@ public interface V1ApiDao {
     @RegisterBeanMapper(ProjectsTable.class)
     @SqlQuery("SELECT pr.* " +
             "     FROM home_projects p" +
-            "     JOIN projects pr ON p.plugin_id = pr.plugin_id" +
+            "     JOIN projects pr ON p.project_id = pr.project_id" +
             "     WHERE true" +
-            "         <if(q)>AND p.name ILIKE '<q>' OR p.description ILIKE '<q>' OR p.owner_name ILIKE '<q>' OR p.plugin_id ILIKE '<q>' <endif>" +
+            "         <if(q)>AND p.name ILIKE '<q>' OR p.description ILIKE '<q>' OR p.owner_name ILIKE '<q>' <endif>" +
             "         <if(categories)>AND p.category IN (<categories>) <endif>" +
             "     ORDER BY :strategyFragment" +
             "     LIMIT :limit OFFSET :offset")

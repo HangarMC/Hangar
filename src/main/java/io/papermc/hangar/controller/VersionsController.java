@@ -225,7 +225,7 @@ public class VersionsController extends HangarController {
         return _showCreator(author, slug, pendingVersion);
     }
 
-    private final Pattern URL_PATTERN = Pattern.compile("(https?://(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?://(?:www\\.|(?!www))[a-zA-Z0-9]+\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]+\\.[^\\s]{2,})");
+    private static final Pattern URL_PATTERN = Pattern.compile("(https?://(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?://(?:www\\.|(?!www))[a-zA-Z0-9]+\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]+\\.[^\\s]{2,})");
 
     @ProjectPermission(NamedPermission.CREATE_VERSION)
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
@@ -370,9 +370,8 @@ public class VersionsController extends HangarController {
         if (channelOptional.isEmpty()) {
             if (projectChannels.size() >= hangarConfig.projects.getMaxChannels()) {
                 alertMsg = "error.channel.maxChannels";
-                alertArgs = new String[] {String.valueOf(hangarConfig.projects.getMaxChannels())};
-            }
-            else if (projectChannels.stream().anyMatch(ch -> ch.getColor() == channelColor)) {
+                alertArgs = new String[]{String.valueOf(hangarConfig.projects.getMaxChannels())};
+            } else if (projectChannels.stream().anyMatch(ch -> ch.getColor() == channelColor)) {
                 alertMsg = "error.channel.duplicateColor";
             }
             if (alertMsg != null) {
@@ -518,9 +517,9 @@ public class VersionsController extends HangarController {
         String curlInstruction;
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
         if (csrfToken == null) {
-            curlInstruction = messageSource.getMessage("version.download.confirm.curl.nocsrf", new String[] {Routes.VERSIONS_CONFIRM_DOWNLOAD.getRouteUrl(author, slug, version, downloadType.ordinal() + "", token, null)}, LocaleContextHolder.getLocale());
+            curlInstruction = messageSource.getMessage("version.download.confirm.curl.nocsrf", new String[]{Routes.VERSIONS_CONFIRM_DOWNLOAD.getRouteUrl(author, slug, version, downloadType.ordinal() + "", token, null)}, LocaleContextHolder.getLocale());
         } else {
-            curlInstruction = messageSource.getMessage("version.download.confirm.curl", new String[] {Routes.VERSIONS_CONFIRM_DOWNLOAD.getRouteUrl(author, slug, version, downloadType.ordinal() + "", token, null), csrfToken.getToken()}, LocaleContextHolder.getLocale());
+            curlInstruction = messageSource.getMessage("version.download.confirm.curl", new String[]{Routes.VERSIONS_CONFIRM_DOWNLOAD.getRouteUrl(author, slug, version, downloadType.ordinal() + "", token, null), csrfToken.getToken()}, LocaleContextHolder.getLocale());
         }
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"README.txt\"");

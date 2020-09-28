@@ -135,8 +135,8 @@ public enum Routes {
     APIV1_SHOW_STATUS_Z("apiv1.showStatusZ", Paths.APIV1_SHOW_STATUS_Z, of(), of()),
     APIV1_SHOW_USER("apiv1.showUser", Paths.APIV1_SHOW_USER, of("user"), of()),
     APIV1_LIST_PAGES("apiv1.listPages", Paths.APIV1_LIST_PAGES, of("author", "slug"), of("parentId")),
-    APIV1_DEPLOY_VERSION("apiv1.deployVersion", Paths.APIV1_DEPLOY_VERSION, of("author", "slugt", "name"), of()),
-    APIV1_LIST_TAGS("apiv1.listTags", Paths.APIV1_LIST_TAGS, of("plugin", "versionName"), of()),
+    APIV1_DEPLOY_VERSION("apiv1.deployVersion", Paths.APIV1_DEPLOY_VERSION, of("author", "slug", "name"), of()),
+    APIV1_LIST_TAGS("apiv1.listTags", Paths.APIV1_LIST_TAGS, of("author", "slug", "versionName"), of()),
     APIV1_LIST_PLATFORMS("apiv1.listPlatforms", Paths.APIV1_LIST_PLATFORMS, of(), of());
 
     private static final Map<String, Routes> ROUTES = new HashMap<>();

@@ -63,7 +63,6 @@ public class AuthenticationService extends HangarService {
     private final HangarDao<ApiKeyDao> apiKeyDao;
     private final AuthenticationManager authenticationManager;
     private final RoleService roleService;
-    private final SessionService sessionService;
     private final PermissionService permissionService;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
@@ -74,7 +73,7 @@ public class AuthenticationService extends HangarService {
     private static final Pattern API_KEY_PATTERN = Pattern.compile("(" + UUID_REGEX + ").(" + UUID_REGEX + ")");
 
     @Autowired
-    public AuthenticationService(HttpServletRequest request, ApiAuthInfo apiAuthInfo, HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, AuthenticationManager authenticationManager, RoleService roleService, SessionService sessionService, PermissionService permissionService, RestTemplate restTemplate, ObjectMapper objectMapper, Supplier<Optional<UsersTable>> currentUser) {
+    public AuthenticationService(HttpServletRequest request, ApiAuthInfo apiAuthInfo, HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService, RestTemplate restTemplate, ObjectMapper objectMapper, Supplier<Optional<UsersTable>> currentUser) {
         this.request = request;
         this.apiAuthInfo = apiAuthInfo;
         this.hangarConfig = hangarConfig;
@@ -83,7 +82,6 @@ public class AuthenticationService extends HangarService {
         this.apiKeyDao = apiKeyDao;
         this.authenticationManager = authenticationManager;
         this.roleService = roleService;
-        this.sessionService = sessionService;
         this.permissionService = permissionService;
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;

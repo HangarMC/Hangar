@@ -87,15 +87,14 @@ public class PluginUploadService {
             throw new HangarException("error.version.illegalVersion");
         }
 
-
         ProjectChannelsTable channel = channelService.getFirstChannel(project);
-
         PendingVersion pendingVersion = startVersion(plugin, project.getId(), project.getForumSync(), channel.getName());
 
         boolean exists = versionService.exists(pendingVersion);
         if (exists && hangarConfig.projects.isFileValidate()) {
             throw new HangarException("error.version.duplicate");
         }
+
         cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).put(project.getId() + "/" + pendingVersion.getVersionString(), pendingVersion);
         return pendingVersion;
     }

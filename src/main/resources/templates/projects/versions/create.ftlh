@@ -37,7 +37,7 @@
 
                 <div class="create-body card-body">
                     <div class="minor create-blurb">
-                        <span><@spring.messageArgs code="version.create.info" args=[projectName, projectSlug] /></span>
+                        <span><@spring.messageArgs code="version.create.info" args=[projectName] /></span>
                     </div>
 
                     <#if pending??>
@@ -203,18 +203,7 @@
                             <@alertFile.alertFile />
                     </@form.form>
 
-                    <#if !pending??>
-                        <@form.form action=Routes.VERSIONS_CREATE_EXTERNAL_URL.getRouteUrl(ownerName, projectSlug) method="POST" id="form-url-upload" class="form-inline">
-                            <@csrf.formField />
-                            <div class="input-group float-right" style="width: 50%">
-                                <input type="text" class="form-control" id="externalUrl" name="externalUrl" placeholder="<@spring.message "version.create.externalUrl" />" style="width: 70%">
-                                <div class="input-group-append">
-                                    <button class="btn btn-info" type="submit">Create Version</button>
-                                </div>
-
-                            </div>
-                        </@form.form>
-                    <#else>
+                    <#if pending??>
                         <#assign version = pending>
                         <#assign formAction>
                             <#if version.versionString??>${Routes.VERSIONS_PUBLISH.getRouteUrl(ownerName, projectSlug, version.versionString)}<#else>${Routes.VERSIONS_PUBLISH_URL.getRouteUrl(ownerName, projectSlug)}</#if>
@@ -224,8 +213,17 @@
                             <input type="hidden" class="channel-color-input" name="channel-color-input" value="${config.channels.colorDefault.hex}">
                             <div><input type="submit" name="create" value="<@spring.message "version.create.publish" />" class="btn btn-primary"></div>
                         </@form.form>
+                    <#else>
+                        <@form.form action=Routes.VERSIONS_CREATE_EXTERNAL_URL.getRouteUrl(ownerName, projectSlug) method="POST" id="form-url-upload" class="form-inline">
+                            <@csrf.formField />
+                            <div class="input-group float-right" style="width: 50%">
+                                <input type="text" class="form-control" id="externalUrl" name="externalUrl" placeholder="<@spring.message "version.create.externalUrl" />" style="width: 70%">
+                                <div class="input-group-append">
+                                    <button class="btn btn-info" type="submit">Create Version</button>
+                                </div>
+                            </div>
+                        </@form.form>
                     </#if>
-
                 </div>
             </div>
             <span class="float-left tos"><i><@spring.messageArgs code="version.create.tos" args=["#"] /></i></span>

@@ -8,13 +8,13 @@ public class ApiScope {
     private final String owner;
     private final String slug;
 
-    private ApiScope(ApiScopeType apiScopeType, String owner, @Nullable String slug) {
+    private ApiScope(ApiScopeType apiScopeType, @Nullable String owner, @Nullable String slug) {
         this.type = apiScopeType;
         this.owner = owner;
         this.slug = slug;
     }
 
-    private ApiScope(ApiScopeType apiScopeType, String owner) {
+    private ApiScope(ApiScopeType apiScopeType, @Nullable String owner) {
         this(apiScopeType, owner, null);
     }
 
