@@ -952,7 +952,7 @@ SELECT p.id,
                       LIMIT 5))                  AS promoted_versions,
        ((setweight((to_tsvector('english'::regconfig, p.name::text) ||
                     to_tsvector('english'::regconfig, regexp_replace(p.name::text, '([a-z])([A-Z]+)'::text,
-                                                                     '\1_\2'::text, 'g'::text)))) ||
+                                                                     '\1_\2'::text, 'g'::text))), 'A'::"char") ||
          setweight(to_tsvector('english'::regconfig, p.description::text), 'B'::"char")) ||
         setweight(to_tsvector('english'::regconfig, array_to_string(p.keywords, ' '::text)), 'C'::"char")) || setweight(
                    to_tsvector('english'::regconfig, p.owner_name::text) || to_tsvector('english'::regconfig,
