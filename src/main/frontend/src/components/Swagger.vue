@@ -8,7 +8,6 @@ import SwaggerUIBundle from 'swagger-ui';
 export default {
     name: 'SwaggerUI',
     mounted() {
-        // console.log(SwaggerUIBundle);
         window.onload = () => {
             window.ui = SwaggerUIBundle({
                 url: '/v2/api-docs',

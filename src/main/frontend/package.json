@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "lintfix": "vue-cli-service lint --fix"
+    "lintfix": "vue-cli-service lint --fix",
+    "webpackdebug": "vue-cli-service inspect > webpack.json"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "1.2.30",
@@ -45,7 +46,10 @@
     "prettier": "^1.19.1",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
-    "vue-template-compiler": "^2.6.11"
+    "stats-webpack-plugin": "^0.7.0",
+    "vue-cli-plugin-webpack-bundle-analyzer": "~2.0.0",
+    "vue-template-compiler": "^2.6.11",
+    "webpack-cli": "^3.3.12"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"

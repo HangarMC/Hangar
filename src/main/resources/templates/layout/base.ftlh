@@ -106,8 +106,8 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
 
         <script type="text/javascript" src="${Routes.JAVA_SCRIPT_ROUTES.getRouteUrl()}"></script>
         <script type="text/javascript" src="<@hangar.url "js/chunk-vendors.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "js/font-awesome.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "js/chunk-common.js" />"></script>
+        <script type="text/javascript" src="<@hangar.url "js/font-awesome.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "js/bootstrap.js" />"></script>
         <script type="text/javascript" src="<@hangar.url "js/main.js" />"></script>
         ${additionalScripts}
