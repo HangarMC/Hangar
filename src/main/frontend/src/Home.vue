@@ -260,4 +260,7 @@ export default {
         color: #586069;
     }
 }
+#relevanceBox {
+  margin-right: 5px;
+}
 </style>
