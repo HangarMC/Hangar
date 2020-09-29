@@ -261,6 +261,6 @@ export default {
     }
 }
 #relevanceBox {
-  margin-right: 5px;
+    margin-right: 5px;
 }
 </style>

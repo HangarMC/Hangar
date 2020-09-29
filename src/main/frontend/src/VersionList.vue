@@ -128,9 +128,11 @@ export default {
     },
     created() {
         this.update();
-        apiV2Request('permissions', 'GET', { author: window.PROJECT_OWNER, slug: window.PROJECT_SLUG }).then(response => {
-            this.canUpload = response.permissions.includes('create_version');
-        });
+        apiV2Request('permissions', 'GET', { author: window.PROJECT_OWNER, slug: window.PROJECT_SLUG }).then(
+            response => {
+                this.canUpload = response.permissions.includes('create_version');
+            }
+        );
         this.$watch(
             () => this.page,
             () => {

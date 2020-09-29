@@ -81,6 +81,11 @@ public class ApplicationController extends HangarController {
 
     private final HttpServletRequest request;
 
+    // TODO remove
+    private final List<String> paperVersions = List.of("1.8", "1.9", "1.10", "1.11", "1.12", "1.13", "1.14", "1.15", "1.16");
+    private final List<String> waterfallVersions = List.of("1.11", "1.11", "1.12", "1.13", "1.14", "1.15", "1.16");
+    private final List<String> velocityVersions = List.of("1.0", "1.1");
+
     @Autowired
     public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, StatusZ statusZ, ObjectMapper mapper, HangarConfig hangarConfig, HttpServletRequest request) {
         this.platformVersionsDao = platformVersionsDao;
@@ -97,6 +102,18 @@ public class ApplicationController extends HangarController {
         this.hangarConfig = hangarConfig;
         this.request = request;
         this.statsService = statsService;
+
+        initPlatformVersions();
+    }
+
+    // TODO remove
+    private void initPlatformVersions() {
+        Map<Platform, List<String>> platformVersions = platformVersionsDao.get().getVersions();
+        if (platformVersions.isEmpty()) {
+            platformVersionsDao.get().insert(paperVersions.stream().map(v -> new PlatformVersionsTable(Platform.PAPER, v)).collect(Collectors.toList()));
+            platformVersionsDao.get().insert(velocityVersions.stream().map(v -> new PlatformVersionsTable(Platform.VELOCITY, v)).collect(Collectors.toList()));
+            platformVersionsDao.get().insert(waterfallVersions.stream().map(v -> new PlatformVersionsTable(Platform.WATERFALL, v)).collect(Collectors.toList()));
+        }
     }
 
     @GetMapping("/")
