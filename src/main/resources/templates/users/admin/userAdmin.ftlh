@@ -78,7 +78,7 @@
                     <a href="${config.authUrl}/admin/accounts/user/${u.user.id}/change/">HangarAuth Profile</a>
                 </div>
                 <div class="list-group-item">
-                    <a href="https://papermc.io/forums${u.user.name}">Forum Profile</a>
+                    <a href="https://papermc.io/forums/u/${u.user.name}">Forum Profile</a>
                 </div>
             </div>
         </@card>
