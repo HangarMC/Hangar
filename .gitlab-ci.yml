@@ -24,7 +24,7 @@ build:
   image: maven:3-jdk-14
   stage: build
   script:
-    - 'mvn $MAVEN_CLI_OPTS package'
+    - 'mvn $MAVEN_CLI_OPTS clean package'
   artifacts:
     paths:
       - target/hangar-*.jar
