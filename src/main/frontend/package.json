@@ -24,6 +24,7 @@
     "highlight.js": "^10.2.0",
     "jquery": "3.5.1",
     "lodash": "4.17.20",
+    "lodash-es": "^4.17.15",
     "moment": "^2.29.0",
     "popper.js": "^1.16.1",
     "query-string": "6.13.1",

@@ -52,7 +52,7 @@
     </div>
 </template>
 <script>
-import _ from 'lodash';
+import { difference, remove } from 'lodash-es';
 import axios from 'axios';
 
 export default {
@@ -81,7 +81,7 @@ export default {
             this.inputs[platform] = '';
         },
         removeVersion(versions, version) {
-            _.remove(versions, v => v === version);
+            remove(versions, v => v === version);
             this.changesMade = true;
         },
         save() {
@@ -89,8 +89,8 @@ export default {
             const removals = {};
             for (const platform in this.platforms) {
                 const versions = this.data.find(o => o.platform === platform.toLowerCase()).versions;
-                additions[platform] = _.difference(versions, this.platforms[platform]);
-                removals[platform] = _.difference(this.platforms[platform], versions);
+                additions[platform] = difference(versions, this.platforms[platform]);
+                removals[platform] = difference(this.platforms[platform], versions);
             }
             let hasChanges = false;
             for (const platform in this.platforms) {

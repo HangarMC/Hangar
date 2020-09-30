@@ -94,7 +94,7 @@ import ProjectList from './components/ProjectList';
 import queryString from 'query-string';
 import { clearFromDefaults } from './utils';
 import { Category, Platform, SortOptions } from './enums';
-import debounce from 'lodash/debounce';
+import { debounce } from 'lodash-es';
 
 function defaultData() {
     return {
