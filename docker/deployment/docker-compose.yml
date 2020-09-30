@@ -87,6 +87,8 @@ services:
       - web
   redis:
     image: redis:6.0.6
+    networks:
+      - web
 
 networks:
   web:
