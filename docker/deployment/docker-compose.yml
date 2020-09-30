@@ -13,20 +13,21 @@ services:
     stdin_open: true
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.hangarnew.loadbalancer.server.port=8080"
-      - "traefik.http.routers.hangarnew.rule=Host(`hangar-new.minidigger.me`)"
-      - "traefik.http.routers.hangarnew.entrypoints=web-secure"
-      - "traefik.http.routers.hangarnew.tls=true"
-      - "traefik.http.routers.hangarnew.tls.options=default"
-      - "traefik.http.routers.hangarnew.tls.certresolver=default"
-      - "traefik.http.routers.hangarnew.tls.domains[0].main=minidigger.me"
-      - "traefik.http.routers.hangarnew.tls.domains[0].sans=*.minidigger.me"
+      - "traefik.http.services.hangar.loadbalancer.server.port=8080"
+      - "traefik.http.routers.hangar.rule=Host(`hangar.minidigger.me`)"
+      - "traefik.http.routers.hangar.entrypoints=web-secure"
+      - "traefik.http.routers.hangar.tls=true"
+      - "traefik.http.routers.hangar.tls.options=default"
+      - "traefik.http.routers.hangar.tls.certresolver=default"
+      - "traefik.http.routers.hangar.tls.domains[0].main=minidigger.me"
+      - "traefik.http.routers.hangar.tls.domains[0].sans=*.minidigger.me"
     networks:
       - web
   db:
     image: registry.gitlab.com/minidigger/hangar2/db:latest
     build: ./db
     environment:
+      POSTGRES_MULTIPLE_DATABASES: hangar,hangarauth
       POSTGRES_USER: hangar
       POSTGRES_PASSWORD: 'hangar'
       POSTGRES_DB: hangar
@@ -44,7 +45,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.services.hangar-mail.loadbalancer.server.port=8025"
       - "traefik.http.routers.hangar-mail.middlewares=basicauth@file"
-      - "traefik.http.routers.hangar-mail.rule=Host(`hangar-mail-new.minidigger.me`)"
+      - "traefik.http.routers.hangar-mail.rule=Host(`hangar-mail.minidigger.me`)"
       - "traefik.http.routers.hangar-mail.entrypoints=web-secure"
       - "traefik.http.routers.hangar-mail.tls=true"
       - "traefik.http.routers.hangar-mail.tls.options=default"
@@ -60,7 +61,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.hangar-auth.loadbalancer.server.port=8000"
-      - "traefik.http.routers.hangar-auth.rule=Host(`hangar-auth-new.minidigger.me`)"
+      - "traefik.http.routers.hangar-auth.rule=Host(`hangar-auth.minidigger.me`)"
       - "traefik.http.routers.hangar-auth.entrypoints=web-secure"
       - "traefik.http.routers.hangar-auth.tls=true"
       - "traefik.http.routers.hangar-auth.tls.options=default"
@@ -75,9 +76,9 @@ services:
       EMAIL_TLS: "false"
       EMAIL_HOST_USER: "dum"
       EMAIL_HOST_PASSWORD: "dum"
-      DB_NAME: "spongeauth"
-      DB_USER: "spongeauth"
-      DB_PASSWORD: "spongeauth"
+      DB_NAME: "hangarauth"
+      DB_USER: "hangar"
+      DB_PASSWORD: "hangar"
       DB_HOST: "hangar_db"
       SSO_ENDPOINT_ore: "{ 'sync_sso_endpoint': ('http://hangar_app:9000/api/sync_sso'), 'sso_secret': 'changeme', 'api_key': 'changeme' }"
       DEBUG: "false"

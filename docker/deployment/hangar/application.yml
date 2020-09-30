@@ -10,8 +10,8 @@ fake-user:
 hangar:
   debug: true
   use-webpack: false
-  auth-url: "https://hangar-auth-new.minidigger.me"
-  base-url: "https://hangar-new.minidigger.me"
+  auth-url: "https://hangar-auth.minidigger.me"
+  base-url: "https://hangar.minidigger.me"
 
   sso:
     secret: "changeme"
@@ -19,5 +19,5 @@ hangar:
 
   security:
     api:
-      url: "https://hangar-auth-new.minidigger.me"
-      avatar-url: "https://hangar-auth-new.minidigger.me/avatar/%s?size=120x120"
+      url: "https://hangar-auth.minidigger.me"
+      avatar-url: "https://hangar-auth.minidigger.me/avatar/%s?size=120x120"
