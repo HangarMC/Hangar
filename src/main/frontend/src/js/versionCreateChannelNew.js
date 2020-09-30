@@ -21,28 +21,22 @@ function getSelect() {
 }
 
 function setColorInput(val) {
-    getForm()
-        .find('.channel-color-input')
-        .val(val);
+    getForm().find('.channel-color-input').val(val);
 }
 
 //=====> DOCUMENT READY
 
-$(function() {
-    setTimeout(function() {
+$(function () {
+    setTimeout(function () {
         initChannelNew(DEFAULT_COLOR);
     }, 200);
 
-    getSelect().change(function() {
-        setColorInput(
-            $(this)
-                .find(':selected')
-                .data('color')
-        );
+    getSelect().change(function () {
+        setColorInput($(this).find(':selected').data('color'));
     });
 
     // eslint-disable-next-line no-unused-vars
-    var onCustomSubmit = function(
+    var onCustomSubmit = function (
         toggle,
         channelName,
         channelHex,
@@ -53,12 +47,8 @@ $(function() {
         // Add new name to select
         var select = getSelect();
         var exists =
-            select.find('option').find(function() {
-                return (
-                    $(this)
-                        .val()
-                        .toLowerCase() === channelName.toLowerCase()
-                );
+            select.find('option').find(function () {
+                return $(this).val().toLowerCase() === channelName.toLowerCase();
             }).length !== 0;
 
         if (!exists) {

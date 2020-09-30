@@ -1,6 +1,6 @@
 //=====> DOCUMENT READY
 
-(function() {
+(function () {
     var d = document.createElement('script');
     d.type = 'text/javascript';
     d.async = true;

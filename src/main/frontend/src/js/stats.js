@@ -4,7 +4,7 @@ import Chart from 'chart.js';
 
 //=====> DOCUMENT READY
 
-$(function() {
+$(function () {
     const TIME_FRAME = window.DAYS;
     var domChartReview = document.getElementById('chart-reviews');
     new Chart(domChartReview, {
@@ -18,22 +18,22 @@ $(function() {
                     backgroundColor: 'cornflowerblue',
                     borderColor: 'dodgerblue',
                     fill: false,
-                    data: window.REVIEW_DATA
+                    data: window.REVIEW_DATA,
                 },
                 {
                     label: 'Uploads',
                     backgroundColor: 'lightseagreen',
                     borderColor: 'darkseagreen',
                     fill: false,
-                    data: window.UPLOAD_DATA
-                }
-            ]
+                    data: window.UPLOAD_DATA,
+                },
+            ],
         },
         options: {
             title: {
-                text: 'Reviews'
-            }
-        }
+                text: 'Reviews',
+            },
+        },
     });
 
     var domChartDownload = document.getElementById('chart-downloads');
@@ -48,22 +48,22 @@ $(function() {
                     backgroundColor: 'cornflowerblue',
                     borderColor: 'dodgerblue',
                     fill: false,
-                    data: window.TOTAL_DOWNLOAD_DATA
+                    data: window.TOTAL_DOWNLOAD_DATA,
                 },
                 {
                     label: 'Unsafe Downloads',
                     backgroundColor: 'lightseagreen',
                     borderColor: 'darkseagreen',
                     fill: false,
-                    data: window.UNSAFE_DOWNLOAD_DATA
-                }
-            ]
+                    data: window.UNSAFE_DOWNLOAD_DATA,
+                },
+            ],
         },
         options: {
             title: {
-                text: 'Downloads'
-            }
-        }
+                text: 'Downloads',
+            },
+        },
     });
 
     var domChartFlags = document.getElementById('chart-flags');
@@ -78,25 +78,25 @@ $(function() {
                     backgroundColor: 'cornflowerblue',
                     borderColor: 'dodgerblue',
                     fill: false,
-                    data: window.OPEN_FLAGS_DATA
+                    data: window.OPEN_FLAGS_DATA,
                 },
                 {
                     label: 'Closed flags',
                     backgroundColor: 'lightseagreen',
                     borderColor: 'darkseagreen',
                     fill: false,
-                    data: window.CLOSED_FLAGS_DATA
-                }
-            ]
+                    data: window.CLOSED_FLAGS_DATA,
+                },
+            ],
         },
         options: {
             title: {
-                text: 'Flags'
-            }
-        }
+                text: 'Flags',
+            },
+        },
     });
 
-    $('#dateGoButton').click(function() {
+    $('#dateGoButton').click(function () {
         var from = $('#fromDate').val();
         var to = $('#toDate').val();
 

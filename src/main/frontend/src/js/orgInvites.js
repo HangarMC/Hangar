@@ -8,12 +8,12 @@ function replyToInvite(id, behalf, reply, success, error) {
         type: 'post',
         url: url,
         success: success,
-        error: error
+        error: error,
     });
 }
 
 function setupInvites() {
-    $('.btn-invite').click(function() {
+    $('.btn-invite').click(function () {
         var btn = $(this);
         var id = btn.attr('data-invite-id');
         var behalf = btn.attr('data-invite-behalf');
@@ -24,16 +24,14 @@ function setupInvites() {
             id,
             behalf,
             accepted,
-            function() {
+            function () {
                 if (accepted == 'decline') {
-                    btn.parent()
-                        .parent()
-                        .hide();
+                    btn.parent().parent().hide();
                 } else {
                     btn.parent().html('<span>Joined</span>');
                 }
             },
-            function() {
+            function () {
                 btn.html('Failed to update');
             }
         );
@@ -42,6 +40,6 @@ function setupInvites() {
 
 //=====> DOCUMENT READY
 
-$(function() {
+$(function () {
     setupInvites();
 });

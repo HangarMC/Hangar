@@ -31,9 +31,9 @@
         </div>
         <div class="col-md-3">
             <select class="form-control select-sort" v-model="sort" @change="resetPage">
-                <option v-for="(option, index) in availableOptions.sort" :key="index" :value="option.id">{{
-                    option.name
-                }}</option>
+                <option v-for="(option, index) in availableOptions.sort" :key="index" :value="option.id">
+                    {{ option.name }}
+                </option>
             </select>
 
             <div>
@@ -110,57 +110,57 @@ function defaultData() {
         availableOptions: {
             category: Category.values,
             platform: Platform.values,
-            sort: SortOptions
-        }
+            sort: SortOptions,
+        },
     };
 }
 
 export default {
     components: {
-        ProjectList
+        ProjectList,
     },
     data: defaultData,
     computed: {
-        isDefault: function() {
+        isDefault: function () {
             return Object.keys(clearFromDefaults(this.baseBinding, defaultData())).length === 0;
         },
-        baseBinding: function() {
+        baseBinding: function () {
             return {
                 q: this.q,
                 sort: this.sort,
                 relevance: this.relevance,
                 categories: this.categories,
-                tags: this.tags
+                tags: this.tags,
             };
         },
-        listBinding: function() {
+        listBinding: function () {
             return clearFromDefaults(
                 Object.assign({}, this.baseBinding, {
                     offset: (this.page - 1) * this.limit,
-                    limit: this.limit
+                    limit: this.limit,
                 }),
                 defaultData()
             );
         },
-        urlBinding: function() {
+        urlBinding: function () {
             return clearFromDefaults(Object.assign({}, this.baseBinding, { page: this.page }), defaultData());
         },
-        queryPlaceholder: function() {
+        queryPlaceholder: function () {
             return (
                 `Search in ${this.projectCount === null ? 'all' : this.projectCount} projects` +
                 `${!this.isDefault ? ' matching your filters' : ''}` +
                 ', proudly made by the community...'
             );
-        }
+        },
     },
     methods: {
-        reset: function() {
+        reset: function () {
             Object.entries(defaultData()).forEach(([key, value]) => (this.$data[key] = value));
         },
-        resetPage: function() {
+        resetPage: function () {
             this.page = 1;
         },
-        changeCategory: function(category) {
+        changeCategory: function (category) {
             if (this.categories.includes(category.id)) {
                 this.categories.splice(this.categories.indexOf(category.id), 1);
             } else if (this.categories.length + 1 === Category.values.length) {
@@ -176,12 +176,12 @@ export default {
             Object.entries(
                 queryString.parse(location.search, {
                     arrayFormat: 'bracket',
-                    parseBooleans: true
+                    parseBooleans: true,
                 })
             )
                 .filter(([key]) => Object.prototype.hasOwnProperty.call(defaultData(), key))
                 .forEach(([key, value]) => (this.$data[key] = value));
-        }
+        },
     },
     created() {
         this.updateData();
@@ -192,7 +192,7 @@ export default {
             () => [this.q, this.sort, this.relevance, this.categories, this.tags, this.page].join(),
             () => {
                 const query = queryString.stringify(this.urlBinding, {
-                    arrayFormat: 'bracket'
+                    arrayFormat: 'bracket',
                 });
                 this.debouncedUpdateProps(query);
             }
@@ -205,10 +205,10 @@ export default {
         );
     },
     watch: {
-        page: function() {
+        page: function () {
             window.scrollTo(0, 0);
-        }
-    }
+        },
+    },
 };
 </script>
 

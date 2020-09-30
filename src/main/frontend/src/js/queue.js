@@ -7,10 +7,10 @@ const MAX_REVIEW_TIME = window.MAX_REVIEW_TIME;
 
 //=====> DOCUMENT READY
 
-$(function() {
+$(function () {
     var momentNow = moment();
     var maxDifference = MAX_REVIEW_TIME;
-    $('span[data-ago]').each(function() {
+    $('span[data-ago]').each(function () {
         var momentAgo = moment($(this).data('ago'));
         $(this).text($(this).data('title') + momentAgo.fromNow());
         if (momentNow.diff(momentAgo) >= maxDifference) {
@@ -27,33 +27,25 @@ $(function() {
         }
     });
 
-    $('.btn-approve').click(function() {
+    $('.btn-approve').click(function () {
         var listItem = $(this).closest('.list-group-item');
         var versionPath = listItem.data('version');
-        toggleSpinner(
-            $(this)
-                .find('[data-fa-i2svg]')
-                .removeClass('fa-thumbs-up')
-        );
+        toggleSpinner($(this).find('[data-fa-i2svg]').removeClass('fa-thumbs-up'));
         $.ajax({
             type: 'post',
             url: '/' + versionPath + '/approve',
-            complete: function() {
-                toggleSpinner(
-                    $('.btn-approve')
-                        .find('[data-fa-i2svg]')
-                        .addClass('fa-thumbs-up')
-                );
+            complete: function () {
+                toggleSpinner($('.btn-approve').find('[data-fa-i2svg]').addClass('fa-thumbs-up'));
             },
-            success: function() {
-                $.when(listItem.fadeOut('slow')).done(function() {
+            success: function () {
+                $.when(listItem.fadeOut('slow')).done(function () {
                     listItem.remove();
                     if (!$('.list-versions').find('li').length) {
                         $('.no-versions').fadeIn();
                         clearUnread($('a[href="/admin/queue"]'));
                     }
                 });
-            }
+            },
         });
     });
 });

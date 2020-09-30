@@ -5,7 +5,7 @@ import diff_match_patch from 'diff-match-patch';
 //=====> DOCUMENT READY
 
 $('body')
-    .on('click', '.data-diff', function() {
+    .on('click', '.data-diff', function () {
         var idToDiff = $(this).attr('data-diff');
 
         var diff = new diff_match_patch();
@@ -18,7 +18,7 @@ $('body')
         $('#modal-view-body').html(diff.diff_prettyHtml(textDiff).replace(/&para;/g, ''));
         $('#modal-view').modal('show');
     })
-    .on('click', '.data-view-old', function() {
+    .on('click', '.data-view-old', function () {
         var idToShow = $(this).attr('data-view');
 
         $('#modal-view-body').html(
@@ -28,7 +28,7 @@ $('body')
         );
         $('#modal-view').modal('show');
     })
-    .on('click', '.data-view-new', function() {
+    .on('click', '.data-view-new', function () {
         var idToShow = $(this).attr('data-view');
 
         $('#modal-view-body').html(

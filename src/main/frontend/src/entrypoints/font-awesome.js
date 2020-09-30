@@ -69,7 +69,7 @@ import {
     faUserTag,
     faUserTie,
     faWindowClose,
-    faWrench
+    faWrench,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -82,7 +82,7 @@ import {
     faPlusSquare,
     faSadTear,
     faStar as farStar,
-    faThumbsUp as farThumbsUp
+    faThumbsUp as farThumbsUp,
 } from '@fortawesome/free-regular-svg-icons';
 
 config.autoAddCss = false;

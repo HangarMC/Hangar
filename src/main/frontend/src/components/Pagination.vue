@@ -42,38 +42,38 @@ export default {
     props: {
         current: {
             type: Number,
-            required: true
+            required: true,
         },
         total: {
             type: Number,
-            required: true
-        }
+            required: true,
+        },
     },
     computed: {
-        hasPrevious: function() {
+        hasPrevious: function () {
             return this.current - 1 >= 1;
         },
-        hasNext: function() {
+        hasNext: function () {
             return this.current + 1 <= this.total;
-        }
+        },
     },
     methods: {
-        previous: function() {
+        previous: function () {
             if (this.hasPrevious) {
                 this.$emit('prev');
             }
         },
-        next: function() {
+        next: function () {
             if (this.hasNext) {
                 this.$emit('next');
             }
         },
-        jump: function(page) {
+        jump: function (page) {
             if (page > 0 <= this.total) {
                 this.$emit('jump-to', page);
             }
-        }
-    }
+        },
+    },
 };
 </script>
 

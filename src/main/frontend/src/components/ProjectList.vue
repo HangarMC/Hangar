@@ -128,47 +128,47 @@ export default {
     components: {
         Tag,
         Pagination,
-        Icon
+        Icon,
     },
     emits: ['jump-to-page', 'next-page', 'prev-page', 'update:projectCount'],
     props: {
         q: String,
         categories: {
-            type: Array
+            type: Array,
         },
         tags: Array,
         owner: String,
         sort: String,
         relevance: {
             type: Boolean,
-            default: true
+            default: true,
         },
         limit: {
             type: Number,
-            default: 25
+            default: 25,
         },
         offset: {
             type: Number,
-            default: 0
-        }
+            default: 0,
+        },
     },
     data() {
         return {
             projects: [],
             totalProjects: 0,
-            loading: true
+            loading: true,
         };
     },
     computed: {
-        current: function() {
+        current: function () {
             return Math.ceil(this.offset / this.limit) + 1;
         },
-        total: function() {
+        total: function () {
             return Math.ceil(this.totalProjects / this.limit);
         },
-        routes: function() {
+        routes: function () {
             return window.jsRoutes.controllers.project;
-        }
+        },
     },
     created() {
         this.update();
@@ -183,7 +183,7 @@ export default {
                     this.sort,
                     this.relevance,
                     this.limit,
-                    this.offset
+                    this.offset,
                 ].join(),
             () => {
                 this.debouncedUpdateProps();
@@ -192,7 +192,7 @@ export default {
     },
     methods: {
         update() {
-            API.request('projects', 'GET', clearFromEmpty(this.$props)).then(response => {
+            API.request('projects', 'GET', clearFromEmpty(this.$props)).then((response) => {
                 this.projects = response.result;
                 this.totalProjects = response.pagination.count;
                 this.loading = false;
@@ -208,17 +208,17 @@ export default {
         tagsFromPromoted(promotedVersions) {
             let tagsArray = [];
             promotedVersions
-                .map(version => version.tags)
-                .forEach(tags => (tagsArray = tags.filter(tag => Platform.isPlatformTag(tag)).concat(tagsArray)));
+                .map((version) => version.tags)
+                .forEach((tags) => (tagsArray = tags.filter((tag) => Platform.isPlatformTag(tag)).concat(tagsArray)));
 
             const reducedTags = [];
 
-            Platform.values.forEach(platform => {
+            Platform.values.forEach((platform) => {
                 let versions = [];
                 tagsArray
-                    .filter(tag => tag.name === platform.id)
+                    .filter((tag) => tag.name === platform.id)
                     .reverse()
-                    .forEach(tag => {
+                    .forEach((tag) => {
                         versions.push(tag.display_data || tag.data);
                     });
 
@@ -226,7 +226,7 @@ export default {
                     reducedTags.push({
                         name: platform.id,
                         versions: versions,
-                        color: platform.color
+                        color: platform.color,
                     });
                 }
             });
@@ -235,8 +235,8 @@ export default {
         },
         formatStats(number) {
             return numberWithCommas(number);
-        }
-    }
+        },
+    },
 };
 </script>
 

@@ -13,11 +13,7 @@ function getAlert() {
 }
 
 function clearIcon(e) {
-    return e
-        .removeClass('fa-spinner')
-        .removeClass('fa-spin')
-        .addClass('fa-pencil-alt')
-        .addClass('fa-upload');
+    return e.removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-pencil-alt').addClass('fa-upload');
 }
 
 function failure(message) {
@@ -32,13 +28,13 @@ function failure(message) {
 
     bs.tooltip({
         placement: 'left',
-        title: message
+        title: message,
     });
 
     // flash
     function flash(amount) {
         if (amount > 0) {
-            bs.find('[data-fa-i2svg]').fadeOut('fast', function() {
+            bs.find('[data-fa-i2svg]').fadeOut('fast', function () {
                 bs.find('[data-fa-i2svg]').fadeIn('fast', flash(amount - 1));
             });
         }
@@ -51,11 +47,7 @@ function failurePlugin(message) {
     failure(message);
     var alert = getAlert();
     var control = alert.find('.file-upload');
-    control
-        .find('button')
-        .removeClass('btn-success')
-        .addClass('btn-danger')
-        .prop('disabled', true);
+    control.find('button').removeClass('btn-success').addClass('btn-danger').prop('disabled', true);
     clearIcon(control.find('[data-fa-i2svg]')).addClass('fa-times');
 }
 
@@ -64,28 +56,21 @@ function reset() {
     alert.hide();
 
     var control = alert.find('.file-upload');
-    control
-        .find('button')
-        .removeClass('btn-danger')
-        .addClass('btn-success')
-        .prop('disabled', false);
+    control.find('button').removeClass('btn-danger').addClass('btn-success').prop('disabled', false);
     clearIcon(control.find('[data-fa-i2svg]')).addClass('fa-pencil-alt');
 
     var bs = alert.find('.alert');
     bs.removeClass('alert-danger').addClass('alert-info');
     bs.find('[data-fa-i2svg]').attr('data-prefix', 'far');
     if (bs.find('[data-fa-i2svg]').data('ui-tooltip')) {
-        bs.find('[data-fa-i2svg]')
-            .removeClass('fa-exclamation-circle')
-            .addClass('fa-file-archive')
-            .tooltip('dispose');
+        bs.find('[data-fa-i2svg]').removeClass('fa-exclamation-circle').addClass('fa-file-archive').tooltip('dispose');
     }
     return alert;
 }
 
 //=====> DOCUMENT READY
 
-$(function() {
+$(function () {
     var platformTags = $('#upload-platform-tags');
     if (platformTags.length >= 1 && platformTags.children().length === 0) {
         platformTags.html(
@@ -93,15 +78,13 @@ $(function() {
         );
     }
 
-    $('#pluginFile').on('change', function() {
+    $('#pluginFile').on('change', function () {
         var alert = reset();
         if (this.files.length === 0) {
             $('#form-upload')[0].reset();
             return;
         }
-        var fileName = $(this)
-            .val()
-            .trim();
+        var fileName = $(this).val().trim();
         var fileSize = this.files[0].size;
         if (!fileName) {
             alert.fadeOut(1000);
@@ -135,10 +118,7 @@ $(function() {
             icon.addClass('fa-upload');
 
             var newTitle = 'Upload plugin';
-            button
-                .tooltip('hide')
-                .data('original-title', newTitle)
-                .tooltip();
+            button.tooltip('hide').data('original-title', newTitle).tooltip();
         }
     });
 });

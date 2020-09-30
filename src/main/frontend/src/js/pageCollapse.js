@@ -7,7 +7,7 @@ var NAMESPACE = window.NAMESPACE;
 //=====> HELPER FUNCTIONS
 
 function bindExpand(e) {
-    e.click(function() {
+    e.click(function () {
         var pageId = $(this).data('page-id');
         var listItem = $(this).closest('.list-group-item');
         var $this = $(this);
@@ -15,7 +15,7 @@ function bindExpand(e) {
             method: 'get',
             url: '/api/v1/projects/' + NAMESPACE + '/pages?parentId=' + pageId,
             dataType: 'json',
-            success: function(childPages) {
+            success: function (childPages) {
                 console.log(childPages);
                 var div = $('<div class="page-children" data-page-id="' + pageId + '"></div>');
                 listItem.after(div);
@@ -35,13 +35,13 @@ function bindExpand(e) {
                     .addClass('fa-minus-square');
                 $this.off('click');
                 bindCollapse($this);
-            }
+            },
         });
     });
 }
 
 function bindCollapse(e) {
-    e.click(function() {
+    e.click(function () {
         var pageId = $(this).data('page-id');
         $('.page-children[data-page-id="' + pageId + '"]').remove();
         $(this)
@@ -57,7 +57,7 @@ function bindCollapse(e) {
 
 //=====> DOCUMENT READY
 
-$(function() {
+$(function () {
     bindExpand($('.page-expand'));
     bindCollapse($('.page-collapse'));
 });

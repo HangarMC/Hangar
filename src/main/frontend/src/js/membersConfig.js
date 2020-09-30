@@ -8,21 +8,17 @@ function updateIndices() {
     // them as a list.
     // hangar remove index from form attrs, spring will auto put them in lists
     var rows = $('.table-members').find('tr');
-    rows.each(function(i) {
+    rows.each(function (i) {
         if (i === 0 || i === rows.length - 1) return; // Skip owner and search rows
-        $(this)
-            .find('input')
-            .attr('name', 'users');
-        $(this)
-            .find('select')
-            .attr('name', 'roles');
+        $(this).find('input').attr('name', 'users');
+        $(this).find('select').attr('name', 'roles');
     });
 }
 
 //=====> DOCUMENT READY
 
-$(function() {
-    initUserSearch(function(result) {
+$(function () {
+    initUserSearch(function (result) {
         var alert = $('.alert-danger');
         if (!result.isSuccess) {
             $('.error-username').text(result.username);
@@ -35,22 +31,14 @@ $(function() {
         // Check if user is already defined
         if (
             $('input[value="' + user.id + '"]').length ||
-            $('.table-members')
-                .first('tr')
-                .find('strong')
-                .text() === user.username
+            $('.table-members').first('tr').find('strong').text() === user.username
         ) {
             return;
         }
 
         // Build the result row from the template
-        var newRow = $('#result-row')
-            .clone()
-            .removeAttr('id');
-        newRow
-            .find('input')
-            .attr('form', 'form-continue')
-            .val(user.id);
+        var newRow = $('#result-row').clone().removeAttr('id');
+        newRow.find('input').attr('form', 'form-continue').val(user.id);
         newRow.find('select').attr('form', 'form-continue');
         newRow
             .find('.username')
@@ -65,17 +53,13 @@ $(function() {
         }
 
         // Bind cancel button
-        newRow.find('.user-cancel').click(function() {
-            $(this)
-                .closest('tr')
-                .remove();
+        newRow.find('.user-cancel').click(function () {
+            $(this).closest('tr').remove();
             updateIndices();
         });
 
         // Insert the new row before the search row
-        $('.user-search')
-            .closest('tr')
-            .before(newRow);
+        $('.user-search').closest('tr').before(newRow);
         updateIndices();
     });
 

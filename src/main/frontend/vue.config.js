@@ -13,7 +13,7 @@ module.exports = {
         webpackBundleAnalyzer: {
             openAnalyzer: false,
             // analyzerMode: "json"
-        }
+        },
     },
     configureWebpack: {
         plugins: [new StatsPlugin('stats.json')],
@@ -30,16 +30,16 @@ module.exports = {
                         minChunks: 2,
                         priority: -10,
                         chunks: 'initial',
-                        reuseExistingChunk: true
-                    }
-                }
+                        reuseExistingChunk: true,
+                    },
+                },
             },
         },
     },
     devServer: {
-        port: 8081
+        port: 8081,
     },
-    chainWebpack: config => {
+    chainWebpack: (config) => {
         // clear default
         config.entryPoints.delete('app');
 
@@ -66,7 +66,7 @@ module.exports = {
             .options({
                 hmr: process.env.NODE_ENV === 'development',
                 reloadAll: true,
-                publicPath: '/css/'
+                publicPath: '/css/',
             })
             .end()
             .use('css-loader')
@@ -81,5 +81,5 @@ module.exports = {
     },
 
     outputDir: outputDir,
-    filenameHashing: false
+    filenameHashing: false,
 };

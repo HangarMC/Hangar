@@ -16,22 +16,20 @@ const ACTIVE_NAV = window.ACTIVE_NAV;
 function initFlagList() {
     var flagList = $('.list-flags');
     if (!flagList.length) return;
-    flagList.find('li').click(function() {
+    flagList.find('li').click(function () {
         flagList.find(':checked').removeAttr('checked');
-        $(this)
-            .find('input')
-            .prop('checked', true);
+        $(this).find('input').prop('checked', true);
     });
 }
 
 function animateEditBtn(e, marginLeft, andThen) {
-    e.animate({ marginLeft: marginLeft }, 100, function() {
+    e.animate({ marginLeft: marginLeft }, 100, function () {
         if (andThen) andThen();
     });
 }
 
 function showEditBtn(e, andThen) {
-    animateEditBtn(e, '-34px', function() {
+    animateEditBtn(e, '-34px', function () {
         e.css('z-index', '1000');
         if (andThen) andThen();
     });
@@ -54,42 +52,32 @@ function initBtnEdit() {
     // highlight with textarea
     var editText = $('.page-edit').find('textarea');
     editText
-        .focus(function() {
+        .focus(function () {
             btnEdit
                 .css('border-color', '#66afe9')
                 .css('border-right', '1px solid white')
                 .css('box-shadow', 'inset 0 1px 1px rgba(0,0,0,.075), -3px 0 8px rgba(102, 175, 233, 0.6)');
             otherBtns.find('.btn').css('border-right-color', '#66afe9');
         })
-        .blur(function() {
-            $('.btn-page')
-                .css('border', '1px solid #ccc')
-                .css('box-shadow', 'none');
+        .blur(function () {
+            $('.btn-page').css('border', '1px solid #ccc').css('box-shadow', 'none');
             $('button.open').css('border-right', 'white');
         });
 
     // handle button clicks
-    pageBtns.click(function() {
+    pageBtns.click(function () {
         if ($(this).hasClass('open')) return;
 
         // toggle button
-        $('button.open')
-            .removeClass('open')
-            .css('border', '1px solid #ccc');
-        $(this)
-            .addClass('open')
-            .css('border-right-color', 'white');
+        $('button.open').removeClass('open').css('border', '1px solid #ccc');
+        $(this).addClass('open').css('border-right-color', 'white');
 
         var editor = $('.page-edit');
         if ($(this).hasClass('btn-edit')) {
             editing = true;
             previewing = false;
-            $(this)
-                .css('position', 'absolute')
-                .css('top', '');
-            $(otherBtns)
-                .css('position', 'absolute')
-                .css('top', '');
+            $(this).css('position', 'absolute').css('top', '');
+            $(otherBtns).css('position', 'absolute').css('top', '');
 
             // open editor
             var content = $('.page-rendered');
@@ -98,9 +86,9 @@ function initBtnEdit() {
             editor.show();
 
             // show buttons
-            showEditBtn($('.btn-preview-container'), function() {
-                showEditBtn($('.btn-save-container'), function() {
-                    showEditBtn($('.btn-cancel-container'), function() {
+            showEditBtn($('.btn-preview-container'), function () {
+                showEditBtn($('.btn-save-container'), function () {
+                    showEditBtn($('.btn-cancel-container'), function () {
                         showEditBtn($('.btn-delete-container'));
                     });
                 });
@@ -111,11 +99,7 @@ function initBtnEdit() {
             var raw = editor.find('textarea').val();
             editor.hide();
             preview.show();
-            toggleSpinner(
-                $(this)
-                    .find('[data-fa-i2svg]')
-                    .toggleClass('fa-eye')
-            );
+            toggleSpinner($(this).find('[data-fa-i2svg]').toggleClass('fa-eye'));
 
             $.ajax({
                 type: 'post',
@@ -123,31 +107,23 @@ function initBtnEdit() {
                 data: JSON.stringify({ raw: raw }),
                 contentType: 'application/json',
                 dataType: 'html',
-                complete: function() {
-                    toggleSpinner(
-                        $('.btn-preview')
-                            .find('[data-fa-i2svg]')
-                            .toggleClass('fa-eye')
-                    );
+                complete: function () {
+                    toggleSpinner($('.btn-preview').find('[data-fa-i2svg]').toggleClass('fa-eye'));
                 },
-                success: function(cooked) {
+                success: function (cooked) {
                     preview.html(cooked);
-                }
+                },
             });
 
             editing = false;
             previewing = true;
         } else if ($(this).hasClass('btn-save')) {
             // add spinner
-            toggleSpinner(
-                $(this)
-                    .find('[data-fa-i2svg]')
-                    .toggleClass('fa-save')
-            );
+            toggleSpinner($(this).find('[data-fa-i2svg]').toggleClass('fa-save'));
         }
     });
 
-    $('.btn-cancel').click(function() {
+    $('.btn-cancel').click(function () {
         editing = false;
         previewing = false;
 
@@ -160,8 +136,8 @@ function initBtnEdit() {
         $('.btn-edit-container').css('z-index', '-1000');
 
         // hide buttons
-        var fromSave = function() {
-            hideEditBtn($('.btn-save-container'), function() {
+        var fromSave = function () {
+            hideEditBtn($('.btn-save-container'), function () {
                 hideEditBtn($('.btn-preview-container'));
             });
         };
@@ -169,7 +145,7 @@ function initBtnEdit() {
         var btnDelete = $('.btn-delete-container');
         var btnCancel = $('.btn-cancel-container');
         if (btnDelete.length) {
-            hideEditBtn(btnDelete, function() {
+            hideEditBtn(btnDelete, function () {
                 hideEditBtn(btnCancel, fromSave);
             });
         } else {
@@ -178,7 +154,7 @@ function initBtnEdit() {
     });
 
     // move with scroll
-    $(window).scroll(function() {
+    $(window).scroll(function () {
         var scrollTop = $(this).scrollTop();
         var editHeight = btnEdit.height();
         var page = previewing ? $('.page-preview') : $('.page-content');
@@ -190,11 +166,9 @@ function initBtnEdit() {
         if (scrollTop > bound && pos === 'absolute' && !editing) {
             var newTop = pageTop + editHeight + 20;
             btnEdit.css('position', 'fixed').css('top', newTop);
-            otherBtns.each(function() {
+            otherBtns.each(function () {
                 newTop += 0.5;
-                $(this)
-                    .css('position', 'fixed')
-                    .css('top', newTop);
+                $(this).css('position', 'fixed').css('top', newTop);
             });
         } else if (scrollTop < bound && pos === 'fixed') {
             btnEdit.css('position', 'absolute').css('top', '');
@@ -205,12 +179,10 @@ function initBtnEdit() {
 
 //=====> DOCUMENT READY
 if (ACTIVE_NAV) {
-    $('.nav')
-        .find(ACTIVE_NAV)
-        .addClass('active');
+    $('.nav').find(ACTIVE_NAV).addClass('active');
 }
 
-$(function() {
+$(function () {
     initFlagList();
     initBtnEdit();
 
@@ -221,15 +193,11 @@ $(function() {
     // flag button alert
     var flagMsg = $('.flag-msg');
     if (flagMsg.length) {
-        flagMsg
-            .hide()
-            .fadeIn(1000)
-            .delay(2000)
-            .fadeOut(1000);
+        flagMsg.hide().fadeIn(1000).delay(2000).fadeOut(1000);
     }
 
     // watch button
-    $('.btn-watch').click(function() {
+    $('.btn-watch').click(function () {
         var status = $(this).find('.watch-status');
         var watching = $(this).hasClass('watching');
         if (watching) {
@@ -240,45 +208,38 @@ $(function() {
             $(this).addClass('watching');
         }
 
-        $(this)
-            .find('[data-fa-i2svg]')
-            .toggleClass('fa-eye')
-            .toggleClass('fa-eye-slash');
+        $(this).find('[data-fa-i2svg]').toggleClass('fa-eye').toggleClass('fa-eye-slash');
 
         $.ajax({
             type: 'post',
-            url: decodeHtml('/' + PROJECT_OWNER + '/' + PROJECT_SLUG) + '/watchers/' + !watching
+            url: decodeHtml('/' + PROJECT_OWNER + '/' + PROJECT_SLUG) + '/watchers/' + !watching,
         });
     });
 
     // setup star button
     var increment = ALREADY_STARRED ? -1 : 1;
-    $('.btn-star').click(function() {
+    $('.btn-star').click(function () {
         var starred = $(this).find('.starred');
         starred.html(' ' + (parseInt(starred.text()) + increment).toString());
         $.ajax({
             type: 'post',
-            url: decodeHtml('/' + PROJECT_OWNER + '/' + PROJECT_SLUG) + '/stars/toggle'
+            url: decodeHtml('/' + PROJECT_OWNER + '/' + PROJECT_SLUG) + '/stars/toggle',
         });
 
         if (increment > 0) {
-            $(this)
-                .find('[data-fa-i2svg]')
-                .attr('data-prefix', 'fas');
+            $(this).find('[data-fa-i2svg]').attr('data-prefix', 'fas');
         } else {
-            $(this)
-                .find('[data-fa-i2svg]')
-                .attr('data-prefix', 'far');
+            $(this).find('[data-fa-i2svg]').attr('data-prefix', 'far');
         }
 
         increment *= -1;
     });
 
     if (PROJECT_ID) {
-        apiV2Request('projects/' + PROJECT_ID).then(response => {
+        apiV2Request('projects/' + PROJECT_ID).then((response) => {
             if (response.promoted_versions) {
                 let html = '';
-                response.promoted_versions.forEach(version => {
+                response.promoted_versions.forEach((version) => {
                     const href = window.jsRoutes.controllers.project.Versions.show(
                         PROJECT_OWNER,
                         PROJECT_SLUG,

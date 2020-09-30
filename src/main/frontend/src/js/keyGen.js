@@ -11,17 +11,15 @@ var KEY_TYPE_DEPLOYMENT = 0;
 //=====> HELPER FUNCTIONS
 
 function bindKeyGen(e) {
-    e.click(function() {
-        $(this)
-            .find('.spinner')
-            .toggle();
+    e.click(function () {
+        $(this).find('.spinner').toggle();
         var $this = $(this);
         $.ajax({
             url: '/api/v1/projects/' + namespace + '/keys/new',
             method: 'post',
             data: { 'key-type': KEY_TYPE_DEPLOYMENT },
             dataType: 'json',
-            success: function(key) {
+            success: function (key) {
                 console.log(key);
                 $('.input-key').val(key.value);
                 $this
@@ -33,42 +31,37 @@ function bindKeyGen(e) {
 
                 bindKeyRevoke($this);
             },
-            complete: function() {
+            complete: function () {
                 e.find('.spinner').toggle();
-            }
+            },
         });
     });
 }
 
 function bindKeyRevoke(e) {
-    e.click(function() {
-        $(this)
-            .find('.spinner')
-            .toggle();
+    e.click(function () {
+        $(this).find('.spinner').toggle();
         var $this = $(this);
         $.ajax({
             url: '/api/v1/projects/' + namespace + '/keys/revoke',
             method: 'post',
             data: { id: $(this).data('key-id') },
-            success: function() {
+            success: function () {
                 $('.input-key').val('');
-                $this
-                    .removeClass('btn-key-revoke btn-danger')
-                    .addClass('btn-key-gen btn-info')
-                    .off('click');
+                $this.removeClass('btn-key-revoke btn-danger').addClass('btn-key-gen btn-info').off('click');
                 $this.find('.text').text(keyGenText);
                 bindKeyGen($this);
             },
-            complete: function() {
+            complete: function () {
                 e.find('.spinner').toggle();
-            }
+            },
         });
     });
 }
 
 //=====> DOCUMENT READY
 
-$(function() {
+$(function () {
     bindKeyGen($('.btn-key-gen'));
     bindKeyRevoke($('.btn-key-revoke'));
 });

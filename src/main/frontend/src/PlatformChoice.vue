@@ -5,7 +5,7 @@
             <span>Loading platforms for you...</span>
         </div>
         <div v-show="!loading && selectedPlatform == null">
-            <span v-for="platform in platforms" @click="select(platform)" style="cursor: pointer;" :key="platform.name">
+            <span v-for="platform in platforms" @click="select(platform)" style="cursor: pointer" :key="platform.name">
                 <Tag :name="platform.name" :color="platform.tag" />
             </span>
         </div>
@@ -17,7 +17,7 @@
             <Tag :name="selectedPlatform.name" :color="selectedPlatform.tag" />
             <div>
                 <template v-for="(v, index) in selectedPlatform.possibleVersions" :key="index">
-                    <label :for="'version-' + v" style="margin-left: 10px;">
+                    <label :for="'version-' + v" style="margin-left: 10px">
                         {{ v }}
                     </label>
                     <input form="form-publish" :id="'version-' + v" type="checkbox" name="versions" :value="v" />
@@ -33,22 +33,22 @@ import Tag from './components/Tag';
 export default {
     name: 'platform-choice',
     components: {
-        Tag
+        Tag,
     },
     data() {
         return {
             platforms: [],
             loading: true,
-            selectedPlatform: null
+            selectedPlatform: null,
         };
     },
     methods: {
-        select: function(platform) {
+        select: function (platform) {
             this.selectedPlatform = platform;
         },
-        unselect: function() {
+        unselect: function () {
             this.selectedPlatform = null;
-        }
+        },
     },
     created() {
         const self = this;
@@ -56,14 +56,14 @@ export default {
             url: '/api/v1/platforms',
             dataType: 'json',
 
-            complete: function() {
+            complete: function () {
                 self.loading = false;
             },
 
-            success: function(platforms) {
+            success: function (platforms) {
                 self.platforms = platforms;
-            }
+            },
         });
-    }
+    },
 };
 </script>

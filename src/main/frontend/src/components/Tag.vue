@@ -4,7 +4,7 @@
             v-bind:style="{
                 color: color.foreground,
                 background: color.background,
-                'border-color': color.background
+                'border-color': color.background,
             }"
             class="tag"
         >
@@ -19,7 +19,7 @@ export default {
     props: {
         name: String,
         data: String,
-        color: Object
-    }
+        color: Object,
+    },
 };
 </script>

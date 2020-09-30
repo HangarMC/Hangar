@@ -16,9 +16,9 @@ export default {
                 presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.SwaggerUIStandalonePreset],
                 plugins: [SwaggerUIBundle.plugins.DownloadUrl],
                 layout: 'BaseLayout',
-                requestInterceptor: req => {
+                requestInterceptor: (req) => {
                     if (!req.loadSpec) {
-                        const promise = getApiSession().then(session => {
+                        const promise = getApiSession().then((session) => {
                             req.headers.authorization = 'HangarApi session=' + session;
                             return req;
                         });
@@ -29,10 +29,10 @@ export default {
                     } else {
                         return req;
                     }
-                }
+                },
             });
         };
-    }
+    },
 };
 </script>
 <style lang="scss">

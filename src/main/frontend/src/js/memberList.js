@@ -5,22 +5,14 @@ import { initUserSearch } from '@/js/userSearch';
 
 function updateIndices() {
     var memberList = $('.list-members');
-    memberList.find('.user-new').each(function() {
-        $(this)
-            .find('input')
-            .attr('name', 'users');
-        $(this)
-            .find('select')
-            .attr('name', 'roles');
+    memberList.find('.user-new').each(function () {
+        $(this).find('input').attr('name', 'users');
+        $(this).find('select').attr('name', 'roles');
     });
 
-    memberList.find('.user-changed').each(function() {
-        $(this)
-            .find('input')
-            .attr('name', 'userUps');
-        $(this)
-            .find('select')
-            .attr('name', 'roleUps');
+    memberList.find('.user-changed').each(function () {
+        $(this).find('input').attr('name', 'userUps');
+        $(this).find('select').attr('name', 'roleUps');
     });
 }
 
@@ -33,7 +25,7 @@ function initMember(memberRow) {
     memberRow
         .find('.fa-edit')
         .parent()
-        .click(function(event) {
+        .click(function (event) {
             event.preventDefault();
             var currentRole = getItemContainer($(this))
                 .find('span.minor.float-right')
@@ -45,34 +37,21 @@ function initMember(memberRow) {
 
             // Mark user as changed
             var container = getItemContainer($(this)).addClass('user-changed');
-            var input = $('#select-role')
-                .clone()
-                .removeAttr('id')
-                .attr('form', 'save');
+            var input = $('#select-role').clone().removeAttr('id').attr('form', 'save');
 
-            input.find('option').each(function(i, el) {
-                if (
-                    $(el)
-                        .val()
-                        .endsWith(currentRole)
-                ) {
+            input.find('option').each(function (i, el) {
+                if ($(el).val().endsWith(currentRole)) {
                     $(el).attr('selected', '');
                 }
             });
 
             // Add input
             container.find('span').replaceWith(input.show());
-            var username = container
-                .find('.username')
-                .text()
-                .trim();
+            var username = container.find('.username').text().trim();
             container.append('<input type="hidden" form="save" value="' + username + '" />');
 
             // Remove edit button and update input names
-            $(this)
-                .find('.fa-edit')
-                .parent()
-                .remove();
+            $(this).find('.fa-edit').parent().remove();
             updateIndices();
         });
 
@@ -80,25 +59,20 @@ function initMember(memberRow) {
     memberRow
         .find('.fa-trash')
         .parent()
-        .click(function(event) {
+        .click(function (event) {
             event.preventDefault();
             $('#modal-user-delete')
                 .find('input[name=username]')
-                .val(
-                    getItemContainer($(this))
-                        .find('.username')
-                        .text()
-                        .trim()
-                );
+                .val(getItemContainer($(this)).find('.username').text().trim());
         });
 }
 
 //=====> DOCUMENT READY
 
-$(function() {
+$(function () {
     initMember($('.list-members').find('.list-group-item'));
 
-    initUserSearch(function(result) {
+    initUserSearch(function (result) {
         var alert = $('.member-error');
         var message = alert.find('span');
         if (!result.isSuccess) {
@@ -119,23 +93,15 @@ $(function() {
         }
 
         // Build result row
-        var resultRow = $('#row-user')
-            .clone()
-            .removeAttr('id')
-            .addClass('user-new');
+        var resultRow = $('#row-user').clone().removeAttr('id').addClass('user-new');
         resultRow
             .find('.username')
             .attr('href', '/' + user.username)
             .text(user.username);
-        resultRow
-            .find('input')
-            .attr('form', 'save')
-            .val(user.id);
+        resultRow.find('input').attr('form', 'save').val(user.id);
         resultRow.find('select').attr('form', 'save');
-        resultRow.find('svg').click(function() {
-            $(this)
-                .parent()
-                .remove();
+        resultRow.find('svg').click(function () {
+            $(this).parent().remove();
             updateIndices();
         });
 
@@ -146,9 +112,7 @@ $(function() {
         } else avatarImg.remove();
 
         // Add result to list
-        $('.user-search')
-            .parent()
-            .before(resultRow);
+        $('.user-search').parent().before(resultRow);
         updateIndices();
     });
 

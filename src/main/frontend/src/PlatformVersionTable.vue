@@ -13,7 +13,7 @@
                     <td>{{ platform }}</td>
                     <td>
                         <div class="platform-version" v-for="(v, index) in versions" :key="index">
-                            <span @click="removeVersion(versions, v)" style="cursor:pointer;">
+                            <span @click="removeVersion(versions, v)" style="cursor: pointer">
                                 <i class="fas fa-times" style="color: #bb0400"></i>
                             </span>
                             {{ v }}
@@ -60,20 +60,20 @@ export default {
     props: {
         platforms: {
             type: Object,
-            default: () => {}
-        }
+            default: () => {},
+        },
     },
     data() {
         return {
             loading: false,
             changesMade: false,
             data: [],
-            inputs: {}
+            inputs: {},
         };
     },
     methods: {
         addVersion(platform) {
-            const versions = this.data.find(o => o.platform === platform).versions;
+            const versions = this.data.find((o) => o.platform === platform).versions;
             if (versions.indexOf(this.inputs[platform]) < 0) {
                 versions.push(this.inputs[platform]);
                 this.changesMade = true;
@@ -81,14 +81,14 @@ export default {
             this.inputs[platform] = '';
         },
         removeVersion(versions, version) {
-            remove(versions, v => v === version);
+            remove(versions, (v) => v === version);
             this.changesMade = true;
         },
         save() {
             const additions = {};
             const removals = {};
             for (const platform in this.platforms) {
-                const versions = this.data.find(o => o.platform === platform.toLowerCase()).versions;
+                const versions = this.data.find((o) => o.platform === platform.toLowerCase()).versions;
                 additions[platform] = difference(versions, this.platforms[platform]);
                 removals[platform] = difference(this.platforms[platform], versions);
             }
@@ -107,7 +107,7 @@ export default {
             axios
                 .post('/admin/versions/', {
                     additions,
-                    removals
+                    removals,
                 })
                 .then(() => {
                     this.changesMade = false;
@@ -115,17 +115,17 @@ export default {
                 .finally(() => {
                     this.loading = false;
                 });
-        }
+        },
     },
     created() {
         for (const platform in this.platforms) {
             this.inputs[platform] = '';
             this.data.push({
                 platform: platform.toLowerCase(),
-                versions: [...this.platforms[platform]]
+                versions: [...this.platforms[platform]],
             });
         }
-    }
+    },
 };
 </script>
 <style lang="scss" scoped>

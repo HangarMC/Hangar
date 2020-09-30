@@ -7,24 +7,17 @@ const CURRENT_PAGE = window.CURRENT_PAGE || 0;
 
 //=====> DOCUMENT READY
 
-$(function() {
+$(function () {
     $('.table-users')
         .find('thead')
         .find('td:not(:first-child)')
-        .click(function() {
-            var sort = $(this)
-                .text()
-                .toLowerCase()
-                .trim();
+        .click(function () {
+            var sort = $(this).text().toLowerCase().trim();
             var direction = '';
             var thisObj = $(this);
             if (thisObj.hasClass('user-sort')) {
                 // Change direction
-                direction = $(this)
-                    .find('svg')
-                    .hasClass('fa-chevron-up')
-                    ? '-'
-                    : '';
+                direction = $(this).find('svg').hasClass('fa-chevron-up') ? '-' : '';
             }
             var start = thisObj.data('list');
             var url = '/' + start + '?sort=' + direction + sort;

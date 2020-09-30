@@ -8,7 +8,7 @@ var PROJECT_SLUG = window.PROJECT_SLUG;
 
 //=====> DOCUMENT READY
 
-$(function() {
+$(function () {
     var form = $('#form-icon');
     var btn = form.find('.btn-upload');
     var url = sanitize('/' + PROJECT_OWNER + '/' + PROJECT_SLUG + '/icon');
@@ -19,18 +19,14 @@ $(function() {
         btn.prop('disabled', input[0].files.length === 0);
     }
 
-    input.on('change', function() {
+    input.on('change', function () {
         updateButton();
     });
 
     // Upload button
-    btn.click(function(e) {
+    btn.click(function (e) {
         e.preventDefault();
-        toggleSpinner(
-            $(this)
-                .find('[data-fa-i2svg]')
-                .toggleClass('fa-upload')
-        );
+        toggleSpinner($(this).find('[data-fa-i2svg]').toggleClass('fa-upload'));
         $.ajax({
             url: url,
             type: 'post',
@@ -38,42 +34,36 @@ $(function() {
             cache: false,
             contentType: false,
             processData: false,
-            success: function() {
+            success: function () {
                 preview.attr('src', url + '/pending?' + performance.now());
-                toggleSpinner(
-                    $('#form-icon .btn-upload')
-                        .find('[data-fa-i2svg]')
-                        .toggleClass('fa-upload')
-                );
+                toggleSpinner($('#form-icon .btn-upload').find('[data-fa-i2svg]').toggleClass('fa-upload'));
                 $('#update-icon').val('true');
                 input.val('');
                 updateButton();
                 $('.setting-icon').prepend('<div class="alert alert-info">Don\'t forget to save changes!</div>');
-            }
+            },
         });
     });
 
     // Reset button
     var reset = form.find('.btn-reset');
-    reset.click(function(e) {
+    reset.click(function (e) {
         e.preventDefault();
-        $(this)
-            .text('')
-            .append('<i class="fas fa-spinner fa-spin"></i>');
+        $(this).text('').append('<i class="fas fa-spinner fa-spin"></i>');
         $.ajax({
             url: url + '/reset',
             type: 'post',
             cache: false,
             contentType: 'application/json',
-            complete: function() {
+            complete: function () {
                 reset.empty().text('Reset');
             },
-            success: function() {
+            success: function () {
                 preview.attr('src', url);
                 input.val('');
                 updateButton();
                 $('.setting-icon .alert').detach();
-            }
+            },
         });
     });
 });

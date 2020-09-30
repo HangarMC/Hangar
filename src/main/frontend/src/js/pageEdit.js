@@ -4,25 +4,21 @@ import { go, KEY_ENTER, slugify } from '@/utils';
 
 //=====> DOCUMENT READY
 
-$(function() {
+$(function () {
     var modal = $('#new-page');
-    modal.on('shown.bs.modal', function() {
-        $(this)
-            .find('input')
-            .focus();
+    modal.on('shown.bs.modal', function () {
+        $(this).find('input').focus();
     });
 
-    modal.find('input').keydown(function(event) {
+    modal.find('input').keydown(function (event) {
         if (event.keyCode === KEY_ENTER) {
             event.preventDefault();
             $('#continue-page').click();
         }
     });
 
-    $('#continue-page').click(function() {
-        var pageName = $('#page-name')
-            .val()
-            .trim();
+    $('#continue-page').click(function () {
+        var pageName = $('#page-name').val().trim();
         var url = '/' + projectOwner + '/' + projectSlug + '/pages/' + slugify(pageName) + '/edit';
         var parent = $('.select-parent').find(':selected');
         var parentId = null;
@@ -48,19 +44,16 @@ $(function() {
             data: {
                 'parent-id': parentId,
                 content: '# ' + pageName + '\n',
-                name: pageName
+                name: pageName,
             },
-            success: function() {
+            success: function () {
                 go(url);
             },
-            error: function(err) {
+            error: function (err) {
                 console.log(err);
                 console.log('error');
-                $('#new-page-label-error')
-                    .show()
-                    .delay(2000)
-                    .fadeOut();
-            }
+                $('#new-page-label-error').show().delay(2000).fadeOut();
+            },
         });
     });
 });

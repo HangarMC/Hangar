@@ -9,14 +9,14 @@ export default {
     props: {
         src: {
             type: String,
-            required: true
+            required: true,
         },
         href: String,
         extraClasses: String,
-        name: String
+        name: String,
     },
     computed: {
-        linkUrl: function() {
+        linkUrl: function () {
             if (this.href != null) {
                 return this.href;
             } else if (this.name != null) {
@@ -24,7 +24,7 @@ export default {
             } else {
                 return '#';
             }
-        }
-    }
+        },
+    },
 };
 </script>

@@ -14,14 +14,14 @@ import ProjectList from './components/ProjectList';
 
 export default {
     components: {
-        ProjectList
+        ProjectList,
     },
     data() {
         return {
             page: 1,
             limit: 5,
-            user: window.USERNAME
+            user: window.USERNAME,
         };
-    }
+    },
 };
 </script>

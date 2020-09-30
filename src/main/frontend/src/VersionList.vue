@@ -33,7 +33,7 @@
                         <div class="row">
                             <div
                                 class="col-6 col-sm-3"
-                                :set="(channel = version.tags.find(filterTag => filterTag.name === 'Channel'))"
+                                :set="(channel = version.tags.find((filterTag) => filterTag.name === 'Channel'))"
                             >
                                 <div class="row">
                                     <div class="col-12">
@@ -51,7 +51,7 @@
                             </div>
                             <div class="col-6 col-sm-3">
                                 <Tag
-                                    v-for="tag in version.tags.filter(filterTag => filterTag.name !== 'Channel')"
+                                    v-for="tag in version.tags.filter((filterTag) => filterTag.name !== 'Channel')"
                                     v-bind:key="tag.name + ':' + tag.data"
                                     v-bind="tag"
                                 ></Tag>
@@ -67,9 +67,7 @@
                                         <span v-if="version.file_info.size_bytes">
                                             {{ formatSize(version.file_info.size_bytes) }}
                                         </span>
-                                        <span v-else>
-                                            (external)
-                                        </span>
+                                        <span v-else> (external) </span>
                                     </div>
                                 </div>
                             </div>
@@ -112,7 +110,7 @@ import { apiV2Request } from '@/js/apiRequests';
 export default {
     components: {
         Tag,
-        Pagination
+        Pagination,
     },
     data() {
         return {
@@ -123,13 +121,13 @@ export default {
             versions: [],
             totalVersions: 0,
             canUpload: false,
-            loading: true
+            loading: true,
         };
     },
     created() {
         this.update();
         apiV2Request('permissions', 'GET', { author: window.PROJECT_OWNER, slug: window.PROJECT_SLUG }).then(
-            response => {
+            (response) => {
                 this.canUpload = response.permissions.includes('create_version');
             }
         );
@@ -145,8 +143,8 @@ export default {
         update() {
             apiV2Request('projects/' + this.projectOwner + '/' + this.projectSlug + '/versions', 'GET', {
                 limit: this.limit,
-                offset: this.offset
-            }).then(response => {
+                offset: this.offset,
+            }).then((response) => {
                 this.versions = response.result;
                 this.totalVersions = response.pagination.count;
                 this.loading = false;
@@ -165,7 +163,7 @@ export default {
             const parser = new DOMParser();
             const dom = parser.parseFromString('<!doctype html><body>' + htmlEncoded, 'text/html');
             return dom.body.textContent;
-        }
+        },
     },
     computed: {
         routes() {
@@ -179,8 +177,8 @@ export default {
         },
         total() {
             return Math.ceil(this.totalVersions / this.limit);
-        }
-    }
+        },
+    },
 };
 </script>
 

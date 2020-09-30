@@ -6,13 +6,13 @@ import { toggleSpinner } from '@/utils';
 function tooltip(selector, title) {
     $(selector).tooltip({
         placement: 'right',
-        title: title
+        title: title,
     });
 }
 
 function success(selector, then) {
     // Simulate loading :P
-    setTimeout(function() {
+    setTimeout(function () {
         toggleSpinner($(selector));
         $(selector).addClass('fa-check-circle');
         then();
@@ -30,16 +30,16 @@ function checkId(name, owner, slug) {
     $.ajax({
         url: '/api/v1/projects/' + owner + '/' + slug,
         statusCode: {
-            404: function() {
-                success('.id-status', function() {
+            404: function () {
+                success('.id-status', function () {
                     checkName(name, true, owner, slug);
                 });
             },
-            200: function() {
+            200: function () {
                 failed('.id-status', 'That plugin ID is not available!');
                 checkName(name, false, owner, slug);
-            }
-        }
+            },
+        },
     });
 }
 
@@ -53,23 +53,21 @@ function checkName(name, idSuccess, owner, slug) {
     $.ajax({
         url: '/' + owner + '/' + slug,
         statusCode: {
-            404: function() {
-                success('.name-status', function() {
+            404: function () {
+                success('.name-status', function () {
                     updateContinueButton(idSuccess, true);
                 });
             },
-            200: function() {
+            200: function () {
                 failed('.name-status', 'You already have a project of this name!');
                 updateContinueButton(idSuccess, false);
-            }
-        }
+            },
+        },
     });
 }
 
 function updateContinueButton(idSuccess, nameSuccess) {
-    var btn = $('.continue-btn')
-        .hide()
-        .removeClass('btn-default');
+    var btn = $('.continue-btn').hide().removeClass('btn-default');
     var icon = toggleSpinner(btn.find('[data-fa-i2svg]'));
     if (idSuccess && nameSuccess) {
         btn.addClass('btn-primary').prop('disabled', false);

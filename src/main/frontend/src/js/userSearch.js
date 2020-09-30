@@ -8,7 +8,7 @@ export function initUserSearch(callback) {
     var input = search.find('input');
 
     // Disable button with no input
-    input.on('input', function() {
+    input.on('input', function () {
         $(this)
             .next()
             .find('.btn')
@@ -16,53 +16,44 @@ export function initUserSearch(callback) {
     });
 
     // Catch enter key
-    input.on('keypress', function(event) {
+    input.on('keypress', function (event) {
         if (event.keyCode === KEY_ENTER) {
             event.preventDefault();
-            $(this)
-                .next()
-                .find('.btn')
-                .click();
+            $(this).next().find('.btn').click();
         }
     });
 
     // Search for user
-    search.find('.btn-search').click(function() {
-        const input = $(this)
-            .closest('.user-search')
-            .find('input');
+    search.find('.btn-search').click(function () {
+        const input = $(this).closest('.user-search').find('input');
         const username = input.val().trim();
         if (username !== '') {
-            toggleSpinner(
-                $(this)
-                    .find('[data-fa-i2svg]')
-                    .toggleClass('fa-search')
-            );
+            toggleSpinner($(this).find('[data-fa-i2svg]').toggleClass('fa-search'));
             $.ajax({
                 url: '/api/v1/users/' + username,
                 dataType: 'json',
 
-                complete: function() {
+                complete: function () {
                     input.val('');
                     toggleSpinner($('.user-search .btn-search [data-fa-i2svg]').toggleClass('fa-search'));
                     $('.user-search .btn-search').prop('disabled', true);
                 },
 
-                error: function() {
+                error: function () {
                     callback({
                         isSuccess: false,
                         username: username,
-                        user: null
+                        user: null,
                     });
                 },
 
-                success: function(user) {
+                success: function (user) {
                     callback({
                         isSuccess: true,
                         username: username,
-                        user: user
+                        user: user,
                     });
-                }
+                },
             });
         }
     });

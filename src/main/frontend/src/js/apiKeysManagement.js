@@ -12,8 +12,8 @@ var DELETE_KEY = window.DELETE_KEY;
 //=====> HELPER FUNCTIONS
 
 function deleteKey(name, row) {
-    return function() {
-        apiV2Request('keys?name=' + name, 'DELETE').then(function() {
+    return function () {
+        apiV2Request('keys?name=' + name, 'DELETE').then(function () {
             row.remove();
         });
     };
@@ -27,25 +27,21 @@ function showError(error) {
 
 //=====> DOCUMENT READY
 
-$(function() {
-    $('.api-key-row').each(function() {
+$(function () {
+    $('.api-key-row').each(function () {
         var row = $(this);
         var name = row.find('.api-key-name').text();
         row.find('.api-key-row-delete-button').click(deleteKey(name, row));
     });
 
-    $('#button-create-new-key').click(function() {
+    $('#button-create-new-key').click(function () {
         var checked = [];
         $('#api-create-key-form')
             .find('input[type=checkbox]')
             .filter("input[id^='perm.']")
             .filter(':checked')
-            .each(function() {
-                checked.push(
-                    $(this)
-                        .attr('id')
-                        .substr('perm.'.length)
-                );
+            .each(function () {
+                checked.push($(this).attr('id').substr('perm.'.length));
             });
         var name = $('#keyName').val();
 
@@ -70,10 +66,10 @@ $(function() {
 
             var data = {
                 permissions: checked,
-                name: name
+                name: name,
             };
 
-            apiV2Request('keys', 'POST', data).then(function(newKey) {
+            apiV2Request('keys', 'POST', data).then(function (newKey) {
                 $('#keyAlert').hide();
                 var namedPerms = '';
 
@@ -86,11 +82,7 @@ $(function() {
                 var row = $('<tr>');
                 var token = newKey.key;
 
-                row.append(
-                    $('<th>')
-                        .addClass('api-key-name')
-                        .text(name)
-                );
+                row.append($('<th>').addClass('api-key-name').text(name));
                 row.append($('<th>').text(token));
                 row.append($('<th>'));
                 row.append($('<th>').text(namedPerms));
