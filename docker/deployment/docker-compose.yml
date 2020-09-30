@@ -85,6 +85,8 @@ services:
       DJANGO_SETTINGS_MODULE: "spongeauth.settings.prod"
     networks:
       - web
+  redis:
+    image: redis:6.0.6
 
 networks:
   web:
