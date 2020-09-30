@@ -33,6 +33,9 @@ import io.papermc.hangar.service.VersionService;
 import io.papermc.hangar.service.project.FlagService;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.AlertUtil;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -54,6 +57,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -64,6 +68,8 @@ import java.util.stream.Collectors;
 
 @Controller
 public class ApplicationController extends HangarController {
+
+    private static final Logger log = LoggerFactory.getLogger(ApplicationController.class);
 
     private final HangarDao<PlatformVersionsDao> platformVersionsDao;
     private final UserService userService;
@@ -102,17 +108,20 @@ public class ApplicationController extends HangarController {
         this.hangarConfig = hangarConfig;
         this.request = request;
         this.statsService = statsService;
-
-        initPlatformVersions();
     }
 
     // TODO remove
+    @PostConstruct
     private void initPlatformVersions() {
-        Map<Platform, List<String>> platformVersions = platformVersionsDao.get().getVersions();
-        if (platformVersions.isEmpty()) {
-            platformVersionsDao.get().insert(paperVersions.stream().map(v -> new PlatformVersionsTable(Platform.PAPER, v)).collect(Collectors.toList()));
-            platformVersionsDao.get().insert(velocityVersions.stream().map(v -> new PlatformVersionsTable(Platform.VELOCITY, v)).collect(Collectors.toList()));
-            platformVersionsDao.get().insert(waterfallVersions.stream().map(v -> new PlatformVersionsTable(Platform.WATERFALL, v)).collect(Collectors.toList()));
+        try {
+            Map<Platform, List<String>> platformVersions = platformVersionsDao.get().getVersions();
+            if (platformVersions.isEmpty()) {
+                platformVersionsDao.get().insert(paperVersions.stream().map(v -> new PlatformVersionsTable(Platform.PAPER, v)).collect(Collectors.toList()));
+                platformVersionsDao.get().insert(velocityVersions.stream().map(v -> new PlatformVersionsTable(Platform.VELOCITY, v)).collect(Collectors.toList()));
+                platformVersionsDao.get().insert(waterfallVersions.stream().map(v -> new PlatformVersionsTable(Platform.WATERFALL, v)).collect(Collectors.toList()));
+            }
+        } catch (Exception ex) {
+            log.warn("Error while initializing platform versions", ex);
         }
     }
 
