@@ -13,7 +13,7 @@
     "@fortawesome/fontawesome-svg-core": "1.2.31",
     "@fortawesome/free-brands-svg-icons": "5.14.0",
     "@fortawesome/free-regular-svg-icons": "5.15.0",
-    "@fortawesome/free-solid-svg-icons": "5.14.0",
+    "@fortawesome/free-solid-svg-icons": "5.15.0",
     "axios": "^0.20.0",
     "bootstrap": "^4.5.2",
     "chart.js": "^2.9.3",
