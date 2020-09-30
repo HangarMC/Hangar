@@ -30,10 +30,8 @@
 
         <!-- dependencies -->
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
-        <freemarker.version>2.3.30</freemarker.version>
         <freemarker-java8.version>2.0.0</freemarker-java8.version>
         <flexmark-all.version>0.62.2</flexmark-all.version>
-        <snakeyaml.version>1.27</snakeyaml.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
 
         <apache-commons-lang.version>3.11</apache-commons-lang.version>
@@ -121,14 +119,12 @@
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>${snakeyaml.version}</version>
         </dependency>
 
         <!-- template engine -->
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
-            <version>${freemarker.version}</version>
         </dependency>
         <!-- java 8 objects in freemarker -->
         <dependency>
@@ -167,7 +163,6 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>7.0.0</version>
         </dependency>
 
         <!-- markdown -->
