@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 
 @Service
 public class RoleService {
@@ -48,19 +49,23 @@ public class RoleService {
         this.userOrganizationRolesDao = userOrganizationRolesDao;
         this.organizationMembersDao = organizationMembersDao;
         this.orgService = orgService;
-        init();
     }
 
+    @PostConstruct
     public void init() {
-        RolesTable admin = roleDao.get().getById(1);
-        if (admin != null && admin.getRole() == Role.HANGAR_ADMIN) {
-            log.info("Skipping role init");
-            return;
-        }
+        try {
+            RolesTable admin = roleDao.get().getById(1);
+            if (admin != null && admin.getRole() == Role.HANGAR_ADMIN) {
+                log.info("Skipping role init");
+                return;
+            }
 
-        log.info("Initializing roles (first start only)");
-        for (Role role : Role.values()) {
-            roleDao.get().insert(RolesTable.fromRole(role));
+            log.info("Initializing roles (first start only)");
+            for (Role role : Role.values()) {
+                roleDao.get().insert(RolesTable.fromRole(role));
+            }
+        } catch (Exception ex) {
+            log.warn("Error while role initialization!", ex);
         }
     }
 
