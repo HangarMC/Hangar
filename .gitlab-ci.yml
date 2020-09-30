@@ -33,7 +33,7 @@ deploy:
   stage: deploy
   image: docker:latest
   variables:
-    SERVICE_NAME: hangarnew
+    SERVICE_NAME: hangar
   services:
     - docker:dind
   before_script:
