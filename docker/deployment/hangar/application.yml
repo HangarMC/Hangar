@@ -9,6 +9,7 @@ fake-user:
 
 hangar:
   debug: true
+  use-webpack: false
   auth-url: "https://hangar-auth-new.minidigger.me"
   base-url: "https://hangar-new.minidigger.me"
 
