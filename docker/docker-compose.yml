@@ -95,6 +95,7 @@ services:
       DB_USER: "hangarauth"
       DB_PASSWORD: "hangarauth"
       DB_HOST: "db"
+      REDIS_HOST: "redis"
       SSO_ENDPOINT_hangar: "{ 'sync_sso_endpoint': ('http://app:8080/api/sync_sso'), 'sso_secret': 'changeme', 'api_key': 'changeme' }"
       DEBUG: "true"
       DJANGO_SETTINGS_MODULE: "spongeauth.settings.prod"

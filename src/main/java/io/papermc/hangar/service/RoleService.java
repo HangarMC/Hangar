@@ -3,36 +3,28 @@ package io.papermc.hangar.service;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.OrganizationMembersDao;
 import io.papermc.hangar.db.dao.ProjectMembersDao;
-import io.papermc.hangar.db.dao.RoleDao;
 import io.papermc.hangar.db.dao.UserGlobalRolesDao;
 import io.papermc.hangar.db.dao.UserOrganizationRolesDao;
 import io.papermc.hangar.db.dao.UserProjectRolesDao;
 import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.ProjectMembersTable;
 import io.papermc.hangar.db.model.ProjectsTable;
-import io.papermc.hangar.db.model.RolesTable;
 import io.papermc.hangar.db.model.UserGlobalRolesTable;
 import io.papermc.hangar.db.model.UserOrganizationRolesTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.viewhelpers.OrgMember;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 
 @Service
 public class RoleService {
 
-    private static final Logger log = LoggerFactory.getLogger(RoleService.class);
-
-    private final HangarDao<RoleDao> roleDao;
     private final HangarDao<UserProjectRolesDao> userProjectRolesDao;
     private final HangarDao<ProjectMembersDao> projectMembersDao;
     private final HangarDao<UserGlobalRolesDao> userGlobalRolesDao;
@@ -41,32 +33,13 @@ public class RoleService {
     private final OrgService orgService;
 
     @Autowired
-    public RoleService(HangarDao<RoleDao> roleDao, HangarDao<UserProjectRolesDao> userProjectRolesDao, HangarDao<ProjectMembersDao> projectMembersDao, HangarDao<UserGlobalRolesDao> userGlobalRolesDao, HangarDao<UserOrganizationRolesDao> userOrganizationRolesDao, HangarDao<OrganizationMembersDao> organizationMembersDao, OrgService orgService) {
-        this.roleDao = roleDao;
+    public RoleService(HangarDao<UserProjectRolesDao> userProjectRolesDao, HangarDao<ProjectMembersDao> projectMembersDao, HangarDao<UserGlobalRolesDao> userGlobalRolesDao, HangarDao<UserOrganizationRolesDao> userOrganizationRolesDao, HangarDao<OrganizationMembersDao> organizationMembersDao, OrgService orgService) {
         this.userProjectRolesDao = userProjectRolesDao;
         this.projectMembersDao = projectMembersDao;
         this.userGlobalRolesDao = userGlobalRolesDao;
         this.userOrganizationRolesDao = userOrganizationRolesDao;
         this.organizationMembersDao = organizationMembersDao;
         this.orgService = orgService;
-    }
-
-    @PostConstruct
-    public void init() {
-        try {
-            RolesTable admin = roleDao.get().getById(1);
-            if (admin != null && admin.getRole() == Role.HANGAR_ADMIN) {
-                log.info("Skipping role init");
-                return;
-            }
-
-            log.info("Initializing roles (first start only)");
-            for (Role role : Role.values()) {
-                roleDao.get().insert(RolesTable.fromRole(role));
-            }
-        } catch (Exception ex) {
-            log.warn("Error while role initialization!", ex);
-        }
     }
 
     public UserProjectRolesTable getUserProjectRole(long id) {

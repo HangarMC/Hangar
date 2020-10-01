@@ -33,9 +33,6 @@ import io.papermc.hangar.service.VersionService;
 import io.papermc.hangar.service.project.FlagService;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.AlertUtil;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -57,7 +54,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -68,8 +64,6 @@ import java.util.stream.Collectors;
 
 @Controller
 public class ApplicationController extends HangarController {
-
-    private static final Logger log = LoggerFactory.getLogger(ApplicationController.class);
 
     private final HangarDao<PlatformVersionsDao> platformVersionsDao;
     private final UserService userService;
@@ -87,11 +81,6 @@ public class ApplicationController extends HangarController {
 
     private final HttpServletRequest request;
 
-    // TODO remove
-    private final List<String> paperVersions = List.of("1.8", "1.9", "1.10", "1.11", "1.12", "1.13", "1.14", "1.15", "1.16");
-    private final List<String> waterfallVersions = List.of("1.11", "1.11", "1.12", "1.13", "1.14", "1.15", "1.16");
-    private final List<String> velocityVersions = List.of("1.0", "1.1");
-
     @Autowired
     public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, StatusZ statusZ, ObjectMapper mapper, HangarConfig hangarConfig, HttpServletRequest request) {
         this.platformVersionsDao = platformVersionsDao;
@@ -108,21 +97,6 @@ public class ApplicationController extends HangarController {
         this.hangarConfig = hangarConfig;
         this.request = request;
         this.statsService = statsService;
-    }
-
-    // TODO remove
-    @PostConstruct
-    private void initPlatformVersions() {
-        try {
-            Map<Platform, List<String>> platformVersions = platformVersionsDao.get().getVersions();
-            if (platformVersions.isEmpty()) {
-                platformVersionsDao.get().insert(paperVersions.stream().map(v -> new PlatformVersionsTable(Platform.PAPER, v)).collect(Collectors.toList()));
-                platformVersionsDao.get().insert(velocityVersions.stream().map(v -> new PlatformVersionsTable(Platform.VELOCITY, v)).collect(Collectors.toList()));
-                platformVersionsDao.get().insert(waterfallVersions.stream().map(v -> new PlatformVersionsTable(Platform.WATERFALL, v)).collect(Collectors.toList()));
-            }
-        } catch (Exception ex) {
-            log.warn("Error while initializing platform versions", ex);
-        }
     }
 
     @GetMapping("/")

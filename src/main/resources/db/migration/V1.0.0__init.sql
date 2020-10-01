@@ -1,6 +1,3 @@
-create extension hstore;
-create extension pgcrypto;
-
 create type role_category as enum ('global', 'project', 'organization');
 
 alter type role_category owner to hangar;
