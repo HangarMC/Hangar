@@ -13,11 +13,25 @@
                     {{ tag.name }}
                 </span>
             </div>
-            <div></div>
+            <div v-if="!empty(platforms)">
+                <template v-for="version in platforms[platform].possibleVersions" :key="version">
+                    <label :for="`version-${version}`">{{ version }}</label>
+                    <input
+                        form="form-publish"
+                        :id="`version-${version}`"
+                        type="checkbox"
+                        name="versions"
+                        :value="version"
+                        :checked="tag.data && tag.data.indexOf(version) > -1"
+                    />
+                    <!--                    <template v-if="(index + 1) % 5 === 0" v-html="</div><div>"> </template>-->
+                </template>
+            </div>
         </template>
     </div>
 </template>
 <script>
+import { isEmpty } from 'lodash-es';
 import axios from 'axios';
 
 export default {
@@ -28,18 +42,24 @@ export default {
     data() {
         return {
             tagsArray: [],
+            platforms: {},
         };
     },
     created() {
-        console.log(this.tags);
         for (const obj of this.tags) {
-            console.log(obj);
             this.tagsArray.push([Object.keys(obj)[0], obj[Object.keys(obj)[0]]]);
         }
-        console.log(this.tagsArray);
         axios.get('/api/v1/platforms').then((res) => {
-            console.log(res.data);
+            for (const platform of res.data) {
+                this.platforms[platform.name.toUpperCase()] = platform;
+            }
+            console.log(this.platforms);
         });
+    },
+    methods: {
+        empty(obj) {
+            return isEmpty(obj);
+        },
     },
 };
 </script>
