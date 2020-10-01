@@ -35,7 +35,8 @@ services:
     image: registry.gitlab.com/minidigger/hangar2/db:latest
     build: ./db
     environment:
-      POSTGRES_MULTIPLE_DATABASES: hangar,hangarauth
+      POSTGRES_MULTIPLE_DATABASES: hangarauth
+      POSTGRES_DB: hangar
       POSTGRES_USER: "user"
       POSTGRES_PASSWORD: "password"
     ports:
