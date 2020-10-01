@@ -37,8 +37,8 @@ services:
     environment:
       POSTGRES_MULTIPLE_DATABASES: hangarauth
       POSTGRES_DB: hangar
-      POSTGRES_USER: "user"
-      POSTGRES_PASSWORD: "password"
+      POSTGRES_USER: hangar
+      POSTGRES_PASSWORD: hangar
     ports:
       - "2345:5432" # pls dont abuse open port :/
     volumes:
@@ -92,7 +92,7 @@ services:
       EMAIL_TLS: "false"
       EMAIL_HOST_USER: "dum"
       EMAIL_HOST_PASSWORD: "dum"
-      DB_NAME: "hangar"
+      DB_NAME: "hangarauth"
       DB_USER: "hangar"
       DB_PASSWORD: "hangar"
       DB_HOST: "db"
