@@ -59,25 +59,26 @@
                 <@renderApprovalList needsApproval />
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12 header-flags">
-                <h2>Awaiting Changes</h2>
-            </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 header-flags">
+            <h2>Awaiting Changes</h2>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title float-left">Awaiting Changes</h4>
-                        <div class="clearfix"></div>
-                    </div>
-                    <@renderApprovalList waitingProjects />
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title float-left">Awaiting Changes</h4>
+                    <div class="clearfix"></div>
                 </div>
+                <@renderApprovalList waitingProjects />
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="modal-visibility-comment" tabindex="-1" role="dialog" aria-labelledby="modal-visibility-comment">
+    <div class="modal fade" id="modal-visibility-comment" tabindex="-1" role="dialog"
+         aria-labelledby="modal-visibility-comment">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -91,7 +92,9 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-default">Close</button>
-                    <button class="btn btn-visibility-comment-submit btn-primary"><i class="fas fa-pencil-alt"></i> Submit</button>
+                    <button class="btn btn-visibility-comment-submit btn-primary"><i class="fas fa-pencil-alt"></i>
+                        Submit
+                    </button>
                 </div>
             </div>
         </div>

@@ -6,8 +6,8 @@ services:
     environment:
       POSTGRES_MULTIPLE_DATABASES: hangarauth
       POSTGRES_DB: hangar
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: 'changeme'
+      POSTGRES_USER: hangar
+      POSTGRES_PASSWORD: 'hangar'
     ports:
       - "5432:5432"
     volumes:
