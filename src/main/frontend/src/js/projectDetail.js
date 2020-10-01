@@ -6,7 +6,7 @@ import { decodeHtml, numberWithCommas, toggleSpinner } from '@/utils';
 
 const PROJECT_OWNER = window.PROJECT_OWNER;
 const PROJECT_SLUG = window.PROJECT_SLUG;
-const PROJECT_ID = window.PROJECT_ID;
+const NAMESPACE = window.NAMESPACE;
 const ALREADY_STARRED = window.ALREADY_STARRED;
 
 const ACTIVE_NAV = window.ACTIVE_NAV;
@@ -235,8 +235,8 @@ $(function () {
         increment *= -1;
     });
 
-    if (PROJECT_ID) {
-        apiV2Request('projects/' + PROJECT_ID).then((response) => {
+    if (NAMESPACE) {
+        apiV2Request('projects/' + NAMESPACE).then((response) => {
             if (response.promoted_versions) {
                 let html = '';
                 response.promoted_versions.forEach((version) => {

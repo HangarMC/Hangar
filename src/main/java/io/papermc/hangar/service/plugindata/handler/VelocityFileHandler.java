@@ -29,7 +29,7 @@ public class VelocityFileHandler extends FileTypeHandler {
             return result;
         }
 
-        String version = (String) data.get("version");
+        String version = String.valueOf(data.get("version"));
         if (version != null) {
             result.add(new DataValue.StringDataValue("version", version));
         }

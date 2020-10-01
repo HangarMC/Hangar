@@ -16,7 +16,7 @@ Base template for Project overview.
         <script <#-- @CSPNonce.attr -->>
           window.PROJECT_OWNER = "${p.project.ownerName}";
           window.PROJECT_SLUG = "${p.project.slug}";
-          window.PROJECT_ID = "${p.project.pluginId}";
+          window.NAMESPACE = "${p.project.ownerName}/${p.project.slug}";
           window.ALREADY_STARRED = ${sp.starred?c};
 
           window.ACTIVE_NAV = "${active}";

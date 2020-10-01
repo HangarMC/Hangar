@@ -121,7 +121,7 @@
                                         <#if version.dependencies??>
                                             <div class="float-right" id="upload-platform-tags">
                                                 <#list version.dependenciesAsGhostTags as pair>
-                                                    <@projectTag.tagTemplate @helper["io.papermc.hangar.model.viewhelpers.ViewTag"].fromVersionTag(pair.right) pair.left "form-publish" />
+                                                    <@projectTag.tagTemplate @helper["io.papermc.hangar.model.viewhelpers.ViewTag"].fromVersionTag(pair.getRight()) pair.left "form-publish" />
                                                 </#list>
                                             </div>
                                         <#else>
