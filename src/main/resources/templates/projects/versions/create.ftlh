@@ -13,13 +13,14 @@
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "js/channelManage.js" />"></script>
 <#--    <script type="text/javascript" src="<@hangar.url "js/pluginUpload.js" />"></script>-->
-    <script type="text/javascript" src="<@hangar.url "js/projectDetail.js" />"></script>
+<#--    <script type="text/javascript" src="<@hangar.url "js/projectDetail.js" />"></script>-->
     <#if pending?? && !pending.dependencies??>
         <script type="text/javascript" src="<@hangar.url "js/platform-choice.js" />"></script>
     </#if>
     <script>
              window.DEFAULT_COLOR = '${config.channels.colorDefault.hex}';
-             window.VERSION_UPLOAD_ROUTE = '${Routes.VERSIONS_UPLOAD.getRouteUrl(ownerName, projectSlug)}'
+             window.OWNER_NAME = '${ownerName}';
+             window.PROJECT_SLUG = '${projectSlug}';
              window.PENDING_VERSION = ${mapper.valueToTree(pending)};
              window.CHANNELS = ${mapper.valueToTree(channels)};
              window.FORUM_SYNC = ${forumSync?c};
@@ -27,9 +28,12 @@
     <script type="text/javascript" src="<@hangar.url "js/versionCreateChannelNew.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "js/create-version.js" />"></script>
 </#assign>
+<#assign styleVar>
+    <link rel="stylesheet" href="<@hangar.url "css/create-version.css" />">
+</#assign>
 
 <#assign message><@spring.message "version.create.pageTitle" /></#assign>
-<@base.base title="${message}" additionalScripts=scriptsVar>
+<@base.base title="${message}" additionalScripts=scriptsVar additionalStyling=styleVar>
 
     <div class="row">
         <div class="${mainWidth}">
@@ -46,7 +50,7 @@
                     </div>
                     <div id="create-version"></div>
                     <#--<#if pending??>
-                        &lt;#&ndash; Show plugin meta &ndash;&gt;
+                        &lt;#&ndash;Show plugin meta&ndash;&gt;
                         <#assign version = pending>
                         <div class="plugin-meta">
                             <table class="plugin-meta-table">
@@ -107,7 +111,7 @@
                                 <tr>
                                     <td><strong>Channel</strong></td>
                                     <td class="form-inline">
-                                        &lt;#&ndash; Show channel selector if old project, editor if new project &ndash;&gt;
+                                        &lt;#&ndash;Show channel selector if old project, editor if new project&ndash;&gt;
                                         <select id="select-channel" form="form-publish" name="channel-input" class="form-control">
                                         <#list channels as channel>
                                             <option value="${channel.name}" data-color="${channel.color.hex}" <#if channel.name == version.channelName>selected</#if>>
@@ -167,7 +171,7 @@
                                     </td>
                                     <td class="rv">
                                         <div class="form-check">
-                                            &lt;#&ndash; @ftlvariable name="forumSync" type="java.lang.Boolean" &ndash;&gt;
+                                            &lt;#&ndash;@ftlvariable name="forumSync" type="java.lang.Boolean"&ndash;&gt;
                                             <input id="create-forum-post-version" class="form-check-input" form="form-publish" name="forum-post" type="checkbox" <#if forumSync> checked </#if> value="true">
                                         </div>
                                         <div class="clearfix"></div>
@@ -196,9 +200,9 @@
                                 document.getElementsByClassName('btn-edit')[0].click();
                             }
                         </script>
-                    </#if>
+                    </#if>-->
 
-                    <@form.form action=Routes.VERSIONS_UPLOAD.getRouteUrl(ownerName, projectSlug) method="POST"
+                    <#--<@form.form action=Routes.VERSIONS_UPLOAD.getRouteUrl(ownerName, projectSlug) method="POST"
                         enctype="multipart/form-data" id="form-upload" class="form-inline">
                         <@csrf.formField />
                             <label class="btn btn-info float-left" for="pluginFile">

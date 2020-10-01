@@ -41,7 +41,7 @@
                         </div>
                     </td>
                 </tr>
-                <template v-if="pendingVersion.fileName && pendingVersion.externalUrl">
+                <template v-if="pendingVersion.fileName && !pendingVersion.externalUrl">
                     <tr>
                         <td><strong>File name</strong></td>
                         <td>{{ pendingVersion.fileName }}</td>
@@ -166,10 +166,19 @@
                 </tr>
             </table>
         </div>
+
+        <div class="release-bulletin">
+            <div style="position: relative">
+                <h3>Release Bulletin</h3>
+                <p>What's new in this release?</p>
+
+                <Editor enabled :raw="pendingVersion.description || ''" target-form="form-publish"></Editor>
+            </div>
+        </div>
     </template>
     <HangarForm
         id="form-upload"
-        :action="versionUploadRoute"
+        :action="ROUTES.parse('VERSIONS_UPLOAD', ownerName, projectSlug)"
         method="post"
         enctype="multipart/form-data"
         clazz="form-inline"
@@ -206,11 +215,51 @@
             </div>
         </div>
     </HangarForm>
+    <template v-if="pendingVersion">
+        <HangarForm
+            :action="
+                pendingVersion.versionString
+                    ? ROUTES.parse('VERSIONS_PUBLISH', ownerName, projectSlug, pendingVersion.versionString)
+                    : ROUTES.parse('VERSIONS_PUBLISH_URL', ownerName, projectSlug)
+            "
+            method="post"
+            id="form-publish"
+            clazz="float-right"
+        >
+            <input type="hidden" class="channel-color-input" name="channel-color-input" :value="defaultColor" />
+            <div>
+                <input type="submit" name="create" value="Publish" class="btn btn-primary" />
+            </div>
+        </HangarForm>
+    </template>
+    <template v-else>
+        <HangarForm
+            :action="ROUTES.parse('VERSIONS_CREATE_EXTERNAL_URL', ownerName, projectSlug)"
+            method="post"
+            id="form-url-upload"
+            clazz="form-inline"
+        >
+            <div class="input-group float-right" style="width: 50%">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="externalUrl"
+                    name="externalUrl"
+                    placeholder="External URL"
+                    style="width: 70%"
+                />
+                <div class="input-group-append">
+                    <button class="btn btn-info" type="submit">Create Version</button>
+                </div>
+            </div>
+        </HangarForm>
+    </template>
 </template>
 <script>
 import HangarForm from '@/components/HangarForm';
 import PlatformChoice from '@/PlatformChoice';
 import PlatformTags from '@/components/PlatformTags';
+import Editor from '@/components/Editor';
 import 'bootstrap/js/dist/tooltip';
 import $ from 'jquery';
 import filesize from 'filesize';
@@ -221,16 +270,20 @@ export default {
         HangarForm,
         PlatformChoice,
         PlatformTags,
+        Editor,
     },
     props: {
+        defaultColor: String,
         pendingVersion: Object,
-        versionUploadRoute: String,
+        ownerName: String,
+        projectSlug: String,
         channels: Array,
         forumSync: Boolean,
     },
     data() {
         return {
             MAX_FILE_SIZE: 20971520,
+            ROUTES: window.ROUTES,
         };
     },
     methods: {
@@ -337,6 +390,10 @@ export default {
                 button.tooltip('hide').data('original-title', newTitle).tooltip();
             }
         },
+        filesize,
+    },
+    mounted() {
+        $('.btn-edit').click();
     },
 };
 </script>

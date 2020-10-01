@@ -65,7 +65,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -379,7 +378,7 @@ public class ProjectsController extends HangarController {
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping(value = "/{author}/{slug}/manage/delete", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public RedirectView softDelete(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String comment, RedirectAttributes ra) {
+    public ModelAndView softDelete(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String comment, RedirectAttributes ra) {
         ProjectsTable project = projectsTable.get();
         Visibility oldVisibility = project.getVisibility();
 
@@ -387,19 +386,19 @@ public class ProjectsController extends HangarController {
         projectFactory.softDeleteProject(project, comment);
         AlertUtil.showAlert(ra, AlertUtil.AlertType.SUCCESS, "project.deleted", project.getName());
         projectService.refreshHomePage();
-        return new RedirectView(Routes.getRouteUrlOf("showHome"));
+        return Routes.SHOW_HOME.getRedirect();
     }
 
     @GlobalPermission(NamedPermission.HARD_DELETE_PROJECT)
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/manage/hardDelete")
-    public RedirectView delete(@PathVariable String author, @PathVariable String slug, RedirectAttributes ra) {
+    public ModelAndView delete(@PathVariable String author, @PathVariable String slug, RedirectAttributes ra) {
         ProjectsTable project = projectsTable.get();
         projectFactory.hardDeleteProject(project);
         userActionLogService.project(request, LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(project.getId())), "deleted", project.getVisibility().getName());
         AlertUtil.showAlert(ra, AlertUtil.AlertType.SUCCESS, "project.deleted", project.getName());
         projectService.refreshHomePage();
-        return new RedirectView(Routes.getRouteUrlOf("showHome"));
+        return Routes.SHOW_HOME.getRedirect();
     }
 
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
@@ -443,7 +442,7 @@ public class ProjectsController extends HangarController {
         projectDao.get().update(projData.getProject());
         userActionLogService.project(request, LoggedActionType.PROJECT_RENAMED.with(ProjectContext.of(projData.getProject().getId())), author + "/" + compactNewName, author + "/" + oldName);
         projectService.refreshHomePage();
-        return new RedirectView(Routes.getRouteUrlOf("projects.show", author, newName));
+        return Routes.PROJECTS_SHOW.getRedirect(author, newName);
     }
 
     @ProjectPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)

@@ -53,7 +53,6 @@ export default {
             for (const platform of res.data) {
                 this.platforms[platform.name.toUpperCase()] = platform;
             }
-            console.log(this.platforms);
         });
     },
     methods: {

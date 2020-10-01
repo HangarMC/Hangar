@@ -2,6 +2,7 @@ package io.papermc.hangar.util;
 
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -140,10 +141,16 @@ public enum Routes {
     APIV1_LIST_PLATFORMS("apiv1.listPlatforms", Paths.APIV1_LIST_PLATFORMS, of(), of());
 
     private static final Map<String, Routes> ROUTES = new HashMap<>();
+    private static final Map<Routes, String> JS_ROUTES = new EnumMap<>(Routes.class);
+
+    public static Map<Routes, String> getJsRoutes() {
+        return JS_ROUTES;
+    }
 
     static {
         for (Routes route : values()) {
             ROUTES.put(route.name, route);
+            JS_ROUTES.put(route, route.url);
         }
     }
 
