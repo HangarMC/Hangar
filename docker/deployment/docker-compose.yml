@@ -30,7 +30,6 @@ services:
       POSTGRES_MULTIPLE_DATABASES: hangar,hangarauth
       POSTGRES_USER: hangar
       POSTGRES_PASSWORD: 'hangar'
-      POSTGRES_DB: hangar
     ports:
       - "2345:5432" # pls dont abuse open port :/
     volumes:
