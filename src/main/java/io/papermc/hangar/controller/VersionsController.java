@@ -21,11 +21,12 @@ import io.papermc.hangar.model.DownloadType;
 import io.papermc.hangar.model.NamedPermission;
 import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.Visibility;
-import io.papermc.hangar.model.generated.Dependency;
+import io.papermc.hangar.model.generated.PlatformDependency;
 import io.papermc.hangar.model.generated.ReviewState;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.model.viewhelpers.VersionData;
+import io.papermc.hangar.model.viewhelpers.VersionDependencies;
 import io.papermc.hangar.security.annotations.GlobalPermission;
 import io.papermc.hangar.security.annotations.ProjectPermission;
 import io.papermc.hangar.security.annotations.UserLock;
@@ -33,7 +34,6 @@ import io.papermc.hangar.service.DownloadsService;
 import io.papermc.hangar.service.StatsService;
 import io.papermc.hangar.service.UserActionLogService;
 import io.papermc.hangar.service.VersionService;
-import io.papermc.hangar.service.plugindata.PluginFileWithData;
 import io.papermc.hangar.service.pluginupload.PendingVersion;
 import io.papermc.hangar.service.pluginupload.PluginUploadService;
 import io.papermc.hangar.service.pluginupload.ProjectFiles;
@@ -77,6 +77,7 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -222,6 +223,7 @@ public class VersionsController extends HangarController {
             AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, e.getMessageKey(), e.getArgs());
             return fillModel(mav);
         }
+        System.out.println(pendingVersion);
         return _showCreator(author, slug, pendingVersion);
     }
 
@@ -240,6 +242,7 @@ public class VersionsController extends HangarController {
 
         ProjectChannelsTable channel = channelService.getFirstChannel(projData.getProject());
         PendingVersion pendingVersion = new PendingVersion(
+                null,
                 null,
                 null,
                 null,
@@ -332,7 +335,8 @@ public class VersionsController extends HangarController {
         ProjectsTable project = projectsTable.get();
         PendingVersion pendingVersion = new PendingVersion(
                 versionString,
-                List.of(new Dependency(platform.getDependencyId(), String.join(",", versions), true)),
+                new VersionDependencies(Platform.class),
+                List.of(new PlatformDependency(platform, versions)),
                 versionDescription,
                 project.getId(),
                 null,
@@ -345,10 +349,10 @@ public class VersionsController extends HangarController {
                 externalUrl,
                 forumPost
         );
-        return _publish(author, slug, versionString, unstable, recommended, channelInput, channelColorInput, versions, forumPost, nonReviewed,content, pendingVersion, platform, attributes);
+        return _publish(author, slug, versionString, unstable, recommended, channelInput, channelColorInput, forumPost, nonReviewed,content, pendingVersion, attributes, pendingVersion.getPlatforms());
     }
 
-    private ModelAndView _publish(String author, String slug, String versionName, boolean unstable, boolean recommended, String channelInput, Color channelColorInput, List<String> versions, boolean forumPost, boolean isNonReviewed, String content, PendingVersion pendingVersion, Platform platform, RedirectAttributes attributes) {
+    private ModelAndView _publish(String author, String slug, String versionName, boolean unstable, boolean recommended, String channelInput, Color channelColorInput, boolean forumPost, boolean isNonReviewed, String content, PendingVersion pendingVersion, RedirectAttributes attributes, List<PlatformDependency> platformDependencies) {
         ProjectData projData = projectData.get();
         Color channelColor = channelColorInput == null ? hangarConfig.channels.getColorDefault() : channelColorInput;
 
@@ -357,7 +361,7 @@ public class VersionsController extends HangarController {
             return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
         }
 
-        if (versions.stream().anyMatch(s -> !platform.getPossibleVersions().contains(s))) {
+        if (platformDependencies.stream().anyMatch(s -> !s.getPlatform().getPossibleVersions().containsAll(s.getVersions()))) {
             AlertUtil.showAlert(attributes, AlertType.ERROR, "error.plugin.invalidVersion");
             return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
         }
@@ -388,8 +392,7 @@ public class VersionsController extends HangarController {
                 channel.getColor(),
                 forumPost,
                 content,
-                versions,
-                platform
+                platformDependencies
         );
 
         if (versionService.exists(newPendingVersion)) {
@@ -445,13 +448,12 @@ public class VersionsController extends HangarController {
                 recommended,
                 channelInput,
                 channelColorInput,
-                versions,
                 forumPost,
                 nonReviewed,
                 content,
                 pendingVersion,
-                Optional.ofNullable(pendingVersion).map(PendingVersion::getPlugin).map(PluginFileWithData::getPlatform).orElse(null),
-                attributes
+                attributes,
+                Optional.ofNullable(pendingVersion).map(PendingVersion::getPlatforms).orElse(new ArrayList<>())
         );
     }
 

@@ -4,15 +4,17 @@ import io.papermc.hangar.model.TagColor;
 
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 
+import java.util.List;
+
 public class ProjectVersionTagsTable {
 
     private long id;
     private long versionId;
     private String name;
-    private String data;
+    private List<String> data;
     private TagColor color;
 
-    public ProjectVersionTagsTable(long id, long versionId, String name, String data, TagColor color) {
+    public ProjectVersionTagsTable(long id, long versionId, String name, List<String> data, TagColor color) {
         this.id = id;
         this.versionId = versionId;
         this.name = name;
@@ -49,11 +51,11 @@ public class ProjectVersionTagsTable {
     }
 
 
-    public String getData() {
+    public List<String> getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(List<String> data) {
         this.data = data;
     }
 

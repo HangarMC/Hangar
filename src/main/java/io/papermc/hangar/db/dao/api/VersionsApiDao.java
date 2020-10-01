@@ -1,10 +1,12 @@
 package io.papermc.hangar.db.dao.api;
 
 import io.papermc.hangar.db.dao.api.mappers.VersionMapper;
+import io.papermc.hangar.db.mappers.DependencyMapper;
 import io.papermc.hangar.model.generated.Version;
 import io.papermc.hangar.model.generated.VersionStatsDay;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
+import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.customizer.BindList.EmptyHandling;
@@ -22,6 +24,7 @@ import java.util.Map;
 public interface VersionsApiDao {
 
     @UseStringTemplateEngine
+    @RegisterColumnMapper(DependencyMapper.class)
     @SqlQuery("SELECT pv.created_at," +
             "pv.version_string," +
             "pv.dependencies," +

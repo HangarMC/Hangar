@@ -96,6 +96,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
             <script>
                 window.csrf = '${_csrf.token}';
                 window.csrfInfo = {
+                    'parameterName': '${_csrf.parameterName}',
                     'headerName': '${_csrf.headerName}',
                     'token': '${_csrf.token}'
                 };

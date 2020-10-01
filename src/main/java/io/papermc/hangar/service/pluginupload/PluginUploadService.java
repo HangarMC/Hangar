@@ -110,6 +110,7 @@ public class PluginUploadService {
         return new PendingVersion(
                 StringUtils.slugify(metaData.getVersion()),
                 metaData.getDependencies(),
+                metaData.getPlatformDependency(),
                 metaData.getDescription(),
                 projectId,
                 path.toFile().length(),

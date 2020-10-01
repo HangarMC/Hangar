@@ -1,5 +1,9 @@
 package io.papermc.hangar.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+
+@JsonFormat(shape = Shape.OBJECT)
 public enum Color {
 
     PURPLE(0, "#B400FF"),

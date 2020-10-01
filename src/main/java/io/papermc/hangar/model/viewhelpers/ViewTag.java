@@ -1,15 +1,17 @@
 package io.papermc.hangar.model.viewhelpers;
 
-import io.papermc.hangar.model.TagColor;
 import io.papermc.hangar.db.model.ProjectVersionTagsTable;
+import io.papermc.hangar.model.TagColor;
+
+import java.util.List;
 
 public class ViewTag {
 
     private final String name;
-    private final String data;
+    private final List<String> data;
     private final TagColor color;
 
-    public ViewTag(String name, String data, TagColor color) {
+    public ViewTag(String name, List<String> data, TagColor color) {
         this.name = name;
         this.data = data;
         this.color = color;
@@ -19,7 +21,7 @@ public class ViewTag {
         return name;
     }
 
-    public String getData() {
+    public List<String> getData() {
         return data;
     }
 

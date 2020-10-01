@@ -1,11 +1,15 @@
 package io.papermc.hangar.db.dao;
 
+import io.papermc.hangar.db.customtypes.JSONB;
+import io.papermc.hangar.db.mappers.DependencyMapper;
+import io.papermc.hangar.db.mappers.PlatformDependencyMapper;
 import io.papermc.hangar.db.model.ProjectVersionTagsTable;
 import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.model.generated.ReviewState;
 import io.papermc.hangar.model.viewhelpers.ReviewQueueEntry;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
+import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
@@ -17,6 +21,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
+@RegisterColumnMapper(DependencyMapper.class)
+@RegisterColumnMapper(PlatformDependencyMapper.class)
 @RegisterBeanMapper(ProjectVersionsTable.class)
 @RegisterBeanMapper(ProjectVersionTagsTable.class)
 public interface ProjectVersionDao {
@@ -24,9 +30,9 @@ public interface ProjectVersionDao {
     @Timestamped
     @GetGeneratedKeys
     @SqlUpdate("INSERT INTO project_versions " +
-            "(created_at, version_string, dependencies, description, project_id, channel_id, file_size, hash, file_name, author_id, create_forum_post, external_url) VALUES " +
-            "(:now, :versionString, :dependencies, :description, :projectId, :channelId, :fileSize, :hash, :fileName, :authorId, :createForumPost, :externalUrl)")
-    ProjectVersionsTable insert(@BindBean ProjectVersionsTable projectVersionsTable);
+            "(created_at, version_string, dependencies, platforms, description, project_id, channel_id, file_size, hash, file_name, author_id, create_forum_post, external_url) VALUES " +
+            "(:now, :versionString, :dependenciesJson, :platformsJson, :description, :projectId, :channelId, :fileSize, :hash, :fileName, :authorId, :createForumPost, :externalUrl)")
+    ProjectVersionsTable insert(@BindBean ProjectVersionsTable projectVersionsTable, JSONB dependenciesJson, JSONB platformsJson);
 
     @SqlUpdate("UPDATE project_versions SET visibility = :visibility, reviewer_id = :reviewerId, approved_at = :approvedAt, description = :description, " +
                "review_state = :reviewState, external_url = :externalUrl " +

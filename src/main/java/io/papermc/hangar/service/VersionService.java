@@ -12,6 +12,7 @@ import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.exceptions.HangarException;
 import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.TagColor;
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.generated.Dependency;
@@ -32,11 +33,13 @@ import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Service
 public class VersionService extends HangarService {
@@ -164,17 +167,29 @@ public class VersionService extends HangarService {
             }
         }
 
-        //TODO dependency identification
-        /*Map<Dependency, ProjectsTable> dependencies = Dependency.from(projectVersion.getDependencies()).stream().collect(HashMap::new, (m, v) -> {
-            ProjectsTable project = projectDao.get().getByPluginId(v.getPluginId());
-            m.put(v, project);
-        }, HashMap::putAll);*/
+        Map<Platform, Map<Dependency, String>> dependencies = new EnumMap<>(Platform.class);
+        projectVersion.getDependencies().forEach((platform, deps) -> dependencies.put(
+                platform,
+                deps.stream().collect(
+                        HashMap::new,
+                        (m, d) -> {
+                            if (d.getExternalUrl() != null) {
+                                m.put(d, d.getExternalUrl());
+                            } else if (d.getProjectId() != null) {
+                                ProjectsTable projectsTable = projectService.getProjectsTable(d.getProjectId());
+                                m.put(d, "/" + projectsTable.getOwnerName() + "/" + projectsTable.getSlug());
+                            } else {
+                                m.put(d, null);
+                            }},
+                        HashMap::putAll
+                )
+                ));
         return new VersionData(
                 projectData,
                 projectVersion,
                 projectChannel,
                 approvedBy,
-                Map.of() //TODO
+                dependencies
         );
     }
 

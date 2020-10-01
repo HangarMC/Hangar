@@ -1,9 +1,15 @@
 package io.papermc.hangar.service.plugindata;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.generated.Dependency;
+import io.papermc.hangar.model.generated.PlatformDependency;
+import io.papermc.hangar.model.viewhelpers.VersionDependencies;
 
 public abstract class DataValue {
 
@@ -47,28 +53,28 @@ public abstract class DataValue {
 
     public static class DependencyDataValue extends DataValue {
 
-        private final List<Dependency> value;
+        private final VersionDependencies value;
 
-        public DependencyDataValue(String key, List<Dependency> value) {
+        public DependencyDataValue(String key, Platform platform, List<Dependency> dependencies) {
             super(key);
-            this.value = value;
+            this.value = new VersionDependencies(Map.of(platform, dependencies));
         }
 
-        public List<Dependency> getValue() {
+        public VersionDependencies getValue() {
             return value;
         }
     }
 
-    public static class UUIDDataValue extends DataValue {
+    public static class PlatformDependencyDataValue extends DataValue {
 
-        private final UUID value;
+        private final List<PlatformDependency> value;
 
-        public UUIDDataValue(String key, UUID value) {
+        public PlatformDependencyDataValue(String key, PlatformDependency value) {
             super(key);
-            this.value = value;
+            this.value = new ArrayList<>(List.of(value));
         }
 
-        public UUID getValue() {
+        public List<PlatformDependency> getValue() {
             return value;
         }
     }

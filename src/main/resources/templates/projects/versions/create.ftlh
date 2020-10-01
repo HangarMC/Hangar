@@ -12,15 +12,20 @@
 
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "js/channelManage.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "js/pluginUpload.js" />"></script>
+<#--    <script type="text/javascript" src="<@hangar.url "js/pluginUpload.js" />"></script>-->
     <script type="text/javascript" src="<@hangar.url "js/projectDetail.js" />"></script>
     <#if pending?? && !pending.dependencies??>
         <script type="text/javascript" src="<@hangar.url "js/platform-choice.js" />"></script>
     </#if>
     <script>
              window.DEFAULT_COLOR = '${config.channels.colorDefault.hex}';
+             window.VERSION_UPLOAD_ROUTE = '${Routes.VERSIONS_UPLOAD.getRouteUrl(ownerName, projectSlug)}'
+             window.PENDING_VERSION = ${mapper.valueToTree(pending)};
+             window.CHANNELS = ${mapper.valueToTree(channels)};
+             window.FORUM_SYNC = ${forumSync?c};
     </script>
     <script type="text/javascript" src="<@hangar.url "js/versionCreateChannelNew.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/create-version.js" />"></script>
 </#assign>
 
 <#assign message><@spring.message "version.create.pageTitle" /></#assign>
@@ -39,9 +44,9 @@
                     <div class="minor create-blurb">
                         <span><@spring.messageArgs code="version.create.info" args=[projectName] /></span>
                     </div>
-
-                    <#if pending??>
-                        <#-- Show plugin meta -->
+                    <div id="create-version"></div>
+                    <#--<#if pending??>
+                        &lt;#&ndash; Show plugin meta &ndash;&gt;
                         <#assign version = pending>
                         <div class="plugin-meta">
                             <table class="plugin-meta-table">
@@ -102,7 +107,7 @@
                                 <tr>
                                     <td><strong>Channel</strong></td>
                                     <td class="form-inline">
-                                        <#-- Show channel selector if old project, editor if new project -->
+                                        &lt;#&ndash; Show channel selector if old project, editor if new project &ndash;&gt;
                                         <select id="select-channel" form="form-publish" name="channel-input" class="form-control">
                                         <#list channels as channel>
                                             <option value="${channel.name}" data-color="${channel.color.hex}" <#if channel.name == version.channelName>selected</#if>>
@@ -121,7 +126,7 @@
                                         <#if version.dependencies??>
                                             <div class="float-right" id="upload-platform-tags">
                                                 <#list version.dependenciesAsGhostTags as pair>
-                                                    <@projectTag.tagTemplate @helper["io.papermc.hangar.model.viewhelpers.ViewTag"].fromVersionTag(pair.getRight()) pair.left "form-publish" />
+                                                    <@projectTag.tagTemplate @helper["io.papermc.hangar.model.viewhelpers.ViewTag"].fromVersionTag(pair.getRight()) pair.getLeft() "form-publish" />
                                                 </#list>
                                             </div>
                                         <#else>
@@ -162,7 +167,7 @@
                                     </td>
                                     <td class="rv">
                                         <div class="form-check">
-                                            <#-- @ftlvariable name="forumSync" type="java.lang.Boolean" -->
+                                            &lt;#&ndash; @ftlvariable name="forumSync" type="java.lang.Boolean" &ndash;&gt;
                                             <input id="create-forum-post-version" class="form-check-input" form="form-publish" name="forum-post" type="checkbox" <#if forumSync> checked </#if> value="true">
                                         </div>
                                         <div class="clearfix"></div>
@@ -186,7 +191,7 @@
                                 />
                             </div>
                         </div>
-                        <script <#--@CSPNonce.attr-->>
+                        <script &lt;#&ndash;@CSPNonce.attr&ndash;&gt;>
                             window.buttonClick = function() {
                                 document.getElementsByClassName('btn-edit')[0].click();
                             }
@@ -223,7 +228,7 @@
                                 </div>
                             </div>
                         </@form.form>
-                    </#if>
+                    </#if>-->
                 </div>
             </div>
             <span class="float-left tos"><i><@spring.messageArgs code="version.create.tos" args=["#"] /></i></span>

@@ -166,6 +166,10 @@ public class ProjectService extends HangarService {
         }
     }
 
+    public ProjectsTable getProjectsTable(long projectId) {
+        return checkVisibility(projectDao.get().getById(projectId));
+    }
+
     public ProjectsTable getProjectsTable(String author, String name) {
         return checkVisibility(projectDao.get().getBySlug(author, name));
     }

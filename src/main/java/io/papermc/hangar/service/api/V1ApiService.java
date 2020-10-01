@@ -167,15 +167,16 @@ public class V1ApiService {
                 .put("downloads", 0)
                 .put("description", v.getDescription());
         objectNode.set("channel", mapper.valueToTree(channel));
-        objectNode.set("dependencies", Dependency.from(v.getDependencies()).stream().collect(Collector.of(mapper::createArrayNode, (array, dep) -> {
-            ObjectNode depObj = mapper.createObjectNode()
-                    //TODO dependency identification
-                    .put("pluginId", dep.getPluginId())
-                    .put("version", dep.getVersion());
-            array.add(depObj);
-        }, (ignored1, ignored2) -> {
-            throw new UnsupportedOperationException();
-        })));
+        objectNode.set("dependencies", mapper.valueToTree(v.getDependencies()));
+//        objectNode.set("dependencies", Dependency.from(v.getDependencies()).stream().collect(Collector.of(mapper::createArrayNode, (array, dep) -> {
+//            ObjectNode depObj = mapper.createObjectNode()
+//                    //TODO dependency identification
+//                    .put("pluginId", dep.getPluginId())
+//                    .put("version", dep.getVersion());
+//            array.add(depObj);
+//        }, (ignored1, ignored2) -> {
+//            throw new UnsupportedOperationException();
+//        })));
 
         if (v.getVisibility() != Visibility.PUBLIC) {
             ObjectNode visObj = mapper.createObjectNode()

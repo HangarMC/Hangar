@@ -2,13 +2,17 @@ package io.papermc.hangar.model.generated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.papermc.hangar.model.Platform;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -29,7 +33,7 @@ public class Version {
 
     @JsonProperty("dependencies")
     @Valid
-    private List<Dependency> dependencies = new ArrayList<>();
+    private Map<Platform, List<Dependency>> dependencies = new EnumMap<>(Platform.class);
 
     @JsonProperty("visibility")
     private Visibility visibility = null;
@@ -99,13 +103,8 @@ public class Version {
         this.name = name;
     }
 
-    public Version dependencies(List<Dependency> dependencies) {
+    public Version dependencies(Map<Platform, List<Dependency>> dependencies) {
         this.dependencies = dependencies;
-        return this;
-    }
-
-    public Version addDependenciesItem(Dependency dependenciesItem) {
-        this.dependencies.add(dependenciesItem);
         return this;
     }
 
@@ -117,11 +116,11 @@ public class Version {
     @ApiModelProperty(required = true, value = "")
     @NotNull
     @Valid
-    public List<Dependency> getDependencies() {
+    public Map<Platform, List<Dependency>> getDependencies() {
         return dependencies;
     }
 
-    public void setDependencies(List<Dependency> dependencies) {
+    public void setDependencies(Map<Platform, List<Dependency>> dependencies) {
         this.dependencies = dependencies;
     }
 

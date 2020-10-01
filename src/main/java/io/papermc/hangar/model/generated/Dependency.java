@@ -1,73 +1,53 @@
 package io.papermc.hangar.model.generated;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import io.swagger.annotations.ApiModelProperty;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import javax.validation.constraints.NotNull;
 
-import io.swagger.annotations.ApiModelProperty;
-
-/**
- * ModelsProtocolsAPIV2VersionDependency
- */
 @Validated
 public class Dependency {
 
-    //TODO dependency identification
-    @JsonProperty("plugin_id")
-    private String pluginId = null;
+    @JsonProperty(value = "name", required = true)
+    private String name;
 
-    @JsonProperty("version")
-    private String version = null;
+    @JsonProperty(value = "required", required = true)
+    private boolean required;
 
-    @JsonProperty("required")
-    private boolean required = true;
+    @JsonProperty("project_id")
+    private Long projectId;
 
-    public Dependency(String pluginId, String version) {
-        this(pluginId, version, true);
-    }
+    @JsonProperty("external_url")
+    private String externalUrl;
 
-    public Dependency(String pluginId, String version, boolean required) {
-        this.pluginId = pluginId;
-        this.version = version;
+    public Dependency(String name, boolean required) {
+        this.name = name;
         this.required = required;
     }
 
-    public Dependency() {
-        //
-    }
-
-    @ApiModelProperty(required = true, value = "")
+    /**
+     * Get dependency name
+     * @return name
+     */
     @NotNull
-
-    @Deprecated
-    public String getPluginId() {
-        return pluginId;
+    @ApiModelProperty(required = true, name = "Name as it appears in plugin.yml")
+    public String getName() {
+        return name;
     }
 
-    public void setPluginId(String pluginId) {
-        this.pluginId = pluginId;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
-     * Get version
-     *
-     * @return version
-     **/
-    @ApiModelProperty(value = "")
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
+     * Is dependency required
+     * @return is required
+     */
+    @ApiModelProperty(required = true, name = "Required dependency")
     public boolean isRequired() {
         return required;
     }
@@ -76,55 +56,67 @@ public class Dependency {
         this.required = required;
     }
 
+    /**
+     * Get Hangar projectId
+     *
+     * @return project id (if applicable)
+     */
+    @Nullable
+    @ApiModelProperty("Hangar project id (if applicable)")
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
+    /**
+     * Get External URL
+     * @return external url (if applicable)
+     */
+    @Nullable
+    @ApiModelProperty("External URL (if applicable)")
+    public String getExternalUrl() {
+        return externalUrl;
+    }
+
+    public void setExternalUrl(String externalUrl) {
+        this.externalUrl = externalUrl;
+    }
+
+    /**
+     * Dependency has either a projectId or an externalUrl
+     * @return true if projectId is not null or externalUrl is not null
+     */
+    @JsonIgnore
+    public boolean isLinked() {
+        return this.externalUrl != null || this.projectId != null;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Dependency dependency = (Dependency) o;
-        return Objects.equals(this.pluginId, dependency.pluginId) &&
-               Objects.equals(this.version, dependency.version);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Dependency that = (Dependency) o;
+        return required == that.required &&
+                name.equals(that.name) &&
+                Objects.equals(projectId, that.projectId) &&
+                Objects.equals(externalUrl, that.externalUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pluginId, version);
+        return Objects.hash(name, required, projectId, externalUrl);
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class ModelsProtocolsAPIV2VersionDependency {\n");
-
-        sb.append("    pluginId: ").append(toIndentedString(pluginId)).append("\n");
-        sb.append("    version: ").append(toIndentedString(version)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return "Dependency{" +
+                "name='" + name + '\'' +
+                ", required=" + required +
+                ", projectId=" + projectId +
+                ", externalUrl='" + externalUrl + '\'' +
+                '}';
     }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
-
-    public static List<Dependency> from(List<String> dependencies) {
-        return dependencies.stream().map(Dependency::fromString).collect(Collectors.toList());
-    }
-
-    private static Dependency fromString(String dep) {
-        if (dep.contains(":")) {
-            return new Dependency(dep.split(":")[0], dep.split(":")[1]);
-        } else {
-            return new Dependency(dep, null);
-        }
-    }
-
 }
