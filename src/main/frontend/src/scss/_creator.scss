@@ -46,13 +46,13 @@
   input[type="text"] { width: 100%; }
   tr { width: 100%; }
   td { padding: 10px; }
-  tr:nth-child(2n) { background-color: #f5f5f5; }
+  & > tr:nth-child(2n) { background-color: #f5f5f5; }
   .rv { padding: 0; }
 
   margin-top: 5px;
   width: 100%;
 
-  tr > td:nth-child(2n) {
+  & > tr > td:nth-child(2n) {
     text-align: right;
     float: right;
   }

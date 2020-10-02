@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.PlatformVersionsDao;
 import io.papermc.hangar.db.model.ProjectVersionTagsTable;
-import io.papermc.hangar.model.generated.Dependency;
 import io.papermc.hangar.model.generated.PlatformDependency;
 import io.papermc.hangar.service.VersionService;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -144,8 +143,16 @@ public enum Platform {
     }
 
     @Nullable
-    public static Platform getByDependencyId(String dependencyId) {
-        return PLATFORMS_BY_DEPENDENDY.get(dependencyId.toLowerCase());
+    public static Platform getByName(@Nullable String name) {
+        if (name == null) {
+            return null;
+        }
+        for (Platform pl : VALUES) {
+            if (pl.name.equalsIgnoreCase(name)) {
+                return pl;
+            }
+        }
+        return null;
     }
 
     public static List<ProjectVersionTagsTable> createPlatformTags(VersionService versionService, long versionId, List<PlatformDependency> platformDependencies) {

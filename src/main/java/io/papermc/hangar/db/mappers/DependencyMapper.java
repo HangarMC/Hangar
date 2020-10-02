@@ -25,7 +25,7 @@ public class DependencyMapper implements ColumnMapper<VersionDependencies> {
     public VersionDependencies map(ResultSet r, int columnNumber, StatementContext ctx) throws SQLException {
         ObjectNode objectNode = (ObjectNode) r.getObject(columnNumber, JSONB.class).getJson();
 
-        VersionDependencies platformListMap = new VersionDependencies(Platform.class);
+        VersionDependencies platformListMap = new VersionDependencies();
         objectNode.fields().forEachRemaining(stringJsonNodeEntry -> {
             ArrayNode depArray = (ArrayNode) stringJsonNodeEntry.getValue();
             List<Dependency> dependencies = new ArrayList<>();

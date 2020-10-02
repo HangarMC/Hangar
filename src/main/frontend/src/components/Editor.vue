@@ -12,11 +12,7 @@
 
         <!-- Preview -->
         <div class="btn-edit-container btn-preview-container" title="Preview">
-            <button
-                type="button"
-                class="btn btn-sm btn-preview btn-page btn-default"
-                @click.stop="pageBtnClick($event.currentTarget)"
-            >
+            <button type="button" class="btn btn-sm btn-preview btn-page btn-default" @click.stop="pageBtnClick($event.currentTarget)">
                 <i class="fas fa-eye"></i>
             </button>
         </div>
@@ -58,13 +54,7 @@
                 </button>
             </div>
 
-            <div
-                class="modal fade"
-                id="modal-page-delete"
-                tabindex="-1"
-                role="dialog"
-                aria-labelledby="label-page-delete"
-            >
+            <div class="modal fade" id="modal-page-delete" tabindex="-1" role="dialog" aria-labelledby="label-page-delete">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -89,12 +79,7 @@
 
         <!-- Edit window -->
         <div class="page-edit" style="display: none">
-            <textarea
-                name="content"
-                class="form-control"
-                :form="targetForm || 'form-editor-save'"
-                v-html="raw"
-            ></textarea>
+            <textarea name="content" class="form-control" :form="targetForm || 'form-editor-save'" v-model="content"></textarea>
         </div>
 
         <!-- Preview window -->
@@ -118,6 +103,7 @@ export default {
     components: {
         HangarForm,
     },
+    emits: ['update:contentProp'],
     props: {
         saveCall: String,
         deleteCall: String,
@@ -129,6 +115,17 @@ export default {
         cancellable: Boolean,
         targetForm: String,
         extraFormValue: String,
+        contentProp: String,
+    },
+    computed: {
+        content: {
+            get() {
+                return this.contentProp;
+            },
+            set(val) {
+                this.$emit('update:contentProp', val);
+            },
+        },
     },
     data() {
         return {
@@ -248,6 +245,7 @@ export default {
         },
     },
     async created() {
+        this.content = this.raw;
         this.cooked = await this.getPreview(this.raw);
     },
     mounted() {

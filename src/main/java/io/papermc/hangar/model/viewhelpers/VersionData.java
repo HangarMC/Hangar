@@ -2,13 +2,13 @@ package io.papermc.hangar.model.viewhelpers;
 
 import io.papermc.hangar.db.model.ProjectChannelsTable;
 import io.papermc.hangar.db.model.ProjectVersionsTable;
-import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.generated.Dependency;
+import io.papermc.hangar.model.generated.PlatformDependency;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class VersionData {
 
@@ -46,16 +46,9 @@ public class VersionData {
         return dependencies;
     }
 
-//    public Map<Dependency, ProjectsTable> getFilteredDependencies() {
-//        // Value is nullable, so we can't use Collectors#toMap
-//        Map<Dependency, ProjectsTable> map = new HashMap<>();
-//        for (Entry<Dependency, ProjectsTable> entry : dependencies.entrySet()) {
-//            if (Platform.getByDependencyId(entry.getKey().getPluginId()) == null) { // Exclude the platform dependency
-//                map.put(entry.getKey(), entry.getValue());
-//            }
-//        }
-//        return map;
-//    }
+    public Map<PlatformDependency, Map<Dependency, String>> getFormattedDependencies() {
+        return this.v.getPlatforms().stream().collect(Collectors.toMap(Function.identity(), pd -> this.dependencies.get(pd.getPlatform())));
+    }
 
     public boolean isRecommended() {
         final Long recommendedVersionId = p.getProject().getRecommendedVersionId();

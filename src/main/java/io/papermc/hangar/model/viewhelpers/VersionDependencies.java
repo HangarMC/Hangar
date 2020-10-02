@@ -9,8 +9,8 @@ import java.util.Map;
 
 public class VersionDependencies extends EnumMap<Platform, List<Dependency>> {
 
-    public VersionDependencies(Class<Platform> keyType) {
-        super(keyType);
+    public VersionDependencies() {
+        super(Platform.class);
     }
 
     public VersionDependencies(Map<Platform, ? extends List<Dependency>> m) {

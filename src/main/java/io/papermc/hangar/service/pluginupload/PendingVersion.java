@@ -1,6 +1,6 @@
 package io.papermc.hangar.service.pluginupload;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.papermc.hangar.controller.forms.NewVersion;
 import io.papermc.hangar.db.model.ProjectVersionTagsTable;
 import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.model.Color;
@@ -125,6 +125,25 @@ public class PendingVersion {
                 plugin,
                 externalUrl,
                 createForumPost
+        );
+    }
+
+    public PendingVersion update(NewVersion newVersion) {
+        return new PendingVersion(
+                versionString,
+                newVersion.getVersionDependencies(),
+                newVersion.getPlatformDependencies(),
+                newVersion.getDescription(),
+                projectId,
+                fileSize,
+                hash,
+                fileName,
+                authorId,
+                newVersion.getChannel().getName(),
+                newVersion.getChannel().getColor(),
+                plugin,
+                newVersion.getExternalUrl(),
+                newVersion.isForumSync()
         );
     }
 

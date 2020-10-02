@@ -53,6 +53,7 @@ public interface VersionsApiDao {
             "ORDER BY pv.created_at DESC LIMIT 1")
     Version getVersion(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
 
+    @RegisterColumnMapper(DependencyMapper.class)
     @UseStringTemplateEngine
     @SqlQuery("SELECT pv.created_at," +
             "pv.version_string," +
@@ -66,8 +67,8 @@ public interface VersionsApiDao {
             "u.name author," +
             "pv.review_state," +
             "array_append(array_agg(pvt.name ORDER BY (pvt.name)) FILTER ( WHERE pvt.name IS NOT NULL ), 'Channel')  AS tag_name," +
-            "array_append(array_agg(pvt.data ORDER BY (pvt.name)) FILTER ( WHERE pvt.name IS NOT NULL ), pc.name)    AS tag_data," +
-            "array_append(array_agg(pvt.color ORDER BY (pvt.name)) FILTER ( WHERE pvt.name IS NOT NULL ), pc.color + 9) AS tag_color " +
+            "array_append(array_agg(array_to_string(pvt.data, ', ') ORDER BY (pvt.name)) FILTER ( WHERE pvt.name IS NOT NULL ), pc.name::text)    AS tag_data," +
+            "array_append(array_agg(pvt.color ORDER BY (pvt.name)) FILTER ( WHERE pvt.name IS NOT NULL ), pc.color) AS tag_color " +
             "FROM projects p" +
             "   JOIN project_versions pv ON p.id = pv.project_id" +
             "   LEFT JOIN users u ON pv.author_id = u.id" +

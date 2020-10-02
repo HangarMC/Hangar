@@ -1,5 +1,7 @@
 package io.papermc.hangar.model.generated;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.model.Platform;
 import io.swagger.annotations.ApiModelProperty;
@@ -13,6 +15,7 @@ import java.util.Objects;
 public class PlatformDependency {
 
     @JsonProperty("name")
+    @JsonFormat(shape = Shape.STRING)
     private Platform platform;
 
     @JsonProperty("versions")
@@ -22,6 +25,8 @@ public class PlatformDependency {
         this.platform = platform;
         this.versions = versions;
     }
+
+    public PlatformDependency() { }
 
     /**
      * Get the platform for this version

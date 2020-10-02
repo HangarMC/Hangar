@@ -126,17 +126,17 @@
                                     Admin actions
                                     <span class="caret"></span>
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="admin-version-actions">
-                                    <li><a href="${Routes.SHOW_LOG.getRouteUrl("", "", "", v.v.versionString, "", "", "")}">User Action Logs</a></li>
+                                <div class="dropdown-menu" aria-labelledby="admin-version-actions">
+                                    <a class="dropdown-item" href="${Routes.SHOW_LOG.getRouteUrl("", "", "", v.v.versionString, "", "", "")}">User Action Logs</a>
                                     <#if headerData.globalPerm(Permission.Reviewer)>
                                         <#if v.v.visibility == Visibility.SOFTDELETE>
-                                            <li><a href="#" data-toggle="modal" data-target="#modal-restore">Undo delete</a></li>
+                                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-restore">Undo delete</a>
                                         </#if>
                                         <#if headerData.globalPerm(Permission.HardDeleteVersion) && !v.recommended && (v.p.publicVersions gt 1 || v.v.visibility == Visibility.SOFTDELETE)>
-                                            <li><a href="#" data-toggle="modal" data-target="#modal-harddelete" style="color: darkred">Hard delete</a></li>
+                                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-harddelete" style="color: darkred">Hard delete</a>
                                         </#if>
                                     </#if>
-                                </ul>
+                                </div>
                             </div>
                         </#if>
 
@@ -181,45 +181,33 @@
                     </div>
                     <ul class="list-group">
                         <#assign Platform=@helper["io.papermc.hangar.model.Platform"] />
-                        <#-- @ftlvariable name="Platform" type="io.papermc.hangar.model.Platform" -->
-                        <#-- todo: dependency identification -->
-                        <#--<#list Platform.getPlatforms(v.dependencies?map(d -> d.pluginId)) as platform>
-                            <#assign dependency=v.dependencies?filter(d -> d.pluginId == platform.dependencyId)?first />
-                            <#if dependency?has_content>
-                                <li class="list-group-item">
-                                    <a href="${platform.url}">
-                                        <strong>${platform.getName()}</strong>
-                                    </a>
-                                    <#if dependency.version?has_content>
-                                        <p class="version-string">${dependency.version}</p>
-                                    <#else>
-                                        <p class="version-string">N/A</p>
-                                    </#if>
-
-                                </li>
-                            </#if>
-                        </#list>
-
-                        <#list v.filteredDependencies as depend, project>
+                        <#list v.formattedDependencies as pd, deps>
                             <li class="list-group-item">
-                                <#if project??>
-                                    <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.ownerName, project.slug)}">
-                                        <strong>${project.name}</strong>
-                                    </a>
-                                <#else>
-                                    <div class="minor">
-                                        &lt;#&ndash; todo: dependency identification &ndash;&gt;
-                                        ${depend.pluginId}
-                                        <i class="fas fa-question-circle"
-                                           title="<@spring.message "version.dependency.notOnOre" />"
-                                           data-toggle="tooltip" data-placement="right"></i>
-                                    </div>
+                                <a href="${pd.platform.url}">
+                                    <strong>${pd.platform.getName()}</strong>
+                                </a>
+                                <#if pd.versions?size != 0>
+                                    <span class="version-string">${pd.versions?join(', ')}</span>
                                 </#if>
-                                <#if depend.version??>
-                                    <p class="version-string">${depend.version}</p>
+                                <#if deps?? && deps?size != 0>
+                                    <ul class="list-group">
+                                        <#list deps as dep, url>
+                                            <#-- @ftlvariable name="dep" type="io.papermc.hangar.model.generated.Dependency" -->
+                                            <li class="list-group-item">
+                                                <#if url?has_content>
+                                                    <a href="${url}">
+                                                        ${dep.name}
+                                                    </a>
+                                                <#else>
+                                                    ${dep.name}
+                                                </#if>
+                                            </li>
+                                        </#list>
+                                    </ul>
                                 </#if>
+
                             </li>
-                        </#list>-->
+                        </#list>
                     </ul>
                 </div>
             </div>

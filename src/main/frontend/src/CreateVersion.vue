@@ -4,39 +4,33 @@
             <table class="plugin-meta-table">
                 <tr>
                     <td><strong>Version</strong></td>
-                    <td v-if="pendingVersion.versionString">
-                        {{ pendingVersion.versionString }}
-                    </td>
-                    <td v-else>
+                    <td>
                         <div class="form-group">
                             <label for="version-string-input" class="sr-only">Version String</label>
                             <input
+                                type="text"
                                 id="version-string-input"
                                 class="form-control"
-                                type="text"
                                 form="form-publish"
                                 name="versionString"
                                 required
-                                placeholder="Version"
+                                v-model="payload.versionString"
+                                :disabled="pendingVersion.versionString"
                             />
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td><strong>Description</strong></td>
-                    <td v-if="pendingVersion.versionString && pendingVersion.description">
-                        {{ pendingVersion.description }}
-                    </td>
-                    <td v-else-if="pendingVersion.versionString && !pendingVersion.description">No description</td>
-                    <td v-else>
+                    <td>
                         <div class="form-group">
                             <label for="version-description-input" class="sr-only">Version Description</label>
                             <input
                                 type="text"
-                                form="form-publish"
-                                name="versionDescription"
-                                class="form-control"
                                 id="version-description-input"
+                                class="form-control"
+                                v-model="payload.description"
+                                :disabled="pendingVersion.versionString && pendingVersion.description"
                             />
                         </div>
                     </td>
@@ -57,15 +51,7 @@
                         <td>
                             <div class="form-group">
                                 <label for="external-url-input" class="sr-only"></label>
-                                <input
-                                    id="external-url-input"
-                                    class="form-control"
-                                    type="text"
-                                    :value="pendingVersion.externalUrl"
-                                    name="externalUrl"
-                                    form="form-publish"
-                                    required
-                                />
+                                <input id="external-url-input" class="form-control" type="text" required v-model="payload.externalUrl" />
                             </div>
                         </td>
                     </tr>
@@ -73,28 +59,17 @@
                 <tr>
                     <td><strong>Channel</strong></td>
                     <td class="form-inline">
-                        <select id="select-channel" form="form-publish" name="channel-input" class="form-control">
-                            <option
-                                v-for="channel in channels"
-                                :key="channel.id"
-                                :value="channel.name"
-                                :data-color="channel.color.hex"
-                                :selected="channel.name === pendingVersion.channelName"
-                            >
+                        <select id="select-channel" class="form-control" v-model="payload.channel.name">
+                            <option v-for="channel in channels" :key="channel.id" :value="channel.name" :data-color="channel.color.hex">
                                 {{ channel.name }}
                             </option>
                         </select>
                         <a href="#">
-                            <i
-                                id="channel-new"
-                                class="fas fa-plus"
-                                data-toggle="modal"
-                                data-target="#channel-settings"
-                            ></i>
+                            <i id="channel-new" class="fas fa-plus" data-toggle="modal" data-target="#channel-settings"></i>
                         </a>
                     </td>
                 </tr>
-                <tr>
+                <!--                <tr>
                     <td><strong>Platform</strong></td>
                     <td v-if="pendingVersion.platforms">
                         <PlatformTags :tags="pendingVersion.dependenciesAsGhostTags" />
@@ -102,7 +77,12 @@
                     <td v-else>
                         <PlatformChoice></PlatformChoice>
                     </td>
-                </tr>
+                </tr>-->
+                <DependencySelection
+                    v-model:platforms-prop="payload.platforms"
+                    v-model:dependencies-prop="payload.dependencies"
+                    :tags="pendingVersion ? pendingVersion.dependenciesAsGhostTags : null"
+                ></DependencySelection>
                 <tr>
                     <td>
                         <label for="is-unstable-version" class="form-check-label">
@@ -111,14 +91,7 @@
                     </td>
                     <td class="rv">
                         <div class="form-check">
-                            <input
-                                id="is-unstable-version"
-                                class="form-check-input"
-                                form="form-publish"
-                                name="unstable"
-                                type="checkbox"
-                                value="true"
-                            />
+                            <input id="is-unstable-version" class="form-check-input" type="checkbox" v-model="payload.unstable" />
                         </div>
                         <div class="clearfix"></div>
                     </td>
@@ -131,15 +104,7 @@
                     </td>
                     <td class="rv">
                         <div class="form-check">
-                            <input
-                                id="is-recommended-version"
-                                class="form-check-input"
-                                form="form-publish"
-                                name="recommended"
-                                type="checkbox"
-                                checked
-                                value="true"
-                            />
+                            <input id="is-recommended-version" class="form-check-input" type="checkbox" v-model="payload.recommended" />
                         </div>
                         <div class="clearfix"></div>
                     </td>
@@ -151,15 +116,7 @@
                     </td>
                     <td class="rv">
                         <div class="form-check">
-                            <input
-                                id="create-forum-post-version"
-                                class="form-check-input"
-                                form="form-publish"
-                                name="forum-post"
-                                type="checkbox"
-                                :checked="forumSync"
-                                value="true"
-                            />
+                            <input id="create-forum-post-version" class="form-check-input" type="checkbox" v-model="payload.forumSync" />
                         </div>
                         <div class="clearfix"></div>
                     </td>
@@ -172,7 +129,12 @@
                 <h3>Release Bulletin</h3>
                 <p>What's new in this release?</p>
 
-                <Editor enabled :raw="pendingVersion.description || ''" target-form="form-publish"></Editor>
+                <Editor
+                    enabled
+                    :raw="pendingVersion.description || ''"
+                    target-form="form-publish"
+                    v-model:content-prop="payload.content"
+                ></Editor>
             </div>
         </div>
     </template>
@@ -216,21 +178,22 @@
         </div>
     </HangarForm>
     <template v-if="pendingVersion">
-        <HangarForm
-            :action="
-                pendingVersion.versionString
-                    ? ROUTES.parse('VERSIONS_PUBLISH', ownerName, projectSlug, pendingVersion.versionString)
-                    : ROUTES.parse('VERSIONS_PUBLISH_URL', ownerName, projectSlug)
-            "
-            method="post"
-            id="form-publish"
-            clazz="float-right"
-        >
-            <input type="hidden" class="channel-color-input" name="channel-color-input" :value="defaultColor" />
-            <div>
-                <input type="submit" name="create" value="Publish" class="btn btn-primary" />
-            </div>
-        </HangarForm>
+        <button class="btn btn-primary float-right mt-1 mr-1" @click="publish">Publish</button>
+        <!--        <HangarForm-->
+        <!--            :action="-->
+        <!--                pendingVersion.versionString-->
+        <!--                    ? ROUTES.parse('VERSIONS_PUBLISH', ownerName, projectSlug, pendingVersion.versionString)-->
+        <!--                    : ROUTES.parse('VERSIONS_PUBLISH_URL', ownerName, projectSlug)-->
+        <!--            "-->
+        <!--            method="post"-->
+        <!--            id="form-publish"-->
+        <!--            clazz="float-right"-->
+        <!--        >-->
+        <!--            <input type="hidden" class="channel-color-input" name="channel-color-input" :value="defaultColor" />-->
+        <!--            <div>-->
+        <!--                <input type="submit" name="create" value="Publish" class="btn btn-primary" />-->
+        <!--            </div>-->
+        <!--        </HangarForm>-->
     </template>
     <template v-else>
         <HangarForm
@@ -240,14 +203,7 @@
             clazz="form-inline"
         >
             <div class="input-group float-right" style="width: 50%">
-                <input
-                    type="text"
-                    class="form-control"
-                    id="externalUrl"
-                    name="externalUrl"
-                    placeholder="External URL"
-                    style="width: 70%"
-                />
+                <input type="text" class="form-control" id="externalUrl" name="externalUrl" placeholder="External URL" style="width: 70%" />
                 <div class="input-group-append">
                     <button class="btn btn-info" type="submit">Create Version</button>
                 </div>
@@ -257,19 +213,22 @@
 </template>
 <script>
 import HangarForm from '@/components/HangarForm';
-import PlatformChoice from '@/PlatformChoice';
-import PlatformTags from '@/components/PlatformTags';
+// import PlatformChoice from '@/PlatformChoice';
+import DependencySelection from '@/components/DependencySelection';
+// import PlatformTags from '@/components/PlatformTags';
 import Editor from '@/components/Editor';
 import 'bootstrap/js/dist/tooltip';
 import $ from 'jquery';
 import filesize from 'filesize';
+import axios from 'axios';
 
 export default {
     name: 'CreateVersion',
     components: {
         HangarForm,
-        PlatformChoice,
-        PlatformTags,
+        // PlatformChoice,
+        DependencySelection,
+        // PlatformTags,
         Editor,
     },
     props: {
@@ -284,7 +243,39 @@ export default {
         return {
             MAX_FILE_SIZE: 20971520,
             ROUTES: window.ROUTES,
+            payload: {
+                versionString: null,
+                description: null,
+                externalUrl: null,
+                channel: {
+                    name: null,
+                    color: null,
+                },
+                platforms: {},
+                dependencies: {},
+                unstable: false,
+                recommended: false,
+                forumSync: null,
+                content: '',
+            },
         };
+    },
+    created() {
+        if (this.pendingVersion) {
+            this.payload.versionString = this.pendingVersion.versionString;
+            this.payload.description = this.pendingVersion.description;
+            this.payload.externalUrl = this.pendingVersion.externalUrl;
+            this.payload.channel.name = this.pendingVersion.channelName;
+            this.payload.channel.color = this.pendingVersion.channelColor;
+            this.payload.forumSync = this.forumSync;
+
+            for (const platform of this.pendingVersion.platforms) {
+                this.payload.platforms[platform.name] = platform.versions;
+            }
+            this.payload.dependencies = this.pendingVersion.dependencies;
+            // console.log(this.pendingVersion.platforms);
+            // console.log(this.pendingVersion.dependencies);
+        }
     },
     methods: {
         getAlert() {
@@ -305,10 +296,7 @@ export default {
             bs.removeClass('alert-danger').addClass('alert-info');
             bs.find('[data-fa-i2svg]').attr('data-prefix', 'far');
             if (bs.find('[data-fa-i2svg]').data('ui-tooltip')) {
-                bs.find('[data-fa-i2svg]')
-                    .removeClass('fa-exclamation-circle')
-                    .addClass('fa-file-archive')
-                    .tooltip('dispose');
+                bs.find('[data-fa-i2svg]').removeClass('fa-exclamation-circle').addClass('fa-file-archive').tooltip('dispose');
             }
             return alert;
         },
@@ -360,9 +348,7 @@ export default {
 
             let success = true;
             if (fileSize > this.MAX_FILE_SIZE) {
-                this.failurePlugin(
-                    'That file is too big. Plugins may be no larger than ' + filesize(this.MAX_FILE_SIZE) + '.'
-                );
+                this.failurePlugin('That file is too big. Plugins may be no larger than ' + filesize(this.MAX_FILE_SIZE) + '.');
                 success = false;
             } else if (!fileName.endsWith('.zip') && !fileName.endsWith('.jar')) {
                 this.failurePlugin('Only JAR and ZIP files are accepted.');
@@ -391,9 +377,81 @@ export default {
             }
         },
         filesize,
+        publish() {
+            const requiredProps = ['forumSync', 'recommended', 'unstable', 'versionString', 'channel.color', 'channel.name'];
+
+            // Validations
+            for (const prop of requiredProps) {
+                if (prop.split('.').reduce((o, i) => o[i], this.payload) == null) {
+                    console.error(`Missing needed prop ${prop}`);
+                    return;
+                }
+            }
+            for (const platform in this.payload.dependencies) {
+                for (const dep of this.payload.dependencies[platform]) {
+                    if (!dep.project_id && !dep.external_url) {
+                        console.error(`Missing link for ${dep.name} on ${platform}`);
+                        return;
+                    }
+                }
+            }
+            for (const platform in this.payload.platforms) {
+                if (!this.payload.platforms[platform].versions.length) {
+                    console.error(`need to specify platform versions for ${platform}`);
+                    return;
+                }
+            }
+
+            console.log('VALIDATED!!');
+            console.log(this.payload);
+
+            const platformDeps = [];
+            for (const platform in this.payload.platforms) {
+                platformDeps.push({
+                    name: platform,
+                    versions: this.payload.platforms[platform].versions,
+                });
+            }
+
+            if (this.payload.content == null) {
+                this.payload.content = '';
+            }
+
+            const url = window.ROUTES.parse('VERSIONS_SAVE_NEW_VERSION', this.ownerName, this.projectSlug, this.payload.versionString);
+            axios
+                .post(
+                    url,
+                    {
+                        ...this.payload,
+                        platforms: platformDeps,
+                    },
+                    {
+                        headers: {
+                            [window.csrfInfo.headerName]: window.csrfInfo.token,
+                        },
+                    }
+                )
+                .then(() => {
+                    $('form')
+                        .attr(
+                            'action',
+                            window.ROUTES.parse('VERSIONS_PUBLISH', this.ownerName, this.projectSlug, this.payload.versionString)
+                        )
+                        .attr('method', 'post')
+                        .submit();
+                });
+        },
     },
     mounted() {
         $('.btn-edit').click();
     },
+    // watch: {
+    //     payload: {
+    //         handler(val) {
+    //             console.log(val);
+    //         },
+    //         deep: true,
+    //     },
+    // },
 };
 </script>

@@ -30,7 +30,7 @@ public class PromotedVersionMapper implements ColumnMapper<List<PromotedVersion>
             String version = json.get("version_string").asText();
             String tagName = json.get("tag_name").asText();
             String data = stringOrNull(json.get("tag_version"));
-            TagColor color = TagColor.VALUES[json.get("tag_color").asInt()];
+            TagColor color = TagColor.getValues()[json.get("tag_color").asInt()];
             // TODO a whole bunch
 //            val displayAndMc = data.map { rawData =>
 //                lazy val lowerBoundVersion = for {

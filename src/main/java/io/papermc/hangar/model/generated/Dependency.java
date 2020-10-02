@@ -29,6 +29,8 @@ public class Dependency {
         this.required = required;
     }
 
+    public Dependency() { }
+
     /**
      * Get dependency name
      * @return name

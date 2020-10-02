@@ -19,6 +19,9 @@ import java.util.StringJoiner;
  */
 @Validated
 public class Project {
+    @JsonProperty("id")
+    private long id;
+
     @JsonProperty("created_at")
     private OffsetDateTime createdAt = null;
 
@@ -71,6 +74,14 @@ public class Project {
     private Long stars;
     @JsonIgnore
     private Long watchers;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public OffsetDateTime getCreatedAt() {
         return createdAt;

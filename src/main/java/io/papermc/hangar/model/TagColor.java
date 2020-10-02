@@ -28,5 +28,9 @@ public enum TagColor { // remember, once we push to production, the order of the
         return foreground;
     }
 
-    public static final TagColor[] VALUES = TagColor.values();
+    private static final TagColor[] VALUES = TagColor.values();
+
+    public static TagColor[] getValues() {
+        return VALUES;
+    }
 }
