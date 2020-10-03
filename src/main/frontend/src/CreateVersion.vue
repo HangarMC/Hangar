@@ -42,7 +42,7 @@
                 <tr>
                     <td><strong>Channel</strong></td>
                     <td class="form-inline">
-                        <select id="select-channel" class="form-control" v-model="payload.channel.name">
+                        <select id="select-channel" class="form-control" v-model="payload.channel.name" style="margin-right: 10px">
                             <option v-for="channel in channels" :key="channel.id" :value="channel.name" :data-color="channel.color.hex">
                                 {{ channel.name }}
                             </option>
@@ -114,17 +114,28 @@
         enctype="multipart/form-data"
         clazz="form-inline"
     >
-        <label for="pluginFile" class="btn btn-info float-left">
-            <input
-                type="file"
-                id="pluginFile"
-                name="pluginFile"
-                style="display: none"
-                accept=".jar,.zip"
-                @change="fileUploaded($event.target.name, $event.target.files)"
-            />
-            Select file
-        </label>
+
+        <div class="input-group float-left" style="width: 50%">
+          <label for="pluginFile" style="flex-wrap: wrap">
+            <span style="flex: 0 0 100%; margin-bottom: 10px" v-if="!pendingVersion">Either upload a file...</span>
+            <div :class="'btn btn-primary' + (pendingVersion ? ' mt-1': '')" style="flex: 0 0 100%">
+              <template v-if="!pendingVersion">
+                Upload
+              </template>
+              <template v-else>
+                Change file
+              </template>
+            </div>
+          </label>
+          <input
+              type="file"
+              id="pluginFile"
+              name="pluginFile"
+              accept=".jar,.zip"
+              style="display: none;"
+              @change="fileUploaded($event.target.name, $event.target.files)"
+          />
+        </div>
         <div class="alert-file file-project float-right" style="display: none">
             <div class="alert alert-info float-left">
                 <i class="far fa-file-archive"></i>
@@ -152,9 +163,10 @@
     <template v-else>
         <HangarForm :action="ROUTES.parse('VERSIONS_CREATE_EXTERNAL_URL', ownerName, projectSlug)" method="post" id="form-url-upload" clazz="form-inline">
             <div class="input-group float-right" style="width: 50%">
+                <label for="externalUrl" style="margin-bottom: 10px">...or specify an external URL</label>
                 <input type="text" class="form-control" id="externalUrl" name="externalUrl" placeholder="External URL" style="width: 70%" />
                 <div class="input-group-append">
-                    <button class="btn btn-info" type="submit">Create Version</button>
+                    <button class="btn btn-primary" type="submit">Create Version</button>
                 </div>
             </div>
         </HangarForm>
