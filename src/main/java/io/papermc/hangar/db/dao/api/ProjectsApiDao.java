@@ -24,7 +24,8 @@ import java.util.Map;
 public interface ProjectsApiDao {
 
     @UseStringTemplateEngine
-    @SqlQuery("SELECT p.created_at," +
+    @SqlQuery("SELECT p.id," +
+            "       p.created_at," +
             "       p.name," +
             "       p.owner_name \"owner\"," +
             "       p.slug," +

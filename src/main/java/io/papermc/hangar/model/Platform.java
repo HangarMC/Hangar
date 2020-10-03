@@ -1,9 +1,11 @@
 package io.papermc.hangar.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.PlatformVersionsDao;
 import io.papermc.hangar.db.model.ProjectVersionTagsTable;
-import io.papermc.hangar.model.generated.Dependency;
+import io.papermc.hangar.model.generated.PlatformDependency;
 import io.papermc.hangar.service.VersionService;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -21,6 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+@JsonFormat(shape = Shape.OBJECT)
 public enum Platform {
 
     PAPER("Paper", PlatformCategory.SERVER_CATEGORY, 0, "paperapi", TagColor.PAPER, "https://papermc.io/downloads"),
@@ -85,7 +88,7 @@ public enum Platform {
         this.platformVersionsDao = platformVersionsDao;
     }
 
-    public ProjectVersionTagsTable createGhostTag(long versionId, String version) {
+    public ProjectVersionTagsTable createGhostTag(long versionId, List<String> version) {
         return new ProjectVersionTagsTable(-1, versionId, name, version, tagColor);
     }
 
@@ -112,33 +115,31 @@ public enum Platform {
                 .collect(Collectors.toList());
     }
 
-    public static List<Pair<Platform, ProjectVersionTagsTable>> getGhostTags(long versionId, List<Dependency> dependencies) {
-        return getPlatforms(
-                dependencies
-                .stream()
-                .map(Dependency::getPluginId)
-                .collect(Collectors.toList())
-        ).stream().map(p -> new ImmutablePair<>(
-                p,
-                p.createGhostTag(
+    public static List<Pair<Platform, ProjectVersionTagsTable>> getGhostTags(long versionId, List<PlatformDependency> platformDependencies) {
+        return platformDependencies.stream().map(dep -> new ImmutablePair<>(
+                dep.getPlatform(),
+                dep.getPlatform().createGhostTag(
                         versionId,
-                        dependencies
-                        .stream()
-                        .filter(d -> d.getPluginId().equalsIgnoreCase(p.dependencyId))
-                        .findFirst()
-                        .get()
-                        .getVersion()
+                        dep.getVersions()
                 )
         )).collect(Collectors.toList());
     }
 
     @Nullable
-    public static Platform getByDependencyId(String dependencyId) {
-        return PLATFORMS_BY_DEPENDENDY.get(dependencyId.toLowerCase());
+    public static Platform getByName(@Nullable String name) {
+        if (name == null) {
+            return null;
+        }
+        for (Platform pl : VALUES) {
+            if (pl.name.equalsIgnoreCase(name)) {
+                return pl;
+            }
+        }
+        return null;
     }
 
-    public static List<ProjectVersionTagsTable> createPlatformTags(VersionService versionService, long versionId, List<Dependency> dependencies) {
-        return versionService.insertTags(getGhostTags(versionId, dependencies).stream().map(Pair::getRight).collect(Collectors.toList()));
+    public static List<ProjectVersionTagsTable> createPlatformTags(VersionService versionService, long versionId, List<PlatformDependency> platformDependencies) {
+        return versionService.insertTags(getGhostTags(versionId, platformDependencies).stream().map(Pair::getRight).collect(Collectors.toList()));
     }
 
     public enum PlatformCategory {

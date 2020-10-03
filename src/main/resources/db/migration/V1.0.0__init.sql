@@ -173,7 +173,8 @@ create table project_versions
             primary key,
     created_at timestamp with time zone not null,
     version_string varchar(255) not null,
-    dependencies varchar(255) [] not null,
+    dependencies jsonb DEFAULT '{}'::jsonb NOT NULL,
+    platforms jsonb DEFAULT '[]'::jsonb NOT NULL,
     description text,
     project_id bigint not null
         constraint versions_project_id_fkey
@@ -560,7 +561,7 @@ create table project_version_tags
             references project_versions
             on delete cascade,
     name varchar(255) not null,
-    data varchar(255),
+    data varchar(255)[],
     color integer not null
 );
 
@@ -899,18 +900,9 @@ WITH tags AS (
                                 pvti.name,
                                 pvti.data,
                                 CASE
-                                    WHEN pvti.name::text = 'Sponge'::text THEN "substring"(pvti.data::text,
-                                                                                           '^\[?(\d+)\.\d+(?:\.\d+)?(?:-SNAPSHOT)?(?:-[a-z0-9]{7,9})?(?:,(?:\d+\.\d+(?:\.\d+)?)?\))?$'::text)
-                                    WHEN pvti.name::text = 'SpongeForge'::text THEN "substring"(pvti.data::text,
-                                                                                                '^\d+\.\d+\.\d+-\d+-(\d+)\.\d+\.\d+(?:(?:-BETA-\d+)|(?:-RC\d+))?$'::text)
-                                    WHEN pvti.name::text = 'SpongeVanilla'::text THEN "substring"(pvti.data::text,
-                                                                                                  '^\d+\.\d+\.\d+-(\d+)\.\d+\.\d+(?:(?:-BETA-\d+)|(?:-RC\d+))?$'::text)
-                                    WHEN pvti.name::text = 'Forge'::text
-                                        THEN "substring"(pvti.data::text, '^\d+\.(\d+)\.\d+(?:\.\d+)?$'::text)
-                                    WHEN pvti.name::text = 'Lantern'::text THEN NULL::text
-                                    WHEN pvti.name::text = 'Paper'::text THEN pvti.data::text
-                                    WHEN pvti.name::text = 'Waterfall'::text THEN pvti.data::text
-                                    WHEN pvti.name::text = 'Velocity'::text THEN pvti.data::text
+                                    WHEN pvti.name::text = 'Paper'::text THEN array_to_string(pvti.data, ', ')
+                                    WHEN pvti.name::text = 'Waterfall'::text THEN array_to_string(pvti.data, ', ')
+                                    WHEN pvti.name::text = 'Velocity'::text THEN array_to_string(pvti.data, ', ')
                                     ELSE NULL::text
                                     END AS platform_version,
                                 pvti.color

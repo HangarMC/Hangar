@@ -1,6 +1,5 @@
 package io.papermc.hangar.service;
 
-import com.vladsch.flexmark.ast.MailLink;
 import com.vladsch.flexmark.ext.anchorlink.AnchorLinkExtension;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
@@ -9,20 +8,10 @@ import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.typographic.TypographicExtension;
 import com.vladsch.flexmark.ext.wikilink.WikiLinkExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
-import com.vladsch.flexmark.html.LinkResolver;
-import com.vladsch.flexmark.html.renderer.LinkResolverBasicContext;
-import com.vladsch.flexmark.html.renderer.LinkStatus;
-import com.vladsch.flexmark.html.renderer.LinkType;
-import com.vladsch.flexmark.html.renderer.ResolvedLink;
 import com.vladsch.flexmark.parser.Parser;
-import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
-
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 
 @Service
@@ -59,6 +48,7 @@ public class MarkdownService {
     }
 
     public String render(String input) {
+        if (input == null) return "";
         return this.render(input, RenderSettings.defaultSettings);
     }
 

@@ -1,5 +1,6 @@
 [#ftl]
 [#-- @implicitly included --]
+[#-- @ftlvariable name="mapper" type="com.fasterxml.jackson.databind.ObjectMapper" --]
 [#-- @ftlvariable name="_csrf" type="org.springframework.security.web.csrf.CsrfToken" --]
 [#-- @ftlvariable name="cu" type="io.papermc.hangar.db.model.UsersTable" --]
 [#-- @ftlvariable name="markdownService" type="io.papermc.hangar.service.MarkdownService" --]

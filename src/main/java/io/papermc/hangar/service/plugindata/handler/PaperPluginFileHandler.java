@@ -2,6 +2,7 @@ package io.papermc.hangar.service.plugindata.handler;
 
 import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.generated.Dependency;
+import io.papermc.hangar.model.generated.PlatformDependency;
 import io.papermc.hangar.service.plugindata.DataValue;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
@@ -29,48 +30,58 @@ public class PaperPluginFileHandler extends FileTypeHandler {
             return result;
         }
 
-        String version = String.valueOf(data.get("version"));
-        if (version != null) {
-            result.add(new DataValue.StringDataValue("version", version));
+        if (data.containsKey("version")) {
+            String version = String.valueOf(data.get("version"));
+            if (version != null) {
+                result.add(new DataValue.StringDataValue(FileTypeHandler.VERSION, version));
+            }
         }
+
         String name = (String) data.get("name");
         if (name != null) {
-            result.add(new DataValue.StringDataValue("name", name));
+            result.add(new DataValue.StringDataValue(FileTypeHandler.NAME, name));
         }
         String description = (String) data.get("description");
         if (description != null) {
-            result.add(new DataValue.StringDataValue("description", description));
+            result.add(new DataValue.StringDataValue(FileTypeHandler.DESCRIPTION, description));
         }
         String website = (String) data.get("website");
         if (website != null) {
-            result.add(new DataValue.StringDataValue("url", website));
+            result.add(new DataValue.StringDataValue(FileTypeHandler.URL, website));
         }
         String author = (String) data.get("author");
         if (author != null) {
-            result.add(new DataValue.StringListDataValue("authors", List.of(author)));
+            result.add(new DataValue.StringListDataValue(FileTypeHandler.AUTHORS, List.of(author)));
         }
+        //noinspection unchecked
         List<String> authors = (List<String>) data.get("authors");
         if (authors != null) {
-            result.add(new DataValue.StringListDataValue("authors", authors));
+            result.add(new DataValue.StringListDataValue(FileTypeHandler.AUTHORS, authors));
         }
 
         List<Dependency> dependencies = new ArrayList<>();
         //noinspection unchecked
         List<String> softdepend = (List<String>) data.get("softdepend");
         if (softdepend != null) {
-            dependencies.addAll(softdepend.stream().map(p -> new Dependency(p, null, false)).collect(Collectors.toList()));
+            dependencies.addAll(softdepend.stream().map(depName -> new Dependency(depName, false)).collect(Collectors.toList()));
         }
         //noinspection unchecked
         List<String> depend = (List<String>) data.get("depend");
         if (depend != null) {
-            dependencies.addAll(depend.stream().map(p -> new Dependency(p, null)).collect(Collectors.toList()));
+            dependencies.addAll(depend.stream().map(depName -> new Dependency(depName, true)).collect(Collectors.toList()));
         }
 
-        String paperVersion = data.getOrDefault("api-version", "").toString();
-        Dependency paperDependency = new Dependency("paperapi", !paperVersion.isEmpty() ? paperVersion : null);
-        dependencies.add(paperDependency);
-        result.add(new DataValue.DependencyDataValue("dependencies", dependencies));
+        if (!dependencies.isEmpty()) {
+            result.add(new DataValue.DependencyDataValue(FileTypeHandler.DEPENDENCIES, getPlatform(), dependencies));
+        }
 
+//        System.out.println(dependencies);
+
+        List<String> versions = new ArrayList<>();
+        if (data.containsKey("api-version")) {
+            versions.add(data.get("api-version").toString());
+        }
+        result.add(new DataValue.PlatformDependencyDataValue(FileTypeHandler.PLATFORM_DEPENDENCY, new PlatformDependency(getPlatform(), versions)));
         return result;
     }
 

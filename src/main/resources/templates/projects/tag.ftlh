@@ -11,7 +11,7 @@
     <div>
         <#list platform.getPossibleVersions() as version>
             <label for="version-${version}">${version}</label>
-            <input form="${form}" id="version-${version}" type="checkbox" name="versions" value="${version}" <#if tag.data?has_content && tag.data == version>checked</#if>>
+            <input form="${form}" id="version-${version}" type="checkbox" name="versions" value="${version}" <#if tag.data?has_content && tag.data?seq_contains(version)>checked</#if>>
             <#if (version?index + 1) % 5 == 0></div><div></#if>
         </#list>
     </div>

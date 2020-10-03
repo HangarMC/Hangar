@@ -14,7 +14,6 @@ import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.Visibility;
-import io.papermc.hangar.model.generated.Dependency;
 import io.papermc.hangar.model.generated.ProjectSortingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -167,15 +166,7 @@ public class V1ApiService {
                 .put("downloads", 0)
                 .put("description", v.getDescription());
         objectNode.set("channel", mapper.valueToTree(channel));
-        objectNode.set("dependencies", Dependency.from(v.getDependencies()).stream().collect(Collector.of(mapper::createArrayNode, (array, dep) -> {
-            ObjectNode depObj = mapper.createObjectNode()
-                    //TODO dependency identification
-                    .put("pluginId", dep.getPluginId())
-                    .put("version", dep.getVersion());
-            array.add(depObj);
-        }, (ignored1, ignored2) -> {
-            throw new UnsupportedOperationException();
-        })));
+        objectNode.set("dependencies", mapper.valueToTree(v.getDependencies()));
 
         if (v.getVisibility() != Visibility.PUBLIC) {
             ObjectNode visObj = mapper.createObjectNode()

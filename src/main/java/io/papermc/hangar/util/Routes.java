@@ -2,6 +2,7 @@ package io.papermc.hangar.util;
 
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +64,7 @@ public enum Routes {
     PROJECTS_REMOVE_MEMBER("projects.removeMember", Paths.PROJECTS_REMOVE_MEMBER, of("author", "slug"), of()),
     VERSIONS_RESTORE("versions.restore", Paths.VERSIONS_RESTORE, of("author", "slug", "version"), of()),
     VERSIONS_DOWNLOAD_RECOMMENDED_JAR("versions.downloadRecommendedJar", Paths.VERSIONS_DOWNLOAD_RECOMMENDED_JAR, of("author", "slug"), of("token")),
+    VERSIONS_SAVE_NEW_VERSION("versions.saveNewVersion", Paths.VERSIONS_SAVE_NEW_VERSION, of("author", "slug", "version"), of()),
     VERSIONS_PUBLISH("versions.publish", Paths.VERSIONS_PUBLISH, of("author", "slug", "version"), of()),
     VERSIONS_PUBLISH_URL("versions.publishUrl", Paths.VERSIONS_PUBLISH_URL, of("author", "slug"), of()),
     VERSIONS_SET_RECOMMENDED("versions.setRecommended", Paths.VERSIONS_SET_RECOMMENDED, of("author", "slug", "version"), of()),
@@ -130,6 +132,7 @@ public enum Routes {
     APIV1_REVOKE_KEY("apiv1.revokeKey", Paths.APIV1_REVOKE_KEY, of("author", "slug"), of()),
     APIV1_CREATE_KEY("apiv1.createKey", Paths.APIV1_CREATE_KEY, of("author", "slug"), of()),
     APIV1_SHOW_PROJECT("apiv1.showProject", Paths.APIV1_SHOW_PROJECT, of("author", "slug"), of()),
+    APIV1_SHOW_PROJECT_BY_ID("apiv1.showProjectById", Paths.APIV1_SHOW_PROJECT_BY_ID, of("id"), of()),
     APIV1_SYNC_SSO("apiv1.syncSso", Paths.APIV1_SYNC_SSO, of(), of()),
     APIV1_TAG_COLOR("apiv1.tagColor", Paths.APIV1_TAG_COLOR, of("tagId"), of()),
     APIV1_SHOW_STATUS_Z("apiv1.showStatusZ", Paths.APIV1_SHOW_STATUS_Z, of(), of()),
@@ -140,10 +143,16 @@ public enum Routes {
     APIV1_LIST_PLATFORMS("apiv1.listPlatforms", Paths.APIV1_LIST_PLATFORMS, of(), of());
 
     private static final Map<String, Routes> ROUTES = new HashMap<>();
+    private static final Map<Routes, String> JS_ROUTES = new EnumMap<>(Routes.class);
+
+    public static Map<Routes, String> getJsRoutes() {
+        return JS_ROUTES;
+    }
 
     static {
         for (Routes route : values()) {
             ROUTES.put(route.name, route);
+            JS_ROUTES.put(route, route.url);
         }
     }
 
@@ -272,6 +281,7 @@ public enum Routes {
 
         public static final String VERSIONS_RESTORE = "/{author}/{slug}/versions/{version}/restore";
         public static final String VERSIONS_DOWNLOAD_RECOMMENDED_JAR = "/{author}/{slug}/versions/recommended/jar";
+        public static final String VERSIONS_SAVE_NEW_VERSION = "/{author}/{slug}/versions/new/{version}";
         public static final String VERSIONS_PUBLISH = "/{author}/{slug}/versions/{version}";
         public static final String VERSIONS_PUBLISH_URL = "/{author}/{slug}/versions/publish";
         public static final String VERSIONS_SET_RECOMMENDED = "/{author}/{slug}/versions/{version}/recommended";
@@ -345,6 +355,7 @@ public enum Routes {
         public static final String APIV1_REVOKE_KEY = "/api/v1/projects/{author}/{slug}/keys/revoke";
         public static final String APIV1_CREATE_KEY = "/api/v1/projects/{author}/{slug}/keys/new";
         public static final String APIV1_SHOW_PROJECT = "/api/v1/projects/{author}/{slug}";
+        public static final String APIV1_SHOW_PROJECT_BY_ID = "/api/v1/projects/{id}";
         public static final String APIV1_SYNC_SSO = "/api/sync_sso";
         public static final String APIV1_TAG_COLOR = "/api/v1/tags/{tagId}";
         public static final String APIV1_SHOW_STATUS_Z = "/statusz";

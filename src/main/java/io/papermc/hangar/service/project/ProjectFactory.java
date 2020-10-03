@@ -1,6 +1,8 @@
 package io.papermc.hangar.service.project;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.dao.HangarDao;
@@ -20,7 +22,6 @@ import io.papermc.hangar.model.NotificationType;
 import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.Visibility;
-import io.papermc.hangar.model.generated.Dependency;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.ProjectPage;
 import io.papermc.hangar.model.viewhelpers.VersionData;
@@ -43,7 +44,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class ProjectFactory {
@@ -60,9 +60,10 @@ public class ProjectFactory {
     private final NotificationService notificationService;
     private final UserActionLogService userActionLogService;
     private final ProjectFiles projectFiles;
+    private final ObjectMapper mapper;
 
     @Autowired
-    public ProjectFactory(HangarConfig hangarConfig, HangarDao<ProjectChannelDao> projectChannelDao, HangarDao<ProjectDao> projectDao, HangarDao<ProjectPageDao> projectPagesDao, HangarDao<ProjectVersionDao> projectVersionDao, RoleService roleService, UserService userService, ProjectService projectService, ChannelService channelService, VersionService versionService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles) {
+    public ProjectFactory(HangarConfig hangarConfig, HangarDao<ProjectChannelDao> projectChannelDao, HangarDao<ProjectDao> projectDao, HangarDao<ProjectPageDao> projectPagesDao, HangarDao<ProjectVersionDao> projectVersionDao, RoleService roleService, UserService userService, ProjectService projectService, ChannelService channelService, VersionService versionService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles, ObjectMapper mapper) {
         this.hangarConfig = hangarConfig;
         this.projectChannelDao = projectChannelDao;
         this.projectDao = projectDao;
@@ -75,6 +76,7 @@ public class ProjectFactory {
         this.notificationService = notificationService;
         this.userActionLogService = userActionLogService;
         this.projectFiles = projectFiles;
+        this.mapper = mapper;
     }
 
     public String getUploadError(UsersTable user) {
@@ -144,14 +146,7 @@ public class ProjectFactory {
 
         ProjectVersionsTable version = projectVersionDao.get().insert(new ProjectVersionsTable(
                 pendingVersion.getVersionString(),
-                //TODO dependency identification
-                pendingVersion.getDependencies().stream().map(d -> {
-                    if (d.getVersion() == null || d.getVersion().isBlank()) {
-                        return d.getPluginId();
-                    } else {
-                        return d.getPluginId() + ":" + d.getVersion();
-                    }
-                }).collect(Collectors.toList()),
+                pendingVersion.getDependencies(),
                 pendingVersion.getDescription(),
                 pendingVersion.getProjectId(),
                 channel.getId(),
@@ -160,14 +155,15 @@ public class ProjectFactory {
                 pendingVersion.getFileName(),
                 pendingVersion.getAuthorId(),
                 pendingVersion.isCreateForumPost(),
-                pendingVersion.getExternalUrl()
-        ));
+                pendingVersion.getExternalUrl(),
+                pendingVersion.getPlatforms()
+        ), new JSONB(mapper.valueToTree(pendingVersion.getDependencies())), new JSONB(mapper.valueToTree(pendingVersion.getPlatforms())));
 
         if (pendingVersion.getPlugin() != null) {
             pendingVersion.getPlugin().getData().createTags(version.getId(), versionService); // TODO not sure what this is for
         }
 
-        Platform.createPlatformTags(versionService, version.getId(), Dependency.from(version.getDependencies()));
+        Platform.createPlatformTags(versionService, version.getId(), version.getPlatforms());
 
         List<UsersTable> watchers = projectService.getProjectWatchers(project.getProject().getId(), 0, null);
         // TODO bulk notif insert

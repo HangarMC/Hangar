@@ -1,5 +1,11 @@
 package io.papermc.hangar.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonFormat(shape = Shape.OBJECT)
 public enum Color {
 
     PURPLE(0, "#B400FF"),
@@ -38,7 +44,8 @@ public enum Color {
         return hex;
     }
 
-    public static Color getById(int id) {
+    @JsonCreator
+    public static Color getById(@JsonProperty("value") int id) {
         return VALUES[id];
     }
 
@@ -47,5 +54,9 @@ public enum Color {
             if (value.hex.equalsIgnoreCase(hexStr)) return value;
         }
         return null;
+    }
+
+    public static Color[] getValues() {
+        return VALUES;
     }
 }

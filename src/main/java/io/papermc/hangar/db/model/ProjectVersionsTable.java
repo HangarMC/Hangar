@@ -2,7 +2,9 @@ package io.papermc.hangar.db.model;
 
 
 import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.model.generated.PlatformDependency;
 import io.papermc.hangar.model.generated.ReviewState;
+import io.papermc.hangar.model.viewhelpers.VersionDependencies;
 import org.jdbi.v3.core.annotation.Unmappable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 
@@ -14,7 +16,7 @@ public class ProjectVersionsTable {
     private long id;
     private OffsetDateTime createdAt;
     private String versionString;
-    private List<String> dependencies;
+    private VersionDependencies dependencies;
     private String description;
     private long projectId;
     private long channelId;
@@ -29,8 +31,9 @@ public class ProjectVersionsTable {
     private boolean createForumPost = true;
     private Long postId;
     private String externalUrl;
+    private List<PlatformDependency> platforms;
 
-    public ProjectVersionsTable(String versionString, List<String> dependencies, String description, long projectId, long channelId, Long fileSize, String hash, String fileName, long authorId, boolean createForumPost, String externalUrl) {
+    public ProjectVersionsTable(String versionString, VersionDependencies dependencies, String description, long projectId, long channelId, Long fileSize, String hash, String fileName, long authorId, boolean createForumPost, String externalUrl, List<PlatformDependency> platforms) {
         this.versionString = versionString;
         this.dependencies = dependencies;
         this.description = description;
@@ -42,6 +45,7 @@ public class ProjectVersionsTable {
         this.authorId = authorId;
         this.createForumPost = createForumPost;
         this.externalUrl = externalUrl;
+        this.platforms = platforms;
     }
 
     public ProjectVersionsTable() { }
@@ -73,11 +77,11 @@ public class ProjectVersionsTable {
     }
 
 
-    public List<String> getDependencies() {
+    public VersionDependencies getDependencies() {
         return dependencies;
     }
 
-    public void setDependencies(List<String> dependencies) {
+    public void setDependencies(VersionDependencies dependencies) {
         this.dependencies = dependencies;
     }
 
@@ -211,6 +215,15 @@ public class ProjectVersionsTable {
         this.externalUrl = externalUrl;
     }
 
+
+    public List<PlatformDependency> getPlatforms() {
+        return platforms;
+    }
+
+    public void setPlatforms(List<PlatformDependency> platforms) {
+        this.platforms = platforms;
+    }
+
     @Unmappable
     public boolean isExternal() {
         return this.externalUrl != null && this.fileName == null;
@@ -222,7 +235,6 @@ public class ProjectVersionsTable {
                 "id=" + id +
                 ", createdAt=" + createdAt +
                 ", versionString='" + versionString + '\'' +
-                ", dependencies=" + dependencies +
                 ", description='" + description + '\'' +
                 ", projectId=" + projectId +
                 ", channelId=" + channelId +
@@ -236,6 +248,9 @@ public class ProjectVersionsTable {
                 ", reviewState=" + reviewState +
                 ", createForumPost=" + createForumPost +
                 ", postId=" + postId +
+                ", externalUrl='" + externalUrl + '\'' +
+                ", dependencies=" + dependencies +
+                ", platformDependencies=" + platforms +
                 '}';
     }
 }

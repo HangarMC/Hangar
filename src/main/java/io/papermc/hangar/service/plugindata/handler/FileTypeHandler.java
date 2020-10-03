@@ -8,6 +8,14 @@ import java.util.List;
 
 public abstract class FileTypeHandler {
 
+    public static final String VERSION = "version";
+    public static final String NAME = "name";
+    public static final String DESCRIPTION = "description";
+    public static final String URL = "url";
+    public static final String AUTHORS = "authors";
+    public static final String DEPENDENCIES = "dependencies";
+    public static final String PLATFORM_DEPENDENCY = "platform-dependency";
+
     private final String fileName;
 
     protected FileTypeHandler(String fileName) {

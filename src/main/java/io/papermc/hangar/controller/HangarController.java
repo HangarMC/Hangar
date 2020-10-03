@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateHashModel;
@@ -29,6 +30,8 @@ public abstract class HangarController {
     private MarkdownService markdownService;
     @Autowired
     private TemplateHelper templateHelper;
+    @Autowired
+    private ObjectMapper mapper;
 
 
     @Autowired
@@ -45,6 +48,8 @@ public abstract class HangarController {
         mav.addObject("markdownService", markdownService);
         mav.addObject("rand", ThreadLocalRandom.current());
         mav.addObject("utils", templateHelper);
+        mav.addObject("mapper", mapper);
+
 
         try {
             mav.addObject("Routes", staticModels.get("io.papermc.hangar.util.Routes"));

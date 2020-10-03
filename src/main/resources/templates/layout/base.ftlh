@@ -92,10 +92,21 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
     </#if>
 
     <#if scriptsEnabled>
+        <script>
+            window.ROUTES = ${mapper.valueToTree(Routes.getJsRoutes())}
+            window.ROUTES.parse = function (key, ...params) {
+                var route = window.ROUTES[key];
+                for (let param of params) {
+                    route = route.replace(/{.+?}/, param);
+                }
+                return route;
+            };
+        </script>
         <#if _csrf?? && _csrf.token??>
             <script>
                 window.csrf = '${_csrf.token}';
                 window.csrfInfo = {
+                    'parameterName': '${_csrf.parameterName}',
                     'headerName': '${_csrf.headerName}',
                     'token': '${_csrf.token}'
                 };

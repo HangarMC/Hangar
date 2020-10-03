@@ -20,7 +20,6 @@ import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.SsoSyncData;
 import io.papermc.hangar.model.TagColor;
 import io.papermc.hangar.model.Visibility;
-import io.papermc.hangar.model.generated.Dependency;
 import io.papermc.hangar.model.generated.ProjectSortingStrategy;
 import io.papermc.hangar.model.viewhelpers.ProjectPage;
 import io.papermc.hangar.model.viewhelpers.UserData;
@@ -32,6 +31,7 @@ import io.papermc.hangar.service.UserActionLogService;
 import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.api.V1ApiService;
 import io.papermc.hangar.service.project.PagesSerivce;
+import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.ApiUtil;
 import io.papermc.hangar.util.TemplateHelper;
 import org.slf4j.Logger;
@@ -78,6 +78,7 @@ public class Apiv1Controller extends HangarController {
     private final ObjectMapper mapper;
     private final TemplateHelper templateHelper;
     private final PagesSerivce pagesSerivce;
+    private final ProjectService projectService;
     private final UserService userService;
     private final SsoService ssoService;
     private final V1ApiService v1ApiService;
@@ -88,11 +89,12 @@ public class Apiv1Controller extends HangarController {
     private final Supplier<ProjectsTable> projectsTable;
 
     @Autowired
-    public Apiv1Controller(HangarConfig hangarConfig, ObjectMapper mapper, TemplateHelper templateHelper, PagesSerivce pagesSerivce, UserService userService, SsoService ssoService, V1ApiService v1ApiService, ApiKeyService apiKeyService, UserActionLogService userActionLogService, HttpServletRequest request, Supplier<ProjectsTable> projectsTable) {
+    public Apiv1Controller(HangarConfig hangarConfig, ObjectMapper mapper, TemplateHelper templateHelper, PagesSerivce pagesSerivce, ProjectService projectService, UserService userService, SsoService ssoService, V1ApiService v1ApiService, ApiKeyService apiKeyService, UserActionLogService userActionLogService, HttpServletRequest request, Supplier<ProjectsTable> projectsTable) {
         this.hangarConfig = hangarConfig;
         this.mapper = mapper;
         this.templateHelper = templateHelper;
         this.pagesSerivce = pagesSerivce;
+        this.projectService = projectService;
         this.userService = userService;
         this.ssoService = ssoService;
         this.v1ApiService = v1ApiService;
@@ -121,6 +123,12 @@ public class Apiv1Controller extends HangarController {
     @GetMapping("/v1/projects/{author}/{slug}")
     public ResponseEntity<ObjectNode> showProject(@PathVariable String author, @PathVariable String slug) {
         ProjectsTable project = projectsTable.get();
+        return ResponseEntity.ok((ObjectNode) writeProjects(List.of(project)).get(0));
+    }
+
+    @GetMapping("v1/projects/{id}")
+    public ResponseEntity<ObjectNode> showProject(@PathVariable long id) {
+        ProjectsTable project = projectService.getProjectsTable(id);
         return ResponseEntity.ok((ObjectNode) writeProjects(List.of(project)).get(0));
     }
 
@@ -284,7 +292,8 @@ public class Apiv1Controller extends HangarController {
 
         projectsTables.forEach(project -> {
             ObjectNode projectObj = mapper.createObjectNode();
-            projectObj.put("author", project.getOwnerName())
+            projectObj.put("id", project.getId())
+                    .put("author", project.getOwnerName())
                     .put("slug", project.getSlug())
                     .put("createdAt", project.getCreatedAt().toString())
                     .put("name", project.getName())
@@ -326,15 +335,7 @@ public class Apiv1Controller extends HangarController {
                 .put("downloads", 0)
                 .put("description", version.getDescription());
         objectNode.set("channel", mapper.valueToTree(channel));
-        objectNode.set("dependencies", Dependency.from(version.getDependencies()).stream().collect(Collector.of(mapper::createArrayNode, (array, dep) -> {
-            ObjectNode depObj = mapper.createObjectNode()
-                    // TODO dependency identification
-                    .put("author", dep.getPluginId())
-                    .put("version", dep.getVersion());
-            array.add(depObj);
-        }, (ignored1, ignored2) -> {
-            throw new UnsupportedOperationException();
-        })));
+        objectNode.set("dependencies", mapper.valueToTree(version.getDependencies()));
         objectNode.set("tags", tags.stream().collect(Collector.of(mapper::createArrayNode, (array, tag) -> array.add(mapper.valueToTree(tag)), (t1, t2) -> {
             throw new UnsupportedOperationException();
         })));
