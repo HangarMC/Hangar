@@ -11,6 +11,7 @@ import {
     faChartArea,
     faCheck,
     faCheckCircle as fasCheckCircle,
+    faCheckSquare,
     faChevronDown,
     faChevronUp,
     faCircle,
@@ -166,7 +167,8 @@ library.add(
     faEyeSlash,
     faUserTag,
     faTags,
-    faExclamationTriangle
+    faExclamationTriangle,
+    faCheckSquare
 );
 
 dom.watch();
