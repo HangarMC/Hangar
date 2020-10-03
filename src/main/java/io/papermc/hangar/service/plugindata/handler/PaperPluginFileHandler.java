@@ -77,8 +77,11 @@ public class PaperPluginFileHandler extends FileTypeHandler {
 
 //        System.out.println(dependencies);
 
-        String paperVersion = data.getOrDefault("api-version", "").toString();
-        result.add(new DataValue.PlatformDependencyDataValue(FileTypeHandler.PLATFORM_DEPENDENCY, new PlatformDependency(getPlatform(), new ArrayList<>(List.of(paperVersion)))));
+        List<String> versions = new ArrayList<>();
+        if (data.containsKey("api-version")) {
+            versions.add(data.get("api-version").toString());
+        }
+        result.add(new DataValue.PlatformDependencyDataValue(FileTypeHandler.PLATFORM_DEPENDENCY, new PlatformDependency(getPlatform(), versions)));
         return result;
     }
 
