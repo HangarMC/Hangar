@@ -18,21 +18,6 @@
                         </div>
                     </td>
                 </tr>
-                <!--                <tr>-->
-                <!--                    <td><strong>Description</strong></td>-->
-                <!--                    <td>-->
-                <!--                        <div class="form-group">-->
-                <!--                            <label for="version-description-input" class="sr-only">Version Description</label>-->
-                <!--                            <input-->
-                <!--                                type="text"-->
-                <!--                                id="version-description-input"-->
-                <!--                                class="form-control"-->
-                <!--                                v-model="payload.description"-->
-                <!--                                :disabled="pendingVersion.versionString && pendingVersion.description"-->
-                <!--                            />-->
-                <!--                        </div>-->
-                <!--                    </td>-->
-                <!--                </tr>-->
                 <template v-if="pendingVersion.fileName && !pendingVersion.externalUrl">
                     <tr>
                         <td><strong>File name</strong></td>
@@ -118,12 +103,7 @@
                 <h3>Release Bulletin</h3>
                 <p>What's new in this release?</p>
 
-                <Editor
-                    enabled
-                    :raw="pendingVersion.description || ''"
-                    target-form="form-publish"
-                    v-model:content-prop="payload.content"
-                ></Editor>
+                <Editor enabled :raw="pendingVersion.description || ''" target-form="form-publish" v-model:content-prop="payload.content"></Editor>
             </div>
         </div>
     </template>
@@ -170,12 +150,7 @@
         <button class="btn btn-primary float-right mt-1 mr-1" @click="publish">Publish</button>
     </template>
     <template v-else>
-        <HangarForm
-            :action="ROUTES.parse('VERSIONS_CREATE_EXTERNAL_URL', ownerName, projectSlug)"
-            method="post"
-            id="form-url-upload"
-            clazz="form-inline"
-        >
+        <HangarForm :action="ROUTES.parse('VERSIONS_CREATE_EXTERNAL_URL', ownerName, projectSlug)" method="post" id="form-url-upload" clazz="form-inline">
             <div class="input-group float-right" style="width: 50%">
                 <input type="text" class="form-control" id="externalUrl" name="externalUrl" placeholder="External URL" style="width: 70%" />
                 <div class="input-group-append">
@@ -237,6 +212,7 @@ export default {
     },
     created() {
         if (this.pendingVersion) {
+            console.log(this.pendingVersion);
             if (this.pendingVersion.versionString) {
                 this.payload.versionString = this.pendingVersion.versionString;
                 this.payload.description = this.pendingVersion.description;
@@ -408,6 +384,9 @@ export default {
             for (const platform in this.payload.dependencies) {
                 for (const dep of this.payload.dependencies[platform]) {
                     if (!dep.project_id && !dep.external_url) {
+                        this.scrollTo('#dependencies-accordion');
+                        depCollapseEl.collapse('show');
+                        $(`#${platform}-${dep.name}-link-cell`).addClass('invalid-input');
                         console.error(`Missing link for ${dep.name} on ${platform}`);
                         return;
                     }
@@ -456,10 +435,7 @@ export default {
                 )
                 .then(() => {
                     $('form')
-                        .attr(
-                            'action',
-                            window.ROUTES.parse('VERSIONS_PUBLISH', this.ownerName, this.projectSlug, this.payload.versionString)
-                        )
+                        .attr('action', window.ROUTES.parse('VERSIONS_PUBLISH', this.ownerName, this.projectSlug, this.payload.versionString))
                         .attr('method', 'post')
                         .submit();
                 });
@@ -468,13 +444,5 @@ export default {
     mounted() {
         $('.btn-edit').click();
     },
-    // watch: {
-    //     payload: {
-    //         handler(val) {
-    //             console.log(val);
-    //         },
-    //         deep: true,
-    //     },
-    // },
 };
 </script>

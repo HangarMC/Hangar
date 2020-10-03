@@ -292,7 +292,8 @@ public class Apiv1Controller extends HangarController {
 
         projectsTables.forEach(project -> {
             ObjectNode projectObj = mapper.createObjectNode();
-            projectObj.put("author", project.getOwnerName())
+            projectObj.put("id", project.getId())
+                    .put("author", project.getOwnerName())
                     .put("slug", project.getSlug())
                     .put("createdAt", project.getCreatedAt().toString())
                     .put("name", project.getName())

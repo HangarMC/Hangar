@@ -30,7 +30,7 @@
                                         <input
                                             :id="`${platformKey}-is-enabled`"
                                             type="checkbox"
-                                            :value="platformKey"
+                                            :checked="platforms[platformKey]"
                                             :disabled="freezePlatforms"
                                             class="mr-2"
                                             @change="selectPlatform(platformKey)"
@@ -90,16 +90,25 @@
                                                     <th>Link</th>
                                                 </tr>
                                                 <tr v-for="dep in dependencies[platformKey]" :key="dep.name">
-                                                    <td class="text-left">{{ dep.name }}</td>
+                                                    <td class="text-center">
+                                                        <div class="w-100">
+                                                            {{ dep.name }}
+                                                        </div>
+
+                                                        <button
+                                                            v-if="!freezePlatforms"
+                                                            class="btn btn-danger"
+                                                            @click="removeDepFromTable(platformKey, dep.name)"
+                                                        >
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </td>
                                                     <td class="align-middle">
                                                         <span :style="{ fontSize: '3rem', color: dep.required ? 'green' : 'red' }">
-                                                            <i
-                                                                class="fas"
-                                                                :class="`${dep.required ? 'fa-check-circle' : 'fa-times-circle'}`"
-                                                            ></i>
+                                                            <i class="fas" :class="`${dep.required ? 'fa-check-circle' : 'fa-times-circle'}`"></i>
                                                         </span>
                                                     </td>
-                                                    <td>
+                                                    <td :id="`${platformKey}-${dep.name}-link-cell`">
                                                         <div class="input-group">
                                                             <div class="input-group-prepend">
                                                                 <div class="input-group-text">
@@ -136,7 +145,8 @@
                                                                     @mousedown.prevent=""
                                                                     @click="selectProject(platformKey, dep.name, project)"
                                                                 >
-                                                                    {{ project.namespace.owner }} / {{ project.namespace.slug }}
+                                                                    {{ project.namespace.owner }} /
+                                                                    {{ project.namespace.slug }}
                                                                 </li>
                                                             </ul>
                                                         </div>
@@ -165,8 +175,43 @@
                                                         </div>
                                                     </td>
                                                 </tr>
-                                                <tr>
-                                                    <td colspan="3"></td>
+                                                <tr v-if="!freezePlatforms">
+                                                    <td colspan="3">
+                                                        <div class="input-group">
+                                                            <input
+                                                                :id="`${platformKey}-new-dep`"
+                                                                type="text"
+                                                                placeholder="Dependency Name"
+                                                                class="form-control"
+                                                                aria-label="New Dependency Name"
+                                                                v-model="addDependency[platformKey].name"
+                                                            />
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-text">
+                                                                    <input
+                                                                        :id="`${platformKey}-new-dep-required`"
+                                                                        class="mr-2"
+                                                                        type="checkbox"
+                                                                        aria-label="Dependency is required?"
+                                                                        v-model="addDependency[platformKey].required"
+                                                                    />
+                                                                    <label :for="`${platformKey}-new-dep-required`" style="position: relative; top: 1px">
+                                                                        Required?
+                                                                    </label>
+                                                                </div>
+                                                                <button
+                                                                    :disabled="
+                                                                        !addDependency[platformKey].name || addDependency[platformKey].name.trim().length === 0
+                                                                    "
+                                                                    class="btn btn-info"
+                                                                    type="button"
+                                                                    @click="addDepToTable(platformKey)"
+                                                                >
+                                                                    Add
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             </table>
                                             <i v-else class="dark-gray">No dependencies</i>
@@ -186,7 +231,7 @@ import { nextTick } from 'vue';
 import axios from 'axios';
 import $ from 'jquery';
 import 'bootstrap/js/dist/collapse';
-import { isEmpty, union } from 'lodash-es';
+import { isEmpty, remove, union } from 'lodash-es';
 
 import { API } from '@/api';
 
@@ -205,6 +250,7 @@ export default {
             dependencyLinking: {},
             searchResults: [],
             platformInfo: {},
+            addDependency: {},
         };
     },
     computed: {
@@ -230,8 +276,11 @@ export default {
         for (const platformObj of data) {
             this.platformInfo[platformObj.name.toUpperCase()] = platformObj;
             this.dependencyLinking[platformObj.name.toUpperCase()] = {};
+            this.addDependency[platformObj.name.toUpperCase()] = {
+                name: '',
+                required: false,
+            };
         }
-        console.log(this.platformInfo);
         this.loading = false;
         await nextTick();
 
@@ -246,20 +295,7 @@ export default {
                 }
 
                 if (this.prevVersion && this.prevVersion.dependencies[platformName] && this.prevVersion.dependencies[platformName].length) {
-                    for (const dep of this.prevVersion.dependencies[platformName]) {
-                        if (dep.project_id) {
-                            this.dependencyLinking[platformName][dep.name] = 'Hangar';
-                            axios.get(window.ROUTES.parse('APIV1_SHOW_PROJECT_BY_ID', dep.project_id)).then((res) => {
-                                if (res.data) {
-                                    this.selectProject(platformName, dep.name, res.data);
-                                }
-                            });
-                        } else if (dep.external_url) {
-                            $(`#${platformName}-${dep.name}-external-input`).val(dep.external_url);
-                            this.dependencyLinking[platformName][dep.name] = 'External';
-                            this.setExternalUrl(dep.external_url, platformName, dep.name);
-                        }
-                    }
+                    this.setDependencyLinks(this.prevVersion.dependencies[platformName], platformName);
                 }
             }
         } else {
@@ -269,12 +305,35 @@ export default {
                     const platformName = platformObj.name.toUpperCase();
                     this.platforms[platformName] = platformObj.versions;
                 }
+                console.log(this.prevVersion.dependencies);
+                for (const platform in this.prevVersion.dependencies) {
+                    this.dependencies[platform.toUpperCase()] = this.prevVersion.dependencies[platform];
+                }
+                await nextTick();
+                for (const platform in this.dependencies) {
+                    this.setDependencyLinks(this.dependencies[platform], platform);
+                }
             }
-            // created with external link
-            console.log('external');
         }
     },
     methods: {
+        setDependencyLinks(deps, platformName) {
+            console.log(deps);
+            for (const dep of deps) {
+                if (dep.project_id) {
+                    this.dependencyLinking[platformName][dep.name] = 'Hangar';
+                    axios.get(window.ROUTES.parse('APIV1_SHOW_PROJECT_BY_ID', dep.project_id)).then((res) => {
+                        if (res.data) {
+                            this.selectProject(platformName, dep.name, res.data);
+                        }
+                    });
+                } else if (dep.external_url) {
+                    $(`#${platformName}-${dep.name}-external-input`).val(dep.external_url);
+                    this.dependencyLinking[platformName][dep.name] = 'External';
+                    this.setExternalUrl(dep.external_url, platformName, dep.name);
+                }
+            }
+        },
         isEmpty,
         linkingClick(toReset, platformKey, depName) {
             this.dependencies[platformKey].find((dep) => dep.name === depName)[toReset] = null;
@@ -313,7 +372,12 @@ export default {
         selectProject(platformKey, depName, project) {
             $(`#${platformKey}-${depName}-project-dropdown`).hide();
             const input = $(`#${platformKey}-${depName}-project-input`);
-            const namespace = `${project.namespace.owner} / ${project.namespace.slug}`;
+            let namespace = '';
+            if (project.namespace) {
+                namespace = `${project.namespace.owner} / ${project.namespace.slug}`;
+            } else {
+                namespace = `${project.author} / ${project.slug}`;
+            }
             input.data('id', project.id);
             input.data('namespace', namespace);
             this.dependencies[platformKey].find((dep) => dep.name === depName).project_id = project.id;
@@ -325,9 +389,27 @@ export default {
         selectPlatform(platformKey) {
             if (!this.platforms[platformKey]) {
                 this.platforms[platformKey] = [];
+                this.dependencies[platformKey] = [];
             } else {
                 delete this.platforms[platformKey];
+                delete this.dependencies[platformKey];
             }
+        },
+        addDepToTable(platformKey) {
+            if (!this.dependencies[platformKey]) {
+                this.dependencies[platformKey] = [];
+            }
+            this.dependencies[platformKey].push({
+                name: this.addDependency[platformKey].name,
+                required: this.addDependency[platformKey].required,
+                project_id: null,
+                external_url: null,
+            });
+            this.addDependency[platformKey].name = '';
+            this.addDependency[platformKey].required = false;
+        },
+        removeDepFromTable(platformKey, depName) {
+            remove(this.dependencies[platformKey], (dep) => dep.name === depName);
         },
     },
 };
@@ -385,5 +467,9 @@ label {
 
 .input-group > input[type='text'].form-control {
     width: 1%;
+}
+
+.input-group input[type='text'] {
+    width: unset;
 }
 </style>

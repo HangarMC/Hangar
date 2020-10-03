@@ -30,10 +30,13 @@ public class PaperPluginFileHandler extends FileTypeHandler {
             return result;
         }
 
-        String version = String.valueOf(data.get("version"));
-        if (version != null) {
-            result.add(new DataValue.StringDataValue(FileTypeHandler.VERSION, version));
+        if (data.containsKey("version")) {
+            String version = String.valueOf(data.get("version"));
+            if (version != null) {
+                result.add(new DataValue.StringDataValue(FileTypeHandler.VERSION, version));
+            }
         }
+
         String name = (String) data.get("name");
         if (name != null) {
             result.add(new DataValue.StringDataValue(FileTypeHandler.NAME, name));
@@ -68,10 +71,14 @@ public class PaperPluginFileHandler extends FileTypeHandler {
             dependencies.addAll(depend.stream().map(depName -> new Dependency(depName, true)).collect(Collectors.toList()));
         }
 
-        result.add(new DataValue.DependencyDataValue(FileTypeHandler.DEPENDENCIES, Platform.PAPER, dependencies));
+        if (!dependencies.isEmpty()) {
+            result.add(new DataValue.DependencyDataValue(FileTypeHandler.DEPENDENCIES, getPlatform(), dependencies));
+        }
+
+//        System.out.println(dependencies);
 
         String paperVersion = data.getOrDefault("api-version", "").toString();
-        result.add(new DataValue.PlatformDependencyDataValue(FileTypeHandler.PLATFORM_DEPENDENCY, new PlatformDependency(Platform.PAPER, new ArrayList<>(List.of(paperVersion)))));
+        result.add(new DataValue.PlatformDependencyDataValue(FileTypeHandler.PLATFORM_DEPENDENCY, new PlatformDependency(getPlatform(), new ArrayList<>(List.of(paperVersion)))));
         return result;
     }
 

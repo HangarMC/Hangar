@@ -1,7 +1,6 @@
 package io.papermc.hangar.db.dao.api.mappers;
 
 import io.papermc.hangar.model.Color;
-import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.generated.FileInfo;
 import io.papermc.hangar.model.generated.ReviewState;
@@ -39,11 +38,13 @@ public class VersionMapper implements RowMapper<Version> {
 
         List<Tag> tags = new ArrayList<>();
         for (int i = 0; i < tagNames.length; i++) {
-            Platform platform = Platform.getByName(tagNames[i]);
-            Tag newTag = new Tag().name(tagNames[i]).data(StringUtils.formatVersionNumbers(Arrays.asList(tagData[i].split(", "))));
-            if (platform != null) {
-                io.papermc.hangar.model.TagColor platformColor = io.papermc.hangar.model.TagColor.getValues()[tagColors[i]];
-                tags.add(newTag.color(new TagColor().foreground(platformColor.getForeground()).background(platformColor.getBackground())));
+            io.papermc.hangar.model.TagColor tagColor = io.papermc.hangar.model.TagColor.getByName(tagNames[i]);
+            Tag newTag = new Tag().name(tagNames[i]);
+            if (tagData[i] != null) {
+                newTag.data(StringUtils.formatVersionNumbers(Arrays.asList(tagData[i].split(", "))));
+            }
+            if (tagColor != null) {
+                tags.add(newTag.color(new TagColor().foreground(tagColor.getForeground()).background(tagColor.getBackground())));
             } else {
                 Color color = Color.getValues()[tagColors[i]];
                 tags.add(newTag.color(new TagColor().background(color.getHex())));

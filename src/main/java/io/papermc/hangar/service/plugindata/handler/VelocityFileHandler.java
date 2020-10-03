@@ -30,9 +30,11 @@ public class VelocityFileHandler extends FileTypeHandler {
             return result;
         }
 
-        String version = String.valueOf(data.get("version"));
-        if (version != null) {
-            result.add(new DataValue.StringDataValue(FileTypeHandler.VERSION, version));
+        if (data.containsKey("version")) {
+            String version = String.valueOf(data.get("version"));
+            if (version != null) {
+                result.add(new DataValue.StringDataValue(FileTypeHandler.VERSION, version));
+            }
         }
         String name = (String) data.get("name");
         if (name != null) {
@@ -63,9 +65,12 @@ public class VelocityFileHandler extends FileTypeHandler {
         } else {
             dependencies = new ArrayList<>();
         }
-        result.add(new DataValue.DependencyDataValue(FileTypeHandler.DEPENDENCIES, Platform.VELOCITY, dependencies));
 
-        result.add(new DataValue.PlatformDependencyDataValue(FileTypeHandler.PLATFORM_DEPENDENCY, new PlatformDependency(Platform.VELOCITY, new ArrayList<>())));
+        if (!dependencies.isEmpty()) {
+            result.add(new DataValue.DependencyDataValue(FileTypeHandler.DEPENDENCIES, getPlatform(), dependencies));
+        }
+
+        result.add(new DataValue.PlatformDependencyDataValue(FileTypeHandler.PLATFORM_DEPENDENCY, new PlatformDependency(getPlatform(), new ArrayList<>())));
         return result;
     }
 

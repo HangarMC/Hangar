@@ -81,7 +81,6 @@ public class StringUtils {
             if (verString.isBlank()) {
                 return version;
             }
-//            System.out.println(version + ": " + verString);
             List<Integer> versionArr = StringUtils.splitVersionNumber(version);
             Matcher hyphen = PREV_HAS_HYPHEN.matcher(verString);
             Matcher comma = PREV_HAS_COMMA_OR_FIRST.matcher(verString);

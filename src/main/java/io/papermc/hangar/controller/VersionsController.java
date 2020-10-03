@@ -332,7 +332,6 @@ public class VersionsController extends HangarController {
         ProjectsTable project = projectsTable.get();
         PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(project.getId() + "/" + versionName, PendingVersion.class);
         NewVersion newVersion = cacheManager.getCache(CacheConfig.NEW_VERSION_CACHE).get(project.getId() + "/" + versionName, NewVersion.class);
-        System.out.println(newVersion);
         if (newVersion == null || (pendingVersion == null && newVersion.getExternalUrl() == null)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } else if (pendingVersion == null && newVersion.getExternalUrl() != null) {

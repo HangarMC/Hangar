@@ -2,7 +2,6 @@ package io.papermc.hangar.service.plugindata;
 
 import io.papermc.hangar.db.model.ProjectVersionTagsTable;
 import io.papermc.hangar.model.Platform;
-import io.papermc.hangar.model.generated.Dependency;
 import io.papermc.hangar.model.generated.PlatformDependency;
 import io.papermc.hangar.model.viewhelpers.VersionDependencies;
 import io.papermc.hangar.service.VersionService;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static io.papermc.hangar.service.plugindata.DataValue.DependencyDataValue;
 import static io.papermc.hangar.service.plugindata.DataValue.PlatformDependencyDataValue;
@@ -20,7 +20,6 @@ import static io.papermc.hangar.service.plugindata.DataValue.StringDataValue;
 import static io.papermc.hangar.service.plugindata.DataValue.StringListDataValue;
 
 public class PluginFileData {
-//    private final Map<Platform, Map<String, DataValue>> dataValues = new HashMap<>();
     private final Map<String, DataValue> dataValues = new HashMap<>();
 
     public PluginFileData(Map<Platform, List<DataValue>> dataValues) {
@@ -83,17 +82,19 @@ public class PluginFileData {
     @Nullable
     public VersionDependencies getDependencies() {
         DataValue dependencies = dataValues.get("dependencies");
-        return dependencies != null ? ((DependencyDataValue) dependencies).getValue() :  null;
+        if (dependencies == null) {
+            return new VersionDependencies(getPlatformDependency().stream().collect(Collectors.toMap(PlatformDependency::getPlatform, pd -> new ArrayList<>())));
+        }
+        return ((DependencyDataValue) dependencies).getValue();
     }
 
-    @Nullable
     public List<PlatformDependency> getPlatformDependency() {
         DataValue platformDependencies = dataValues.get(FileTypeHandler.PLATFORM_DEPENDENCY);
         return platformDependencies != null ? ((PlatformDependencyDataValue) platformDependencies).getValue() : null;
     }
 
     public boolean validate() {
-        return getName() != null && getAuthors() != null && getDependencies() != null;
+        return getName() != null && getAuthors() != null && getPlatformDependency() != null;
     }
 
     public List<ProjectVersionTagsTable> createTags(long versionId, VersionService versionService) {
