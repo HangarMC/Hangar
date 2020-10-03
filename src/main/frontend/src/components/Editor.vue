@@ -78,12 +78,12 @@
         </template>
 
         <!-- Edit window -->
-        <div class="page-edit" style="display: none">
+        <div class="page-edit version-content-view" style="display: none">
             <textarea name="content" class="form-control" :form="targetForm || 'form-editor-save'" v-model="content"></textarea>
         </div>
 
         <!-- Preview window -->
-        <div class="page-preview page-rendered" style="display: none"></div>
+        <div class="page-preview page-rendered version-content-view" style="display: none"></div>
 
         <HangarForm v-if="saveable" method="post" :action="saveCall" id="form-editor-save">
             <input v-if="extraFormValue" type="hidden" :value="extraFormValue" name="name" />
@@ -227,7 +227,6 @@ export default {
                         return this.showEditBtn($('.btn-delete-container'));
                     });
             } else if ($(target).hasClass('btn-preview')) {
-                console.log('test');
                 // render markdown
                 const preview = $('.page-preview');
                 const raw = editor.find('textarea').val();
@@ -267,39 +266,6 @@ export default {
                 $('.btn-page').css('border', '1px solid #ccc').css('box-shadow', 'none');
                 $('button.open').css('border-right', 'white');
             });
-
-        // move with scroll
-        // $(window).scroll(function () {
-        //     const scrollTop = $(this).scrollTop();
-        //     const editHeight = btnEdit.height();
-        //     const page = this.previewing ? $('.page-preview') : $('.page-content');
-        //     const pageTop = page.position().top;
-        //     const pto = page.offset().top;
-        //     const pos = btnEdit.css('position');
-        //     const bound = pto - editHeight - 30;
-        //
-        //     console.log(`scrollTop: ${scrollTop}`);
-        //     console.log(`editHeight: ${editHeight}`);
-        //     console.log(`page: ${page}`);
-        //     console.log(`pageTop: ${pageTop}`);
-        //     console.log(`pto: ${pto}`);
-        //     console.log(`pos: ${pos}`);
-        //     console.log(`bound: ${bound}`);
-        //
-        //     if (scrollTop > bound && pos === 'absolute' && !this.editing) {
-        //         console.log('test1');
-        //         let newTop = pageTop + editHeight + 20;
-        //         btnEdit.css('position', 'fixed').css('top', newTop);
-        //         otherBtns.each(function () {
-        //             newTop += 0.5;
-        //             $(this).css('position', 'fixed').css('top', newTop);
-        //         });
-        //     } else if (scrollTop < bound && pos === 'fixed') {
-        //         console.log('test2');
-        //         btnEdit.css('position', 'absolute').css('top', '');
-        //         otherBtns.css('position', 'absolute').css('top', '');
-        //     }
-        // });
     },
 };
 </script>

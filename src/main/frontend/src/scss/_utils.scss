@@ -48,6 +48,11 @@ a > .fa {
   cursor: pointer;
 }
 
+.invalid-input,
+.invalid-input:focus {
+  box-shadow: 0 0 2px 2px red !important;
+}
+
 @mixin no-box-shadow() {
   box-shadow: none;
 }

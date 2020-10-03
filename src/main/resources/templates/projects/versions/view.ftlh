@@ -171,49 +171,42 @@
             </div>
         </div>
 
-
-        <#if v.v.dependencies?has_content>
-                <!-- Dependencies -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Dependencies</h3>
-                    </div>
-                    <ul class="list-group">
-                        <#assign Platform=@helper["io.papermc.hangar.model.Platform"] />
-                        <#list v.formattedDependencies as pd, deps>
-                            <li class="list-group-item">
-                                <a href="${pd.platform.url}">
-                                    <strong>${pd.platform.getName()}</strong>
-                                </a>
-                                <#if pd.versions?size != 0>
-                                    <span class="version-string">${pd.versions?join(', ')}</span>
-                                </#if>
-                                <#if deps?? && deps?size != 0>
-                                    <ul class="list-group">
-                                        <#list deps as dep, url>
-                                            <#-- @ftlvariable name="dep" type="io.papermc.hangar.model.generated.Dependency" -->
-                                            <li class="list-group-item">
-                                                <#if url?has_content>
-                                                    <a href="${url}">
-                                                        ${dep.name}
-                                                    </a>
-                                                <#else>
-                                                    ${dep.name}
-                                                </#if>
-                                            </li>
-                                        </#list>
-                                    </ul>
-                                </#if>
-
-                            </li>
-                        </#list>
-                    </ul>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Dependencies</h3>
                 </div>
+                <ul class="list-group">
+                    <#assign Platform=@helper["io.papermc.hangar.model.Platform"] />
+                    <#list v.formattedDependencies as pd, deps>
+                        <li class="list-group-item" style="background-color: ${pd.platform.tagColor.background}22">
+                            <a href="${pd.platform.url}">
+                                <strong>${pd.platform.getName()}</strong>
+                            </a>
+                            <#if pd.versions?size != 0>
+                                <span class="version-string">${pd.formattedVersion}</span>
+                            </#if>
+                            <#if deps?? && deps?size != 0>
+                                <ul class="list-group">
+                                    <#list deps as dep, url>
+                                    <#-- @ftlvariable name="dep" type="io.papermc.hangar.model.generated.Dependency" -->
+                                        <li class="list-group-item">
+                                            <#if url?has_content>
+                                                <a href="${url}">
+                                                    ${dep.name}
+                                                </a>
+                                            <#else>
+                                                ${dep.name}
+                                            </#if>
+                                        </li>
+                                    </#list>
+                                </ul>
+                            </#if>
+                        </li>
+                    </#list>
+                </ul>
             </div>
-        <#else>
-            <p class="minor text-center"><i><@spring.message "version.dependency.no" /></i></p>
-        </#if>
+        </div>
     </div>
 
     <#if sp.perms(Permission.DeleteVersion) && v.p.publicVersions != 1>

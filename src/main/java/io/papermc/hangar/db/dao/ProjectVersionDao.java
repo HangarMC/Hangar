@@ -82,6 +82,9 @@ public interface ProjectVersionDao {
             "  ORDER BY sq.project_name DESC, sq.version_string DESC")
     List<ReviewQueueEntry> getQueue(@EnumByOrdinal ReviewState reviewState);
 
+    @SqlQuery("SELECT * FROM project_versions WHERE project_id = :projectId ORDER BY created_at LIMIT 1")
+    ProjectVersionsTable getMostRecentVersion(long projectId);
+
     @SqlQuery("SELECT * FROM project_versions WHERE project_id = :projectId AND (hash = :hash OR lower(version_string) = lower(:versionString))")
     ProjectVersionsTable getProjectVersion(long projectId, String hash, String versionString);
 

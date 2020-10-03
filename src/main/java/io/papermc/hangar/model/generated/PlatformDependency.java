@@ -1,9 +1,11 @@
 package io.papermc.hangar.model.generated;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.model.Platform;
+import io.papermc.hangar.util.StringUtils;
 import io.swagger.annotations.ApiModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.validation.annotation.Validated;
@@ -14,19 +16,32 @@ import java.util.Objects;
 @Validated
 public class PlatformDependency {
 
-    @JsonProperty("name")
+    @JsonProperty(value = "name", required = true)
     @JsonFormat(shape = Shape.STRING)
     private Platform platform;
 
-    @JsonProperty("versions")
+    @JsonProperty(value = "versions", required = true)
     private List<String> versions;
+
+    @JsonProperty("formatted_versions")
+    private final String formattedVersion;
 
     public PlatformDependency(Platform platform, List<String> versions) {
         this.platform = platform;
         this.versions = versions;
+        this.formattedVersion = PlatformDependency.formatVersions(this.versions);
     }
 
-    public PlatformDependency() { }
+    @JsonCreator
+    public PlatformDependency(@JsonProperty(value = "name", required = true) Platform platform, @JsonProperty(value = "versions", required = true) List<String> versions, @JsonProperty("formatted_versions") String formattedVersion) {
+        this.platform = platform;
+        this.versions = versions;
+        if (formattedVersion == null) {
+            this.formattedVersion = PlatformDependency.formatVersions(this.versions);
+        } else {
+            this.formattedVersion = formattedVersion;
+        }
+    }
 
     /**
      * Get the platform for this version
@@ -62,18 +77,14 @@ public class PlatformDependency {
         }
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PlatformDependency that = (PlatformDependency) o;
-        return platform == that.platform &&
-                versions.equals(that.versions);
+    @NotNull
+    @ApiModelProperty(value = "Formatted version string")
+    public String getFormattedVersion() {
+        return formattedVersion;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(platform, versions);
+    private static String formatVersions(List<String> versions) {
+        return StringUtils.formatVersionNumbers(versions);
     }
 
     @Override
@@ -81,6 +92,23 @@ public class PlatformDependency {
         return "PlatformDependency{" +
                 "platform=" + platform +
                 ", versions=" + versions +
+                ", formattedVersion='" + formattedVersion + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlatformDependency that = (PlatformDependency) o;
+        return platform == that.platform &&
+                versions.equals(that.versions) &&
+                formattedVersion.equals(that.formattedVersion);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(platform, versions, formattedVersion);
+    }
+
 }

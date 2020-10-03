@@ -2,10 +2,7 @@
     <div class="version-list">
         <div class="row text-center">
             <div class="col-12">
-                <a
-                    v-if="canUpload"
-                    class="btn yellow"
-                    :href="routes.Versions.showCreator(htmlDecode(projectOwner), htmlDecode(projectSlug)).absoluteURL()"
+                <a v-if="canUpload" class="btn yellow" :href="ROUTES.parse('VERSIONS_SHOW_CREATOR', projectOwner, projectSlug)"
                     >Upload a New Version</a
                 >
             </div>
@@ -18,13 +15,7 @@
             <div class="list-group">
                 <a
                     v-for="(version, index) in versions"
-                    :href="
-                        routes.Versions.show(
-                            htmlDecode(projectOwner),
-                            htmlDecode(projectSlug),
-                            version.name
-                        ).absoluteURL()
-                    "
+                    :href="ROUTES.parse('VERSIONS_SHOW', htmlDecode(projectOwner), htmlDecode(projectSlug), version.name)"
                     class="list-group-item list-group-item-action"
                     :class="[classForVisibility(version.visibility)]"
                     :key="index"
@@ -32,7 +23,7 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div
-                                class="col-6 col-sm-3"
+                                class="col-4 col-md-2 col-lg-2"
                                 :set="(channel = version.tags.find((filterTag) => filterTag.name === 'Channel'))"
                             >
                                 <div class="row">
@@ -40,23 +31,20 @@
                                         <span class="text-bold">{{ version.name }}</span>
                                     </div>
                                     <div class="col-12">
-                                        <span
-                                            v-if="channel"
-                                            class="channel"
-                                            v-bind:style="{ background: channel.color.background }"
-                                            >{{ channel.data }}</span
-                                        >
+                                        <span v-if="channel" class="channel" v-bind:style="{ background: channel.color.background }">{{
+                                            channel.data
+                                        }}</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-6 col-sm-3">
+                            <div class="col-8 col-md-6 col-lg-4">
                                 <Tag
                                     v-for="tag in version.tags.filter((filterTag) => filterTag.name !== 'Channel')"
                                     v-bind:key="tag.name + ':' + tag.data"
                                     v-bind="tag"
                                 ></Tag>
                             </div>
-                            <div class="col-3 hidden-xs">
+                            <div class="col-md-4 col-lg-3 d-none d-md-block">
                                 <div class="row">
                                     <div class="col-12">
                                         <i class="fas fa-fw fa-calendar"></i>
@@ -71,7 +59,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-3 hidden-xs">
+                            <div class="col-md-3 col-lg-3 d-none d-lg-block">
                                 <div class="row">
                                     <div class="col-12">
                                         <i class="fas fa-fw fa-user-tag"></i>
@@ -87,13 +75,7 @@
                     </div>
                 </a>
             </div>
-            <Pagination
-                :current="current"
-                :total="total"
-                @prev="page--"
-                @next="page++"
-                @jumpTo="page = $event"
-            ></Pagination>
+            <Pagination :current="current" :total="total" @prev="page--" @next="page++" @jumpTo="page = $event"></Pagination>
         </div>
     </div>
 </template>
@@ -122,15 +104,14 @@ export default {
             totalVersions: 0,
             canUpload: false,
             loading: true,
+            ROUTES: window.ROUTES,
         };
     },
     created() {
         this.update();
-        apiV2Request('permissions', 'GET', { author: window.PROJECT_OWNER, slug: window.PROJECT_SLUG }).then(
-            (response) => {
-                this.canUpload = response.permissions.includes('create_version');
-            }
-        );
+        apiV2Request('permissions', 'GET', { author: window.PROJECT_OWNER, slug: window.PROJECT_SLUG }).then((response) => {
+            this.canUpload = response.permissions.includes('create_version');
+        });
         this.$watch(
             () => this.page,
             () => {

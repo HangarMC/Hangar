@@ -10,6 +10,7 @@ import io.papermc.hangar.model.generated.TagColor;
 import io.papermc.hangar.model.generated.Version;
 import io.papermc.hangar.model.generated.VersionStatsAll;
 import io.papermc.hangar.model.viewhelpers.VersionDependencies;
+import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
@@ -18,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +40,7 @@ public class VersionMapper implements RowMapper<Version> {
         List<Tag> tags = new ArrayList<>();
         for (int i = 0; i < tagNames.length; i++) {
             Platform platform = Platform.getByName(tagNames[i]);
-            Tag newTag = new Tag().name(tagNames[i]).data(tagData[i]);
+            Tag newTag = new Tag().name(tagNames[i]).data(StringUtils.formatVersionNumbers(Arrays.asList(tagData[i].split(", "))));
             if (platform != null) {
                 io.papermc.hangar.model.TagColor platformColor = io.papermc.hangar.model.TagColor.getValues()[tagColors[i]];
                 tags.add(newTag.color(new TagColor().foreground(platformColor.getForeground()).background(platformColor.getBackground())));

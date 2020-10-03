@@ -17,38 +17,23 @@
 
                     <div id="dep-collapse" class="collapse" aria-labelledby="dep-heading" data-parent="#dependencies-accordion">
                         <div v-if="!loading" class="card-body">
-                            <template v-for="(platform, platformKey) in platforms" :key="platformKey">
-                                <!--<div
-                                    class="row platform-header-row"
-                                    :style="{ backgroundColor: `${platform.tag.background}22` }"
-                                >
-                                    <div class="col-12 text-center">
-                                        &lt;!&ndash;<div v-if="platform.tag" class="tags">
-                                            <span
-                                                :style="{
-                                                    color: platform.tag.foreground,
-                                                    backgroundColor: platform.tag.background,
-                                                    borderColor: platform.tag.background,
-                                                }"
-                                                class="tag"
-                                            >
-                                                {{ platform.name }}
-                                            </span>
-                                        </div>&ndash;&gt;
-                                    </div>
-                                </div>-->
+                            <template v-for="(platform, platformKey) in platformInfo" :key="platformKey">
                                 <div
+                                    :id="`${platformKey}-row`"
                                     class="row platform-row align-items-center"
-                                    :style="{ backgroundColor: `${platform.tag.background}22` }"
+                                    :style="{
+                                        backgroundColor: !platforms[platformKey] ? '#00000022' : platform.tag.background + '45',
+                                    }"
                                 >
-                                    <div class="col-1 d-flex align-items-center">
+                                    <div class="platform-row-overlay" :style="{ zIndex: !platforms[platformKey] ? 5 : -10 }"></div>
+                                    <div class="col-1 d-flex align-items-center" style="z-index: 10">
                                         <input
                                             :id="`${platformKey}-is-enabled`"
                                             type="checkbox"
-                                            v-model="platformsSelected"
                                             :value="platformKey"
                                             :disabled="freezePlatforms"
                                             class="mr-2"
+                                            @change="selectPlatform(platformKey)"
                                         />
                                         <label :for="`${platformKey}-is-enabled`">
                                             <span
@@ -65,16 +50,18 @@
                                     </div>
                                     <div class="col-3">
                                         <div class="clearfix"></div>
-                                        <div v-if="!isEmpty(platforms)">
+                                        <div>
                                             <div class="row no-gutters">
-                                                <div class="col-6 text-right">
-                                                    <div
-                                                        v-for="version in platform.possibleVersions.slice(
-                                                            0,
-                                                            Math.ceil(platform.possibleVersions.length / 2)
-                                                        )"
-                                                        :key="version"
-                                                    >
+                                                <!--is there a better way of making two columns?-->
+                                                <div
+                                                    v-for="(versionList, index) in [
+                                                        platform.possibleVersions.slice(0, Math.ceil(platform.possibleVersions.length / 2)),
+                                                        platform.possibleVersions.slice(Math.ceil(platform.possibleVersions.length / 2)),
+                                                    ]"
+                                                    :key="index"
+                                                    class="col-6 text-right d-flex flex-column justify-content-start"
+                                                >
+                                                    <div v-for="version in versionList" :key="version">
                                                         <label :for="`${platformKey}-version-${version}`">
                                                             {{ version }}
                                                         </label>
@@ -82,34 +69,10 @@
                                                             :id="`${platformKey}-version-${version}`"
                                                             type="checkbox"
                                                             :value="version"
-                                                            v-model="versions[platformKey]"
+                                                            v-model="platforms[platformKey]"
                                                             class="mr-2"
-                                                            :disabled="platformsSelected.indexOf(platformKey) === -1"
-                                                            @change="versionClick(platformKey)"
+                                                            :disabled="!platforms[platformKey]"
                                                         />
-                                                        <!--                    <template v-if="(index + 1) % 5 === 0" v-html="</div><div>"> </template>-->
-                                                    </div>
-                                                </div>
-                                                <div class="col-6 text-right">
-                                                    <div
-                                                        v-for="version in platform.possibleVersions.slice(
-                                                            Math.ceil(platform.possibleVersions.length / 2)
-                                                        )"
-                                                        :key="version"
-                                                    >
-                                                        <label :for="`${platformKey}-version-${version}`">
-                                                            {{ version }}
-                                                        </label>
-                                                        <input
-                                                            :id="`${platformKey}-version-${version}`"
-                                                            type="checkbox"
-                                                            :value="version"
-                                                            v-model="versions[platformKey]"
-                                                            class="mr-2"
-                                                            :disabled="platformsSelected.indexOf(platformKey) === -1"
-                                                            @change="versionClick(platformKey)"
-                                                        />
-                                                        <!--                    <template v-if="(index + 1) % 5 === 0" v-html="</div><div>"> </template>-->
                                                     </div>
                                                 </div>
                                             </div>
@@ -118,7 +81,7 @@
                                     <div class="col-8 text-center">
                                         <form :ref="`${platformKey.toLowerCase()}DepForm`" autocomplete="off">
                                             <table
-                                                v-if="dependencies[platformKey] && dependencies[platformKey].length"
+                                                v-if="(dependencies[platformKey] && dependencies[platformKey].length) || !freezePlatforms"
                                                 class="table table-bordered table-dark dependency-table"
                                             >
                                                 <tr>
@@ -190,6 +153,7 @@
                                                                 </div>
                                                             </div>
                                                             <input
+                                                                :id="`${platformKey}-${dep.name}-external-input`"
                                                                 type="text"
                                                                 class="form-control"
                                                                 aria-label="Hangar Project Name"
@@ -200,6 +164,9 @@
                                                             />
                                                         </div>
                                                     </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3"></td>
                                                 </tr>
                                             </table>
                                             <i v-else class="dark-gray">No dependencies</i>
@@ -215,9 +182,11 @@
     </tr>
 </template>
 <script>
+import { nextTick } from 'vue';
 import axios from 'axios';
 import $ from 'jquery';
-import { isEmpty } from 'lodash-es';
+import 'bootstrap/js/dist/collapse';
+import { isEmpty, union } from 'lodash-es';
 
 import { API } from '@/api';
 
@@ -227,16 +196,15 @@ export default {
     props: {
         platformsProp: Object,
         dependenciesProp: Object,
-        tags: Array,
+        prevVersion: Object,
     },
     data() {
         return {
-            platformsSelected: [],
             freezePlatforms: false,
-            versions: {},
             loading: true,
             dependencyLinking: {},
             searchResults: [],
+            platformInfo: {},
         };
     },
     computed: {
@@ -257,26 +225,57 @@ export default {
             },
         },
     },
-    created() {
-        if (this.platforms) {
-            this.platformsSelected = Object.keys(this.platforms);
-            this.freezePlatforms = true;
+    async created() {
+        const { data } = await axios.get(window.ROUTES.parse('APIV1_LIST_PLATFORMS'));
+        for (const platformObj of data) {
+            this.platformInfo[platformObj.name.toUpperCase()] = platformObj;
+            this.dependencyLinking[platformObj.name.toUpperCase()] = {};
         }
-        axios.get('/api/v1/platforms').then((res) => {
-            for (const platform of res.data) {
-                const versions = this.platforms[platform.name.toUpperCase()];
-                this.platforms[platform.name.toUpperCase()] = { ...platform, versions };
-                this.versions[platform.name.toUpperCase()] = versions;
-                this.dependencyLinking[platform.name.toUpperCase()] = {};
+        console.log(this.platformInfo);
+        this.loading = false;
+        await nextTick();
+
+        if (!isEmpty(this.platforms)) {
+            this.freezePlatforms = true;
+            for (const platformName in this.platforms) {
+                if (this.prevVersion && this.prevVersion.platforms.find((plat) => plat.name === platformName)) {
+                    this.platforms[platformName] = union(
+                        this.platforms[platformName],
+                        this.prevVersion.platforms.find((plat) => plat.name === platformName).versions
+                    );
+                }
+
+                if (this.prevVersion && this.prevVersion.dependencies[platformName] && this.prevVersion.dependencies[platformName].length) {
+                    for (const dep of this.prevVersion.dependencies[platformName]) {
+                        if (dep.project_id) {
+                            this.dependencyLinking[platformName][dep.name] = 'Hangar';
+                            axios.get(window.ROUTES.parse('APIV1_SHOW_PROJECT_BY_ID', dep.project_id)).then((res) => {
+                                if (res.data) {
+                                    this.selectProject(platformName, dep.name, res.data);
+                                }
+                            });
+                        } else if (dep.external_url) {
+                            $(`#${platformName}-${dep.name}-external-input`).val(dep.external_url);
+                            this.dependencyLinking[platformName][dep.name] = 'External';
+                            this.setExternalUrl(dep.external_url, platformName, dep.name);
+                        }
+                    }
+                }
             }
-            this.loading = false;
-        });
+        } else {
+            $('#dep-collapse').collapse('show');
+            if (this.prevVersion) {
+                for (const platformObj of this.prevVersion.platforms) {
+                    const platformName = platformObj.name.toUpperCase();
+                    this.platforms[platformName] = platformObj.versions;
+                }
+            }
+            // created with external link
+            console.log('external');
+        }
     },
     methods: {
         isEmpty,
-        versionClick(platformKey) {
-            this.platforms[platformKey].versions = this.versions[platformKey];
-        },
         linkingClick(toReset, platformKey, depName) {
             this.dependencies[platformKey].find((dep) => dep.name === depName)[toReset] = null;
         },
@@ -323,6 +322,13 @@ export default {
         setExternalUrl(value, platformKey, depName) {
             this.dependencies[platformKey].find((dep) => dep.name === depName).external_url = value;
         },
+        selectPlatform(platformKey) {
+            if (!this.platforms[platformKey]) {
+                this.platforms[platformKey] = [];
+            } else {
+                delete this.platforms[platformKey];
+            }
+        },
     },
 };
 </script>
@@ -351,6 +357,15 @@ label {
     position: relative;
     padding-top: 10px;
     padding-bottom: 10px;
+}
+
+.platform-row-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
 }
 
 .platform-select-div {

@@ -46,6 +46,7 @@ import io.papermc.hangar.util.AlertUtil.AlertType;
 import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.RequestUtil;
 import io.papermc.hangar.util.Routes;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.MessageSource;
@@ -218,7 +219,7 @@ public class VersionsController extends HangarController {
 
         PendingVersion pendingVersion;
         try {
-            pendingVersion = pluginUploadService.processSubsequentPluginUpload(file, projData.getProjectOwner(), projData.getProject());
+            pendingVersion = pluginUploadService.processSubsequentPluginUpload(file, getCurrentUser(), projData.getProject());
         } catch (HangarException e) {
             ModelAndView mav = _showCreator(author, slug, null);
             AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, e.getMessageKey(), e.getArgs());
@@ -245,7 +246,7 @@ public class VersionsController extends HangarController {
                 null,
                 null,
                 null,
-                null,
+                "",
                 projData.getProject().getId(),
                 null,
                 null,
@@ -255,8 +256,8 @@ public class VersionsController extends HangarController {
                 channel.getColor(),
                 null,
                 externalUrl,
-                false
-        );
+                false,
+                versionService.getMostRelevantVersion(projData.getProject()));
         return _showCreator(author, slug, pendingVersion);
     }
 
@@ -332,15 +333,31 @@ public class VersionsController extends HangarController {
         PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(project.getId() + "/" + versionName, PendingVersion.class);
         NewVersion newVersion = cacheManager.getCache(CacheConfig.NEW_VERSION_CACHE).get(project.getId() + "/" + versionName, NewVersion.class);
         System.out.println(newVersion);
-        if (pendingVersion == null || newVersion == null) {
+        if (newVersion == null || (pendingVersion == null && newVersion.getExternalUrl() == null)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-            // If was started w/url, no pending version was put into the cache so this will be null
-        } else {
-            return __publish(attributes, author, slug, versionName, newVersion, pendingVersion);
+        } else if (pendingVersion == null && newVersion.getExternalUrl() != null) {
+            pendingVersion = new PendingVersion(
+                    newVersion.getVersionString(),
+                    null,
+                    null,
+                    "",
+                    project.getId(),
+                    null,
+                    null,
+                    null,
+                    getCurrentUser().getId(),
+                    newVersion.getChannel().getName(),
+                    newVersion.getChannel().getColor(),
+                    null,
+                    newVersion.getExternalUrl(),
+                    newVersion.isForumSync(),
+                    null
+            );
         }
+        return __publish(attributes, author, slug, versionName, newVersion, pendingVersion);
     }
 
-    private ModelAndView __publish(RedirectAttributes attributes, String author, String slug, String versionName, NewVersion newVersion, PendingVersion pendingVersion) {
+    private ModelAndView __publish(RedirectAttributes attributes, String author, String slug, String versionName, @NotNull NewVersion newVersion, @NotNull PendingVersion pendingVersion) {
         ProjectData projData = projectData.get();
 
         if (newVersion.getPlatformDependencies().stream().anyMatch(s -> !s.getPlatform().getPossibleVersions().containsAll(s.getVersions()))) {
@@ -398,6 +415,8 @@ public class VersionsController extends HangarController {
 
         userActionLogService.version(request, LoggedActionType.VERSION_UPLOADED.with(VersionContext.of(projData.getProject().getId(), version.getId())), "published", "");
 
+        cacheManager.getCache(CacheConfig.NEW_VERSION_CACHE).evict(projData.getProject().getId() + "/" + versionName);
+        cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).evict(projData.getProject().getId() + "/" + versionName);
         return Routes.VERSIONS_SHOW.getRedirect(author, slug, versionName);
     }
 
@@ -435,8 +454,8 @@ public class VersionsController extends HangarController {
                 channelColorInput,
                 null,
                 externalUrl,
-                forumPost
-        );
+                forumPost,
+                versionService.getMostRelevantVersion(project));
         return _publish(author, slug, versionString, unstable, recommended, channelInput, channelColorInput, forumPost, nonReviewed,content, pendingVersion, attributes, pendingVersion.getPlatforms());
     }
 

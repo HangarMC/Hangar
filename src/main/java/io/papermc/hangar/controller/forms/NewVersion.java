@@ -18,9 +18,6 @@ public class NewVersion {
     @JsonProperty(value = "dependencies", required = true)
     private VersionDependencies versionDependencies;
 
-    @JsonProperty("description")
-    private String description;
-
     @JsonProperty("externalUrl")
     private String externalUrl;
 
@@ -58,15 +55,6 @@ public class NewVersion {
 
     public void setVersionDependencies(VersionDependencies versionDependencies) {
         this.versionDependencies = versionDependencies;
-    }
-
-    @Nullable
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     @Nullable
@@ -120,12 +108,20 @@ public class NewVersion {
         this.versionString = versionString;
     }
 
+    @NotNull
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     @Override
     public String toString() {
         return "NewVersion{" +
                 "channel=" + channel +
                 ", versionDependencies=" + versionDependencies +
-                ", description='" + description + '\'' +
                 ", externalUrl='" + externalUrl + '\'' +
                 ", forumSync=" + forumSync +
                 ", platformDependencies=" + platformDependencies +
@@ -146,7 +142,6 @@ public class NewVersion {
                 unstable == that.unstable &&
                 channel.equals(that.channel) &&
                 versionDependencies.equals(that.versionDependencies) &&
-                Objects.equals(description, that.description) &&
                 Objects.equals(externalUrl, that.externalUrl) &&
                 platformDependencies.equals(that.platformDependencies) &&
                 versionString.equals(that.versionString) &&
@@ -155,15 +150,7 @@ public class NewVersion {
 
     @Override
     public int hashCode() {
-        return Objects.hash(channel, versionDependencies, description, externalUrl, forumSync, platformDependencies, recommended, unstable, versionString, content);
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
+        return Objects.hash(channel, versionDependencies, externalUrl, forumSync, platformDependencies, recommended, unstable, versionString, content);
     }
 
 }

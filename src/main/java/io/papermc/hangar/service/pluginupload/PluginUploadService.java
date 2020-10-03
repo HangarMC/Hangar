@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Supplier;
 
 @Service
 public class PluginUploadService {
@@ -36,8 +37,10 @@ public class PluginUploadService {
     private final CacheManager cacheManager;
     private final HangarConfig config;
 
+    private final Supplier<ProjectsTable> projectsTable;
+
     @Autowired
-    public PluginUploadService(HangarConfig hangarConfig, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, VersionService versionService, CacheManager cacheManager, HangarConfig config) {
+    public PluginUploadService(HangarConfig hangarConfig, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, VersionService versionService, CacheManager cacheManager, HangarConfig config, Supplier<ProjectsTable> projectsTable) {
         this.hangarConfig = hangarConfig;
         this.projectFiles = projectFiles;
         this.pluginDataService = pluginDataService;
@@ -45,6 +48,7 @@ public class PluginUploadService {
         this.versionService = versionService;
         this.cacheManager = cacheManager;
         this.config = config;
+        this.projectsTable = projectsTable;
     }
 
     public PluginFileWithData processPluginUpload(MultipartFile file, UsersTable owner) {
@@ -121,7 +125,7 @@ public class PluginUploadService {
                 config.getChannels().getColorDefault(),
                 plugin,
                 null,
-                forumSync
-        );
+                forumSync,
+                versionService.getMostRelevantVersion(projectsTable.get()));
     }
 }

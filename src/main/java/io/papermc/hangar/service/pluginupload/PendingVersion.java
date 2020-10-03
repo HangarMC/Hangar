@@ -1,16 +1,16 @@
 package io.papermc.hangar.service.pluginupload;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.controller.forms.NewVersion;
-import io.papermc.hangar.db.model.ProjectVersionTagsTable;
 import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.model.Color;
-import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.generated.PlatformDependency;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.VersionDependencies;
 import io.papermc.hangar.service.plugindata.PluginFileWithData;
 import io.papermc.hangar.service.project.ProjectFactory;
-import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -31,8 +31,9 @@ public class PendingVersion {
     private final PluginFileWithData plugin;
     private final String externalUrl;
     private final boolean createForumPost;
+    private final ProjectVersionsTable prevVersion;
 
-    public PendingVersion(String versionString, VersionDependencies dependencies, List<PlatformDependency> platforms, String description, long projectId, Long fileSize, String hash, String fileName, long authorId, String channelName, Color channelColor, PluginFileWithData plugin, String externalUrl, boolean createForumPost) {
+    public PendingVersion(@Nullable String versionString, @Nullable VersionDependencies dependencies, @Nullable List<PlatformDependency> platforms, @NotNull String description, long projectId, @Nullable Long fileSize, @Nullable String hash, @Nullable String fileName, long authorId, String channelName, Color channelColor, @Nullable PluginFileWithData plugin, @Nullable String externalUrl, boolean createForumPost, @Nullable ProjectVersionsTable prevVersion) {
         this.versionString = versionString;
         this.dependencies = dependencies;
         this.platforms = platforms;
@@ -47,20 +48,25 @@ public class PendingVersion {
         this.plugin = plugin;
         this.externalUrl = externalUrl;
         this.createForumPost = createForumPost;
+        this.prevVersion = prevVersion;
     }
 
+    @Nullable
     public String getVersionString() {
         return versionString;
     }
 
+    @Nullable
     public VersionDependencies getDependencies() {
         return dependencies;
     }
 
+    @Nullable
     public List<PlatformDependency> getPlatforms() {
         return platforms;
     }
 
+    @Nullable
     public String getDescription() {
         return description;
     }
@@ -69,14 +75,17 @@ public class PendingVersion {
         return projectId;
     }
 
+    @Nullable
     public Long getFileSize() {
         return fileSize;
     }
 
+    @Nullable
     public String getHash() {
         return hash;
     }
 
+    @Nullable
     public String getFileName() {
         return fileName;
     }
@@ -93,10 +102,12 @@ public class PendingVersion {
         return channelColor;
     }
 
+    @JsonIgnore
     public PluginFileWithData getPlugin() {
         return plugin;
     }
 
+    @Nullable
     public String getExternalUrl() {
         return externalUrl;
     }
@@ -105,9 +116,15 @@ public class PendingVersion {
         return createForumPost;
     }
 
-    public List<Pair<Platform, ProjectVersionTagsTable>> getDependenciesAsGhostTags() {
-        return Platform.getGhostTags(-1L, platforms);
+    @Nullable
+    public ProjectVersionsTable getPrevVersion() {
+        return prevVersion;
     }
+
+//    @JsonIgnore
+//    public List<Pair<Platform, ProjectVersionTagsTable>> getDependenciesAsGhostTags() {
+//        return Platform.getGhostTags(-1L, platforms);
+//    }
 
     public PendingVersion copy(String channelName, Color channelColor, boolean createForumPost, String description, List<PlatformDependency> platformDependencies) {
         return new PendingVersion(
@@ -124,8 +141,8 @@ public class PendingVersion {
                 channelColor,
                 plugin,
                 externalUrl,
-                createForumPost
-        );
+                createForumPost,
+                prevVersion);
     }
 
     public PendingVersion update(NewVersion newVersion) {
@@ -133,7 +150,7 @@ public class PendingVersion {
                 versionString,
                 newVersion.getVersionDependencies(),
                 newVersion.getPlatformDependencies(),
-                newVersion.getDescription(),
+                newVersion.getContent(),
                 projectId,
                 fileSize,
                 hash,
@@ -143,8 +160,8 @@ public class PendingVersion {
                 newVersion.getChannel().getColor(),
                 plugin,
                 newVersion.getExternalUrl(),
-                newVersion.isForumSync()
-        );
+                newVersion.isForumSync(),
+                prevVersion);
     }
 
     public ProjectVersionsTable complete(HttpServletRequest request, ProjectData project, ProjectFactory factory) {

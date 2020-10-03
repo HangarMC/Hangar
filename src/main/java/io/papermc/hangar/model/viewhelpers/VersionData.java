@@ -6,9 +6,8 @@ import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.generated.Dependency;
 import io.papermc.hangar.model.generated.PlatformDependency;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class VersionData {
 
@@ -47,7 +46,7 @@ public class VersionData {
     }
 
     public Map<PlatformDependency, Map<Dependency, String>> getFormattedDependencies() {
-        return this.v.getPlatforms().stream().collect(Collectors.toMap(Function.identity(), pd -> this.dependencies.get(pd.getPlatform())));
+        return this.v.getPlatforms().stream().collect(HashMap::new, (hashMap, platformDependency) -> hashMap.put(platformDependency, this.dependencies.get(platformDependency.getPlatform())), HashMap::putAll);
     }
 
     public boolean isRecommended() {

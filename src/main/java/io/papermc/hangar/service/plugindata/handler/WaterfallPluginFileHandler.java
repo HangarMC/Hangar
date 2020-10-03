@@ -58,12 +58,12 @@ public class WaterfallPluginFileHandler extends FileTypeHandler {
 
         List<Dependency> dependencies = new ArrayList<>();
         //noinspection unchecked
-        List<String> softdepend = (List<String>) data.get("softdepend");
+        List<String> softdepend = (List<String>) data.get("softDepends");
         if (softdepend != null) {
             dependencies.addAll(softdepend.stream().map(depName -> new Dependency(depName, false)).collect(Collectors.toList()));
         }
         //noinspection unchecked
-        List<String> depend = (List<String>) data.get("depend");
+        List<String> depend = (List<String>) data.get("depends");
         if (depend != null) {
             dependencies.addAll(depend.stream().map(depName -> new Dependency(depName, true)).collect(Collectors.toList()));
         }

@@ -132,6 +132,7 @@ public enum Routes {
     APIV1_REVOKE_KEY("apiv1.revokeKey", Paths.APIV1_REVOKE_KEY, of("author", "slug"), of()),
     APIV1_CREATE_KEY("apiv1.createKey", Paths.APIV1_CREATE_KEY, of("author", "slug"), of()),
     APIV1_SHOW_PROJECT("apiv1.showProject", Paths.APIV1_SHOW_PROJECT, of("author", "slug"), of()),
+    APIV1_SHOW_PROJECT_BY_ID("apiv1.showProjectById", Paths.APIV1_SHOW_PROJECT_BY_ID, of("id"), of()),
     APIV1_SYNC_SSO("apiv1.syncSso", Paths.APIV1_SYNC_SSO, of(), of()),
     APIV1_TAG_COLOR("apiv1.tagColor", Paths.APIV1_TAG_COLOR, of("tagId"), of()),
     APIV1_SHOW_STATUS_Z("apiv1.showStatusZ", Paths.APIV1_SHOW_STATUS_Z, of(), of()),
@@ -354,6 +355,7 @@ public enum Routes {
         public static final String APIV1_REVOKE_KEY = "/api/v1/projects/{author}/{slug}/keys/revoke";
         public static final String APIV1_CREATE_KEY = "/api/v1/projects/{author}/{slug}/keys/new";
         public static final String APIV1_SHOW_PROJECT = "/api/v1/projects/{author}/{slug}";
+        public static final String APIV1_SHOW_PROJECT_BY_ID = "/api/v1/projects/{id}";
         public static final String APIV1_SYNC_SSO = "/api/sync_sso";
         public static final String APIV1_TAG_COLOR = "/api/v1/tags/{tagId}";
         public static final String APIV1_SHOW_STATUS_Z = "/statusz";

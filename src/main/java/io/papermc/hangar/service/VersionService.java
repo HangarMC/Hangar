@@ -37,9 +37,9 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @Service
 public class VersionService extends HangarService {
@@ -86,6 +86,15 @@ public class VersionService extends HangarService {
     public Supplier<VersionData> versionData() {
         //noinspection SpringConfigurationProxyMethods
         return () -> this.getVersionData(projectService.projectData().get(), projectVersionsTable().get());
+    }
+
+    public ProjectVersionsTable getMostRelevantVersion(ProjectsTable project) {
+        Optional<ProjectVersionsTable> version = Optional.ofNullable(getRecommendedVersion(project));
+        return version.or(() -> Optional.ofNullable(getMostRecentVersion(project))).orElse(null);
+    }
+
+    public ProjectVersionsTable getMostRecentVersion(ProjectsTable project) {
+        return versionDao.get().getMostRecentVersion(project.getId());
     }
 
     public ProjectVersionsTable getRecommendedVersion(ProjectsTable project) {

@@ -11,8 +11,6 @@
                                 type="text"
                                 id="version-string-input"
                                 class="form-control"
-                                form="form-publish"
-                                name="versionString"
                                 required
                                 v-model="payload.versionString"
                                 :disabled="pendingVersion.versionString"
@@ -20,21 +18,21 @@
                         </div>
                     </td>
                 </tr>
-                <tr>
-                    <td><strong>Description</strong></td>
-                    <td>
-                        <div class="form-group">
-                            <label for="version-description-input" class="sr-only">Version Description</label>
-                            <input
-                                type="text"
-                                id="version-description-input"
-                                class="form-control"
-                                v-model="payload.description"
-                                :disabled="pendingVersion.versionString && pendingVersion.description"
-                            />
-                        </div>
-                    </td>
-                </tr>
+                <!--                <tr>-->
+                <!--                    <td><strong>Description</strong></td>-->
+                <!--                    <td>-->
+                <!--                        <div class="form-group">-->
+                <!--                            <label for="version-description-input" class="sr-only">Version Description</label>-->
+                <!--                            <input-->
+                <!--                                type="text"-->
+                <!--                                id="version-description-input"-->
+                <!--                                class="form-control"-->
+                <!--                                v-model="payload.description"-->
+                <!--                                :disabled="pendingVersion.versionString && pendingVersion.description"-->
+                <!--                            />-->
+                <!--                        </div>-->
+                <!--                    </td>-->
+                <!--                </tr>-->
                 <template v-if="pendingVersion.fileName && !pendingVersion.externalUrl">
                     <tr>
                         <td><strong>File name</strong></td>
@@ -69,19 +67,10 @@
                         </a>
                     </td>
                 </tr>
-                <!--                <tr>
-                    <td><strong>Platform</strong></td>
-                    <td v-if="pendingVersion.platforms">
-                        <PlatformTags :tags="pendingVersion.dependenciesAsGhostTags" />
-                    </td>
-                    <td v-else>
-                        <PlatformChoice></PlatformChoice>
-                    </td>
-                </tr>-->
                 <DependencySelection
                     v-model:platforms-prop="payload.platforms"
                     v-model:dependencies-prop="payload.dependencies"
-                    :tags="pendingVersion ? pendingVersion.dependenciesAsGhostTags : null"
+                    :prev-version="pendingVersion.prevVersion"
                 ></DependencySelection>
                 <tr>
                     <td>
@@ -179,21 +168,6 @@
     </HangarForm>
     <template v-if="pendingVersion">
         <button class="btn btn-primary float-right mt-1 mr-1" @click="publish">Publish</button>
-        <!--        <HangarForm-->
-        <!--            :action="-->
-        <!--                pendingVersion.versionString-->
-        <!--                    ? ROUTES.parse('VERSIONS_PUBLISH', ownerName, projectSlug, pendingVersion.versionString)-->
-        <!--                    : ROUTES.parse('VERSIONS_PUBLISH_URL', ownerName, projectSlug)-->
-        <!--            "-->
-        <!--            method="post"-->
-        <!--            id="form-publish"-->
-        <!--            clazz="float-right"-->
-        <!--        >-->
-        <!--            <input type="hidden" class="channel-color-input" name="channel-color-input" :value="defaultColor" />-->
-        <!--            <div>-->
-        <!--                <input type="submit" name="create" value="Publish" class="btn btn-primary" />-->
-        <!--            </div>-->
-        <!--        </HangarForm>-->
     </template>
     <template v-else>
         <HangarForm
@@ -219,6 +193,7 @@ import DependencySelection from '@/components/DependencySelection';
 import Editor from '@/components/Editor';
 import 'bootstrap/js/dist/tooltip';
 import $ from 'jquery';
+import 'bootstrap/js/dist/collapse';
 import filesize from 'filesize';
 import axios from 'axios';
 
@@ -262,19 +237,20 @@ export default {
     },
     created() {
         if (this.pendingVersion) {
-            this.payload.versionString = this.pendingVersion.versionString;
-            this.payload.description = this.pendingVersion.description;
-            this.payload.externalUrl = this.pendingVersion.externalUrl;
+            if (this.pendingVersion.versionString) {
+                this.payload.versionString = this.pendingVersion.versionString;
+                this.payload.description = this.pendingVersion.description;
+
+                for (const platform of this.pendingVersion.platforms) {
+                    this.payload.platforms[platform.name] = platform.versions;
+                }
+                this.payload.dependencies = this.pendingVersion.dependencies;
+            } else {
+                this.payload.externalUrl = this.pendingVersion.externalUrl;
+            }
             this.payload.channel.name = this.pendingVersion.channelName;
             this.payload.channel.color = this.pendingVersion.channelColor;
             this.payload.forumSync = this.forumSync;
-
-            for (const platform of this.pendingVersion.platforms) {
-                this.payload.platforms[platform.name] = platform.versions;
-            }
-            this.payload.dependencies = this.pendingVersion.dependencies;
-            // console.log(this.pendingVersion.platforms);
-            // console.log(this.pendingVersion.dependencies);
         }
     },
     methods: {
@@ -377,16 +353,58 @@ export default {
             }
         },
         filesize,
+        scrollTo(selector) {
+            $([document.documentElement, document.body]).animate(
+                {
+                    scrollTop: $(selector).offset().top - 80,
+                },
+                600
+            );
+        },
         publish() {
-            const requiredProps = ['forumSync', 'recommended', 'unstable', 'versionString', 'channel.color', 'channel.name'];
+            const requiredProps = [
+                {
+                    propName: 'forumSync',
+                },
+                {
+                    propName: 'recommended',
+                },
+                {
+                    propName: 'unstable',
+                },
+                {
+                    propName: 'versionString',
+                    selector: '#version-string-input',
+                },
+                {
+                    propName: 'channel.color',
+                },
+                {
+                    propName: 'channel.name',
+                },
+                {
+                    propName: 'content',
+                    selector: '.version-content-view',
+                },
+            ];
+
+            $('.invalid-input').removeClass('invalid-input');
 
             // Validations
             for (const prop of requiredProps) {
-                if (prop.split('.').reduce((o, i) => o[i], this.payload) == null) {
-                    console.error(`Missing needed prop ${prop}`);
+                const val = prop.propName.split('.').reduce((o, i) => o[i], this.payload);
+                if (typeof val === 'undefined' || val === null || val === '') {
+                    if (prop.selector) {
+                        const el = $(prop.selector);
+                        el.addClass('invalid-input');
+                        this.scrollTo(prop.selector);
+                    }
+
                     return;
                 }
             }
+            const parentEl = $('#dependencies-accordion');
+            const depCollapseEl = $('#dep-collapse');
             for (const platform in this.payload.dependencies) {
                 for (const dep of this.payload.dependencies[platform]) {
                     if (!dep.project_id && !dep.external_url) {
@@ -395,21 +413,26 @@ export default {
                     }
                 }
             }
+            if (Object.keys(this.payload.platforms).length === 0) {
+                this.scrollTo('#dependencies-accordion');
+                depCollapseEl.collapse('show');
+                parentEl.addClass('invalid-input');
+                return;
+            }
             for (const platform in this.payload.platforms) {
-                if (!this.payload.platforms[platform].versions.length) {
-                    console.error(`need to specify platform versions for ${platform}`);
+                if (!this.payload.platforms[platform].length) {
+                    depCollapseEl.collapse('show');
+                    this.scrollTo('#dependencies-accordion');
+                    $(`#${platform}-row`).addClass('invalid-input');
                     return;
                 }
             }
-
-            console.log('VALIDATED!!');
-            console.log(this.payload);
 
             const platformDeps = [];
             for (const platform in this.payload.platforms) {
                 platformDeps.push({
                     name: platform,
-                    versions: this.payload.platforms[platform].versions,
+                    versions: this.payload.platforms[platform],
                 });
             }
 
