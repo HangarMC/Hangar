@@ -121,11 +121,6 @@ public class PendingVersion {
         return prevVersion;
     }
 
-//    @JsonIgnore
-//    public List<Pair<Platform, ProjectVersionTagsTable>> getDependenciesAsGhostTags() {
-//        return Platform.getGhostTags(-1L, platforms);
-//    }
-
     public PendingVersion copy(String channelName, Color channelColor, boolean createForumPost, String description, List<PlatformDependency> platformDependencies) {
         return new PendingVersion(
                 versionString,

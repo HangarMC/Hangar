@@ -336,15 +336,6 @@ public class Apiv1Controller extends HangarController {
                 .put("description", version.getDescription());
         objectNode.set("channel", mapper.valueToTree(channel));
         objectNode.set("dependencies", mapper.valueToTree(version.getDependencies()));
-//        objectNode.set("dependencies", Dependency.from(version.getDependencies()).stream().collect(Collector.of(mapper::createArrayNode, (array, dep) -> {
-//            ObjectNode depObj = mapper.createObjectNode()
-//                    // TODO dependency identification
-//                    .put("author", dep.getPluginId())
-//                    .put("version", dep.getVersion());
-//            array.add(depObj);
-//        }, (ignored1, ignored2) -> {
-//            throw new UnsupportedOperationException();
-//        })));
         objectNode.set("tags", tags.stream().collect(Collector.of(mapper::createArrayNode, (array, tag) -> array.add(mapper.valueToTree(tag)), (t1, t2) -> {
             throw new UnsupportedOperationException();
         })));

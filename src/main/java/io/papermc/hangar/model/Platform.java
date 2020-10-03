@@ -123,23 +123,6 @@ public enum Platform {
                         dep.getVersions()
                 )
         )).collect(Collectors.toList());
-//        return getPlatforms(
-//                dependencies
-//                .stream()
-//                .map(Dependency::getPluginId)
-//                .collect(Collectors.toList())
-//        ).stream().map(p -> new ImmutablePair<>(
-//                p,
-//                p.createGhostTag(
-//                        versionId,
-//                        dependencies
-//                        .stream()
-//                        .filter(d -> d.getPluginId().equalsIgnoreCase(p.dependencyId))
-//                        .findFirst()
-//                        .get()
-//                        .getVersion()
-//                )
-//        )).collect(Collectors.toList());
     }
 
     @Nullable

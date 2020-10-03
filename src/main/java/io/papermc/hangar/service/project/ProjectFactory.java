@@ -147,14 +147,6 @@ public class ProjectFactory {
         ProjectVersionsTable version = projectVersionDao.get().insert(new ProjectVersionsTable(
                 pendingVersion.getVersionString(),
                 pendingVersion.getDependencies(),
-//                //TODO dependency identification
-//                pendingVersion.getDependencies().stream().map(d -> {
-//                    if (d.getVersion() == null || d.getVersion().isBlank()) {
-//                        return d.getPluginId();
-//                    } else {
-//                        return d.getPluginId() + ":" + d.getVersion();
-//                    }
-//                }).collect(Collectors.toList()),
                 pendingVersion.getDescription(),
                 pendingVersion.getProjectId(),
                 channel.getId(),
