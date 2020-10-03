@@ -30,10 +30,8 @@ export function sanitize(html) {
     return $('<textarea>').html(html).text();
 }
 
-export function decodeHtml(html) {
-    // lol
-    return $('<textarea>').html(html).val();
-}
+// Just a duplicate of the function above? 
+export function decodeHtml(html) {return sanitize(html);}
 
 export function go(str) {
     window.location = decodeHtml(str);
