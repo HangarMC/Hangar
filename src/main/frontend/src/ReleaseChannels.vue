@@ -47,9 +47,9 @@
     </table>
     <NewChannel
         :edit="edit"
-        :name-prop="newChannel.name"
-        :color-prop="newChannel.color"
-        :non-reviewed-prop="newChannel.nonReviewed"
+        v-model:name-prop="newChannel.name"
+        v-model:color-prop="newChannel.color"
+        v-model:non-reviewed-prop="newChannel.nonReviewed"
         @channel-created="editFinal($event)"
     ></NewChannel>
     <form ref="edit-form" :action="ROUTES.parse('CHANNELS_SAVE', ownerName, projectSlug, newChannel.oldName)" method="post" class="d-none">
@@ -99,7 +99,7 @@ export default {
             $('#channel-settings').modal('show');
         },
         delChannel(channel, versionCount) {
-            $('#delete-form').attr('action', this.ROUTES.parse('CHANNELS_DELETE', this.ownerName, this.projectSlug, this.channel.name));
+            $('#delete-form').attr('action', this.ROUTES.parse('CHANNELS_DELETE', this.ownerName, this.projectSlug, channel.name));
             if (versionCount > 0) {
                 $('#version-count-on-delete').text(versionCount);
                 $('#modal-delete').modal('show');
