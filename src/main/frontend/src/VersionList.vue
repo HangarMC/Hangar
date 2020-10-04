@@ -2,9 +2,7 @@
     <div class="version-list">
         <div class="row text-center">
             <div class="col-12">
-                <a v-if="canUpload" class="btn yellow" :href="ROUTES.parse('VERSIONS_SHOW_CREATOR', projectOwner, projectSlug)"
-                    >Upload a New Version</a
-                >
+                <a v-if="canUpload" class="btn yellow" :href="ROUTES.parse('VERSIONS_SHOW_CREATOR', projectOwner, projectSlug)">Upload a New Version</a>
             </div>
         </div>
         <div v-show="loading">
@@ -22,18 +20,13 @@
                 >
                     <div class="container-fluid">
                         <div class="row">
-                            <div
-                                class="col-4 col-md-2 col-lg-2"
-                                :set="(channel = version.tags.find((filterTag) => filterTag.name === 'Channel'))"
-                            >
+                            <div class="col-4 col-md-2 col-lg-2" :set="(channel = version.tags.find((filterTag) => filterTag.name === 'Channel'))">
                                 <div class="row">
                                     <div class="col-12">
                                         <span class="text-bold">{{ version.name }}</span>
                                     </div>
                                     <div class="col-12">
-                                        <span v-if="channel" class="channel" v-bind:style="{ background: channel.color.background }">{{
-                                            channel.data
-                                        }}</span>
+                                        <span v-if="channel" class="channel" v-bind:style="{ background: channel.color.background }">{{ channel.data }}</span>
                                     </div>
                                 </div>
                             </div>

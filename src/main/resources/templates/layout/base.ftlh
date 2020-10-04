@@ -93,7 +93,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
 
     <#if scriptsEnabled>
         <script>
-            window.ROUTES = ${mapper.valueToTree(Routes.getJsRoutes())}
+            window.ROUTES = ${mapper.valueToTree(Routes.getJsRoutes())};
             window.ROUTES.parse = function (key, ...params) {
                 var route = window.ROUTES[key];
                 for (let param of params) {

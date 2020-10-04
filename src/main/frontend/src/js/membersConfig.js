@@ -29,10 +29,7 @@ $(function () {
 
         var user = result.user;
         // Check if user is already defined
-        if (
-            $('input[value="' + user.id + '"]').length ||
-            $('.table-members').first('tr').find('strong').text() === user.username
-        ) {
+        if ($('input[value="' + user.id + '"]').length || $('.table-members').first('tr').find('strong').text() === user.username) {
             return;
         }
 

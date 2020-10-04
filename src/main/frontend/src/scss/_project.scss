@@ -140,28 +140,6 @@
   border-bottom: 1px solid black;
 }
 
-.channel {
-  font-weight: bold;
-  padding: 2px 4px;
-  text-align: center;
-  color: white;
-  cursor: default;
-}
-
-.channel-sm {
-  font-size: 10px;
-}
-
-.channel-head {
-  @include towardsBottomRight(15px, 23px);
-  font-size: 20px;
-  display: inline-block;
-}
-
-.channel-flat {
-  border-radius: 0;
-}
-
 .spongeapi {
   background-color: $sponge_yellow;
   color: black;

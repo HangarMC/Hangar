@@ -10,9 +10,7 @@ import 'bootstrap/js/dist/tooltip';
 
 const clipboardManager = new ClipboardJS('.copy-url');
 clipboardManager.on('success', function () {
-    const element = $('.btn-download')
-        .tooltip({ title: 'Copied!', placement: 'bottom', trigger: 'manual' })
-        .tooltip('show');
+    const element = $('.btn-download').tooltip({ title: 'Copied!', placement: 'bottom', trigger: 'manual' }).tooltip('show');
     setTimeout(function () {
         element.tooltip('dispose');
     }, 2200);

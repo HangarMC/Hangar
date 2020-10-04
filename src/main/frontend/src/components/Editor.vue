@@ -1,12 +1,7 @@
 <template>
     <template v-if="enabled">
         <!-- Edit -->
-        <button
-            type="button"
-            class="btn btn-sm btn-edit btn-page btn-default"
-            title="Edit"
-            @click.stop="pageBtnClick($event.currentTarget)"
-        >
+        <button type="button" class="btn btn-sm btn-edit btn-page btn-default" title="Edit" @click.stop="pageBtnClick($event.currentTarget)">
             <i class="fas fa-edit"></i> Edit
         </button>
 
@@ -18,12 +13,7 @@
         </div>
 
         <div v-if="saveable" class="btn-edit-container btn-save-container" title="Save">
-            <button
-                form="form-editor-save"
-                type="submit"
-                class="btn btn-sm btn-save btn-page btn-default"
-                @click.stop="pageBtnClick($event.currentTarget)"
-            >
+            <button form="form-editor-save" type="submit" class="btn btn-sm btn-save btn-page btn-default" @click.stop="pageBtnClick($event.currentTarget)">
                 <i class="fas fa-save"></i>
             </button>
         </div>
@@ -63,9 +53,7 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body">
-                            Are you sure you want to delete this {{ subject.toLowerCase() }}? This cannot be undone.
-                        </div>
+                        <div class="modal-body">Are you sure you want to delete this {{ subject.toLowerCase() }}? This cannot be undone.</div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                             <HangarForm method="post" :action="deleteCall" clazz="form-inline">

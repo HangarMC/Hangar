@@ -39,24 +39,23 @@
   border-bottom: 1px solid $lighter;
 }
 
-.plugin-meta-table {
-  @include basic-border();
-  @include box-shadow4(0, 1px, 1px, rgba(0,0,0,0.05));
-
-  input[type="text"] { width: 100%; }
-  tr { width: 100%; }
-  td { padding: 10px; }
-  & > tr:nth-child(2n) { background-color: #f5f5f5; }
-  .rv { padding: 0; }
-
-  margin-top: 5px;
-  width: 100%;
-
-  & > tr > td:nth-child(2n) {
-    text-align: right;
-    float: right;
-  }
-}
+//.plugin-meta-table {
+//  @include basic-border();
+//  @include box-shadow4(0, 1px, 1px, rgba(0,0,0,0.05));
+//
+//  tr { width: 100%; }
+//  td { padding: 10px; }
+//  & > tr:nth-child(2n) { background-color: #f5f5f5; }
+//  .rv { padding: 0; }
+//
+//  margin-top: 5px;
+//  width: 100%;
+//
+//  & > tr > td:nth-child(2n) {
+//    text-align: right;
+//    float: right;
+//  }
+//}
 
 .create-buttons > form {
   margin-bottom: 0;

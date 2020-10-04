@@ -1,101 +1,122 @@
 <template>
     <template v-if="pendingVersion">
         <div class="plugin-meta">
-            <table class="plugin-meta-table">
-                <tr>
-                    <td><strong>Version</strong></td>
-                    <td>
-                        <div class="form-group">
-                            <label for="version-string-input" class="sr-only">Version String</label>
-                            <input
-                                type="text"
-                                id="version-string-input"
-                                class="form-control"
-                                required
-                                v-model="payload.versionString"
-                                :disabled="pendingVersion.versionString"
-                            />
-                        </div>
-                    </td>
-                </tr>
+            <div class="row justify-content-around">
+                <div class="input-group meta-info col-xl-3 col-lg-3 col-12">
+                    <div class="input-group-prepend">
+                        <label for="version-string-input" class="input-group-text">Version</label>
+                    </div>
+                    <input
+                        type="text"
+                        id="version-string-input"
+                        class="form-control"
+                        required
+                        v-model="payload.versionString"
+                        :disabled="pendingVersion.versionString"
+                    />
+                </div>
                 <template v-if="pendingVersion.fileName && !pendingVersion.externalUrl">
-                    <tr>
-                        <td><strong>File name</strong></td>
-                        <td>{{ pendingVersion.fileName }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>File size</strong></td>
-                        <td>{{ filesize(pendingVersion.fileSize) }}</td>
-                    </tr>
+                    <div class="input-group meta-info col-xl-6 col-lg-5 col-12">
+                        <div class="input-group-prepend">
+                            <label for="file-name-input" class="input-group-text">File name</label>
+                        </div>
+                        <input id="file-name-input" type="text" class="form-control" :value="pendingVersion.fileName" disabled />
+                    </div>
+                    <div class="input-group meta-info col-xl-3 col-lg-4 col-12">
+                        <div class="input-group-prepend">
+                            <label for="file-size-input" class="input-group-text">File size</label>
+                        </div>
+                        <input id="file-size-input" type="text" class="form-control" :value="filesize(pendingVersion.fileSize)" disabled />
+                    </div>
                 </template>
-                <template v-else>
-                    <tr>
-                        <td><strong>External URL</strong></td>
-                        <td>
-                            <div class="form-group">
-                                <label for="external-url-input" class="sr-only"></label>
-                                <input id="external-url-input" class="form-control" type="text" required v-model="payload.externalUrl" />
-                            </div>
-                        </td>
-                    </tr>
-                </template>
-                <tr>
-                    <td><strong>Channel</strong></td>
-                    <td class="form-inline">
-                        <select id="select-channel" class="form-control" v-model="payload.channel.name" style="margin-right: 10px">
-                            <option v-for="channel in channels" :key="channel.id" :value="channel.name" :data-color="channel.color.hex">
-                                {{ channel.name }}
-                            </option>
-                        </select>
-                        <a href="#">
-                            <i id="channel-new" class="fas fa-plus" data-toggle="modal" data-target="#channel-settings"></i>
-                        </a>
-                    </td>
-                </tr>
-                <DependencySelection
-                    v-model:platforms-prop="payload.platforms"
-                    v-model:dependencies-prop="payload.dependencies"
-                    :prev-version="pendingVersion.prevVersion"
-                ></DependencySelection>
-                <tr>
-                    <td>
-                        <label for="is-unstable-version" class="form-check-label">
-                            <strong>Mark this version as unstable</strong>
+                <div v-else class="col-xl-9 col-lg-9 col-12 input-group meta-info">
+                    <div class="input-group-prepend">
+                        <label for="external-url-input" class="input-group-text">External URL</label>
+                    </div>
+                    <input id="external-url-input" class="form-control" type="text" required v-model="payload.externalUrl" />
+                </div>
+            </div>
+            <div class="row justify-content-around">
+                <div class="col-xl-4 col-lg-9 col-md-6 col-12 input-group">
+                    <div class="input-group-prepend">
+                        <label for="select-channel" class="input-group-text">Channel</label>
+                    </div>
+                    <select id="select-channel" class="custom-select" v-model="payload.channel" :style="{ backgroundColor: payload.channel.color.hex }">
+                        <option
+                            v-for="channel in channels"
+                            :key="channel.id"
+                            :value="{ name: channel.name, color: channel.color, nonReviewed: channel.nonReviewed }"
+                        >
+                            {{ channel.name }}
+                        </option>
+                    </select>
+                    <div class="input-group-append">
+                        <NewChannel
+                            v-model:name-prop="createdChannel.name"
+                            v-model:color-prop="createdChannel.color"
+                            v-model:non-reviewed-prop="createdChannel.nonReviewed"
+                            @channel-created="setChannel"
+                        >
+                            <template v-slot:activator="slotProps">
+                                <button
+                                    class="btn btn-outline-primary"
+                                    type="button"
+                                    data-toggle="modal"
+                                    :data-target="`#${slotProps.targetId}`"
+                                    @click.prevent
+                                >
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </template>
+                        </NewChannel>
+                    </div>
+                </div>
+                <div class="input-group meta-info meta-info-checkbox col-xl-2 col-md-4 col-6">
+                    <div class="input-group-prepend">
+                        <label for="is-unstable-version" class="input-group-text">
+                            <span>Unstable</span>
                         </label>
-                    </td>
-                    <td class="rv">
-                        <div class="form-check">
+                    </div>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
                             <input id="is-unstable-version" class="form-check-input" type="checkbox" v-model="payload.unstable" />
                         </div>
-                        <div class="clearfix"></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="is-recommended-version" class="form-check-label">
-                            <strong>Recommended</strong>
+                    </div>
+                </div>
+                <div class="input-group meta-info meta-info-checkbox col-xl-3 col-md-4 col-6">
+                    <div class="input-group-prepend">
+                        <label for="is-recommended-version" class="input-group-text">
+                            <span>Recommended</span>
                         </label>
-                    </td>
-                    <td class="rv">
-                        <div class="form-check">
+                    </div>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
                             <input id="is-recommended-version" class="form-check-input" type="checkbox" v-model="payload.recommended" />
                         </div>
-                        <div class="clearfix"></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="create-forum-post-version" class="form-check-label"></label>
-                        <strong>Create forum post</strong>
-                    </td>
-                    <td class="rv">
-                        <div class="form-check">
+                    </div>
+                </div>
+                <div class="input-group meta-info meta-info-checkbox col-xl-2 col-md-4 col-6">
+                    <div class="input-group-prepend">
+                        <label for="create-forum-post-version" class="input-group-text">
+                            <span>Forum Post</span>
+                        </label>
+                    </div>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
                             <input id="create-forum-post-version" class="form-check-input" type="checkbox" v-model="payload.forumSync" />
                         </div>
-                        <div class="clearfix"></div>
-                    </td>
-                </tr>
-            </table>
+                    </div>
+                </div>
+            </div>
+            <div id="deps-management" class="row">
+                <div class="col-12">
+                    <DependencySelection
+                        v-model:platforms-prop="payload.platforms"
+                        v-model:dependencies-prop="payload.dependencies"
+                        :prev-version="pendingVersion.prevVersion"
+                    ></DependencySelection>
+                </div>
+            </div>
         </div>
 
         <div class="release-bulletin">
@@ -114,27 +135,22 @@
         enctype="multipart/form-data"
         clazz="form-inline"
     >
-
         <div class="input-group float-left" style="width: 50%">
-          <label for="pluginFile" style="flex-wrap: wrap">
-            <span style="flex: 0 0 100%; margin-bottom: 10px" v-if="!pendingVersion">Either upload a file...</span>
-            <div :class="'btn btn-primary' + (pendingVersion ? ' mt-1': '')" style="flex: 0 0 100%">
-              <template v-if="!pendingVersion">
-                Upload
-              </template>
-              <template v-else>
-                Change file
-              </template>
-            </div>
-          </label>
-          <input
-              type="file"
-              id="pluginFile"
-              name="pluginFile"
-              accept=".jar,.zip"
-              style="display: none;"
-              @change="fileUploaded($event.target.name, $event.target.files)"
-          />
+            <label for="pluginFile" style="flex-wrap: wrap">
+                <span style="flex: 0 0 100%; margin-bottom: 10px" v-if="!pendingVersion">Either upload a file...</span>
+                <div :class="'btn btn-primary' + (pendingVersion ? ' mt-1' : '')" style="flex: 0 0 100%">
+                    <template v-if="!pendingVersion"> Upload</template>
+                    <template v-else> Change file</template>
+                </div>
+            </label>
+            <input
+                type="file"
+                id="pluginFile"
+                name="pluginFile"
+                accept=".jar,.zip"
+                style="display: none"
+                @change="fileUploaded($event.target.name, $event.target.files)"
+            />
         </div>
         <div class="alert-file file-project float-right" style="display: none">
             <div class="alert alert-info float-left">
@@ -174,44 +190,63 @@
 </template>
 <script>
 import HangarForm from '@/components/HangarForm';
-// import PlatformChoice from '@/PlatformChoice';
 import DependencySelection from '@/components/DependencySelection';
-// import PlatformTags from '@/components/PlatformTags';
 import Editor from '@/components/Editor';
+import NewChannel from '@/components/NewChannel';
 import 'bootstrap/js/dist/tooltip';
 import $ from 'jquery';
 import 'bootstrap/js/dist/collapse';
 import filesize from 'filesize';
 import axios from 'axios';
+import { remove } from 'lodash-es';
+
+const channels = [];
+for (const channel of window.CHANNELS) {
+    channels.push({
+        color: channel.color,
+        nonReviewed: channel.isNonReviewed,
+        name: channel.name,
+    });
+}
 
 export default {
     name: 'CreateVersion',
     components: {
+        NewChannel,
         HangarForm,
-        // PlatformChoice,
         DependencySelection,
-        // PlatformTags,
         Editor,
     },
     props: {
-        defaultColor: String,
         pendingVersion: Object,
         ownerName: String,
         projectSlug: String,
-        channels: Array,
         forumSync: Boolean,
     },
     data() {
         return {
+            channels,
             MAX_FILE_SIZE: 20971520,
             ROUTES: window.ROUTES,
+            createdChannel: {
+                name: null,
+                color: {
+                    hex: null,
+                    value: null,
+                },
+                nonReviewed: false,
+            },
             payload: {
                 versionString: null,
                 description: null,
                 externalUrl: null,
                 channel: {
                     name: null,
-                    color: null,
+                    color: {
+                        hex: null,
+                        value: null,
+                    },
+                    nonReviewed: false,
                 },
                 platforms: {},
                 dependencies: {},
@@ -224,7 +259,6 @@ export default {
     },
     created() {
         if (this.pendingVersion) {
-            console.log(this.pendingVersion);
             if (this.pendingVersion.versionString) {
                 this.payload.versionString = this.pendingVersion.versionString;
                 this.payload.description = this.pendingVersion.description;
@@ -237,7 +271,11 @@ export default {
                 this.payload.externalUrl = this.pendingVersion.externalUrl;
             }
             this.payload.channel.name = this.pendingVersion.channelName;
-            this.payload.channel.color = this.pendingVersion.channelColor;
+            this.payload.channel.color.hex = this.pendingVersion.channelColor.hex;
+            this.payload.channel.color.value = this.pendingVersion.channelColor.value;
+            this.payload.channel.nonReviewed = this.channels.find(
+                (ch) => ch.name === this.pendingVersion.channelName && ch.color.hex === this.pendingVersion.channelColor.hex
+            ).nonReviewed;
             this.payload.forumSync = this.forumSync;
         }
     },
@@ -349,6 +387,25 @@ export default {
                 600
             );
         },
+        setChannel() {
+            remove(this.channels, (ch) => !window.CHANNELS.find((och) => ch.name === och.name));
+            this.channels.push({
+                color: {
+                    value: this.createdChannel.color.value,
+                    hex: this.createdChannel.color.hex,
+                },
+                nonReviewed: this.createdChannel.nonReviewed,
+                name: this.createdChannel.name,
+            });
+            this.payload.channel = {
+                color: {
+                    hex: this.createdChannel.color.hex,
+                    value: this.createdChannel.color.value,
+                },
+                nonReviewed: this.createdChannel.nonReviewed,
+                name: this.createdChannel.name,
+            };
+        },
         publish() {
             const requiredProps = [
                 {
@@ -391,21 +448,20 @@ export default {
                     return;
                 }
             }
-            const parentEl = $('#dependencies-accordion');
+            const parentEl = $('#deps-management');
             const depCollapseEl = $('#dep-collapse');
             for (const platform in this.payload.dependencies) {
                 for (const dep of this.payload.dependencies[platform]) {
                     if (!dep.project_id && !dep.external_url) {
-                        this.scrollTo('#dependencies-accordion');
+                        this.scrollTo('#deps-management');
                         depCollapseEl.collapse('show');
                         $(`#${platform}-${dep.name}-link-cell`).addClass('invalid-input');
-                        console.error(`Missing link for ${dep.name} on ${platform}`);
                         return;
                     }
                 }
             }
             if (Object.keys(this.payload.platforms).length === 0) {
-                this.scrollTo('#dependencies-accordion');
+                this.scrollTo('#deps-management');
                 depCollapseEl.collapse('show');
                 parentEl.addClass('invalid-input');
                 return;
@@ -413,7 +469,7 @@ export default {
             for (const platform in this.payload.platforms) {
                 if (!this.payload.platforms[platform].length) {
                     depCollapseEl.collapse('show');
-                    this.scrollTo('#dependencies-accordion');
+                    this.scrollTo('#deps-management');
                     $(`#${platform}-row`).addClass('invalid-input');
                     return;
                 }
@@ -446,10 +502,10 @@ export default {
                     }
                 )
                 .then(() => {
-                    $('form')
-                        .attr('action', window.ROUTES.parse('VERSIONS_PUBLISH', this.ownerName, this.projectSlug, this.payload.versionString))
-                        .attr('method', 'post')
-                        .submit();
+                    const publishUrl = window.ROUTES.parse('VERSIONS_PUBLISH', this.ownerName, this.projectSlug, this.payload.versionString);
+                    const form = $(`<form action="${publishUrl}" method="post" style="display: none"></form>`).appendTo('body');
+                    form.append(`<input name="${window.csrfInfo.parameterName}" value="${window.csrfInfo.token}" />`);
+                    form.submit();
                 });
         },
     },
@@ -458,3 +514,33 @@ export default {
     },
 };
 </script>
+<style lang="scss" scoped>
+.input-group {
+    margin-bottom: 1em;
+
+    &.meta-info {
+        width: unset;
+
+        input:disabled {
+            background-color: #00000017;
+        }
+
+        &.meta-info-checkbox {
+            justify-content: center;
+
+            .input-group-prepend > * {
+                border-right: none;
+
+                span {
+                    position: relative;
+                    top: 1px;
+                }
+            }
+
+            .input-group-append > * {
+                border-left: none;
+            }
+        }
+    }
+}
+</style>

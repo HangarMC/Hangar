@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 @Service
 public class ChannelService {
@@ -58,14 +59,14 @@ public class ChannelService {
         return channelFactory.createChannel(projectId, channelName, color, isNonReviewed);
     }
 
-    public void updateProjectChannel(long projectId, String oldChannel, String channelName, Color color) {
+    public void updateProjectChannel(long projectId, String oldChannel, String channelName, Color color, boolean nonReviewed) {
         if (!hangarConfig.channels.isValidChannelName(channelName)) {
             throw new HangarException("error.channel.invalidName", channelName);
         }
 
-        InvalidChannelCreationReason reason = channelDao.get().validateChanneUpdate(projectId, oldChannel, channelName, color.getValue());
+        InvalidChannelCreationReason reason = channelDao.get().validateChannelUpdate(projectId, oldChannel, channelName, color.getValue());
         checkInvalidChannelCreationReason(reason);
-        channelDao.get().update(projectId, oldChannel, channelName, color);
+        channelDao.get().update(projectId, oldChannel, channelName, color, nonReviewed);
     }
 
     private void checkInvalidChannelCreationReason(@Nullable InvalidChannelCreationReason reason) {

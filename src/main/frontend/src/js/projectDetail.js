@@ -240,11 +240,7 @@ $(function () {
             if (response.promoted_versions) {
                 let html = '';
                 response.promoted_versions.forEach((version) => {
-                    const href = window.jsRoutes.controllers.project.Versions.show(
-                        PROJECT_OWNER,
-                        PROJECT_SLUG,
-                        version.version
-                    ).absoluteURL();
+                    const href = window.jsRoutes.controllers.project.Versions.show(PROJECT_OWNER, PROJECT_SLUG, version.version).absoluteURL();
                     html = html + "<li class='list-group-item'><a href='" + href + "'>" + version.version + '</a></li>';
                 });
                 $('.promoted-list').html(html);

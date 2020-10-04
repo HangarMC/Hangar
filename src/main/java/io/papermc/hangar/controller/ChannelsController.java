@@ -1,5 +1,8 @@
 package io.papermc.hangar.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.model.Color;
 import io.papermc.hangar.model.NamedPermission;
@@ -23,13 +26,15 @@ import java.util.function.Supplier;
 public class ChannelsController extends HangarController {
 
     private final ChannelService channelService;
+    private final ObjectMapper mapper;
 
     private final Supplier<ProjectsTable> projectsTable;
     private final Supplier<ProjectData> projectData;
 
     @Autowired
-    public ChannelsController(ChannelService channelService, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
+    public ChannelsController(ChannelService channelService, ObjectMapper mapper, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
         this.channelService = channelService;
+        this.mapper = mapper;
         this.projectsTable = projectsTable;
         this.projectData = projectData;
     }
@@ -40,8 +45,16 @@ public class ChannelsController extends HangarController {
     @GetMapping("/{author}/{slug}/channels")
     public ModelAndView showList(@PathVariable String author, @PathVariable String slug) {
         ModelAndView mv = new ModelAndView("projects/channels/list");
-        mv.addObject("p", projectData.get());
-        mv.addObject("channels", channelService.getChannelsWithVersionCount(projectData.get().getProject().getId()));
+        ProjectData projData = projectData.get();
+        ArrayNode channels = mapper.createArrayNode();
+        channelService.getChannelsWithVersionCount(projData.getProject().getId()).forEach((projectChannelsTable, count) -> {
+            ObjectNode channel = mapper.createObjectNode()
+                    .put("versionCount", count)
+                    .set("channel", mapper.valueToTree(projectChannelsTable));
+            channels.add(channel);
+        });
+        mv.addObject("p", projData);
+        mv.addObject("channels", channels);
         return fillModel(mv);
     }
 
@@ -49,8 +62,8 @@ public class ChannelsController extends HangarController {
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/channels")
-    public ModelAndView create(@PathVariable String author, @PathVariable String slug, @RequestParam("channel-input") String channelId, @RequestParam("channel-color-input") Color channelColor) {
-        channelService.addProjectChannel(projectsTable.get().getId(), channelId, channelColor, false);
+    public ModelAndView create(@PathVariable String author, @PathVariable String slug, @RequestParam("name") String channelId, @RequestParam("color") Color channelColor, @RequestParam("nonReviewed") boolean nonReviewed) {
+        channelService.addProjectChannel(projectsTable.get().getId(), channelId, channelColor, nonReviewed);
         return Routes.CHANNELS_SHOW_LIST.getRedirect(author, slug);
     }
 
@@ -58,9 +71,13 @@ public class ChannelsController extends HangarController {
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
     @PostMapping("/{author}/{slug}/channels/{channel}")
-    public ModelAndView save(@PathVariable String author, @PathVariable String slug, @PathVariable String channel,
-                             @RequestParam("channel-input") String newChannelName, @RequestParam("channel-color-input") String newChannelHex) {
-        channelService.updateProjectChannel(projectsTable.get().getId(), channel, newChannelName, Color.getByHexStr(newChannelHex));
+    public ModelAndView save(@PathVariable String author,
+                             @PathVariable String slug,
+                             @PathVariable String channel,
+                             @RequestParam("name") String name,
+                             @RequestParam("color") Color color,
+                             @RequestParam(value = "nonReviewed") boolean nonReviewed) {
+        channelService.updateProjectChannel(projectsTable.get().getId(), channel, name, color, nonReviewed);
         return Routes.CHANNELS_SHOW_LIST.getRedirect(author, slug);
     }
 

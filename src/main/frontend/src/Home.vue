@@ -2,13 +2,7 @@
     <div class="row">
         <div class="col-md-9">
             <div class="project-search" :class="{ 'input-group': q.length > 0 }">
-                <input
-                    type="text"
-                    class="form-control"
-                    v-model="q"
-                    @keydown="resetPage"
-                    :placeholder="queryPlaceholder"
-                />
+                <input type="text" class="form-control" v-model="q" @keydown="resetPage" :placeholder="queryPlaceholder" />
                 <span class="input-group-btn" v-if="q.length > 0">
                     <button class="btn btn-default" type="button" @click="q = ''">
                         <i class="fas fa-times"></i>
@@ -16,9 +10,7 @@
                 </span>
             </div>
             <div v-if="!isDefault" class="clearSelection">
-                <a @click="reset"
-                    ><i class="fa fa-window-close"></i> Clear current search query, categories, platform, and sort</a
-                >
+                <a @click="reset"><i class="fa fa-window-close"></i> Clear current search query, categories, platform, and sort</a>
             </div>
             <project-list
                 v-bind="listBinding"
@@ -66,11 +58,7 @@
                     </div>
 
                     <div class="list-group platform-list">
-                        <a
-                            class="list-group-item list-group-item-action"
-                            @click="tags = []"
-                            v-bind:class="{ active: tags.length === 0 }"
-                        >
+                        <a class="list-group-item list-group-item-action" @click="tags = []" v-bind:class="{ active: tags.length === 0 }">
                             <span class="parent">Any</span>
                         </a>
                         <a

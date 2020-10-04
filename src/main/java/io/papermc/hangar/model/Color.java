@@ -5,6 +5,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @JsonFormat(shape = Shape.OBJECT)
 public enum Color {
 
@@ -28,6 +33,7 @@ public enum Color {
     TRANSPARENT(17, "transparent");
 
     private static final Color[] VALUES = values();
+    private static List<Color> CHANNEL_COLORS = null;
     private final int value;
     private final String hex;
 
@@ -45,6 +51,15 @@ public enum Color {
     }
 
     @JsonCreator
+    public static Color getByIdAndHex(@JsonProperty("hex") String hex, @JsonProperty("value") int id) {
+        Color color = VALUES[id];
+        if (color.hex.equalsIgnoreCase(hex)) {
+            return color;
+        }
+        return null;
+    }
+
+    @JsonCreator
     public static Color getById(@JsonProperty("value") int id) {
         return VALUES[id];
     }
@@ -58,5 +73,12 @@ public enum Color {
 
     public static Color[] getValues() {
         return VALUES;
+    }
+
+    public static List<Color> getNonTransparentValues() {
+        if (CHANNEL_COLORS == null) {
+            CHANNEL_COLORS = Arrays.stream(VALUES).filter(c -> c.value <= 15).collect(Collectors.toList());
+        }
+        return CHANNEL_COLORS;
     }
 }

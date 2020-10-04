@@ -54,17 +54,7 @@ $(function () {
         if (!exists) {
             setColorInput(channelHex);
             select.find(':selected').removeAttr('selected');
-            select.append(
-                '<option data-color="' +
-                    channelHex +
-                    '" ' +
-                    'value="' +
-                    channelName +
-                    '" ' +
-                    'selected>' +
-                    channelName +
-                    '</option>'
-            );
+            select.append('<option data-color="' + channelHex + '" ' + 'value="' + channelName + '" ' + 'selected>' + channelName + '</option>');
         }
 
         $('#channel-settings').modal('hide');

@@ -26,17 +26,7 @@ $(function () {
         if (parent.length) {
             parentId = parent.val() === '-1' ? null : parent.val();
 
-            if (parentId !== null)
-                url =
-                    '/' +
-                    projectOwner +
-                    '/' +
-                    projectSlug +
-                    '/pages/' +
-                    parent.data('slug') +
-                    '/' +
-                    slugify(pageName) +
-                    '/edit';
+            if (parentId !== null) url = '/' + projectOwner + '/' + projectSlug + '/pages/' + parent.data('slug') + '/' + slugify(pageName) + '/edit';
         }
         $.ajax({
             method: 'post',

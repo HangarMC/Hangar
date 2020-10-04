@@ -21,11 +21,7 @@ export function apiV2Request(url, method = 'GET', data = {}) {
                     resolve(data);
                 })
                 .fail(function (xhr) {
-                    if (
-                        xhr.responseJSON &&
-                        (xhr.responseJSON.error === 'Api session expired' ||
-                            xhr.responseJSON.error === 'Invalid session')
-                    ) {
+                    if (xhr.responseJSON && (xhr.responseJSON.error === 'Api session expired' || xhr.responseJSON.error === 'Invalid session')) {
                         // This should never happen but just in case we catch it and invalidate the session to definitely get a new one
                         invalidateApiSession();
                         apiV2Request(url, method, data)
