@@ -17,13 +17,7 @@ $(function () {
             $(this)
                 .text('pastdue ' + momentAgo.fromNow())
                 .css('color', 'darkred');
-            $(this)
-                .parent()
-                .parent()
-                .find('.status')
-                .removeClass()
-                .addClass('status far fa-fw fa-clock fa-2x')
-                .css('color', 'darkred');
+            $(this).parent().parent().find('.status').removeClass().addClass('status far fa-fw fa-clock fa-2x').css('color', 'darkred');
         }
     });
 

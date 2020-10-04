@@ -27,8 +27,8 @@ public interface ProjectChannelDao {
     @GetGeneratedKeys
     ProjectChannelsTable insert(@BindBean ProjectChannelsTable projectChannel);
 
-    @SqlUpdate("UPDATE project_channels SET name = :name, color = :color WHERE project_id = :projectId AND name = :oldName")
-    void update(long projectId, String oldName, String name, @EnumByOrdinal Color color);
+    @SqlUpdate("UPDATE project_channels SET name = :name, color = :color, is_non_reviewed = :nonReviewed WHERE project_id = :projectId AND name = :oldName")
+    void update(long projectId, String oldName, String name, @EnumByOrdinal Color color, boolean nonReviewed);
 
     @SqlQuery("SELECT * FROM project_channels WHERE project_id = :projectId LIMIT 1")
     ProjectChannelsTable getFirstChannel(long projectId);
@@ -50,7 +50,7 @@ public interface ProjectChannelDao {
             "CASE WHEN '<channelName>' IN (SELECT \"name\" FROM project_channels WHERE project_id = :projectId AND name != :oldChannelName) THEN 'DUPLICATE_NAME' " +
             "     WHEN <colorValue> IN (SELECT color FROM project_channels WHERE project_id = :projectId AND name != :oldChannelName) THEN 'UNIQUE_COLOR' " +
             "END")
-    ChannelService.InvalidChannelCreationReason validateChanneUpdate(long projectId, String oldChannelName, @Define String channelName, @Define long colorValue);
+    ChannelService.InvalidChannelCreationReason validateChannelUpdate(long projectId, String oldChannelName, @Define String channelName, @Define long colorValue);
 
     @SqlQuery("SELECT * FROM project_channels WHERE project_id = :projectId AND (name = :channelName OR id = :channelId)")
     ProjectChannelsTable getProjectChannel(long projectId, String channelName, Long channelId);

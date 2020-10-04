@@ -27,12 +27,7 @@
                             <label for="add-version-input" class="sr-only">Add Version</label>
                             <input type="text" id="add-version-input" class="form-control" v-model="inputs[platform]" />
                             <div class="input-group-append">
-                                <button
-                                    type="button"
-                                    class="btn btn-primary"
-                                    @click="addVersion(platform)"
-                                    :disabled="!inputs[platform]"
-                                >
+                                <button type="button" class="btn btn-primary" @click="addVersion(platform)" :disabled="!inputs[platform]">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>

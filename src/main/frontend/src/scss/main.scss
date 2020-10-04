@@ -16,6 +16,8 @@
 @import "dropdowns";
 @import "buttons";
 
+@import "channel";
+
 html {
   position: relative;
   min-height: 100%;
@@ -257,17 +259,6 @@ select.form-control, input.form-control {
       margin-left: 0;
     }
   }
-}
-
-.channel {
-  align-items: center;
-  display: inline-flex;
-  border-radius: 3px;
-  font-size: 0.75em;
-  height: 2em;
-  padding-left: 0.75em;
-  padding-right: 0.75em;
-  white-space: nowrap;
 }
 
 .table tbody > tr > td {

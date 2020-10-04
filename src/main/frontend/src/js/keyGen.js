@@ -22,11 +22,7 @@ function bindKeyGen(e) {
             success: function (key) {
                 console.log(key);
                 $('.input-key').val(key.value);
-                $this
-                    .removeClass('btn-key-gen btn-info')
-                    .addClass('btn-key-revoke btn-danger')
-                    .data('key-id', key.id)
-                    .off('click');
+                $this.removeClass('btn-key-gen btn-info').addClass('btn-key-revoke btn-danger').data('key-id', key.id).off('click');
                 $this.find('.text').text(keyRevokeText);
 
                 bindKeyRevoke($this);

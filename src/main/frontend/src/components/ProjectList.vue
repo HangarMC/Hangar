@@ -16,34 +16,18 @@
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-12 col-sm-1">
-                                    <Icon
-                                        :name="project.namespace.owner"
-                                        :src="project.icon_url"
-                                        extra-classes="user-avatar-sm"
-                                    ></Icon>
+                                    <Icon :name="project.namespace.owner" :src="project.icon_url" extra-classes="user-avatar-sm"></Icon>
                                 </div>
                                 <div class="col-12 col-sm-11">
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <a
-                                                :href="
-                                                    routes.Projects.show(
-                                                        project.namespace.owner,
-                                                        project.namespace.slug
-                                                    ).absoluteURL()
-                                                "
-                                                class="title"
-                                            >
+                                            <a :href="routes.Projects.show(project.namespace.owner, project.namespace.slug).absoluteURL()" class="title">
                                                 {{ project.name }}
                                             </a>
                                         </div>
                                         <div class="col-sm-6 hidden-xs">
                                             <div class="info minor">
-                                                <span
-                                                    class="stat recommended-version"
-                                                    title="Recommended version"
-                                                    v-if="project.recommended_version"
-                                                >
+                                                <span class="stat recommended-version" title="Recommended version" v-if="project.recommended_version">
                                                     <i class="far fa-gem"></i>
                                                     <a
                                                         :href="
@@ -58,24 +42,14 @@
                                                     </a>
                                                 </span>
 
-                                                <span class="stat" title="Views"
-                                                    ><i class="fas fa-eye"></i>
-                                                    {{ formatStats(project.stats.views) }}</span
-                                                >
+                                                <span class="stat" title="Views"><i class="fas fa-eye"></i> {{ formatStats(project.stats.views) }}</span>
                                                 <span class="stat" title="Download"
-                                                    ><i class="fas fa-download"></i>
-                                                    {{ formatStats(project.stats.downloads) }}</span
+                                                    ><i class="fas fa-download"></i> {{ formatStats(project.stats.downloads) }}</span
                                                 >
-                                                <span class="stat" title="Stars"
-                                                    ><i class="fas fa-star"></i>
-                                                    {{ formatStats(project.stats.stars) }}</span
-                                                >
+                                                <span class="stat" title="Stars"><i class="fas fa-star"></i> {{ formatStats(project.stats.stars) }}</span>
 
                                                 <span :title="categoryFromId(project.category).name" class="stat">
-                                                    <i
-                                                        :class="'fa-' + categoryFromId(project.category).icon"
-                                                        class="fas"
-                                                    ></i>
+                                                    <i :class="'fa-' + categoryFromId(project.category).icon" class="fas"></i>
                                                 </span>
                                             </div>
                                         </div>
@@ -174,17 +148,7 @@ export default {
         this.update();
         this.debouncedUpdateProps = debounce(this.update, 500);
         this.$watch(
-            () =>
-                [
-                    this.q,
-                    this.categories,
-                    this.tags,
-                    this.owner,
-                    this.sort,
-                    this.relevance,
-                    this.limit,
-                    this.offset,
-                ].join(),
+            () => [this.q, this.categories, this.tags, this.owner, this.sort, this.relevance, this.limit, this.offset].join(),
             () => {
                 this.debouncedUpdateProps();
             }

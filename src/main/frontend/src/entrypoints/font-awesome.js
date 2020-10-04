@@ -39,6 +39,7 @@ import {
     faKey,
     faLink,
     faList,
+    faListOl,
     faLock,
     faMagic,
     faMoneyBillAlt,
@@ -48,6 +49,7 @@ import {
     faPlayCircle,
     faPlus,
     faPuzzlePiece,
+    faQuestion,
     faQuestionCircle,
     faReply,
     faSave,
@@ -57,6 +59,7 @@ import {
     faSpinner,
     faStar as fasStar,
     faStopCircle,
+    faTag,
     faTags,
     faTerminal,
     faThumbsUp as fasThumbsUp,
@@ -120,6 +123,7 @@ library.add(
     faChartArea,
     faHeartbeat,
     faList,
+    faListOl,
     faSignOutAlt,
     farThumbsUp,
     faTrash,
@@ -168,7 +172,9 @@ library.add(
     faUserTag,
     faTags,
     faExclamationTriangle,
-    faCheckSquare
+    faCheckSquare,
+    faQuestion,
+    faTag
 );
 
 dom.watch();

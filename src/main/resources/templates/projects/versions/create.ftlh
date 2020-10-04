@@ -11,21 +11,15 @@
 <#assign mainWidth = "col-md-10">
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "js/channelManage.js" />"></script>
-<#--    <script type="text/javascript" src="<@hangar.url "js/pluginUpload.js" />"></script>-->
-<#--    <script type="text/javascript" src="<@hangar.url "js/projectDetail.js" />"></script>-->
-    <#if pending?? && !pending.dependencies??>
-        <script type="text/javascript" src="<@hangar.url "js/platform-choice.js" />"></script>
-    </#if>
     <script>
-             window.DEFAULT_COLOR = '${config.channels.colorDefault.hex}';
              window.OWNER_NAME = '${ownerName}';
              window.PROJECT_SLUG = '${projectSlug}';
              window.PENDING_VERSION = ${mapper.valueToTree(pending)};
-             window.CHANNELS = ${mapper.valueToTree(channels)};
+             window.CHANNELS = ${channels};
              window.FORUM_SYNC = ${forumSync?c};
+             window.MAX_CHANNEL_NAME_LEN = ${config.channels.maxNameLen};
+             window.COLORS = ${mapper.valueToTree(@helper["io.papermc.hangar.model.Color"].getNonTransparentValues())};
     </script>
-    <script type="text/javascript" src="<@hangar.url "js/versionCreateChannelNew.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "js/create-version.js" />"></script>
 </#assign>
 <#assign styleVar>
@@ -63,6 +57,6 @@
 
     </div>
 
-    <@modalManage.modalManage />
+<#--    <@modalManage.modalManage />-->
 
 </@base.base>

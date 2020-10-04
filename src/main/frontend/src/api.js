@@ -23,11 +23,7 @@ export class API {
                         resolve(data);
                     })
                     .fail((xhr) => {
-                        if (
-                            xhr.responseJSON &&
-                            (xhr.responseJSON.error === 'Api session expired' ||
-                                xhr.responseJSON.error === 'Invalid session')
-                        ) {
+                        if (xhr.responseJSON && (xhr.responseJSON.error === 'Api session expired' || xhr.responseJSON.error === 'Invalid session')) {
                             // This should never happen but just in case we catch it and invalidate the session to definitely get a new one
                             API.invalidateSession();
                             API.request(url, method, data)
@@ -53,10 +49,7 @@ export class API {
 
             if (window.isLoggedIn) {
                 session = parseJsonOrNull(localStorage.getItem('api_session'));
-                if (
-                    session === null ||
-                    (!isNaN(new Date(session.expires).getTime()) && new Date(session.expires) < date)
-                ) {
+                if (session === null || (!isNaN(new Date(session.expires).getTime()) && new Date(session.expires) < date)) {
                     return $.ajax({
                         url: '/api/v2/authenticate/user',
                         method: 'POST',
@@ -79,10 +72,7 @@ export class API {
                 }
             } else {
                 session = parseJsonOrNull(localStorage.getItem('public_api_session'));
-                if (
-                    session === null ||
-                    (!isNaN(new Date(session.expires).getTime()) && new Date(session.expires) < date)
-                ) {
+                if (session === null || (!isNaN(new Date(session.expires).getTime()) && new Date(session.expires) < date)) {
                     $.ajax({
                         url: '/api/v2/authenticate',
                         method: 'POST',

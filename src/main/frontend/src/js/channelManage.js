@@ -90,14 +90,7 @@ export function initChannelManager(toggle, channelName, channelHex, title, call,
             submitInput.submit(function (event) {
                 event.preventDefault();
                 var modal = getModal();
-                onCustomSubmit(
-                    toggle,
-                    modal.find('.channel-input').val(),
-                    modal.find('.channel-color-input').val(),
-                    title,
-                    submit,
-                    nonReviewed
-                );
+                onCustomSubmit(toggle, modal.find('.channel-input').val(), modal.find('.channel-color-input').val(), title, submit, nonReviewed);
             });
         } else {
             // Set form action
@@ -173,16 +166,7 @@ function initColorPicker() {
 $(function () {
     initModal();
     if (DEFAULT_HEX && CHANNEL_CREATE_ROUTE) {
-        initChannelManager(
-            '#channel-new',
-            '',
-            DEFAULT_HEX,
-            'New channel',
-            CHANNEL_CREATE_ROUTE,
-            'post',
-            'Create channel',
-            false
-        );
+        initChannelManager('#channel-new', '', DEFAULT_HEX, 'New channel', CHANNEL_CREATE_ROUTE, 'post', 'Create channel', false);
     }
 
     if (window.loadDeleteManager) {

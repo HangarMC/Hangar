@@ -27,12 +27,7 @@ function bindExpand(e) {
                     link.text(page.name); // this will sanitize the input
                     div.append(childPage);
                 }
-                $this
-                    .removeClass('page-expand')
-                    .addClass('page-collapse')
-                    .find('[data-fa-i2svg]')
-                    .removeClass('fa-plus-square')
-                    .addClass('fa-minus-square');
+                $this.removeClass('page-expand').addClass('page-collapse').find('[data-fa-i2svg]').removeClass('fa-plus-square').addClass('fa-minus-square');
                 $this.off('click');
                 bindCollapse($this);
             },
@@ -44,12 +39,7 @@ function bindCollapse(e) {
     e.click(function () {
         var pageId = $(this).data('page-id');
         $('.page-children[data-page-id="' + pageId + '"]').remove();
-        $(this)
-            .removeClass('page-collapse')
-            .addClass('page-expand')
-            .find('[data-fa-i2svg]')
-            .removeClass('fa-minus-square')
-            .addClass('fa-plus-square');
+        $(this).removeClass('page-collapse').addClass('page-expand').find('[data-fa-i2svg]').removeClass('fa-minus-square').addClass('fa-plus-square');
         $(this).off('click');
         bindExpand($(this));
     });

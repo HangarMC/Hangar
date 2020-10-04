@@ -86,14 +86,7 @@ $(function () {
                 row.append($('<th>').text(token));
                 row.append($('<th>'));
                 row.append($('<th>').text(namedPerms));
-                row.append(
-                    $('<th>').append(
-                        $('<button>')
-                            .addClass('btn btn-danger api-key-row-delete-button')
-                            .text(DELETE_KEY)
-                            .click(deleteKey(name, row))
-                    )
-                );
+                row.append($('<th>').append($('<button>').addClass('btn btn-danger api-key-row-delete-button').text(DELETE_KEY).click(deleteKey(name, row))));
 
                 $('#api-key-rows:last-child').append(row);
             });

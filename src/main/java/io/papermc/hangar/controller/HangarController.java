@@ -50,7 +50,6 @@ public abstract class HangarController {
         mav.addObject("utils", templateHelper);
         mav.addObject("mapper", mapper);
 
-
         try {
             mav.addObject("Routes", staticModels.get("io.papermc.hangar.util.Routes"));
         } catch (TemplateModelException e) {
