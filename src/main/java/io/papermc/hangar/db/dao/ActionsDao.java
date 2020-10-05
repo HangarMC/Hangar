@@ -52,7 +52,7 @@ public interface ActionsDao {
     @SqlQuery("SELECT * FROM v_logged_actions la " +
               " WHERE true " +
               "<if(userFilter)>AND la.user_name = :userFilter<endif> " +
-              "<if(projectFilter)>AND la.p_slug = :projectFilter<endif> " +
+              "<if(projectFilter)>AND (la.p_owner_name || la.p_slug) = :projectFilter<endif> " +
               "<if(versionFilter)>AND la.pv_version_string = :versionFilter<endif> " +
               "<if(pageFilter)>AND la.pp_id = :pageFilter<endif> " +
               "<if(actionFilter)>AND la.action = :actionFilter::LOGGED_ACTION_TYPE<endif> " +
