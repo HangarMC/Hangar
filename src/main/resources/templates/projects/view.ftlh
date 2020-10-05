@@ -9,11 +9,15 @@ Base template for Project overview.
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
 <#assign FlagReason=@helper["io.papermc.hangar.model.FlagReason"]>
 <#-- @ftlvariable name="FlagReason" type="io.papermc.hangar.model.FlagReason" -->
-<#macro view p sp active noButtons=false additionalScripts="" additionalStyling="">
+<#macro view p sp active noButtons=false additionalScripts="">
 <#-- @ftlvariable name="p" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
 <#-- @ftlvariable name="sp" type="io.papermc.hangar.model.viewhelpers.ScopedProjectData" -->
     <#assign scriptsVar>
         <script <#-- @CSPNonce.attr -->>
+            window.PROJECT = ${mapper.valueToTree(p.project)};
+            window.CAN_EDIT_PAGES = ${sp.perms(Permission.EditPage)?c};
+
+
             window.PROJECT_OWNER = "${p.project.ownerName}";
             window.PROJECT_SLUG = "${p.project.slug}";
             window.NAMESPACE = "${p.project.ownerName}/${p.project.slug}";
@@ -22,8 +26,12 @@ Base template for Project overview.
             window.ACTIVE_NAV = "${active}";
         </script>
         ${additionalScripts}
-        <script type="text/javascript" src="<@hangar.url "js/projectDetail.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "js/pageEdit.js" />"></script>
+        <#--<script type="text/javascript" src="<@hangar.url "js/projectDetail.js" />"></script>-->
+        <#--<script type="text/javascript" src="<@hangar.url "js/pageEdit.js" />"></script>-->
+    </#assign>
+
+    <#assign styleVar>
+        <link rel="stylesheet" href="<@hangar.url "css/project-view.css" />">
     </#assign>
 
     <#assign metaVar>
@@ -35,7 +43,7 @@ Base template for Project overview.
         <meta property="og:description" content="${p.project.description!}"/>
     </#assign>
 
-    <@base.base title=(p.project.ownerName + " / " + p.project.name) additionalScripts=scriptsVar additionalStyling=additionalStyling additionalMeta=metaVar>
+    <@base.base title=(p.project.ownerName + " / " + p.project.name) additionalScripts=scriptsVar additionalStyling=styleVar additionalMeta=metaVar>
         <div class="project-header-container">
             <#if p.visibility != Visibility.PUBLIC>
                 <div class="row">
@@ -192,24 +200,6 @@ Base template for Project overview.
                                         Owner on forum <i class="fas fa-external-link-alt" aria-hidden="true"></i>
                                     </a>
                                 </div>
-
-                            <#--<ul class="dropdown-menu" aria-labelledby="admin-actions">
-                                <#if headerData.globalPerm(Permission.ModNotesAndFlags)>
-                                    <li class="dropdown-item">
-                                        <a href="${Routes.PROJECTS_SHOW_FLAGS.getRouteUrl(p.project.ownerName, p.project.slug)}">
-                                            Flag history (${p.flagCount})
-                                        </a>
-                                    </li>
-                                </#if>
-                                <#if headerData.globalPerm(Permission.ModNotesAndFlags)>
-                                <li><a href="${Routes.PROJECTS_SHOW_NOTES.getRouteUrl(p.project.ownerName, p.project.slug)}">
-                                        Staff notes (${p.noteCount}) </a></li>
-                                </#if>
-                                <#if headerData.globalPerm(Permission.ViewLogs)>
-                                <li><a href="${Routes.SHOW_LOG.getRouteUrl("", "", p.project.pluginId, "", "", "", "")}">
-                                        User Action Logs</a></li>
-                                </#if>
-                                <li><a href="https://papermc.io/forums/${p.project.ownerName}">Owner on forum <i class="fas fa-external-link-alt" aria-hidden="true"></i></a></li>
                             </ul>-->
                             </#if>
                         </div>
@@ -224,13 +214,13 @@ Base template for Project overview.
                         <div class="navbar-inner">
                             <ul class="nav navbar-nav">
                                 <!-- Tabs -->
-                                <li id="docs" class="nav-item">
+                                <li id="docs" class="nav-item <#if active='#docs'>active</#if>">
                                     <a href="${Routes.PROJECTS_SHOW.getRouteUrl(p.project.ownerName, p.project.slug)}"
                                        class="nav-link">
                                         <i class="fas fa-book"></i> <@spring.message "project.docs" /></a>
                                 </li>
 
-                                <li id="versions" class="nav-item">
+                                <li id="versions" class="nav-item <#if active='#versions'>active</#if>">
                                     <a href="${Routes.VERSIONS_SHOW_LIST.getRouteUrl(p.project.ownerName, p.project.slug)}"
                                        class="nav-link">
                                         <i class="fas fa-download"></i> <@spring.message "project.versions" />
@@ -238,7 +228,7 @@ Base template for Project overview.
                                 </li>
 
                                 <#if p.project.topicId??>
-                                    <li id="discussion" class="nav-item">
+                                    <li id="discussion" class="nav-item <#if active='#discussion'>active</#if>">
                                         <a href="${Routes.PROJECTS_SHOW_DISCUSSION.getRouteUrl(p.project.ownerName, p.project.slug)}"
                                            class="nav-link">
                                             <i class="fas fa-users"></i> <@spring.message "project.discuss" />
@@ -248,7 +238,7 @@ Base template for Project overview.
 
                                 <#if sp.perms(Permission.EditProjectSettings)>
                                 <#-- Show manager if permitted -->
-                                    <li id="settings" class="nav-item">
+                                    <li id="settings" class="nav-item <#if active='#settings'>active</#if>">
                                         <a href="${Routes.PROJECTS_SHOW_SETTINGS.getRouteUrl(p.project.ownerName, p.project.slug)}"
                                            class="nav-link">
                                             <i class="fas fa-cog"></i> <@spring.message "project.settings" />

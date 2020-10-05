@@ -8,14 +8,22 @@
 <#assign ReviewState=@helper["io.papermc.hangar.model.generated.ReviewState"] />
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"] />
 <#assign Visibility=@helper["io.papermc.hangar.model.Visibility"] />
-<@projects.view p=v.p sp=sp active="#versions" noButtons=true>
+<#assign scriptsVar>
+    <script>
+        window.VERSION = ${mapper.valueToTree(v.v)};
+    </script>
+    <script type="text/javascript" src="<@hangar.url "js/version-view.js" />"></script>
+</#assign>
+<@projects.view p=v.p sp=sp active="#versions" noButtons=true additionalScripts=scriptsVar>
     <!-- Version header -->
     <div class="row">
         <div class="col-md-12 version-header">
                 <!-- Title -->
             <div class="clearfix">
-                <h1 class="float-left">${v.v.versionString}</h1>
-                <span class="channel channel-head" style="background-color: ${v.c.color.hex};">${v.c.name}</span>
+                <h1 class="float-left position-relative">
+                    ${v.v.versionString}
+                    <div class="channel channel-head" style="background-color: ${v.c.color.hex};">${v.c.name}</div>
+                </h1>
             </div>
 
                 <!-- User info -->
@@ -159,14 +167,8 @@
                         </div>
                     </div>
                 </#if>
-                <div class="col-md-12">
-                <@editor.editor
-                    saveCall=Routes.VERSIONS_SAVE_DESCRIPTION.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString)
-                    enabled=sp.perms(Permission.EditPage)
-                    raw=v.v.description!""
-                    cooked=markdownService.render(v.v.description)
-                    subject="Version"
-                />
+                <div class="col-md-12" style="z-index: 5">
+                    <div id="version-view"></div>
                 </div>
             </div>
         </div>

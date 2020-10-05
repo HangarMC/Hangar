@@ -15,7 +15,7 @@
              window.OWNER_NAME = '${ownerName}';
              window.PROJECT_SLUG = '${projectSlug}';
              window.PENDING_VERSION = ${mapper.valueToTree(pending)};
-             window.CHANNELS = ${channels};
+             window.CHANNELS = ${mapper.valueToTree(channels)};
              window.FORUM_SYNC = ${forumSync?c};
              window.MAX_CHANNEL_NAME_LEN = ${config.channels.maxNameLen};
              window.COLORS = ${mapper.valueToTree(@helper["io.papermc.hangar.model.Color"].getNonTransparentValues())};

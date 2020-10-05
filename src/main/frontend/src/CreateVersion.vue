@@ -120,11 +120,19 @@
         </div>
 
         <div class="release-bulletin">
-            <div style="position: relative">
+            <div style="position: relative; z-index: 5">
                 <h3>Release Bulletin</h3>
                 <p>What's new in this release?</p>
 
-                <Editor enabled :raw="pendingVersion.description || ''" target-form="form-publish" v-model:content-prop="payload.content"></Editor>
+                <Editor
+                    enabled
+                    :raw="pendingVersion.description || ''"
+                    target-form="form-publish"
+                    v-model:content-prop="payload.content"
+                    :saveable="false"
+                    :cancellable="false"
+                    open
+                ></Editor>
             </div>
         </div>
     </template>
@@ -429,7 +437,7 @@ export default {
                 },
                 {
                     propName: 'content',
-                    selector: '.version-content-view',
+                    selector: '.page-content-view',
                 },
             ];
 
@@ -508,9 +516,6 @@ export default {
                     form.submit();
                 });
         },
-    },
-    mounted() {
-        $('.btn-edit').click();
     },
 };
 </script>
