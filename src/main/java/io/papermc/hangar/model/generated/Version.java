@@ -1,24 +1,21 @@
 package io.papermc.hangar.model.generated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.papermc.hangar.model.Platform;
+import io.papermc.hangar.model.Visibility;
+import io.swagger.annotations.ApiModelProperty;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
-import io.papermc.hangar.model.Visibility;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * ModelsProtocolsAPIV2Version

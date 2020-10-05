@@ -3,6 +3,10 @@ spring:
     url: jdbc:postgresql://hangar_db:5432/hangar
     username: hangar
     password: hangar
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+    date-format: com.fasterxml.jackson.databind.util.StdDateFormat
 
 fake-user:
   enabled: false

@@ -1,5 +1,6 @@
 package io.papermc.hangar.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import freemarker.template.TemplateException;
 import io.papermc.hangar.controller.converters.ColorHexConverter;
 import io.papermc.hangar.controller.converters.StringToEnumConverterFactory;
@@ -7,10 +8,8 @@ import io.papermc.hangar.security.UserLockExceptionResolver;
 import io.papermc.hangar.util.Routes;
 import no.api.freemarker.java8.Java8ObjectWrapper;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
@@ -18,20 +17,25 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.resource.VersionResourceResolver;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@EnableWebMvc
 @Configuration
-public class MvcConfig implements WebMvcConfigurer {
+public class WebConfig extends WebMvcConfigurationSupport {
+
+    private final ObjectMapper mapper;
+
+    public WebConfig(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
 
     @Bean
     public FreeMarkerViewResolver freemarkerViewResolver() {
@@ -78,6 +82,12 @@ public class MvcConfig implements WebMvcConfigurer {
                 .addResolver(new VersionResourceResolver());
     }
 
+    @Override
+    public void configureMessageConverters(@NotNull List<HttpMessageConverter<?>> converters) {
+        converters.add(new MappingJackson2HttpMessageConverter(mapper));
+        super.addDefaultHttpMessageConverters(converters);
+    }
+
     @Bean
     public ErrorViewResolver errorViewResolver() {
         return (request, status, model) -> {
@@ -93,14 +103,6 @@ public class MvcConfig implements WebMvcConfigurer {
         };
     }
 
-    @Bean
-    public MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("classpath:messages");
-        messageSource.setCacheSeconds(10); //reload messages every 10 seconds
-        return messageSource;
-    }
-
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverterFactory(new StringToEnumConverterFactory());
@@ -108,11 +110,13 @@ public class MvcConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public RestTemplate restTemplate() {
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(ObjectMapper mapper) {
+        return new MappingJackson2HttpMessageConverter(mapper);
+    }
+
+    @Bean
+    public RestTemplate restTemplate(List<HttpMessageConverter<?>> messageConverters) {
         RestTemplate restTemplate = new RestTemplate();
-        List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        messageConverters.add(converter);
         restTemplate.setMessageConverters(messageConverters);
         return restTemplate;
     }
