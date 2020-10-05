@@ -146,48 +146,6 @@ Base template for Project overview.
                                 </div>
                             </div>
                         </div>
-                        <#--<div class="float-right project-controls">
-
-                            &lt;#&ndash; TODO
-                            @flash.get("reported").map { _ =>
-                            <span class="flag-msg">
-                                <i class="fas fa-thumbs-up"></i> Flag submitted for review
-                            </span>
-                            }
-                            &ndash;&gt;
-
-                            <!-- Flag button &ndash;&gt;
-
-                            <#if headerData.hasUser() && (headerData.globalPerm(Permission.ModNotesAndFlags) || headerData.globalPerm(Permission.ViewLogs))>
-                                <button class="btn btn-alert dropdown-toggle" type="button" id="admin-actions"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Admin actions
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="admin-actions">
-                                    <#if headerData.globalPerm(Permission.ModNotesAndFlags)>
-                                        <a href="${Routes.PROJECTS_SHOW_FLAGS.getRouteUrl(p.project.ownerName, p.project.slug)}"
-                                           class="dropdown-item">
-                                            Flag history (${p.flagCount})
-                                        </a>
-                                    </#if>
-                                    <#if headerData.globalPerm(Permission.ModNotesAndFlags)>
-                                        <a href="${Routes.PROJECTS_SHOW_NOTES.getRouteUrl(p.project.ownerName, p.project.slug)}"
-                                           class="dropdown-item">
-                                            Staff notes (${p.noteCount})
-                                        </a>
-                                    </#if>
-                                    <#if headerData.globalPerm(Permission.ViewLogs)>
-                                        <a href="${Routes.SHOW_LOG.getRouteUrl("", "", p.project.slug, "", "", "", "")}"
-                                           class="dropdown-item">
-                                            User Action Logs
-                                        </a>list-flags
-                                    </#if>
-                                    <a href="https://papermc.io/forums/${p.project.ownerName}" class="dropdown-item">
-                                        Owner on forum <i class="fas fa-external-link-alt" aria-hidden="true"></i>
-                                    </a>
-                                </div>
-                            </#if>
-                        </div>-->
                     </#if>
                 </div>
             </div>
