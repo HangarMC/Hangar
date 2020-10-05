@@ -9,7 +9,7 @@
             :title="$t('general.edit')"
             @click.stop="edit"
         >
-            <i class="fas fa-edit"></i> {{ $t('general.edit') }}
+            <i class="fas fa-edit"></i><span v-text="$t('general.edit')"></span>
         </button>
 
         <!-- Preview -->
@@ -55,10 +55,10 @@
         </transition>
 
         <!-- Edit window -->
-        <div v-show="editing && !previewing" class="page-edit page-content-view">
+        <div v-show="editing && !previewing" class="page-edit page-content-view" style="padding-top: 10px">
             <textarea name="content" class="form-control" :form="targetForm || 'form-editor-save'" v-model="content"></textarea>
         </div>
-        <div v-show="editing && previewing" class="page-preview page-rendered page-content-view" v-html="previewContent"></div>
+        <div v-show="editing && previewing" class="page-preview page-rendered page-content-view" v-html="previewContent" style="margin-top: 10px"></div>
 
         <HangarForm v-if="saveable" method="post" :action="saveCall" id="form-editor-save">
             <input v-if="extraFormValue" type="hidden" :value="extraFormValue" name="name" />
@@ -215,7 +215,7 @@ export default {
     }
 }
 .btn-edit {
-    @include towardsBottomRight(-50px, 20px);
+    @include towardsBottomRight(-47px, 20px);
     position: absolute;
 
     &.open {

@@ -9,7 +9,7 @@ Base template for Project overview.
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
 <#assign FlagReason=@helper["io.papermc.hangar.model.FlagReason"]>
 <#-- @ftlvariable name="FlagReason" type="io.papermc.hangar.model.FlagReason" -->
-<#macro view p sp active noButtons=false additionalScripts="">
+<#macro view p sp active noButtons=false additionalScripts="" additionalStyling="">
 <#-- @ftlvariable name="p" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
 <#-- @ftlvariable name="sp" type="io.papermc.hangar.model.viewhelpers.ScopedProjectData" -->
     <#assign scriptsVar>
@@ -25,13 +25,13 @@ Base template for Project overview.
 
             window.ACTIVE_NAV = "${active}";
         </script>
+        <script type="text/javascript" src="<@hangar.url "js/project-controls.js" />"></script>
         ${additionalScripts}
-        <#--<script type="text/javascript" src="<@hangar.url "js/projectDetail.js" />"></script>-->
-        <#--<script type="text/javascript" src="<@hangar.url "js/pageEdit.js" />"></script>-->
     </#assign>
 
     <#assign styleVar>
-        <link rel="stylesheet" href="<@hangar.url "css/project-view.css" />">
+        <link rel="stylesheet" href="<@hangar.url "css/project-controls.css" />">
+        ${additionalStyling}
     </#assign>
 
     <#assign metaVar>
@@ -89,88 +89,74 @@ Base template for Project overview.
                 </div>
                 <div class="col-md-6">
                     <#if !noButtons>
-                        <div class="float-right project-controls">
+                        <div
+                                id="project-controls"
+                                data-visibility="${p.visibility.getName()}"
+                                data-has-user="${headerData.hasUser()?c}"
+                                data-is-owner="${p.isOwner(headerData.getCurrentUser())?c}"
+                                data-is-starred="${sp.starred?c}"
+                                data-is-watching="${sp.watching?c}"
+                                data-has-user-flags="${sp.uprojectFlags?c}"
+                                data-star-count="${p.starCount?c}"
+                                data-flag-count="${p.flagCount?c}"
+                                data-note-count="${p.noteCount?c}"
+                                data-has-mod-notes="${headerData.globalPerm(Permission.ModNotesAndFlags)?c}"
+                                data-has-view-logs="${headerData.globalPerm(Permission.ViewLogs)?c}"
+                                data-flag-reported="${false?c}" <#--TODO flasing on flag reporting -->
+                        ></div>
+                        <div class="modal fade" id="modal-flag" tabindex="-1" role="dialog"
+                             aria-labelledby="label-flag">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" id="label-flag">Flag project</h4>
+                                        <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <#import "*/utils/form.ftlh" as form>
+                                    <@form.form action=Routes.PROJECTS_FLAG.getRouteUrl(p.project.ownerName, p.project.slug) method="POST">
+                                        <#import "*/utils/csrf.ftlh" as csrf>
+                                        <@csrf.formField />
+                                        <div class="modal-body">
+                                            <ul id="list-flags" class="list-group list-flags">
+                                                <#list FlagReason.getValues() as reason>
+                                                    <#-- @ftlvariable name="reason" type="io.papermc.hangar.model.FlagReason" -->
+                                                    <li class="list-group-item">
+                                                        <span>${reason.title}</span>
+                                                        <span class="float-right">
+                                                                    <input type="radio" required
+                                                                           value="${reason.name()}" name="flag-reason"/>
+                                                                </span>
+                                                    </li>
+                                                </#list>
+                                            </ul>
+                                            <input class="form-control" name="comment" type="text"
+                                                   maxlength="255" required="required"
+                                                   placeholder="<@spring.message "ph.comment" />&hellip;"/>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                Close
+                                            </button>
+                                            <button type="submit" class="btn btn-primary">Flag</button>
+                                        </div>
+                                    </@form.form>
+                                </div>
+                            </div>
+                        </div>
+                        <#--<div class="float-right project-controls">
 
-                            <#-- TODO
+                            &lt;#&ndash; TODO
                             @flash.get("reported").map { _ =>
                             <span class="flag-msg">
                                 <i class="fas fa-thumbs-up"></i> Flag submitted for review
                             </span>
                             }
-                            -->
+                            &ndash;&gt;
 
-                            <#if p.visibility != Visibility.SOFTDELETE>
-                                <#if !p.isOwner(headerData.getCurrentUser())>
-                                    <button class="btn btn-default btn-star">
-                                        <i id="icon-star" <#if sp.starred>
-                                            class="fas fa-star"
-                                        <#else>
-                                            class="far fa-star"
-                                                </#if>></i>
-                                        <span class="starred">${p.starCount}</span>
-                                    </button>
-
-                                    <button class="btn btn-watch btn-default <#if sp.watching> watching </#if>">
-                                        <i class="fas <#if sp.watching> fa-eye-slash <#else> fa-eye </#if>"></i>
-                                        <span class="watch-status"> <#if sp.watching> Unwatch <#else> Watch </#if></span>
-                                    </button>
-                                <#else>
-                                    <span class="minor stars-static">
-                                        <i class="fas fa-star"></i> ${p.starCount}
-                                    </span>
-                                </#if>
-                            </#if>
-
-                            <!-- Flag button -->
-                            <#if headerData.hasUser() && !p.isOwner(headerData.getCurrentUser())
-                            && !sp.uprojectFlags
-                            && p.getVisibility() != Visibility.SOFTDELETE>
-                                <button data-toggle="modal" data-target="#modal-flag" class="btn btn-default">
-                                    <i class="fas fa-flag"></i> <@spring.message "project.flag" />
-                                </button>
-                                <div class="modal fade" id="modal-flag" tabindex="-1" role="dialog"
-                                     aria-labelledby="label-flag">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h4 class="modal-title" id="label-flag">Flag project</h4>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                        aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <#import "*/utils/form.ftlh" as form>
-                                            <@form.form action=Routes.PROJECTS_FLAG.getRouteUrl(p.project.ownerName, p.project.slug) method="POST">
-                                                <#import "*/utils/csrf.ftlh" as csrf>
-                                                <@csrf.formField />
-                                                <div class="modal-body">
-                                                    <ul class="list-group list-flags">
-                                                        <#list FlagReason.getValues() as reason>
-                                                        <#-- @ftlvariable name="reason" type="io.papermc.hangar.model.FlagReason" -->
-                                                            <li class="list-group-item">
-                                                                <span>${reason.title}</span>
-                                                                <span class="float-right">
-                                                                    <input type="radio" required
-                                                                           value="${reason.name()}" name="flag-reason"/>
-                                                                </span>
-                                                            </li>
-                                                        </#list>
-                                                    </ul>
-                                                    <input class="form-control" name="comment" type="text"
-                                                           maxlength="255" required="required"
-                                                           placeholder="<@spring.message "ph.comment" />&hellip;"/>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal">
-                                                        Close
-                                                    </button>
-                                                    <button type="submit" class="btn btn-primary">Flag</button>
-                                                </div>
-                                            </@form.form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </#if>
+                            <!-- Flag button &ndash;&gt;
 
                             <#if headerData.hasUser() && (headerData.globalPerm(Permission.ModNotesAndFlags) || headerData.globalPerm(Permission.ViewLogs))>
                                 <button class="btn btn-alert dropdown-toggle" type="button" id="admin-actions"
@@ -194,15 +180,14 @@ Base template for Project overview.
                                         <a href="${Routes.SHOW_LOG.getRouteUrl("", "", p.project.slug, "", "", "", "")}"
                                            class="dropdown-item">
                                             User Action Logs
-                                        </a>
+                                        </a>list-flags
                                     </#if>
                                     <a href="https://papermc.io/forums/${p.project.ownerName}" class="dropdown-item">
                                         Owner on forum <i class="fas fa-external-link-alt" aria-hidden="true"></i>
                                     </a>
                                 </div>
-                            </ul>-->
                             </#if>
-                        </div>
+                        </div>-->
                     </#if>
                 </div>
             </div>
@@ -210,7 +195,7 @@ Base template for Project overview.
             <!-- Nav -->
             <div class="row row-nav">
                 <div class="col-md-12">
-                    <div class="navbar navbar-light project-navbar float-left navbar-expand-lg">
+                    <div class="navbar navbar-light project-navbar float-left navbar-expand-md">
                         <div class="navbar-inner">
                             <ul class="nav navbar-nav">
                                 <!-- Tabs -->
