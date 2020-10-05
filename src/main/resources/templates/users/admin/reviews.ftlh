@@ -14,7 +14,13 @@
     <div class="row">
         <div class="col-md-12  header-flags">
             <div class="clearfix">
-                <h1 class="float-left">${project.project.name} <i>${version.v.versionString}</i></h1>
+                <h1 class="float-left">
+                    <a class="btn btn-primary" href="/${utils.urlEncode(project.project.ownerName)}/${utils.urlEncode(project.project.slug)}/versions/${utils.urlEncode(version.v.versionString)}">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    ${project.project.name}
+                    <i>${version.v.versionString}</i>
+                </h1>
             </div>
             <p class="user date float-left">
                 <a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(project.project.ownerName)}">

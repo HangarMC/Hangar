@@ -1,12 +1,15 @@
 package io.papermc.hangar.db.mappers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.TagColor;
 import io.papermc.hangar.model.generated.PromotedVersion;
 import io.papermc.hangar.model.generated.PromotedVersionTag;
+import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +23,7 @@ public class PromotedVersionMapper implements ColumnMapper<List<PromotedVersion>
 
     @Override
     public List<PromotedVersion> map(ResultSet rs, int column, StatementContext ctx) throws SQLException {
+        ObjectMapper mapper = new ObjectMapper();
         List<PromotedVersion> promotedVersions = new ArrayList<>();
         JsonNode jsonNode = ((JSONB) rs.getObject(column)).getJson();
         if (!jsonNode.isArray()) {
@@ -29,7 +33,14 @@ public class PromotedVersionMapper implements ColumnMapper<List<PromotedVersion>
         jsons.forEach(json -> {
             String version = json.get("version_string").asText();
             String tagName = json.get("tag_name").asText();
-            String data = stringOrNull(json.get("tag_version"));
+            String data = null;
+            if (json.has("tag_version") && json.get("tag_version").isArray()) {
+                try {
+                    data = StringUtils.formatVersionNumbers((List<String>) mapper.treeToValue(json.get("tag_version"), List.class));
+                } catch (JsonProcessingException exception) {
+                    exception.printStackTrace();
+                }
+            }
             TagColor color = TagColor.getValues()[json.get("tag_color").asInt()];
             // TODO a whole bunch
 //            val displayAndMc = data.map { rawData =>
@@ -88,6 +99,7 @@ public class PromotedVersionMapper implements ColumnMapper<List<PromotedVersion>
                                             new PromotedVersionTag()
                                                     .name(tagName)
                                                     .data(data)
+                                                    .displayData(data) // TODO
                                                     .color(
                                                             new io.papermc.hangar.model.generated.TagColor()
                                                                     .background(color.getBackground())

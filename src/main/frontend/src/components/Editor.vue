@@ -1,50 +1,73 @@
 <template>
     <template v-if="enabled">
         <!-- Edit -->
-        <button type="button" class="btn btn-sm btn-edit btn-page btn-default" title="Edit" @click.stop="pageBtnClick($event.currentTarget)">
-            <i class="fas fa-edit"></i> Edit
+
+        <button
+            type="button"
+            class="btn btn-sm btn-edit btn-page btn-default"
+            :class="{ open: editing && !previewing }"
+            :title="$t('general.edit')"
+            @click.stop="edit"
+        >
+            <i class="fas fa-edit"></i> {{ $t('general.edit') }}
         </button>
 
         <!-- Preview -->
-        <div class="btn-edit-container btn-preview-container" title="Preview">
-            <button type="button" class="btn btn-sm btn-preview btn-page btn-default" @click.stop="pageBtnClick($event.currentTarget)">
-                <i class="fas fa-eye"></i>
-            </button>
-        </div>
-
-        <div v-if="saveable" class="btn-edit-container btn-save-container" title="Save">
-            <button form="form-editor-save" type="submit" class="btn btn-sm btn-save btn-page btn-default" @click.stop="pageBtnClick($event.currentTarget)">
-                <i class="fas fa-save"></i>
-            </button>
-        </div>
-
-        <div v-if="cancellable" class="btn-edit-container btn-cancel-container" title="Cancel">
-            <button
-                type="button"
-                class="btn btn-sm btn-cancel btn-page btn-default"
-                @click.stop="
-                    btnCancel();
-                    pageBtnClick($event.currentTarget);
-                "
-            >
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-
-        <template v-if="deletable">
-            <div class="btn-edit-container btn-delete container" title="Delete">
-                <button
-                    type="button"
-                    class="btn btn-sm btn-page-delete btn-page btn-default"
-                    data-toggle="modal"
-                    data-target="#modal-page-delete"
-                    @click.stop="pageBtnClick($event.currentTarget)"
-                >
-                    <i class="fas fa-trash"></i>
+        <transition name="button-hide">
+            <div v-if="editing" class="btn-edit-container btn-preview-container" :class="{ open: previewing }" :title="$t('general.preview')">
+                <button type="button" class="btn btn-sm btn-preview btn-page btn-default" @click.stop="preview">
+                    <i v-show="loading.preview" class="fas fa-loading"></i>
+                    <i v-show="!loading.preview" class="fas fa-eye"></i>
                 </button>
             </div>
+        </transition>
 
-            <div class="modal fade" id="modal-page-delete" tabindex="-1" role="dialog" aria-labelledby="label-page-delete">
+        <transition name="button-hide">
+            <div v-if="saveable && editing" class="btn-edit-container btn-save-container" :title="$t('general.save')">
+                <button form="form-editor-save" type="submit" class="btn btn-sm btn-save btn-page btn-default">
+                    <i class="fas fa-save"></i>
+                </button>
+            </div>
+        </transition>
+
+        <transition name="button-hide">
+            <div v-if="cancellable && editing" class="btn-edit-container btn-cancel-container" :title="$t('general.cancel')">
+                <button type="button" class="btn btn-sm btn-cancel btn-page btn-default" @click.stop="cancel">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </transition>
+
+        <transition name="button-hide">
+            <template v-if="deletable && editing">
+                <div class="btn-edit-container btn-delete-container" :title="$t('general.delete')">
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-page-delete btn-page btn-default"
+                        data-toggle="modal"
+                        data-target="#modal-page-delete"
+                        style="color: var(--danger)"
+                    >
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </template>
+        </transition>
+
+        <!-- Edit window -->
+        <div v-show="editing && !previewing" class="page-edit page-content-view">
+            <textarea name="content" class="form-control" :form="targetForm || 'form-editor-save'" v-model="content"></textarea>
+        </div>
+        <div v-show="editing && previewing" class="page-preview page-rendered page-content-view" v-html="previewContent"></div>
+
+        <HangarForm v-if="saveable" method="post" :action="saveCall" id="form-editor-save">
+            <input v-if="extraFormValue" type="hidden" :value="extraFormValue" name="name" />
+        </HangarForm>
+
+        <div v-show="!editing" class="page-content page-rendered page-content-view" v-html="preCooked"></div>
+
+        <teleport to="body">
+            <div v-if="deletable" class="modal fade" id="modal-page-delete" tabindex="-1" role="dialog" aria-labelledby="label-page-delete">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -63,28 +86,13 @@
                     </div>
                 </div>
             </div>
-        </template>
-
-        <!-- Edit window -->
-        <div class="page-edit version-content-view" style="display: none">
-            <textarea name="content" class="form-control" :form="targetForm || 'form-editor-save'" v-model="content"></textarea>
-        </div>
-
-        <!-- Preview window -->
-        <div class="page-preview page-rendered version-content-view" style="display: none"></div>
-
-        <HangarForm v-if="saveable" method="post" :action="saveCall" id="form-editor-save">
-            <input v-if="extraFormValue" type="hidden" :value="extraFormValue" name="name" />
-        </HangarForm>
-
-        <div class="page-content page-rendered">{{ cooked }}</div>
+        </teleport>
     </template>
 </template>
 <script>
+import { nextTick } from 'vue';
 import HangarForm from '@/components/HangarForm';
-import $ from 'jquery';
 import axios from 'axios';
-import { toggleSpinner } from '@/utils';
 
 export default {
     name: 'Editor',
@@ -95,23 +103,41 @@ export default {
     props: {
         saveCall: String,
         deleteCall: String,
-        saveable: Boolean,
+        saveable: {
+            type: Boolean,
+            default: true,
+        },
         deletable: Boolean,
-        enabled: Boolean,
+        enabled: {
+            type: Boolean,
+            default: true,
+        },
         raw: String,
         subject: String,
-        cancellable: Boolean,
+        cancellable: {
+            type: Boolean,
+            default: true,
+        },
         targetForm: String,
         extraFormValue: String,
         contentProp: String,
+        open: Boolean,
     },
     computed: {
         content: {
             get() {
-                return this.contentProp;
+                if (typeof this.contentProp !== 'undefined') {
+                    return this.contentProp;
+                } else {
+                    return this.inputContent;
+                }
             },
             set(val) {
-                this.$emit('update:contentProp', val);
+                if (typeof this.contentProp !== 'undefined') {
+                    this.$emit('update:contentProp', val);
+                } else {
+                    this.inputContent = val;
+                }
             },
         },
     },
@@ -119,149 +145,238 @@ export default {
         return {
             editing: false,
             previewing: false,
-            cooked: null,
+            inputContent: null,
+            preCooked: null,
+            previewContent: null,
+            loading: {
+                preview: false,
+            },
         };
     },
     methods: {
-        showEditBtn(e) {
-            return new Promise((resolve) => {
-                this.animateEditBtn(e, '-34px', function () {
-                    e.css('z-index', '1000');
-                    resolve();
-                });
-            });
-        },
-        animateEditBtn(e, marginLeft) {
-            return new Promise((resolve) => {
-                e.animate({ marginLeft: marginLeft }, 100, function () {
-                    resolve();
-                });
-            });
-        },
-        hideEditBtn(e, andThen) {
-            this.animateEditBtn(e, '0', andThen);
-        },
-        async getPreview(raw, target) {
-            toggleSpinner($(target).find('[data-fa-i2svg]').toggleClass('fa-eye'));
-            const res = await axios.post(
-                '/pages/preview',
-                { raw },
-                {
-                    headers: {
-                        [window.csrfInfo.headerName]: window.csrfInfo.token,
-                    },
-                }
-            );
-            toggleSpinner($(target).find('[data-fa-i2svg]').toggleClass('fa-eye'));
-            return res.data;
-        },
-        btnCancel() {
-            this.editing = false;
+        edit() {
+            this.editing = true;
             this.previewing = false;
-
-            // hide editor; show content
-            $('.page-edit').hide();
-            $('.page-preview').hide();
-            $('.page-content').show();
-
-            // move buttons behind
-            $('.btn-edit-container').css('z-index', '-1000');
-
-            // hide buttons
-            const fromSave = function () {
-                this.hideEditBtn($('.btn-save-container'), function () {
-                    this.hideEditBtn($('.btn-preview-container'));
-                });
-            };
-
-            var btnDelete = $('.btn-delete-container');
-            var btnCancel = $('.btn-cancel-container');
-            if (btnDelete.length) {
-                this.hideEditBtn(btnDelete, function () {
-                    this.hideEditBtn(btnCancel, fromSave);
-                });
-            } else {
-                this.hideEditBtn(btnCancel, fromSave);
-            }
         },
-        async pageBtnClick(target) {
-            if ($(target).hasClass('open')) return;
-            $('button.open').removeClass('open').css('border', '1px solid #ccc');
-            $(target).addClass('open').css('border-right-color', 'white');
-
-            const otherBtns = $('.btn-edit-container');
-            const editor = $('.page-edit');
-            if ($(target).hasClass('btn-edit')) {
-                this.editing = true;
-                this.previewing = false;
-                $(this).css('position', 'absolute').css('top', '');
-                $(otherBtns).css('position', 'absolute').css('top', '');
-
-                // open editor
-                var content = $('.page-rendered');
-                editor.find('textarea').css('height', content.css('height'));
-                content.hide();
-                editor.show();
-
-                // show buttons
-                this.showEditBtn($('.btn-preview-container'))
-                    .then(() => {
-                        return this.showEditBtn($('.btn-save-container'));
-                    })
-                    .then(() => {
-                        return this.showEditBtn($('.btn-cancel-container'));
-                    })
-                    .then(() => {
-                        return this.showEditBtn($('.btn-delete-container'));
-                    });
-            } else if ($(target).hasClass('btn-preview')) {
-                // render markdown
-                const preview = $('.page-preview');
-                const raw = editor.find('textarea').val();
-                editor.hide();
-                preview.show();
-
-                preview.html(await this.getPreview(raw));
-
-                this.editing = false;
-                this.previewing = true;
-            } else if ($(target).hasClass('btn-save')) {
-                // add spinner
-                toggleSpinner($(target).find('[data-fa-i2svg]').toggleClass('fa-save'));
+        async preview() {
+            this.previewing = true;
+            this.previewContent = await this.getPreview(this.content);
+        },
+        async cancel() {
+            this.previewing = false;
+            await nextTick();
+            this.editing = false;
+        },
+        async getPreview(content) {
+            if (content && content.trim().length > 0) {
+                this.loading.preview = true;
+                const res = await axios.post(
+                    '/pages/preview',
+                    { raw: content },
+                    {
+                        headers: {
+                            [window.csrfInfo.headerName]: window.csrfInfo.token,
+                        },
+                    }
+                );
+                this.loading.preview = false;
+                return res.data;
+            } else {
+                return '';
             }
         },
     },
     async created() {
         this.content = this.raw;
-        this.cooked = await this.getPreview(this.raw);
-    },
-    mounted() {
-        const btnEdit = $('.btn-edit');
-        if (!btnEdit.length) return;
-
-        const otherBtns = $('.btn-edit-container');
-
-        const editText = $('.page-edit').find('textarea');
-        editText
-            .focus(() => {
-                btnEdit
-                    .css('border-color', '#66afe9')
-                    .css('border-right', '1px solid white')
-                    .css('box-shadow', 'inset 0 1px 1px rgba(0,0,0,.075), -3px 0 8px rgba(102, 175, 233, 0.6)');
-                otherBtns.find('.btn').css('border-right-color', '#66afe9');
-            })
-            .blur(() => {
-                $('.btn-page').css('border', '1px solid #ccc').css('box-shadow', 'none');
-                $('button.open').css('border-right', 'white');
-            });
+        this.preCooked = await this.getPreview(this.raw);
+        if (this.open) {
+            this.edit();
+        }
     },
 };
 </script>
 <style lang="scss" scoped>
-.btn-edit,
+@import '../scss/utils';
+
+.btn-edit-container {
+    margin-left: -34px;
+    z-index: -1;
+
+    &.open {
+        z-index: 0;
+    }
+
+    &.open .btn-page {
+        border-right-color: white;
+    }
+
+    &:not(.open) .btn-page {
+        border: 1px solid #ccc;
+    }
+}
+.btn-edit {
+    @include towardsBottomRight(-50px, 20px);
+    position: absolute;
+
+    &.open {
+        border-right-color: white;
+    }
+
+    &:not(.open) {
+        border: 1px solid #ccc;
+    }
+}
+
+.page-rendered,
+.page-edit textarea {
+    min-height: 350px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.page-edit textarea {
+    resize: vertical;
+}
+
+button.open:hover {
+    background-color: white;
+    cursor: default;
+    border-color: $light;
+}
+
+.btn-page {
+    @include transition6(border-color, ease-in-out, 0.15s, box-shadow, ease-in-out, 0.15s);
+    border-radius: 4px 0 0 4px;
+    padding: 6px;
+    z-index: 1000;
+}
+
+.btn-page:focus {
+    outline: none;
+}
+
 .btn-edit-container {
     position: absolute;
-    //margin-left: -34px;
-    z-index: 1000;
+    overflow: hidden;
+}
+
+.btn-edit-container .btn {
+    width: 35px;
+}
+
+.btn-preview-container {
+    margin-top: 58px;
+}
+.btn-save-container {
+    margin-top: 96px;
+}
+.btn-cancel-container {
+    margin-top: 135px;
+}
+.btn-delete-container {
+    margin-top: 175px;
+}
+
+.btn-page-delete {
+    color: #c12e2a;
+}
+
+.button-hide-enter-active {
+    transition: all 0.3s ease-out;
+}
+
+.button-hide-leave-active {
+    transition: all 0.3s ease-in;
+}
+
+.button-hide-leave-to {
+    z-index: -1;
+}
+
+.button-hide-enter-from,
+.button-hide-leave-to {
+    transform: translateX(34px);
+}
+</style>
+<style lang="scss">
+@import '../scss/utils';
+.page-rendered {
+    @include basic-border();
+    @include box-shadow4(0, 1px, 1px, rgba(0, 0, 0, 0.05));
+
+    padding: 10px 20px 20px 20px;
+    overflow: hidden;
+    background-color: white;
+    max-width: 100%;
+
+    table tr > th {
+        padding: 5px;
+    }
+    table tr:nth-child(2n) {
+        background-color: #f5f5f5;
+    }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-weight: bold;
+    }
+    img {
+        max-width: 100%;
+    }
+
+    table tr > td,
+    .page-rendered table tr > th {
+        padding: 10px;
+        @include basic-border();
+    }
+
+    code {
+        background-color: #f5f5f5;
+        color: black;
+    }
+
+    a code {
+        color: #337ab7;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    h1,
+    h2 {
+        border-bottom: 1px solid $lighter;
+        padding-bottom: 5px;
+    }
+
+    .headeranchor {
+        display: none;
+        text-decoration: none;
+    }
+
+    h1:hover,
+    h2:hover,
+    h3:hover {
+        .headeranchor {
+            display: inline-block;
+            font-size: 16px;
+            margin-left: -18px;
+            width: 18px;
+        }
+    }
+
+    h4:hover,
+    h5:hover,
+    h6:hover {
+        .headeranchor {
+            display: inline-block;
+            font-size: 12px;
+            margin-left: -12px;
+            width: 12px;
+        }
+    }
 }
 </style>

@@ -13,16 +13,21 @@ Documentation page within Project overview.
 -->
 
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
-<#function canEditPages>
-    <#return sp.perms(Permission.EditPage)>
-</#function>
 
 <#assign scriptsVar>
-    <script> <#--@CSPNonce.attr-->
+    <script>
+        window.PAGE = ${mapper.valueToTree(projectPage)};
+        window.ROOT_PAGES = ${utils.serializeMap(rootPages)};
+        window.PAGE_COUNT = ${pageCount};
+        <#--window.OWNER_NAME = '${p.project.ownerName}';-->
+        <#--window.PROJECT_SLUG = '${p.project.slug}';-->
+        <#--window.PROJECT_PAGE = '${projectPage.slug}';-->
+    </script>
+<#--    <script> &lt;#&ndash;@CSPNonce.attr&ndash;&gt;
       window.NAMESPACE = '${p.getFullSlug()}';
     </script>
     <#if editorOpen>
-        <script <#--@CSPNonce.attr-->>
+        <script &lt;#&ndash;@CSPNonce.attr&ndash;&gt;>
             window.buttonClick = function() {
                 document.getElementsByClassName('btn-edit')[0].click();
             }
@@ -30,44 +35,41 @@ Documentation page within Project overview.
     </#if>
     <script type="text/javascript" src="<@hangar.url "js/pageCollapse.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "js/userSearch.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "js/memberList.js" />"></script>
+    <script type="text/javascript" src="<@hangar.url "js/memberList.js" />"></script>-->
+    <script type="text/javascript" src="<@hangar.url "js/project-view.js" />"></script>
 </#assign>
 
 <@projectView.view p=p sp=sp active="#docs" additionalScripts=scriptsVar>
-    <div class="row">
-        <div class="col-md-9">
-            <div class="row">
-                <div class="col-md-12">
-                    <@editor.editor
-                        saveCall=Routes.PAGES_SAVE.getRouteUrl(p.project.ownerName, p.project.slug, projectPage.slug)
-                        deleteCall=Routes.PAGES_DELETE.getRouteUrl(p.project.ownerName, p.project.slug, projectPage.slug)
-                        deletable=projectPage.isDeletable
-                        enabled=canEditPages()
-                        raw=projectPage.contents
-                        cooked=markdownService.render(projectPage.contents)
-                        subject="Page"
-                        extraFormValue=projectPage.name />
-                </div>
-            </div>
+    <div id="project-view"></div>
+<#--<div class="row">
+        <div class="col-md-12">
+            <@editor.editor
+                saveCall=Routes.PAGES_SAVE.getRouteUrl(p.project.ownerName, p.project.slug, projectPage.slug)
+                deleteCall=Routes.PAGES_DELETE.getRouteUrl(p.project.ownerName, p.project.slug, projectPage.slug)
+                deletable=projectPage.isDeletable
+                enabled=canEditPages()
+                raw=projectPage.contents
+                cooked=markdownService.render(projectPage.contents)
+                subject="Page"
+                extraFormValue=projectPage.name />
         </div>
-        <div class="col-md-3">
+        <div class="col-md-6">
 
             <#if p.project.recommendedVersionId??>
-            <div class="btn-group btn-download">
-                <a href="${Routes.VERSIONS_DOWNLOAD_RECOMMENDED.getRouteUrl(p.project.ownerName, p.project.slug, "")}"
-                   title="<@spring.message "project.download.recommend" />" data-toggle="tooltip"
-                   data-placement="bottom" class="btn btn-primary">
-                    <i class="fas fa-download"></i> <@spring.message "general.download" />
-                </a>
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a href="${Routes.VERSIONS_DOWNLOAD_RECOMMENDED.getRouteUrl(p.project.ownerName, p.project.slug, "")}" class="dropdown-item"><@spring.message "general.download" /></a>
-                    <a href="#" class="copy-url dropdown-item" data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD_RECOMMENDED.getRouteUrl(p.project.ownerName, p.project.slug, "")}">Copy URL</a>
+                <div class="btn-group btn-download">
+                    <a href="${Routes.VERSIONS_DOWNLOAD_RECOMMENDED.getRouteUrl(p.project.ownerName, p.project.slug, "")}"
+                       title="<@spring.message "project.download.recommend" />" data-toggle="tooltip"
+                       data-placement="bottom" class="btn btn-primary">
+                        <i class="fas fa-download"></i> <@spring.message "general.download" />
+                    </a>
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a href="${Routes.VERSIONS_DOWNLOAD_RECOMMENDED.getRouteUrl(p.project.ownerName, p.project.slug, "")}" class="dropdown-item"><@spring.message "general.download" /></a>
+                        <a href="#" class="copy-url dropdown-item" data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD_RECOMMENDED.getRouteUrl(p.project.ownerName, p.project.slug, "")}">Copy URL</a>
+                    </div>
                 </div>
-            </div>
             </#if>
 
             <div class="stats minor">
@@ -106,13 +108,6 @@ Documentation page within Project overview.
                     </#if>
                 </div>
                 <ul class="list-group">
-<#--                    <li class="list-group-item">-->
-<#--                        <a href="${Routes.PAGES_SHOW.getRouteUrl(p.project.ownerName, p.project.slug, config.pages.home.name)}">-->
-<#--                        ${"Home"}-->
-<#--                        </a>-->
-<#--                    </li>-->
-                    <#-- @ftlvariable name="pg" type="io.papermc.hangar.model.viewhelpers.ProjectPage" -->
-                    <#-- @ftlvariable name="children" type="java.util.List<ProjectPage>" -->
                     <#list rootPages as pg, children>
                         <li class="list-group-item">
                             <#if children?size gt 0>
@@ -132,7 +127,7 @@ Documentation page within Project overview.
                         </li>
                         <#if projectPage.parentId?? && projectPage.parentId = pg.id>
                             <div class="page-children" data-page-id="${pg.id}">
-                                <#-- @ftlvariable name="childPage" type="io.papermc.hangar.model.viewhelpers.ProjectPage" -->
+                                &lt;#&ndash; @ftlvariable name="childPage" type="io.papermc.hangar.model.viewhelpers.ProjectPage" &ndash;&gt;
                                 <#list children as childPage>
                                     <li class="list-group-item page-item-child">
                                         <a href="${Routes.PAGES_SHOW.getRouteUrl(p.project.ownerName, p.project.slug, childPage.slug)}">
@@ -146,8 +141,8 @@ Documentation page within Project overview.
                 </ul>
             </div>
 
-                <!-- Member list -->
+                <!-- Member list &ndash;&gt;
             <@memberList.memberList project=p perms=sp.permissions settingsCall=Routes.PROJECTS_SHOW_SETTINGS.getRouteUrl(p.project.ownerName, p.project.slug) />
         </div>
-    </div>
+    </div>-->
 </@projectView.view>

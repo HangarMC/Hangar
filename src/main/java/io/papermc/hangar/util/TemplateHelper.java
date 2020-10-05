@@ -1,5 +1,8 @@
 package io.papermc.hangar.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.model.ProjectsTable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +13,17 @@ import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Map;
 
 @Component
 public class TemplateHelper {
 
+    private final ObjectMapper mapper;
     private final HangarConfig hangarConfig;
 
     @Autowired
-    public TemplateHelper(HangarConfig hangarConfig) {
+    public TemplateHelper(ObjectMapper mapper, HangarConfig hangarConfig) {
+        this.mapper = mapper;
         this.hangarConfig = hangarConfig;
     }
 
@@ -54,5 +60,16 @@ public class TemplateHelper {
 
     public String prettifyDate(OffsetDateTime dateTime) {
         return DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).format(dateTime.toLocalDate());
+    }
+
+    public ArrayNode serializeMap(Map<?, ?> map) {
+        ArrayNode arrayNode = mapper.createArrayNode();
+        map.forEach((o, o2) -> {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.set("key", mapper.valueToTree(o));
+            objectNode.set("value", mapper.valueToTree(o2));
+            arrayNode.add(objectNode);
+        });
+        return arrayNode;
     }
 }

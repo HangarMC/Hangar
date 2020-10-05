@@ -22,9 +22,13 @@
 }
 
 .channel-head {
-  @include towardsBottomRight(15px, 23px);
-  font-size: 20px;
-  display: inline-block;
+  font-size: 14px;
+  height: unset;
+  padding: 4px 2px 3px;
+  float: left;
+  position: absolute;
+  left: 100%;
+  bottom: 0.9em;
 }
 
 .channel-flat {

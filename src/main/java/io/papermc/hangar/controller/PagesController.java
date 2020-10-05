@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller;
 
+import io.papermc.hangar.controller.forms.PagePreview;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectPageContext;
 import io.papermc.hangar.db.dao.HangarDao;
@@ -20,8 +21,6 @@ import io.papermc.hangar.service.project.PagesSerivce;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.Routes;
 import io.papermc.hangar.util.StringUtils;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -68,15 +67,8 @@ public class PagesController extends HangarController {
     }
 
     @PostMapping(value = "/pages/preview", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> showPreview(@RequestBody String raw) throws JSONException {
-        JSONObject rawJson;
-        try {
-            rawJson = new JSONObject(raw);
-            rawJson.getString("raw");
-        } catch (JSONException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(markdownService.render(rawJson.getString("raw")), HttpStatus.OK);
+    public ResponseEntity<String> showPreview(@RequestBody PagePreview rawObj) {
+        return ResponseEntity.ok(markdownService.render(rawObj.getRaw()));
     }
 
     @GetMapping({"/{author}/{slug}/pages/{page}", "/{author}/{slug}/pages/{page}/{subPage}"})

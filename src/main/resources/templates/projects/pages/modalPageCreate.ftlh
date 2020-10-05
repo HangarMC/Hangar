@@ -2,14 +2,6 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/utils/csrf.ftlh" as csrf />
 
-<#--@import ore.OreConfig-->
-<#--@import ore.db.Model-->
-<#--@import ore.models.project.{Page, Project}-->
-<#--@import util.syntax._-->
-<#--@import views.html.helper.CSPNonce-->
-
-<#--@(model: Project, rootPages: Seq[Model[Page]])(implicit messages: Messages, request: RequestHeader, config: OreConfig)-->
-
 <#macro pageCreate project, rootPages>
     <script <#--@CSPNonce.attr-->>
         PROJECT_OWNER = '${project.ownerName}';
