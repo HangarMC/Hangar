@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import { toggleSpinner } from '@/utils';
 
+$.ajaxSetup(window.ajaxSettings);
+
 //=====> HELPER FUNCTIONS
 
 function markRead(notification) {
