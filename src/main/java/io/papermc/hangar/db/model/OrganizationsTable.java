@@ -1,6 +1,7 @@
 package io.papermc.hangar.db.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.jdbi.v3.core.annotation.Unmappable;
 
 import java.time.OffsetDateTime;
@@ -69,6 +70,7 @@ public class OrganizationsTable implements Visitable, ProjectOwner {
 
     @Unmappable
     @Override
+    @JsonIgnore
     public String getUrl() {
         return "/" + getName();
     }

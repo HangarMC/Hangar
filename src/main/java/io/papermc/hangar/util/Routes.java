@@ -40,6 +40,7 @@ public enum Routes {
     PROJECTS_SHOW_SETTINGS("projects.showSettings", Paths.PROJECTS_SHOW_SETTINGS, of("author", "slug"), of()),
     PROJECTS_SET_INVITE_STATUS("projects.setInviteStatus", Paths.PROJECTS_SET_INVITE_STATUS, of("id", "status"), of()),
     PROJECTS_TOGGLE_STARRED("projects.toggleStarred", Paths.PROJECTS_TOGGLE_STARRED, of("author", "slug"), of()),
+    PROJECTS_VALIDATE_NAME("projects.validateName", Paths.PROJECTS_VALIDATE_NAME, of(), of()),
     PROJECTS_SHOW_CREATOR("projects.showCreator", Paths.PROJECTS_SHOW_CREATOR, of(), of()),
     PROJECTS_SHOW_STARGAZERS("projects.showStargazers", Paths.PROJECTS_SHOW_STARGAZERS, of("author", "slug"), of("page")),
     PROJECTS_SHOW_WATCHERS("projects.showWatchers", Paths.PROJECTS_SHOW_WATCHERS, of("author", "slug"), of("page")),
@@ -256,6 +257,7 @@ public enum Routes {
         public static final String PROJECTS_SHOW_SETTINGS = "/{author}/{slug}/manage";
         public static final String PROJECTS_SET_INVITE_STATUS = "/invite/{id}/{status}";
         public static final String PROJECTS_TOGGLE_STARRED = "/{author}/{slug}/stars/toggle";
+        public static final String PROJECTS_VALIDATE_NAME = "/validateProjectName";
         public static final String PROJECTS_SHOW_CREATOR = "/new";
         public static final String PROJECTS_SHOW_STARGAZERS = "/{author}/{slug}/stars";
         public static final String PROJECTS_SHOW_WATCHERS = "/{author}/{slug}/watchers";

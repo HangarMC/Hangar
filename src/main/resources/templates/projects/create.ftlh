@@ -6,12 +6,19 @@
 Page used for uploading and creating new projects.
 -->
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "js/projectCreateValidate.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "js/pluginUpload.js" />"></script>
+    <script nonce="${nonce}">
+        window.CURRENT_USER = ${mapper.valueToTree(cu)};
+        window.ORGANIZAITONS = ${mapper.valueToTree(createProjectOrgas)};
+    </script>
+    <script type="text/javascript" src="<@hangar.url "js/create-project.js" />"></script>
+    <#--<script type="text/javascript" src="<@hangar.url "js/projectCreateValidate.js" />"></script>-->
+</#assign>
+<#assign styleVar>
+    <link rel="stylesheet" href="<@hangar.url "css/create-project.css" />">
 </#assign>
 
 <#assign message><@spring.message "project.create" /></#assign>
-<@base.base title="${message}" additionalScripts=scriptsVar>
+<@base.base title="${message}" additionalScripts=scriptsVar additionalStyling=styleVar>
 
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -29,7 +36,8 @@ Page used for uploading and creating new projects.
                     </div>
 
                     <div>
-                        <#import "*/utils/form.ftlh" as form>
+                        <div id="create-project"></div>
+                        <#--<#import "*/utils/form.ftlh" as form>
                         <@form.form action=Routes.PROJECTS_CREATE_PROJECT.getRouteUrl() method="POST">
                             <#import "*/utils/csrf.ftlh" as csrf>
                             <@csrf.formField />
@@ -64,7 +72,7 @@ Page used for uploading and creating new projects.
                             </div>
 
                             <button type="submit" class="btn btn-primary">Create project</button>
-                        </@form.form>
+                        </@form.form>-->
                     </div>
                 </div>
             </div>

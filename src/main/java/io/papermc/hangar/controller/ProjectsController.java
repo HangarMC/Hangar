@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.controller.forms.ProjectNameValidate;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.dao.GeneralDao;
@@ -59,6 +60,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
@@ -161,17 +163,9 @@ public class ProjectsController extends HangarController {
             return fillModel(mav);
         }
 
-        ProjectOwner ownerUser;
-        if (owner != curUser.getId()) {
-            List<OrganizationsTable> orgs = userService.getOrganizationsUserCanUploadTo(curUser);
-            Optional<ProjectOwner> ownerOptional = orgs.stream().filter(org -> org.getId() == owner).map(ProjectOwner.class::cast).findAny();
-            if (ownerOptional.isEmpty()) {
-                return AlertUtil.showAlert(Routes.PROJECTS_SHOW_CREATOR.getRedirect(), AlertType.ERROR, "error.project.ownerNotFound");
-            } else {
-                ownerUser = ownerOptional.get();
-            }
-        } else {
-            ownerUser = curUser;
+        ProjectOwner ownerUser = getProjectOwner(owner);
+        if (ownerUser == null) {
+            return fillModel(AlertUtil.showAlert(Routes.PROJECTS_SHOW_CREATOR.getRedirect(), AlertType.ERROR, "error.project.ownerNotFound"));
         }
 
         // create project
@@ -188,6 +182,23 @@ public class ProjectsController extends HangarController {
         generalDao.get().refreshHomeProjects();
 
         return Routes.PROJECTS_SHOW.getRedirect(project.getOwnerName(), project.getSlug());
+    }
+
+    private ProjectOwner getProjectOwner(long owner) {
+        UsersTable curUser = getCurrentUser();
+        ProjectOwner ownerUser;
+        if (owner != curUser.getId()) {
+            List<OrganizationsTable> orgs = userService.getOrganizationsUserCanUploadTo(curUser);
+            Optional<ProjectOwner> ownerOptional = orgs.stream().filter(org -> org.getId() == owner).map(ProjectOwner.class::cast).findAny();
+            if (ownerOptional.isEmpty()) {
+                return null;
+            } else {
+                ownerUser = ownerOptional.get();
+            }
+        } else {
+            ownerUser = curUser;
+        }
+        return ownerUser;
     }
 
     @Secured("ROLE_USER")
@@ -220,6 +231,18 @@ public class ProjectsController extends HangarController {
     public Object setInviteStatusOnBehalf(@PathVariable Object id, @PathVariable Object status, @PathVariable Object behalf) {
         // TODO perms Permission.ManageProjectMembers
         return null; // TODO implement setInviteStatusOnBehalf request controller
+    }
+
+    @Secured("ROLE_USER")
+    @PostMapping(value = "/validateProjectName", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public void validateProjectName(@RequestBody ProjectNameValidate projectNameValidateForm) {
+        ProjectOwner projectOwner = getProjectOwner(projectNameValidateForm.getOwnerId());
+        try {
+            projectFactory.checkProjectAvailability(projectOwner, projectNameValidateForm.getProjectName());
+        } catch (HangarException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @UserLock

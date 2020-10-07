@@ -45,11 +45,13 @@ public interface ProjectDao {
     @SqlUpdate("DELETE FROM projects WHERE id = :id")
     void delete(@BindBean ProjectsTable project);
 
-    @SqlQuery("SELECT CASE " +
-            "WHEN owner_id = :ownerId AND name = :name THEN 'OWNER_NAME' " +
-            "WHEN owner_id = :ownerId AND slug = :slug THEN 'OWNER_SLUG' " +
-            "END " +
-            "FROM projects")
+    @SqlQuery("SELECT * FROM " +
+              "     (SELECT CASE " +
+              "         WHEN \"name\" = :name THEN 'OWNER_NAME'" +
+              "         WHEN slug = :slug THEN 'OWNER_SLUG'" +
+              "     END" +
+              "     FROM projects WHERE owner_id = :ownerId) sq" +
+              " WHERE sq IS NOT NULL ")
     InvalidProjectReason checkNamespace(long ownerId, String name, String slug);
 
     @SqlQuery("select * from projects where lower(owner_name) = lower(:author) AND lower(slug) = lower(:slug)")
