@@ -42,10 +42,11 @@ function convert() {
         .replace(/\[quote=.+?]((?:.|\n)+?)\[\/quote]/gim, '$1') //remove [quote=] tags
         .replace(/\[size=.+?]((?:.|\n)+?)\[\/size]/gim, '## $1') //Size [size=] tags
         .replace(/\[color=.+?]((?:.|\n)+?)\[\/color]/gim, '$1') //remove [color] tags
+        .replace(/\[font=.+?]((?:.|\n)+?)\[\/font]/gim, '$1') //remove [font] tags
         .replace(/\[list=1]((?:.|\n)+?)\[\/list]/gim, function (match, p1) {
             return p1.replace(/\[\*]/gim, '1. ');
         })
-        .replace(/(\n)\[\*]/gim, '$1* ') //lists; replcae lists with + unordered lists.
+        .replace(/(\n)\[\*]/gim, '$1* ') //lists; replace lists with + unordered lists.
         .replace(/\[\/*list]/gim, '')
         .replace(/\[img]((?:.|\n)+?)\[\/img]/gim, '![$1]($1)')
         .replace(/\[url=(.+?)]((?:.|\n)+?)\[\/url]/gim, '[$2]($1)')
@@ -71,6 +72,7 @@ function convert() {
 }
 
 $(function () {
+    $.ajaxSetup(window.ajaxSettings);
     document.getElementById('preview-tab').onclick = function () {
         showMDPreview();
     };
