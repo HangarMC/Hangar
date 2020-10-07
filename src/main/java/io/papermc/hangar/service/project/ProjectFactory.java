@@ -2,6 +2,7 @@ package io.papermc.hangar.service.project;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.controller.forms.NewProjectForm;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
@@ -87,16 +88,15 @@ public class ProjectFactory {
         }
     }
 
-    public ProjectsTable createProject(ProjectOwner ownerUser, String name, Category category, String description) {
-        String slug = StringUtils.slugify(name);
-        ProjectsTable projectsTable = new ProjectsTable(name, slug, ownerUser.getName(), ownerUser.getUserId(), category, description, Visibility.NEW);
+    public ProjectsTable createProject(ProjectOwner ownerUser, Category category, NewProjectForm newProjectForm) {
+        ProjectsTable projectsTable = new ProjectsTable(ownerUser, category, newProjectForm);
 
         ProjectChannelsTable channelsTable = new ProjectChannelsTable(hangarConfig.channels.getNameDefault(), hangarConfig.channels.getColorDefault(), -1, false);
 
-        String content = "# " + name + "\n\n" + hangarConfig.pages.home.getMessage();
+        String content = "# " + projectsTable.getName() + "\n\n" + hangarConfig.pages.home.getMessage();
         ProjectPagesTable pagesTable = new ProjectPage(-1, hangarConfig.pages.home.getName(), StringUtils.slugify(hangarConfig.pages.home.getName()), content, false, null);
 
-        checkProjectAvailability(ownerUser, name);
+        checkProjectAvailability(ownerUser, projectsTable.getName());
 
         projectsTable = projectDao.get().insert(projectsTable);
         channelsTable.setProjectId(projectsTable.getId());

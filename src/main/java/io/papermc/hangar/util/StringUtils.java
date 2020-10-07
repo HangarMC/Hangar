@@ -1,5 +1,7 @@
 package io.papermc.hangar.util;
 
+import org.springframework.lang.Nullable;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -37,6 +39,16 @@ public class StringUtils {
      */
     public static List<Integer> splitVersionNumber(String str) {
         return Arrays.stream(str.split("\\.")).map(Integer::parseInt).collect(Collectors.toList());
+    }
+
+    /**
+     * Takes a nullable input and returns itself or if blank, null
+     * @param input input string
+     * @return itself or null
+     */
+    public static String stringOrNull(@Nullable String input) {
+        if (input == null || input.isBlank()) return null;
+        return input;
     }
 
     private static final Pattern LAST_WHOLE_VERSION = Pattern.compile("((?<=,\\s)|^)[0-9.]{2,}(?=-\\d+$)");
