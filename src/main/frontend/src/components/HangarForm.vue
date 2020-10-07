@@ -1,5 +1,5 @@
 <template>
-    <form :action="action" :method="method" :enctype="enctype" :id="id" :class="clazz">
+    <form :action="action" :method="method" :enctype="enctype" :id="id" :class="clazz" :autocomplete="noAutocomplete ? 'off' : 'on'">
         <input type="hidden" :name="name" :value="value" />
         <slot></slot>
     </form>
@@ -13,6 +13,7 @@ export default {
         enctype: String,
         id: String,
         clazz: String,
+        noAutocomplete: Boolean,
     },
     data() {
         return {

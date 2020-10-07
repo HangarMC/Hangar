@@ -117,6 +117,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
     @Bean
     public RestTemplate restTemplate(List<HttpMessageConverter<?>> messageConverters) {
         RestTemplate restTemplate = new RestTemplate();
+        super.addDefaultHttpMessageConverters(messageConverters);
         restTemplate.setMessageConverters(messageConverters);
         return restTemplate;
     }
