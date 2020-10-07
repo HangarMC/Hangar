@@ -92,7 +92,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
     </#if>
 
     <#if scriptsEnabled>
-        <script>
+        <script nonce="${nonce}">
             window.ROUTES = ${mapper.valueToTree(Routes.getJsRoutes())};
             window.ROUTES.parse = function (key, ...params) {
                 var route = window.ROUTES[key];
@@ -103,7 +103,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
             };
         </script>
         <#if _csrf?? && _csrf.token??>
-            <script>
+            <script nonce="${nonce}">
                 window.csrf = '${_csrf.token}';
                 window.csrfInfo = {
                     'parameterName': '${_csrf.parameterName}',

@@ -17,7 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DependencyMapper implements ColumnMapper<VersionDependencies> {
+public class VersionDependenciesMapper implements ColumnMapper<VersionDependencies> {
 
     private final ObjectMapper mapper = new ObjectMapper();
 

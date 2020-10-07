@@ -1,8 +1,8 @@
 package io.papermc.hangar.db.dao;
 
 import io.papermc.hangar.db.customtypes.JSONB;
-import io.papermc.hangar.db.mappers.DependencyMapper;
 import io.papermc.hangar.db.mappers.PlatformDependencyMapper;
+import io.papermc.hangar.db.mappers.VersionDependenciesMapper;
 import io.papermc.hangar.db.model.ProjectVersionTagsTable;
 import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.model.generated.ReviewState;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-@RegisterColumnMapper(DependencyMapper.class)
+@RegisterColumnMapper(VersionDependenciesMapper.class)
 @RegisterColumnMapper(PlatformDependencyMapper.class)
 @RegisterBeanMapper(ProjectVersionsTable.class)
 @RegisterBeanMapper(ProjectVersionTagsTable.class)

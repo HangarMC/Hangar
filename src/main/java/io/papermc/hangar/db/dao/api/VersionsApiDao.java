@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.dao.api;
 
 import io.papermc.hangar.db.dao.api.mappers.VersionMapper;
-import io.papermc.hangar.db.mappers.DependencyMapper;
+import io.papermc.hangar.db.mappers.VersionDependenciesMapper;
 import io.papermc.hangar.model.generated.Version;
 import io.papermc.hangar.model.generated.VersionStatsDay;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
@@ -24,7 +24,7 @@ import java.util.Map;
 public interface VersionsApiDao {
 
     @UseStringTemplateEngine
-    @RegisterColumnMapper(DependencyMapper.class)
+    @RegisterColumnMapper(VersionDependenciesMapper.class)
     @SqlQuery("SELECT pv.created_at," +
             "pv.version_string," +
             "pv.dependencies," +
@@ -53,7 +53,7 @@ public interface VersionsApiDao {
             "ORDER BY pv.created_at DESC LIMIT 1")
     Version getVersion(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
 
-    @RegisterColumnMapper(DependencyMapper.class)
+    @RegisterColumnMapper(VersionDependenciesMapper.class)
     @UseStringTemplateEngine
     @SqlQuery("SELECT pv.created_at," +
             "pv.version_string," +

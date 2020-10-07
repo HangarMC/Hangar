@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.dao.api;
 
-import io.papermc.hangar.db.mappers.DependencyMapper;
 import io.papermc.hangar.db.mappers.PlatformDependencyMapper;
+import io.papermc.hangar.db.mappers.VersionDependenciesMapper;
 import io.papermc.hangar.db.model.ProjectChannelsTable;
 import io.papermc.hangar.db.model.ProjectVersionTagsTable;
 import io.papermc.hangar.db.model.ProjectVersionsTable;
@@ -54,7 +54,7 @@ public interface V1ApiDao {
 
     @UseStringTemplateEngine
     @RegisterBeanMapper(ProjectVersionsTable.class)
-    @RegisterColumnMapper(DependencyMapper.class)
+    @RegisterColumnMapper(VersionDependenciesMapper.class)
     @RegisterColumnMapper(PlatformDependencyMapper.class)
     @SqlQuery("SELECT pv.* " +
               "     FROM project_versions pv" +
@@ -83,7 +83,7 @@ public interface V1ApiDao {
 
     @KeyColumn("p_id")
     @RegisterBeanMapper(ProjectVersionsTable.class)
-    @RegisterColumnMapper(DependencyMapper.class)
+    @RegisterColumnMapper(VersionDependenciesMapper.class)
     @RegisterColumnMapper(PlatformDependencyMapper.class)
     @SqlQuery("SELECT p.id p_id, pv.* FROM project_versions pv JOIN projects p ON pv.project_id = p.id WHERE p.recommended_version_id = pv.id AND p.id IN (<projectIds>)")
     Map<Long, ProjectVersionsTable> getProjectsRecommendedVersion(@BindList(onEmpty = EmptyHandling.NULL_STRING) List<Long> projectIds);

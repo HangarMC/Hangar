@@ -14,13 +14,11 @@ import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.db.model.UsersTable;
-import io.papermc.hangar.model.Category;
 import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.SsoSyncData;
 import io.papermc.hangar.model.TagColor;
 import io.papermc.hangar.model.Visibility;
-import io.papermc.hangar.model.generated.ProjectSortingStrategy;
 import io.papermc.hangar.model.viewhelpers.ProjectPage;
 import io.papermc.hangar.model.viewhelpers.UserData;
 import io.papermc.hangar.security.annotations.UserLock;
@@ -104,21 +102,21 @@ public class Apiv1Controller extends HangarController {
         this.projectsTable = projectsTable;
     }
 
-    @GetMapping("/v1/projects")
-    public ResponseEntity<ArrayNode> listProjects(@RequestParam(defaultValue = "") List<Category> categories, @RequestParam(defaultValue = "4") int sort, @RequestParam(required = false) String q, @RequestParam(required = false) Long limit, @RequestParam(required = false) Long offset) {
-        int maxLoad = hangarConfig.projects.getInitLoad();
-        long realLimit = ApiUtil.limitOrDefault(limit, maxLoad);
-        long realOffset = ApiUtil.offsetOrZero(offset);
-        ProjectSortingStrategy strategy;
-        try {
-            strategy = ProjectSortingStrategy.VALUES[sort];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-
-        List<ProjectsTable> sortedProjects = v1ApiService.getProjects(q, categories.stream().map(Category::getValue).collect(Collectors.toList()), strategy, realLimit, realOffset);
-        return ResponseEntity.ok(writeProjects(sortedProjects));
-    }
+//    @GetMapping("/v1/projects")
+//    public ResponseEntity<ArrayNode> listProjects(@RequestParam(defaultValue = "") List<Category> categories, @RequestParam(defaultValue = "4") int sort, @RequestParam(required = false) String q, @RequestParam(required = false) Long limit, @RequestParam(required = false) Long offset) {
+//        int maxLoad = hangarConfig.projects.getInitLoad();
+//        long realLimit = ApiUtil.limitOrDefault(limit, maxLoad);
+//        long realOffset = ApiUtil.offsetOrZero(offset);
+//        ProjectSortingStrategy strategy;
+//        try {
+//            strategy = ProjectSortingStrategy.VALUES[sort];
+//        } catch (ArrayIndexOutOfBoundsException e) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+//        }
+//
+//        List<ProjectsTable> sortedProjects = v1ApiService.getProjects(q, categories.stream().map(Category::getValue).collect(Collectors.toList()), strategy, realLimit, realOffset);
+//        return ResponseEntity.ok(writeProjects(sortedProjects));
+//    }
 
     @GetMapping("/v1/projects/{author}/{slug}")
     public ResponseEntity<ObjectNode> showProject(@PathVariable String author, @PathVariable String slug) {
@@ -126,11 +124,11 @@ public class Apiv1Controller extends HangarController {
         return ResponseEntity.ok((ObjectNode) writeProjects(List.of(project)).get(0));
     }
 
-    @GetMapping("v1/projects/{id}")
-    public ResponseEntity<ObjectNode> showProject(@PathVariable long id) {
-        ProjectsTable project = projectService.getProjectsTable(id);
-        return ResponseEntity.ok((ObjectNode) writeProjects(List.of(project)).get(0));
-    }
+//    @GetMapping("/v1/projects/{id}")
+//    public ResponseEntity<ObjectNode> showProject(@PathVariable long id) {
+//        ProjectsTable project = projectService.getProjectsTable(id);
+//        return ResponseEntity.ok((ObjectNode) writeProjects(List.of(project)).get(0));
+//    }
 
     @PreAuthorize("@authenticationService.authV1ApiRequest(T(io.papermc.hangar.model.Permission).EditApiKeys, T(io.papermc.hangar.controller.util.ApiScope).forProject(#author, #slug))")
     @UserLock
