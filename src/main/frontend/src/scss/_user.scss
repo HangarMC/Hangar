@@ -39,21 +39,33 @@
   span, select { margin-left: auto; }
 }
 
-.username {
-  svg {
-    font-size: 0.6em;
-    font-weight: normal;
-    padding: 3px;
+.user-title {
+  display: flex;
+  align-items: baseline;
+
+  .user-actions {
+    float: left;
+    margin-left: 0.5em;
+
+    & > a:hover {
+      text-decoration: none;
+    }
+
+    svg {
+      font-size: 1.5em;
+      font-weight: normal;
+      padding: 3px;
+    }
+
+    .action-lock-account:hover, .action-api svg:hover, .user-settings svg:hover {
+      background-color: gray;
+      transition: all 0.5s ease;
+    }
+
+    svg { cursor: pointer; }
+
+    .action-api, .user-settings { color: #333; }
   }
-
-  .action-lock-account:hover, .action-api svg:hover, .user-settings svg:hover {
-    background-color: gray;
-    transition: all 0.5s ease;
-  }
-
-  svg { cursor: pointer; }
-
-  .action-api, .user-settings { color: #333; }
 }
 
 .organization-avatar {
@@ -90,7 +102,6 @@
     .user-avatar { margin-right: 20px; }
   }
 
-  .user-badge > h1 { float: left; }
   .float-right { @include size(20%, 100%); }
   .user-roles li { display: inline; }
 

@@ -1,11 +1,11 @@
 package io.papermc.hangar.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.model.NotificationsTable;
-import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.UserSessionsTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.exceptions.HangarException;
@@ -14,6 +14,8 @@ import io.papermc.hangar.model.NamedPermission;
 import io.papermc.hangar.model.NotificationFilter;
 import io.papermc.hangar.model.Prompt;
 import io.papermc.hangar.model.viewhelpers.InviteSubject;
+import io.papermc.hangar.model.viewhelpers.OrganizationData;
+import io.papermc.hangar.model.viewhelpers.ScopedOrganizationData;
 import io.papermc.hangar.model.viewhelpers.UserData;
 import io.papermc.hangar.model.viewhelpers.UserRole;
 import io.papermc.hangar.security.annotations.GlobalPermission;
@@ -54,13 +56,16 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Controller
 public class UsersController extends HangarController {
 
+    private final ObjectMapper mapper;
     private final HangarConfig hangarConfig;
     private final AuthenticationService authenticationService;
     private final UserService userService;
@@ -81,7 +86,8 @@ public class UsersController extends HangarController {
 
 
     @Autowired
-    public UsersController(HangarConfig hangarConfig, AuthenticationService authenticationService, UserService userService, OrgService orgService, RoleService roleService, ApiKeyService apiKeyService, PermissionService permissionService, SessionService sessionService, NotificationService notificationService, SsoService ssoService, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, SitemapService sitemapService, HttpServletRequest request, HttpServletResponse response, Supplier<UsersTable> usersTable) {
+    public UsersController(ObjectMapper mapper, HangarConfig hangarConfig, AuthenticationService authenticationService, UserService userService, OrgService orgService, RoleService roleService, ApiKeyService apiKeyService, PermissionService permissionService, SessionService sessionService, NotificationService notificationService, SsoService ssoService, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, SitemapService sitemapService, HttpServletRequest request, HttpServletResponse response, Supplier<UsersTable> usersTable) {
+        this.mapper = mapper;
         this.hangarConfig = hangarConfig;
         this.authenticationService = authenticationService;
         this.userService = userService;
@@ -238,12 +244,12 @@ public class UsersController extends HangarController {
     @GetMapping("/{user}")
     public ModelAndView showProjects(@PathVariable String user) {
         ModelAndView mav = new ModelAndView("users/projects");
-        OrganizationsTable organizationsTable = orgService.getOrganization(user);
+        UserData userData = userService.getUserData(user);
+        Optional<OrganizationData> orgData = Optional.ofNullable(orgService.getOrganizationData(userData.getUser()));
+        Optional<ScopedOrganizationData> scopedOrgData = orgData.map(organizationData -> orgService.getScopedOrganizationData(organizationData.getOrg()));
         mav.addObject("u", userService.getUserData(user));
-        if (organizationsTable != null) {
-            mav.addObject("o", orgService.getOrganizationData(organizationsTable, null));
-            mav.addObject("so", orgService.getScopedOrganizationData(organizationsTable));
-        }
+        mav.addObject("o", orgData);
+        mav.addObject("so", scopedOrgData);
         return fillModel(mav);
     }
 
@@ -253,10 +259,15 @@ public class UsersController extends HangarController {
     public ModelAndView editApiKeys(@PathVariable String user) {
         ModelAndView mav = new ModelAndView("users/apiKeys");
         UserData userData = userService.getUserData(user);
+        Optional<OrganizationData> orgData = Optional.ofNullable(orgService.getOrganizationData(userData.getUser()));
+        Optional<ScopedOrganizationData> scopedOrgData = orgData.map(organizationData -> orgService.getScopedOrganizationData(organizationData.getOrg()));
         long userId = userData.getUser().getId();
         mav.addObject("u", userData);
+        mav.addObject("o", orgData);
+        mav.addObject("so", scopedOrgData);
         mav.addObject("keys", apiKeyService.getKeys(userId));
-        mav.addObject("perms", permissionService.getPossibleOrganizationPermissions(userId).add(permissionService.getPossibleProjectPermissions(userId)).add(userData.getUserPerm()).toNamed());
+        List<NamedPermission> perms = permissionService.getPossibleOrganizationPermissions(userId).add(permissionService.getPossibleProjectPermissions(userId)).add(userData.getUserPerm()).toNamed();
+        mav.addObject("perms", perms.stream().map(perm -> mapper.createObjectNode().put("value", perm.toString()).put("name", perm.getFrontendName())).collect(Collectors.toList()));
         return fillModel(mav);
     }
 

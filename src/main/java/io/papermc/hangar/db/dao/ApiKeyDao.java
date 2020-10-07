@@ -26,8 +26,9 @@ public interface ApiKeyDao {
     @SqlUpdate("DELETE FROM api_keys k WHERE k.name = :keyName AND k.owner_id = :ownerId")
     int delete(String keyName, long ownerId);
 
+    // Frontend key request, only show non-private info
     @RegisterBeanMapper(ApiKey.class)
-    @SqlQuery("SELECT *, raw_key_permissions::BIGINT perm_value FROM api_keys WHERE owner_id = :ownerId")
+    @SqlQuery("SELECT id, name, token_identifier, raw_key_permissions::BIGINT perm_value FROM api_keys WHERE owner_id = :ownerId")
     List<ApiKey> getByOwner(long ownerId);
 
     @SqlQuery("SELECT *, raw_key_permissions::BIGINT perm_value FROM api_keys WHERE name = :keyName AND owner_id = :ownerId")

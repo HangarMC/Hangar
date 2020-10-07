@@ -81,7 +81,7 @@
                     @prev="$emit('prev-page')"
                 ></Pagination>
             </div>
-            <div v-else class="list-group-item empty-project-list">
+            <div v-else class="list-group-item empty-project-list d-flex align-items-center">
                 <i class="far fa-2x fa-sad-tear"></i>
                 <span>Oops! No projects found...</span>
             </div>
