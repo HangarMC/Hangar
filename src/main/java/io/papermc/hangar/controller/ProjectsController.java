@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.controller.forms.NewProjectForm;
 import io.papermc.hangar.controller.forms.ProjectNameValidate;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
@@ -143,10 +144,7 @@ public class ProjectsController extends HangarController {
     @UserLock
     @Secured("ROLE_USER")
     @PostMapping(value = "/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public Object createProject(@RequestParam("name") String name,
-                                @RequestParam("category") String cat,
-                                @RequestParam("description") String description,
-                                @RequestParam("owner") long owner) {
+    public Object createProject(NewProjectForm newProjectForm) {
         // check if creation should be prevented
         UsersTable curUser = getCurrentUser();
         String uploadError = projectFactory.getUploadError(curUser);
@@ -156,14 +154,14 @@ public class ProjectsController extends HangarController {
             return fillModel(mav);
         }
         // validate input
-        Category category = Category.fromTitle(cat);
+        Category category = Category.fromTitle(newProjectForm.getCategory());
         if (category == null) {
             ModelAndView mav = showCreator();
             AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, "error.project.categoryNotFound");
             return fillModel(mav);
         }
 
-        ProjectOwner ownerUser = getProjectOwner(owner);
+        ProjectOwner ownerUser = getProjectOwner(newProjectForm.getOwner());
         if (ownerUser == null) {
             return fillModel(AlertUtil.showAlert(Routes.PROJECTS_SHOW_CREATOR.getRedirect(), AlertType.ERROR, "error.project.ownerNotFound"));
         }
@@ -171,7 +169,7 @@ public class ProjectsController extends HangarController {
         // create project
         ProjectsTable project;
         try {
-            project = projectFactory.createProject(ownerUser, name, category, description);
+            project = projectFactory.createProject(ownerUser, category, newProjectForm);
         } catch (HangarException ex) {
             ModelAndView mav = showCreator();
             AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, ex.getMessageKey());

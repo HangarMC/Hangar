@@ -29,6 +29,7 @@ import {
     faEyeSlash,
     faFlag,
     faGamepad,
+    faGavel,
     faGem as fasGem,
     faGlobe,
     faGraduationCap,
@@ -174,7 +175,8 @@ library.add(
     faExclamationTriangle,
     faCheckSquare,
     faQuestion,
-    faTag
+    faTag,
+    faGavel
 );
 
 dom.watch();

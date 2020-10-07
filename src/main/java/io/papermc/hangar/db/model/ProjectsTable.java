@@ -1,14 +1,17 @@
 package io.papermc.hangar.db.model;
 
 
+import io.papermc.hangar.controller.forms.NewProjectForm;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.Category;
 import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.annotation.Unmappable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 import java.time.OffsetDateTime;
 import java.util.Collection;
+import java.util.Set;
 
 public class ProjectsTable implements Visitable {
 
@@ -34,18 +37,24 @@ public class ProjectsTable implements Visitable {
     private String licenseUrl;
     private boolean forumSync;
 
-    public ProjectsTable() {
-        //
-    }
+    public ProjectsTable() { }
 
-    public ProjectsTable(String name, String slug, String ownerName, long ownerId, Category category, String description, Visibility visibility) {
-        this.name = name;
-        this.slug = slug;
-        this.ownerName = ownerName;
-        this.ownerId = ownerId;
+    public ProjectsTable(ProjectOwner projectOwner, Category category, NewProjectForm newProjectForm) {
+        this.name = newProjectForm.getName();
+        this.slug = StringUtils.slugify(newProjectForm.getName());
+        this.ownerName = projectOwner.getName();
+        this.ownerId = projectOwner.getUserId();
         this.category = category;
-        this.description = description;
-        this.visibility = visibility;
+        this.description = newProjectForm.getDescription();
+        this.visibility = Visibility.NEW;
+        this.homepage = StringUtils.stringOrNull(newProjectForm.getHomepageUrl());
+        this.issues = StringUtils.stringOrNull(newProjectForm.getIssueTrackerUrl());
+        this.source = StringUtils.stringOrNull(newProjectForm.getSourceUrl());
+        this.support = StringUtils.stringOrNull(newProjectForm.getExternalSupportUrl());
+
+        this.keywords = newProjectForm.getKeywords() != null ? Set.of(newProjectForm.getKeywords().split("\\s")) : Set.of();
+        this.licenseName = StringUtils.stringOrNull(newProjectForm.getLicenseType().equalsIgnoreCase("custom") ? newProjectForm.getLicenseName() : newProjectForm.getLicenseType());
+        this.licenseUrl = StringUtils.stringOrNull(newProjectForm.getLicenseUrl());
     }
 
     public long getId() {
