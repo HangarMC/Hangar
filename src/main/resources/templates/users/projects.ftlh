@@ -3,45 +3,36 @@
 <#import "*/users/view.ftlh" as users />
 <#import "*/users/memberList.ftlh" as memberList />
 
-<#--@import controllers.Routes.IO_PAPERMC_HANGAR_MODEL__PERMISSION.getRouteUrl(.Requests.OreRequest
-@import models.viewhelper.{OrganizationData, ScopedOrganizationData, UserData}
-@import ore.OreConfig
-@import ore.permission.Permission
-@import ore.permission.role.Role
-@import util.syntax._
-@import views.html.utils.userAvatar
-@(u: UserData, o: Option[(OrganizationData, ScopedOrganizationData)])(
-        implicit messages: Messages, flash: Flash, request: OreRequest[_], config: OreConfig, assetsFinder: AssetsFinder)-->
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"] />
 <#assign Role=@helper["io.papermc.hangar.model.Role"] />
 
 <#function canEditOrgMembers>
-    <#return u.isOrga() && o?? && so.permissions.has(Permission.ManageOrganizationMembers)>
+    <#return u.isOrga() && o.present && so.get().permissions.has(Permission.ManageOrganizationMembers)>
 </#function>
 
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "js/user-profile.js" />"></script>
-    <#if u.isOrga() && o?? && canEditOrgMembers()>
+    <#if u.isOrga() && o.present && canEditOrgMembers()>
     <script type="text/javascript" src="<@hangar.url "js/orgInvites.js" />"></script>
     </#if>
     <script type="text/javascript" src="<@hangar.url "js/userSearch.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "js/memberList.js" />"></script>
 </#assign>
 
-<@users.view u=u o=o additionalScripts=scriptsVar>
+<@users.view u=u o=o so=so additionalScripts=scriptsVar>
     <div class="row">
         <div class="col-md-8">
             <div id="user-profile"></div>
         </div>
         <div class="col-md-4">
-            <#if u.isOrga() && o?? && canEditOrgMembers()>
+            <#if u.isOrga() && o.present && canEditOrgMembers()>
                 <div class="card-user-info card">
                     <div class="card-header">
                         <h3 class="card-title"><@spring.message "project.manager" /></h3>
                     </div>
                     <table class="table card-body">
                         <tbody>
-                            <#list o.projectRoles as role, project>
+                            <#list o.get().projectRoles as role, project>
                                 <tr>
                                     <td>
                                         <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.ownerName, project.slug)}">${project.ownerName}/${project.slug}</a>
@@ -132,9 +123,9 @@
                 </div>
             <#else>
                 <#assign orgData=o> <#-- todo fix scopeddata -->
-                <@memberList.memberList project=orgData editable=true perms=so.permissions
-                saveCall=Routes.ORG_UPDATE_MEMBERS.getRouteUrl(orgData.org.name)
-                removeCall=Routes.ORG_REMOVE_MEMBER.getRouteUrl(orgData.org.name) />
+                <@memberList.memberList project=orgData.get() editable=true perms=so.get().permissions
+                saveCall=Routes.ORG_UPDATE_MEMBERS.getRouteUrl(orgData.get().org.name)
+                removeCall=Routes.ORG_REMOVE_MEMBER.getRouteUrl(orgData.get().org.name) />
             </#if>
         </div>
     </div>
