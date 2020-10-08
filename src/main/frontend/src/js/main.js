@@ -40,6 +40,9 @@ $(function () {
     $('.link-go-back').click(function () {
         window.history.back();
     });
+
+    // we loaded now I guess
+    $('.loader').hide();
 });
 
 // Fix page anchors which were broken by the fixed top navigation
