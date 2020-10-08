@@ -13,3 +13,4 @@
 [#-- @ftlvariable name="rc" type="org.springframework.web.servlet.support.RequestContext" --]
 [#-- @ftlvariable name="config" type="io.papermc.hangar.config.hangar.HangarConfig" --]
 [#-- @ftlvariable name="Routes" type="io.papermc.hangar.util.Routes" --]
+[#-- @ftlvariable name="urls" type="org.springframework.web.servlet.resource.ResourceUrlProvider" --]

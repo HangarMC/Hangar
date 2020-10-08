@@ -8,7 +8,7 @@
         <#if config.useWebpack>
             http://localhost:8081/${path}
         <#else>
-            /assets/${path}
+            ${urls.getForLookupPath('/assets/${path}')}
         </#if>
     </#compress>
 </#macro>

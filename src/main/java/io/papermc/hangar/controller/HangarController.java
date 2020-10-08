@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.resource.ResourceUrlProvider;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
@@ -37,7 +38,8 @@ public abstract class HangarController {
     private ObjectMapper mapper;
     @Autowired
     private HttpServletResponse response;
-
+    @Autowired
+    private ResourceUrlProvider resourceUrlProvider;
 
     @Autowired
     protected Supplier<Optional<UsersTable>> currentUser;
@@ -56,6 +58,7 @@ public abstract class HangarController {
         mav.addObject("rand", ThreadLocalRandom.current());
         mav.addObject("utils", templateHelper);
         mav.addObject("mapper", mapper);
+        mav.addObject("urls", resourceUrlProvider);
 
         try {
             mav.addObject("Routes", staticModels.get("io.papermc.hangar.util.Routes"));

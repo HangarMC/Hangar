@@ -1,12 +1,10 @@
 package io.papermc.hangar.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import freemarker.template.TemplateException;
-import io.papermc.hangar.controller.converters.ColorHexConverter;
-import io.papermc.hangar.controller.converters.StringToEnumConverterFactory;
-import io.papermc.hangar.security.UserLockExceptionResolver;
-import io.papermc.hangar.util.Routes;
-import no.api.freemarker.java8.Java8ObjectWrapper;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,23 +14,34 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.resource.CssLinkResourceTransformer;
+import org.springframework.web.servlet.resource.ResourceUrlEncodingFilter;
 import org.springframework.web.servlet.resource.VersionResourceResolver;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import javax.servlet.Filter;
+import javax.validation.constraints.NotNull;
+
+import io.papermc.hangar.controller.converters.ColorHexConverter;
+import io.papermc.hangar.controller.converters.StringToEnumConverterFactory;
+import io.papermc.hangar.security.UserLockExceptionResolver;
+import io.papermc.hangar.util.Routes;
+import no.api.freemarker.java8.Java8ObjectWrapper;
 
 @Configuration
 public class WebConfig extends WebMvcConfigurationSupport {
 
     private final ObjectMapper mapper;
 
+    @Autowired
     public WebConfig(ObjectMapper mapper) {
         this.mapper = mapper;
     }
@@ -75,11 +84,25 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        VersionResourceResolver resolver = new VersionResourceResolver()
+                .addContentVersionStrategy("/**");
+
         registry.addResourceHandler("/assets/**")
                 .addResourceLocations("classpath:/public/")
-                .setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
+                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
                 .resourceChain(true)
-                .addResolver(new VersionResourceResolver());
+                .addResolver(resolver)
+                .addTransformer(new CssLinkResourceTransformer());
+    }
+
+    @Bean
+    public ResourceUrlEncodingFilter resourceUrlEncodingFilter() {
+        return new ResourceUrlEncodingFilter();
+    }
+
+    @Bean
+    public Filter shallowEtagHeaderFilter() {
+        return new ShallowEtagHeaderFilter();
     }
 
     @Override
