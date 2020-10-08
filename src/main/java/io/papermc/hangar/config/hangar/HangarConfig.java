@@ -30,6 +30,7 @@ public class HangarConfig {
     private final ApplicationHome home = new ApplicationHome(HangarApplication.class);
     private String pluginUploadDir = home.getDir().toPath().resolve("work").toString();
     private String baseUrl = "https://localhost:8080";
+    private String gaCode = "";
 
     @NestedConfigurationProperty
     public final FakeUserConfig fakeUser;
@@ -189,6 +190,14 @@ public class HangarConfig {
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
+    }
+
+    public String getGaCode() {
+        return gaCode;
+    }
+
+    public void setGaCode(String gaCode) {
+        this.gaCode = gaCode;
     }
 
     public void checkDebug() {

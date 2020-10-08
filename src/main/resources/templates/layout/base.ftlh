@@ -51,13 +51,13 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <meta name="theme-color" content="#2980B9">
 
         <#-- google foo -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-38006759-9"></script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=${config.gaCode}"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
 
-            gtag('config', 'UA-38006759-9');
+            gtag('config', '${config.gaCode}');
         </script>
         <script type="application/ld+json">
             {
