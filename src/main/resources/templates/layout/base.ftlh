@@ -48,6 +48,32 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <#-- See https://goo.gl/OOhYW5 and https://goo.gl/qRE0vM -->
         <link rel="manifest" href="<@hangar.url "manifest/manifest.json" />">
         <meta name="theme-color" content="#2980B9">
+
+        <#-- google foo -->
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                "url": "${config.baseUrl}",
+                "name": "Hangar | PaperMC",
+                "logo": "https://papermc.io/images/logo-marker.svg?v=2ca03d456bd669f9",
+                "contactPoint": {
+                    "email": "info@papermc.io"
+                 }
+            }
+        </script>
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "url": "${config.baseUrl}",
+                "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": "${config.baseUrl}?q={search_term_string}",
+                    "query-input": "required name=search_term_string"
+                }
+            }
+        </script>
     </head>
     <body class="site">
     <#if showHeader>
