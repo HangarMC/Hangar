@@ -18,7 +18,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <link href="${config.security.api.url}" rel="dns-prefetch">
 <#--        <link href="<@hangar.config "app.discourseCdnUrl" />" rel="dns-prefetch">--><#--TODO this-->
 
-        <link rel="prefetch" href="<@hangar.url "images/favicon.ico" />">
+        <link rel="prefetch" href="<@hangar.url "images/favicon/favicon.ico" />">
         <link rel="prefetch" href="https://fonts.googleapis.com/css?family=Montserrat:400,700">
         <link rel="prefetch" href="<@hangar.url "css/chunk-common.css" />">
         <link rel="prefetch" href="<@hangar.url "css/chunk-vendors.css" />">
@@ -34,15 +34,11 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <meta name="viewport" content="width=device-width, initial-scale=1">
         ${additionalMeta}
 
-        <link rel="apple-touch-icon" sizes="180x180"
-              href="https://papermc.io/favicons/apple-touch-icon.png?v=BG70oBaPzN">
-        <link rel="icon" type="image/png" sizes="32x32"
-              href="https://papermc.io/favicons/favicon-32x32.png?v=BG70oBaPzN">
-        <link rel="icon" type="image/png" sizes="16x16"
-              href="https://papermc.io/favicons/favicon-16x16.png?v=BG70oBaPzN">
+        <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon/favicon-16x16.png">
 
-
-        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Montserrat:400,700" >
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" >
         <link rel="stylesheet" type="text/css" href="<@hangar.url "css/chunk-common.css" />"/>
         <link rel="stylesheet" type="text/css" href="<@hangar.url "css/chunk-vendors.css" />">
         <link rel="stylesheet" type="text/css" href="<@hangar.url "css/main.css" />"/>

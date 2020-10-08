@@ -21,6 +21,7 @@ sorted according to different criteria.
     <meta property="og:url" content="${config.baseUrl}">
     <meta property="og:image" content="<@hangar.url "images/ore-dark.png" />" />
     <meta property="og:description" content="<@spring.message "general.description" />" />
+    <meta name="description" content="<@spring.message "general.description" />" />
 </#macro>
 
 <#function randomSponsor>

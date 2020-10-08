@@ -27,4 +27,4 @@ Disallow: /*/*/versions/*/reviews
 Disallow: /*/*/versions/*/new
 Disallow: /*/*/versions/*/confirm
 
-Sitemap: https://hangar-new.minidigger.me/sitemap.xml
+Sitemap: https://hangar.minidigger.me/sitemap.xml

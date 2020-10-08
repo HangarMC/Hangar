@@ -7,13 +7,13 @@
   "start_url": "/?homescreen=1",
   "icons": [
     {
-      "src": "https://papermc.io/favicons/android-chrome-192x192.png?v=BG70oBaPzN",
+      "src": "/assets/images/favicon/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://papermc.io/favicons/android-chrome-384x384.png?v=BG70oBaPzN",
-      "sizes": "384x384",
+      "src": "/assets/images/favicon/android-chrome-512x512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ]

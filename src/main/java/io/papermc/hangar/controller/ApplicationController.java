@@ -3,6 +3,36 @@ package io.papermc.hangar.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
+
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controller.util.StatusZ;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
@@ -33,34 +63,6 @@ import io.papermc.hangar.service.VersionService;
 import io.papermc.hangar.service.project.FlagService;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.AlertUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
-
-import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 public class ApplicationController extends HangarController {
@@ -222,13 +224,13 @@ public class ApplicationController extends HangarController {
     @GetMapping("/admin/stats")
     public ModelAndView showStats(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
         ModelAndView mav = new ModelAndView("users/admin/stats");
-        if(from == null){
+        if (from == null) {
             from = LocalDate.now().minus(30, ChronoUnit.DAYS);
         }
-        if(to == null){
+        if (to == null) {
             to = LocalDate.now();
         }
-        if(to.isBefore(from)){
+        if (to.isBefore(from)) {
             to = from;
         }
         List<Stats> stats = statsService.getStats(from, to);
@@ -267,8 +269,8 @@ public class ApplicationController extends HangarController {
         Map<String, List<String>> additions;
         Map<String, List<String>> removals;
         try {
-            additions = mapper.treeToValue(object.get("additions"), (Class<Map<String,List<String>>>)(Class)Map.class);
-            removals = mapper.treeToValue(object.get("removals"), (Class<Map<String,List<String>>>)(Class)Map.class);
+            additions = mapper.treeToValue(object.get("additions"), (Class<Map<String, List<String>>>) (Class) Map.class);
+            removals = mapper.treeToValue(object.get("removals"), (Class<Map<String, List<String>>>) (Class) Map.class);
         } catch (JsonProcessingException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad formatting", e);
         }
@@ -307,10 +309,10 @@ public class ApplicationController extends HangarController {
     @GetMapping(value = "/favicon.ico", produces = "images/x-icon")
     @ResponseBody
     public ClassPathResource faviconRedirect() {
-        return new ClassPathResource("public/images/favicon.ico");
+        return new ClassPathResource("public/images/favicon/favicon.ico");
     }
 
-    @GetMapping(value = "/global-sitemap.xml", produces =  MediaType.APPLICATION_XML_VALUE)
+    @GetMapping(value = "/global-sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
     @ResponseBody
     public String globalSitemap() {
         return sitemapService.getGlobalSitemap();

@@ -41,6 +41,7 @@ Base template for Project overview.
         <meta property="og:image" content="${p.iconUrl}"/>
         <meta property="og:site_name" content="<@spring.message "general.appName" />"/>
         <meta property="og:description" content="${p.project.description!}"/>
+        <meta name="description" content="${p.project.description!}" />
     </#assign>
 
     <@base.base title=(p.project.ownerName + " / " + p.project.name) additionalScripts=scriptsVar additionalStyling=styleVar additionalMeta=metaVar>
