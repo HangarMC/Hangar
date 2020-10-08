@@ -78,6 +78,7 @@ export default {
     },
     methods: {
         watch() {
+            if (!this.checkHasUser()) return;
             this.value.watching = !this.value.watching;
             $.ajax({
                 type: 'post',
@@ -85,6 +86,7 @@ export default {
             });
         },
         star() {
+            if (!this.checkHasUser()) return;
             this.value.starCount += this.starIncrement;
             this.value.starred = this.starIncrement > 0;
             $.ajax({
@@ -93,6 +95,14 @@ export default {
             });
             this.starIncrement *= -1;
         },
+      checkHasUser() {
+          if (!this.hasUser) {
+            // TODO some alert or modal?
+            alert("Please login first");
+            return false;
+          }
+          return true;
+      }
     },
     created() {
         this.value.starred = this.isStarred;
