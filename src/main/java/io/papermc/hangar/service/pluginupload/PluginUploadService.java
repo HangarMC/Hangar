@@ -92,7 +92,7 @@ public class PluginUploadService {
         }
 
         ProjectChannelsTable channel = channelService.getFirstChannel(project);
-        PendingVersion pendingVersion = startVersion(plugin, project.getId(), project.getForumSync(), channel.getName());
+        PendingVersion pendingVersion = startVersion(plugin, project.getId(), project.getForumSync(), channel);
 
         boolean exists = versionService.exists(pendingVersion);
         if (exists && hangarConfig.projects.isFileValidate()) {
@@ -103,7 +103,7 @@ public class PluginUploadService {
         return pendingVersion;
     }
 
-    private PendingVersion startVersion(PluginFileWithData plugin, long projectId, boolean forumSync, String channelName) {
+    private PendingVersion startVersion(PluginFileWithData plugin, long projectId, boolean forumSync, ProjectChannelsTable channel) {
         PluginFileData metaData = plugin.getData();
         if (metaData.getVersion() == null || metaData.getVersion().isBlank()) {
             throw new HangarException("error.plugin.noVersion");
@@ -121,8 +121,8 @@ public class PluginUploadService {
                 plugin.getMd5(),
                 path.getFileName().toString(),
                 plugin.getUserId(),
-                channelName,
-                config.getChannels().getColorDefault(),
+                channel.getName(),
+                channel.getColor(),
                 plugin,
                 null,
                 forumSync,

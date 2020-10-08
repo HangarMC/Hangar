@@ -136,65 +136,65 @@
             </div>
         </div>
     </template>
-    <HangarForm
-        id="form-upload"
-        :action="ROUTES.parse('VERSIONS_UPLOAD', ownerName, projectSlug)"
-        method="post"
-        enctype="multipart/form-data"
-        clazz="form-inline"
-    >
-        <div class="input-group float-left" style="width: 50%">
-            <label for="pluginFile" style="flex-wrap: wrap">
-                <span style="flex: 0 0 100%; margin-bottom: 10px" v-if="!pendingVersion">Either upload a file...</span>
-                <div :class="'btn btn-primary' + (pendingVersion ? ' mt-1' : '')" style="flex: 0 0 100%">
-                    <template v-if="!pendingVersion"> Upload</template>
-                    <template v-else> Change file</template>
+    <div class="row">
+        <div class="col-6">
+            <HangarForm id="form-upload" :action="ROUTES.parse('VERSIONS_UPLOAD', ownerName, projectSlug)" method="post" enctype="multipart/form-data">
+                <div class="input-group" style="width: 50%">
+                    <label for="pluginFile" style="flex-wrap: wrap">
+                        <div style="flex: 0 0 100%; margin-bottom: 10px" v-if="!pendingVersion">Either upload a file...</div>
+                        <div :class="'btn btn-primary btn-block' + (pendingVersion ? ' mt-1' : '')" style="flex: 0 0 100%">
+                            <template v-if="!pendingVersion"> Upload</template>
+                            <template v-else> Change file</template>
+                        </div>
+                    </label>
+                    <input
+                        type="file"
+                        id="pluginFile"
+                        name="pluginFile"
+                        accept=".jar,.zip"
+                        style="display: none"
+                        @change="fileUploaded($event.target.name, $event.target.files)"
+                    />
                 </div>
-            </label>
-            <input
-                type="file"
-                id="pluginFile"
-                name="pluginFile"
-                accept=".jar,.zip"
-                style="display: none"
-                @change="fileUploaded($event.target.name, $event.target.files)"
-            />
+            </HangarForm>
         </div>
-        <div class="alert-file file-project float-right" style="display: none">
-            <div class="alert alert-info float-left">
-                <i class="far fa-file-archive"></i>
-                <strong class="file-name"></strong>
-                <span class="file-size float-right"></span>
-            </div>
-            <div class="file-upload float-right">
-                <button
-                    data-toggle="tooltip"
-                    data-placement="right"
-                    title="Sign plugin"
-                    type="submit"
-                    name="submit"
-                    form="form-upload"
-                    class="btn btn-info btn-block btn-sign"
-                >
-                    <i class="fas fa-pencil-alt"></i>
-                </button>
-            </div>
-        </div>
-    </HangarForm>
-    <template v-if="pendingVersion">
-        <button class="btn btn-primary float-right mt-1 mr-1" @click="publish">Publish</button>
-    </template>
-    <template v-else>
-        <HangarForm :action="ROUTES.parse('VERSIONS_CREATE_EXTERNAL_URL', ownerName, projectSlug)" method="post" id="form-url-upload" clazz="form-inline">
-            <div class="input-group float-right" style="width: 50%">
-                <label for="externalUrl" style="margin-bottom: 10px">...or specify an external URL</label>
-                <input type="text" class="form-control" id="externalUrl" name="externalUrl" placeholder="External URL" style="width: 70%" />
-                <div class="input-group-append">
-                    <button class="btn btn-primary" type="submit">Create Version</button>
+        <div class="col-6">
+            <div class="alert-file file-project float-right" style="display: none">
+                <div class="alert alert-info float-left">
+                    <i class="far fa-file-archive"></i>
+                    <strong class="file-name"></strong>
+                    <span class="file-size float-right"></span>
+                </div>
+                <div class="file-upload float-right">
+                    <button
+                        data-toggle="tooltip"
+                        data-placement="right"
+                        title="Sign plugin"
+                        type="submit"
+                        name="submit"
+                        form="form-upload"
+                        class="btn btn-info btn-block btn-sign"
+                    >
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
                 </div>
             </div>
-        </HangarForm>
-    </template>
+            <template v-if="pendingVersion">
+                <button class="btn btn-primary float-right mt-1 mr-1" @click="publish">Publish</button>
+            </template>
+            <template v-else>
+                <HangarForm :action="ROUTES.parse('VERSIONS_CREATE_EXTERNAL_URL', ownerName, projectSlug)" method="post" id="form-url-upload">
+                    <div class="input-group">
+                        <label for="externalUrl" style="margin-bottom: 10px">...or specify an external URL</label>
+                        <input type="text" class="form-control" id="externalUrl" name="externalUrl" placeholder="External URL" style="width: 70%" />
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">Create Version</button>
+                        </div>
+                    </div>
+                </HangarForm>
+            </template>
+        </div>
+    </div>
 </template>
 <script>
 import HangarForm from '@/components/HangarForm';
