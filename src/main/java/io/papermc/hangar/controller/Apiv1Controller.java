@@ -118,17 +118,17 @@ public class Apiv1Controller extends HangarController {
 //        return ResponseEntity.ok(writeProjects(sortedProjects));
 //    }
 
-    @GetMapping("/v1/projects/{author}/{slug}")
-    public ResponseEntity<ObjectNode> showProject(@PathVariable String author, @PathVariable String slug) {
-        ProjectsTable project = projectsTable.get();
-        return ResponseEntity.ok((ObjectNode) writeProjects(List.of(project)).get(0));
-    }
-
-//    @GetMapping("/v1/projects/{id}")
-//    public ResponseEntity<ObjectNode> showProject(@PathVariable long id) {
-//        ProjectsTable project = projectService.getProjectsTable(id);
+//    @GetMapping("/v1/projects/{author}/{slug}")
+//    public ResponseEntity<ObjectNode> showProject(@PathVariable String author, @PathVariable String slug) {
+//        ProjectsTable project = projectsTable.get();
 //        return ResponseEntity.ok((ObjectNode) writeProjects(List.of(project)).get(0));
 //    }
+
+    @GetMapping("/v1/projects/{id}")
+    public ResponseEntity<ObjectNode> showProject(@PathVariable long id) {
+        ProjectsTable project = projectService.getProjectsTable(id);
+        return ResponseEntity.ok((ObjectNode) writeProjects(List.of(project)).get(0));
+    }
 
     @PreAuthorize("@authenticationService.authV1ApiRequest(T(io.papermc.hangar.model.Permission).EditApiKeys, T(io.papermc.hangar.controller.util.ApiScope).forProject(#author, #slug))")
     @UserLock

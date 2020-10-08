@@ -30,7 +30,7 @@ public interface ProjectChannelDao {
     @SqlUpdate("UPDATE project_channels SET name = :name, color = :color, is_non_reviewed = :nonReviewed WHERE project_id = :projectId AND name = :oldName")
     void update(long projectId, String oldName, String name, @EnumByOrdinal Color color, boolean nonReviewed);
 
-    @SqlQuery("SELECT * FROM project_channels WHERE project_id = :projectId LIMIT 1")
+    @SqlQuery("SELECT * FROM project_channels WHERE project_id = :projectId ORDER BY created_at LIMIT 1")
     ProjectChannelsTable getFirstChannel(long projectId);
 
     @SqlQuery("SELECT * FROM project_channels WHERE project_id = :projectId")

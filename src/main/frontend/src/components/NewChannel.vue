@@ -15,7 +15,7 @@
                 <p style="font-size: 12px" class="text-center">
                     Name must be: unique; alphanumeric, have no spaces, and max {{ maxChannelNameLen }} characters.
                 </p>
-                <div class="form-inline">
+                <div class="form-group">
                     <div id="channel-input" class="input-group">
                         <input
                             type="text"
