@@ -89,6 +89,7 @@ public class RoleService {
 
     public void removeRole(long orgId, long userId) {
         userOrganizationRolesDao.get().delete(orgId, userId);
+        organizationMembersDao.get().delete(orgId, userId);
     }
 
     public void addMember(long projectId, long userId) {

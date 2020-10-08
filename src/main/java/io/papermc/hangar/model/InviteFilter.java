@@ -1,5 +1,9 @@
 package io.papermc.hangar.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+
+@JsonFormat(shape = Shape.OBJECT)
 public enum InviteFilter {
     ALL(0, "all", "notification.invite.all"),
     PROJECTS(1, "projects", "notification.invite.projects"),
@@ -25,5 +29,11 @@ public enum InviteFilter {
 
     public String getTitle() {
         return title;
+    }
+
+    private static final InviteFilter[] VALUES = values();
+
+    public static InviteFilter[] getValues() {
+        return VALUES;
     }
 }
