@@ -59,6 +59,20 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <@header.header authEnabled=authEnabled />
     </#if>
 
+    <div tabindex="0" aria-label="Loading" class="loader active" aria-busy="true" id="page-loader">
+        <div class="loader-background"></div>
+        <div class="loader-icon">
+            <svg viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg">
+                <g fill="none" fill-rule="evenodd">
+                    <g transform="translate(1 1)" stroke-width="2">
+                        <circle stroke-opacity=".25" cx="18" cy="18" r="18"></circle>
+                        <path d="M36 18c0-9.94-8.06-18-18-18" transform="rotate(111.343 18 18)"></path>
+                    </g>
+                </g>
+            </svg>
+        </div>
+    </div>
+
     <div class="site-content">
         <#if noContainer>
             <#nested>
