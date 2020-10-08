@@ -1,5 +1,9 @@
 package io.papermc.hangar.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+
+@JsonFormat(shape = Shape.OBJECT)
 public enum NotificationFilter {
     UNREAD(0, "unread", "notification.empty.unread", "notification.unread", "n.read = false"),
     READ(1, "read", "notification.empty.read", "notification.read", "n.read = true"),
@@ -37,5 +41,11 @@ public enum NotificationFilter {
 
     public String getFilter() {
         return filter;
+    }
+
+    private static final NotificationFilter[] VALUES = values();
+
+    public static NotificationFilter[] getValues() {
+        return VALUES;
     }
 }

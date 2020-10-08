@@ -5,6 +5,7 @@ import {
     faArrowRight,
     faAsterisk,
     faBell,
+    faBirthdayCake,
     faBook,
     faBug,
     faCalendar,
@@ -176,7 +177,8 @@ library.add(
     faCheckSquare,
     faQuestion,
     faTag,
-    faGavel
+    faGavel,
+    faBirthdayCake
 );
 
 dom.watch();
