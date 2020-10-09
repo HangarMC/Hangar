@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller.api;
 
+import io.papermc.hangar.model.api.PlatformInfo;
 import io.papermc.hangar.model.generated.DeployVersionInfo;
 import io.papermc.hangar.model.generated.PaginatedVersionResult;
 import io.papermc.hangar.model.generated.Version;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 @Api(value = "versions", tags = "Versions")
-@RequestMapping("/api/v2/")
+@RequestMapping({"/api", "/api/v1"})
 public interface VersionsApi {
 
     @ApiOperation(value = "Creates a new version", nickname = "deployVersion", notes = "Creates a new version for a project. Requires the `create_version` permission in the project or owning organization.", response = Version.class, authorizations = {
@@ -86,4 +87,24 @@ public interface VersionsApi {
             @ApiParam(value = "The first date to include in the result", required = true) @RequestParam(value = "fromDate") @NotNull @Valid String fromDate,
             @ApiParam(value = "The last date to include in the result", required = true) @RequestParam(value = "toDate") @NotNull @Valid String toDate
     );
+
+    @ApiOperation(
+            value = "Returns a list of platforms and their information",
+            nickname = "showPlatforms",
+            notes = "Returns a list of platforms and their information. Used internally for dependency selection.",
+            response = PlatformInfo.class,
+            responseContainer = "List",
+            hidden = true,
+            authorizations = {
+                    @Authorization("Session")
+            },
+            tags = "Versions"
+    )
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Ok", response = PlatformInfo.class, responseContainer = "List"),
+            @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
+            @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
+    })
+    @GetMapping(value = "/platforms", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<List<PlatformInfo>> showPlatforms();
 }

@@ -206,7 +206,6 @@
 </template>
 <script>
 import { nextTick } from 'vue';
-import axios from 'axios';
 import $ from 'jquery';
 import 'bootstrap/js/dist/collapse';
 import { isEmpty, remove, union } from 'lodash-es';
@@ -250,7 +249,7 @@ export default {
         },
     },
     async created() {
-        const { data } = await axios.get(window.ROUTES.parse('APIV1_LIST_PLATFORMS'));
+        const data = await API.request('platforms');
         for (const platformObj of data) {
             this.platformInfo[platformObj.name.toUpperCase()] = platformObj;
             this.dependencyLinking[platformObj.name.toUpperCase()] = {};
@@ -298,10 +297,8 @@ export default {
             for (const dep of deps) {
                 if (dep.project_id) {
                     this.dependencyLinking[platformName][dep.name] = 'Hangar';
-                    axios.get(window.ROUTES.parse('APIV1_SHOW_PROJECT_BY_ID', dep.project_id)).then((res) => {
-                        if (res.data) {
-                            this.selectProject(platformName, dep.name, res.data);
-                        }
+                    API.request(`projects/${dep.project_id}`).then((res) => {
+                        this.selectProject(platformName, dep.name, res);
                     });
                 } else if (dep.external_url) {
                     $(`#${platformName}-${dep.name}-external-input`).val(dep.external_url);

@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import { KEY_ENTER, toggleSpinner } from '@/utils';
+import { API } from '@/api';
 
 //=====> HELPER FUNCTIONS
 
@@ -29,32 +30,26 @@ export function initUserSearch(callback) {
         const username = input.val().trim();
         if (username !== '') {
             toggleSpinner($(this).find('[data-fa-i2svg]').toggleClass('fa-search'));
-            $.ajax({
-                url: '/api/v1/users/' + username,
-                dataType: 'json',
-
-                complete: function () {
-                    input.val('');
-                    toggleSpinner($('.user-search .btn-search [data-fa-i2svg]').toggleClass('fa-search'));
-                    $('.user-search .btn-search').prop('disabled', true);
-                },
-
-                error: function () {
-                    callback({
-                        isSuccess: false,
-                        username: username,
-                        user: null,
-                    });
-                },
-
-                success: function (user) {
+            API.request(`users/${username}`)
+                .then((user) => {
                     callback({
                         isSuccess: true,
                         username: username,
                         user: user,
                     });
-                },
-            });
+                })
+                .catch(() => {
+                    callback({
+                        isSuccess: false,
+                        username: username,
+                        user: null,
+                    });
+                })
+                .finally(() => {
+                    input.val('');
+                    toggleSpinner($('.user-search .btn-search [data-fa-i2svg]').toggleClass('fa-search'));
+                    $('.user-search .btn-search').prop('disabled', true);
+                });
         }
     });
 }

@@ -54,6 +54,5 @@ Versions page within Project overview.
                 <@users.memberList project=p perms=sp.permissions settingsCall=Routes.PROJECTS_SHOW_SETTINGS.getRouteUrl(p.project.ownerName, p.project.slug)/>
             </div>
         </div>
-
     </div>
 </@projects.view>

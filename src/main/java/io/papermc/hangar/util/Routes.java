@@ -126,22 +126,11 @@ public enum Routes {
     CHANNELS_SAVE("channels.save", Paths.CHANNELS_SAVE, of("author", "slug", "channel"), of()),
     CHANNELS_SHOW_LIST("channels.showList", Paths.CHANNELS_SHOW_LIST, of("author", "slug"), of()),
     CHANNELS_CREATE("channels.create", Paths.CHANNELS_CREATE, of("author", "slug"), of()),
-    APIV1_SHOW_VERSION("apiv1.showVersion", Paths.APIV1_SHOW_VERSION, of("author", "slug", "name"), of()),
-    APIV1_LIST_PROJECTS("apiv1.listProjects", Paths.APIV1_LIST_PROJECTS, of(), of("categories", "sort", "q", "limit", "offset")),
-    APIV1_LIST_USERS("apiv1.listUsers", Paths.APIV1_LIST_USERS, of(), of("limit", "offset")),
-    APIV1_LIST_VERSIONS("apiv1.listVersions", Paths.APIV1_LIST_VERSIONS, of("author", "slug"), of("channels", "limit", "offset")),
+
+
+    // TO BE REMOVED
     APIV1_REVOKE_KEY("apiv1.revokeKey", Paths.APIV1_REVOKE_KEY, of("author", "slug"), of()),
-    APIV1_CREATE_KEY("apiv1.createKey", Paths.APIV1_CREATE_KEY, of("author", "slug"), of()),
-    APIV1_SHOW_PROJECT("apiv1.showProject", Paths.APIV1_SHOW_PROJECT, of("author", "slug"), of()),
-    APIV1_SHOW_PROJECT_BY_ID("apiv1.showProjectById", Paths.APIV1_SHOW_PROJECT_BY_ID, of("id"), of()),
-    APIV1_SYNC_SSO("apiv1.syncSso", Paths.APIV1_SYNC_SSO, of(), of()),
-    APIV1_TAG_COLOR("apiv1.tagColor", Paths.APIV1_TAG_COLOR, of("tagId"), of()),
-    APIV1_SHOW_STATUS_Z("apiv1.showStatusZ", Paths.APIV1_SHOW_STATUS_Z, of(), of()),
-    APIV1_SHOW_USER("apiv1.showUser", Paths.APIV1_SHOW_USER, of("user"), of()),
-    APIV1_LIST_PAGES("apiv1.listPages", Paths.APIV1_LIST_PAGES, of("author", "slug"), of("parentId")),
-    APIV1_DEPLOY_VERSION("apiv1.deployVersion", Paths.APIV1_DEPLOY_VERSION, of("author", "slug", "name"), of()),
-    APIV1_LIST_TAGS("apiv1.listTags", Paths.APIV1_LIST_TAGS, of("author", "slug", "versionName"), of()),
-    APIV1_LIST_PLATFORMS("apiv1.listPlatforms", Paths.APIV1_LIST_PLATFORMS, of(), of());
+    APIV1_CREATE_KEY("apiv1.createKey", Paths.APIV1_CREATE_KEY, of("author", "slug"), of());
 
     private static final Map<String, Routes> ROUTES = new HashMap<>();
     private static final Map<Routes, String> JS_ROUTES = new EnumMap<>(Routes.class);
@@ -350,22 +339,9 @@ public enum Routes {
         public static final String CHANNELS_SHOW_LIST = "/{author}/{slug}/channels";
         public static final String CHANNELS_CREATE = "/{author}/{slug}/channels";
 
-        public static final String APIV1_SHOW_VERSION = "/api/v1/projects/{author}/{slug}/versions/{name}";
-        public static final String APIV1_LIST_PROJECTS = "/api/v1/projects";
-        public static final String APIV1_LIST_USERS = "/api/v1/users";
-        public static final String APIV1_LIST_VERSIONS = "/api/v1/projects/{author}/{slug}/versions";
+        // TO BE REMOVED
         public static final String APIV1_REVOKE_KEY = "/api/v1/projects/{author}/{slug}/keys/revoke";
         public static final String APIV1_CREATE_KEY = "/api/v1/projects/{author}/{slug}/keys/new";
-        public static final String APIV1_SHOW_PROJECT = "/api/v1/projects/{author}/{slug}";
-        public static final String APIV1_SHOW_PROJECT_BY_ID = "/api/v1/projects/{id}";
-        public static final String APIV1_SYNC_SSO = "/api/sync_sso";
-        public static final String APIV1_TAG_COLOR = "/api/v1/tags/{tagId}";
-        public static final String APIV1_SHOW_STATUS_Z = "/statusz";
-        public static final String APIV1_SHOW_USER = "/api/v1/users/{user}";
-        public static final String APIV1_LIST_PAGES = "/api/v1/projects/{author}/{slug}/pages";
-        public static final String APIV1_DEPLOY_VERSION = "/api/v1/projects/{author}/{slug}/versions/{name}";
-        public static final String APIV1_LIST_TAGS = "/api/v1/projects/{author}/{slug}/tags/{versionName}";
-        public static final String APIV1_LIST_PLATFORMS = "/api/v1/platforms";
 
         private Paths() { }
     }

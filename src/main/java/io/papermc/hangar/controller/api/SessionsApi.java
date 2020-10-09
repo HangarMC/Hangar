@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Api(value = "sessions", description = "the sessions API", tags = "Sessions (Authentication)")
-@RequestMapping("/api/v2/")
+@RequestMapping({"/api", "/api/v1"})
 public interface SessionsApi {
 
     @ApiOperation(value = "Invalidates the API session used for the request.", nickname = "deleteSession", notes = "Invalidates the API session used to make this call.", authorizations = {

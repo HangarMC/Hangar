@@ -5,9 +5,12 @@ import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controller.exceptions.HangarApiException;
 import io.papermc.hangar.model.ApiAuthInfo;
 import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.Platform;
+import io.papermc.hangar.model.api.PlatformInfo;
 import io.papermc.hangar.model.generated.DeployVersionInfo;
 import io.papermc.hangar.model.generated.PaginatedVersionResult;
 import io.papermc.hangar.model.generated.Pagination;
+import io.papermc.hangar.model.generated.TagColor;
 import io.papermc.hangar.model.generated.Version;
 import io.papermc.hangar.model.generated.VersionStatsDay;
 import io.papermc.hangar.service.api.VersionApiService;
@@ -25,6 +28,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -92,5 +96,19 @@ public class VersionsApiController implements VersionsApi {
             throw new HangarApiException(HttpStatus.NOT_FOUND); // TODO Not found might not be right here?
         }
         return ResponseEntity.ok(versionStats);
+    }
+
+    @Override
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).None, T(io.papermc.hangar.controller.util.ApiScope).forGlobal())")
+    public ResponseEntity<List<PlatformInfo>> showPlatforms() {
+        List<PlatformInfo> platformInfoList = new ArrayList<>();
+        for (Platform platform : Platform.getValues()) {
+            platformInfoList.add(new PlatformInfo(platform.getName(),
+                    platform.getUrl(),
+                    platform.getPlatformCategory(),
+                    platform.getPossibleVersions(),
+                    new TagColor().background(platform.getTagColor().getBackground()).foreground(platform.getTagColor().getForeground())));
+        }
+        return ResponseEntity.ok(platformInfoList);
     }
 }
