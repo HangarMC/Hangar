@@ -70,7 +70,7 @@
                     <div>
 
                         <#if !v.recommended && sp.perms(Permission.EditVersion) && v.v.visibility != Visibility.SOFTDELETE>
-                            <@form.form method="POST" action=Routes.VERSIONS_SET_RECOMMENDED.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString) class="form-inline">
+                            <@form.form method="POST" action=Routes.VERSIONS_SET_RECOMMENDED.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString) class="d-inline">
                                 <@csrf.formField />
                                 <button type="submit" class="btn btn-info">
                                     <i class="fas fa-gem"></i> Set recommended

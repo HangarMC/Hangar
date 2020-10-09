@@ -95,14 +95,14 @@ export default {
             });
             this.starIncrement *= -1;
         },
-      checkHasUser() {
-          if (!this.hasUser) {
-            // TODO some alert or modal?
-            alert("Please login first");
-            return false;
-          }
-          return true;
-      }
+        checkHasUser() {
+            if (!this.hasUser) {
+                // TODO some alert or modal?
+                alert('Please login first');
+                return false;
+            }
+            return true;
+        },
     },
     created() {
         this.value.starred = this.isStarred;

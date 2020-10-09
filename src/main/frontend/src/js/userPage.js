@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import { apiV2Request } from '@/js/apiRequests';
 
+$.ajaxSetup(window.ajaxSettings);
+
 //=====> EXTERNAL CONSTANTS
 
 const USERNAME = window.USERNAME;
