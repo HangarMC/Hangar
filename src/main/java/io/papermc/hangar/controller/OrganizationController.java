@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class OrgController extends HangarController {
+public class OrganizationController extends HangarController {
 
     private static final String STATUS_DECLINE = "decline";
     private static final String STATUS_ACCEPT = "accept";
@@ -65,7 +65,7 @@ public class OrgController extends HangarController {
     private final HttpServletRequest request;
 
     @Autowired
-    public OrgController(AuthenticationService authenticationService, OrgService orgService, OrgFactory orgFactory, UserService userService, RoleService roleService, UserActionLogService userActionLogService, NotificationService notificationService, HangarConfig hangarConfig, HttpServletRequest request) {
+    public OrganizationController(AuthenticationService authenticationService, OrgService orgService, OrgFactory orgFactory, UserService userService, RoleService roleService, UserActionLogService userActionLogService, NotificationService notificationService, HangarConfig hangarConfig, HttpServletRequest request) {
         this.authenticationService = authenticationService;
         this.orgService = orgService;
         this.orgFactory = orgFactory;

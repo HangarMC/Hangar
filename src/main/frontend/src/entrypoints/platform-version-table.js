@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
 import axios from 'axios';
-import PlatformVersionTable from '@/PlatformVersionTable';
+import PlatformVersionTable from '@/components/entrypoints/PlatformVersionTable';
 
 axios.defaults.headers.post[window.csrfInfo.headerName] = window.csrfInfo.token;
 

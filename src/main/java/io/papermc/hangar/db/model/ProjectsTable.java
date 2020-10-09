@@ -53,7 +53,7 @@ public class ProjectsTable implements Visitable {
         this.support = StringUtils.stringOrNull(newProjectForm.getExternalSupportUrl());
 
         this.keywords = newProjectForm.getKeywords() != null ? Set.of(newProjectForm.getKeywords().split("\\s")) : Set.of();
-        this.licenseName = StringUtils.stringOrNull(newProjectForm.getLicenseType().equalsIgnoreCase("custom") ? newProjectForm.getLicenseName() : newProjectForm.getLicenseType());
+        this.licenseName = StringUtils.stringOrNull("custom".equalsIgnoreCase(newProjectForm.getLicenseType()) ? newProjectForm.getLicenseName() : newProjectForm.getLicenseType());
         this.licenseUrl = StringUtils.stringOrNull(newProjectForm.getLicenseUrl());
     }
 

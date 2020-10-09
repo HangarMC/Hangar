@@ -86,6 +86,6 @@ public abstract class HangarController {
     }
 
     protected UsersTable getCurrentUser() {
-        return currentUser.get().orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
+        return currentUser.get().orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
     }
 }

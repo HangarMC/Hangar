@@ -1,5 +1,7 @@
 package io.papermc.hangar.model.generated;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.model.Role;
 import io.swagger.annotations.ApiModelProperty;
@@ -27,6 +29,7 @@ public class User {
     private OffsetDateTime joinDate = null;
 
     @JsonProperty("roles")
+    @JsonFormat(shape = Shape.STRING)
     private List<Role> roles = new ArrayList<>();
 
     @ApiModelProperty(required = true)

@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import Notifications from '@/Notifications';
+import Notifications from '@/components/entrypoints/Notifications';
 import { setupI18n } from '@/plugins/i18n';
 
 const i18n = setupI18n();

@@ -1,7 +1,11 @@
 package io.papermc.hangar.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 
+@JsonFormat(shape = Shape.OBJECT)
 public enum Role {
 
     HANGAR_ADMIN("Hangar_Admin", 1, RoleCategory.GLOBAL, Permission.All, "Hangar Admin", Color.RED),
@@ -43,12 +47,17 @@ public enum Role {
     private static final Role[] VALUES = values();
 
     private final String value;
+    @JsonIgnore
     private final long roleId;
+    @JsonIgnore
     private final RoleCategory category;
+    @JsonIgnore
     private final Permission permissions;
     private final String title;
     private final Color color;
+    @JsonIgnore
     private final boolean isAssignable;
+    @JsonIgnore
     private Long rank = null;
 
     Role(String value, int roleId, RoleCategory category, Permission permissions, String title, Color color) {

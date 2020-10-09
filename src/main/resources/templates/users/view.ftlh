@@ -17,7 +17,7 @@
     <#return u.isOrga() && o.present && so.get().permissions.has(Permission.EditOrganizationSettings)>
 </#function>
 
-<#macro view u o so additionalScripts="">
+<#macro view u o so additionalScripts="" additionalStyling="">
     <#-- @ftlvariable name="u" type="io.papermc.hangar.model.viewhelpers.UserData" -->
     <#-- @ftlvariable name="o" type="java.util.Optional<io.papermc.hangar.model.viewhelpers.OrganizationData>" -->
     <#-- @ftlvariable name="so" type="java.util.Optional<io.papermc.hangar.model.viewhelpers.ScopedOrganizationData>" -->

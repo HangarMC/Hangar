@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import ProjectList from './components/ProjectList';
+import ProjectList from '../ProjectList';
 
 export default {
     components: {

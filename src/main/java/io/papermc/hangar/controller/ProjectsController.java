@@ -27,6 +27,7 @@ import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.generated.Note;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
+import io.papermc.hangar.model.viewhelpers.ScopedOrganizationData;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.model.viewhelpers.UserData;
 import io.papermc.hangar.security.annotations.GlobalPermission;
@@ -207,6 +208,28 @@ public class ProjectsController extends HangarController {
         if (projectRole == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+        updateRole(status, projectRole);
+    }
+
+    @Secured("ROLE_USER")
+    @PostMapping("/invite/{id}/{status}/{behalf}")
+    @ResponseStatus(HttpStatus.OK)
+    public void setInviteStatusOnBehalf(@PathVariable long id, @PathVariable String status, @PathVariable String behalf) {
+        UserProjectRolesTable projectRole = roleService.getUserProjectRole(id);
+        OrganizationsTable organizationsTable = orgService.getOrganization(behalf);
+        if (projectRole == null || organizationsTable == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        ScopedOrganizationData scopedOrganizationData = orgService.getScopedOrganizationData(organizationsTable);
+        if (!scopedOrganizationData.getPermissions().has(Permission.ManageProjectMembers)) {
+            if (getCurrentUser() != null) { // getCurrentUser() handles throwing UNAUTHORIZED
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            }
+        }
+        updateRole(status, projectRole);
+    }
+
+    private void updateRole(String status, UserProjectRolesTable projectRole) {
         switch (status) {
             case STATUS_DECLINE:
                 roleService.removeRole(projectRole);
@@ -222,13 +245,6 @@ public class ProjectsController extends HangarController {
             default:
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-    }
-
-    @Secured("ROLE_USER")
-    @PostMapping("/invite/{id}/{status}/{behalf}")
-    public Object setInviteStatusOnBehalf(@PathVariable Object id, @PathVariable Object status, @PathVariable Object behalf) {
-        // TODO perms Permission.ManageProjectMembers
-        return null; // TODO implement setInviteStatusOnBehalf request controller
     }
 
     @Secured("ROLE_USER")

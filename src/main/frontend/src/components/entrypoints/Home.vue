@@ -78,10 +78,10 @@
 </template>
 
 <script>
-import ProjectList from './components/ProjectList';
+import ProjectList from '../ProjectList';
 import queryString from 'query-string';
-import { clearFromDefaults } from './utils';
-import { Category, Platform, SortOptions } from './enums';
+import { clearFromDefaults } from '../../utils';
+import { Category, Platform, SortOptions } from '../../enums';
 import { debounce } from 'lodash-es';
 
 function defaultData() {
@@ -201,7 +201,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import './scss/variables';
+@import 'src/scss/variables';
 
 .select-sort {
     margin-bottom: 10px;

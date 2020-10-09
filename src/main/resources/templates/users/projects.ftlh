@@ -12,45 +12,51 @@
 
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "js/user-profile.js" />"></script>
-    <#if u.isOrga() && o.present && canEditOrgMembers()>
-    <script type="text/javascript" src="<@hangar.url "js/orgInvites.js" />"></script>
+    <#if u.isOrga()>
+        <#if o.present && canEditOrgMembers()>
+            <script>
+                window.ORG_NAME = '${u.user.name}';
+                window.PROJECT_ROLES = ${utils.serializeMap(o.get().projectRoles)};
+            </script>
+        </#if>
+        <script type="text/javascript" src="<@hangar.url "js/org-sidebar.js" />"></script>
     </#if>
     <script type="text/javascript" src="<@hangar.url "js/userSearch.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "js/memberList.js" />"></script>
 </#assign>
 
-<@users.view u=u o=o so=so additionalScripts=scriptsVar>
+<#assign styleVar>
+    <#if u.isOrga()>
+        <link rel="stylesheet" href="<@hangar.url "css/org-sidebar.css" />">
+    </#if>
+</#assign>
+
+<@users.view u=u o=o so=so additionalScripts=scriptsVar additionalStyling=styleVar>
     <div class="row">
         <div class="col-md-8">
             <div id="user-profile"></div>
         </div>
         <div class="col-md-4">
             <#if u.isOrga() && o.present && canEditOrgMembers()>
-                <div class="card-user-info card">
-                    <div class="card-header">
-                        <h3 class="card-title"><@spring.message "project.manager" /></h3>
-                    </div>
-                    <table class="table card-body">
-                        <tbody>
+                <div id="org-project-manager">
+                    <div class="card-user-info card">
+                        <div class="card-header">
+                            <h3 class="card-title"><@spring.message "project.manager" /></h3>
+                        </div>
+                        <table class="table card-body">
+                            <tbody>
                             <#list o.get().projectRoles as role, project>
                                 <tr>
                                     <td>
                                         <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.ownerName, project.slug)}">${project.ownerName}/${project.slug}</a>
-                                        <span class="minor">${role.role.title}</span>
+                                        <span class="minor" style="font-size: 12px">${role.role.title}</span>
                                     </td>
-                                    <td>
-                                        <#if role.role != Role.PROJECT_OWNER>
-                                            <#if role.isAccepted>
-                                                <button class="btn btn-sm btn-danger float-right btn-invite" data-invite-id="${role.id}" data-invite-behalf="${u.user.name}" data-invite-accepted="decline">Leave</button>
-                                            <#else>
-                                                <button class="btn btn-sm btn-info float-right btn-invite" data-invite-id="${role.id}" data-invite-behalf="${u.user.name}" data-invite-accepted="accept">Join</button>
-                                            </#if>
-                                        </#if>
-                                    </td>
+                                    <td></td>
                                 </tr>
                             </#list>
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </#if>
             <#if !u.isOrga()>
@@ -122,10 +128,9 @@
                     </div>
                 </div>
             <#else>
-                <#assign orgData=o> <#-- todo fix scopeddata -->
-                <@memberList.memberList project=orgData.get() editable=true perms=so.get().permissions
-                saveCall=Routes.ORG_UPDATE_MEMBERS.getRouteUrl(orgData.get().org.name)
-                removeCall=Routes.ORG_REMOVE_MEMBER.getRouteUrl(orgData.get().org.name) />
+                <@memberList.memberList project=o.get() editable=true perms=so.get().permissions
+                saveCall=Routes.ORG_UPDATE_MEMBERS.getRouteUrl(o.get().org.name)
+                removeCall=Routes.ORG_REMOVE_MEMBER.getRouteUrl(o.get().org.name) />
             </#if>
         </div>
     </div>

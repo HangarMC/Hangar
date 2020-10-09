@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import Stats from '@/Stats';
+import Stats from '@/components/entrypoints/Stats';
 import { setupI18n } from '@/plugins/i18n';
 
 const i18n = setupI18n();

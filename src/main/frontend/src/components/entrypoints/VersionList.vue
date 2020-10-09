@@ -77,9 +77,9 @@
 import fileSize from 'filesize';
 import moment from 'moment';
 
-import Tag from './components/Tag';
-import Pagination from './components/Pagination';
-import { Visibility } from './enums';
+import Tag from '../Tag';
+import Pagination from '../Pagination';
+import { Visibility } from '../../enums';
 import { apiV2Request } from '@/js/apiRequests';
 
 export default {

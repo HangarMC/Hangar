@@ -85,6 +85,7 @@ public class RoleService {
 
     public void removeRole(UserProjectRolesTable userProjectRolesTable) {
         userProjectRolesDao.get().delete(userProjectRolesTable.getProjectId(), userProjectRolesTable.getUserId());
+        projectMembersDao.get().delete(userProjectRolesTable.getProjectId(), userProjectRolesTable.getUserId());
     }
 
     public void removeRole(long orgId, long userId) {

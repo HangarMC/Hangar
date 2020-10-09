@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import ProjectControls from '@/ProjectControls';
+import ProjectControls from '@/components/entrypoints/ProjectControls';
 import { setupI18n } from '@/plugins/i18n';
 
 const mountPoint = document.getElementById('project-controls');

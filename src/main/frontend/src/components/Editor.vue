@@ -64,8 +64,6 @@
             <input v-if="extraFormValue" type="hidden" :value="extraFormValue" name="name" />
         </HangarForm>
 
-        <div v-show="!editing" class="page-content page-rendered page-content-view" v-html="preCooked"></div>
-
         <teleport to="body">
             <div v-if="deletable" class="modal fade" id="modal-page-delete" tabindex="-1" role="dialog" aria-labelledby="label-page-delete">
                 <div class="modal-dialog" role="document">
@@ -88,6 +86,7 @@
             </div>
         </teleport>
     </template>
+    <div v-show="!editing" class="page-content page-rendered page-content-view" v-html="preCooked"></div>
 </template>
 <script>
 import { nextTick } from 'vue';

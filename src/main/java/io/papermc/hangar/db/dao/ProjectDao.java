@@ -154,8 +154,17 @@ public interface ProjectDao {
     List<UnhealthyProject> getUnhealthyProjects(@Define("age") long staleAgeSeconds);
 
     @RegisterBeanMapper(value = UserProjectRolesTable.class, prefix = "pr")
-    @SqlQuery("SELECT upr.id pr_id, upr.created_at pr_created_at, upr.user_id pr_user_id, upr.role_type pr_role_type, upr.project_id pr_project_id, upr.is_accepted pr_is_accepted, " +
-            "p.* FROM user_project_roles upr JOIN projects p ON p.id = upr.project_id WHERE upr.user_id = :userId")
+    @SqlQuery("SELECT " +
+            "   upr.id pr_id," +
+            "   upr.created_at pr_created_at," +
+            "   upr.user_id pr_user_id," +
+            "   upr.role_type pr_role_type," +
+            "   upr.project_id pr_project_id," +
+            "   upr.is_accepted pr_is_accepted, " +
+            "   p.* " +
+            "FROM user_project_roles upr " +
+            "   JOIN projects p ON p.id = upr.project_id " +
+            "WHERE upr.user_id = :userId")
     Map<UserProjectRolesTable, ProjectsTable> getProjectRoles(long userId);
 
     @SqlQuery("SELECT v.version_string version_versionString, v.file_name version_fileName, p.owner_name AS owner, p.name AS name " +
