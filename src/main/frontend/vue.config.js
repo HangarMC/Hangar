@@ -25,13 +25,16 @@ module.exports = {
                     extractComments: true,
                     cache: true,
                     parallel: true,
-                    sourceMap: true, // Must be set to true if using source-maps in production
+                    sourceMap: false, // Must be set to true if using source-maps in development/production
                     terserOptions: {
                         // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
                         extractComments: 'all',
                         compress: {
                             drop_console: true,
                             pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn'],
+                        },
+                        output: {
+                            comments: false,
                         },
                     },
                 }),
