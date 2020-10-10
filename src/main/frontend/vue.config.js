@@ -20,7 +20,21 @@ module.exports = {
         plugins: [new StatsPlugin('stats.json')],
         optimization: {
             minimize: true,
-            minimizer: [new TerserPlugin()],
+            minimizer: [
+                new TerserPlugin({
+                    extractComments: true,
+                    cache: true,
+                    parallel: true,
+                    sourceMap: true, // Must be set to true if using source-maps in production
+                    terserOptions: {
+                        // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
+                        extractComments: 'all',
+                        compress: {
+                            drop_console: true,
+                        },
+                    },
+                }),
+            ],
             splitChunks: {
                 cacheGroups: {
                     // TODO remove vendor chunk, make everything depend on main chunk, stuff like chart.js should only be used in its own file
