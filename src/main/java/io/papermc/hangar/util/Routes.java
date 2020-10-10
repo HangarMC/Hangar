@@ -89,6 +89,7 @@ public enum Routes {
     VERSIONS_SHOW_CREATOR_WITH_META("versions.showCreatorWithMeta", Paths.VERSIONS_SHOW_CREATOR_WITH_META, of("author", "slug", "version"), of()),
     VERSIONS_CONFIRM_DOWNLOAD("versions.confirmDownload", Paths.VERSIONS_CONFIRM_DOWNLOAD, of("author", "slug", "version"), of("downloadType", "token", "dummy")),
     PAGES_SHOW_PREVIEW("pages.showPreview", Paths.PAGES_SHOW_PREVIEW, of(), of()),
+    PAGES_BB_CONVERT("pages.bbConvert", Paths.PAGES_BB_CONVERT, of(), of()),
     PAGES_SAVE("pages.save", Paths.PAGES_SAVE, of("author", "slug", "page"), of()),
     PAGES_SHOW_EDITOR("pages.showEditor", Paths.PAGES_SHOW_EDITOR, of("author", "slug", "page"), of()),
     PAGES_SHOW("pages.show", Paths.PAGES_SHOW, of("author", "slug", "page"), of()),
@@ -308,6 +309,7 @@ public enum Routes {
         public static final String VERSIONS_CONFIRM_DOWNLOAD = "/{author}/{slug}/versions/{version}/confirm";
 
         public static final String PAGES_SHOW_PREVIEW = "/pages/preview";
+        public static final String PAGES_BB_CONVERT = "/pages/bb-convert";
         public static final String PAGES_SAVE = "/{author}/{slug}/pages/{page}/edit";
         public static final String PAGES_SHOW_EDITOR = "/{author}/{slug}/pages/{page}/edit";
         public static final String PAGES_SHOW = "/{author}/{slug}/pages/{page}";

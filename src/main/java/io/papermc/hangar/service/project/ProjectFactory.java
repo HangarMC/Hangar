@@ -93,8 +93,11 @@ public class ProjectFactory {
 
         ProjectChannelsTable channelsTable = new ProjectChannelsTable(hangarConfig.channels.getNameDefault(), hangarConfig.channels.getColorDefault(), -1, false);
 
-        String content = "# " + projectsTable.getName() + "\n\n" + hangarConfig.pages.home.getMessage();
-        ProjectPagesTable pagesTable = new ProjectPage(-1, hangarConfig.pages.home.getName(), StringUtils.slugify(hangarConfig.pages.home.getName()), content, false, null);
+        String newPageContent = StringUtils.stringOrNull(newProjectForm.getPageContent());
+        if (newPageContent == null) {
+            newPageContent = "# " + projectsTable.getName() + "\n\n" + hangarConfig.pages.home.getMessage();
+        }
+        ProjectPagesTable pagesTable = new ProjectPage(-1, hangarConfig.pages.home.getName(), StringUtils.slugify(hangarConfig.pages.home.getName()), newPageContent, false, null);
 
         checkProjectAvailability(ownerUser, projectsTable.getName());
 

@@ -16,6 +16,8 @@ public class NewProjectForm {
     private String licenseName;
     private String licenseUrl;
 
+    private String pageContent;
+
     public String getName() {
         return name;
     }
@@ -110,5 +112,32 @@ public class NewProjectForm {
 
     public void setLicenseUrl(String licenseUrl) {
         this.licenseUrl = licenseUrl;
+    }
+
+    public String getPageContent() {
+        return pageContent;
+    }
+
+    public void setPageContent(String pageContent) {
+        this.pageContent = pageContent;
+    }
+
+    @Override
+    public String toString() {
+        return "NewProjectForm{" +
+                "name='" + name + '\'' +
+                ", category='" + category + '\'' +
+                ", description='" + description + '\'' +
+                ", owner=" + owner +
+                ", homepageUrl='" + homepageUrl + '\'' +
+                ", issueTrackerUrl='" + issueTrackerUrl + '\'' +
+                ", sourceUrl='" + sourceUrl + '\'' +
+                ", externalSupportUrl='" + externalSupportUrl + '\'' +
+                ", keywords='" + keywords + '\'' +
+                ", licenseType='" + licenseType + '\'' +
+                ", licenseName='" + licenseName + '\'' +
+                ", licenseUrl='" + licenseUrl + '\'' +
+                ", pageContent='" + pageContent + '\'' +
+                '}';
     }
 }

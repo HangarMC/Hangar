@@ -3,6 +3,7 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 import {
     faArrowLeft,
     faArrowRight,
+    faArrowsAltV,
     faAsterisk,
     faBell,
     faBirthdayCake,
@@ -178,7 +179,8 @@ library.add(
     faQuestion,
     faTag,
     faGavel,
-    faBirthdayCake
+    faBirthdayCake,
+    faArrowsAltV
 );
 
 dom.watch();
