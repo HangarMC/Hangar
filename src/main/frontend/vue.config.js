@@ -31,6 +31,7 @@ module.exports = {
                         extractComments: 'all',
                         compress: {
                             drop_console: true,
+                            pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn'],
                         },
                     },
                 }),
