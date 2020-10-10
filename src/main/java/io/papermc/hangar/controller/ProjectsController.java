@@ -8,6 +8,7 @@ import io.papermc.hangar.controller.forms.NewProjectForm;
 import io.papermc.hangar.controller.forms.ProjectNameValidate;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
+import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.db.dao.GeneralDao;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.ProjectDao;
@@ -48,6 +49,7 @@ import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.AlertUtil;
 import io.papermc.hangar.util.AlertUtil.AlertType;
 import io.papermc.hangar.util.FileUtils;
+import io.papermc.hangar.util.ListUtils;
 import io.papermc.hangar.util.Routes;
 import io.papermc.hangar.util.StringUtils;
 import io.papermc.hangar.util.TemplateHelper;
@@ -537,12 +539,16 @@ public class ProjectsController extends HangarController {
         }
 
         // TODO perhaps bulk notification insert?
-        if (users != null && roles != null) {
-            for (int i = 0; i < users.size(); i++) {
-                roleService.addRole(project, users.get(i), roles.get(i), false);
-                notificationService.sendNotification(users.get(i), project.getOwnerId(), NotificationType.PROJECT_INVITE, new String[]{"notification.project.invite", roles.get(i).getTitle(), project.getName()});
+
+        Map<Long, Role> userRoles = ListUtils.zip(users, roles);
+        userRoles.forEach((memberId, role) -> {
+            if (role.getCategory() != RoleCategory.PROJECT || !role.isAssignable()) {
+                // ignore roles that aren't project roles and aren't assignable
+                return;
             }
-        }
+            roleService.addRole(project, memberId, role, false);
+            notificationService.sendNotification(memberId, project.getOwnerId(), NotificationType.PROJECT_INVITE, new String[]{"notification.project.invite", role.getTitle(), project.getName()});
+        });
 
         if (userUps != null && roleUps != null) {
             Map<String, UsersTable> usersToUpdate = userService.getUsers(userUps).stream().collect(Collectors.toMap(UsersTable::getName, user -> user));

@@ -1,5 +1,6 @@
 package io.papermc.hangar.db.customtypes;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import org.postgresql.util.PGobject;
 
 import java.util.Objects;
@@ -28,6 +29,7 @@ public class RoleCategory extends PGobject {
     }
 
     @Override
+    @JsonValue
     public String getValue() {
         return value;
     }

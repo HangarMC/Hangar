@@ -1,5 +1,7 @@
 package io.papermc.hangar.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -47,11 +49,8 @@ public enum Role {
     private static final Role[] VALUES = values();
 
     private final String value;
-    @JsonIgnore
     private final long roleId;
-    @JsonIgnore
     private final RoleCategory category;
-    @JsonIgnore
     private final Permission permissions;
     private final String title;
     private final Color color;
@@ -120,6 +119,7 @@ public enum Role {
         return null;
     }
 
+    @JsonCreator(mode = Mode.DELEGATING)
     public static Role fromValue(String value) {
         for (Role r : values()) {
             if (r.value.equals(value)) {

@@ -13,16 +13,23 @@
 <#assign scriptsVar>
     <script type="text/javascript" src="<@hangar.url "js/user-profile.js" />"></script>
     <#if u.isOrga()>
+        <script>
+            window.JOINABLE = ${mapper.valueToTree(o.get())};
+            window.CAN_MANAGE_MEMBERS = ${so.get().permissions.has(Permission.ManageSubjectMembers)?c};
+            window.ORG_OWNER_PERM = ${Permission.IsOrganizationOwner.value?c};
+            window.FILTERED_MEMBERS = ${utils.serializeMap(o.get().filteredMembers(headerData))};
+            window.AVATAR_URL = '${config.security.api.avatarUrl}';
+        </script>
         <#if o.present && canEditOrgMembers()>
             <script>
+                window.POSSIBLE_ROLES = ${mapper.valueToTree(Role.values()?filter(role -> role.category == o.get().roleCategory && role.isAssignable())?sort_by("permissions")?reverse)};
+
                 window.ORG_NAME = '${u.user.name}';
                 window.PROJECT_ROLES = ${utils.serializeMap(o.get().projectRoles)};
             </script>
         </#if>
         <script type="text/javascript" src="<@hangar.url "js/org-sidebar.js" />"></script>
     </#if>
-    <script type="text/javascript" src="<@hangar.url "js/userSearch.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "js/memberList.js" />"></script>
 </#assign>
 
 <#assign styleVar>
@@ -128,9 +135,11 @@
                     </div>
                 </div>
             <#else>
-                <@memberList.memberList project=o.get() editable=true perms=so.get().permissions
-                saveCall=Routes.ORG_UPDATE_MEMBERS.getRouteUrl(o.get().org.name)
-                removeCall=Routes.ORG_REMOVE_MEMBER.getRouteUrl(o.get().org.name) />
+                <div id="org-member-list">
+                    <@memberList.memberList project=o.get() editable=true perms=so.get().permissions
+                    saveCall=Routes.ORG_UPDATE_MEMBERS.getRouteUrl(o.get().org.name)
+                    removeCall=Routes.ORG_REMOVE_MEMBER.getRouteUrl(o.get().org.name) includeModal=false />
+                </div>
             </#if>
         </div>
     </div>

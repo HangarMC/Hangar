@@ -41,7 +41,7 @@
         ${additionalScripts}
     </#assign>
 
-    <@base.base title=u.user.name additionalScripts=scriptsVar>
+    <@base.base title=u.user.name additionalScripts=scriptsVar additionalStyling=additionalStyling>
         <!-- Updated by JS -->
         <div class="alert alert-success alert-dismissable" role="alert" style="display: none;">
             <button type="button" class="close" data-dismiss="alert" aria-label="<@spring.message "general.close" />">

@@ -9,7 +9,7 @@
 <!-- TODO: Pagination -->
 <#-- @ftlvariable name="perms" type="io.papermc.hangar.model.Permission" -->
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
-<#macro memberList project perms editable=false removeCall="" settingsCall="" saveCall="">
+<#macro memberList project perms editable=false removeCall="" settingsCall="" saveCall="" includeModal=true>
 <#-- @ftlvariable name="project" type="io.papermc.hangar.model.viewhelpers.JoinableData" -->
     <#if project.members?size != 0>
 
@@ -28,30 +28,32 @@
             </ul>
 
             <!-- Delete modal -->
-            <div class="modal fade" id="modal-user-delete" tabindex="-1" role="dialog" aria-labelledby="label-user-delete">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" id="label-user-delete"><@spring.message "project.removeMember" /></h4>
-                            <button type="button" class="close" data-dismiss="modal"
-                                    aria-label="<@spring.message "general.close" />">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body"><@spring.message "project.removeMember.confirm" /></div>
-                        <div class="modal-footer">
-                            <@form.form action=removeCall method="POST" class="form-inline">
-                                <@csrf.formField />
-                                <input type="hidden" name="username" />
-                                <button type="button" class="btn btn-default" data-dismiss="modal">
-                                    <@spring.message "general.close" />
+            <#if includeModal>
+                <div class="modal fade" id="modal-user-delete" tabindex="-1" role="dialog" aria-labelledby="label-user-delete">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="label-user-delete"><@spring.message "project.removeMember" /></h4>
+                                <button type="button" class="close" data-dismiss="modal"
+                                        aria-label="<@spring.message "general.close" />">
+                                    <span aria-hidden="true">&times;</span>
                                 </button>
-                                <button type="submit" class="btn btn-danger"><@spring.message "general.remove" /></button>
-                            </@form.form>
+                            </div>
+                            <div class="modal-body"><@spring.message "project.removeMember.confirm" /></div>
+                            <div class="modal-footer">
+                                <@form.form action=removeCall method="POST" class="form-inline">
+                                    <@csrf.formField />
+                                    <input type="hidden" name="username" />
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                                        <@spring.message "general.close" />
+                                    </button>
+                                    <button type="submit" class="btn btn-danger"><@spring.message "general.remove" /></button>
+                                </@form.form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </#if>
         </#if>
 
         <div class="alert alert-danger member-error" style="display: none">

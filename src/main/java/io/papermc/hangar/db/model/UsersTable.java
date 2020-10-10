@@ -1,9 +1,6 @@
 package io.papermc.hangar.db.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.jdbi.v3.core.annotation.Unmappable;
-
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -46,12 +43,6 @@ public class UsersTable implements Serializable, ProjectOwner {
         this.readPrompts = readPrompts;
         this.isLocked = isLocked;
         this.language = language;
-    }
-
-    @JsonIgnore
-    @Unmappable
-    public UsersTable getUser() {
-        return this; // TODO dummy to fix frontend
     }
 
     @Override

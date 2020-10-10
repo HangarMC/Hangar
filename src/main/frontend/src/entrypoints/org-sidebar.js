@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-// import OrganizationMemberList from '@/components/entrypoints/organizations/OrganizationMemberList';
+import OrganizationMemberList from '@/components/entrypoints/organizations/OrganizationMemberList';
 import ProjectManager from '@/components/entrypoints/organizations/ProjectManager';
 import { setupI18n } from '@/plugins/i18n';
 
@@ -9,4 +9,4 @@ if (managerEl) {
     createApp(ProjectManager).use(i18n).mount(managerEl);
 }
 
-// createApp(OrganizationMemberList).use(i18n).mount('#org-member-list');
+createApp(OrganizationMemberList).use(i18n).mount('#org-member-list');

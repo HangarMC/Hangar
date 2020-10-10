@@ -4,6 +4,7 @@ import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.ApiAuthInfo;
 import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.api.PaginatedUserResult;
 import io.papermc.hangar.model.generated.PaginatedCompactProjectResult;
 import io.papermc.hangar.model.generated.Pagination;
 import io.papermc.hangar.model.generated.ProjectCompact;
@@ -61,6 +62,18 @@ public class UsersApiController implements UsersApi {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "Couldn't find a user with " + user + " name!");
         }
         return ResponseEntity.ok(userObj);
+    }
+
+    @Override
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.util.ApiScope).forGlobal())")
+    public ResponseEntity<PaginatedUserResult> showUsers(String q, Long limit, long offset) {
+        long realLimit = ApiUtil.limitOrDefault(limit, hangarConfig.projects.getInitLoad());
+        long realOffset = ApiUtil.offsetOrZero(offset);
+
+        List<User> users = userApiService.getUsers(q, realLimit, realOffset);
+        long count = userApiService.getUsersCount(q);
+        PaginatedUserResult result = new PaginatedUserResult(new Pagination().limit(realLimit).offset(realOffset).count(count), users);
+        return ResponseEntity.ok(result);
     }
 
     @Override

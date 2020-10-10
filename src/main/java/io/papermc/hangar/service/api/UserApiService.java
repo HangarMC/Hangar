@@ -2,8 +2,6 @@ package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.api.UsersApiDao;
-import io.papermc.hangar.db.model.UsersTable;
-import io.papermc.hangar.model.generated.PaginatedCompactProjectResult;
 import io.papermc.hangar.model.generated.ProjectCompact;
 import io.papermc.hangar.model.generated.ProjectSortingStrategy;
 import io.papermc.hangar.model.generated.User;
@@ -23,6 +21,14 @@ public class UserApiService {
 
     public User getUser(String name) {
         return usersApiDao.get().userQuery(name);
+    }
+
+    public List<User> getUsers(String q, long limit, long offset) {
+        return usersApiDao.get().usersQuery(q, limit, offset);
+    }
+
+    public long getUsersCount(String q) {
+        return usersApiDao.get().usersQueryCount(q);
     }
 
     public List<ProjectCompact> getWatchedProjects(String user, boolean seeHidden, Long userId, ProjectSortingStrategy strategy, long limit, long offset) {

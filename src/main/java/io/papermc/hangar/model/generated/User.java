@@ -16,6 +16,10 @@ import java.util.List;
 
 @Validated
 public class User {
+
+    @JsonProperty("id")
+    private long id;
+
     @JsonProperty("createdAt")
     private OffsetDateTime createdAt = null;
 
@@ -31,6 +35,15 @@ public class User {
     @JsonProperty("roles")
     @JsonFormat(shape = Shape.STRING)
     private List<Role> roles = new ArrayList<>();
+
+    @ApiModelProperty(required = true)
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     @ApiModelProperty(required = true)
     @NotNull

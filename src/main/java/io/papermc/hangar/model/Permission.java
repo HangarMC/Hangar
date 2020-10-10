@@ -1,5 +1,7 @@
 package io.papermc.hangar.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -93,6 +95,7 @@ public class Permission implements Comparable<Permission> {
         return Arrays.stream(NamedPermission.values()).filter(perm -> has(perm.getPermission())).collect(Collectors.toUnmodifiableList());
     }
 
+    @JsonValue
     public long getValue() {
         return value;
     }

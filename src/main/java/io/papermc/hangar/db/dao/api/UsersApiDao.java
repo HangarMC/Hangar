@@ -16,13 +16,35 @@ import java.util.List;
 public interface UsersApiDao {
 
     @RegisterBeanMapper(User.class)
-    @SqlQuery("SELECT u.created_at, u.name, u.tagline, u.join_date, array_agg(r.name) roles " +
+    @SqlQuery("SELECT u.id, u.created_at, u.name, u.tagline, u.join_date, array_agg(r.name) roles " +
               " FROM users u" +
               "     JOIN user_global_roles ugr ON u.id = ugr.user_id" +
               "     JOIN roles r ON ugr.role_id = r.id" +
               " WHERE u.name = :name" +
               " GROUP BY u.id")
     User userQuery(String name);
+
+    @RegisterBeanMapper(User.class)
+    @SqlQuery("SELECT u.id," +
+            "       u.created_at," +
+            "       u.name," +
+            "       u.tagline," +
+            "       u.join_date," +
+            "       array_agg(r.name) roles" +
+            "   FROM users u" +
+            "       JOIN user_global_roles ugr ON u.id = ugr.user_id" +
+            "       JOIN roles r ON ugr.role_id = r.id" +
+            "   WHERE u.name ILIKE '%' || :query || '%' " +
+            "   GROUP BY u.id " +
+            "   LIMIT :limit OFFSET :offset")
+    List<User> usersQuery(String query, long limit, long offset);
+
+    @SqlQuery("SELECT COUNT(*)" +
+            "   FROM users u" +
+            "       JOIN user_global_roles ugr ON u.id = ugr.user_id" +
+            "       JOIN roles r ON ugr.role_id = r.id" +
+            "   WHERE u.name ILIKE '%' || :query || '%'")
+    long usersQueryCount(String query);
 
     @UseStringTemplateEngine
     @RegisterBeanMapper(ProjectCompact.class)
