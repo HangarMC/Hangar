@@ -22,6 +22,7 @@
             </div>
         </transition>
 
+       <!-- Save -->
         <transition name="button-hide">
             <div v-if="saveable && editing" class="btn-edit-container btn-save-container" :title="$t('general.save')">
                 <button form="form-editor-save" type="submit" class="btn btn-sm btn-save btn-page btn-default">
@@ -29,8 +30,9 @@
                 </button>
             </div>
         </transition>
-
-        <transition name="button-hide">
+       
+         <!-- Cancel -->
+         <transition name="button-hide">
             <div v-if="cancellable && editing" class="btn-edit-container btn-cancel-container" :title="$t('general.cancel')">
                 <button type="button" class="btn btn-sm btn-cancel btn-page btn-default" @click.stop="cancel">
                     <i class="fas fa-times"></i>
@@ -38,7 +40,8 @@
             </div>
         </transition>
 
-        <transition name="button-hide">
+         <!-- Trash -->
+         <transition name="button-hide">
             <template v-if="deletable && editing">
                 <div class="btn-edit-container btn-delete-container" :title="$t('general.delete')">
                     <button
