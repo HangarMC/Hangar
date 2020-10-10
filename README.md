@@ -1,12 +1,12 @@
-# Hangar - Papers upcoming Plugin Repository
+# Hangar - Paper's upcoming Plugin Repository
 
-This is the repository for Hangar, a plugin repository used for paper plugins and similar pieces of software.
+This is the repository for Hangar, a plugin repository used for Paper plugins and similar pieces of software.
 
 Hangar is a "fork" of [Ore](https://github.com/SpongePowered/Ore), created by the Sponge project, 
 but rebuild from the ground up using the Spring Boot Framework in Java, using the Freemarker templating engine.  
 We would like the thank all Ore contributors, without them, this project would never have been possible.
 
-The frontend is a mixture of vue and jquery, which will be cleaned up eventually.
+The frontend is a mixture of Vue and jQuery, which will be cleaned up eventually.
 
 There may or may not be a staging instance running at https://hangar-new.minidigger.me. 
 It may or may not allow you to log in, please don't create too much of a mess so that I don't always need to nuke the DB when I want to use it.
@@ -18,7 +18,7 @@ The frontend is located in `src/main/frontend` and uses webpack. You will need y
 
 Additionally, you will need a postgresql database. For your convenience, this repo contains a dev-db docker compose stack in the docker folder that will get you setup.
 
-This project currently uses java 11.
+This project currently uses Kava 11.
 
 ### Building with Docker
 If you want to build both Hangar and [HangarAuth](https://github.com/MiniDigger/HangarAuth)
