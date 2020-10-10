@@ -38,7 +38,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.annotation.RequestScope;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.WebUtils;
 
@@ -56,7 +55,6 @@ import java.util.regex.Pattern;
 public class AuthenticationService extends HangarService {
 
     private final HttpServletRequest request;
-    private final ApiAuthInfo apiAuthInfo;
     private final HangarConfig hangarConfig;
     private final HangarDao<UserDao> userDao;
     private final HangarDao<SessionsDao> sessionsDao;
@@ -73,9 +71,8 @@ public class AuthenticationService extends HangarService {
     private static final Pattern API_KEY_PATTERN = Pattern.compile("(" + UUID_REGEX + ").(" + UUID_REGEX + ")");
 
     @Autowired
-    public AuthenticationService(HttpServletRequest request, ApiAuthInfo apiAuthInfo, HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService, RestTemplate restTemplate, ObjectMapper objectMapper, Supplier<Optional<UsersTable>> currentUser) {
+    public AuthenticationService(HttpServletRequest request, HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService, RestTemplate restTemplate, ObjectMapper objectMapper, Supplier<Optional<UsersTable>> currentUser) {
         this.request = request;
-        this.apiAuthInfo = apiAuthInfo;
         this.hangarConfig = hangarConfig;
         this.userDao = userDao;
         this.sessionsDao = sessionsDao;
@@ -122,7 +119,12 @@ public class AuthenticationService extends HangarService {
     }
 
     public boolean authApiRequest(Permission perms, ApiScope apiScope) {
-        return checkPerms(perms, apiScope, apiAuthInfo.getUserId());
+        //noinspection SpringConfigurationProxyMethods
+        boolean hasPerms = checkPerms(perms, apiScope, apiAuthInfo().getUserId());
+        if (!hasPerms) {
+            throw new HangarApiException(HttpStatus.FORBIDDEN);
+        }
+        return true;
     }
 
     private boolean checkPerms(Permission perms, ApiScope apiScope, Long userId) {
@@ -140,7 +142,7 @@ public class AuthenticationService extends HangarService {
                 }
                 return permissionService.getOrganizationPermissions(userId, apiScope.getOwner()).has(perms);
             default:
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+                throw new HangarApiException(HttpStatus.BAD_REQUEST);
         }
     }
 

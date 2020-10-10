@@ -1,8 +1,8 @@
 package io.papermc.hangar.config;
 
 import io.papermc.hangar.filter.HangarAuthenticationFilter;
-import io.papermc.hangar.security.HangarAuthenticationEntryPoint;
 import io.papermc.hangar.security.HangarAuthenticationProvider;
+import io.papermc.hangar.security.entrypoints.HangarAuthenticationEntryPoint;
 import io.papermc.hangar.security.voters.GlobalPermissionVoter;
 import io.papermc.hangar.security.voters.OrganizationPermissionVoter;
 import io.papermc.hangar.security.voters.ProjectPermissionVoter;

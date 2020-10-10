@@ -1,9 +1,12 @@
 package io.papermc.hangar.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import freemarker.template.TemplateException;
-
+import io.papermc.hangar.controller.converters.ColorHexConverter;
+import io.papermc.hangar.controller.converters.StringToEnumConverterFactory;
+import io.papermc.hangar.security.UserLockExceptionResolver;
+import io.papermc.hangar.util.Routes;
+import no.api.freemarker.java8.Java8ObjectWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
 import org.springframework.context.annotation.Bean;
@@ -24,17 +27,11 @@ import org.springframework.web.servlet.resource.VersionResourceResolver;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
+import javax.servlet.Filter;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import javax.servlet.Filter;
-import javax.validation.constraints.NotNull;
-
-import io.papermc.hangar.controller.converters.ColorHexConverter;
-import io.papermc.hangar.controller.converters.StringToEnumConverterFactory;
-import io.papermc.hangar.security.UserLockExceptionResolver;
-import io.papermc.hangar.util.Routes;
-import no.api.freemarker.java8.Java8ObjectWrapper;
 
 @Configuration
 public class WebConfig extends WebMvcConfigurationSupport {

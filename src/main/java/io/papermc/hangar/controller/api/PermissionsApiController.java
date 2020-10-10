@@ -17,7 +17,6 @@ import org.springframework.stereotype.Controller;
 import java.util.List;
 import java.util.function.BiPredicate;
 
-@ApiController
 @Controller
 public class PermissionsApiController implements PermissionsApi {
 

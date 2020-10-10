@@ -52,7 +52,7 @@ public class AuthUtils {
         String authHeader = request == null ? ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getHeader(HttpHeaders.AUTHORIZATION) : request.getHeader(HttpHeaders.AUTHORIZATION);
         boolean missingAuthHeader = authHeader == null || authHeader.isBlank() || !authHeader.startsWith("HangarApi");
         if (missingAuthHeader && requireHeader) {
-            throw new HangarApiException(HttpStatus.UNAUTHORIZED);
+            throw AuthUtils.unAuth("Invalid or no header found");
         } else if (missingAuthHeader) {
             return new AuthCredentials(null, null);
         }
@@ -86,7 +86,7 @@ public class AuthUtils {
             } else if (sessionMatcher.find()) {
                 sessionKey = sessionMatcher.group();
             } else {
-                throw new HangarApiException(HttpStatus.UNAUTHORIZED, "Invalid Authorization header format");
+                throw AuthUtils.unAuth("Invalid Authorization header format");
             }
             return new AuthCredentials(apiKey, sessionKey);
         }

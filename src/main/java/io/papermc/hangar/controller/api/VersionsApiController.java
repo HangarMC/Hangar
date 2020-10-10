@@ -28,7 +28,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-@ApiController
 @Controller
 public class VersionsApiController implements VersionsApi {
 

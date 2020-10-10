@@ -22,7 +22,6 @@ import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
-@ApiController
 @Controller
 public class UsersApiController implements UsersApi {
 

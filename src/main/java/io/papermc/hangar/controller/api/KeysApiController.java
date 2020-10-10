@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@ApiController
 @Controller
 public class KeysApiController implements KeysApi {
 

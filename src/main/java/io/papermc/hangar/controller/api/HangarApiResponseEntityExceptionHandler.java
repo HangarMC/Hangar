@@ -12,7 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.servlet.http.HttpServletRequest;
 
-@ControllerAdvice(annotations = {ApiController.class})
+@ControllerAdvice(basePackages = "io.papermc.hangar.controller.api")
 public class HangarApiResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final ObjectMapper mapper;
@@ -24,8 +24,12 @@ public class HangarApiResponseEntityExceptionHandler extends ResponseEntityExcep
 
     @ExceptionHandler(HangarApiException.class)
     public ResponseEntity<ObjectNode> handleException(HangarApiException exception, HttpServletRequest request) {
+        String reason = exception.getReason();
+        if (reason == null || reason.isBlank()) {
+            reason = exception.getStatus().getReasonPhrase();
+        }
         ObjectNode response = mapper.createObjectNode()
-                .put("message", exception.getReason());
+                .put("message", reason);
         ObjectNode error = mapper.createObjectNode()
                 .put("message", exception.getStatus().getReasonPhrase())
                 .put("code", exception.getStatus().value());
