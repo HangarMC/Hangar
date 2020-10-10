@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const StatsPlugin = require('stats-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const sourceDir = path.resolve(__dirname, 'src');
 const entryDir = path.resolve(sourceDir, 'entrypoints');
@@ -18,6 +19,8 @@ module.exports = {
     configureWebpack: {
         plugins: [new StatsPlugin('stats.json')],
         optimization: {
+            minimize: true,
+            minimizer: [new TerserPlugin()],
             splitChunks: {
                 cacheGroups: {
                     // TODO remove vendor chunk, make everything depend on main chunk, stuff like chart.js should only be used in its own file

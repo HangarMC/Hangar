@@ -49,6 +49,7 @@
     "sass": "1.26.11",
     "sass-loader": "10.0.2",
     "stats-webpack-plugin": "0.7.0",
+    "terser-webpack-plugin": "^4.2.3",
     "vue-cli-plugin-webpack-bundle-analyzer": "2.0.0",
     "vue-template-compiler": "2.6.12",
     "webpack-cli": "3.3.12"
