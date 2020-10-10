@@ -20,9 +20,10 @@ Documentation page within Project overview.
         window.ROOT_PAGES = ${utils.serializeMap(rootPages)};
         window.PAGE_COUNT = ${pageCount};
         window.EDITOR_OPEN = ${(editorOpen!false)?c};
-        window.JOINABLE = ${mapper.valueToTree(p)};
+
+        window.FILTERED_MEMBERS = ${utils.serializeMap(p.filteredMembers(headerData))};
+        window.CAN_MANAGE_MEMBERS = ${sp.permissions.has(Permission.ManageSubjectMembers)?c};
     </script>
-    <script type="text/javascript" src="<@hangar.url "js/memberList.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "js/project-view.js" />"></script>
 </#assign>
 
@@ -33,12 +34,12 @@ Documentation page within Project overview.
 <@projectView.view p=p sp=sp active="#docs" additionalScripts=scriptsVar additionalStyling=styleVar>
     <div id="project-view">
         <div class="row">
-            <div class="col-12">
+            <div class="col-lg-8 col-12">
                 <div class="page-preview page-rendered">${markdownService.render(projectPage.contents)}</div>
             </div>
+            <div class="col-lg-4 col-12">
+                <@memberList.memberList project=p perms=sp.permissions settingsCall=Routes.PROJECTS_SHOW_SETTINGS.getRouteUrl(p.project.ownerName, p.project.slug) />
+            </div>
         </div>
-    </div>
-    <div id="member-list" style="display: none">
-        <@memberList.memberList project=p perms=sp.permissions settingsCall=Routes.PROJECTS_SHOW_SETTINGS.getRouteUrl(p.project.ownerName, p.project.slug) />
     </div>
 </@projectView.view>

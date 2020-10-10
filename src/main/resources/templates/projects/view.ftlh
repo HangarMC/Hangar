@@ -16,14 +16,6 @@ Base template for Project overview.
         <script <#-- @CSPNonce.attr -->>
             window.PROJECT = ${mapper.valueToTree(p.project)};
             window.CAN_EDIT_PAGES = ${sp.perms(Permission.EditPage)?c};
-
-
-            window.PROJECT_OWNER = "${p.project.ownerName}";
-            window.PROJECT_SLUG = "${p.project.slug}";
-            window.NAMESPACE = "${p.project.ownerName}/${p.project.slug}";
-            window.ALREADY_STARRED = ${sp.starred?c};
-
-            window.ACTIVE_NAV = "${active}";
         </script>
         <script type="text/javascript" src="<@hangar.url "js/project-controls.js" />"></script>
         ${additionalScripts}

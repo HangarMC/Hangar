@@ -138,7 +138,11 @@
                     </div>
                 </div>
                 <div class="col-lg-12 col-md-4">
-                    <div id="member-list-location"></div>
+                    <MemberList
+                        :filtered-members-prop="filteredMembers"
+                        :can-manage-members="canManageMembers"
+                        :settings-call="ROUTES.parse('PROJECTS_SHOW_SETTINGS', project.ownerName, project.slug)"
+                    ></MemberList>
                 </div>
             </div>
         </div>
@@ -194,12 +198,13 @@ import moment from 'moment';
 import { API } from '@/api';
 import { go, slugify } from '@/utils';
 import $ from 'jquery';
+import MemberList from '@/components/MemberList';
 
 $.ajaxSetup(window.ajaxSettings);
 
 export default {
     name: 'ProjectView',
-    components: { Editor, Tag, HangarModal },
+    components: { MemberList, Editor, Tag, HangarModal },
     data() {
         return {
             ROUTES: window.ROUTES,
@@ -215,6 +220,8 @@ export default {
             },
             expanded: {},
             editorOpen: window.EDITOR_OPEN,
+            canManageMembers: window.CAN_MANAGE_MEMBERS,
+            filteredMembers: window.FILTERED_MEMBERS,
         };
     },
     created() {
@@ -222,12 +229,6 @@ export default {
             this.apiProject = res;
         });
         this.expanded[this.page.name] = true;
-    },
-    mounted() {
-        const memberList = document.getElementById('member-list');
-        if (memberList) {
-            document.getElementById('member-list-location').appendChild(memberList).style.display = 'block';
-        }
     },
     methods: {
         moment,

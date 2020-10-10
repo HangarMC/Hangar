@@ -66,8 +66,8 @@ export default {
     data() {
         return {
             ROUTES: window.ROUTES,
-            ownerName: window.PROJECT_OWNER,
-            projectSlug: window.PROJECT_SLUG,
+            ownerName: window.PROJECT.ownerName,
+            projectSlug: window.PROJECT.slug,
             value: {
                 starred: false,
                 watching: false,
