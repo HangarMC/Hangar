@@ -1,10 +1,12 @@
 <template>
+
     <HangarModal target-id="convert-modal" modal-class="modal-xl">
         <template v-slot:activator>
             <button type="button" class="btn btn-secondary btn-block" data-toggle="modal" data-target="#convert-modal">
                 Convert project description from Spigot
             </button>
         </template>
+
         <template v-slot:modal-content>
             <div class="modal-header">
                 <h5 class="modal-title" id="convert-modal-label">Convert project description</h5>
@@ -12,6 +14,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+
             <div class="modal-body">
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
@@ -30,6 +33,7 @@
                         >
                     </li>
                 </ul>
+
                 <div class="tab-content" id="convert-content">
                     <div class="tab-pane fade show active" id="convert" role="tabpanel" aria-labelledby="convert-tab">
                         <div class="container-fluid" id="converter-windows">
@@ -59,6 +63,7 @@
                             ></textarea>
                         </div>
                     </div>
+
                     <div class="tab-pane fade" id="preview" role="tabpanel" aria-labelledby="preview-tab" v-html="outputHtml"></div>
                     <div class="tab-pane fade" id="getbbcode" role="tabpanel" aria-labelledby="howto-tab">
                         To get the BBCode of your Spigot project, do the following:
@@ -70,6 +75,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="modal-footer">
                 <div class="btn-group">
                     <button type="button" class="btn btn-primary" data-dismiss="modal" :disabled="!output" @click="saveOutput">Save and Close</button>
