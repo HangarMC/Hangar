@@ -46,6 +46,10 @@
                     </select>
                 </div>
             </div>
+            <div class="col-12">
+              <input type="hidden" name="pageContent" v-model="form.pageContent" />
+              <BBCodeConverter v-model:proj-page-content="form.pageContent"></BBCodeConverter>
+            </div>
         </div>
         <div class="row collapse" id="additional-settings">
             <div class="col-12 text-center"><span class="input-divider">Links</span></div>
@@ -125,11 +129,6 @@
                     </div>
                     <input id="keywords-input" name="keywords" type="text" class="form-control" />
                 </div>
-            </div>
-            <div class="col-12 text-center"><span class="input-divider">BBCode</span></div>
-            <div class="col-12">
-                <input type="hidden" name="pageContent" v-model="form.pageContent" />
-                <BBCodeConverter v-model:proj-page-content="form.pageContent"></BBCodeConverter>
             </div>
         </div>
         <button

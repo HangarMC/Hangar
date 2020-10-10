@@ -25,9 +25,9 @@ public class BBCodeConverter {
         REPLACERS.put("font", (tag, tagArg, content) -> content);
         REPLACERS.put("user", (tag, tagArg, content) -> content);
         REPLACERS.put("list", (tag, tagArg, content) -> content);
+        REPLACERS.put("size", (tag, tagArg, content) -> content);
 
-        REPLACERS.put("size", (tag, tagArg, content) -> content); //TODO
-        REPLACERS.put("spoiler", (tag, tagArg, content) -> content); //TODO
+        REPLACERS.put("spoiler", (tag, tagArg, content) -> content); //TODO?
         REPLACERS.put("b", (tag, tagArg, content) -> "**" + content + "**");
         REPLACERS.put("i", (tag, tagArg, content) -> "*" + content + "*");
         REPLACERS.put("s", (tag, tagArg, content) -> "~~" + content + "~~");
@@ -50,10 +50,22 @@ public class BBCodeConverter {
      * @return converted text to Markdown formatting
      */
     public String convertToMarkdown(String s) {
+        // Deduplication, remove spaces in tags
         int index = 0;
-        //TODO Deduplication of tags
         while ((index = s.indexOf(TAG_PREFIX, index)) != -1) {
-            int closingIndex = process(s, index);
+            int closingIndex = process(s, index, true);
+            if (closingIndex == -1) {
+                index++;
+                continue;
+            }
+
+            s = s.substring(0, index) + currentContent + s.substring(closingIndex);
+        }
+
+        // Tag conversion
+        index = 0;
+        while ((index = s.indexOf(TAG_PREFIX, index)) != -1) {
+            int closingIndex = process(s, index, false);
             if (closingIndex == -1) {
                 // No closing tag/no simple match
                 index++;
@@ -81,11 +93,12 @@ public class BBCodeConverter {
     }
 
     /**
-     * @param s     string
-     * @param index index to start searching from
+     * @param s           string
+     * @param index       index to start searching from
+     * @param deduplicate whether tags should be deduplicated, false for normal conversion
      * @return index after the currently processed tag is closed, or -1 if none
      */
-    private int process(String s, int index) {
+    private int process(String s, int index, boolean deduplicate) {
         int tagSuffixIndex = s.indexOf(TAG_SUFFIX, index);
         if (tagSuffixIndex == -1 || tagSuffixIndex == index + 1) {
             // No closing bracket
@@ -100,7 +113,7 @@ public class BBCodeConverter {
             tagName = tagName.substring(0, argIndex);
         }
 
-        if (SIMPLE_SINGLETON_REPLACERS.containsKey(tagName)) {
+        if (!deduplicate && SIMPLE_SINGLETON_REPLACERS.containsKey(tagName)) {
             // Simple opening tag only replacement
             currentTag = tagName;
             currentArg = null;
@@ -108,8 +121,9 @@ public class BBCodeConverter {
             return tagSuffixIndex + 1;
         }
 
+        String lowerCaseString = s.toLowerCase();
         String closingTag = String.format(CLOSING_FORMAT, tagName);
-        int closingIndex = s.toLowerCase().indexOf(closingTag, index);
+        int closingIndex = lowerCaseString.indexOf(closingTag, index);
         if (closingIndex == -1) {
             // No closing tag
             return -1;
@@ -118,6 +132,19 @@ public class BBCodeConverter {
         currentTag = tagName;
         currentArg = tagArg;
         currentContent = s.substring(tagSuffixIndex + 1, closingIndex);
+        if (deduplicate) {
+            String fullTag = s.substring(index, tagSuffixIndex + 1).toLowerCase();
+            String lowerCaseContent = lowerCaseString.substring(tagSuffixIndex + 1, closingIndex);
+            int duplicateTagIndex = lowerCaseContent.indexOf(fullTag);
+            if (duplicateTagIndex == -1) {
+                // No duplicate
+                return -1;
+            }
+
+            // Keep opening tag, remove duplicate opening in content, skip one closing tag
+            currentContent = fullTag + currentContent.substring(0, duplicateTagIndex) + currentContent.substring(duplicateTagIndex + fullTag.length());
+        }
+
         return closingIndex + closingTag.length();
     }
 
