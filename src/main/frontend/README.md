@@ -1,4 +1,4 @@
-# hangar
+# Hangar
 
 ## Project setup
 ```
