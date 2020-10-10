@@ -126,6 +126,11 @@
                     <input id="keywords-input" name="keywords" type="text" class="form-control" />
                 </div>
             </div>
+            <div class="col-12 text-center"><span class="input-divider">BBCode</span></div>
+            <div class="col-12">
+                <input type="hidden" name="pageContent" v-model="form.pageContent" />
+                <BBCodeConverter v-model:proj-page-content="form.pageContent"></BBCodeConverter>
+            </div>
         </div>
         <button
             type="button"
@@ -151,10 +156,12 @@
 import axios from 'axios';
 import HangarForm from '@/components/HangarForm';
 import { Category } from '@/enums';
+import BBCodeConverter from '@/components/BBCodeConverter';
 
 export default {
     name: 'CreateProject',
     components: {
+        BBCodeConverter,
         HangarForm,
     },
     data() {
@@ -171,6 +178,7 @@ export default {
                 description: '',
                 licenseType: '',
                 customName: '',
+                pageContent: '',
             },
             categories: Category.values,
         };

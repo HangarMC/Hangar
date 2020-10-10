@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller;
 
-import io.papermc.hangar.controller.forms.PagePreview;
+import io.papermc.hangar.controller.forms.RawPage;
+import io.papermc.hangar.controller.util.BBCodeConverter;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectPageContext;
 import io.papermc.hangar.db.dao.HangarDao;
@@ -67,8 +68,14 @@ public class PagesController extends HangarController {
     }
 
     @PostMapping(value = "/pages/preview", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> showPreview(@RequestBody PagePreview rawObj) {
+    public ResponseEntity<String> showPreview(@RequestBody RawPage rawObj) {
         return ResponseEntity.ok(markdownService.render(rawObj.getRaw()));
+    }
+
+    @PostMapping(value = "/pages/bb-convert", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> bbConverter(@RequestBody RawPage rawObj) {
+        BBCodeConverter bbCodeConverter = new BBCodeConverter();
+        return ResponseEntity.ok(bbCodeConverter.convertToMarkdown(rawObj.getRaw()));
     }
 
     @GetMapping({"/{author}/{slug}/pages/{page}", "/{author}/{slug}/pages/{page}/{subPage}"})
