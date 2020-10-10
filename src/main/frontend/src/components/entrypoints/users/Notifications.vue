@@ -159,8 +159,8 @@ export default {
         };
     },
     mounted() {
-        const invites = $('.invite-content');
-        invites.css('height', invites.width());
+        const invites = document.querySelector('.invite-content');
+        invites.style.height = invites.style.width;
     },
     methods: {
         avatarUrl(username) {
