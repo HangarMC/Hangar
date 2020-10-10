@@ -1,10 +1,11 @@
 <template>
     <MemberList
-        :joinable="joinable"
+        :filtered-members-prop="filteredMembers"
         editable
         :can-manage-members="canManageMembers"
-        :save-call="ROUTES.parse('ORG_UPDATE_MEMBERS', joinable.org.name)"
-        :remove-call="ROUTES.parse('ORG_REMOVE_MEMBER', joinable.org.name)"
+        :save-call="ROUTES.parse('ORG_UPDATE_MEMBERS', joinableName)"
+        :remove-call="ROUTES.parse('ORG_REMOVE_MEMBER', joinableName)"
+        :roles="roles"
     ></MemberList>
 </template>
 
@@ -19,8 +20,10 @@ export default {
     data() {
         return {
             ROUTES: window.ROUTES,
-            joinable: window.JOINABLE,
+            joinableName: window.JOINABLE_NAME,
             canManageMembers: window.CAN_MANAGE_MEMBERS,
+            filteredMembers: window.FILTERED_MEMBERS,
+            roles: window.POSSIBLE_ROLES || [],
         };
     },
 };

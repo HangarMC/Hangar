@@ -68,8 +68,8 @@
                     <div class="float-right">
                         <#if !editable && settingsCall?has_content>
                             <a href="${settingsCall}"
-                               class="btn yellow btn-sm">
-                                <i class="fas fa-pencil-alt"></i>
+                               class="btn btn-warning btn-sm">
+                                <i class="fas fa-pencil-alt">Edit</i>
                             </a>
                         </#if>
 

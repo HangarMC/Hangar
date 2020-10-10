@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
 import $ from 'jquery';
-import UserProfile from '@/components/entrypoints/UserProfile';
+import UserProfile from '@/components/entrypoints/users/UserProfile';
 
 $.ajaxSetup(window.ajaxSettings);
 

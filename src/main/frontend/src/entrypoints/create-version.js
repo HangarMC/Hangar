@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import CreateVersion from '@/components/entrypoints/CreateVersion';
+import CreateVersion from '@/components/entrypoints/versions/CreateVersion';
 import { setupI18n } from '@/plugins/i18n';
 
 const i18n = setupI18n();

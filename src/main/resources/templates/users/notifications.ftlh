@@ -18,8 +18,6 @@
             NOTIFICATIONS: ${mapper.valueToTree(NotificationFilter.getValues())},
             INVITES: ${mapper.valueToTree(InviteFilter.getValues())},
         };
-
-        window.AVATAR_URL = '${config.security.api.avatarUrl}';
     </script>
     <script type="text/javascript" src="<@hangar.url "js/notifications.js" />"></script>
 </#assign>

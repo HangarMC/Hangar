@@ -14,11 +14,10 @@
     <script type="text/javascript" src="<@hangar.url "js/user-profile.js" />"></script>
     <#if u.isOrga()>
         <script>
-            window.JOINABLE = ${mapper.valueToTree(o.get())};
+            window.JOINABLE_NAME = '${o.get().org.name}';
             window.CAN_MANAGE_MEMBERS = ${so.get().permissions.has(Permission.ManageSubjectMembers)?c};
             window.ORG_OWNER_PERM = ${Permission.IsOrganizationOwner.value?c};
             window.FILTERED_MEMBERS = ${utils.serializeMap(o.get().filteredMembers(headerData))};
-            window.AVATAR_URL = '${config.security.api.avatarUrl}';
         </script>
         <#if o.present && canEditOrgMembers()>
             <script>

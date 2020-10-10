@@ -1,10 +1,10 @@
 <template>
-    <template v-if="Object.keys(joinable.members).length">
+    <template v-if="filteredMembers.length">
         <div class="card" style="z-index: 2">
             <div class="card-header">
                 <h3 class="float-left card-title" v-text="$t('project.settings.members')"></h3>
                 <div v-if="canManageMembers" class="float-right">
-                    <a v-if="!editable && settingsCall" :href="settingsCall" class="btn bg-yellow btn-sm">
+                    <a v-if="!editable && settingsCall" :href="settingsCall" class="btn bg-warning btn-sm">
                         <i class="fas fa-pencil-alt"></i>
                     </a>
                     <button
@@ -125,26 +125,29 @@ export default {
         UserAvatar,
     },
     props: {
-        joinable: Object,
+        filteredMembersProp: Array,
         canManageMembers: Boolean,
         editable: Boolean,
         removeCall: String,
         settingsCall: String,
         saveCall: String,
+        roles: Array,
     },
     data() {
         return {
             ROUTES: window.ROUTES,
-            filteredMembers: [...window.FILTERED_MEMBERS],
+            filteredMembers: [],
             isOrgOwnerPermission: window.ORG_OWNER_PERM,
             form: {
                 updates: {},
                 additions: {},
             },
-            roles: window.POSSIBLE_ROLES,
             error: null,
             userToDelete: null,
         };
+    },
+    created() {
+        this.filteredMembers = [...this.filteredMembersProp];
     },
     methods: {
         avatarUrl(username) {
@@ -190,7 +193,7 @@ export default {
                         5000,
                         this
                     );
-                    this.filteredMembers = [...window.FILTERED_MEMBERS];
+                    this.filteredMembers = [...this.filteredMembersProp];
                     this.resetForm();
                 });
         },

@@ -138,6 +138,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
 
     <#if scriptsEnabled>
         <script nonce="${nonce}">
+            window.AVATAR_URL = '${config.security.api.avatarUrl}';
             window.ROUTES = ${mapper.valueToTree(Routes.getJsRoutes())};
             window.ROUTES.parse = function (key, ...params) {
                 var route = window.ROUTES[key];
