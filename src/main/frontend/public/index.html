@@ -6,6 +6,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <!-- START ZAPPFIX BETA INJECT -->
+    <script>
+      console.error("ZAPPFIX: Fixed Empty Property (Array) (REMOVE WHEN FIXED)");
+      window.COLORS = [];
+      console.error("ZAPPFIX: Fixed Empty Property (STRING) (REMOVE WHEN FIXED)");
+      window.DiscourseEmbed.discourseUrl = "about:"
+    </script>
+    <!-- END ZAPPFIX BETA INJECT -->
   </head>
   <body>
     <noscript>

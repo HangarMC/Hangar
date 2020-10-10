@@ -20,7 +20,7 @@ module.exports = {
         plugins: [new StatsPlugin('stats.json')],
         optimization: {
             minimize: true,
-            minimizer: [new TerserPlugin()],
+            minimizer: [new TerserPlugin({ cache: true, parallel: true, terserOptions: { output: { comments: false } } })],
             splitChunks: {
                 cacheGroups: {
                     // TODO remove vendor chunk, make everything depend on main chunk, stuff like chart.js should only be used in its own file
