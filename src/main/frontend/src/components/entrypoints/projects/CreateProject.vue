@@ -47,8 +47,11 @@
                 </div>
             </div>
             <div class="col-12">
-              <input type="hidden" name="pageContent" v-model="form.pageContent" />
-              <BBCodeConverter v-model:proj-page-content="form.pageContent"></BBCodeConverter>
+                <input type="hidden" name="pageContent" v-model="form.pageContent" />
+                <BBCodeConverter v-model:proj-page-content="form.pageContent"></BBCodeConverter>
+            </div>
+            <div v-if="form.pageContent" class="col-12">
+                <div class="alert alert-info">Your converted project description will now be displayed on your main project page.</div>
             </div>
         </div>
         <div class="row collapse" id="additional-settings">
