@@ -8,10 +8,13 @@ import io.papermc.hangar.controller.UsersController;
 import io.papermc.hangar.controller.util.ApiScope;
 import io.papermc.hangar.db.dao.ApiKeyDao;
 import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.dao.ProjectDao;
 import io.papermc.hangar.db.dao.UserDao;
 import io.papermc.hangar.db.dao.api.SessionsDao;
 import io.papermc.hangar.db.model.ApiKeysTable;
 import io.papermc.hangar.db.model.ApiSessionsTable;
+import io.papermc.hangar.db.model.OrganizationsTable;
+import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.ApiAuthInfo;
@@ -20,6 +23,7 @@ import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.generated.ApiSessionResponse;
 import io.papermc.hangar.model.generated.SessionType;
 import io.papermc.hangar.security.HangarAuthentication;
+import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.service.sso.ChangeAvatarToken;
 import io.papermc.hangar.util.AuthUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -54,36 +58,44 @@ import java.util.regex.Pattern;
 @Service
 public class AuthenticationService extends HangarService {
 
-    private final HttpServletRequest request;
+
     private final HangarConfig hangarConfig;
     private final HangarDao<UserDao> userDao;
     private final HangarDao<SessionsDao> sessionsDao;
     private final HangarDao<ApiKeyDao> apiKeyDao;
+    private final HangarDao<ProjectDao> projectDao;
     private final AuthenticationManager authenticationManager;
     private final RoleService roleService;
     private final PermissionService permissionService;
+    private final ProjectService projectService;
+    private final OrgService orgService;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
+    private final HttpServletRequest request;
     private final Supplier<Optional<UsersTable>> currentUser;
 
     private static final String UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
     private static final Pattern API_KEY_PATTERN = Pattern.compile("(" + UUID_REGEX + ").(" + UUID_REGEX + ")");
 
     @Autowired
-    public AuthenticationService(HttpServletRequest request, HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService, RestTemplate restTemplate, ObjectMapper objectMapper, Supplier<Optional<UsersTable>> currentUser) {
-        this.request = request;
+    public AuthenticationService(HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, HangarDao<ProjectDao> projectDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService, ProjectService projectService, OrgService orgService, RestTemplate restTemplate, ObjectMapper objectMapper, HttpServletRequest request, Supplier<Optional<UsersTable>> currentUser) {
         this.hangarConfig = hangarConfig;
         this.userDao = userDao;
         this.sessionsDao = sessionsDao;
         this.apiKeyDao = apiKeyDao;
+        this.projectDao = projectDao;
         this.authenticationManager = authenticationManager;
         this.roleService = roleService;
         this.permissionService = permissionService;
+        this.projectService = projectService;
+        this.orgService = orgService;
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
+        this.request = request;
         this.currentUser = currentUser;
     }
+
 
     @Bean
     @RequestScope
@@ -135,10 +147,19 @@ public class AuthenticationService extends HangarService {
                 if (StringUtils.isEmpty(apiScope.getOwner()) || StringUtils.isEmpty(apiScope.getSlug())) {
                     throw new IllegalArgumentException("Must have passed the owner and slug to apiAction");
                 }
-                return permissionService.getProjectPermissions(userId, apiScope.getOwner(), apiScope.getSlug()).has(perms);
+                Permission projectPermissions = permissionService.getProjectPermissions(userId, apiScope.getOwner(), apiScope.getSlug());
+                ProjectsTable projectsTable = projectService.checkVisibility(projectDao.get().getBySlug(apiScope.getOwner(), apiScope.getSlug()), projectPermissions);
+                if (projectsTable == null) {
+                    throw new HangarApiException(HttpStatus.NOT_FOUND);
+                }
+                return projectPermissions.has(perms);
             case ORGANIZATION:
                 if (StringUtils.isEmpty(apiScope.getOwner())) {
                     throw new IllegalArgumentException("Must have passed the owner to apiAction");
+                }
+                OrganizationsTable organizationsTable = orgService.getOrganization(apiScope.getOwner());
+                if (organizationsTable == null) {
+                    throw new HangarApiException(HttpStatus.NOT_FOUND);
                 }
                 return permissionService.getOrganizationPermissions(userId, apiScope.getOwner()).has(perms);
             default:
