@@ -160,7 +160,7 @@ export default {
     },
     mounted() {
         const invites = document.querySelector('.invite-content');
-        invites.style.height = invites.style.width;
+        invites.style.height = invites.offsetWidth;
     },
     methods: {
         avatarUrl(username) {
