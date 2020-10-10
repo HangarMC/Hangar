@@ -1,5 +1,7 @@
 package io.papermc.hangar.controller.util;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,6 +64,12 @@ public class BBCodeConverter {
             s = s.substring(0, index) + currentContent + s.substring(closingIndex);
         }
 
+        // Iterate until no whitespaces are left (else they might only be moved into the upper tag...)
+        String result;
+        while ((result = removeTrailingWhitespaces(s)) != null) {
+            s = result;
+        }
+
         // Tag conversion
         index = 0;
         while ((index = s.indexOf(TAG_PREFIX, index)) != -1) {
@@ -90,6 +98,40 @@ public class BBCodeConverter {
             s = s.substring(0, index) + processed + s.substring(closingIndex);
         }
         return s;
+    }
+
+    @Nullable
+    private String removeTrailingWhitespaces(String s) {
+        int index = 0;
+        boolean foundTrailingSpace = false;
+        while ((index = s.indexOf(TAG_PREFIX, index)) != -1) {
+            int closingIndex = process(s, index, false);
+            if (closingIndex == -1 || currentContent == null) {
+                index++;
+                continue;
+            }
+
+            boolean startsWithSpace = currentContent.startsWith(" ");
+            boolean endsWithSpace = currentContent.endsWith(" ");
+            if (startsWithSpace || endsWithSpace) {
+                foundTrailingSpace = true;
+                currentContent = currentContent.trim();
+            }
+
+            // Readd opening and closing tag, then spaces
+            int tagSuffixIndex = s.indexOf(TAG_SUFFIX, index);
+            currentContent = s.substring(index, tagSuffixIndex + 1) + currentContent + s.substring(closingIndex - currentTag.length() - 3, closingIndex);
+            if (startsWithSpace) {
+                currentContent = " " + currentContent;
+            }
+            if (endsWithSpace) {
+                currentContent += " ";
+            }
+
+            s = s.substring(0, index) + currentContent + s.substring(closingIndex);
+            index++;
+        }
+        return foundTrailingSpace ? s : null;
     }
 
     /**
