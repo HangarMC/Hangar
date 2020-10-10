@@ -370,7 +370,7 @@ export default {
             alert.find('.file-size').text(filesize(files[0].size));
             alert.fadeIn('slow');
 
-            $('#form-url-upload').css('display', 'none');
+            document.getElementById('form-url-upload').style.display = "none";
 
             if (success) {
                 const alertInner = alert.find('.alert');
