@@ -128,7 +128,6 @@
 </template>
 
 <script>
-import $ from 'jquery';
 import axios from 'axios';
 import { chunk, remove } from 'lodash-es';
 import UserAvatar from '@/components/UserAvatar';
