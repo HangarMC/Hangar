@@ -3,36 +3,6 @@ package io.papermc.hangar.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
-
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controller.util.StatusZ;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
@@ -63,6 +33,34 @@ import io.papermc.hangar.service.VersionService;
 import io.papermc.hangar.service.project.FlagService;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.AlertUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
+
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class ApplicationController extends HangarController {
@@ -316,38 +314,6 @@ public class ApplicationController extends HangarController {
     @ResponseBody
     public String globalSitemap() {
         return sitemapService.getGlobalSitemap();
-    }
-
-    @GetMapping(value = "/javascriptRoutes", produces = "text/javascript")
-    @ResponseBody
-    public String javaScriptRoutes() {
-        // yeah, dont even ask wtf is happening here, I dont have an answer
-        return "window.jsRoutes = {}; (function(_root){\n" +
-               "var _nS = function(c,f,b){var e=c.split(f||\".\"),g=b||_root,d,a;for(d=0,a=e.length;d<a;d++){g=g[e[d]]=g[e[d]]||{}}return g}\n" +
-               "var _qS = function(items){var qs = ''; for(var i=0;i<items.length;i++) {if(items[i]) qs += (qs ? '&' : '') + items[i]}; return qs ? ('?' + qs) : ''}\n" +
-               "var _s = function(p,s){return p+((s===true||(s&&s.secure))?'s':'')+'://'}\n" +
-               "var _wA = function(r){return {ajax:function(c){c=c||{};c.url=r.url;c.type=r.method;return jQuery.ajax(c)}, method:r.method,type:r.method,url:r.url,absoluteURL: function(s){return _s('http',s)+'localhost:8080'+r.url},webSocketURL: function(s){return _s('ws',s)+'localhost:9000'+r.url}}}\n" +
-               "_nS('controllers.project.Projects'); _root['controllers']['project']['Projects']['show'] = \n" +
-               "        function(author0,slug1) {\n" +
-               "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"author\", author0)) + \"/\" + encodeURIComponent((function(k,v) {return v})(\"slug\", slug1))})\n" +
-               "        }\n" +
-               "      ;\n" +
-               "_nS('controllers.project.Versions'); _root['controllers']['project']['Versions']['show'] = \n" +
-               "        function(author0,slug1,version2) {\n" +
-               "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"author\", author0)) + \"/\" + encodeURIComponent((function(k,v) {return v})(\"slug\", slug1)) + \"/versions/\" + encodeURIComponent((function(k,v) {return v})(\"version\", version2))})\n" +
-               "        }\n" +
-               "      ;\n" +
-               "_nS('controllers.project.Versions'); _root['controllers']['project']['Versions']['showCreator'] = \n" +
-               "        function(author0,slug1) {\n" +
-               "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"author\", author0)) + \"/\" + encodeURIComponent((function(k,v) {return v})(\"slug\", slug1)) + \"/versions/new\"})\n" +
-               "        }\n" +
-               "      ;\n" +
-               "_nS('controllers.Users'); _root['controllers']['Users']['showProjects'] = \n" +
-               "        function(user0) {\n" +
-               "          return _wA({method:\"GET\", url:\"/\" + encodeURIComponent((function(k,v) {return v})(\"user\", user0))})\n" +
-               "        }\n" +
-               "      ;\n" +
-               "})(jsRoutes)"; // TODO implement javaScriptRoutes request controller
     }
 
     @GetMapping("/linkout")

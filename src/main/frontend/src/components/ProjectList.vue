@@ -21,7 +21,7 @@
                                 <div class="col-12 col-sm-11">
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <a :href="routes.Projects.show(project.namespace.owner, project.namespace.slug).absoluteURL()" class="title">
+                                            <a :href="ROUTES.parse('PROJECTS_SHOW', project.namespace.owner, project.namespace.slug)" class="title">
                                                 {{ project.name }}
                                             </a>
                                         </div>
@@ -31,11 +31,12 @@
                                                     <i class="far fa-gem"></i>
                                                     <a
                                                         :href="
-                                                            routes.Versions.show(
+                                                            ROUTES.parse(
+                                                                'VERSIONS_SHOW',
                                                                 project.namespace.owner,
                                                                 project.namespace.slug,
                                                                 project.recommended_version.version
-                                                            ).absoluteURL()
+                                                            )
                                                         "
                                                     >
                                                         {{ project.recommended_version.version }}
@@ -128,6 +129,7 @@ export default {
     },
     data() {
         return {
+            ROUTES: window.ROUTES,
             projects: [],
             totalProjects: 0,
             loading: true,
@@ -139,9 +141,6 @@ export default {
         },
         total: function () {
             return Math.ceil(this.totalProjects / this.limit);
-        },
-        routes: function () {
-            return window.jsRoutes.controllers.project;
         },
     },
     created() {

@@ -196,9 +196,6 @@ export default {
         },
     },
     computed: {
-        routes() {
-            return window.jsRoutes.controllers.project;
-        },
         offset() {
             return (this.page - 1) * this.limit;
         },

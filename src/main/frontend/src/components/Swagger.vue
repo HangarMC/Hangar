@@ -19,7 +19,7 @@ export default {
                 requestInterceptor: (req) => {
                     if (!req.loadSpec) {
                         const promise = getApiSession().then((session) => {
-                            req.headers.authorization = 'HangarApi session=' + session;
+                            req.headers.authorization = 'HangarApi session="' + session + '"';
                             return req;
                         });
                         // Workaround for fixing the curl URL

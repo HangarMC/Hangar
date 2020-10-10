@@ -33,7 +33,6 @@ public enum Routes {
     SWAGGER("swagger", Paths.SWAGGER, of(), of()),
     SHOW_ACTIVITIES("showActivities", Paths.SHOW_ACTIVITIES, of("user"), of()),
     USER_ADMIN("userAdmin", Paths.USER_ADMIN, of("user"), of()),
-    JAVA_SCRIPT_ROUTES("javaScriptRoutes", Paths.JAVA_SCRIPT_ROUTES, of(), of()),
 
     PROJECTS_RENAME("projects.rename", Paths.PROJECTS_RENAME, of("author", "slug"), of()),
     PROJECTS_SET_WATCHING("projects.setWatching", Paths.PROJECTS_SET_WATCHING, of("author", "slug", "watching"), of()),
@@ -250,7 +249,6 @@ public enum Routes {
         public static final String SWAGGER = "/api";
         public static final String SHOW_ACTIVITIES = "/admin/activities/{user}";
         public static final String USER_ADMIN = "/admin/user/{user}";
-        public static final String JAVA_SCRIPT_ROUTES = "/javascriptRoutes";
 
         public static final String PROJECTS_RENAME = "/{author}/{slug}/manage/rename";
         public static final String PROJECTS_SET_WATCHING = "/{author}/{slug}/watchers/{watching}";

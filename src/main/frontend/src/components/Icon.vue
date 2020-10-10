@@ -20,7 +20,7 @@ export default {
             if (this.href != null) {
                 return this.href;
             } else if (this.name != null) {
-                return window.jsRoutes.controllers.Users.showProjects(this.name, null).absoluteURL();
+                return window.ROUTES.parse('USERS_SHOW_PROJECTS', this.name);
             } else {
                 return '#';
             }
