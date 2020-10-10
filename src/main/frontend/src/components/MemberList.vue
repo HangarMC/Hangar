@@ -3,10 +3,12 @@
         <div class="card" style="z-index: 2">
             <div class="card-header">
                 <h3 class="float-left card-title" v-text="$t('project.settings.members')"></h3>
+
                 <div v-if="canManageMembers" class="float-right">
                     <a v-if="!editable && settingsCall" :href="settingsCall" class="btn bg-warning btn-sm">
                         <i class="fas fa-pencil-alt"></i>
                     </a>
+
                     <button
                         v-if="saveCall && (Object.keys(form.updates).length || Object.keys(form.additions).length)"
                         class="btn-members-save btn btn-card btn-sm"
@@ -15,16 +17,19 @@
                         :data-title="$t('org.users.save')"
                         @click.prevent="save"
                     >
+
                         <i class="fas fa-save"></i>
                     </button>
                 </div>
             </div>
+
             <ul class="list-members list-group">
                 <transition name="slide-down">
                     <li v-show="error" class="list-group-item" style="z-index: -1">
                         <div class="alert alert-danger" role="alert" v-text="error"></div>
                     </li>
                 </transition>
+
                 <li v-for="({ key: role, value: user }, index) in filteredMembers" :key="index" class="list-group-item">
                     <UserAvatar :user-name="user.name" :avatar-url="avatarUrl(user.name)" clazz="user-avatar-xs"></UserAvatar>
                     <a :href="ROUTES.parse('USERS_SHOW_PROJECTS', user.name)" class="username" v-text="user.name"></a>
@@ -63,6 +68,7 @@
                     >
                         <option v-for="role in roles" :key="role.value" :value="role.value">{{ role.title }}</option>
                     </select>
+
                     <select
                         v-if="
                             editable &&
@@ -74,6 +80,7 @@
                         aria-label="Role Selection"
                         v-model="form.additions[user.name].role"
                     >
+
                         <option v-for="role in roles" :key="role.value" :value="role.value">{{ role.title }}</option>
                     </select>
                 </li>
