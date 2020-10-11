@@ -50,9 +50,10 @@
                 <#else>
                     <@card "Members">
                         <#-- TODO organization members map-->
-                        <@roleTable keyName="User" tableType="memberRole" withOwner=false roles=orga.adminTable() roleTypes=orgRoles ; member, role>
-                            <a href="${Routes.USER_ADMIN.getRouteUrl(member.user.name)}">
-                                ${member.user.name}
+                        <@roleTable keyName="User" tableType="memberRole" withOwner=false roles=orga.adminTable() roleTypes=orgRoles ; memberUser, role>
+                            <#-- @ftlvariable name="memberUser" type="io.papermc.hangar.db.model.UsersTable" -->
+                            <a href="${Routes.USER_ADMIN.getRouteUrl(memberUser.name)}">
+                                ${memberUser.name}
                             </a>
                         </@roleTable>
                     </@card>
