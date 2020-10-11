@@ -220,7 +220,6 @@ public class UsersController extends HangarController {
         }
     }
 
-    @GlobalPermission(NamedPermission.IS_STAFF)
     @GetMapping("/staff")
     public Object showStaff(@RequestParam(required = false, defaultValue = "roles") String sort, @RequestParam(required = false, defaultValue = "1") int page) {
         ModelAndView mav = new ModelAndView("users/staff");

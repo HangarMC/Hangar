@@ -18,8 +18,8 @@ public class HangarErrorController extends HangarController implements ErrorCont
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         String errorRequestUri = (String) request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI);
 
-//        request.getAttributeNames().asIterator().forEachRemaining(s -> System.out.println(s + ": " + request.getAttribute(s))); // TODO for logging attributes to see what's there
-        ModelAndView mav = new ModelAndView("errors/error"); // TODO show custom message with error if applicable
+//        request.getAttributeNames().asIterator().forEachRemaining(s -> System.out.println(s + ": " + request.getAttribute(s))); // for logging attributes to see what's there
+        ModelAndView mav = new ModelAndView("errors/error");
         if (status != null) {
             int statusCode = Integer.parseInt(status.toString());
 

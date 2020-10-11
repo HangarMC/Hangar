@@ -75,14 +75,12 @@
                                 </a>
                             </li>
 
-                            <#if headerData.globalPerm(Permission.IsStaff)>
-                                <#assign title><@spring.message "project.viewStaff"/></#assign>
-                                <li class="nav-icon staff-icon" <@tooltip title=title />>
-                                    <a href="${Routes.USERS_SHOW_STAFF.getRouteUrl("", "")}">
-                                        <i class="icon fas fa-user-tie"></i>
-                                    </a>
-                                </li>
-                            </#if>
+                            <#assign title><@spring.message "project.viewStaff"/></#assign>
+                            <li class="nav-icon staff-icon" <@tooltip title=title />>
+                                <a href="${Routes.USERS_SHOW_STAFF.getRouteUrl("", "")}">
+                                    <i class="icon fas fa-user-tie"></i>
+                                </a>
+                            </li>
 
                         <#-- Show user controls -->
                             <li class="dropdown user-controls nav-icon">

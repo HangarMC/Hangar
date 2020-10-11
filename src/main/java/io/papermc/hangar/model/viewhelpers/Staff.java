@@ -1,8 +1,8 @@
 package io.papermc.hangar.model.viewhelpers;
 
-import java.time.OffsetDateTime;
-
 import io.papermc.hangar.model.Role;
+
+import java.time.OffsetDateTime;
 
 public class Staff {
 
@@ -52,9 +52,5 @@ public class Staff {
 
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public String getAvatarUrl() {
-        return "https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png"; // TODO figure out what to do with avatar url
     }
 }
