@@ -190,7 +190,7 @@
     "irc": "Community",
     "issues": "Issues",
     "javadocs": "Javadocs",
-    "language": "en_US",
+    "language": "en",
     "learnMore": "Learn more",
     "linkout": {
       "title": "External Link Warning",
@@ -328,7 +328,7 @@
       },
       "input": {
         "category": "Project category",
-        "description": "Project description",
+        "description": "Project summary",
         "name": "Project name"
       },
       "issue-input": "Issue tracker URL",
@@ -409,16 +409,48 @@
     },
     "search": "Search for projects.",
     "settings": {
+      "category": {
+        "_": "Category",
+        "info": "Categorize your project into one of {0} categories. Appropriately categorizing your project makes it easier for people to find."
+      },
+      "externalSupport": {
+        "_": "External support",
+        "info": "An external place where you can offer support to your users. Could be a forum, a Discord server, or somewhere else."
+      },
+      "homepage": {
+        "_": "Homepage",
+        "info": "Having a custom homepage for your project helps you look more proper, official, and gives you another place to gather information about your project."
+      },
+      "issues": {
+        "_": "Issue tracker",
+        "info": "Providing an issue tracker helps your users get support more easily and provides you with an easy way to track bugs."
+      },
+      "keywords": {
+        "_": "Keywords",
+        "info": "These are special words that will return your project when people add them to their searches. Max 5."
+      },
+      "source": {
+        "_": "Source code",
+        "info": "Support the community of developers by making your project open source!"
+      },
       "_": "Settings",
       "deployKey": {
         "_": "Deployment key",
         "info": "Generate a unique deployment key to enable build deployment from Gradle"
+      },
+      "description": {
+        "_": "Description",
+        "info": "A short description of your project (max 120)"
       },
       "forumSync": {
         "_": "Create posts on the forums",
         "info": "Sets if events like a new release should automatically create a post on the forums"
       },
       "genKey": "Generate key",
+      "icon": {
+        "_": "Icon",
+        "info": "Upload an image representative of your project."
+      },
       "license": {
         "_": "License",
         "info": "What can people do (and not do) with your project?"
@@ -552,25 +584,11 @@
     "description": "Description",
     "download": {
       "confirm": {
-        "body": {
-          "api": "\nThis version has not been reviewed by our moderation staff and may not be safe for download. \nDisclaimer: We disclaim all responsibility for any harm to your server or system should you choose not to heed this \nwarning."
-        },
-        "curl": {
-          "_": "\nPlease POST to the attached link to acknowledge this disclaimer and continue to the download. \ncurl -O -J -L -d -X \"{0}&csrfToken",
-          "nocsrf": "\nPlease POST to the attached link to acknowledge this disclaimer and continue to the download. \ncurl -O -J -L -d -X \"{0}\""
-        },
         "disclaimer": "We disclaim all responsibility for any harm to your server or system should you choose not to heed this warning.",
-        "download": "Download it at my own risk",
         "externalUrl": "This version download is on an external site.",
         "header": "{1} {2} by {0}",
-        "nonReviewedChannel": "This version will not be reviewed and may not be safe to use.",
         "reviewedChannel": "This version has not been reviewed by our moderation staff yet and may not be safe to use.",
-        "title": "Download Warning for",
-        "wget": "Sorry, but Hangar does not support the use of wget. \nPlease use the following curl instead: \ncurl -O -J -L \"<url>\""
-      },
-      "confirmPartial": {
-        "api": "\nThis version has only been partially reviewed by our moderation staff and may not be safe for download. \nWhile the core plugin has been reviewed, other resources like shaded libraries have not. \nDisclaimer: We disclaim all responsibility for any harm to your server or system should you choose not to heed this \nwarning.",
-        "reviewedChannel": "\nThis version has only been partially reviewed by our moderation staff and may not be safe for use. \nWhile the core plugin has been reviewed, other resources like shaded libraries have not."
+        "title": "Download Warning for"
       }
     },
     "externalUrl": "URL",

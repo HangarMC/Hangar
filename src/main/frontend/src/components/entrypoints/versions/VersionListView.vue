@@ -116,8 +116,8 @@ import moment from 'moment';
 import Tag from '@/components/Tag';
 import Pagination from '@/components/Pagination';
 import { Visibility } from '@/enums';
-import { apiV2Request } from '@/js/apiRequests';
 import MemberList from '@/components/MemberList';
+import { API } from '@/api';
 
 export default {
     components: {
@@ -148,7 +148,7 @@ export default {
     },
     created() {
         this.update();
-        apiV2Request('permissions', 'GET', { author: window.PROJECT_OWNER, slug: window.PROJECT_SLUG }).then((response) => {
+        API.request('permissions', 'GET', { author: window.PROJECT_OWNER, slug: window.PROJECT_SLUG }).then((response) => {
             this.canUpload = response.permissions.includes('create_version');
         });
         this.$watch(
@@ -161,7 +161,7 @@ export default {
     },
     methods: {
         update() {
-            apiV2Request('projects/' + this.ownerName + '/' + this.projectSlug + '/versions', 'GET', {
+            API.request(`projects/${this.ownerName}/${this.projectSlug}/versions`, 'GET', {
                 limit: this.limit,
                 offset: this.offset,
             }).then((response) => {

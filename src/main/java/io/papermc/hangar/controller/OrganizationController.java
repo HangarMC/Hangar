@@ -2,7 +2,7 @@ package io.papermc.hangar.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.controller.forms.OrganizationRoleUpdate;
+import io.papermc.hangar.controller.forms.JoinableRoleUpdates;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.OrganizationContext;
 import io.papermc.hangar.db.customtypes.RoleCategory;
@@ -160,11 +160,11 @@ public class OrganizationController extends HangarController {
     @Secured("ROLE_USER")
     @PostMapping(value = "/organizations/{organization}/settings/members", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void updateMembers(@PathVariable String organization, @RequestBody OrganizationRoleUpdate organizationRoleUpdate) {
+    public void updateMembers(@PathVariable String organization, @RequestBody JoinableRoleUpdates orgRoleUpdates) {
         OrganizationsTable org = orgService.getOrganization(organization);
 
         List<String> newState = new ArrayList<>();
-        organizationRoleUpdate.getAdditions().forEach(userRole -> {
+        orgRoleUpdates.getAdditions().forEach(userRole -> {
             if (userRole.getRole().getCategory() == RoleCategory.ORGANIZATION && userRole.getRole().isAssignable()) {
                 UsersTable memberUser = userService.getUsersTable(userRole.getUserId());
                 newState.add(memberUser.getName() + ": " + userRole.getRole().getTitle());
@@ -177,7 +177,7 @@ public class OrganizationController extends HangarController {
             newState.clear();
         }
 
-        organizationRoleUpdate.getUpdates().forEach(userRole -> {
+        orgRoleUpdates.getUpdates().forEach(userRole -> {
             if (userRole.getRole().getCategory() == RoleCategory.ORGANIZATION && userRole.getRole().isAssignable()) {
                 UsersTable memberUser = userService.getUsersTable(userRole.getUserId());
                 newState.add(memberUser.getName() + ": " + userRole.getRole().getTitle());

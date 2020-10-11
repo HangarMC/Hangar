@@ -28,14 +28,9 @@
                 <li v-for="({ key: role, value: user }, index) in filteredMembers" :key="index" class="list-group-item">
                     <UserAvatar :user-name="user.name" :avatar-url="avatarUrl(user.name)" clazz="user-avatar-xs"></UserAvatar>
                     <a :href="ROUTES.parse('USERS_SHOW_PROJECTS', user.name)" class="username" v-text="user.name"></a>
-                    <template v-if="editable && canManageMembers && (!role.role || (role.role.permissions & isOrgOwnerPermission) !== isOrgOwnerPermission)">
-                        <a v-if="!role.isEditing" href="#" @click.prevent title="Remove Member">
-                            <i
-                                class="ml-1 fas fa-trash fa-xs text-danger"
-                                data-toggle="modal"
-                                data-target="#modal-user-delete"
-                                @click="userToDelete = user.name"
-                            ></i>
+                    <template v-if="editable && canManageMembers && (!role.role || (role.role.permissions & isJoinableOwnerPerm) !== isJoinableOwnerPerm)">
+                        <a v-if="!role.isEditing" href="#" @click.prevent title="Remove Member" @click="userToDelete = user.name">
+                            <i class="ml-1 fas fa-trash fa-xs text-danger" data-toggle="modal" data-target="#modal-user-delete"></i>
                         </a>
                         <a v-if="!role.isEditing" href="#" @click.prevent="edit(role, user)" title="Change Role"><i class="ml-1 fas fa-edit fa-xs"></i></a>
                         <a v-else href="#" @click.prevent="cancel(role, user)" :title="`Cancel ${role.isNew ? 'New' : 'Edit'}`">
@@ -54,7 +49,7 @@
                         v-if="
                             editable &&
                             canManageMembers &&
-                            (!role.role || (role.role.permissions & isOrgOwnerPermission) !== isOrgOwnerPermission) &&
+                            (!role.role || (role.role.permissions & isJoinableOwnerPerm) !== isJoinableOwnerPerm) &&
                             role.isEditing &&
                             !role.isNew
                         "
@@ -67,7 +62,7 @@
                         v-if="
                             editable &&
                             canManageMembers &&
-                            (!role.role || (role.role.permissions & isOrgOwnerPermission) !== isOrgOwnerPermission) &&
+                            (!role.role || (role.role.permissions & isJoinableOwnerPerm) !== isJoinableOwnerPerm) &&
                             role.isEditing &&
                             role.isNew
                         "
@@ -137,7 +132,7 @@ export default {
         return {
             ROUTES: window.ROUTES,
             filteredMembers: [],
-            isOrgOwnerPermission: window.ORG_OWNER_PERM,
+            isJoinableOwnerPerm: window.ORG_OWNER_PERM || window.PROJECT_OWNER_PERM,
             form: {
                 updates: {},
                 additions: {},
@@ -179,7 +174,7 @@ export default {
                 });
             }
             axios
-                .post(this.saveCall, data, window.ajaxSettings)
+                .post(this.saveCall, this.getForm(), window.ajaxSettings)
                 .then(() => {
                     location.reload();
                 })
@@ -202,6 +197,25 @@ export default {
                 updates: {},
                 additions: {},
             };
+        },
+        getForm() {
+            const data = {
+                updates: [],
+                additions: [],
+            };
+            for (const name in this.form.updates) {
+                data.updates.push({
+                    role: this.form.updates[name].role,
+                    id: this.form.updates[name].id,
+                });
+            }
+            for (const name in this.form.additions) {
+                data.additions.push({
+                    role: this.form.additions[name].role,
+                    id: this.form.additions[name].id,
+                });
+            }
+            return data;
         },
         cancel(role, user) {
             if (role.isNew) {

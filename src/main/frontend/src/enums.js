@@ -66,11 +66,11 @@ export const SortOptions = [
 export class Visibility {
     static get values() {
         return [
-            { name: 'public', class: '' },
-            { name: 'new', class: 'project-new' },
-            { name: 'needsChanges', class: 'striped project-needsChanges' },
-            { name: 'needsApproval', class: 'striped project-needsChanges' },
-            { name: 'softDelete', class: 'striped project-hidden' },
+            { name: 'public', class: '', showModal: false },
+            { name: 'new', class: 'project-new', showModal: false },
+            { name: 'needsChanges', class: 'striped project-needsChanges', showModal: true },
+            { name: 'needsApproval', class: 'striped project-needsChanges', showModal: false },
+            { name: 'softDelete', class: 'striped project-hidden', showModal: true },
         ];
     }
 

@@ -1,8 +1,8 @@
-package io.papermc.hangar.controller.api;
+package io.papermc.hangar.controller.exceptions.handlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.controller.exceptions.HangarApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

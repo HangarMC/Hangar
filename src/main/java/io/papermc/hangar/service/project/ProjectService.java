@@ -28,6 +28,7 @@ import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.pluginupload.ProjectFiles;
 import io.papermc.hangar.util.RequestUtil;
 import io.papermc.hangar.util.Routes;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
@@ -174,11 +175,14 @@ public class ProjectService extends HangarService {
         return checkVisibility(projectDao.get().getBySlug(author, name));
     }
 
-    public ProjectsTable checkVisibility(ProjectsTable projectsTable) {
+    public ProjectsTable checkVisibility(@Nullable ProjectsTable projectsTable) {
+        if (projectsTable == null) {
+            return null;
+        }
         return checkVisibility(projectsTable, permissionService.getProjectPermissions(currentUser.get().map(UsersTable::getId).orElse(-10L), projectsTable.getId()));
     }
 
-    public ProjectsTable checkVisibility(ProjectsTable projectsTable, Permission permission) {
+    public ProjectsTable checkVisibility(@Nullable ProjectsTable projectsTable, Permission permission) {
         if (projectsTable == null) {
             return null;
         }

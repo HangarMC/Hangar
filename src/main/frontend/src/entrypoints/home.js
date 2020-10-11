@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
 import $ from 'jquery';
-import Home from '../components/entrypoints/Home';
+import Home from '@/components/entrypoints/Home';
 
 $.ajaxSetup(window.ajaxSettings);
 

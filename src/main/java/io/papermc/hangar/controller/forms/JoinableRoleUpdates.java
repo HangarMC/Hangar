@@ -6,13 +6,13 @@ import io.papermc.hangar.controller.forms.objects.UserRole;
 
 import java.util.List;
 
-public class OrganizationRoleUpdate {
+public class JoinableRoleUpdates {
 
     private final List<UserRole> updates;
     private final List<UserRole> additions;
 
     @JsonCreator
-    public OrganizationRoleUpdate(@JsonProperty(value = "updates", required = true) List<UserRole> updates, @JsonProperty(value = "additions", required = true) List<UserRole> additions) {
+    public JoinableRoleUpdates(@JsonProperty(value = "updates", required = true) List<UserRole> updates, @JsonProperty(value = "additions", required = true) List<UserRole> additions) {
         this.updates = updates;
         this.additions = additions;
     }

@@ -2,7 +2,7 @@ package io.papermc.hangar.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.controller.exceptions.HangarApiException;
 import io.papermc.hangar.model.ApiAuthInfo;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.generated.DeployVersionInfo;

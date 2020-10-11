@@ -1,4 +1,4 @@
-package io.papermc.hangar.exceptions;
+package io.papermc.hangar.controller.exceptions;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;

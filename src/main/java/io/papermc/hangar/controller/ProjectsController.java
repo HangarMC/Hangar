@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.controller.exceptions.JsonResponseException;
+import io.papermc.hangar.controller.forms.JoinableRoleUpdates;
 import io.papermc.hangar.controller.forms.NewProjectForm;
 import io.papermc.hangar.controller.forms.ProjectNameValidate;
+import io.papermc.hangar.controller.forms.SaveProjectForm;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.customtypes.RoleCategory;
@@ -24,7 +27,6 @@ import io.papermc.hangar.model.FlagReason;
 import io.papermc.hangar.model.NamedPermission;
 import io.papermc.hangar.model.NotificationType;
 import io.papermc.hangar.model.Permission;
-import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.generated.Note;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
@@ -49,7 +51,6 @@ import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.AlertUtil;
 import io.papermc.hangar.util.AlertUtil.AlertType;
 import io.papermc.hangar.util.FileUtils;
-import io.papermc.hangar.util.ListUtils;
 import io.papermc.hangar.util.Routes;
 import io.papermc.hangar.util.StringUtils;
 import io.papermc.hangar.util.TemplateHelper;
@@ -83,12 +84,9 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Controller
 public class ProjectsController extends HangarController {
@@ -488,42 +486,26 @@ public class ProjectsController extends HangarController {
     @ProjectPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)
     @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
     @Secured("ROLE_USER")
-    @PostMapping(value = "/{author}/{slug}/manage/save", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ModelAndView save(@PathVariable String author,
-                             @PathVariable String slug,
-                             @RequestParam Category category,
-                             @RequestParam(required = false) String keywords,
-                             @RequestParam(required = false) String issues,
-                             @RequestParam(required = false) String source,
-                             @RequestParam(value = "license-name", required = false) String licenseName,
-                             @RequestParam(value = "license-url", required = false) String licenseUrl,
-                             @RequestParam("forum-sync") boolean forumSync,
-                             @RequestParam String description,
-                             @RequestParam("update-icon") boolean updateIcon,
-                             @RequestParam(required = false) List<Long> users,
-                             @RequestParam(required = false) List<Role> roles,
-                             @RequestParam(required = false) List<String> userUps,
-                             @RequestParam(required = false) List<Role> roleUps) {
-
-        Set<String> keywordSet = keywords != null ? Set.of(keywords.split(" ")) : Set.of();
-        if (keywordSet.size() > hangarConfig.getProjects().getMaxKeywords()) {
-            ModelAndView mav = showSettings(author, slug);
-            AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, "error.project.maxKeywords", hangarConfig.getProjects().getMaxKeywords());
-            return mav;
+    @PostMapping(value = "/{author}/{slug}/manage/save", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public void save(@PathVariable String author, @PathVariable String slug, @RequestBody SaveProjectForm saveProjectForm) {
+        if (saveProjectForm.getKeywords().size() > hangarConfig.getProjects().getMaxKeywords()) {
+            throw new JsonResponseException("error.project.maxKeywords", hangarConfig.getProjects().getMaxKeywords());
         }
-
         ProjectsTable project = projectsTable.get();
-        project.setCategory(category);
-        project.setKeywords(keywordSet);
-        project.setIssues(issues);
-        project.setSource(source);
-        project.setLicenseName(licenseName);
-        project.setLicenseUrl(licenseUrl);
-        project.setForumSync(forumSync);
-        project.setDescription(description);
+        project.setCategory(saveProjectForm.getCategory());
+        project.setKeywords(saveProjectForm.getKeywords());
+        project.setHomepage(saveProjectForm.getProjectLinks().getHomepage());
+        project.setIssues(saveProjectForm.getProjectLinks().getIssues());
+        project.setSource(saveProjectForm.getProjectLinks().getSource());
+        project.setSupport(saveProjectForm.getProjectLinks().getSupport());
+        project.setLicenseName(saveProjectForm.getLicense().getName());
+        project.setLicenseUrl(saveProjectForm.getLicense().getUrl());
+        project.setForumSync(saveProjectForm.isForumSync());
+        project.setDescription(saveProjectForm.getDescription());
         projectDao.get().update(project);
 
-        if (updateIcon) {
+        if (saveProjectForm.isIconChange()) {
             Path pendingIconPath = projectFiles.getPendingIconPath(author, slug);
             if (pendingIconPath != null) {
                 try {
@@ -539,31 +521,21 @@ public class ProjectsController extends HangarController {
             }
         }
 
-        // TODO perhaps bulk notification insert?
-
-        Map<Long, Role> userRoles = ListUtils.zip(users, roles);
-        userRoles.forEach((memberId, role) -> {
-            if (role.getCategory() != RoleCategory.PROJECT || !role.isAssignable()) {
-                // ignore roles that aren't project roles and aren't assignable
-                return;
+        JoinableRoleUpdates projectRoleUpdates = saveProjectForm.getProjectRoleUpdates();
+        projectRoleUpdates.getAdditions().forEach(userRole -> {
+            if (userRole.getRole().getCategory() == RoleCategory.PROJECT & userRole.getRole().isAssignable()) {
+                roleService.addRole(project, userRole.getUserId(), userRole.getRole(), false);
+                notificationService.sendNotification(userRole.getUserId(), project.getOwnerId(), NotificationType.PROJECT_INVITE,new String[]{"notification.project.invite", userRole.getRole().getTitle(), project.getName()});
             }
-            roleService.addRole(project, memberId, role, false);
-            notificationService.sendNotification(memberId, project.getOwnerId(), NotificationType.PROJECT_INVITE, new String[]{"notification.project.invite", role.getTitle(), project.getName()});
         });
-
-        if (userUps != null && roleUps != null) {
-            Map<String, UsersTable> usersToUpdate = userService.getUsers(userUps).stream().collect(Collectors.toMap(UsersTable::getName, user -> user));
-            if (usersToUpdate.size() != roleUps.size())
-                throw new RuntimeException("Mismatching userUps & roleUps size");
-            for (int i = 0; i < userUps.size(); i++) {
-                roleService.updateRole(project, usersToUpdate.get(userUps.get(i)).getId(), roleUps.get(i));
+        projectRoleUpdates.getUpdates().forEach(userRole -> {
+            if (userRole.getRole().getCategory() == RoleCategory.PROJECT && userRole.getRole().isAssignable()) {
+                roleService.updateRole(project, userRole.getUserId(), userRole.getRole());
             }
-        }
+        });
 
         projectService.refreshHomePage();
         userActionLogService.project(request, LoggedActionType.PROJECT_SETTINGS_CHANGED.with(ProjectContext.of(project.getId())), "", "");
-
-        return Routes.PROJECTS_SHOW.getRedirect(author, slug);
     }
 
     @ProjectPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)

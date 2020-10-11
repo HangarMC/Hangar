@@ -1,7 +1,7 @@
 package io.papermc.hangar.controller.api;
 
 import io.papermc.hangar.config.hangar.SsoConfig;
-import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.controller.exceptions.HangarApiException;
 import io.papermc.hangar.model.SsoSyncData;
 import io.papermc.hangar.service.SsoService;
 import io.papermc.hangar.service.UserService;

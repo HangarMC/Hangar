@@ -21,10 +21,15 @@ export default {
     },
     computed: {
         src() {
-            return this.imgSrc || this.userName ? this.avatarUrl : '';
+            return this.imgSrc || (this.userName ? this.avatarUrl || this.getAvatarUrl(this.userName) : '');
         },
         url() {
             return this.href || this.userName ? this.ROUTES.parse('USERS_SHOW_PROJECTS', this.userName) : '#';
+        },
+    },
+    methods: {
+        getAvatarUrl(username) {
+            return window.AVATAR_URL.replace('%s', username);
         },
     },
 };

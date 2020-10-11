@@ -1,8 +1,8 @@
 package io.papermc.hangar.controller.api;
 
+import io.papermc.hangar.controller.exceptions.HangarApiException;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.api.SessionsDao;
-import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.util.AuthUtils;
 import io.papermc.hangar.util.AuthUtils.AuthCredentials;
 import org.slf4j.Logger;
