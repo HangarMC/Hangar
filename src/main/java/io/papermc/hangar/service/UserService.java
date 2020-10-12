@@ -126,6 +126,13 @@ public class UserService extends HangarService {
         }
     }
 
+    @Bean
+    @RequestScope
+    public Supplier<UserData> userData() {
+        //noinspection SpringConfigurationProxyMethods
+        return () -> this.getUserData(usersTable().get());
+    }
+
     public HeaderData getHeaderData() {
         if (currentUser.get().isEmpty()) {
             return HeaderData.UNAUTHENTICATED;
@@ -309,11 +316,12 @@ public class UserService extends HangarService {
     }
 
     public void markPromptAsRead(Prompt prompt) {
-        if (currentUser.get().isPresent()) {
-            if (!currentUser.get().get().getReadPrompts().contains(prompt.ordinal())) {
-                currentUser.get().get().getReadPrompts().add(prompt.ordinal());
+        Optional<UsersTable> currUser = currentUser.get();
+        if (currUser.isPresent()) {
+            if (!currUser.get().getReadPrompts().contains(prompt.ordinal())) {
+                currUser.get().getReadPrompts().add(prompt.ordinal());
             }
-            userDao.get().update(currentUser.get().get());
+            userDao.get().update(currUser.get());
         }
     }
 

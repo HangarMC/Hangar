@@ -4,16 +4,22 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.controller.forms.UserAdminForm;
 import io.papermc.hangar.controller.util.StatusZ;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
+import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.PlatformVersionsDao;
 import io.papermc.hangar.db.model.PlatformVersionsTable;
+import io.papermc.hangar.db.model.RoleTable;
 import io.papermc.hangar.db.model.Stats;
+import io.papermc.hangar.db.model.UserOrganizationRolesTable;
+import io.papermc.hangar.db.model.UserProjectRolesTable;
 import io.papermc.hangar.model.NamedPermission;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.Platform;
+import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.viewhelpers.Activity;
 import io.papermc.hangar.model.viewhelpers.LoggedActionViewModel;
@@ -25,6 +31,7 @@ import io.papermc.hangar.model.viewhelpers.UserData;
 import io.papermc.hangar.security.annotations.GlobalPermission;
 import io.papermc.hangar.service.JobService;
 import io.papermc.hangar.service.OrgService;
+import io.papermc.hangar.service.RoleService;
 import io.papermc.hangar.service.SitemapService;
 import io.papermc.hangar.service.StatsService;
 import io.papermc.hangar.service.UserActionLogService;
@@ -60,6 +67,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Controller
@@ -75,14 +83,16 @@ public class ApplicationController extends HangarController {
     private final JobService jobService;
     private final SitemapService sitemapService;
     private final StatsService statsService;
+    private final RoleService roleService;
     private final StatusZ statusZ;
     private final ObjectMapper mapper;
     private final HangarConfig hangarConfig;
 
     private final HttpServletRequest request;
+    private final Supplier<UserData> userData;
 
     @Autowired
-    public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, StatusZ statusZ, ObjectMapper mapper, HangarConfig hangarConfig, HttpServletRequest request) {
+    public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, RoleService roleService, StatusZ statusZ, ObjectMapper mapper, HangarConfig hangarConfig, HttpServletRequest request, Supplier<UserData> userData) {
         this.platformVersionsDao = platformVersionsDao;
         this.userService = userService;
         this.projectService = projectService;
@@ -92,11 +102,13 @@ public class ApplicationController extends HangarController {
         this.versionService = versionService;
         this.jobService = jobService;
         this.sitemapService = sitemapService;
+        this.roleService = roleService;
         this.statusZ = statusZ;
         this.mapper = mapper;
         this.hangarConfig = hangarConfig;
         this.request = request;
         this.statsService = statsService;
+        this.userData = userData;
     }
 
     @GetMapping("/")
@@ -292,11 +304,74 @@ public class ApplicationController extends HangarController {
         return fillModel(mav);
     }
 
+
+    private static final String ORG_ROLE = "orgRole";
+    private static final String MEMBER_ROLE = "memberRole";
+    private static final String PROJECT_ROLE = "projectRole";
     @GlobalPermission(NamedPermission.EDIT_ALL_USER_SETTINGS)
     @Secured("ROLE_USER")
-    @PostMapping("/admin/user/{user}/update")
-    public Object updateUser(@PathVariable Object user) {
-        return null; // TODO implement updateUser request controller
+    @PostMapping(value = "/admin/user/{user}/update", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public void updateUser(@PathVariable("user") String userName, @RequestBody UserAdminForm userAdminForm) {
+        UserData user = userData.get();
+        switch (userAdminForm.getThing()) {
+            case ORG_ROLE: {
+                if (user.isOrga()) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                }
+                UserOrganizationRolesTable orgRole = roleService.getUserOrgRole(userAdminForm.getData().get("id").asLong());
+                break;
+            }
+            case MEMBER_ROLE: {
+                if (!user.isOrga()) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                }
+                UserOrganizationRolesTable orgRole = roleService.getUserOrgRole(userAdminForm.getData().get("id").asLong());
+                updateRoleTable(userAdminForm, orgRole, RoleCategory.ORGANIZATION, Role.ORGANIZATION_OWNER);
+                break;
+            }
+            case PROJECT_ROLE: {
+                UserProjectRolesTable projectRole = roleService.getUserProjectRole(userAdminForm.getData().get("id").asLong());
+                updateRoleTable(userAdminForm, projectRole, RoleCategory.PROJECT, Role.PROJECT_OWNER);
+                break;
+            }
+            default:
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private static final String SET_ROLE = "setRole";
+    private static final String SET_ACCEPTED = "setAccepted";
+    private static final String DELETE_ROLE = "deleteRole";
+    private <R extends RoleTable> void updateRoleTable(UserAdminForm userAdminForm, R userRole, RoleCategory allowedCategory, Role ownerType) {
+        switch (userAdminForm.getAction()) {
+            case SET_ROLE:
+                Role role = Role.fromId(userAdminForm.getData().get("role").asLong());
+                if (role == null) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                }
+                else if (role == ownerType) {
+                    // TODO transfer owner
+                }
+                else if (role.getCategory() == allowedCategory && role.isAssignable()) {
+                    userRole.setRoleType(role.getValue());
+                    roleService.updateRole(userRole);
+                } else {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                }
+                break;
+            case SET_ACCEPTED:
+                userRole.setIsAccepted(true);
+                roleService.updateRole(userRole);
+                break;
+            case DELETE_ROLE:
+                if (userRole.getRole().isAssignable()) {
+                    roleService.removeRole(userRole);
+                }
+                break;
+            default:
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/api") // TODO move to Apiv1Controller maybe

@@ -8,7 +8,11 @@ public interface RoleTable {
 
     boolean getIsAccepted();
 
+    void setIsAccepted(boolean isAccepted);
+
     String getRoleType();
+
+    void setRoleType(String roleType);
 
     Role getRole();
 }

@@ -9,6 +9,7 @@ import io.papermc.hangar.db.dao.UserProjectRolesDao;
 import io.papermc.hangar.db.model.OrganizationsTable;
 import io.papermc.hangar.db.model.ProjectMembersTable;
 import io.papermc.hangar.db.model.ProjectsTable;
+import io.papermc.hangar.db.model.RoleTable;
 import io.papermc.hangar.db.model.UserGlobalRolesTable;
 import io.papermc.hangar.db.model.UserOrganizationRolesTable;
 import io.papermc.hangar.db.model.UserProjectRolesTable;
@@ -55,6 +56,22 @@ public class RoleService {
             addMember(projectsTable.getId(), userId);
         }
         userProjectRolesDao.get().insert(new UserProjectRolesTable(userId, role.getValue(), projectsTable.getId(), isAccepted));
+    }
+
+    public <R extends RoleTable> void updateRole(R roleTable) {
+        if (roleTable instanceof UserProjectRolesTable) {
+            this.updateRole((UserProjectRolesTable) roleTable);
+        } else if (roleTable instanceof UserOrganizationRolesTable) {
+            this.updateRole((UserOrganizationRolesTable) roleTable);
+        }
+    }
+
+    public <R extends RoleTable> void removeRole(R roleTable) {
+        if (roleTable instanceof UserProjectRolesTable) {
+            this.removeRole( (UserProjectRolesTable) roleTable);
+        } else if (roleTable instanceof UserOrganizationRolesTable) {
+            this.removeRole(((UserOrganizationRolesTable) roleTable).getOrganizationId(), ((UserOrganizationRolesTable) roleTable).getUserId());
+        }
     }
 
     public void updateRole(ProjectsTable projectsTable, long userId, Role role) {

@@ -2,18 +2,6 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
-<#--
-@import controllers.sugar.Requests.OreRequest
-@import models.viewhelper.{OrganizationData, UserData}
-@import ore.OreConfig
-@import ore.db.Model
-@import ore.models.organization.Organization
-@import ore.models.project.Project
-@import ore.models.user.User
-@import ore.models.user.role.{OrganizationUserRole, ProjectUserRole, UserRoleModel}
-@import ore.permission.role.Role
-@(user: UserData, orga: Option[OrganizationData], userProjectRoles: Seq[(Project, Model[ProjectUserRole])])(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
--->
 <#assign prefix>
     Edit ${u.isOrga()?string("Organization", "User")}
 </#assign>
@@ -24,7 +12,24 @@
 <#assign projectRoles=Role.values()?filter(role -> role.category == RoleCategory.PROJECT) />
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "js/userAdmin.js" />"></script>
+    <script>
+        window.IS_ORGANIZATION = ${u.isOrga()?c};
+        window.ROLES = {
+            <#if u.isOrga()>
+            MEMBERS: ${utils.serializeMap(orga.adminTable())},
+            <#else>
+            ORGANIZATIONS: ${utils.serializeMap(u.orgas)},
+            PROJECTS: ${utils.serializeMap(userProjectRoles)},
+            </#if>
+        };
+        window.ROLE_TYPES = {
+            <#if !u.isOrga()>
+            PROJECT: ${mapper.valueToTree(projectRoles)},
+            </#if>
+            ORGANIZATION: ${mapper.valueToTree(orgRoles)},
+        }
+    </script>
+    <script type="text/javascript" src="<@hangar.url "js/user-admin.js" />"></script>
 </#assign>
 
 <@base.base title=(prefix + u.user.name) additionalScripts=scriptsVar>
@@ -37,40 +42,41 @@
 
     <div class="row">
         <div class="col-md-9">
-            <div class="row">
+            <div id="user-admin">
+                <div class="row">
+                    <#if !u.isOrga()>
+                        <@card "Organizations">
+                            <@roleTable keyName="Organization" tableType="orgRole" withOwner=true roles=u.orgas roleTypes=orgRoles ; org, role>
+                            <#-- @ftlvariable name="org" type="io.papermc.hangar.model.viewhelpers.OrganizationData" -->
+                                <a href="${Routes.USER_ADMIN.getRouteUrl(org.org.name)}">
+                                    ${org.org.name}
+                                </a>
+                            </@roleTable>
+                        </@card>
+                    <#else>
+                        <@card "Members">
+                            <@roleTable keyName="User" tableType="memberRole" withOwner=false roles=orga.adminTable() roleTypes=orgRoles ; memberUser, role>
+                                <#-- @ftlvariable name="memberUser" type="io.papermc.hangar.db.model.UsersTable" -->
+                                <a href="${Routes.USER_ADMIN.getRouteUrl(memberUser.name)}">
+                                    ${memberUser.name}
+                                </a>
+                            </@roleTable>
+                        </@card>
+                    </#if>
+                </div>
                 <#if !u.isOrga()>
-                    <@card "Organizations">
-                        <@roleTable keyName="Organization" tableType="orgRole" withOwner=true roles=u.orgas roleTypes=orgRoles ; org, role>
-                        <#-- @ftlvariable name="org" type="io.papermc.hangar.model.viewhelpers.OrganizationData" -->
-                            <a href="${Routes.USER_ADMIN.getRouteUrl(org.org.name)}">
-                                ${org.org.name}
-                            </a>
-                        </@roleTable>
-                    </@card>
-                <#else>
-                    <@card "Members">
-                        <#-- TODO organization members map-->
-                        <@roleTable keyName="User" tableType="memberRole" withOwner=false roles=orga.adminTable() roleTypes=orgRoles ; memberUser, role>
-                            <#-- @ftlvariable name="memberUser" type="io.papermc.hangar.db.model.UsersTable" -->
-                            <a href="${Routes.USER_ADMIN.getRouteUrl(memberUser.name)}">
-                                ${memberUser.name}
-                            </a>
-                        </@roleTable>
-                    </@card>
+                    <div class="row">
+                        <@card "Projects">
+                            <@roleTable keyName="Project" tableType="projectRole" withOwner=true roles=userProjectRoles roleTypes=projectRoles ; project, role>
+                            <#-- @ftlvariable name="project" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
+                                <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.projectOwner.name, project.project.slug)}">
+                                    ${project.project.name}
+                                </a>
+                            </@roleTable>
+                        </@card>
+                    </div>
                 </#if>
             </div>
-            <#if !u.isOrga()>
-                <div class="row">
-                    <@card "Projects">
-                        <@roleTable keyName="Project" tableType="projectRole" withOwner=true roles=userProjectRoles roleTypes=projectRoles ; project, role>
-                        <#-- @ftlvariable name="project" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
-                            <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.projectOwner.name, project.project.slug)}">
-                                ${project.project.name}
-                            </a>
-                        </@roleTable>
-                    </@card>
-                </div>
-            </#if>
         </div>
 
         <@card title="Other Administration" size=3>
