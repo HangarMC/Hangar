@@ -513,7 +513,7 @@ export default {
         genKey() {
             this.loading.genKey = true;
             axios
-                .post(`/api/v1/projects/${this.project.namespace}/keys/new`, { 'key-type': 0 }, window.ajaxSettings)
+                .post(`/api/old/v1/projects/${this.project.namespace}/keys/new`, { 'key-type': 0 }, window.ajaxSettings)
                 .then(({ data }) => {
                     this.deploymentKey = data;
                 })
@@ -524,7 +524,7 @@ export default {
         revokeKey() {
             this.loading.revokeKey = true;
             axios
-                .post(`/api/v1/projects/${this.project.namespace}/keys/revoke`, { id: this.deploymentKey.id }, window.ajaxSettings)
+                .post(`/api/old/v1/projects/${this.project.namespace}/keys/revoke`, { id: this.deploymentKey.id }, window.ajaxSettings)
                 .then(() => {
                     this.deploymentKey = null;
                 })
