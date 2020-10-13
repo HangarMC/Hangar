@@ -122,6 +122,17 @@ public class ProjectsApiController implements ProjectsApi {
         return ResponseEntity.ok(project);
     }
 
+    @Override
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.util.ApiScope).forProject(#id))")
+    public ResponseEntity<Project> showProject(long id) {
+        boolean seeHidden = apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden);
+        Project project = projectApiService.getProject(id, seeHidden, apiAuthInfo.getUserId());
+        if (project == null) {
+            log.error("Couldn't find a project for that id");
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "Couldn't find a project for id: " + id);
+        }
+        return ResponseEntity.ok(project);
+    }
 
     @Override
     @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).IsProjectMember, T(io.papermc.hangar.controller.util.ApiScope).forProject(#author, #slug))")

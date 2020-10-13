@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
@@ -75,6 +76,7 @@ public class AuthenticationService extends HangarService {
     private final HttpServletRequest request;
     private final Supplier<Optional<UsersTable>> currentUser;
 
+    private static final Pattern API_ROUTE_PATTERN = Pattern.compile("^/api/(?!old).+");
     private static final String UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
     private static final Pattern API_KEY_PATTERN = Pattern.compile("(" + UUID_REGEX + ").(" + UUID_REGEX + ")");
 
@@ -100,7 +102,8 @@ public class AuthenticationService extends HangarService {
     @Bean
     @RequestScope
     public ApiAuthInfo apiAuthInfo() {
-        if (request.getRequestURI().startsWith("/api/v2")) { // if api method
+        Matcher apiMatcher = API_ROUTE_PATTERN.matcher(request.getRequestURI());
+        if (apiMatcher.matches()) { // if api method
             AuthUtils.AuthCredentials credentials = AuthUtils.parseAuthHeader(request, true);
             if (credentials.getSession() == null) {
                 throw AuthUtils.unAuth("No session specified");
@@ -118,6 +121,7 @@ public class AuthenticationService extends HangarService {
         return null;
     }
 
+    // TODO remove once all of old v1 is gone
     public boolean authV1ApiRequest(Permission perms, ApiScope apiScope) {
         Cookie sessionCookie = WebUtils.getCookie(request, UsersController.AUTH_TOKEN_NAME);
         if (sessionCookie == null) {
@@ -144,11 +148,19 @@ public class AuthenticationService extends HangarService {
             case GLOBAL:
                 return permissionService.getGlobalPermissions(userId).has(perms);
             case PROJECT:
-                if (StringUtils.isEmpty(apiScope.getOwner()) || StringUtils.isEmpty(apiScope.getSlug())) {
-                    throw new IllegalArgumentException("Must have passed the owner and slug to apiAction");
+                if ((StringUtils.isEmpty(apiScope.getOwner()) || StringUtils.isEmpty(apiScope.getSlug())) && apiScope.getId() == null) {
+                    throw new IllegalArgumentException("Must have passed an (owner and slug) OR an ID to apiAction");
                 }
-                Permission projectPermissions = permissionService.getProjectPermissions(userId, apiScope.getOwner(), apiScope.getSlug());
-                ProjectsTable projectsTable = projectService.checkVisibility(projectDao.get().getBySlug(apiScope.getOwner(), apiScope.getSlug()), projectPermissions);
+                ProjectsTable projectsTable;
+                Permission projectPermissions;
+                if (apiScope.getId() != null) {
+                    projectPermissions = permissionService.getProjectPermissions(userId, apiScope.getId());
+                    projectsTable = projectService.checkVisibility(projectDao.get().getById(apiScope.getId()), projectPermissions);
+                }
+                else {
+                    projectPermissions = permissionService.getProjectPermissions(userId, apiScope.getOwner(), apiScope.getSlug());
+                    projectsTable = projectService.checkVisibility(projectDao.get().getBySlug(apiScope.getOwner(), apiScope.getSlug()), projectPermissions);
+                }
                 if (projectsTable == null) {
                     throw new HangarApiException(HttpStatus.NOT_FOUND);
                 }

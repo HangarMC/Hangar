@@ -29,6 +29,9 @@ public class User {
     @JsonProperty("tagline")
     private String tagline = null;
 
+    @JsonProperty("avatarUrl")
+    private String avatarUrl = null;
+
     @JsonProperty("joinDate")
     private OffsetDateTime joinDate = null;
 
@@ -75,6 +78,17 @@ public class User {
 
     public void setTagline(String tagline) {
         this.tagline = tagline;
+    }
+
+    @ApiModelProperty(required = true)
+    @NotNull
+    @Valid
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     @ApiModelProperty()

@@ -20,7 +20,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 @Api(value = "keys", description = "the keys API", tags = "Keys")
-@RequestMapping("/api/v2/")
+@RequestMapping({"/api", "/api/v1"})
 public interface KeysApi {
 
     @ApiOperation(value = "Creates an API key", nickname = "createKey", notes = "Creates an API key. Requires the `edit_api_keys` permission.", response = ApiKeyResponse.class, authorizations = {

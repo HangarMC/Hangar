@@ -4,7 +4,6 @@
 
 <#assign scripts>
     <script type="text/javascript" src="<@hangar.url "js/orgCreate.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "js/userSearch.js" />"></script>
     <script type="text/javascript" src="<@hangar.url "js/membersConfig.js" />"></script>
 </#assign>
 

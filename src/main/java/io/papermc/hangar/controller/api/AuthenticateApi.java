@@ -18,7 +18,7 @@ import io.papermc.hangar.model.generated.SessionProperties;
 import io.papermc.hangar.model.generated.ApiSessionResponse;
 
 @Api(value = "authenticate", description = "the authenticate API", tags = "Sessions (Authentication)")
-@RequestMapping("/api/v2/")
+@RequestMapping({"/api/v1/", "/api/"})
 public interface AuthenticateApi {
 
     @ApiOperation(value = "Creates an API session", nickname = "authenticate", notes = "Creates a new API session. Pass an API key to create an authenticated session. To create a public session, don't pass an Authorization header. When passing an API key, you should use the scheme `HangarApi`, and parameter `apikey`. An example would be `Authorization: HangarApi apikey=\"foobar\"`. The returned session should be specified in all following request as the parameter `session`. An example would be `Authorization: HangarApi session=\"noisses\"`", response = ApiSessionResponse.class, authorizations = {

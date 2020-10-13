@@ -47,9 +47,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf()
                 .ignoringAntMatchers(
-                        "/api/v2/authenticate",
-                        "/api/v2/sessions/current",
-                        "/api/v2/keys",
+                        "/api/authenticate",
+                        "/api/v1/authenticate",
+                        "/api/sessions/current",
+                        "/api/v1/sessions/current",
+                        "/api/keys",
+                        "/api/v1/keys",
                         "/api/sync_sso"
                 )
                 .and()

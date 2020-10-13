@@ -87,7 +87,7 @@ public class UserService extends HangarService {
     @Bean
     @RequestScope
     public Supplier<Optional<UsersTable>> currentUser() {
-        if (request.getRequestURI().startsWith("/api/v1")) {
+        if (request.getRequestURI().startsWith("/api/old/v1")) { // TODO remove once all of the old v1 is gone
             Cookie sessionCookie = WebUtils.getCookie(request, UsersController.AUTH_TOKEN_NAME);
             if (sessionCookie == null) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);

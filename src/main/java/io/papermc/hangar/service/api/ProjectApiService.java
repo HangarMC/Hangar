@@ -44,6 +44,14 @@ public class ProjectApiService {
         return project;
     }
 
+    public Project getProject(long id, boolean seeHidden, Long requesterId) {
+        Project project = projectApiDao.get().listProjects(id, seeHidden, requesterId, null, null, null, null, null, 1, 0).stream().findFirst().orElse(null);
+        if (project != null) {
+            setProjectIconUrl(project);
+        }
+        return project;
+    }
+
     public List<Project> getProjects(String owner, String slug, List<Category> categories, List<Tag> tags, String query, boolean seeHidden, Long requesterId, ProjectSortingStrategy sort, boolean orderWithRelevance, long limit, long offset) {
         String ordering = ApiUtil.strategyOrDefault(sort).getSql();
         if (orderWithRelevance && query != null && !query.isEmpty()) {

@@ -33,8 +33,6 @@ public class SwaggerConfig {
                              "<h3>Authorization</h3> Once you do that you should receive an session. This is valid for a pre-defined set of time. When it expires, you need to authenticate again. " +
                              "To use it, set it in the Authorization header like so `Authorization: HangarApi session=\"noisses\"`. For more info about authentication, see [here](#/Authentification/authenticate). " +
                              "<h2>FAQ</h2>" +
-                             "<h3>Can I just change v1 to v2 and be done with the transition to the new API?</h3>" +
-                             "No, not at all. The new API is wildly different from the old API. You won't even get out the door. " +
                              "<h3>Why do I need to create a new session when I just want to get some public info?</h3>" +
                              "We're working on a session-less authentification for public endpoints. " +
                              "<h3>What format does dates have?</h3>" +
@@ -42,7 +40,7 @@ public class SwaggerConfig {
                 .license("Unlicence")
                 .licenseUrl("http://unlicense.org")
                 .termsOfServiceUrl("")
-                .version("2.0")
+                .version("1.0")
                 .contact(new Contact("MiniDigger", "https://minidigger.me", "admin@minidigger.me"))
                 .build();
     }

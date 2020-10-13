@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Api(value = "permissions", tags = "Permissions")
-@RequestMapping("/api/v2/")
+@RequestMapping({"/api", "/api/v1"})
 public interface PermissionsApi {
 
     @ApiOperation(value = "Do an AND permission check", nickname = "hasAll", notes = "Checks that you have all the permissions passed in with a given session in a given context", response = PermissionCheck.class, authorizations = {

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.Valid;
 
 @Api(value = "users", description = "the users API", tags = {"Users"})
-@RequestMapping("/api/v2/")
+@RequestMapping({"/api", "/api/v1"})
 public interface UsersApi {
 
     @ApiOperation(
@@ -76,9 +76,7 @@ public interface UsersApi {
             @ApiResponse(code = 200, message = "Ok", response = UsersTable.class),
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")})
-    @RequestMapping(value = "/users/{user}",
-            produces = {"application/json"},
-            method = RequestMethod.GET)
+    @GetMapping(value = "/users/{user}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<User> showUser(@ApiParam(value = "The user to return", required = true) @PathVariable("user") String user
     );
 
@@ -89,9 +87,7 @@ public interface UsersApi {
             @ApiResponse(code = 200, message = "Ok", response = PaginatedCompactProjectResult.class),
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")})
-    @RequestMapping(value = "/users/{user}/watching",
-            produces = {"application/json"},
-            method = RequestMethod.GET)
+    @GetMapping(value = "/users/{user}/watching", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<PaginatedCompactProjectResult> showWatching(@ApiParam(value = "The user to return for", required = true) @PathVariable("user") String user
             , @ApiParam(value = "How to sort the projects") @Valid @RequestParam(value = "sort", required = false) ProjectSortingStrategy sort
             , @ApiParam(value = "The maximum amount of projects to return") @Valid @RequestParam(value = "limit", required = false) Long limit

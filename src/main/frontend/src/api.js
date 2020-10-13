@@ -11,7 +11,7 @@ export class API {
                 const isBodyRequest = method === 'POST' || method === 'PUT' || method === 'PATCH';
 
                 $.ajax({
-                    url: '/api/v2/' + url,
+                    url: '/api/v1/' + url,
                     method: method,
                     dataType: 'json',
                     contentType: isFormData ? false : 'application/json',
@@ -51,7 +51,7 @@ export class API {
                 session = parseJsonOrNull(localStorage.getItem('api_session'));
                 if (session === null || (!isNaN(new Date(session.expires).getTime()) && new Date(session.expires) < date)) {
                     return $.ajax({
-                        url: '/api/v2/authenticate/user',
+                        url: '/api/v1/authenticate/user',
                         method: 'POST',
                         dataType: 'json',
                         contentType: 'application/json',
@@ -74,7 +74,7 @@ export class API {
                 session = parseJsonOrNull(localStorage.getItem('public_api_session'));
                 if (session === null || (!isNaN(new Date(session.expires).getTime()) && new Date(session.expires) < date)) {
                     $.ajax({
-                        url: '/api/v2/authenticate',
+                        url: '/api/v1/authenticate',
                         method: 'POST',
                         dataType: 'json',
                         contentType: 'application/json',
