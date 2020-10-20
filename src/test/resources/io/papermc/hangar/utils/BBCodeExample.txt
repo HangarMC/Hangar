@@ -1,0 +1,86 @@
+[B][FONT=Verdana][SIZE=4][COLOR=rgb(64, 64, 64)][ATTACH=full]398874[/ATTACH]
+This plugin lets you activate a maintenance mode on your [/COLOR][COLOR=#4da6ff]BungeeCord as well as Spigot server[/COLOR][COLOR=rgb(64, 64, 64)], which will prevent players without a permission to join the server.[/COLOR][/SIZE][/FONT][/B]
+[FONT=Verdana][SIZE=4][B][COLOR=rgb(77, 166, 255)]Whatever version you want to use, just place the plugin inside your plugin folder of your server running Spigot or BungeeCord![/COLOR][/B]
+
+[/SIZE]
+[ATTACH=full]246817[/ATTACH]
+
+Its features include:[/FONT]
+[LIST]
+[*][FONT=Verdana]A [B]custom motd[/B] as well as [B]server icon[/B], that will be shown during maintenance[/FONT]
+[*][FONT=Verdana][B]Start- and endtimers[/B], which will [B]enable/disable maintenance mode after the time is up[/B][/FONT]
+[*][FONT=Verdana]A '%TIMER%' variable usable in the pingmessage, to show the time until a running endtimer finishes [I](other variables and tricks are explained in the configuration file's comments)[/I][/FONT]
+[*][FONT=Verdana]A [B]maintenance whitelist[/B], to grant specific players the ability to join while you're working on your server[/FONT]
+[*][FONT=Verdana]Notifications when players try to join your server during maintenance[/FONT]
+[*][FONT=Verdana]Nearly all [B]messages are editable[/B] via the language file, given in a multitude of different languages
+
+[B]Additional features on Bungee:[/B][/FONT]
+[*][FONT=Verdana]Only want to enable [B]maintenance on a single server[/B]? You can also do so by using the `/maintenance <on/off> <servername>` command[/FONT]
+[*][FONT=Verdana]Link [B]multiple proxy instances with a MySQL database [/B]connection, so you don't have to enable/disable maintenance on each proxy by hand[/FONT]
+[*][FONT=Verdana][B]Waiting servers[/B] during full proxy maintenance, as well as [B]fallback servers[/B] to go to when a single proxied server is under maintenance[/FONT]
+[*][FONT=Verdana][B]Using ServerListPlus[/B]? Maintenance will toggle its status when enabling maintenance and reenable the SLP motd when disabling maintenance[/FONT]
+[*][FONT=Verdana]Want to have PlaceholderAPI placeholders on Spigot? See [B][URL='https://github.com/KennyTV/Maintenance/wiki/MaintenanceAddon']here [/URL][/B]for more information on the MaintenanceAddon.[/FONT]
+[/LIST]
+[FONT=Verdana]
+[COLOR=#ff0000]IMPORTANT[/COLOR][COLOR=rgb(64, 64, 64)]: If using the plugin on a Spigot server, the plugin [B][URL='https://www.spigotmc.org/resources/protocollib.1997/']ProtocolLib[/URL] [/B]is required to use Maintenance to its full extend.[/COLOR]
+
+[/FONT]
+[CENTER][FONT=Verdana][ATTACH=full]401279[/ATTACH][/FONT][/CENTER]
+
+[CENTER][FONT=Verdana][SIZE=5][COLOR=#b30000]Did you find a bug[/COLOR]? Use the [URL='https://github.com/KennyTV/Maintenance/issues'][B]issue tracker[/B][/URL]
+[COLOR=#59b300]Other questions or problems[/COLOR]? Click the wonderful icon below ✨[/SIZE]
+[/FONT]
+[URL='https://discord.gg/vGCUzHq'][FONT=Verdana][ATTACH=full]401277[/ATTACH][/FONT][/URL]
+[/CENTER]
+[FONT=Verdana]
+[ATTACH=full]398878[/ATTACH][/FONT]
+[I][FONT=Verdana]Arguments in < > are necessary, those in [ ] aren't (can be omitted).[/FONT][/I]
+[LIST]
+[*][FONT=Verdana][B]/maintenance <on/off> [server][/B] will set the status of the maintenance mode[/FONT]
+[*][FONT=Verdana][B]/maintenance reload[/B] reloads the config and maintenance-icon file[/FONT]
+[*][FONT=Verdana][B]/maintenace <add/remove> <player/uuid>[/B] allows specific players to join on the server when maintenance is enabled[/FONT]
+[/LIST]
+[FONT=Verdana]
+[ATTACH=full]398879[/ATTACH][/FONT]
+[LIST]
+[*][FONT=Verdana][B][B]maintenance.admin [/B][/B]- super permission, that grants access to all perms below[/FONT]
+[*][B][FONT=Verdana]maintenance.joinnotification[/FONT][/B][FONT=Verdana] - if enabled: sends a notification to you if a player tries to join the server while maintenance is enabled[/FONT]
+[/LIST]
+[FONT=Verdana]Extra permissions for the Bungee part:[/FONT]
+[LIST]
+[*][FONT=Verdana][B]maintenance.singleserver.toggle [/B]- use the "/maintenance <on/off> <server>" commands[/FONT]
+[/LIST]
+[FONT=Verdana]
+IMPORTANT - If you are using the plugin on your proxyserver: You have to have these permissions on the proxy, not on the Spigot servers! This can be done by putting them into the Bungee config.yml as seen here:
+[ATTACH=full]355970[/ATTACH]
+This or you have a permissions plugin, which also works across the Proxy/Bungee  (for example LuckPerms).
+If you use it on a Spigot server, normal permission plugins should work (as well as being an operator).
+
+
+[ATTACH=full]398875[/ATTACH]
+
+If you are using [I]the Spigot version of the plugin[/I], you have to have [URL='https://www.spigotmc.org/resources/protocollib.1997/'][B]ProtocolLib [/B][/URL]installed to use the custom server-icon and the playercount-messages (that, or you have Paper running on 1.12.2 or higher)! The rest however is also accessible without it.
+For the Bungee version you don't need to have any other plugins installed.
+
+[I]proxied-maintenance-servers[/I], [I]fallback [/I]and [I]mysql [/I]section are only for the Bungee version.
+[SIZE=4]
+[CODE]
+# Used for autoupdating the config, do not change this value.
+config-version: 4
+...
+[/CODE]
+[SIZE=4][SIZE=4][SIZE=4][FONT=Verdana][SIZE=4][SIZE=4][SPOILER="language-en.yml"][CODE]noPermission: "&cYou do not have the permission to execute that command."
+kickmessage: "&cThe server is currently under maintenance!%NEWLINE%&cTry again later!"
+...
+[/CODE][/SPOILER][/SIZE][/SIZE]
+
+[ATTACH=full]401278[/ATTACH]
+[FONT=Verdana][SIZE=4][FONT=Verdana][FONT=Verdana][SIZE=4][FONT=Verdana][FONT=Verdana][SIZE=4][FONT=Verdana][SIZE=4][SIZE=4]If you have the ServerListPlus plugin on your BungeeCord/Spigot server, Maintenance will toggle its status. If you enable maintenance, the ServerListPlus motd will be disabled and then reenabled, when you disable maintenance to prevent any issues with them overriding each other.[/SIZE][/SIZE][/FONT][/SIZE][/FONT][/FONT][/SIZE][/FONT][/FONT][/SIZE][/FONT]
+
+
+[ATTACH=full]398886[/ATTACH]
+[FONT=Verdana][SIZE=4][FONT=Verdana][FONT=Verdana][SIZE=4][FONT=Verdana][FONT=Verdana][SIZE=4][FONT=Verdana][SIZE=4][SIZE=4][COLOR=#808080][I]Only available for the BungeeCord version![/I][/COLOR][/SIZE][/SIZE][/FONT][/SIZE][/FONT][/FONT][/SIZE][/FONT][/FONT][/SIZE][/FONT][/FONT][/SIZE][/SIZE][/SIZE][/SIZE][/FONT]
+[SIZE=4][COLOR=#808080][FONT=Verdana][SIZE=4][SIZE=4][SIZE=4][FONT=Verdana][FONT=Verdana][SIZE=4][FONT=Verdana][FONT=Verdana][SIZE=4][FONT=Verdana][FONT=Verdana][SIZE=4][FONT=Verdana][SIZE=4][SIZE=4]By enabling MySQL in the config, you can even connect multiple proxy-servers to a set value in your database, so you won't have to enable/disable maintenance on each proxy by hand![/SIZE][/SIZE][/FONT][/SIZE][/FONT][/FONT][/SIZE][/FONT][/FONT][/SIZE][/FONT][/FONT][/SIZE][/SIZE][/SIZE][/FONT][/COLOR][SIZE=4][SIZE=4][FONT=Verdana][SIZE=4][FONT=Verdana][FONT=Verdana][SIZE=4][FONT=Verdana][FONT=Verdana][SIZE=4][FONT=Verdana][FONT=Verdana][SIZE=4][FONT=Verdana][SIZE=4][SIZE=4][COLOR=#808080][/COLOR]
+
+
+[B][FONT=Verdana][SIZE=4]A rating or a review would be highly appreciated and a creation of one (and also for a spigot account) is fairly easy! :)[/SIZE][/FONT][/B][/SIZE][/SIZE][/FONT][/SIZE][/FONT][/FONT][/SIZE][/FONT][/FONT][/SIZE][/FONT][/FONT][/SIZE][/FONT][/SIZE][/SIZE][/SIZE]
