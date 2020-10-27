@@ -56,23 +56,3 @@ $("a[href^='#']").click(function () {
 
     return scrollToAnchor(this.hash);
 });
-
-//=====> SERVICE WORKER
-
-// The service worker has been removed in commit 9ab90b5f4a5728587fc08176e316edbe88dfce9e.
-// This code ensures that the service worker is removed from the browser.
-
-// Hangar doesn't need this since it was never added.
-/*if (window.navigator && navigator.serviceWorker) {
-  if ("getRegistrations" in navigator.serviceWorker) {
-    navigator.serviceWorker.getRegistrations().then(function(registrations) {
-      registrations.forEach(function(registration) {
-        registration.unregister();
-      });
-    });
-  } else if ("getRegistration" in navigator.serviceWorker) {
-    navigator.serviceWorker.getRegistration().then(function(registration) {
-      registration.unregister();
-    });
-  }
-}*/

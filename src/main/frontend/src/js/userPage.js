@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { apiV2Request } from '@/js/apiRequests';
+import { API } from '@/api';
 
 $.ajaxSetup(window.ajaxSettings);
 
@@ -31,7 +31,7 @@ function loadActions(increment, action) {
     pages[action] += increment;
     var offset = (pages[action] - 1) * CONTENT_PER_PAGE;
 
-    apiV2Request('users/' + USERNAME + '/' + action + '?offset=' + offset + '&limit=' + CONTENT_PER_PAGE).then(function (result) {
+    API.request(`users/${USERNAME}/${action}?offset=${offset}&limit=${CONTENT_PER_PAGE}`).then((result) => {
         //TODO: Use pagination info
         var tbody = getStarsPanel(action).find('.card-body').find('tbody');
 

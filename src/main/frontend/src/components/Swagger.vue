@@ -2,8 +2,8 @@
     <div id="swagger-ui"></div>
 </template>
 <script>
-import { getApiSession } from '@/js/apiRequests';
 import SwaggerUIBundle from 'swagger-ui';
+import { API } from '@/api';
 
 export default {
     name: 'SwaggerUI',
@@ -18,7 +18,7 @@ export default {
                 layout: 'BaseLayout',
                 requestInterceptor: (req) => {
                     if (!req.loadSpec) {
-                        const promise = getApiSession().then((session) => {
+                        const promise = API.getSession().then((session) => {
                             req.headers.authorization = 'HangarApi session="' + session + '"';
                             return req;
                         });
