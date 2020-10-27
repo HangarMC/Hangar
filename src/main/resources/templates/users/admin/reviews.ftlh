@@ -62,16 +62,23 @@
         <#if headerData.isCurrentUser(mostRecentUnfinishedReview.userId)>
             <div class="row">
                 <div class="col-md-12">
-                    <div class="input-group" style="width: 100%;
-                        margin-top: 1em;">
-                        <textarea type="text" class="form-control textarea-addmessage" placeholder="Message" autocomplete="off"></textarea>
-                        <div class="input-group-addon btn btn-review-addmessage-submit btn-primary"><i class="fas fa-clipboard"></i> <@spring.message "review.addmessage" /></div>
+                    <div class="input-group" style="width: 100%; margin-top: 1em; border-radius: 4px 4px 0 0;">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Review Message</span>
+                        </div>
+                        <textarea type="text" class="form-control textarea-addmessage" autocomplete="off" aria-label="Review Message"></textarea>
+                        <div class="input-group-append">
+                            <button class="btn btn-review-addmessage-submit btn-primary">
+                                <i class="fas fa-clipboard"></i>
+                                <@spring.message "review.addmessage" />
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </#if>
     </#if>
-    <div class="row version-description">
+    <div class="row version-description mt-2">
         <div class="col-md-12">
             <h2><@spring.message "review.log" /></h2>
         </div>
