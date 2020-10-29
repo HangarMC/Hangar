@@ -29,12 +29,10 @@ public class NotificationService extends HangarService {
     private final HangarDao<NotificationsDao> notificationsDao;
     private final HangarDao<UserProjectRolesDao> userProjectRolesDao;
     private final HangarDao<UserOrganizationRolesDao> userOrganizationRolesTable;
-    private final UserService userService;
 
     @Autowired
-    public NotificationService(HangarDao<NotificationsDao> notificationsDao, UserService userService, HangarDao<UserProjectRolesDao> userProjectRolesDao, HangarDao<UserOrganizationRolesDao> userOrganizationRolesTable) {
+    public NotificationService(HangarDao<NotificationsDao> notificationsDao, HangarDao<UserProjectRolesDao> userProjectRolesDao, HangarDao<UserOrganizationRolesDao> userOrganizationRolesTable) {
         this.notificationsDao = notificationsDao;
-        this.userService = userService;
         this.userProjectRolesDao = userProjectRolesDao;
         this.userOrganizationRolesTable = userOrganizationRolesTable;
     }

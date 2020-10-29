@@ -27,8 +27,8 @@ import java.util.Map;
 @RegisterBeanMapper(ProjectsTable.class)
 public interface ProjectDao {
 
-    @SqlUpdate("insert into projects (created_at, name, slug, owner_name, owner_id, category, description, visibility, homepage, issues, source, support, license_name, license_url) " +
-               "values (:now, :name, :slug, :ownerName,:ownerId, :category, :description, :visibility, :homepage, :issues, :source, :support, :licenseName, :licenseUrl)")
+    @SqlUpdate("insert into projects (created_at, name, slug, owner_name, owner_id, category, description, visibility, homepage, issues, source, support, keywords, license_name, license_url) " +
+               "values (:now, :name, :slug, :ownerName,:ownerId, :category, :description, :visibility, :homepage, :issues, :source, :support, :keywords, :licenseName, :licenseUrl)")
     @Timestamped
     @GetGeneratedKeys
     ProjectsTable insert(@BindBean ProjectsTable project);

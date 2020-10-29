@@ -181,7 +181,6 @@ public class ProjectsController extends HangarController {
         generalDao.get().refreshHomeProjects();
 
         return Routes.PROJECTS_SHOW.getRedirect(project.getOwnerName(), project.getSlug());
-//        return Routes.PROJECTS_SHOW_CREATOR.getRedirect();
     }
 
     private ProjectOwner getProjectOwner(long owner) {

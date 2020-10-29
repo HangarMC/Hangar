@@ -67,6 +67,7 @@ module.exports = {
                 hmr: process.env.NODE_ENV === 'development',
                 reloadAll: true,
                 publicPath: '/css/',
+                esModule: false,
             })
             .end()
             .use('css-loader')

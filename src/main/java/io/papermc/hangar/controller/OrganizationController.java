@@ -93,11 +93,9 @@ public class OrganizationController extends HangarController {
                 roleService.removeRole(orgRole.getOrganizationId(), orgRole.getUserId());
                 break;
             case STATUS_ACCEPT:
-                orgRole.setIsAccepted(true);
-                roleService.updateRole(orgRole);
-                break;
             case STATUS_UNACCEPT:
-                orgRole.setIsAccepted(false);
+                orgRole.setIsAccepted(status.equals(STATUS_ACCEPT));
+                orgRole.setIsAccepted(true);
                 roleService.updateRole(orgRole);
                 break;
             default:
