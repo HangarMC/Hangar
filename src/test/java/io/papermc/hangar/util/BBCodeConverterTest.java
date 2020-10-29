@@ -39,8 +39,8 @@ public class BBCodeConverterTest {
 
     @Test
     void testImageAndUrl() {
-        String result = converter.convertToMarkdown("[img]imagelink[/img], [url=https://github.com/]click here[/url]");
-        Assertions.assertEquals("![imagelink](imagelink), [click here](https://github.com/)", result);
+        String result = converter.convertToMarkdown("[img]imagelink[/img], [url=https://github.com/]click here[/url] or [url='https://github.com/']here[/url]");
+        Assertions.assertEquals("![imagelink](imagelink), [click here](https://github.com/) or [here](https://github.com/)", result);
     }
 
     @Test

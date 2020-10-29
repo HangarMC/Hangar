@@ -34,7 +34,14 @@ public class BBCodeConverter {
         REPLACERS.put("i", (tag, tagArg, content) -> "*" + content + "*");
         REPLACERS.put("s", (tag, tagArg, content) -> "~~" + content + "~~");
         REPLACERS.put("img", (tag, tagArg, content) -> "![" + content + "](" + content + ")");
-        REPLACERS.put("url", (tag, tagArg, content) -> "[" + content + "](" + tagArg + ")");
+        REPLACERS.put("url", (tag, tagArg, content) -> {
+            String url = tagArg;
+            char firstCharacter = url.length() > 2 ? url.charAt(0) : '-';
+            if ((firstCharacter == '\'' || firstCharacter == '\"') && url.charAt(url.length() - 1) == firstCharacter) {
+                url = url.substring(1, url.length() - 1);
+            }
+            return "[" + content + "](" + url + ")";
+        });
         REPLACERS.put("code", (tag, tagArg, content) -> "```" + content + "```");
         REPLACERS.put("attach", ((tag, tagArg, content) -> {
             String imageUrl = "https://www.spigotmc.org/attachments/" + content;

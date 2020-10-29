@@ -19,18 +19,18 @@ Its features include:
 * Link **multiple proxy instances with a MySQL database** connection, so you don't have to enable/disable maintenance on each proxy by hand
 * **Waiting servers** during full proxy maintenance, as well as **fallback servers** to go to when a single proxied server is under maintenance
 * **Using ServerListPlus**? Maintenance will toggle its status when enabling maintenance and reenable the SLP motd when disabling maintenance
-* Want to have PlaceholderAPI placeholders on Spigot? See **[here]('https://github.com/kennytv/maintenance/wiki/maintenanceaddon')** for more information on the MaintenanceAddon.
+* Want to have PlaceholderAPI placeholders on Spigot? See **[here](https://github.com/kennytv/maintenance/wiki/maintenanceaddon)** for more information on the MaintenanceAddon.
 
 
-IMPORTANT: If using the plugin on a Spigot server, the plugin **[ProtocolLib]('https://www.spigotmc.org/resources/protocollib.1997/')** is required to use Maintenance to its full extend.
+IMPORTANT: If using the plugin on a Spigot server, the plugin **[ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/)** is required to use Maintenance to its full extend.
 
 
 ![https://www.spigotmc.org/attachments/401279](https://www.spigotmc.org/attachments/401279)
 
-Did you find a bug? Use the [**issue tracker**]('https://github.com/kennytv/maintenance/issues')
+Did you find a bug? Use the [**issue tracker**](https://github.com/kennytv/maintenance/issues)
 Other questions or problems? Click the wonderful icon below ✨
 
-[![https://www.spigotmc.org/attachments/401277](https://www.spigotmc.org/attachments/401277)]('https://discord.gg/vgcuzhq')
+[![https://www.spigotmc.org/attachments/401277](https://www.spigotmc.org/attachments/401277)](https://discord.gg/vgcuzhq)
 
 
 ![https://www.spigotmc.org/attachments/398878](https://www.spigotmc.org/attachments/398878)
@@ -59,7 +59,7 @@ If you use it on a Spigot server, normal permission plugins should work (as well
 
 ![https://www.spigotmc.org/attachments/398875](https://www.spigotmc.org/attachments/398875)
 
-If you are using *the Spigot version of the plugin*, you have to have [**ProtocolLib**]('https://www.spigotmc.org/resources/protocollib.1997/') installed to use the custom server-icon and the playercount-messages (that, or you have Paper running on 1.12.2 or higher)! The rest however is also accessible without it.
+If you are using *the Spigot version of the plugin*, you have to have [**ProtocolLib**](https://www.spigotmc.org/resources/protocollib.1997/) installed to use the custom server-icon and the playercount-messages (that, or you have Paper running on 1.12.2 or higher)! The rest however is also accessible without it.
 For the Bungee version you don't need to have any other plugins installed.
 
 *proxied-maintenance-servers*, *fallback* and *mysql* section are only for the Bungee version.
