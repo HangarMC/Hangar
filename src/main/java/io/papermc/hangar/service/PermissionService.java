@@ -13,6 +13,7 @@ public class PermissionService {
 
     private final HangarDao<PermissionsDao> permissionsDao;
 
+    public static final Permission DEFAULT_SIGNED_OUT_PERMISSIONS = Permission.ViewPublicInfo;
     public static final Permission DEFAULT_GLOBAL_PERMISSIONS = Permission.ViewPublicInfo.add(Permission.EditOwnUserSettings).add(Permission.EditApiKeys);
 
     @Autowired
@@ -41,14 +42,14 @@ public class PermissionService {
 
     public Permission getProjectPermissions(Long userId, String author, String slug) {
         if (userId == null) {
-            return Permission.None;
+            return DEFAULT_SIGNED_OUT_PERMISSIONS;
         }
         return addDefaults(permissionsDao.get().getProjectPermission(userId, author, slug));
     }
 
     public Permission getProjectPermissions(UsersTable usersTable, String author, String slug) {
         if (usersTable == null) {
-            return Permission.None;
+            return DEFAULT_SIGNED_OUT_PERMISSIONS;
         }
         return addDefaults(permissionsDao.get().getProjectPermission(usersTable.getId(), author, slug));
     }
@@ -59,7 +60,7 @@ public class PermissionService {
 
     public Permission getOrganizationPermissions(UsersTable usersTable, String orgName) {
         if (usersTable == null) {
-                return Permission.None;
+                return DEFAULT_SIGNED_OUT_PERMISSIONS;
         }
         return addDefaults(permissionsDao.get().getOrgPermission(usersTable.getId(), orgName));
     }
