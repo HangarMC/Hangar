@@ -17,17 +17,13 @@ import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.db.model.ProjectsTable;
 import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.exceptions.HangarException;
-import io.papermc.hangar.model.Color;
 import io.papermc.hangar.model.DownloadType;
 import io.papermc.hangar.model.NamedPermission;
-import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.Visibility;
-import io.papermc.hangar.model.generated.PlatformDependency;
 import io.papermc.hangar.model.generated.ReviewState;
 import io.papermc.hangar.model.viewhelpers.ProjectData;
 import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.model.viewhelpers.VersionData;
-import io.papermc.hangar.model.viewhelpers.VersionDependencies;
 import io.papermc.hangar.security.annotations.GlobalPermission;
 import io.papermc.hangar.security.annotations.ProjectPermission;
 import io.papermc.hangar.security.annotations.UserLock;
@@ -138,6 +134,7 @@ public class VersionsController extends HangarController {
         this.projectData = projectData;
     }
 
+    // TODO remove this? Isn't used in frontend
     @GetMapping(value = "/api/project/{author}/{slug}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object downloadRecommendedJarById(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String token) {
@@ -150,6 +147,7 @@ public class VersionsController extends HangarController {
         }
     }
 
+    // TODO remove this? Isn't used in frontend
     @GetMapping(value = "/api/project/{author}/{slug}/versions/{name}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object downloadJarById(@PathVariable String author, @PathVariable String slug, @PathVariable String name, @RequestParam Optional<String> token) {
@@ -664,7 +662,6 @@ public class VersionsController extends HangarController {
     @PostMapping("/{author}/{slug}/versions/{version}/hardDelete")
     public ModelAndView delete(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestBody String comment, RedirectAttributes ra) {
         VersionData vData = versionData.get();
-        userActionLogService.version(request, LoggedActionType.VERSION_DELETED.with(VersionContext.of(vData.getV().getProjectId(), vData.getV().getId())), "Deleted: " + comment, vData.getV().getVisibility().getName());
         try {
             projectFactory.prepareDeleteVersion(vData);
         } catch (HangarException e) {
@@ -674,6 +671,7 @@ public class VersionsController extends HangarController {
         Path versionDir = projectFiles.getVersionDir(vData.getP().getOwnerName(), vData.getP().getProject().getSlug(), vData.getV().getVersionString());
         FileUtils.deleteDirectory(versionDir);
         versionService.deleteVersion(vData.getV().getId());
+        userActionLogService.version(request, LoggedActionType.VERSION_DELETED.with(VersionContext.of(vData.getV().getProjectId(), vData.getV().getId())), "Deleted: " + comment, vData.getV().getVisibility().getName());
         // Ore deletes the channel if no more versions are left, I don't think that is a good idea, easy enough to delete the channel manually.
         return Routes.VERSIONS_SHOW_LIST.getRedirect(author, slug);
     }

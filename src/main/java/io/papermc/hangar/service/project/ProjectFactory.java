@@ -218,7 +218,7 @@ public class ProjectFactory {
     public void prepareDeleteVersion(VersionData versionData) {
         if (versionData.getP().getVisibility() == Visibility.SOFTDELETE) return;
         List<ProjectVersionsTable> projectVersions = projectVersionDao.get().getProjectVersions(versionData.getP().getProject().getId());
-        if (projectVersions.stream().filter(p -> p.getVisibility() == Visibility.PUBLIC).count() <= 1) {
+        if (projectVersions.stream().filter(p -> p.getVisibility() == Visibility.PUBLIC).count() <= 1 && versionData.getV().getVisibility() == Visibility.PUBLIC) {
             throw new HangarException("error.version.onlyOnePublic");
         }
 
