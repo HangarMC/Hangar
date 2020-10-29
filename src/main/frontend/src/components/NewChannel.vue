@@ -87,7 +87,7 @@ export default {
     components: {
         HangarModal,
     },
-    emits: ['channel-created', 'update:nameProp', 'update:nonReviewedProp', 'update:colorProp'],
+    emits: ['saved', 'update:nameProp', 'update:nonReviewedProp', 'update:colorProp'],
     props: {
         edit: {
             type: Boolean,
@@ -147,7 +147,7 @@ export default {
                 $('#color-popover-open').addClass('invalid-input');
                 return;
             }
-            this.$emit('channel-created', this.edit ? 'EDIT' : 'NEW');
+            this.$emit('saved', this.edit ? 'EDIT' : 'NEW');
             $('#channel-settings').modal('hide');
             $(document.body).removeClass('modal-open');
             $('.modal-backdrop').remove();

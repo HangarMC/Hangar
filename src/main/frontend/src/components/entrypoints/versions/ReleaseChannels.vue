@@ -33,6 +33,10 @@
                 </td>
                 <td>
                     <div class="btn btn-sm" :class="versionCount ? 'btn-danger' : 'btn-warning'" @click.prevent="delChannel(channel, versionCount)">Delete</div>
+                    <div>
+                        <small>not implemented</small
+                        ><!--TODO implement-->
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -50,7 +54,7 @@
         v-model:name-prop="newChannel.name"
         v-model:color-prop="newChannel.color"
         v-model:non-reviewed-prop="newChannel.nonReviewed"
-        @channel-created="editFinal($event)"
+        @saved="editFinal($event)"
     ></NewChannel>
     <form ref="edit-form" :action="ROUTES.parse('CHANNELS_SAVE', ownerName, projectSlug, newChannel.oldName)" method="post" class="d-none">
         <input type="hidden" name="name" :value="newChannel.name" class="d-none" required />

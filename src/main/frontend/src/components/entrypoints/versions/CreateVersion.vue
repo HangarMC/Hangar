@@ -55,7 +55,7 @@
                             v-model:name-prop="createdChannel.name"
                             v-model:color-prop="createdChannel.color"
                             v-model:non-reviewed-prop="createdChannel.nonReviewed"
-                            @channel-created="setChannel"
+                            @saved="setChannel"
                         >
                             <template v-slot:activator="slotProps">
                                 <button
