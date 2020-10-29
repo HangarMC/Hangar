@@ -51,6 +51,20 @@
             <#if authEnabled>
                 <div class="collapse navbar-collapse float-right navbar-right">
                     <ul class="nav navbar-nav">
+                        <#assign title><@spring.message "project.viewAuthors"/></#assign>
+                        <li class="nav-icon authors-icon" <@tooltip title=title />>
+                            <a href="${Routes.USERS_SHOW_AUTHORS.getRouteUrl("", "")}">
+                                <i class="icon fas fa-users"></i>
+                            </a>
+                        </li>
+
+                        <#assign title><@spring.message "project.viewStaff"/></#assign>
+                        <li class="nav-icon staff-icon" <@tooltip title=title />>
+                            <a href="${Routes.USERS_SHOW_STAFF.getRouteUrl("", "")}">
+                                <i class="icon fas fa-user-tie"></i>
+                            </a>
+                        </li>
+
                         <#if cu??>
                             <li class="dropdown nav-icon new-controls">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" id="creatorDropDown" aria-expanded="false">
@@ -68,21 +82,7 @@
                                 </div>
                             </li>
 
-                            <#assign title><@spring.message "project.viewAuthors"/></#assign>
-                            <li class="nav-icon authors-icon" <@tooltip title=title />>
-                                <a href="${Routes.USERS_SHOW_AUTHORS.getRouteUrl("", "")}">
-                                    <i class="icon fas fa-users"></i>
-                                </a>
-                            </li>
-
-                            <#assign title><@spring.message "project.viewStaff"/></#assign>
-                            <li class="nav-icon staff-icon" <@tooltip title=title />>
-                                <a href="${Routes.USERS_SHOW_STAFF.getRouteUrl("", "")}">
-                                    <i class="icon fas fa-user-tie"></i>
-                                </a>
-                            </li>
-
-                        <#-- Show user controls -->
+                            <#-- Show user controls -->
                             <li class="dropdown user-controls nav-icon">
                                 <a href="#" class="dropdown-toggle user-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" id="userDropDown" aria-expanded="false">
                                     <#if headerData.hasNotice()>

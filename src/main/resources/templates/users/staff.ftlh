@@ -51,7 +51,7 @@
                     <#import "*/utils/userAvatar.ftlh" as userAvatar>
 					<td><@userAvatar.userAvatar userName=staffUser.name avatarUrl=utils.avatarUrl(staffUser.name) clazz="user-avatar-xs"></@userAvatar.userAvatar></td>
 					<td>
-						<a href="${Routes.SHOW_ACTIVITIES.getRouteUrl(staffUser.name)}">${staffUser.name}</a>
+						<a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(staffUser.name)}">${staffUser.name}</a>
 					</td>
 					<td>
 						<span class="user-role channel" style="background-color: ${staffUser.role.color.hex}">
