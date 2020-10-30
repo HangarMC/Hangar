@@ -22,7 +22,7 @@
 <#assign message><@spring.messageArgs code="channel.list.title" args=[p.project.ownerName, p.project.slug] /></#assign>
 <@base.base title=message additionalScripts=scriptsVar additionalStyling=styleVar>
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title"><@spring.message "channel.list.title" /></h3>
@@ -32,6 +32,10 @@
                         <@spring.message "channel.list.description" />
                     </p>
                     <div id="release-channels"></div>
+
+                    <p class="minor create-blurb">
+                        <a href="/${p.project.ownerName}/${p.project.slug}/versions"><@spring.message "project.back" /></a>
+                    </p>
                 </div>
             </div>
         </div>
