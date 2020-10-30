@@ -450,14 +450,13 @@ export default {
             axios
                 .post(this.ROUTES.parse('PROJECTS_SAVE', this.project.project.ownerName, this.project.project.slug), data, window.ajaxSettings)
                 .then(() => {
-                    location.reload();
+                    location.href = this.ROUTES.parse('PROJECTS_SHOW', this.project.project.ownerName, this.project.project.slug);
                 })
                 .catch((err) => {
                     if (err.response.headers['content-type'] === 'application/json') {
                         this.error = this.$t(err.response.data.messageKey, err.response.data.messageArgs);
                     } else {
                         this.error = "Error while saving, " + err.message; // TODO move to i18n
-                      console.log(err);
                     }
                     document.getElementById('project-settings-error').scrollIntoView({
                       inline: 'nearest',
