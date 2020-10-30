@@ -7,12 +7,15 @@
                         <a v-if="canUpload" class="btn yellow" :href="ROUTES.parse('VERSIONS_SHOW_CREATOR', ownerName, projectSlug)">Upload a New Version</a>
                     </div>
                 </div>
-                <div v-show="loading">
+                <div v-if="loading">
                     <i class="fas fa-spinner fa-spin"></i>
                     <span>Loading versions for you...</span>
                 </div>
-                <div v-show="!loading">
-                    <div class="list-group">
+                <div v-else-if="filteredVersions.length === 0">
+                    <span>No versions found!</span>
+                </div>
+                <div v-else>
+                    <div class="list-group" >
                         <a
                             v-for="(version, index) in filteredVersions"
                             :href="ROUTES.parse('VERSIONS_SHOW', htmlDecode(ownerName), htmlDecode(projectSlug), version.name)"
