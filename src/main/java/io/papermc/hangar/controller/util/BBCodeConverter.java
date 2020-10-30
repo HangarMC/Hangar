@@ -43,6 +43,7 @@ public class BBCodeConverter {
             return "[" + content + "](" + url + ")";
         });
         REPLACERS.put("code", (tag, tagArg, content) -> "```" + content + "```");
+        REPLACERS.put("icode", (tag, tagArg, content) -> "`" + content + "`");
         REPLACERS.put("attach", ((tag, tagArg, content) -> {
             String imageUrl = "https://www.spigotmc.org/attachments/" + content;
             return "![" + imageUrl + "](" + imageUrl + ")";

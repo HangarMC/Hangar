@@ -50,6 +50,12 @@ public class BBCodeConverterTest {
     }
 
     @Test
+    void testInlineCode() {
+        String result = converter.convertToMarkdown("My code is [icode]inline[/icode]!");
+        Assertions.assertEquals("My code is `inline`!", result);
+    }
+
+    @Test
     void testAttachment() {
         String result = converter.convertToMarkdown("[attach]100[/attach]");
         Assertions.assertEquals("![https://www.spigotmc.org/attachments/100](https://www.spigotmc.org/attachments/100)", result);
