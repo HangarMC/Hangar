@@ -1,7 +1,7 @@
 import { createApp } from 'vue';
 import VersionList from '@/components/entrypoints/versions/VersionListView';
 import { setupI18n } from '@/plugins/i18n';
-import $ from "jquery";
+import $ from 'jquery';
 
 $.ajaxSetup(window.ajaxSettings);
 const i18n = setupI18n();

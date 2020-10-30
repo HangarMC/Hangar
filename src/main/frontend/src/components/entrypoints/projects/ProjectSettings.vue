@@ -456,16 +456,16 @@ export default {
                     if (err.response.headers['content-type'] === 'application/json') {
                         this.error = this.$t(err.response.data.messageKey, err.response.data.messageArgs);
                     } else {
-                        this.error = "Error while saving, " + err.message; // TODO move to i18n
+                        this.error = 'Error while saving, ' + err.message; // TODO move to i18n
                     }
                     document.getElementById('project-settings-error').scrollIntoView({
-                      inline: 'nearest',
-                      block: 'nearest',
-                      behavior: 'smooth',
+                        inline: 'nearest',
+                        block: 'nearest',
+                        behavior: 'smooth',
                     });
                     setTimeout(
                         () => {
-                          self.error = null;
+                            self.error = null;
                         },
                         5000,
                         this

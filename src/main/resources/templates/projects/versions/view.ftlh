@@ -202,6 +202,9 @@
                                             <#else>
                                                 ${dep.name}
                                             </#if>
+                                            <#if dep.required>
+                                                <small class="float-right">(required)</small>
+                                            </#if>
                                         </li>
                                     </#list>
                                 </ul>
