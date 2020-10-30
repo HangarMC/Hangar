@@ -2,8 +2,10 @@ FROM openjdk:16-jdk-alpine
 
 LABEL maintainer="Yannick Lamprecht <yannicklamprecht@live.de>"
 
-ADD target/hangar-*.jar app.jar
-ADD docker/deployment/hangar/application.yml application.yml
+WORKDIR hangar
+
+ADD target/hangar-*.jar /hangar/app.jar
+ADD docker/deployment/hangar/application.yml /hangar/application.yml
 
 ENV TERM xterm-256color
 

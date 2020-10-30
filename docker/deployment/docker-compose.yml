@@ -21,6 +21,8 @@ services:
       - "traefik.http.routers.hangar.tls.certresolver=default"
       - "traefik.http.routers.hangar.tls.domains[0].main=minidigger.me"
       - "traefik.http.routers.hangar.tls.domains[0].sans=*.minidigger.me"
+    volumes:
+      - hangar_data:/hangar/uploads
     networks:
       - web
   db:
@@ -98,4 +100,4 @@ networks:
 
 volumes:
   db_data:
-  uploads:
+  hangar_data:

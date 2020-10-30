@@ -16,6 +16,7 @@ hangar:
   use-webpack: false
   auth-url: "https://hangar-auth.minidigger.me"
   base-url: "https://hangar.minidigger.me"
+  plugin-upload-dir: "/hangar/uploads"
 
   sso:
     secret: "changeme"

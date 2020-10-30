@@ -2,6 +2,8 @@ package io.papermc.hangar.service.pluginupload;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,8 @@ import java.util.stream.Stream;
 @Component
 public class ProjectFiles {
 
+    private static final Logger logger = LoggerFactory.getLogger(ProjectFiles.class);
+
     private final Path pluginsDir;
     private final Path tmpDir;
 
@@ -22,6 +26,7 @@ public class ProjectFiles {
         Path uploadsDir = Path.of(hangarConfig.getPluginUploadDir());
         pluginsDir = uploadsDir.resolve("plugins");
         tmpDir = uploadsDir.resolve("tmp");
+        logger.info("Init work dir {} ", uploadsDir);
     }
 
     public Path getProjectDir(String owner, String name) {
