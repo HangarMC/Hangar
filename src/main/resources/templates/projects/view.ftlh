@@ -68,12 +68,13 @@ Base template for Project overview.
                 <div class="col-md-6">
                     <div class="project-header">
                         <div class="project-path">
+                            <img class="user-avatar user-avatar-sm project-icon" src="${p.iconUrl}" alt="${p.project.slug}" />
                             <a href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(p.project.ownerName)}">${p.project.ownerName}</a>
                             /
                             <a class="project-name"
                                href="${Routes.PROJECTS_SHOW.getRouteUrl(p.project.ownerName, p.project.slug)}">${p.project.name}</a>
                         </div>
-                        <div>
+                        <div class="project-description">
                             <#if p.project.description??>
                                 <i class="minor" title="${p.project.description}">${p.project.description}</i>
                             </#if>
