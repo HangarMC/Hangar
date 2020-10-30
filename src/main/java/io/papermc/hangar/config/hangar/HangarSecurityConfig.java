@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.stereotype.Component;
 
+import java.net.URI;
 import java.util.List;
 
 @Component
@@ -142,5 +143,9 @@ public class HangarSecurityConfig {
 
     public void setApi(SecurityApiConfig api) {
         this.api = api;
+    }
+
+    public boolean checkSafe(String url) {
+        return safeDownloadHosts.contains(URI.create(url).getHost());
     }
 }

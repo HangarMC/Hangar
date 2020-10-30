@@ -604,7 +604,7 @@ public class VersionsController extends HangarController {
     }
 
     private Object sendVersion(ProjectsTable project, ProjectVersionsTable version, String token, boolean confirm) {
-        boolean isSafeExternalHost = version.isExternal() && hangarConfig.security.getSafeDownloadHosts().contains(URI.create(version.getExternalUrl()).getHost());
+        boolean isSafeExternalHost = version.isExternal() && hangarConfig.security.checkSafe(version.getExternalUrl());
         boolean passed = checkConfirmation(version, token);
         if (passed || confirm || isSafeExternalHost) {
             return _sendVersion(project, version);

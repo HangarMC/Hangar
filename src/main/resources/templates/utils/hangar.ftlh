@@ -1,6 +1,10 @@
 <#macro linkout url>
 <#--noinspection FtlReferencesInspection-->
-    ${Routes.LINK_OUT.getRouteUrl(url)}
+    <#if config.security.checkSafe(url)>
+        ${url}
+    <#else>
+        ${Routes.LINK_OUT.getRouteUrl(url)}
+    </#if>
 </#macro>
 
 <#macro url path>
