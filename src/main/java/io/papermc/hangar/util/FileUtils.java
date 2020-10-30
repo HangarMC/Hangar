@@ -1,5 +1,8 @@
 package io.papermc.hangar.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -10,6 +13,8 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class FileUtils {
+
+    private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
     private FileUtils() { }
 
@@ -36,7 +41,7 @@ public class FileUtils {
                 e.printStackTrace();
             }
         } else {
-//            MDCLogger.debug(s"Tried to clean directory that doesn't exist: $dir") TODO logging
+            logger.debug("Tried to clean directory that doesn't exist: {}", dir);
         }
     }
 
@@ -46,7 +51,7 @@ public class FileUtils {
             if (Files.exists(file)) {
                 Files.delete(file);
             } else {
-//                MDCLogger.debug(s"Tried to remove file that doesn't exist: $file") TODO logging
+                logger.debug("Tried to remove file that doesn't exist: {}", file);
             }
             return FileVisitResult.CONTINUE;
         }
@@ -56,7 +61,7 @@ public class FileUtils {
             if (Files.exists(dir)) {
                 Files.delete(dir);
             } else {
-//                MDCLogger.debug(s"Tried to remove directory that doesn't exist: $dir") TODO logging
+                logger.debug("Tried to remove directory that doesn't exist: {}", dir);
             }
             return FileVisitResult.CONTINUE;
         }

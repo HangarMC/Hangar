@@ -6,7 +6,10 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
+
+import io.papermc.hangar.util.Routes;
 
 @Component
 @ConfigurationProperties(prefix = "hangar.security")
@@ -147,5 +150,27 @@ public class HangarSecurityConfig {
 
     public boolean checkSafe(String url) {
         return safeDownloadHosts.contains(URI.create(url).getHost());
+    }
+
+    public String makeSafe(String urlString) {
+        try {
+            URI uri  = new URI(urlString);
+            String host = uri.getHost();
+            if (uri.getScheme() != null && host == null) {
+                if (uri.getScheme().equals("mailto")) {
+                    return urlString;
+                } else {
+                    return Routes.LINK_OUT.getRouteUrl(urlString);
+                }
+            } else {
+                if (host == null || this.safeDownloadHosts.contains(host) || this.safeDownloadHosts.stream().anyMatch(host::endsWith)) {
+                    return urlString;
+                } else {
+                    return Routes.LINK_OUT.getRouteUrl(urlString);
+                }
+            }
+        } catch (URISyntaxException ex) {
+            return Routes.LINK_OUT.getRouteUrl(urlString);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package io.papermc.hangar.service;
 
+import com.vladsch.flexmark.ast.MailLink;
 import com.vladsch.flexmark.ext.anchorlink.AnchorLinkExtension;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
@@ -8,19 +9,37 @@ import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.typographic.TypographicExtension;
 import com.vladsch.flexmark.ext.wikilink.WikiLinkExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.html.LinkResolver;
+import com.vladsch.flexmark.html.LinkResolverFactory;
+import com.vladsch.flexmark.html.renderer.LinkResolverBasicContext;
+import com.vladsch.flexmark.html.renderer.LinkStatus;
+import com.vladsch.flexmark.html.renderer.LinkType;
+import com.vladsch.flexmark.html.renderer.ResolvedLink;
 import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Set;
+
+import io.papermc.hangar.config.hangar.HangarConfig;
 
 @Service
 public class MarkdownService {
 
     private final Parser markdownParser;
     private final MutableDataSet options;
+    private final HangarConfig config;
 
-    public MarkdownService() {
+    @Autowired
+    public MarkdownService(HangarConfig config) {
+        this.config = config;
+
         options = new MutableDataSet()
                 .set(HtmlRenderer.SUPPRESS_HTML, true)
                 .set(AnchorLinkExtension.ANCHORLINKS_TEXT_PREFIX, "<i class=\"fas fa-link\"></i>")
@@ -64,7 +83,7 @@ public class MarkdownService {
 
         HtmlRenderer htmlRenderer = HtmlRenderer
                 .builder(options)
-//                .linkResolverFactory(new ExternalLinkResolver())
+                .linkResolverFactory(new ExternalLinkResolverFactory(config))
                 .build();
 
         return htmlRenderer.render(markdownParser.parse(input));
@@ -82,41 +101,50 @@ public class MarkdownService {
         }
     }
 
-    // TODO external links for markdown shit
-//    static class ExternalLinkResolver implements LinkResolver {
-//
-//        @Override
-//        public @NotNull ResolvedLink resolveLink(@NotNull Node node, @NotNull LinkResolverBasicContext context, @NotNull ResolvedLink link) {
-//            if (link.getLinkType() == LinkType.IMAGE || node instanceof MailLink) {
-//                return link;
-//            } else {
-//                return link.withStatus(LinkStatus.VALID).withUrl(wrapExternal(link.getUrl()));
-//            }
-//        }
-//
-//        private String wrapExternal(String urlString) {
-//            try {
-//                URI uri  = new URI(urlString);
-//                String host = uri.getHost();
-//                if (uri.getScheme() != null && host == null) {
-//                    if (uri.getScheme().equals("mailto")) {
-//                        return urlString;
-//                    } else {
-//                        return controllers.routes.Application.linkOut(urlString).toString
-//                    }
-//                } else {
-//                    String trustedUrlHosts = this.config.app.trustedUrlHosts;
-//                    val checkSubdomain = (trusted: String) =>
-//                    trusted(0) == '.' && (host.endsWith(trusted) || host == trusted.substring(1))
-//                    if (host == null || trustedUrlHosts.exists(trusted => trusted == host || checkSubdomain(trusted))) { // scalafix:ok
-//                       return urlString
-//                    } else {
-//                       return controllers.routes.Application.linkOut(urlString).toString
-//                    }
-//                }
-//            } catch (URISyntaxException ex) {
-//               return controllers.routes.Application.linkOut(urlString).toString
-//            }
-//        }
-//    }
+    static class ExternalLinkResolverFactory implements LinkResolverFactory {
+
+        private final HangarConfig config;
+
+        ExternalLinkResolverFactory(HangarConfig config) {
+            this.config = config;
+        }
+
+        @Override
+        public @Nullable Set<Class<?>> getAfterDependents() {
+            return null;
+        }
+
+        @Override
+        public @Nullable Set<Class<?>> getBeforeDependents() {
+            return null;
+        }
+
+        @Override
+        public boolean affectsGlobalScope() {
+            return false;
+        }
+
+        @Override
+        public @NotNull LinkResolver apply(@NotNull LinkResolverBasicContext linkResolverBasicContext) {
+            return new ExternalLinkResolver(config);
+        }
+    }
+
+    static class ExternalLinkResolver implements LinkResolver {
+
+        private final HangarConfig config;
+
+        ExternalLinkResolver(HangarConfig config) {
+            this.config = config;
+        }
+
+        @Override
+        public @NotNull ResolvedLink resolveLink(@NotNull Node node, @NotNull LinkResolverBasicContext context, @NotNull ResolvedLink link) {
+            if (link.getLinkType() == LinkType.IMAGE || node instanceof MailLink) {
+                return link;
+            } else {
+                return link.withStatus(LinkStatus.VALID).withUrl(config.security.makeSafe(link.getUrl()));
+            }
+        }
+    }
 }

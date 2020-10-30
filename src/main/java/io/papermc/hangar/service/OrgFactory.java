@@ -82,8 +82,6 @@ public class OrgFactory {
             authOrgUser = new AuthUser(-100, name, dummyEmail, "", Locale.ENGLISH, null);
             userDao.get().insert(new UsersTable(authOrgUser.getId(), null, name, dummyEmail, null, List.of(), false, authOrgUser.getLang().toLanguageTag()));
         }
-        // TODO uncomment this line if you aren't running Machine_Maker's branch of HangarAuth.
-//        userDao.get().insert(new UsersTable(authOrgUser.getId(), null, name, dummyEmail, null, List.of(), false, authOrgUser.getLang().toLanguageTag()));
 
         // Just a note, the /api/sync_sso creates the org user here, so it will already be created when the above response is returned
         OrganizationsTable org = new OrganizationsTable(authOrgUser.getId(), name, ownerId, authOrgUser.getId());
