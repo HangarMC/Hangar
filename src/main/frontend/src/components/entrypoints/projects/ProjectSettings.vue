@@ -446,6 +446,7 @@ export default {
                 this.showError('license-name-input');
                 return;
             }
+            const self = this;
             axios
                 .post(this.ROUTES.parse('PROJECTS_SAVE', this.project.project.ownerName, this.project.project.slug), data, window.ajaxSettings)
                 .then(() => {
@@ -454,19 +455,22 @@ export default {
                 .catch((err) => {
                     if (err.response.headers['content-type'] === 'application/json') {
                         this.error = this.$t(err.response.data.messageKey, err.response.data.messageArgs);
-                        document.getElementById('project-settings-error').scrollIntoView({
-                            inline: 'nearest',
-                            block: 'nearest',
-                            behavior: 'smooth',
-                        });
-                        setTimeout(
-                            () => {
-                                self.error = null;
-                            },
-                            5000,
-                            this
-                        );
+                    } else {
+                        this.error = "Error while saving, " + err.message; // TODO move to i18n
+                      console.log(err);
                     }
+                    document.getElementById('project-settings-error').scrollIntoView({
+                      inline: 'nearest',
+                      block: 'nearest',
+                      behavior: 'smooth',
+                    });
+                    setTimeout(
+                        () => {
+                          self.error = null;
+                        },
+                        5000,
+                        this
+                    );
                 });
         },
         handleFileChange(target) {
