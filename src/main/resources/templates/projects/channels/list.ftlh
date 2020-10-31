@@ -6,17 +6,19 @@
 <#import "*/utils/csrf.ftlh" as csrf>
 
 <#assign scriptsVar>
-    <script <#--@CSPNonce.attr-->>
+    <script nonce="${nonce}">
+        <#outputformat "JavaScript">
         window.OWNER_NAME = '${p.project.ownerName}';
         window.PROJECT_SLUG = '${p.project.slug}';
         window.COLORS = ${mapper.valueToTree(@helper["io.papermc.hangar.model.Color"].getNonTransparentValues())};
         window.MAX_CHANNEL_NAME_LEN = ${config.channels.maxNameLen};
         window.CHANNELS = ${mapper.valueToTree(channels)};
+        </#outputformat>
     </script>
-    <script type="text/javascript" src="<@hangar.url "js/release-channels.js" />"></script>
+    <script type="text/javascript" src="${hangar.url("js/release-channels.js")}"></script>
 </#assign>
 <#assign styleVar>
-    <link rel="stylesheet" href="<@hangar.url "css/release-channels.css" />">
+    <link rel="stylesheet" href="${hangar.url("css/release-channels.css")}">
 </#assign>
 
 <#assign message><@spring.messageArgs code="channel.list.title" args=[p.project.ownerName, p.project.slug] /></#assign>

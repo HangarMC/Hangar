@@ -3,7 +3,8 @@
 <#import "*/layout/base.ftlh" as base />
 
 <#assign scriptsVar>
-    <script <#--@CSPNonce.attr-->>
+    <script nonce="${nonce}">
+      <#outputformat "JavaScript">
       window.DAYS = ${days};
       window.REVIEW_DATA = ${reviewData};
       window.UPLOAD_DATA = ${uploadData};
@@ -16,8 +17,9 @@
           FROM: '${@helper["java.time.LocalDate"].now().minus(1, @helper["java.time.temporal.ChronoUnit"].DAYS)}',
           TO: '${@helper["java.time.LocalDate"].now()}',
       };
+      </#outputformat>
     </script>
-    <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "js/stats.js" />"></script>
+    <script nonce="${nonce}" type="text/javascript" src="${hangar.url("js/stats.js")}"></script>
 </#assign>
 
 <@base.base title="Stats" additionalScripts=scriptsVar>

@@ -5,11 +5,13 @@
 <#import "*/layout/base.ftlh" as base />
 
 <#assign scriptsVar>
-    <link rel="stylesheet" href="<@hangar.url "css/platform-version-table.css" />">
-    <script>
+    <link rel="stylesheet" href="${hangar.url("css/platform-version-table.css")}">
+    <script nonce="${nonce}">
+        <#outputformat "JavaScript">
         window.PLATFORMS = ${platformVersions}
+        </#outputformat>
     </script>
-    <script type="text/javascript" src="<@hangar.url "js/platform-version-table.js" />"></script>
+    <script type="text/javascript" src="${hangar.url("js/platform-version-table.js")}"></script>
 </#assign>
 
 <#assign message><@spring.message "admin.platformVersions.title" /></#assign>

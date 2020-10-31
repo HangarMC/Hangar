@@ -12,7 +12,8 @@
 <#assign projectRoles=Role.values()?filter(role -> role.category == RoleCategory.PROJECT) />
 
 <#assign scriptsVar>
-    <script>
+    <script nonce="${nonce}">
+        <#outputformat "JavaScript">
         window.IS_ORGANIZATION = ${u.isOrga()?c};
         window.ROLES = {
             <#if u.isOrga()>
@@ -28,8 +29,9 @@
             </#if>
             ORGANIZATION: ${mapper.valueToTree(orgRoles)},
         }
+        </#outputformat>
     </script>
-    <script type="text/javascript" src="<@hangar.url "js/user-admin.js" />"></script>
+    <script type="text/javascript" src="${hangar.url("js/user-admin.js")}"></script>
 </#assign>
 
 <@base.base title=(prefix + u.user.name) additionalScripts=scriptsVar>

@@ -3,10 +3,12 @@
 <#import "*/layout/base.ftlh" as base />
 
 <#assign scriptsVar>
-    <script>
+    <script nonce="${nonce}">
+        <#outputformat "JavaScript">
         window.MAX_REVIEW_TIME = ${config.queue.maxReviewTime.toMillis()};
+        </#outputformat>
     </script>
-    <script type="text/javascript" src="<@hangar.url "js/queue.js" />"></script>
+    <script type="text/javascript" src="${hangar.url("js/queue.js")}"></script>
 </#assign>
 
 <#assign message><@spring.message "user.queue" /></#assign>

@@ -9,10 +9,12 @@
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"] />
 <#assign Visibility=@helper["io.papermc.hangar.model.Visibility"] />
 <#assign scriptsVar>
-    <script>
+    <script nonce="${nonce}">
+        <#outputformat "JavaScript">
         window.VERSION = ${mapper.valueToTree(v.v)};
+        </#outputformat>
     </script>
-    <script type="text/javascript" src="<@hangar.url "js/version-view.js" />"></script>
+    <script type="text/javascript" src="${hangar.url("js/version-view.js")}"></script>
 </#assign>
 <@projects.view p=v.p sp=sp active="#versions" noButtons=true additionalScripts=scriptsVar>
     <!-- Version header -->

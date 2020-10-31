@@ -31,7 +31,7 @@
                                 <i class="fa-fw fas fa-graduation-cap"></i><@spring.message "general.javadocs" />
                             </a></li>
                         <li class="active"><a href="${Routes.SHOW_HOME.getRouteUrl()}">
-                                <img src="<@hangar.url "images/ore-nav.svg" />" alt=""
+                                <img src="${hangar.url("images/ore-nav.svg")}" alt=""
                                      class="fa-fw ore-nav"><@spring.message "general.plugins" />
                                 (<@spring.message "general.appName" />)
                             </a></li>

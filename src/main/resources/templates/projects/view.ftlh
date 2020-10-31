@@ -13,16 +13,18 @@ Base template for Project overview.
 <#-- @ftlvariable name="p" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
 <#-- @ftlvariable name="sp" type="io.papermc.hangar.model.viewhelpers.ScopedProjectData" -->
     <#assign scriptsVar>
-        <script <#-- @CSPNonce.attr -->>
+        <script nonce="${nonce}">
+            <#outputformat "JavaScript">
             window.PROJECT = ${mapper.valueToTree(p.project)};
             window.CAN_EDIT_PAGES = ${sp.perms(Permission.EditPage)?c};
+            </#outputformat>
         </script>
-        <script type="text/javascript" src="<@hangar.url "js/project-controls.js" />"></script>
+        <script type="text/javascript" src="${hangar.url("js/project-controls.js")}"></script>
         ${additionalScripts}
     </#assign>
 
     <#assign styleVar>
-        <link rel="stylesheet" href="<@hangar.url "css/project-controls.css" />">
+        <link rel="stylesheet" href="${hangar.url("css/project-controls.css")}">
         ${additionalStyling}
     </#assign>
 
@@ -184,40 +186,40 @@ Base template for Project overview.
                                 </#if>
 
                                 <#if p.project.homepage??>
-                                    <#assign homepage>${p.project.homepage}</#assign> <#-- move these assigns? -->
+                                    <#assign homepage=p.project.homepage />
                                     <li id="homepage" class="nav-item">
                                         <a title="${homepage}" target="_blank" rel="noopener"
-                                           href="<@hangar.linkout homepage/>" class="nav-link">
+                                           href="${hangar.linkout(homepage)}" class="nav-link">
                                             <i class="fas fa-home"></i> Homepage <i
                                                     class="fas fa-external-link-alt"></i></a>
                                     </li>
                                 </#if>
 
                                 <#if p.project.issues??>
-                                    <#assign issues>${p.project.issues}</#assign>
+                                    <#assign issues=p.project.issues />
                                     <li id="issues" class="nav-item">
                                         <a title="${issues}" target="_blank" rel="noopener"
-                                           href="<@hangar.linkout issues/>" class="nav-link">
+                                           href="${hangar.linkout(issues)}" class="nav-link">
                                             <i class="fas fa-bug"></i> Issues <i
                                                     class="fas fa-external-link-alt"></i></a>
                                     </li>
                                 </#if>
 
                                 <#if p.project.source??>
-                                    <#assign source>${p.project.source}</#assign>
+                                    <#assign source=p.project.source />
                                     <li id="source" class="nav-item">
                                         <a title="${source}" target="_blank" rel="noopener"
-                                           href="<@hangar.linkout source/>" class="nav-link">
+                                           href="${hangar.linkout(source)}" class="nav-link">
                                             <i class="fas fa-code"></i> Source <i class="fas fa-external-link-alt"></i>
                                         </a>
                                     </li>
                                 </#if>
 
                                 <#if p.project.support??>
-                                    <#assign support>${p.project.support}</#assign>
+                                    <#assign support=p.project.support />
                                     <li id="support" class="nav-item">
                                         <a title="${support}" target="_blank" rel="noopener"
-                                           href="<@hangar.linkout support/>" class="nav-link">
+                                           href="${hangar.linkout(support)}" class="nav-link">
                                             <i class="fas fa-question-circle"></i> Support <i
                                                     class="fas fa-external-link-alt"></i>
                                         </a>

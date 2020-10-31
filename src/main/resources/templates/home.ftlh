@@ -8,18 +8,18 @@ sorted according to different criteria.
 <#import "*/layout/base.ftlh" as base>
 
 <#macro scripts>
-    <script src="<@hangar.url "js/home.js" />"></script>
+    <script src="${hangar.url("js/home.js")}"></script>
 </#macro>
 
 <#macro stylesheets>
-    <link rel="stylesheet" type="text/css" href="<@hangar.url "css/home.css" />" />
+    <link rel="stylesheet" type="text/css" href="${hangar.url("css/home.css")}" />
 </#macro>
 
 <#macro meta>
     <meta property="og:title" content="<@spring.message "general.appName" />">
     <meta property="og:type" content="website" />
     <meta property="og:url" content="${config.baseUrl}">
-    <meta property="og:image" content="<@hangar.url "images/ore-dark.png" />" />
+    <meta property="og:image" content="${hangar.url("images/ore-dark.png")}" />
     <meta property="og:description" content="<@spring.message "general.description" />" />
     <meta name="description" content="<@spring.message "general.description" />" />
 </#macro>
@@ -40,7 +40,7 @@ sorted according to different criteria.
             <div class="col-md-9 hangar-banner">
                 <div class="row aligned-row">
                     <div class="col-auto ore-logo">
-                        <img src="<@hangar.url "images/ore-colored.svg" />" alt="Ore logo" />
+                        <img src="${hangar.url("images/ore-colored.svg")}" alt="Ore logo" />
                     </div>
                     <div class="col-10 text">
                         <div class="headline">Hangar</div>
@@ -55,7 +55,7 @@ sorted according to different criteria.
                         <#-- @ftlvariable name="sponsor" type="io.papermc.hangar.config.hangar.HangarConfig.Sponsor" -->
                         <#assign sponsor=randomSponsor() />
                         <a href="${sponsor.link}">
-                            <img class="logo" src="<@hangar.url sponsor.image />" alt="${sponsor.name}" />
+                            <img class="logo" src="${hangar.url(sponsor.image)}" alt="${sponsor.name}" />
                         </a>
                     </div>
                 </div>

@@ -11,7 +11,8 @@
 <#assign mainWidth = "col-md-10">
 
 <#assign scriptsVar>
-    <script>
+    <script nonce="${nonce}">
+            <#outputformat "JavaScript">
              window.OWNER_NAME = '${ownerName}';
              window.PROJECT_SLUG = '${projectSlug}';
              window.PENDING_VERSION = ${mapper.valueToTree(pending)};
@@ -19,11 +20,12 @@
              window.FORUM_SYNC = ${forumSync?c};
              window.MAX_CHANNEL_NAME_LEN = ${config.channels.maxNameLen};
              window.COLORS = ${mapper.valueToTree(@helper["io.papermc.hangar.model.Color"].getNonTransparentValues())};
+             </#outputformat>
     </script>
-    <script type="text/javascript" src="<@hangar.url "js/create-version.js" />"></script>
+    <script type="text/javascript" src="${hangar.url("js/create-version.js")}"></script>
 </#assign>
 <#assign styleVar>
-    <link rel="stylesheet" href="<@hangar.url "css/create-version.css" />">
+    <link rel="stylesheet" href="${hangar.url("css/create-version.css")}">
 </#assign>
 
 <#assign message><@spring.message "version.create.pageTitle" /></#assign>

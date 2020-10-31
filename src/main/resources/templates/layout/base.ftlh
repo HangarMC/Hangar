@@ -18,14 +18,14 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <link href="${config.security.api.url}" rel="dns-prefetch">
 <#--        <link href="<@hangar.config "app.discourseCdnUrl" />" rel="dns-prefetch">--><#--TODO this-->
 
-        <link rel="prefetch" href="<@hangar.url "images/favicon/favicon.ico" />">
+        <link rel="prefetch" href="${hangar.url("images/favicon/favicon.ico")}">
         <link rel="prefetch" href="https://fonts.googleapis.com/css?family=Montserrat:400,700">
-        <link rel="prefetch" href="<@hangar.url "css/chunk-common.css" />">
-        <link rel="prefetch" href="<@hangar.url "css/chunk-vendors.css" />">
-        <link rel="prefetch" href="<@hangar.url "css/main.css" />">
+        <link rel="prefetch" href="${hangar.url("css/chunk-common.css")}">
+        <link rel="prefetch" href="${hangar.url("css/chunk-vendors.css")}">
+        <link rel="prefetch" href="${hangar.url("css/main.css")}">
 
-        <link rel="prefetch" href="<@hangar.url "manifest/manifest.json" />">
-        <link rel="prefetch" href="<@hangar.url "js/bootstrap.js" />">
+        <link rel="prefetch" href="${hangar.url("manifest/manifest.json")}">
+        <link rel="prefetch" href="${hangar.url("js/bootstrap.js")}">
 
         <title>${title} | Hangar</title>
 
@@ -40,24 +40,26 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon/favicon-16x16.png">
 
         <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" >
-        <link rel="stylesheet" type="text/css" href="<@hangar.url "css/chunk-common.css" />"/>
-        <link rel="stylesheet" type="text/css" href="<@hangar.url "css/chunk-vendors.css" />">
-        <link rel="stylesheet" type="text/css" href="<@hangar.url "css/main.css" />"/>
+        <link rel="stylesheet" type="text/css" href="${hangar.url("css/chunk-common.css")}"/>
+        <link rel="stylesheet" type="text/css" href="${hangar.url("css/chunk-vendors.css")}">
+        <link rel="stylesheet" type="text/css" href="${hangar.url("css/main.css")}"/>
 
         ${additionalStyling}
 
         <#-- See https://goo.gl/OOhYW5 and https://goo.gl/qRE0vM -->
-        <link rel="manifest" href="<@hangar.url "manifest/manifest.json" />">
+        <link rel="manifest" href="${hangar.url("manifest/manifest.json")}">
         <meta name="theme-color" content="#2980B9">
 
         <#-- google foo -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=${config.gaCode}"></script>
-        <script>
+        <script nonce="${nonce}">
+            <#outputformat "JavaScript">
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
 
             gtag('config', '${config.gaCode}');
+            </#outputformat>
         </script>
         <script type="application/ld+json">
             {
@@ -138,6 +140,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
 
     <#if scriptsEnabled>
         <script nonce="${nonce}">
+            <#outputformat "JavaScript">
             window.AVATAR_URL = '${config.security.api.avatarUrl}';
             window.ROUTES = ${mapper.valueToTree(Routes.getJsRoutes())};
             window.ROUTES.parse = function (key, ...params) {
@@ -147,9 +150,11 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
                 }
                 return route;
             };
+            </#outputformat>
         </script>
         <#if _csrf?? && _csrf.token??>
             <script nonce="${nonce}">
+                <#outputformat "JavaScript">
                 window.csrf = '${_csrf.token}';
                 window.csrfInfo = {
                     'parameterName': '${_csrf.parameterName}',
@@ -158,14 +163,15 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
                 };
                 window.ajaxSettings = {"headers": { '${_csrf.headerName}': window.csrf}};
                 window.isLoggedIn = ${headerData.hasUser()?c};
+                </#outputformat>
             </script>
         </#if>
 
-        <script type="text/javascript" src="<@hangar.url "js/chunk-vendors.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "js/chunk-common.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "js/font-awesome.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "js/bootstrap.js" />"></script>
-        <script type="text/javascript" src="<@hangar.url "js/main.js" />"></script>
+        <script type="text/javascript" src="${hangar.url("js/chunk-vendors.js")}"></script>
+        <script type="text/javascript" src="${hangar.url("js/chunk-common.js")}"></script>
+        <script type="text/javascript" src="${hangar.url("js/font-awesome.js")}"></script>
+        <script type="text/javascript" src="${hangar.url("js/bootstrap.js")}"></script>
+        <script type="text/javascript" src="${hangar.url("js/main.js")}"></script>
         ${additionalScripts}
     </#if>
 

@@ -24,7 +24,8 @@
     <#-- @ftlvariable name="Permission" type="io.papermc.hangar.model.Permission" -->
     <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
     <#assign scriptsVar>
-        <script <#-- @CSPNonce.attr -->>
+        <script nonce="${nonce}">
+            <#outputformat "JavaScript">
             window.USERNAME = '${u.user.name}';
             window.NO_ACTION_MESSAGE = {};
             window.CATEGORY_TITLE = {};
@@ -36,8 +37,9 @@
             </#list>
             window.NO_ACTION_MESSAGE.starred = '<@spring.messageArgs code="user.noStars" args=[u.user.name] />';
             window.NO_ACTION_MESSAGE.watching = '<@spring.messageArgs code="user.noWatching" args=[u.user.name] />';
+            </#outputformat>
         </script>
-        <script type="text/javascript" src="<@hangar.url "js/userPage.js" />"></script>
+        <script type="text/javascript" src="${hangar.url("js/userPage.js")}"></script>
         ${additionalScripts}
     </#assign>
 
@@ -147,16 +149,7 @@
 
         <#nested />
 
-        <#assign lockModalTitle>
-            <#compress>
-                <#if u.user.isLocked()>
-                    user.unlock
-                <#else>
-                    user.lock
-                </#if>
-            </#compress>
-        </#assign>
-        <@modal.modal lockModalTitle "modal-lock" "label-lock">
+        <@modal.modal lockModalTitle() "modal-lock" "label-lock">
             <div class="modal-body">
                 <p class="minor">
                     <#if u.user.isLocked()>
@@ -201,3 +194,11 @@
         </@modal.modal>
     </@base.base>
 </#macro>
+
+<#function lockModalTitle>
+    <#if u.user.isLocked()>
+        <#return "user.unlock">
+    <#else>
+        <#return "user.lock">
+    </#if>
+</#function>

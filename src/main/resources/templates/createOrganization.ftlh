@@ -3,8 +3,8 @@
 <#import "*/layout/base.ftlh" as base />
 
 <#assign scripts>
-    <script type="text/javascript" src="<@hangar.url "js/orgCreate.js" />"></script>
-    <script type="text/javascript" src="<@hangar.url "js/membersConfig.js" />"></script>
+    <script type="text/javascript" src="${hangar.url("js/orgCreate.js")}"></script>
+    <script type="text/javascript" src="${hangar.url("js/membersConfig.js")}"></script>
 </#assign>
 
 <#assign message><@spring.message "org.create.title" /></#assign>

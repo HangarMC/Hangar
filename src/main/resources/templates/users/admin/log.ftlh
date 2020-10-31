@@ -3,7 +3,7 @@
 <#import "*/layout/base.ftlh" as base />
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "js/actionLog.js" />"></script>
+    <script type="text/javascript" src="${hangar.url("js/actionLog.js")}"></script>
 </#assign>
 
 <#assign message><@spring.message "admin.log.title" /></#assign>

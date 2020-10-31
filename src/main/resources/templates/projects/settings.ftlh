@@ -11,7 +11,8 @@
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"] />
 <#assign Role=@helper["io.papermc.hangar.model.Role"] />
 <#assign scriptsVar>
-    <script>
+    <script nonce="${nonce}">
+        <#outputformat "JavaScript">
         window.PROJECT = ${mapper.valueToTree(p)};
         window.DEPLOYMENT_KEY = ${mapper.valueToTree(deploymentKey)};
 
@@ -25,11 +26,12 @@
         }
         window.POSSIBLE_ROLES = ${mapper.valueToTree(Role.values()?filter(role -> role.category == p.roleCategory && role.isAssignable())?sort_by("permissions")?reverse)};
         window.PROJECT_OWNER_PERM = ${Permission.IsSubjectOwner.value};
+        </#outputformat>
     </script>
-    <script type="text/javascript" src="<@hangar.url "js/project-settings.js" />"></script>
+    <script type="text/javascript" src="${hangar.url("js/project-settings.js")}"></script>
 </#assign>
 <#assign styleVar>
-    <link rel="stylesheet" href="<@hangar.url "css/project-settings.css" />">
+    <link rel="stylesheet" href="${hangar.url("css/project-settings.css")}">
 </#assign>
 
 <@projects.view p=p sp=sp active="#settings" additionalScripts=scriptsVar additionalStyling=styleVar>

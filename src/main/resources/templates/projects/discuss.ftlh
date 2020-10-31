@@ -9,18 +9,22 @@ Discussion page within Project overview.
 
 <#-- todo: Bridge to Paper Discourse page? Directly save discussion in Hangar? -->
 <#assign scriptsVar>
-    <script <#--@CSPNonce.attr-->>
+    <script nonce="${nonce}">
+        <#outputformat "JavaScript">
         window.DiscourseEmbed = {
             discourseUrl: '${config.app.discourseUrl}/',
             topicId: ${p.project.topicId}
         };
+        </#outputformat>
     </script>
-    <script <#--@CSPNonce.attr-->>
+    <script nonce="${nonce}">
+        <#outputformat "JavaScript">
         window.buttonClick = function() {
             document.getElementsByClassName('btn.edit')[0].click();
         }
+        </#outputformat>
     </script>
-    <script type="text/javascript" src="<@hangar.url "js/projectDiscuss.js" />"></script>
+    <script type="text/javascript" src="${hangar.url("js/projectDiscuss.js")}"></script>
 </#assign>
 
 <@view.view p=p sp=sp active="#discussion" additionalScripts=scriptsVar>

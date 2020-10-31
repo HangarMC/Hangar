@@ -7,13 +7,15 @@ Page used for uploading and creating new projects.
 -->
 <#assign scriptsVar>
     <script nonce="${nonce}">
+        <#outputformat "JavaScript">
         window.CURRENT_USER = ${mapper.valueToTree(cu)};
         window.ORGANIZAITONS = ${mapper.valueToTree(createProjectOrgas)};
+        </#outputformat>
     </script>
-    <script type="text/javascript" src="<@hangar.url "js/create-project.js" />"></script>
+    <script type="text/javascript" src="${hangar.url("js/create-project.js")}"></script>
 </#assign>
 <#assign styleVar>
-    <link rel="stylesheet" href="<@hangar.url "css/create-project.css" />">
+    <link rel="stylesheet" href="${hangar.url("css/create-project.css")}">
 </#assign>
 
 <#assign message><@spring.message "project.create" /></#assign>

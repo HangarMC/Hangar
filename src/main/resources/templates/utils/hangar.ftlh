@@ -1,13 +1,11 @@
-<#macro linkout url>
-    ${config.security.makeSafe(url)}
-</#macro>
+<#function linkout url>
+   <#return config.security.makeSafe(url)>
+</#function>
 
-<#macro url path>
-    <#compress>
-        <#if config.useWebpack>
-            http://localhost:8081/${path}
-        <#else>
-            ${urls.getForLookupPath('/assets/${path}')!"/assets/${path}?error"}
-        </#if>
-    </#compress>
-</#macro>
+<#function url path>
+    <#if config.useWebpack>
+        <#return 'http://localhost:8081/${path}'>
+    <#else>
+        <#return urls.getForLookupPath("/assets/${path}")!"/assets/${path}?error">
+    </#if>
+</#function>

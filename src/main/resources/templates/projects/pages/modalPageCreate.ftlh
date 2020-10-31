@@ -3,9 +3,11 @@
 <#import "*/utils/csrf.ftlh" as csrf />
 
 <#macro pageCreate project, rootPages>
-    <script <#--@CSPNonce.attr-->>
+    <script nonce="${nonce}">
+        <#outputformat "JavaScript">
         PROJECT_OWNER = '${project.ownerName}';
         PROJECT_SLUG = '${project.slug}';
+        </#outputformat>
     </script>
 
     <div class="modal fade" id="new-page" tabindex="-1" role="dialog" aria-labelledby="new-page-label">

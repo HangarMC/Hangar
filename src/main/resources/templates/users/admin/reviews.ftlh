@@ -3,8 +3,12 @@
 <#import "*/layout/base.ftlh" as base />
 
 <#assign scripts>
-    <script <#--@CSPNonce.attr--> type="text/javascript" src="<@hangar.url "js/review.js" />"></script>
-    <script <#--@CSPNonce.attr-->>window.versionPath = '${utils.urlEncode(project.project.ownerName)}/${utils.urlEncode(project.project.slug)}/versions/${utils.urlEncode(version.v.versionString)}'</script>
+    <script nonce="${nonce}" type="text/javascript" src="${hangar.url("js/review.js")}"></script>
+    <script nonce="${nonce}">
+        <#outputformat "JavaScript">
+        window.versionPath = '${utils.urlEncode(project.project.ownerName)}/${utils.urlEncode(project.project.slug)}/versions/${utils.urlEncode(version.v.versionString)}'
+        </#outputformat>
+    </script>
 </#assign>
 
 <#assign ReviewState=@helper["io.papermc.hangar.model.generated.ReviewState"] />

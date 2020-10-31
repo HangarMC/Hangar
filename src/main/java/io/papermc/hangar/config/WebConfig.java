@@ -1,6 +1,8 @@
 package io.papermc.hangar.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import freemarker.core.HTMLOutputFormat;
 import freemarker.template.TemplateException;
 import io.papermc.hangar.controller.converters.ColorHexConverter;
 import io.papermc.hangar.controller.converters.StringToEnumConverterFactory;
@@ -64,12 +66,17 @@ public class WebConfig extends WebMvcConfigurationSupport {
         freeMarkerConfigurer.getConfiguration().setOutputEncoding("UTF-8");
         freeMarkerConfigurer.getConfiguration().setLogTemplateExceptions(false);
         freeMarkerConfigurer.getConfiguration().setAPIBuiltinEnabled(true);
+        freeMarkerConfigurer.getConfiguration().setOutputFormat(HTMLOutputFormat.INSTANCE);
         freeMarkerConfigurer.getConfiguration().setObjectWrapper(new Java8ObjectWrapper(freemarker.template.Configuration.getVersion()));
         freeMarkerConfigurer.getConfiguration().setTemplateExceptionHandler((te, env, out) -> {
             String message = te.getMessage();
             if (message.contains("org.springframework.web.servlet.support.RequestContext.getMessage")) {
                 System.out.println("[Template Error, most likely missing key] " + message);
-                te.getCause().printStackTrace();
+                if (te.getCause() != null) {
+                    te.getCause().printStackTrace();
+                } else {
+                    te.printStackTrace();
+                }
             } else if (message.contains(" see cause exception in the Java stack trace.")) {
                 te.printStackTrace();
             } else {

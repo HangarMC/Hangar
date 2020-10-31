@@ -7,10 +7,10 @@ Mostly copied from swagger-ui's index file
 <#import "*/layout/base.ftlh" as base />
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "js/swagger.js" />"></script>
+    <script type="text/javascript" src="${hangar.url("js/swagger.js")}"></script>
 </#assign>
 <#assign styleVar>
-    <link rel="stylesheet" type="text/css" href="<@hangar.url "css/swagger.css" />">
+    <link rel="stylesheet" type="text/css" href="${hangar.url("css/swagger.css")}">
 </#assign>
 
 <#assign message><@spring.message "general.openapi" /></#assign>

@@ -7,18 +7,20 @@ Versions page within Project overview.
 -->
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
 <#assign scriptsVar>
-    <script>
+    <script nonce="${nonce}">
+            <#outputformat "JavaScript">
             window.PROJECT_OWNER = '${p.project.ownerName}';
             window.PROJECT_SLUG = '${p.project.slug}';
             window.CHANNELS = ${mapper.valueToTree(channels)};
             window.CAN_EDIT_CHANNELS = ${sp.perms(Permission.EditTags)?c};
             window.FILTERED_MEMBERS = ${utils.serializeMap(p.filteredMembers(headerData))};
             window.CAN_MANAGE_MEMBERS = ${sp.permissions.has(Permission.ManageSubjectMembers)?c};
+            </#outputformat>
     </script>
-    <script type="text/javascript" src="<@hangar.url "js/version-list-view.js" />"></script>
+    <script type="text/javascript" src="${hangar.url("js/version-list-view.js")}"></script>
 </#assign>
 <#assign stylesheetsVar>
-    <link rel="stylesheet" type="text/css" href="<@hangar.url "css/version-list-view.css" />" />
+    <link rel="stylesheet" type="text/css" href="${hangar.url("css/version-list-view.css")}" />
 </#assign>
 <@projects.view p=p sp=sp active="#versions" additionalScripts=scriptsVar additionalStyling=stylesheetsVar>
     <div id="version-list-view">

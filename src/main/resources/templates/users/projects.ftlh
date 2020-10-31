@@ -11,29 +11,33 @@
 </#function>
 
 <#assign scriptsVar>
-    <script type="text/javascript" src="<@hangar.url "js/user-profile.js" />"></script>
+    <script type="text/javascript" src="${hangar.url("js/user-profile.js")}"></script>
     <#if u.isOrga()>
-        <script>
+        <script nonce="${nonce}">
+            <#outputformat "JavaScript">
             window.JOINABLE_NAME = '${o.get().org.name}';
             window.CAN_MANAGE_MEMBERS = ${so.get().permissions.has(Permission.ManageSubjectMembers)?c};
             window.ORG_OWNER_PERM = ${Permission.IsOrganizationOwner.value?c};
             window.FILTERED_MEMBERS = ${utils.serializeMap(o.get().filteredMembers(headerData))};
+            </#outputformat>
         </script>
         <#if o.present && canEditOrgMembers()>
-            <script>
+            <script nonce="${nonce}">
+                <#outputformat "JavaScript">
                 window.POSSIBLE_ROLES = ${mapper.valueToTree(Role.values()?filter(role -> role.category == o.get().roleCategory && role.isAssignable())?sort_by("permissions")?reverse)};
 
                 window.ORG_NAME = '${u.user.name}';
                 window.PROJECT_ROLES = ${utils.serializeMap(o.get().projectRoles)};
+                </#outputformat>
             </script>
         </#if>
-        <script type="text/javascript" src="<@hangar.url "js/org-sidebar.js" />"></script>
+        <script type="text/javascript" src="${hangar.url("js/org-sidebar.js")}"></script>
     </#if>
 </#assign>
 
 <#assign styleVar>
     <#if u.isOrga()>
-        <link rel="stylesheet" href="<@hangar.url "css/org-sidebar.css" />">
+        <link rel="stylesheet" href="${hangar.url("css/org-sidebar.css")}">
     </#if>
 </#assign>
 
