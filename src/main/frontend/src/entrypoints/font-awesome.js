@@ -69,6 +69,7 @@ import {
     faTimes,
     faTimesCircle,
     faTrash,
+    faUndo,
     faUnlockAlt,
     faUpload,
     faUser,
@@ -180,7 +181,8 @@ library.add(
     faTag,
     faGavel,
     faBirthdayCake,
-    faArrowsAltV
+    faArrowsAltV,
+    faUndo
 );
 
 dom.watch();

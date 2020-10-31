@@ -3,23 +3,28 @@
 <#import "*/layout/base.ftlh" as base />
 
 <#assign scripts>
-    <script nonce="${nonce}" type="text/javascript" src="${hangar.url("js/review.js")}"></script>
     <script nonce="${nonce}">
         <#outputformat "JavaScript">
-        window.versionPath = '${utils.urlEncode(project.project.ownerName)}/${utils.urlEncode(project.project.slug)}/versions/${utils.urlEncode(version.v.versionString)}'
+        window.PROJECT = ${mapper.valueToTree(project.project)};
+        window.VERSION = ${mapper.valueToTree(version.v)};
+        window.MOST_RECENT_UNFINISHED_REVIEW = ${mapper.valueToTree(mostRecentUnfinishedReview)};
+        <#if mostRecentUnfinishedReview??>
+        window.MOST_RECENT_IS_CURRENT_USER = ${headerData.isCurrentUser(mostRecentUnfinishedReview.userId)?c};
+        </#if>
         </#outputformat>
     </script>
+    <script nonce="${nonce}" type="text/javascript" src="${hangar.url("js/version-reviews.js")}"></script>
 </#assign>
 
 <#assign ReviewState=@helper["io.papermc.hangar.model.generated.ReviewState"] />
 <#-- @ftlvariable name="ReviewState" type="io.papermc.hangar.model.generated.ReviewState" -->
 <#assign message><@spring.messageArgs code="review.title" args=[project.project.name, version.v.versionString] /></#assign>
 <@base.base title=message additionalScripts=scripts>
-    <div class="row">
-        <div class="col-md-12  header-flags">
+    <div id="review-btn-group" class="row">
+        <div class="col-md-12 header-flags">
             <div class="clearfix">
                 <h1 class="float-left">
-                    <a class="btn btn-primary" href="/${utils.urlEncode(project.project.ownerName)}/${utils.urlEncode(project.project.slug)}/versions/${utils.urlEncode(version.v.versionString)}">
+                    <a class="btn btn-primary" href="${Routes.VERSIONS_SHOW.getRouteUrl(project.project.ownerName, project.project.slug, version.v.versionString)}">
                         <i class="fas fa-arrow-left"></i>
                     </a>
                     ${project.project.name}
@@ -64,7 +69,7 @@
     </div>
     <#if mostRecentUnfinishedReview??>
         <#if headerData.isCurrentUser(mostRecentUnfinishedReview.userId)>
-            <div class="row">
+            <div id="review-new-message" class="row">
                 <div class="col-md-12">
                     <div class="input-group" style="width: 100%; margin-top: 1em; border-radius: 4px 4px 0 0;">
                         <div class="input-group-prepend">
@@ -164,51 +169,6 @@
                 </#list>
                 </tbody>
             </table>
-        </div>
-    </div>
-
-
-    <div class="modal fade" id="modal-review-stop" tabindex="-1" role="dialog" aria-labelledby="modal-review-stop">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="<@spring.message "general.close" />">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title"><@spring.message "review.stop" /></h4>
-                </div>
-                <div class="modal-body">
-                    <@spring.message "review.whystop" />
-                    <br>
-                    <textarea class="textarea-stop form-control" rows="3"></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-default"><@spring.message "general.cancel" /></button>
-                    <button class="btn btn-review-stop-submit btn-primary"><i class="fas fa-stop-circle"></i> <@spring.message "review.stop" /></button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modal-review-takeover" tabindex="-1" role="dialog" aria-labelledby="modal-review-takeover">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="<@spring.message "general.close" />">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title"><@spring.message "review.takeover" /></h4>
-                </div>
-                <div class="modal-body">
-                    <@spring.message "review.whytakeover" />
-                    <br>
-                    <textarea class="textarea-takeover form-control" rows="3"></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-default"><@spring.message "general.cancel" /></button>
-                    <button class="btn btn-review-takeover-submit btn-primary"><i class="fas fa-clipboard"></i> <@spring.message "review.takeover" /></button>
-                </div>
-            </div>
         </div>
     </div>
 </@base.base>

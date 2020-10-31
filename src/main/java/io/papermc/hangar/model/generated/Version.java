@@ -1,5 +1,7 @@
 package io.papermc.hangar.model.generated;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.Visibility;
@@ -242,11 +244,13 @@ public class Version {
     @NotNull
 
     @EnumByOrdinal
+    @JsonFormat(shape = Shape.STRING)
     public ReviewState getReviewState() {
         return reviewState;
     }
 
     @EnumByOrdinal
+    @JsonFormat(shape = Shape.STRING)
     public void setReviewState(ReviewState reviewState) {
         this.reviewState = reviewState;
     }

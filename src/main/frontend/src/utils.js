@@ -59,6 +59,12 @@ export function toggleSpinner(e) {
     return e.toggleClass('fa-spinner').toggleClass('fa-spin');
 }
 
+export function toggleSpin(element) {
+    element.classList.toggle('fa-spinner');
+    element.classList.toggle('fa-spin');
+    return element;
+}
+
 export function numberWithCommas(x) {
     const parts = x.toString().split('.');
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');

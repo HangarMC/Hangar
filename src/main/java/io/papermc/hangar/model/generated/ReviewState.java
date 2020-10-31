@@ -1,11 +1,14 @@
 package io.papermc.hangar.model.generated;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Gets or Sets reviewState
  */
+@JsonFormat(shape = Shape.OBJECT)
 public enum ReviewState {
     UNREVIEWED(0, "unreviewed"),
 
@@ -24,9 +27,8 @@ public enum ReviewState {
     }
 
     @Override
-    @JsonValue
     public String toString() {
-        return String.valueOf(value);
+        return apiName;
     }
 
     public long getValue() {
