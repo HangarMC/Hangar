@@ -208,7 +208,7 @@ public class ProjectFactory {
             Files.createDirectories(newPath.getParent());
         }
 
-        Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING); // TODO maybe remove the replace_existing in prod?
+        Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING);
         Files.deleteIfExists(oldPath);
         if (Files.notExists(newPath)) {
             throw new HangarException("error.plugin.fileName");

@@ -134,36 +134,6 @@ public class VersionsController extends HangarController {
         this.projectData = projectData;
     }
 
-    // TODO remove this? Isn't used in frontend
-    @GetMapping(value = "/api/project/{author}/{slug}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    @ResponseBody
-    public Object downloadRecommendedJarById(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String token) {
-        ProjectsTable project = projectsTable.get();
-        ProjectVersionsTable recommendedVersion = versionService.getRecommendedVersion(project);
-        if (recommendedVersion == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } else {
-            return sendJar(project, recommendedVersion, token, true);
-        }
-    }
-
-    // TODO remove this? Isn't used in frontend
-    @GetMapping(value = "/api/project/{author}/{slug}/versions/{name}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    @ResponseBody
-    public Object downloadJarById(@PathVariable String author, @PathVariable String slug, @PathVariable String name, @RequestParam Optional<String> token) {
-        ProjectsTable project = projectsTable.get();
-        ProjectVersionsTable pvt = projectVersionsTable.get();
-        if (pvt.isExternal()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No jar for this version found");
-        }
-        if (token.isPresent()) {
-            confirmDownload0(DownloadType.JAR_FILE, token);
-            return sendJar(project, pvt, token.get(), true);
-        } else {
-            return sendJar(project, pvt, token.orElse(null), true);
-        }
-    }
-
     @GlobalPermission(NamedPermission.VIEW_LOGS)
     @Secured("ROLE_USER")
     @GetMapping("/{author}/{slug}/versionLog")

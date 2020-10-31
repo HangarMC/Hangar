@@ -88,6 +88,33 @@ public interface VersionsApi {
             @ApiParam(value = "The last date to include in the result", required = true) @RequestParam(value = "toDate") @NotNull @Valid String toDate
     );
 
+    @ApiOperation(value = "Downloads the recommended version", nickname = "downloadRecommended", notes = "Downloads the file of the recommended version of this project", response = Object.class, authorizations = {
+            @Authorization(value = "Session")}, tags = "Versions")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Ok", response = Object.class),
+            @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
+            @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")})
+    @GetMapping(value = "/projects/{author}/{slug}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    Object downloadRecommended(
+            @ApiParam(value = "The author of the version to return the stats for", required = true) @PathVariable("author") String author,
+            @ApiParam(value = "The slug of the project to return stats for", required = true) @PathVariable("slug") String slug,
+            @ApiParam(value = "The download token")  @RequestParam(required = false) String token
+    );
+
+    @ApiOperation(value = "Downloads the version", nickname = "download", notes = "Downloads the file of the given version of this project", response = Object.class, authorizations = {
+            @Authorization(value = "Session")}, tags = "Versions")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Ok", response = Object.class),
+            @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
+            @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")})
+    @GetMapping(value = "/projects/{author}/{slug}/versions/{name}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    Object download(
+            @ApiParam(value = "The author of the version to return the stats for", required = true) @PathVariable("author") String author,
+            @ApiParam(value = "The slug of the project to return stats for", required = true) @PathVariable("slug") String slug,
+            @ApiParam(value = "The name of the version", required = true) @PathVariable("name") String name,
+            @ApiParam(value = "The download token")  @RequestParam(required = false) String token
+    );
+
     @ApiOperation(
             value = "Returns a list of platforms and their information",
             nickname = "showPlatforms",
