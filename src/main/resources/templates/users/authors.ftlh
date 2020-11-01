@@ -2,26 +2,10 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 <#import "*/layout/base.ftlh" as base />
 
-<#--
-@import java.time.OffsetDateTime
-
-@import controllers.sugar.Requests.OreRequest
-@import db.impl.access.UserBase.UserOrdering
-@import ore.OreConfig
-@import ore.models.user.User
-@import ore.permission.role.Role
-@import util.StringFormatterUtils._
-@import util.syntax._
-@import views.html.helper.CSPNonce
-@import views.html.utils.userAvatar
-@(authors: Seq[(String, Option[OffsetDateTime], OffsetDateTime, Option[Role], Option[Role], Long)], ordering: String, page: Int)(implicit messages: Messages, request: OreRequest[_], config: OreConfig, flash: Flash, assetsFinder: AssetsFinder)
-
-@pageSize = @{ config.ore.users.authorPageSize }
--->
 <#assign pageSize=config.user.authorPageSize />
 
 <#function direction>
-	<#if ordering?startsWith("-")>
+	<#if ordering?starts_with("-")>
 		<#return "chevron-down">
 	<#else>
 		<#return "chevron-up">
@@ -30,10 +14,10 @@
 
 <#function isActiveSort td>
 	<#assign sort=ordering>
-	<#if sort?startsWith("-")>
+	<#if sort?starts_with("-")>
 		<#assign sort=sort?substring(1)>
 	</#if>
-	<#return sort?upperCase == td?upperCase>
+	<#return sort?upper_case == td?upper_case>
 </#function>
 
 <#assign scriptsVar>

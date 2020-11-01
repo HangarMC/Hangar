@@ -3,7 +3,7 @@
 <#import "*/layout/base.ftlh" as base>
 
 <#function direction>
-	<#if ordering?startsWith("-")>
+	<#if ordering?starts_with("-")>
 		<#return "chevron-down">
 	<#else>
 		<#return "chevron-up">
@@ -12,10 +12,10 @@
 
 <#function isActiveSort td>
 	<#assign sort=ordering>
-	<#if sort?startsWith("-")>
+	<#if sort?starts_with("-")>
 		<#assign sort=sort?substring(1)>
 	</#if>
-	<#return sort?upperCase == td?upperCase>
+	<#return sort?upper_case == td?upper_case>
 </#function>
 
 <#assign scriptsVar>
