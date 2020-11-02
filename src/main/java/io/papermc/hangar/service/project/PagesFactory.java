@@ -39,6 +39,10 @@ public class PagesFactory {
             throw new HangarException("error.minLength");
         }
 
+        if (!hangarConfig.projects.getNameMatcher().test(name)) {
+            throw new HangarException("error.page.invalidName");
+        }
+
         ProjectPagesTable table = new ProjectPage(
                 projectId,
                 name,

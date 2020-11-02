@@ -147,6 +147,10 @@ public class ProjectFactory {
             throw new HangarException("error.version.duplicate");
         }
 
+        if (!hangarConfig.projects.getNameMatcher().test(pendingVersion.getVersionString())) {
+            throw new HangarException("error.project.invalidName");
+        }
+
         ProjectVersionsTable version = projectVersionDao.get().insert(new ProjectVersionsTable(
                 pendingVersion.getVersionString(),
                 pendingVersion.getDependencies(),

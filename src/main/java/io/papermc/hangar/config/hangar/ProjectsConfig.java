@@ -1,13 +1,19 @@
 package io.papermc.hangar.config.hangar;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 @Component
 @ConfigurationProperties(prefix = "hangar.projects")
 public class ProjectsConfig {
+
+    @Value("#{T(java.util.regex.Pattern).compile(${hangar.projects.name-regex})}")
+    private Pattern nameRegex = Pattern.compile("^[a-zA-Z0-9-_]{3,}$");
     private int maxNameLen = 25;
     private int maxPages = 50;
     private int maxChannels = 5;
@@ -21,6 +27,18 @@ public class ProjectsConfig {
     private String draftExpire = "1d";
     private int userGridPageSize = 30;
     private Duration unsafeDownloadMaxAge = Duration.ofMinutes(10);
+
+    public Pattern getNameRegex() {
+        return nameRegex;
+    }
+
+    public Predicate<String> getNameMatcher() {
+        return nameRegex.asMatchPredicate();
+    }
+
+    public void setNameRegex(Pattern nameRegex) {
+        this.nameRegex = nameRegex;
+    }
 
     public int getMaxNameLen() {
         return maxNameLen;

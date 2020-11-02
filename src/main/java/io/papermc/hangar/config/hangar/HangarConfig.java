@@ -208,7 +208,7 @@ public class HangarConfig {
 
     public boolean isValidProjectName(String name) {
         String sanitized = StringUtils.compact(name);
-        return sanitized.length() >= 1 && sanitized.length() <= projects.getMaxNameLen();
+        return sanitized.length() >= 1 && sanitized.length() <= projects.getMaxNameLen() && projects.getNameMatcher().test(name);
     }
 
     // Added to make freemarker realize they are here

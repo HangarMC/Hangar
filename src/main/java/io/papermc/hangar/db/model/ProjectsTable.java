@@ -40,7 +40,7 @@ public class ProjectsTable implements Visitable {
     public ProjectsTable() { }
 
     public ProjectsTable(ProjectOwner projectOwner, Category category, NewProjectForm newProjectForm) {
-        this.name = newProjectForm.getName();
+        this.name = StringUtils.compact(newProjectForm.getName());
         this.slug = StringUtils.slugify(newProjectForm.getName());
         this.ownerName = projectOwner.getName();
         this.ownerId = projectOwner.getUserId();
