@@ -26,3 +26,6 @@ hangar:
     api:
       url: "https://hangar-auth.minidigger.me"
       avatar-url: "https://hangar-auth.minidigger.me/avatar/%s?size=120x120"
+
+  projects:
+    name-regex: "^[a-zA-Z0-9-_]{3,}$"

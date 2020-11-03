@@ -91,6 +91,7 @@ hangar:
     user-grid-page-size: 30
     max-keywords: 5
     unsafe-download-max-age: 10
+    name-regex: "^[a-zA-Z0-9-_]{3,}$"
 
   users:
     stars-per-page: 5

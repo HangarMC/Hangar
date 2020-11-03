@@ -1,6 +1,5 @@
 package io.papermc.hangar.config.hangar;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -12,8 +11,8 @@ import java.util.regex.Pattern;
 @ConfigurationProperties(prefix = "hangar.projects")
 public class ProjectsConfig {
 
-    @Value("#{T(java.util.regex.Pattern).compile(${hangar.projects.name-regex})}")
-    private Pattern nameRegex = Pattern.compile("^[a-zA-Z0-9-_]{3,}$");
+    private String nameRegex = "^[a-zA-Z0-9-_]{3,}$";
+    private Pattern namePattern = Pattern.compile(this.nameRegex);
     private int maxNameLen = 25;
     private int maxPages = 50;
     private int maxChannels = 5;
@@ -28,16 +27,17 @@ public class ProjectsConfig {
     private int userGridPageSize = 30;
     private Duration unsafeDownloadMaxAge = Duration.ofMinutes(10);
 
-    public Pattern getNameRegex() {
+    public String getNameRegex() {
         return nameRegex;
     }
 
     public Predicate<String> getNameMatcher() {
-        return nameRegex.asMatchPredicate();
+        return namePattern.asMatchPredicate();
     }
 
-    public void setNameRegex(Pattern nameRegex) {
+    public void setNameRegex(String nameRegex) {
         this.nameRegex = nameRegex;
+        this.namePattern = Pattern.compile(nameRegex);
     }
 
     public int getMaxNameLen() {
