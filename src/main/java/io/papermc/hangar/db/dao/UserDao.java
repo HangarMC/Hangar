@@ -1,7 +1,10 @@
 package io.papermc.hangar.db.dao;
 
+import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.model.viewhelpers.Author;
 import io.papermc.hangar.model.viewhelpers.FlagActivity;
 import io.papermc.hangar.model.viewhelpers.ReviewActivity;
+import io.papermc.hangar.model.viewhelpers.Staff;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.BindList;
@@ -15,10 +18,6 @@ import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
-import io.papermc.hangar.db.model.UsersTable;
-import io.papermc.hangar.model.viewhelpers.Author;
-import io.papermc.hangar.model.viewhelpers.Staff;
 
 @Repository
 @RegisterBeanMapper(UsersTable.class)
@@ -109,7 +108,7 @@ public interface UserDao {
     void removeStargazing(long projectId, long userId);
 
 
-    @SqlQuery("SELECT pvr.ended_at, pv.version_string, p.owner_name \"owner\", p.slug" +
+    @SqlQuery("SELECT pvr.ended_at, pv.version_string, pv.version_string || '.' || pv.id AS version_string_url, p.owner_name \"owner\", p.slug" +
             "  FROM users u" +
             "         JOIN project_version_reviews pvr ON u.id = pvr.user_id" +
             "         JOIN project_versions pv ON pvr.version_id = pv.id" +

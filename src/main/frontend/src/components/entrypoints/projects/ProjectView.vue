@@ -76,7 +76,7 @@
                                 class="list-group-item list-group-item-action"
                                 :href="ROUTES.parse('VERSIONS_SHOW', project.ownerName, project.slug, version.version)"
                             >
-                                {{ version.version }}
+                                {{ version.version.substring(0, version.version.lastIndexOf('.')) }}
                                 <Tag v-for="(tag, index) in version.tags" :key="index" :color="tag.color" :data="tag.display_data" :name="tag.name"></Tag>
                             </a>
                         </div>

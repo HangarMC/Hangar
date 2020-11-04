@@ -54,6 +54,7 @@ public class VersionMapper implements RowMapper<Version> {
         return new Version()
                 .createdAt(rs.getObject("created_at", OffsetDateTime.class))
                 .name(rs.getString("version_string"))
+                .urlName(rs.getString("version_string") + "." + rs.getLong("id"))
                 .dependencies(versionDependenciesColumnMapper.get().map(rs, rs.findColumn("dependencies"), ctx))
                 .visibility(Visibility.fromId(rs.getLong("visibility")))
                 .description(rs.getString("description"))

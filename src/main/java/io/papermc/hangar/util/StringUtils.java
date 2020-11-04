@@ -2,6 +2,7 @@ package io.papermc.hangar.util;
 
 import org.springframework.lang.Nullable;
 
+import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -49,6 +50,16 @@ public class StringUtils {
     public static String stringOrNull(@Nullable String input) {
         if (input == null || input.isBlank()) return null;
         return input;
+    }
+
+    public static <T extends Throwable> long getVersionId(@NotNull String versionString, T error) throws T {
+        int index = versionString.lastIndexOf('.');
+        try {
+            return Long.parseLong(versionString.substring(index + 1));
+        } catch (NumberFormatException ex) {
+            throw error;
+        }
+
     }
 
     private static final Pattern LAST_WHOLE_VERSION = Pattern.compile("((?<=,\\s)|^)[0-9.]{2,}(?=-\\d+$)");

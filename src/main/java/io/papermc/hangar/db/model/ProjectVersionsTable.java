@@ -229,6 +229,11 @@ public class ProjectVersionsTable {
         return this.externalUrl != null && this.fileName == null;
     }
 
+    @Unmappable
+    public String getVersionStringUrl() {
+        return this.versionString + "." + this.id;
+    }
+
     @Override
     public String toString() {
         return "ProjectVersionsTable{" +

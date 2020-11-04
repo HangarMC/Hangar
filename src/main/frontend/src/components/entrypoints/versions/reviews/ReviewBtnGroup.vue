@@ -2,7 +2,7 @@
     <div class="col-md-12 header-flags">
         <div class="clearfix">
             <h1 class="float-left">
-                <a :href="ROUTES.parse('VERSIONS_SHOW', project.ownerName, project.slug, version.versionString)" class="btn btn-primary">
+                <a :href="ROUTES.parse('VERSIONS_SHOW', project.ownerName, project.slug, version.versionStringUrl)" class="btn btn-primary">
                     <i class="fas fa-arrow-left"></i>
                 </a>
                 {{ project.name }}
@@ -22,7 +22,7 @@
                         {{ version.reviewState.value !== 2 ? 'Remove from queue' : 'Add to queue' }}
                     </a>
                     <a :href="ROUTES.parse('PROJECTS_SHOW', project.ownerName, project.slug)" class="btn btn-info"> Project Page</a>
-                    <a :href="ROUTES.parse('VERSIONS_DOWNLOAD_JAR', project.ownerName, project.slug, version.versionString)" class="btn btn-info"
+                    <a :href="ROUTES.parse('VERSIONS_DOWNLOAD_JAR', project.ownerName, project.slug, version.versionStringUrl)" class="btn btn-info"
                         >Download File</a
                     >
                 </div>
@@ -123,7 +123,7 @@ export default {
         skip() {
             axios
                 .post(
-                    this.ROUTES.parse('REVIEWS_BACKLOG_TOGGLE', this.project.ownerName, this.project.slug, this.version.versionString),
+                    this.ROUTES.parse('REVIEWS_BACKLOG_TOGGLE', this.project.ownerName, this.project.slug, this.version.versionStringUrl),
                     null,
                     window.ajaxSettings
                 )
@@ -136,7 +136,7 @@ export default {
             toggleSpin(icon).classList.toggle('fa-stop-circle');
             axios
                 .post(
-                    this.ROUTES.parse('REVIEWS_STOP_REVIEW', this.project.ownerName, this.project.slug, this.version.versionString),
+                    this.ROUTES.parse('REVIEWS_STOP_REVIEW', this.project.ownerName, this.project.slug, this.version.versionStringUrl),
                     stringify({
                         content: this.reason.stop,
                     }),
@@ -158,14 +158,14 @@ export default {
             const promises = [];
             promises.push(
                 axios.post(
-                    this.ROUTES.parse('REVIEWS_APPROVE_REVIEW', this.project.ownerName, this.project.slug, this.version.versionString),
+                    this.ROUTES.parse('REVIEWS_APPROVE_REVIEW', this.project.ownerName, this.project.slug, this.version.versionStringUrl),
                     null,
                     window.ajaxSettings
                 )
             );
             const urlKey = partial ? 'VERSIONS_APPROVE_PARTIAL' : 'VERSIONS_APPROVE';
             promises.push(
-                axios.post(this.ROUTES.parse(urlKey, this.project.ownerName, this.project.slug, this.version.versionString), null, window.ajaxSettings)
+                axios.post(this.ROUTES.parse(urlKey, this.project.ownerName, this.project.slug, this.version.versionStringUrl), null, window.ajaxSettings)
             );
             Promise.all(promises).then(() => {
                 location.reload();
@@ -175,7 +175,7 @@ export default {
             toggleSpin(e.target.querySelector('[data-fa-i2svg]')).classList.toggle('fa-clipboard');
             axios
                 .post(
-                    this.ROUTES.parse('REVIEWS_TAKEOVER_REVIEW', this.project.ownerName, this.project.slug, this.version.versionString),
+                    this.ROUTES.parse('REVIEWS_TAKEOVER_REVIEW', this.project.ownerName, this.project.slug, this.version.versionStringUrl),
                     stringify({ content: this.reason.takeover }),
                     {
                         headers: {
@@ -193,7 +193,7 @@ export default {
             event.target.disabled = true;
             axios
                 .post(
-                    this.ROUTES.parse('REVIEWS_CREATE_REVIEW', this.project.ownerName, this.project.slug, this.version.versionString),
+                    this.ROUTES.parse('REVIEWS_CREATE_REVIEW', this.project.ownerName, this.project.slug, this.version.versionStringUrl),
                     null,
                     window.ajaxSettings
                 )
@@ -210,7 +210,7 @@ export default {
             e.target.disabled = true;
             axios
                 .post(
-                    this.ROUTES.parse('REVIEWS_REOPEN_REVIEW', this.project.ownerName, this.project.slug, this.version.versionString),
+                    this.ROUTES.parse('REVIEWS_REOPEN_REVIEW', this.project.ownerName, this.project.slug, this.version.versionStringUrl),
                     null,
                     window.ajaxSettings
                 )

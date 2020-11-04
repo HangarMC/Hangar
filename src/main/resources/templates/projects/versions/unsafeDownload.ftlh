@@ -48,7 +48,7 @@
                         </div>
 
                         <div class="col-12 col-sm-6">
-                            <form action="${Routes.VERSIONS_CONFIRM_DOWNLOAD.getRouteUrl(project.ownerName, project.slug, target.versionString, downloadType.ordinal() + "", "", "dummy")}" method="post" id="form-download">
+                            <form action="${Routes.VERSIONS_CONFIRM_DOWNLOAD.getRouteUrl(project.ownerName, project.slug, target.versionStringUrl, downloadType.ordinal() + "", "", "dummy")}" method="post" id="form-download">
                                 <@csrf.formField />
 
                                 <button type="submit" form="form-download" class="btn btn-danger float-right-sm">

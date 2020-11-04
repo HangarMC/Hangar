@@ -72,7 +72,7 @@
                     <div>
 
                         <#if !v.recommended && sp.perms(Permission.EditVersion) && v.v.visibility != Visibility.SOFTDELETE>
-                            <@form.form method="POST" action=Routes.VERSIONS_SET_RECOMMENDED.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString) class="d-inline">
+                            <@form.form method="POST" action=Routes.VERSIONS_SET_RECOMMENDED.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionStringUrl) class="d-inline">
                                 <@csrf.formField />
                                 <button type="submit" class="btn btn-info">
                                     <i class="fas fa-gem"></i> Set recommended
@@ -82,9 +82,9 @@
 
                         <#if headerData.globalPerm(Permission.Reviewer)>
                             <#if v.v.reviewState.checked>
-                                <a href="${Routes.REVIEWS_SHOW_REVIEWS.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString)}" class="btn btn-info"><@spring.message "review.log" /></a>
+                                <a href="${Routes.REVIEWS_SHOW_REVIEWS.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionStringUrl)}" class="btn btn-info"><@spring.message "review.log" /></a>
                             <#else>
-                                <a href="${Routes.REVIEWS_SHOW_REVIEWS.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString)}" class="btn btn-success">
+                                <a href="${Routes.REVIEWS_SHOW_REVIEWS.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionStringUrl)}" class="btn btn-success">
                                     <i class="fas fa-play"></i> <@spring.message "review.start" />
                                 </a>
                             </#if>
@@ -111,7 +111,7 @@
                         </#if>
 
                         <div class="btn-group btn-download">
-                            <a href="${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}"
+                            <a href="${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionStringUrl, "", "")}"
                                title="<@spring.message "project.download.recommend" />" data-toggle="tooltip"
                                data-placement="bottom" class="btn btn-primary">
                                 <i class="fas fa-download"></i>
@@ -125,8 +125,8 @@
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}"><@spring.message "general.download" /></a>
-                                <a href="#" class="copy-url dropdown-item" data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString, "", "")}">Copy URL</a>
+                                <a class="dropdown-item" href="${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionStringUrl, "", "")}"><@spring.message "general.download" /></a>
+                                <a href="#" class="copy-url dropdown-item" data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionStringUrl, "", "")}">Copy URL</a>
                             </div>
                         </div>
 
@@ -228,7 +228,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <@form.form method="POST" action=Routes.VERSIONS_SOFT_DELETE.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString)>
+                    <@form.form method="POST" action=Routes.VERSIONS_SOFT_DELETE.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionStringUrl)>
                         <div class="modal-body">
                             <@spring.message "version.delete.info" />
                             <textarea name="comment" class="textarea-delete-comment form-control" rows="3"></textarea>
@@ -259,7 +259,7 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <@form.form method="POST" action=Routes.VERSIONS_RESTORE.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString)>
+                        <@form.form method="POST" action=Routes.VERSIONS_RESTORE.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionStringUrl)>
                             <div class="modal-body">
                                 <textarea name="comment" class="textarea-delete-comment form-control" rows="3"></textarea>
                             </div>
@@ -287,7 +287,7 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <@form.form method="POST" action=Routes.VERSIONS_DELETE.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionString)>
+                        <@form.form method="POST" action=Routes.VERSIONS_DELETE.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionStringUrl)>
                             <div class="modal-body">
                                 <textarea name="comment" class="textarea-delete-comment form-control" rows="3"></textarea>
                             </div>

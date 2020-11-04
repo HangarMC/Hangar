@@ -30,6 +30,9 @@ public class Version {
     @JsonProperty("name")
     private String name = null;
 
+    @JsonProperty("url_name")
+    private String urlName = null;
+
     @JsonProperty("dependencies")
     @Valid
     private Map<Platform, List<Dependency>> dependencies = new EnumMap<>(Platform.class);
@@ -100,6 +103,26 @@ public class Version {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Version urlName(String urlName) {
+        this.urlName = urlName;
+        return this;
+    }
+
+    /**
+     * Get url name
+     * @return url name
+     */
+    @ApiModelProperty(required = true, value = "")
+    @NotNull
+
+    public String getUrlName() {
+        return urlName;
+    }
+
+    public void setUrlName(String urlName) {
+        this.urlName = urlName;
     }
 
     public Version dependencies(Map<Platform, List<Dependency>> dependencies) {

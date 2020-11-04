@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-md-12">
             <h1><@spring.message "version.log.visibility.title" />
-                <a href="${Routes.VERSIONS_SHOW.getRouteUrl(project.ownerName, project.project.slug, version.versionString)}">
+                <a href="${Routes.VERSIONS_SHOW.getRouteUrl(project.ownerName, project.project.slug, version.versionStringUrl)}">
                     ${project.ownerName}/${project.project.slug}/versions/${version.versionString}
                 </a>
             </h1>
