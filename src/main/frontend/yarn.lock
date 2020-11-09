@@ -4321,11 +4321,6 @@ extsprintf@^1.2.0:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
 
-fast-deep-equal@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-2.0.1.tgz#7b05218ddf9667bf7f370bf7fdb2cb15fdd0aa49"
-  integrity sha1-ewUhjd+WZ79/Nwv3/bLLFf3Qqkk=
-
 fast-deep-equal@^3.1.1:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
@@ -4348,12 +4343,10 @@ fast-glob@^2.2.6:
     merge2 "^1.2.3"
     micromatch "^3.1.10"
 
-fast-json-patch@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/fast-json-patch/-/fast-json-patch-2.2.1.tgz#18150d36c9ab65c7209e7d4eb113f4f8eaabe6d9"
-  integrity sha512-4j5uBaTnsYAV5ebkidvxiLUYOwjQ+JSFljeqfTxCrH9bDmlCQaOJFS84oDJ2rAXZq2yskmk3ORfoP9DCwqFNig==
-  dependencies:
-    fast-deep-equal "^2.0.1"
+fast-json-patch@^3.0.0-1:
+  version "3.0.0-1"
+  resolved "https://registry.yarnpkg.com/fast-json-patch/-/fast-json-patch-3.0.0-1.tgz#4c68f2e7acfbab6d29d1719c44be51899c93dabb"
+  integrity sha512-6pdFb07cknxvPzCeLsFHStEy+MysPJPgZQ9LbQ/2O67unQF93SNqfdSqnPPl71YMHX+AD8gbl7iuoGFzHEdDuw==
 
 fast-json-stable-stringify@^2.0.0:
   version "2.1.0"
@@ -9133,10 +9126,10 @@ svgo@^1.0.0:
     unquote "~1.1.1"
     util.promisify "~1.0.0"
 
-swagger-client@=3.11.1:
-  version "3.11.1"
-  resolved "https://registry.yarnpkg.com/swagger-client/-/swagger-client-3.11.1.tgz#594a5e570e3751d62164e368accd278e783a1346"
-  integrity sha512-/D4I9lnGKaRmiNFTSY6xBBWYgPCHcDw7J9m4mcyeSOmZs7yGHVSFa7ozNyc7TAjNY0x2zQKjivGMUNkJ72W7ZQ==
+swagger-client@=3.12.0:
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/swagger-client/-/swagger-client-3.12.0.tgz#28d940cc44d5d1dbc4d833066eec1093b65277d3"
+  integrity sha512-u8IAf+xWYvUY4H23gIgpN77I6BnJngAoZ80pnKB/Qex/nNxf99MvnpzatU0Wj4L5vz/Qa145PIj/ACbcMKK/MQ==
   dependencies:
     "@babel/runtime-corejs3" "^7.11.2"
     btoa "^1.2.1"
@@ -9144,7 +9137,7 @@ swagger-client@=3.11.1:
     cookie "~0.4.1"
     cross-fetch "^3.0.6"
     deep-extend "~0.6.0"
-    fast-json-patch "^2.2.1"
+    fast-json-patch "^3.0.0-1"
     isomorphic-form-data "~2.0.0"
     js-yaml "^3.14.0"
     lodash "^4.17.19"
@@ -9153,10 +9146,10 @@ swagger-client@=3.11.1:
     traverse "~0.6.6"
     url "~0.11.0"
 
-swagger-ui@3.35.1:
-  version "3.35.1"
-  resolved "https://registry.yarnpkg.com/swagger-ui/-/swagger-ui-3.35.1.tgz#2f27f348abb3630d5c9c236a03f08e7a5ed26743"
-  integrity sha512-jZwBsVe61vvddDseACO96UjqOCtKwuz7MA4IyclcvwhQDOAnD4g1gkX/Y6L77w2DYWUFn3+dpEdxKv0VBqFU/A==
+swagger-ui@3.36.2:
+  version "3.36.2"
+  resolved "https://registry.yarnpkg.com/swagger-ui/-/swagger-ui-3.36.2.tgz#0d28161cde1c823b113af412fd0822de733a4c35"
+  integrity sha512-KWPUYx8gZuaZEWLkibfXhj7l3HpZ3xq7sgCvClGj1PPaoR/rSU47KCpfFVmMbk1X24tBrZ1C6D58OkDUb2ifPw==
   dependencies:
     "@babel/runtime-corejs3" "^7.11.2"
     "@braintree/sanitize-url" "^5.0.0"
@@ -9192,7 +9185,7 @@ swagger-ui@3.35.1:
     reselect "^4.0.0"
     serialize-error "^2.1.0"
     sha.js "^2.4.11"
-    swagger-client "=3.11.1"
+    swagger-client "=3.12.0"
     url-parse "^1.4.7"
     xml-but-prettier "^1.0.1"
     zenscroll "^4.0.2"
