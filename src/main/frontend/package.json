@@ -48,7 +48,7 @@
     "mini-css-extract-plugin": "1.0.0",
     "prettier": "2.1.2",
     "sass": "1.28.0",
-    "sass-loader": "10.0.4",
+    "sass-loader": "10.0.5",
     "stats-webpack-plugin": "0.7.0",
     "vue-cli-plugin-webpack-bundle-analyzer": "2.0.0",
     "vue-template-compiler": "2.6.12",
