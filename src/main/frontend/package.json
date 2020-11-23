@@ -46,7 +46,7 @@
     "eslint-plugin-vue": "7.0.1",
     "lint-staged": "10.5.1",
     "mini-css-extract-plugin": "1.0.0",
-    "prettier": "2.1.2",
+    "prettier": "2.2.0",
     "sass": "1.28.0",
     "sass-loader": "10.0.5",
     "stats-webpack-plugin": "0.7.0",
