@@ -30,7 +30,7 @@
     "qs": "^6.9.4",
     "query-string": "6.13.7",
     "swagger-ui": "3.36.2",
-    "vue": "3.0.2",
+    "vue": "3.0.4",
     "vue-i18n": "^9.0.0-beta.6",
     "webpack-jquery-ui": "2.0.1"
   },
