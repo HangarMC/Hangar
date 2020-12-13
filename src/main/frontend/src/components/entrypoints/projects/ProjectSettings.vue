@@ -190,7 +190,7 @@
                                 <input
                                     v-model.trim="renameForm.value"
                                     name="name"
-                                    class="form-control"
+                                    class="form-control mb-2"
                                     type="text"
                                     maxlength="25"
                                     @keydown.enter.prevent

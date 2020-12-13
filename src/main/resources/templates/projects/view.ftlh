@@ -43,7 +43,7 @@ Base template for Project overview.
             <#if p.visibility != Visibility.PUBLIC>
                 <div class="row">
                     <div class="col-12">
-                        <div class="alert alert-danger" role="alert" style="margin: 0.2em 0 0 0">
+                        <div class="alert alert-danger" role="alert" style="margin: 0.2em 0 0.5em 0">
                             <#if p.visibility == Visibility.NEEDSCHANGES>
                                 <#if sp.perms(Permission.EditPage)>
                                     <a class="btn btn-success float-right" href="/${p.fullSlug}/manage/sendforapproval">Send
