@@ -2,19 +2,13 @@
     <div class="row">
         <div class="col-md-9">
             <div class="version-list">
-                <div class="row text-center">
-                    <div class="col-12">
-                        <a v-if="canUpload" class="btn btn-primary" :href="ROUTES.parse('VERSIONS_SHOW_CREATOR', ownerName, projectSlug)"
-                            >Upload a New Version</a
-                        >
-                    </div>
-                </div>
                 <div v-if="loading">
                     <i class="fas fa-spinner fa-spin"></i>
                     <span>Loading versions for you...</span>
                 </div>
                 <div v-else-if="filteredVersions.length === 0">
                     <span>No versions found!</span>
+                    <span v-if="canUpload"> You may upload a new version in the sidebar!</span>
                 </div>
                 <div v-else>
                     <div class="list-group">
@@ -81,7 +75,15 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+          <div class="col-md-3">
+            <div class="row" v-if="canUpload" >
+              <div class="col-12">
+                <a class="btn btn-primary mb-2 w-100" :href="ROUTES.parse('VERSIONS_SHOW_CREATOR', ownerName, projectSlug)">
+                  Upload a New Version
+                </a>
+              </div>
+            </div>
+
             <div class="card channels">
                 <div class="card-header">
                     <h3 class="card-title float-left">Channels</h3>
