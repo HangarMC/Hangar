@@ -38,6 +38,7 @@ module.exports = {
     },
     devServer: {
         port: 8081,
+        hot: process.env.NODE_ENV === 'development',
     },
     chainWebpack: (config) => {
         // clear default
@@ -64,8 +65,6 @@ module.exports = {
             .use('mini-css-extract')
             .loader(MiniCssExtractPlugin.loader)
             .options({
-                hmr: process.env.NODE_ENV === 'development',
-                reloadAll: true,
                 publicPath: '/css/',
                 esModule: false,
             })
