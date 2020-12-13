@@ -296,9 +296,7 @@ button.open:hover {
 .button-hide-leave-to {
     transform: translateX(34px);
 }
-</style>
-<style lang="scss">
-@import '../scss/utils';
+
 .page-rendered {
     @include basic-border();
     @include box-shadow4(0, 1px, 1px, rgba(0, 0, 0, 0.05));
