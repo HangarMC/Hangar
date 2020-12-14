@@ -427,20 +427,20 @@
       },
       "keywords": {
         "_": "Keywords",
-        "info": "These are special words that will return your project when people add them to their searches. Max 5."
+        "info": "These are special words that will return your project when people add them to their searches. (max 5 keywords)"
       },
       "source": {
         "_": "Source code",
-        "info": "Support the community of developers by making your project open source!"
+        "info": "A link to your project's source code. Support the community of developers by making your project open source!"
       },
       "_": "Settings",
       "deployKey": {
         "_": "Deployment key",
-        "info": "Generate a unique deployment key to enable build deployment from Gradle"
+        "info": "Generate a unique deployment key to enable build deployment from Gradle."
       },
       "description": {
         "_": "Description",
-        "info": "A short description of your project (max 120)"
+        "info": "A short description of your project. (max 120 characters)"
       },
       "forumSync": {
         "_": "Create posts on the forums",
@@ -449,7 +449,7 @@
       "genKey": "Generate key",
       "icon": {
         "_": "Icon",
-        "info": "Upload an image representative of your project."
+        "info": "Upload an image that represents your project."
       },
       "license": {
         "_": "License",
