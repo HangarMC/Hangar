@@ -444,7 +444,7 @@
       },
       "forumSync": {
         "_": "Create posts on the forums",
-        "info": "Sets if events like a new release should automatically create a post on the forums"
+        "info": "Should events (like new releases) have a forum post automatically created?"
       },
       "genKey": "Generate key",
       "icon": {
