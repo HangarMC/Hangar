@@ -6,12 +6,14 @@
 Versions page within Project overview.
 -->
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
+<#assign Platform=@helper["io.papermc.hangar.model.Platform"]>
 <#assign scriptsVar>
     <script nonce="${nonce}">
             <#outputformat "JavaScript">
             window.PROJECT_OWNER = '${p.project.ownerName}';
             window.PROJECT_SLUG = '${p.project.slug}';
             window.CHANNELS = ${mapper.valueToTree(channels)};
+            window.PLATFORMS = ${mapper.valueToTree(Platform.getValues())}
             window.CAN_EDIT_CHANNELS = ${sp.perms(Permission.EditTags)?c};
             window.FILTERED_MEMBERS = ${utils.serializeMap(p.filteredMembers(headerData))};
             window.CAN_MANAGE_MEMBERS = ${sp.permissions.has(Permission.ManageSubjectMembers)?c};
