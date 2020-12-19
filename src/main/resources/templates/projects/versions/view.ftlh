@@ -171,7 +171,9 @@
                 </#if>
                 <div class="col-md-12" style="z-index: 5">
                     <div id="version-view">
-                        <div class="page-preview page-rendered">${markdownService.render(v.v.getDescription())}</div>
+                        <div class="page-preview page-rendered">
+                            <#outputformat "plainText">${markdownService.render(v.v.getDescription())}</#outputformat>
+                        </div>
                     </div>
                 </div>
             </div>

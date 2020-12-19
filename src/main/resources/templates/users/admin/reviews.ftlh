@@ -117,7 +117,7 @@
                                         <#if !review.messages?filter(m -> m.takeover)?has_content>
                                             <i>- no message provided -</i>
                                         <#else>
-                                            <i>${markdownService.render(review.messages?filter(m -> m.takeover)?first.message)}</i>
+                                            <i><#outputformat "plainText">${markdownService.render(review.messages?filter(m -> m.takeover)?first.message)}</#outputformat></i>
                                         </#if>
                                     </td>
                                 </tr>
@@ -143,7 +143,7 @@
                                         <#if !review.messages?filter(m -> m.stop)?has_content>
                                             <i>- no message provided -</i>
                                         <#else>
-                                            <i>${markdownService.render(review.messages?filter(m -> m.stop)?first.message)}</i>
+                                            <i><#outputformat "plainText">${markdownService.render(review.messages?filter(m -> m.stop)?first.message)}</#outputformat></i>
                                         </#if>
                                     </td>
                                 </tr>
@@ -158,7 +158,7 @@
                                 <strong>${review.userName!"Unknown"}</strong>
                                 added message
                                 <br>
-                                <i>${markdownService.render(message.message)}</i>
+                                <i><#outputformat "plainText">${markdownService.render(message.message)}</#outputformat></i>
                             </td>
                         </tr>
                     </#list>

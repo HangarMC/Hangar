@@ -39,7 +39,7 @@
                         <tr>
                             <td>${entry.visibility}</td>
                             <td>${utils.prettifyDateTime(entry.createdAt)}</td>
-                            <td>${markdownService.render(entry.comment)}</td>
+                            <td><#outputformat "plainText">${markdownService.render(entry.comment)}</#outputformat></td>
                             <#if createdBy??>
                                 <td>${createdBy}</td>
                             <#else>

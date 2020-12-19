@@ -24,7 +24,7 @@
                         </span>
                         <p>
                             <strong>Request:</strong>
-                            ${markdownService.render(project.comment)}
+                            <#outputformat "plainText">${markdownService.render(project.comment)}</#outputformat>
                         </p>
                     </div>
                     <div class="col-12 col-md-4">
