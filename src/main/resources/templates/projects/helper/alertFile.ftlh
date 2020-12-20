@@ -9,7 +9,7 @@
             <span class="file-size float-right"></span>
         </div>
         <div class="file-upload float-right">
-            <button data-toggle="tooltip" data-placement="right" title="Sign plugin" type="submit" name="submit"
+            <button data-tooltip-toggle data-placement="right" title="Sign plugin" type="submit" name="submit"
                     form="form-upload"
                     class="btn btn-info btn-block btn-sign">
                 <i class="fas fa-pencil-alt"></i>

@@ -45,7 +45,7 @@ export function clearUnread(e) {
 }
 
 export function initTooltips() {
-    $('[data-toggle="tooltip"]').tooltip({
+    $('[data-tooltip-toggle]').tooltip({
         container: 'body',
         delay: { show: 500 },
     });

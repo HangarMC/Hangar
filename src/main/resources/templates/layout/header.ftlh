@@ -207,5 +207,5 @@
 </#macro>
 
 <#macro tooltip title placement="bottom">
-    data-toggle="tooltip" data-placement="${placement}" title="${title}"
+    data-tooltip-toggle data-placement="${placement}" title="${title}"
 </#macro>

@@ -167,7 +167,7 @@
                 </div>
                 <div class="file-upload float-right">
                     <button
-                        data-toggle="tooltip"
+                        data-tooltip-toggle
                         data-placement="right"
                         title="Sign plugin"
                         type="submit"

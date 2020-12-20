@@ -19,7 +19,7 @@
                         <a
                             :href="ROUTES.parse('VERSIONS_DOWNLOAD_RECOMMENDED', project.ownerName, project.slug)"
                             :title="$t('project.download.recommend._')"
-                            data-toggle="tooltip"
+                            data-tooltip-toggle
                             data-placement="bottom"
                             class="btn btn-primary"
                         >
