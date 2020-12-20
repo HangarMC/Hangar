@@ -69,8 +69,8 @@ public class StringUtils {
 
     }
 
-    private static final Pattern LAST_WHOLE_VERSION = Pattern.compile("((?<=,\\s)|^)[0-9.]{2,}(?=-\\d+$)");
-    private static final Pattern PREV_HAS_HYPHEN = Pattern.compile("(?<=\\d-)\\d+$");
+    private static final Pattern LAST_WHOLE_VERSION = Pattern.compile("((?<=,\\s)|^)[0-9.]{2,}(?=-[0-9.]+$)");
+    private static final Pattern PREV_HAS_HYPHEN = Pattern.compile("(?<=\\d-)[0-9.]+$");
     private static final Pattern PREV_HAS_COMMA_OR_FIRST = Pattern.compile("((?<=,\\s)|^)[0-9.]+$");
 
     /**
@@ -115,7 +115,8 @@ public class StringUtils {
             Matcher hyphen = PREV_HAS_HYPHEN.matcher(verString);
             Matcher comma = PREV_HAS_COMMA_OR_FIRST.matcher(verString);
             if (hyphen.find()) {
-                int prevVersion = Integer.parseInt(hyphen.group());
+                String[] group = hyphen.group().split("\\.");
+                int prevVersion = Integer.parseInt(group[group.length - 1]);
                 Matcher prevVersionMatcher = LAST_WHOLE_VERSION.matcher(verString);
                 if (!prevVersionMatcher.find()) {
                     throw new IllegalArgumentException("Bad version string");
@@ -123,7 +124,7 @@ public class StringUtils {
                 List<Integer> previousWholeVersion = StringUtils.splitVersionNumber(prevVersionMatcher.group());
                 if (previousWholeVersion.size() == versionArr.size()) {
                     if (versionArr.get(versionArr.size() - 1) - 1 == prevVersion) {
-                        return verString.replaceFirst("-\\d+$", "-" + versionArr.get(versionArr.size() - 1));
+                        return verString.replaceFirst("-[0-9.]+$", "-" + version);
                     } else {
                         return verString + ", " + version;
                     }
@@ -135,7 +136,7 @@ public class StringUtils {
                 List<Integer> prevVersion = StringUtils.splitVersionNumber(comma.group());
                 if (prevVersion.size() == versionArr.size()) {
                     if (versionArr.get(versionArr.size() - 1) - 1 == prevVersion.get(prevVersion.size() - 1)) {
-                        return verString + "-" + versionArr.get(versionArr.size() - 1);
+                        return verString + "-" + version;
                     } else {
                         return verString + ", " + version;
                     }
