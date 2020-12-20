@@ -25,6 +25,7 @@ import io.papermc.hangar.service.pluginupload.PendingVersion;
 import io.papermc.hangar.service.project.ChannelService;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.RequestUtil;
+import io.papermc.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
@@ -71,7 +72,7 @@ public class VersionService extends HangarService {
     public Supplier<ProjectVersionsTable> projectVersionsTable() {
         Map<String, String> pathParams = RequestUtil.getPathParams(request);
         if (pathParams.keySet().containsAll(Set.of("author", "slug", "version"))) {
-            ProjectVersionsTable pvt = this.getVersion(pathParams.get("author"), pathParams.get("slug"), pathParams.get("version"));
+            ProjectVersionsTable pvt = this.getVersion(pathParams.get("author"), pathParams.get("slug"), StringUtils.getVersionId(pathParams.get("version"), new ResponseStatusException(HttpStatus.BAD_REQUEST, "Badly formatted version string")));
             if (pvt == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
@@ -104,18 +105,18 @@ public class VersionService extends HangarService {
         return versionDao.get().getProjectVersion(project.getId(), "", project.getRecommendedVersionId());
     }
 
-    public ProjectVersionsTable getVersion(long projectId, String versionString) {
+    public ProjectVersionsTable getVersion(long projectId, long versionId) {
         Permission perms = permissionService.getProjectPermissions(currentUser.get().map(UsersTable::getId).orElse(-10L), projectId);
-        ProjectVersionsTable pvt = versionDao.get().getProjectVersion(projectId, "", versionString);
+        ProjectVersionsTable pvt = versionDao.get().getProjectVersion(projectId, "", versionId);
         if (!perms.has(Permission.SeeHidden) && !perms.has(Permission.IsProjectMember) && pvt.getVisibility() != Visibility.PUBLIC) {
             return null;
         }
         return pvt;
     }
 
-    public ProjectVersionsTable getVersion(String author, String slug, String versionString) {
+    public ProjectVersionsTable getVersion(String author, String slug, long versionId) {
         ProjectsTable projectsTable = projectDao.get().getBySlug(author, slug);
-        return getVersion(projectsTable.getId(), versionString);
+        return getVersion(projectsTable.getId(), versionId);
     }
 
     public void update(ProjectVersionsTable projectVersionsTable) {

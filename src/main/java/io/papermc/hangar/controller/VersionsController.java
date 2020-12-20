@@ -72,7 +72,6 @@ import org.springframework.web.util.WebUtils;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.net.URI;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
@@ -384,7 +383,7 @@ public class VersionsController extends HangarController {
 
         cacheManager.getCache(CacheConfig.NEW_VERSION_CACHE).evict(projData.getProject().getId() + "/" + versionName);
         cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).evict(projData.getProject().getId() + "/" + versionName);
-        return Routes.VERSIONS_SHOW.getRedirect(author, slug, versionName);
+        return Routes.VERSIONS_SHOW.getRedirect(author, slug, version.getVersionStringUrl());
     }
 
     @GetMapping("/{author}/{slug}/versions/{version:.*}")
@@ -458,7 +457,7 @@ public class VersionsController extends HangarController {
         if (api) {
             removeAddWarnings(address, expiration, token);
             headers.setContentType(MediaType.APPLICATION_JSON);
-            String downloadUrl = versionsTable.getExternalUrl() != null ? versionsTable.getExternalUrl() : Routes.VERSIONS_DOWNLOAD_JAR_BY_ID.getRouteUrl(project.getOwnerName(), project.getSlug(), versionsTable.getVersionString(), token);
+            String downloadUrl = versionsTable.getExternalUrl() != null ? versionsTable.getExternalUrl() : Routes.VERSIONS_DOWNLOAD_JAR_BY_ID.getRouteUrl(project.getOwnerName(), project.getSlug(), versionsTable.getVersionStringUrl(), token);
             ObjectNode objectNode = mapper.createObjectNode()
                     .put("message", apiMsg)
                     .put("post", Routes.VERSIONS_CONFIRM_DOWNLOAD.getRouteUrl(author, slug, version, downloadType.ordinal() + "", token, null))
@@ -582,7 +581,7 @@ public class VersionsController extends HangarController {
             return Routes.VERSIONS_SHOW_DOWNLOAD_CONFIRM.getRedirect(
                     project.getOwnerName(),
                     project.getSlug(),
-                    version.getVersionString(),
+                    version.getVersionStringUrl(),
                     (version.getExternalUrl() != null ? DownloadType.EXTERNAL_DOWNLOAD.ordinal() : DownloadType.UPLOADED_FILE.ordinal()) + "",
                     false + "",
                     "dummy"
@@ -662,7 +661,7 @@ public class VersionsController extends HangarController {
                 return Routes.VERSIONS_SHOW_DOWNLOAD_CONFIRM.getRedirect(
                         project.getOwnerName(),
                         project.getSlug(),
-                        version.getVersionString(),
+                        version.getVersionStringUrl(),
                         DownloadType.JAR_FILE.ordinal() + "",
                         api + "",
                         null

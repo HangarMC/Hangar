@@ -24,7 +24,7 @@
         <div class="col-md-12 header-flags">
             <div class="clearfix">
                 <h1 class="float-left">
-                    <a class="btn btn-primary" href="${Routes.VERSIONS_SHOW.getRouteUrl(project.project.ownerName, project.project.slug, version.v.versionString)}">
+                    <a class="btn btn-primary" href="${Routes.VERSIONS_SHOW.getRouteUrl(project.project.ownerName, project.project.slug, version.v.versionStringUrl)}">
                         <i class="fas fa-arrow-left"></i>
                     </a>
                     ${project.project.name}
@@ -42,7 +42,7 @@
                     <span class="btn-group-sm">
                         <a href="#" class="btn btn-info btn-skip-review"><#if version.v.reviewState != ReviewState.BACKLOG> Remove from queue <#else> Add to queue </#if></a>
                         <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.project.ownerName, project.project.slug)}" class="btn btn-info">Project Page</a>
-                        <a href="${Routes.VERSIONS_DOWNLOAD_JAR.getRouteUrl(project.project.ownerName, project.project.slug, version.v.versionString, "")}" class="btn btn-info">Download File</a>
+                        <a href="${Routes.VERSIONS_DOWNLOAD_JAR.getRouteUrl(project.project.ownerName, project.project.slug, version.v.versionStringUrl, "")}" class="btn btn-info">Download File</a>
                     </span>
                     <span class="btn-group-sm">
                     <#if mostRecentUnfinishedReview??>

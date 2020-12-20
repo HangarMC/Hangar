@@ -12,7 +12,9 @@ import java.util.regex.Pattern;
 public class ProjectsConfig {
 
     private String nameRegex = "^[a-zA-Z0-9-_]{3,}$";
+    private String versionNameRegex = "^[a-zA-Z0-9-_.]+$";
     private Pattern namePattern = Pattern.compile(this.nameRegex);
+    private Pattern versionNamePattern = Pattern.compile(this.versionNameRegex);
     private int maxNameLen = 25;
     private int maxPages = 50;
     private int maxChannels = 5;
@@ -35,9 +37,22 @@ public class ProjectsConfig {
         return namePattern.asMatchPredicate();
     }
 
+    public Predicate<String> getVersionNameMatcher() {
+        return versionNamePattern.asMatchPredicate();
+    }
+
     public void setNameRegex(String nameRegex) {
         this.nameRegex = nameRegex;
         this.namePattern = Pattern.compile(nameRegex);
+    }
+
+    public String getVersionNameRegex() {
+        return versionNameRegex;
+    }
+
+    public void setVersionNameRegex(String versionNameRegex) {
+        this.versionNameRegex = versionNameRegex;
+        this.versionNamePattern = Pattern.compile(versionNameRegex);
     }
 
     public int getMaxNameLen() {

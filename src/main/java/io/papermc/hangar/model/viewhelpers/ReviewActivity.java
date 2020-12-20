@@ -6,6 +6,7 @@ public class ReviewActivity extends Activity {
 
     private OffsetDateTime endedAt;
     public String versionString;
+    private String versionStringUrl;
 
     public OffsetDateTime getEndedAt() {
         return endedAt;
@@ -21,5 +22,13 @@ public class ReviewActivity extends Activity {
 
     public void setVersionString(String versionString) {
         this.versionString = versionString;
+    }
+
+    public String getVersionStringUrl() {
+        return versionStringUrl;
+    }
+
+    public void setVersionStringUrl(String versionStringUrl) {
+        this.versionStringUrl = versionStringUrl;
     }
 }

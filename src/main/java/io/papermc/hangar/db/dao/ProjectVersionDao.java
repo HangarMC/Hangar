@@ -47,6 +47,7 @@ public interface ProjectVersionDao {
             "       sq.project_slug," +
             "       sq.project_name," +
             "       sq.version_string," +
+            "       sq.version_string_url," +
             "       sq.version_created_at," +
             "       sq.channel_name," +
             "       sq.channel_color," +
@@ -59,6 +60,7 @@ public interface ProjectVersionDao {
             "               p.name                                                                   AS project_name," +
             "               p.slug                                                                   AS project_slug," +
             "               v.version_string," +
+            "               v.version_string || '.' || v.id                                          AS version_string_url," +
             "               v.created_at                                                             AS version_created_at," +
             "               c.name                                                                   AS channel_name," +
             "               c.color                                                                  AS channel_color," +

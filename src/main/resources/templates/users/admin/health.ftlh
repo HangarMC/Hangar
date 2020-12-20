@@ -110,7 +110,7 @@
                 <div class="card-body list-group list-group-health">
                     <#list missingFileProjects as missingFileProject>
                         <div class="list-group-item">
-                            <a href="${Routes.VERSIONS_SHOW.getRouteUrl(missingFileProject.owner, missingFileProject.name, missingFileProject.getVersion().getVersionString())}">
+                            <a href="${Routes.VERSIONS_SHOW.getRouteUrl(missingFileProject.owner, missingFileProject.name, missingFileProject.getVersion().getVersionStringUrl())}">
                                 <strong>${missingFileProject.displayText}</strong>
                             </a>
                         </div>

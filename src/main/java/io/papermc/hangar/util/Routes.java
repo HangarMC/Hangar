@@ -62,6 +62,7 @@ public enum Routes {
     PROJECTS_SHOW_NOTES("projects.showNotes", Paths.PROJECTS_SHOW_NOTES, of("author", "slug"), of()),
     PROJECTS_SET_VISIBLE("projects.setVisible", Paths.PROJECTS_SET_VISIBLE, of("author", "slug", "visibility"), of()),
     PROJECTS_REMOVE_MEMBER("projects.removeMember", Paths.PROJECTS_REMOVE_MEMBER, of("author", "slug"), of()),
+
     VERSIONS_RESTORE("versions.restore", Paths.VERSIONS_RESTORE, of("author", "slug", "version"), of()),
     VERSIONS_DOWNLOAD_RECOMMENDED_JAR("versions.downloadRecommendedJar", Paths.VERSIONS_DOWNLOAD_RECOMMENDED_JAR, of("author", "slug"), of("token")),
     VERSIONS_SAVE_NEW_VERSION("versions.saveNewVersion", Paths.VERSIONS_SAVE_NEW_VERSION, of("author", "slug", "version"), of()),
@@ -87,12 +88,14 @@ public enum Routes {
     VERSIONS_DELETE("versions.delete", Paths.VERSIONS_DELETE, of("author", "slug", "version"), of()),
     VERSIONS_SHOW_CREATOR_WITH_META("versions.showCreatorWithMeta", Paths.VERSIONS_SHOW_CREATOR_WITH_META, of("author", "slug", "version"), of()),
     VERSIONS_CONFIRM_DOWNLOAD("versions.confirmDownload", Paths.VERSIONS_CONFIRM_DOWNLOAD, of("author", "slug", "version"), of("downloadType", "token", "dummy")),
+
     PAGES_SHOW_PREVIEW("pages.showPreview", Paths.PAGES_SHOW_PREVIEW, of(), of()),
     PAGES_BB_CONVERT("pages.bbConvert", Paths.PAGES_BB_CONVERT, of(), of()),
     PAGES_SAVE("pages.save", Paths.PAGES_SAVE, of("author", "slug", "page"), of()),
     PAGES_SHOW_EDITOR("pages.showEditor", Paths.PAGES_SHOW_EDITOR, of("author", "slug", "page"), of()),
     PAGES_SHOW("pages.show", Paths.PAGES_SHOW, of("author", "slug", "page"), of()),
     PAGES_DELETE("pages.delete", Paths.PAGES_DELETE, of("author", "slug", "page"), of()),
+
     USERS_SHOW_AUTHORS("users.showAuthors", Paths.USERS_SHOW_AUTHORS, of(), of("sort", "page")),
     USERS_SAVE_TAGLINE("users.saveTagline", Paths.USERS_SAVE_TAGLINE, of("user"), of()),
     USERS_SIGN_UP("users.signUp", Paths.USERS_SIGN_UP, of(), of()),
@@ -107,12 +110,14 @@ public enum Routes {
     USERS_LOGOUT("users.logout", Paths.USERS_LOGOUT, of(), of()),
     USERS_USER_SITEMAP("users.userSitemap", Paths.USERS_USER_SITEMAP, of("user"), of()),
     USERS_EDIT_API_KEYS("users.editApiKeys", Paths.USERS_EDIT_API_KEYS, of("user"), of()),
+
     ORG_UPDATE_MEMBERS("org.updateMembers", Paths.ORG_UPDATE_MEMBERS, of("organization"), of()),
     ORG_UPDATE_AVATAR("org.updateAvatar", Paths.ORG_UPDATE_AVATAR, of("organization"), of()),
     ORG_SET_INVITE_STATUS("org.setInviteStatus", Paths.ORG_SET_INVITE_STATUS, of("id", "status"), of()),
     ORG_SHOW_CREATOR("org.showCreator", Paths.ORG_SHOW_CREATOR, of(), of()),
     ORG_CREATE("org.create", Paths.ORG_CREATE, of(), of()),
     ORG_REMOVE_MEMBER("org.removeMember", Paths.ORG_REMOVE_MEMBER, of("organization"), of()),
+
     REVIEWS_ADD_MESSAGE("reviews.addMessage", Paths.REVIEWS_ADD_MESSAGE, of("author", "slug", "version"), of()),
     REVIEWS_BACKLOG_TOGGLE("reviews.backlogToggle", Paths.REVIEWS_BACKLOG_TOGGLE, of("author", "slug", "version"), of()),
     REVIEWS_SHOW_REVIEWS("reviews.showReviews", Paths.REVIEWS_SHOW_REVIEWS, of("author", "slug", "version"), of()),
@@ -122,6 +127,7 @@ public enum Routes {
     REVIEWS_CREATE_REVIEW("reviews.createReview", Paths.REVIEWS_CREATE_REVIEW, of("author", "slug", "version"), of()),
     REVIEWS_TAKEOVER_REVIEW("reviews.takeoverReview", Paths.REVIEWS_TAKEOVER_REVIEW, of("author", "slug", "version"), of()),
     REVIEWS_REOPEN_REVIEW("reviews.reopenReview", Paths.REVIEWS_REOPEN_REVIEW, of("author", "slug", "version"), of()),
+
     CHANNELS_DELETE("channels.delete", Paths.CHANNELS_DELETE, of("author", "slug", "channel"), of()),
     CHANNELS_SAVE("channels.save", Paths.CHANNELS_SAVE, of("author", "slug", "channel"), of()),
     CHANNELS_SHOW_LIST("channels.showList", Paths.CHANNELS_SHOW_LIST, of("author", "slug"), of()),

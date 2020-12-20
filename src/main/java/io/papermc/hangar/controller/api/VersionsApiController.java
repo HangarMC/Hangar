@@ -1,25 +1,6 @@
 package io.papermc.hangar.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controller.exceptions.HangarApiException;
 import io.papermc.hangar.model.ApiAuthInfo;
@@ -34,6 +15,24 @@ import io.papermc.hangar.model.generated.Version;
 import io.papermc.hangar.model.generated.VersionStatsDay;
 import io.papermc.hangar.service.api.VersionApiService;
 import io.papermc.hangar.util.ApiUtil;
+import io.papermc.hangar.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class VersionsApiController implements VersionsApi {
@@ -77,7 +76,7 @@ public class VersionsApiController implements VersionsApi {
     @Override
     @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.util.ApiScope).forProject(#author, #slug))")
     public ResponseEntity<Version> showVersion(String author, String slug, String name) {
-        Version version = versionApiService.getVersion(author, slug, name, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), ApiUtil.userIdOrNull(apiAuthInfo.getUser()));
+        Version version = versionApiService.getVersion(author, slug, StringUtils.getVersionId(name, new HangarApiException(HttpStatus.BAD_REQUEST, "badly formatted version string")), apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), ApiUtil.userIdOrNull(apiAuthInfo.getUser()));
         if (version == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         } else {
@@ -94,7 +93,7 @@ public class VersionsApiController implements VersionsApi {
         if (from.isAfter(to)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "From date is after to date");
         }
-        Map<String, VersionStatsDay> versionStats = versionApiService.getVersionStats(author, slug, version, from, to);
+        Map<String, VersionStatsDay> versionStats = versionApiService.getVersionStats(author, slug, StringUtils.getVersionId(version, new HangarApiException(HttpStatus.BAD_REQUEST, "badly formatted version string")), from, to);
         if (versionStats.isEmpty()) {
             throw new HangarApiException(HttpStatus.NOT_FOUND); // TODO Not found might not be right here?
         }

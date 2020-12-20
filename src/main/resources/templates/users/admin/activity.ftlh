@@ -32,7 +32,7 @@
                                     <td>Review approved</td>
                                     <td>${utils.prettifyDateTime(activity.endedAt!OffsetDateTime.MIN)}</td>
                                     <td>for:
-                                        <a href="${Routes.REVIEWS_SHOW_REVIEWS.getRouteUrl(activity.getProject().getOwner(), activity.getProject().getSlug(), activity.versionString)}" title="Go to reviews...">
+                                        <a href="${Routes.REVIEWS_SHOW_REVIEWS.getRouteUrl(activity.getProject().getOwner(), activity.getProject().getSlug(), activity.versionStringUrl)}" title="Go to reviews...">
                                             ${activity.getProject().getOwner()} / ${activity.getProject().getSlug()} / ${activity.versionString}
                                         </a>
                                     </td>

@@ -1,6 +1,6 @@
 <template>
     <Editor
-        :save-call="ROUTES.parse('VERSIONS_SAVE_DESCRIPTION', project.ownerName, project.slug, version.versionString)"
+        :save-call="ROUTES.parse('VERSIONS_SAVE_DESCRIPTION', project.ownerName, project.slug, version.versionStringUrl)"
         :enabled="canEditPages"
         subject="Version"
         :raw="version.description || ''"

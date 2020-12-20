@@ -14,7 +14,7 @@
                     <div class="list-group">
                         <a
                             v-for="(version, index) in filteredVersions"
-                            :href="ROUTES.parse('VERSIONS_SHOW', htmlDecode(ownerName), htmlDecode(projectSlug), version.name)"
+                            :href="ROUTES.parse('VERSIONS_SHOW', htmlDecode(ownerName), htmlDecode(projectSlug), version.url_name)"
                             class="list-group-item list-group-item-action"
                             :class="[classForVisibility(version.visibility)]"
                             :key="index"

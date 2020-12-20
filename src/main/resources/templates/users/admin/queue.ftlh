@@ -47,7 +47,7 @@
                         <#list underReview as entry>
                         <tr <#if entry.unfinished && headerData.isCurrentUser(entry.reviewerId)>class="warning"</#if>>
                         <td>
-                            <a href="${Routes.VERSIONS_SHOW.getRouteUrl(entry.author, entry.slug, entry.versionString)}">
+                            <a href="${Routes.VERSIONS_SHOW.getRouteUrl(entry.author, entry.slug, entry.versionStringUrl)}">
                                 ${entry.namespace}
                             </a>
                             <br>
@@ -135,7 +135,7 @@
                                 <@userAvatar.userAvatar userName=entry.author avatarUrl=utils.avatarUrl(entry.author) clazz="user-avatar-xs"></@userAvatar.userAvatar>
                             </td>
                             <td>
-                                <a href="${Routes.VERSIONS_SHOW.getRouteUrl(entry.author, entry.slug, entry.versionString)}">
+                                <a href="${Routes.VERSIONS_SHOW.getRouteUrl(entry.author, entry.slug, entry.versionStringUrl)}">
                                     ${entry.namespace}
                                 </a>
                             </td>

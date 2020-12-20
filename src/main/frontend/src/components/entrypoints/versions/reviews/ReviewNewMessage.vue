@@ -35,7 +35,7 @@ export default {
             toggleSpin(e.target.querySelector('[data-fa-i2svg]')).classList.toggle('fa-clipboard');
             axios
                 .post(
-                    this.ROUTES.parse('REVIEWS_ADD_MESSAGE', this.project.ownerName, this.project.slug, this.version.versionString),
+                    this.ROUTES.parse('REVIEWS_ADD_MESSAGE', this.project.ownerName, this.project.slug, this.version.versionStringUrl),
                     stringify({ content: this.message }),
                     {
                         headers: {

@@ -1,7 +1,6 @@
 package io.papermc.hangar.model.viewhelpers;
 
 import io.papermc.hangar.model.Color;
-
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,6 +12,7 @@ public class ReviewQueueEntry {
     private String projectName;
     private String projectSlug;
     private String versionString;
+    private String versionStringUrl;
     private OffsetDateTime versionCreatedAt;
     private String channelName;
     private Color channelColor;
@@ -26,11 +26,12 @@ public class ReviewQueueEntry {
     public ReviewQueueEntry() {
     }
 
-    public ReviewQueueEntry(String projectAuthor, String projectName, String projectSlug, String versionString, OffsetDateTime versionCreatedAt, String channelName, Color channelColor, String versionAuthor, @Nullable Long reviewerId, @Nullable String reviewerName, @Nullable OffsetDateTime reviewStarted, @Nullable OffsetDateTime reviewEnded) {
+    public ReviewQueueEntry(String projectAuthor, String projectName, String projectSlug, String versionString, String versionStringUrl, OffsetDateTime versionCreatedAt, String channelName, Color channelColor, String versionAuthor, @Nullable Long reviewerId, @Nullable String reviewerName, @Nullable OffsetDateTime reviewStarted, @Nullable OffsetDateTime reviewEnded) {
         this.projectAuthor = projectAuthor;
         this.projectName = projectName;
         this.projectSlug = projectSlug;
         this.versionString = versionString;
+        this.versionStringUrl = versionStringUrl;
         this.versionCreatedAt = versionCreatedAt;
         this.channelName = channelName;
         this.channelColor = channelColor;
@@ -75,6 +76,10 @@ public class ReviewQueueEntry {
 
     public String getVersionString() {
         return versionString;
+    }
+
+    public String getVersionStringUrl() {
+        return versionStringUrl;
     }
 
     public OffsetDateTime getVersionCreatedAt() {
@@ -130,6 +135,10 @@ public class ReviewQueueEntry {
         this.versionString = versionString;
     }
 
+    public void setVersionStringUrl(String versionStringUrl) {
+        this.versionStringUrl = versionStringUrl;
+    }
+
     public void setVersionCreatedAt(OffsetDateTime versionCreatedAt) {
         this.versionCreatedAt = versionCreatedAt;
     }
@@ -166,10 +175,11 @@ public class ReviewQueueEntry {
     @Override
     public String toString() {
         return "ReviewQueueEntry{" +
-                "author='" + projectAuthor + '\'' +
+                "projectAuthor='" + projectAuthor + '\'' +
                 ", projectName='" + projectName + '\'' +
-                ", slug='" + projectSlug + '\'' +
+                ", projectSlug='" + projectSlug + '\'' +
                 ", versionString='" + versionString + '\'' +
+                ", versionStringUrl='" + versionStringUrl + '\'' +
                 ", versionCreatedAt=" + versionCreatedAt +
                 ", channelName='" + channelName + '\'' +
                 ", channelColor=" + channelColor +

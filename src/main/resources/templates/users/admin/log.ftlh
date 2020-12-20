@@ -99,7 +99,7 @@
                                     </td>
                                 <#elseif action.actionContext.class.simpleName == "VersionContext">
                                     <td>
-                                        <a <#if action.project.owner?? && action.project.slug?? && action.project.versionString??>href="${Routes.VERSIONS_SHOW.getRouteUrl(action.project.owner!"Unknown", action.project.slug!"Unknown", action.version.versionString!"Unknown")}"</#if>>${action.project.owner!"Unknown"}/${action.project.slug!"Unknown"}/${action.version.versionString!"Unknown"}</a>
+                                        <a <#if action.project.owner?? && action.project.slug?? && action.project.versionString??>href="${Routes.VERSIONS_SHOW.getRouteUrl(action.project.owner!"Unknown", action.project.slug!"Unknown", action.version.versionStringUrl!"Unknown")}"</#if>>${action.project.owner!"Unknown"}/${action.project.slug!"Unknown"}/${action.version.versionString!"Unknown"}</a>
                                         <small class="filter-project">(<a <#if action.project.slug??>href="${Routes.SHOW_LOG.getRouteUrl(page?string, userFilter, action.project.slug, versionFilter, pageFilter, actionFilter, subjectFilter)}"</#if>>${action.project.slug!"Unknown"}</a>)</small>
                                         <small class="filter-version">(<a <#if action.version.versionString??>href="${Routes.SHOW_LOG.getRouteUrl(page?string, userFilter, projectFilter, action.version.versionString, pageFilter, actionFilter, subjectFilter)}"</#if>>${action.version.versionString!"Unknown"}</a>)</small>
                                     </td>

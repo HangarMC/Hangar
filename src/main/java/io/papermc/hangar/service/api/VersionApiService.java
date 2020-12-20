@@ -19,8 +19,8 @@ public class VersionApiService {
         this.apiVersionsDao = apiVersionsDao;
     }
 
-    public Version getVersion(String author, String slug, String versionString, boolean canSeeHidden, Long userId) {
-        return apiVersionsDao.get().getVersion(author, slug, versionString, canSeeHidden, userId);
+    public Version getVersion(String author, String slug, long versionId, boolean canSeeHidden, Long userId) {
+        return apiVersionsDao.get().getVersion(author, slug, versionId, canSeeHidden, userId);
     }
 
     public List<Version> getVersionList(String author, String slug, List<String> tags, boolean canSeeHidden, Long limit, long offset, Long userId) {
@@ -32,8 +32,8 @@ public class VersionApiService {
         return count == null ? 0 : count;
     }
 
-    public Map<String, VersionStatsDay> getVersionStats(String author, String slug, String versionString, LocalDate fromDate, LocalDate toDate) {
-        return apiVersionsDao.get().versionStats(author, slug, versionString, fromDate, toDate);
+    public Map<String, VersionStatsDay> getVersionStats(String author, String slug, long versionId, LocalDate fromDate, LocalDate toDate) {
+        return apiVersionsDao.get().versionStats(author, slug, versionId, fromDate, toDate);
     }
 
 }

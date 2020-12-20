@@ -25,7 +25,8 @@ public interface VersionsApiDao {
 
     @UseStringTemplateEngine
     @RegisterColumnMapper(VersionDependenciesMapper.class)
-    @SqlQuery("SELECT pv.created_at," +
+    @SqlQuery("SELECT pv.id," +
+            "pv.created_at," +
             "pv.version_string," +
             "pv.dependencies," +
             "pv.visibility," +
@@ -48,14 +49,15 @@ public interface VersionsApiDao {
             "<if(userId)>OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4) <endif>) AND <endif> " +
             "p.slug = :slug AND " +
             "p.owner_name = :author AND " +
-            "pv.version_string = :versionString " +
+            "pv.id = :versionId " +
             "GROUP BY p.id, pv.id, u.id, pc.id " +
             "ORDER BY pv.created_at DESC LIMIT 1")
-    Version getVersion(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
+    Version getVersion(String author, String slug, long versionId, @Define boolean canSeeHidden, @Define Long userId);
 
     @RegisterColumnMapper(VersionDependenciesMapper.class)
     @UseStringTemplateEngine
-    @SqlQuery("SELECT pv.created_at," +
+    @SqlQuery("SELECT pv.id," +
+            "pv.created_at," +
             "pv.version_string," +
             "pv.dependencies," +
             "pv.visibility," +
@@ -118,7 +120,7 @@ public interface VersionsApiDao {
             "             LEFT JOIN project_versions_downloads pvd ON dates.day = pvd.day" +
             "    WHERE p.owner_name = :author" +
             "      AND pv.slug = :slug" +
-            "      AND pv.version_string = :versionString" +
+            "      AND pv.id = :versionId" +
             "      AND (pvd IS NULL OR (pvd.project_id = p.id AND pvd.version_id = pv.id));")
-    Map<String, VersionStatsDay> versionStats(String author, String slug, String versionString, LocalDate fromDate, LocalDate toDate);
+    Map<String, VersionStatsDay> versionStats(String author, String slug, long versionId, LocalDate fromDate, LocalDate toDate);
 }
