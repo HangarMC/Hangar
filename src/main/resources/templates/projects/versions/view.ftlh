@@ -112,7 +112,7 @@
 
                         <div class="btn-group btn-download">
                             <a href="${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionStringUrl, "", "")}"
-                               title="<@spring.message "project.download.recommend" />" data-tooltip-toggle
+                               title="<#if v.v.externalUrl??><@spring.message "project.download.external" /><#else><@spring.messageArgs code="project.download.version" args=[v.v.versionString] /></#if>" data-tooltip-toggle
                                data-placement="bottom" class="btn btn-primary">
                                 <i class="fas fa-download"></i>
                                 <#if v.v.externalUrl??>
@@ -121,7 +121,7 @@
                                     <@spring.message "general.download" />
                                 </#if>
                             </a>
-                            <button type="button" class="btn btn-primary copy-url"
+                            <button type="button" class="btn btn-primary copy-url" data-tooltip-toggle title="<@spring.message "project.download.copyURL" />" data-placement="right"
                                     data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionStringUrl, "", "")}">
                                 <i class="fas fa-copy"></i>
                             </button>

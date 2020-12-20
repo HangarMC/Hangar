@@ -355,7 +355,8 @@
         "_": "Download the latest recommended version",
         "warn": "This project's recommended version has not been reviewed by our moderation staff and may not be safe for download."
       },
-      "warn": "This version has not been reviewed by our moderation staff and may not be safe for download."
+      "warn": "This version has not been reviewed by our moderation staff and may not be safe for download.",
+      "copyURL": "Copy download URL"
     },
     "downloads": "Downloads",
     "flag": {

@@ -29,6 +29,8 @@
                         <button
                             type="button"
                             class="btn btn-primary copy-url"
+                            data-tooltip-toggle
+                            :title="$t('project.download.copyURL')"
                             :data-clipboard-text="baseUrl + ROUTES.parse('VERSIONS_DOWNLOAD_RECOMMENDED', project.ownerName, project.slug)"
                         >
                             <i class="fas fa-copy"></i>
