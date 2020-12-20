@@ -1,8 +1,13 @@
 package io.papermc.hangar.service;
 
 import com.vladsch.flexmark.ast.MailLink;
+import com.vladsch.flexmark.ext.abbreviation.AbbreviationExtension;
+import com.vladsch.flexmark.ext.admonition.AdmonitionExtension;
 import com.vladsch.flexmark.ext.anchorlink.AnchorLinkExtension;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
+import com.vladsch.flexmark.ext.emoji.EmojiExtension;
+import com.vladsch.flexmark.ext.emoji.EmojiImageType;
+import com.vladsch.flexmark.ext.footnotes.FootnoteExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
 import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
@@ -50,6 +55,8 @@ public class MarkdownService {
                 .set(TablesExtension.APPEND_MISSING_COLUMNS, true)
                 .set(TablesExtension.DISCARD_EXTRA_COLUMNS, true)
                 .set(TablesExtension.HEADER_SEPARATOR_COLUMN_MATCH, true)
+                // extensions
+                .set(EmojiExtension.USE_IMAGE_TYPE, EmojiImageType.UNICODE_ONLY)
                 .set(
                         Parser.EXTENSIONS,
                         Arrays.asList(
@@ -59,7 +66,10 @@ public class MarkdownService {
                                 TaskListExtension.create(),
                                 TablesExtension.create(),
                                 TypographicExtension.create(),
-                                WikiLinkExtension.create()
+                                WikiLinkExtension.create(),
+                                EmojiExtension.create(),
+                                FootnoteExtension.create(),
+                                AdmonitionExtension.create()
                         )
                 );
 

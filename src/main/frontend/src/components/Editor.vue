@@ -122,6 +122,20 @@ export default {
         contentProp: String,
         open: Boolean,
     },
+    watch: {
+      preCooked() {
+        this.$nextTick(() => {
+          console.log("running");
+          window.admonition();
+        });
+      },
+      previewContent() {
+        this.$nextTick(() => {
+          console.log("running");
+          window.admonition();
+        });
+      }
+    },
     computed: {
         content: {
             get() {

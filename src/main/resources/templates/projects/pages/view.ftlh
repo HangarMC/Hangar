@@ -27,10 +27,12 @@ Documentation page within Project overview.
         </#outputformat>
     </script>
     <script nonce="${nonce}" type="text/javascript" src="${hangar.url("js/project-view.js")}"></script>
+    <script nonce="${nonce}" type="text/javascript" src="${hangar.url("ext/js/admonition.js")}"></script>
 </#assign>
 
 <#assign styleVar>
     <link rel="stylesheet" href="${hangar.url("css/project-view.css")}">
+    <link rel="stylesheet" href="${hangar.url("ext/css/admonition.css")}">
 </#assign>
 
 <@projectView.view p=p sp=sp active="#docs" additionalScripts=scriptsVar additionalStyling=styleVar>

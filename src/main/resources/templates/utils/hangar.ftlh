@@ -3,9 +3,10 @@
 </#function>
 
 <#function url path>
-    <#if config.useWebpack>
+    <#if config.useWebpack && !path?starts_with("ext/")>
         <#return 'http://localhost:8081/${path}'>
     <#else>
-        <#return urls.getForLookupPath("/assets/${path}")!"/assets/${path}?error">
+        <#assign fixedPath = ("/assets/" + path)?replace("/ext/", "-ext/")>
+        <#return urls.getForLookupPath(fixedPath)!"${fixedPath}?error">
     </#if>
 </#function>

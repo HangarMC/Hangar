@@ -3,6 +3,8 @@ package io.papermc.hangar.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.vladsch.flexmark.ext.admonition.AdmonitionExtension;
+
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controller.forms.UserAdminForm;
 import io.papermc.hangar.controller.util.StatusZ;
@@ -415,4 +417,15 @@ public class ApplicationController extends HangarController {
         return sitemapService.getSitemap();
     }
 
+    @GetMapping(value = "/assets-ext/css/admonition.css", produces = "text/css")
+    @ResponseBody
+    public String admonitionCss() {
+        return AdmonitionExtension.getDefaultCSS();
+    }
+
+    @GetMapping(value = "/assets-ext/js/admonition.js", produces = "text/javascript")
+    @ResponseBody
+    public String admonitionJs() {
+        return AdmonitionExtension.getDefaultScript().replace("(() => {", "window.admonition = () => {").replace("})();", "};");
+    }
 }
