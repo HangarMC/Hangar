@@ -55,7 +55,7 @@
             </div>
         </div>
         <div class="row collapse" id="additional-settings">
-            <div class="col-12 text-center"><span class="input-divider">Links</span></div>
+            <Divider>Links</Divider>
             <div class="col-12">
                 <div class="input-group">
                     <div class="input-group-prepend">
@@ -88,7 +88,7 @@
                     <input id="external-support-input" name="externalSupportUrl" type="text" class="form-control" />
                 </div>
             </div>
-            <div class="col-12 text-center"><span class="input-divider">License</span></div>
+            <Divider>License</Divider>
             <div class="col-12">
                 <div class="input-group">
                     <div class="input-group-prepend">
@@ -124,7 +124,7 @@
                     <input id="license-url-input" name="licenseUrl" class="form-control" type="text" placeholder="URL" />
                 </div>
             </div>
-            <div class="col-12 text-center"><span class="input-divider">SEO</span></div>
+            <Divider>SEO</Divider>
             <div class="col-12">
                 <div class="input-group">
                     <div class="input-group-prepend">
@@ -159,10 +159,12 @@ import axios from 'axios';
 import HangarForm from '@/components/HangarForm';
 import { Category } from '@/enums';
 import BBCodeConverter from '@/components/BBCodeConverter';
+import Divider from '@/components/Divider';
 
 export default {
     name: 'CreateProject',
     components: {
+        Divider,
         BBCodeConverter,
         HangarForm,
     },
@@ -221,28 +223,5 @@ label > svg {
 
 #license-name-input {
     border-radius: 0;
-}
-
-.input-divider {
-    position: relative;
-}
-
-.input-divider::before,
-.input-divider::after {
-    content: '';
-    position: absolute;
-    width: 10vw;
-    top: 0.35rem;
-    height: 2px;
-    overflow: hidden;
-    background-color: #00000082;
-}
-
-.input-divider::before {
-    left: -11vw;
-}
-
-.input-divider::after {
-    right: -11vw;
 }
 </style>
