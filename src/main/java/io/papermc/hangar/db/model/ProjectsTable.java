@@ -11,7 +11,6 @@ import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 import java.time.OffsetDateTime;
 import java.util.Collection;
-import java.util.Set;
 
 public class ProjectsTable implements Visitable {
 
@@ -39,7 +38,7 @@ public class ProjectsTable implements Visitable {
 
     public ProjectsTable() { }
 
-    public ProjectsTable(ProjectOwner projectOwner, Category category, NewProjectForm newProjectForm) {
+    public ProjectsTable(ProjectOwner projectOwner, Category category, NewProjectForm newProjectForm, Collection<String> keywords) {
         this.name = StringUtils.compact(newProjectForm.getName());
         this.slug = StringUtils.slugify(newProjectForm.getName());
         this.ownerName = projectOwner.getName();
@@ -51,8 +50,7 @@ public class ProjectsTable implements Visitable {
         this.issues = StringUtils.stringOrNull(newProjectForm.getIssueTrackerUrl());
         this.source = StringUtils.stringOrNull(newProjectForm.getSourceUrl());
         this.support = StringUtils.stringOrNull(newProjectForm.getExternalSupportUrl());
-
-        this.keywords = newProjectForm.getKeywords() != null ? Set.of(newProjectForm.getKeywords().split("\\s")) : Set.of();
+        this.keywords = keywords;
         this.licenseName = StringUtils.stringOrNull("custom".equalsIgnoreCase(newProjectForm.getLicenseType()) ? newProjectForm.getLicenseName() : newProjectForm.getLicenseType());
         this.licenseUrl = StringUtils.stringOrNull(newProjectForm.getLicenseUrl());
     }

@@ -4,7 +4,9 @@ import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -50,6 +52,11 @@ public class StringUtils {
     public static String stringOrNull(@Nullable String input) {
         if (input == null || input.isBlank()) return null;
         return input;
+    }
+
+    @NotNull
+    public static Collection<String> parseKeywords(@Nullable String input) {
+        return input == null ? Set.of() : Set.of(input.split("\\s+"));
     }
 
     public static <T extends Throwable> long getVersionId(@NotNull String versionString, T error) throws T {

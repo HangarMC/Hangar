@@ -130,7 +130,7 @@
                     <div class="input-group-prepend">
                         <label for="keywords-input" class="input-group-text"> <i class="fas fa-key"></i> Keywords </label>
                     </div>
-                    <input id="keywords-input" name="keywords" type="text" class="form-control" />
+                    <input id="keywords-input" name="keywords" type="text" class="form-control" placeholder="(separated by spaces)" />
                 </div>
             </div>
         </div>

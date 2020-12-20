@@ -7,7 +7,7 @@ public class HangarException extends RuntimeException {
 
     public HangarException(String messageKey) {
         this.messageKey = messageKey;
-        this.args = null;
+        this.args = new String[0];
     }
 
     public HangarException(String messageKey, String... args) {

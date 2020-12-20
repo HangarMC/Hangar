@@ -19,10 +19,10 @@ import {
     faCircle,
     faClipboard,
     faCode,
-    faCopy,
     faCog,
     faComment,
     faComments,
+    faCopy,
     faDownload,
     faEdit,
     faExclamationCircle,
@@ -184,7 +184,7 @@ library.add(
     faBirthdayCake,
     faArrowsAltV,
     faUndo,
-    faCopy,
+    faCopy
 );
 
 dom.watch();

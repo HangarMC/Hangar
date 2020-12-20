@@ -123,18 +123,18 @@ export default {
         open: Boolean,
     },
     watch: {
-      preCooked() {
-        this.$nextTick(() => {
-          console.log("running");
-          window.admonition();
-        });
-      },
-      previewContent() {
-        this.$nextTick(() => {
-          console.log("running");
-          window.admonition();
-        });
-      }
+        preCooked() {
+            this.$nextTick(() => {
+                console.log('running');
+                window.admonition();
+            });
+        },
+        previewContent() {
+            this.$nextTick(() => {
+                console.log('running');
+                window.admonition();
+            });
+        },
     },
     computed: {
         content: {

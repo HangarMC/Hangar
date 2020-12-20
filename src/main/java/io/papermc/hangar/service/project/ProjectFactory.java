@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,7 +90,16 @@ public class ProjectFactory {
     }
 
     public ProjectsTable createProject(ProjectOwner ownerUser, Category category, NewProjectForm newProjectForm) {
-        ProjectsTable projectsTable = new ProjectsTable(ownerUser, category, newProjectForm);
+        Collection<String> keywords;
+        try {
+            keywords = StringUtils.parseKeywords(newProjectForm.getKeywords());
+            if (keywords.size() > hangarConfig.projects.getMaxKeywords()) {
+                throw new HangarException("error.project.maxKeywords", String.valueOf(hangarConfig.projects.getMaxKeywords()));
+            }
+        } catch (IllegalArgumentException e) {
+            throw new HangarException("error.project.duplicateKeyword");
+        }
+        ProjectsTable projectsTable = new ProjectsTable(ownerUser, category, newProjectForm, keywords);
 
         ProjectChannelsTable channelsTable = new ProjectChannelsTable(hangarConfig.channels.getNameDefault(), hangarConfig.channels.getColorDefault(), -1, false);
 

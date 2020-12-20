@@ -173,7 +173,7 @@ public class ProjectsController extends HangarController {
             project = projectFactory.createProject(ownerUser, category, newProjectForm);
         } catch (HangarException ex) {
             ModelAndView mav = showCreator();
-            AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, ex.getMessageKey());
+            AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, ex.getMessageKey(), ex.getArgs());
             return fillModel(mav);
         }
 

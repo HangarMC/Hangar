@@ -26,8 +26,11 @@
                             <i class="fas fa-download"></i>
                             {{ $t('general.download') }}
                         </a>
-                        <button type="button" class="btn btn-primary copy-url"
-                              :data-clipboard-text="baseUrl + ROUTES.parse('VERSIONS_DOWNLOAD_RECOMMENDED', project.ownerName, project.slug)">
+                        <button
+                            type="button"
+                            class="btn btn-primary copy-url"
+                            :data-clipboard-text="baseUrl + ROUTES.parse('VERSIONS_DOWNLOAD_RECOMMENDED', project.ownerName, project.slug)"
+                        >
                             <i class="fas fa-copy"></i>
                         </button>
                     </div>
@@ -217,7 +220,7 @@ export default {
             editorOpen: window.EDITOR_OPEN,
             canManageMembers: window.CAN_MANAGE_MEMBERS,
             filteredMembers: window.FILTERED_MEMBERS,
-            baseUrl: window.location.origin
+            baseUrl: window.location.origin,
         };
     },
     created() {
