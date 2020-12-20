@@ -24,7 +24,7 @@
             <div class="clearfix">
                 <h1 class="float-left position-relative">
                     ${v.v.versionString}
-                    <div class="channel channel-head" style="background-color: ${v.c.color.hex};">${v.c.name}</div>
+                    <div class="channel channel-head ml-2" style="background-color: ${v.c.color.hex};">${v.c.name}</div>
                 </h1>
             </div>
 

@@ -1,6 +1,7 @@
 package io.papermc.hangar.config.hangar;
 
 import io.papermc.hangar.HangarApplication;
+import io.papermc.hangar.model.Announcement;
 import io.papermc.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
@@ -24,13 +26,13 @@ public class HangarConfig {
     private boolean useWebpack = false;
     private boolean debug = false;
     private int debugLevel = 3;
-    private boolean staging = true;
     private boolean logTimings = false;
     private String authUrl = "https://hangarauth.minidigger.me";
     private final ApplicationHome home = new ApplicationHome(HangarApplication.class);
     private String pluginUploadDir = home.getDir().toPath().resolve("work").toString();
     private String baseUrl = "https://localhost:8080";
     private String gaCode = "";
+    private List<Announcement> announcements = new ArrayList<>();
 
     @NestedConfigurationProperty
     public final FakeUserConfig fakeUser;
@@ -152,12 +154,12 @@ public class HangarConfig {
         this.debugLevel = debugLevel;
     }
 
-    public boolean isStaging() {
-        return staging;
+    public List<Announcement> getAnnouncements() {
+        return announcements;
     }
 
-    public void setStaging(boolean staging) {
-        this.staging = staging;
+    public void setAnnouncements(List<Announcement> announcements) {
+        this.announcements = announcements;
     }
 
     public boolean isLogTimings() {

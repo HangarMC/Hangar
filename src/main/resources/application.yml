@@ -44,12 +44,19 @@ fake-user:
 hangar:
   debug: true
   debug-level: 3
-  staging: true
   log-timings: false
   auth-url: "http://localhost:8000"
   base-url: "http://localhost:8080"
   use-webpack: true
   ga-code: "UA-38006759-9"
+
+  announcements:
+      -
+        text: "This is a staging server for testing purposes. Data could be deleted at any time. Please use our production server at (TODO: prod url, lol) for uploading your plugins!"
+        color: "#ff544b"
+      -
+        text: "This is an announcement. It's cool"
+        color: "green"
 
   sponsors:
     - name: Beer
