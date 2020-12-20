@@ -19,6 +19,7 @@ import {
     faCircle,
     faClipboard,
     faCode,
+    faCopy,
     faCog,
     faComment,
     faComments,
@@ -182,7 +183,8 @@ library.add(
     faGavel,
     faBirthdayCake,
     faArrowsAltV,
-    faUndo
+    faUndo,
+    faCopy,
 );
 
 dom.watch();

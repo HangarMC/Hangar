@@ -26,15 +26,10 @@
                             <i class="fas fa-download"></i>
                             {{ $t('general.download') }}
                         </a>
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="sr-only">Toggle Dropdown</span>
+                        <button type="button" class="btn btn-primary copy-url"
+                              :data-clipboard-text="baseUrl + ROUTES.parse('VERSIONS_DOWNLOAD_RECOMMENDED', project.ownerName, project.slug)">
+                            <i class="fas fa-copy"></i>
                         </button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a :href="ROUTES.parse('VERSIONS_DOWNLOAD_RECOMMENDED', project.ownerName, project.slug)" class="dropdown-item">
-                                {{ $t('general.download') }}
-                            </a>
-                            <a href="#" class="" @click.prevent></a>
-                        </div>
                     </div>
                     <div class="stats minor">
                         <p>{{ $t('project.category.info', [formatCategory(project.category)]) }}</p>
@@ -222,6 +217,7 @@ export default {
             editorOpen: window.EDITOR_OPEN,
             canManageMembers: window.CAN_MANAGE_MEMBERS,
             filteredMembers: window.FILTERED_MEMBERS,
+            baseUrl: window.location.origin
         };
     },
     created() {

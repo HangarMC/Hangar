@@ -121,13 +121,10 @@
                                     <@spring.message "general.download" />
                                 </#if>
                             </a>
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="sr-only">Toggle Dropdown</span>
+                            <button type="button" class="btn btn-primary copy-url"
+                                    data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionStringUrl, "", "")}">
+                                <i class="fas fa-copy"></i>
                             </button>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionStringUrl, "", "")}"><@spring.message "general.download" /></a>
-                                <a href="#" class="copy-url dropdown-item" data-clipboard-text="${config.baseUrl}${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionStringUrl, "", "")}">Copy URL</a>
-                            </div>
                         </div>
 
                         <#if cu?? && headerData.globalPerm(Permission.ViewLogs)>
