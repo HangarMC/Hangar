@@ -157,6 +157,13 @@ public class UsersController extends HangarController {
         UserSessionsTable session = sessionService.createSession(user);
         Cookie sessionCookie = new Cookie(AUTH_TOKEN_NAME, session.getToken());
         response.addCookie(sessionCookie);
+        if (!url.startsWith("http")) {
+            if (url.startsWith("/")) {
+                url = hangarConfig.getBaseUrl() + url;
+            } else {
+                url = hangarConfig.getBaseUrl() + "/" + url;
+            }
+        }
         return Routes.getRedirectToUrl(url);
     }
 
