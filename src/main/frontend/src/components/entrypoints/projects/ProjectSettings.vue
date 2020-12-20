@@ -2,11 +2,15 @@
     <div class="row">
         <div class="col-md-8">
             <div class="card card-settings">
-                <div class="card-header">
+                <div class="card-header sticky">
                     <h3 class="card-title float-left" v-text="$t('project.settings._')"></h3>
                     <template v-if="permissions.seeHidden">
                         <BtnHide :namespace="project.namespace" :project-visibility="project.visibility"></BtnHide>
                     </template>
+                    <button type="button" class="btn btn-success float-right" @click="save">
+                        <i class="fas fa-check"></i>
+                        Save changes
+                    </button>
                 </div>
                 <div class="card-body">
                     <Setting :name="$t('project.settings.category._')" :desc="$t('project.settings.category.info', [categories.length])">
