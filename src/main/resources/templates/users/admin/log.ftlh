@@ -115,8 +115,8 @@
                                         <textarea style="display: none" data-newstate="${offset + action?index}">${action.newState}</textarea>
                                     </td>
                                 <#else>
-                                    <td>${action.oldState?has_content?string(action.oldState, "<i>none</i>")}</td>
-                                    <td>${action.newState?has_content?string(action.newState, "<i>none</i>")}</td>
+                                    <td><#outputformat "plainText">${action.oldState?has_content?string(action.oldState, "<i>none</i>")}</#outputformat></td>
+                                    <td><#outputformat "plainText">${action.newState?has_content?string(action.newState, "<i>none</i>")}</#outputformat></td>
                                 </#if>
                             </tr>
                             </#list>

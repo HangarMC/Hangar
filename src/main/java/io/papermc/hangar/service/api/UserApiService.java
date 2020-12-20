@@ -6,7 +6,6 @@ import io.papermc.hangar.model.generated.ProjectCompact;
 import io.papermc.hangar.model.generated.ProjectSortingStrategy;
 import io.papermc.hangar.model.generated.User;
 import io.papermc.hangar.util.ApiUtil;
-import io.papermc.hangar.util.TemplateHelper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,19 +14,13 @@ import java.util.List;
 public class UserApiService {
 
     private final HangarDao<UsersApiDao> usersApiDao;
-    private final TemplateHelper templateHelper;
 
-    public UserApiService(HangarDao<UsersApiDao> usersApiDao, TemplateHelper templateHelper) {
+    public UserApiService(HangarDao<UsersApiDao> usersApiDao) {
         this.usersApiDao = usersApiDao;
-        this.templateHelper = templateHelper;
     }
 
     public User getUser(String name) {
-        User user = usersApiDao.get().userQuery(name);
-        if (user != null) {
-            user.setAvatarUrl(templateHelper.avatarUrl(user.getName()));
-        }
-        return user;
+        return usersApiDao.get().userQuery(name);
     }
 
     public List<User> getUsers(String q, long limit, long offset) {

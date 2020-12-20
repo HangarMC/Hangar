@@ -10,7 +10,7 @@
                     <button
                         v-if="saveCall && (Object.keys(form.updates).length || Object.keys(form.additions).length)"
                         class="btn-members-save btn btn-card btn-sm"
-                        data-toggle="tooltip"
+                        data-tooltip-toggle
                         data-placement="top"
                         :data-title="$t('org.users.save')"
                         @click.prevent="save"

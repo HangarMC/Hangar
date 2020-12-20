@@ -49,7 +49,7 @@
                 <tr>
                     <td class="note-fixed-with">${utils.prettifyDateTime(note.toDateTime())}</td>
                     <td class="note-fixed-with"><strong>${note.getUser()!"Unknown"}</strong></td>
-                    <td>${markdownService.render(note.getMessage())}</td>
+                    <td><#outputformat "plainText">${markdownService.render(note.getMessage())}</#outputformat></td>
                 </tr>
                 </#list>
                 </tbody>

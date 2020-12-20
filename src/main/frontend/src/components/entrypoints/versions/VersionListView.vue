@@ -75,22 +75,20 @@
                 </div>
             </div>
         </div>
-          <div class="col-md-3">
-            <div class="row" v-if="canUpload" >
-              <div class="col-12">
-                <a class="btn btn-primary mb-2 w-100" :href="ROUTES.parse('VERSIONS_SHOW_CREATOR', ownerName, projectSlug)">
-                  Upload a New Version
-                </a>
-              </div>
+        <div class="col-md-3">
+            <div class="row" v-if="canUpload">
+                <div class="col-12">
+                    <a class="btn btn-primary mb-2 w-100" :href="ROUTES.parse('VERSIONS_SHOW_CREATOR', ownerName, projectSlug)"> Upload a New Version </a>
+                </div>
             </div>
 
-            <div class="card channels">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="card-title float-left">Channels</h3>
-                    <input v-model="channelFilter.allChecked" type="checkbox" class="float-right channels-all" @change="checkAll" aria-label="Check All" />
+                    <input v-model="channelFilter.allChecked" type="checkbox" class="float-right" @change="checkAll" aria-label="Check All" />
                 </div>
 
-                <ul class="list-group list-channel">
+                <ul class="list-group">
                     <li v-for="channel in channels" :key="channel.id" class="list-group-item">
                         <span class="channel" :style="{ backgroundColor: channel.color.hex }" v-text="channel.name"></span>
                         <input
@@ -107,6 +105,32 @@
                     </li>
                 </ul>
             </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title float-left">Platforms</h3>
+                    <input v-model="platformFilter.allChecked" type="checkbox" class="float-right" @change="checkAllPlatforms" aria-label="Check All" />
+                </div>
+
+                <ul class="list-group">
+                    <li v-for="platform in platforms" :key="platform.name" class="list-group-item">
+                        <span
+                            class="channel"
+                            :style="{ backgroundColor: platform.tagColor.background, color: platform.tagColor.foreground }"
+                            v-text="platform.name"
+                        ></span>
+                        <input
+                            v-model="platformFilter.filter"
+                            type="checkbox"
+                            :value="platform.name"
+                            class="float-right"
+                            @change="updateCheckAllPlatforms"
+                            :aria-label="platform.name"
+                        />
+                    </li>
+                </ul>
+            </div>
+
             <MemberList
                 :can-manage-members="canManageMembers"
                 :filtered-members-prop="filteredMembers"
@@ -144,11 +168,16 @@ export default {
             canUpload: false,
             loading: true,
             channels: window.CHANNELS,
+            platforms: window.PLATFORMS,
             canEditChannels: window.CAN_EDIT_CHANNELS,
             filteredMembers: window.FILTERED_MEMBERS,
             canManageMembers: window.CAN_MANAGE_MEMBERS,
             channelFilter: {
                 filter: window.CHANNELS.map((ch) => ch.name),
+                allChecked: true,
+            },
+            platformFilter: {
+                filter: window.PLATFORMS.map((pl) => pl.name),
                 allChecked: true,
             },
         };
@@ -201,6 +230,16 @@ export default {
         updateCheckAll() {
             this.channelFilter.allChecked = this.channelFilter.filter.length === this.channels.length;
         },
+        checkAllPlatforms() {
+            if (this.platformFilter.allChecked) {
+                this.platformFilter.filter = this.platforms.map((pl) => pl.name);
+            } else {
+                this.platformFilter.filter = [];
+            }
+        },
+        updateCheckAllPlatforms() {
+            this.platformFilter.allChecked = this.platformFilter.filter.length === this.platforms.length;
+        },
     },
     computed: {
         offset() {
@@ -213,7 +252,11 @@ export default {
             return Math.ceil(this.totalVersions / this.limit);
         },
         filteredVersions() {
-            return this.versions.filter((v) => this.channelFilter.filter.indexOf(v.tags.find((t) => t.name === 'Channel').data) > -1);
+            return this.versions.filter(
+                (v) =>
+                    this.channelFilter.filter.indexOf(v.tags.find((t) => t.name === 'Channel').data) > -1 &&
+                    v.tags.some((t) => this.platformFilter.filter.indexOf(t.name) > -1)
+            );
         },
     },
 };

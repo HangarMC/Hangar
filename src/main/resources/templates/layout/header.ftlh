@@ -67,7 +67,7 @@
 
                         <#if cu??>
                             <li class="dropdown nav-icon new-controls">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" id="creatorDropDown" aria-expanded="false">
+                                <a <@tooltip title="Create new..."/> class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" id="creatorDropDown" aria-expanded="false">
                                     <i class="icon fas fa-plus"></i>
                                 </a>
                                 <div class="user-dropdown dropdown-menu dropdown-menu-right" aria-label="Create new &hellip;" aria-labelledby="creatorDropDown">
@@ -84,7 +84,7 @@
 
                             <#-- Show user controls -->
                             <li class="dropdown user-controls nav-icon">
-                                <a href="#" class="dropdown-toggle user-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" id="userDropDown" aria-expanded="false">
+                                <a <@tooltip title=cu.name placement="right" /> class="dropdown-toggle user-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" id="userDropDown" aria-expanded="false">
                                     <#if headerData.hasNotice()>
                                         <span class="unread"></span>
                                     </#if>
@@ -206,6 +206,6 @@
     </nav>
 </#macro>
 
-<#macro tooltip title>
-    data-toggle="tooltip" data-placement="bottom" title="${title}"
+<#macro tooltip title placement="bottom">
+    data-tooltip-toggle data-placement="${placement}" title="${title}"
 </#macro>

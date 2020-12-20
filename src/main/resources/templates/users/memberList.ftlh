@@ -76,7 +76,7 @@
                         <#if saveCall?has_content>
                             <@form.form action=saveCall method="POST" id="save">
                                 <@csrf.formField />
-                                <button class="btn-members-save btn btn-card btn-sm" data-toggle="tooltip"
+                                <button class="btn-members-save btn btn-card btn-sm" data-tooltip-toggle
                                         data-placement="top" data-title="<@spring.message "org.users.save" />" style="display: none;">
                                     <i class="fas fa-save"></i>
                                 </button>

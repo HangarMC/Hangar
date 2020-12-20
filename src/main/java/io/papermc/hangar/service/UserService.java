@@ -160,10 +160,10 @@ public class UserService extends HangarService {
 
     @Cacheable(CacheConfig.AUTHORS_CACHE)
     public List<Author> getAuthors(int page, String sort) {
-        boolean reverse = true;
+        boolean reverse = false;
         if (sort.startsWith("-")) {
             sort = sort.substring(1);
-            reverse = false;
+            reverse = true;
         }
 
         long pageSize = config.user.getAuthorPageSize();
@@ -177,10 +177,10 @@ public class UserService extends HangarService {
 
     @Cacheable(CacheConfig.STAFF_CACHE)
     public List<Staff> getStaff(int page, String sort) {
-        boolean reverse = true;
+        boolean reverse = false;
         if (sort.startsWith("-")) {
             sort = sort.substring(1);
-            reverse = false;
+            reverse = true;
         }
 
         long pageSize = config.user.getAuthorPageSize();

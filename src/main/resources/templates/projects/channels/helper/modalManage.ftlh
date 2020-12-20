@@ -39,7 +39,7 @@
                             <a href="#">
                                 <i class="fas fa-question-circle"
                                    title="<@spring.message "channel.nonReviewed.info" />"
-                                   data-toggle="tooltip"></i>
+                                   data-tooltip-toggle></i>
                             </a>
                         </div>
                     </div>

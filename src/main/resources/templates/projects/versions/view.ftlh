@@ -42,7 +42,7 @@
                 <div class="version-icons">
                     <div>
                     <#if v.recommended>
-                            <i data-toggle="tooltip" data-placement="left"
+                            <i data-tooltip-toggle data-placement="left"
                             title="<@spring.message "version.recommended" />"
                             class="recommended far fa-lg fa-gem float-right"></i>
                     </#if>
@@ -56,10 +56,10 @@
                                 </#if>
                             </#if>
                             <#if v.v.reviewState == ReviewState.PARTIALLY_REVIEWED>
-                                <i data-toggle="tooltip" data-placement="left" title="<@spring.message "version.approvedPartial" />"
+                                <i data-tooltip-toggle data-placement="left" title="<@spring.message "version.approvedPartial" />"
                                 class="far fa-lg fa-check-circle"></i>
                             <#else>
-                                <i data-toggle="tooltip" data-placement="left" title="<@spring.message "version.approved" />"
+                                <i data-tooltip-toggle data-placement="left" title="<@spring.message "version.approved" />"
                                 class="far fa-lg fa-check-circle"></i>
                             </#if>
                     </#if>
@@ -91,14 +91,14 @@
                         </#if>
 
                         <#if v.v.visibility == Visibility.SOFTDELETE>
-                            <a class="btn btn-danger" disabled data-toggle="tooltip" data-placement="top"
+                            <a class="btn btn-danger" disabled data-tooltip-toggle data-placement="top"
                             title="<@spring.message "version.delete.alreadyDeleted" />">
                                 <i class="fas fa-trash"></i> <@spring.message "general.delete" />
                             </a>
                         <#else>
                             <#if sp.perms(Permission.DeleteVersion)>
                                 <#if v.p.publicVersions == 1>
-                                    <a class="btn btn-danger" disabled data-toggle="tooltip" data-placement="top"
+                                    <a class="btn btn-danger" disabled data-tooltip-toggle data-placement="top"
                                     title="<@spring.message "version.delete.cannotLast" />">
                                         <i class="fas fa-trash"></i> <@spring.message "general.delete" />
                                     </a>
@@ -112,7 +112,7 @@
 
                         <div class="btn-group btn-download">
                             <a href="${Routes.VERSIONS_DOWNLOAD.getRouteUrl(v.p.project.ownerName, v.p.project.slug, v.v.versionStringUrl, "", "")}"
-                               title="<@spring.message "project.download.recommend" />" data-toggle="tooltip"
+                               title="<@spring.message "project.download.recommend" />" data-tooltip-toggle
                                data-placement="bottom" class="btn btn-primary">
                                 <i class="fas fa-download"></i>
                                 <#if v.v.externalUrl??>
@@ -171,7 +171,9 @@
                 </#if>
                 <div class="col-md-12" style="z-index: 5">
                     <div id="version-view">
-                        <div class="page-preview page-rendered">${markdownService.render(v.v.getDescription())}</div>
+                        <div class="page-preview page-rendered">
+                            <#outputformat "plainText">${markdownService.render(v.v.getDescription())}</#outputformat>
+                        </div>
                     </div>
                 </div>
             </div>
