@@ -125,13 +125,11 @@ export default {
     watch: {
         preCooked() {
             this.$nextTick(() => {
-                console.log('running');
                 window.admonition();
             });
         },
         previewContent() {
             this.$nextTick(() => {
-                console.log('running');
                 window.admonition();
             });
         },

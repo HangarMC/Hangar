@@ -15,7 +15,6 @@ $(function () {
         var needsModal = $(this).data('modal');
         var spinner = $('button[data-project="' + project + '"]').find('[data-fa-i2svg]');
         toggleSpinner(spinner.toggleClass(ICON));
-        console.log(needsModal);
         if (needsModal) {
             $('.modal-title').html($(this).text().trim() + ': comment');
             $('#modal-visibility-comment').modal('show');

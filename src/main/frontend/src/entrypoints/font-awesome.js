@@ -186,7 +186,7 @@ library.add(
     faArrowsAltV,
     faUndo,
     faCopy,
-    faBars,
+    faBars
 );
 
 dom.watch();
