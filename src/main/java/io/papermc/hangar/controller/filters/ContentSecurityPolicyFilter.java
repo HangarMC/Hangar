@@ -12,7 +12,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.NetworkInterface;
 
 @Component
 public class ContentSecurityPolicyFilter extends OncePerRequestFilter {
@@ -30,10 +29,6 @@ public class ContentSecurityPolicyFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         String CSP_NONCE = RandomStringUtils.randomAlphanumeric(64);
-        NetworkInterface.networkInterfaces().forEach(networkInterface -> {
-            System.out.println(networkInterface.getName());
-            System.out.println(networkInterface.getInterfaceAddresses());
-        });
         response.addHeader(
                 "Content-Security-Policy",
                 CSP
