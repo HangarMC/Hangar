@@ -16,6 +16,6 @@ export function setupI18n(locale = 'en') {
 }
 
 export function setI18nLanguage(i18n, locale) {
-    i18n.global.locale.value = locale;
+    i18n.global.locale = locale;
     document.querySelector('html').setAttribute('lang', locale);
 }
