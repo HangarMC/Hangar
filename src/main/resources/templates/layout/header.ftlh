@@ -2,7 +2,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 
 <#macro header authEnabled=true>
-    <nav id="topbar" class="navbar-main navbar-inverse navbar-expand-lg">
+    <nav id="topbar" class="navbar-main navbar-inverse navbar-expand-md">
         <div class="container">
             <#-- Left navbar -->
             <div id="sp-logo-container" class="float-left">
