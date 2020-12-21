@@ -11,7 +11,7 @@ import org.jdbi.v3.core.enums.EnumByOrdinal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-public class ProjectVersionsTable {
+public class ProjectVersionsTable implements VisibilityModel {
 
     private long id;
     private OffsetDateTime createdAt;

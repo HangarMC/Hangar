@@ -16,6 +16,9 @@ Base template for Project overview.
         <script nonce="${nonce}">
             <#outputformat "JavaScript">
             window.PROJECT = ${mapper.valueToTree(p.project)};
+            <#if !p.recommendedVersion??>
+            window.PROJECT.recommendedVersionId = null;
+            </#if>
             window.CAN_EDIT_PAGES = ${sp.perms(Permission.EditPage)?c};
             </#outputformat>
         </script>

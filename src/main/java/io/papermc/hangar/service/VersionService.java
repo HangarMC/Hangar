@@ -9,9 +9,7 @@ import io.papermc.hangar.db.model.ProjectVersionTagsTable;
 import io.papermc.hangar.db.model.ProjectVersionVisibilityChangesTable;
 import io.papermc.hangar.db.model.ProjectVersionsTable;
 import io.papermc.hangar.db.model.ProjectsTable;
-import io.papermc.hangar.db.model.UsersTable;
 import io.papermc.hangar.exceptions.HangarException;
-import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.TagColor;
 import io.papermc.hangar.model.Visibility;
@@ -50,20 +48,20 @@ public class VersionService extends HangarService {
     private final HangarDao<VisibilityDao> visibilityDao;
     private final ProjectService projectService;
     private final ChannelService channelService;
+    private final VisibilityService visibilityService;
     private final UserService userService;
-    private final PermissionService permissionService;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public VersionService(HangarDao<ProjectVersionDao> versionDao, HangarDao<ProjectDao> projectDao, HangarDao<VisibilityDao> visibilityDao, ProjectService projectService, ChannelService channelService, UserService userService, PermissionService permissionService, HttpServletRequest request) {
+    public VersionService(HangarDao<ProjectVersionDao> versionDao, HangarDao<ProjectDao> projectDao, HangarDao<VisibilityDao> visibilityDao, ProjectService projectService, ChannelService channelService, VisibilityService visibilityService, UserService userService, HttpServletRequest request) {
         this.versionDao = versionDao;
         this.projectDao = projectDao;
         this.visibilityDao = visibilityDao;
         this.projectService = projectService;
         this.channelService = channelService;
+        this.visibilityService = visibilityService;
         this.userService = userService;
-        this.permissionService = permissionService;
         this.request = request;
     }
 
@@ -102,16 +100,11 @@ public class VersionService extends HangarService {
         if (project.getRecommendedVersionId() == null) {
             return null;
         }
-        return versionDao.get().getProjectVersion(project.getId(), "", project.getRecommendedVersionId());
+        return visibilityService.checkVisibility(versionDao.get().getProjectVersion(project.getId(), "", project.getRecommendedVersionId()), ProjectVersionsTable::getProjectId);
     }
 
     public ProjectVersionsTable getVersion(long projectId, long versionId) {
-        Permission perms = permissionService.getProjectPermissions(currentUser.get().map(UsersTable::getId).orElse(-10L), projectId);
-        ProjectVersionsTable pvt = versionDao.get().getProjectVersion(projectId, "", versionId);
-        if (!perms.has(Permission.SeeHidden) && !perms.has(Permission.IsProjectMember) && pvt.getVisibility() != Visibility.PUBLIC) {
-            return null;
-        }
-        return pvt;
+        return visibilityService.checkVisibility(versionDao.get().getProjectVersion(projectId, "", versionId), ProjectVersionsTable::getProjectId);
     }
 
     public ProjectVersionsTable getVersion(String author, String slug, long versionId) {
@@ -126,7 +119,6 @@ public class VersionService extends HangarService {
     public void deleteVersion(long versionId) {
         versionDao.get().deleteVersion(versionId);
     }
-
 
     public void changeVisibility(VersionData versionData, Visibility visibility, String comment, long userId) {
         if (versionData.getV().getVisibility() == visibility) return; // No change

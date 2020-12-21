@@ -25,10 +25,10 @@ import io.papermc.hangar.model.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.model.viewhelpers.UserRole;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.PermissionService;
+import io.papermc.hangar.service.VisibilityService;
 import io.papermc.hangar.service.pluginupload.ProjectFiles;
 import io.papermc.hangar.util.RequestUtil;
 import io.papermc.hangar.util.Routes;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
@@ -56,13 +56,14 @@ public class ProjectService extends HangarService {
     private final HangarDao<ProjectVersionDao> versionDao;
     private final HangarDao<GeneralDao> generalDao;
     private final FlagService flagService;
+    private final VisibilityService visibilityService;
     private final PermissionService permissionService;
     private final ProjectFiles projectFiles;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectVersionDao> versionDao, HangarDao<GeneralDao> generalDao, ProjectFiles projectFiles, FlagService flagService, PermissionService permissionService, HttpServletRequest request) {
+    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<ProjectVersionDao> versionDao, HangarDao<GeneralDao> generalDao, ProjectFiles projectFiles, FlagService flagService, VisibilityService visibilityService, PermissionService permissionService, HttpServletRequest request) {
         this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
         this.userDao = userDao;
@@ -71,6 +72,7 @@ public class ProjectService extends HangarService {
         this.generalDao = generalDao;
         this.projectFiles = projectFiles;
         this.flagService = flagService;
+        this.visibilityService = visibilityService;
         this.permissionService = permissionService;
         this.request = request;
     }
@@ -120,10 +122,7 @@ public class ProjectService extends HangarService {
             noteCount = messages.size();
         }
         Map.Entry<String, ProjectVisibilityChangesTable> latestProjectVisibilityChangeWithUser = visibilityDao.get().getLatestProjectVisibilityChange(projectsTable.getId());
-        ProjectVersionsTable recommendedVersion = null;
-        if (projectsTable.getRecommendedVersionId() != null) {
-            recommendedVersion = versionDao.get().getProjectVersion(projectsTable.getId(), "", projectsTable.getRecommendedVersionId());
-        }
+        ProjectVersionsTable recommendedVersion = visibilityService.checkVisibility(versionDao.get().getProjectVersion(projectsTable.getId(), "", projectsTable.getRecommendedVersionId()), ProjectVersionsTable::getProjectId);
         String iconUrl = Routes.PROJECTS_SHOW_ICON.getRouteUrl(projectsTable.getOwnerName(), projectsTable.getSlug());
         long starCount = userDao.get().getProjectStargazers(projectsTable.getId(), 0, null).size();
         long watcherCount = userDao.get().getProjectWatchers(projectsTable.getId(), 0, null).size();
@@ -168,28 +167,11 @@ public class ProjectService extends HangarService {
     }
 
     public ProjectsTable getProjectsTable(long projectId) {
-        return checkVisibility(projectDao.get().getById(projectId));
+        return visibilityService.checkVisibility(projectDao.get().getById(projectId), ProjectsTable::getId);
     }
 
     public ProjectsTable getProjectsTable(String author, String name) {
-        return checkVisibility(projectDao.get().getBySlug(author, name));
-    }
-
-    public ProjectsTable checkVisibility(@Nullable ProjectsTable projectsTable) {
-        if (projectsTable == null) {
-            return null;
-        }
-        return checkVisibility(projectsTable, permissionService.getProjectPermissions(currentUser.get().map(UsersTable::getId).orElse(-10L), projectsTable.getId()));
-    }
-
-    public ProjectsTable checkVisibility(@Nullable ProjectsTable projectsTable, Permission permission) {
-        if (projectsTable == null) {
-            return null;
-        }
-        if (!permission.has(Permission.SeeHidden) && !permission.has(Permission.IsProjectMember) && projectsTable.getVisibility() != Visibility.PUBLIC) {
-            return null;
-        }
-        return projectsTable;
+        return visibilityService.checkVisibility(projectDao.get().getBySlug(author, name), ProjectsTable::getId);
     }
 
     public void changeVisibility(ProjectsTable project, Visibility newVisibility, String comment) {

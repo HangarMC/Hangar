@@ -23,7 +23,6 @@ import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.generated.ApiSessionResponse;
 import io.papermc.hangar.model.generated.SessionType;
 import io.papermc.hangar.security.HangarAuthentication;
-import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.service.sso.ChangeAvatarToken;
 import io.papermc.hangar.util.AuthUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -68,7 +67,7 @@ public class AuthenticationService extends HangarService {
     private final AuthenticationManager authenticationManager;
     private final RoleService roleService;
     private final PermissionService permissionService;
-    private final ProjectService projectService;
+    private final VisibilityService visibilityService;
     private final OrgService orgService;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
@@ -81,7 +80,7 @@ public class AuthenticationService extends HangarService {
     private static final Pattern API_KEY_PATTERN = Pattern.compile("(" + UUID_REGEX + ").(" + UUID_REGEX + ")");
 
     @Autowired
-    public AuthenticationService(HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, HangarDao<ProjectDao> projectDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService, ProjectService projectService, OrgService orgService, RestTemplate restTemplate, ObjectMapper objectMapper, HttpServletRequest request, Supplier<Optional<UsersTable>> currentUser) {
+    public AuthenticationService(HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, HangarDao<ProjectDao> projectDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService, VisibilityService visibilityService, OrgService orgService, RestTemplate restTemplate, ObjectMapper objectMapper, HttpServletRequest request, Supplier<Optional<UsersTable>> currentUser) {
         this.hangarConfig = hangarConfig;
         this.userDao = userDao;
         this.sessionsDao = sessionsDao;
@@ -90,7 +89,7 @@ public class AuthenticationService extends HangarService {
         this.authenticationManager = authenticationManager;
         this.roleService = roleService;
         this.permissionService = permissionService;
-        this.projectService = projectService;
+        this.visibilityService = visibilityService;
         this.orgService = orgService;
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
@@ -155,11 +154,11 @@ public class AuthenticationService extends HangarService {
                 Permission projectPermissions;
                 if (apiScope.getId() != null) {
                     projectPermissions = permissionService.getProjectPermissions(userId, apiScope.getId());
-                    projectsTable = projectService.checkVisibility(projectDao.get().getById(apiScope.getId()), projectPermissions);
+                    projectsTable = visibilityService.checkVisibility(projectDao.get().getById(apiScope.getId()), projectPermissions);
                 }
                 else {
                     projectPermissions = permissionService.getProjectPermissions(userId, apiScope.getOwner(), apiScope.getSlug());
-                    projectsTable = projectService.checkVisibility(projectDao.get().getBySlug(apiScope.getOwner(), apiScope.getSlug()), projectPermissions);
+                    projectsTable = visibilityService.checkVisibility(projectDao.get().getBySlug(apiScope.getOwner(), apiScope.getSlug()), projectPermissions);
                 }
                 if (projectsTable == null) {
                     throw new HangarApiException(HttpStatus.NOT_FOUND);

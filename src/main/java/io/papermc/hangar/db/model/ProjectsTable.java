@@ -12,7 +12,7 @@ import org.jdbi.v3.core.enums.EnumByOrdinal;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 
-public class ProjectsTable implements Visitable {
+public class ProjectsTable implements Visitable, VisibilityModel {
 
     private long id;
     private OffsetDateTime createdAt;
