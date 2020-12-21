@@ -71,7 +71,7 @@ public abstract class HangarController {
         }
         mav.addObject("cu", currentUser.get().orElse(null));
         mav.addObject("headerData", userService.getHeaderData());
-        if (response.containsHeader("Content-Security-Policy")) {
+        if (request.getAttribute("nonce") != null) {
             mav.addObject("nonce", request.getAttribute("nonce"));
         } else {
             mav.addObject("nonce", "missing-csp-header");

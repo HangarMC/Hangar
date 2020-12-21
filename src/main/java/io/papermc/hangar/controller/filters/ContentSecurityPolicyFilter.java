@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,8 +38,9 @@ public class ContentSecurityPolicyFilter extends OncePerRequestFilter {
         builder.default_src(CSP.SELF, "https://google-analytics.com", "https://fonts.gstatic.com", "https://fonts.googleapis.com")
                 .style_src(CSP.SELF, "https://fonts.googleapis.com", CSP.UNSAFE_INLINE)
                 .font_src("fonts.gstatic.com")
-                .script_src(CSP.SELF, "'nonce-{nonce}'")
-                .img_src(CSP.SELF, hangarConfig.getAuthUrl(), "https://www.google-analytics.com", "data: papermc.io paper.readthedocs.io")
+                .script_src(CSP.SELF, "'nonce-{nonce}'", CSP.UNSAFE_INLINE) // unsafe inline is ignored by browsers that support nonces, just added for backwards compat
+//                .img_src(CSP.SELF, hangarConfig.getAuthUrl(), "https://www.google-analytics.com", "https://www.gravatar.com", "data: papermc.io paper.readthedocs.io") // ppl can use images in descriptions, we would need an image proxy or smth
+                .img_src(CSP.SELF, "https:")
                 .manifest_src(CSP.SELF)
                 .prefetch_src(CSP.SELF, "https://fonts.googleapis.com") // isnt implemented yet -> default_src
                 .connect_src(CSP.SELF, "https://www.google-analytics.com", "https://stats.g.doubleclick.net")
@@ -70,7 +70,7 @@ public class ContentSecurityPolicyFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         String nonce = RandomStringUtils.randomAlphanumeric(64);
-        response.addHeader(CSP.Header.SECURE,cspHeader.replace("{nonce}", nonce));
+        response.addHeader(CSP.Header.REPORT_ONLY,cspHeader.replace("{nonce}", nonce));
         request.setAttribute("nonce", nonce);
         filterChain.doFilter(request, response);
     }
