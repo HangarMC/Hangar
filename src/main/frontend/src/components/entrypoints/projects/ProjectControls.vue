@@ -32,7 +32,7 @@
                 <a v-if="hasModNotes" :href="ROUTES.parse('PROJECTS_SHOW_NOTES', ownerName, projectSlug)" class="dropdown-item">
                     Staff notes ({{ noteCount }})
                 </a>
-                <a v-if="hasViewLogs" :href="`${ROUTES.parse('SHOW_LOG')}?projectFilter=${ownerName}${projectSlug}`" class="dropdown-item">
+                <a v-if="hasViewLogs" :href="`${ROUTES.parse('SHOW_LOG')}?projectFilter=${ownerName}/${projectSlug}`" class="dropdown-item">
                     User Action Logs
                 </a>
                 <a :href="`https://papermc.io/forums/${ownerName}`" class="dropdown-item">
