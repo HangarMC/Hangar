@@ -1,6 +1,6 @@
 <template>
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-lg-9">
             <div class="version-list">
                 <div v-if="loading">
                     <i class="fas fa-spinner fa-spin"></i>
@@ -75,67 +75,72 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-lg-3">
             <div class="row" v-if="canUpload">
                 <div class="col-12">
                     <a class="btn btn-primary mb-2 w-100" :href="ROUTES.parse('VERSIONS_SHOW_CREATOR', ownerName, projectSlug)"> Upload a New Version </a>
                 </div>
             </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-12 col-md-4 col-sm-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title float-left">Channels</h3>
+                            <input v-model="channelFilter.allChecked" type="checkbox" class="float-right" @change="checkAll" aria-label="Check All" />
+                        </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title float-left">Channels</h3>
-                    <input v-model="channelFilter.allChecked" type="checkbox" class="float-right" @change="checkAll" aria-label="Check All" />
+                        <ul class="list-group">
+                            <li v-for="channel in channels" :key="channel.id" class="list-group-item">
+                                <span class="channel" :style="{ backgroundColor: channel.color.hex }" v-text="channel.name"></span>
+                                <input
+                                    v-model="channelFilter.filter"
+                                    :value="channel.name"
+                                    type="checkbox"
+                                    class="float-right"
+                                    @change="updateCheckAll"
+                                    :aria-label="channel.name"
+                                />
+                            </li>
+                            <li v-if="canEditChannels" class="list-group-item text-right">
+                                <a :href="ROUTES.parse('CHANNELS_SHOW_LIST', ownerName, projectSlug)" class="btn btn-sm bg-warning"> Edit </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
+                <div class="col-lg-12 col-md-4 col-sm-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title float-left">Platforms</h3>
+                            <input v-model="platformFilter.allChecked" type="checkbox" class="float-right" @change="checkAllPlatforms" aria-label="Check All" />
+                        </div>
 
-                <ul class="list-group">
-                    <li v-for="channel in channels" :key="channel.id" class="list-group-item">
-                        <span class="channel" :style="{ backgroundColor: channel.color.hex }" v-text="channel.name"></span>
-                        <input
-                            v-model="channelFilter.filter"
-                            :value="channel.name"
-                            type="checkbox"
-                            class="float-right"
-                            @change="updateCheckAll"
-                            :aria-label="channel.name"
-                        />
-                    </li>
-                    <li v-if="canEditChannels" class="list-group-item text-right">
-                        <a :href="ROUTES.parse('CHANNELS_SHOW_LIST', ownerName, projectSlug)" class="btn btn-sm bg-warning"> Edit </a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title float-left">Platforms</h3>
-                    <input v-model="platformFilter.allChecked" type="checkbox" class="float-right" @change="checkAllPlatforms" aria-label="Check All" />
+                        <ul class="list-group">
+                            <li v-for="platform in platforms" :key="platform.name" class="list-group-item">
+                                <span
+                                    class="channel"
+                                    :style="{ backgroundColor: platform.tagColor.background, color: platform.tagColor.foreground }"
+                                    v-text="platform.name"
+                                />
+                                <input
+                                    v-model="platformFilter.filter"
+                                    type="checkbox"
+                                    :value="platform.name"
+                                    class="float-right"
+                                    @change="updateCheckAllPlatforms"
+                                    :aria-label="platform.name"
+                                />
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-
-                <ul class="list-group">
-                    <li v-for="platform in platforms" :key="platform.name" class="list-group-item">
-                        <span
-                            class="channel"
-                            :style="{ backgroundColor: platform.tagColor.background, color: platform.tagColor.foreground }"
-                            v-text="platform.name"
-                        ></span>
-                        <input
-                            v-model="platformFilter.filter"
-                            type="checkbox"
-                            :value="platform.name"
-                            class="float-right"
-                            @change="updateCheckAllPlatforms"
-                            :aria-label="platform.name"
-                        />
-                    </li>
-                </ul>
+                <div class="col-lg-12 col-md-4 col-sm-6">
+                    <MemberList
+                        :can-manage-members="canManageMembers"
+                        :filtered-members-prop="filteredMembers"
+                        :settings-call="ROUTES.parse('PROJECTS_SHOW_SETTINGS', ownerName, projectSlug)"
+                    ></MemberList>
+                </div>
             </div>
-
-            <MemberList
-                :can-manage-members="canManageMembers"
-                :filtered-members-prop="filteredMembers"
-                :settings-call="ROUTES.parse('PROJECTS_SHOW_SETTINGS', ownerName, projectSlug)"
-            ></MemberList>
         </div>
     </div>
 </template>

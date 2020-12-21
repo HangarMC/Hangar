@@ -14,18 +14,19 @@
                         :key="project.namespace.owner + project.namespace.slug"
                     >
                         <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-12 col-sm-1">
+                            <div class="row flex-lg-nowrap flex-md-wrap">
+                                <div class="flex-shrink-0 pl-3">
                                     <Icon :name="project.namespace.owner" :src="project.icon_url" extra-classes="user-avatar-sm"></Icon>
                                 </div>
-                                <div class="col-12 col-sm-11">
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <a :href="ROUTES.parse('PROJECTS_SHOW', project.namespace.owner, project.namespace.slug)" class="title">
-                                                {{ project.name }}
-                                            </a>
-                                        </div>
-                                        <div class="col-sm-6 hidden-xs">
+                                <div class="flex-lg-shrink-0 ml-2">
+                                    <a :href="ROUTES.parse('PROJECTS_SHOW', project.namespace.owner, project.namespace.slug)" class="title">
+                                        {{ project.name }}
+                                    </a>
+                                    <div class="description">{{ project.description }}</div>
+                                </div>
+                                <div class="flex-grow-1 mr-2">
+                                    <div class="row flex-wrap">
+                                        <div class="col-12 d-lg-block d-none">
                                             <div class="info minor">
                                                 <span class="stat recommended-version" title="Recommended version" v-if="project.recommended_version">
                                                     <i class="far fa-gem"></i>
@@ -54,19 +55,14 @@
                                                 </span>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-7 description-column">
-                                            <div class="description">{{ project.description }}</div>
-                                        </div>
-                                        <div class="col-12 col-sm-5 tags-line" v-if="project.promoted_versions">
+                                        <div class="col-12 tags-line">
                                             <Tag
                                                 v-bind:name="tag.name"
                                                 v-bind:data="tag.versions.join(' | ')"
                                                 v-bind:color="tag.color"
                                                 v-bind:key="project.name + '-' + tag.name"
                                                 v-for="tag in tagsFromPromoted(project.promoted_versions)"
-                                            ></Tag>
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -259,12 +255,15 @@ export default {
         justify-content: flex-end;
 
         @media (max-width: 480px) {
-            justify-content: flex-start;
             margin-top: 0.5rem;
         }
 
         .tags {
             margin-right: 0.5rem;
+
+            &:first-child {
+                margin-left: 0.5rem;
+            }
         }
 
         :last-child {
