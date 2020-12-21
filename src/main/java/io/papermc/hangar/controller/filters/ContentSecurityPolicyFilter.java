@@ -20,7 +20,7 @@ public class ContentSecurityPolicyFilter extends OncePerRequestFilter {
     public final HangarConfig hangarConfig;
 
     // TODO check this
-    private static final String CSP = "default-src 'self' {additional-uris} fonts.googleapis.com; style-src fonts.googleapis.com 'self' {additional-uris} 'unsafe-inline'; font-src fonts.gstatic.com; script-src {additional-uris} 'self' 'nonce-{nonce}' 'unsafe-eval'; img-src 'self' data: papermc.io paper.readthedocs.io {additional-uris} {auth-uri}; manifest-src {manifest-uri}; prefetch-src {prefetch-uri}; media-src {prefetch-uri}; object-src 'none'; block-all-mixed-content; frame-ancestors 'none'; base-uri 'none'";
+    private static final String CSP = "default-src 'self' https://google-analytics.com {additional-uris} fonts.googleapis.com; style-src fonts.googleapis.com 'self' {additional-uris} 'unsafe-inline'; font-src fonts.gstatic.com; script-src {additional-uris} 'self' 'nonce-{nonce}' 'unsafe-eval'; img-src 'self' data: papermc.io paper.readthedocs.io {additional-uris} {auth-uri}; manifest-src {manifest-uri}; prefetch-src {prefetch-uri}; media-src {prefetch-uri}; object-src 'none'; block-all-mixed-content; frame-ancestors 'none'; base-uri 'none'";
 
     @Autowired
     public ContentSecurityPolicyFilter(HangarConfig hangarConfig) {
