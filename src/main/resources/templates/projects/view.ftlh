@@ -22,7 +22,7 @@ Base template for Project overview.
             window.CAN_EDIT_PAGES = ${sp.perms(Permission.EditPage)?c};
             </#outputformat>
         </script>
-        <script nonce="${nonce}" type="text/javascript" src="${hangar.url("ext/js/admonition.js")}"></script>
+        <script type="text/javascript" src="${hangar.url("ext/js/admonition.js")}"></script>
         <script type="text/javascript" src="${hangar.url("js/project-controls.js")}"></script>
         ${additionalScripts}
     </#assign>

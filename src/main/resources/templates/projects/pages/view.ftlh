@@ -26,7 +26,7 @@ Documentation page within Project overview.
         window.CAN_MANAGE_MEMBERS = ${sp.permissions.has(Permission.ManageSubjectMembers)?c};
         </#outputformat>
     </script>
-    <script nonce="${nonce}" type="text/javascript" src="${hangar.url("js/project-view.js")}"></script>
+    <script type="text/javascript" src="${hangar.url("js/project-view.js")}"></script>
 </#assign>
 
 <#assign styleVar>

@@ -12,14 +12,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.NetworkInterface;
 
 @Component
 public class ContentSecurityPolicyFilter extends OncePerRequestFilter {
 
     public final HangarConfig hangarConfig;
 
-    private static final String CSP = "default-src 'self' {additional-uris} fonts.googleapis.com; style-src fonts.googleapis.com 'self' {additional-uris} 'unsafe-inline'; font-src fonts.gstatic.com; script-src {additional-uris} 'self' 'nonce-{nonce}' 'unsafe-eval'; img-src 'self' papermc.io paper.readthedocs.io {additional-uris} {auth-uri}; manifest-src {manifest-uri}; prefetch-src {prefetch-uri}; media {prefetch-uri}; object-src 'none'; block-all-mixed-content; frame-ancestors 'none'; base-uri 'none'";
-
+    // TODO check this
+    private static final String CSP = "default-src 'self' {additional-uris} fonts.googleapis.com; style-src fonts.googleapis.com 'self' {additional-uris} 'unsafe-inline'; font-src fonts.gstatic.com; script-src {additional-uris} 'self' 'nonce-{nonce}' 'unsafe-eval'; img-src 'self' data: papermc.io paper.readthedocs.io {additional-uris} {auth-uri}; manifest-src {manifest-uri}; prefetch-src {prefetch-uri}; media-src {prefetch-uri}; object-src 'none'; block-all-mixed-content; frame-ancestors 'none'; base-uri 'none'";
 
     @Autowired
     public ContentSecurityPolicyFilter(HangarConfig hangarConfig) {
@@ -29,15 +30,19 @@ public class ContentSecurityPolicyFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         String CSP_NONCE = RandomStringUtils.randomAlphanumeric(64);
-//        response.addHeader(
-//                "Content-Security-Policy",
-//                CSP
-//                .replace("{additional-uris}", hangarConfig.isUseWebpack() ? "http://localhost:8081" : "")
-//                .replace("{auth-uri}", hangarConfig.getAuthUrl())
-//                .replace("{manifest-uri}", hangarConfig.isUseWebpack() ? "http://localhost:8081/manifest/manifest.json" : "'self'")
-//                .replace("{prefetch-uri}", hangarConfig.isUseWebpack() ? "http://localhost:8081" : "'self'")
-//                .replace("{nonce}", CSP_NONCE));
-        // TODO still some changes to make to the header
+        NetworkInterface.networkInterfaces().forEach(networkInterface -> {
+            System.out.println(networkInterface.getName());
+            System.out.println(networkInterface.getInterfaceAddresses());
+        });
+        response.addHeader(
+                "Content-Security-Policy",
+                CSP
+                .replace("{additional-uris}", hangarConfig.isUseWebpack() ? "http://localhost:8081 http://*:8081 ws://*:8081" : "") // TODO idk how to get the local IP to put here... without those last two entries, there are a bunch of console errors. Maybe you can figure it out Mini.
+                .replace("{auth-uri}", hangarConfig.getAuthUrl())
+                .replace("{manifest-uri}", hangarConfig.isUseWebpack() ? "http://localhost:8081/manifest/manifest.json" : "'self'")
+                .replace("{prefetch-uri}", hangarConfig.isUseWebpack() ? "http://localhost:8081" : "'self'")
+                .replace("{nonce}", CSP_NONCE));
+        request.setAttribute("nonce", CSP_NONCE);
         filterChain.doFilter(request, response);
     }
 }

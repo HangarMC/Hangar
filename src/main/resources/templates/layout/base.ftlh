@@ -51,7 +51,7 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
         <meta name="theme-color" content="#2980B9">
 
         <#-- google foo -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=${config.gaCode}"></script>
+        <script async nonce="${nonce}" src="https://www.googletagmanager.com/gtag/js?id=${config.gaCode}"></script>
         <script nonce="${nonce}">
             <#outputformat "JavaScript">
             window.dataLayer = window.dataLayer || [];

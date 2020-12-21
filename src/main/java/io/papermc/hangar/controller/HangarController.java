@@ -16,13 +16,12 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.resource.ResourceUrlProvider;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public abstract class HangarController {
 
@@ -37,14 +36,14 @@ public abstract class HangarController {
     @Autowired
     private ObjectMapper mapper;
     @Autowired
+    private HttpServletRequest request;
+    @Autowired
     private HttpServletResponse response;
     @Autowired
     private ResourceUrlProvider resourceUrlProvider;
 
     @Autowired
     protected Supplier<Optional<UsersTable>> currentUser;
-
-    private static final Pattern NONCE_PATTERN = Pattern.compile("(?<=nonce-)[a-zA-Z0-9]+");
 
     protected ModelAndView fillModel(ModelAndView mav) {
         // helpers
@@ -73,12 +72,7 @@ public abstract class HangarController {
         mav.addObject("cu", currentUser.get().orElse(null));
         mav.addObject("headerData", userService.getHeaderData());
         if (response.containsHeader("Content-Security-Policy")) {
-            Matcher nonceMatcher = NONCE_PATTERN.matcher(response.getHeader("Content-Security-Policy"));
-            if (!nonceMatcher.find()) {
-                throw new IllegalStateException("Must have script nonce defined");
-            }
-            String nonce = nonceMatcher.group();
-            mav.addObject("nonce", nonce);
+            mav.addObject("nonce", request.getAttribute("nonce"));
         } else {
             mav.addObject("nonce", "missing-csp-header");
         }

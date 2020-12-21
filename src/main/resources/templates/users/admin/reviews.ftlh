@@ -13,7 +13,7 @@
         </#if>
         </#outputformat>
     </script>
-    <script nonce="${nonce}" type="text/javascript" src="${hangar.url("js/version-reviews.js")}"></script>
+    <script type="text/javascript" src="${hangar.url("js/version-reviews.js")}"></script>
 </#assign>
 
 <#assign ReviewState=@helper["io.papermc.hangar.model.generated.ReviewState"] />

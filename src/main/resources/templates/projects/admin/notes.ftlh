@@ -3,7 +3,7 @@
 <#import "*/layout/base.ftlh" as base />
 
 <#assign scriptsVar>
-    <script nonce="${nonce}" type="text/javascript" src="${hangar.url("js/showNotes.js")}"></script>
+    <script type="text/javascript" src="${hangar.url("js/showNotes.js")}"></script>
     <script nonce="${nonce}">
         <#outputformat "JavaScript">
         window.resourcePath = '${project.ownerName}/${project.slug}'

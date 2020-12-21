@@ -19,7 +19,7 @@
       };
       </#outputformat>
     </script>
-    <script nonce="${nonce}" type="text/javascript" src="${hangar.url("js/stats.js")}"></script>
+    <script type="text/javascript" src="${hangar.url("js/stats.js")}"></script>
 </#assign>
 
 <@base.base title="Stats" additionalScripts=scriptsVar>
