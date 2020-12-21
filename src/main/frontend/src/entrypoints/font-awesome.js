@@ -5,6 +5,7 @@ import {
     faArrowRight,
     faArrowsAltV,
     faAsterisk,
+    faBars,
     faBell,
     faBirthdayCake,
     faBook,
@@ -184,7 +185,8 @@ library.add(
     faBirthdayCake,
     faArrowsAltV,
     faUndo,
-    faCopy
+    faCopy,
+    faBars,
 );
 
 dom.watch();

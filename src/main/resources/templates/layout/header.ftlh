@@ -49,7 +49,10 @@
             <#assign Permission=@helper["io.papermc.hangar.model.Permission"] />
             <#-- @ftlvariable name="Permission" type="io.papermc.hangar.model.Permission" -->
             <#if authEnabled>
-                <div class="collapse navbar-collapse float-right navbar-right">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navToggle" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fa-fw fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse float-right navbar-right" id="navToggle">
                     <ul class="nav navbar-nav">
                         <#assign title><@spring.message "project.viewAuthors"/></#assign>
                         <li class="nav-icon authors-icon" <@tooltip title=title />>
