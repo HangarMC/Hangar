@@ -46,7 +46,7 @@ public class MarkdownService {
         this.config = config;
 
         options = new MutableDataSet()
-                .set(HtmlRenderer.SUPPRESS_HTML, true)
+                .set(HtmlRenderer.ESCAPE_HTML, true)
                 .set(AnchorLinkExtension.ANCHORLINKS_TEXT_PREFIX, "<i class=\"fas fa-link\"></i>")
                 .set(AnchorLinkExtension.ANCHORLINKS_ANCHOR_CLASS, "headeranchor")
                 .set(AnchorLinkExtension.ANCHORLINKS_WRAP_TEXT, false)
