@@ -134,7 +134,7 @@
                                     <span class="caret"></span>
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="admin-version-actions">
-                                    <a class="dropdown-item" href="${Routes.SHOW_LOG.getRouteUrl("", "", "", v.v.versionString, "", "", "")}">User Action Logs</a>
+                                    <a class="dropdown-item" href="${Routes.SHOW_LOG.getRouteUrl("", "", v.p.fullSlug, v.v.versionString, "", "", "")}">User Action Logs</a>
                                     <#if headerData.globalPerm(Permission.Reviewer)>
                                         <#if v.v.visibility == Visibility.SOFTDELETE>
                                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-restore">Undo delete</a>
