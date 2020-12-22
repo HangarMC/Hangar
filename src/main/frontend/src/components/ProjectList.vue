@@ -14,8 +14,8 @@
                         :key="project.namespace.owner + project.namespace.slug"
                     >
                         <div class="container-fluid">
-                            <div class="row flex-lg-nowrap flex-md-wrap">
-                                <div class="flex-shrink-0 pl-3">
+                            <div class="row flex-lg-nowrap flex-md-wrap px-3">
+                                <div class="flex-shrink-0">
                                     <Icon :name="project.namespace.owner" :src="project.icon_url" extra-classes="user-avatar-sm"></Icon>
                                 </div>
                                 <div class="flex-lg-shrink-0 ml-2">

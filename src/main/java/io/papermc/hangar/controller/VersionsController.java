@@ -31,6 +31,7 @@ import io.papermc.hangar.service.DownloadsService;
 import io.papermc.hangar.service.StatsService;
 import io.papermc.hangar.service.UserActionLogService;
 import io.papermc.hangar.service.VersionService;
+import io.papermc.hangar.service.VersionService.RecommendedVersionService;
 import io.papermc.hangar.service.pluginupload.PendingVersion;
 import io.papermc.hangar.service.pluginupload.PluginUploadService;
 import io.papermc.hangar.service.pluginupload.ProjectFiles;
@@ -86,6 +87,7 @@ public class VersionsController extends HangarController {
 
     private final ProjectService projectService;
     private final VersionService versionService;
+    private final RecommendedVersionService recommendedVersionService;
     private final ProjectFactory projectFactory;
     private final StatsService statsService;
     private final PluginUploadService pluginUploadService;
@@ -109,9 +111,10 @@ public class VersionsController extends HangarController {
 
 
     @Autowired
-    public VersionsController(ProjectService projectService, VersionService versionService, ProjectFactory projectFactory, StatsService statsService, PluginUploadService pluginUploadService, ChannelService channelService, DownloadsService downloadsService, UserActionLogService userActionLogService, CacheManager cacheManager, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, MessageSource messageSource, ObjectMapper mapper, HttpServletRequest request, HttpServletResponse response, Supplier<ProjectVersionsTable> projectVersionsTable, Supplier<VersionData> versionData, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
+    public VersionsController(ProjectService projectService, VersionService versionService, RecommendedVersionService recommendedVersionService, ProjectFactory projectFactory, StatsService statsService, PluginUploadService pluginUploadService, ChannelService channelService, DownloadsService downloadsService, UserActionLogService userActionLogService, CacheManager cacheManager, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, MessageSource messageSource, ObjectMapper mapper, HttpServletRequest request, HttpServletResponse response, Supplier<ProjectVersionsTable> projectVersionsTable, Supplier<VersionData> versionData, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
         this.projectService = projectService;
         this.versionService = versionService;
+        this.recommendedVersionService = recommendedVersionService;
         this.projectFactory = projectFactory;
         this.statsService = statsService;
         this.pluginUploadService = pluginUploadService;
@@ -261,7 +264,7 @@ public class VersionsController extends HangarController {
     @ResponseBody
     public Object downloadRecommended(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String token) {
         ProjectsTable project = projectsTable.get();
-        ProjectVersionsTable recommendedVersion = versionService.getRecommendedVersion(project);
+        ProjectVersionsTable recommendedVersion = recommendedVersionService.getRecommendedVersion(project);
         if (recommendedVersion == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
@@ -273,7 +276,7 @@ public class VersionsController extends HangarController {
     @ResponseBody
     public Object downloadRecommendedJar(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String token) {
         ProjectsTable project = projectsTable.get();
-        ProjectVersionsTable recommendedVersion = versionService.getRecommendedVersion(project);
+        ProjectVersionsTable recommendedVersion = recommendedVersionService.getRecommendedVersion(project);
         if (recommendedVersion == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {

@@ -24,6 +24,7 @@ import io.papermc.hangar.service.project.ChannelService;
 import io.papermc.hangar.service.project.ProjectService;
 import io.papermc.hangar.util.RequestUtil;
 import io.papermc.hangar.util.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
@@ -49,18 +50,20 @@ public class VersionService extends HangarService {
     private final ProjectService projectService;
     private final ChannelService channelService;
     private final VisibilityService visibilityService;
+    private final RecommendedVersionService recommendedVersionService;
     private final UserService userService;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public VersionService(HangarDao<ProjectVersionDao> versionDao, HangarDao<ProjectDao> projectDao, HangarDao<VisibilityDao> visibilityDao, ProjectService projectService, ChannelService channelService, VisibilityService visibilityService, UserService userService, HttpServletRequest request) {
+    public VersionService(HangarDao<ProjectVersionDao> versionDao, HangarDao<ProjectDao> projectDao, HangarDao<VisibilityDao> visibilityDao, ProjectService projectService, ChannelService channelService, VisibilityService visibilityService, RecommendedVersionService recommendedVersionService, UserService userService, HttpServletRequest request) {
         this.versionDao = versionDao;
         this.projectDao = projectDao;
         this.visibilityDao = visibilityDao;
         this.projectService = projectService;
         this.channelService = channelService;
         this.visibilityService = visibilityService;
+        this.recommendedVersionService = recommendedVersionService;
         this.userService = userService;
         this.request = request;
     }
@@ -82,13 +85,14 @@ public class VersionService extends HangarService {
 
     @Bean
     @RequestScope
-    public Supplier<VersionData> versionData() {
+    @Autowired
+    public Supplier<VersionData> versionData(Supplier<ProjectData> projectDataSupplier) {
         //noinspection SpringConfigurationProxyMethods
-        return () -> this.getVersionData(projectService.projectData().get(), projectVersionsTable().get());
+        return () -> this.getVersionData(projectDataSupplier.get(), projectVersionsTable().get());
     }
 
     public ProjectVersionsTable getMostRelevantVersion(ProjectsTable project) {
-        Optional<ProjectVersionsTable> version = Optional.ofNullable(getRecommendedVersion(project));
+        Optional<ProjectVersionsTable> version = Optional.ofNullable(recommendedVersionService.getRecommendedVersion(project));
         return version.or(() -> Optional.ofNullable(getMostRecentVersion(project))).orElse(null);
     }
 
@@ -96,12 +100,7 @@ public class VersionService extends HangarService {
         return versionDao.get().getMostRecentVersion(project.getId());
     }
 
-    public ProjectVersionsTable getRecommendedVersion(ProjectsTable project) {
-        if (project.getRecommendedVersionId() == null) {
-            return null;
-        }
-        return visibilityService.checkVisibility(versionDao.get().getProjectVersion(project.getId(), "", project.getRecommendedVersionId()), ProjectVersionsTable::getProjectId);
-    }
+
 
     public ProjectVersionsTable getVersion(long projectId, long versionId) {
         return visibilityService.checkVisibility(versionDao.get().getProjectVersion(projectId, "", versionId), ProjectVersionsTable::getProjectId);
@@ -197,5 +196,27 @@ public class VersionService extends HangarService {
 
     public Map<ProjectVersionVisibilityChangesTable, String> getVersionVisibilityChanges(long versionId) {
         return visibilityDao.get().getProjectVersionVisibilityChanges(versionId);
+    }
+
+    @Service
+    public static class RecommendedVersionService {
+
+        private final VisibilityService visibilityService;
+        private final HangarDao<ProjectVersionDao> versionDao;
+
+        @Autowired
+        public RecommendedVersionService(VisibilityService visibilityService, HangarDao<ProjectVersionDao> versionDao) {
+            this.visibilityService = visibilityService;
+            this.versionDao = versionDao;
+        }
+
+        @Nullable
+        public ProjectVersionsTable getRecommendedVersion(ProjectsTable project) {
+            if (project.getRecommendedVersionId() == null) {
+                return null;
+            }
+            return visibilityService.checkVisibility(versionDao.get().getProjectVersion(project.getId(), "", project.getRecommendedVersionId()), ProjectVersionsTable::getProjectId);
+        }
+
     }
 }
