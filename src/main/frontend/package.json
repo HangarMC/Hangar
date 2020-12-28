@@ -29,7 +29,7 @@
     "popper.js": "1.16.1",
     "qs": "6.9.4",
     "query-string": "6.13.7",
-    "swagger-ui": "3.36.2",
+    "swagger-ui": "3.38.0",
     "vue": "3.0.4",
     "vue-i18n": "9.0.0-beta.14",
     "webpack-jquery-ui": "2.0.1"
@@ -43,7 +43,7 @@
     "babel-eslint": "10.1.0",
     "eslint": "7.15.0",
     "eslint-plugin-prettier": "3.1.4",
-    "eslint-plugin-vue": "7.0.1",
+    "eslint-plugin-vue": "7.4.0",
     "husky": "4.3.6",
     "lint-staged": "10.5.3",
     "mini-css-extract-plugin": "1.2.1",
