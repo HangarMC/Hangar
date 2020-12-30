@@ -60,12 +60,12 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="preview" role="tabpanel" aria-labelledby="preview-tab" v-html="outputHtml"></div>
-                    <div class="tab-pane fade" id="getbbcode" role="tabpanel" aria-labelledby="howto-tab">
+                    <div class="tab-pane fade" id="getbbcode" role="tabpanel" aria-labelledby="howto-tab" style="text-align: center">
                         To get the BBCode of your Spigot project, do the following:
                         <br />1. Go to your project and click on "Edit Resource".
-                        <img src="https://i.imgur.com/8CyLMf3.png" alt="Edit Project" />
+                        <br /><img src="https://i.imgur.com/8CyLMf3.png" alt="Edit Project" />
                         <br /><br />Click on the wrench symbol in the description editor.
-                        <img src="https://i.imgur.com/FLVIuQK.png" width="425" height="198" alt="Show BBCode" />
+                        <br /><img src="https://i.imgur.com/FLVIuQK.png" width="425" height="198" alt="Show BBCode" />
                         <br /><br />Copy paste the new contents into the upper converter texbox, do changes to the output if you like, and hit save!
                     </div>
                 </div>
