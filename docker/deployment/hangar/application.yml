@@ -20,11 +20,9 @@ hangar:
 
   announcements:
     -
-      text: "This is a staging server for testing purposes. Data could be deleted at any time. Please use our production server at (TODO: prod url, lol) for uploading your plugins!"
+      #text: "This is a staging server for testing purposes. Data could be deleted at any time. Please use our production server at (TODO: prod url, lol) for uploading your plugins!"
+      text: "This is a staging server for testing purposes. Data could be deleted at any time. email confirmations are disabled. If you wanna help test, sneak into #hangar-dev"
       color: "#ff544b"
-    -
-      text: "This is an announcement. It's cool"
-      color: "green"
 
   sso:
     secret: "changeme"
