@@ -22,14 +22,16 @@ Base template for Project overview.
             window.CAN_EDIT_PAGES = ${sp.perms(Permission.EditPage)?c};
             </#outputformat>
         </script>
-        <script type="text/javascript" src="${hangar.url("ext/js/admonition.js")}"></script>
-        <script type="text/javascript" src="${hangar.url("js/project-controls.js")}"></script>
+        <script nonce="${nonce}" type="text/javascript" src="${hangar.url("ext/js/admonition.js")}"></script>
+        <script nonce="${nonce}" type="text/javascript" src="${hangar.url("js/project-controls.js")}"></script>
+        <script nonce="${nonce}" defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
         ${additionalScripts}
     </#assign>
 
     <#assign styleVar>
         <link rel="stylesheet" href="${hangar.url("ext/css/admonition.css")}">
         <link rel="stylesheet" href="${hangar.url("css/project-controls.css")}">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
         ${additionalStyling}
     </#assign>
 

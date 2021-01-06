@@ -172,6 +172,7 @@ export default {
         async preview() {
             this.previewing = true;
             this.previewContent = await this.getPreview(this.content);
+            this.$nextTick(() => this.renderKatex());
         },
         async cancel() {
             this.previewing = false;
@@ -196,6 +197,18 @@ export default {
                 return '';
             }
         },
+      renderKatex() {
+        const mathElems = document.getElementsByClassName('katex');
+        const elems = [];
+        for (const i in mathElems) {
+          if (Object.prototype.hasOwnProperty.call(mathElems, i)) elems.push(mathElems[i]);
+        }
+
+        elems.forEach((elem) => {
+          // eslint-disable-next-line
+          katex.render(elem.textContent, elem, { throwOnError: false, displayMode: elem.nodeName !== 'SPAN' });
+        });
+      }
     },
     async created() {
         this.content = this.raw;
@@ -203,6 +216,8 @@ export default {
         if (this.open) {
             this.edit();
         }
+
+        this.$nextTick(() => this.renderKatex());
     },
 };
 </script>

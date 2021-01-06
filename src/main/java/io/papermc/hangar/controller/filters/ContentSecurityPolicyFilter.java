@@ -36,8 +36,8 @@ public class ContentSecurityPolicyFilter extends OncePerRequestFilter {
         PolicyBuilder builder = new PolicyBuilder();
 
         builder.default_src(CSP.SELF, "https://google-analytics.com", "https://fonts.gstatic.com", "https://fonts.googleapis.com")
-                .style_src(CSP.SELF, "https://fonts.googleapis.com", CSP.UNSAFE_INLINE)
-                .font_src("fonts.gstatic.com")
+                .style_src(CSP.SELF, "https://fonts.googleapis.com", "cdn.jsdelivr.net", CSP.UNSAFE_INLINE)
+                .font_src("fonts.gstatic.com", "cdn.jsdelivr.net")
                 .script_src(CSP.SELF, "'nonce-{nonce}'", CSP.UNSAFE_INLINE) // unsafe inline is ignored by browsers that support nonces, just added for backwards compat
 //                .img_src(CSP.SELF, hangarConfig.getAuthUrl(), "https://www.google-analytics.com", "https://www.gravatar.com", "data: papermc.io paper.readthedocs.io") // ppl can use images in descriptions, we would need an image proxy or smth
                 .img_src(CSP.SELF, "https:")

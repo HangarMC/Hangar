@@ -10,6 +10,7 @@ import com.vladsch.flexmark.ext.emoji.EmojiImageType;
 import com.vladsch.flexmark.ext.footnotes.FootnoteExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
 import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
+import com.vladsch.flexmark.ext.gitlab.GitLabExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.typographic.TypographicExtension;
 import com.vladsch.flexmark.ext.wikilink.WikiLinkExtension;
@@ -69,7 +70,8 @@ public class MarkdownService {
                                 WikiLinkExtension.create(),
                                 EmojiExtension.create(),
                                 FootnoteExtension.create(),
-                                AdmonitionExtension.create()
+                                AdmonitionExtension.create(),
+                                GitLabExtension.create()
                         )
                 );
 

@@ -80,6 +80,7 @@ import {
     faUserTie,
     faWindowClose,
     faWrench,
+    faHandHoldingUsd,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -186,7 +187,8 @@ library.add(
     faArrowsAltV,
     faUndo,
     faCopy,
-    faBars
+    faBars,
+    faHandHoldingUsd
 );
 
 dom.watch();
