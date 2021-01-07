@@ -20,6 +20,7 @@
 
                 <form action="https://sandbox.paypal.com/cgi-bin/webscr" method="post" @submit="popup($el)">
                     <input type="hidden" name="business" value="minidigger-author@hangar.minidigger.me" />
+                    <input type="hidden" name="return" value="http://localhost:8080/paper/Test" />
 
                     <template v-if="monthly">
                         <input type="hidden" name="cmd" value="_xclick-subscriptions" />
