@@ -53,7 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/v1/sessions/current",
                         "/api/keys",
                         "/api/v1/keys",
-                        "/api/sync_sso"
+                        "/api/sync_sso",
+                        "/paypal/ipn"
                 )
                 .and()
                 .addFilter(new HangarAuthenticationFilter())
@@ -72,7 +73,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManager();
     }
 
-    
     @Bean
     public AccessDecisionManager accessDecisionManager() {
         List<AccessDecisionVoter<? extends Object>> decisionVoters = Arrays.asList(
