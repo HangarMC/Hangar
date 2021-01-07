@@ -36,6 +36,17 @@
                             <i class="fas fa-copy"></i>
                         </button>
                     </div>
+                    <a
+                        v-if="true"
+                        :href="ROUTES.parse('VERSIONS_DOWNLOAD_RECOMMENDED', project.ownerName, project.slug)"
+                        :title="$t('general.donate')"
+                        data-tooltip-toggle
+                        data-placement="bottom"
+                        class="btn btn-primary btn-donate"
+                    >
+                        <i class="fas fa-hand-holding-usd"></i>
+                        {{ $t('general.donate') }}
+                    </a>
                     <div class="stats minor">
                         <p>{{ $t('project.category.info', [formatCategory(project.category)]) }}</p>
                         <p>{{ $t('project.publishDate', [moment(project.createdAt).format('MMM D, YYYY')]) }}</p>
