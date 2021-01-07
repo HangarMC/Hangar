@@ -1,5 +1,7 @@
 package io.papermc.hangar.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -12,9 +14,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class PaypalService extends HangarService {
+
+    private static final Logger logger = LoggerFactory.getLogger(PaypalService.class);
 
     private static final String paypalCallback = "https://ipnpb.paypal.com/cgi-bin/webscr?cmd=_notify-validate&";
     private static final String paypalSandboxCallback = "https://ipnpb.sandbox.paypal.com/cgi-bin/webscr?cmd=_notify-validate&";
@@ -38,36 +44,74 @@ public class PaypalService extends HangarService {
             if (r.statusCode() == 200) {
                 switch (r.body()) {
                     case "VERIFIED":
-                        System.out.println("verified!");
-                        MultiValueMap<String, String> parsedIpn = parseIpn(ipn);
-                        System.out.println(parsedIpn);
+                        Map<String, String> parsedIpn = parseIpn(ipn);
+                        logger.info("Verified ipn: {}", parsedIpn);
+                        handleIpn(parsedIpn);
                         break;
                     case "INVALID":
-                        System.out.println("invalid");
+                        logger.info("Invalid ipn: {}", ipn);
+
                         break;
                     default:
-                        System.out.println("error: " + r.statusCode() + " " + r.body());
+                        logger.error("Error while verifying ipn {}, {}", r.statusCode(), r.body());
+                        logger.error("IPN was {}", ipn);
                         break;
                 }
             } else {
-                System.out.println("error: " + r.statusCode() + " " + r.body());
+                logger.error("Error while verifying ipn {}, {}", r.statusCode(), r.body());
+                logger.error("IPN was {}", ipn);
             }
         });
     }
 
-    public MultiValueMap<String, String> parseIpn(String ipn) {
+    public void handleIpn(Map<String, String> ipn) {
+        // check that recipient is a hangar author
+        String receiver = ipn.get("receiver_email");
+        logger.info("Receiver is: {}", receiver);
+        // check that transaction id and last payment status isnt already here
+        String transactionId = ipn.get("txn_id");
+        logger.info("transaction id is {}", transactionId);
+        String paymentStatus = ipn.get("payment_status");
+        // check that status is completed
+        if (paymentStatus.equals("Completed")) {
+            // precede
+            logger.info("Status was completed");
+        } else {
+            // send notification
+            logger.info("Status: {}", paymentStatus);
+            return;
+        }
+        // check the amount and currency
+        String amount = ipn.get("mc_gross");
+        String fee = ipn.get("mc_fee");
+        String currency = ipn.get("mc_currency");
+        logger.info("Currency {} amount {} fee {}", currency, amount, fee);
+        // check that its not a test_ipn
+        String test = ipn.get("test_ipn");
+        if (test != null && test.equals("1")) {
+            logger.info("Was test ipn");
+        }
+        // check that payer is a hangar user and has a pending payment
+        String payer = ipn.get("payer_email");
+        logger.info("Payer {}", payer);
+        // read custom
+        String custom = ipn.get("custom");
+        logger.info("Custom {}", custom);
+    }
+
+    public Map<String, String> parseIpn(String ipn) {
         // FormHttpMessageConverter#read
         String[] pairs = StringUtils.tokenizeToStringArray(ipn, "&");
-        MultiValueMap<String, String> result = new LinkedMultiValueMap<>(pairs.length);
+        Map<String, String> result = new HashMap<>(pairs.length);
 
         for (String pair : pairs) {
             int idx = pair.indexOf("=");
             if (idx == -1) {
-                result.add(URLDecoder.decode(pair, Charset.defaultCharset()), null);
+                result.put(URLDecoder.decode(pair, Charset.defaultCharset()), null);
             } else {
                 String name = URLDecoder.decode(pair.substring(0, idx), Charset.defaultCharset());
                 String value = URLDecoder.decode(pair.substring(idx + 1), Charset.defaultCharset());
-                result.add(name, value);
+                result.put(name, value);
             }
         }
 
