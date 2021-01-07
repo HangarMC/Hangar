@@ -39,20 +39,20 @@
                     <!-- todo: make donation button toggleable in settings, get email and stuff into modal, translate -->
                     <div v-if="true">
                         <DonationModal>
-                          <template v-slot:activator="slotProps">
-                            <a
-                                :title="$t('general.donate')"
-                                data-tooltip-toggle
-                                data-placement="bottom"
-                                class="btn btn-primary btn-donate"
-                                data-toggle="modal"
-                                :data-target="`#${slotProps.targetId}`"
-                                @click.prevent
-                            >
-                              <i class="fas fa-hand-holding-usd"></i>
-                              {{ $t('general.donate') }}
-                            </a>
-                          </template>
+                            <template v-slot:activator="slotProps">
+                                <a
+                                    :title="$t('general.donate')"
+                                    data-tooltip-toggle
+                                    data-placement="bottom"
+                                    class="btn btn-primary btn-donate"
+                                    data-toggle="modal"
+                                    :data-target="`#${slotProps.targetId}`"
+                                    @click.prevent
+                                >
+                                    <i class="fas fa-hand-holding-usd"></i>
+                                    {{ $t('general.donate') }}
+                                </a>
+                            </template>
                         </DonationModal>
                     </div>
                     <div class="stats minor">
@@ -218,13 +218,13 @@ import { API } from '@/api';
 import { go, slugify } from '@/utils';
 import $ from 'jquery';
 import MemberList from '@/components/MemberList';
-import DonationModal from "@/components/DonationModal";
+import DonationModal from '@/components/DonationModal';
 
 $.ajaxSetup(window.ajaxSettings);
 
 export default {
     name: 'ProjectView',
-    components: {DonationModal, MemberList, Editor, Tag, HangarModal },
+    components: { DonationModal, MemberList, Editor, Tag, HangarModal },
     data() {
         return {
             ROUTES: window.ROUTES,
