@@ -36,17 +36,25 @@
                             <i class="fas fa-copy"></i>
                         </button>
                     </div>
-                    <a
-                        v-if="true"
-                        :href="ROUTES.parse('VERSIONS_DOWNLOAD_RECOMMENDED', project.ownerName, project.slug)"
-                        :title="$t('general.donate')"
-                        data-tooltip-toggle
-                        data-placement="bottom"
-                        class="btn btn-primary btn-donate"
-                    >
-                        <i class="fas fa-hand-holding-usd"></i>
-                        {{ $t('general.donate') }}
-                    </a>
+                    <!-- todo: make donation button toggleable in settings, get email and stuff into modal, translate -->
+                    <div v-if="true">
+                        <DonationModal>
+                          <template v-slot:activator="slotProps">
+                            <a
+                                :title="$t('general.donate')"
+                                data-tooltip-toggle
+                                data-placement="bottom"
+                                class="btn btn-primary btn-donate"
+                                data-toggle="modal"
+                                :data-target="`#${slotProps.targetId}`"
+                                @click.prevent
+                            >
+                              <i class="fas fa-hand-holding-usd"></i>
+                              {{ $t('general.donate') }}
+                            </a>
+                          </template>
+                        </DonationModal>
+                    </div>
                     <div class="stats minor">
                         <p>{{ $t('project.category.info', [formatCategory(project.category)]) }}</p>
                         <p>{{ $t('project.publishDate', [moment(project.createdAt).format('MMM D, YYYY')]) }}</p>
@@ -210,12 +218,13 @@ import { API } from '@/api';
 import { go, slugify } from '@/utils';
 import $ from 'jquery';
 import MemberList from '@/components/MemberList';
+import DonationModal from "@/components/DonationModal";
 
 $.ajaxSetup(window.ajaxSettings);
 
 export default {
     name: 'ProjectView',
-    components: { MemberList, Editor, Tag, HangarModal },
+    components: {DonationModal, MemberList, Editor, Tag, HangarModal },
     data() {
         return {
             ROUTES: window.ROUTES,
