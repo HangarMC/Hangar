@@ -38,7 +38,12 @@
                     </div>
                     <!-- todo: make donation button toggleable in settings, get email and stuff into modal, translate -->
                     <div v-if="true">
-                        <DonationModal>
+                        <DonationModal
+                            donation-email="minidigger-author@hangar.minidigger.me"
+                            donation-target="paper/Test"
+                            return-url="http://localhost:8080/paper/Test?donation=success"
+                            cancel-return-url="http://localhost:8080/paper/Test?donation=failure"
+                        >
                             <template v-slot:activator="slotProps">
                                 <a
                                     :title="$t('general.donate')"
@@ -218,7 +223,7 @@ import { API } from '@/api';
 import { go, slugify } from '@/utils';
 import $ from 'jquery';
 import MemberList from '@/components/MemberList';
-import DonationModal from '@/components/DonationModal';
+import DonationModal from '@/components/donation/DonationModal';
 
 $.ajaxSetup(window.ajaxSettings);
 

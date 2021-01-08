@@ -74,6 +74,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -269,7 +270,7 @@ public class ProjectsController extends HangarController {
     }
 
     @GetMapping("/{author}/{slug}")
-    public ModelAndView show(@PathVariable String author, @PathVariable String slug) {
+    public ModelAndView show(@PathVariable String author, @PathVariable String slug, @PathParam("donation") String donation) {
         ModelAndView mav = new ModelAndView("projects/pages/view");
         ProjectData projData = projectData.get();
         mav.addObject("p", projData);
@@ -279,6 +280,9 @@ public class ProjectsController extends HangarController {
         mav.addObject("editorOpen", false);
         pagesSerivce.fillPages(mav, projData.getProject().getId());
         statsService.addProjectView(projData.getProject());
+        if (donation != null) {
+            mav.addObject("donation", donation);
+        }
         return fillModel(mav);
     }
 

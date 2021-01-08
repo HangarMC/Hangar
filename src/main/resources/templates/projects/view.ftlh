@@ -46,6 +46,11 @@ Base template for Project overview.
     </#assign>
 
     <@base.base title=(p.project.ownerName + " / " + p.project.name) additionalScripts=scriptsVar additionalStyling=styleVar additionalMeta=metaVar>
+        <#if donation??>
+            <div id="donation-result">
+                <DonationResult></DonationResult>
+            </div>
+        </#if>
         <div class="project-header-container">
             <#if p.visibility != Visibility.PUBLIC>
                 <div class="row">
