@@ -48,7 +48,7 @@
     "lint-staged": "10.5.3",
     "mini-css-extract-plugin": "1.2.1",
     "prettier": "2.2.1",
-    "sass": "1.30.0",
+    "sass": "1.32.2",
     "sass-loader": "10.1.0",
     "stats-webpack-plugin": "0.7.0",
     "vue-cli-plugin-webpack-bundle-analyzer": "4.0.0",
