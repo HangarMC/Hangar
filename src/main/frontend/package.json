@@ -29,7 +29,7 @@
     "popper.js": "1.16.1",
     "qs": "6.9.4",
     "query-string": "6.13.8",
-    "swagger-ui": "3.38.0",
+    "swagger-ui": "3.40.0",
     "vue": "3.0.5",
     "vue-i18n": "9.0.0-beta.14",
     "webpack-jquery-ui": "2.0.1"
