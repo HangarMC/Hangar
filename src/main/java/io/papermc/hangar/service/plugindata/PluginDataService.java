@@ -57,9 +57,7 @@ public class PluginDataService {
                     }
                 });
                 PluginFileWithData fileData = new PluginFileWithData(file, new PluginFileData(dataValueMap), userId);
-                if (!fileData.getData().validate()) {
-                    throw new HangarException("error.plugin.incomplete", "id or version");
-                }
+                fileData.getData().validate();
                 return fileData;
             }
         }

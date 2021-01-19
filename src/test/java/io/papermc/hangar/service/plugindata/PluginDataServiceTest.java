@@ -15,7 +15,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {PluginDataService.class, PaperPluginFileHandler.class, VelocityFileHandler.class, WaterfallPluginFileHandler.class})
@@ -29,8 +28,7 @@ class PluginDataServiceTest {
     @Test
     void test_paper_happyDay() throws Exception {
         PluginFileData data = classUnderTest.loadMeta(path.resolve("Paper.jar"), -1).getData();
-
-        assertTrue(data.validate());
+        data.validate();
         assertEquals("Maintenance", data.getName());
         assertEquals("Enable maintenance mode with a custom maintenance motd and icon.", data.getDescription());
         assertEquals("3.0.5", data.getVersion());
@@ -48,7 +46,7 @@ class PluginDataServiceTest {
     void test_waterfall_happyDay() throws Exception {
         PluginFileData data = classUnderTest.loadMeta(path.resolve("Waterfall.jar"), -1).getData();
 
-        assertTrue(data.validate());
+        data.validate();
         assertEquals("Maintenance", data.getName());
         assertEquals("Enable maintenance mode with a custom maintenance motd and icon.", data.getDescription());
         assertEquals("3.0.5", data.getVersion());
@@ -62,7 +60,7 @@ class PluginDataServiceTest {
     void test_velocity_happyDay() throws Exception {
         PluginFileData data = classUnderTest.loadMeta(path.resolve("Velocity.jar"), -1).getData();
 
-        assertTrue(data.validate());
+        data.validate();
         assertEquals("Maintenance", data.getName());
         assertEquals("Enable maintenance mode with a custom maintenance motd and icon.", data.getDescription());
         assertEquals("3.0.5", data.getVersion());
@@ -104,7 +102,7 @@ class PluginDataServiceTest {
     void test_zip_happyDay() throws Exception {
         PluginFileData data = classUnderTest.loadMeta(path.resolve("TestZip.zip"), -1).getData();
 
-        assertTrue(data.validate());
+        data.validate();
         assertEquals("Maintenance", data.getName());
         assertEquals("Enable maintenance mode with a custom maintenance motd and icon.", data.getDescription());
         assertEquals("3.0.5", data.getVersion());

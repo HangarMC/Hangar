@@ -1,6 +1,7 @@
 package io.papermc.hangar.service.plugindata;
 
 import io.papermc.hangar.db.model.ProjectVersionTagsTable;
+import io.papermc.hangar.exceptions.HangarException;
 import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.generated.PlatformDependency;
 import io.papermc.hangar.model.viewhelpers.VersionDependencies;
@@ -93,8 +94,14 @@ public class PluginFileData {
         return platformDependencies != null ? ((PlatformDependencyDataValue) platformDependencies).getValue() : null;
     }
 
-    public boolean validate() {
-        return getName() != null && getAuthors() != null && getPlatformDependency() != null;
+    public void validate() {
+        if (getName() == null) {
+            throw new HangarException("error.plugin.incomplete", "name");
+        } else if (getVersion() == null) {
+            throw new HangarException("error.plugin.incomplete", "version");
+        } else if (getPlatformDependency() == null) {
+            throw new HangarException("error.plugin.incomplete", "platform");
+        }
     }
 
     public List<ProjectVersionTagsTable> createTags(long versionId, VersionService versionService) {
