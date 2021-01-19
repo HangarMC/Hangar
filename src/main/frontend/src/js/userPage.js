@@ -31,16 +31,17 @@ function loadActions(increment, action) {
     pages[action] += increment;
     var offset = (pages[action] - 1) * CONTENT_PER_PAGE;
 
-    API.request(`users/${USERNAME}/${action}?offset=${offset}&limit=${CONTENT_PER_PAGE}`).then((result) => {
+    API.request(`users/${USERNAME}/${action}?offset=${offset}&limit=${CONTENT_PER_PAGE}`).then((response) => {
         //TODO: Use pagination info
         var tbody = getStarsPanel(action).find('.card-body').find('tbody');
 
         var content = [];
+        let data = response.data;
 
-        if (result.pagination.count === 0) {
+        if (data.pagination.count === 0) {
             content.push($('<tr>').append($('<td>').append($("<i class='minor'>").text(NO_ACTION_MESSAGE[action]))));
         } else {
-            for (var project of result.result) {
+            for (var project of data.result) {
                 var link = $('<a>')
                     .attr('href', '/' + project.namespace.owner + '/' + project.namespace.slug)
                     .text(project.namespace.owner + '/')
@@ -74,7 +75,7 @@ function loadActions(increment, action) {
 
         // Check if there is a next page
         var next = footer.find('.next');
-        if (result.pagination.count > pages[action] * CONTENT_PER_PAGE) {
+        if (data.pagination.count > pages[action] * CONTENT_PER_PAGE) {
             next.show();
         } else {
             next.hide();

@@ -152,8 +152,9 @@ export default {
     methods: {
         update() {
             API.request('projects', 'GET', clearFromEmpty(this.$props)).then((response) => {
-                this.projects = response.result;
-                this.totalProjects = response.pagination.count;
+                let data = response.data;
+                this.projects = data.result;
+                this.totalProjects = data.pagination.count;
                 this.loading = false;
                 this.$emit('update:projectCount', this.totalProjects);
             });

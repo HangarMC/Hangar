@@ -44,12 +44,13 @@ export default {
         search() {
             this.selectedUser = null;
             this.loading = true;
-            API.request(`users?q=${this.input}`).then((res) => {
+            API.request(`users?q=${this.input}`).then((response) => {
+                let data = response.data;
                 this.loading = false;
-                if (res.result.length === 1 && res.result[0].name.toLowerCase() === this.input.toLowerCase()) {
-                    this.selectUser(res.result[0]);
+                if (data.result.length === 1 && data.result[0].name.toLowerCase() === this.input.toLowerCase()) {
+                    this.selectUser(data.result[0]);
                 } else {
-                    this.userResults = res.result;
+                    this.userResults = data.result;
                 }
             });
         },

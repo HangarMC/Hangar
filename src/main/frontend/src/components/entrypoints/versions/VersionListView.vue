@@ -190,7 +190,7 @@ export default {
     created() {
         this.update();
         API.request('permissions', 'GET', { author: window.PROJECT_OWNER, slug: window.PROJECT_SLUG }).then((response) => {
-            this.canUpload = response.permissions.includes('create_version');
+            this.canUpload = response.data.permissions.includes('create_version');
         });
         this.$watch(
             () => this.page,
@@ -206,8 +206,9 @@ export default {
                 limit: this.limit,
                 offset: this.offset,
             }).then((response) => {
-                this.versions = response.result;
-                this.totalVersions = response.pagination.count;
+                let data = response.data;
+                this.versions = data.result;
+                this.totalVersions = data.pagination.count;
                 this.loading = false;
             });
         },
