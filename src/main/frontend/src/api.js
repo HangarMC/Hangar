@@ -11,7 +11,7 @@ export class API {
                     headers: { Authorization: 'HangarApi session="' + session + '"' },
                     data: data,
                 })
-                    .then((data) => resolve(data))
+                    .then((response) => resolve(response))
                     .catch((error) => {
                         if (error.response && (error.response.error === 'Api session expired' || error.response.error === 'Invalid session')) {
                             // This should never happen but just in case we catch it and invalidate the session to definitely get a new one
