@@ -1,6 +1,5 @@
 import { parseJsonOrNull } from './utils';
-import axios from "axios";
-
+import axios from 'axios';
 
 export class API {
     static request(url, method = 'get', data = {}) {
@@ -18,7 +17,7 @@ export class API {
                             // This should never happen but just in case we catch it and invalidate the session to definitely get a new one
                             API.invalidateSession();
                             API.request(url, method, data)
-                                .then((data) => {
+                                .then(({data}) => {
                                     resolve(data);
                                 })
                                 .catch((error) => {
@@ -41,8 +40,8 @@ export class API {
             if (window.isLoggedIn) {
                 session = parseJsonOrNull(localStorage.getItem('api_session'));
                 if (session === null || (!isNaN(new Date(session.expires).getTime()) && new Date(session.expires) < date)) {
-                    return this.request('/api/v1/authenticate/user', 'POST')
-                        .done((data) => {
+                    return axios.post('/api/v1/authenticate', {}, {headers: {'Content-Type': 'application/json'}})
+                        .then((data) => {
                             if (data.type !== 'user') {
                                 reject('Expected user session from user authentication');
                             } else {
@@ -50,8 +49,8 @@ export class API {
                                 resolve(data.session);
                             }
                         })
-                        .fail((xhr) => {
-                            reject(xhr.statusText);
+                        .catch((error) => {
+                            reject(error);
                         });
                 } else {
                     resolve(session.session);
@@ -59,17 +58,18 @@ export class API {
             } else {
                 session = parseJsonOrNull(localStorage.getItem('public_api_session'));
                 if (session === null || (!isNaN(new Date(session.expires).getTime()) && new Date(session.expires) < date)) {
-                    this.request('/api/v1/authenticate')
-                        .done((data) => {
+                    axios.post('/api/v1/authenticate', {}, { headers: {'Content-Type': 'application/json'} })
+                        .then(({data}) => {
                             if (data.type !== 'public') {
                                 reject('Expected public session from public authentication');
                             } else {
                                 localStorage.setItem('public_api_session', JSON.stringify(data));
+                                console.log(data);
                                 resolve(data.session);
                             }
                         })
-                        .fail((xhr) => {
-                            reject(xhr.statusText);
+                        .catch((error) => {
+                            reject(error);
                         });
                 } else {
                     resolve(session.session);
