@@ -8,8 +8,8 @@ export class API {
                 return axios({
                     method: method,
                     url: '/api/v1/' + url,
-                    headers: {Authorization: 'HangarApi session="' + session + '"'},
-                    data: data
+                    headers: { Authorization: 'HangarApi session="' + session + '"' },
+                    data: data,
                 })
                     .then((data) => resolve(data))
                     .catch((error) => {
@@ -17,7 +17,7 @@ export class API {
                             // This should never happen but just in case we catch it and invalidate the session to definitely get a new one
                             API.invalidateSession();
                             API.request(url, method, data)
-                                .then(({data}) => {
+                                .then(({ data }) => {
                                     resolve(data);
                                 })
                                 .catch((error) => {
@@ -40,7 +40,8 @@ export class API {
             if (window.isLoggedIn) {
                 session = parseJsonOrNull(localStorage.getItem('api_session'));
                 if (session === null || (!isNaN(new Date(session.expires).getTime()) && new Date(session.expires) < date)) {
-                    return axios.post('/api/v1/authenticate', {}, {headers: {'Content-Type': 'application/json'}})
+                    return axios
+                        .post('/api/v1/authenticate', {}, { headers: { 'Content-Type': 'application/json' } })
                         .then((data) => {
                             if (data.type !== 'user') {
                                 reject('Expected user session from user authentication');
@@ -58,8 +59,9 @@ export class API {
             } else {
                 session = parseJsonOrNull(localStorage.getItem('public_api_session'));
                 if (session === null || (!isNaN(new Date(session.expires).getTime()) && new Date(session.expires) < date)) {
-                    axios.post('/api/v1/authenticate', {}, { headers: {'Content-Type': 'application/json'} })
-                        .then(({data}) => {
+                    axios
+                        .post('/api/v1/authenticate', {}, { headers: { 'Content-Type': 'application/json' } })
+                        .then(({ data }) => {
                             if (data.type !== 'public') {
                                 reject('Expected public session from public authentication');
                             } else {
