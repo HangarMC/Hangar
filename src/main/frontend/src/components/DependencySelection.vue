@@ -329,10 +329,10 @@ export default {
                     this.dependencies[platformKey].find((dep) => dep.name === depName).project_id = null;
                 }
 
-                API.request(`projects?relevance=true&limit=25&offset=0&q=${inputVal}`).then((res) => {
-                    if (res.result.length) {
+                API.request(`projects?relevance=true&limit=25&offset=0&q=${inputVal}`).then(({ data }) => {
+                    if (data.result.length) {
                         $(`#${platformKey}-${depName}-project-dropdown`).show();
-                        this.searchResults = res.result;
+                        this.searchResults = data.result;
                     } else {
                         $(`#${platformKey}-${depName}-project-dropdown`).hide();
                         this.searchResults = [];

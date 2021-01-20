@@ -189,8 +189,8 @@ export default {
     },
     created() {
         this.update();
-        API.request('permissions', 'GET', { author: window.PROJECT_OWNER, slug: window.PROJECT_SLUG }).then((response) => {
-            this.canUpload = response.data.permissions.includes('create_version');
+        API.request('permissions', 'GET', { author: window.PROJECT_OWNER, slug: window.PROJECT_SLUG }).then(({ data }) => {
+            this.canUpload = data.permissions.includes('create_version');
         });
         this.$watch(
             () => this.page,
@@ -205,8 +205,7 @@ export default {
             API.request(`projects/${this.ownerName}/${this.projectSlug}/versions`, 'GET', {
                 limit: this.limit,
                 offset: this.offset,
-            }).then((response) => {
-                let data = response.data;
+            }).then(({ data }) => {
                 this.versions = data.result;
                 this.totalVersions = data.pagination.count;
                 this.loading = false;

@@ -31,12 +31,11 @@ function loadActions(increment, action) {
     pages[action] += increment;
     var offset = (pages[action] - 1) * CONTENT_PER_PAGE;
 
-    API.request(`users/${USERNAME}/${action}?offset=${offset}&limit=${CONTENT_PER_PAGE}`).then((response) => {
+    API.request(`users/${USERNAME}/${action}?offset=${offset}&limit=${CONTENT_PER_PAGE}`).then(({ data }) => {
         //TODO: Use pagination info
         var tbody = getStarsPanel(action).find('.card-body').find('tbody');
 
         var content = [];
-        let data = response.data;
 
         if (data.pagination.count === 0) {
             content.push($('<tr>').append($('<td>').append($("<i class='minor'>").text(NO_ACTION_MESSAGE[action]))));

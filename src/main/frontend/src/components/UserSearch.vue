@@ -44,8 +44,7 @@ export default {
         search() {
             this.selectedUser = null;
             this.loading = true;
-            API.request(`users?q=${this.input}`).then((response) => {
-                let data = response.data;
+            API.request(`users?q=${this.input}`).then(({ data }) => {
                 this.loading = false;
                 if (data.result.length === 1 && data.result[0].name.toLowerCase() === this.input.toLowerCase()) {
                     this.selectUser(data.result[0]);

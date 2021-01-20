@@ -91,12 +91,12 @@ export default {
             API.request('keys', 'POST', {
                 permissions: this.form.perms,
                 name: this.form.name,
-            }).then((newKey) => {
+            }).then(({ data }) => {
                 this.error = null;
                 this.existingKeys.push({
                     name: this.form.name,
-                    token: newKey.key,
-                    namedRawPermissions: newKey.perms,
+                    token: data.key,
+                    namedRawPermissions: data.perms,
                 });
                 this.form.name = '';
                 this.form.perms = [];
