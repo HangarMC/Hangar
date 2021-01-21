@@ -1,0 +1,96 @@
+<template>
+    <v-footer dark padless>
+        <v-container>
+            <v-row align="center" justify="center">
+                <v-col cols="12" class="d-flex justify-center">
+                    By using this site you're accepting our <a href="#"> Terms of Service</a
+                    ><!-- todo tos link -->
+                </v-col>
+            </v-row>
+
+            <v-row align="center" justify="center">
+                <v-col cols="12" sm="2" class="d-flex justify-center">
+                    <div>
+                        <h5>Hangar API</h5>
+                        <v-btn color="primary" to="/api">API</v-btn>
+                    </div>
+                </v-col>
+
+                <v-col cols="12" sm="2" class="d-flex justify-center">
+                    <div>
+                        <h5>Help Needed?</h5>
+                        <v-btn color="primary" href="https://papermc.io/forums">Forum</v-btn>
+                    </div>
+                </v-col>
+
+                <v-col cols="12" sm="4" class="d-flex justify-center">
+                    <a href="https://papermc.io">
+                        <img src="https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png" alt="Paper Logo" />
+                    </a>
+                </v-col>
+
+                <v-col cols="12" sm="2" class="d-flex justify-center">
+                    <div>
+                        <h5>Found an Issue?</h5>
+                        <v-btn color="primary" href="https://github.com/PaperMC/Hangar/issues" target="_blank" rel="noopener">Issues</v-btn>
+                    </div>
+                </v-col>
+
+                <v-col cols="12" sm="2" class="d-flex justify-center">
+                    <div>
+                        <h5>Our Sponsors</h5>
+                        <v-btn color="primary" href="https://papermc.io/sponsors">Sponsors</v-btn>
+                    </div>
+                </v-col>
+            </v-row>
+
+            <v-row align="center" justify="center">
+                <v-col cols="12" class="d-flex justify-center">Copyright © <a href="https://papermc.io">PaperMC</a> 2016 - {{ new Date().getFullYear() }} </v-col>
+            </v-row>
+        </v-container>
+    </v-footer>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from 'nuxt-property-decorator';
+import Discuss from '~/pages/_author/_slug/discuss.vue';
+@Component({
+    components: { Discuss },
+})
+export default class Footer extends Vue {}
+</script>
+
+<style lang="scss" scoped>
+img {
+    height: 60px;
+    width: 60px;
+
+    @media (min-width: 768px) {
+        height: 74px;
+        width: 74px;
+
+        &:hover {
+            animation-name: bounce;
+            animation-duration: 0.5s;
+            animation-fill-mode: both;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes bounce {
+            0%,
+            100% {
+                transform: rotateZ(0);
+            }
+            33% {
+                transform: rotateZ(-5deg);
+            }
+            50% {
+                transform: rotateZ(0);
+            }
+            76% {
+                transform: rotateZ(5deg);
+            }
+        }
+    }
+}
+</style>

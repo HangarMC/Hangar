@@ -40,11 +40,13 @@ export default {
         // https://go.nuxtjs.dev/pwa
         '@nuxtjs/pwa',
         'cookie-universal-nuxt',
+        '@nuxtjs/proxy',
     ],
 
     // Axios module configuration: https://go.nuxtjs.dev/config-axios
     axios: {
         baseURL: process.env.BACKEND_URL || 'http://localhost:8080',
+        browserBaseURL: '/',
     },
 
     // PWA module configuration: https://go.nuxtjs.dev/pwa
@@ -76,5 +78,12 @@ export default {
     // Build Configuration: https://go.nuxtjs.dev/config-build
     build: {
         transpile: ['vuex-module-decorators'],
+    },
+
+    proxy: ['http://localhost:8080/api'],
+
+    server: {
+        port: 3000,
+        host: 'localhost',
     },
 };
