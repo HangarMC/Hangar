@@ -28,11 +28,13 @@
     "nuxt": "^2.14.12",
     "nuxt-property-decorator": "^2.9.1",
     "vue": "^2.6.12",
-    "vuex": "^3.6.0"
+    "vuex": "^3.6.0",
+    "vuex-module-decorators": "^1.0.1"
   },
   "devDependencies": {
     "@nuxt/types": "^2.14.12",
     "@nuxt/typescript-build": "^2.0.4",
+    "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/eslint-config-typescript": "^5.0.0",
     "@nuxtjs/eslint-module": "^3.0.2",
     "@nuxtjs/vuetify": "^1.11.3",

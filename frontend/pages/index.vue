@@ -15,6 +15,12 @@ import { PaginatedProjectList } from 'hangar-api';
 export default class Home extends Vue {
     projects?: PaginatedProjectList;
 
+    head() {
+        return {
+            title: 'Home',
+        };
+    }
+
     async asyncData({ $api }: Context): Promise<{ projects: PaginatedProjectList }> {
         return { projects: await $api.request<PaginatedProjectList>('projects', 'get', { limit: 25, offset: 0 }) };
     }

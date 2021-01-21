@@ -6,8 +6,10 @@ export default {
     telemetry: false,
     // Global page headers: https://go.nuxtjs.dev/config-head
     head: {
-        titleTemplate: '%s - hangar-client',
-        title: 'hangar-client',
+        titleTemplate: (titleChunk) => {
+            return titleChunk ? `${titleChunk} | Hangar` : 'Hangar';
+        },
+        title: null,
         meta: [
             { charset: 'utf-8' },
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -31,6 +33,7 @@ export default {
         '@nuxt/typescript-build',
         // https://go.nuxtjs.dev/vuetify
         '@nuxtjs/vuetify',
+        '@nuxtjs/dotenv',
     ],
 
     // Modules: https://go.nuxtjs.dev/config-modules
@@ -76,9 +79,7 @@ export default {
     },
 
     // Build Configuration: https://go.nuxtjs.dev/config-build
-    build: {
-        transpile: ['vuex-module-decorators'],
-    },
+    build: {},
 
     proxy: ['http://localhost:8080/api'],
 
