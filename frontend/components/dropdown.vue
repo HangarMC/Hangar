@@ -31,7 +31,7 @@ export interface Control {
 @Component
 export default class Card extends Vue {
     @Prop({ type: Array as PropType<Control[]>, required: true })
-    controls: Control[];
+    controls!: Control[];
 
     isRouterLink(control: Control): Boolean {
         return control.link.startsWith('/');

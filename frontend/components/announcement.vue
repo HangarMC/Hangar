@@ -13,7 +13,7 @@ import { PropType } from 'vue';
 @Component
 export default class Card extends Vue {
     @Prop({ type: Object as PropType<Announcement>, required: true })
-    announcement: Announcement;
+    announcement!: Announcement;
 }
 </script>
 

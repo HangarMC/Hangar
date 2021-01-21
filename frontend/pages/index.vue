@@ -64,13 +64,24 @@ import { Component, Vue } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
 import { PaginatedProjectList } from 'hangar-api';
 
+// TODO move somewhere else
+interface Category {
+    icon: string;
+    text: string;
+}
+
+interface Platform {
+    icon: string;
+    text: string;
+}
+
 @Component
 export default class Home extends Vue {
     projects?: PaginatedProjectList;
     totalProjects: Number = 1337;
-    projectFilter: String = null;
+    projectFilter: String | null = null;
     // TODO get categories from server
-    categories: Array = [
+    categories: Category[] = [
         {
             icon: 'mdi-home',
             text: 'Test',
@@ -78,7 +89,7 @@ export default class Home extends Vue {
     ];
 
     // TODO get platforms from server
-    platforms: Array = [
+    platforms: Platform[] = [
         {
             icon: 'mdi-home',
             text: 'Test',
