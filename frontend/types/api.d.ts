@@ -105,4 +105,9 @@ declare module 'hangar-api' {
         pagination: Pagination;
         result: Project[];
     }
+
+    interface Announcement {
+        text: String;
+        color: String;
+    }
 }

@@ -11,79 +11,7 @@
                     <v-icon color="white" class="dropdown-icon">mdi-chevron-down</v-icon>
                 </v-app-bar-nav-icon>
             </template>
-            <v-list dense>
-                <v-list-item link href="https://www.papermc.io">
-                    <v-list-item-icon>
-                        <v-icon color="white">mdi-home</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title>Homepage</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-
-                <v-list-item link href="https://papermc.io/forums">
-                    <v-list-item-icon>
-                        <v-icon color="white">mdi-comment-multiple</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title>Forums</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-
-                <v-list-item link href="https://github.com/PaperMC">
-                    <v-list-item-icon>
-                        <v-icon color="white">mdi-code-braces</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title>Code</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-
-                <v-list-item link href="https://paper.readthedocs.io">
-                    <v-list-item-icon>
-                        <v-icon color="white">mdi-book</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title>Docs</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-
-                <v-list-item link href="https://papermc.io/javadocs">
-                    <v-list-item-icon>
-                        <v-icon color="white">mdi-school</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title>JavaDocs</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-
-                <v-list-item link to="/">
-                    <v-list-item-icon>
-                        <v-icon color="white">mdi-home</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title>Hangar (Plugins)</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-
-                <v-list-item link href="https://papermc.io/downloads">
-                    <v-list-item-icon>
-                        <v-icon color="white">mdi-download</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title>Downloads</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-
-                <v-list-item link href="https://papermc.io/community">
-                    <v-list-item-icon>
-                        <v-icon color="white">mdi-comment</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title>Community</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-            </v-list>
+            <dropdown :controls="dropdown" />
         </v-menu>
 
         <v-spacer></v-spacer>
@@ -99,25 +27,7 @@
                         <v-icon small color="white" class="dropdown-icon">mdi-chevron-down</v-icon>
                     </v-btn>
                 </template>
-                <v-list dense>
-                    <v-list-item link to="/new">
-                        <v-list-item-icon>
-                            <v-icon color="white">mdi-book</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title>New Project</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-list-item link to="/organizations/new">
-                        <v-list-item-icon>
-                            <v-icon color="white">mdi-account-group</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title>New Organization</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-list>
+                <dropdown :controls="newControls" />
             </v-menu>
 
             <v-menu bottom offset-y transition="slide-y-transition">
@@ -127,116 +37,140 @@
                         <v-icon small color="white" class="dropdown-icon">mdi-chevron-down</v-icon>
                     </v-btn>
                 </template>
-                <v-list dense>
-                    <v-list-item link :to="'/' + user">
-                        <v-list-item-icon>
-                            <v-icon color="white">mdi-account</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ user }}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-list-item link to="/notifications">
-                        <v-list-item-icon>
-                            <v-icon color="white">mdi-bell</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title>Notifications</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <!-- todo: check perms -->
-                    <v-list-item link to="/admin/flags">
-                        <v-list-item-icon>
-                            <v-icon color="white">mdi-flag</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title>Flags</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-list-item link to="/admin/approval/projects">
-                        <v-list-item-icon>
-                            <v-icon color="white">mdi-thumb-up</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title>Project approvals</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-list-item link to="/admin/approval/versions">
-                        <v-list-item-icon>
-                            <v-icon color="white">mdi-thumb-up-outline</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title>Version approvals</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-list-item link to="/admin/stats">
-                        <v-list-item-icon>
-                            <v-icon color="white">mdi-chart-line</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title>Stats</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-list-item link to="/admin/health">
-                        <v-list-item-icon>
-                            <v-icon color="white">mdi-heart-plus</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title>Hangar Health</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-list-item link to="/admin/log">
-                        <v-list-item-icon>
-                            <v-icon color="white">mdi-format-list-bulleted</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title>User Action Log</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-list-item link to="/admin/versions">
-                        <v-list-item-icon>
-                            <v-icon color="white">mdi-tag-multiple</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title>Platform Versions</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-divider />
-
-                    <v-list-item link to="/logout">
-                        <v-list-item-icon>
-                            <v-icon color="white">mdi-logout</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title>Sign out</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-list>
+                <dropdown :controls="userControls" />
             </v-menu>
         </template>
         <template v-else>
-            <v-btn>Sign up</v-btn>
-            <v-btn>Log In</v-btn>
+            <v-btn to="/signUp">Sign up</v-btn>
+            <v-btn to="/login">Log In</v-btn>
         </template>
     </v-app-bar>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
+import { Control } from '~/components/dropdown.vue';
 
 @Component
 export default class NewPage extends Vue {
     loggedIn = true;
-    user = "MiniDigger";
+    user = 'MiniDigger';
+
+    get dropdown(): Control[] {
+        const controls: Control[] = [];
+        controls.push({
+            link: 'https://www.papermc.io',
+            icon: 'mdi-home',
+            title: 'Homepage',
+        });
+        controls.push({
+            link: 'https://papermc.io/forums',
+            icon: 'mdi-comment-multiple',
+            title: 'Forums',
+        });
+        controls.push({
+            link: 'https://github.com/PaperMC',
+            icon: 'mdi-code-braces',
+            title: 'Code',
+        });
+        controls.push({
+            link: 'https://paper.readthedocs.io',
+            icon: 'mdi-book',
+            title: 'Docs',
+        });
+        controls.push({
+            link: 'https://papermc.io/javadocs',
+            icon: 'mdi-school',
+            title: 'JavaDocs',
+        });
+        controls.push({
+            link: '/',
+            icon: 'mdi-home',
+            title: 'Hangar (Plugins)',
+        });
+        controls.push({
+            link: 'https://papermc.io/downloads',
+            icon: 'mdi-download',
+            title: 'Downloads',
+        });
+        controls.push({
+            link: 'https://papermc.io/community',
+            icon: 'mdi-comment',
+            title: 'Community',
+        });
+        return controls;
+    }
+
+    get newControls(): Control[] {
+        const controls: Control[] = [];
+        controls.push({
+            link: '/new',
+            icon: 'mdi-book',
+            title: 'New Project',
+        });
+        controls.push({
+            link: '/organizations/new',
+            icon: 'mdi-account-group',
+            title: 'New Organization',
+        });
+        return controls;
+    }
+
+    get userControls(): Control[] {
+        const controls: Control[] = [];
+        controls.push({
+            link: '/' + this.user,
+            icon: 'mdi-account',
+            title: this.user,
+        });
+        controls.push({
+            link: '/notifications',
+            icon: 'mdi-bell',
+            title: 'Notifications',
+        });
+        // TODO check perms
+        controls.push({
+            link: '/admin/flags',
+            icon: 'mdi-flag',
+            title: 'Flags',
+        });
+        controls.push({
+            link: '/admin/approval/projects',
+            icon: 'mdi-thumb-up',
+            title: 'Project approvals',
+        });
+        controls.push({
+            link: '/admin/approval/versions',
+            icon: 'mdi-thumb-up-outline',
+            title: 'Version approvals',
+        });
+        controls.push({
+            link: '/admin/stats',
+            icon: 'mdi-chart-line',
+            title: 'Stats',
+        });
+        controls.push({
+            link: '/admin/health',
+            icon: 'mdi-heart-plus',
+            title: 'Hangar Health',
+        });
+        controls.push({
+            link: '/admin/log',
+            icon: 'mdi-format-list-bulleted',
+            title: 'User Action Log',
+        });
+        controls.push({
+            link: '/admin/versions',
+            icon: 'mdi-tag-multiple',
+            title: 'Platform Versions',
+        });
+        controls.push({
+            link: '/logout',
+            icon: 'mdi-logout',
+            title: 'Sign out',
+        });
+        return controls;
+    }
 }
 </script>
 
