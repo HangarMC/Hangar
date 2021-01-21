@@ -1,8 +1,8 @@
 package io.papermc.hangar.service;
 
-import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.daoold.HangarDao;
 import io.papermc.hangar.db.modelold.JobsTable;
-import io.papermc.hangar.db.dao.JobDao;
+import io.papermc.hangar.db.daoold.JobDao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

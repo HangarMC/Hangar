@@ -1,8 +1,8 @@
 package io.papermc.hangar.service;
 
-import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.PlatformVersionsDao;
-import io.papermc.hangar.db.dao.RoleDao;
+import io.papermc.hangar.db.daoold.HangarDao;
+import io.papermc.hangar.db.daoold.PlatformVersionsDao;
+import io.papermc.hangar.db.daoold.RoleDao;
 import io.papermc.hangar.db.modelold.PlatformVersionsTable;
 import io.papermc.hangar.db.modelold.RolesTable;
 import io.papermc.hangar.modelold.Platform;

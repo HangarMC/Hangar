@@ -2,7 +2,7 @@ package io.papermc.hangar.controllerold.api;
 
 import io.papermc.hangar.modelold.ApiAuthInfo;
 import io.papermc.hangar.modelold.NamedPermission;
-import io.papermc.hangar.modelold.Permission;
+import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.modelold.PermissionType;
 import io.papermc.hangar.modelold.generated.PermissionCheck;
 import io.papermc.hangar.modelold.generated.Permissions;
@@ -30,7 +30,7 @@ public class PermissionsApiController implements PermissionsApi {
     }
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.modelold.Permission).None, T(io.papermc.hangar.controllerold.util.ApiScope).forGlobal())")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).None, T(io.papermc.hangar.controller.ApiScope).forGlobal())")
     public ResponseEntity<PermissionCheck> hasAll(List<NamedPermission> permissions, String author, String slug) {
         return has(permissions, author, slug, (namedPerms, perm) -> namedPerms.stream().anyMatch(p -> perm.has(p.getPermission())));
     }
@@ -41,7 +41,7 @@ public class PermissionsApiController implements PermissionsApi {
     }
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.modelold.Permission).None, T(io.papermc.hangar.controllerold.util.ApiScope).forGlobal())")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).None, T(io.papermc.hangar.controller.ApiScope).forGlobal())")
     public ResponseEntity<Permissions> showPermissions(String author, String slug) {
         Pair<PermissionType, Permission> scopedPerms = getPermissionsInScope(author, slug);
         return ResponseEntity.ok(new Permissions().type(scopedPerms.getLeft()).permissions(scopedPerms.getRight().toNamed()));

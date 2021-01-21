@@ -2,7 +2,7 @@ package io.papermc.hangar.modelold.viewhelpers;
 
 import io.papermc.hangar.db.modelold.UserOrganizationRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
-import io.papermc.hangar.modelold.Permission;
+import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.modelold.Role;
 
 import java.util.ArrayList;

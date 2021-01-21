@@ -1,9 +1,9 @@
 package io.papermc.hangar.service;
 
-import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.PermissionsDao;
+import io.papermc.hangar.db.daoold.HangarDao;
+import io.papermc.hangar.db.daoold.PermissionsDao;
 import io.papermc.hangar.db.modelold.UsersTable;
-import io.papermc.hangar.modelold.Permission;
+import io.papermc.hangar.model.Permission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;

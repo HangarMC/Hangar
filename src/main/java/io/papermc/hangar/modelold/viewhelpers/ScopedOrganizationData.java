@@ -1,6 +1,6 @@
 package io.papermc.hangar.modelold.viewhelpers;
 
-import io.papermc.hangar.modelold.Permission;
+import io.papermc.hangar.model.Permission;
 
 public class ScopedOrganizationData {
     private final Permission permissions;

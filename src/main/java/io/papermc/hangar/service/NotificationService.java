@@ -1,9 +1,9 @@
 package io.papermc.hangar.service;
 
-import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.NotificationsDao;
-import io.papermc.hangar.db.dao.UserOrganizationRolesDao;
-import io.papermc.hangar.db.dao.UserProjectRolesDao;
+import io.papermc.hangar.db.daoold.HangarDao;
+import io.papermc.hangar.db.daoold.NotificationsDao;
+import io.papermc.hangar.db.daoold.UserOrganizationRolesDao;
+import io.papermc.hangar.db.daoold.UserProjectRolesDao;
 import io.papermc.hangar.db.modelold.NotificationsTable;
 import io.papermc.hangar.db.modelold.OrganizationsTable;
 import io.papermc.hangar.db.modelold.ProjectsTable;

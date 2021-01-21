@@ -1,8 +1,8 @@
 package io.papermc.hangar.service.project;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.ProjectChannelDao;
+import io.papermc.hangar.db.daoold.HangarDao;
+import io.papermc.hangar.db.daoold.ProjectChannelDao;
 import io.papermc.hangar.db.modelold.ProjectChannelsTable;
 import io.papermc.hangar.exceptions.HangarException;
 import io.papermc.hangar.modelold.Color;

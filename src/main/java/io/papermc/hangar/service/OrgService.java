@@ -1,16 +1,16 @@
 package io.papermc.hangar.service;
 
-import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.OrganizationDao;
-import io.papermc.hangar.db.dao.OrganizationMembersDao;
-import io.papermc.hangar.db.dao.ProjectDao;
-import io.papermc.hangar.db.dao.UserDao;
-import io.papermc.hangar.db.dao.UserOrganizationRolesDao;
+import io.papermc.hangar.db.daoold.HangarDao;
+import io.papermc.hangar.db.daoold.OrganizationDao;
+import io.papermc.hangar.db.daoold.OrganizationMembersDao;
+import io.papermc.hangar.db.daoold.ProjectDao;
+import io.papermc.hangar.db.daoold.UserDao;
+import io.papermc.hangar.db.daoold.UserOrganizationRolesDao;
 import io.papermc.hangar.db.modelold.OrganizationMembersTable;
 import io.papermc.hangar.db.modelold.OrganizationsTable;
 import io.papermc.hangar.db.modelold.UserOrganizationRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
-import io.papermc.hangar.modelold.Permission;
+import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.modelold.viewhelpers.OrgMember;
 import io.papermc.hangar.modelold.viewhelpers.OrganizationData;
 import io.papermc.hangar.modelold.viewhelpers.ScopedOrganizationData;

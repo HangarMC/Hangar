@@ -1,7 +1,7 @@
 package io.papermc.hangar.service.project;
 
-import io.papermc.hangar.db.dao.FlagDao;
-import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.daoold.FlagDao;
+import io.papermc.hangar.db.daoold.HangarDao;
 import io.papermc.hangar.db.modelold.ProjectFlagsTable;
 import io.papermc.hangar.modelold.FlagReason;
 import io.papermc.hangar.modelold.viewhelpers.ProjectFlag;

@@ -1,8 +1,8 @@
 package io.papermc.hangar.service;
 
-import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.ProjectStatsDao;
-import io.papermc.hangar.db.dao.ProjectStatsTrackerDao;
+import io.papermc.hangar.db.daoold.HangarDao;
+import io.papermc.hangar.db.daoold.ProjectStatsDao;
+import io.papermc.hangar.db.daoold.ProjectStatsTrackerDao;
 import io.papermc.hangar.db.modelold.ProjectVersionsTable;
 import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.db.modelold.Stats;

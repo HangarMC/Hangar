@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.modelold;
 
 
-import io.papermc.hangar.modelold.Permission;
+import io.papermc.hangar.model.Permission;
 import org.jdbi.v3.core.mapper.Nested;
 
 import java.time.OffsetDateTime;

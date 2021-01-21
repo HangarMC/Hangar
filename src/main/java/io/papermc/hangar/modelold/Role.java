@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.db.customtypes.RoleCategory;
+import io.papermc.hangar.model.Permission;
 
 @JsonFormat(shape = Shape.OBJECT)
 public enum Role {
@@ -127,6 +129,11 @@ public enum Role {
             }
         }
         return null;
+    }
+
+    @JsonCreator(mode = Mode.PROPERTIES)
+    public static Role fromPropertyValue(@JsonProperty("value") String value) {
+        return fromValue(value);
     }
 
     public static Role fromId(long id) {

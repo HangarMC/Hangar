@@ -1,9 +1,9 @@
 package io.papermc.hangar.service;
 
-import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.ProjectDao;
-import io.papermc.hangar.db.dao.ProjectVersionDao;
-import io.papermc.hangar.db.dao.VisibilityDao;
+import io.papermc.hangar.db.daoold.HangarDao;
+import io.papermc.hangar.db.daoold.ProjectDao;
+import io.papermc.hangar.db.daoold.ProjectVersionDao;
+import io.papermc.hangar.db.daoold.VisibilityDao;
 import io.papermc.hangar.db.modelold.ProjectChannelsTable;
 import io.papermc.hangar.db.modelold.ProjectVersionTagsTable;
 import io.papermc.hangar.db.modelold.ProjectVersionVisibilityChangesTable;

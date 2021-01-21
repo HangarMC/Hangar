@@ -47,7 +47,7 @@ public class Apiv1Controller extends HangarController {
         this.projectsTable = projectsTable;
     }
 
-    @PreAuthorize("@authenticationService.authV1ApiRequest(T(io.papermc.hangar.modelold.Permission).EditApiKeys, T(io.papermc.hangar.controllerold.util.ApiScope).forProject(#author, #slug))")
+    @PreAuthorize("@authenticationService.authV1ApiRequest(T(io.papermc.hangar.model.Permission).EditApiKeys, T(io.papermc.hangar.controller.ApiScope).forProject(#author, #slug))")
     @UserLock
     @Secured("ROLE_USER")
     @PostMapping("/v1/projects/{author}/{slug}/keys/new") // USED IN project settings (deployment key)
@@ -67,7 +67,7 @@ public class Apiv1Controller extends HangarController {
         return ResponseEntity.ok(apiKeyObj);
     }
 
-    @PreAuthorize("@authenticationService.authV1ApiRequest(T(io.papermc.hangar.modelold.Permission).EditApiKeys, T(io.papermc.hangar.controllerold.util.ApiScope).forProject(#author, #slug))")
+    @PreAuthorize("@authenticationService.authV1ApiRequest(T(io.papermc.hangar.model.Permission).EditApiKeys, T(io.papermc.hangar.controller.ApiScope).forProject(#author, #slug))")
     @UserLock
     @Secured("ROLE_USER")
     @PostMapping("/v1/projects/{author}/{slug}/keys/revoke") // USED in project settings (deployment key)

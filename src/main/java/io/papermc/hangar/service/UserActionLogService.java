@@ -1,8 +1,8 @@
 package io.papermc.hangar.service;
 
 import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.dao.ActionsDao;
-import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.daoold.ActionsDao;
+import io.papermc.hangar.db.daoold.HangarDao;
 import io.papermc.hangar.db.modelold.LoggedActionsOrganizationTable;
 import io.papermc.hangar.db.modelold.LoggedActionsPageTable;
 import io.papermc.hangar.db.modelold.LoggedActionsProjectTable;

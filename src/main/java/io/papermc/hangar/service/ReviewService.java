@@ -2,9 +2,9 @@ package io.papermc.hangar.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import io.papermc.hangar.db.dao.ProjectVersionReviewDao;
+import io.papermc.hangar.db.daoold.ProjectVersionReviewDao;
 import io.papermc.hangar.modelold.viewhelpers.VersionReview;
-import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.daoold.HangarDao;
 import io.papermc.hangar.db.modelold.ProjectVersionReviewsTable;
 
 import org.springframework.beans.factory.annotation.Autowired;

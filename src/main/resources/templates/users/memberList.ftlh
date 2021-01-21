@@ -7,7 +7,7 @@
 <#import "*/users/invite/roleSelect.ftlh" as roleSelect>
 
 <!-- TODO: Pagination -->
-<#-- @ftlvariable name="perms" type="io.papermc.hangar.modelold.Permission" -->
+<#-- @ftlvariable name="perms" type="io.papermc.hangar.model.Permission" -->
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
 <#macro memberList project perms editable=false removeCall="" settingsCall="" saveCall="" includeModal=true>
 <#-- @ftlvariable name="project" type="io.papermc.hangar.modelold.viewhelpers.JoinableData" -->

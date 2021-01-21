@@ -1,8 +1,8 @@
 package io.papermc.hangar.service.project;
 
-import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.daoold.HangarDao;
 import io.papermc.hangar.util.StringUtils;
-import io.papermc.hangar.db.dao.ProjectPageDao;
+import io.papermc.hangar.db.daoold.ProjectPageDao;
 import io.papermc.hangar.modelold.viewhelpers.ProjectPage;
 
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;

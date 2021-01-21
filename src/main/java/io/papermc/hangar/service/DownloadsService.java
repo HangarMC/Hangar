@@ -1,8 +1,8 @@
 package io.papermc.hangar.service;
 
-import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.ProjectVersionDownloadWarningDao;
-import io.papermc.hangar.db.dao.ProjectVersionUnsafeDownloadsDao;
+import io.papermc.hangar.db.daoold.HangarDao;
+import io.papermc.hangar.db.daoold.ProjectVersionDownloadWarningDao;
+import io.papermc.hangar.db.daoold.ProjectVersionUnsafeDownloadsDao;
 import io.papermc.hangar.db.modelold.ProjectVersionDownloadWarningsTable;
 import io.papermc.hangar.db.modelold.ProjectVersionUnsafeDownloadsTable;
 import org.springframework.stereotype.Service;

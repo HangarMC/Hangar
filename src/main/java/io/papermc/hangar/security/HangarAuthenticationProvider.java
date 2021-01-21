@@ -1,7 +1,7 @@
 package io.papermc.hangar.security;
 
-import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.UserDao;
+import io.papermc.hangar.db.daoold.HangarDao;
+import io.papermc.hangar.db.daoold.UserDao;
 import io.papermc.hangar.db.modelold.UsersTable;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;

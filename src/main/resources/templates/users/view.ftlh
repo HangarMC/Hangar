@@ -12,7 +12,7 @@
 <#-- @ftlvariable name="u" type="io.papermc.hangar.modelold.viewhelpers.UserData" -->
 <#-- @ftlvariable name="o" type="java.util.Optional<io.papermc.hangar.modelold.viewhelpers.OrganizationData>" -->
 <#-- @ftlvariable name="so" type="java.util.Optional<io.papermc.hangar.modelold.viewhelpers.ScopedOrganizationData>" -->
-<#-- @ftlvariable name="Permission" type="io.papermc.hangar.modelold.Permission" -->
+<#-- @ftlvariable name="Permission" type="io.papermc.hangar.model.Permission" -->
     <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
     <#return u.isOrga() && o.present && so.get().permissions.has(Permission.EditOrganizationSettings)>
 </#function>
@@ -21,7 +21,7 @@
 <#-- @ftlvariable name="u" type="io.papermc.hangar.modelold.viewhelpers.UserData" -->
 <#-- @ftlvariable name="o" type="java.util.Optional<io.papermc.hangar.modelold.viewhelpers.OrganizationData>" -->
 <#-- @ftlvariable name="so" type="java.util.Optional<io.papermc.hangar.modelold.viewhelpers.ScopedOrganizationData>" -->
-<#-- @ftlvariable name="Permission" type="io.papermc.hangar.modelold.Permission" -->
+<#-- @ftlvariable name="Permission" type="io.papermc.hangar.model.Permission" -->
     <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
     <#assign scriptsVar>
         <script nonce="${nonce}">

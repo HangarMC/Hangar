@@ -3,8 +3,8 @@ package io.papermc.hangar.controllerold;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.UserDao;
+import io.papermc.hangar.db.daoold.HangarDao;
+import io.papermc.hangar.db.daoold.UserDao;
 import io.papermc.hangar.db.modelold.NotificationsTable;
 import io.papermc.hangar.db.modelold.UserSessionsTable;
 import io.papermc.hangar.db.modelold.UsersTable;
@@ -62,7 +62,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-@Controller
+//@Controller
 public class UsersController extends HangarController {
 
     private final ObjectMapper mapper;

@@ -3,14 +3,14 @@ package io.papermc.hangar.controllerold.api;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controllerold.exceptions.HangarApiException;
 import io.papermc.hangar.modelold.ApiAuthInfo;
-import io.papermc.hangar.modelold.Permission;
+import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.modelold.api.PaginatedUserResult;
 import io.papermc.hangar.modelold.generated.PaginatedCompactProjectResult;
 import io.papermc.hangar.modelold.generated.Pagination;
 import io.papermc.hangar.modelold.generated.ProjectCompact;
 import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
 import io.papermc.hangar.modelold.generated.User;
-import io.papermc.hangar.service.api.UserApiService;
+import io.papermc.hangar.service.apiold.UserApiService;
 import io.papermc.hangar.util.ApiUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
-@Controller
+//@Controller
 public class UsersApiController implements UsersApi {
 
     private static final Logger log = LoggerFactory.getLogger(UsersApiController.class);
@@ -39,7 +39,7 @@ public class UsersApiController implements UsersApi {
     }
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.modelold.Permission).ViewPublicInfo, T(io.papermc.hangar.controllerold.util.ApiScope).forGlobal())")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.ApiScope).forGlobal())")
     public ResponseEntity<PaginatedCompactProjectResult> showStarred(String user, ProjectSortingStrategy sort, Long limit, Long offset) {
         long realLimit = ApiUtil.limitOrDefault(limit, hangarConfig.projects.getInitLoad());
         long realOffset = ApiUtil.offsetOrZero(offset);
@@ -53,7 +53,7 @@ public class UsersApiController implements UsersApi {
     }
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.modelold.Permission).ViewPublicInfo, T(io.papermc.hangar.controllerold.util.ApiScope).forGlobal())")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.ApiScope).forGlobal())")
     public ResponseEntity<User> showUser(String user) {
         User userObj = userApiService.getUser(user);
         if (userObj == null) {
@@ -64,7 +64,7 @@ public class UsersApiController implements UsersApi {
     }
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.modelold.Permission).ViewPublicInfo, T(io.papermc.hangar.controllerold.util.ApiScope).forGlobal())")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.ApiScope).forGlobal())")
     public ResponseEntity<PaginatedUserResult> showUsers(String q, Long limit, long offset) {
         long realLimit = ApiUtil.limitOrDefault(limit, hangarConfig.projects.getInitLoad());
         long realOffset = ApiUtil.offsetOrZero(offset);
@@ -76,7 +76,7 @@ public class UsersApiController implements UsersApi {
     }
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.modelold.Permission).ViewPublicInfo, T(io.papermc.hangar.controllerold.util.ApiScope).forGlobal())")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.ApiScope).forGlobal())")
     public ResponseEntity<PaginatedCompactProjectResult> showWatching(String user, ProjectSortingStrategy sort, Long limit, Long offset) {
         long realLimit = ApiUtil.limitOrDefault(limit, hangarConfig.projects.getInitLoad());
         long realOffset = ApiUtil.offsetOrZero(offset);

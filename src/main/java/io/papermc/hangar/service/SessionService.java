@@ -2,7 +2,7 @@ package io.papermc.hangar.service;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.UserSessionDao;
-import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.daoold.HangarDao;
 import io.papermc.hangar.db.modelold.UserSessionsTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import org.springframework.stereotype.Service;

@@ -2,6 +2,7 @@ package io.papermc.hangar.model.api;
 
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.Named;
+import io.papermc.hangar.model.internal.HangarUser;
 import io.papermc.hangar.modelold.Role;
 
 import java.time.OffsetDateTime;
