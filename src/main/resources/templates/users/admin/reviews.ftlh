@@ -17,7 +17,7 @@
 </#assign>
 
 <#assign ReviewState=@helper["io.papermc.hangar.model.generated.ReviewState"] />
-<#-- @ftlvariable name="ReviewState" type="io.papermc.hangar.model.generated.ReviewState" -->
+<#-- @ftlvariable name="ReviewState" type="io.papermc.hangar.modelold.generated.ReviewState" -->
 <#assign message><@spring.messageArgs code="review.title" args=[project.project.name, version.v.versionString] /></#assign>
 <@base.base title=message additionalScripts=scripts>
     <div id="review-btn-group" class="row">
@@ -103,7 +103,7 @@
         <div class="col-md-12">
             <table class="table table-sm setting-no-border table-review-log">
                 <tbody>
-                <#-- @ftlvariable name="review" type="io.papermc.hangar.model.viewhelpers.VersionReview" -->
+                <#-- @ftlvariable name="review" type="io.papermc.hangar.modelold.viewhelpers.VersionReview" -->
                 <#list reviews as review>
                     <#if review.endedAt??>
                         <#if reviews?size gt (reviews?size - review?index)>
@@ -151,7 +151,7 @@
                         </#if>
                     </#if>
                     <#list review.getMessages()?filter(m -> !m.takeover && !m.stop)?reverse as message>
-                    <#-- @ftlvariable name="message" type="io.papermc.hangar.model.viewhelpers.VersionReviewMessage" -->
+                    <#-- @ftlvariable name="message" type="io.papermc.hangar.modelold.viewhelpers.VersionReviewMessage" -->
                         <tr>
                             <td>${message.getFormattedTime()}</td> <#-- TODO per locale-->
                             <td>

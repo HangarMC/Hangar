@@ -1,6 +1,6 @@
 package io.papermc.hangar.security.voters;
 
-import io.papermc.hangar.model.NamedPermission;
+import io.papermc.hangar.modelold.NamedPermission;
 import io.papermc.hangar.security.HangarAuthentication;
 import io.papermc.hangar.security.attributes.PermissionAttribute;
 import org.aopalliance.intercept.MethodInvocation;

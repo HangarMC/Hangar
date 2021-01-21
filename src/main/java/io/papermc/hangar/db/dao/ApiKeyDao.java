@@ -1,9 +1,9 @@
 package io.papermc.hangar.db.dao;
 
-import io.papermc.hangar.db.model.ApiKeysTable;
-import io.papermc.hangar.db.model.ProjectApiKeysTable;
-import io.papermc.hangar.model.ApiAuthInfo;
-import io.papermc.hangar.model.viewhelpers.ApiKey;
+import io.papermc.hangar.db.modelold.ApiKeysTable;
+import io.papermc.hangar.db.modelold.ProjectApiKeysTable;
+import io.papermc.hangar.modelold.ApiAuthInfo;
+import io.papermc.hangar.modelold.viewhelpers.ApiKey;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;

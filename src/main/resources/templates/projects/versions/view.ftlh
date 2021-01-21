@@ -194,7 +194,7 @@
                             <#if deps?? && deps?size != 0>
                                 <ul class="list-group">
                                     <#list deps as dep, url>
-                                    <#-- @ftlvariable name="dep" type="io.papermc.hangar.model.generated.Dependency" -->
+                                    <#-- @ftlvariable name="dep" type="io.papermc.hangar.modelold.generated.Dependency" -->
                                         <li class="list-group-item">
                                             <#if url?has_content>
                                                 <a href="${url}">

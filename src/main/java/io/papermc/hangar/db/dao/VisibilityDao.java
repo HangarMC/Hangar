@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.dao;
 
-import io.papermc.hangar.db.model.ProjectVersionVisibilityChangesTable;
-import io.papermc.hangar.db.model.ProjectVisibilityChangesTable;
+import io.papermc.hangar.db.modelold.ProjectVersionVisibilityChangesTable;
+import io.papermc.hangar.db.modelold.ProjectVisibilityChangesTable;
 
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;

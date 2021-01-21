@@ -1,7 +1,7 @@
 package io.papermc.hangar.service.plugindata;
 
 import io.papermc.hangar.exceptions.HangarException;
-import io.papermc.hangar.model.Platform;
+import io.papermc.hangar.modelold.Platform;
 import io.papermc.hangar.service.plugindata.handler.FileTypeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

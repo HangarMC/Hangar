@@ -1,6 +1,6 @@
 package io.papermc.hangar.service.sso;
 
-import io.papermc.hangar.model.Role;
+import io.papermc.hangar.modelold.Role;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

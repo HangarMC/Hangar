@@ -6,7 +6,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
-import io.papermc.hangar.db.model.RolesTable;
+import io.papermc.hangar.db.modelold.RolesTable;
 
 @Repository
 @RegisterBeanMapper(RolesTable.class)

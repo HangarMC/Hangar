@@ -2,7 +2,7 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 
 <#macro prompt prompt id="" position="right">
-    <#-- @ftlvariable name="prompt" type="io.papermc.hangar.model.Prompt" -->
+<#-- @ftlvariable name="prompt" type="io.papermc.hangar.modelold.Prompt" -->
     <div class="prompt popover ${id} ${position}" data-prompt-id="${prompt.ordinal()}">
         <div class="arrow"></div>
         <h3 class="popover-title"><@spring.message prompt.titleId /></h3>

@@ -15,10 +15,10 @@ import io.papermc.hangar.db.dao.ProjectDao;
 import io.papermc.hangar.db.dao.ProjectPageDao;
 import io.papermc.hangar.db.dao.ProjectVersionDao;
 import io.papermc.hangar.db.dao.UserDao;
-import io.papermc.hangar.db.model.ProjectVersionsTable;
-import io.papermc.hangar.db.model.ProjectsTable;
-import io.papermc.hangar.db.model.UsersTable;
-import io.papermc.hangar.model.viewhelpers.ProjectPage;
+import io.papermc.hangar.db.modelold.ProjectVersionsTable;
+import io.papermc.hangar.db.modelold.ProjectsTable;
+import io.papermc.hangar.db.modelold.UsersTable;
+import io.papermc.hangar.modelold.viewhelpers.ProjectPage;
 
 @Service
 public class SitemapService {

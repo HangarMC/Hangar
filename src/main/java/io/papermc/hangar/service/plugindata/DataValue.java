@@ -1,15 +1,13 @@
 package io.papermc.hangar.service.plugindata;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-import io.papermc.hangar.model.Platform;
-import io.papermc.hangar.model.generated.Dependency;
-import io.papermc.hangar.model.generated.PlatformDependency;
-import io.papermc.hangar.model.viewhelpers.VersionDependencies;
+import io.papermc.hangar.modelold.Platform;
+import io.papermc.hangar.modelold.generated.Dependency;
+import io.papermc.hangar.modelold.generated.PlatformDependency;
+import io.papermc.hangar.modelold.viewhelpers.VersionDependencies;
 
 public abstract class DataValue {
 

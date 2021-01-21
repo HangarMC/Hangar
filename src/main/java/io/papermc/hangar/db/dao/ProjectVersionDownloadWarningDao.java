@@ -1,6 +1,6 @@
 package io.papermc.hangar.db.dao;
 
-import io.papermc.hangar.db.model.ProjectVersionDownloadWarningsTable;
+import io.papermc.hangar.db.modelold.ProjectVersionDownloadWarningsTable;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;

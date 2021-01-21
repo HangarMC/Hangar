@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.dao;
 
-import io.papermc.hangar.db.model.ProjectsTable;
-import io.papermc.hangar.db.model.UserProjectRolesTable;
+import io.papermc.hangar.db.modelold.ProjectsTable;
+import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;

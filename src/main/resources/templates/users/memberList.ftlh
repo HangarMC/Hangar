@@ -7,10 +7,10 @@
 <#import "*/users/invite/roleSelect.ftlh" as roleSelect>
 
 <!-- TODO: Pagination -->
-<#-- @ftlvariable name="perms" type="io.papermc.hangar.model.Permission" -->
+<#-- @ftlvariable name="perms" type="io.papermc.hangar.modelold.Permission" -->
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
 <#macro memberList project perms editable=false removeCall="" settingsCall="" saveCall="" includeModal=true>
-<#-- @ftlvariable name="project" type="io.papermc.hangar.model.viewhelpers.JoinableData" -->
+<#-- @ftlvariable name="project" type="io.papermc.hangar.modelold.viewhelpers.JoinableData" -->
     <#if project.members?size != 0>
 
         <#if editable && perms.has(Permission.ManageSubjectMembers)>
@@ -89,8 +89,8 @@
             <ul class="list-members list-group">
                 <!-- Member list -->
                 <#list project.filteredMembers(headerData) as subjectRole, user>
-                    <#-- @ftlvariable name="subjectRole" type="io.papermc.hangar.db.model.RoleTable" -->
-                    <#-- @ftlvariable name="user" type="io.papermc.hangar.db.model.UsersTable" -->
+                <#-- @ftlvariable name="subjectRole" type="io.papermc.hangar.db.modelold.RoleTable" -->
+                <#-- @ftlvariable name="user" type="io.papermc.hangar.db.modelold.UsersTable" -->
                     <li class="list-group-item">
                         <@userAvatar.userAvatar userName=user.name avatarUrl=utils.avatarUrl(user.name) clazz="user-avatar-xs"></@userAvatar.userAvatar>
                         <a class="username" href="${Routes.USERS_SHOW_PROJECTS.getRouteUrl(user.name)}">

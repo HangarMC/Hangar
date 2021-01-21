@@ -1,10 +1,10 @@
 package io.papermc.hangar.db.dao;
 
-import io.papermc.hangar.db.model.UsersTable;
-import io.papermc.hangar.model.viewhelpers.Author;
-import io.papermc.hangar.model.viewhelpers.FlagActivity;
-import io.papermc.hangar.model.viewhelpers.ReviewActivity;
-import io.papermc.hangar.model.viewhelpers.Staff;
+import io.papermc.hangar.db.modelold.UsersTable;
+import io.papermc.hangar.modelold.viewhelpers.Author;
+import io.papermc.hangar.modelold.viewhelpers.FlagActivity;
+import io.papermc.hangar.modelold.viewhelpers.ReviewActivity;
+import io.papermc.hangar.modelold.viewhelpers.Staff;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.BindList;

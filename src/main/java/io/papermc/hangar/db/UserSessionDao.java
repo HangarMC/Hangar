@@ -1,6 +1,6 @@
 package io.papermc.hangar.db;
 
-import io.papermc.hangar.db.model.UserSessionsTable;
+import io.papermc.hangar.db.modelold.UserSessionsTable;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;

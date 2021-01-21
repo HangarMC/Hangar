@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import io.papermc.hangar.db.customtypes.JSONB;
-import io.papermc.hangar.model.generated.PlatformDependency;
+import io.papermc.hangar.modelold.generated.PlatformDependency;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 

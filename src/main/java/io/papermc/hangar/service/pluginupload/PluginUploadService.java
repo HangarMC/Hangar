@@ -2,9 +2,9 @@ package io.papermc.hangar.service.pluginupload;
 
 import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.db.model.ProjectChannelsTable;
-import io.papermc.hangar.db.model.ProjectsTable;
-import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.db.modelold.ProjectChannelsTable;
+import io.papermc.hangar.db.modelold.ProjectsTable;
+import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.exceptions.HangarException;
 import io.papermc.hangar.service.VersionService;
 import io.papermc.hangar.service.plugindata.PluginDataService;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.db.model.ProjectsTable;
+import io.papermc.hangar.db.modelold.ProjectsTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

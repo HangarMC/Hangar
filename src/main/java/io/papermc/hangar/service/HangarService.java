@@ -1,6 +1,6 @@
 package io.papermc.hangar.service;
 
-import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.db.modelold.UsersTable;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

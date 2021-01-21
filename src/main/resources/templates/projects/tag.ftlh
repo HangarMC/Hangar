@@ -2,8 +2,8 @@
 <#import "*/utils/hangar.ftlh" as hangar />
 
 <#macro tagTemplate tag platform form tagCount=0>
-    <#-- @ftlvariable name="tag" type="io.papermc.hangar.model.viewhelpers.ViewTag" -->
-    <#-- @ftlvariable name="platform" type="io.papermc.hangar.model.Platform" -->
+<#-- @ftlvariable name="tag" type="io.papermc.hangar.modelold.viewhelpers.ViewTag" -->
+<#-- @ftlvariable name="platform" type="io.papermc.hangar.modelold.Platform" -->
     <div class="tags">
         <span style="color: ${tag.color.getForeground()}; background-color:${tag.color.getBackground()}; border-color: ${tag.color.getBackground()}" class="tag">${tag.name}</span>
     </div>

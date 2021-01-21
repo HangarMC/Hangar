@@ -1,7 +1,7 @@
 package io.papermc.hangar.util;
 
-import io.papermc.hangar.db.model.UsersTable;
-import io.papermc.hangar.model.generated.ProjectSortingStrategy;
+import io.papermc.hangar.db.modelold.UsersTable;
+import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

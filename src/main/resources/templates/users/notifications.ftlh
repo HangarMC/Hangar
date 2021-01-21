@@ -3,8 +3,8 @@
 <#import "*/layout/base.ftlh" as base />
 <#import "*/utils/userAvatar.ftlh" as userAvatar>
 
-<#-- @ftlvariable name="NotificationFilter" type="io.papermc.hangar.model.NotificationFilter" -->
-<#-- @ftlvariable name="InviteFilter" type="io.papermc.hangar.model.InviteFilter" -->
+<#-- @ftlvariable name="NotificationFilter" type="io.papermc.hangar.modelold.NotificationFilter" -->
+<#-- @ftlvariable name="InviteFilter" type="io.papermc.hangar.modelold.InviteFilter" -->
 <#assign NotificationFilter=@helper["io.papermc.hangar.model.NotificationFilter"] />
 <#assign InviteFilter=@helper["io.papermc.hangar.model.InviteFilter"] />
 <#assign scriptsVar>

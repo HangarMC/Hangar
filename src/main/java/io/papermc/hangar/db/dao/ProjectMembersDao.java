@@ -5,7 +5,7 @@ import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
-import io.papermc.hangar.db.model.ProjectMembersTable;
+import io.papermc.hangar.db.modelold.ProjectMembersTable;
 
 @Repository
 @RegisterBeanMapper(ProjectMembersTable.class)

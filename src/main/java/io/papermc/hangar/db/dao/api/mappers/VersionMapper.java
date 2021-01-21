@@ -1,14 +1,14 @@
 package io.papermc.hangar.db.dao.api.mappers;
 
-import io.papermc.hangar.model.Color;
-import io.papermc.hangar.model.Visibility;
-import io.papermc.hangar.model.generated.FileInfo;
-import io.papermc.hangar.model.generated.ReviewState;
-import io.papermc.hangar.model.generated.Tag;
-import io.papermc.hangar.model.generated.TagColor;
-import io.papermc.hangar.model.generated.Version;
-import io.papermc.hangar.model.generated.VersionStatsAll;
-import io.papermc.hangar.model.viewhelpers.VersionDependencies;
+import io.papermc.hangar.modelold.Color;
+import io.papermc.hangar.modelold.Visibility;
+import io.papermc.hangar.modelold.generated.FileInfo;
+import io.papermc.hangar.modelold.generated.ReviewState;
+import io.papermc.hangar.modelold.generated.Tag;
+import io.papermc.hangar.modelold.generated.TagColor;
+import io.papermc.hangar.modelold.generated.Version;
+import io.papermc.hangar.modelold.generated.VersionStatsAll;
+import io.papermc.hangar.modelold.viewhelpers.VersionDependencies;
 import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.mapper.RowMapper;
@@ -38,7 +38,7 @@ public class VersionMapper implements RowMapper<Version> {
 
         List<Tag> tags = new ArrayList<>();
         for (int i = 0; i < tagNames.length; i++) {
-            io.papermc.hangar.model.TagColor tagColor = io.papermc.hangar.model.TagColor.getByName(tagNames[i]);
+            io.papermc.hangar.modelold.TagColor tagColor = io.papermc.hangar.modelold.TagColor.getByName(tagNames[i]);
             Tag newTag = new Tag().name(tagNames[i]);
             if (tagData[i] != null) {
                 newTag.data(StringUtils.formatVersionNumbers(Arrays.asList(tagData[i].split(", "))));

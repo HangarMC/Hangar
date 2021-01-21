@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.db.customtypes.JSONB;
-import io.papermc.hangar.model.Platform;
-import io.papermc.hangar.model.generated.Dependency;
-import io.papermc.hangar.model.viewhelpers.VersionDependencies;
+import io.papermc.hangar.modelold.Platform;
+import io.papermc.hangar.modelold.generated.Dependency;
+import io.papermc.hangar.modelold.viewhelpers.VersionDependencies;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 

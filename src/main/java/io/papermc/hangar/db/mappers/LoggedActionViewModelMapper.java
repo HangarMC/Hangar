@@ -7,11 +7,11 @@ import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectPageContext;
 import io.papermc.hangar.db.customtypes.LoggedActionType.UserContext;
 import io.papermc.hangar.db.customtypes.LoggedActionType.VersionContext;
-import io.papermc.hangar.model.viewhelpers.LoggedActionViewModel;
-import io.papermc.hangar.model.viewhelpers.LoggedProject;
-import io.papermc.hangar.model.viewhelpers.LoggedProjectPage;
-import io.papermc.hangar.model.viewhelpers.LoggedProjectVersion;
-import io.papermc.hangar.model.viewhelpers.LoggedSubject;
+import io.papermc.hangar.modelold.viewhelpers.LoggedActionViewModel;
+import io.papermc.hangar.modelold.viewhelpers.LoggedProject;
+import io.papermc.hangar.modelold.viewhelpers.LoggedProjectPage;
+import io.papermc.hangar.modelold.viewhelpers.LoggedProjectVersion;
+import io.papermc.hangar.modelold.viewhelpers.LoggedSubject;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 

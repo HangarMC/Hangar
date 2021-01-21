@@ -3,7 +3,7 @@ package io.papermc.hangar.service.project;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.util.StringUtils;
 import io.papermc.hangar.db.dao.ProjectPageDao;
-import io.papermc.hangar.model.viewhelpers.ProjectPage;
+import io.papermc.hangar.modelold.viewhelpers.ProjectPage;
 
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;

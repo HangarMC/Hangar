@@ -27,7 +27,7 @@
                         <#assign OffsetDateTime=@helper["java.time.OffsetDateTime"]>
                         <#list activities as activity>
                             <#if activity.class.simpleName == "ReviewActivity">
-                                <#-- @ftlvariable name="activity" type="io.papermc.hangar.model.viewhelpers.ReviewActivity" -->
+                            <#-- @ftlvariable name="activity" type="io.papermc.hangar.modelold.viewhelpers.ReviewActivity" -->
                                 <tr>
                                     <td>Review approved</td>
                                     <td>${utils.prettifyDateTime(activity.endedAt!OffsetDateTime.MIN)}</td>
@@ -38,7 +38,7 @@
                                     </td>
                                 </tr>
                             <#elseif activity.class.simpleName = "FlagActivity">
-                                <#-- @ftlvariable name="activity" type="io.papermc.hangar.model.viewhelpers.FlagActivity" -->
+                            <#-- @ftlvariable name="activity" type="io.papermc.hangar.modelold.viewhelpers.FlagActivity" -->
                                 <tr>
                                     <td>Flag resolved</td>
                                     <td>${utils.prettifyDateTime(activity.resolvedAt!OffsetDateTime.MIN)}</td> <#--TODO: activity end datetime needs to be moved to abstract Activity-->

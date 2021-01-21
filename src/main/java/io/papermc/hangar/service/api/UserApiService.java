@@ -2,9 +2,9 @@ package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.api.UsersApiDao;
-import io.papermc.hangar.model.generated.ProjectCompact;
-import io.papermc.hangar.model.generated.ProjectSortingStrategy;
-import io.papermc.hangar.model.generated.User;
+import io.papermc.hangar.modelold.generated.ProjectCompact;
+import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
+import io.papermc.hangar.modelold.generated.User;
 import io.papermc.hangar.util.ApiUtil;
 import org.springframework.stereotype.Service;
 

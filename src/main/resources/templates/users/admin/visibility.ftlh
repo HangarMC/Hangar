@@ -4,7 +4,7 @@
 <#import "*/projects/helper/btnHide.ftlh" as btnHide />
 
 <#macro renderApprovalList projectSeq>
-<#-- @ftlvariable name="projectSeq" type="java.util.List<io.papermc.hangar.model.viewhelpers.ProjectApprovalData>" -->
+<#-- @ftlvariable name="projectSeq" type="java.util.List<io.papermc.hangar.modelold.viewhelpers.ProjectApprovalData>" -->
     <ul class="list-group list-flags-admin">
         <#if !projectSeq?has_content>
             <li class="list-group-item">

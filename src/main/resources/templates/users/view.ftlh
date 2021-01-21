@@ -9,19 +9,19 @@
 <#import "*/utils/prompt.ftlh" as promptView>
 
 <#function canEditOrgSettings u o so>
-    <#-- @ftlvariable name="u" type="io.papermc.hangar.model.viewhelpers.UserData" -->
-    <#-- @ftlvariable name="o" type="java.util.Optional<io.papermc.hangar.model.viewhelpers.OrganizationData>" -->
-    <#-- @ftlvariable name="so" type="java.util.Optional<io.papermc.hangar.model.viewhelpers.ScopedOrganizationData>" -->
-    <#-- @ftlvariable name="Permission" type="io.papermc.hangar.model.Permission" -->
+<#-- @ftlvariable name="u" type="io.papermc.hangar.modelold.viewhelpers.UserData" -->
+<#-- @ftlvariable name="o" type="java.util.Optional<io.papermc.hangar.modelold.viewhelpers.OrganizationData>" -->
+<#-- @ftlvariable name="so" type="java.util.Optional<io.papermc.hangar.modelold.viewhelpers.ScopedOrganizationData>" -->
+<#-- @ftlvariable name="Permission" type="io.papermc.hangar.modelold.Permission" -->
     <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
     <#return u.isOrga() && o.present && so.get().permissions.has(Permission.EditOrganizationSettings)>
 </#function>
 
 <#macro view u o so additionalScripts="" additionalStyling="">
-    <#-- @ftlvariable name="u" type="io.papermc.hangar.model.viewhelpers.UserData" -->
-    <#-- @ftlvariable name="o" type="java.util.Optional<io.papermc.hangar.model.viewhelpers.OrganizationData>" -->
-    <#-- @ftlvariable name="so" type="java.util.Optional<io.papermc.hangar.model.viewhelpers.ScopedOrganizationData>" -->
-    <#-- @ftlvariable name="Permission" type="io.papermc.hangar.model.Permission" -->
+<#-- @ftlvariable name="u" type="io.papermc.hangar.modelold.viewhelpers.UserData" -->
+<#-- @ftlvariable name="o" type="java.util.Optional<io.papermc.hangar.modelold.viewhelpers.OrganizationData>" -->
+<#-- @ftlvariable name="so" type="java.util.Optional<io.papermc.hangar.modelold.viewhelpers.ScopedOrganizationData>" -->
+<#-- @ftlvariable name="Permission" type="io.papermc.hangar.modelold.Permission" -->
     <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
     <#assign scriptsVar>
         <script nonce="${nonce}">
@@ -69,7 +69,7 @@
                         </div>
 
                         <#assign Prompt=@helper["io.papermc.hangar.model.Prompt"] />
-                    <#-- @ftlvariable name="Prompt" type="io.papermc.hangar.model.Prompt" -->
+                    <#-- @ftlvariable name="Prompt" type="io.papermc.hangar.modelold.Prompt" -->
                         <#if !u.headerData.currentUser.readPrompts?seq_contains(Prompt.CHANGE_AVATAR.ordinal())>
                             <@promptView.prompt prompt=Prompt.CHANGE_AVATAR id="popover-avatar" />
                         </#if>

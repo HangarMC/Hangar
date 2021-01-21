@@ -1,9 +1,9 @@
 package io.papermc.hangar.service;
 
-import io.papermc.hangar.db.model.UsersTable;
-import io.papermc.hangar.db.model.VisibilityModel;
-import io.papermc.hangar.model.Permission;
-import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.db.modelold.UsersTable;
+import io.papermc.hangar.db.modelold.VisibilityModel;
+import io.papermc.hangar.modelold.Permission;
+import io.papermc.hangar.modelold.Visibility;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

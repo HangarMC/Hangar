@@ -1,6 +1,6 @@
 package io.papermc.hangar.db.dao.api;
 
-import io.papermc.hangar.db.model.ApiSessionsTable;
+import io.papermc.hangar.db.modelold.ApiSessionsTable;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;

@@ -1,6 +1,6 @@
 package io.papermc.hangar.security.annotations;
 
-import io.papermc.hangar.model.NamedPermission;
+import io.papermc.hangar.modelold.NamedPermission;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

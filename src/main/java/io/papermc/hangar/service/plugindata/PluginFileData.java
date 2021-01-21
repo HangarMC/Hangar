@@ -1,10 +1,10 @@
 package io.papermc.hangar.service.plugindata;
 
-import io.papermc.hangar.db.model.ProjectVersionTagsTable;
+import io.papermc.hangar.db.modelold.ProjectVersionTagsTable;
 import io.papermc.hangar.exceptions.HangarException;
-import io.papermc.hangar.model.Platform;
-import io.papermc.hangar.model.generated.PlatformDependency;
-import io.papermc.hangar.model.viewhelpers.VersionDependencies;
+import io.papermc.hangar.modelold.Platform;
+import io.papermc.hangar.modelold.generated.PlatformDependency;
+import io.papermc.hangar.modelold.viewhelpers.VersionDependencies;
 import io.papermc.hangar.service.VersionService;
 import io.papermc.hangar.service.plugindata.handler.FileTypeHandler;
 import org.springframework.lang.Nullable;

@@ -1,6 +1,6 @@
 package io.papermc.hangar.db.dao;
 
-import io.papermc.hangar.db.model.JobsTable;
+import io.papermc.hangar.db.modelold.JobsTable;
 
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;

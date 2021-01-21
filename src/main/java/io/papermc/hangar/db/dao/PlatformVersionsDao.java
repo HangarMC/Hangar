@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.dao;
 
-import io.papermc.hangar.db.model.PlatformVersionsTable;
-import io.papermc.hangar.model.Platform;
+import io.papermc.hangar.db.modelold.PlatformVersionsTable;
+import io.papermc.hangar.modelold.Platform;
 import org.jdbi.v3.core.enums.EnumStrategy;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;

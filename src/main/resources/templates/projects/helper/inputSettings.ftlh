@@ -6,13 +6,14 @@
         <div class="setting-description">
             <h4>Category</h4>
             <p>
-                Categorize your project into one of ${@helper["io.papermc.hangar.model.Category"].visible()?size} categories. Appropriately categorizing your
+                Categorize your project into one of ${@helper["io.papermc.hangar.modelold.Category"].visible()?size}
+                categories. Appropriately categorizing your
                 project makes it easier for people to find.
             </p>
         </div>
         <div class="setting-content">
             <select class="form-control" id="category" name="category" form="${form}">
-                <#-- @ftlvariable name="category" type="io.papermc.hangar.model.Category" -->
+                <#-- @ftlvariable name="category" type="io.papermc.hangar.modelold.Category" -->
                 <#list @helper["io.papermc.hangar.model.Category"].values() as category>
                     <#if category.isVisible()>
                         <option <#if selected?? && selected.equals(category)> selected </#if> >

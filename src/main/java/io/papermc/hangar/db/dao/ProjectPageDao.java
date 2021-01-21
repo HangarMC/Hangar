@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.dao;
 
-import io.papermc.hangar.db.model.ProjectPagesTable;
-import io.papermc.hangar.model.viewhelpers.ProjectPage;
+import io.papermc.hangar.db.modelold.ProjectPagesTable;
+import io.papermc.hangar.modelold.viewhelpers.ProjectPage;
 
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;

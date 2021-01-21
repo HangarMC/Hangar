@@ -8,10 +8,10 @@ Base template for Project overview.
 <#assign Visibility=@helper["io.papermc.hangar.model.Visibility"]>
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"]>
 <#assign FlagReason=@helper["io.papermc.hangar.model.FlagReason"]>
-<#-- @ftlvariable name="FlagReason" type="io.papermc.hangar.model.FlagReason" -->
+<#-- @ftlvariable name="FlagReason" type="io.papermc.hangar.modelold.FlagReason" -->
 <#macro view p sp active noButtons=false additionalScripts="" additionalStyling="">
-<#-- @ftlvariable name="p" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
-<#-- @ftlvariable name="sp" type="io.papermc.hangar.model.viewhelpers.ScopedProjectData" -->
+<#-- @ftlvariable name="p" type="io.papermc.hangar.modelold.viewhelpers.ProjectData" -->
+<#-- @ftlvariable name="sp" type="io.papermc.hangar.modelold.viewhelpers.ScopedProjectData" -->
     <#assign scriptsVar>
         <script nonce="${nonce}">
             <#outputformat "JavaScript">
@@ -130,7 +130,7 @@ Base template for Project overview.
                                         <div class="modal-body">
                                             <ul id="list-flags" class="list-group list-flags">
                                                 <#list FlagReason.getValues() as reason>
-                                                    <#-- @ftlvariable name="reason" type="io.papermc.hangar.model.FlagReason" -->
+                                                <#-- @ftlvariable name="reason" type="io.papermc.hangar.modelold.FlagReason" -->
                                                     <li class="list-group-item">
                                                         <span>${reason.title}</span>
                                                         <span class="float-right">

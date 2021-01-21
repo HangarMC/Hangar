@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.dao;
 
-import io.papermc.hangar.db.model.ProjectChannelsTable;
-import io.papermc.hangar.model.Color;
+import io.papermc.hangar.db.modelold.ProjectChannelsTable;
+import io.papermc.hangar.modelold.Color;
 import io.papermc.hangar.service.project.ChannelService;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;

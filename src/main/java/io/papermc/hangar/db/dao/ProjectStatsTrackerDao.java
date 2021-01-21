@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.dao;
 
-import io.papermc.hangar.db.model.ProjectVersionsDownloadsIndividualTable;
-import io.papermc.hangar.db.model.ProjectVersionsDownloadsTable;
+import io.papermc.hangar.db.modelold.ProjectVersionsDownloadsIndividualTable;
+import io.papermc.hangar.db.modelold.ProjectVersionsDownloadsTable;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;

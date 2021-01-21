@@ -1,6 +1,6 @@
 package io.papermc.hangar.db.mappers;
 
-import io.papermc.hangar.model.Role;
+import io.papermc.hangar.modelold.Role;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.springframework.stereotype.Component;

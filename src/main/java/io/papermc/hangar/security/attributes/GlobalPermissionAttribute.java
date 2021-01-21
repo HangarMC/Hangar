@@ -1,6 +1,6 @@
 package io.papermc.hangar.security.attributes;
 
-import io.papermc.hangar.model.NamedPermission;
+import io.papermc.hangar.modelold.NamedPermission;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.util.Assert;
 

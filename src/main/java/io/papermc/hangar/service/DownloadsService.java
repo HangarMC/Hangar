@@ -3,8 +3,8 @@ package io.papermc.hangar.service;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.ProjectVersionDownloadWarningDao;
 import io.papermc.hangar.db.dao.ProjectVersionUnsafeDownloadsDao;
-import io.papermc.hangar.db.model.ProjectVersionDownloadWarningsTable;
-import io.papermc.hangar.db.model.ProjectVersionUnsafeDownloadsTable;
+import io.papermc.hangar.db.modelold.ProjectVersionDownloadWarningsTable;
+import io.papermc.hangar.db.modelold.ProjectVersionUnsafeDownloadsTable;
 import org.springframework.stereotype.Service;
 
 import java.net.InetAddress;

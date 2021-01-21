@@ -1,12 +1,12 @@
 package io.papermc.hangar.db.dao;
 
 import io.papermc.hangar.db.mappers.LoggedActionViewModelMapper;
-import io.papermc.hangar.db.model.LoggedActionsOrganizationTable;
-import io.papermc.hangar.db.model.LoggedActionsPageTable;
-import io.papermc.hangar.db.model.LoggedActionsProjectTable;
-import io.papermc.hangar.db.model.LoggedActionsUserTable;
-import io.papermc.hangar.db.model.LoggedActionsVersionTable;
-import io.papermc.hangar.model.viewhelpers.LoggedActionViewModel;
+import io.papermc.hangar.db.modelold.LoggedActionsOrganizationTable;
+import io.papermc.hangar.db.modelold.LoggedActionsPageTable;
+import io.papermc.hangar.db.modelold.LoggedActionsProjectTable;
+import io.papermc.hangar.db.modelold.LoggedActionsUserTable;
+import io.papermc.hangar.db.modelold.LoggedActionsVersionTable;
+import io.papermc.hangar.modelold.viewhelpers.LoggedActionViewModel;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;

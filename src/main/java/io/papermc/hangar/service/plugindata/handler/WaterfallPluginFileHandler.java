@@ -1,8 +1,8 @@
 package io.papermc.hangar.service.plugindata.handler;
 
-import io.papermc.hangar.model.Platform;
-import io.papermc.hangar.model.generated.Dependency;
-import io.papermc.hangar.model.generated.PlatformDependency;
+import io.papermc.hangar.modelold.Platform;
+import io.papermc.hangar.modelold.generated.Dependency;
+import io.papermc.hangar.modelold.generated.PlatformDependency;
 import io.papermc.hangar.service.plugindata.DataValue;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;

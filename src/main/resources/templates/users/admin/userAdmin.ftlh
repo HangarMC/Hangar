@@ -49,7 +49,7 @@
                     <#if !u.isOrga()>
                         <@card "Organizations">
                             <@roleTable keyName="Organization" tableType="orgRole" withOwner=true roles=u.orgas roleTypes=orgRoles ; org, role>
-                            <#-- @ftlvariable name="org" type="io.papermc.hangar.model.viewhelpers.OrganizationData" -->
+                            <#-- @ftlvariable name="org" type="io.papermc.hangar.modelold.viewhelpers.OrganizationData" -->
                                 <a href="${Routes.USER_ADMIN.getRouteUrl(org.org.name)}">
                                     ${org.org.name}
                                 </a>
@@ -58,7 +58,7 @@
                     <#else>
                         <@card "Members">
                             <@roleTable keyName="User" tableType="memberRole" withOwner=false roles=orga.adminTable() roleTypes=orgRoles ; memberUser, role>
-                                <#-- @ftlvariable name="memberUser" type="io.papermc.hangar.db.model.UsersTable" -->
+                            <#-- @ftlvariable name="memberUser" type="io.papermc.hangar.db.modelold.UsersTable" -->
                                 <a href="${Routes.USER_ADMIN.getRouteUrl(memberUser.name)}">
                                     ${memberUser.name}
                                 </a>
@@ -70,7 +70,7 @@
                     <div class="row">
                         <@card "Projects">
                             <@roleTable keyName="Project" tableType="projectRole" withOwner=true roles=userProjectRoles roleTypes=projectRoles ; project, role>
-                            <#-- @ftlvariable name="project" type="io.papermc.hangar.model.viewhelpers.ProjectData" -->
+                            <#-- @ftlvariable name="project" type="io.papermc.hangar.modelold.viewhelpers.ProjectData" -->
                                 <a href="${Routes.PROJECTS_SHOW.getRouteUrl(project.projectOwner.name, project.project.slug)}">
                                     ${project.project.name}
                                 </a>
@@ -101,11 +101,11 @@
     <table class="table role-table">
         <tr><th>${keyName}</th><#if withOwner><th>Owner</th></#if><th>Role</th><th>Accepted</th></tr>
         <#list roles as object, role>
-        <#-- @ftlvariable name="role" type="io.papermc.hangar.model.viewhelpers.UserRole" -->
+        <#-- @ftlvariable name="role" type="io.papermc.hangar.modelold.viewhelpers.UserRole" -->
             <tr data-role-type="${tableType}" data-role-id="${role.role.roleId}">
                 <td><#nested object, role /></td>
                 <#if withOwner>
-                    <#-- @ftlvariable name="object" type="io.papermc.hangar.model.viewhelpers.JoinableData" -->
+                <#-- @ftlvariable name="object" type="io.papermc.hangar.modelold.viewhelpers.JoinableData" -->
                     <td><a href="${Routes.USER_ADMIN.getRouteUrl(object.ownerName)}">${object.ownerName}</a></td>
                 </#if>
                 <#if !role.role.assignable>

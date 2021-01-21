@@ -2,10 +2,10 @@ package io.papermc.hangar.service;
 
 import io.papermc.hangar.db.dao.ApiKeyDao;
 import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.model.ApiKeysTable;
-import io.papermc.hangar.db.model.ProjectApiKeysTable;
-import io.papermc.hangar.model.Permission;
-import io.papermc.hangar.model.viewhelpers.ApiKey;
+import io.papermc.hangar.db.modelold.ApiKeysTable;
+import io.papermc.hangar.db.modelold.ProjectApiKeysTable;
+import io.papermc.hangar.modelold.Permission;
+import io.papermc.hangar.modelold.viewhelpers.ApiKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

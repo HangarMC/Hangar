@@ -2,8 +2,8 @@ package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.api.VersionsApiDao;
-import io.papermc.hangar.model.generated.Version;
-import io.papermc.hangar.model.generated.VersionStatsDay;
+import io.papermc.hangar.modelold.generated.Version;
+import io.papermc.hangar.modelold.generated.VersionStatsDay;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

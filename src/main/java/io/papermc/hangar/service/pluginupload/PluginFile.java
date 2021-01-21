@@ -2,7 +2,7 @@ package io.papermc.hangar.service.pluginupload;
 
 import java.nio.file.Path;
 
-import io.papermc.hangar.db.model.UsersTable;
+import io.papermc.hangar.db.modelold.UsersTable;
 
 public class PluginFile {
 

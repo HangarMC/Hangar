@@ -1,9 +1,9 @@
 package io.papermc.hangar.db.dao;
 
-import io.papermc.hangar.db.model.OrganizationsTable;
-import io.papermc.hangar.db.model.UserOrganizationRolesTable;
-import io.papermc.hangar.db.model.UsersTable;
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.db.modelold.OrganizationsTable;
+import io.papermc.hangar.db.modelold.UserOrganizationRolesTable;
+import io.papermc.hangar.db.modelold.UsersTable;
+import io.papermc.hangar.modelold.Permission;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;

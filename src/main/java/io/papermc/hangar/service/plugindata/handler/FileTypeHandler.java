@@ -1,6 +1,6 @@
 package io.papermc.hangar.service.plugindata.handler;
 
-import io.papermc.hangar.model.Platform;
+import io.papermc.hangar.modelold.Platform;
 import io.papermc.hangar.service.plugindata.DataValue;
 
 import java.io.BufferedReader;

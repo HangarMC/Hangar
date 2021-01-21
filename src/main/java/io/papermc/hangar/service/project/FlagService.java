@@ -2,9 +2,9 @@ package io.papermc.hangar.service.project;
 
 import io.papermc.hangar.db.dao.FlagDao;
 import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.model.ProjectFlagsTable;
-import io.papermc.hangar.model.FlagReason;
-import io.papermc.hangar.model.viewhelpers.ProjectFlag;
+import io.papermc.hangar.db.modelold.ProjectFlagsTable;
+import io.papermc.hangar.modelold.FlagReason;
+import io.papermc.hangar.modelold.viewhelpers.ProjectFlag;
 import io.papermc.hangar.service.HangarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

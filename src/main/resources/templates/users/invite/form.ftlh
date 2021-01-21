@@ -5,7 +5,7 @@
 <#import "*/users/invite/roleSelect.ftlh" as roleSelect />
 
 <#macro form owner roleCategory="" loadedUsers=[]>
-<#-- @ftlvariable name="owner" type="io.papermc.hangar.db.model.UsersTable" -->
+<#-- @ftlvariable name="owner" type="io.papermc.hangar.db.modelold.UsersTable" -->
     <#-- Template row -->
     <table style="display: none;">
         <tbody>

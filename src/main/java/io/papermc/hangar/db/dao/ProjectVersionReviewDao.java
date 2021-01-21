@@ -1,6 +1,6 @@
 package io.papermc.hangar.db.dao;
 
-import io.papermc.hangar.db.model.ProjectVersionReviewsTable;
+import io.papermc.hangar.db.modelold.ProjectVersionReviewsTable;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;

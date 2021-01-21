@@ -1,14 +1,14 @@
 package io.papermc.hangar.db.dao;
 
-import io.papermc.hangar.db.model.ProjectsTable;
-import io.papermc.hangar.db.model.UserProjectRolesTable;
-import io.papermc.hangar.db.model.UsersTable;
-import io.papermc.hangar.model.Permission;
-import io.papermc.hangar.model.generated.ProjectStatsAll;
-import io.papermc.hangar.model.viewhelpers.ProjectApprovalData;
-import io.papermc.hangar.model.viewhelpers.ProjectMissingFile;
-import io.papermc.hangar.model.viewhelpers.ScopedProjectData;
-import io.papermc.hangar.model.viewhelpers.UnhealthyProject;
+import io.papermc.hangar.db.modelold.ProjectsTable;
+import io.papermc.hangar.db.modelold.UserProjectRolesTable;
+import io.papermc.hangar.db.modelold.UsersTable;
+import io.papermc.hangar.modelold.Permission;
+import io.papermc.hangar.modelold.generated.ProjectStatsAll;
+import io.papermc.hangar.modelold.viewhelpers.ProjectApprovalData;
+import io.papermc.hangar.modelold.viewhelpers.ProjectMissingFile;
+import io.papermc.hangar.modelold.viewhelpers.ScopedProjectData;
+import io.papermc.hangar.modelold.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.service.project.ProjectFactory.InvalidProjectReason;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;

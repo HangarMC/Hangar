@@ -2,8 +2,8 @@ package io.papermc.hangar.db.dao.api;
 
 import io.papermc.hangar.db.dao.api.mappers.VersionMapper;
 import io.papermc.hangar.db.mappers.VersionDependenciesMapper;
-import io.papermc.hangar.model.generated.Version;
-import io.papermc.hangar.model.generated.VersionStatsDay;
+import io.papermc.hangar.modelold.generated.Version;
+import io.papermc.hangar.modelold.generated.VersionStatsDay;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;

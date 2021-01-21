@@ -1,6 +1,6 @@
 package io.papermc.hangar.db.dao;
 
-import io.papermc.hangar.db.model.Stats;
+import io.papermc.hangar.db.modelold.Stats;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.springframework.stereotype.Repository;

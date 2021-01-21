@@ -1,9 +1,9 @@
 package io.papermc.hangar.db.dao.api;
 
 import io.papermc.hangar.db.mappers.PromotedVersionMapper;
-import io.papermc.hangar.model.generated.Project;
-import io.papermc.hangar.model.generated.ProjectMember;
-import io.papermc.hangar.model.generated.ProjectStatsDay;
+import io.papermc.hangar.modelold.generated.Project;
+import io.papermc.hangar.modelold.generated.ProjectMember;
+import io.papermc.hangar.modelold.generated.ProjectStatsDay;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;

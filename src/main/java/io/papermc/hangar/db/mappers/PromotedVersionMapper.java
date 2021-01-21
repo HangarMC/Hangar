@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import io.papermc.hangar.db.customtypes.JSONB;
-import io.papermc.hangar.model.TagColor;
-import io.papermc.hangar.model.generated.PromotedVersion;
-import io.papermc.hangar.model.generated.PromotedVersionTag;
+import io.papermc.hangar.modelold.TagColor;
+import io.papermc.hangar.modelold.generated.PromotedVersion;
+import io.papermc.hangar.modelold.generated.PromotedVersionTag;
 import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.statement.StatementContext;
@@ -101,7 +101,7 @@ public class PromotedVersionMapper implements ColumnMapper<List<PromotedVersion>
                                                     .data(data)
                                                     .displayData(data) // TODO
                                                     .color(
-                                                            new io.papermc.hangar.model.generated.TagColor()
+                                                            new io.papermc.hangar.modelold.generated.TagColor()
                                                                     .background(color.getBackground())
                                                                     .foreground(color.getForeground())
                                                     )

@@ -1,8 +1,8 @@
 package io.papermc.hangar.db.dao;
 
 
-import io.papermc.hangar.db.model.RolesTable;
-import io.papermc.hangar.db.model.UserGlobalRolesTable;
+import io.papermc.hangar.db.modelold.RolesTable;
+import io.papermc.hangar.db.modelold.UserGlobalRolesTable;
 
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.AllowUnusedBindings;

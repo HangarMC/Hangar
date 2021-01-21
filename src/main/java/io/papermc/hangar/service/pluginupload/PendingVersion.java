@@ -1,12 +1,12 @@
 package io.papermc.hangar.service.pluginupload;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.papermc.hangar.controller.forms.NewVersion;
-import io.papermc.hangar.db.model.ProjectVersionsTable;
-import io.papermc.hangar.model.Color;
-import io.papermc.hangar.model.generated.PlatformDependency;
-import io.papermc.hangar.model.viewhelpers.ProjectData;
-import io.papermc.hangar.model.viewhelpers.VersionDependencies;
+import io.papermc.hangar.controllerold.forms.NewVersion;
+import io.papermc.hangar.db.modelold.ProjectVersionsTable;
+import io.papermc.hangar.modelold.Color;
+import io.papermc.hangar.modelold.generated.PlatformDependency;
+import io.papermc.hangar.modelold.viewhelpers.ProjectData;
+import io.papermc.hangar.modelold.viewhelpers.VersionDependencies;
 import io.papermc.hangar.service.plugindata.PluginFileWithData;
 import io.papermc.hangar.service.project.ProjectFactory;
 import org.jetbrains.annotations.NotNull;

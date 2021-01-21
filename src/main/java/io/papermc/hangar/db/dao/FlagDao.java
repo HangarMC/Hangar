@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.dao;
 
-import io.papermc.hangar.model.viewhelpers.ProjectFlag;
-import io.papermc.hangar.db.model.ProjectFlagsTable;
+import io.papermc.hangar.modelold.viewhelpers.ProjectFlag;
+import io.papermc.hangar.db.modelold.ProjectFlagsTable;
 
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;

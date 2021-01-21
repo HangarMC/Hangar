@@ -5,7 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.UserSignOnDao;
-import io.papermc.hangar.db.model.UserSignOnsTable;
+import io.papermc.hangar.db.modelold.UserSignOnsTable;
 import io.papermc.hangar.exceptions.HangarException;
 import io.papermc.hangar.service.sso.AuthUser;
 import io.papermc.hangar.service.sso.UrlWithNonce;
