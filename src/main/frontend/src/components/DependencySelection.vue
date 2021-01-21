@@ -297,8 +297,8 @@ export default {
             for (const dep of deps) {
                 if (dep.project_id) {
                     this.dependencyLinking[platformName][dep.name] = 'Hangar';
-                    API.request(`projects/${dep.project_id}`).then((response) => {
-                        this.selectProject(platformName, dep.name, response.data);
+                    API.request(`projects/${dep.project_id}`).then(({data}) => {
+                        this.selectProject(platformName, dep.name, data);
                     });
                 } else if (dep.external_url) {
                     $(`#${platformName}-${dep.name}-external-input`).val(dep.external_url);
