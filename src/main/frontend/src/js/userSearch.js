@@ -31,11 +31,11 @@ export function initUserSearch(callback) {
         if (username !== '') {
             toggleSpinner($(this).find('[data-fa-i2svg]').toggleClass('fa-search'));
             API.request(`users/${username}`)
-                .then((user) => {
+                .then(({ data }) => {
                     callback({
                         isSuccess: true,
                         username: username,
-                        user: user,
+                        user: data,
                     });
                 })
                 .catch(() => {

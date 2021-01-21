@@ -251,8 +251,8 @@ export default {
         };
     },
     created() {
-        API.request(`projects/${this.project.ownerName}/${this.project.slug}`).then((res) => {
-            this.apiProject = res;
+        API.request(`projects/${this.project.ownerName}/${this.project.slug}`).then(({ data }) => {
+            this.apiProject = data;
         });
         this.expanded[this.page.name] = true;
     },

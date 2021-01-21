@@ -249,7 +249,7 @@ export default {
         },
     },
     async created() {
-        const data = await API.request('platforms');
+        const data = await API.request('platforms').data;
         for (const platformObj of data) {
             this.platformInfo[platformObj.name.toUpperCase()] = platformObj;
             this.dependencyLinking[platformObj.name.toUpperCase()] = {};
@@ -297,8 +297,8 @@ export default {
             for (const dep of deps) {
                 if (dep.project_id) {
                     this.dependencyLinking[platformName][dep.name] = 'Hangar';
-                    API.request(`projects/${dep.project_id}`).then((res) => {
-                        this.selectProject(platformName, dep.name, res);
+                    API.request(`projects/${dep.project_id}`).then(({ data }) => {
+                        this.selectProject(platformName, dep.name, data);
                     });
                 } else if (dep.external_url) {
                     $(`#${platformName}-${dep.name}-external-input`).val(dep.external_url);
@@ -329,10 +329,10 @@ export default {
                     this.dependencies[platformKey].find((dep) => dep.name === depName).project_id = null;
                 }
 
-                API.request(`projects?relevance=true&limit=25&offset=0&q=${inputVal}`).then((res) => {
-                    if (res.result.length) {
+                API.request(`projects?relevance=true&limit=25&offset=0&q=${inputVal}`).then(({ data }) => {
+                    if (data.result.length) {
                         $(`#${platformKey}-${depName}-project-dropdown`).show();
-                        this.searchResults = res.result;
+                        this.searchResults = data.result;
                     } else {
                         $(`#${platformKey}-${depName}-project-dropdown`).hide();
                         this.searchResults = [];
