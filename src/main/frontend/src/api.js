@@ -41,7 +41,7 @@ export class API {
                 session = parseJsonOrNull(localStorage.getItem('api_session'));
                 if (session === null || (!isNaN(new Date(session.expires).getTime()) && new Date(session.expires) < date)) {
                     return axios
-                        .post('/api/v1/authenticate', {}, { headers: { 'Content-Type': 'application/json' } })
+                        .post('/api/v1/authenticate/user', {}, { headers: { 'Content-Type': 'application/json' } })
                         .then((data) => {
                             if (data.type !== 'user') {
                                 reject('Expected user session from user authentication');
@@ -66,7 +66,6 @@ export class API {
                                 reject('Expected public session from public authentication');
                             } else {
                                 localStorage.setItem('public_api_session', JSON.stringify(data));
-                                console.log(data);
                                 resolve(data.session);
                             }
                         })
