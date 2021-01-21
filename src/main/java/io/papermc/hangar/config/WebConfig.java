@@ -1,7 +1,6 @@
 package io.papermc.hangar.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import freemarker.core.HTMLOutputFormat;
 import freemarker.template.TemplateException;
 import io.papermc.hangar.controller.converters.ColorHexConverter;
@@ -21,6 +20,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.resource.CssLinkResourceTransformer;
@@ -52,6 +52,11 @@ public class WebConfig extends WebMvcConfigurationSupport {
         resolver.setPrefix("");
         resolver.setSuffix(".ftl");
         return resolver;
+    }
+
+    @Override
+    protected void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedOrigins("http://localhost:3000");
     }
 
     @Bean
