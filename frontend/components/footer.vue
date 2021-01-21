@@ -45,7 +45,9 @@
             </v-row>
 
             <v-row align="center" justify="center">
-                <v-col cols="12" class="d-flex justify-center">Copyright © <a href="https://papermc.io">PaperMC</a> 2016 - {{ new Date().getFullYear() }} </v-col>
+                <v-col cols="12" class="d-flex justify-center"
+                    >Copyright © <a href="https://papermc.io">PaperMC</a> 2016 - {{ new Date().getFullYear() }}
+                </v-col>
             </v-row>
         </v-container>
     </v-footer>
@@ -53,10 +55,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
-import Discuss from '~/pages/_author/_slug/discuss.vue';
-@Component({
-    components: { Discuss },
-})
+@Component
 export default class Footer extends Vue {}
 </script>
 
@@ -92,5 +91,9 @@ img {
             }
         }
     }
+}
+
+a {
+    margin: 0 3px;
 }
 </style>
