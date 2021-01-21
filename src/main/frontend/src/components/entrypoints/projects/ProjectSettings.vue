@@ -159,6 +159,19 @@
                             </div>
                         </template>
                     </Setting>
+                    <Setting v-if="true" :name="$t('project.settings.donation._')" :desc="$t('project.settings.donation.info')">
+                        <label for="donation-email-input" class="sr-only">{{ $t('project.settings.donation._') }}</label>
+                        <input
+                            v-model.trim="form.donation.donationEmail"
+                            type="email"
+                            class="form-control"
+                            id="donation-email-input"
+                            maxlength="120"
+                            placeholder="Paypal Email"
+                        />
+                        <label for="description-input" class="sr-only">{{ $t('project.settings.donation._') }}</label>
+                        <TagInput v-model="form.donation.tierTag" />
+                    </Setting>
                     <Setting v-if="permissions.editApiKeys" :name="$t('project.settings.deployKey._')" :desc="$t('project.settings.deployKey.info')">
                         <template v-slot:description="props">
                             <h4 v-text="props['setting-name']"></h4>
@@ -349,6 +362,8 @@ import HangarForm from '@/components/HangarForm';
 import UserAvatar from '@/components/UserAvatar';
 import Setting from '@/components/Setting';
 import HangarModal from '@/components/HangarModal';
+import { VueTagsInput } from '@johmun/vue-tags-input/vue-tags-input/publish';
+import TagInput from '@/components/TagInput';
 
 const LICENSES = ['MIT', 'Apache 2.0', 'GNU General Public License (GPL)', 'GNU Lesser General Public License (LGPL)'];
 const VALIDATIONS = [
@@ -358,7 +373,7 @@ const VALIDATIONS = [
 
 export default {
     name: 'ProjectSettings',
-    components: { HangarModal, Setting, UserAvatar, HangarForm, MemberList, BtnHide },
+    components: { TagInput, HangarModal, Setting, UserAvatar, HangarForm, MemberList, BtnHide, VueTagsInput },
     data() {
         return {
             ROUTES: window.ROUTES,
@@ -399,6 +414,11 @@ export default {
                 },
                 forumSync: window.PROJECT.settings.forumSync,
                 description: window.PROJECT.project.description,
+                donation: {
+                    donationEmail: window.PROJECT.settings.donationEmail,
+                    tierTag: '',
+                    tiers: window.PROJECT.settings.donationTiers || [],
+                },
             },
             renameForm: {
                 value: window.PROJECT.project.name,
@@ -411,6 +431,12 @@ export default {
                 previewSrc: window.PROJECT.iconUrl,
                 hasChanged: false,
             },
+            donationTierValidation: [
+                {
+                    classes: 'valid-amount',
+                    rule: /^([0-9]{1,3}(\.[0-9]{1,2})?)$/,
+                },
+            ],
         };
     },
     methods: {
