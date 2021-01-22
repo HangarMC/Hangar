@@ -23,10 +23,11 @@
 import { Component, Vue } from 'nuxt-property-decorator';
 import { Prop } from 'vue-property-decorator';
 import { PropType } from 'vue';
+import { TranslateResult } from 'vue-i18n';
 
 export interface Control {
     icon: String;
-    title: String;
+    title: String | TranslateResult;
     link?: String;
     action?: Function;
 }
