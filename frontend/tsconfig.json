@@ -25,12 +25,13 @@
       ]
     },
     "types": [
-      "@nuxt/types",
       "@types/node",
+      "@nuxt/types",
       "@nuxtjs/axios",
+      "@nuxtjs/vuetify",
+      "nuxt-i18n",
       "cookie-universal-nuxt",
-      "@nuxtjs/vuetify"
-    ]
+    ],
   },
   "exclude": [
     "node_modules",

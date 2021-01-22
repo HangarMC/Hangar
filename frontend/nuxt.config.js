@@ -1,4 +1,6 @@
 import colors from 'vuetify/es5/util/colors';
+import en from './locales/en.json';
+import fr from './locales/fr.json';
 
 require('dotenv').config();
 
@@ -44,6 +46,7 @@ export default {
         '@nuxtjs/pwa',
         'cookie-universal-nuxt',
         '@nuxtjs/proxy',
+        'nuxt-i18n',
     ],
 
     // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -86,6 +89,24 @@ export default {
     },
 
     proxy: ['http://localhost:8080/api/', 'http://localhost:8080/signup', 'http://localhost:8080/login', 'http://localhost:8080/logout'],
+
+    i18n: {
+        vueI18nLoader: true,
+        strategy: 'no_prefix',
+        defaultLocale: 'en',
+        locales: [
+            { code: 'fr', iso: 'fr-FR', name: 'Français' },
+            { code: 'en', iso: 'en-US', name: 'English' },
+        ],
+        vueI18n: {
+            locale: 'en',
+            fallbackLocale: 'en',
+            messages: {
+                en,
+                fr,
+            },
+        },
+    },
 
     server: {
         port: 3000,

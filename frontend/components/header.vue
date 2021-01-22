@@ -41,8 +41,8 @@
             </v-menu>
         </template>
         <template v-else>
-            <v-btn href="/signup" class="mr-2" color="primary">Sign up</v-btn>
-            <v-btn color="secondary" @click="$auth.login($route.fullPath)">Log In</v-btn>
+            <v-btn href="/signup" class="mr-2" color="primary" v-text="$t('nav.signup')"></v-btn>
+            <v-btn color="secondary" @click="$auth.login($route.fullPath)" v-text="$t('nav.login')"></v-btn>
         </template>
     </v-app-bar>
 </template>
@@ -58,42 +58,42 @@ export default class Header extends Vue {
         controls.push({
             link: 'https://www.papermc.io',
             icon: 'mdi-home',
-            title: 'Homepage',
+            title: this.$t('nav.hangar.home'),
         });
         controls.push({
             link: 'https://papermc.io/forums',
             icon: 'mdi-comment-multiple',
-            title: 'Forums',
+            title: this.$t('nav.hangar.forums'),
         });
         controls.push({
             link: 'https://github.com/PaperMC',
             icon: 'mdi-code-braces',
-            title: 'Code',
+            title: this.$t('nav.hangar.code'),
         });
         controls.push({
             link: 'https://paper.readthedocs.io',
             icon: 'mdi-book',
-            title: 'Docs',
+            title: this.$t('nav.hangar.docs'),
         });
         controls.push({
             link: 'https://papermc.io/javadocs',
             icon: 'mdi-school',
-            title: 'JavaDocs',
+            title: this.$t('nav.hangar.javadocs'),
         });
         controls.push({
             link: '/',
             icon: 'mdi-home',
-            title: 'Hangar (Plugins)',
+            title: this.$t('nav.hangar.hangar'),
         });
         controls.push({
             link: 'https://papermc.io/downloads',
             icon: 'mdi-download',
-            title: 'Downloads',
+            title: this.$t('nav.hangar.downloads'),
         });
         controls.push({
             link: 'https://papermc.io/community',
             icon: 'mdi-comment',
-            title: 'Community',
+            title: this.$t('nav.hangar.community'),
         });
         return controls;
     }
@@ -103,12 +103,12 @@ export default class Header extends Vue {
         controls.push({
             link: '/new',
             icon: 'mdi-book',
-            title: 'New Project',
+            title: this.$t('nav.new.project'),
         });
         controls.push({
             link: '/organizations/new',
             icon: 'mdi-account-group',
-            title: 'New Organization',
+            title: this.$t('nav.new.organization'),
         });
         return controls;
     }
@@ -123,48 +123,48 @@ export default class Header extends Vue {
         controls.push({
             link: '/notifications',
             icon: 'mdi-bell',
-            title: 'Notifications',
+            title: this.$t('nav.user.notifications'),
         });
         // TODO check perms
         controls.push({
             link: '/admin/flags',
             icon: 'mdi-flag',
-            title: 'Flags',
+            title: this.$t('nav.user.flags'),
         });
         controls.push({
             link: '/admin/approval/projects',
             icon: 'mdi-thumb-up',
-            title: 'Project approvals',
+            title: this.$t('nav.user.projectApprovals'),
         });
         controls.push({
             link: '/admin/approval/versions',
             icon: 'mdi-thumb-up-outline',
-            title: 'Version approvals',
+            title: this.$t('nav.user.versionApprovals'),
         });
         controls.push({
             link: '/admin/stats',
             icon: 'mdi-chart-line',
-            title: 'Stats',
+            title: this.$t('nav.user.stats'),
         });
         controls.push({
             link: '/admin/health',
             icon: 'mdi-heart-plus',
-            title: 'Hangar Health',
+            title: this.$t('nav.user.health'),
         });
         controls.push({
             link: '/admin/log',
             icon: 'mdi-format-list-bulleted',
-            title: 'User Action Log',
+            title: this.$t('nav.user.log'),
         });
         controls.push({
             link: '/admin/versions',
             icon: 'mdi-tag-multiple',
-            title: 'Platform Versions',
+            title: this.$t('nav.user.platformVersions'),
         });
         controls.push({
             action: () => this.$auth.logout(),
             icon: 'mdi-logout',
-            title: 'Sign out',
+            title: this.$t('nav.user.logout'),
         });
         return controls;
     }

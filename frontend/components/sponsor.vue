@@ -1,6 +1,6 @@
 <template>
     <v-card>
-        <v-card-subtitle>Sponsored by</v-card-subtitle>
+        <v-card-subtitle v-text="$t('hangar.sponsoredBy')"></v-card-subtitle>
     </v-card>
 </template>
 

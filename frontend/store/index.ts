@@ -25,6 +25,7 @@ export const actions: ActionTree<RootState, RootState> = {
             );
             // others
         } catch (e) {
+            console.error('ERROR FETCHING BACKEND DATA');
             console.error(e);
         }
     },

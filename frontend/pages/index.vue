@@ -4,15 +4,11 @@
             <v-col cols="12" sm="8" md="5" offset-md="3">
                 <v-row justify="center" align="center">
                     <h1>Hangar</h1>
-                    <v-subheader>A Minecraft package repository</v-subheader>
+                    <v-subheader v-text="$t('hangar.subtitle')"></v-subheader>
                 </v-row>
                 <v-row justify="center" align="center">
                     <v-col cols="12">
-                        <v-text-field
-                            v-model="projectFilter"
-                            :label="'Search in ' + totalProjects + ' projects, proudly made by the community...'"
-                            clearable
-                        ></v-text-field>
+                        <v-text-field v-model="projectFilter" :label="$t('hangar.projectSearch.query', [totalProjects])" clearable></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row justify="center" align="center">
@@ -27,7 +23,7 @@
 
                 <v-select></v-select>
 
-                <v-checkbox label="Sort with relevance"></v-checkbox>
+                <v-checkbox :label="$t('hangar.projectSearch.relevanceSort')"></v-checkbox>
 
                 <v-list dense>
                     <v-subheader>Categories</v-subheader>
