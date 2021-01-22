@@ -7,7 +7,7 @@
     "build": "nuxt-ts build",
     "start": "nuxt-ts start",
     "generate": "nuxt-ts generate",
-    "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore .",
+    "lint:js": "eslint --ext \".js,.vue,.ts\" --ignore-path .gitignore .",
     "lint": "yarn lint:js"
   },
   "lint-staged": {
@@ -28,10 +28,12 @@
     "nuxt": "^2.14.12",
     "nuxt-property-decorator": "^2.9.1",
     "vue": "^2.6.12",
-    "vuex": "^3.6.0",
-    "vuex-module-decorators": "^1.0.1"
+    "vuex": "^3.6.0"
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.34",
+    "@fortawesome/free-solid-svg-icons": "^5.15.2",
+    "@fortawesome/vue-fontawesome": "^2.0.2",
     "@nuxt/types": "^2.14.12",
     "@nuxt/typescript-build": "^2.0.4",
     "@nuxtjs/dotenv": "^1.4.1",
