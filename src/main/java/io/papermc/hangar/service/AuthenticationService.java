@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.controllerold.UsersController;
-import io.papermc.hangar.controllerold.exceptions.HangarApiException;
 import io.papermc.hangar.controller.ApiScope;
+import io.papermc.hangar.controller.LoginController;
+import io.papermc.hangar.controllerold.exceptions.HangarApiException;
 import io.papermc.hangar.db.daoold.ApiKeyDao;
 import io.papermc.hangar.db.daoold.HangarDao;
 import io.papermc.hangar.db.daoold.ProjectDao;
@@ -17,8 +17,8 @@ import io.papermc.hangar.db.modelold.ApiSessionsTable;
 import io.papermc.hangar.db.modelold.OrganizationsTable;
 import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.db.modelold.UsersTable;
-import io.papermc.hangar.modelold.ApiAuthInfo;
 import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.modelold.ApiAuthInfo;
 import io.papermc.hangar.modelold.Role;
 import io.papermc.hangar.modelold.generated.ApiSessionResponse;
 import io.papermc.hangar.modelold.generated.SessionType;
@@ -122,7 +122,7 @@ public class AuthenticationService extends HangarService {
 
     // TODO remove once all of old v1 is gone
     public boolean authV1ApiRequest(Permission perms, ApiScope apiScope) {
-        Cookie sessionCookie = WebUtils.getCookie(request, UsersController.AUTH_TOKEN_NAME);
+        Cookie sessionCookie = WebUtils.getCookie(request, LoginController.AUTH_TOKEN_NAME);
         if (sessionCookie == null) {
             return false;
         } else {

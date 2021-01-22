@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.papermc.hangar.controller.requestmodels.api.RequestPagination;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.User;
+import io.papermc.hangar.modelold.ApiAuthInfo;
 import io.papermc.hangar.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -21,15 +22,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class UsersController {
 
     private final UsersService usersService;
+    private final ApiAuthInfo apiAuthInfo;
 
     @Autowired
-    public UsersController(UsersService usersService) {
+    public UsersController(UsersService usersService, ApiAuthInfo apiAuthInfo) {
         this.usersService = usersService;
+        this.apiAuthInfo = apiAuthInfo;
     }
 
     @GetMapping("/users/{user}")
     @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.ApiScope).forGlobal())")
     public ResponseEntity<User> getUser(@PathVariable("user") String userName) throws JsonProcessingException {
+        if (userName.equals("@me")) {
+            return ResponseEntity.ok(usersService.getUser(apiAuthInfo.getUser().getName(), User.class));
+        }
         return ResponseEntity.ok(usersService.getUser(userName, User.class));
     }
 

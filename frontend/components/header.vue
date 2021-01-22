@@ -19,7 +19,7 @@
         <v-btn icon to="/authors"><v-icon color="white">mdi-account-group</v-icon></v-btn>
         <v-btn icon to="/staff"><v-icon color="white">mdi-account-tie</v-icon></v-btn>
 
-        <template v-if="loggedIn">
+        <template v-if="$store.state.auth.user">
             <v-menu bottom offset-y transition="slide-y-transition">
                 <template #activator="{ on, attrs }">
                     <v-btn v-bind="attrs" v-on="on">
@@ -41,8 +41,8 @@
             </v-menu>
         </template>
         <template v-else>
-            <v-btn to="/signUp">Sign up</v-btn>
-            <v-btn to="/login">Log In</v-btn>
+            <v-btn to="/signUp" class="mr-2" color="primary">Sign up</v-btn>
+            <v-btn color="secondary" @click="$auth.login($route.fullPath)">Log In</v-btn>
         </template>
     </v-app-bar>
 </template>
@@ -52,10 +52,7 @@ import { Component, Vue } from 'nuxt-property-decorator';
 import { Control } from '~/components/dropdown.vue';
 
 @Component
-export default class NewPage extends Vue {
-    loggedIn = true;
-    user = 'MiniDigger';
-
+export default class Header extends Vue {
     get dropdown(): Control[] {
         const controls: Control[] = [];
         controls.push({
@@ -119,9 +116,9 @@ export default class NewPage extends Vue {
     get userControls(): Control[] {
         const controls: Control[] = [];
         controls.push({
-            link: '/' + this.user,
+            link: '/' + this.$store.state.auth.user.name,
             icon: 'mdi-account',
-            title: this.user,
+            title: this.$store.state.auth.user.name,
         });
         controls.push({
             link: '/notifications',
@@ -165,7 +162,7 @@ export default class NewPage extends Vue {
             title: 'Platform Versions',
         });
         controls.push({
-            link: '/logout',
+            action: () => this.$auth.logout(),
             icon: 'mdi-logout',
             title: 'Sign out',
         });

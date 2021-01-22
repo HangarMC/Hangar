@@ -2,7 +2,7 @@ package io.papermc.hangar.service;
 
 import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.controllerold.UsersController;
+import io.papermc.hangar.controller.LoginController;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.UserContext;
 import io.papermc.hangar.db.daoold.HangarDao;
@@ -88,7 +88,7 @@ public class UserService extends HangarService {
     @RequestScope
     public Supplier<Optional<UsersTable>> currentUser() {
         if (request.getRequestURI().startsWith("/api/old/v1")) { // TODO remove once all of the old v1 is gone
-            Cookie sessionCookie = WebUtils.getCookie(request, UsersController.AUTH_TOKEN_NAME);
+            Cookie sessionCookie = WebUtils.getCookie(request, LoginController.AUTH_TOKEN_NAME);
             if (sessionCookie == null) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             } else {

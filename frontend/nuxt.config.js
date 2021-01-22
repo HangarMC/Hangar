@@ -22,7 +22,7 @@ export default {
     css: [],
 
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-    plugins: ['~/plugins/api.ts'],
+    plugins: ['~/plugins/api.ts', '~/plugins/auth.ts'],
 
     // Auto import components: https://go.nuxtjs.dev/config-components
     components: true,
@@ -81,7 +81,11 @@ export default {
     // Build Configuration: https://go.nuxtjs.dev/config-build
     build: {},
 
-    proxy: ['http://localhost:8080/api'],
+    router: {
+        middleware: 'auth',
+    },
+
+    proxy: ['http://localhost:8080/api/**'],
 
     server: {
         port: 3000,

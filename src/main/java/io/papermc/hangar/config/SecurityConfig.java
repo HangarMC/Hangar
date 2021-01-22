@@ -49,6 +49,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .ignoringAntMatchers(
                         "/api/authenticate",
                         "/api/v1/authenticate",
+                        "/api/authenticate/user",
+                        "/api/v1/authenticate/user",
                         "/api/sessions/current",
                         "/api/v1/sessions/current",
                         "/api/keys",

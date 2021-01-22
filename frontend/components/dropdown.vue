@@ -5,7 +5,9 @@
             :key="control.title"
             link
             :to="isRouterLink(control) ? control.link : null"
+            :nuxt="isRouterLink(control)"
             :href="isRouterLink(control) ? null : control.link"
+            @click="control.action ? control.action() : null"
         >
             <v-list-item-icon>
                 <v-icon color="white">{{ control.icon }}</v-icon>
@@ -25,7 +27,8 @@ import { PropType } from 'vue';
 export interface Control {
     icon: String;
     title: String;
-    link: String;
+    link?: String;
+    action?: Function;
 }
 
 @Component
@@ -34,7 +37,7 @@ export default class Card extends Vue {
     controls!: Control[];
 
     isRouterLink(control: Control): Boolean {
-        return control.link.startsWith('/');
+        return !!control.link && control.link.startsWith('/');
     }
 }
 </script>
