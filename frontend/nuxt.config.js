@@ -19,10 +19,10 @@ export default {
     },
 
     // Global CSS: https://go.nuxtjs.dev/config-css
-    css: ['@fortawesome/fontawesome-svg-core/styles.css'],
+    css: [],
 
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-    plugins: ['~/plugins/api.ts', '~/plugins/auth.ts', '~/plugins/font-awesome.ts', '~/plugins/utils.ts'],
+    plugins: ['~/plugins/api.ts', '~/plugins/auth.ts', '~/plugins/utils.ts'],
 
     // Auto import components: https://go.nuxtjs.dev/config-components
     components: true,
@@ -62,9 +62,6 @@ export default {
     // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
     vuetify: {
         customVariables: ['~/assets/variables.scss'],
-        icons: {
-            iconfont: 'faSvg',
-        },
         theme: {
             dark: true,
             themes: {

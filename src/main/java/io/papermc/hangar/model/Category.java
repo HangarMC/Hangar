@@ -13,16 +13,16 @@ import java.util.stream.Collectors;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Category {
-    ADMIN_TOOLS(0, "Admin Tools", "fa-server", "admin_tools"),
-    CHAT(1, "Chat", "fa-comment", "chat"),
-    DEV_TOOLS(2, "Developer Tools", "fa-wrench", "dev_tools"),
-    ECONOMY(3, "Economy", "fa-money-bill-alt", "economy"),
-    GAMEPLAY(4, "Gameplay", "fa-puzzle-piece", "gameplay"),
-    GAMES(5, "Games", "fa-gamepad", "games"),
-    PROTECTION(6, "Protection", "fa-lock", "protection"),
-    ROLE_PLAYING(7, "Role Playing", "fa-magic", "role_playing"),
-    WORLD_MANAGEMENT(8, "World Management", "fa-globe", "world_management"),
-    MISC(9, "Miscellaneous", "fa-asterisk", "misc"),
+    ADMIN_TOOLS(0, "Admin Tools", "mdi-server", "admin_tools"),
+    CHAT(1, "Chat", "mdi-chat", "chat"),
+    DEV_TOOLS(2, "Developer Tools", "mdi-wrench", "dev_tools"),
+    ECONOMY(3, "Economy", "mdi-cash-multiple", "economy"),
+    GAMEPLAY(4, "Gameplay", "mdi-puzzle", "gameplay"),
+    GAMES(5, "Games", "mdi-controller-classic", "games"),
+    PROTECTION(6, "Protection", "mdi-lock", "protection"),
+    ROLE_PLAYING(7, "Role Playing", "mdi-auto-fix", "role_playing"),
+    WORLD_MANAGEMENT(8, "World Management", "mdi-earth", "world_management"),
+    MISC(9, "Miscellaneous", "mdi-asterisk", "misc"),
     UNDEFINED(10, "Undefined", "", "undefined");
 
     private final int value;

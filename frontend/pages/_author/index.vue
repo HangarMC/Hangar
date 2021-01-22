@@ -68,7 +68,7 @@ interface Author {
 
 interface Button {
     icon: String;
-    action: Function;
+    action?: Function;
     url: String;
     name: String;
 }
