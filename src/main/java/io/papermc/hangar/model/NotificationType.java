@@ -1,4 +1,4 @@
-package io.papermc.hangar.modelold;
+package io.papermc.hangar.model;
 
 public enum NotificationType {
 
@@ -8,6 +8,7 @@ public enum NotificationType {
     VERSION_REVIEWED(3);
 
     private final long value;
+
     NotificationType(long value) {
         this.value = value;
     }

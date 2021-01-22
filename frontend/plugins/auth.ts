@@ -8,22 +8,25 @@ const createAuth = ({ app: { $cookies }, store, $api }: Context) => {
             $cookies.set('returnRoute', redirect, {
                 path: '/',
                 maxAge: 120,
-                sameSite: 'lax',
+                secure: true,
             });
-            location.replace(`http://localhost:8080/login?returnUrl=http://localhost:3000/login`);
+            location.replace(`/login?returnUrl=http://localhost:3000/${redirect}`);
         }
 
         processLogin(): Promise<void> {
             store.commit('auth/SET_AUTHED', true);
-            return $api.request<User>('users/@me').then((user) => {
-                store.commit('auth/SET_USER', user);
-            });
+            return this.updateUser();
         }
 
         logout(): void {
-            store.commit('auth/SET_USER', false);
             $api.invalidateSession();
-            location.replace('http://localhost:8080/logout');
+            // location.replace('/logout'); // TODO uncomment
+        }
+
+        updateUser(): Promise<void> {
+            return $api.requestInternal<User>('users/@me').then((user) => {
+                store.commit('auth/SET_USER', user);
+            });
         }
     }
 

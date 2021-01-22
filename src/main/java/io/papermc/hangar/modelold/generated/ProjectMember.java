@@ -11,7 +11,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import io.swagger.annotations.ApiModelProperty;
-import io.papermc.hangar.modelold.Role;
+import io.papermc.hangar.model.Role;
 
 /**
  * ModelsProtocolsAPIV2ProjectMember

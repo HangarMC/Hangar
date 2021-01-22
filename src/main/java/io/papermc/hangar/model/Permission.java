@@ -87,7 +87,7 @@ public class Permission implements Comparable<Permission> {
     public boolean isNone() {
         return value == 0;
     }
-
+    @JsonValue
     public String toBinString() {
         return Long.toBinaryString(value);
     }
@@ -96,7 +96,7 @@ public class Permission implements Comparable<Permission> {
         return Arrays.stream(NamedPermission.values()).filter(perm -> has(perm.getPermission())).collect(Collectors.toUnmodifiableList());
     }
 
-    @JsonValue
+//    @JsonValue
     public long getValue() {
         return value;
     }

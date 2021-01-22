@@ -21,7 +21,7 @@ import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 import io.papermc.hangar.modelold.NamedPermission;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.modelold.Platform;
-import io.papermc.hangar.modelold.Role;
+import io.papermc.hangar.model.Role;
 import io.papermc.hangar.modelold.Visibility;
 import io.papermc.hangar.modelold.viewhelpers.Activity;
 import io.papermc.hangar.modelold.viewhelpers.LoggedActionViewModel;

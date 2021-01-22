@@ -1,7 +1,7 @@
 package io.papermc.hangar.modelold.viewhelpers;
 
 import io.papermc.hangar.db.modelold.RoleTable;
-import io.papermc.hangar.modelold.Role;
+import io.papermc.hangar.model.Role;
 
 public class UserRole<R extends RoleTable> {
 

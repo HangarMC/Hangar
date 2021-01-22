@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.modelold;
 
 
-import io.papermc.hangar.modelold.NotificationType;
+import io.papermc.hangar.model.NotificationType;
 
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 

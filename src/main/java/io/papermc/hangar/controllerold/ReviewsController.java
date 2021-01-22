@@ -7,7 +7,7 @@ import io.papermc.hangar.db.modelold.ProjectVersionReviewsTable;
 import io.papermc.hangar.db.modelold.ProjectVersionsTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.modelold.NamedPermission;
-import io.papermc.hangar.modelold.NotificationType;
+import io.papermc.hangar.model.NotificationType;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.modelold.generated.ReviewState;
 import io.papermc.hangar.modelold.viewhelpers.VersionData;

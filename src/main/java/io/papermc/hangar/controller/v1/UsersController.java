@@ -33,9 +33,6 @@ public class UsersController {
     @GetMapping("/users/{user}")
     @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.ApiScope).forGlobal())")
     public ResponseEntity<User> getUser(@PathVariable("user") String userName) throws JsonProcessingException {
-        if (userName.equals("@me")) {
-            return ResponseEntity.ok(usersService.getUser(apiAuthInfo.getUser().getName(), User.class));
-        }
         return ResponseEntity.ok(usersService.getUser(userName, User.class));
     }
 

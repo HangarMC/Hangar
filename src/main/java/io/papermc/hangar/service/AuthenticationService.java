@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controller.ApiScope;
-import io.papermc.hangar.controller.LoginController;
 import io.papermc.hangar.controllerold.exceptions.HangarApiException;
 import io.papermc.hangar.db.daoold.ApiKeyDao;
 import io.papermc.hangar.db.daoold.HangarDao;
@@ -19,7 +18,7 @@ import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.modelold.ApiAuthInfo;
-import io.papermc.hangar.modelold.Role;
+import io.papermc.hangar.model.Role;
 import io.papermc.hangar.modelold.generated.ApiSessionResponse;
 import io.papermc.hangar.modelold.generated.SessionType;
 import io.papermc.hangar.security.HangarAuthentication;
@@ -41,10 +40,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.springframework.web.util.WebUtils;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -122,15 +120,7 @@ public class AuthenticationService extends HangarService {
 
     // TODO remove once all of old v1 is gone
     public boolean authV1ApiRequest(Permission perms, ApiScope apiScope) {
-        Cookie sessionCookie = WebUtils.getCookie(request, LoginController.AUTH_TOKEN_NAME);
-        if (sessionCookie == null) {
-            return false;
-        } else {
-            if (currentUser.get().isEmpty()) {
-                return false;
-            }
-            return checkPerms(perms, apiScope, currentUser.get().get().getId());
-        }
+        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "GET RID OF THIS");
     }
 
     public boolean authApiRequest(Permission perms, ApiScope apiScope) {

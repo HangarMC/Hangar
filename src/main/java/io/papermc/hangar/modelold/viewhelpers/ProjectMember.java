@@ -1,7 +1,7 @@
 package io.papermc.hangar.modelold.viewhelpers;
 
 import io.papermc.hangar.db.modelold.UsersTable;
-import io.papermc.hangar.modelold.Role;
+import io.papermc.hangar.model.Role;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jetbrains.annotations.NotNull;
 

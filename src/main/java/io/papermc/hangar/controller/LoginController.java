@@ -1,12 +1,10 @@
 package io.papermc.hangar.controller;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.db.modelold.UserSessionsTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.exceptions.HangarException;
 import io.papermc.hangar.service.AuthenticationService;
 import io.papermc.hangar.service.RoleService;
-import io.papermc.hangar.service.SessionService;
 import io.papermc.hangar.service.SsoService;
 import io.papermc.hangar.service.UserService;
 import io.papermc.hangar.service.sso.AuthUser;
@@ -33,19 +31,15 @@ public class LoginController extends HangarController {
     private final SsoService ssoService;
     private final UserService userService;
     private final RoleService roleService;
-    private final SessionService sessionService;
 
     @Autowired
-    public LoginController(HangarConfig hangarConfig, AuthenticationService authenticationService, SsoService ssoService, UserService userService, RoleService roleService, SessionService sessionService) {
+    public LoginController(HangarConfig hangarConfig, AuthenticationService authenticationService, SsoService ssoService, UserService userService, RoleService roleService) {
         this.hangarConfig = hangarConfig;
         this.authenticationService = authenticationService;
         this.ssoService = ssoService;
         this.userService = userService;
         this.roleService = roleService;
-        this.sessionService = sessionService;
     }
-
-    public static final String AUTH_TOKEN_NAME = "_hangartoken";
 
     @GetMapping("/login")
     public ModelAndView login(@RequestParam(defaultValue = "") String sso, @RequestParam(defaultValue = "") String sig, @RequestParam(defaultValue = "") String returnUrl, @CookieValue(value = "url", required = false) String redirectUrl, RedirectAttributes attributes) {
@@ -110,9 +104,6 @@ public class LoginController extends HangarController {
     }
 
     private ModelAndView redirectBack(String url, UsersTable user) {
-        UserSessionsTable session = sessionService.createSession(user);
-        Cookie sessionCookie = new Cookie(AUTH_TOKEN_NAME, session.getToken());
-        response.addCookie(sessionCookie);
         if (!url.startsWith("http")) {
             if (url.startsWith("/")) {
                 url = hangarConfig.getBaseUrl() + url;

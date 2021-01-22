@@ -6,7 +6,7 @@ import io.papermc.hangar.db.daoold.RoleDao;
 import io.papermc.hangar.db.modelold.PlatformVersionsTable;
 import io.papermc.hangar.db.modelold.RolesTable;
 import io.papermc.hangar.modelold.Platform;
-import io.papermc.hangar.modelold.Role;
+import io.papermc.hangar.model.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.ContextRefreshedEvent;

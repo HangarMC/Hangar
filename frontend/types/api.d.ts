@@ -4,7 +4,7 @@ declare module 'hangar-api' {
 
     interface Model {
         id: number;
-        created_at: string;
+        createdAt: string;
     }
 
     interface Named {
@@ -23,17 +23,27 @@ declare module 'hangar-api' {
 
     interface Role {
         value: string;
-        role_id: number;
+        roleId: number;
         category: RoleCategory;
         permission: bigint; // TODO maybe?
         title: string;
         color: Color;
     }
 
+    interface HeaderData {
+        globalPermission: string;
+        hasNotice: boolean;
+        hasProjectApprovals: boolean;
+        hasReviewQueue: boolean;
+        hasUnreadNotifications: boolean;
+        unresolvedFlags: boolean;
+    }
+
     interface User extends Model, Named {
         tagline: string | null;
         joinDate: string;
         roles: Role[];
+        headerData: HeaderData;
     }
 
     interface ApiSession {

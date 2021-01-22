@@ -26,7 +26,7 @@ const createApi = ($axios: NuxtAxiosInstance, $cookies: NuxtCookies, store: Stor
                                 } else {
                                     $cookies.set('api_session', JSON.stringify(data), {
                                         path: '/',
-                                        maxAge: 60 * 60 * 24 * 7,
+                                        expires: new Date(data.expires),
                                         secure: true,
                                     });
                                     resolve(data.session);
@@ -50,7 +50,7 @@ const createApi = ($axios: NuxtAxiosInstance, $cookies: NuxtCookies, store: Stor
                                 } else {
                                     $cookies.set('public_api_session', JSON.stringify(data), {
                                         path: '/',
-                                        maxAge: 60 * 60 * 24 * 7 * 4,
+                                        expires: new Date(data.expires),
                                         secure: true,
                                     });
                                     resolve(data.session);
@@ -67,25 +67,31 @@ const createApi = ($axios: NuxtAxiosInstance, $cookies: NuxtCookies, store: Stor
         }
 
         invalidateSession(): void {
-            if (store.state.auth.authenticated) {
-                $cookies.remove('api_session', {
-                    path: '/',
-                });
-            } else {
-                store.commit('auth/SET_AUTHED', false);
-                $cookies.remove('public_api_session', {
-                    path: '/',
-                });
-            }
+            store.commit('auth/SET_AUTHED', false);
+            store.commit('auth/SET_USER', null);
+            $cookies.remove('api_session', {
+                path: '/',
+            });
+            $cookies.remove('public_api_session', {
+                path: '/',
+            });
+        }
+
+        requestInternal<T>(url: string, method: 'get' | 'post' = 'get', data: object = {}): Promise<T> {
+            return this._request(`internal/${url}`, method, data);
         }
 
         request<T>(url: string, method: 'get' | 'post' = 'get', data: object = {}): Promise<T> {
+            return this._request(`v1/${url}`, method, data);
+        }
+
+        private _request<T>(url: string, method: 'get' | 'post', data: object): Promise<T> {
             return new Promise<T>((resolve, reject) => {
                 return this.getSession()
                     .then((session) => {
                         return ($axios({
                             method,
-                            url: '/api/v1/' + url,
+                            url: '/api/' + url,
                             headers: { Authorization: 'HangarApi session="' + session + '"' },
                             data,
                         }) as AxiosPromise<T>)

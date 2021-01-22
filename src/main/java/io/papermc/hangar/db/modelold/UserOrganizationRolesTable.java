@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.modelold;
 
 
-import io.papermc.hangar.modelold.Role;
+import io.papermc.hangar.model.Role;
 
 import java.time.OffsetDateTime;
 

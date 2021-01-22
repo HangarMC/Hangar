@@ -25,7 +25,7 @@ import io.papermc.hangar.exceptions.HangarException;
 import io.papermc.hangar.modelold.Category;
 import io.papermc.hangar.modelold.FlagReason;
 import io.papermc.hangar.modelold.NamedPermission;
-import io.papermc.hangar.modelold.NotificationType;
+import io.papermc.hangar.model.NotificationType;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.modelold.Visibility;
 import io.papermc.hangar.modelold.generated.Note;

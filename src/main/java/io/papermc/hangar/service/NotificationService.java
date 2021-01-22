@@ -12,7 +12,7 @@ import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.modelold.InviteFilter;
 import io.papermc.hangar.modelold.NotificationFilter;
-import io.papermc.hangar.modelold.NotificationType;
+import io.papermc.hangar.model.NotificationType;
 import io.papermc.hangar.modelold.viewhelpers.InviteSubject;
 import io.papermc.hangar.modelold.viewhelpers.UserRole;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;

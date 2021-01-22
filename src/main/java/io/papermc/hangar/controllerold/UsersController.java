@@ -23,7 +23,6 @@ import io.papermc.hangar.service.NotificationService;
 import io.papermc.hangar.service.OrgService;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.RoleService;
-import io.papermc.hangar.service.SessionService;
 import io.papermc.hangar.service.SitemapService;
 import io.papermc.hangar.service.SsoService;
 import io.papermc.hangar.service.SsoService.SignatureException;
@@ -37,6 +36,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,7 +54,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-//@Controller
+@Controller("oldUsersController")
 public class UsersController extends HangarController {
 
     private final ObjectMapper mapper;
@@ -65,7 +65,6 @@ public class UsersController extends HangarController {
     private final RoleService roleService;
     private final ApiKeyService apiKeyService;
     private final PermissionService permissionService;
-    private final SessionService sessionService;
     private final NotificationService notificationService;
     private final SsoService ssoService;
     private final UserActionLogService userActionLogService;
@@ -78,7 +77,7 @@ public class UsersController extends HangarController {
 
 
     @Autowired
-    public UsersController(ObjectMapper mapper, HangarConfig hangarConfig, AuthenticationService authenticationService, UserService userService, OrgService orgService, RoleService roleService, ApiKeyService apiKeyService, PermissionService permissionService, SessionService sessionService, NotificationService notificationService, SsoService ssoService, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, SitemapService sitemapService, HttpServletRequest request, HttpServletResponse response, Supplier<UsersTable> usersTable) {
+    public UsersController(ObjectMapper mapper, HangarConfig hangarConfig, AuthenticationService authenticationService, UserService userService, OrgService orgService, RoleService roleService, ApiKeyService apiKeyService, PermissionService permissionService, NotificationService notificationService, SsoService ssoService, UserActionLogService userActionLogService, HangarDao<UserDao> userDao, SitemapService sitemapService, HttpServletRequest request, HttpServletResponse response, Supplier<UsersTable> usersTable) {
         this.mapper = mapper;
         this.hangarConfig = hangarConfig;
         this.authenticationService = authenticationService;
@@ -87,7 +86,6 @@ public class UsersController extends HangarController {
         this.roleService = roleService;
         this.apiKeyService = apiKeyService;
         this.permissionService = permissionService;
-        this.sessionService = sessionService;
         this.notificationService = notificationService;
         this.ssoService = ssoService;
         this.userActionLogService = userActionLogService;

@@ -14,12 +14,16 @@ import java.util.List;
 @RegisterConstructorMapper(User.class)
 public interface UsersDAO {
 
-    @SqlQuery("SELECT u.id, u.created_at, u.name, u.tagline, u.join_date, array_agg(r.name) roles " +
-            " FROM users u" +
-            "     JOIN user_global_roles ugr ON u.id = ugr.user_id" +
-            "     JOIN roles r ON ugr.role_id = r.id" +
-            " WHERE u.name = :name" +
-            " GROUP BY u.id")
+    @SqlQuery("SELECT u.id, " +
+            "       u.created_at," +
+            "       u.name, u.tagline," +
+            "       u.join_date, " +
+            "       array_agg(r.name) roles" +
+            "   FROM users u" +
+            "       JOIN user_global_roles ugr ON u.id = ugr.user_id" +
+            "       JOIN roles r ON ugr.role_id = r.id" +
+            "   WHERE u.name = :name" +
+            "   GROUP BY u.id")
     <T extends User> T getUser(String name, @MapTo Class<T> type);
 
     @SqlQuery("SELECT u.id," +

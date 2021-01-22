@@ -47,7 +47,6 @@ public class UserTable extends Table implements Named {
         return name;
     }
 
-    @Override
     public void setName(String name) {
         this.name = name;
     }

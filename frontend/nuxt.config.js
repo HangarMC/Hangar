@@ -85,7 +85,7 @@ export default {
         middleware: 'auth',
     },
 
-    proxy: ['http://localhost:8080/api/**'],
+    proxy: ['http://localhost:8080/api/', 'http://localhost:8080/signup', 'http://localhost:8080/login', 'http://localhost:8080/logout'],
 
     server: {
         port: 3000,
