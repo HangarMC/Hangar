@@ -20,7 +20,8 @@ const createAuth = ({ app: { $cookies }, store, $api }: Context) => {
 
         logout(): void {
             $api.invalidateSession();
-            // location.replace('/logout'); // TODO uncomment
+            location.reload();
+            // location.replace('/logout'); // TODO uncomment (maybe have a "full log out" system seperate so you dont have to log out from all paper sites?)
         }
 
         updateUser(): Promise<void> {
