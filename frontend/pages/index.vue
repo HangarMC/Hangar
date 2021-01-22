@@ -32,12 +32,12 @@
                 <v-list dense>
                     <v-subheader>Categories</v-subheader>
                     <v-list-item-group>
-                        <v-list-item v-for="(cat, i) in categories" :key="i">
+                        <v-list-item v-for="cat in $store.state.projectCategories.values()" :key="cat.apiName">
                             <v-list-item-icon>
                                 <v-icon v-text="cat.icon" />
                             </v-list-item-icon>
                             <v-list-item-content>
-                                <v-list-item-title v-text="cat.text"></v-list-item-title>
+                                <v-list-item-title v-text="cat.title"></v-list-item-title>
                             </v-list-item-content> </v-list-item
                     ></v-list-item-group>
                 </v-list>
@@ -65,11 +65,6 @@ import { Context } from '@nuxt/types';
 import { PaginatedResult, Project } from 'hangar-api';
 
 // TODO move somewhere else
-interface Category {
-    icon: string;
-    text: string;
-}
-
 interface Platform {
     icon: string;
     text: string;
@@ -80,13 +75,6 @@ export default class Home extends Vue {
     projects?: PaginatedResult<Project>;
     totalProjects: Number = 1337;
     projectFilter: String | null = null;
-    // TODO get categories from server
-    categories: Category[] = [
-        {
-            icon: 'mdi-home',
-            text: 'Test',
-        },
-    ];
 
     // TODO get platforms from server
     platforms: Platform[] = [
@@ -102,8 +90,8 @@ export default class Home extends Vue {
         };
     }
 
-    async asyncData({ $api }: Context): Promise<{ projects: PaginatedProjectList }> {
-        return { projects: await $api.request<PaginatedProjectList>('projects', 'get', { limit: 25, offset: 0 }) };
+    async asyncData({ $api, store }: Context): Promise<{ projects: PaginatedResult<Project> }> {
+        return { projects: await $api.request<PaginatedResult<Project>>('projects', 'get', { limit: 25, offset: 0 }) };
     }
 }
 </script>

@@ -10,7 +10,7 @@ const createAuth = ({ app: { $cookies }, store, $api }: Context) => {
                 maxAge: 120,
                 secure: true,
             });
-            location.replace(`/login?returnUrl=http://localhost:3000/${redirect}`);
+            location.replace(`/login?returnUrl=http://localhost:3000${redirect}`);
         }
 
         processLogin(): Promise<void> {

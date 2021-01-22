@@ -18,11 +18,11 @@ export default class ProjectPage extends Vue {
         };
     }
 
-    async asyncData({ $api, params, error }: Context): Promise<{ project: Project }> {
+    async asyncData({ $api, params, error }: Context): Promise<{ project: Project } | void> {
         return await $api
             .request<Project>(`projects/${params.author}/${params.slug}`)
             .then((project) => {
-                return { project };
+                return Promise.resolve({ project });
             })
             .catch((err: AxiosError) => {
                 const hangarError: ApiError = err.response?.data as ApiError;

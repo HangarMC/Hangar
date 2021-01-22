@@ -129,4 +129,12 @@ declare module 'hangar-api' {
         text: String;
         color: String;
     }
+
+    // Data interfaces
+    interface IProjectCategory {
+        title: string;
+        icon: string;
+        apiName: string;
+        visible: boolean;
+    }
 }

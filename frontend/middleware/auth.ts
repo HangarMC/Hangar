@@ -5,7 +5,7 @@ import { ApiSessionType } from '~/types/enums';
 export default ({ store, app: { $cookies }, $auth, redirect }: Context) => {
     if ($cookies.get('returnRoute')) {
         // is returning from login
-        const returnRoute: string = $cookies.get<string>('returnRoute');
+        const returnRoute = $cookies.get<string>('returnRoute');
         return $auth.processLogin().then(() => {
             $cookies.remove('returnRoute', {
                 path: '/',

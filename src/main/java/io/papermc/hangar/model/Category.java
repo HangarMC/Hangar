@@ -1,6 +1,8 @@
 package io.papermc.hangar.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Category {
     ADMIN_TOOLS(0, "Admin Tools", "fa-server", "admin_tools"),
     CHAT(1, "Chat", "fa-comment", "chat"),
@@ -42,6 +45,7 @@ public enum Category {
         this.isVisible = isVisible;
     }
 
+    @JsonIgnore
     public int getValue() {
         return value;
     }
