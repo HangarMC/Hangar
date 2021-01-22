@@ -1,21 +1,9 @@
 import colors from 'vuetify/es5/util/colors';
-import { NuxtVueI18n } from 'nuxt-i18n/types';
-import VueI18n, { IVueI18n } from 'vue-i18n';
+import NuxtVueI18n from 'nuxt-i18n';
 import en from './locales/en';
 import fr from './locales/fr';
 
 require('dotenv').config();
-
-declare module 'vue/types/vue' {
-    interface Vue {
-        readonly $i18n: VueI18n & IVueI18n;
-        $t: typeof VueI18n.prototype.t;
-        $tc: typeof VueI18n.prototype.tc;
-        $te: typeof VueI18n.prototype.te;
-        $d: typeof VueI18n.prototype.d;
-        $n: typeof VueI18n.prototype.n;
-    }
-}
 
 export default {
     telemetry: false,
@@ -119,7 +107,7 @@ export default {
                 fr,
             },
         },
-    } as NuxtVueI18n.Options.AllOptionsInterface,
+    } as NuxtVueI18n.NuxtVueI18n.Options.AllOptionsInterface,
 
     server: {
         port: 3000,
