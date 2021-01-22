@@ -13,7 +13,7 @@
         </div>
         <div class="setting-content">
             <select class="form-control" id="category" name="category" form="${form}">
-                <#-- @ftlvariable name="category" type="io.papermc.hangar.modelold.Category" -->
+                <#-- @ftlvariable name="category" type="io.papermc.hangar.model.Category" -->
                 <#list @helper["io.papermc.hangar.model.Category"].values() as category>
                     <#if category.isVisible()>
                         <option <#if selected?? && selected.equals(category)> selected </#if> >

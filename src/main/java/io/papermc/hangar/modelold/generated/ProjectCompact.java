@@ -3,7 +3,7 @@ package io.papermc.hangar.modelold.generated;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.papermc.hangar.modelold.Category;
+import io.papermc.hangar.model.Category;
 import io.swagger.annotations.ApiModelProperty;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;

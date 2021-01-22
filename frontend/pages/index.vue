@@ -62,7 +62,7 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
-import { PaginatedProjectList } from 'hangar-api';
+import { PaginatedResult, Project } from 'hangar-api';
 
 // TODO move somewhere else
 interface Category {
@@ -77,7 +77,7 @@ interface Platform {
 
 @Component
 export default class Home extends Vue {
-    projects?: PaginatedProjectList;
+    projects?: PaginatedResult<Project>;
     totalProjects: Number = 1337;
     projectFilter: String | null = null;
     // TODO get categories from server

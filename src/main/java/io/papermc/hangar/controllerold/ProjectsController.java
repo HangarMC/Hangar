@@ -22,12 +22,12 @@ import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.exceptions.HangarException;
-import io.papermc.hangar.modelold.Category;
+import io.papermc.hangar.model.Category;
 import io.papermc.hangar.modelold.FlagReason;
 import io.papermc.hangar.modelold.NamedPermission;
 import io.papermc.hangar.model.NotificationType;
 import io.papermc.hangar.model.Permission;
-import io.papermc.hangar.modelold.Visibility;
+import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.modelold.generated.Note;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
 import io.papermc.hangar.modelold.viewhelpers.ScopedOrganizationData;
@@ -89,7 +89,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-@Controller
+@Controller("oldProjectsController")
 public class ProjectsController extends HangarController {
 
     public static final Pattern ID_PATTERN = Pattern.compile("[a-z][a-z0-9-_]{0,63}");

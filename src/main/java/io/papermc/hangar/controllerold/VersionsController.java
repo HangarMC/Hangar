@@ -19,7 +19,7 @@ import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.exceptions.HangarException;
 import io.papermc.hangar.modelold.DownloadType;
 import io.papermc.hangar.modelold.NamedPermission;
-import io.papermc.hangar.modelold.Visibility;
+import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.modelold.generated.ReviewState;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
 import io.papermc.hangar.modelold.viewhelpers.ScopedProjectData;

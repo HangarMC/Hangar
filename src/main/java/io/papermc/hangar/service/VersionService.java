@@ -12,7 +12,7 @@ import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.exceptions.HangarException;
 import io.papermc.hangar.modelold.Platform;
 import io.papermc.hangar.modelold.TagColor;
-import io.papermc.hangar.modelold.Visibility;
+import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.modelold.generated.Dependency;
 import io.papermc.hangar.modelold.generated.ReviewState;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;

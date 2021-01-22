@@ -1,5 +1,6 @@
 package io.papermc.hangar.util;
 
+import io.papermc.hangar.config.hangar.HangarConfig;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
@@ -14,6 +15,8 @@ import java.util.stream.Collectors;
 public class StringUtils {
 
     private StringUtils() { }
+
+    private static final HangarConfig hangarConfig = StaticContextAccessor.getBean(HangarConfig.class);
 
     /**
      * Returns a URL readable string from the specified string.
@@ -52,6 +55,16 @@ public class StringUtils {
     public static String stringOrNull(@Nullable String input) {
         if (input == null || input.isBlank()) return null;
         return input;
+    }
+
+    /**
+     * Formats the avatar url for a name
+     *
+     * @param name name (user, project)
+     * @return the avatar url
+     */
+    public static String avatarUrl(String name) {
+        return String.format(hangarConfig.security.api.getAvatarUrl(), name);
     }
 
     @NotNull

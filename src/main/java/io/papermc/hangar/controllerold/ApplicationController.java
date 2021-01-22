@@ -22,7 +22,7 @@ import io.papermc.hangar.modelold.NamedPermission;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.modelold.Platform;
 import io.papermc.hangar.model.Role;
-import io.papermc.hangar.modelold.Visibility;
+import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.modelold.viewhelpers.Activity;
 import io.papermc.hangar.modelold.viewhelpers.LoggedActionViewModel;
 import io.papermc.hangar.modelold.viewhelpers.OrganizationData;

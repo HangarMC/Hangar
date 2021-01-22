@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.modelold.Platform;
-import io.papermc.hangar.modelold.Visibility;
+import io.papermc.hangar.model.Visibility;
 import io.swagger.annotations.ApiModelProperty;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;

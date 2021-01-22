@@ -5,7 +5,7 @@ import org.springframework.lang.Nullable;
 
 import java.time.OffsetDateTime;
 
-import io.papermc.hangar.modelold.Visibility;
+import io.papermc.hangar.model.Visibility;
 
 public class ProjectVisibilityChangesTable {
 

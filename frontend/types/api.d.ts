@@ -2,6 +2,15 @@
 declare module 'hangar-api' {
     import { ApiSessionType, ProjectCategory, RoleCategory, Visibility } from '~/types/enums';
 
+    interface ApiError {
+        message: string;
+        error: {
+            message: string;
+            code: number;
+        };
+        pathParams: Record<string, string>;
+    }
+
     interface Model {
         id: number;
         createdAt: string;
@@ -66,8 +75,8 @@ declare module 'hangar-api' {
     interface ProjectStats {
         views: number;
         downloads: number;
-        recent_views: number;
-        recent_downloads: number;
+        recentViews: number;
+        recentDownloads: number;
         stars: number;
         waters: number;
     }
@@ -89,7 +98,7 @@ declare module 'hangar-api' {
     interface PromotedVersionTag extends Named {
         data: string;
         displayData: string;
-        minecraft_version: string;
+        minecraftVersion: string;
         color: TagColor;
     }
 
@@ -100,20 +109,20 @@ declare module 'hangar-api' {
 
     interface Project extends Model, Named {
         namespace: ProjectNamespace;
-        promoted_versions: PromotedVersion[];
+        promotedVersions: PromotedVersion[];
         stats: ProjectStats;
         category: ProjectCategory;
         description: string;
-        last_updated: Date;
+        lastUpdated: Date;
         visibility: Visibility;
-        user_actions: UserActions;
+        userActions: UserActions;
         settings: ProjectSettings;
-        icon_url: string;
+        iconUrl: string;
     }
 
-    interface PaginatedProjectList {
+    interface PaginatedResult<T extends Model> {
         pagination: Pagination;
-        result: Project[];
+        result: T[];
     }
 
     interface Announcement {

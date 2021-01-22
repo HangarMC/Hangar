@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import io.papermc.hangar.db.customtypes.JSONB;
+import io.papermc.hangar.model.api.project.PromotedVersion;
+import io.papermc.hangar.model.api.project.PromotedVersionTag;
 import io.papermc.hangar.modelold.TagColor;
-import io.papermc.hangar.modelold.generated.PromotedVersion;
-import io.papermc.hangar.modelold.generated.PromotedVersionTag;
 import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.statement.StatementContext;
@@ -92,21 +92,18 @@ public class PromotedVersionMapper implements ColumnMapper<List<PromotedVersion>
 //                }
 //            }
             promotedVersions.add(
-                    new PromotedVersion()
-                            .version(version)
-                            .tags(
-                                    List.of(
-                                            new PromotedVersionTag()
-                                                    .name(tagName)
-                                                    .data(data)
-                                                    .displayData(data) // TODO
-                                                    .color(
-                                                            new io.papermc.hangar.modelold.generated.TagColor()
-                                                                    .background(color.getBackground())
-                                                                    .foreground(color.getForeground())
-                                                    )
+                    new PromotedVersion(
+                            version,
+                            List.of(
+                                    new PromotedVersionTag(
+                                            tagName,
+                                            data,
+                                            data, // TODO
+                                            null,
+                                            color
                                     )
                             )
+                    )
             );
         });
         return promotedVersions;

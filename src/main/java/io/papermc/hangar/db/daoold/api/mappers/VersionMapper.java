@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.daoold.api.mappers;
 
 import io.papermc.hangar.modelold.Color;
-import io.papermc.hangar.modelold.Visibility;
+import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.modelold.generated.FileInfo;
 import io.papermc.hangar.modelold.generated.ReviewState;
 import io.papermc.hangar.modelold.generated.Tag;

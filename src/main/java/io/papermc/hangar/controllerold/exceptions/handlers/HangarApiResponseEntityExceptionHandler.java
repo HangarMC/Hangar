@@ -12,7 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.servlet.http.HttpServletRequest;
 
-@ControllerAdvice(basePackages = "io.papermc.hangar.controller.api")
+@ControllerAdvice(basePackages = "io.papermc.hangar.controller")
 public class HangarApiResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final ObjectMapper mapper;
@@ -34,7 +34,7 @@ public class HangarApiResponseEntityExceptionHandler extends ResponseEntityExcep
                 .put("message", exception.getStatus().getReasonPhrase())
                 .put("code", exception.getStatus().value());
         response.set("error", error);
-        response.set("path_params", mapper.valueToTree(request.getAttribute(View.PATH_VARIABLES)));
+        response.set("pathParams", mapper.valueToTree(request.getAttribute(View.PATH_VARIABLES)));
         return new ResponseEntity<>(response, exception.getResponseHeaders(), exception.getStatus());
     }
 }

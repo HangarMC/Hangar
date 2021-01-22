@@ -1,7 +1,8 @@
 package io.papermc.hangar.db.modelold;
 
 
-import io.papermc.hangar.modelold.Visibility;
+import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.model.Visible;
 import io.papermc.hangar.modelold.generated.PlatformDependency;
 import io.papermc.hangar.modelold.generated.ReviewState;
 import io.papermc.hangar.modelold.viewhelpers.VersionDependencies;
@@ -11,7 +12,7 @@ import org.jdbi.v3.core.enums.EnumByOrdinal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-public class ProjectVersionsTable implements VisibilityModel {
+public class ProjectVersionsTable implements Visible {
 
     private long id;
     private OffsetDateTime createdAt;

@@ -32,8 +32,6 @@ public class UsersService {
         this.apiAuthInfo = apiAuthInfo;
     }
 
-//    public Supplier<HangarUser>
-
     public <T extends User> T getUser(String name, Class<T> type) {
         T user = usersDAO.getUser(name, type);
         if (user == null) {

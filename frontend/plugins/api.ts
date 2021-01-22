@@ -1,6 +1,6 @@
 import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
-import { AxiosPromise } from 'axios';
+import { AxiosPromise, AxiosError } from 'axios';
 import { ApiSession } from 'hangar-api';
 import { NuxtAxiosInstance } from '@nuxtjs/axios';
 import { NuxtCookies } from 'cookie-universal-nuxt';
@@ -96,23 +96,28 @@ const createApi = ($axios: NuxtAxiosInstance, $cookies: NuxtCookies, store: Stor
                             data,
                         }) as AxiosPromise<T>)
                             .then(({ data }) => resolve(data))
-                            .catch((error) => {
-                                if (error.response && (error.response.error === 'Api session expired' || error.response.error === 'Invalid session')) {
-                                    // This should never happen but just in case we catch it and invalidate the session to definitely get a new one
-                                    this.invalidateSession();
-                                    this.request<T>(url, method, data)
-                                        .then((data) => {
-                                            resolve(data);
-                                        })
-                                        .catch((error) => {
-                                            reject(error);
-                                        });
-                                } else {
-                                    reject(error.response.statusText);
-                                }
+                            .catch((error: AxiosError) => {
+                                reject(error);
+                                // console.log(error);
+                                // if (error.response && (error.response.error === 'Api session expired' || error.response.error === 'Invalid session')) {
+                                //     // This should never happen but just in case we catch it and invalidate the session to definitely get a new one
+                                //     this.invalidateSession();
+                                //     this.request<T>(url, method, data)
+                                //         .then((data) => {
+                                //             resolve(data);
+                                //         })
+                                //         .catch((error) => {
+                                //             reject(error);
+                                //         });
+                                // } else {
+                                //     reject(error.response.statusText);
+                                // }
                             });
                     })
-                    .catch((reason) => reject(reason));
+                    .catch((reason) => {
+                        console.log(reason);
+                        // TODO error popup here
+                    });
             });
         }
     }

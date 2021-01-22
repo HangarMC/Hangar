@@ -3,8 +3,9 @@ package io.papermc.hangar.db.modelold;
 
 import io.papermc.hangar.controllerold.forms.NewProjectForm;
 import io.papermc.hangar.db.customtypes.JSONB;
-import io.papermc.hangar.modelold.Category;
-import io.papermc.hangar.modelold.Visibility;
+import io.papermc.hangar.model.Category;
+import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.model.Visible;
 import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.annotation.Unmappable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
@@ -12,7 +13,7 @@ import org.jdbi.v3.core.enums.EnumByOrdinal;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 
-public class ProjectsTable implements Visitable, VisibilityModel {
+public class ProjectsTable implements Visitable, Visible {
 
     private long id;
     private OffsetDateTime createdAt;

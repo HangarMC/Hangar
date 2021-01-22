@@ -127,7 +127,7 @@ public class AuthenticationService extends HangarService {
         //noinspection SpringConfigurationProxyMethods
         boolean hasPerms = checkPerms(perms, apiScope, apiAuthInfo().getUserId());
         if (!hasPerms) {
-            throw new HangarApiException(HttpStatus.FORBIDDEN);
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
         return true;
     }
