@@ -41,8 +41,8 @@
             </v-menu>
         </template>
         <template v-else>
-            <v-btn href="/signup" class="mr-2" color="primary" v-text="$t('nav.signup')"></v-btn>
-            <v-btn color="secondary" @click="$auth.login($route.fullPath)" v-text="$t('nav.login')"></v-btn>
+            <v-btn href="/signup" class="mr-2" color="primary">{{ $t('nav.signup') }}</v-btn>
+            <v-btn color="secondary" @click="$auth.login($route.fullPath)">{{ $t('nav.login') }}</v-btn>
         </template>
     </v-app-bar>
 </template>

@@ -23,7 +23,7 @@ public enum Category {
     ROLE_PLAYING(7, "Role Playing", "mdi-auto-fix", "role_playing"),
     WORLD_MANAGEMENT(8, "World Management", "mdi-earth", "world_management"),
     MISC(9, "Miscellaneous", "mdi-asterisk", "misc"),
-    UNDEFINED(10, "Undefined", "", "undefined");
+    UNDEFINED(10, "Undefined", "", "undefined", false);
 
     private final int value;
     private final String title;

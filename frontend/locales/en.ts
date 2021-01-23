@@ -38,6 +38,20 @@ const msgs: LocaleMessageObject = {
             community: 'Community',
         },
     },
+    project: {
+        category: {
+            admin_tools: 'Admin Tools',
+            chat: 'Chat',
+            dev_tools: 'Developer Tools',
+            economy: 'Economy',
+            gameplay: 'Gameplay',
+            games: 'Games',
+            protection: 'Protection',
+            role_playing: 'Role Playing',
+            world_management: 'World Management',
+            misc: 'Miscellaneous',
+        },
+    },
     message: 'Good morning!',
 };
 

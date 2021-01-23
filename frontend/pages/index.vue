@@ -28,14 +28,15 @@
                 <v-list dense>
                     <v-subheader>Categories</v-subheader>
                     <v-list-item-group>
-                        <v-list-item v-for="cat in $store.state.projectCategories.values()" :key="cat.apiName">
+                        <v-list-item v-for="cat in $store.getters.visibleCategories" :key="cat.apiName">
                             <v-list-item-icon>
                                 <v-icon v-text="cat.icon" />
                             </v-list-item-icon>
                             <v-list-item-content>
-                                <v-list-item-title v-text="cat.title"></v-list-item-title>
-                            </v-list-item-content> </v-list-item
-                    ></v-list-item-group>
+                                <v-list-item-title v-text="$t(`project.category.${cat.apiName}`)"></v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list-item-group>
                 </v-list>
 
                 <v-list dense>

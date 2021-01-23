@@ -1,4 +1,4 @@
-import { ActionTree, MutationTree } from 'vuex';
+import { ActionTree, MutationTree, GetterTree } from 'vuex';
 import { Context } from '@nuxt/types';
 import { IProjectCategory } from 'hangar-api';
 import { ProjectCategory } from '~/types/enums';
@@ -29,6 +29,10 @@ export const actions: ActionTree<RootState, RootState> = {
             console.error(e);
         }
     },
+};
+
+export const getters: GetterTree<RootState, RootState> = {
+    visibleCategories: (state: RootState) => Array.from(state.projectCategories.values()).filter((value) => value.visible),
 };
 
 function convertToMap<E, T>(values: T[], toStringFunc: (value: T) => string): Map<E, T> {
