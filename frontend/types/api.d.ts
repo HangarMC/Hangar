@@ -137,4 +137,10 @@ declare module 'hangar-api' {
         apiName: string;
         visible: boolean;
     }
+
+    interface IPermission {
+        value: string;
+        frontendName: string;
+        permission: bigint;
+    }
 }

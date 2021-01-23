@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.model.Category;
+import io.papermc.hangar.modelold.NamedPermission;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -43,6 +44,19 @@ public class BackendDataController {
     @GetMapping("/categories")
     public ResponseEntity<ArrayNode> getCategories() {
         return ResponseEntity.ok(mapper.valueToTree(Category.VALUES));
+    }
+
+    @GetMapping("/permissions")
+    public ResponseEntity<ArrayNode> getPermissions() {
+        ArrayNode arrayNode = mapper.createArrayNode();
+        for (NamedPermission namedPermission : NamedPermission.VALUES) {
+            ObjectNode namedPermissionObject = mapper.createObjectNode();
+            namedPermissionObject.put("value", namedPermission.getValue());
+            namedPermissionObject.put("frontendName", namedPermission.getFrontendName());
+            namedPermissionObject.put("permission", namedPermission.getPermission().toBinString());
+            arrayNode.add(namedPermissionObject);
+        }
+        return ResponseEntity.ok(arrayNode);
     }
 
     @GetMapping("/platforms")

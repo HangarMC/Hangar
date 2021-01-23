@@ -1,10 +1,11 @@
 import { ActionTree, MutationTree, GetterTree } from 'vuex';
 import { Context } from '@nuxt/types';
-import { IProjectCategory } from 'hangar-api';
-import { ProjectCategory } from '~/types/enums';
+import { IPermission, IProjectCategory } from 'hangar-api';
+import { NamedPermission, ProjectCategory } from '~/types/enums';
 
 export const state = () => ({
     projectCategories: (null as unknown) as Map<ProjectCategory, IProjectCategory>,
+    permissions: (null as unknown) as Map<NamedPermission, IPermission>,
 });
 
 export type RootState = ReturnType<typeof state>;
@@ -12,6 +13,9 @@ export type RootState = ReturnType<typeof state>;
 export const mutations: MutationTree<RootState> = {
     SET_PROJECT_CATEGORIES: (state, payload: Map<ProjectCategory, IProjectCategory>) => {
         state.projectCategories = payload;
+    },
+    SET_PERMISSIONS: (state, payload: Map<NamedPermission, IPermission>) => {
+        state.permissions = payload;
     },
 };
 
@@ -22,6 +26,16 @@ export const actions: ActionTree<RootState, RootState> = {
             commit(
                 'SET_PROJECT_CATEGORIES',
                 convertToMap<ProjectCategory, IProjectCategory>(categoryResult, (value) => value.apiName)
+            );
+            const permissionResultTemp = await $api.requestInternal<{ value: string; frontendName: string; permission: string }[]>('data/permissions');
+            const permissionResult: IPermission[] = permissionResultTemp.map(({ value, frontendName, permission }) => ({
+                value,
+                frontendName,
+                permission: BigInt('0b' + permission),
+            }));
+            commit(
+                'SET_PERMISSIONS',
+                convertToMap<NamedPermission, IPermission>(permissionResult, (value) => value.value)
             );
             // others
         } catch (e) {
@@ -38,7 +52,11 @@ export const getters: GetterTree<RootState, RootState> = {
 function convertToMap<E, T>(values: T[], toStringFunc: (value: T) => string): Map<E, T> {
     const map = new Map<E, T>();
     for (const value of values) {
-        map.set((toStringFunc(value) as unknown) as E, value);
+        const key: E = (toStringFunc(value) as unknown) as E;
+        if (key == null) {
+            throw new Error('Could not find an enum for ' + value);
+        }
+        map.set(key, value);
     }
     return map;
 }

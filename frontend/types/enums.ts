@@ -33,36 +33,40 @@ export enum Visibility {
     SOFT_DELETE = 'softDelete',
 }
 
-// export class ProjectCategory {
-//     private static values: Map<string, ProjectCategory>;
-//     public static getValues(): IterableIterator<ProjectCategory> {
-//         return this.values.values();
-//     }
-//
-//     public static getByName(name: string): ProjectCategory | undefined {
-//         return this.values.get(name);
-//     }
-//
-//     public static ADMIN_TOOLS = ProjectCategory.create('admin_tools', 'Admin Tools', 'fa-server');
-//     public static CHAT = ProjectCategory.create('chat', 'Chat', 'fa-comment');
-//     public static DEV_TOOLS = ProjectCategory.create('dev_tools', 'Developer Tools', 'fa-wrench');
-//     public static ECONOMY = ProjectCategory.create('economy', 'Economy', 'fa-money-bill-alt');
-//     public static GAMEPLAY = ProjectCategory.create('gameplay', 'Gameplay', 'fa-puzzle-piece');
-//     public static GAMES = ProjectCategory.create('games', 'Games', 'fa-gamepad');
-//
-//     name: string;
-//     title: string;
-//     icon: string;
-//
-//     constructor(name: string, title: string, icon: string) {
-//         this.name = name;
-//         this.title = title;
-//         this.icon = icon;
-//     }
-//
-//     static create(name: string, title: string, icon: string): ProjectCategory {
-//         const category = new ProjectCategory(name, title, icon);
-//         this.values.set(name, category);
-//         return category;
-//     }
-// }
+export enum NamedPermission {
+    VIEW_PUBLIC_INFO = 'view_public_info',
+    EDIT_OWN_USER_SETTINGS = 'edit_own_user_settings',
+    EDIT_API_KEYS = 'edit_api_keys',
+
+    EDIT_SUBJECT_SETTINGS = 'edit_subject_settings',
+    MANAGE_SUBJECT_MEMBERS = 'manage_subject_members',
+    IS_SUBJECT_OWNER = 'is_subject_owner',
+    IS_SUBJECT_MEMBER = 'is_subject_member',
+
+    CREATE_PROJECT = 'create_project',
+    EDIT_PAGE = 'edit_page',
+    DELETE_PROJECT = 'delete_project',
+
+    CREATE_VERSION = 'create_version',
+    EDIT_VERSION = 'edit_version',
+    DELETE_VERSION = 'delete_version',
+    EDIT_TAGS = 'edit_tags',
+
+    CREATE_ORGANIZATION = 'create_organization',
+    POST_AS_ORGANIZATION = 'post_as_organization',
+
+    MOD_NOTES_AND_FLAGS = 'mod_notes_and_flags',
+    SEE_HIDDEN = 'see_hidden',
+    IS_STAFF = 'is_staff',
+    REVIEWER = 'reviewer',
+
+    VIEW_HEALTH = 'view_health',
+    VIEW_IP = 'view_ip',
+    VIEW_STATS = 'view_stats',
+    VIEW_LOGS = 'view_logs',
+
+    MANUAL_VALUE_CHANGES = 'manual_value_changes',
+    HARD_DELETE_PROJECT = 'hard_delete_project',
+    HARD_DELETE_VERSION = 'hard_delete_version',
+    EDIT_ALL_USER_SETTINGS = 'edit_all_user_settings',
+}

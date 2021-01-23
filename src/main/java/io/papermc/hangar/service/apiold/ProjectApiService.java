@@ -3,14 +3,10 @@ package io.papermc.hangar.service.apiold;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.daoold.HangarDao;
 import io.papermc.hangar.db.daoold.api.ProjectsApiDao;
-import io.papermc.hangar.model.Category;
 import io.papermc.hangar.modelold.generated.Project;
 import io.papermc.hangar.modelold.generated.ProjectMember;
-import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
 import io.papermc.hangar.modelold.generated.ProjectStatsDay;
-import io.papermc.hangar.modelold.generated.Tag;
 import io.papermc.hangar.service.pluginupload.ProjectFiles;
-import io.papermc.hangar.util.ApiUtil;
 import io.papermc.hangar.util.Routes;
 import io.papermc.hangar.util.TemplateHelper;
 import org.springframework.stereotype.Service;
@@ -19,7 +15,6 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class ProjectApiService {

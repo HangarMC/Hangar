@@ -1,7 +1,9 @@
 import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
+import { NamedPermission } from '~/types/enums';
+import { RootState } from '~/store';
 
-const createUtil = (_: Context) => {
+const createUtil = ({ store }: Context) => {
     class Util {
         avatarUrl(name: String): String {
             return 'https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png';
@@ -16,6 +18,21 @@ const createUtil = (_: Context) => {
         prettyDate(date: Date): String {
             // TODO format date
             return 'Oct 8, 2020';
+        }
+
+        has(perms: bigint | string, namedPermission: NamedPermission): boolean {
+            let _perms: bigint;
+            const perm = (store.state as RootState).permissions.get(namedPermission);
+            if (!perm) {
+                throw new Error(namedPermission + ' is not valid');
+            }
+            if (typeof perms === 'string') {
+                _perms = BigInt('0b' + perm.value);
+            } else {
+                _perms = perms;
+            }
+
+            return (_perms & perm.permission) === perm.permission;
         }
     }
 
