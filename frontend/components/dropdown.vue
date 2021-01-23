@@ -33,7 +33,7 @@ export interface Control {
 }
 
 @Component
-export default class Card extends Vue {
+export default class Dropdown extends Vue {
     @Prop({ type: Array as PropType<Control[]>, required: true })
     controls!: Control[];
 

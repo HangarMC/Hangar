@@ -4,7 +4,7 @@
 
         <v-main>
             <v-container>
-                <Announcement v-for="(announcement, idx) in announcements" :key="idx" :announcement="announcement" />
+                <AnnouncementComponent v-for="(announcement, idx) in announcements" :key="idx" :announcement="announcement" />
 
                 <nuxt />
             </v-container>
@@ -25,7 +25,7 @@ export default class DefaultLayout extends Vue {
         {
             text:
                 'This is a staging server for testing purposes. Data could be deleted at any time. email confirmations are disabled. If you wanna help test, sneak into #hangar-dev',
-            color: '#ff544b',
+            color: 'red lighten-1',
         },
     ];
 }

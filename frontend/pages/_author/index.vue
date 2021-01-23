@@ -47,6 +47,10 @@
                     <v-subheader>Stars</v-subheader>
                     <!-- todo -->
                 </v-list>
+                <v-list dense>
+                    <v-subheader>Watching</v-subheader>
+                    <!-- todo -->
+                </v-list>
             </v-col>
         </v-row>
     </div>
@@ -95,6 +99,7 @@ export default class AuthorPage extends Vue {
 
     get buttons(): Button[] {
         const buttons = [] as Button[];
+        // TODO user admin
         buttons.push({ icon: 'mdi-cog', url: '', name: 'Settings' });
         buttons.push({ icon: 'mdi-lock-open-outline', url: '', name: 'Lock Account' });
         buttons.push({ icon: 'mdi-lock-outline', url: '', name: 'Unlock Account' });

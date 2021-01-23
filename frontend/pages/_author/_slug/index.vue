@@ -1,16 +1,27 @@
 <template>
-    <div>{{ project.name }}</div>
+    <div>
+        <ProjectLayout :project="project" :author="user">
+            <v-row>
+                <v-col cols="12" md="8"> Description </v-col>
+                <v-col cols="12" md="4"> Download </v-col>
+            </v-row>
+        </ProjectLayout>
+    </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
-import { ApiError, Project } from 'hangar-api';
+import { ApiError, Project, User } from 'hangar-api';
 import { AxiosError } from 'axios';
+import ProjectLayout from '~/components/ProjectLayout.vue';
 
-@Component
+@Component({
+    components: { ProjectLayout },
+})
 export default class ProjectPage extends Vue {
     project?: Project;
+    user?: User = { name: 'test' }; // todo load user
 
     head() {
         return {

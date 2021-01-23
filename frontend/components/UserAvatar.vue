@@ -56,4 +56,8 @@ export default class UserAvatar extends Vue {
     width: 100px;
     height: 100px;
 }
+.user-avatar-sm {
+    width: 50px;
+    height: 50px;
+}
 </style>

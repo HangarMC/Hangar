@@ -14,7 +14,7 @@ export interface Sponsor {
 }
 
 @Component
-export default class Card extends Vue {
+export default class Sponsor extends Vue {
     // TODO get sponsor from server, randomly
     sponsor: Sponsor = {
         img: '',
