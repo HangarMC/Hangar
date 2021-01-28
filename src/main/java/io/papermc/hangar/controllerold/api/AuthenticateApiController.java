@@ -3,7 +3,7 @@ package io.papermc.hangar.controllerold.api;
 import io.papermc.hangar.modelold.generated.ApiSessionResponse;
 import io.papermc.hangar.modelold.generated.SessionProperties;
 import io.papermc.hangar.security.HangarAuthentication;
-import io.papermc.hangar.service.AuthenticationService;
+import io.papermc.hangar.serviceold.AuthenticationService;
 import io.papermc.hangar.util.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

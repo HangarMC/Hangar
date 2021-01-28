@@ -1,12 +1,12 @@
 package io.papermc.hangar.model.db;
 
-import io.papermc.hangar.model.Named;
+import io.papermc.hangar.model.db.projects.ProjectOwner;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 
-public class UserTable extends Table implements Named {
+public class UserTable extends Table implements ProjectOwner {
 
     private String fullName;
     private String name;
@@ -97,5 +97,10 @@ public class UserTable extends Table implements Named {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    @Override
+    public long getUserId() {
+        return id;
     }
 }

@@ -1,7 +1,7 @@
 package io.papermc.hangar.controller.v1;
 
+import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
 import io.papermc.hangar.controller.v1.interfaces.IPermissionsController;
-import io.papermc.hangar.controllerold.exceptions.HangarApiException;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.PermissionType;
 import io.papermc.hangar.model.api.permissions.PermissionCheck;
@@ -48,13 +48,13 @@ public class PermissionsController implements IPermissionsController {
 
     private Pair<PermissionType, Permission> getPermissionsInScope(String author, String slug, String organization) {
         if (author != null && slug != null && organization == null) { // author & slug
-            Permission perms = permissionService.getProjectPermissions(apiAuthInfo.getUser(), author, slug);
+            Permission perms = permissionService.getProjectPermissions(apiAuthInfo.getUserId(), author, slug);
             return new ImmutablePair<>(PermissionType.PROJECT, perms);
         } else if (author != null && slug == null && organization == null) { // just author
             Permission perms = permissionService.getGlobalPermissions(author);
             return new ImmutablePair<>(PermissionType.GLOBAL, perms);
         } else if (author == null && slug == null && organization != null) { // just org
-            Permission perms = permissionService.getOrganizationPermissions(apiAuthInfo.getUser(), organization);
+            Permission perms = permissionService.getOrganizationPermissions(apiAuthInfo.getUserId(), organization);
             return new ImmutablePair<>(PermissionType.ORGANIZATION, perms);
         } else {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "Incorrect request parameters");

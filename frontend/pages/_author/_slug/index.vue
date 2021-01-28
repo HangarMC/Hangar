@@ -14,11 +14,8 @@ import { Component, Vue } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
 import { ApiError, Project, User } from 'hangar-api';
 import { AxiosError } from 'axios';
-import ProjectLayout from '~/components/ProjectLayout.vue';
 
-@Component({
-    components: { ProjectLayout },
-})
+@Component
 export default class ProjectPage extends Vue {
     project?: Project;
     user?: User = { name: 'test' }; // todo load user

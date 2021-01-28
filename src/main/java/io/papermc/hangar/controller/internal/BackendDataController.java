@@ -22,7 +22,7 @@ import java.lang.annotation.Annotation;
 
 @Controller
 @RequestMapping(path = "/api/internal/data", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
-@PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.ApiScope).forGlobal())")
+@PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
 public class BackendDataController {
 
     private final ObjectMapper mapper;

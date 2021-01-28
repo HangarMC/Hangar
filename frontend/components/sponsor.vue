@@ -6,15 +6,10 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
-
-export interface Sponsor {
-    img: String;
-    title: String;
-    link: String;
-}
+import { Sponsor } from 'hangar-api';
 
 @Component
-export default class Sponsor extends Vue {
+export default class HangarSponsor extends Vue {
     // TODO get sponsor from server, randomly
     sponsor: Sponsor = {
         img: '',

@@ -3,7 +3,7 @@ package io.papermc.hangar.security.voters;
 import io.papermc.hangar.security.HangarAuthentication;
 import io.papermc.hangar.security.UserLockException;
 import io.papermc.hangar.security.attributes.UserLockAttribute;
-import io.papermc.hangar.service.UserService;
+import io.papermc.hangar.serviceold.UserService;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;

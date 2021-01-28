@@ -9,7 +9,7 @@ import io.papermc.hangar.modelold.NamedPermission;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
 import io.papermc.hangar.security.annotations.ProjectPermission;
 import io.papermc.hangar.security.annotations.UserLock;
-import io.papermc.hangar.service.project.ChannelService;
+import io.papermc.hangar.serviceold.project.ChannelService;
 import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;

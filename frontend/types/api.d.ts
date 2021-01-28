@@ -130,6 +130,12 @@ declare module 'hangar-api' {
         color: String;
     }
 
+    interface Sponsor {
+        img: String;
+        title: String;
+        link: String;
+    }
+
     // Data interfaces
     interface IProjectCategory {
         title: string;

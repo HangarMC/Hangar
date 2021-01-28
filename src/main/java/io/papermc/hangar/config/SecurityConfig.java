@@ -8,7 +8,7 @@ import io.papermc.hangar.security.voters.OrganizationPermissionVoter;
 import io.papermc.hangar.security.voters.ProjectPermissionVoter;
 import io.papermc.hangar.security.voters.UserLockVoter;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.service.UserService;
+import io.papermc.hangar.serviceold.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

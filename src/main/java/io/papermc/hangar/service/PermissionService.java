@@ -1,83 +1,73 @@
 package io.papermc.hangar.service;
 
-import io.papermc.hangar.db.daoold.HangarDao;
-import io.papermc.hangar.db.daoold.PermissionsDao;
-import io.papermc.hangar.db.modelold.UsersTable;
+import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.dao.PermissionsDAO;
 import io.papermc.hangar.model.Permission;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
-@Service
-public class PermissionService {
+import java.util.function.Function;
 
-    private final HangarDao<PermissionsDao> permissionsDao;
+@Service
+public class PermissionService extends HangarService {
 
     public static final Permission DEFAULT_SIGNED_OUT_PERMISSIONS = Permission.ViewPublicInfo;
-    public static final Permission DEFAULT_GLOBAL_PERMISSIONS = Permission.ViewPublicInfo.add(Permission.EditOwnUserSettings).add(Permission.EditApiKeys);
+    public static final Permission DEFAULT_SIGNED_IN_PERMISSIONS = Permission.ViewPublicInfo.add(Permission.EditOwnUserSettings).add(Permission.EditApiKeys);
 
-    @Autowired
-    public PermissionService(HangarDao<PermissionsDao> permissionsDao) {
-        this.permissionsDao = permissionsDao;
+    private final PermissionsDAO permissionsDAO;
+
+    public PermissionService(HangarDao<PermissionsDAO> permissionsDAO) {
+        this.permissionsDAO = permissionsDAO.get();
     }
 
-    public Permission getGlobalPermissions(Long userId) {
-        if (userId == null) {
-            return Permission.ViewPublicInfo;
-        }
-        return addDefaults(permissionsDao.get().getGlobalPermission(userId, null));
+    @NotNull
+    // Global permissions
+    public Permission getGlobalPermissions(@Nullable Long userId) {
+        return getPermissions(userId, permissionsDAO::getGlobalPermission);
     }
 
-    public Permission getGlobalPermissions(String userName) {
-        return addDefaults(permissionsDao.get().getGlobalPermission(null, userName));
+    @NotNull
+    public Permission getGlobalPermissions(@Nullable String userName) {
+        return getPermissions(userName, permissionsDAO::getGlobalPermission);
     }
 
-    public Permission getProjectPermissions(long userId, long projectId) {
-        return addDefaults(permissionsDao.get().getProjectPermission(userId, projectId));
+    // Project permissions
+    public Permission getProjectPermissions(@Nullable Long userId, long projectId) {
+        return getPermissions(userId, (id) -> permissionsDAO.getProjectPermission(id, projectId));
     }
 
-    public Permission getProjectPermissions(long userId, String author, String slug) {
-        return addDefaults(permissionsDao.get().getProjectPermission(userId, author, slug));
+    public Permission getProjectPermissions(@Nullable Long userId, @NotNull String author, @NotNull String slug) {
+        return getPermissions(userId, (id) -> permissionsDAO.getProjectPermission(id, author, slug));
     }
 
-    public Permission getProjectPermissions(Long userId, String author, String slug) {
-        if (userId == null) {
+    // Organization permissions
+    public Permission getOrganizationPermissions(@Nullable Long userId, long orgId) {
+        return getPermissions(userId, (id) -> permissionsDAO.getOrganizationPermission(id, orgId));
+    }
+
+    public Permission getOrganizationPermissions(@Nullable Long userId, @NotNull String orgName) {
+        return getPermissions(userId, (id) -> permissionsDAO.getOrganizationPermission(id, orgName));
+    }
+
+    // Possible permissions for a user
+    public Permission getPossibleProjectPermissions(@Nullable Long userId) {
+        return getPermissions(userId, permissionsDAO::getPossibleProjectPermissions);
+    }
+
+    public Permission getPossibleOrganizationPermissions(@Nullable Long userId) {
+        return getPermissions(userId, permissionsDAO::getPossibleOrganizationPermissions);
+    }
+
+    @NotNull
+    private <T> Permission getPermissions(@Nullable T identifier, @NotNull Function<T, Permission> permissionSupplier) {
+        if (identifier == null) {
             return DEFAULT_SIGNED_OUT_PERMISSIONS;
         }
-        return addDefaults(permissionsDao.get().getProjectPermission(userId, author, slug));
-    }
-
-    public Permission getProjectPermissions(UsersTable usersTable, String author, String slug) {
-        if (usersTable == null) {
-            return DEFAULT_SIGNED_OUT_PERMISSIONS;
+        Permission perm = permissionSupplier.apply(identifier);
+        if (perm == null) {
+            return DEFAULT_SIGNED_IN_PERMISSIONS;
         }
-        return addDefaults(permissionsDao.get().getProjectPermission(usersTable.getId(), author, slug));
-    }
-
-    public Permission getOrganizationPermissions(long userId, String orgName) {
-        return addDefaults(permissionsDao.get().getOrgPermission(userId, orgName));
-    }
-
-    public Permission getOrganizationPermissions(UsersTable usersTable, String orgName) {
-        if (usersTable == null) {
-                return DEFAULT_SIGNED_OUT_PERMISSIONS;
-        }
-        return addDefaults(permissionsDao.get().getOrgPermission(usersTable.getId(), orgName));
-    }
-
-    public Permission getPossibleProjectPermissions(long userId) {
-        return addDefaults(permissionsDao.get().getPossibleProjectPermissions(userId));
-    }
-
-    public Permission getPossibleOrganizationPermissions(long userId) {
-        return addDefaults(permissionsDao.get().getPossibleOrganizationPermissions(userId));
-    }
-
-    private Permission addDefaults(@Nullable Permission permission) {
-        if (permission == null) {
-            return DEFAULT_GLOBAL_PERMISSIONS;
-        } else {
-            return permission.add(DEFAULT_GLOBAL_PERMISSIONS);
-        }
+        else return perm.add(DEFAULT_SIGNED_IN_PERMISSIONS);
     }
 }

@@ -7,8 +7,8 @@ import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.modelold.ProjectApiKeysTable;
 import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.security.annotations.UserLock;
-import io.papermc.hangar.service.ApiKeyService;
-import io.papermc.hangar.service.UserActionLogService;
+import io.papermc.hangar.serviceold.ApiKeyService;
+import io.papermc.hangar.serviceold.UserActionLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +47,7 @@ public class Apiv1Controller extends HangarController {
         this.projectsTable = projectsTable;
     }
 
-    @PreAuthorize("@authenticationService.authV1ApiRequest(T(io.papermc.hangar.model.Permission).EditApiKeys, T(io.papermc.hangar.controller.ApiScope).forProject(#author, #slug))")
+    @PreAuthorize("@authenticationService.authV1ApiRequest(T(io.papermc.hangar.model.Permission).EditApiKeys, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     @UserLock
     @Secured("ROLE_USER")
     @PostMapping("/v1/projects/{author}/{slug}/keys/new") // USED IN project settings (deployment key)
@@ -67,7 +67,7 @@ public class Apiv1Controller extends HangarController {
         return ResponseEntity.ok(apiKeyObj);
     }
 
-    @PreAuthorize("@authenticationService.authV1ApiRequest(T(io.papermc.hangar.model.Permission).EditApiKeys, T(io.papermc.hangar.controller.ApiScope).forProject(#author, #slug))")
+    @PreAuthorize("@authenticationService.authV1ApiRequest(T(io.papermc.hangar.model.Permission).EditApiKeys, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     @UserLock
     @Secured("ROLE_USER")
     @PostMapping("/v1/projects/{author}/{slug}/keys/revoke") // USED in project settings (deployment key)

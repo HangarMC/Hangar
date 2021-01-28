@@ -1,6 +1,6 @@
 package io.papermc.hangar.model.api;
 
-import io.papermc.hangar.controller.requestmodels.api.RequestPagination;
+import io.papermc.hangar.controller.extras.requestmodels.api.RequestPagination;
 
 public class Pagination extends RequestPagination {
 

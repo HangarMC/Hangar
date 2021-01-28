@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping(path = "/api/internal", produces = MediaType.APPLICATION_JSON_VALUE, method = { RequestMethod.GET, RequestMethod.POST })
+@PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.Permission).EditOwnUserSettings, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
 public class HangarUsersController {
 
     private final UsersService usersService;
@@ -26,7 +27,6 @@ public class HangarUsersController {
     }
 
     @GetMapping("/users/@me")
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).EditOwnUserSettings, T(io.papermc.hangar.controller.ApiScope).forGlobal())")
     public ResponseEntity<HangarUser> getCurrentUser() {
         return ResponseEntity.ok(usersService.getUser(apiAuthInfo.getUser().getName(), HangarUser.class));
     }

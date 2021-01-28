@@ -5,10 +5,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.modelold.ProjectVersionReviewsTable;
-import io.papermc.hangar.service.ReviewService;
+import io.papermc.hangar.serviceold.ReviewService;
 
 import java.util.ArrayList;
 import java.util.List;

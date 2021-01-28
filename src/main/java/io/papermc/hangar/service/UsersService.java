@@ -1,10 +1,10 @@
 package io.papermc.hangar.service;
 
-import io.papermc.hangar.controller.requestmodels.api.RequestPagination;
-import io.papermc.hangar.controllerold.exceptions.HangarApiException;
-import io.papermc.hangar.db.dao.NotificationsDAO;
+import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
+import io.papermc.hangar.controller.extras.requestmodels.api.RequestPagination;
+import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.UsersDAO;
-import io.papermc.hangar.db.daoold.HangarDao;
+import io.papermc.hangar.db.dao.internal.table.NotificationsDAO;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UsersService {
+public class UsersService extends HangarService {
 
     private final UsersDAO usersDAO;
     private final NotificationsDAO notificationsDAO;

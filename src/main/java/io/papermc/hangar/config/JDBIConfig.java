@@ -4,7 +4,7 @@ import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.customtypes.JobState;
 import io.papermc.hangar.db.customtypes.LoggedAction;
 import io.papermc.hangar.db.customtypes.RoleCategory;
-import io.papermc.hangar.db.daoold.HangarDao;
+import io.papermc.hangar.db.dao.HangarDao;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.spi.JdbiPlugin;

@@ -1,13 +1,12 @@
 package io.papermc.hangar.controllerold;
 
+import io.papermc.hangar.serviceold.PaypalService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.net.URISyntaxException;
-
-import io.papermc.hangar.service.PaypalService;
 
 @Controller
 public class PaypalController extends HangarController {

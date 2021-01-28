@@ -1,10 +1,10 @@
 package io.papermc.hangar.controllerold.api;
 
 import io.papermc.hangar.config.hangar.SsoConfig;
-import io.papermc.hangar.controllerold.exceptions.HangarApiException;
+import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
 import io.papermc.hangar.modelold.SsoSyncData;
-import io.papermc.hangar.service.SsoService;
-import io.papermc.hangar.service.UserService;
+import io.papermc.hangar.serviceold.SsoService;
+import io.papermc.hangar.serviceold.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package io.papermc.hangar.modelold.viewhelpers;
 
 import io.papermc.hangar.db.modelold.OrganizationsTable;
 import io.papermc.hangar.db.modelold.ProjectsTable;
-import io.papermc.hangar.db.modelold.Visitable;
+import io.papermc.hangar.model.Visitable;
 
 public class InviteSubject<T extends Visitable> {
 

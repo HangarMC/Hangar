@@ -9,7 +9,7 @@ import io.papermc.hangar.modelold.viewhelpers.ProjectApprovalData;
 import io.papermc.hangar.modelold.viewhelpers.ProjectMissingFile;
 import io.papermc.hangar.modelold.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.modelold.viewhelpers.UnhealthyProject;
-import io.papermc.hangar.service.project.ProjectFactory.InvalidProjectReason;
+import io.papermc.hangar.serviceold.project.ProjectFactory.InvalidProjectReason;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Define;

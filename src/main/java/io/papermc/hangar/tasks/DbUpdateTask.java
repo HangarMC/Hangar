@@ -1,7 +1,7 @@
 package io.papermc.hangar.tasks;
 
-import io.papermc.hangar.service.StatsService;
-import io.papermc.hangar.service.project.ProjectService;
+import io.papermc.hangar.serviceold.StatsService;
+import io.papermc.hangar.serviceold.project.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

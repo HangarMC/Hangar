@@ -21,7 +21,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping(path = {"/api", "/api/v1"}, produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
-@PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).None, T(io.papermc.hangar.controller.ApiScope).forGlobal())")
+@PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.Permission).None, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
 
 public interface IPermissionsController {
 

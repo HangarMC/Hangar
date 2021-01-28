@@ -1,7 +1,7 @@
 package io.papermc.hangar.controller.v1;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.papermc.hangar.controller.requestmodels.api.RequestPagination;
+import io.papermc.hangar.controller.extras.requestmodels.api.RequestPagination;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.modelold.ApiAuthInfo;
@@ -31,13 +31,13 @@ public class UsersController {
     }
 
     @GetMapping("/users/{user}")
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.ApiScope).forGlobal())")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
     public ResponseEntity<User> getUser(@PathVariable("user") String userName) throws JsonProcessingException {
         return ResponseEntity.ok(usersService.getUser(userName, User.class));
     }
 
     @GetMapping("/users")
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.ApiScope).forGlobal())")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
     public ResponseEntity<PaginatedResult<User>> getUsers(@RequestParam("q") String query, RequestPagination pagination) {
         return ResponseEntity.ok(usersService.getUsers(query, pagination, User.class));
     }

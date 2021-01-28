@@ -2,9 +2,9 @@ package io.papermc.hangar.controllerold.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.controllerold.exceptions.HangarApiException;
-import io.papermc.hangar.modelold.ApiAuthInfo;
+import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
 import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.modelold.ApiAuthInfo;
 import io.papermc.hangar.modelold.Platform;
 import io.papermc.hangar.modelold.api.PlatformInfo;
 import io.papermc.hangar.modelold.generated.DeployVersionInfo;
@@ -13,7 +13,7 @@ import io.papermc.hangar.modelold.generated.Pagination;
 import io.papermc.hangar.modelold.generated.TagColor;
 import io.papermc.hangar.modelold.generated.Version;
 import io.papermc.hangar.modelold.generated.VersionStatsDay;
-import io.papermc.hangar.service.apiold.VersionApiService;
+import io.papermc.hangar.serviceold.apiold.VersionApiService;
 import io.papermc.hangar.util.ApiUtil;
 import io.papermc.hangar.util.StringUtils;
 import org.slf4j.Logger;
@@ -64,7 +64,7 @@ public class VersionsApiController implements VersionsApi {
     }
 
 
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.ApiScope).forProject(#author, #slug))")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     @Override
     public ResponseEntity<PaginatedVersionResult> listVersions(String author, String slug, List<String> tags, Long limit, Long offset) {
         List<Version> versions = versionApiService.getVersionList(author, slug, tags, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), ApiUtil.limitOrDefault(limit, hangarConfig.projects.getInitVersionLoad()), ApiUtil.offsetOrZero(offset), ApiUtil.userIdOrNull(apiAuthInfo.getUser()));
@@ -74,7 +74,7 @@ public class VersionsApiController implements VersionsApi {
 
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.ApiScope).forProject(#author, #slug))")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     public ResponseEntity<Version> showVersion(String author, String slug, String name) {
         Version version = versionApiService.getVersion(author, slug, StringUtils.getVersionId(name, new HangarApiException(HttpStatus.BAD_REQUEST, "badly formatted version string")), apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), ApiUtil.userIdOrNull(apiAuthInfo.getUser()));
         if (version == null) {
@@ -86,7 +86,7 @@ public class VersionsApiController implements VersionsApi {
 
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).IsProjectMember, T(io.papermc.hangar.controller.ApiScope).forProject(#author, #slug))")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).IsProjectMember, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     public ResponseEntity<Map<String, VersionStatsDay>> showVersionStats(String author, String slug, String version, @NotNull @Valid String fromDate, @NotNull @Valid String toDate) {
         LocalDate from = ApiUtil.parseDate(fromDate);
         LocalDate to = ApiUtil.parseDate(toDate);
@@ -101,7 +101,7 @@ public class VersionsApiController implements VersionsApi {
     }
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).None, T(io.papermc.hangar.controller.ApiScope).forGlobal())")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).None, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
     public ResponseEntity<List<PlatformInfo>> showPlatforms() {
         List<PlatformInfo> platformInfoList = new ArrayList<>();
         for (Platform platform : Platform.getValues()) {
@@ -117,7 +117,7 @@ public class VersionsApiController implements VersionsApi {
     // moved from versions controller
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.ApiScope).forProject(#author, #slug))")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     public Object download(String author, String slug, String name, String token) {
 //        ProjectsTable project = projectsTable.get();
 //        ProjectVersionsTable pvt = projectVersionsTable.get();
@@ -134,7 +134,7 @@ public class VersionsApiController implements VersionsApi {
     }
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.ApiScope).forProject(#author, #slug))")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     public Object downloadRecommended(String author, String slug, String token) {
 //        ProjectsTable project = projectsTable.get();
 //        ProjectVersionsTable recommendedVersion = versionService.getRecommendedVersion(project);

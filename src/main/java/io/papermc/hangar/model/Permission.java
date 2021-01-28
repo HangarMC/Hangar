@@ -2,12 +2,17 @@ package io.papermc.hangar.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.papermc.hangar.modelold.NamedPermission;
+import org.jdbi.v3.core.argument.Argument;
+import org.jdbi.v3.core.statement.StatementContext;
 
+import java.sql.JDBCType;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Permission implements Comparable<Permission> {
+public class Permission implements Comparable<Permission>, Argument {
 
     public static final Permission None = new Permission(0);
     public static final Permission All = new Permission(0XFFFFFFFFFFFFFFFL);
@@ -113,5 +118,10 @@ public class Permission implements Comparable<Permission> {
     @Override
     public String toString() {
         return toNamed().toString();
+    }
+
+    @Override
+    public void apply(int position, PreparedStatement statement, StatementContext ctx) throws SQLException {
+        statement.setObject(position, this.value, JDBCType.VARBINARY);
     }
 }

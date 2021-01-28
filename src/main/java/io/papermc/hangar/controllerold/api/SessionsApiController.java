@@ -1,7 +1,7 @@
 package io.papermc.hangar.controllerold.api;
 
-import io.papermc.hangar.controllerold.exceptions.HangarApiException;
-import io.papermc.hangar.db.daoold.HangarDao;
+import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
+import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.daoold.api.SessionsDao;
 import io.papermc.hangar.util.AuthUtils;
 import io.papermc.hangar.util.AuthUtils.AuthCredentials;
@@ -25,7 +25,7 @@ public class SessionsApiController implements SessionsApi {
         this.sessionsDao = sessionsDao;
     }
 
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).None, T(io.papermc.hangar.controller.ApiScope).forGlobal())")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).None, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
     @Override
     public ResponseEntity<Void> deleteSession() {
         AuthCredentials credentials = AuthUtils.parseAuthHeader(true);
