@@ -1,6 +1,6 @@
 package io.papermc.hangar.modelold.viewhelpers;
 
-import io.papermc.hangar.modelold.Color;
+import io.papermc.hangar.model.Color;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jetbrains.annotations.Nullable;
 

@@ -2,7 +2,7 @@ package io.papermc.hangar.controllerold.forms.objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.papermc.hangar.model.Role;
+import io.papermc.hangar.modelold.Role;
 import org.jetbrains.annotations.NotNull;
 
 public class UserRole {

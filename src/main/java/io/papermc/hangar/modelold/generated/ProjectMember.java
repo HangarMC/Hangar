@@ -1,17 +1,15 @@
 package io.papermc.hangar.modelold.generated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import io.papermc.hangar.modelold.Role;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
-import io.swagger.annotations.ApiModelProperty;
-import io.papermc.hangar.model.Role;
 
 /**
  * ModelsProtocolsAPIV2ProjectMember

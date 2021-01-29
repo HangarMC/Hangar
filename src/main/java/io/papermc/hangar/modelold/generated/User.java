@@ -3,7 +3,7 @@ package io.papermc.hangar.modelold.generated;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.papermc.hangar.model.Role;
+import io.papermc.hangar.modelold.Role;
 import io.swagger.annotations.ApiModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

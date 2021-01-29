@@ -1,7 +1,7 @@
 package io.papermc.hangar.controllerold.forms.objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.papermc.hangar.modelold.Color;
+import io.papermc.hangar.model.Color;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;

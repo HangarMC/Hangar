@@ -3,7 +3,7 @@ package io.papermc.hangar.model.internal;
 import io.papermc.hangar.model.Identified;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.api.User;
-import io.papermc.hangar.model.Role;
+import io.papermc.hangar.model.roles.GlobalRole;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -13,7 +13,7 @@ public class HangarUser extends User implements Identified {
     private final long id;
     private HeaderData headerData;
 
-    public HangarUser(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<Role> roles, long id) {
+    public HangarUser(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<GlobalRole> roles, long id) {
         super(createdAt, name, tagline, joinDate, roles);
         this.id = id;
     }

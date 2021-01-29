@@ -42,6 +42,16 @@ public class ApiSessionTable extends Table {
         return expires;
     }
 
+    @Override
+    public String toString() {
+        return "ApiSessionTable{" +
+                "token='" + token + '\'' +
+                ", keyId=" + keyId +
+                ", userId=" + userId +
+                ", expires=" + expires +
+                "} " + super.toString();
+    }
+
     public static ApiSessionTable fromApiKey(String token, ApiKeyTable apiKeyTable, OffsetDateTime expires) {
         return new ApiSessionTable(token, apiKeyTable.getId(), apiKeyTable.getOwnerId(), expires);
     }

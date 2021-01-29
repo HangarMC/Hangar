@@ -259,4 +259,29 @@ public class ProjectTable extends Table implements Visitable, Visible {
     public String getUrl() {
         return "/" + this.getOwnerName() + "/" + this.getSlug();
     }
+
+    @Override
+    public String toString() {
+        return "ProjectTable{" +
+                "name='" + name + '\'' +
+                ", slug='" + slug + '\'' +
+                ", ownerName='" + ownerName + '\'' +
+                ", recommendedVersionId=" + recommendedVersionId +
+                ", ownerId=" + ownerId +
+                ", topicId=" + topicId +
+                ", postId=" + postId +
+                ", category=" + category +
+                ", description='" + description + '\'' +
+                ", visibility=" + visibility +
+                ", notes=" + notes +
+                ", keywords=" + keywords +
+                ", homepage='" + homepage + '\'' +
+                ", issues='" + issues + '\'' +
+                ", source='" + source + '\'' +
+                ", support='" + support + '\'' +
+                ", licenseName='" + licenseName + '\'' +
+                ", licenseUrl='" + licenseUrl + '\'' +
+                ", forumSync=" + forumSync +
+                "} " + super.toString();
+    }
 }

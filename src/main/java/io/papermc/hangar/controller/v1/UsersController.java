@@ -5,7 +5,7 @@ import io.papermc.hangar.controller.extras.requestmodels.api.RequestPagination;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.modelold.ApiAuthInfo;
-import io.papermc.hangar.service.UsersService;
+import io.papermc.hangar.service.api.UsersApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,24 +21,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping(path = {"/api", "/api/v1"}, produces = MediaType.APPLICATION_JSON_VALUE, method = {RequestMethod.GET, RequestMethod.POST})
 public class UsersController {
 
-    private final UsersService usersService;
+    private final UsersApiService usersApiService;
     private final ApiAuthInfo apiAuthInfo;
 
     @Autowired
-    public UsersController(UsersService usersService, ApiAuthInfo apiAuthInfo) {
-        this.usersService = usersService;
+    public UsersController(UsersApiService usersApiService, ApiAuthInfo apiAuthInfo) {
+        this.usersApiService = usersApiService;
         this.apiAuthInfo = apiAuthInfo;
     }
 
     @GetMapping("/users/{user}")
     @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
     public ResponseEntity<User> getUser(@PathVariable("user") String userName) throws JsonProcessingException {
-        return ResponseEntity.ok(usersService.getUser(userName, User.class));
+        return ResponseEntity.ok(usersApiService.getUser(userName, User.class));
     }
 
     @GetMapping("/users")
     @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
     public ResponseEntity<PaginatedResult<User>> getUsers(@RequestParam("q") String query, RequestPagination pagination) {
-        return ResponseEntity.ok(usersService.getUsers(query, pagination, User.class));
+        return ResponseEntity.ok(usersApiService.getUsers(query, pagination, User.class));
     }
 }

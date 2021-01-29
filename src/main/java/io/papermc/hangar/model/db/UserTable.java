@@ -1,6 +1,7 @@
 package io.papermc.hangar.model.db;
 
 import io.papermc.hangar.model.db.projects.ProjectOwner;
+import org.jdbi.v3.core.mapper.PropagateNull;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 import java.time.OffsetDateTime;
@@ -18,7 +19,7 @@ public class UserTable extends Table implements ProjectOwner {
     private String language;
 
     @JdbiConstructor
-    public UserTable(long id, String fullName, String name, String email, String tagline, OffsetDateTime joinDate, List<Integer> readPrompts, boolean isLocked, String language) {
+    public UserTable(@PropagateNull long id, String fullName, String name, String email, String tagline, OffsetDateTime joinDate, List<Integer> readPrompts, boolean isLocked, String language) {
         super(id);
         this.fullName = fullName;
         this.name = name;
@@ -30,8 +31,14 @@ public class UserTable extends Table implements ProjectOwner {
         this.language = language;
     }
 
-    public UserTable(long id) {
+    public UserTable(long id, String fullName, String name, String email, List<Integer> readPrompts, boolean isLocked, String language) {
         super(id);
+        this.fullName = fullName;
+        this.name = name;
+        this.email = email;
+        this.readPrompts = readPrompts;
+        this.isLocked = isLocked;
+        this.language = language;
     }
 
     public String getFullName() {
@@ -102,5 +109,19 @@ public class UserTable extends Table implements ProjectOwner {
     @Override
     public long getUserId() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return "UserTable{" +
+                "fullName='" + fullName + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", tagline='" + tagline + '\'' +
+                ", joinDate=" + joinDate +
+                ", readPrompts=" + readPrompts +
+                ", isLocked=" + isLocked +
+                ", language='" + language + '\'' +
+                "} " + super.toString();
     }
 }

@@ -13,4 +13,11 @@ public abstract class Model {
     public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
+
+    @Override
+    public String toString() {
+        return "Model{" +
+                "createdAt=" + createdAt +
+                '}';
+    }
 }

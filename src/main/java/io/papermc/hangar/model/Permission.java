@@ -3,6 +3,7 @@ package io.papermc.hangar.model;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.papermc.hangar.modelold.NamedPermission;
 import org.jdbi.v3.core.argument.Argument;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import org.jdbi.v3.core.statement.StatementContext;
 
 import java.sql.JDBCType;
@@ -63,7 +64,8 @@ public class Permission implements Comparable<Permission>, Argument {
 
     private long value;
 
-    private Permission(long value) {
+    @JdbiConstructor
+    public Permission(long value) {
         this.value = value;
     }
 
@@ -101,7 +103,6 @@ public class Permission implements Comparable<Permission>, Argument {
         return Arrays.stream(NamedPermission.values()).filter(perm -> has(perm.getPermission())).collect(Collectors.toUnmodifiableList());
     }
 
-//    @JsonValue
     public long getValue() {
         return value;
     }

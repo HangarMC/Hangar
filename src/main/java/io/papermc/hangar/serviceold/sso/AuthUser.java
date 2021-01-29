@@ -2,7 +2,7 @@ package io.papermc.hangar.serviceold.sso;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.papermc.hangar.model.Role;
+import io.papermc.hangar.modelold.Role;
 
 import java.util.ArrayList;
 import java.util.Arrays;

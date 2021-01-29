@@ -49,4 +49,13 @@ public class OrganizationTable extends Table implements Visitable, ProjectOwner 
     public String getUrl() {
         return "/" + getName();
     }
+
+    @Override
+    public String toString() {
+        return "OrganizationTable{" +
+                "name='" + name + '\'' +
+                ", ownerId=" + ownerId +
+                ", userId=" + userId +
+                "} " + super.toString();
+    }
 }

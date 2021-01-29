@@ -1,4 +1,4 @@
-package io.papermc.hangar.service;
+package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
 import io.papermc.hangar.controller.extras.requestmodels.api.RequestPagination;
@@ -12,6 +12,7 @@ import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.internal.HangarUser;
 import io.papermc.hangar.model.internal.HangarUser.HeaderData;
 import io.papermc.hangar.modelold.ApiAuthInfo;
+import io.papermc.hangar.service.HangarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,14 +20,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UsersService extends HangarService {
+public class UsersApiService extends HangarService {
 
     private final UsersDAO usersDAO;
     private final NotificationsDAO notificationsDAO;
     private final ApiAuthInfo apiAuthInfo;
 
     @Autowired
-    public UsersService(HangarDao<UsersDAO> usersDAO, HangarDao<NotificationsDAO> notificationsDAO, ApiAuthInfo apiAuthInfo) {
+    public UsersApiService(HangarDao<UsersDAO> usersDAO, HangarDao<NotificationsDAO> notificationsDAO, ApiAuthInfo apiAuthInfo) {
         this.usersDAO = usersDAO.get();
         this.notificationsDAO = notificationsDAO.get();
         this.apiAuthInfo = apiAuthInfo;

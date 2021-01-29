@@ -2,27 +2,19 @@ package io.papermc.hangar.controller.extras;
 
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.db.UserTable;
-import io.papermc.hangar.model.db.sessions.ApiKeyTable;
-import org.jdbi.v3.core.mapper.Nested;
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
-import java.time.OffsetDateTime;
 
 public class HangarRequest {
 
     private final UserTable userTable;
-    private final ApiKeyTable apiKeyTable;
-    private final String session;
-    private final OffsetDateTime expires;
-    private final Permission globalPerms;
+    private final Permission globalPermissions;
 
-    @JdbiConstructor
-    public HangarRequest(@Nested("u") UserTable userTable, @Nested("ak") ApiKeyTable apiKeyTable, String session, OffsetDateTime expires, Permission globalPerms) {
+    public HangarRequest(UserTable userTable, Permission globalPermissions) {
         this.userTable = userTable;
-        this.apiKeyTable = apiKeyTable;
-        this.session = session;
-        this.expires = expires;
-        this.globalPerms = globalPerms;
+        this.globalPermissions = globalPermissions;
+    }
+
+    public boolean hasUser() {
+        return userTable != null;
     }
 
     public Long getUserId() {
@@ -33,19 +25,15 @@ public class HangarRequest {
         return userTable;
     }
 
-    public ApiKeyTable getApiKeyTable() {
-        return apiKeyTable;
+    public Permission getGlobalPermissions() {
+        return globalPermissions;
     }
 
-    public String getSession() {
-        return session;
-    }
-
-    public OffsetDateTime getExpires() {
-        return expires;
-    }
-
-    public Permission getGlobalPerms() {
-        return globalPerms;
+    @Override
+    public String toString() {
+        return "HangarRequest{" +
+                "userTable=" + userTable +
+                ", globalPermissions=" + globalPermissions +
+                '}';
     }
 }

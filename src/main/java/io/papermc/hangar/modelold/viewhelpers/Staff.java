@@ -1,6 +1,6 @@
 package io.papermc.hangar.modelold.viewhelpers;
 
-import io.papermc.hangar.model.Role;
+import io.papermc.hangar.modelold.Role;
 
 import java.time.OffsetDateTime;
 

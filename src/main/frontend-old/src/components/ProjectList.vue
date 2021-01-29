@@ -61,7 +61,7 @@
                                                 v-bind:data="tag.versions.join(' | ')"
                                                 v-bind:color="tag.color"
                                                 v-bind:key="project.name + '-' + tag.name"
-                                                v-for="tag in tagsFromPromoted(project.promoted_versions)"
+                                                v-for="tag in tagsFromPromoted(project.promotedVersions)"
                                             />
                                         </div>
                                     </div>
@@ -152,6 +152,7 @@ export default {
     methods: {
         update() {
             API.request('projects', 'GET', clearFromEmpty(this.$props)).then((response) => {
+                console.log(response.result);
                 this.projects = response.result;
                 this.totalProjects = response.pagination.count;
                 this.loading = false;

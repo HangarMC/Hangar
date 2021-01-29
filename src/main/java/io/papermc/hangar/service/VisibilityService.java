@@ -1,6 +1,5 @@
 package io.papermc.hangar.service;
 
-import io.papermc.hangar.controller.extras.HangarRequest;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.Visible;
@@ -17,12 +16,10 @@ public class VisibilityService extends HangarService {
 
     private final PermissionService permissionService;
 
-    private final HangarRequest hangarRequest;
 
     @Autowired
-    public VisibilityService(PermissionService permissionService, HangarRequest hangarRequest) {
+    public VisibilityService(PermissionService permissionService) {
         this.permissionService = permissionService;
-        this.hangarRequest = hangarRequest;
     }
 
     @Nullable
@@ -42,7 +39,7 @@ public class VisibilityService extends HangarService {
     }
 
     public <T extends Visible> T checkApiVisibility(@Nullable T model, @NotNull Function<T, Long> projectIdSupplier) {
-        return _checkVisibility(model, hangarRequest::getUserId, projectIdSupplier);
+        return _checkVisibility(model, hangarApiRequest::getUserId, projectIdSupplier);
     }
 
     private <T extends Visible> T _checkVisibility(@Nullable T model, @NotNull Supplier<Long> userIdSupplier, @NotNull Function<T, Long> projectIdSupplier) {

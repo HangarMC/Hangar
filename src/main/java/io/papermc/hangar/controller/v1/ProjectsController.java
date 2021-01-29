@@ -5,7 +5,7 @@ import io.papermc.hangar.model.Category;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
-import io.papermc.hangar.service.api.ProjectsService;
+import io.papermc.hangar.service.api.ProjectsApiService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -24,17 +24,17 @@ import java.util.List;
 @RequestMapping(path = {"/api", "/api/v1" }, produces = MediaType.APPLICATION_JSON_VALUE, method = { RequestMethod.GET })
 public class ProjectsController {
 
-    private final ProjectsService projectsService;
+    private final ProjectsApiService projectsApiService;
 
     @Autowired
-    public ProjectsController(ProjectsService projectsService) {
-        this.projectsService = projectsService;
+    public ProjectsController(ProjectsApiService projectsApiService) {
+        this.projectsApiService = projectsApiService;
     }
 
     @GetMapping("/projects/{author}/{slug}")
     @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     public ResponseEntity<Project> getProject(@PathVariable String author, @PathVariable String slug) {
-        return ResponseEntity.ok(projectsService.getProject(author, slug));
+        return ResponseEntity.ok(projectsApiService.getProject(author, slug));
     }
 
     @GetMapping("/projects")
@@ -46,6 +46,6 @@ public class ProjectsController {
                                                                 @RequestParam(defaultValue = "updated") ProjectSortingStrategy sort,
                                                                 @RequestParam(defaultValue = "true") boolean orderWithRelevance,
                                                                 @NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(projectsService.getProjects(q, categories, tags, owner, sort, orderWithRelevance, pagination));
+        return ResponseEntity.ok(projectsApiService.getProjects(q, categories, tags, owner, sort, orderWithRelevance, pagination));
     }
 }

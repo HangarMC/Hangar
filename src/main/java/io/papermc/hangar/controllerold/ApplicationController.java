@@ -18,10 +18,11 @@ import io.papermc.hangar.db.modelold.Stats;
 import io.papermc.hangar.db.modelold.UserOrganizationRolesTable;
 import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 import io.papermc.hangar.model.Permission;
-import io.papermc.hangar.model.Role;
 import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.model.roles.GlobalRole;
 import io.papermc.hangar.modelold.NamedPermission;
 import io.papermc.hangar.modelold.Platform;
+import io.papermc.hangar.modelold.Role;
 import io.papermc.hangar.modelold.viewhelpers.Activity;
 import io.papermc.hangar.modelold.viewhelpers.LoggedActionViewModel;
 import io.papermc.hangar.modelold.viewhelpers.OrganizationData;
@@ -92,8 +93,10 @@ public class ApplicationController extends HangarController {
     private final HttpServletRequest request;
     private final Supplier<UserData> userData;
 
+    private final io.papermc.hangar.service.internal.RoleService roleServiceNew;
+
     @Autowired
-    public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, RoleService roleService, StatusZ statusZ, ObjectMapper mapper, HangarConfig hangarConfig, HttpServletRequest request, Supplier<UserData> userData) {
+    public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, RoleService roleService, StatusZ statusZ, ObjectMapper mapper, HangarConfig hangarConfig, HttpServletRequest request, Supplier<UserData> userData, io.papermc.hangar.service.internal.RoleService roleServiceNew) {
         this.platformVersionsDao = platformVersionsDao;
         this.userService = userService;
         this.projectService = projectService;
@@ -110,10 +113,13 @@ public class ApplicationController extends HangarController {
         this.request = request;
         this.statsService = statsService;
         this.userData = userData;
+        this.roleServiceNew = roleServiceNew;
     }
 
     @GetMapping("/")
     public ModelAndView showHome(ModelMap modelMap) {
+        roleServiceNew.deleteRole(GlobalRole.ADVISOR.create(null, getCurrentUser().getId(), true));
+
         ModelAndView mav = new ModelAndView("home");
         AlertUtil.transferAlerts(mav, modelMap);
         return fillModel(mav);

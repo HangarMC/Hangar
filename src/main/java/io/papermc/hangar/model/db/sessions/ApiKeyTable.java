@@ -3,7 +3,7 @@ package io.papermc.hangar.model.db.sessions;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.db.Table;
-import org.jdbi.v3.core.mapper.Nested;
+import org.jdbi.v3.core.mapper.PropagateNull;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 import java.time.OffsetDateTime;
@@ -14,24 +14,24 @@ public class ApiKeyTable extends Table implements Named {
     private final long ownerId;
     private final String tokenIdentifier;
     private final String token;
-    private final Permission permission;
+    private final Permission permissions;
 
-    public ApiKeyTable(String name, long ownerId, String tokenIdentifier, String token, Permission permission) {
+    public ApiKeyTable(String name, long ownerId, String tokenIdentifier, String token, Permission permissions) {
         this.name = name;
         this.ownerId = ownerId;
         this.tokenIdentifier = tokenIdentifier;
         this.token = token;
-        this.permission = permission;
+        this.permissions = permissions;
     }
 
     @JdbiConstructor
-    public ApiKeyTable(OffsetDateTime createdAt, long id, String name, long ownerId, String tokenIdentifier, String token, @Nested("perm") Permission permission) {
+    public ApiKeyTable(OffsetDateTime createdAt, @PropagateNull long id, String name, long ownerId, String tokenIdentifier, String token, Permission permissions) {
         super(createdAt, id);
         this.name = name;
         this.ownerId = ownerId;
         this.tokenIdentifier = tokenIdentifier;
         this.token = token;
-        this.permission = permission;
+        this.permissions = permissions;
     }
 
     @Override
@@ -51,7 +51,18 @@ public class ApiKeyTable extends Table implements Named {
         return token;
     }
 
-    public Permission getPermission() {
-        return permission;
+    public Permission getPermissions() {
+        return permissions;
+    }
+
+    @Override
+    public String toString() {
+        return "ApiKeyTable{" +
+                "name='" + name + '\'' +
+                ", ownerId=" + ownerId +
+                ", tokenIdentifier='" + tokenIdentifier + '\'' +
+                ", token='" + token + '\'' +
+                ", permissions=" + permissions +
+                "} " + super.toString();
     }
 }

@@ -13,8 +13,8 @@ import io.papermc.hangar.db.modelold.OrganizationsTable;
 import io.papermc.hangar.db.modelold.UserOrganizationRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.model.Permission;
-import io.papermc.hangar.model.Role;
 import io.papermc.hangar.modelold.Prompt;
+import io.papermc.hangar.modelold.Role;
 import io.papermc.hangar.modelold.SsoSyncData;
 import io.papermc.hangar.modelold.UserOrdering;
 import io.papermc.hangar.modelold.viewhelpers.Author;
@@ -48,7 +48,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-@Service
+@Service("oldUserService")
 public class UserService extends HangarService {
 
     private final HangarDao<UserDao> userDao;

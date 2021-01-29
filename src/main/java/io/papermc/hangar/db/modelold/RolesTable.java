@@ -2,7 +2,7 @@ package io.papermc.hangar.db.modelold;
 
 
 import io.papermc.hangar.db.customtypes.RoleCategory;
-import io.papermc.hangar.model.Role;
+import io.papermc.hangar.modelold.Role;
 
 public class RolesTable {
 

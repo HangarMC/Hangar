@@ -2,11 +2,11 @@ package io.papermc.hangar.model.internal;
 
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
-import io.papermc.hangar.model.db.roles.RoleTable;
+import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 
 import java.util.List;
 
-public interface Joinable<R extends RoleTable> {
+public interface Joinable<R extends ExtendedRoleTable> {
 
     ProjectOwner getOwner();
 

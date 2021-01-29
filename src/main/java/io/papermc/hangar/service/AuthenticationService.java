@@ -1,6 +1,8 @@
 package io.papermc.hangar.service;
 
+import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controller.extras.ApiScope;
+import io.papermc.hangar.controller.extras.HangarApiRequest;
 import io.papermc.hangar.controller.extras.HangarRequest;
 import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
 import io.papermc.hangar.db.dao.HangarDao;
@@ -9,56 +11,89 @@ import io.papermc.hangar.db.dao.session.ApiSessionDAO;
 import io.papermc.hangar.db.dao.session.HangarRequestDAO;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.db.OrganizationTable;
+import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
+import io.papermc.hangar.model.roles.GlobalRole;
+import io.papermc.hangar.security.HangarAuthentication;
 import io.papermc.hangar.service.internal.OrganizationService;
+import io.papermc.hangar.service.internal.RoleService;
+import io.papermc.hangar.service.internal.UserService;
 import io.papermc.hangar.util.AuthUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Locale;
 
 @Service
 public class AuthenticationService extends HangarService {
 
+    private final HangarConfig hangarConfig;
     private final HangarRequestDAO hangarRequestDAO;
     private final ApiSessionDAO apiSessionDAO;
     private final ProjectDAO projectDAO;
     private final PermissionService permissionService;
     private final VisibilityService visibilityService;
     private final OrganizationService organizationService;
+    private final UserService userService;
+    private final RoleService roleService;
+    private final AuthenticationManager authenticationManager;
 
     private final HttpServletRequest request;
 
-    public AuthenticationService(HangarDao<HangarRequestDAO> hangarRequestDAO, HangarDao<ApiSessionDAO> apiSessionDAO, HangarDao<ProjectDAO> projectDAO, PermissionService permissionService, VisibilityService visibilityService, OrganizationService organizationService, HttpServletRequest request) {
+    public AuthenticationService(HangarConfig hangarConfig, HangarDao<HangarRequestDAO> hangarRequestDAO, HangarDao<ApiSessionDAO> apiSessionDAO, HangarDao<ProjectDAO> projectDAO, PermissionService permissionService, VisibilityService visibilityService, OrganizationService organizationService, UserService userService, RoleService roleService, AuthenticationManager authenticationManager, HttpServletRequest request) {
+        this.hangarConfig = hangarConfig;
         this.hangarRequestDAO = hangarRequestDAO.get();
         this.apiSessionDAO = apiSessionDAO.get();
         this.projectDAO = projectDAO.get();
         this.permissionService = permissionService;
         this.visibilityService = visibilityService;
         this.organizationService = organizationService;
+        this.userService = userService;
+        this.roleService = roleService;
+        this.authenticationManager = authenticationManager;
         this.request = request;
     }
 
     @Bean
     @RequestScope
-    public HangarRequest hangarRequest() {
+    public HangarApiRequest hangarApiRequest() {
         AuthUtils.AuthCredentials credentials = AuthUtils.parseAuthHeader(request, true);
         if (credentials.getSession() == null) {
             throw AuthUtils.unAuth("No session specified");
         }
-        HangarRequest hangarRequest = hangarRequestDAO.createHangarRequest(credentials.getSession());
-        if (hangarRequest == null) {
+        HangarApiRequest hangarApiRequest = hangarRequestDAO.createHangarRequest(credentials.getSession());
+        if (hangarApiRequest == null) {
             throw AuthUtils.unAuth("Invalid session");
         }
-        if (hangarRequest.getExpires().isBefore(OffsetDateTime.now())) {
+        if (hangarApiRequest.getExpires().isBefore(OffsetDateTime.now())) {
             apiSessionDAO.delete(credentials.getSession());
             throw AuthUtils.unAuth("Api session expired");
         }
-        return hangarRequest;
+        return hangarApiRequest;
+    }
+
+    @Bean
+    @RequestScope
+    public HangarRequest hangarRequest() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserTable userTable = null;
+        Long userId = null;
+        if (authentication instanceof HangarAuthentication) {
+            HangarAuthentication hangarAuthentication = (HangarAuthentication) authentication;
+            userTable = userService.getUserTable(hangarAuthentication.getUserId());
+            if (userTable != null) userId = userTable.getUserId();
+        }
+        return new HangarRequest(userTable, permissionService.getGlobalPermissions(userId));
     }
 
     /**
@@ -69,7 +104,7 @@ public class AuthenticationService extends HangarService {
      * @return true if allowed, throws if not
      */
     public boolean handleApiRequest(Permission requiredPerms, ApiScope apiScope) {
-        if (!checkPerms(requiredPerms, apiScope, hangarRequest.getUserId())) {
+        if (!checkPerms(requiredPerms, apiScope, hangarApiRequest.getUserId())) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
         return true;
@@ -109,5 +144,34 @@ public class AuthenticationService extends HangarService {
             default:
                 throw new HangarApiException(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    public UserTable loginAsFakeUser() {
+        String userName = hangarConfig.fakeUser.getUsername();
+        UserTable userTable = userService.getUserTable(userName);
+        if (userTable == null) {
+            userTable = new UserTable(
+                    hangarConfig.fakeUser.getId(),
+                    hangarConfig.fakeUser.getName(),
+                    userName,
+                    hangarConfig.fakeUser.getEmail(),
+                    List.of(),
+                    false,
+                    Locale.ENGLISH.toLanguageTag()
+            );
+
+            userTable = userService.insertUser(userTable);
+
+            roleService.addRole(GlobalRole.HANGAR_ADMIN.create(null, userTable.getId(), true));
+        }
+        setAuthenticatedUser(userTable);
+        return userTable;
+    }
+
+    public void setAuthenticatedUser(UserTable user) {
+        // TODO properly do auth, remember me shit too
+        Authentication auth = new HangarAuthentication(List.of(new SimpleGrantedAuthority("ROLE_USER")), user.getName(), user.getId());
+        authenticationManager.authenticate(auth);
+        SecurityContextHolder.getContext().setAuthentication(auth);
     }
 }

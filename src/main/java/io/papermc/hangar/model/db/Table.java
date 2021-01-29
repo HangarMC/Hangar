@@ -30,4 +30,11 @@ public abstract class Table extends Model implements Identified {
     public long getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "Table{" +
+                "id=" + id +
+                "} " + super.toString();
+    }
 }

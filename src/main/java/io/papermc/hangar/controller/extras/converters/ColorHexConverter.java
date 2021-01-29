@@ -1,6 +1,6 @@
 package io.papermc.hangar.controller.extras.converters;
 
-import io.papermc.hangar.modelold.Color;
+import io.papermc.hangar.model.Color;
 import org.springframework.core.convert.converter.Converter;
 
 public class ColorHexConverter implements Converter<String, Color> {

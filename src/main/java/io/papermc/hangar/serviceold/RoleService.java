@@ -13,7 +13,7 @@ import io.papermc.hangar.db.modelold.RoleTable;
 import io.papermc.hangar.db.modelold.UserGlobalRolesTable;
 import io.papermc.hangar.db.modelold.UserOrganizationRolesTable;
 import io.papermc.hangar.db.modelold.UserProjectRolesTable;
-import io.papermc.hangar.model.Role;
+import io.papermc.hangar.modelold.Role;
 import io.papermc.hangar.modelold.viewhelpers.OrgMember;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Service("oldRoleService")
 public class RoleService {
 
     private final HangarDao<UserProjectRolesDao> userProjectRolesDao;
