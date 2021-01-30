@@ -132,60 +132,6 @@ public class UserService extends HangarService {
         );
     }
 
-    @CacheEvict(value = CacheConfig.AUTHORS_CACHE,  allEntries = true)
-    public void clearAuthorsCache() {}
-
-    @Cacheable(CacheConfig.AUTHORS_CACHE)
-    public List<Author> getAuthors(int page, String sort) {
-        boolean reverse = false;
-        if (sort.startsWith("-")) {
-            sort = sort.substring(1);
-            reverse = true;
-        }
-
-        long pageSize = config.user.getAuthorPageSize();
-        long offset = (page - 1) * pageSize;
-
-        return userDao.get().getAuthors(offset, pageSize, userOrder(reverse, sort));
-    }
-
-    @CacheEvict(value = CacheConfig.STAFF_CACHE,  allEntries = true)
-    public void clearStaffCache() {}
-
-    @Cacheable(CacheConfig.STAFF_CACHE)
-    public List<Staff> getStaff(int page, String sort) {
-        boolean reverse = false;
-        if (sort.startsWith("-")) {
-            sort = sort.substring(1);
-            reverse = true;
-        }
-
-        long pageSize = config.user.getAuthorPageSize();
-        long offset = (page - 1) * pageSize;
-
-        return userDao.get().getStaff(offset, pageSize, userOrder(reverse, sort));
-    }
-
-    private String userOrder(boolean reverse, String sortStr) {
-        String sort = reverse ? " ASC" : " DESC";
-
-        String sortUserName = "sq.name" + sort;
-        String thenSortUserName = "," + sortUserName;
-
-        switch (sortStr) {
-            case UserOrdering.JoinDate:
-                return "ORDER BY sq.join_date" + sort;
-            case UserOrdering.UserName:
-                return "ORDER BY " + sortUserName;
-            case UserOrdering.Projects:
-                return "ORDER BY sq.count" + sort + thenSortUserName;
-            case UserOrdering.Role:
-                return "ORDER BY sq.permission::BIGINT" + sort + " NULLS LAST" + ", sq.role" + sort + thenSortUserName;
-            default:
-                return " ";
-        }
-    }
-
     public void setLocked(UsersTable user, boolean locked) {
         user.setIsLocked(locked);
         if (locked) {

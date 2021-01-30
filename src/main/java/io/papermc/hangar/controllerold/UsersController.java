@@ -96,16 +96,6 @@ public class UsersController extends HangarController {
         this.usersTable = usersTable;
     }
 
-    @GetMapping("/authors")
-    public ModelAndView showAuthors(@RequestParam(required = false, defaultValue = "projects") String sort, @RequestParam(required = false, defaultValue = "1") int page) {
-        ModelAndView mav = new ModelAndView("users/authors");
-        mav.addObject("authors", userService.getAuthors(page, sort));
-        mav.addObject("ordering", sort);
-        mav.addObject("page", page);
-        mav.addObject("pageSize", hangarConfig.user.getAuthorPageSize());
-        return fillModel(mav);
-    }
-
     @Secured("ROLE_USER")
     @GetMapping("/notifications")
     public ModelAndView showNotifications(@RequestParam(defaultValue = "UNREAD") NotificationFilter notificationFilter, @RequestParam(defaultValue = "ALL") InviteFilter inviteFilter) {
@@ -137,16 +127,6 @@ public class UsersController extends HangarController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid prompt id");
         }
         userService.markPromptAsRead(prompt);
-    }
-
-    @GetMapping("/staff")
-    public Object showStaff(@RequestParam(required = false, defaultValue = "roles") String sort, @RequestParam(required = false, defaultValue = "1") int page) {
-        ModelAndView mav = new ModelAndView("users/staff");
-        mav.addObject("staff", userService.getStaff(page, sort));
-        mav.addObject("ordering", sort);
-        mav.addObject("page", page);
-        mav.addObject("pageSize", hangarConfig.user.getAuthorPageSize());
-        return fillModel(mav);
     }
 
     @GetMapping("/{user}")

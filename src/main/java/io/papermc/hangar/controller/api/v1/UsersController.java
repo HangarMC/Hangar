@@ -41,4 +41,14 @@ public class UsersController extends HangarApiController implements IUsersContro
     public ResponseEntity<PaginatedResult<ProjectCompact>> getUserWatching(String userName, ProjectSortingStrategy sort, @NotNull RequestPagination pagination) {
         return ResponseEntity.ok(usersApiService.getUserWatching(userName, sort, pagination));
     }
+
+    @Override
+    public ResponseEntity<PaginatedResult<User>> getAuthors(String sort, @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(usersApiService.getAuthors(sort, pagination));
+    }
+
+    @Override
+    public ResponseEntity<PaginatedResult<User>> getStaff(String sort, @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(usersApiService.getStaff(sort, pagination));
+    }
 }

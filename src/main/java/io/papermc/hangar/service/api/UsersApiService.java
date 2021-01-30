@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.api;
 
+import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
 import io.papermc.hangar.controller.extras.requestmodels.api.RequestPagination;
 import io.papermc.hangar.db.dao.HangarDao;
@@ -13,9 +14,12 @@ import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.project.ProjectCompact;
 import io.papermc.hangar.model.internal.HangarUser;
 import io.papermc.hangar.model.internal.HangarUser.HeaderData;
+import io.papermc.hangar.modelold.UserOrdering;
 import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
 import io.papermc.hangar.service.HangarService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +63,52 @@ public class UsersApiService extends HangarService {
         List<ProjectCompact> projects = usersApiDAO.getUserWatching(userName, canSeeHidden, hangarApiRequest.getUserId(), sortingStrategy.getSql(), pagination.getLimit(), pagination.getOffset());
         long count = usersApiDAO.getUserWatchingCount(userName, canSeeHidden, hangarApiRequest.getUserId());
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
+    }
+
+    @CacheEvict(value = CacheConfig.AUTHORS_CACHE,  allEntries = true)
+    public void clearAuthorsCache() {}
+
+    @Cacheable(CacheConfig.AUTHORS_CACHE)
+    public PaginatedResult<User> getAuthors(String sort, RequestPagination pagination) {
+        List<User> users = usersApiDAO.getAuthors(pagination.getOffset(), pagination.getLimit(), userOrder(sort));
+        long count = usersApiDAO.getAuthorsCount();
+        return new PaginatedResult<>(new Pagination(count, pagination), users);
+    }
+
+    @CacheEvict(value = CacheConfig.STAFF_CACHE,  allEntries = true)
+    public void clearStaffCache() {}
+
+    @Cacheable(CacheConfig.STAFF_CACHE)
+    public PaginatedResult<User> getStaff(String sort, RequestPagination pagination) {
+        List<User> users = usersApiDAO.getStaff(pagination.getOffset(), pagination.getLimit(), userOrder(sort));
+        long count = usersApiDAO.getStaffCount();
+        return new PaginatedResult<>(new Pagination(count, pagination), users);
+    }
+
+    private String userOrder(String sortStr) {
+        boolean reverse = false;
+        if (sortStr.startsWith("-")) {
+            sortStr = sortStr.substring(1);
+            reverse = true;
+        }
+
+        String sort = reverse ? " ASC" : " DESC";
+
+        String sortUserName = "sq.name" + sort;
+        String thenSortUserName = "," + sortUserName;
+
+        switch (sortStr) {
+            case UserOrdering.JoinDate:
+                return "ORDER BY sq.join_date" + sort;
+            case UserOrdering.UserName:
+                return "ORDER BY " + sortUserName;
+            case UserOrdering.Projects:
+                return "ORDER BY sq.count" + sort + thenSortUserName;
+            case UserOrdering.Role:
+                return "ORDER BY sq.permission::BIGINT" + sort + " NULLS LAST" + ", sq.role" + sort + thenSortUserName;
+            default:
+                return " ";
+        }
     }
 
     private <T extends User> T getUserRequired(String name, Class<T> type) {

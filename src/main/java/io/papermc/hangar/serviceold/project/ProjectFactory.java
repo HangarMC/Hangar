@@ -33,6 +33,7 @@ import io.papermc.hangar.modelold.generated.PlatformDependency;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
 import io.papermc.hangar.modelold.viewhelpers.ProjectPage;
 import io.papermc.hangar.modelold.viewhelpers.VersionData;
+import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.serviceold.NotificationService;
 import io.papermc.hangar.serviceold.RoleService;
 import io.papermc.hangar.serviceold.UserActionLogService;
@@ -69,16 +70,16 @@ public class ProjectFactory {
     private final HangarDao<ProjectPageDao> projectPagesDao;
     private final HangarDao<ProjectVersionDao> projectVersionDao;
     private final RoleService roleService;
-    private final UserService userService;
     private final ProjectService projectService;
     private final VersionService versionService;
     private final NotificationService notificationService;
     private final UserActionLogService userActionLogService;
     private final ProjectFiles projectFiles;
     private final ObjectMapper mapper;
+    private final UsersApiService usersApiService;
 
     @Autowired
-    public ProjectFactory(HangarConfig hangarConfig, HangarDao<PlatformVersionsDao> platformVersionsDao, HangarDao<ProjectVersionDependencyDAO> projectVersionDependencyDAO, HangarDao<ProjectVersionPlatformDependencyDAO> projectVersionPlatformDependencyDAO, HangarDao<ProjectChannelDao> projectChannelDao, HangarDao<ProjectDao> projectDao, HangarDao<ProjectPageDao> projectPagesDao, HangarDao<ProjectVersionDao> projectVersionDao, RoleService roleService, UserService userService, ProjectService projectService, ChannelService channelService, VersionService versionService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles, ObjectMapper mapper) {
+    public ProjectFactory(HangarConfig hangarConfig, HangarDao<PlatformVersionsDao> platformVersionsDao, HangarDao<ProjectVersionDependencyDAO> projectVersionDependencyDAO, HangarDao<ProjectVersionPlatformDependencyDAO> projectVersionPlatformDependencyDAO, HangarDao<ProjectChannelDao> projectChannelDao, HangarDao<ProjectDao> projectDao, HangarDao<ProjectPageDao> projectPagesDao, HangarDao<ProjectVersionDao> projectVersionDao, RoleService roleService, ProjectService projectService, VersionService versionService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles, ObjectMapper mapper, UsersApiService usersApiService) {
         this.hangarConfig = hangarConfig;
         this.platformVersionsDao = platformVersionsDao;
         this.projectVersionDependencyDAO = projectVersionDependencyDAO;
@@ -87,7 +88,6 @@ public class ProjectFactory {
         this.projectDao = projectDao;
         this.projectVersionDao = projectVersionDao;
         this.roleService = roleService;
-        this.userService = userService;
         this.projectPagesDao = projectPagesDao;
         this.projectService = projectService;
         this.versionService = versionService;
@@ -95,6 +95,7 @@ public class ProjectFactory {
         this.userActionLogService = userActionLogService;
         this.projectFiles = projectFiles;
         this.mapper = mapper;
+        this.usersApiService = usersApiService;
     }
 
     public String getUploadError(UsersTable user) {
@@ -136,7 +137,7 @@ public class ProjectFactory {
 
         roleService.addRole(projectsTable, ownerUser.getUserId(), Role.PROJECT_OWNER, true);
 
-        userService.clearAuthorsCache();
+        usersApiService.clearAuthorsCache();
         projectService.refreshHomePage();
 
         return projectsTable;
@@ -243,7 +244,7 @@ public class ProjectFactory {
         }
 
         projectService.refreshHomePage();
-        userService.clearAuthorsCache();
+        usersApiService.clearAuthorsCache();
 
         return version;
     }
