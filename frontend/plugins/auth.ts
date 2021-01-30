@@ -8,7 +8,7 @@ const createAuth = ({ app: { $cookies }, store, $api }: Context) => {
             $cookies.set('returnRoute', redirect, {
                 path: '/',
                 maxAge: 120,
-                secure: true,
+                // secure: true, // this doesn't work for me for some reason
             });
             location.replace(`/login?returnUrl=http://localhost:3000${redirect}`);
         }
