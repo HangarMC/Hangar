@@ -28,6 +28,7 @@
     "nuxt": "^2.14.12",
     "nuxt-i18n": "Machine-Maker/i18n-module#fix/mixing-mem-leak",
     "nuxt-property-decorator": "^2.9.1",
+    "swagger-ui": "^3.41.1",
     "vue": "^2.6.12",
     "vuex": "^3.6.0"
   },

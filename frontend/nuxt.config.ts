@@ -91,7 +91,13 @@ export default {
         middleware: 'auth',
     },
 
-    proxy: ['http://localhost:8080/api/', 'http://localhost:8080/signup', 'http://localhost:8080/login', 'http://localhost:8080/logout'],
+    proxy: [
+        'http://localhost:8080/api/',
+        'http://localhost:8080/signup',
+        'http://localhost:8080/login',
+        'http://localhost:8080/logout',
+        'http://localhost:8080/v2/api-docs/',
+    ],
 
     i18n: {
         vueI18nLoader: true,
