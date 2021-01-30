@@ -149,6 +149,8 @@ export default class NewPage extends Vue {
     get licences() {
         return ['MIT', 'Apache 2.0', 'GPL', 'LGPL'];
     }
+
+    // TODO implement actual logic
 }
 </script>
 

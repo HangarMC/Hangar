@@ -5,6 +5,8 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 
+// TODO implement OrganizationsSettingsMemberPage
+
 @Component
 export default class OrganizationsSettingsMemberPage extends Vue {}
 </script>

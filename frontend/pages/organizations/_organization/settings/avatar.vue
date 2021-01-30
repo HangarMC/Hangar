@@ -5,6 +5,8 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 
+// TODO implement OrganizationSettingsAvatarPage
+
 @Component
 export default class OrganizationSettingsAvatarPage extends Vue {}
 </script>

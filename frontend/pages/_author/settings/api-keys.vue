@@ -5,6 +5,7 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 
+// TODO implement AuthorSettingsApiKeysPage
 @Component
 export default class AuthorSettingsApiKeysPage extends Vue {}
 </script>

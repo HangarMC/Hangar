@@ -5,6 +5,7 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 
+// TODO implement AdminApprovalVersionsPage
 @Component
 export default class AdminApprovalVersionsPage extends Vue {}
 </script>

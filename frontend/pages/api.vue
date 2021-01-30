@@ -5,6 +5,8 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 
+// TODO implement ApiPage
+
 @Component
 export default class ApiPage extends Vue {}
 </script>

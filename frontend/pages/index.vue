@@ -69,6 +69,7 @@ interface Platform {
 
 @Component
 export default class Home extends Vue {
+  // TOOD implement filtering
     projects?: PaginatedResult<Project>;
     totalProjects: Number = 1337;
     projectFilter: String | null = null;

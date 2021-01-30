@@ -24,7 +24,6 @@ export default class AuthorsPage extends Vue {
         { text: 'Projects', value: 'projects' },
     ];
 
-    totalAuthors = 0;
     authors?: PaginatedResult<User>;
     loading = false;
     options?: DataOptions = { page: 1, itemsPerPage: 10 };
@@ -63,7 +62,7 @@ export default class AuthorsPage extends Vue {
         };
     }
 
-    async asyncData({ $api, store }: Context): Promise<{ authors: PaginatedResult<User> }> {
+    async asyncData({ $api }: Context): Promise<{ authors: PaginatedResult<User> }> {
         return { authors: await $api.request<PaginatedResult<User>>('authors', 'get', { limit: 10, offset: 0 }) };
     }
 }

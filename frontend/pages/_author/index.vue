@@ -41,15 +41,15 @@
             <v-col cols="12" md="4">
                 <v-list dense>
                     <v-subheader>Organizations</v-subheader>
-                    <!-- todo -->
+                    <!-- todo display orgs -->
                 </v-list>
                 <v-list dense>
                     <v-subheader>Stars</v-subheader>
-                    <!-- todo -->
+                    <!-- todo display stars -->
                 </v-list>
                 <v-list dense>
                     <v-subheader>Watching</v-subheader>
-                    <!-- todo -->
+                    <!-- todo watching -->
                 </v-list>
             </v-col>
         </v-row>
