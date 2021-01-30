@@ -1,3 +1,4 @@
+// @ts-ignore
 import colors from 'vuetify/es5/util/colors';
 import NuxtVueI18n from 'nuxt-i18n';
 import en from './locales/en';
@@ -63,6 +64,8 @@ export default {
     // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
     vuetify: {
         customVariables: ['~/assets/variables.scss'],
+        preset: 'vue-cli-plugin-vuetify-preset-reply/preset',
+        treeShake: true,
         theme: {
             dark: true,
             themes: {
@@ -80,7 +83,9 @@ export default {
     },
 
     // Build Configuration: https://go.nuxtjs.dev/config-build
-    build: {},
+    build: {
+        transpile: ['vue-cli-plugin-vuetify-preset-reply'],
+    },
 
     router: {
         middleware: 'auth',
