@@ -1,23 +1,20 @@
 package io.papermc.hangar.db.modelold;
 
 
+import io.papermc.hangar.model.ReviewState;
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.Visible;
-import io.papermc.hangar.modelold.generated.PlatformDependency;
-import io.papermc.hangar.modelold.generated.ReviewState;
-import io.papermc.hangar.modelold.viewhelpers.VersionDependencies;
 import org.jdbi.v3.core.annotation.Unmappable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 
 public class ProjectVersionsTable implements Visible {
 
     private long id;
     private OffsetDateTime createdAt;
     private String versionString;
-    private VersionDependencies dependencies;
+//    private VersionDependencies dependencies;
     private String description;
     private long projectId;
     private long channelId;
@@ -32,11 +29,11 @@ public class ProjectVersionsTable implements Visible {
     private boolean createForumPost = true;
     private Long postId;
     private String externalUrl;
-    private List<PlatformDependency> platforms;
+//    private List<PlatformDependency> platforms;
 
-    public ProjectVersionsTable(String versionString, VersionDependencies dependencies, String description, long projectId, long channelId, Long fileSize, String hash, String fileName, long authorId, boolean createForumPost, String externalUrl, List<PlatformDependency> platforms) {
+    public ProjectVersionsTable(String versionString/*, VersionDependencies dependencies*/, String description, long projectId, long channelId, Long fileSize, String hash, String fileName, long authorId, boolean createForumPost, String externalUrl/*, List<PlatformDependency> platforms*/) {
         this.versionString = versionString;
-        this.dependencies = dependencies;
+//        this.dependencies = dependencies;
         this.description = description;
         this.projectId = projectId;
         this.channelId = channelId;
@@ -46,7 +43,7 @@ public class ProjectVersionsTable implements Visible {
         this.authorId = authorId;
         this.createForumPost = createForumPost;
         this.externalUrl = externalUrl;
-        this.platforms = platforms;
+//        this.platforms = platforms;
     }
 
     public ProjectVersionsTable() { }
@@ -78,13 +75,13 @@ public class ProjectVersionsTable implements Visible {
     }
 
 
-    public VersionDependencies getDependencies() {
-        return dependencies;
-    }
-
-    public void setDependencies(VersionDependencies dependencies) {
-        this.dependencies = dependencies;
-    }
+//    public VersionDependencies getDependencies() {
+//        return dependencies;
+//    }
+//
+//    public void setDependencies(VersionDependencies dependencies) {
+//        this.dependencies = dependencies;
+//    }
 
 
     public String getDescription() {
@@ -217,13 +214,13 @@ public class ProjectVersionsTable implements Visible {
     }
 
 
-    public List<PlatformDependency> getPlatforms() {
-        return platforms;
-    }
-
-    public void setPlatforms(List<PlatformDependency> platforms) {
-        this.platforms = platforms;
-    }
+//    public List<PlatformDependency> getPlatforms() {
+//        return platforms;
+//    }
+//
+//    public void setPlatforms(List<PlatformDependency> platforms) {
+//        this.platforms = platforms;
+//    }
 
     @Unmappable
     public boolean isExternal() {
@@ -255,8 +252,8 @@ public class ProjectVersionsTable implements Visible {
                 ", createForumPost=" + createForumPost +
                 ", postId=" + postId +
                 ", externalUrl='" + externalUrl + '\'' +
-                ", dependencies=" + dependencies +
-                ", platformDependencies=" + platforms +
+//                ", dependencies=" + dependencies +
+//                ", platformDependencies=" + platforms +
                 '}';
     }
 }

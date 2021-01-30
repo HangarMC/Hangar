@@ -44,4 +44,16 @@ public class ProjectSettings {
     public boolean isForumSync() {
         return forumSync;
     }
+
+    @Override
+    public String toString() {
+        return "ProjectSettings{" +
+                "homepage='" + homepage + '\'' +
+                ", issues='" + issues + '\'' +
+                ", source='" + source + '\'' +
+                ", support='" + support + '\'' +
+                ", license=" + license +
+                ", forumSync=" + forumSync +
+                '}';
+    }
 }

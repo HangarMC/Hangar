@@ -26,6 +26,9 @@ public interface GlobalRoleDAO extends RoleDAO<GlobalRoleTable> {
     @SqlUpdate("DELETE FROM user_global_roles WHERE user_id = :userId AND role_id = :roleId")
     void delete(@BindBean GlobalRoleTable table);
 
+    @SqlUpdate("DELETE FROM user_global_roles WHERE user_id = :userId")
+    void deleteAll(long userId);
+
     @Override
     default GlobalRoleTable getTable(long id) {
         throw new UnsupportedOperationException("Cannot get global roles by just an id");

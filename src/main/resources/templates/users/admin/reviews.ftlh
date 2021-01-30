@@ -17,7 +17,7 @@
 </#assign>
 
 <#assign ReviewState=@helper["io.papermc.hangar.model.generated.ReviewState"] />
-<#-- @ftlvariable name="ReviewState" type="io.papermc.hangar.modelold.generated.ReviewState" -->
+<#-- @ftlvariable name="ReviewState" type="io.papermc.hangar.model.ReviewState" -->
 <#assign message><@spring.messageArgs code="review.title" args=[project.project.name, version.v.versionString] /></#assign>
 <@base.base title=message additionalScripts=scripts>
     <div id="review-btn-group" class="row">

@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import io.papermc.hangar.db.customtypes.JSONB;
-import io.papermc.hangar.model.api.project.PromotedVersion;
-import io.papermc.hangar.model.api.project.PromotedVersionTag;
-import io.papermc.hangar.modelold.TagColor;
+import io.papermc.hangar.model.TagColor;
+import io.papermc.hangar.model.api.project.version.PromotedVersion;
+import io.papermc.hangar.model.api.project.version.PromotedVersionTag;
 import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.statement.StatementContext;
@@ -41,7 +41,7 @@ public class PromotedVersionMapper implements ColumnMapper<List<PromotedVersion>
                     exception.printStackTrace();
                 }
             }
-            TagColor color = TagColor.getValues()[json.get("tag_color").asInt()];
+            TagColor color = TagColor.VALUES[json.get("tag_color").asInt()];
             // TODO a whole bunch
 //            val displayAndMc = data.map { rawData =>
 //                lazy val lowerBoundVersion = for {

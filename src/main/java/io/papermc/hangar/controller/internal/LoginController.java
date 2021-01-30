@@ -2,14 +2,14 @@ package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controller.HangarController;
-import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.exceptions.HangarException;
-import io.papermc.hangar.serviceold.AuthenticationService;
-import io.papermc.hangar.serviceold.RoleService;
-import io.papermc.hangar.serviceold.SsoService;
-import io.papermc.hangar.serviceold.UserService;
-import io.papermc.hangar.serviceold.sso.AuthUser;
-import io.papermc.hangar.serviceold.sso.UrlWithNonce;
+import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.internal.sso.AuthUser;
+import io.papermc.hangar.model.internal.sso.URLWithNonce;
+import io.papermc.hangar.service.AuthenticationService;
+import io.papermc.hangar.service.internal.RoleService;
+import io.papermc.hangar.service.internal.SSOService;
+import io.papermc.hangar.service.internal.UserService;
 import io.papermc.hangar.util.AlertUtil;
 import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +29,12 @@ public class LoginController extends HangarController {
 
     private final HangarConfig hangarConfig;
     private final AuthenticationService authenticationService;
-    private final SsoService ssoService;
+    private final SSOService ssoService;
     private final UserService userService;
     private final RoleService roleService;
 
     @Autowired
-    public LoginController(HangarConfig hangarConfig, AuthenticationService authenticationService, SsoService ssoService, UserService userService, RoleService roleService) {
+    public LoginController(HangarConfig hangarConfig, AuthenticationService authenticationService, SSOService ssoService, UserService userService, RoleService roleService) {
         this.hangarConfig = hangarConfig;
         this.authenticationService = authenticationService;
         this.ssoService = ssoService;
@@ -47,7 +47,7 @@ public class LoginController extends HangarController {
         if (hangarConfig.fakeUser.isEnabled()) {
             hangarConfig.checkDebug();
 
-            UsersTable fakeUser = authenticationService.loginAsFakeUser();
+            UserTable fakeUser = authenticationService.loginAsFakeUser();
 
             return redirectBack(returnUrl, fakeUser);
         } else if (sso.isEmpty()) {
@@ -67,9 +67,9 @@ public class LoginController extends HangarController {
                 return Routes.SHOW_HOME.getRedirect();
             }
 
-            UsersTable user = userService.getOrCreate(authUser.getUsername(), authUser);
+            UserTable user = userService.getOrCreate(authUser.getUserName(), authUser);
             roleService.removeAllGlobalRoles(user.getId());
-            authUser.getGlobalRoles().forEach(role -> roleService.addGlobalRole(user.getId(), role.getRoleId()));
+            authUser.getGlobalRoles().forEach(globalRole -> roleService.addRole(globalRole.create(null, user.getId(), true)));
             authenticationService.setAuthenticatedUser(user);
 
             String redirectPath = redirectUrl != null ? redirectUrl : Routes.getRouteUrlOf("showHome");
@@ -104,7 +104,7 @@ public class LoginController extends HangarController {
         }
     }
 
-    private ModelAndView redirectBack(String url, UsersTable user) {
+    private ModelAndView redirectBack(String url, UserTable user) {
         if (!url.startsWith("http")) {
             if (url.startsWith("/")) {
                 url = hangarConfig.getBaseUrl() + url;
@@ -115,7 +115,7 @@ public class LoginController extends HangarController {
         return Routes.getRedirectToUrl(url);
     }
 
-    private ModelAndView redirectToSso(UrlWithNonce urlWithNonce, RedirectAttributes attributes) {
+    private ModelAndView redirectToSso(URLWithNonce urlWithNonce, RedirectAttributes attributes) {
         if (!hangarConfig.sso.isEnabled()) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.noLogin");
             return Routes.SHOW_HOME.getRedirect();

@@ -18,8 +18,7 @@ public class Dependency {
     @JsonProperty(value = "required", required = true)
     private boolean required;
 
-    @JsonProperty("project_id")
-    private Long projectId;
+    private ProjectNamespace namespace;
 
     @JsonProperty("external_url")
     private String externalUrl;
@@ -64,13 +63,13 @@ public class Dependency {
      * @return project id (if applicable)
      */
     @Nullable
-    @ApiModelProperty("Hangar project id (if applicable)")
-    public Long getProjectId() {
-        return projectId;
+    @ApiModelProperty("Hangar project namespace")
+    public ProjectNamespace getNamespace() {
+        return namespace;
     }
 
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
+    public void setNamespace(ProjectNamespace namespace) {
+        this.namespace = namespace;
     }
 
     /**
@@ -93,7 +92,7 @@ public class Dependency {
      */
     @JsonIgnore
     public boolean isLinked() {
-        return this.externalUrl != null || this.projectId != null;
+        return this.externalUrl != null || this.namespace != null;
     }
 
     @Override
@@ -103,13 +102,13 @@ public class Dependency {
         Dependency that = (Dependency) o;
         return required == that.required &&
                 name.equals(that.name) &&
-                Objects.equals(projectId, that.projectId) &&
+                Objects.equals(namespace, that.namespace) &&
                 Objects.equals(externalUrl, that.externalUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, required, projectId, externalUrl);
+        return Objects.hash(name, required, namespace, externalUrl);
     }
 
     @Override
@@ -117,7 +116,7 @@ public class Dependency {
         return "Dependency{" +
                 "name='" + name + '\'' +
                 ", required=" + required +
-                ", projectId=" + projectId +
+                ", namespace=" + namespace +
                 ", externalUrl='" + externalUrl + '\'' +
                 '}';
     }

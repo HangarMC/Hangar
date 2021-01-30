@@ -17,4 +17,12 @@ public class ProjectLicense {
     public String getUrl() {
         return url;
     }
+
+    @Override
+    public String toString() {
+        return "ProjectLicense{" +
+                "name='" + name + '\'' +
+                ", url='" + url + '\'' +
+                '}';
+    }
 }

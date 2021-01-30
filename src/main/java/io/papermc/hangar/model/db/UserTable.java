@@ -94,6 +94,8 @@ public class UserTable extends Table implements ProjectOwner {
         return isLocked;
     }
 
+    public boolean getIsLocked() { return isLocked; } // JDBI needs this annoyingly
+
     public void setLocked(boolean locked) {
         isLocked = locked;
     }

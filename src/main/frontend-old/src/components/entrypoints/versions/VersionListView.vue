@@ -14,7 +14,7 @@
                     <div class="list-group">
                         <a
                             v-for="(version, index) in filteredVersions"
-                            :href="ROUTES.parse('VERSIONS_SHOW', htmlDecode(ownerName), htmlDecode(projectSlug), version.url_name)"
+                            :href="ROUTES.parse('VERSIONS_SHOW', htmlDecode(ownerName), htmlDecode(projectSlug), version.urlName)"
                             class="list-group-item list-group-item-action"
                             :class="[classForVisibility(version.visibility)]"
                             :key="index"
@@ -44,12 +44,12 @@
                                         <div class="row">
                                             <div class="col-12">
                                                 <i class="fas fa-fw fa-calendar"></i>
-                                                {{ formatDate(version.created_at) }}
+                                                {{ formatDate(version.createdAt) }}
                                             </div>
                                             <div class="col-12">
                                                 <i class="far fa-fw fa-file"></i>
-                                                <span v-if="version.file_info.size_bytes">
-                                                    {{ formatSize(version.file_info.size_bytes) }}
+                                                <span v-if="version.fileInfo.sizeBytes">
+                                                    {{ formatSize(version.fileInfo.sizeBytes) }}
                                                 </span>
                                                 <span v-else> (external) </span>
                                             </div>

@@ -9,6 +9,7 @@ public class JsonResponseException extends ResponseStatusException {
 
     private final String messageKey;
     private final String[] args;
+
     public JsonResponseException(String messageKey, Object...args) {
         super(HttpStatus.BAD_REQUEST);
         this.messageKey = messageKey;

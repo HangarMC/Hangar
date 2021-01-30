@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import freemarker.core.HTMLOutputFormat;
 import freemarker.template.TemplateException;
 import io.papermc.hangar.controller.extras.converters.ColorHexConverter;
+import io.papermc.hangar.controller.extras.converters.OffsetDateTimeConverter;
 import io.papermc.hangar.controller.extras.converters.StringToEnumConverterFactory;
 import io.papermc.hangar.security.UserLockExceptionResolver;
 import io.papermc.hangar.util.Routes;
@@ -139,6 +140,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverterFactory(new StringToEnumConverterFactory());
         registry.addConverter(new ColorHexConverter());
+        registry.addConverter(new OffsetDateTimeConverter());
     }
 
     @Bean

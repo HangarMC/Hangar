@@ -5,7 +5,6 @@ import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.modelold.ApiAuthInfo;
 import io.papermc.hangar.modelold.generated.Project;
-import io.papermc.hangar.modelold.generated.ProjectMember;
 import io.papermc.hangar.modelold.generated.ProjectStatsDay;
 import io.papermc.hangar.serviceold.apiold.ProjectApiService;
 import io.papermc.hangar.util.ApiUtil;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Controller;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -39,18 +37,18 @@ public class ProjectsApiController implements ProjectsApi {
         this.projectApiService = projectApiService;
     }
 
-    @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
-    public ResponseEntity<List<ProjectMember>> showMembers(String author, String slug, Long inLimit, Long inOffset) {
-        long limit = ApiUtil.limitOrDefault(inLimit, hangarConfig.getProjects().getInitLoad());
-        long offset = ApiUtil.offsetOrZero(inOffset);
-        List<ProjectMember> projectMembers = projectApiService.getProjectMembers(author, slug, limit, offset);
-        if (projectMembers == null || projectMembers.isEmpty()) { // TODO this will also happen when the offset is too high
-            log.error("Couldn't find a project for that author/slug");
-            throw new HangarApiException(HttpStatus.NOT_FOUND, "Couldn't find a project for: " + author + "/" + slug);
-        }
-        return ResponseEntity.ok(projectMembers);
-    }
+//    @Override
+//    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
+//    public ResponseEntity<List<ProjectMember>> showMembers(String author, String slug, Long inLimit, Long inOffset) {
+//        long limit = ApiUtil.limitOrDefault(inLimit, hangarConfig.getProjects().getInitLoad());
+//        long offset = ApiUtil.offsetOrZero(inOffset);
+//        List<ProjectMember> projectMembers = projectApiService.getProjectMembers(author, slug, limit, offset);
+//        if (projectMembers == null || projectMembers.isEmpty()) { // TODO this will also happen when the offset is too high
+//            log.error("Couldn't find a project for that author/slug");
+//            throw new HangarApiException(HttpStatus.NOT_FOUND, "Couldn't find a project for: " + author + "/" + slug);
+//        }
+//        return ResponseEntity.ok(projectMembers);
+//    }
 
     @Override
     @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#id))")

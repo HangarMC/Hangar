@@ -1,6 +1,6 @@
 package io.papermc.hangar.db.modelold;
 
-import io.papermc.hangar.modelold.Platform;
+import io.papermc.hangar.model.Platform;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 import java.time.OffsetDateTime;

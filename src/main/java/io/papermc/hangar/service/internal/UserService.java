@@ -3,22 +3,28 @@ package io.papermc.hangar.service.internal;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.internal.sso.AuthUser;
+import io.papermc.hangar.model.internal.sso.SsoSyncData;
+import io.papermc.hangar.model.roles.GlobalRole;
 import io.papermc.hangar.service.HangarService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.function.Function;
 
 @Service
 public class UserService extends HangarService {
 
     private final UserDAO userDAO;
+    private final RoleService roleService;
 
     @Autowired
-    public UserService(HangarDao<UserDAO> userDAO) {
+    public UserService(HangarDao<UserDAO> userDAO, RoleService roleService) {
         this.userDAO = userDAO.get();
+        this.roleService = roleService;
     }
 
     public UserTable insertUser(UserTable userTable) {
@@ -41,5 +47,51 @@ public class UserService extends HangarService {
             return null;
         }
         return userTableFunction.apply(identifier);
+    }
+
+    public UserTable getOrCreate(String userName, AuthUser authUser) {
+        UserTable user = getUserTable(userName);
+        if (user == null) {
+            user = new UserTable(
+                    authUser.getId(),
+                    null,
+                    authUser.getUserName(),
+                    authUser.getEmail(),
+                    List.of(),
+                    false,
+                    authUser.getLang().toLanguageTag()
+            );
+            user = insertUser(user);
+        }
+        return user;
+    }
+
+    public void ssoSyncUser(SsoSyncData syncData) {
+        UserTable user = userDAO.getUserTable(syncData.getExternalId());
+        if (user == null) {
+            user = new UserTable(
+                    syncData.getExternalId(),
+                    syncData.getFullName(),
+                    syncData.getUsername(),
+                    syncData.getEmail(),
+                    List.of(),
+                    false,
+                    null
+            );
+            user = userDAO.insert(user);
+        } else {
+            user.setFullName(syncData.getFullName());
+            user.setName(syncData.getUsername());
+            user.setEmail(syncData.getEmail());
+            userDAO.update(user);
+        }
+
+        for (GlobalRole addGroup : syncData.getAddGroups()) {
+            roleService.addRole(addGroup.create(null, user.getId(), true));
+        }
+
+        for (GlobalRole removeGroup : syncData.getRemoveGroups()) {
+            roleService.deleteRole(removeGroup.create(null, user.getId(), true));
+        }
     }
 }

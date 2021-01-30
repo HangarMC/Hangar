@@ -144,7 +144,7 @@
                                                         value="External"
                                                         aria-label="External Link"
                                                         v-model="dependencyLinking[platformKey][dep.name]"
-                                                        @change="linkingClick('project_id', platformKey, dep.name)"
+                                                        @change="linkingClick('namespace', platformKey, dep.name)"
                                                     />
                                                 </div>
                                             </div>
@@ -295,9 +295,9 @@ export default {
     methods: {
         setDependencyLinks(deps, platformName) {
             for (const dep of deps) {
-                if (dep.project_id) {
+                if (dep.namespace) {
                     this.dependencyLinking[platformName][dep.name] = 'Hangar';
-                    API.request(`projects/${dep.project_id}`).then((res) => {
+                    API.request(`projects/${dep.namespace.owner}/${dep.namespace.slug}`).then((res) => {
                         this.selectProject(platformName, dep.name, res);
                     });
                 } else if (dep.external_url) {
@@ -326,7 +326,7 @@ export default {
                     // reset on changing
                     input.data('namespace', '');
                     input.data('id', '');
-                    this.dependencies[platformKey].find((dep) => dep.name === depName).project_id = null;
+                    this.dependencies[platformKey].find((dep) => dep.name === depName).namespace = null;
                 }
 
                 API.request(`projects?relevance=true&limit=25&offset=0&q=${inputVal}`).then((res) => {
@@ -347,13 +347,13 @@ export default {
             const input = $(`#${platformKey}-${depName}-project-input`);
             let namespace = '';
             if (project.namespace) {
-                namespace = `${project.namespace.owner} / ${project.namespace.slug}`;
+                namespace = `${project.namespace.owner}/${project.namespace.slug}`;
             } else {
-                namespace = `${project.author} / ${project.slug}`;
+                namespace = `${project.author}/${project.slug}`;
             }
             input.data('id', project.id);
             input.data('namespace', namespace);
-            this.dependencies[platformKey].find((dep) => dep.name === depName).project_id = project.id;
+            this.dependencies[platformKey].find((dep) => dep.name === depName).namespace = namespace;
             input.val(namespace);
         },
         setExternalUrl(value, platformKey, depName) {
@@ -375,7 +375,7 @@ export default {
             this.dependencies[platformKey].push({
                 name: this.addDependency[platformKey].name,
                 required: this.addDependency[platformKey].required,
-                project_id: null,
+                namespace: null,
                 external_url: null,
             });
             this.addDependency[platformKey].name = '';

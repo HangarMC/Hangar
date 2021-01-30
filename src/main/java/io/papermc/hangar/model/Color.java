@@ -31,8 +31,9 @@ public enum Color {
     GRAY(16, "#A9A9A9"),
     TRANSPARENT(17, "transparent");
 
-    private static final Color[] VALUES = values();
+    public static final Color[] VALUES = values();
     private static List<Color> CHANNEL_COLORS = null;
+
     private final int value;
     private final String hex;
 
@@ -68,10 +69,6 @@ public enum Color {
             if (value.hex.equalsIgnoreCase(hexStr)) return value;
         }
         return null;
-    }
-
-    public static Color[] getValues() {
-        return VALUES;
     }
 
     public static List<Color> getNonTransparentValues() {

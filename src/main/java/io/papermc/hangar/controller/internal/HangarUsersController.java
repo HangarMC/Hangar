@@ -1,7 +1,7 @@
 package io.papermc.hangar.controller.internal;
 
+import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.model.internal.HangarUser;
-import io.papermc.hangar.modelold.ApiAuthInfo;
 import io.papermc.hangar.service.api.UsersApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,19 +15,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 @RequestMapping(path = "/api/internal", produces = MediaType.APPLICATION_JSON_VALUE, method = { RequestMethod.GET, RequestMethod.POST })
 @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.Permission).EditOwnUserSettings, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
-public class HangarUsersController {
+public class HangarUsersController extends HangarController {
 
     private final UsersApiService usersApiService;
-    private final ApiAuthInfo apiAuthInfo;
+
 
     @Autowired
-    public HangarUsersController(UsersApiService usersApiService, ApiAuthInfo apiAuthInfo) {
+    public HangarUsersController(UsersApiService usersApiService) {
         this.usersApiService = usersApiService;
-        this.apiAuthInfo = apiAuthInfo;
     }
 
     @GetMapping("/users/@me")
     public ResponseEntity<HangarUser> getCurrentUser() {
-        return ResponseEntity.ok(usersApiService.getUser(apiAuthInfo.getUser().getName(), HangarUser.class));
+        return ResponseEntity.ok(usersApiService.getUser(hangarRequest.getUserTable().getName(), HangarUser.class));
     }
 }

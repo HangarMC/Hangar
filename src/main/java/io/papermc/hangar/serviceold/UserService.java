@@ -15,7 +15,6 @@ import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.modelold.Prompt;
 import io.papermc.hangar.modelold.Role;
-import io.papermc.hangar.modelold.SsoSyncData;
 import io.papermc.hangar.modelold.UserOrdering;
 import io.papermc.hangar.modelold.viewhelpers.Author;
 import io.papermc.hangar.modelold.viewhelpers.FlagActivity;
@@ -27,7 +26,6 @@ import io.papermc.hangar.modelold.viewhelpers.UserData;
 import io.papermc.hangar.modelold.viewhelpers.UserRole;
 import io.papermc.hangar.security.HangarAuthentication;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.serviceold.sso.AuthUser;
 import io.papermc.hangar.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -230,60 +228,6 @@ public class UserService extends HangarService {
 
     public List<UsersTable> getUsers(List<String> userNames) {
         return userDao.get().getUsers(userNames);
-    }
-
-    public UsersTable getOrCreate(String username, AuthUser authUser) {
-        UsersTable user = userDao.get().getByName(username);
-        if (user == null) {
-            user = new UsersTable(
-                    authUser.getId(),
-                    null,
-                    authUser.getUsername(),
-                    authUser.getEmail(),
-                    null,
-                    List.of(),
-                    false,
-                    authUser.getLang().toLanguageTag()
-            );
-            userDao.get().insert(user);
-        }
-        return user;
-    }
-
-    public void ssoSyncUser(SsoSyncData syncData) {
-        UsersTable user = userDao.get().getById(syncData.getExternalId());
-        if (user == null) {
-            user = new UsersTable(
-                    syncData.getExternalId(),
-                    syncData.getFullName(),
-                    syncData.getUsername(),
-                    syncData.getEmail(),
-                    null,
-                    List.of(),
-                    false,
-                    null
-            );
-            user = userDao.get().insert(user);
-        } else {
-            user.setFullName(syncData.getFullName());
-            user.setName(syncData.getUsername());
-            user.setEmail(syncData.getEmail());
-            userDao.get().update(user);
-        }
-
-        for (String roleName : syncData.getAddGroups()) {
-            Role role = Role.fromValue(roleName);
-            if (role != null) {
-                roleService.addGlobalRole(user.getId(), role.getRoleId());
-            }
-        }
-
-        for (String roleName : syncData.getRemoveGroups()) {
-            Role role = Role.fromValue(roleName);
-            if (role != null) {
-                roleService.removeGlobalRole(user.getId(), role.getRoleId());
-            }
-        }
     }
 
     public List<ReviewActivity> getReviewActivity(String username) {

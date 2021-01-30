@@ -13,7 +13,7 @@ Versions page within Project overview.
             window.PROJECT_OWNER = '${p.project.ownerName}';
             window.PROJECT_SLUG = '${p.project.slug}';
             window.CHANNELS = ${mapper.valueToTree(channels)};
-            window.PLATFORMS = ${mapper.valueToTree(Platform.getValues())}
+            window.PLATFORMS = ${mapper.valueToTree(Platform.VALUES)}
             window.CAN_EDIT_CHANNELS = ${sp.perms(Permission.EditTags)?c};
             window.FILTERED_MEMBERS = ${utils.serializeMap(p.filteredMembers(headerData))};
             window.CAN_MANAGE_MEMBERS = ${sp.permissions.has(Permission.ManageSubjectMembers)?c};

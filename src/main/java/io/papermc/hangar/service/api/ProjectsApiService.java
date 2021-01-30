@@ -4,12 +4,13 @@ import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controller.extras.HangarApiRequest;
 import io.papermc.hangar.controller.extras.requestmodels.api.RequestPagination;
 import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.v1.ProjectsDAO;
+import io.papermc.hangar.db.dao.v1.ProjectsApiDAO;
 import io.papermc.hangar.model.Category;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
 import io.papermc.hangar.model.api.project.Project;
+import io.papermc.hangar.model.api.project.ProjectMember;
 import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
 import io.papermc.hangar.modelold.generated.Tag;
 import io.papermc.hangar.service.HangarService;
@@ -29,22 +30,27 @@ import java.util.stream.Collectors;
 public class ProjectsApiService extends HangarService {
 
     private final HangarConfig hangarConfig;
-    private final ProjectsDAO projectsDAO;
+    private final ProjectsApiDAO projectsApiDAO;
     private final ProjectFiles projectFiles;
 
     private final HangarApiRequest hangarApiRequest;
 
     @Autowired
-    public ProjectsApiService(HangarConfig hangarConfig, HangarDao<ProjectsDAO> projectsDAO, ProjectFiles projectFiles, HangarApiRequest hangarApiRequest) {
+    public ProjectsApiService(HangarConfig hangarConfig, HangarDao<ProjectsApiDAO> projectsDAO, ProjectFiles projectFiles, HangarApiRequest hangarApiRequest) {
         this.hangarConfig = hangarConfig;
-        this.projectsDAO = projectsDAO.get();
+        this.projectsApiDAO = projectsDAO.get();
         this.projectFiles = projectFiles;
         this.hangarApiRequest = hangarApiRequest;
     }
 
     public Project getProject(String author, String slug) {
         boolean seeHidden = hangarApiRequest.getGlobalPermissions().has(Permission.SeeHidden);
-        return projectsDAO.getProjects(author, slug, seeHidden, hangarApiRequest.getUserId(), null, null, null, null, null, 1, 0).stream().findFirst().orElse(null);
+        return projectsApiDAO.getProjects(author, slug, seeHidden, hangarApiRequest.getUserId(), null, null, null, null, null, 1, 0).stream().findFirst().map(this::setProjectIconUrl).orElse(null);
+    }
+
+    public PaginatedResult<ProjectMember> getProjectMembers(String author, String slug, RequestPagination requestPagination) {
+        List<ProjectMember> projectMembers = projectsApiDAO.getProjectMembers(author, slug, requestPagination.getLimit(), requestPagination.getOffset());
+        return new PaginatedResult<>(new Pagination(projectsApiDAO.getProjectMembersCount(author, slug), requestPagination), projectMembers);
     }
 
     public PaginatedResult<Project> getProjects(String query, List<Category> categories, List<String> tags, String owner, ProjectSortingStrategy sort, boolean orderWithRelevance, RequestPagination pagination) {
@@ -83,9 +89,9 @@ public class ProjectsApiService extends HangarService {
             ordering = orderingFirstHalf + relevance;
         }
 
-        List<Project> projects = projectsDAO.getProjects(owner, null, seeHidden, hangarApiRequest.getUserId(), ordering, getCategoryNumbers(categories), getTagsNames(parsedTags), trimQuery(query), getQueryStatement(query), pagination.getLimit(), pagination.getOffset());
+        List<Project> projects = projectsApiDAO.getProjects(owner, null, seeHidden, hangarApiRequest.getUserId(), ordering, getCategoryNumbers(categories), getTagsNames(parsedTags), trimQuery(query), getQueryStatement(query), pagination.getLimit(), pagination.getOffset());
         projects.forEach(this::setProjectIconUrl);
-        return new PaginatedResult<>(new Pagination(projectsDAO.countProjects(owner, null, seeHidden, hangarApiRequest.getUserId(), getCategoryNumbers(categories), getTagsNames(parsedTags), trimQuery(query), getQueryStatement(query)), pagination), projects);
+        return new PaginatedResult<>(new Pagination(projectsApiDAO.countProjects(owner, null, seeHidden, hangarApiRequest.getUserId(), getCategoryNumbers(categories), getTagsNames(parsedTags), trimQuery(query), getQueryStatement(query)), pagination), projects);
     }
 
     private List<Integer> getCategoryNumbers(List<Category> categories){
@@ -116,12 +122,13 @@ public class ProjectsApiService extends HangarService {
         return queryStatement;
     }
 
-    private void setProjectIconUrl(Project project) {
+    private Project setProjectIconUrl(Project project) {
         Path iconPath = projectFiles.getIconPath(project.getNamespace().getOwner(), project.getNamespace().getSlug());
         if (iconPath != null) {
             project.setIconUrl(hangarConfig.getBaseUrl() + Routes.getRouteUrlOf("projects.showIcon", project.getNamespace().getOwner(), project.getNamespace().getSlug()));
         } else {
             project.setIconUrl(StringUtils.avatarUrl(project.getNamespace().getOwner()));
         }
+        return project;
     }
 }

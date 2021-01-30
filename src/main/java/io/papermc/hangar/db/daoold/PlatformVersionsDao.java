@@ -1,7 +1,8 @@
 package io.papermc.hangar.db.daoold;
 
 import io.papermc.hangar.db.modelold.PlatformVersionsTable;
-import io.papermc.hangar.modelold.Platform;
+import io.papermc.hangar.model.Platform;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.enums.EnumStrategy;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
@@ -36,5 +37,11 @@ public interface PlatformVersionsDao {
 
     @SqlQuery("SELECT version FROM platform_versions WHERE platform = :platform ORDER BY string_to_array(version, '.')::INT[]")
     List<String> getVersionsForPlatform(int platform);
+
+    @SqlQuery("SELECT * FROM platform_versions WHERE platform = :platform")
+    List<PlatformVersionsTable> getVersionsForPlatform(@EnumByOrdinal io.papermc.hangar.modelold.Platform platform);
+
+    @SqlQuery("SELECT pv.* FROM project_version_platform_dependencies pvpd JOIN platform_versions pv ON pv.id = pvpd.platform_version_id WHERE pvpd.version_id = :versionId")
+    List<PlatformVersionsTable> getPlatformVersionsForVersion(long versionId);
 
 }

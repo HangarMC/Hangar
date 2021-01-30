@@ -11,21 +11,15 @@ import java.lang.reflect.Method;
 @SuppressWarnings("rawtypes")
 public class StringToEnumConverterFactory implements ConverterFactory<String, Enum> {
 
-    private static class StringtoEnumConverter<T extends Enum> implements Converter<String, T> {
-        private final Class<T> enumType;
-
-        public StringtoEnumConverter(Class<T> enumType) {
-            this.enumType = enumType;
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public T convert(String source) {
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends Enum> @NotNull Converter<String, T> getConverter(@NotNull Class<T> targetType) {
+        return s -> {
             // search for json creator first
             try {
-                for (Method declaredMethod : enumType.getDeclaredMethods()) {
+                for (Method declaredMethod : targetType.getDeclaredMethods()) {
                     if (declaredMethod.isAnnotationPresent(JsonCreator.class)) {
-                        return (T) declaredMethod.invoke(null, source);
+                        return (T) declaredMethod.invoke(null, s);
                     }
                 }
             } catch (IllegalAccessException | InvocationTargetException ignored) {
@@ -35,19 +29,15 @@ public class StringToEnumConverterFactory implements ConverterFactory<String, En
             // try ordinal
             int ordinal;
             try {
-                ordinal = Integer.parseInt(source);
-                return enumType.getEnumConstants()[ordinal];
+                ordinal = Integer.parseInt(s);
+                return targetType.getEnumConstants()[ordinal];
             } catch (NumberFormatException ignored) {
                 // ignored
             }
 
             // fall back to value of
-            return (T) Enum.valueOf(this.enumType, source.trim().toUpperCase());
-        }
-    }
-
-    @Override
-    public <T extends Enum> @NotNull Converter<String, T> getConverter(@NotNull Class<T> targetType) {
-        return new StringtoEnumConverter<>(targetType);
+            return (T) Enum.valueOf(targetType, s.trim().toUpperCase());
+        };
+//        return new StringtoEnumConverter<>(targetType);
     }
 }

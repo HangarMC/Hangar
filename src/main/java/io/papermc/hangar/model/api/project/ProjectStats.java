@@ -41,4 +41,16 @@ public class ProjectStats {
     public long getWatchers() {
         return watchers;
     }
+
+    @Override
+    public String toString() {
+        return "ProjectStats{" +
+                "views=" + views +
+                ", downloads=" + downloads +
+                ", recentViews=" + recentViews +
+                ", recentDownloads=" + recentDownloads +
+                ", stars=" + stars +
+                ", watchers=" + watchers +
+                '}';
+    }
 }

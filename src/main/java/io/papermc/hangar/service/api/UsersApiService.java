@@ -5,13 +5,15 @@ import io.papermc.hangar.controller.extras.requestmodels.api.RequestPagination;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.UsersDAO;
 import io.papermc.hangar.db.dao.internal.table.NotificationsDAO;
+import io.papermc.hangar.db.dao.v1.UsersApiDAO;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
 import io.papermc.hangar.model.api.User;
+import io.papermc.hangar.model.api.project.ProjectCompact;
 import io.papermc.hangar.model.internal.HangarUser;
 import io.papermc.hangar.model.internal.HangarUser.HeaderData;
-import io.papermc.hangar.modelold.ApiAuthInfo;
+import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
 import io.papermc.hangar.service.HangarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,21 +25,18 @@ import java.util.List;
 public class UsersApiService extends HangarService {
 
     private final UsersDAO usersDAO;
+    private final UsersApiDAO usersApiDAO;
     private final NotificationsDAO notificationsDAO;
-    private final ApiAuthInfo apiAuthInfo;
 
     @Autowired
-    public UsersApiService(HangarDao<UsersDAO> usersDAO, HangarDao<NotificationsDAO> notificationsDAO, ApiAuthInfo apiAuthInfo) {
+    public UsersApiService(HangarDao<UsersDAO> usersDAO, HangarDao<UsersApiDAO> usersApiDAO, HangarDao<NotificationsDAO> notificationsDAO) {
         this.usersDAO = usersDAO.get();
+        this.usersApiDAO = usersApiDAO.get();
         this.notificationsDAO = notificationsDAO.get();
-        this.apiAuthInfo = apiAuthInfo;
     }
 
     public <T extends User> T getUser(String name, Class<T> type) {
-        T user = usersDAO.getUser(name, type);
-        if (user == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND, "Couldn't find a user with " + name + " name");
-        }
+        T user = getUserRequired(name, type);
         return user instanceof HangarUser ? (T) supplyHeaderData((HangarUser) user) : user;
     }
 
@@ -46,12 +45,36 @@ public class UsersApiService extends HangarService {
         return new PaginatedResult<>(new Pagination(usersDAO.getUsersCount(query), pagination), users);
     }
 
-    public HangarUser supplyHeaderData(HangarUser hangarUser) {
-        Permission globalPermission = apiAuthInfo.getGlobalPerms();
+    public PaginatedResult<ProjectCompact> getUserStarred(String userName, ProjectSortingStrategy sortingStrategy, RequestPagination pagination) {
+        getUserRequired(userName, User.class);
+        boolean canSeeHidden = hangarApiRequest.getGlobalPermissions().has(Permission.SeeHidden);
+        List<ProjectCompact> projects = usersApiDAO.getUserStarred(userName, canSeeHidden, hangarApiRequest.getUserId(), sortingStrategy.getSql(), pagination.getLimit(), pagination.getOffset());
+        long count = usersApiDAO.getUserStarredCount(userName, canSeeHidden, hangarApiRequest.getUserId());
+        return new PaginatedResult<>(new Pagination(count, pagination), projects);
+    }
 
-        boolean hasUnreadNotifs = notificationsDAO.hasUnreadNotifications(apiAuthInfo.getUserId());
+    public PaginatedResult<ProjectCompact> getUserWatching(String userName, ProjectSortingStrategy sortingStrategy, RequestPagination pagination) {
+        getUserRequired(userName, User.class);
+        boolean canSeeHidden = hangarApiRequest.getGlobalPermissions().has(Permission.SeeHidden);
+        List<ProjectCompact> projects = usersApiDAO.getUserWatching(userName, canSeeHidden, hangarApiRequest.getUserId(), sortingStrategy.getSql(), pagination.getLimit(), pagination.getOffset());
+        long count = usersApiDAO.getUserWatchingCount(userName, canSeeHidden, hangarApiRequest.getUserId());
+        return new PaginatedResult<>(new Pagination(count, pagination), projects);
+    }
+
+    private <T extends User> T getUserRequired(String name, Class<T> type) {
+        T user = usersDAO.getUser(name, type);
+        if (user == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "Couldn't find a user with " + name + " name");
+        }
+        return user;
+    }
+
+    private HangarUser supplyHeaderData(HangarUser hangarUser) {
+        Permission globalPermission = hangarApiRequest.getGlobalPermissions();
+
+        boolean hasUnreadNotifs = notificationsDAO.hasUnreadNotifications(hangarApiRequest.getUserId());
         boolean hasUnresolvedFlags = globalPermission.has(Permission.ModNotesAndFlags) && notificationsDAO.hasUnresolvedFlags();
-        boolean hasProjectApprovals = globalPermission.has(Permission.ModNotesAndFlags.add(Permission.SeeHidden)) && notificationsDAO.hasProjectApprovals(apiAuthInfo.getUserId());
+        boolean hasProjectApprovals = globalPermission.has(Permission.ModNotesAndFlags.add(Permission.SeeHidden)) && notificationsDAO.hasProjectApprovals(hangarApiRequest.getUserId());
         boolean hasReviewQueue = globalPermission.has(Permission.Reviewer) && notificationsDAO.hasReviewQueue();
         hangarUser.setHeaderData(new HeaderData(
                 globalPermission,

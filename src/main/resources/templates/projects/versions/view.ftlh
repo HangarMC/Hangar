@@ -5,7 +5,7 @@
 <#import "*/projects/view.ftlh" as projects />
 <#import "*/utils/editor.ftlh" as editor />
 
-<#assign ReviewState=@helper["io.papermc.hangar.model.generated.ReviewState"] />
+<#assign ReviewState=@helper["io.papermc.hangar.model.ReviewState"] />
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"] />
 <#assign Visibility=@helper["io.papermc.hangar.model.Visibility"] />
 <#assign scriptsVar>

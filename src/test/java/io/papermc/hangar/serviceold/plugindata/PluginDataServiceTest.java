@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ContextConfiguration(classes = {PluginDataService.class, PaperPluginFileHandler.class, VelocityFileHandler.class, WaterfallPluginFileHandler.class})
 class PluginDataServiceTest {
 
-    private static final Path path = Path.of("src/test/resources/io/papermc/hangar/service/plugindata");
+    private static final Path path = Path.of("src/test/resources/io/papermc/hangar/serviceold/plugindata");
 
     @Autowired
     private PluginDataService classUnderTest;

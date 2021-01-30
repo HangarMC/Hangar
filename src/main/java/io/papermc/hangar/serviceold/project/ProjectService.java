@@ -46,7 +46,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-@Service
+@Service("oldProjectService")
 public class ProjectService extends HangarService {
 
     private final HangarConfig hangarConfig;

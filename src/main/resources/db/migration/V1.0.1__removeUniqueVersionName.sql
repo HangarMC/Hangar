@@ -1,1 +1,0 @@
-DROP INDEX versions_project_id_version_string_idx;

@@ -2,20 +2,13 @@ package io.papermc.hangar.controllerold.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
-import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.modelold.ApiAuthInfo;
 import io.papermc.hangar.modelold.Platform;
 import io.papermc.hangar.modelold.api.PlatformInfo;
 import io.papermc.hangar.modelold.generated.DeployVersionInfo;
-import io.papermc.hangar.modelold.generated.PaginatedVersionResult;
-import io.papermc.hangar.modelold.generated.Pagination;
 import io.papermc.hangar.modelold.generated.TagColor;
 import io.papermc.hangar.modelold.generated.Version;
-import io.papermc.hangar.modelold.generated.VersionStatsDay;
 import io.papermc.hangar.serviceold.apiold.VersionApiService;
-import io.papermc.hangar.util.ApiUtil;
-import io.papermc.hangar.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +19,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class VersionsApiController implements VersionsApi {
@@ -63,45 +52,8 @@ public class VersionsApiController implements VersionsApi {
         }
     }
 
-
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     @Override
-    public ResponseEntity<PaginatedVersionResult> listVersions(String author, String slug, List<String> tags, Long limit, Long offset) {
-        List<Version> versions = versionApiService.getVersionList(author, slug, tags, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), ApiUtil.limitOrDefault(limit, hangarConfig.projects.getInitVersionLoad()), ApiUtil.offsetOrZero(offset), ApiUtil.userIdOrNull(apiAuthInfo.getUser()));
-        long versionCount = versionApiService.getVersionCount(author, slug, tags, apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), ApiUtil.userIdOrNull(apiAuthInfo.getUser()));
-        return new ResponseEntity<>(new PaginatedVersionResult().result(versions).pagination(new Pagination().limit(limit).offset(offset).count(versionCount)), HttpStatus.OK);
-    }
-
-
-    @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
-    public ResponseEntity<Version> showVersion(String author, String slug, String name) {
-        Version version = versionApiService.getVersion(author, slug, StringUtils.getVersionId(name, new HangarApiException(HttpStatus.BAD_REQUEST, "badly formatted version string")), apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden), ApiUtil.userIdOrNull(apiAuthInfo.getUser()));
-        if (version == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
-        } else {
-            return ResponseEntity.ok(version);
-        }
-    }
-
-
-    @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).IsProjectMember, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
-    public ResponseEntity<Map<String, VersionStatsDay>> showVersionStats(String author, String slug, String version, @NotNull @Valid String fromDate, @NotNull @Valid String toDate) {
-        LocalDate from = ApiUtil.parseDate(fromDate);
-        LocalDate to = ApiUtil.parseDate(toDate);
-        if (from.isAfter(to)) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "From date is after to date");
-        }
-        Map<String, VersionStatsDay> versionStats = versionApiService.getVersionStats(author, slug, StringUtils.getVersionId(version, new HangarApiException(HttpStatus.BAD_REQUEST, "badly formatted version string")), from, to);
-        if (versionStats.isEmpty()) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND); // TODO Not found might not be right here?
-        }
-        return ResponseEntity.ok(versionStats);
-    }
-
-    @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).None, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
+    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.Permission).None, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
     public ResponseEntity<List<PlatformInfo>> showPlatforms() {
         List<PlatformInfo> platformInfoList = new ArrayList<>();
         for (Platform platform : Platform.getValues()) {

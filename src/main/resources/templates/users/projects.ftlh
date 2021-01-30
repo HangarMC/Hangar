@@ -4,7 +4,7 @@
 <#import "*/users/memberList.ftlh" as memberList />
 
 <#assign Permission=@helper["io.papermc.hangar.model.Permission"] />
-<#assign Role=@helper["io.papermc.hangar.model.Role"] />
+<#assign Role=@helper["io.papermc.hangar.modelold.Role"] />
 
 <#function canEditOrgMembers>
     <#return u.isOrga() && o.present && so.get().permissions.has(Permission.ManageOrganizationMembers)>

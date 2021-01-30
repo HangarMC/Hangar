@@ -17,4 +17,12 @@ public class TagColor {
     public String getBackground() {
         return background;
     }
+
+    @Override
+    public String toString() {
+        return "TagColor{" +
+                "foreground='" + foreground + '\'' +
+                ", background='" + background + '\'' +
+                '}';
+    }
 }

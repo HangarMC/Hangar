@@ -17,5 +17,13 @@ public class ProjectNamespace {
     public String getSlug() {
         return slug;
     }
+
+    @Override
+    public String toString() {
+        return "ProjectNamespace{" +
+                "owner='" + owner + '\'' +
+                ", slug='" + slug + '\'' +
+                '}';
+    }
 }
 

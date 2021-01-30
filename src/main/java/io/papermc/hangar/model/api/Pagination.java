@@ -18,4 +18,11 @@ public class Pagination extends RequestPagination {
     public long getCount() {
         return count;
     }
+
+    @Override
+    public String toString() {
+        return "Pagination{" +
+                "count=" + count +
+                "} " + super.toString();
+    }
 }

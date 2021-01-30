@@ -60,6 +60,7 @@ public class BackendDataController {
     }
 
     @GetMapping("/platforms")
+    // TODO include valid versions (equivalent of PlatformInfo)
     public ResponseEntity<ObjectNode> getPlatforms() {
         throw new NotImplementedException("NOT IMPLEMENTED");
     }

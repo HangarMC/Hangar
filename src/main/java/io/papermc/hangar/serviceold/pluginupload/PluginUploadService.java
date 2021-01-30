@@ -35,19 +35,17 @@ public class PluginUploadService {
     private final ChannelService channelService;
     private final VersionService versionService;
     private final CacheManager cacheManager;
-    private final HangarConfig config;
 
     private final Supplier<ProjectsTable> projectsTable;
 
     @Autowired
-    public PluginUploadService(HangarConfig hangarConfig, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, VersionService versionService, CacheManager cacheManager, HangarConfig config, Supplier<ProjectsTable> projectsTable) {
+    public PluginUploadService(HangarConfig hangarConfig, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, VersionService versionService, CacheManager cacheManager, Supplier<ProjectsTable> projectsTable) {
         this.hangarConfig = hangarConfig;
         this.projectFiles = projectFiles;
         this.pluginDataService = pluginDataService;
         this.channelService = channelService;
         this.versionService = versionService;
         this.cacheManager = cacheManager;
-        this.config = config;
         this.projectsTable = projectsTable;
     }
 
@@ -114,7 +112,7 @@ public class PluginUploadService {
         return new PendingVersion(
                 StringUtils.slugify(metaData.getVersion()),
                 metaData.getDependencies(),
-                metaData.getPlatformDependency(),
+                metaData.getPlatformDependencies(),
                 metaData.getDescription(),
                 projectId,
                 path.toFile().length(),

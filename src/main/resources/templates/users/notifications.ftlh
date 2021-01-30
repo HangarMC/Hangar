@@ -5,8 +5,8 @@
 
 <#-- @ftlvariable name="NotificationFilter" type="io.papermc.hangar.modelold.NotificationFilter" -->
 <#-- @ftlvariable name="InviteFilter" type="io.papermc.hangar.modelold.InviteFilter" -->
-<#assign NotificationFilter=@helper["io.papermc.hangar.model.NotificationFilter"] />
-<#assign InviteFilter=@helper["io.papermc.hangar.model.InviteFilter"] />
+<#assign NotificationFilter=@helper["io.papermc.hangar.modelold.NotificationFilter"] />
+<#assign InviteFilter=@helper["io.papermc.hangar.modelold.InviteFilter"] />
 <#assign scriptsVar>
     <script nonce="${nonce}">
         <#outputformat "JavaScript">

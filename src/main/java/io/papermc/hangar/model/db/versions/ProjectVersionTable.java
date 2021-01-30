@@ -1,11 +1,11 @@
 package io.papermc.hangar.model.db.versions;
 
 import io.papermc.hangar.model.Named;
+import io.papermc.hangar.model.ReviewState;
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.Visible;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.modelold.generated.PlatformDependency;
-import io.papermc.hangar.modelold.generated.ReviewState;
 import io.papermc.hangar.modelold.viewhelpers.VersionDependencies;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;

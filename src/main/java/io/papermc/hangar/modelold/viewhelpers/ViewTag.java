@@ -1,7 +1,7 @@
 package io.papermc.hangar.modelold.viewhelpers;
 
 import io.papermc.hangar.db.modelold.ProjectVersionTagsTable;
-import io.papermc.hangar.modelold.TagColor;
+import io.papermc.hangar.model.TagColor;
 
 import java.util.List;
 

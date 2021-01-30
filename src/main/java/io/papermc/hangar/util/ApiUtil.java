@@ -13,11 +13,13 @@ public class ApiUtil {
 
     private ApiUtil() { }
 
+    @Deprecated
     public static long limitOrDefault(Long limit, long defaultValue) {
         if (limit != null && limit < 1) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Limit should be greater than 0");
         return Math.min(limit == null ? defaultValue : limit, defaultValue);
     }
 
+    @Deprecated
     public static long offsetOrZero(Long offset) {
         return Math.max(offset == null ? 0 : offset, 0);
     }
@@ -34,6 +36,7 @@ public class ApiUtil {
         }
     }
 
+    @Deprecated
     public static ProjectSortingStrategy strategyOrDefault(@Nullable ProjectSortingStrategy strategy) {
         return strategy == null ? ProjectSortingStrategy.Default : strategy;
     }

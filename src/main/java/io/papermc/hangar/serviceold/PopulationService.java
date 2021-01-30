@@ -5,7 +5,7 @@ import io.papermc.hangar.db.daoold.PlatformVersionsDao;
 import io.papermc.hangar.db.daoold.RoleDao;
 import io.papermc.hangar.db.modelold.PlatformVersionsTable;
 import io.papermc.hangar.db.modelold.RolesTable;
-import io.papermc.hangar.modelold.Platform;
+import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.modelold.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ public class PopulationService {
     }
 
     private final List<String> paperVersions = List.of("1.8", "1.9", "1.10", "1.11", "1.12", "1.13", "1.14", "1.15", "1.16");
-    private final List<String> waterfallVersions = List.of("1.11", "1.11", "1.12", "1.13", "1.14", "1.15", "1.16");
+    private final List<String> waterfallVersions = List.of("1.11", "1.12", "1.13", "1.14", "1.15", "1.16");
     private final List<String> velocityVersions = List.of("1.0", "1.1");
 
     private void populatePlatformVersions() {
@@ -59,7 +59,7 @@ public class PopulationService {
             log.info("Populating 'platform_versions' table with initial values");
             platformVersionsDao.get().insert(paperVersions.stream().map(v -> new PlatformVersionsTable(Platform.PAPER, v)).collect(Collectors.toList()));
             platformVersionsDao.get().insert(velocityVersions.stream().map(v -> new PlatformVersionsTable(Platform.VELOCITY, v)).collect(Collectors.toList()));
-//            platformVersionsDao.get().insert(waterfallVersions.stream().map(v -> new PlatformVersionsTable(Platform.WATERFALL, v)).collect(Collectors.toList())); // TODO ok, I have no idea why this throws some duplicate key error. I can manually insert them just fine.
+            platformVersionsDao.get().insert(waterfallVersions.stream().map(v -> new PlatformVersionsTable(Platform.WATERFALL, v)).collect(Collectors.toList())); // TODO ok, I have no idea why this throws some duplicate key error. I can manually insert them just fine.
         } else {
             log.info("The 'platform_versions' table is already populated");
         }

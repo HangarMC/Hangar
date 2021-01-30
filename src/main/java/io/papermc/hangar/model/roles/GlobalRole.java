@@ -8,8 +8,12 @@ import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
 import io.papermc.hangar.util.StaticContextAccessor;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.statement.StatementContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public enum GlobalRole implements Role<GlobalRoleTable> {
 
@@ -115,5 +119,10 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
     @Override
     public RoleDAO<GlobalRoleTable> getRoleDAO() {
         return GLOBAL_ROLE_DAO;
+    }
+
+    @Override
+    public void apply(int position, PreparedStatement statement, StatementContext ctx) throws SQLException {
+        statement.setLong(position, roleId);
     }
 }

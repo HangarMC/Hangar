@@ -460,11 +460,14 @@ export default {
             const depCollapseEl = $('#dep-collapse');
             for (const platform in this.payload.dependencies) {
                 for (const dep of this.payload.dependencies[platform]) {
-                    if (!dep.project_id && !dep.external_url) {
+                    if (!dep.namespace && !dep.external_url) {
                         this.scrollTo('#deps-management');
                         depCollapseEl.collapse('show');
                         $(`#${platform}-${dep.name}-link-cell`).addClass('invalid-input');
                         return;
+                    }
+                    if (dep.namespace) {
+                        dep.namespace = { owner: dep.namespace.split('/')[0], slug: dep.namespace.split('/')[1] };
                     }
                 }
             }

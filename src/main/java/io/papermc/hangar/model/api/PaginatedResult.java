@@ -1,10 +1,8 @@
 package io.papermc.hangar.model.api;
 
-import io.papermc.hangar.model.Model;
-
 import java.util.List;
 
-public class PaginatedResult<T extends Model> {
+public class PaginatedResult<T> {
 
     private final Pagination pagination;
     private final List<T> result;
@@ -20,5 +18,13 @@ public class PaginatedResult<T extends Model> {
 
     public List<T> getResult() {
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "PaginatedResult{" +
+                "pagination=" + pagination +
+                ", result=" + result +
+                '}';
     }
 }

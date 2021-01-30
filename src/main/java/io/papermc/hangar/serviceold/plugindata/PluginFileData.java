@@ -84,12 +84,12 @@ public class PluginFileData {
     public VersionDependencies getDependencies() {
         DataValue dependencies = dataValues.get("dependencies");
         if (dependencies == null) {
-            return new VersionDependencies(getPlatformDependency().stream().collect(Collectors.toMap(PlatformDependency::getPlatform, pd -> new ArrayList<>())));
+            return new VersionDependencies(getPlatformDependencies().stream().collect(Collectors.toMap(PlatformDependency::getPlatform, pd -> new ArrayList<>())));
         }
         return ((DependencyDataValue) dependencies).getValue();
     }
 
-    public List<PlatformDependency> getPlatformDependency() {
+    public List<PlatformDependency> getPlatformDependencies() {
         DataValue platformDependencies = dataValues.get(FileTypeHandler.PLATFORM_DEPENDENCY);
         return platformDependencies != null ? ((PlatformDependencyDataValue) platformDependencies).getValue() : null;
     }
@@ -99,7 +99,7 @@ public class PluginFileData {
             throw new HangarException("error.plugin.incomplete", "name");
         } else if (getVersion() == null) {
             throw new HangarException("error.plugin.incomplete", "version");
-        } else if (getPlatformDependency() == null) {
+        } else if (getPlatformDependencies() == null || getPlatformDependencies().isEmpty()) {
             throw new HangarException("error.plugin.incomplete", "platform");
         }
     }

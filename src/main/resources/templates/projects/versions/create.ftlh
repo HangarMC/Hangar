@@ -22,9 +22,11 @@
              window.COLORS = ${mapper.valueToTree(@helper["io.papermc.hangar.model.Color"].getNonTransparentValues())};
              </#outputformat>
     </script>
+    <script nonce="${nonce}" type="text/javascript" src="${hangar.url("ext/js/admonition.js")}"></script>
     <script type="text/javascript" src="${hangar.url("js/create-version.js")}"></script>
 </#assign>
 <#assign styleVar>
+    <link rel="stylesheet" href="${hangar.url("ext/css/admonition.css")}">
     <link rel="stylesheet" href="${hangar.url("css/create-version.css")}">
 </#assign>
 

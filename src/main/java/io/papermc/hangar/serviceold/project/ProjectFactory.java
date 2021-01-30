@@ -3,14 +3,17 @@ package io.papermc.hangar.serviceold.project;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controllerold.forms.NewProjectForm;
-import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.dao.internal.table.ProjectVersionDependencyDAO;
+import io.papermc.hangar.db.dao.internal.table.ProjectVersionPlatformDependencyDAO;
+import io.papermc.hangar.db.daoold.PlatformVersionsDao;
 import io.papermc.hangar.db.daoold.ProjectChannelDao;
 import io.papermc.hangar.db.daoold.ProjectDao;
 import io.papermc.hangar.db.daoold.ProjectPageDao;
 import io.papermc.hangar.db.daoold.ProjectVersionDao;
+import io.papermc.hangar.db.modelold.PlatformVersionsTable;
 import io.papermc.hangar.db.modelold.ProjectChannelsTable;
 import io.papermc.hangar.db.modelold.ProjectOwner;
 import io.papermc.hangar.db.modelold.ProjectPagesTable;
@@ -21,8 +24,12 @@ import io.papermc.hangar.exceptions.HangarException;
 import io.papermc.hangar.model.Category;
 import io.papermc.hangar.model.NotificationType;
 import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.model.db.versions.ProjectVersionDependencyTable;
+import io.papermc.hangar.model.db.versions.ProjectVersionPlatformDependencyTable;
 import io.papermc.hangar.modelold.Platform;
 import io.papermc.hangar.modelold.Role;
+import io.papermc.hangar.modelold.generated.Dependency;
+import io.papermc.hangar.modelold.generated.PlatformDependency;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
 import io.papermc.hangar.modelold.viewhelpers.ProjectPage;
 import io.papermc.hangar.modelold.viewhelpers.VersionData;
@@ -43,14 +50,20 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class ProjectFactory {
 
     private final HangarConfig hangarConfig;
+    private final HangarDao<PlatformVersionsDao> platformVersionsDao;
+    private final HangarDao<ProjectVersionDependencyDAO> projectVersionDependencyDAO;
+    private final HangarDao<ProjectVersionPlatformDependencyDAO> projectVersionPlatformDependencyDAO;
     private final HangarDao<ProjectChannelDao> projectChannelDao;
     private final HangarDao<ProjectDao> projectDao;
     private final HangarDao<ProjectPageDao> projectPagesDao;
@@ -65,8 +78,11 @@ public class ProjectFactory {
     private final ObjectMapper mapper;
 
     @Autowired
-    public ProjectFactory(HangarConfig hangarConfig, HangarDao<ProjectChannelDao> projectChannelDao, HangarDao<ProjectDao> projectDao, HangarDao<ProjectPageDao> projectPagesDao, HangarDao<ProjectVersionDao> projectVersionDao, RoleService roleService, UserService userService, ProjectService projectService, ChannelService channelService, VersionService versionService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles, ObjectMapper mapper) {
+    public ProjectFactory(HangarConfig hangarConfig, HangarDao<PlatformVersionsDao> platformVersionsDao, HangarDao<ProjectVersionDependencyDAO> projectVersionDependencyDAO, HangarDao<ProjectVersionPlatformDependencyDAO> projectVersionPlatformDependencyDAO, HangarDao<ProjectChannelDao> projectChannelDao, HangarDao<ProjectDao> projectDao, HangarDao<ProjectPageDao> projectPagesDao, HangarDao<ProjectVersionDao> projectVersionDao, RoleService roleService, UserService userService, ProjectService projectService, ChannelService channelService, VersionService versionService, NotificationService notificationService, UserActionLogService userActionLogService, ProjectFiles projectFiles, ObjectMapper mapper) {
         this.hangarConfig = hangarConfig;
+        this.platformVersionsDao = platformVersionsDao;
+        this.projectVersionDependencyDAO = projectVersionDependencyDAO;
+        this.projectVersionPlatformDependencyDAO = projectVersionPlatformDependencyDAO;
         this.projectChannelDao = projectChannelDao;
         this.projectDao = projectDao;
         this.projectVersionDao = projectVersionDao;
@@ -163,7 +179,7 @@ public class ProjectFactory {
 
         ProjectVersionsTable version = projectVersionDao.get().insert(new ProjectVersionsTable(
                 pendingVersion.getVersionString(),
-                pendingVersion.getDependencies(),
+//                pendingVersion.getDependencies(),
                 pendingVersion.getDescription(),
                 pendingVersion.getProjectId(),
                 channel.getId(),
@@ -172,15 +188,33 @@ public class ProjectFactory {
                 pendingVersion.getFileName(),
                 pendingVersion.getAuthorId(),
                 pendingVersion.isCreateForumPost(),
-                pendingVersion.getExternalUrl(),
-                pendingVersion.getPlatforms()
-        ), new JSONB(mapper.valueToTree(pendingVersion.getDependencies())), new JSONB(mapper.valueToTree(pendingVersion.getPlatforms())));
+                pendingVersion.getExternalUrl()/*,*/
+//                pendingVersion.getPlatforms()
+        ));
 
         if (pendingVersion.getPlugin() != null) {
             pendingVersion.getPlugin().getData().createTags(version.getId(), versionService); // TODO not sure what this is for
         }
 
-        Platform.createPlatformTags(versionService, version.getId(), version.getPlatforms());
+        Platform.createPlatformTags(versionService, version.getId(), pendingVersion.getPlatforms());
+
+        List<ProjectVersionPlatformDependencyTable> platformDependencyTables = new ArrayList<>();
+        for (PlatformDependency platformDependency : pendingVersion.getPlatforms()) {
+            if (platformDependency.getVersions().isEmpty()) continue;
+            Map<String, Long> platformVersionTableIds = platformVersionsDao.get().getVersionsForPlatform(platformDependency.getPlatform()).stream().collect(Collectors.toMap(PlatformVersionsTable::getVersion, PlatformVersionsTable::getId));
+            for (String versionString : platformDependency.getVersions()) {
+                platformDependencyTables.add(new ProjectVersionPlatformDependencyTable(version.getId(), platformVersionTableIds.get(versionString)));
+            }
+        }
+        projectVersionPlatformDependencyDAO.get().insertAll(platformDependencyTables);
+
+        List<ProjectVersionDependencyTable> projectVersionDependencyTables = new ArrayList<>();
+        for (Map.Entry<Platform, List<Dependency>> entry : pendingVersion.getDependencies().entrySet()) {
+            for (Dependency dependency : entry.getValue()) {
+                projectVersionDependencyTables.add(new ProjectVersionDependencyTable(version.getId(), io.papermc.hangar.model.Platform.valueOf(entry.getKey().name()), dependency.getName(), dependency.isRequired(), dependency.getNamespace() != null ? projectService.getProjectsTable(dependency.getNamespace().getOwner(), dependency.getNamespace().getSlug()).getId() : null, dependency.getExternalUrl()));
+            }
+        }
+        projectVersionDependencyDAO.get().insertAll(projectVersionDependencyTables);
 
         List<UsersTable> watchers = projectService.getProjectWatchers(project.getProject().getId(), 0, null);
         // TODO bulk notif insert

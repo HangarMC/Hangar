@@ -18,10 +18,10 @@ import io.papermc.hangar.db.modelold.Stats;
 import io.papermc.hangar.db.modelold.UserOrganizationRolesTable;
 import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.roles.GlobalRole;
 import io.papermc.hangar.modelold.NamedPermission;
-import io.papermc.hangar.modelold.Platform;
 import io.papermc.hangar.modelold.Role;
 import io.papermc.hangar.modelold.viewhelpers.Activity;
 import io.papermc.hangar.modelold.viewhelpers.LoggedActionViewModel;
@@ -270,7 +270,7 @@ public class ApplicationController extends HangarController {
     public ModelAndView showPlatformVersions() {
         ModelAndView mav = new ModelAndView("users/admin/platformVersions");
         Map<Platform, List<String>> versions = platformVersionsDao.get().getVersions();
-        for (Platform p : Platform.getValues()) {
+        for (Platform p : Platform.VALUES) {
             versions.putIfAbsent(p, new ArrayList<>());
         }
         mav.addObject("platformVersions", mapper.valueToTree(versions));
