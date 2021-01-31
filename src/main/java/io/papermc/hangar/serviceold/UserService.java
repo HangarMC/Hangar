@@ -1,6 +1,5 @@
 package io.papermc.hangar.serviceold;
 
-import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.UserContext;
@@ -15,21 +14,16 @@ import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.modelold.Prompt;
 import io.papermc.hangar.modelold.Role;
-import io.papermc.hangar.modelold.UserOrdering;
-import io.papermc.hangar.modelold.viewhelpers.Author;
 import io.papermc.hangar.modelold.viewhelpers.FlagActivity;
 import io.papermc.hangar.modelold.viewhelpers.HeaderData;
 import io.papermc.hangar.modelold.viewhelpers.OrganizationData;
 import io.papermc.hangar.modelold.viewhelpers.ReviewActivity;
-import io.papermc.hangar.modelold.viewhelpers.Staff;
 import io.papermc.hangar.modelold.viewhelpers.UserData;
 import io.papermc.hangar.modelold.viewhelpers.UserRole;
-import io.papermc.hangar.security.HangarAuthentication;
+import io.papermc.hangar.security.HangarAuthenticationToken;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -82,7 +76,7 @@ public class UserService extends HangarService {
     public Supplier<Optional<UsersTable>> currentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
-            HangarAuthentication auth = (HangarAuthentication) authentication;
+            HangarAuthenticationToken auth = (HangarAuthenticationToken) authentication;
             return () -> Optional.ofNullable(userDao.get().getById(auth.getUserId()));
         }
         return Optional::empty;

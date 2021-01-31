@@ -1,33 +1,36 @@
 package io.papermc.hangar.security;
 
-import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.daoold.UserDao;
-import io.papermc.hangar.db.modelold.UsersTable;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.dao.UsersDAO;
+import io.papermc.hangar.model.internal.user.HangarUser;
 
 @Component
 public class HangarAuthenticationProvider implements AuthenticationProvider {
 
-    private final HangarDao<UserDao> userDao;
+    private final HangarDao<UsersDAO> userDao;
 
-    public HangarAuthenticationProvider(HangarDao<UserDao> userDao) {
+    public HangarAuthenticationProvider(HangarDao<UsersDAO> userDao) {
         this.userDao = userDao;
     }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String userName = authentication.getName();
+        if (!(authentication instanceof HangarAuthenticationToken)) {
+            return null;
+        }
 
-        UsersTable usersTable = userDao.get().getByName(userName);
+        HangarAuthenticationToken token = (HangarAuthenticationToken) authentication;
+        String userName = token.getName();
 
-        if (usersTable != null) {
-            return new HangarAuthentication(List.of(new SimpleGrantedAuthority("ROLE_USER")), userName, usersTable.getId());
+        HangarUser user = userDao.get().getUser((userName, HangarUser.class);
+
+        if (user != null) {
+            return new HangarAuthenticationToken(user, token.getCredentials());
         } else {
             return null;
         }
@@ -35,6 +38,6 @@ public class HangarAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return authentication.equals(HangarAuthentication.class);
+        return authentication.equals(HangarAuthenticationToken.class);
     }
 }

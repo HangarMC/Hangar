@@ -126,6 +126,9 @@ hangar:
   security:
     secure: false
     unsafe-download-max-age: 600000
+    token-issuer: "Hangar"
+    token-secret: "secret!"
+    token-expiry: 86400 # one day for now
     api:
       url: "http://localhost:8000"
       # avatar-url: "http://localhost:8000/avatar/%s?size=120x120" # only comment in if you run auth locally
@@ -138,4 +141,3 @@ hangar:
         reset: 5m
     safe-download-hosts:
       - "github.com"
-

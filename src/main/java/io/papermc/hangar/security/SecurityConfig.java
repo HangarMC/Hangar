@@ -1,14 +1,5 @@
-package io.papermc.hangar.config;
+package io.papermc.hangar.security;
 
-import io.papermc.hangar.filter.HangarAuthenticationFilter;
-import io.papermc.hangar.security.HangarAuthenticationProvider;
-import io.papermc.hangar.security.entrypoints.HangarAuthenticationEntryPoint;
-import io.papermc.hangar.security.voters.GlobalPermissionVoter;
-import io.papermc.hangar.security.voters.OrganizationPermissionVoter;
-import io.papermc.hangar.security.voters.ProjectPermissionVoter;
-import io.papermc.hangar.security.voters.UserLockVoter;
-import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.serviceold.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,10 +13,19 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 
 import java.util.Arrays;
 import java.util.List;
+
+import io.papermc.hangar.security.entrypoints.HangarAuthenticationEntryPoint;
+import io.papermc.hangar.security.voters.GlobalPermissionVoter;
+import io.papermc.hangar.security.voters.OrganizationPermissionVoter;
+import io.papermc.hangar.security.voters.ProjectPermissionVoter;
+import io.papermc.hangar.security.voters.UserLockVoter;
+import io.papermc.hangar.service.PermissionService;
+import io.papermc.hangar.serviceold.UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -44,6 +44,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // enable anon user
+        http.
+                anonymous();
+
+        // stateless sessions
+        http
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        // csrf
         http
                 .csrf()
                 .ignoringAntMatchers(
@@ -53,8 +63,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/v1/keys",
                         "/api/sync_sso",
                         "/paypal/ipn"
-                )
-                .and()
+                );
+
+        // disabled not needed auth stuff
+        http
+                .formLogin().disable()
+                .httpBasic().disable()
+                .logout().disable();
+
+        // auth
+        http
                 .addFilter(new HangarAuthenticationFilter())
                 .exceptionHandling().authenticationEntryPoint(new HangarAuthenticationEntryPoint())
                 .and().authorizeRequests().anyRequest().permitAll().accessDecisionManager(accessDecisionManager());

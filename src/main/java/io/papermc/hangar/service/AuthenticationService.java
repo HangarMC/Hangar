@@ -18,7 +18,7 @@ import io.papermc.hangar.model.db.auth.ApiKeyTable;
 import io.papermc.hangar.model.db.auth.ApiSessionTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.roles.GlobalRole;
-import io.papermc.hangar.security.HangarAuthentication;
+import io.papermc.hangar.security.HangarAuthenticationToken;
 import io.papermc.hangar.service.internal.OrganizationService;
 import io.papermc.hangar.service.internal.RoleService;
 import io.papermc.hangar.service.internal.UserService;
@@ -99,8 +99,8 @@ public class AuthenticationService extends HangarService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserTable userTable = null;
         Long userId = null;
-        if (authentication instanceof HangarAuthentication) {
-            HangarAuthentication hangarAuthentication = (HangarAuthentication) authentication;
+        if (authentication instanceof HangarAuthenticationToken) {
+            HangarAuthenticationToken hangarAuthentication = (HangarAuthenticationToken) authentication;
             userTable = userService.getUserTable(hangarAuthentication.getUserId());
             if (userTable != null) userId = userTable.getUserId();
         }
@@ -245,7 +245,7 @@ public class AuthenticationService extends HangarService {
 
     public void setAuthenticatedUser(UserTable user) {
         // TODO properly do auth, remember me shit too
-        Authentication auth = new HangarAuthentication(List.of(new SimpleGrantedAuthority("ROLE_USER")), user.getName(), user.getId());
+        Authentication auth = new HangarAuthenticationToken(List.of(new SimpleGrantedAuthority("ROLE_USER")), user.getName(), user.getId());
         authenticationManager.authenticate(auth);
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
