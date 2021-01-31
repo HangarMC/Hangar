@@ -1,16 +1,5 @@
-package io.papermc.hangar.config;
+package io.papermc.hangar.security;
 
-import io.papermc.hangar.security.metadatasources.GlobalPermissionSource;
-import io.papermc.hangar.security.metadatasources.HangarMetadataSources;
-import io.papermc.hangar.security.metadatasources.OrganizationPermissionSource;
-import io.papermc.hangar.security.metadatasources.ProjectPermissionSource;
-import io.papermc.hangar.security.metadatasources.UserLockSource;
-import io.papermc.hangar.security.voters.GlobalPermissionVoter;
-import io.papermc.hangar.security.voters.OrganizationPermissionVoter;
-import io.papermc.hangar.security.voters.ProjectPermissionVoter;
-import io.papermc.hangar.security.voters.UserLockVoter;
-import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.serviceold.UserService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -31,6 +20,18 @@ import org.springframework.security.config.core.GrantedAuthorityDefaults;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.papermc.hangar.security.metadatasources.GlobalPermissionSource;
+import io.papermc.hangar.security.metadatasources.HangarMetadataSources;
+import io.papermc.hangar.security.metadatasources.OrganizationPermissionSource;
+import io.papermc.hangar.security.metadatasources.ProjectPermissionSource;
+import io.papermc.hangar.security.metadatasources.UserLockSource;
+import io.papermc.hangar.security.voters.GlobalPermissionVoter;
+import io.papermc.hangar.security.voters.OrganizationPermissionVoter;
+import io.papermc.hangar.security.voters.ProjectPermissionVoter;
+import io.papermc.hangar.security.voters.UserLockVoter;
+import io.papermc.hangar.service.PermissionService;
+import io.papermc.hangar.serviceold.UserService;
 
 @Configuration
 @AutoConfigureBefore(SecurityConfig.class)
@@ -65,7 +66,8 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
         try {
             GrantedAuthorityDefaults grantedAuthorityDefaults = applicationContext.getBean(GrantedAuthorityDefaults.class);
             roleVoter.setRolePrefix(grantedAuthorityDefaults.getRolePrefix());
-        } catch (BeansException ignored) { }
+        } catch (BeansException ignored) {
+        }
         decisionVoters.add(roleVoter);
         decisionVoters.add(new AuthenticatedVoter());
         decisionVoters.add(new ProjectPermissionVoter(permissionService));

@@ -21,7 +21,7 @@ import io.papermc.hangar.modelold.ApiAuthInfo;
 import io.papermc.hangar.modelold.Role;
 import io.papermc.hangar.modelold.generated.ApiSessionResponse;
 import io.papermc.hangar.modelold.generated.SessionType;
-import io.papermc.hangar.security.HangarAuthentication;
+import io.papermc.hangar.security.HangarAuthenticationToken;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.VisibilityService;
 import io.papermc.hangar.serviceold.sso.ChangeAvatarToken;
@@ -257,7 +257,7 @@ public class AuthenticationService extends HangarService {
 
     public void setAuthenticatedUser(UsersTable user) {
         // TODO properly do auth, remember me shit too
-        Authentication auth = new HangarAuthentication(List.of(new SimpleGrantedAuthority("ROLE_USER")), user.getName(), user.getId());
+        Authentication auth = new HangarAuthenticationToken(List.of(new SimpleGrantedAuthority("ROLE_USER")), user.getName(), user.getId());
         authenticationManager.authenticate(auth);
         SecurityContextHolder.getContext().setAuthentication(auth);
     }

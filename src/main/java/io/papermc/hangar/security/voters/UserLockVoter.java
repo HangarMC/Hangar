@@ -1,6 +1,6 @@
 package io.papermc.hangar.security.voters;
 
-import io.papermc.hangar.security.HangarAuthentication;
+import io.papermc.hangar.security.HangarAuthenticationToken;
 import io.papermc.hangar.security.UserLockException;
 import io.papermc.hangar.security.attributes.UserLockAttribute;
 import io.papermc.hangar.serviceold.UserService;
@@ -43,11 +43,11 @@ public class UserLockVoter implements AccessDecisionVoter {
     @Override
     public int vote(Authentication authentication, Object object, Collection collection) {
         if (!(object instanceof MethodInvocation)) return ACCESS_ABSTAIN;
-        if (!(authentication instanceof HangarAuthentication) || authentication.getPrincipal().equals("anonymousUser")) {
+        if (!(authentication instanceof HangarAuthenticationToken) || authentication.getPrincipal().equals("anonymousUser")) {
             return ACCESS_ABSTAIN;
         }
         MethodInvocation methodInvocation = (MethodInvocation) object;
-        HangarAuthentication hangarAuth = (HangarAuthentication) authentication;
+        HangarAuthenticationToken hangarAuth = (HangarAuthenticationToken) authentication;
         Collection<UserLockAttribute> attributes = ((Collection<ConfigAttribute>) collection).stream().filter(this::supports).map(UserLockAttribute.class::cast).collect(Collectors.toSet());
         if (attributes.size() > 1) {
             throw new IllegalStateException("Should have, at most, 1 user lock attribute");

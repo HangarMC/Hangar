@@ -18,6 +18,9 @@ public class HangarSecurityConfig {
     private boolean secure = false;
     private long unsafeDownloadMaxAge = 600000;
     private List<String> safeDownloadHosts = List.of();
+    private String tokenIssuer;
+    private String tokenSecret;
+    private int tokenExpiry;
     @NestedConfigurationProperty
     public SecurityApiConfig api;
 
@@ -114,6 +117,30 @@ public class HangarSecurityConfig {
         public void setBreaker(SecurityApiConfig.ApiBreakerConfig breaker) {
             this.breaker = breaker;
         }
+    }
+
+    public int getTokenExpiry() {
+        return tokenExpiry;
+    }
+
+    public void setTokenExpiry(int tokenExpiry) {
+        this.tokenExpiry = tokenExpiry;
+    }
+
+    public String getTokenIssuer() {
+        return tokenIssuer;
+    }
+
+    public void setTokenIssuer(String tokenIssuer) {
+        this.tokenIssuer = tokenIssuer;
+    }
+
+    public String getTokenSecret() {
+        return tokenSecret;
+    }
+
+    public void setTokenSecret(String tokenSecret) {
+        this.tokenSecret = tokenSecret;
     }
 
     public boolean isSecure() {

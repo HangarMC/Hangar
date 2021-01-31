@@ -35,6 +35,7 @@
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
 
         <apache-commons-lang.version>3.11</apache-commons-lang.version>
+        <jwt.version>3.12.1</jwt.version>
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -120,7 +121,7 @@
             <artifactId>snakeyaml</artifactId>
         </dependency>
 
-        <!-- template engine -->
+        <!-- template engine TODO remove once freemarker is gone -->
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
@@ -171,10 +172,17 @@
             <version>${flexmark-all.version}</version>
         </dependency>
 
+        <!-- sitemap -->
         <dependency>
             <groupId>cz.jiripinkas</groupId>
             <artifactId>jsitemapgenerator</artifactId>
             <version>${jsitemapgenerator.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${jwt.version}</version>
         </dependency>
 
         <!-- runtime -->

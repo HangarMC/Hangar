@@ -3,7 +3,7 @@ package io.papermc.hangar.controller.api.v1;
 import io.papermc.hangar.controller.api.v1.interfaces.IAuthenticationController;
 import io.papermc.hangar.controller.extras.requestmodels.api.SessionProperties;
 import io.papermc.hangar.model.api.auth.ApiSession;
-import io.papermc.hangar.security.HangarAuthentication;
+import io.papermc.hangar.security.HangarAuthenticationToken;
 import io.papermc.hangar.service.AuthenticationService;
 import io.papermc.hangar.util.AuthUtils;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +32,8 @@ public class AuthenticationController extends HangarApiController implements IAu
     @Override
     public ResponseEntity<ApiSession> authenticateUser(SessionProperties body) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication instanceof HangarAuthentication) {
-            return ResponseEntity.ok(authenticationService.authenticateUser(((HangarAuthentication) authentication).getUserId()));
+        if (authentication instanceof HangarAuthenticationToken) {
+            return ResponseEntity.ok(authenticationService.authenticateUser(((HangarAuthenticationToken) authentication).getUserId()));
         } else {
             throw AuthUtils.unAuth();
         }

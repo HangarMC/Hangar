@@ -1,7 +1,7 @@
 package io.papermc.hangar.security.voters;
 
 import io.papermc.hangar.modelold.NamedPermission;
-import io.papermc.hangar.security.HangarAuthentication;
+import io.papermc.hangar.security.HangarAuthenticationToken;
 import io.papermc.hangar.security.attributes.PermissionAttribute;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.security.access.AccessDecisionVoter;
@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 
 public abstract class HangarPermissionVoter implements AccessDecisionVoter {
 
-    private final BiFunction<HangarAuthentication, MethodInvocation, Collection<NamedPermission>> getUserPermissions;
-    private final Predicate<HangarAuthentication> authChecks;
+    private final BiFunction<HangarAuthenticationToken, MethodInvocation, Collection<NamedPermission>> getUserPermissions;
+    private final Predicate<HangarAuthenticationToken> authChecks;
     private final Predicate<PermissionAttribute> typeCheck;
 
-    public HangarPermissionVoter(BiFunction<HangarAuthentication, MethodInvocation, Collection<NamedPermission>> getUserPermissions, Predicate<HangarAuthentication> authChecks, Predicate<PermissionAttribute> typeCheck) {
+    public HangarPermissionVoter(BiFunction<HangarAuthenticationToken, MethodInvocation, Collection<NamedPermission>> getUserPermissions, Predicate<HangarAuthenticationToken> authChecks, Predicate<PermissionAttribute> typeCheck) {
         this.getUserPermissions = getUserPermissions;
         this.authChecks = authChecks;
         this.typeCheck = typeCheck;
@@ -40,14 +40,14 @@ public abstract class HangarPermissionVoter implements AccessDecisionVoter {
         if (!(object instanceof MethodInvocation)) return ACCESS_ABSTAIN;
         MethodInvocation method = (MethodInvocation) object;
         Collection<NamedPermission> requiredPermissions = ((Collection<ConfigAttribute>) collection).stream().filter(this::supports).map(PermissionAttribute.class::cast).filter(typeCheck).map(PermissionAttribute::getPermission).collect(Collectors.toSet());
-        if (requiredPermissions.isEmpty() && (!(authentication instanceof HangarAuthentication) || authentication.getPrincipal().equals("anonymousUser"))) {
+        if (requiredPermissions.isEmpty() && (!(authentication instanceof HangarAuthenticationToken) || authentication.getPrincipal().equals("anonymousUser"))) {
             return ACCESS_ABSTAIN;
         }
-        else if (!requiredPermissions.isEmpty() && (!(authentication instanceof HangarAuthentication) || authentication.getPrincipal().equals("anonymousUser"))) {
+        else if (!requiredPermissions.isEmpty() && (!(authentication instanceof HangarAuthenticationToken) || authentication.getPrincipal().equals("anonymousUser"))) {
             return ACCESS_DENIED;
         }
 
-        HangarAuthentication hangarAuth = (HangarAuthentication) authentication;
+        HangarAuthenticationToken hangarAuth = (HangarAuthenticationToken) authentication;
         if (!authChecks.test(hangarAuth)) return ACCESS_DENIED;
         Collection<NamedPermission> userPermissions = getUserPermissions.apply(hangarAuth, method);
         if (!userPermissions.containsAll(requiredPermissions)) {
