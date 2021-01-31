@@ -7,6 +7,13 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import SwaggerUIBundle from 'swagger-ui';
+import { SwaggerConfigs, SwaggerUIBundle as SwaggerUIBundleType } from 'swagger-ui-dist';
+
+declare global {
+    interface Window {
+        ui: SwaggerUIBundleType;
+    }
+}
 
 @Component
 export default class ApiPage extends Vue {
@@ -27,13 +34,14 @@ export default class ApiPage extends Vue {
                         });
                         // Workaround for fixing the curl URL
                         // https://github.com/swagger-api/swagger-ui/issues/4778#issuecomment-456403631
+                        // @ts-ignore
                         promise.url = req.url;
                         return promise;
                     } else {
                         return req;
                     }
                 },
-            });
+            } as SwaggerConfigs) as SwaggerUIBundleType;
         };
     }
 }

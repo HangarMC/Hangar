@@ -1,6 +1,7 @@
 // @ts-ignore
 import colors from 'vuetify/es5/util/colors';
-import NuxtVueI18n from 'nuxt-i18n';
+import { NuxtConfig } from '@nuxt/types';
+
 import en from './locales/en';
 import fr from './locales/fr';
 
@@ -13,7 +14,6 @@ export default {
         titleTemplate: (titleChunk: string) => {
             return titleChunk ? `${titleChunk} | Hangar` : 'Hangar';
         },
-        title: null,
         meta: [
             { charset: 'utf-8' },
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -37,6 +37,8 @@ export default {
         '@nuxt/typescript-build',
         // https://go.nuxtjs.dev/vuetify
         '@nuxtjs/vuetify',
+        // https://go.nuxtjs.dev/eslint
+        '@nuxtjs/eslint-module',
         '@nuxtjs/dotenv',
     ],
 
@@ -67,9 +69,23 @@ export default {
         preset: 'vue-cli-plugin-vuetify-preset-reply/preset',
         treeShake: true,
         theme: {
+            default: 'dark',
             dark: true,
+            disable: false,
+            options: {},
             themes: {
                 dark: {
+                    anchor: colors.blue.lighten3,
+                    primary: colors.blue.darken2,
+                    accent: colors.grey.darken3,
+                    secondary: colors.amber.darken3,
+                    info: colors.teal.lighten1,
+                    warning: colors.amber.base,
+                    error: colors.deepOrange.accent4,
+                    success: colors.green.accent3,
+                },
+                light: {
+                    anchor: colors.blue.lighten3,
                     primary: colors.blue.darken2,
                     accent: colors.grey.darken3,
                     secondary: colors.amber.darken3,
@@ -115,7 +131,7 @@ export default {
                 fr,
             },
         },
-    } as NuxtVueI18n.NuxtVueI18n.Options.AllOptionsInterface,
+    },
 
     server: {
         port: 3000,
@@ -125,4 +141,4 @@ export default {
     loading: {
         continuous: true,
     },
-};
+} as NuxtConfig;

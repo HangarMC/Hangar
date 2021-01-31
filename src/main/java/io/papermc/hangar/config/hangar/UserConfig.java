@@ -3,6 +3,8 @@ package io.papermc.hangar.config.hangar;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @ConfigurationProperties(prefix = "hangar.users")
 public class UserConfig {
@@ -10,6 +12,7 @@ public class UserConfig {
     private int maxTaglineLen = 100;
     private int authorPageSize = 25;
     private int projectPageSize = 5;
+    private List<String> staffRoles = List.of("Hangar_Admin", "Hangar_Mod");
 
     public int getStarsPerPage() {
         return starsPerPage;
@@ -41,5 +44,13 @@ public class UserConfig {
 
     public void setProjectPageSize(int projectPageSize) {
         this.projectPageSize = projectPageSize;
+    }
+
+    public List<String> getStaffRoles() {
+        return staffRoles;
+    }
+
+    public void setStaffRoles(List<String> staffRoles) {
+        this.staffRoles = staffRoles;
     }
 }

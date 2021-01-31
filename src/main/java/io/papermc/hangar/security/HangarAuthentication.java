@@ -12,13 +12,6 @@ public class HangarAuthentication extends AbstractAuthenticationToken {
     private final String username;
     private final Long userId;
 
-    public HangarAuthentication(String username) {
-        super(null);
-        this.username = username;
-        this.userId = null;
-        setAuthenticated(false);
-    }
-
     public HangarAuthentication(Collection<? extends GrantedAuthority> authorities, String username, long userId) {
         super(authorities);
         this.username = username;

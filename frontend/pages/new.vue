@@ -1,6 +1,6 @@
 <template>
     <v-stepper v-model="step" vertical>
-        <StepperStep :current-step="step" :this-step="1" @continue="step = 2" @back="">
+        <StepperStep :current-step="step" :this-step="1" @continue="step = 2">
             <v-card class="mb-12 pa-1" min-height="200px" v-html="$t('project.new.step1.text')" />
         </StepperStep>
 
@@ -128,6 +128,7 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import StepperStep from '~/components/StepperStep.vue';
+
 @Component({
     components: { StepperStep },
 })

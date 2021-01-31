@@ -14,14 +14,16 @@ public class User extends Model implements Named {
     private final String tagline;
     private final OffsetDateTime joinDate;
     private final List<GlobalRole> roles;
+    private final long projectCount;
 
     @JdbiConstructor
-    public User(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<GlobalRole> roles) {
+    public User(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<GlobalRole> roles, long projectCount) {
         super(createdAt);
         this.name = name;
         this.tagline = tagline;
         this.joinDate = joinDate;
         this.roles = roles;
+        this.projectCount = projectCount;
     }
 
     @Override
@@ -39,5 +41,20 @@ public class User extends Model implements Named {
 
     public List<GlobalRole> getRoles() {
         return roles;
+    }
+
+    public long getProjectCount() {
+        return projectCount;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", tagline='" + tagline + '\'' +
+                ", joinDate=" + joinDate +
+                ", roles=" + roles +
+                ", projectCount=" + projectCount +
+                "} " + super.toString();
     }
 }

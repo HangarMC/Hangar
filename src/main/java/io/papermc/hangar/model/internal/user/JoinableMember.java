@@ -1,9 +1,9 @@
-package io.papermc.hangar.model.internal;
+package io.papermc.hangar.model.internal.user;
 
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 
-public class JoinableMember<R extends ExtendedRoleTable> {
+public class JoinableMember<R extends ExtendedRoleTable<?>> {
 
     private final R role;
     private final UserTable user;

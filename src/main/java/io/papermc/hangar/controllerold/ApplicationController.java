@@ -20,7 +20,6 @@ import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.Visibility;
-import io.papermc.hangar.model.roles.GlobalRole;
 import io.papermc.hangar.modelold.NamedPermission;
 import io.papermc.hangar.modelold.Role;
 import io.papermc.hangar.modelold.viewhelpers.Activity;
@@ -118,8 +117,6 @@ public class ApplicationController extends HangarController {
 
     @GetMapping("/")
     public ModelAndView showHome(ModelMap modelMap) {
-        roleServiceNew.deleteRole(GlobalRole.ADVISOR.create(null, getCurrentUser().getId(), true));
-
         ModelAndView mav = new ModelAndView("home");
         AlertUtil.transferAlerts(mav, modelMap);
         return fillModel(mav);

@@ -69,7 +69,7 @@ interface Platform {
 
 @Component
 export default class Home extends Vue {
-  // TOOD implement filtering
+    // TODO implement filtering
     projects?: PaginatedResult<Project>;
     totalProjects: Number = 1337;
     projectFilter: String | null = null;
@@ -88,7 +88,7 @@ export default class Home extends Vue {
         };
     }
 
-    async asyncData({ $api, store }: Context): Promise<{ projects: PaginatedResult<Project> }> {
+    async asyncData({ $api }: Context): Promise<{ projects: PaginatedResult<Project> }> {
         return { projects: await $api.request<PaginatedResult<Project>>('projects', 'get', { limit: 25, offset: 0 }) };
     }
 }

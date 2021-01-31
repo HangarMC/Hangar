@@ -25,7 +25,7 @@ export default class StaffPage extends Vue {
 
     staff?: PaginatedResult<User>;
     loading = false;
-    options?: DataOptions = { page: 1, itemsPerPage: 10 };
+    options = { page: 1, itemsPerPage: 10 } as DataOptions;
     initialLoad = true;
 
     @Watch('options', { deep: true })
@@ -61,7 +61,7 @@ export default class StaffPage extends Vue {
         };
     }
 
-    async asyncData({ $api, store }: Context): Promise<{ staff: PaginatedResult<User> }> {
+    async asyncData({ $api }: Context): Promise<{ staff: PaginatedResult<User> }> {
         return { staff: await $api.request<PaginatedResult<User>>('staff', 'get', { limit: 10, offset: 0 }) };
     }
 }

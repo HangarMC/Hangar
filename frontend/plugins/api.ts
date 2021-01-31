@@ -1,6 +1,6 @@
 import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
-import { AxiosPromise, AxiosError } from 'axios';
+import { AxiosError, AxiosPromise } from 'axios';
 import { ApiSession } from 'hangar-api';
 import { NuxtAxiosInstance } from '@nuxtjs/axios';
 import { NuxtCookies } from 'cookie-universal-nuxt';
@@ -144,6 +144,7 @@ declare module '@nuxt/types' {
 }
 
 declare module 'vuex/types/index' {
+    // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
     interface Store<S> {
         $api: apiType;
     }

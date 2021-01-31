@@ -4,30 +4,26 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Visibility {
-    PUBLIC(0, "public", false, ""),
+    PUBLIC("public", false, ""),
 
-    NEW(1, "new", false, "project-new"),
+    NEW("new", false, "project-new"),
 
-    NEEDSCHANGES(2, "needsChanges", true, "striped project-needsChanges"),
+    NEEDSCHANGES("needsChanges", true, "striped project-needsChanges"),
 
-    NEEDSAPPROVAL(3, "needsApproval", false, "striped project-needsChanges"),
+    NEEDSAPPROVAL("needsApproval", false, "striped project-needsChanges"),
 
-    SOFTDELETE(4, "softDelete", true, "striped project-hidden");
+    SOFTDELETE("softDelete", true, "striped project-hidden");
 
-    private final long value;
+    public static Visibility[] VALUES = values();
+
     private final String name;
     private final boolean showModal;
     private final String cssClass;
 
-    Visibility(long value, String name, boolean showModal, String cssClass) {
-        this.value = value;
+    Visibility(String name, boolean showModal, String cssClass) {
         this.name = name;
         this.showModal = showModal;
         this.cssClass = cssClass;
-    }
-
-    public long getValue() {
-        return value;
     }
 
     public String getName() {
@@ -60,7 +56,7 @@ public enum Visibility {
 
     public static Visibility fromId(long visibility) {
         for (Visibility b : Visibility.values()) {
-            if (b.value == visibility) {
+            if (b.ordinal() == visibility) {
                 return b;
             }
         }

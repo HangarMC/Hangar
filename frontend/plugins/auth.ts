@@ -18,16 +18,21 @@ const createAuth = ({ app: { $cookies }, store, $api }: Context) => {
             return this.updateUser();
         }
 
-        logout(): void {
+        logout(reload = true): void {
             $api.invalidateSession();
-            location.reload();
-            // location.replace('/logout'); // TODO uncomment (maybe have a "full log out" system seperate so you dont have to log out from all paper sites?)
+            if (reload) {
+                location.reload();
+            }
+            // location.replace('/logout'); // TODO uncomment (maybe have a "full log out" system separate so you dont have to log out from all paper sites?)
         }
 
         updateUser(): Promise<void> {
-            return $api.requestInternal<User>('users/@me').then((user) => {
-                store.commit('auth/SET_USER', user);
-            });
+            return $api
+                .requestInternal<User>('users/@me')
+                .then((user) => {
+                    store.commit('auth/SET_USER', user);
+                })
+                .catch(() => this.logout(false));
         }
     }
 
@@ -53,6 +58,7 @@ declare module '@nuxt/types' {
 }
 
 declare module 'vuex/types/index' {
+    // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
     interface Store<S> {
         $auth: authType;
     }

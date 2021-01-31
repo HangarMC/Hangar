@@ -5,8 +5,13 @@
         :options.sync="options"
         :server-items-length="authors.pagination.count"
         :loading="loading"
+        :items-per-page="10"
         class="elevation-1"
-    ></v-data-table>
+    >
+        <template #item.roles="{ item }">
+            {{ item.roles.map((r) => r.title).join(', ') }}
+        </template>
+    </v-data-table>
 </template>
 
 <script lang="ts">
@@ -18,15 +23,15 @@ import { DataOptions } from 'vuetify';
 @Component
 export default class AuthorsPage extends Vue {
     headers = [
-        { text: 'Username', value: 'username' },
+        { text: 'Username', value: 'name' },
         { text: 'Roles', value: 'roles' },
-        { text: 'Joined', value: 'joined' },
-        { text: 'Projects', value: 'projects' },
+        { text: 'Joined', value: 'joinDate' },
+        { text: 'Projects', value: 'projectCount' },
     ];
 
     authors?: PaginatedResult<User>;
     loading = false;
-    options?: DataOptions = { page: 1, itemsPerPage: 10 };
+    options = { page: 1, itemsPerPage: 10 } as DataOptions;
     initialLoad = true;
 
     @Watch('options', { deep: true })

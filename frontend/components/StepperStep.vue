@@ -20,17 +20,17 @@ import { Prop } from 'vue-property-decorator';
 
 @Component
 export default class StepperStep extends Vue {
-    @Prop()
-    currentStep: Number;
+    @Prop({ required: true })
+    currentStep!: Number;
 
-    @Prop()
-    thisStep: Number;
+    @Prop({ required: true })
+    thisStep!: Number;
 
     @Prop({ default: false })
-    optional: Boolean;
+    optional!: Boolean;
 
     @Prop({ default: true })
-    buttons: Boolean;
+    buttons!: Boolean;
 }
 </script>
 

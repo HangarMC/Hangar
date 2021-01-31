@@ -21,7 +21,7 @@ public class RoleService extends HangarService {
         if (existingRoleTable == null) {
             newRoleTable.getRole().getRoleDAO().insert(newRoleTable);
         } else {
-            throw new IllegalArgumentException("Use already has a role there");
+            throw new IllegalArgumentException("User already has a role there");
         }
     }
 

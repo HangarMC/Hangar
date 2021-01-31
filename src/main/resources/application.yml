@@ -105,6 +105,9 @@ hangar:
     max-tagline-len: 100
     author-page-size: 25
     project-page-size: 5
+    staff-roles:
+      - Hangar_Admin
+      - Hangar_Mod
 
 
   sso:

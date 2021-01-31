@@ -1,4 +1,4 @@
-package io.papermc.hangar.model.internal;
+package io.papermc.hangar.model.internal.user;
 
 import io.papermc.hangar.model.Identified;
 import io.papermc.hangar.model.Permission;
@@ -13,8 +13,8 @@ public class HangarUser extends User implements Identified {
     private final long id;
     private HeaderData headerData;
 
-    public HangarUser(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<GlobalRole> roles, long id) {
-        super(createdAt, name, tagline, joinDate, roles);
+    public HangarUser(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<GlobalRole> roles, long projectCount, long id) {
+        super(createdAt, name, tagline, joinDate, roles, projectCount);
         this.id = id;
     }
 
@@ -37,8 +37,16 @@ public class HangarUser extends User implements Identified {
                 this.getName(),
                 this.getTagline(),
                 this.getJoinDate(),
-                this.getRoles()
-        );
+                this.getRoles(),
+                this.getProjectCount());
+    }
+
+    @Override
+    public String toString() {
+        return "HangarUser{" +
+                "id=" + id +
+                ", headerData=" + headerData +
+                "} " + super.toString();
     }
 
     public static class HeaderData {
@@ -80,6 +88,18 @@ public class HangarUser extends User implements Identified {
 
         public boolean isHasReviewQueue() {
             return hasReviewQueue;
+        }
+
+        @Override
+        public String toString() {
+            return "HeaderData{" +
+                    "globalPermission=" + globalPermission +
+                    ", hasNotice=" + hasNotice +
+                    ", hasUnreadNotifications=" + hasUnreadNotifications +
+                    ", unresolvedFlags=" + unresolvedFlags +
+                    ", hasProjectApprovals=" + hasProjectApprovals +
+                    ", hasReviewQueue=" + hasReviewQueue +
+                    '}';
         }
     }
 }

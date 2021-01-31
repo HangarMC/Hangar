@@ -19,8 +19,8 @@ public class UserTable extends Table implements ProjectOwner {
     private String language;
 
     @JdbiConstructor
-    public UserTable(@PropagateNull long id, String fullName, String name, String email, String tagline, OffsetDateTime joinDate, List<Integer> readPrompts, boolean isLocked, String language) {
-        super(id);
+    public UserTable(OffsetDateTime createdAt, @PropagateNull long id, String fullName, String name, String email, String tagline, OffsetDateTime joinDate, List<Integer> readPrompts, boolean isLocked, String language) {
+        super(createdAt, id);
         this.fullName = fullName;
         this.name = name;
         this.email = email;

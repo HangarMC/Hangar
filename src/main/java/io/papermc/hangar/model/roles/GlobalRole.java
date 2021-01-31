@@ -1,5 +1,6 @@
 package io.papermc.hangar.model.roles;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.db.dao.internal.table.roles.GlobalRoleDAO;
 import io.papermc.hangar.db.dao.internal.table.roles.RoleDAO;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum GlobalRole implements Role<GlobalRoleTable> {
 
     HANGAR_ADMIN("Hangar_Admin", 1, Permission.All, "Hangar Admin", Color.RED),

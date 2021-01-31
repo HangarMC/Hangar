@@ -6,6 +6,7 @@ import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.projects.ProjectVisibilityChangeTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
+import io.papermc.hangar.model.internal.user.JoinableMember;
 
 import java.util.List;
 

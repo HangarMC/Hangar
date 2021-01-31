@@ -12,8 +12,8 @@ import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.project.ProjectCompact;
-import io.papermc.hangar.model.internal.HangarUser;
-import io.papermc.hangar.model.internal.HangarUser.HeaderData;
+import io.papermc.hangar.model.internal.user.HangarUser;
+import io.papermc.hangar.model.internal.user.HangarUser.HeaderData;
 import io.papermc.hangar.modelold.UserOrdering;
 import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
 import io.papermc.hangar.service.HangarService;
@@ -70,7 +70,7 @@ public class UsersApiService extends HangarService {
 
     @Cacheable(CacheConfig.AUTHORS_CACHE)
     public PaginatedResult<User> getAuthors(String sort, RequestPagination pagination) {
-        List<User> users = usersApiDAO.getAuthors(pagination.getOffset(), pagination.getLimit(), userOrder(sort));
+        List<User> users = usersApiDAO.getAuthors(pagination.getLimit(), pagination.getOffset(), userOrder(sort));
         long count = usersApiDAO.getAuthorsCount();
         return new PaginatedResult<>(new Pagination(count, pagination), users);
     }
@@ -80,8 +80,8 @@ public class UsersApiService extends HangarService {
 
     @Cacheable(CacheConfig.STAFF_CACHE)
     public PaginatedResult<User> getStaff(String sort, RequestPagination pagination) {
-        List<User> users = usersApiDAO.getStaff(pagination.getOffset(), pagination.getLimit(), userOrder(sort));
-        long count = usersApiDAO.getStaffCount();
+        List<User> users = usersApiDAO.getStaff(pagination.getLimit(), pagination.getOffset(), userOrder(sort), hangarConfig.user.getStaffRoles());
+        long count = usersApiDAO.getStaffCount(hangarConfig.user.getStaffRoles());
         return new PaginatedResult<>(new Pagination(count, pagination), users);
     }
 
@@ -94,18 +94,19 @@ public class UsersApiService extends HangarService {
 
         String sort = reverse ? " ASC" : " DESC";
 
-        String sortUserName = "sq.name" + sort;
+        String sortUserName = "name" + sort;
         String thenSortUserName = "," + sortUserName;
 
         switch (sortStr) {
             case UserOrdering.JoinDate:
-                return "ORDER BY sq.join_date" + sort;
+                return "ORDER BY join_date" + sort;
             case UserOrdering.UserName:
                 return "ORDER BY " + sortUserName;
             case UserOrdering.Projects:
-                return "ORDER BY sq.count" + sort + thenSortUserName;
-            case UserOrdering.Role:
-                return "ORDER BY sq.permission::BIGINT" + sort + " NULLS LAST" + ", sq.role" + sort + thenSortUserName;
+                return "ORDER BY project_count" + sort + thenSortUserName;
+                // TODO this is gonna be a bit trickier... perhaps this whole ordering bit should be done entirely on frontend?
+//            case UserOrdering.Role:
+//                return "ORDER BY sq.permission::BIGINT" + sort + " NULLS LAST" + ", sq.role" + sort + thenSortUserName;
             default:
                 return " ";
         }

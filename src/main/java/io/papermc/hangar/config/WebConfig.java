@@ -46,6 +46,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
         this.mapper = mapper;
     }
 
+    // TODO remove after freemarker is gone
     @Bean
     public FreeMarkerViewResolver freemarkerViewResolver() {
         FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
@@ -55,11 +56,13 @@ public class WebConfig extends WebMvcConfigurationSupport {
         return resolver;
     }
 
+    // TODO this for production
     @Override
     protected void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**").allowedOrigins("http://localhost:3000");
     }
 
+    // TODO remove after freemarker is gone
     @Bean
     public FreeMarkerConfigurer freemarkerConfig() {
         FreeMarkerConfigurer freeMarkerConfigurer = new FreeMarkerConfigurer();
@@ -92,6 +95,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
         return freeMarkerConfigurer;
     }
 
+    // TODO remove after freemarker is gone
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         VersionResourceResolver resolver = new VersionResourceResolver()
@@ -121,6 +125,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
         super.addDefaultHttpMessageConverters(converters);
     }
 
+    // TODO maybe? remove after freemarker is gone
     @Bean
     public ErrorViewResolver errorViewResolver() {
         return (request, status, model) -> {

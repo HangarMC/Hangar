@@ -47,13 +47,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf()
                 .ignoringAntMatchers(
-                        "/api/authenticate",
                         "/api/v1/authenticate",
-                        "/api/authenticate/user",
                         "/api/v1/authenticate/user",
-                        "/api/sessions/current",
                         "/api/v1/sessions/current",
-                        "/api/keys",
                         "/api/v1/keys",
                         "/api/sync_sso",
                         "/paypal/ipn"
@@ -65,8 +61,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(authProvider);
+    protected void configure(AuthenticationManagerBuilder builder) {
+        builder.authenticationProvider(authProvider);
     }
 
     @Bean

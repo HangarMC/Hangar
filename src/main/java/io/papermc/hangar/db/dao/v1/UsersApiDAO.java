@@ -3,11 +3,9 @@ package io.papermc.hangar.db.dao.v1;
 import io.papermc.hangar.db.mappers.PromotedVersionMapper;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.project.ProjectCompact;
-import io.papermc.hangar.modelold.viewhelpers.Staff;
-
-import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
+import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
@@ -16,11 +14,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-@RegisterConstructorMapper(ProjectCompact.class)
-@RegisterColumnMapper(PromotedVersionMapper.class)
-@UseStringTemplateEngine
 public interface UsersApiDAO {
 
+    @RegisterConstructorMapper(ProjectCompact.class)
+    @RegisterColumnMapper(PromotedVersionMapper.class)
+    @UseStringTemplateEngine
     @SqlQuery("SELECT p.created_at," +
             " p.name," +
             " p.owner_name \"owner\"," +
@@ -54,6 +52,9 @@ public interface UsersApiDAO {
             "     u.name = :user")
     long getUserStarredCount(String user, @Define boolean canSeeHidden, @Define Long userId);
 
+    @RegisterConstructorMapper(ProjectCompact.class)
+    @RegisterColumnMapper(PromotedVersionMapper.class)
+    @UseStringTemplateEngine
     @SqlQuery("SELECT p.created_at," +
             " p.name," +
             " p.owner_name \"owner\"," +
@@ -87,74 +88,44 @@ public interface UsersApiDAO {
             "     u.name = :user")
     long getUserWatchingCount(String user, @Define boolean canSeeHidden, @Define Long userId);
 
-    // TODO fix this query
-    @SqlQuery("SELECT sq.name," +
-              "       sq.join_date," +
-              "       sq.created_at," +
-              "       sq.role," +
-              "       sq.donator_role," +
-              "       sq.count" +
-              "    FROM (SELECT u.name," +
-              "                 u.join_date," +
-              "                 u.created_at," +
-              "                 r.name                                                                                           AS role," +
-              "                 r.permission," +
-              "                 (SELECT COUNT(*)" +
-              "                      FROM project_members_all pma" +
-              "                      WHERE pma.user_id = u.id)                                                                   AS count," +
-              "                 CASE WHEN dr.rank IS NULL THEN NULL ELSE dr.name END                                             AS donator_role," +
-              "                 row_number() OVER (PARTITION BY u.id ORDER BY r.permission::BIGINT DESC, dr.rank ASC NULLS LAST) AS row" +
-              "              FROM projects p" +
-              "                       JOIN users u ON p.owner_id = u.id" +
-              "                       LEFT JOIN user_global_roles gr ON gr.user_id = u.id" +
-              "                       LEFT JOIN roles r ON gr.role_id = r.id" +
-              "                       LEFT JOIN user_global_roles dgr ON dgr.user_id = u.id" +
-              "                       LEFT JOIN roles dr ON dgr.role_id = dr.id) sq" +
-              "    WHERE sq.row = 1" +
-              "    <userOrder>" +
-              "    OFFSET :offset LIMIT :limit")
-    @UseStringTemplateEngine
-    @RegisterBeanMapper(User.class)
-    List<User> getAuthors(long offset, long limit, @Define String userOrder);
+    @RegisterConstructorMapper(User.class)
+    @SqlQuery("SELECT u.created_at," +
+            "       u.name," +
+            "       u.tagline," +
+            "       u.join_date," +
+            "       array(SELECT r.name FROM roles r JOIN user_global_roles ugr ON r.id = ugr.role_id WHERE u.id = ugr.user_id ORDER BY r.permission::BIGINT DESC) roles," +
+            "       (SELECT count(*) FROM project_members_all pma WHERE pma.user_id = u.id) AS project_count" +
+            "   FROM users u" +
+            "   WHERE u.id IN " +
+            "       (SELECT DISTINCT p.owner_id FROM projects p WHERE p.visibility != 1)" +
+            "   <userOrder> " +
+            "   LIMIT :limit OFFSET :offset")
+    List<User> getAuthors(long limit, long offset, @Define String userOrder);
 
-    @SqlQuery("SELECT count(*)" +
-              "    FROM (SELECT u.name," +
-              "                 row_number() OVER (PARTITION BY u.id ORDER BY r.permission::BIGINT DESC, dr.rank ASC NULLS LAST) AS row" +
-              "              FROM projects p" +
-              "                       JOIN users u ON p.owner_id = u.id" +
-              "                       LEFT JOIN user_global_roles gr ON gr.user_id = u.id" +
-              "                       LEFT JOIN roles r ON gr.role_id = r.id" +
-              "                       LEFT JOIN user_global_roles dgr ON dgr.user_id = u.id" +
-              "                       LEFT JOIN roles dr ON dgr.role_id = dr.id) sq" +
-              "    WHERE sq.row = 1")
+    @SqlQuery("SELECT count(DISTINCT p.owner_id) FROM projects p WHERE p.visibility != 1")
     long getAuthorsCount();
 
-    // TODO fix this query
-    @SqlQuery("SELECT sq.name, sq.join_date, sq.created_at, sq.role" +
-              "  FROM (SELECT u.name                                                  AS name," +
-              "               r.name                                                  AS role," +
-              "               u.join_date," +
-              "               u.created_at," +
-              "               r.permission," +
-              "               rank() OVER (PARTITION BY u.name ORDER BY r.permission::BIGINT DESC) AS rank" +
-              "          FROM users u" +
-              "                 JOIN user_global_roles ugr ON u.id = ugr.user_id" +
-              "                 JOIN roles r ON ugr.role_id = r.id" +
-              "          WHERE r.name IN ('Hangar_Admin', 'Hangar_Mod')) sq" +
-              "  WHERE sq.rank = 1" +
-              "    <userOrder>" +
-              "    OFFSET :offset LIMIT :limit")
-    @UseStringTemplateEngine
-    @RegisterBeanMapper(User.class)
-    List<User> getStaff(long offset, long limit, @Define String userOrder);
+    @RegisterConstructorMapper(User.class)
+    @SqlQuery(" SELECT u.id," +
+            "       u.created_at," +
+            "       u.name," +
+            "       u.tagline," +
+            "       u.join_date," +
+            "       array_agg(r.name ORDER BY r.permission::BIGINT DESC) roles," +
+            "       (SELECT count(*) FROM project_members_all pma WHERE pma.user_id = u.id) AS project_count" +
+            "   FROM users u" +
+            "       JOIN user_global_roles ugr ON u.id = ugr.user_id" +
+            "       JOIN roles r ON ugr.role_id = r.id" +
+            "   WHERE r.name IN (<staffRoles>)" +
+            "   GROUP BY u.id" +
+            "   <userOrder>" +
+            "   OFFSET :offset LIMIT :limit")
+    List<User> getStaff(long limit, long offset, @Define String userOrder, @BindList(onEmpty = BindList.EmptyHandling.NULL_STRING) List<String> staffRoles);
 
-    @SqlQuery("SELECT count(*)" +
-              "  FROM (SELECT u.name                                                  AS name," +
-              "               rank() OVER (PARTITION BY u.name ORDER BY r.permission::BIGINT DESC) AS rank" +
-              "          FROM users u" +
-              "                 JOIN user_global_roles ugr ON u.id = ugr.user_id" +
-              "                 JOIN roles r ON ugr.role_id = r.id" +
-              "          WHERE r.name IN ('Hangar_Admin', 'Hangar_Mod')) sq" +
-              "  WHERE sq.rank = 1")
-    long getStaffCount();
+    @SqlQuery(" SELECT count(u.id)" +
+            "   FROM users u " +
+            "       JOIN user_global_roles ugr ON u.id = ugr.user_id" +
+            "       JOIN roles r ON ugr.role_id = r.id" +
+            "   WHERE r.name in (<staffRoles>)")
+    long getStaffCount(@BindList(onEmpty = BindList.EmptyHandling.NULL_STRING) List<String> staffRoles);
 }
