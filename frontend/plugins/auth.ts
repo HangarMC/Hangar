@@ -13,9 +13,9 @@ const createAuth = ({ app: { $cookies }, store, $api }: Context) => {
             location.replace(`/login?returnUrl=http://localhost:3000${redirect}`);
         }
 
-        processLogin(): Promise<void> {
+        processLogin(token: string): Promise<void> {
             store.commit('auth/SET_AUTHED', true);
-            return this.updateUser();
+            return this.updateUser(token);
         }
 
         logout(reload = true): void {
@@ -26,13 +26,16 @@ const createAuth = ({ app: { $cookies }, store, $api }: Context) => {
             // location.replace('/logout'); // TODO uncomment (maybe have a "full log out" system separate so you dont have to log out from all paper sites?)
         }
 
-        updateUser(): Promise<void> {
+        updateUser(token: string): Promise<void> {
             return $api
-                .requestInternal<User>('users/@me')
+                .requestInternalWithToken<User>('users/@me', token)
                 .then((user) => {
                     store.commit('auth/SET_USER', user);
                 })
-                .catch(() => this.logout(false));
+                .catch((err) => {
+                    console.log(err);
+                    this.logout(false);
+                });
         }
     }
 

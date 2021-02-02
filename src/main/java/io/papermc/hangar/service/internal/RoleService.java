@@ -2,10 +2,15 @@ package io.papermc.hangar.service.internal;
 
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.roles.GlobalRoleDAO;
+import io.papermc.hangar.model.db.roles.GlobalRoleTable;
 import io.papermc.hangar.model.db.roles.RoleTable;
+import io.papermc.hangar.model.roles.GlobalRole;
 import io.papermc.hangar.model.roles.Role;
 import io.papermc.hangar.service.HangarService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RoleService extends HangarService {
@@ -27,6 +32,10 @@ public class RoleService extends HangarService {
 
     public <T extends RoleTable<? extends Role<T>>> void deleteRole(T roleTable) {
         roleTable.getRole().getRoleDAO().delete(roleTable);
+    }
+
+    public List<GlobalRole> getGlobalRoles(long userId) {
+        return globalRoleDAO.getGlobalRoleTables(userId).stream().map(GlobalRoleTable::getRole).collect(Collectors.toList());
     }
 
     public void removeAllGlobalRoles(long userId) {

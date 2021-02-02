@@ -3,24 +3,21 @@ package io.papermc.hangar.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import freemarker.core.HTMLOutputFormat;
 import freemarker.template.TemplateException;
+import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controller.extras.converters.ColorHexConverter;
 import io.papermc.hangar.controller.extras.converters.OffsetDateTimeConverter;
 import io.papermc.hangar.controller.extras.converters.StringToEnumConverterFactory;
-import io.papermc.hangar.security.UserLockExceptionResolver;
-import io.papermc.hangar.util.Routes;
+import io.papermc.hangar.securityold.UserLockExceptionResolver;
 import no.api.freemarker.java8.Java8ObjectWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.CacheControl;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -39,10 +36,12 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class WebConfig extends WebMvcConfigurationSupport {
 
+    private final HangarConfig hangarConfig;
     private final ObjectMapper mapper;
 
     @Autowired
-    public WebConfig(ObjectMapper mapper) {
+    public WebConfig(HangarConfig hangarConfig, ObjectMapper mapper) {
+        this.hangarConfig = hangarConfig;
         this.mapper = mapper;
     }
 
@@ -56,10 +55,9 @@ public class WebConfig extends WebMvcConfigurationSupport {
         return resolver;
     }
 
-    // TODO this for production
     @Override
     protected void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("http://localhost:3000");
+        registry.addMapping("/api/internal/**").allowedOrigins(hangarConfig.isUseWebpack() ? "http://localhost:3000" : "https://hangar.minidigger.me");
     }
 
     // TODO remove after freemarker is gone
@@ -126,20 +124,20 @@ public class WebConfig extends WebMvcConfigurationSupport {
     }
 
     // TODO maybe? remove after freemarker is gone
-    @Bean
-    public ErrorViewResolver errorViewResolver() {
-        return (request, status, model) -> {
-            if (status == HttpStatus.GATEWAY_TIMEOUT || status == HttpStatus.REQUEST_TIMEOUT) {
-                return new ModelAndView("errors/timeout");
-            } else if (status == HttpStatus.NOT_FOUND) {
-                return new ModelAndView("errors/notFound");
-            } else if (status == HttpStatus.FORBIDDEN) {
-                return Routes.USERS_LOGIN.getRedirect("", "", request.getRequestURI());
-            } else {
-                return new ModelAndView("errors/error");
-            }
-        };
-    }
+//    @Bean
+//    public ErrorViewResolver errorViewResolver() {
+//        return (request, status, model) -> {
+//            if (status == HttpStatus.GATEWAY_TIMEOUT || status == HttpStatus.REQUEST_TIMEOUT) {
+//                return new ModelAndView("errors/timeout");
+//            } else if (status == HttpStatus.NOT_FOUND) {
+//                return new ModelAndView("errors/notFound");
+//            } else if (status == HttpStatus.FORBIDDEN) {
+//                return Routes.USERS_LOGIN.getRedirect("", "", request.getRequestURI());
+//            } else {
+//                return new ModelAndView("errors/error");
+//            }
+//        };
+//    }
 
     @Override
     public void addFormatters(FormatterRegistry registry) {

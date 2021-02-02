@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.model.Category;
 import io.papermc.hangar.modelold.NamedPermission;
+import io.papermc.hangar.security.annotations.Anyone;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.lang.annotation.Annotation;
 
 @Controller
+@Anyone
 @RequestMapping(path = "/api/internal/data", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
 public class BackendDataController {
 

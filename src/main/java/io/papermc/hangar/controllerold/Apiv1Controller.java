@@ -6,7 +6,7 @@ import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.modelold.ProjectApiKeysTable;
 import io.papermc.hangar.db.modelold.ProjectsTable;
-import io.papermc.hangar.security.annotations.UserLock;
+import io.papermc.hangar.securityold.annotations.UserLock;
 import io.papermc.hangar.serviceold.ApiKeyService;
 import io.papermc.hangar.serviceold.UserActionLogService;
 import org.springframework.beans.factory.annotation.Autowired;

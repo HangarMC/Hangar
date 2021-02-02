@@ -1,7 +1,7 @@
 package io.papermc.hangar.controller.api.v1.interfaces;
 
-import io.papermc.hangar.controller.extras.requestmodels.api.SessionProperties;
 import io.papermc.hangar.model.api.auth.ApiSession;
+import io.papermc.hangar.model.api.requests.SessionProperties;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

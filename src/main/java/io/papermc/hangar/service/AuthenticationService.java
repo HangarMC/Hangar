@@ -18,7 +18,7 @@ import io.papermc.hangar.model.db.auth.ApiKeyTable;
 import io.papermc.hangar.model.db.auth.ApiSessionTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.roles.GlobalRole;
-import io.papermc.hangar.security.HangarAuthenticationToken;
+import io.papermc.hangar.security.internal.HangarAuthenticationToken;
 import io.papermc.hangar.service.internal.OrganizationService;
 import io.papermc.hangar.service.internal.RoleService;
 import io.papermc.hangar.service.internal.UserService;
@@ -28,7 +28,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
@@ -245,8 +244,8 @@ public class AuthenticationService extends HangarService {
 
     public void setAuthenticatedUser(UserTable user) {
         // TODO properly do auth, remember me shit too
-        Authentication auth = new HangarAuthenticationToken(List.of(new SimpleGrantedAuthority("ROLE_USER")), user.getName(), user.getId());
-        authenticationManager.authenticate(auth);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+//        Authentication auth = new HangarAuthenticationToken(List.of(new SimpleGrantedAuthority("ROLE_USER")), user.getName(), user.getId());
+//        authenticationManager.authenticate(auth);
+//        SecurityContextHolder.getContext().setAuthentication(auth);
     }
 }

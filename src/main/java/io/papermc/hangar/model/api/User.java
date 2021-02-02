@@ -7,6 +7,7 @@ import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class User extends Model implements Named {
 
@@ -45,6 +46,20 @@ public class User extends Model implements Named {
 
     public long getProjectCount() {
         return projectCount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        User user = (User) o;
+        return projectCount == user.projectCount && name.equals(user.name) && Objects.equals(tagline, user.tagline) && joinDate.equals(user.joinDate) && roles.equals(user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), name, tagline, joinDate, roles, projectCount);
     }
 
     @Override

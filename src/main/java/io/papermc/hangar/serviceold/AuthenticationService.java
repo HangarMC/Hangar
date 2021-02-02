@@ -21,7 +21,6 @@ import io.papermc.hangar.modelold.ApiAuthInfo;
 import io.papermc.hangar.modelold.Role;
 import io.papermc.hangar.modelold.generated.ApiSessionResponse;
 import io.papermc.hangar.modelold.generated.SessionType;
-import io.papermc.hangar.security.HangarAuthenticationToken;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.VisibilityService;
 import io.papermc.hangar.serviceold.sso.ChangeAvatarToken;
@@ -34,9 +33,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -257,9 +253,9 @@ public class AuthenticationService extends HangarService {
 
     public void setAuthenticatedUser(UsersTable user) {
         // TODO properly do auth, remember me shit too
-        Authentication auth = new HangarAuthenticationToken(List.of(new SimpleGrantedAuthority("ROLE_USER")), user.getName(), user.getId());
-        authenticationManager.authenticate(auth);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+//        Authentication auth = new HangarAuthenticationToken(List.of(new SimpleGrantedAuthority("ROLE_USER")), user.getName(), user.getId());
+//        authenticationManager.authenticate(auth);
+//        SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
     public URI changeAvatarUri(String requester, String organization) throws JsonProcessingException {

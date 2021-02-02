@@ -28,8 +28,17 @@ public interface UsersDAO {
             "       JOIN user_global_roles ugr ON u.id = ugr.user_id" +
             "       JOIN roles r ON ugr.role_id = r.id" +
             "   WHERE u.name = :name" +
+            "       OR u.id = :id" +
             "   GROUP BY u.id")
-    <T extends User> T getUser(String name, @MapTo Class<T> type);
+    <T extends User> T _getUser(String name, Long id, @MapTo Class<T> type);
+
+    default  <T extends User> T getUser(String name, Class<T> type) {
+        return _getUser(name, null, type);
+    }
+
+    default <T extends User> T getUser(long id, Class<T> type) {
+        return _getUser(null, id, type);
+    }
 
     @SqlQuery("SELECT u.id," +
             "       u.created_at," +
