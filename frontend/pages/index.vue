@@ -58,7 +58,6 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
-import { Context } from '@nuxt/types';
 import { PaginatedResult, Project } from 'hangar-api';
 
 // TODO move somewhere else
@@ -88,8 +87,10 @@ export default class Home extends Vue {
         };
     }
 
-    async asyncData({ $api }: Context): Promise<{ projects: PaginatedResult<Project> }> {
-        return { projects: await $api.request<PaginatedResult<Project>>('projects', 'get', { limit: 25, offset: 0 }) };
+    asyncData() {
+        // async asyncData({ $api }: Context): Promise<{ projects: [] }> {
+        return { projects: { result: [] } };
+        // return { projects: await $api.request<PaginatedResult<Project>>('projects', 'get', { limit: 25, offset: 0 }) };
     }
 }
 </script>

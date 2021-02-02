@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-@ControllerAdvice(assignableTypes = HangarController.class)
+@ControllerAdvice(assignableTypes = { HangarController.class })
 public class JsonResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final ObjectMapper mapper;

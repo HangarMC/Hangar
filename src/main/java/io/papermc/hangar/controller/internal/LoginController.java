@@ -1,18 +1,20 @@
 package io.papermc.hangar.controller.internal;
 
-import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.exceptions.HangarException;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.sso.AuthUser;
 import io.papermc.hangar.model.internal.sso.URLWithNonce;
+import io.papermc.hangar.security.internal.HangarAuthenticationFilter;
 import io.papermc.hangar.service.AuthenticationService;
+import io.papermc.hangar.service.TokenService;
 import io.papermc.hangar.service.internal.RoleService;
 import io.papermc.hangar.service.internal.SSOService;
 import io.papermc.hangar.service.internal.UserService;
 import io.papermc.hangar.util.AlertUtil;
 import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
@@ -27,55 +30,95 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class LoginController extends HangarController {
 
-    private final HangarConfig hangarConfig;
     private final AuthenticationService authenticationService;
     private final SSOService ssoService;
     private final UserService userService;
     private final RoleService roleService;
+    private final TokenService tokenService;
 
     @Autowired
-    public LoginController(HangarConfig hangarConfig, AuthenticationService authenticationService, SSOService ssoService, UserService userService, RoleService roleService) {
-        this.hangarConfig = hangarConfig;
+    public LoginController(AuthenticationService authenticationService, SSOService ssoService, UserService userService, RoleService roleService, TokenService tokenService) {
         this.authenticationService = authenticationService;
         this.ssoService = ssoService;
         this.userService = userService;
         this.roleService = roleService;
+        this.tokenService = tokenService;
     }
 
-    @GetMapping("/login")
-    public ModelAndView login(@RequestParam(defaultValue = "") String sso, @RequestParam(defaultValue = "") String sig, @RequestParam(defaultValue = "") String returnUrl, @CookieValue(value = "url", required = false) String redirectUrl, RedirectAttributes attributes) {
+    @GetMapping(path = "/login", params = "returnUrl")
+    public Object loginFromFrontend(@RequestParam(defaultValue = Routes.Paths.SHOW_HOME) String returnUrl, RedirectAttributes attributes) {
         if (hangarConfig.fakeUser.isEnabled()) {
             hangarConfig.checkDebug();
 
             UserTable fakeUser = authenticationService.loginAsFakeUser();
-
-            return redirectBack(returnUrl, fakeUser);
-        } else if (sso.isEmpty()) {
-            String returnPath = returnUrl.isBlank() ? request.getRequestURI() : returnUrl;
+            String token = tokenService.createTokenForUser(fakeUser, response);
+            return new RedirectView(returnUrl + "?token=" + token);
+        } else {
             try {
-                response.addCookie(new Cookie("url", returnPath));
+                response.addCookie(new Cookie("url", returnUrl));
                 return redirectToSso(ssoService.getLoginUrl(hangarConfig.getBaseUrl() + "/login"), attributes);
             } catch (HangarException e) {
                 AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, e.getMessageKey(), e.getArgs());
                 return Routes.SHOW_HOME.getRedirect();
             }
-
-        } else {
-            AuthUser authUser = ssoService.authenticate(sso, sig);
-            if (authUser == null) {
-                AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.loginFailed");
-                return Routes.SHOW_HOME.getRedirect();
-            }
-
-            UserTable user = userService.getOrCreate(authUser.getUserName(), authUser);
-            roleService.removeAllGlobalRoles(user.getId());
-            authUser.getGlobalRoles().forEach(globalRole -> roleService.addRole(globalRole.create(null, user.getId(), true)));
-            authenticationService.setAuthenticatedUser(user);
-
-            String redirectPath = redirectUrl != null ? redirectUrl : Routes.getRouteUrlOf("showHome");
-            return redirectBack(redirectPath, user);
         }
     }
+
+    @GetMapping(path = "/login", params = {"sso", "sig"})
+    public ModelAndView loginFromAuth(@RequestParam String sso, @RequestParam String sig, @CookieValue String url, RedirectAttributes attributes) {
+        AuthUser authUser = ssoService.authenticate(sso, sig);
+        if (authUser == null) {
+            AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.loginFailed");
+            return Routes.SHOW_HOME.getRedirect();
+        }
+
+        UserTable user = userService.getOrCreate(authUser.getUserName(), authUser);
+        roleService.removeAllGlobalRoles(user.getId());
+        authUser.getGlobalRoles().forEach(globalRole -> roleService.addRole(globalRole.create(null, user.getId(), true)));
+        authenticationService.setAuthenticatedUser(user);
+        String token = tokenService.createTokenForUser(user, response);
+        return redirectBackOnSuccessfulLogin(url + "?token=" + token, user);
+    }
+
+    @GetMapping("/refresh")
+    public ResponseEntity<String> refreshToken(@CookieValue(name = HangarAuthenticationFilter.AUTH_NAME + "_REFRESH", required = false) String refreshToken) {
+        return ResponseEntity.ok(tokenService.refreshToken(refreshToken, response));
+    }
+
+//    @GetMapping("/login")
+//    public ModelAndView login(@RequestParam(defaultValue = "") String sso, @RequestParam(defaultValue = "") String sig, @RequestParam(defaultValue = "") String returnUrl, @CookieValue(value = "url", required = false) String redirectUrl, RedirectAttributes attributes) {
+//        if (hangarConfig.fakeUser.isEnabled()) {
+//            hangarConfig.checkDebug();
+//
+//            UserTable fakeUser = authenticationService.loginAsFakeUser();
+//
+//            return redirectBackOnSuccessfulLogin(returnUrl, fakeUser);
+//        } else if (sso.isEmpty()) {
+//            String returnPath = returnUrl.isBlank() ? request.getRequestURI() : returnUrl;
+//            try {
+//                response.addCookie(new Cookie("url", returnPath));
+//                return redirectToSso(ssoService.getLoginUrl(hangarConfig.getBaseUrl() + "/login"), attributes);
+//            } catch (HangarException e) {
+//                AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, e.getMessageKey(), e.getArgs());
+//                return Routes.SHOW_HOME.getRedirect();
+//            }
+//
+//        } else {
+//            AuthUser authUser = ssoService.authenticate(sso, sig);
+//            if (authUser == null) {
+//                AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.loginFailed");
+//                return Routes.SHOW_HOME.getRedirect();
+//            }
+//
+//            UserTable user = userService.getOrCreate(authUser.getUserName(), authUser);
+//            roleService.removeAllGlobalRoles(user.getId());
+//            authUser.getGlobalRoles().forEach(globalRole -> roleService.addRole(globalRole.create(null, user.getId(), true)));
+//            authenticationService.setAuthenticatedUser(user);
+//
+//            String redirectPath = redirectUrl != null ? redirectUrl : Routes.getRouteUrlOf("showHome");
+//            return redirectBackOnSuccessfulLogin(redirectPath, user);
+//        }
+//    }
 
     @PostMapping("/verify")
     public ModelAndView verify(@RequestParam String returnPath, RedirectAttributes attributes) {
@@ -104,7 +147,7 @@ public class LoginController extends HangarController {
         }
     }
 
-    private ModelAndView redirectBack(String url, UserTable user) {
+    private ModelAndView redirectBackOnSuccessfulLogin(String url, UserTable user) {
         if (!url.startsWith("http")) {
             if (url.startsWith("/")) {
                 url = hangarConfig.getBaseUrl() + url;
@@ -112,6 +155,7 @@ public class LoginController extends HangarController {
                 url = hangarConfig.getBaseUrl() + "/" + url;
             }
         }
+//        response.addCookie(CookieUtils.builder(HangarAuthenticationFilter.AUTH_NAME, tokenService.expiring()));
         return Routes.getRedirectToUrl(url);
     }
 

@@ -1,6 +1,17 @@
 package io.papermc.hangar.controller.api.v1.interfaces;
 
 
+import io.papermc.hangar.model.api.PaginatedResult;
+import io.papermc.hangar.model.api.User;
+import io.papermc.hangar.model.api.project.ProjectCompact;
+import io.papermc.hangar.model.api.requests.RequestPagination;
+import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,18 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import io.papermc.hangar.controller.extras.requestmodels.api.RequestPagination;
-import io.papermc.hangar.model.api.PaginatedResult;
-import io.papermc.hangar.model.api.User;
-import io.papermc.hangar.model.api.project.ProjectCompact;
-import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
 
 @Api(tags = "Users", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)

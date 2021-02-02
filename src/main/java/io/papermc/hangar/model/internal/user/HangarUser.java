@@ -7,6 +7,7 @@ import io.papermc.hangar.model.roles.GlobalRole;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class HangarUser extends User implements Identified {
 
@@ -39,6 +40,20 @@ public class HangarUser extends User implements Identified {
                 this.getJoinDate(),
                 this.getRoles(),
                 this.getProjectCount());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        HangarUser that = (HangarUser) o;
+        return id == that.id && Objects.equals(headerData, that.headerData);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, headerData);
     }
 
     @Override
@@ -88,6 +103,19 @@ public class HangarUser extends User implements Identified {
 
         public boolean isHasReviewQueue() {
             return hasReviewQueue;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            HeaderData that = (HeaderData) o;
+            return hasNotice == that.hasNotice && hasUnreadNotifications == that.hasUnreadNotifications && unresolvedFlags == that.unresolvedFlags && hasProjectApprovals == that.hasProjectApprovals && hasReviewQueue == that.hasReviewQueue && globalPermission.equals(that.globalPermission);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(globalPermission, hasNotice, hasUnreadNotifications, unresolvedFlags, hasProjectApprovals, hasReviewQueue);
         }
 
         @Override

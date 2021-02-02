@@ -66,6 +66,33 @@ const createApi = ($axios: NuxtAxiosInstance, $cookies: NuxtCookies, store: Stor
             });
         }
 
+        getToken(fetch: boolean = true): Promise<string | null> {
+            if (store.state.auth.token) {
+                // TODO check expiry
+                console.log('token exists');
+                return Promise.resolve(store.state.auth.token);
+            } else if (fetch) {
+                console.log('fetching token');
+                return this.refreshToken();
+            } else {
+                return Promise.resolve(null);
+            }
+        }
+
+        refreshToken(): Promise<string | null> {
+            return new Promise<string | null>((resolve) => {
+                return $axios
+                    .get<string>('/refresh')
+                    .then((value) => {
+                        store.commit('auth/SET_TOKEN', value.data);
+                        resolve(value.data);
+                    })
+                    .catch(() => {
+                        resolve(null);
+                    });
+            });
+        }
+
         invalidateSession(): void {
             store.commit('auth/SET_AUTHED', false);
             store.commit('auth/SET_USER', null);
@@ -77,8 +104,26 @@ const createApi = ($axios: NuxtAxiosInstance, $cookies: NuxtCookies, store: Stor
             });
         }
 
-        requestInternal<T>(url: string, method: 'get' | 'post' = 'get', data: object = {}): Promise<T> {
-            return this._request(`internal/${url}`, method, data);
+        requestInternalWithToken<T>(url: string, token: string | null, method: 'get' | 'post' = 'get', data: object = {}): Promise<T> {
+            return new Promise<T>((resolve, reject) => {
+                const headers = token ? { Authorization: `HangarAuth ${token}` } : {};
+                return ($axios({
+                    method,
+                    url: '/api/internal/' + url,
+                    headers,
+                    data,
+                }) as AxiosPromise<T>)
+                    .then(({ data }) => resolve(data))
+                    .catch((error: AxiosError) => {
+                        reject(error);
+                    });
+            });
+        }
+
+        requestInternal<T>(url: string, authed: boolean = true, method: 'get' | 'post' = 'get', data: object = {}): Promise<T> {
+            return this.getToken(authed).then((token) => {
+                return this.requestInternalWithToken<T>(url, token, method, data);
+            });
         }
 
         request<T>(url: string, method: 'get' | 'post' = 'get', data: object = {}): Promise<T> {

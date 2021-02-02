@@ -4,12 +4,18 @@ import { User } from 'hangar-api';
 
 export const state = () => ({
     authenticated: false,
-    user: (null as unknown) as User,
+    user: null as User | null,
+    token: null as string | null,
 });
 
 export type AuthState = ReturnType<typeof state>;
 
 export const mutations: MutationTree<AuthState> = {
-    SET_USER: (state, user: User) => (state.user = user),
+    SET_USER: (state, user: User) => {
+        state.user = user;
+    },
     SET_AUTHED: (state, auth: boolean) => (state.authenticated = auth),
+    SET_TOKEN: (state, token: string) => {
+        state.token = token;
+    },
 };

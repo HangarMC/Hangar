@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
-import io.papermc.hangar.controller.extras.requestmodels.api.RequestPagination;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.model.Permission;
@@ -9,6 +8,7 @@ import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
+import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

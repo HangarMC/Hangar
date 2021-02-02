@@ -3,8 +3,6 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE TYPE role_category AS ENUM ('global', 'project', 'organization');
 
--- alter type role_category owner to hangar;
-
 CREATE TYPE logged_action_type AS ENUM (
     'project_visibility_change',
     'project_renamed',
@@ -30,11 +28,7 @@ CREATE TYPE logged_action_type AS ENUM (
     'org_member_roles_updated'
     );
 
--- alter type logged_action_type owner to hangar;
-
 CREATE TYPE job_state AS ENUM ('not_started', 'started', 'done', 'fatal_failure');
-
--- alter type job_state owner to hangar;
 
 CREATE TABLE users
 (
@@ -56,8 +50,6 @@ CREATE TABLE users
     language varchar(16)
 );
 
--- alter table users owner to hangar;
-
 CREATE TABLE projects
 (
     id bigserial NOT NULL
@@ -70,12 +62,12 @@ CREATE TABLE projects
     owner_name varchar(255) NOT NULL
         CONSTRAINT projects_owner_name_fkey
             REFERENCES users (name)
-            ON UPDATE CASCADE ,
+            ON UPDATE CASCADE,
     recommended_version_id bigint,
     owner_id bigint NOT NULL
         CONSTRAINT projects_owner_id_fkey
             REFERENCES users
-            ON DELETE CASCADE ,
+            ON DELETE CASCADE,
     topic_id integer,
     post_id integer,
     category integer NOT NULL,
@@ -95,8 +87,6 @@ CREATE TABLE projects
     CONSTRAINT projects_owner_name_slug_key
         UNIQUE (owner_name, slug)
 );
-
--- alter table projects owner to hangar;
 
 CREATE INDEX projects_recommended_version_id
     ON projects (recommended_version_id);
@@ -118,8 +108,6 @@ CREATE TABLE project_stars
         PRIMARY KEY (user_id, project_id)
 );
 
--- alter table project_stars owner to hangar;
-
 CREATE TABLE project_pages
 (
     id bigserial NOT NULL
@@ -139,8 +127,6 @@ CREATE TABLE project_pages
             REFERENCES project_pages
             ON DELETE SET NULL
 );
-
--- alter table project_pages owner to hangar;
 
 CREATE INDEX page_slug_idx
     on project_pages (lower(slug::text));
@@ -167,8 +153,6 @@ CREATE TABLE project_channels
         UNIQUE (project_id, color)
 );
 
--- alter table project_channels owner to hangar;
-
 CREATE TABLE project_versions
 (
     id bigserial NOT NULL
@@ -180,11 +164,11 @@ CREATE TABLE project_versions
     project_id bigint NOT NULL
         CONSTRAINT versions_project_id_fkey
             REFERENCES projects
-            ON DELETE CASCADE ,
+            ON DELETE CASCADE,
     channel_id bigint NOT NULL
         CONSTRAINT versions_channel_id_fkey
             REFERENCES project_channels
-            ON DELETE CASCADE ,
+            ON DELETE CASCADE,
     file_size bigint default 1
         CONSTRAINT versions_file_size_check
             CHECK (file_size > 0),
@@ -194,19 +178,17 @@ CREATE TABLE project_versions
     reviewer_id bigint
         CONSTRAINT project_versions_reviewer_id_fkey
             REFERENCES users
-            ON DELETE SET NULL ,
+            ON DELETE SET NULL,
     approved_at timestamp with time zone,
     author_id bigint
         CONSTRAINT project_versions_author_id_fkey
             REFERENCES users
-            ON DELETE SET NULL ,
+            ON DELETE SET NULL,
     visibility integer DEFAULT 1 NOT NULL,
     review_state integer DEFAULT 0 NOT NULL,
     create_forum_post boolean NOT NULL,
     post_id integer
 );
-
--- alter table project_versions owner to hangar;
 
 CREATE TABLE platform_versions
 (
@@ -218,8 +200,6 @@ CREATE TABLE platform_versions
     version    varchar(255)             NOT NULL,
     CONSTRAINT platform_version_unique UNIQUE (platform, version)
 );
-
--- alter table platform_versions owner to hangar;
 
 CREATE TABLE project_version_dependencies
 (
@@ -240,8 +220,6 @@ CREATE TABLE project_version_dependencies
             REFERENCES projects
             ON DELETE CASCADE
 );
-
--- alter table project_version_dependencies owner to hangar;
 
 CREATE TABLE project_version_platform_dependencies
 (
@@ -284,8 +262,6 @@ CREATE TABLE user_project_roles
         UNIQUE (user_id, role_type, project_id)
 );
 
--- alter table user_project_roles owner to hangar;
-
 CREATE TABLE project_flags
 (
     id bigserial NOT NULL
@@ -310,8 +286,6 @@ CREATE TABLE project_flags
             ON DELETE SET NULL
 );
 
--- alter table project_flags owner to hangar;
-
 CREATE TABLE notifications
 (
     id bigserial NOT NULL
@@ -332,8 +306,6 @@ CREATE TABLE notifications
     message_args varchar(255) [] NOT NULL
 );
 
--- alter table notifications owner to hangar;
-
 CREATE TABLE project_watchers
 (
     project_id bigint NOT NULL
@@ -349,8 +321,6 @@ CREATE TABLE project_watchers
     CONSTRAINT project_watchers_project_id_user_id_key
         UNIQUE (project_id, user_id)
 );
-
--- alter table project_watchers owner to hangar;
 
 CREATE TABLE organizations
 (
@@ -374,8 +344,6 @@ CREATE TABLE organizations
             ON DELETE CASCADE
 );
 
--- alter table organizations owner to hangar;
-
 CREATE TABLE organization_members
 (
     user_id bigint NOT NULL
@@ -389,8 +357,6 @@ CREATE TABLE organization_members
     CONSTRAINT organization_members_pkey
         PRIMARY KEY (user_id, organization_id)
 );
-
--- alter table organization_members owner to hangar;
 
 CREATE TABLE user_organization_roles
 (
@@ -412,8 +378,6 @@ CREATE TABLE user_organization_roles
         UNIQUE (user_id, role_type, organization_id)
 );
 
--- alter table user_organization_roles owner to hangar;
-
 CREATE TABLE project_members
 (
     project_id bigint NOT NULL
@@ -428,8 +392,6 @@ CREATE TABLE project_members
         PRIMARY KEY (project_id, user_id)
 );
 
--- alter table project_members owner to hangar;
-
 CREATE TABLE user_sign_ons
 (
     id bigserial NOT NULL
@@ -441,8 +403,6 @@ CREATE TABLE user_sign_ons
             UNIQUE,
     is_completed boolean DEFAULT FALSE NOT NULL
 );
-
--- alter table user_sign_ons owner to hangar;
 
 CREATE TABLE project_version_unsafe_downloads
 (
@@ -457,8 +417,6 @@ CREATE TABLE project_version_unsafe_downloads
     address inet NOT NULL,
     download_type integer NOT NULL
 );
-
--- alter table project_version_unsafe_downloads owner to hangar;
 
 CREATE TABLE project_version_download_warnings
 (
@@ -482,8 +440,6 @@ CREATE TABLE project_version_download_warnings
         UNIQUE (address, version_id)
 );
 
--- alter table project_version_download_warnings owner to hangar;
-
 CREATE TABLE project_api_keys
 (
     id bigserial NOT NULL
@@ -496,8 +452,6 @@ CREATE TABLE project_api_keys
             ON DELETE CASCADE,
     value varchar(255) NOT NULL
 );
-
--- alter table project_api_keys owner to hangar;
 
 CREATE TABLE project_version_reviews
 (
@@ -516,8 +470,6 @@ CREATE TABLE project_version_reviews
     ended_at timestamp with time zone,
     comment jsonb DEFAULT '{}'::jsonb NOT NULL
 );
-
--- alter table project_version_reviews owner to hangar;
 
 CREATE TABLE project_visibility_changes
 (
@@ -542,8 +494,6 @@ CREATE TABLE project_visibility_changes
     visibility integer NOT NULL
 );
 
--- alter table project_visibility_changes owner to hangar;
-
 CREATE TABLE project_version_visibility_changes
 (
     id bigserial NOT NULL
@@ -567,8 +517,6 @@ CREATE TABLE project_version_visibility_changes
     visibility integer NOT NULL
 );
 
--- alter table project_version_visibility_changes owner to hangar;
-
 CREATE TABLE project_version_tags
 (
     id bigserial NOT NULL
@@ -582,8 +530,6 @@ CREATE TABLE project_version_tags
     data varchar(255)[],
     color integer NOT NULL
 );
-
--- alter table project_version_tags owner to hangar;
 
 CREATE INDEX projects_versions_tags_version_id
     on project_version_tags (version_id);
@@ -605,8 +551,6 @@ CREATE TABLE roles
     permission bit(64) DEFAULT '0'::bit(64) NOT NULL
 );
 
--- alter table roles owner to hangar;
-
 CREATE UNIQUE INDEX role_name_idx
     ON roles (name);
 
@@ -624,8 +568,6 @@ CREATE TABLE user_global_roles
         PRIMARY KEY (user_id, role_id)
 );
 
--- alter table user_global_roles owner to hangar;
-
 CREATE TABLE api_keys
 (
     id bigserial NOT NULL
@@ -639,14 +581,12 @@ CREATE TABLE api_keys
             ON DELETE CASCADE,
     token_identifier varchar(255) NOT NULL
         CONSTRAINT api_keys_token_identifier_key
-            UNIQUE ,
+            UNIQUE,
     token text NOT NULL,
     raw_key_permissions bit(64) NOT NULL,
     CONSTRAINT api_keys_owner_id_name_key
         UNIQUE (owner_id, name)
 );
-
--- alter table api_keys owner to hangar;
 
 CREATE TABLE api_sessions
 (
@@ -665,8 +605,6 @@ CREATE TABLE api_sessions
             ON DELETE CASCADE,
     expires timestamp with time zone NOT NULL
 );
-
--- alter table api_sessions owner to hangar;
 
 CREATE TABLE logged_actions_project
 (
@@ -687,8 +625,6 @@ CREATE TABLE logged_actions_project
     new_state text NOT NULL,
     old_state text NOT NULL
 );
-
--- alter table logged_actions_project owner to hangar;
 
 CREATE TABLE logged_actions_version
 (
@@ -714,8 +650,6 @@ CREATE TABLE logged_actions_version
     old_state text NOT NULL
 );
 
--- alter table logged_actions_version owner to hangar;
-
 CREATE TABLE logged_actions_page
 (
     id bigserial NOT NULL
@@ -740,8 +674,6 @@ CREATE TABLE logged_actions_page
     old_state text NOT NULL
 );
 
--- alter table logged_actions_page owner to hangar;
-
 CREATE TABLE logged_actions_user
 (
     id bigserial NOT NULL
@@ -762,8 +694,6 @@ CREATE TABLE logged_actions_user
     old_state text NOT NULL
 );
 
--- alter table logged_actions_user owner to hangar;
-
 CREATE TABLE logged_actions_organization
 (
     id bigserial NOT NULL
@@ -783,8 +713,6 @@ CREATE TABLE logged_actions_organization
     new_state text NOT NULL,
     old_state text NOT NULL
 );
-
--- alter table logged_actions_organization owner to hangar;
 
 CREATE TABLE project_versions_downloads_individual
 (
@@ -809,8 +737,6 @@ CREATE TABLE project_versions_downloads_individual
     processed integer DEFAULT 0 NOT NULL
 );
 
--- alter table project_versions_downloads_individual owner to hangar;
-
 CREATE TABLE project_versions_downloads
 (
     day date NOT NULL,
@@ -826,8 +752,6 @@ CREATE TABLE project_versions_downloads
     CONSTRAINT project_versions_downloads_pkey
         PRIMARY KEY (day, version_id)
 );
-
--- alter table project_versions_downloads owner to hangar;
 
 CREATE INDEX project_versions_downloads_project_id_version_id_idx
     on project_versions_downloads (project_id, version_id);
@@ -851,7 +775,6 @@ CREATE TABLE project_views_individual
     processed integer DEFAULT 0 NOT NULL
 );
 
--- alter table project_views_individual owner to hangar;
 
 CREATE TABLE project_views
 (
@@ -859,13 +782,11 @@ CREATE TABLE project_views
     project_id bigint NOT NULL
         CONSTRAINT project_views_project_id_fkey
             REFERENCES projects
-            ON DELETE CASCADE ,
+            ON DELETE CASCADE,
     views integer NOT NULL DEFAULT 1,
     CONSTRAINT project_views_pkey
         PRIMARY KEY (project_id, day)
 );
-
--- alter table project_views owner to hangar;
 
 CREATE TABLE jobs
 (
@@ -882,7 +803,22 @@ CREATE TABLE jobs
     job_properties hstore NOT NULL
 );
 
--- alter table jobs owner to hangar;
+CREATE TABLE user_refresh_tokens
+(
+    id bigserial NOT NULL
+        CONSTRAINT user_refresh_token_pkey
+            PRIMARY KEY,
+    created_at timestamp with time zone NOT NULL,
+    user_id bigint NOT NULL
+        CONSTRAINT user_refresh_tokens_user_id_fkey
+            REFERENCES users
+            ON DELETE CASCADE,
+    CONSTRAINT user_refresh_tokens_user_id_unique
+        UNIQUE (user_id),
+    token varchar(128) NOT NULL,
+    CONSTRAINT user_refresh_tokens_token_unique
+        UNIQUE (token)
+);
 
 CREATE VIEW project_members_all(id, user_id) AS
 SELECT p.id,
@@ -895,8 +831,6 @@ SELECT p.id,
 FROM projects p
          LEFT JOIN organization_members om ON p.owner_id = om.organization_id
 WHERE om.user_id IS NOT NULL;
-
--- alter table project_members_all owner to hangar;
 
 CREATE MATERIALIZED VIEW home_projects AS
 WITH tags AS (
@@ -1006,16 +940,12 @@ FROM projects p
                     GROUP BY pv.project_id) pdr ON p.id = pdr.project_id
 GROUP BY p.id, ps.stars, pw.watchers, pva.views, pda.downloads, pvr.recent_views, pdr.recent_downloads;
 
--- alter materialized view home_projects owner to hangar;
-
 CREATE VIEW global_trust(user_id, permission) AS
 SELECT gr.user_id,
        COALESCE(bit_or(r.permission), '0'::bit(64)) AS permission
 FROM user_global_roles gr
          JOIN roles r ON gr.role_id = r.id
 GROUP BY gr.user_id;
-
--- alter table global_trust owner to hangar;
 
 CREATE VIEW project_trust(project_id, user_id, permission) AS
 SELECT pm.project_id,
@@ -1026,8 +956,6 @@ FROM project_members pm
          JOIN roles r ON rp.role_type::text = r.name::text
 GROUP BY pm.project_id, pm.user_id;
 
--- alter table project_trust owner to hangar;
-
 CREATE VIEW organization_trust(organization_id, user_id, permission) AS
 SELECT om.organization_id,
        om.user_id,
@@ -1037,8 +965,6 @@ FROM organization_members om
               ON om.organization_id = ro.organization_id AND om.user_id = ro.user_id AND ro.is_accepted
          JOIN roles r ON ro.role_type::text = r.name::text
 GROUP BY om.organization_id, om.user_id;
-
--- alter table organization_trust owner to hangar;
 
 CREATE VIEW v_logged_actions(id, created_at, user_id, user_name, address, action, context_type, new_state, old_state, p_id, p_slug, p_owner_name, pv_id, pv_version_string, pp_id, pp_name, pp_slug, s_id, s_name) AS
 SELECT a.id,
@@ -1162,8 +1088,6 @@ FROM logged_actions_organization a
          LEFT JOIN users u ON a.user_id = u.id
          LEFT JOIN users s ON o.user_id = s.id;
 
--- alter table v_logged_actions owner to hangar;
-
 CREATE FUNCTION delete_old_project_version_download_warnings() RETURNS TRIGGER
     LANGUAGE plpgsql
 AS $$
@@ -1172,8 +1096,6 @@ BEGIN
     RETURN NEW;
 END
 $$;
-
--- alter function delete_old_project_version_download_warnings() owner to hangar;
 
 CREATE TRIGGER clean_old_project_version_download_warnings
     AFTER INSERT
@@ -1189,8 +1111,6 @@ BEGIN
 END
 $$;
 
--- alter function delete_old_project_version_unsafe_downloads() owner to hangar;
-
 CREATE TRIGGER clean_old_project_version_unsafe_downloads
     AFTER INSERT
     ON project_version_unsafe_downloads
@@ -1203,8 +1123,6 @@ BEGIN
     UPDATE projects p SET name = u.name FROM users u WHERE p.id = new.id AND u.id = new.owner_id;
 END;
 $$;
-
--- alter function update_project_name_trigger() owner to hangar;
 
 CREATE TRIGGER project_owner_name_updater
     AFTER UPDATE
@@ -1241,8 +1159,6 @@ BEGIN
 END;
 $$;
 
--- alter function logged_action_type_from_int(integer) owner to hangar;
-
 CREATE FUNCTION websearch_to_tsquery_postfix(dictionary regconfig, query text) RETURNS tsquery
     IMMUTABLE
     STRICT
@@ -1265,5 +1181,3 @@ BEGIN
     RETURN init && (websearch_to_tsquery(dictionary, last) || to_tsquery('simple', last || ':*'));
 END;
 $$;
-
--- alter function websearch_to_tsquery_postfix(regconfig, text) owner to hangar;

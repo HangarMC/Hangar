@@ -112,6 +112,7 @@ export default {
         'http://localhost:8080/signup',
         'http://localhost:8080/login',
         'http://localhost:8080/logout',
+        'http://localhost:8080/refresh',
         'http://localhost:8080/v2/api-docs/',
     ],
 

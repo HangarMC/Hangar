@@ -29,7 +29,7 @@ import io.papermc.hangar.modelold.viewhelpers.ProjectFlag;
 import io.papermc.hangar.modelold.viewhelpers.ReviewQueueEntry;
 import io.papermc.hangar.modelold.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.modelold.viewhelpers.UserData;
-import io.papermc.hangar.security.annotations.GlobalPermission;
+import io.papermc.hangar.securityold.annotations.GlobalPermission;
 import io.papermc.hangar.serviceold.JobService;
 import io.papermc.hangar.serviceold.OrgService;
 import io.papermc.hangar.serviceold.RoleService;

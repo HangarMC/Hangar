@@ -13,7 +13,7 @@ import io.papermc.hangar.modelold.NamedPermission;
 import io.papermc.hangar.modelold.viewhelpers.VersionData;
 import io.papermc.hangar.modelold.viewhelpers.VersionReview;
 import io.papermc.hangar.modelold.viewhelpers.VersionReviewMessage;
-import io.papermc.hangar.security.annotations.GlobalPermission;
+import io.papermc.hangar.securityold.annotations.GlobalPermission;
 import io.papermc.hangar.serviceold.NotificationService;
 import io.papermc.hangar.serviceold.ReviewService;
 import io.papermc.hangar.serviceold.UserActionLogService;

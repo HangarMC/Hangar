@@ -1,10 +1,10 @@
 package io.papermc.hangar.controller.api.v1;
 
 import io.papermc.hangar.controller.api.v1.interfaces.IUsersController;
-import io.papermc.hangar.controller.extras.requestmodels.api.RequestPagination;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.project.ProjectCompact;
+import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
 import io.papermc.hangar.service.api.UsersApiService;
 import org.jetbrains.annotations.NotNull;

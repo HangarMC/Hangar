@@ -1,4 +1,4 @@
-import { ActionTree, MutationTree, GetterTree } from 'vuex';
+import { ActionTree, GetterTree, MutationTree } from 'vuex';
 import { Context } from '@nuxt/types';
 import { IPermission, IProjectCategory } from 'hangar-api';
 import { NamedPermission, ProjectCategory } from '~/types/enums';
@@ -22,12 +22,12 @@ export const mutations: MutationTree<RootState> = {
 export const actions: ActionTree<RootState, RootState> = {
     async nuxtServerInit({ commit }, { $api }: Context) {
         try {
-            const categoryResult = await $api.requestInternal<IProjectCategory[]>('data/categories');
+            const categoryResult = await $api.requestInternal<IProjectCategory[]>('data/categories', false);
             commit(
                 'SET_PROJECT_CATEGORIES',
                 convertToMap<ProjectCategory, IProjectCategory>(categoryResult, (value) => value.apiName)
             );
-            const permissionResultTemp = await $api.requestInternal<{ value: string; frontendName: string; permission: string }[]>('data/permissions');
+            const permissionResultTemp = await $api.requestInternal<{ value: string; frontendName: string; permission: string }[]>('data/permissions', false);
             const permissionResult: IPermission[] = permissionResultTemp.map(({ value, frontendName, permission }) => ({
                 value,
                 frontendName,

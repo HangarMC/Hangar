@@ -1,10 +1,10 @@
 package io.papermc.hangar.controller.api.v1;
 
 import io.papermc.hangar.controller.api.v1.interfaces.IVersionsController;
-import io.papermc.hangar.controller.extras.requestmodels.api.RequestPagination;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
+import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.service.api.VersionsApiService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;

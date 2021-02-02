@@ -21,6 +21,10 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS: false
     date-format: com.fasterxml.jackson.databind.util.StdDateFormat
 
+logging:
+  level:
+    root: TRACE
+
 fake-user:
   enabled: false
   id: -2
@@ -105,6 +109,9 @@ hangar:
   security:
     secure: false
     unsafe-download-max-age: 600000
+    token-issuer: "Hangar"
+    token-secret: "secret!"
+    token-expiry: 86400 # one day for now
     api:
       url: "http://auth:8000"
       avatar-url: "http://localhost:8000/avatar/%s?size=120x120" # only comment in if you run auth locally

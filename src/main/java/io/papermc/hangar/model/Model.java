@@ -1,6 +1,7 @@
 package io.papermc.hangar.model;
 
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
 public abstract class Model {
 
@@ -12,6 +13,19 @@ public abstract class Model {
 
     public OffsetDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Model model = (Model) o;
+        return createdAt.equals(model.createdAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(createdAt);
     }
 
     @Override
