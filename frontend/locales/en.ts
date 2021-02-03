@@ -133,6 +133,17 @@ const msgs: LocaleMessageObject = {
             create: 'Create',
         },
     },
+    notifications: {
+        title: 'Notifications',
+        invites: 'Invites',
+        readAll: 'Mark all as read',
+        filterUnread: 'Unread',
+        filterRead: 'Read',
+        filterAll: 'All',
+        filterInviteOrg: 'Organizations',
+        filterInviteProject: 'Projects',
+        filterInviteAll: 'All',
+    },
     visibility: {
         notice: {
             needsChanges: 'This project requires changes: {0}',
