@@ -120,6 +120,19 @@ const msgs: LocaleMessageObject = {
         },
         sendForApproval: 'Send for approval',
     },
+    organization: {
+        new: {
+            title: 'Create a new Organization',
+            text: 'Organizations allow you group users provide closer collaboration between them within your projects on Hangar.',
+            name: 'Organization Name',
+        },
+    },
+    form: {
+        userSelection: {
+            addUser: 'Add User...',
+            create: 'Create',
+        },
+    },
     visibility: {
         notice: {
             needsChanges: 'This project requires changes: {0}',
