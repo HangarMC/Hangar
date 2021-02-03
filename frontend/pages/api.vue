@@ -18,31 +18,29 @@ declare global {
 @Component
 export default class ApiPage extends Vue {
     mounted() {
-        window.onload = () => {
-            window.ui = SwaggerUIBundle({
-                url: '/v2/api-docs/',
-                dom_id: '#swagger-ui',
-                deepLinking: true,
-                presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.SwaggerUIStandalonePreset],
-                plugins: [SwaggerUIBundle.plugins.DownloadUrl],
-                layout: 'BaseLayout',
-                requestInterceptor: (req) => {
-                    if (!req.loadSpec) {
-                        const promise = this.$api.getSession().then((session) => {
-                            req.headers.authorization = 'HangarApi session="' + session + '"';
-                            return req;
-                        });
-                        // Workaround for fixing the curl URL
-                        // https://github.com/swagger-api/swagger-ui/issues/4778#issuecomment-456403631
-                        // @ts-ignore
-                        promise.url = req.url;
-                        return promise;
-                    } else {
+        window.ui = SwaggerUIBundle({
+            url: '/v2/api-docs/',
+            dom_id: '#swagger-ui',
+            deepLinking: true,
+            presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.SwaggerUIStandalonePreset],
+            plugins: [SwaggerUIBundle.plugins.DownloadUrl],
+            layout: 'BaseLayout',
+            requestInterceptor: (req) => {
+                if (!req.loadSpec) {
+                    const promise = this.$api.getSession().then((session) => {
+                        req.headers.authorization = 'HangarApi session="' + session + '"';
                         return req;
-                    }
-                },
-            } as SwaggerConfigs) as SwaggerUIBundleType;
-        };
+                    });
+                    // Workaround for fixing the curl URL
+                    // https://github.com/swagger-api/swagger-ui/issues/4778#issuecomment-456403631
+                    // @ts-ignore
+                    promise.url = req.url;
+                    return promise;
+                } else {
+                    return req;
+                }
+            },
+        } as SwaggerConfigs) as SwaggerUIBundleType;
     }
 }
 </script>
