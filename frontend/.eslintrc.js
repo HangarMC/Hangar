@@ -19,5 +19,6 @@ module.exports = {
                 allowModifiers: true,
             },
         ],
+        'vue/valid-template-root': 'off', // dum false positive
     },
 };

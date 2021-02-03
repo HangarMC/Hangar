@@ -60,4 +60,8 @@ export default class UserAvatar extends Vue {
     width: 50px;
     height: 50px;
 }
+.user-avatar-xs {
+    width: 32px;
+    height: 32px;
+}
 </style>
