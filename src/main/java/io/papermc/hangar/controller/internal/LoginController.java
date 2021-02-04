@@ -1,25 +1,28 @@
 package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.controller.HangarController;
+import io.papermc.hangar.controller.api.RefreshResponse;
 import io.papermc.hangar.exceptions.HangarException;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.sso.AuthUser;
 import io.papermc.hangar.model.internal.sso.URLWithNonce;
-import io.papermc.hangar.security.internal.HangarAuthenticationFilter;
+import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.AuthenticationService;
 import io.papermc.hangar.service.TokenService;
-import io.papermc.hangar.service.internal.RoleService;
 import io.papermc.hangar.service.internal.SSOService;
 import io.papermc.hangar.service.internal.UserService;
+import io.papermc.hangar.service.internal.roles.GlobalRoleService;
 import io.papermc.hangar.util.AlertUtil;
 import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -33,15 +36,15 @@ public class LoginController extends HangarController {
     private final AuthenticationService authenticationService;
     private final SSOService ssoService;
     private final UserService userService;
-    private final RoleService roleService;
+    private final GlobalRoleService globalRoleService;
     private final TokenService tokenService;
 
     @Autowired
-    public LoginController(AuthenticationService authenticationService, SSOService ssoService, UserService userService, RoleService roleService, TokenService tokenService) {
+    public LoginController(AuthenticationService authenticationService, SSOService ssoService, UserService userService, GlobalRoleService globalRoleService, TokenService tokenService) {
         this.authenticationService = authenticationService;
         this.ssoService = ssoService;
         this.userService = userService;
-        this.roleService = roleService;
+        this.globalRoleService = globalRoleService;
         this.tokenService = tokenService;
     }
 
@@ -51,8 +54,8 @@ public class LoginController extends HangarController {
             hangarConfig.checkDebug();
 
             UserTable fakeUser = authenticationService.loginAsFakeUser();
-            String token = tokenService.createTokenForUser(fakeUser, response);
-            return new RedirectView(returnUrl + "?token=" + token);
+            tokenService.createTokenForUser(fakeUser);
+            return new RedirectView(returnUrl);
         } else {
             try {
                 response.addCookie(new Cookie("url", returnUrl));
@@ -73,16 +76,22 @@ public class LoginController extends HangarController {
         }
 
         UserTable user = userService.getOrCreate(authUser.getUserName(), authUser);
-        roleService.removeAllGlobalRoles(user.getId());
-        authUser.getGlobalRoles().forEach(globalRole -> roleService.addRole(globalRole.create(null, user.getId(), true)));
+        globalRoleService.removeAllGlobalRoles(user.getId());
+        authUser.getGlobalRoles().forEach(globalRole -> globalRoleService.addRole(globalRole.create(null, user.getId(), true)));
         authenticationService.setAuthenticatedUser(user);
-        String token = tokenService.createTokenForUser(user, response);
+        String token = tokenService.createTokenForUser(user);
         return redirectBackOnSuccessfulLogin(url + "?token=" + token, user);
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity<String> refreshToken(@CookieValue(name = HangarAuthenticationFilter.AUTH_NAME + "_REFRESH", required = false) String refreshToken) {
-        return ResponseEntity.ok(tokenService.refreshToken(refreshToken, response));
+    public ResponseEntity<RefreshResponse> refreshToken(@CookieValue(name = SecurityConfig.AUTH_NAME_REFRESH_COOKIE, required = false) String refreshToken) {
+        return ResponseEntity.ok(tokenService.refreshToken(refreshToken));
+    }
+
+    @GetMapping("/invalidate")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void invalidateRefreshToken(@CookieValue(name = SecurityConfig.AUTH_NAME_REFRESH_COOKIE) String refreshToken) {
+        tokenService.invalidateToken(refreshToken);
     }
 
 //    @GetMapping("/login")

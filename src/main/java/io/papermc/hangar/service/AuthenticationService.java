@@ -18,15 +18,14 @@ import io.papermc.hangar.model.db.auth.ApiKeyTable;
 import io.papermc.hangar.model.db.auth.ApiSessionTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.roles.GlobalRole;
-import io.papermc.hangar.security.internal.HangarAuthenticationToken;
+import io.papermc.hangar.security.HangarAuthenticationToken;
 import io.papermc.hangar.service.internal.OrganizationService;
-import io.papermc.hangar.service.internal.RoleService;
 import io.papermc.hangar.service.internal.UserService;
+import io.papermc.hangar.service.internal.roles.GlobalRoleService;
 import io.papermc.hangar.util.AuthUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -54,12 +53,11 @@ public class AuthenticationService extends HangarService {
     private final VisibilityService visibilityService;
     private final OrganizationService organizationService;
     private final UserService userService;
-    private final RoleService roleService;
-    private final AuthenticationManager authenticationManager;
+    private final GlobalRoleService globalRoleService;
 
     private final HttpServletRequest request;
 
-    public AuthenticationService(HangarConfig hangarConfig, HangarDao<HangarRequestDAO> hangarRequestDAO, HangarDao<ApiSessionDAO> apiSessionDAO, HangarDao<ProjectDAO> projectDAO, HangarDao<ApiKeyDAO> apiKeyDAO, PermissionService permissionService, VisibilityService visibilityService, OrganizationService organizationService, UserService userService, RoleService roleService, AuthenticationManager authenticationManager, HttpServletRequest request) {
+    public AuthenticationService(HangarConfig hangarConfig, HangarDao<HangarRequestDAO> hangarRequestDAO, HangarDao<ApiSessionDAO> apiSessionDAO, HangarDao<ProjectDAO> projectDAO, HangarDao<ApiKeyDAO> apiKeyDAO, PermissionService permissionService, VisibilityService visibilityService, OrganizationService organizationService, UserService userService, GlobalRoleService globalRoleService, HttpServletRequest request) {
         this.hangarConfig = hangarConfig;
         this.hangarRequestDAO = hangarRequestDAO.get();
         this.apiSessionDAO = apiSessionDAO.get();
@@ -69,8 +67,7 @@ public class AuthenticationService extends HangarService {
         this.visibilityService = visibilityService;
         this.organizationService = organizationService;
         this.userService = userService;
-        this.roleService = roleService;
-        this.authenticationManager = authenticationManager;
+        this.globalRoleService = globalRoleService;
         this.request = request;
     }
 
@@ -236,7 +233,7 @@ public class AuthenticationService extends HangarService {
 
             userTable = userService.insertUser(userTable);
 
-            roleService.addRole(GlobalRole.HANGAR_ADMIN.create(null, userTable.getId(), true));
+            globalRoleService.addRole(GlobalRole.HANGAR_ADMIN.create(null, userTable.getId(), true));
         }
         setAuthenticatedUser(userTable);
         return userTable;

@@ -111,7 +111,8 @@ hangar:
     unsafe-download-max-age: 600000
     token-issuer: "Hangar"
     token-secret: "secret!"
-    token-expiry: 86400 # one day for now
+    token-expiry: 300 # seconds
+    refresh-token-expiry: 30 # days
     api:
       url: "http://auth:8000"
       avatar-url: "http://localhost:8000/avatar/%s?size=120x120" # only comment in if you run auth locally

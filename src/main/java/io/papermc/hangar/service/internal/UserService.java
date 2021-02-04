@@ -7,6 +7,7 @@ import io.papermc.hangar.model.internal.sso.AuthUser;
 import io.papermc.hangar.model.internal.sso.SsoSyncData;
 import io.papermc.hangar.model.roles.GlobalRole;
 import io.papermc.hangar.service.HangarService;
+import io.papermc.hangar.service.internal.roles.GlobalRoleService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,12 @@ import java.util.function.Function;
 public class UserService extends HangarService {
 
     private final UserDAO userDAO;
-    private final RoleService roleService;
+    private final GlobalRoleService globalRoleService;
 
     @Autowired
-    public UserService(HangarDao<UserDAO> userDAO, RoleService roleService) {
+    public UserService(HangarDao<UserDAO> userDAO, GlobalRoleService globalRoleService) {
         this.userDAO = userDAO.get();
-        this.roleService = roleService;
+        this.globalRoleService = globalRoleService;
     }
 
     public UserTable insertUser(UserTable userTable) {
@@ -87,11 +88,11 @@ public class UserService extends HangarService {
         }
 
         for (GlobalRole addGroup : syncData.getAddGroups()) {
-            roleService.addRole(addGroup.create(null, user.getId(), true));
+            globalRoleService.addRole(addGroup.create(null, user.getId(), true));
         }
 
         for (GlobalRole removeGroup : syncData.getRemoveGroups()) {
-            roleService.deleteRole(removeGroup.create(null, user.getId(), true));
+            globalRoleService.deleteRole(removeGroup.create(null, user.getId(), true));
         }
     }
 }

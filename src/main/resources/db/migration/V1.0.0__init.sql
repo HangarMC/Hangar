@@ -46,7 +46,7 @@ CREATE TABLE users
     tagline varchar(255),
     join_date timestamp with time zone,
     read_prompts integer[] DEFAULT '{}'::integer[] NOT NULL,
-    is_locked boolean DEFAULT FALSE NOT NULL,
+    locked boolean DEFAULT FALSE NOT NULL,
     language varchar(16)
 );
 
@@ -257,7 +257,7 @@ CREATE TABLE user_project_roles
         CONSTRAINT user_project_roles_project_id_fkey
             REFERENCES projects
             ON DELETE CASCADE,
-    is_accepted boolean DEFAULT FALSE NOT NULL,
+    accepted boolean DEFAULT FALSE NOT NULL,
     CONSTRAINT user_project_roles_user_id_role_type_id_project_id_key
         UNIQUE (user_id, role_type, project_id)
 );
@@ -373,7 +373,7 @@ CREATE TABLE user_organization_roles
         CONSTRAINT user_organization_roles_organization_id_fkey
             REFERENCES organizations
             ON DELETE CASCADE,
-    is_accepted boolean default false NOT NULL,
+    accepted boolean default false NOT NULL,
     CONSTRAINT user_organization_roles_user_id_role_type_id_organization_id_ke
         UNIQUE (user_id, role_type, organization_id)
 );
@@ -813,12 +813,12 @@ CREATE TABLE user_refresh_tokens
         CONSTRAINT user_refresh_tokens_user_id_fkey
             REFERENCES users
             ON DELETE CASCADE,
-    CONSTRAINT user_refresh_tokens_user_id_unique
-        UNIQUE (user_id),
-    token varchar(128) NOT NULL,
-    CONSTRAINT user_refresh_tokens_token_unique
-        UNIQUE (token)
+    last_updated timestamp with time zone NOT NULL,
+    token uuid NOT NULL CONSTRAINT user_refresh_tokens_token_unique UNIQUE,
+    device_id uuid NOT NULL CONSTRAINT user_refresh_tokens_device_id_unique UNIQUE
 );
+
+CREATE INDEX user_refresh_tokens_token_idx ON user_refresh_tokens (token);
 
 CREATE VIEW project_members_all(id, user_id) AS
 SELECT p.id,
@@ -952,7 +952,7 @@ SELECT pm.project_id,
        pm.user_id,
        COALESCE(bit_or(r.permission), '0'::bit(64)) AS permission
 FROM project_members pm
-         JOIN user_project_roles rp ON pm.project_id = rp.project_id AND pm.user_id = rp.user_id AND rp.is_accepted
+         JOIN user_project_roles rp ON pm.project_id = rp.project_id AND pm.user_id = rp.user_id AND rp.accepted
          JOIN roles r ON rp.role_type::text = r.name::text
 GROUP BY pm.project_id, pm.user_id;
 
@@ -962,7 +962,7 @@ SELECT om.organization_id,
        COALESCE(bit_or(r.permission), '0'::bit(64)) AS permission
 FROM organization_members om
          JOIN user_organization_roles ro
-              ON om.organization_id = ro.organization_id AND om.user_id = ro.user_id AND ro.is_accepted
+              ON om.organization_id = ro.organization_id AND om.user_id = ro.user_id AND ro.accepted
          JOIN roles r ON ro.role_type::text = r.name::text
 GROUP BY om.organization_id, om.user_id;
 

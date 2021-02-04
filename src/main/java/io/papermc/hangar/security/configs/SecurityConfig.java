@@ -1,8 +1,8 @@
 package io.papermc.hangar.security.configs;
 
-import io.papermc.hangar.security.entrypoints.HangarAuthenticationEntryPoint;
-import io.papermc.hangar.security.internal.HangarAuthenticationFilter;
-import io.papermc.hangar.security.internal.HangarAuthenticationProvider;
+import io.papermc.hangar.security.HangarAuthenticationEntryPoint;
+import io.papermc.hangar.security.HangarAuthenticationFilter;
+import io.papermc.hangar.security.HangarAuthenticationProvider;
 import io.papermc.hangar.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +22,10 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    public static final String AUTH_NAME = "HangarAuth";
+    public static final String AUTH_NAME_REFRESH_COOKIE = AUTH_NAME + "_REFRESH";
+
+    private static final RequestMatcher API_MATCHER = new AndRequestMatcher(new AntPathRequestMatcher("/api/**"), new NegatedRequestMatcher(new AntPathRequestMatcher("/api/v1/authenticate/**")));
     private static final RequestMatcher PUBLIC_API_MATCHER = new AndRequestMatcher(new AntPathRequestMatcher("/api/v1/**"), new NegatedRequestMatcher(new AntPathRequestMatcher("/api/v1/authenticate/**")));
     private static final RequestMatcher INTERNAL_API_MATCHER = new AntPathRequestMatcher("/api/internal/**");
 
@@ -43,11 +47,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Disable session creation
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 
-                // Enable cors except on public API and certain other routes
-                .csrf().ignoringAntMatchers("/api/v1/**", "/api/sync_sso", "/paypal/ipn").and()
+                // Disable csrf (shouldn't need it as its just a backend api now)
+                .csrf().disable()
 
                 // Custom auth filters
-                .addFilterBefore(new HangarAuthenticationFilter(INTERNAL_API_MATCHER, tokenService, authenticationManager()), AnonymousAuthenticationFilter.class)
+                .addFilterBefore(new HangarAuthenticationFilter(API_MATCHER, tokenService, authenticationManager()), AnonymousAuthenticationFilter.class)
 
                 .exceptionHandling().authenticationEntryPoint(new HangarAuthenticationEntryPoint()).and()
 

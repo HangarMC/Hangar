@@ -11,7 +11,7 @@
                     <v-icon color="white" class="dropdown-icon">mdi-chevron-down</v-icon>
                 </v-app-bar-nav-icon>
             </template>
-            <dropdown :controls="dropdown" />
+            <Dropdown :controls="dropdown" />
         </v-menu>
 
         <v-spacer></v-spacer>
@@ -27,7 +27,7 @@
                         <v-icon small color="white" class="dropdown-icon">mdi-chevron-down</v-icon>
                     </v-btn>
                 </template>
-                <dropdown :controls="newControls" />
+                <Dropdown :controls="newControls" />
             </v-menu>
 
             <v-menu bottom offset-y transition="slide-y-transition">
@@ -37,7 +37,7 @@
                         <v-icon small color="white" class="dropdown-icon">mdi-chevron-down</v-icon>
                     </v-btn>
                 </template>
-                <dropdown :controls="userControls" />
+                <Dropdown :controls="userControls" />
             </v-menu>
         </template>
         <template v-else>
@@ -49,9 +49,13 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
-import { Control } from '~/components/dropdown.vue';
+import Dropdown, { Control } from '~/components/layouts/Dropdown.vue';
 
-@Component
+@Component({
+    components: {
+        Dropdown,
+    },
+})
 export default class Header extends Vue {
     get dropdown(): Control[] {
         const controls: Control[] = [];

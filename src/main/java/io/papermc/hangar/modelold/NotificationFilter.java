@@ -5,26 +5,22 @@ import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
 @JsonFormat(shape = Shape.OBJECT)
 public enum NotificationFilter {
-    UNREAD(0, "unread", "notification.empty.unread", "notification.unread", "n.read = false"),
-    READ(1, "read", "notification.empty.read", "notification.read", "n.read = true"),
-    ALL(2, "all", "notification.empty.all", "notification.all", "true");
+    UNREAD("unread", "notification.empty.unread", "notification.unread", "n.read = false"),
+    READ( "read", "notification.empty.read", "notification.read", "n.read = true"),
+    ALL( "all", "notification.empty.all", "notification.all", "true");
 
-    private final long value;
     private final String name;
     private final String emptyMessage;
     private final String title;
     private final String filter;
 
-    NotificationFilter(long value, String name, String emptyMessage, String title, String filter) {
-        this.value = value;
+    public static final NotificationFilter[] VALUES = values();
+
+    NotificationFilter(String name, String emptyMessage, String title, String filter) {
         this.name = name;
         this.emptyMessage = emptyMessage;
         this.title = title;
         this.filter = filter;
-    }
-
-    public long getValue() {
-        return value;
     }
 
     public String getName() {
@@ -41,11 +37,5 @@ public enum NotificationFilter {
 
     public String getFilter() {
         return filter;
-    }
-
-    private static final NotificationFilter[] VALUES = values();
-
-    public static NotificationFilter[] getValues() {
-        return VALUES;
     }
 }

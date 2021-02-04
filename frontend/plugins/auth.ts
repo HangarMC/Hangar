@@ -2,13 +2,13 @@ import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
 import { User } from 'hangar-api';
 
-const createAuth = ({ app: { $cookies }, store, $api }: Context) => {
+const createAuth = ({ app: { $cookies }, $axios, store, $api }: Context) => {
     class Auth {
         login(redirect: string): void {
             $cookies.set('returnRoute', redirect, {
                 path: '/',
                 maxAge: 120,
-                // secure: true, // this doesn't work for me for some reason
+                secure: process.env.NODE_ENV === 'production',
             });
             location.replace(`/login?returnUrl=http://localhost:3000${redirect}`);
         }
@@ -19,11 +19,16 @@ const createAuth = ({ app: { $cookies }, store, $api }: Context) => {
         }
 
         logout(reload = true): void {
-            $api.invalidateSession();
+            store.commit('auth/SET_USER', null);
+            store.commit('auth/SET_TOKEN', null);
+            store.commit('auth/SET_AUTHED', false);
+            $axios.get('/invalidate');
+            $cookies.remove('HangarAuth_REFRESH', {
+                path: '/',
+            });
             if (reload) {
                 location.reload();
             }
-            // location.replace('/logout'); // TODO uncomment (maybe have a "full log out" system separate so you dont have to log out from all paper sites?)
         }
 
         updateUser(token: string): Promise<void> {
@@ -34,7 +39,7 @@ const createAuth = ({ app: { $cookies }, store, $api }: Context) => {
                 })
                 .catch((err) => {
                     console.log(err);
-                    this.logout(false);
+                    this.logout(process.client);
                 });
         }
     }

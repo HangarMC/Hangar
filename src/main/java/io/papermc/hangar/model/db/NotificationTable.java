@@ -1,6 +1,6 @@
 package io.papermc.hangar.model.db;
 
-import io.papermc.hangar.model.NotificationType;
+import io.papermc.hangar.model.internal.user.notifications.NotificationType;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 

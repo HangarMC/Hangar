@@ -10,8 +10,8 @@ import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.db.modelold.UserOrganizationRolesTable;
 import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
-import io.papermc.hangar.model.NotificationType;
-import io.papermc.hangar.modelold.InviteFilter;
+import io.papermc.hangar.model.internal.user.notifications.InviteFilter;
+import io.papermc.hangar.model.internal.user.notifications.NotificationType;
 import io.papermc.hangar.modelold.NotificationFilter;
 import io.papermc.hangar.modelold.viewhelpers.InviteSubject;
 import io.papermc.hangar.modelold.viewhelpers.UserRole;
@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-@Service
+@Service("oldNotificationService")
 public class NotificationService extends HangarService {
 
     private final HangarDao<NotificationsDao> notificationsDao;

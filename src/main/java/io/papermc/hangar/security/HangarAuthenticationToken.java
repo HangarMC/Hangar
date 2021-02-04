@@ -1,9 +1,10 @@
-package io.papermc.hangar.security.internal;
+package io.papermc.hangar.security;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import io.papermc.hangar.model.internal.user.HangarUser;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -12,14 +13,13 @@ public class HangarAuthenticationToken extends AbstractAuthenticationToken {
     private static final long serialVersionUID = 3847099128940870714L;
 
     private final DecodedJWT token;
-    private final HangarUser user;
+    private final HangarPrincipal user;
 
     // Used by HangarAuthenticationProvider once user is verified
-    public HangarAuthenticationToken(HangarUser user, DecodedJWT token) {
+    public HangarAuthenticationToken(HangarPrincipal user, DecodedJWT token) {
         super(AuthorityUtils.createAuthorityList("ROLE_USER"));
         this.token = token;
         this.user = user;
-        System.out.println(user);
         super.setAuthenticated(true);
     }
 
@@ -31,17 +31,24 @@ public class HangarAuthenticationToken extends AbstractAuthenticationToken {
     }
 
     @Override
-    public String getDetails() {
-        return token.getSubject();
-    }
-
-    @Override
     public DecodedJWT getCredentials() {
         return token;
     }
 
     @Override
-    public HangarUser getPrincipal() {
+    public String getName() {
+        if (user == null) {
+            throw new AuthenticationServiceException("This authentication token is not authenticated, so it doesn't have a user");
+        }
+        return user.getUserName();
+    }
+
+    @Override
+    @NotNull
+    public HangarPrincipal getPrincipal() {
+        if (user == null) {
+            throw new AuthenticationServiceException("This authentication token is not authenticated, so it doesn't have a user");
+        }
         return user;
     }
 

@@ -11,7 +11,7 @@ import io.papermc.hangar.db.daoold.UserDao;
 import io.papermc.hangar.db.modelold.OrganizationsTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.exceptions.HangarException;
-import io.papermc.hangar.model.NotificationType;
+import io.papermc.hangar.model.internal.user.notifications.NotificationType;
 import io.papermc.hangar.modelold.Role;
 import io.papermc.hangar.modelold.viewhelpers.UserData;
 import io.papermc.hangar.serviceold.sso.AuthUser;

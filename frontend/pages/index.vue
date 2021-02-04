@@ -19,7 +19,7 @@
             </v-col>
 
             <v-col cols="12" sm="2" md="2">
-                <sponsor />
+                <HangarSponsor />
 
                 <v-select></v-select>
 
@@ -59,6 +59,8 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import { PaginatedResult, Project } from 'hangar-api';
+import ProjectList from '~/components/ProjectList.vue';
+import HangarSponsor from '~/components/layouts/Sponsor.vue';
 
 // TODO move somewhere else
 interface Platform {
@@ -66,7 +68,12 @@ interface Platform {
     text: string;
 }
 
-@Component
+@Component({
+    components: {
+        ProjectList,
+        HangarSponsor,
+    },
+})
 export default class Home extends Vue {
     // TODO implement filtering
     projects?: PaginatedResult<Project>;

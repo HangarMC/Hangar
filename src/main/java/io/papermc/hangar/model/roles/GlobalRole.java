@@ -2,13 +2,9 @@ package io.papermc.hangar.model.roles;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.papermc.hangar.db.customtypes.RoleCategory;
-import io.papermc.hangar.db.dao.internal.table.roles.GlobalRoleDAO;
-import io.papermc.hangar.db.dao.internal.table.roles.RoleDAO;
 import io.papermc.hangar.model.Color;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
-import io.papermc.hangar.util.StaticContextAccessor;
-import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,8 +38,6 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
     IRON_DONOR("Iron_Donor",16, Permission.None, "Iron Donor", Color.SILVER, 3L),
     GOLD_DONOR("Gold_Donor",17, Permission.None, "Gold Donor", Color.GOLD, 2L),
     DIAMOND_DONOR("Diamond_Donor",18, Permission.None, "Diamond Donor", Color.LIGHTBLUE, 1L);
-
-    private static final GlobalRoleDAO GLOBAL_ROLE_DAO = StaticContextAccessor.getBean(Jdbi.class).onDemand(GlobalRoleDAO.class);
 
     private final String value;
     private final long roleId;
@@ -116,11 +110,6 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
     @Override
     public GlobalRoleTable create(@Nullable Long principalId, long userId, boolean isAccepted) {
         return new GlobalRoleTable(userId, this);
-    }
-
-    @Override
-    public RoleDAO<GlobalRoleTable> getRoleDAO() {
-        return GLOBAL_ROLE_DAO;
     }
 
     @Override

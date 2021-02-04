@@ -15,11 +15,11 @@ public class UserTable extends Table implements ProjectOwner {
     private String tagline;
     private OffsetDateTime joinDate;
     private List<Integer> readPrompts;
-    private boolean isLocked;
+    private boolean locked;
     private String language;
 
     @JdbiConstructor
-    public UserTable(OffsetDateTime createdAt, @PropagateNull long id, String fullName, String name, String email, String tagline, OffsetDateTime joinDate, List<Integer> readPrompts, boolean isLocked, String language) {
+    public UserTable(OffsetDateTime createdAt, @PropagateNull long id, String fullName, String name, String email, String tagline, OffsetDateTime joinDate, List<Integer> readPrompts, boolean locked, String language) {
         super(createdAt, id);
         this.fullName = fullName;
         this.name = name;
@@ -27,17 +27,17 @@ public class UserTable extends Table implements ProjectOwner {
         this.tagline = tagline;
         this.joinDate = joinDate;
         this.readPrompts = readPrompts;
-        this.isLocked = isLocked;
+        this.locked = locked;
         this.language = language;
     }
 
-    public UserTable(long id, String fullName, String name, String email, List<Integer> readPrompts, boolean isLocked, String language) {
+    public UserTable(long id, String fullName, String name, String email, List<Integer> readPrompts, boolean locked, String language) {
         super(id);
         this.fullName = fullName;
         this.name = name;
         this.email = email;
         this.readPrompts = readPrompts;
-        this.isLocked = isLocked;
+        this.locked = locked;
         this.language = language;
     }
 
@@ -91,13 +91,11 @@ public class UserTable extends Table implements ProjectOwner {
     }
 
     public boolean isLocked() {
-        return isLocked;
+        return locked;
     }
 
-    public boolean getIsLocked() { return isLocked; } // JDBI needs this annoyingly
-
     public void setLocked(boolean locked) {
-        isLocked = locked;
+        this.locked = locked;
     }
 
     public String getLanguage() {
@@ -122,7 +120,7 @@ public class UserTable extends Table implements ProjectOwner {
                 ", tagline='" + tagline + '\'' +
                 ", joinDate=" + joinDate +
                 ", readPrompts=" + readPrompts +
-                ", isLocked=" + isLocked +
+                ", locked=" + locked +
                 ", language='" + language + '\'' +
                 "} " + super.toString();
     }

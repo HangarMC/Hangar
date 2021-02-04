@@ -116,6 +116,11 @@ public class Permission implements Comparable<Permission>, Argument {
         return new Permission(value);
     }
 
+    public static Permission fromBinString(String binString) {
+        if (binString == null) return null;
+        return new Permission(Long.parseLong(binString, 2));
+    }
+
     @Override
     public String toString() {
         return toNamed().toString();

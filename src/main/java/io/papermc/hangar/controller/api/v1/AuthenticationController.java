@@ -3,7 +3,7 @@ package io.papermc.hangar.controller.api.v1;
 import io.papermc.hangar.controller.api.v1.interfaces.IAuthenticationController;
 import io.papermc.hangar.model.api.auth.ApiSession;
 import io.papermc.hangar.model.api.requests.SessionProperties;
-import io.papermc.hangar.security.internal.HangarAuthenticationToken;
+import io.papermc.hangar.security.HangarAuthenticationToken;
 import io.papermc.hangar.service.AuthenticationService;
 import io.papermc.hangar.util.AuthUtils;
 import org.springframework.http.ResponseEntity;

@@ -1,9 +1,17 @@
-package io.papermc.hangar.security.internal;
+package io.papermc.hangar.security;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
+import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.TokenService;
 import org.springframework.core.log.LogMessage;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,8 +30,7 @@ import java.util.stream.Stream;
 
 public class HangarAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    public static final String AUTH_NAME = "HangarAuth";
-    private static final String AUTH_TOKEN_ATTR = "HangarAuthJWTToken";
+    private static final String AUTH_TOKEN_ATTR = SecurityConfig.AUTH_NAME + "JWTToken";
 
     private final TokenService tokenService;
 
@@ -31,20 +38,19 @@ public class HangarAuthenticationFilter extends AbstractAuthenticationProcessing
         super(requiresAuth);
         this.setAuthenticationManager(authenticationManager);
         this.tokenService = tokenService;
-//        this.setAuthenticationSuccessHandler((request, response, authentication) -> request.getRequestDispatcher(request.getRequestURI()).forward(request, response));
     }
 
     @Override
     protected boolean requiresAuthentication(HttpServletRequest request, HttpServletResponse response) {
         if (super.requiresAuthentication(request, response)) {
             Optional<String> token = Stream.of(
-                    Optional.ofNullable(request.getHeader(HttpHeaders.AUTHORIZATION)).map(value -> value.replace(AUTH_NAME, "").trim()),
+                    Optional.ofNullable(request.getHeader(HttpHeaders.AUTHORIZATION)).map(value -> value.replace(SecurityConfig.AUTH_NAME, "").trim()),
                     Optional.ofNullable(request.getParameter("t")),
-                    Arrays.stream(request.getCookies()).filter(c -> c.getName().equals(AUTH_NAME)).map(Cookie::getValue).findFirst()
+                    Optional.ofNullable(request.getCookies()).flatMap(cookies -> Arrays.stream(cookies).filter(c -> c.getName().equals(SecurityConfig.AUTH_NAME)).map(Cookie::getValue).findFirst())
             ).flatMap(Optional::stream).findFirst();
             if (token.isEmpty()) {
                 if (this.logger.isTraceEnabled()) {
-                    logger.trace("Couldn't find a " + AUTH_NAME + " token on the request");
+                    logger.trace("Couldn't find a " + SecurityConfig.AUTH_NAME + " token on the request");
                 }
                 return false;
             }
@@ -56,14 +62,17 @@ public class HangarAuthenticationFilter extends AbstractAuthenticationProcessing
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        // request should ALWAYS have a `jwtToken` attribute here
+        // request should ALWAYS have a `HangarAuthJWTToken` attribute here
         String jwt = (String) request.getAttribute(AUTH_TOKEN_ATTR);
         try {
             HangarAuthenticationToken token = new HangarAuthenticationToken(tokenService.verify(jwt));
             return getAuthenticationManager().authenticate(token);
+        } catch (TokenExpiredException tokenExpiredException) {
+            throw new CredentialsExpiredException("JWT was expired", tokenExpiredException);
+        } catch (JWTVerificationException jwtVerificationException) {
+            throw new BadCredentialsException("Unable to verify the JWT", jwtVerificationException);
         } catch (Exception e) {
-            throw e;
-//            throw new BadCredentialsException("Unable to verify the JWT", e);
+            throw new InternalAuthenticationServiceException(e.getMessage(), e);
         }
     }
 
@@ -74,5 +83,25 @@ public class HangarAuthenticationFilter extends AbstractAuthenticationProcessing
             this.logger.debug(LogMessage.format("Set SecurityContextHolder to %s", authResult));
         }
         chain.doFilter(request, response);
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        SecurityContextHolder.clearContext();
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace("Failed to process authentication request", failed);
+            this.logger.trace("Cleared SecurityContextHolder");
+            this.logger.trace("Handling authentication failure");
+        }
+
+        HttpStatus status;
+        if (failed instanceof CredentialsExpiredException) {
+            status = HttpStatus.FORBIDDEN;
+        } else if (failed instanceof BadCredentialsException) {
+            status = HttpStatus.UNAUTHORIZED;
+        } else {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        throw new HangarApiException(status, failed.getMessage());
     }
 }
