@@ -20,10 +20,10 @@ public interface UserOrganizationRolesDao {
 
     @Timestamped
     @GetGeneratedKeys
-    @SqlUpdate("INSERT INTO user_organization_roles (created_at, user_id, role_type, organization_id, is_accepted) VALUES (:now, :userId, :roleType, :organizationId, :isAccepted)")
+    @SqlUpdate("INSERT INTO user_organization_roles (created_at, user_id, role_type, organization_id, accepted) VALUES (:now, :userId, :roleType, :organizationId, :accepted)")
     UserOrganizationRolesTable insert(@BindBean UserOrganizationRolesTable userOrganizationRolesTable);
 
-    @SqlUpdate("UPDATE user_organization_roles SET role_type = :roleType, is_accepted = :isAccepted WHERE id = :id")
+    @SqlUpdate("UPDATE user_organization_roles SET role_type = :roleType, accepted = :accepted WHERE id = :id")
     void update(@BindBean UserOrganizationRolesTable userOrganizationRolesTable);
 
     @SqlUpdate("DELETE FROM user_organization_roles WHERE organization_id = :orgId AND user_id = :userId")
@@ -42,6 +42,6 @@ public interface UserOrganizationRolesDao {
     List<UserOrganizationRolesTable> getUserRoles(long orgId, long userId);
 
     @RegisterBeanMapper(value = OrganizationsTable.class, prefix = "o")
-    @SqlQuery("SELECT uor.*, o.id o_id, o.created_at o_created_at, o.name o_name, o.owner_id o_owner_id, o.user_id o_user_id FROM user_organization_roles uor LEFT OUTER JOIN organizations o ON uor.organization_id = o.id WHERE uor.user_id = :userId AND uor.is_accepted = false ORDER BY uor.created_at")
+    @SqlQuery("SELECT uor.*, o.id o_id, o.created_at o_created_at, o.name o_name, o.owner_id o_owner_id, o.user_id o_user_id FROM user_organization_roles uor LEFT OUTER JOIN organizations o ON uor.organization_id = o.id WHERE uor.user_id = :userId AND uor.accepted = false ORDER BY uor.created_at")
     Map<UserOrganizationRolesTable, OrganizationsTable> getUnacceptedRoles(long userId);
 }

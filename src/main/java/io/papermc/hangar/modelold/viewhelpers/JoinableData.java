@@ -51,6 +51,6 @@ public class JoinableData<R extends RoleTable, T> {
         if (hasEditMembers || userIsOwner) {
             return members;
         }
-        else return members.entrySet().stream().filter(member -> member.getKey().getIsAccepted()).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+        else return members.entrySet().stream().filter(member -> member.getKey().isAccepted()).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
     }
 }

@@ -20,7 +20,7 @@ public interface ProjectRoleDAO extends RoleDAO<ProjectRoleTable> {
     @Timestamped
     @GetGeneratedKeys
     @SqlUpdate("INSERT INTO user_project_roles (created_at, user_id, role_type, project_id, accepted) " +
-               "VALUES (:now, :userId, :roleType, :projectId, :isAccepted)")
+               "VALUES (:now, :userId, :roleType, :projectId, :accepted)")
     ProjectRoleTable insert(@BindBean ProjectRoleTable table);
 
     @Override

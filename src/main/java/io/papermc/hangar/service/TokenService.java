@@ -73,7 +73,7 @@ public class TokenService extends HangarService {
         UserTable userTable = userService.getUserTable(userRefreshToken.getUserId());
         assert userTable != null;
         String token = _newToken(userTable, userRefreshToken);
-        return new RefreshResponse(token, userRefreshToken.getToken().toString(), hangarConfig.security.getRefreshTokenExpiry(), SecurityConfig.AUTH_NAME_REFRESH_COOKIE);
+        return new RefreshResponse(token, userRefreshToken.getToken().toString(), SecurityConfig.AUTH_NAME_REFRESH_COOKIE);
     }
 
     public void invalidateToken(String refreshToken) {

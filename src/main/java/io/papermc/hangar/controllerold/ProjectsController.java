@@ -236,11 +236,11 @@ public class ProjectsController extends HangarController {
                 roleService.removeRole(projectRole);
                 break;
             case STATUS_ACCEPT:
-                projectRole.setIsAccepted(true);
+                projectRole.setAccepted(true);
                 roleService.updateRole(projectRole);
                 break;
             case STATUS_UNACCEPT:
-                projectRole.setIsAccepted(false);
+                projectRole.setAccepted(false);
                 roleService.updateRole(projectRole);
                 break;
             default:

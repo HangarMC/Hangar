@@ -22,12 +22,12 @@ const createApi = ({ $axios, store, app: { $cookies }, error }: Context) => {
         private refreshToken(): Promise<string | null> {
             return new Promise<string | null>((resolve) => {
                 return $axios
-                    .get<{ token: string; refreshToken: string; expiresIn: number }>('/refresh')
+                    .get<{ token: string; refreshToken: string; cookieName: string }>('/refresh')
                     .then((value) => {
                         store.commit('auth/SET_TOKEN', value.data.token);
-                        $cookies.set('HangarAuth_REFRESH', value.data.refreshToken, {
+                        $cookies.set(value.data.cookieName, value.data.refreshToken, {
                             path: '/',
-                            maxAge: value.data.expiresIn,
+                            expires: new Date(<number>jwtDecode<JwtPayload>(value.data.token).exp * 1000),
                             sameSite: 'strict',
                             secure: process.env.NODE_ENV === 'production',
                         });

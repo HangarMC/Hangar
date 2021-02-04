@@ -11,7 +11,7 @@ public class UserRole<R extends RoleTable> {
 
     public UserRole(R userRole) {
         this.userRole = userRole;
-        this.isAccepted = userRole.getIsAccepted();
+        this.isAccepted = userRole.isAccepted();
         this.role = Role.valueOf(userRole.getRoleType().toUpperCase());
     }
 

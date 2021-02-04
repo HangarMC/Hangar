@@ -6,9 +6,9 @@ public interface RoleTable {
 
     long getId();
 
-    boolean getIsAccepted();
+    boolean isAccepted();
 
-    void setIsAccepted(boolean isAccepted);
+    void setAccepted(boolean isAccepted);
 
     String getRoleType();
 

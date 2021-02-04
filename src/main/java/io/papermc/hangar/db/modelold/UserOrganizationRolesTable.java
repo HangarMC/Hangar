@@ -12,14 +12,14 @@ public class UserOrganizationRolesTable implements RoleTable {
     private long userId;
     private String roleType;
     private long organizationId;
-    private boolean isAccepted;
+    private boolean accepted;
     private Role role;
 
-    public UserOrganizationRolesTable(long userId, String roleType, long organizationId, boolean isAccepted) {
+    public UserOrganizationRolesTable(long userId, String roleType, long organizationId, boolean accepted) {
         this.userId = userId;
         this.roleType = roleType;
         this.organizationId = organizationId;
-        this.isAccepted = isAccepted;
+        this.accepted = accepted;
     }
 
     public UserOrganizationRolesTable() { }
@@ -70,12 +70,12 @@ public class UserOrganizationRolesTable implements RoleTable {
     }
 
 
-    public boolean getIsAccepted() {
-        return isAccepted;
+    public boolean isAccepted() {
+        return accepted;
     }
 
-    public void setIsAccepted(boolean isAccepted) {
-        this.isAccepted = isAccepted;
+    public void setAccepted(boolean isAccepted) {
+        this.accepted = isAccepted;
     }
 
     @Override

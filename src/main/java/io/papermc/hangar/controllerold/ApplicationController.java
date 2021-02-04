@@ -362,7 +362,7 @@ public class ApplicationController extends HangarController {
                 }
                 break;
             case SET_ACCEPTED:
-                userRole.setIsAccepted(true);
+                userRole.setAccepted(true);
                 roleService.updateRole(userRole);
                 break;
             case DELETE_ROLE:

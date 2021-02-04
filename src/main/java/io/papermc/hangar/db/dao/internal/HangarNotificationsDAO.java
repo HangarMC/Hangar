@@ -28,7 +28,7 @@ public interface HangarNotificationsDAO {
             "   FROM user_project_roles upr" +
             "   JOIN projects p ON p.id = upr.project_id" +
             "   WHERE upr.user_id = :userId " +
-            "       AND upr.is_accepted = FALSE" +
+            "       AND upr.accepted = FALSE" +
             "   ORDER BY upr.created_at")
     List<HangarInvite.HangarProjectInvite> getProjectInvites(long userId);
 
@@ -41,7 +41,7 @@ public interface HangarNotificationsDAO {
             "   FROM user_organization_roles uor" +
             "   JOIN organizations o ON o.id = uor.organization_id" +
             "   WHERE uor.user_id = :userId" +
-            "       AND uor.is_accepted = FALSE" +
+            "       AND uor.accepted = FALSE" +
             "   ORDER BY uor.created_at")
     List<HangarInvite.HangarOrganizationInvite> getOrganizationInvites(long userId);
 }

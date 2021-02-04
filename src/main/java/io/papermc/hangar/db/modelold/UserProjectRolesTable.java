@@ -70,11 +70,11 @@ public class UserProjectRolesTable implements RoleTable {
     }
 
 
-    public boolean getIsAccepted() {
+    public boolean isAccepted() {
         return isAccepted;
     }
 
-    public void setIsAccepted(boolean isAccepted) {
+    public void setAccepted(boolean isAccepted) {
         this.isAccepted = isAccepted;
     }
 
