@@ -22,12 +22,12 @@ const createApi = ({ $axios, store, app: { $cookies }, error }: Context) => {
         private refreshToken(): Promise<string | null> {
             return new Promise<string | null>((resolve) => {
                 return $axios
-                    .get<{ token: string; refreshToken: string; cookieName: string }>('/refresh')
+                    .get<{ token: string; refreshToken: string; cookieName: string; expiresIn: number }>('/refresh')
                     .then((value) => {
                         store.commit('auth/SET_TOKEN', value.data.token);
                         $cookies.set(value.data.cookieName, value.data.refreshToken, {
                             path: '/',
-                            expires: new Date(<number>jwtDecode<JwtPayload>(value.data.token).exp * 1000),
+                            expires: new Date(Date.now() + value.data.expiresIn * 1000),
                             sameSite: 'strict',
                             secure: process.env.NODE_ENV === 'production',
                         });
@@ -83,7 +83,7 @@ const createApi = ({ $axios, store, app: { $cookies }, error }: Context) => {
             if (!decodedToken.exp) {
                 return false;
             }
-            return decodedToken.exp * 1000 > Date.now();
+            return decodedToken.exp * 1000 > Date.now() - 10 * 1000; // check against 10 seconds earlier to mitigate tokens expiring mid-request
         }
 
         private _request<T>(url: string, token: string | null, method: AxiosRequestConfig['method'], data: object): Promise<T> {

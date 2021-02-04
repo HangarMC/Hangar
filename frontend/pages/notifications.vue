@@ -132,6 +132,7 @@ export default class NotificationsPage extends Vue {
     async fetch() {
         this.notifications = await this.$api.requestInternal<HangarNotification[]>('notifications');
         this.invites = await this.$api.requestInternal<Invites>('invites');
+        // TODO remove this test article
         this.invites.projects.push({
             name: 'TestProject',
             roleTableId: 4,
