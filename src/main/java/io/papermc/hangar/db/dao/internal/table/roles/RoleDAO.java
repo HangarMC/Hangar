@@ -5,7 +5,7 @@ import io.papermc.hangar.model.roles.Role;
 
 public interface RoleDAO<T extends RoleTable<? extends Role<T>>> {
 
-    void insert(T table);
+    T insert(T table);
 
     void update(T table);
 

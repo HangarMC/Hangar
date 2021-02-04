@@ -7,13 +7,13 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import { Prop } from 'vue-property-decorator';
-import { Announcement } from 'hangar-api';
+import { Announcement as AnnouncementObject } from 'hangar-api';
 import { PropType } from 'vue';
 
 @Component
-export default class AnnouncementComponent extends Vue {
-    @Prop({ type: Object as PropType<Announcement>, required: true })
-    announcement!: Announcement;
+export default class Announcement extends Vue {
+    @Prop({ type: Object as PropType<AnnouncementObject>, required: true })
+    announcement!: AnnouncementObject;
 }
 </script>
 

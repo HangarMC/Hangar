@@ -1,8 +1,7 @@
 package io.papermc.hangar.db.modelold;
 
 
-import io.papermc.hangar.model.NotificationType;
-
+import io.papermc.hangar.model.internal.user.notifications.NotificationType;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 import java.time.OffsetDateTime;

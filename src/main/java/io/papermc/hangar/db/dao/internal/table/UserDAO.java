@@ -16,12 +16,12 @@ public interface UserDAO {
 
     @Timestamped
     @GetGeneratedKeys
-    @SqlUpdate("INSERT INTO users (id, created_at, full_name, name, email, tagline, join_date, read_prompts, is_locked, language) " +
-               "VALUES (:id, :now, :fullName, :name, :email, :tagline, :now, :readPrompts, :isLocked, :language)")
+    @SqlUpdate("INSERT INTO users (id, created_at, full_name, name, email, tagline, join_date, read_prompts, locked, language) " +
+               "VALUES (:id, :now, :fullName, :name, :email, :tagline, :now, :readPrompts, :locked, :language)")
     UserTable insert(@BindBean UserTable user);
 
     @GetGeneratedKeys
-    @SqlUpdate("UPDATE users SET full_name = :fullName, name = :name, email = :email, tagline = :tagline, read_prompts = :readPrompts, is_locked = :isLocked, language = :language WHERE id = :id")
+    @SqlUpdate("UPDATE users SET full_name = :fullName, name = :name, email = :email, tagline = :tagline, read_prompts = :readPrompts, locked = :locked, language = :language WHERE id = :id")
     UserTable update(@BindBean UserTable user);
 
     @SqlQuery("SELECT * FROM users WHERE id = :id OR name = :name")

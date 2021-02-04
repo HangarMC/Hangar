@@ -1,7 +1,10 @@
 <template>
     <v-stepper v-model="step" vertical>
         <StepperStep :current-step="step" :this-step="1" @continue="step = 2">
-            <v-card class="mb-12 pa-1" min-height="200px" v-html="$t('project.new.step1.text')" />
+            <!--            <v-card class="mb-12 pa-1" min-height="200px" v-html="$t('project.new.step1.text')" />-->
+            <v-card class="mb-12 pa-1" min-height="200px">
+                <v-card-text v-html="$t('project.new.step1.text')"></v-card-text>
+            </v-card>
         </StepperStep>
 
         <StepperStep :current-step="step" :this-step="2" @continue="step = 3" @back="step = 1">
@@ -131,6 +134,9 @@ import StepperStep from '~/components/StepperStep.vue';
 
 @Component({
     components: { StepperStep },
+    head: {
+        title: 'New Project',
+    },
 })
 export default class NewPage extends Vue {
     step = 1;

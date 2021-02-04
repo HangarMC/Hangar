@@ -136,13 +136,22 @@ const msgs: LocaleMessageObject = {
     notifications: {
         title: 'Notifications',
         invites: 'Invites',
+        invited: 'You have been invited to join {0}',
         readAll: 'Mark all as read',
-        filterUnread: 'Unread',
-        filterRead: 'Read',
-        filterAll: 'All',
-        filterInviteOrg: 'Organizations',
-        filterInviteProject: 'Projects',
-        filterInviteAll: 'All',
+        unread: 'Unread',
+        read: 'Read',
+        all: 'All',
+        invite: {
+            all: 'All',
+            projects: 'Projects',
+            organizations: 'Organizations',
+        },
+        empty: {
+            unread: 'You have no unread notifications.',
+            read: 'You have no read notifications.',
+            all: 'You have no notifications.',
+            invites: 'You have no invites',
+        },
     },
     visibility: {
         notice: {

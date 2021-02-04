@@ -7,6 +7,7 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import { Prop } from 'vue-property-decorator';
+import { PropType } from 'vue';
 
 @Component
 export default class UserAvatar extends Vue {
@@ -20,7 +21,7 @@ export default class UserAvatar extends Vue {
     imgSrc!: String;
 
     @Prop()
-    clazz!: String;
+    clazz!: PropType<'user-avatar-md' | 'user-avatar-sm' | 'user-avatar-xs'>;
 
     // attribute map // TODO implement
     @Prop()

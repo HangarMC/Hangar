@@ -6,6 +6,7 @@ import org.jdbi.v3.sqlobject.config.RegisterColumnMapperFactory;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
@@ -17,12 +18,13 @@ public interface ProjectRoleDAO extends RoleDAO<ProjectRoleTable> {
 
     @Override
     @Timestamped
-    @SqlUpdate("INSERT INTO user_project_roles (created_at, user_id, role_type, project_id, is_accepted) " +
+    @GetGeneratedKeys
+    @SqlUpdate("INSERT INTO user_project_roles (created_at, user_id, role_type, project_id, accepted) " +
                "VALUES (:now, :userId, :roleType, :projectId, :isAccepted)")
-    void insert(@BindBean ProjectRoleTable table);
+    ProjectRoleTable insert(@BindBean ProjectRoleTable table);
 
     @Override
-    @SqlUpdate("UPDATE user_project_roles SET role_type = :roleType, is_accepted = :isAccepted WHERE id = :id")
+    @SqlUpdate("UPDATE user_project_roles SET role_type = :roleType, accepted = :accepted WHERE id = :id")
     void update(@BindBean ProjectRoleTable table);
 
     @Override

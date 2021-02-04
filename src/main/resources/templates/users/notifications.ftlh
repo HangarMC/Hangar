@@ -4,7 +4,7 @@
 <#import "*/utils/userAvatar.ftlh" as userAvatar>
 
 <#-- @ftlvariable name="NotificationFilter" type="io.papermc.hangar.modelold.NotificationFilter" -->
-<#-- @ftlvariable name="InviteFilter" type="io.papermc.hangar.modelold.InviteFilter" -->
+<#-- @ftlvariable name="InviteFilter" type="io.papermc.hangar.model.internal.user.notifications.InviteFilter" -->
 <#assign NotificationFilter=@helper["io.papermc.hangar.modelold.NotificationFilter"] />
 <#assign InviteFilter=@helper["io.papermc.hangar.modelold.InviteFilter"] />
 <#assign scriptsVar>
@@ -16,8 +16,8 @@
         window.INVITES = ${utils.serializeMap(invites)};
 
         window.FILTERS = {
-            NOTIFICATIONS: ${mapper.valueToTree(NotificationFilter.getValues())},
-            INVITES: ${mapper.valueToTree(InviteFilter.getValues())},
+            NOTIFICATIONS: ${mapper.valueToTree(NotificationFilter.VALUES)},
+            INVITES: ${mapper.valueToTree(InviteFilter.VALUES)},
         };
         </#outputformat>
     </script>

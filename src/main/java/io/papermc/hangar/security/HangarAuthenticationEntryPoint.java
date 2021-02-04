@@ -1,4 +1,4 @@
-package io.papermc.hangar.security.entrypoints;
+package io.papermc.hangar.security;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

@@ -8,7 +8,7 @@ import io.papermc.hangar.db.daoold.UserDao;
 import io.papermc.hangar.db.modelold.NotificationsTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.model.internal.sso.AuthUser;
-import io.papermc.hangar.modelold.InviteFilter;
+import io.papermc.hangar.model.internal.user.notifications.InviteFilter;
 import io.papermc.hangar.modelold.NamedPermission;
 import io.papermc.hangar.modelold.NotificationFilter;
 import io.papermc.hangar.modelold.Prompt;

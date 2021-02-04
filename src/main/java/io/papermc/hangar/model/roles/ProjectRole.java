@@ -1,13 +1,9 @@
 package io.papermc.hangar.model.roles;
 
 import io.papermc.hangar.db.customtypes.RoleCategory;
-import io.papermc.hangar.db.dao.internal.table.roles.ProjectRoleDAO;
-import io.papermc.hangar.db.dao.internal.table.roles.RoleDAO;
 import io.papermc.hangar.model.Color;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
-import io.papermc.hangar.util.StaticContextAccessor;
-import org.jdbi.v3.core.Jdbi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
@@ -18,8 +14,6 @@ public enum ProjectRole implements Role<ProjectRoleTable> {
     PROJECT_EDITOR("Project_Editor", 21, Permission.EditPage.add(PROJECT_SUPPORT.getPermissions()), "Editor", Color.TRANSPARENT),
     PROJECT_DEVELOPER("Project_Developer", 20, Permission.CreateVersion.add(Permission.EditVersion).add(Permission.EditTags).add(PROJECT_EDITOR.getPermissions()), "Developer", Color.TRANSPARENT),
     PROJECT_OWNER("Project_Owner", 19, Permission.IsProjectOwner.add(Permission.EditApiKeys).add(Permission.DeleteProject).add(Permission.DeleteVersion).add(PROJECT_DEVELOPER.getPermissions()), "Owner", Color.TRANSPARENT, false);
-
-    private static final ProjectRoleDAO PROJECT_ROLE_DAO = StaticContextAccessor.getBean(Jdbi.class).onDemand(ProjectRoleDAO.class);
 
     private final String value;
     private final long roleId;
@@ -92,10 +86,5 @@ public enum ProjectRole implements Role<ProjectRoleTable> {
     public ProjectRoleTable create(@Nullable Long principalId, long userId, boolean isAccepted) {
         Preconditions.checkNotNull(principalId, "project id");
         return new ProjectRoleTable(userId, this, isAccepted, principalId);
-    }
-
-    @Override
-    public RoleDAO<ProjectRoleTable> getRoleDAO() {
-        return PROJECT_ROLE_DAO;
     }
 }

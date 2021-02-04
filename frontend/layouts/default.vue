@@ -4,7 +4,7 @@
 
         <v-main>
             <v-container>
-                <AnnouncementComponent v-for="(announcement, idx) in announcements" :key="idx" :announcement="announcement" />
+                <Announcement v-for="(announcement, idx) in announcements" :key="idx" :announcement="announcement" />
 
                 <nuxt />
             </v-container>
@@ -16,8 +16,17 @@
 
 <script>
 import { Component, Vue } from 'nuxt-property-decorator';
+import Header from '~/components/layouts/Header';
+import Footer from '~/components/layouts/Footer';
+import Announcement from '~/components/layouts/Announcement';
 
-@Component
+@Component({
+    components: {
+        Header,
+        Footer,
+        Announcement,
+    },
+})
 export default class DefaultLayout extends Vue {
     title = 'Hangar';
     // TODO fetch from server

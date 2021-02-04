@@ -92,10 +92,8 @@ public class ApplicationController extends HangarController {
     private final HttpServletRequest request;
     private final Supplier<UserData> userData;
 
-    private final io.papermc.hangar.service.internal.RoleService roleServiceNew;
-
     @Autowired
-    public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, RoleService roleService, StatusZ statusZ, ObjectMapper mapper, HangarConfig hangarConfig, HttpServletRequest request, Supplier<UserData> userData, io.papermc.hangar.service.internal.RoleService roleServiceNew) {
+    public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, RoleService roleService, StatusZ statusZ, ObjectMapper mapper, HangarConfig hangarConfig, HttpServletRequest request, Supplier<UserData> userData) {
         this.platformVersionsDao = platformVersionsDao;
         this.userService = userService;
         this.projectService = projectService;
@@ -112,7 +110,6 @@ public class ApplicationController extends HangarController {
         this.request = request;
         this.statsService = statsService;
         this.userData = userData;
-        this.roleServiceNew = roleServiceNew;
     }
 
     @GetMapping("/")

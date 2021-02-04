@@ -1,15 +1,17 @@
 package io.papermc.hangar.config.hangar;
 
+import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.boot.convert.DurationUnit;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
-
-import io.papermc.hangar.util.Routes;
 
 @Component
 @ConfigurationProperties(prefix = "hangar.security")
@@ -20,7 +22,10 @@ public class HangarSecurityConfig {
     private List<String> safeDownloadHosts = List.of();
     private String tokenIssuer;
     private String tokenSecret;
-    private int tokenExpiry;
+    @DurationUnit(ChronoUnit.SECONDS)
+    private Duration tokenExpiry;
+    @DurationUnit(ChronoUnit.DAYS)
+    private Duration refreshTokenExpiry;
     @NestedConfigurationProperty
     public SecurityApiConfig api;
 
@@ -119,12 +124,20 @@ public class HangarSecurityConfig {
         }
     }
 
-    public int getTokenExpiry() {
+    public Duration getTokenExpiry() {
         return tokenExpiry;
     }
 
-    public void setTokenExpiry(int tokenExpiry) {
+    public void setTokenExpiry(Duration tokenExpiry) {
         this.tokenExpiry = tokenExpiry;
+    }
+
+    public Duration getRefreshTokenExpiry() {
+        return refreshTokenExpiry;
+    }
+
+    public void setRefreshTokenExpiry(Duration refreshTokenExpiry) {
+        this.refreshTokenExpiry = refreshTokenExpiry;
     }
 
     public String getTokenIssuer() {

@@ -20,7 +20,11 @@ import { Context } from '@nuxt/types';
 import { PaginatedResult, User } from 'hangar-api';
 import { DataOptions } from 'vuetify';
 
-@Component
+@Component({
+    head: {
+        title: 'Authors',
+    },
+})
 export default class AuthorsPage extends Vue {
     headers = [
         { text: 'Username', value: 'name' },
@@ -42,7 +46,7 @@ export default class AuthorsPage extends Vue {
         }
         this.loading = true;
 
-        this.$api.request<PaginatedResult<User>>('authors', 'get', this.requestOptions).then((authors) => {
+        this.$api.request<PaginatedResult<User>>('authors', false, 'get', this.requestOptions).then((authors) => {
             this.authors = authors;
             this.loading = false;
         });
@@ -68,7 +72,7 @@ export default class AuthorsPage extends Vue {
     }
 
     async asyncData({ $api }: Context): Promise<{ authors: PaginatedResult<User> }> {
-        return { authors: await $api.request<PaginatedResult<User>>('authors', 'get', { limit: 10, offset: 0 }) };
+        return { authors: await $api.request<PaginatedResult<User>>('authors', false, 'get', { limit: 10, offset: 0 }) };
     }
 }
 </script>

@@ -15,7 +15,11 @@ import { PaginatedResult, User } from 'hangar-api';
 import { DataOptions } from 'vuetify';
 import { Context } from '@nuxt/types';
 
-@Component
+@Component({
+    head: {
+        title: 'Staff',
+    },
+})
 export default class StaffPage extends Vue {
     headers = [
         { text: 'Username', value: 'username' },
@@ -36,7 +40,7 @@ export default class StaffPage extends Vue {
         }
         this.loading = true;
 
-        this.$api.request<PaginatedResult<User>>('staff', 'get', this.requestOptions).then((staff) => {
+        this.$api.request<PaginatedResult<User>>('staff', false, 'get', this.requestOptions).then((staff) => {
             this.staff = staff;
             this.loading = false;
         });
@@ -62,7 +66,7 @@ export default class StaffPage extends Vue {
     }
 
     async asyncData({ $api }: Context): Promise<{ staff: PaginatedResult<User> }> {
-        return { staff: await $api.request<PaginatedResult<User>>('staff', 'get', { limit: 10, offset: 0 }) };
+        return { staff: await $api.request<PaginatedResult<User>>('staff', false, 'get', { limit: 10, offset: 0 }) };
     }
 }
 </script>

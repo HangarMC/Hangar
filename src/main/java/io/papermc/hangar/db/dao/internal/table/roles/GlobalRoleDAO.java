@@ -5,6 +5,7 @@ import io.papermc.hangar.model.db.roles.GlobalRoleTable;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapperFactory;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
@@ -16,8 +17,9 @@ import java.util.List;
 @RegisterColumnMapperFactory(RoleMapperFactory.class)
 public interface GlobalRoleDAO extends RoleDAO<GlobalRoleTable> {
 
+    @GetGeneratedKeys
     @SqlUpdate("INSERT INTO user_global_roles VALUES (:userId, :roleId) ON CONFLICT DO NOTHING")
-    void insert(@BindBean GlobalRoleTable table);
+    GlobalRoleTable insert(@BindBean GlobalRoleTable table);
 
     @Override
     default void update(GlobalRoleTable table) {

@@ -1,6 +1,5 @@
 package io.papermc.hangar.controller.utils;
 
-
 import org.apache.commons.lang3.builder.Builder;
 
 import javax.servlet.http.Cookie;

@@ -29,7 +29,7 @@ export default {
     plugins: ['~/plugins/api.ts', '~/plugins/auth.ts', '~/plugins/utils.ts'],
 
     // Auto import components: https://go.nuxtjs.dev/config-components
-    components: true,
+    components: false, // Can change this back if you really want, but it doesn't look like Webstorm or Intellij understand what's going on if they aren't imported. Also, does it really matter? It's just a few imports
 
     // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
     buildModules: [
@@ -100,7 +100,7 @@ export default {
 
     // Build Configuration: https://go.nuxtjs.dev/config-build
     build: {
-        transpile: ['vue-cli-plugin-vuetify-preset-reply'],
+        transpile: ['vue-cli-plugin-vuetify-preset-reply', 'lodash-es'],
     },
 
     router: {
@@ -113,6 +113,7 @@ export default {
         'http://localhost:8080/login',
         'http://localhost:8080/logout',
         'http://localhost:8080/refresh',
+        'http://localhost:8080/invalidate',
         'http://localhost:8080/v2/api-docs/',
     ],
 

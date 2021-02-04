@@ -1,7 +1,6 @@
 package io.papermc.hangar.model.roles;
 
 import io.papermc.hangar.db.customtypes.RoleCategory;
-import io.papermc.hangar.db.dao.internal.table.roles.RoleDAO;
 import io.papermc.hangar.model.Color;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.db.roles.RoleTable;
@@ -51,8 +50,6 @@ public interface Role<T extends RoleTable<? extends Role<T>>> extends Argument {
 
     @NotNull
     T create(@Nullable Long principalId, long userId, boolean isAccepted);
-
-    RoleDAO<T> getRoleDAO();
 
     @Override
     default void apply(int position, PreparedStatement statement, StatementContext ctx) throws SQLException {

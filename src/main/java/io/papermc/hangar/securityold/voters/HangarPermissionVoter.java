@@ -1,7 +1,7 @@
 package io.papermc.hangar.securityold.voters;
 
 import io.papermc.hangar.modelold.NamedPermission;
-import io.papermc.hangar.security.internal.HangarAuthenticationToken;
+import io.papermc.hangar.security.HangarAuthenticationToken;
 import io.papermc.hangar.securityold.attributes.PermissionAttribute;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.security.access.AccessDecisionVoter;

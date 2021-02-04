@@ -9,15 +9,25 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
 @RegisterConstructorMapper(UserRefreshToken.class)
 public interface UserRefreshTokenDAO {
 
     @Timestamped
     @GetGeneratedKeys
-    @SqlUpdate("INSERT INTO user_refresh_tokens (created_at, user_id, token) VALUES (:now, :userId, :token) ON CONFLICT (user_id) DO UPDATE SET created_at = :now, token = :token")
+    @SqlUpdate("INSERT INTO user_refresh_tokens (created_at, user_id, last_updated, token, device_id) VALUES (:now, :userId, :now, :token, :deviceId)")
     UserRefreshToken insert(@BindBean UserRefreshToken userRefreshToken);
 
+    @Timestamped
+    @GetGeneratedKeys
+    @SqlUpdate("UPDATE user_refresh_tokens SET last_updated = :now, token = :token WHERE id = :id")
+    UserRefreshToken update(@BindBean UserRefreshToken userRefreshToken);
+
+    @SqlUpdate("DELETE FROM user_refresh_tokens WHERE token = :token")
+    void delete(UUID token);
+
     @SqlQuery("SELECT * FROM user_refresh_tokens WHERE token = :token")
-    UserRefreshToken getByToken(String token);
+    UserRefreshToken getByToken(UUID token);
 }
