@@ -2,7 +2,7 @@ import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
 import { User } from 'hangar-api';
 
-const createAuth = ({ app: { $cookies }, $axios, store, $api }: Context) => {
+const createAuth = ({ app: { $cookies }, $axios, store, $api, redirect }: Context) => {
     class Auth {
         login(redirect: string): void {
             $cookies.set('returnRoute', redirect, {
@@ -18,16 +18,17 @@ const createAuth = ({ app: { $cookies }, $axios, store, $api }: Context) => {
             return this.updateUser(token);
         }
 
-        logout(reload = true): void {
+        async logout(shouldRedirect = true): Promise<void> {
             store.commit('auth/SET_USER', null);
             store.commit('auth/SET_TOKEN', null);
             store.commit('auth/SET_AUTHED', false);
-            $axios.get('/invalidate');
+            await $axios.get('/invalidate');
             $cookies.remove('HangarAuth_REFRESH', {
                 path: '/',
             });
-            if (reload) {
-                location.reload();
+            if (shouldRedirect) {
+                // TODO redirect home because they may have been on authed page and a reload would just show an error
+                redirect('/');
             }
         }
 

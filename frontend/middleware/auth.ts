@@ -20,7 +20,7 @@ export default async ({ app: { $cookies }, $auth, $api, store, redirect }: Conte
                 return $auth.processLogin(token);
             }
         } else {
-            $auth.logout(process.client);
+            return $auth.logout(process.client);
         }
     }
 };

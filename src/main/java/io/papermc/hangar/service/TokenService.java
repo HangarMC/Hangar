@@ -103,7 +103,7 @@ public class TokenService extends HangarService {
     private JWTVerifier getVerifier() {
         if (verifier == null) {
             verifier = JWT.require(getAlgo())
-                    .acceptExpiresAt(10)
+                    .acceptLeeway(10)
                     .withIssuer(hangarConfig.security.getTokenIssuer())
                     .build();
         }

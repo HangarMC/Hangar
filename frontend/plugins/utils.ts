@@ -15,9 +15,12 @@ const createUtil = ({ store }: Context) => {
             return 'https://papermc.io/forums/u/' + name;
         }
 
-        prettyDate(_date: Date): String {
-            // TODO format date
-            return 'Oct 8, 2020';
+        prettyDate(date: Date): String {
+            return date.toLocaleDateString(undefined, {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+            });
         }
 
         has(perms: bigint | string, namedPermission: NamedPermission): boolean {

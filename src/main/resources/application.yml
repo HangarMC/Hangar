@@ -108,6 +108,7 @@ hangar:
     staff-roles:
       - Hangar_Admin
       - Hangar_Mod
+      - Hangar_Dev
 
 
   sso:

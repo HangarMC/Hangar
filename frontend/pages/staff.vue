@@ -6,13 +6,20 @@
         :server-items-length="staff.pagination.count"
         :loading="loading"
         class="elevation-1"
-    ></v-data-table>
+    >
+        <template #item.roles="{ item }">
+            {{ item.roles.map((r) => r.title).join(', ') }}
+        </template>
+        <template #item.joinDate="{ item }">
+            {{ $util.prettyDate(new Date(item.joinDate)) }}
+        </template>
+    </v-data-table>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'nuxt-property-decorator';
 import { PaginatedResult, User } from 'hangar-api';
-import { DataOptions } from 'vuetify';
+import { DataOptions, DataTableHeader } from 'vuetify';
 import { Context } from '@nuxt/types';
 
 @Component({
@@ -21,10 +28,10 @@ import { Context } from '@nuxt/types';
     },
 })
 export default class StaffPage extends Vue {
-    headers = [
-        { text: 'Username', value: 'username' },
+    headers: DataTableHeader[] = [
+        { text: 'Username', value: 'name' },
         { text: 'Roles', value: 'roles' },
-        { text: 'Joined', value: 'joined' },
+        { text: 'Joined', value: 'joinDate' },
     ];
 
     staff?: PaginatedResult<User>;

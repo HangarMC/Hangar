@@ -21,9 +21,9 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS: false
     date-format: com.fasterxml.jackson.databind.util.StdDateFormat
 
-logging:
-  level:
-    root: TRACE
+#logging:
+#  level:
+#    root: TRACE
 
 fake-user:
   enabled: false
@@ -91,6 +91,7 @@ hangar:
     staff-roles:
       - Hangar_Admin
       - Hangar_Mod
+      - Hangar_Dev
 
 
   sso:

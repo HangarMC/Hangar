@@ -5,11 +5,13 @@
         :options.sync="options"
         :server-items-length="authors.pagination.count"
         :loading="loading"
-        :items-per-page="10"
         class="elevation-1"
     >
         <template #item.roles="{ item }">
             {{ item.roles.map((r) => r.title).join(', ') }}
+        </template>
+        <template #item.joinDate="{ item }">
+            {{ $util.prettyDate(new Date(item.joinDate)) }}
         </template>
     </v-data-table>
 </template>
@@ -18,7 +20,7 @@
 import { Component, Vue, Watch } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
 import { PaginatedResult, User } from 'hangar-api';
-import { DataOptions } from 'vuetify';
+import { DataOptions, DataTableHeader } from 'vuetify';
 
 @Component({
     head: {
@@ -26,7 +28,7 @@ import { DataOptions } from 'vuetify';
     },
 })
 export default class AuthorsPage extends Vue {
-    headers = [
+    headers: DataTableHeader[] = [
         { text: 'Username', value: 'name' },
         { text: 'Roles', value: 'roles' },
         { text: 'Joined', value: 'joinDate' },
