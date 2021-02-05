@@ -3,7 +3,11 @@ name: Deploy
 on:
   # allow manual dispatch
   workflow_dispatch:
+  # run on PRs
   push:
+    branches:
+      - nuxt-frontend # todo test
+  pull_request:
     branches:
       - nuxt-frontend
     #- master TODO: once nuxt is merged, change this back
@@ -26,7 +30,42 @@ jobs:
         with:
           node-version: '12'
 
+      - name: Cache Maven Deps
+        uses: actions/cache@v2
+        with:
+          path: $GITHUB_WORKSPACE/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build backend
+        run: mvn --batch-mode --errors --fail-at-end --show-version --no-transfer-progress -Dmaven.repo.local=$GITHUB_WORKSPACE/.m2/repository install -DskipTests # todo fix tests
+
+      - name: Cache Yarn
+        uses: actions/cache@v2
+        with:
+          path: "~/.cache/yarn"
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install frontend deps
+        env:
+          CI: true
+        run: (cd frontend && yarn install --frozen-lockfile --cache-folder ~/.cache/yarn)
+
+      - name: Lint frontend
+        env:
+          CI: true
+        run: (cd frontend && yarn lint)
+
+      - name: Build frontend
+        env:
+          CI: true
+        run: (cd frontend && yarn build)
+
       - name: Set up Docker
+        if: github.event_name == 'push'
         run: |
           echo $DOCKER_CA_PEM >> $GITHUB_WORKSPACE/ca.pem.base64
           echo $DOCKER_CERT >> $GITHUB_WORKSPACE/cert.pem.base64
@@ -37,10 +76,11 @@ jobs:
           alias secure-docker="docker -H tcp://bender.minidigger.me:4243 --tlsverify --tlscacert=$GITHUB_WORKSPACE/ca.pem --tlscert=$GITHUB_WORKSPACE/cert.pem --tlskey=$GITHUB_WORKSPACE/key.pem"
 
       - name: Docker
+        if: github.event_name == 'push'
         run: |
           cd docker/deployment
           docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
           docker-compose build
           docker-compose push
           secure-docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-          secure-docker stack deploy --with-registry-auth --compose-file=docker-compose.yml ${SERVICE_NAME}
+          secure-docker stack deploy --with-registry-auth --compose-file=docker-compose.yml hangar_new
