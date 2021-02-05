@@ -4,7 +4,7 @@ services:
   frontend:
     build:
       context: ../../frontend
-      dockerfile: docker/deployment/hangar-frontend/Dockerfile
+      dockerfile: ../docker/deployment/hangar-frontend/Dockerfile
     depends_on:
       - 'backend'
     stdin_open: true
