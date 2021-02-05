@@ -28,7 +28,7 @@ import UserAvatar from '~/components/UserAvatar.vue';
     components: { UserAvatar },
 })
 export default class UserSelectionForm extends Vue {
-    users: Array<User> = [{ id: 1, name: 'Test' }];
+    users: Array<User> = [this.$util.dummyUser()];
 }
 </script>
 

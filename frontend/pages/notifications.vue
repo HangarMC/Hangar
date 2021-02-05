@@ -108,7 +108,7 @@ export default class NotificationsPage extends Vue {
         this.$api
             .requestInternal(`notifications/${notification.id}`, true, 'post')
             .then(() => {
-                remove(this.notifications, (n) => n.id === notification.id);
+                remove(this.notifications, (n: HangarNotification) => n.id === notification.id);
                 if (notification.action) {
                     this.$router.push(notification.action);
                 }

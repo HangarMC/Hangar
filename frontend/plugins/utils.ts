@@ -1,26 +1,45 @@
-import { Context } from '@nuxt/types';
-import { Inject } from '@nuxt/types/app';
-import { AxiosError } from 'axios';
-import { HangarException } from 'hangar-api';
-import { NamedPermission } from '~/types/enums';
-import { RootState } from '~/store';
+import {Context} from '@nuxt/types';
+import {Inject} from '@nuxt/types/app';
+import {AxiosError} from 'axios';
+import {HangarException, User} from 'hangar-api';
+import {NamedPermission} from '~/types/enums';
+import {RootState} from '~/store';
 
 type Validation = (v: string) => boolean | string;
 type ValidationArgument = (field?: string) => Validation;
 
-const createUtil = ({ store, error }: Context) => {
+const createUtil = ({store, error}: Context) => {
     class Util {
-        avatarUrl(_name: String): String {
+        dummyUser(): User {
+            return {
+                name: "Dummy",
+                id: 42,
+                tagline: null,
+                createdAt: this.prettyDate(new Date()),
+                roles: [],
+                headerData: {
+                    globalPermission: "",
+                    hasNotice: true,
+                    hasProjectApprovals: true,
+                    hasReviewQueue: true,
+                    hasUnreadNotifications: true,
+                    unresolvedFlags: true
+                },
+                joinDate: this.prettyDate(new Date())
+            }
+        }
+
+        avatarUrl(_name: string): string {
             return 'https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png';
             // TODO avatar url
             // return '/avatar/' + name + '?size=120x120';
         }
 
-        forumUrl(name: String): String {
+        forumUrl(name: string): string {
             return 'https://papermc.io/forums/u/' + name;
         }
 
-        prettyDate(date: Date): String {
+        prettyDate(date: Date): string {
             return date.toLocaleDateString(undefined, {
                 day: 'numeric',
                 month: 'long',

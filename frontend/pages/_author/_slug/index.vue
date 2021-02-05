@@ -18,7 +18,7 @@ import { AxiosError } from 'axios';
 @Component
 export default class ProjectPage extends Vue {
     project?: Project;
-    user?: User = { name: 'test' }; // todo load user
+    user?: User = this.$util.dummyUser(); // todo load user
 
     head() {
         return {
