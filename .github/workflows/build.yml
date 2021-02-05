@@ -54,6 +54,11 @@ jobs:
           CI: true
         run: (cd frontend && yarn install --frozen-lockfile --cache-folder ~/.cache/yarn)
 
+      - name: Lint frontend
+        env:
+          CI: true
+        run: (cd frontend && yarn lint)
+
       - name: Build frontend
         env:
           CI: true
