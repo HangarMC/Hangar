@@ -3,7 +3,7 @@ FROM openjdk:16-jdk-alpine
 WORKDIR hangar
 
 ADD target/hangar-*.jar /hangar/app.jar
-ADD docker/deployment/hangar/application.yml /hangar/application.yml
+ADD docker/deployment/hangar-backend/application.yml /hangar/application.yml
 
 ENV TERM xterm-256color
 

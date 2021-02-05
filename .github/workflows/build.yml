@@ -79,8 +79,5 @@ jobs:
         if: github.event_name == 'push'
         run: |
           cd docker/deployment
-          docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
           docker-compose build
-          docker-compose push
-          secure-docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-          secure-docker stack deploy --with-registry-auth --compose-file=docker-compose.yml hangar_new
+          secure-docker stack deploy --compose-file=docker-compose.yml hangar_new
