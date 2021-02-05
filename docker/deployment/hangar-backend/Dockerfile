@@ -1,7 +1,5 @@
 FROM openjdk:16-jdk-alpine
 
-LABEL maintainer="Yannick Lamprecht <yannicklamprecht@live.de>"
-
 WORKDIR hangar
 
 ADD target/hangar-*.jar /hangar/app.jar
