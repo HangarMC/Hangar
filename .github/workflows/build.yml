@@ -64,7 +64,7 @@ jobs:
           CI: true
         run: (cd frontend && yarn build)
 
-      - name: Set up Docker
+      - name: Docker
         if: github.event_name == 'push'
         run: |
           echo $DOCKER_CA_PEM >> $GITHUB_WORKSPACE/ca.pem.base64
@@ -74,10 +74,6 @@ jobs:
           base64 -d $GITHUB_WORKSPACE/cert.pem.base64 >> $GITHUB_WORKSPACE/cert.pem
           base64 -d $GITHUB_WORKSPACE/key.pem.base64 >> $GITHUB_WORKSPACE/key.pem
           alias secure-docker="docker -H tcp://bender.minidigger.me:4243 --tlsverify --tlscacert=$GITHUB_WORKSPACE/ca.pem --tlscert=$GITHUB_WORKSPACE/cert.pem --tlskey=$GITHUB_WORKSPACE/key.pem"
-
-      - name: Docker
-        if: github.event_name == 'push'
-        run: |
           cd docker/deployment
           docker-compose build
           secure-docker stack deploy --compose-file=docker-compose.yml hangar_new
