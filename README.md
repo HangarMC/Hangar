@@ -3,18 +3,16 @@
 This is the repository for Hangar, a plugin repository used for paper plugins and similar pieces of software.
 
 Hangar is a "fork" of [Ore](https://github.com/SpongePowered/Ore), created by the Sponge project, 
-but rebuild from the ground up using the Spring Boot Framework in Java, using the Freemarker templating engine.  
+but rebuild from the ground up using the Spring Boot Framework in Java for the backend, and nuxt (and vuetify) for the frontend (which is partially server rendered).
 We would like the thank all Ore contributors, without them, this project would never have been possible.
 
-The frontend is a mixture of vue and jquery, which will be cleaned up eventually.
-
-There may or may not be a staging instance running at https://hangar-new.minidigger.me. 
+There may or may not be a staging instance running at https://hangar-new.minidigger.me or https://hangar.minidigger.me
 It may or may not allow you to log in, please don't create too much of a mess so that I don't always need to nuke the DB when I want to use it.
 
 ## Building
 
 The project uses maven and should be straight forward (we even include a wrapper for you, wow!)  
-The frontend is located in `src/main/frontend` and uses webpack. You will need yarn to build that. Initially install dependencies via `yarn`, then start the dev environment using `yarn run serve`.
+The frontend is located in `frontend` and uses webpack. You will need yarn to build that. Initially install dependencies via `yarn`, then start the dev environment using `yarn run dev`.
 
 Additionally, you will need a postgresql database. For your convenience, this repo contains a dev-db docker compose stack in the docker folder that will get you setup.
 
