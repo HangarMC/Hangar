@@ -1,32 +1,32 @@
-import {Context} from '@nuxt/types';
-import {Inject} from '@nuxt/types/app';
-import {AxiosError} from 'axios';
-import {HangarException, User} from 'hangar-api';
-import {NamedPermission} from '~/types/enums';
-import {RootState} from '~/store';
+import { Context } from '@nuxt/types';
+import { Inject } from '@nuxt/types/app';
+import { AxiosError } from 'axios';
+import { HangarException, User } from 'hangar-api';
+import { NamedPermission } from '~/types/enums';
+import { RootState } from '~/store';
 
 type Validation = (v: string) => boolean | string;
 type ValidationArgument = (field?: string) => Validation;
 
-const createUtil = ({store, error}: Context) => {
+const createUtil = ({ store, error }: Context) => {
     class Util {
         dummyUser(): User {
             return {
-                name: "Dummy",
+                name: 'Dummy',
                 id: 42,
                 tagline: null,
                 createdAt: this.prettyDate(new Date()),
                 roles: [],
                 headerData: {
-                    globalPermission: "",
+                    globalPermission: '',
                     hasNotice: true,
                     hasProjectApprovals: true,
                     hasReviewQueue: true,
                     hasUnreadNotifications: true,
-                    unresolvedFlags: true
+                    unresolvedFlags: true,
                 },
-                joinDate: this.prettyDate(new Date())
-            }
+                joinDate: this.prettyDate(new Date()),
+            };
         }
 
         avatarUrl(_name: string): string {
