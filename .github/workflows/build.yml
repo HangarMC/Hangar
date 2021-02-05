@@ -4,6 +4,9 @@ on:
   # allow manual dispatch
   workflow_dispatch:
   # run on PRs
+  push:
+    branches:
+    - nuxt-frontend # todo test
   pull_request:
     branches:
     - nuxt-frontend
