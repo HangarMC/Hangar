@@ -34,6 +34,12 @@ export enum Visibility {
     SOFT_DELETE = 'softDelete',
 }
 
+export enum PermissionType {
+    GLOBAL = 'global',
+    PROJECT = 'project',
+    ORGANIZATION = 'organization',
+}
+
 export enum NamedPermission {
     VIEW_PUBLIC_INFO = 'view_public_info',
     EDIT_OWN_USER_SETTINGS = 'edit_own_user_settings',

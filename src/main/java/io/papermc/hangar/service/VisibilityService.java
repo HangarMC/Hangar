@@ -24,7 +24,7 @@ public class VisibilityService extends HangarService {
 
     @Nullable
     public <T extends Visible> T checkVisibility(@Nullable T model, @NotNull Function<T, Long> projectIdSupplier) {
-        return _checkVisibility(model, hangarRequest::getUserId, projectIdSupplier);
+        return _checkVisibility(model, this::getHangarUserId, projectIdSupplier);
     }
 
     @Nullable
@@ -39,7 +39,7 @@ public class VisibilityService extends HangarService {
     }
 
     public <T extends Visible> T checkApiVisibility(@Nullable T model, @NotNull Function<T, Long> projectIdSupplier) {
-        return _checkVisibility(model, hangarApiRequest::getUserId, projectIdSupplier);
+        return _checkVisibility(model, this::getHangarUserId, projectIdSupplier);
     }
 
     private <T extends Visible> T _checkVisibility(@Nullable T model, @NotNull Supplier<Long> userIdSupplier, @NotNull Function<T, Long> projectIdSupplier) {

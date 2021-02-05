@@ -49,6 +49,7 @@
 import remove from 'lodash-es/remove';
 import { Component, Vue } from 'nuxt-property-decorator';
 import { HangarNotification, Invite, Invites } from 'hangar-internal';
+import { LoggedIn } from '~/utils/perms';
 // TODO implement NotificationsPage
 
 @Component({
@@ -56,6 +57,7 @@ import { HangarNotification, Invite, Invites } from 'hangar-internal';
         title: 'Notifications',
     },
 })
+@LoggedIn
 export default class NotificationsPage extends Vue {
     notifications: HangarNotification[] = [];
     invites = {} as Invites;

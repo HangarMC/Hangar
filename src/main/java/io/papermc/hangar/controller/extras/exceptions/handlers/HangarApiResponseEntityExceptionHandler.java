@@ -35,6 +35,7 @@ public class HangarApiResponseEntityExceptionHandler extends ResponseEntityExcep
                 .put("code", exception.getStatus().value());
         response.set("error", error);
         response.set("pathParams", mapper.valueToTree(request.getAttribute(View.PATH_VARIABLES)));
+        response.put("isHangarException", true);
         return new ResponseEntity<>(response, exception.getResponseHeaders(), exception.getStatus());
     }
 }

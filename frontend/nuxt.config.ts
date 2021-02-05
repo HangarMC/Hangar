@@ -26,7 +26,7 @@ export default {
     css: [],
 
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-    plugins: ['~/plugins/api.ts', '~/plugins/auth.ts', '~/plugins/utils.ts'],
+    plugins: ['~/plugins/utils.ts', '~/plugins/api.ts', '~/plugins/auth.ts'],
 
     // Auto import components: https://go.nuxtjs.dev/config-components
     components: false, // Can change this back if you really want, but it doesn't look like Webstorm or Intellij understand what's going on if they aren't imported. Also, does it really matter? It's just a few imports
@@ -104,7 +104,7 @@ export default {
     },
 
     router: {
-        middleware: 'auth',
+        middleware: ['auth', 'routePermissions'],
     },
 
     proxy: [

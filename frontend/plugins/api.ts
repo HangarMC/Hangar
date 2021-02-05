@@ -2,6 +2,7 @@ import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
 import { AxiosError, AxiosRequestConfig } from 'axios';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
+import qs from 'qs';
 
 const createApi = ({ $axios, store, app: { $cookies }, error }: Context) => {
     class API {
@@ -95,7 +96,13 @@ const createApi = ({ $axios, store, app: { $cookies }, error }: Context) => {
                         method,
                         url: `/api/${url}`,
                         headers,
-                        data,
+                        data: method?.toLowerCase() !== 'get' ? data : {},
+                        params: method?.toLowerCase() === 'get' ? data : {},
+                        paramsSerializer: (params) => {
+                            return qs.stringify(params, {
+                                arrayFormat: 'repeat',
+                            });
+                        },
                     })
                     .then(({ data }) => resolve(data))
                     .catch((error: AxiosError) => {

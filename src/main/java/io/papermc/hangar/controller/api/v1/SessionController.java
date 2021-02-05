@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller.api.v1;
 
+import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.controller.api.v1.interfaces.ISessionsController;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.auth.ApiSessionDAO;
@@ -9,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class SessionController extends HangarApiController implements ISessionsController {
+public class SessionController extends HangarController implements ISessionsController {
 
     private final ApiSessionDAO apiSessionDAO;
 
@@ -20,7 +21,7 @@ public class SessionController extends HangarApiController implements ISessionsC
 
     @Override
     public ResponseEntity<Void> deleteSession() {
-        apiSessionDAO.delete(hangarApiRequest.getSession());
+//        apiSessionDAO.delete(hangarApiRequest.getSession());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -5,14 +5,15 @@ import io.papermc.hangar.controller.extras.HangarApiRequest;
 import io.papermc.hangar.controller.extras.HangarRequest;
 import io.papermc.hangar.security.HangarAuthenticationToken;
 import io.papermc.hangar.security.HangarPrincipal;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 
 public abstract class HangarService {
 
@@ -34,10 +35,18 @@ public abstract class HangarService {
     protected HangarRequest hangarRequest;
 
     protected final HangarPrincipal getHangarPrincipal() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof HangarAuthenticationToken)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authentication principal found");
-        }
-        return (HangarPrincipal) authentication.getPrincipal();
+        return _getHangarPrincipal().orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authentication principal found"));
+    }
+
+    @Nullable
+    protected final Long getHangarUserId() {
+        return _getHangarPrincipal().map(HangarPrincipal::getId).orElse(null);
+    }
+
+    private Optional<HangarPrincipal> _getHangarPrincipal() {
+        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .filter(HangarAuthenticationToken.class::isInstance)
+                .map(HangarAuthenticationToken.class::cast)
+                .map(HangarAuthenticationToken::getPrincipal);
     }
 }

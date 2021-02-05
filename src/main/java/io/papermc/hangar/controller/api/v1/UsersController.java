@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller.api.v1;
 
+import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.controller.api.v1.interfaces.IUsersController;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.User;
@@ -13,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class UsersController extends HangarApiController implements IUsersController {
+public class UsersController extends HangarController implements IUsersController {
 
     private final UsersApiService usersApiService;
 

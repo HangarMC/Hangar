@@ -1,6 +1,12 @@
 /* eslint-disable camelcase */
 declare module 'hangar-api' {
-    import { ApiSessionType, ProjectCategory, RoleCategory, Visibility } from '~/types/enums';
+    import { ApiSessionType, NamedPermission, PermissionType, ProjectCategory, RoleCategory, Visibility } from '~/types/enums';
+
+    interface IPermission {
+        value: NamedPermission;
+        frontendName: string;
+        permission: bigint;
+    }
 
     interface ApiError {
         message: string;
@@ -136,17 +142,26 @@ declare module 'hangar-api' {
         link: String;
     }
 
-    // Data interfaces
-    interface IProjectCategory {
-        title: string;
-        icon: string;
-        apiName: string;
-        visible: boolean;
+    // PermissionController
+    interface PermissionCheck {
+        type: PermissionType;
+        result: boolean;
     }
 
-    interface IPermission {
-        value: string;
-        frontendName: string;
-        permission: bigint;
+    interface UserPermissions {
+        type: PermissionType;
+        permissionBinString: string;
+        permissions: IPermission[];
+    }
+
+    // Errors
+    interface HangarException {
+        reason: string;
+        error: {
+            message: string;
+            code: number;
+        };
+        pathParams: Record<string, any>;
+        isHangarException: boolean;
     }
 }

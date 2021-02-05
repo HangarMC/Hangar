@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller.api.v1;
 
+import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.controller.api.v1.interfaces.IPermissionsController;
 import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
 import io.papermc.hangar.model.Permission;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.function.BiPredicate;
 
 @Controller
-public class PermissionsController extends HangarApiController implements IPermissionsController {
+public class PermissionsController extends HangarController implements IPermissionsController {
 
     private final PermissionService permissionService;
 
@@ -41,18 +42,18 @@ public class PermissionsController extends HangarApiController implements IPermi
     @Override
     public ResponseEntity<UserPermissions> showPermissions(String author, String slug, String organization) {
         Pair<PermissionType, Permission> scopedPerms = getPermissionsInScope(author, slug, organization);
-        return ResponseEntity.ok(new UserPermissions(scopedPerms.getLeft(), scopedPerms.getRight().toNamed()));
+        return ResponseEntity.ok(new UserPermissions(scopedPerms.getLeft(), scopedPerms.getRight().toBinString(), scopedPerms.getRight().toNamed()));
     }
 
     private Pair<PermissionType, Permission> getPermissionsInScope(String author, String slug, String organization) {
         if (author != null && slug != null && organization == null) { // author & slug
-            Permission perms = permissionService.getProjectPermissions(hangarApiRequest.getUserId(), author, slug);
+            Permission perms = permissionService.getProjectPermissions(getHangarPrincipal().getId(), author, slug);
             return new ImmutablePair<>(PermissionType.PROJECT, perms);
-        } else if (author != null && slug == null && organization == null) { // just author
-            Permission perms = permissionService.getGlobalPermissions(author);
+        } else if (author == null && slug == null && organization == null) { // current user (I don't think there's a need to see other user's global permissions)
+            Permission perms = permissionService.getGlobalPermissions(getHangarPrincipal().getId());
             return new ImmutablePair<>(PermissionType.GLOBAL, perms);
-        } else if (author == null && slug == null && organization != null) { // just org
-            Permission perms = permissionService.getOrganizationPermissions(hangarApiRequest.getUserId(), organization);
+        } else if (author == null && slug == null) { // just org
+            Permission perms = permissionService.getOrganizationPermissions(getHangarPrincipal().getId(), organization);
             return new ImmutablePair<>(PermissionType.ORGANIZATION, perms);
         } else {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "Incorrect request parameters");

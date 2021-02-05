@@ -11,7 +11,7 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,8 +21,8 @@ import java.util.List;
 
 
 @Api(tags = "Permissions", produces = MediaType.APPLICATION_JSON_VALUE)
-@RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
-@PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.Permission).None, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
+@RequestMapping(path = "/api/v1/permissions", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+@Secured("ROLE_USER")
 public interface IPermissionsController {
 
     @ApiOperation(
@@ -38,7 +38,7 @@ public interface IPermissionsController {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired")
     })
-    @GetMapping("/permissions/hasAll")
+    @GetMapping(value = "/hasAll")
     ResponseEntity<PermissionCheck> hasAllPermissions(@ApiParam(value = "The permissions to check", required = true) @RequestParam List<NamedPermission> permissions,
                                                       @ApiParam("The owner of the project to check permissions in. Must not be used together with `organizationName`") @RequestParam(required = false) String author,
                                                       @ApiParam("The project slug of the project to check permissions in. Must not be used together with `organizationName`") @RequestParam(required = false) String slug,
@@ -57,7 +57,7 @@ public interface IPermissionsController {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired")
     })
-    @GetMapping("/permissions/hasAny")
+    @GetMapping("/hasAny")
     ResponseEntity<PermissionCheck> hasAny(@ApiParam(value = "The permissions to check", required = true) @RequestParam List<NamedPermission> permissions,
                                            @ApiParam("The owner of the project to check permissions in. Must not be used together with `organizationName") @RequestParam(required = false) String author,
                                            @ApiParam("The project slug of the project to check permissions in. Must not be used together with `organizationName`") @RequestParam(required = false) String slug,
@@ -76,7 +76,7 @@ public interface IPermissionsController {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired")
     })
-    @GetMapping(value = "/permissions",
+    @GetMapping(value = "/",
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<UserPermissions> showPermissions(
             @ApiParam("The owner of the project to get the permissions for. Must not be used together with `organizationName`") @RequestParam(required = false) String author,
