@@ -1,4 +1,4 @@
-# Hangar - Papers upcoming Plugin Repository
+# Hangar - Paper's upcoming Plugin Repository
 
 This is the repository for Hangar, a plugin repository used for paper plugins and similar pieces of software.
 
