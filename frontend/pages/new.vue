@@ -216,7 +216,14 @@
                         <div v-if="!projectError" class="text-h5 mt-2">{{ $t('project.new.step5.text') }}</div>
                         <template v-else>
                             <div class="text-h5 mt-2">{{ $t('project.new.error') }}</div>
-                            <v-btn @click="step = 1">Retry</v-btn>
+                            <v-btn
+                                @click="
+                                    step = 1;
+                                    projectLoading = true;
+                                    projectError = false;
+                                "
+                                >Retry</v-btn
+                            >
                         </template>
                     </v-card-text>
                 </v-card>

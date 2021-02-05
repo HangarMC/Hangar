@@ -2,7 +2,7 @@ package io.papermc.hangar.controllerold.api;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.modelold.ApiAuthInfo;
 import io.papermc.hangar.modelold.generated.Project;
 import io.papermc.hangar.modelold.generated.ProjectStatsDay;
@@ -38,7 +38,7 @@ public class ProjectsApiController implements ProjectsApi {
     }
 
 //    @Override
-//    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
+//    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.common.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
 //    public ResponseEntity<List<ProjectMember>> showMembers(String author, String slug, Long inLimit, Long inOffset) {
 //        long limit = ApiUtil.limitOrDefault(inLimit, hangarConfig.getProjects().getInitLoad());
 //        long offset = ApiUtil.offsetOrZero(inOffset);
@@ -51,7 +51,7 @@ public class ProjectsApiController implements ProjectsApi {
 //    }
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#id))")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.common.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#id))")
     public ResponseEntity<Project> showProject(long id) {
         boolean seeHidden = apiAuthInfo.getGlobalPerms().has(Permission.SeeHidden);
         Project project = projectApiService.getProject(id, seeHidden, apiAuthInfo.getUserId());
@@ -63,7 +63,7 @@ public class ProjectsApiController implements ProjectsApi {
     }
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).IsProjectMember, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.common.Permission).IsProjectMember, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     public ResponseEntity<Map<String, ProjectStatsDay>> showProjectStats(String author, String slug, @NotNull @Valid String fromDate, @NotNull @Valid String toDate) {
         LocalDate from = ApiUtil.parseDate(fromDate);
         LocalDate to = ApiUtil.parseDate(toDate);

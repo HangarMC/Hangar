@@ -1,6 +1,6 @@
 package io.papermc.hangar.config.hangar;
 
-import io.papermc.hangar.model.Color;
+import io.papermc.hangar.model.common.Color;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class ChannelsConfig {
     private int maxNameLen = 15;
     private String nameRegex = "^[a-zA-Z0-9]+$";
-    @Value("#{T(io.papermc.hangar.model.Color).getById(${hangar.channels.color-default})}")
+    @Value("#{T(io.papermc.hangar.model.common.Color).getById(${hangar.channels.color-default})}")
     private Color colorDefault = Color.getById(7);
     private String nameDefault = "Release";
 

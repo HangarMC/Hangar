@@ -1,6 +1,6 @@
 package io.papermc.hangar.model.db.projects;
 
-import io.papermc.hangar.model.FlagReason;
+import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.model.db.Table;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;

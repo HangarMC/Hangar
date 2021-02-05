@@ -1,6 +1,6 @@
 package io.papermc.hangar.db.mappers;
 
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.common.Permission;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 

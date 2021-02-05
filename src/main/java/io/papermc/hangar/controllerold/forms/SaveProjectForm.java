@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.controllerold.forms.objects.License;
 import io.papermc.hangar.controllerold.forms.objects.ProjectLinks;
-import io.papermc.hangar.model.Category;
+import io.papermc.hangar.model.common.projects.Category;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

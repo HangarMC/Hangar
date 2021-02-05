@@ -9,7 +9,7 @@ import io.papermc.hangar.controller.utils.CookieUtils;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.auth.UserRefreshTokenDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.auth.UserRefreshToken;
 import io.papermc.hangar.security.HangarPrincipal;
@@ -87,17 +87,19 @@ public class TokenService extends HangarService {
                 .withSubject(userTable.getName())
                 .withClaim("id", userTable.getId())
                 .withClaim("permissions", globalPermission.toBinString())
+                .withClaim("locked", userTable.isLocked())
                 .sign(getAlgo());
     }
 
     public HangarPrincipal parseHangarPrincipal(DecodedJWT decodedJWT) {
         String subject = decodedJWT.getSubject();
         Long userId = decodedJWT.getClaim("id").asLong();
+        boolean locked = decodedJWT.getClaim("locked").asBoolean();
         Permission globalPermission = Permission.fromBinString(decodedJWT.getClaim("permissions").asString());
         if (subject == null || userId == null || globalPermission == null) {
             throw new BadCredentialsException("Malformed jwt");
         }
-        return new HangarPrincipal(userId, subject, globalPermission);
+        return new HangarPrincipal(userId, subject, locked, globalPermission);
     }
 
     private JWTVerifier getVerifier() {

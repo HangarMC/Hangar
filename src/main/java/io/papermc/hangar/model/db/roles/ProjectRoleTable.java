@@ -1,6 +1,6 @@
 package io.papermc.hangar.model.db.roles;
 
-import io.papermc.hangar.model.roles.ProjectRole;
+import io.papermc.hangar.model.common.roles.ProjectRole;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 import java.time.OffsetDateTime;

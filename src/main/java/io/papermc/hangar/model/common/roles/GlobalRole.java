@@ -1,9 +1,9 @@
-package io.papermc.hangar.model.roles;
+package io.papermc.hangar.model.common.roles;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.papermc.hangar.db.customtypes.RoleCategory;
-import io.papermc.hangar.model.Color;
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.common.Color;
+import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.jetbrains.annotations.NotNull;

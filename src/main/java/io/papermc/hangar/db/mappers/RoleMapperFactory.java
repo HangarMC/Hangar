@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.mappers;
 
-import io.papermc.hangar.model.roles.GlobalRole;
-import io.papermc.hangar.model.roles.Role;
+import io.papermc.hangar.model.common.roles.GlobalRole;
+import io.papermc.hangar.model.common.roles.Role;
 import org.jdbi.v3.core.config.ConfigRegistry;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.mapper.ColumnMapperFactory;

@@ -21,8 +21,8 @@ import io.papermc.hangar.db.modelold.ProjectVersionsTable;
 import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.exceptions.HangarException;
-import io.papermc.hangar.model.Category;
-import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.model.common.projects.Category;
+import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.versions.ProjectVersionDependencyTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionPlatformDependencyTable;
 import io.papermc.hangar.model.internal.user.notifications.NotificationType;
@@ -211,7 +211,7 @@ public class ProjectFactory {
         List<ProjectVersionDependencyTable> projectVersionDependencyTables = new ArrayList<>();
         for (Map.Entry<Platform, List<Dependency>> entry : pendingVersion.getDependencies().entrySet()) {
             for (Dependency dependency : entry.getValue()) {
-                projectVersionDependencyTables.add(new ProjectVersionDependencyTable(version.getId(), io.papermc.hangar.model.Platform.valueOf(entry.getKey().name()), dependency.getName(), dependency.isRequired(), dependency.getNamespace() != null ? projectService.getProjectsTable(dependency.getNamespace().getOwner(), dependency.getNamespace().getSlug()).getId() : null, dependency.getExternalUrl()));
+                projectVersionDependencyTables.add(new ProjectVersionDependencyTable(version.getId(), io.papermc.hangar.model.common.Platform.valueOf(entry.getKey().name()), dependency.getName(), dependency.isRequired(), dependency.getNamespace() != null ? projectService.getProjectsTable(dependency.getNamespace().getOwner(), dependency.getNamespace().getSlug()).getId() : null, dependency.getExternalUrl()));
             }
         }
         projectVersionDependencyDAO.get().insertAll(projectVersionDependencyTables);

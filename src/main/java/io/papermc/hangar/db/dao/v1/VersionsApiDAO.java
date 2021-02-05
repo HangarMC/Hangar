@@ -1,10 +1,10 @@
 package io.papermc.hangar.db.dao.v1;
 
-import io.papermc.hangar.model.Color;
 import io.papermc.hangar.model.api.color.TagColor;
 import io.papermc.hangar.model.api.project.version.Tag;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
+import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.result.LinkedHashMapRowReducer;
 import org.jdbi.v3.core.result.RowView;
@@ -138,7 +138,7 @@ public interface VersionsApiDAO {
             List<Tag> tags = new ArrayList<>();
             for (int i = 0; i < tagNames.length; i++) {
                 TagColor apiTagColor;
-                io.papermc.hangar.model.TagColor tagColor = io.papermc.hangar.model.TagColor.getByName(tagNames[i]);
+                io.papermc.hangar.model.common.TagColor tagColor = io.papermc.hangar.model.common.TagColor.getByName(tagNames[i]);
                 if (tagColor == null) {
                     Color color = Color.VALUES[tagColors[i]];
                     apiTagColor = new TagColor(null, color.getHex());

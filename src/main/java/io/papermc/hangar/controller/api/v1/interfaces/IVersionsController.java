@@ -55,7 +55,7 @@ public interface IVersionsController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping(value = "/projects/{author}/{slug}/versions/{name:.*}")
-    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
+    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.common.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     ResponseEntity<Version> getVersion(@ApiParam("The author of the project to return the version for") @PathVariable String author,
                                        @ApiParam("The slug of the project to return") @PathVariable String slug,
                                        @ApiParam("The name of the version to return") @PathVariable String name
@@ -74,7 +74,7 @@ public interface IVersionsController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/projects/{author}/{slug}/versions")
-    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
+    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.common.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     ResponseEntity<PaginatedResult<Version>> getVersions(@ApiParam("The author of the project to return versions for") @PathVariable String author,
                                                          @ApiParam("The slug of the project to return versions for") @PathVariable String slug,
                                                          @ApiParam("A list of tags all the returned versions should have. Should be formatted either as `tagname` or `tagname:tagdata`.") @RequestParam(required = false) List<String> tags,
@@ -95,7 +95,7 @@ public interface IVersionsController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping(value = "/projects/{author}/{slug}/versions/{version}/stats", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.Permission).IsProjectMember, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
+    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.common.Permission).IsProjectMember, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     ResponseEntity<Map<String, VersionStats>> getVersionStats(@ApiParam("The author of the version to return the stats for") @PathVariable String author,
                                                               @ApiParam("The slug of the project to return stats for") @PathVariable String slug,
                                                               @ApiParam("The version to return the stats for") @PathVariable String version,

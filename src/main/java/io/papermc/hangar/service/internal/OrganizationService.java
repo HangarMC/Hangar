@@ -2,7 +2,7 @@ package io.papermc.hangar.service.internal;
 
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.OrganizationDAO;
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.service.HangarService;
 import org.springframework.beans.factory.annotation.Autowired;

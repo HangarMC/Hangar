@@ -1,7 +1,7 @@
 package io.papermc.hangar.model.db.auth;
 
 import io.papermc.hangar.model.Named;
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.Table;
 import org.jdbi.v3.core.mapper.PropagateNull;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;

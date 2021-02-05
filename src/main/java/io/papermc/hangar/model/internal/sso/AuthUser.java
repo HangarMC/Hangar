@@ -1,8 +1,8 @@
 package io.papermc.hangar.model.internal.sso;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import io.papermc.hangar.model.roles.GlobalRole;
-import io.papermc.hangar.model.roles.Role;
+import io.papermc.hangar.model.common.roles.GlobalRole;
+import io.papermc.hangar.model.common.roles.Role;
 
 import java.util.ArrayList;
 import java.util.List;

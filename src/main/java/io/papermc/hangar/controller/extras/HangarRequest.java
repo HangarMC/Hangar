@@ -1,6 +1,6 @@
 package io.papermc.hangar.controller.extras;
 
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
 
 public class HangarRequest {

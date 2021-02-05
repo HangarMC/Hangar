@@ -3,7 +3,7 @@ package io.papermc.hangar.modelold.viewhelpers;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.db.modelold.RoleTable;
 import io.papermc.hangar.db.modelold.UsersTable;
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.common.Permission;
 
 import java.util.Map;
 import java.util.Map.Entry;

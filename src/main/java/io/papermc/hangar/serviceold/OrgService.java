@@ -10,7 +10,7 @@ import io.papermc.hangar.db.modelold.OrganizationMembersTable;
 import io.papermc.hangar.db.modelold.OrganizationsTable;
 import io.papermc.hangar.db.modelold.UserOrganizationRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.modelold.viewhelpers.OrgMember;
 import io.papermc.hangar.modelold.viewhelpers.OrganizationData;
 import io.papermc.hangar.modelold.viewhelpers.ScopedOrganizationData;

@@ -1,8 +1,8 @@
-package io.papermc.hangar.model.roles;
+package io.papermc.hangar.model.common.roles;
 
 import io.papermc.hangar.db.customtypes.RoleCategory;
-import io.papermc.hangar.model.Color;
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.common.Color;
+import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.roles.RoleTable;
 import org.jdbi.v3.core.argument.Argument;
 import org.jdbi.v3.core.statement.StatementContext;

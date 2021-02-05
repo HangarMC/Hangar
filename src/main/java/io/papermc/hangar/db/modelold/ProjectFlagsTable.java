@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.modelold;
 
 
-import io.papermc.hangar.model.FlagReason;
+import io.papermc.hangar.model.common.projects.FlagReason;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 import java.time.OffsetDateTime;

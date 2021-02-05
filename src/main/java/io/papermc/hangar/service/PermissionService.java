@@ -2,7 +2,7 @@ package io.papermc.hangar.service;
 
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.PermissionsDAO;
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.common.Permission;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;

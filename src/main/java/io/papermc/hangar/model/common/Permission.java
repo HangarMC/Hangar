@@ -1,4 +1,4 @@
-package io.papermc.hangar.model;
+package io.papermc.hangar.model.common;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.papermc.hangar.modelold.NamedPermission;

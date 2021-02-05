@@ -1,8 +1,7 @@
 package io.papermc.hangar.modelold.viewhelpers;
 
-import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.modelold.generated.ProjectNamespace;
-
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 

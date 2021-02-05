@@ -1,10 +1,10 @@
 package io.papermc.hangar.controller.api.v1.interfaces;
 
-import io.papermc.hangar.model.Category;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.ProjectMember;
 import io.papermc.hangar.model.api.requests.RequestPagination;
+import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -41,7 +41,7 @@ public interface IProjectsController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping( "/projects/{author}/{slug}")
-    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
+    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.common.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     ResponseEntity<Project> getProject(@ApiParam("The author of the project to return") @PathVariable String author,
                                        @ApiParam("The slug of the project to return") @PathVariable String slug);
 
@@ -58,7 +58,7 @@ public interface IProjectsController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/projects/{author}/{slug}/members")
-    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
+    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.common.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(
             @ApiParam("The author of the project to return members for") @PathVariable("author") String author,
             @ApiParam("The slug of the project to return") @PathVariable("slug") String slug,
@@ -78,7 +78,7 @@ public interface IProjectsController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/projects")
-    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
+    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.common.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
     ResponseEntity<PaginatedResult<Project>> getProjects(
             @ApiParam("The query to use when searching") @RequestParam(required = false) String q,
             @ApiParam("Restrict your search to a list of categories") @RequestParam(required = false) List<Category> categories,

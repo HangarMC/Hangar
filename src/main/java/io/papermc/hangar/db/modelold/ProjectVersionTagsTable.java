@@ -1,6 +1,6 @@
 package io.papermc.hangar.db.modelold;
 
-import io.papermc.hangar.model.TagColor;
+import io.papermc.hangar.model.common.TagColor;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 import java.util.List;

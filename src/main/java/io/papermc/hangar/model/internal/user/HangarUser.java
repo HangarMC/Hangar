@@ -1,9 +1,9 @@
 package io.papermc.hangar.model.internal.user;
 
 import io.papermc.hangar.model.Identified;
-import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.api.User;
-import io.papermc.hangar.model.roles.GlobalRole;
+import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.common.roles.GlobalRole;
 
 import java.time.OffsetDateTime;
 import java.util.List;

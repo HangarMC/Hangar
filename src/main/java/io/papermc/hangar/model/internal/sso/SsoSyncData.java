@@ -1,6 +1,6 @@
 package io.papermc.hangar.model.internal.sso;
 
-import io.papermc.hangar.model.roles.GlobalRole;
+import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.util.SsoUtil;
 
 import java.util.List;

@@ -27,6 +27,6 @@ public interface ISessionsController {
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")})
     @DeleteMapping("/sessions/current")
-    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.Permission).None, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
+    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.common.Permission).None, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
     ResponseEntity<Void> deleteSession();
 }

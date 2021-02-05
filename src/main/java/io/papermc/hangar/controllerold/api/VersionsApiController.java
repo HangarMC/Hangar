@@ -53,7 +53,7 @@ public class VersionsApiController implements VersionsApi {
     }
 
     @Override
-    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.Permission).None, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
+    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.common.Permission).None, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
     public ResponseEntity<List<PlatformInfo>> showPlatforms() {
         List<PlatformInfo> platformInfoList = new ArrayList<>();
         for (Platform platform : Platform.getValues()) {
@@ -69,7 +69,7 @@ public class VersionsApiController implements VersionsApi {
     // moved from versions controller
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.common.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     public Object download(String author, String slug, String name, String token) {
 //        ProjectsTable project = projectsTable.get();
 //        ProjectVersionsTable pvt = projectVersionsTable.get();
@@ -86,7 +86,7 @@ public class VersionsApiController implements VersionsApi {
     }
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.common.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     public Object downloadRecommended(String author, String slug, String token) {
 //        ProjectsTable project = projectsTable.get();
 //        ProjectVersionsTable recommendedVersion = versionService.getRecommendedVersion(project);

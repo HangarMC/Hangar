@@ -2,8 +2,8 @@ package io.papermc.hangar.service.internal.roles;
 
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.roles.GlobalRoleDAO;
+import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
-import io.papermc.hangar.model.roles.GlobalRole;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

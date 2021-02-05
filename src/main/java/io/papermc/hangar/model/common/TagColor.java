@@ -1,4 +1,4 @@
-package io.papermc.hangar.model;
+package io.papermc.hangar.model.common;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;

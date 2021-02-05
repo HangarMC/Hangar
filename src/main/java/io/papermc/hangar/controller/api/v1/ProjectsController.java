@@ -2,11 +2,11 @@ package io.papermc.hangar.controller.api.v1;
 
 import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.controller.api.v1.interfaces.IProjectsController;
-import io.papermc.hangar.model.Category;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.ProjectMember;
 import io.papermc.hangar.model.api.requests.RequestPagination;
+import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
 import io.papermc.hangar.service.api.ProjectsApiService;
 import org.jetbrains.annotations.NotNull;

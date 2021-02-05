@@ -1,9 +1,9 @@
 package io.papermc.hangar.db.modelold;
 
 
-import io.papermc.hangar.model.ReviewState;
-import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.Visible;
+import io.papermc.hangar.model.common.projects.ReviewState;
+import io.papermc.hangar.model.common.projects.Visibility;
 import org.jdbi.v3.core.annotation.Unmappable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 

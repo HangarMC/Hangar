@@ -1,6 +1,6 @@
 package io.papermc.hangar.model.db.versions;
 
-import io.papermc.hangar.model.Platform;
+import io.papermc.hangar.model.common.Platform;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 

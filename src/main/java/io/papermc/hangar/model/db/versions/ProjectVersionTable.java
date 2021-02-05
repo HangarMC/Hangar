@@ -1,9 +1,9 @@
 package io.papermc.hangar.model.db.versions;
 
 import io.papermc.hangar.model.Named;
-import io.papermc.hangar.model.ReviewState;
-import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.Visible;
+import io.papermc.hangar.model.common.projects.ReviewState;
+import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.modelold.generated.PlatformDependency;
 import io.papermc.hangar.modelold.viewhelpers.VersionDependencies;

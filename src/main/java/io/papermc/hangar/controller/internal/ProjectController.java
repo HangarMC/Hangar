@@ -1,9 +1,10 @@
 package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.controller.HangarController;
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProject;
 import io.papermc.hangar.model.internal.api.responses.PossibleProjectOwner;
+import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,6 +49,7 @@ public class ProjectController extends HangarController {
         return ResponseEntity.ok(possibleProjectOwners);
     }
 
+    @Unlocked
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createProject(@RequestBody @Valid NewProject newProject) {
         System.out.println(newProject);

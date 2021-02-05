@@ -1,6 +1,6 @@
 package io.papermc.hangar.modelold.viewhelpers;
 
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.common.Permission;
 import org.jdbi.v3.core.annotation.Unmappable;
 
 public class ScopedProjectData {

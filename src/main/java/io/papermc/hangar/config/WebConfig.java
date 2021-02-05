@@ -10,8 +10,11 @@ import io.papermc.hangar.controller.extras.converters.StringToEnumConverterFacto
 import io.papermc.hangar.securityold.UserLockExceptionResolver;
 import no.api.freemarker.java8.Java8ObjectWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.expression.BeanFactoryResolver;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.CacheControl;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -162,5 +165,12 @@ public class WebConfig extends WebMvcConfigurationSupport {
     @Bean
     public UserLockExceptionResolver userLockExceptionResolver() {
         return new UserLockExceptionResolver();
+    }
+
+    @Bean
+    public StandardEvaluationContext standardEvaluationContext(ApplicationContext applicationContext) {
+        StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
+        evaluationContext.setBeanResolver(new BeanFactoryResolver(applicationContext));
+        return evaluationContext;
     }
 }

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.papermc.hangar.model.Category;
+import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.modelold.NamedPermission;
 import io.papermc.hangar.security.annotations.Anyone;
 import org.apache.commons.lang3.NotImplementedException;

@@ -3,8 +3,8 @@ package io.papermc.hangar.modelold.viewhelpers;
 import io.papermc.hangar.db.modelold.PlatformVersionsTable;
 import io.papermc.hangar.db.modelold.ProjectChannelsTable;
 import io.papermc.hangar.db.modelold.ProjectVersionsTable;
-import io.papermc.hangar.model.Platform;
 import io.papermc.hangar.model.api.project.version.Dependency;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.modelold.generated.PlatformDependency;
 
 import java.util.HashMap;

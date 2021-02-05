@@ -3,7 +3,7 @@ package io.papermc.hangar.controllerold.api;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.UserContext;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.modelold.ApiAuthInfo;
 import io.papermc.hangar.modelold.NamedPermission;
 import io.papermc.hangar.modelold.generated.ApiKeyRequest;
@@ -39,7 +39,7 @@ public class KeysApiController implements KeysApi {
     }
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).EditApiKeys, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.common.Permission).EditApiKeys, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
     public ResponseEntity<ApiKeyResponse> createKey(ApiKeyRequest body) {
         List<NamedPermission> perms;
         try {
@@ -72,7 +72,7 @@ public class KeysApiController implements KeysApi {
     }
 
     @Override
-    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.Permission).EditApiKeys, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
+    @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.common.Permission).EditApiKeys, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
     public ResponseEntity<Void> deleteKey(String name) {
         if (apiAuthInfo.getUser() == null) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "Public keys can't be used to delete");

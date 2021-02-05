@@ -1,17 +1,19 @@
 package io.papermc.hangar.security;
 
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 
 public class HangarPrincipal implements ProjectOwner {
 
     private final long id;
-    private final String userName;
+    private final String name;
+    private final boolean locked;
     private final Permission globalPermissions;
 
-    public HangarPrincipal(long id, String userName, Permission globalPermissions) {
+    public HangarPrincipal(long id, String name, boolean locked, Permission globalPermissions) {
         this.id = id;
-        this.userName = userName;
+        this.name = name;
+        this.locked = locked;
         this.globalPermissions = globalPermissions;
     }
 
@@ -22,12 +24,16 @@ public class HangarPrincipal implements ProjectOwner {
 
     @Override
     public String getName() {
-        return userName;
+        return name;
     }
 
     @Override
     public long getUserId() {
         return id;
+    }
+
+    public boolean isLocked() {
+        return locked;
     }
 
     public Permission getGlobalPermissions() {
@@ -38,7 +44,8 @@ public class HangarPrincipal implements ProjectOwner {
     public String toString() {
         return "HangarPrincipal{" +
                 "id=" + id +
-                ", userName='" + userName + '\'' +
+                ", name='" + name + '\'' +
+                ", locked=" + locked +
                 ", globalPermissions=" + globalPermissions +
                 '}';
     }

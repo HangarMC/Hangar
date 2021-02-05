@@ -1,6 +1,6 @@
 package io.papermc.hangar.modelold.generated;
 
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.common.Permission;
 import org.jdbi.v3.core.annotation.Unmappable;
 import org.jdbi.v3.core.mapper.Nested;
 

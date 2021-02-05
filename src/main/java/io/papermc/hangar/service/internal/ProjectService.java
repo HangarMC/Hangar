@@ -2,6 +2,8 @@ package io.papermc.hangar.service.internal;
 
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.ProjectDAO;
+import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.VisibilityService;
@@ -10,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -21,23 +24,14 @@ public class ProjectService extends HangarService {
 
     private final ProjectDAO projectDAO;
     private final VisibilityService visibilityService;
+    private final OrganizationService organizationService;
 
     @Autowired
-    public ProjectService(HangarDao<ProjectDAO> projectDAO, VisibilityService visibilityService) {
+    public ProjectService(HangarDao<ProjectDAO> projectDAO, VisibilityService visibilityService, OrganizationService organizationService) {
         this.projectDAO = projectDAO.get();
         this.visibilityService = visibilityService;
+        this.organizationService = organizationService;
     }
-
-//    @Bean
-//    @RequestScope
-//    public Supplier<ProjectTable> projectTableSupplier() {
-//        Optional<ProjectTable> projectTable = RequestUtil.requirePathParams(List.of(AUTHOR, SLUG), params -> this.getProjectTable(params[0], params[1]));
-//        if (projectTable.isPresent()) {
-//            return projectTable::get;
-//        } else {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-//        }
-//    }
 
     @Nullable
     public ProjectTable getProjectTable(@Nullable Long projectId) {
@@ -48,6 +42,13 @@ public class ProjectService extends HangarService {
         return getProjectTable(author, name, projectDAO::getBySlug);
     }
 
+    @Nullable
+    public ProjectOwner getProjectOwner(long userId) {
+        if (Objects.equals(getHangarUserId(), userId)) {
+            return getHangarPrincipal();
+        }
+        return organizationService.getOrganizationTablesWithPermission(userId, Permission.CreateProject).stream().filter(ot -> ot.getUserId() == userId).findFirst().orElse(null);
+    }
 
     @Nullable
     private <T> ProjectTable getProjectTable(@Nullable T identifier, @NotNull Function<T, ProjectTable> projectTableFunction) {
@@ -64,6 +65,4 @@ public class ProjectService extends HangarService {
         }
         return visibilityService.checkVisibility(projectTableFunction.apply(identifierOne, identifierTwo), ProjectTable::getId);
     }
-
-
 }

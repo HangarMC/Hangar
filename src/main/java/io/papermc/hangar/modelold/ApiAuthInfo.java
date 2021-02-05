@@ -1,7 +1,7 @@
 package io.papermc.hangar.modelold;
 
 import io.papermc.hangar.db.modelold.UsersTable;
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.modelold.generated.ApiKey;
 import org.jdbi.v3.core.mapper.Nested;
 

@@ -2,10 +2,10 @@ package io.papermc.hangar.model.api.project.version;
 
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.Named;
-import io.papermc.hangar.model.Platform;
-import io.papermc.hangar.model.ReviewState;
-import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.Visible;
+import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.common.projects.ReviewState;
+import io.papermc.hangar.model.common.projects.Visibility;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;

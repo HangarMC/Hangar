@@ -1,8 +1,8 @@
 package io.papermc.hangar.service;
 
-import io.papermc.hangar.model.Permission;
-import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.Visible;
+import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.common.projects.Visibility;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;

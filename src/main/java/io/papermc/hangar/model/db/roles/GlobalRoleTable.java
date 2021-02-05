@@ -1,6 +1,6 @@
 package io.papermc.hangar.model.db.roles;
 
-import io.papermc.hangar.model.roles.GlobalRole;
+import io.papermc.hangar.model.common.roles.GlobalRole;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 public class GlobalRoleTable implements RoleTable<GlobalRole> {

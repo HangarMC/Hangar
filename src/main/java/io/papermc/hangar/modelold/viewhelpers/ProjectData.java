@@ -6,7 +6,7 @@ import io.papermc.hangar.db.modelold.ProjectVisibilityChangesTable;
 import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
-import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.serviceold.MarkdownService;
 
 import java.util.List;

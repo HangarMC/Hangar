@@ -3,10 +3,10 @@ package io.papermc.hangar.db.modelold;
 
 import io.papermc.hangar.controllerold.forms.NewProjectForm;
 import io.papermc.hangar.db.customtypes.JSONB;
-import io.papermc.hangar.model.Category;
-import io.papermc.hangar.model.Visibility;
 import io.papermc.hangar.model.Visible;
 import io.papermc.hangar.model.Visitable;
+import io.papermc.hangar.model.common.projects.Category;
+import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.annotation.Unmappable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;

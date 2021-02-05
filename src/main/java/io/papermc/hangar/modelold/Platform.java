@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.daoold.PlatformVersionsDao;
 import io.papermc.hangar.db.modelold.ProjectVersionTagsTable;
-import io.papermc.hangar.model.TagColor;
+import io.papermc.hangar.model.common.TagColor;
 import io.papermc.hangar.modelold.generated.PlatformDependency;
 import io.papermc.hangar.serviceold.VersionService;
 import org.apache.commons.lang3.tuple.ImmutablePair;

@@ -1,7 +1,7 @@
 package io.papermc.hangar.model.internal;
 
-import io.papermc.hangar.model.FlagReason;
-import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.model.common.projects.FlagReason;
+import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.projects.ProjectFlagTable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 

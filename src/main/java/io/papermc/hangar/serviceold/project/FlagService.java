@@ -3,7 +3,7 @@ package io.papermc.hangar.serviceold.project;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.daoold.FlagDao;
 import io.papermc.hangar.db.modelold.ProjectFlagsTable;
-import io.papermc.hangar.model.FlagReason;
+import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.modelold.viewhelpers.ProjectFlag;
 import io.papermc.hangar.serviceold.HangarService;
 import org.springframework.beans.factory.annotation.Autowired;

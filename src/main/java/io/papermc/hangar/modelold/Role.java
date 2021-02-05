@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.db.customtypes.RoleCategory;
-import io.papermc.hangar.model.Color;
-import io.papermc.hangar.model.Permission;
+import io.papermc.hangar.model.common.Color;
+import io.papermc.hangar.model.common.Permission;
 
 @JsonFormat(shape = Shape.OBJECT)
 public enum Role {

@@ -1,6 +1,6 @@
 package io.papermc.hangar.model.api.project.version;
 
-import io.papermc.hangar.model.TagColor;
+import io.papermc.hangar.model.common.TagColor;
 
 public class PromotedVersionTag extends Tag {
 

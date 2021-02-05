@@ -1,4 +1,4 @@
-package io.papermc.hangar.model;
+package io.papermc.hangar.model.common.projects;
 
 public enum FlagReason {
 

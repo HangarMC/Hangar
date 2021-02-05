@@ -2,8 +2,8 @@ package io.papermc.hangar.modelold.generated;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.papermc.hangar.model.Category;
-import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.model.common.projects.Category;
+import io.papermc.hangar.model.common.projects.Visibility;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 import org.springframework.validation.annotation.Validated;

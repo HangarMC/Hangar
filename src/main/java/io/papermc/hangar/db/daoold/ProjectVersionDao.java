@@ -4,7 +4,7 @@ import io.papermc.hangar.db.mappers.PlatformDependencyMapper;
 import io.papermc.hangar.db.mappers.VersionDependenciesMapper;
 import io.papermc.hangar.db.modelold.ProjectVersionTagsTable;
 import io.papermc.hangar.db.modelold.ProjectVersionsTable;
-import io.papermc.hangar.model.ReviewState;
+import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.modelold.viewhelpers.ReviewQueueEntry;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;

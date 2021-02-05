@@ -6,7 +6,7 @@ import io.papermc.hangar.db.daoold.ProjectChannelDao;
 import io.papermc.hangar.db.modelold.ProjectChannelsTable;
 import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.exceptions.HangarException;
-import io.papermc.hangar.model.Color;
+import io.papermc.hangar.model.common.Color;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

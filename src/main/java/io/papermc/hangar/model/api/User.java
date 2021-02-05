@@ -2,7 +2,7 @@ package io.papermc.hangar.model.api;
 
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.Named;
-import io.papermc.hangar.model.roles.GlobalRole;
+import io.papermc.hangar.model.common.roles.GlobalRole;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 import java.time.OffsetDateTime;

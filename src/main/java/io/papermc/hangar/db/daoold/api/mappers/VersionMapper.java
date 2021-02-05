@@ -1,8 +1,8 @@
 package io.papermc.hangar.db.daoold.api.mappers;
 
-import io.papermc.hangar.model.Color;
-import io.papermc.hangar.model.ReviewState;
-import io.papermc.hangar.model.Visibility;
+import io.papermc.hangar.model.common.Color;
+import io.papermc.hangar.model.common.projects.ReviewState;
+import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.modelold.generated.FileInfo;
 import io.papermc.hangar.modelold.generated.Tag;
 import io.papermc.hangar.modelold.generated.TagColor;
@@ -38,7 +38,7 @@ public class VersionMapper implements RowMapper<Version> {
 
         List<Tag> tags = new ArrayList<>();
         for (int i = 0; i < tagNames.length; i++) {
-            io.papermc.hangar.model.TagColor tagColor = io.papermc.hangar.model.TagColor.getByName(tagNames[i]);
+            io.papermc.hangar.model.common.TagColor tagColor = io.papermc.hangar.model.common.TagColor.getByName(tagNames[i]);
             Tag newTag = new Tag().name(tagNames[i]);
             if (tagData[i] != null) {
                 newTag.data(StringUtils.formatVersionNumbers(Arrays.asList(tagData[i].split(", "))));

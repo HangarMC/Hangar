@@ -1,9 +1,9 @@
 package io.papermc.hangar.model.internal.user.notifications;
 
+import io.papermc.hangar.model.common.roles.OrganizationRole;
+import io.papermc.hangar.model.common.roles.ProjectRole;
+import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.roles.RoleTable;
-import io.papermc.hangar.model.roles.OrganizationRole;
-import io.papermc.hangar.model.roles.ProjectRole;
-import io.papermc.hangar.model.roles.Role;
 
 public abstract class HangarInvite<R extends Role<? extends RoleTable<R>>> {
 

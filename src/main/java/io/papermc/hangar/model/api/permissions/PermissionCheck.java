@@ -1,6 +1,6 @@
 package io.papermc.hangar.model.api.permissions;
 
-import io.papermc.hangar.model.PermissionType;
+import io.papermc.hangar.model.common.PermissionType;
 
 public class PermissionCheck {
 

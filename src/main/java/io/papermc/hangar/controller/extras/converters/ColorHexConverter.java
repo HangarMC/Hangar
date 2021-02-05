@@ -1,6 +1,6 @@
 package io.papermc.hangar.controller.extras.converters;
 
-import io.papermc.hangar.model.Color;
+import io.papermc.hangar.model.common.Color;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.convert.converter.Converter;
 
