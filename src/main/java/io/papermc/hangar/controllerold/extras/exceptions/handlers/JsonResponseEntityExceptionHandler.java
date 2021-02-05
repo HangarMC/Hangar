@@ -1,9 +1,9 @@
-package io.papermc.hangar.controller.extras.exceptions.handlers;
+package io.papermc.hangar.controllerold.extras.exceptions.handlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.papermc.hangar.controller.extras.exceptions.JsonResponseException;
 import io.papermc.hangar.controllerold.HangarController;
+import io.papermc.hangar.controllerold.extras.exceptions.JsonResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+@Deprecated
 @ControllerAdvice(assignableTypes = { HangarController.class })
 public class JsonResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 

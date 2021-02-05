@@ -9,22 +9,24 @@
                 <nuxt />
             </v-container>
         </v-main>
-
+        <HangarSnackbar />
         <Footer />
     </v-app>
 </template>
 
-<script>
+<script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import Header from '~/components/layouts/Header';
 import Footer from '~/components/layouts/Footer';
 import Announcement from '~/components/layouts/Announcement';
+import HangarSnackbar from '~/components/layouts/HangarSnackbar.vue';
 
 @Component({
     components: {
         Header,
         Footer,
         Announcement,
+        HangarSnackbar,
     },
 })
 export default class DefaultLayout extends Vue {

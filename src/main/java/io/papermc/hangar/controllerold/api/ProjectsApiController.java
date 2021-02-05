@@ -1,7 +1,7 @@
 package io.papermc.hangar.controllerold.api;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.modelold.ApiAuthInfo;
 import io.papermc.hangar.modelold.generated.Project;

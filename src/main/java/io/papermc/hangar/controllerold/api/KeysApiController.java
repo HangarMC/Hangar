@@ -1,8 +1,8 @@
 package io.papermc.hangar.controllerold.api;
 
-import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.UserContext;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.modelold.ApiAuthInfo;
 import io.papermc.hangar.modelold.NamedPermission;

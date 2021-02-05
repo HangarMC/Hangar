@@ -3,7 +3,7 @@ package io.papermc.hangar.controller.internal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.controller.HangarController;
-import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.model.internal.user.notifications.HangarNotification;

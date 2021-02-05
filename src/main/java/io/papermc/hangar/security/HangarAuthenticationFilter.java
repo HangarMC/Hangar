@@ -2,7 +2,7 @@ package io.papermc.hangar.security;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.TokenService;
 import org.springframework.core.log.LogMessage;

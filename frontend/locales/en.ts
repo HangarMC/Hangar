@@ -118,6 +118,7 @@ const msgs: LocaleMessageObject = {
                 title: 'Finishing',
                 text: 'Creating...',
             },
+            error: 'There was an error creating the project',
         },
         sendForApproval: 'Send for approval',
     },

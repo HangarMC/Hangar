@@ -4,6 +4,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+@Deprecated(forRemoval = true)
 public class HeaderResponseStatusException extends ResponseStatusException {
 
     private final HttpHeaders headers;

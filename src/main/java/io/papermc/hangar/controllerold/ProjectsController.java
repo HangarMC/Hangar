@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.controller.extras.exceptions.JsonResponseException;
+import io.papermc.hangar.controllerold.extras.exceptions.JsonResponseException;
 import io.papermc.hangar.controllerold.forms.JoinableRoleUpdates;
 import io.papermc.hangar.controllerold.forms.NewProjectForm;
 import io.papermc.hangar.controllerold.forms.ProjectNameValidate;

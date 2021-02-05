@@ -1,5 +1,6 @@
 package io.papermc.hangar.exceptions;
 
+@Deprecated(forRemoval = true)
 public class HangarException extends RuntimeException {
 
     private final String messageKey;

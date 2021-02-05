@@ -1,6 +1,6 @@
 package io.papermc.hangar.util;
 
-import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
+import io.papermc.hangar.exceptions.HangarApiException;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

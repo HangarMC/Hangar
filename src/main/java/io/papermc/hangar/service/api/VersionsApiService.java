@@ -1,8 +1,8 @@
 package io.papermc.hangar.service.api;
 
-import io.papermc.hangar.controller.extras.exceptions.HangarApiException;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;

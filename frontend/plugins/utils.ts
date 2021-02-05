@@ -4,6 +4,7 @@ import { AxiosError } from 'axios';
 import { HangarException, User } from 'hangar-api';
 import { NamedPermission } from '~/types/enums';
 import { RootState } from '~/store';
+import { ErrorPayload } from '~/store/snackbar';
 
 type Validation = (v: string) => boolean | string;
 type ValidationArgument = (field?: string) => Validation;
@@ -100,6 +101,14 @@ const createUtil = ({ store, error }: Context) => {
         };
 
         $v: Record<string, Validation> = {};
+
+        error(err: string | ErrorPayload) {
+            if (typeof err === 'string') {
+                store.dispatch('snackbar/SHOW_ERROR', { message: err });
+            } else {
+                store.dispatch('snackbar/SHOW_ERROR', err);
+            }
+        }
     }
 
     return new Util();

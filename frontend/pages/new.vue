@@ -3,7 +3,7 @@
         <v-stepper-header>
             <v-stepper-step step="1" :complete="step > 1">{{ $t('project.new.step1.title') }}</v-stepper-step>
             <v-divider />
-            <v-stepper-step step="2" :complete="step > 2 && forms.step1" :rules="[() => noBasicSettingsError]"
+            <v-stepper-step step="2" :complete="step > 2 && forms.step2" :rules="[() => noBasicSettingsError]"
                 >{{ $t('project.new.step2.title') }}<small v-show="!noBasicSettingsError">Missing Information</small></v-stepper-step
             >
             <v-divider />
@@ -15,7 +15,7 @@
                 >{{ $t('project.new.step4.title') }}<small>{{ $t('project.new.step4.optional') }}</small></v-stepper-step
             >
             <v-divider />
-            <v-stepper-step step="5" :complete="true">{{ $t('project.new.step5.title') }}</v-stepper-step>
+            <v-stepper-step step="5" :complete="!projectLoading">{{ $t('project.new.step5.title') }}</v-stepper-step>
         </v-stepper-header>
         <v-stepper-items>
             <StepperStepContent :step="1" @back="$router.push('/')" @continue="step = 2">
@@ -31,7 +31,7 @@
                     <v-card-title v-if="$vuetify.breakpoint.smAndDown">
                         {{ $t('project.new.step2.title') }}
                     </v-card-title>
-                    <v-form ref="step1Form" v-model="forms.step1">
+                    <v-form v-model="forms.step2">
                         <v-container>
                             <v-row justify="space-around">
                                 <v-col cols="12" md="6">
@@ -92,112 +92,111 @@
                     <v-card-title v-if="$vuetify.breakpoint.smAndDown">
                         {{ $t('project.new.step3.title') }}
                     </v-card-title>
-                    <v-form ref="step1Form" v-model="forms.step1">
-                        <v-container>
-                            <div class="text-h6 pt-1">
-                                <v-icon color="info" large style="transform: rotate(-45deg)" class="mb-1">mdi-link</v-icon>
-                                {{ $t('project.new.step3.links') }}
-                            </div>
-                            <v-divider class="mb-2" />
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        v-model.trim="form.links.homepage"
-                                        dense
-                                        hide-details
-                                        filled
-                                        :label="$t('project.new.step3.homepage')"
-                                        append-icon="mdi-home-search"
-                                    />
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        v-model.trim="form.links.issues"
-                                        dense
-                                        hide-details
-                                        filled
-                                        :label="$t('project.new.step3.issues')"
-                                        append-icon="mdi-bug"
-                                    />
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        v-model.trim="form.links.source"
-                                        dense
-                                        hide-details
-                                        filled
-                                        :label="$t('project.new.step3.source')"
-                                        append-icon="mdi-source-branch"
-                                    />
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        v-model.trim="form.links.support"
-                                        dense
-                                        hide-details
-                                        filled
-                                        :label="$t('project.new.step3.support')"
-                                        append-icon="mdi-face-agent"
-                                    />
-                                </v-col>
-                            </v-row>
-                            <div class="text-h6 pt-5">
-                                <v-icon color="info" large class="mb-1">mdi-license</v-icon>
-                                {{ $t('project.new.step3.licence') }}
-                            </div>
-                            <v-divider class="mb-2" />
-                            <v-row>
-                                <v-col cols="12" :md="isCustomLicense ? 4 : 6">
-                                    <v-select
-                                        v-model="form.license.type"
-                                        dense
-                                        hide-details
-                                        filled
-                                        clearable
-                                        :items="licences"
-                                        :label="$t('project.new.step3.type')"
-                                    />
-                                </v-col>
-                                <v-col v-if="isCustomLicense" cols="12" md="8">
-                                    <v-text-field
-                                        v-model.trim="form.license.customName"
-                                        dense
-                                        hide-details
-                                        filled
-                                        :label="$t('project.new.step3.customName')"
-                                    />
-                                </v-col>
-                                <v-col cols="12" :md="isCustomLicense ? 12 : 6">
-                                    <v-text-field v-model.trim="form.license.url" dense hide-details filled :label="$t('project.new.step3.url')" />
-                                </v-col>
-                            </v-row>
-                            <div class="text-h6 pt-5">
-                                <v-icon color="info" large class="mb-1">mdi-cloud-search</v-icon>
-                                {{ $t('project.new.step3.seo') }}
-                            </div>
-                            <v-divider class="mb-2" />
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-combobox
-                                        v-model="form.keywords"
-                                        small-chips
-                                        deletable-chips
-                                        multiple
-                                        dense
-                                        hide-details
-                                        filled
-                                        :delimiters="[' ', ',', '.']"
-                                        hide-no-data
-                                        :label="$t('project.new.step3.keywords')"
-                                        append-icon="mdi-file-word-box"
-                                    />
-                                </v-col>
-                            </v-row>
-                        </v-container>
-                    </v-form>
+                    <v-container>
+                        <div class="text-h6 pt-1">
+                            <v-icon color="info" large style="transform: rotate(-45deg)" class="mb-1">mdi-link</v-icon>
+                            {{ $t('project.new.step3.links') }}
+                        </div>
+                        <v-divider class="mb-2" />
+                        <v-row>
+                            <v-col cols="12">
+                                <v-text-field
+                                    v-model.trim="form.links.homepage"
+                                    dense
+                                    hide-details
+                                    filled
+                                    :label="$t('project.new.step3.homepage')"
+                                    append-icon="mdi-home-search"
+                                />
+                            </v-col>
+                            <v-col cols="12">
+                                <v-text-field
+                                    v-model.trim="form.links.issues"
+                                    dense
+                                    hide-details
+                                    filled
+                                    :label="$t('project.new.step3.issues')"
+                                    append-icon="mdi-bug"
+                                />
+                            </v-col>
+                            <v-col cols="12">
+                                <v-text-field
+                                    v-model.trim="form.links.source"
+                                    dense
+                                    hide-details
+                                    filled
+                                    :label="$t('project.new.step3.source')"
+                                    append-icon="mdi-source-branch"
+                                />
+                            </v-col>
+                            <v-col cols="12">
+                                <v-text-field
+                                    v-model.trim="form.links.support"
+                                    dense
+                                    hide-details
+                                    filled
+                                    :label="$t('project.new.step3.support')"
+                                    append-icon="mdi-face-agent"
+                                />
+                            </v-col>
+                        </v-row>
+                        <div class="text-h6 pt-5">
+                            <v-icon color="info" large class="mb-1">mdi-license</v-icon>
+                            {{ $t('project.new.step3.licence') }}
+                        </div>
+                        <v-divider class="mb-2" />
+                        <v-row>
+                            <v-col cols="12" :md="isCustomLicense ? 4 : 6">
+                                <v-select
+                                    v-model="form.license.type"
+                                    dense
+                                    hide-details
+                                    filled
+                                    clearable
+                                    :items="licences"
+                                    :label="$t('project.new.step3.type')"
+                                />
+                            </v-col>
+                            <v-col v-if="isCustomLicense" cols="12" md="8">
+                                <v-text-field v-model.trim="form.license.customName" dense hide-details filled :label="$t('project.new.step3.customName')" />
+                            </v-col>
+                            <v-col cols="12" :md="isCustomLicense ? 12 : 6">
+                                <v-text-field v-model.trim="form.license.url" dense hide-details filled :label="$t('project.new.step3.url')" />
+                            </v-col>
+                        </v-row>
+                        <div class="text-h6 pt-5">
+                            <v-icon color="info" large class="mb-1">mdi-cloud-search</v-icon>
+                            {{ $t('project.new.step3.seo') }}
+                        </div>
+                        <v-divider class="mb-2" />
+                        <v-row>
+                            <v-col cols="12">
+                                <v-combobox
+                                    v-model="form.keywords"
+                                    small-chips
+                                    deletable-chips
+                                    multiple
+                                    dense
+                                    hide-details
+                                    filled
+                                    :delimiters="[' ', ',', '.']"
+                                    hide-no-data
+                                    :label="$t('project.new.step3.keywords')"
+                                    append-icon="mdi-file-word-box"
+                                />
+                            </v-col>
+                        </v-row>
+                    </v-container>
                 </v-card>
             </StepperStepContent>
-            <StepperStepContent :step="4" @back="step = 3" @continue="step = 5">
+            <StepperStepContent
+                :step="4"
+                @back="step = 3"
+                @continue="
+                    step = 5;
+                    createProject();
+                "
+            >
                 <v-tabs v-model="spigotConvertTab" fixed-tabs>
                     <v-tab v-text="$t('project.new.step4.convert')"></v-tab>
                     <v-tab v-text="$t('project.new.step4.preview')"></v-tab>
@@ -213,8 +212,12 @@
             <StepperStepContent :step="5" hide-buttons>
                 <v-card>
                     <v-card-text class="text-center">
-                        <v-progress-circular indeterminate color="red" size="50"></v-progress-circular>
-                        <div class="text-h5 mt-2">{{ $t('project.new.step5.text') }}</div>
+                        <v-progress-circular v-if="projectLoading" indeterminate color="red" size="50"></v-progress-circular>
+                        <div v-if="!projectError" class="text-h5 mt-2">{{ $t('project.new.step5.text') }}</div>
+                        <template v-else>
+                            <div class="text-h5 mt-2">{{ $t('project.new.error') }}</div>
+                            <v-btn @click="step = 1">Retry</v-btn>
+                        </template>
                     </v-card-text>
                 </v-card>
             </StepperStepContent>
@@ -225,6 +228,7 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
+import { HangarValidationException } from 'hangar-api';
 import StepperStepContent from '~/components/steppers/StepperStepContent.vue';
 import { RootState } from '~/store';
 import { ProjectCategory } from '~/types/enums';
@@ -267,6 +271,10 @@ interface NewProjectForm {
 export default class NewPage extends Vue {
     step = 1;
     spigotConvertTab = 0;
+    projectLoading = true;
+    projectError = false;
+    projectOwners!: ProjectOwner[];
+    error = null as string | null;
     form = ({
         category: ProjectCategory.ADMIN_TOOLS,
         links: {},
@@ -275,10 +283,8 @@ export default class NewPage extends Vue {
     } as unknown) as NewProjectForm;
 
     forms = {
-        step1: false,
+        step2: false,
     };
-
-    projectOwners!: ProjectOwner[];
 
     get categoryIcon() {
         return (this.$store.state as RootState).projectCategories.get(this.form.category)?.icon;
@@ -293,7 +299,7 @@ export default class NewPage extends Vue {
     }
 
     get noBasicSettingsError() {
-        return this.step !== 2 || this.forms.step1;
+        return this.step !== 2 || this.forms.step2;
     }
 
     // TODO do we want to get those from the server? Jake: I think so, it'd be nice to admins to be able to configure default licenses, but not needed for MVP
@@ -309,6 +315,27 @@ export default class NewPage extends Vue {
 
     created() {
         this.form.ownerId = this.projectOwners.find((po) => !po.isOrganization)?.userId!;
+    }
+
+    createProject() {
+        console.log(this.form);
+        this.$api
+            .requestInternal('projects/create', true, 'post', this.form)
+            .then(() => {
+                console.log('created');
+            })
+            .catch((err) => {
+                this.projectError = true;
+                if (err.response?.data?.isHangarValidationException) {
+                    const validationError: HangarValidationException = err.response.data;
+                    for (const fieldError of validationError.fieldErrors) {
+                        this.$util.error(fieldError.errorMsg);
+                    }
+                }
+            })
+            .finally(() => {
+                this.projectLoading = false;
+            });
     }
 
     // TODO implement create project endpoint

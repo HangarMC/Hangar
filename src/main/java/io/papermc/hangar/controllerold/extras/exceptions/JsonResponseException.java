@@ -1,10 +1,11 @@
-package io.papermc.hangar.controller.extras.exceptions;
+package io.papermc.hangar.controllerold.extras.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
 
+@Deprecated
 public class JsonResponseException extends ResponseStatusException {
 
     private final String messageKey;

@@ -1,4 +1,3 @@
-// TODO use decorators once typescript eslint 4.14.1 comes out Monday Jan 25
 import { MutationTree } from 'vuex';
 import { User } from 'hangar-api';
 
