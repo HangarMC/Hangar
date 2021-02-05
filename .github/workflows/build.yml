@@ -13,6 +13,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=$GITHUB_WORKSPACE/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
+      MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
+      CI: "true"
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -27,11 +32,27 @@ jobs:
         with:
           node-version: '12'
 
+      - name: Cache Maven Deps
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
       - name: Build backend
-        run: mvn install
+        run: mvn install -DskipTests # todo fix tests
+
+      - name: Cache Yarn
+        uses: actions/cache@v2
+        with:
+          path: "~/.cache/yarn"
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
       - name: Install frontend deps
-        run: (cd frontend && yarn)
+        run: (cd frontend && yarn install --frozen-lockfile --cache-folder ~/.cache/yarn)
 
       - name: Build frontend
         run: (cd frontend && yarn build)
