@@ -5,6 +5,9 @@ import { HangarException } from 'hangar-api';
 import { NamedPermission } from '~/types/enums';
 import { RootState } from '~/store';
 
+type Validation = (v: string) => boolean | string;
+type ValidationArgument = (field?: string) => Validation;
+
 const createUtil = ({ store, error }: Context) => {
     class Util {
         avatarUrl(_name: String): String {
@@ -72,6 +75,12 @@ const createUtil = ({ store, error }: Context) => {
                 });
             }
         }
+
+        $vc: Record<string, ValidationArgument> = {
+            require: ((name: string = 'Field') => (v: string) => !!v || `${name} is required`) as ValidationArgument,
+        };
+
+        $v: Record<string, Validation> = {};
     }
 
     return new Util();

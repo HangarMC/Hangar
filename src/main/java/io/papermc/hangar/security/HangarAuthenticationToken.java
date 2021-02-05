@@ -40,7 +40,7 @@ public class HangarAuthenticationToken extends AbstractAuthenticationToken {
         if (user == null) {
             throw new AuthenticationServiceException("This authentication token is not authenticated, so it doesn't have a user");
         }
-        return user.getUserName();
+        return user.getName();
     }
 
     @Override

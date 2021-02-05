@@ -1,5 +1,6 @@
 package io.papermc.hangar.db.dao.internal.table;
 
+import io.papermc.hangar.model.Permission;
 import io.papermc.hangar.model.db.OrganizationTable;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -8,6 +9,8 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 @RegisterConstructorMapper(OrganizationTable.class)
@@ -26,4 +29,11 @@ public interface OrganizationDAO {
 
     @SqlQuery("SELECT * FROM organizations WHERE name = :username")
     OrganizationTable getByUserName(String username);
+
+    @SqlQuery("SELECT o.*" +
+            "   FROM organization_trust ot" +
+            "       JOIN organizations o ON ot.organization_id = o.id" +
+            "   WHERE ot.user_id = :userId" +
+            "       AND (ot.permission & :permission::bit(64)) = ot.permission")
+    List<OrganizationTable> getOrganizationsWithPermission(long userId, Permission permission);
 }

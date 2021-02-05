@@ -73,10 +73,10 @@ const msgs: LocaleMessageObject = {
         },
         new: {
             step1: {
-                title: 'Agree to guidelines',
+                title: 'User Agreement',
                 text:
                     'A project contains your downloads and the documentation for your plugin.<br>Before continuing, please review the <a href="#">Hangar Submission Guidelines.</a>',
-                continue: 'I agree',
+                continue: 'Agree',
                 back: 'Abort',
             },
             step2: {
@@ -100,6 +100,7 @@ const msgs: LocaleMessageObject = {
                 support: 'External Support',
                 licence: 'Licence',
                 type: 'Type',
+                customName: 'Name',
                 url: 'URL',
                 seo: 'SEO',
                 keywords: 'Keywords',

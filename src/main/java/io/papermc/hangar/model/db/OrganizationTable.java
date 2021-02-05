@@ -1,7 +1,7 @@
 package io.papermc.hangar.model.db;
 
-import io.papermc.hangar.db.modelold.ProjectOwner;
 import io.papermc.hangar.model.Visitable;
+import io.papermc.hangar.model.db.projects.ProjectOwner;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 import java.time.OffsetDateTime;

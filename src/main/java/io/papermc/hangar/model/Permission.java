@@ -6,7 +6,6 @@ import org.jdbi.v3.core.argument.Argument;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import org.jdbi.v3.core.statement.StatementContext;
 
-import java.sql.JDBCType;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -128,6 +127,6 @@ public class Permission implements Comparable<Permission>, Argument {
 
     @Override
     public void apply(int position, PreparedStatement statement, StatementContext ctx) throws SQLException {
-        statement.setObject(position, this.value, JDBCType.VARBINARY);
+        statement.setLong(position, this.value);
     }
 }

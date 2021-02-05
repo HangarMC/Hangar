@@ -1,8 +1,10 @@
 declare module 'hangar-internal' {
+    import { ProjectCategory } from '~/types/enums';
+
     interface IProjectCategory {
         title: string;
         icon: string;
-        apiName: string;
+        apiName: ProjectCategory;
         visible: boolean;
     }
 }
