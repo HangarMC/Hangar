@@ -21,7 +21,7 @@ import java.util.List;
 
 
 @Api(tags = "Permissions", produces = MediaType.APPLICATION_JSON_VALUE)
-@RequestMapping(path = "/api/v1/permissions", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+@RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
 @Secured("ROLE_USER")
 public interface IPermissionsController {
 
@@ -38,7 +38,7 @@ public interface IPermissionsController {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired")
     })
-    @GetMapping(value = "/hasAll")
+    @GetMapping(value = "/permissions/hasAll")
     ResponseEntity<PermissionCheck> hasAllPermissions(@ApiParam(value = "The permissions to check", required = true) @RequestParam List<NamedPermission> permissions,
                                                       @ApiParam("The owner of the project to check permissions in. Must not be used together with `organizationName`") @RequestParam(required = false) String author,
                                                       @ApiParam("The project slug of the project to check permissions in. Must not be used together with `organizationName`") @RequestParam(required = false) String slug,
@@ -57,7 +57,7 @@ public interface IPermissionsController {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired")
     })
-    @GetMapping("/hasAny")
+    @GetMapping("/permissions/hasAny")
     ResponseEntity<PermissionCheck> hasAny(@ApiParam(value = "The permissions to check", required = true) @RequestParam List<NamedPermission> permissions,
                                            @ApiParam("The owner of the project to check permissions in. Must not be used together with `organizationName") @RequestParam(required = false) String author,
                                            @ApiParam("The project slug of the project to check permissions in. Must not be used together with `organizationName`") @RequestParam(required = false) String slug,
@@ -76,7 +76,7 @@ public interface IPermissionsController {
             @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired")
     })
-    @GetMapping(value = "/",
+    @GetMapping(value = "/permissions",
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<UserPermissions> showPermissions(
             @ApiParam("The owner of the project to get the permissions for. Must not be used together with `organizationName`") @RequestParam(required = false) String author,

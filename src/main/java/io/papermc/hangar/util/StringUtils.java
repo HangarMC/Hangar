@@ -68,6 +68,7 @@ public class StringUtils {
     }
 
     @NotNull
+    @Deprecated(forRemoval = true)
     public static Collection<String> parseKeywords(@Nullable String input) {
         return input == null ? Set.of() : Set.of(input.split("\\s+"));
     }

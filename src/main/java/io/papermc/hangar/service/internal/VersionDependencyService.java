@@ -1,8 +1,8 @@
 package io.papermc.hangar.service.internal;
 
 import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.internal.table.ProjectVersionDependencyDAO;
-import io.papermc.hangar.db.dao.internal.table.ProjectVersionPlatformDependencyDAO;
+import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionDependencyDAO;
+import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionPlatformDependencyDAO;
 import io.papermc.hangar.db.daoold.PlatformVersionsDao;
 import io.papermc.hangar.db.modelold.PlatformVersionsTable;
 import io.papermc.hangar.model.common.Platform;

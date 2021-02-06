@@ -356,7 +356,7 @@ public class VersionsController extends HangarController {
         }
         newVersion.getChannel().setColor(channel.getColor());
         newVersion.getChannel().setName(channel.getName());
-        newVersion.getChannel().setNonReviewed(channel.getIsNonReviewed());
+        newVersion.getChannel().setNonReviewed(channel.isNonReviewed());
 
         PendingVersion updatedVersion = pendingVersion.update(newVersion);
 
@@ -481,7 +481,7 @@ public class VersionsController extends HangarController {
                 ModelAndView mav = new ModelAndView("projects/versions/unsafeDownload");
                 mav.addObject("project", project);
                 mav.addObject("target", versionsTable);
-                mav.addObject("isTargetChannelNonReviewed", channelsTable.getIsNonReviewed());
+                mav.addObject("isTargetChannelNonReviewed", channelsTable.isNonReviewed());
                 mav.addObject("downloadType", downloadType);
                 return fillModel(mav);
             }

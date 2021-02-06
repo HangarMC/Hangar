@@ -2,7 +2,6 @@ package io.papermc.hangar.db.daoold;
 
 import io.papermc.hangar.db.modelold.ProjectPagesTable;
 import io.papermc.hangar.modelold.viewhelpers.ProjectPage;
-
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -20,7 +19,7 @@ import java.util.List;
 @RegisterBeanMapper(ProjectPage.class)
 public interface ProjectPageDao {
 
-    @SqlUpdate("INSERT INTO project_pages (created_at, project_id, name, slug, contents, is_deletable, parent_id) VALUES (:now, :projectId, :name, :slug, :contents, :isDeletable, :parentId)")
+    @SqlUpdate("INSERT INTO project_pages (created_at, project_id, name, slug, contents, deletable, parent_id) VALUES (:now, :projectId, :name, :slug, :contents, :deletable, :parentId)")
     @Timestamped
     @GetGeneratedKeys
     ProjectPagesTable insert(@BindBean ProjectPagesTable projectPagesTable);
@@ -43,10 +42,10 @@ public interface ProjectPageDao {
 
     @RegisterBeanMapper(ProjectPage.class)
     @KeyColumn("id")
-    @SqlQuery("SELECT id, created_at, name, slug, contents, is_deletable FROM project_pages WHERE project_id = :projectId AND parent_id IS NULL ORDER BY created_at")
+    @SqlQuery("SELECT id, created_at, name, slug, contents, deletable FROM project_pages WHERE project_id = :projectId AND parent_id IS NULL ORDER BY created_at")
     LinkedHashMap<Long, ProjectPage> getRootPages(long projectId);
 
     @RegisterBeanMapper(ProjectPage.class)
-    @SqlQuery("SELECT id, created_at, name, slug, contents, is_deletable, parent_id FROM project_pages WHERE project_id = :projectId AND parent_id = :parentId")
+    @SqlQuery("SELECT id, created_at, name, slug, contents, deletable, parent_id FROM project_pages WHERE project_id = :projectId AND parent_id = :parentId")
     List<ProjectPage> getChildPages(long projectId, long parentId);
 }

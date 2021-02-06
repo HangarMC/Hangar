@@ -96,6 +96,7 @@ public class AuthenticationService extends HangarService {
 
     @Bean
     @RequestScope
+    @Deprecated
     public ApiAuthInfo apiAuthInfo() {
         Matcher apiMatcher = API_ROUTE_PATTERN.matcher(request.getRequestURI());
         if (apiMatcher.matches()) { // if api method

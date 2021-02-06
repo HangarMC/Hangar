@@ -1,6 +1,7 @@
 package io.papermc.hangar.model.db.roles;
 
 import io.papermc.hangar.model.common.roles.ProjectRole;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 import java.time.OffsetDateTime;
@@ -10,7 +11,7 @@ public class ProjectRoleTable extends ExtendedRoleTable<ProjectRole> {
     private final long projectId;
 
     @JdbiConstructor
-    public ProjectRoleTable(OffsetDateTime createdAt, long id, long userId, ProjectRole role, boolean accepted, long projectId) {
+    public ProjectRoleTable(OffsetDateTime createdAt, long id, long userId, @ColumnName("role_type") ProjectRole role, boolean accepted, long projectId) {
         super(createdAt, id, userId, role, accepted);
         this.projectId = projectId;
     }

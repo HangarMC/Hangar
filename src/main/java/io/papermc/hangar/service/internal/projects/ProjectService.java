@@ -1,12 +1,13 @@
-package io.papermc.hangar.service.internal;
+package io.papermc.hangar.service.internal.projects;
 
 import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.internal.table.ProjectDAO;
+import io.papermc.hangar.db.dao.internal.table.projects.ProjectDAO;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.VisibilityService;
+import io.papermc.hangar.service.internal.OrganizationService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,10 @@ public class ProjectService extends HangarService {
             return getHangarPrincipal();
         }
         return organizationService.getOrganizationTablesWithPermission(userId, Permission.CreateProject).stream().filter(ot -> ot.getUserId() == userId).findFirst().orElse(null);
+    }
+
+    public void refreshHomeProjects() {
+        projectDAO.refreshHomeProjects();
     }
 
     @Nullable

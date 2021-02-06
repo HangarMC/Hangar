@@ -157,6 +157,8 @@ const msgs: LocaleMessageObject = {
     },
     visibility: {
         notice: {
+            new:
+                'This project is new, and will not be shown to others until a version has been uploaded. If a version is not uploaded over a longer time the project will be deleted.',
             needsChanges: 'This project requires changes: {0}',
             needsApproval: 'You have sent the project for review',
             softDelete: 'Project deleted by {0}',

@@ -2,7 +2,9 @@ package io.papermc.hangar.model.common.projects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
 
+@EnumByOrdinal
 public enum Visibility {
     PUBLIC("public", false, ""),
 

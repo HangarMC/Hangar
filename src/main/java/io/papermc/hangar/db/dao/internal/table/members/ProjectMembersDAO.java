@@ -1,6 +1,5 @@
 package io.papermc.hangar.db.dao.internal.table.members;
 
-import io.papermc.hangar.db.modelold.ProjectMembersTable;
 import io.papermc.hangar.model.db.members.ProjectMemberTable;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -10,7 +9,7 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@RegisterConstructorMapper(ProjectMembersTable.class)
+@RegisterConstructorMapper(ProjectMemberTable.class)
 public interface ProjectMembersDAO extends MembersDAO<ProjectMemberTable> {
 
     @Override

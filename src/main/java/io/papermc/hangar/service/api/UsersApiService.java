@@ -57,17 +57,17 @@ public class UsersApiService extends HangarService {
 
     public PaginatedResult<ProjectCompact> getUserStarred(String userName, ProjectSortingStrategy sortingStrategy, RequestPagination pagination) {
         getUserRequired(userName, usersDAO::getUser, User.class);
-        boolean canSeeHidden = hangarApiRequest.getGlobalPermissions().has(Permission.SeeHidden);
-        List<ProjectCompact> projects = usersApiDAO.getUserStarred(userName, canSeeHidden, hangarApiRequest.getUserId(), sortingStrategy.getSql(), pagination.getLimit(), pagination.getOffset());
-        long count = usersApiDAO.getUserStarredCount(userName, canSeeHidden, hangarApiRequest.getUserId());
+        boolean canSeeHidden = getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden);
+        List<ProjectCompact> projects = usersApiDAO.getUserStarred(userName, canSeeHidden, getHangarUserId(), sortingStrategy.getSql(), pagination.getLimit(), pagination.getOffset());
+        long count = usersApiDAO.getUserStarredCount(userName, canSeeHidden, getHangarUserId());
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
     }
 
     public PaginatedResult<ProjectCompact> getUserWatching(String userName, ProjectSortingStrategy sortingStrategy, RequestPagination pagination) {
         getUserRequired(userName, usersDAO::getUser, User.class);
-        boolean canSeeHidden = hangarApiRequest.getGlobalPermissions().has(Permission.SeeHidden);
-        List<ProjectCompact> projects = usersApiDAO.getUserWatching(userName, canSeeHidden, hangarApiRequest.getUserId(), sortingStrategy.getSql(), pagination.getLimit(), pagination.getOffset());
-        long count = usersApiDAO.getUserWatchingCount(userName, canSeeHidden, hangarApiRequest.getUserId());
+        boolean canSeeHidden = getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden);
+        List<ProjectCompact> projects = usersApiDAO.getUserWatching(userName, canSeeHidden, getHangarUserId(), sortingStrategy.getSql(), pagination.getLimit(), pagination.getOffset());
+        long count = usersApiDAO.getUserWatchingCount(userName, canSeeHidden, getHangarUserId());
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
     }
 
@@ -137,7 +137,7 @@ public class UsersApiService extends HangarService {
 //        boolean hasUnreadNotifs = notificationsDAO.hasUnreadNotifications(hangarApiRequest.getUserId());
         boolean hasUnreadNotifs = notificationsDAO.hasUnreadNotifications(hangarUser.getId());
         boolean hasUnresolvedFlags = globalPermission.has(Permission.ModNotesAndFlags) && notificationsDAO.hasUnresolvedFlags();
-        boolean hasProjectApprovals = globalPermission.has(Permission.ModNotesAndFlags.add(Permission.SeeHidden)) && notificationsDAO.hasProjectApprovals(hangarApiRequest.getUserId());
+        boolean hasProjectApprovals = globalPermission.has(Permission.ModNotesAndFlags.add(Permission.SeeHidden)) && notificationsDAO.hasProjectApprovals(getHangarPrincipal().getUserId());
         boolean hasReviewQueue = globalPermission.has(Permission.Reviewer) && notificationsDAO.hasReviewQueue();
         hangarUser.setHeaderData(new HeaderData(
                 globalPermission,

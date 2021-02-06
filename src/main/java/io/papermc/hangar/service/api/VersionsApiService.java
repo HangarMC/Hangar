@@ -31,12 +31,12 @@ public class VersionsApiService extends HangarService {
 
     public Version getVersion(String author, String slug, String name) {
         long versionId = StringUtils.getVersionId(name, new HangarApiException(HttpStatus.BAD_REQUEST, "badly formatted version string"));
-        return versionsApiDAO.getVersion(author, slug, versionId, hangarApiRequest.getGlobalPermissions().has(Permission.SeeHidden), hangarApiRequest.getUserId());
+        return versionsApiDAO.getVersion(author, slug, versionId, getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
     }
 
     public PaginatedResult<Version> getVersions(String author, String slug, List<String> tags, RequestPagination pagination) {
-        List<Version> versions = versionsApiDAO.getVersions(author, slug, tags, hangarApiRequest.getGlobalPermissions().has(Permission.SeeHidden), hangarApiRequest.getUserId(), pagination.getLimit(), pagination.getOffset());
-        Long versionCount = versionsApiDAO.getVersionCount(author, slug, tags, hangarApiRequest.getGlobalPermissions().has(Permission.SeeHidden), hangarApiRequest.getUserId());
+        List<Version> versions = versionsApiDAO.getVersions(author, slug, tags, getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId(), pagination.getLimit(), pagination.getOffset());
+        Long versionCount = versionsApiDAO.getVersionCount(author, slug, tags, getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
         return new PaginatedResult<>(new Pagination(versionCount == null ? 0 : versionCount.longValue(), pagination), versions);
     }
 

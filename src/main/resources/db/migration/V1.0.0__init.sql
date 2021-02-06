@@ -121,7 +121,7 @@ CREATE TABLE project_pages
     name varchar(255) NOT NULL,
     slug varchar(255) NOT NULL,
     contents text default ''::text NOT NULL,
-    is_deletable boolean DEFAULT TRUE NOT NULL,
+    deletable boolean DEFAULT TRUE NOT NULL,
     parent_id bigint
         CONSTRAINT project_pages_parent_id_fkey
             REFERENCES project_pages
@@ -146,7 +146,7 @@ CREATE TABLE project_channels
         CONSTRAINT channels_project_id_fkey
             REFERENCES projects
             ON DELETE CASCADE,
-    is_non_reviewed boolean DEFAULT FALSE NOT NULL,
+    non_reviewed boolean DEFAULT FALSE NOT NULL,
     CONSTRAINT channels_project_id_name_key
         UNIQUE (project_id, name),
     CONSTRAINT channels_project_id_color_id_key

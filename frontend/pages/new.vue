@@ -180,7 +180,6 @@
                                     hide-details
                                     filled
                                     :delimiters="[' ', ',', '.']"
-                                    hide-no-data
                                     :label="$t('project.new.step3.keywords')"
                                     append-icon="mdi-file-word-box"
                                 />
@@ -327,9 +326,9 @@ export default class NewPage extends Vue {
     createProject() {
         console.log(this.form);
         this.$api
-            .requestInternal('projects/create', true, 'post', this.form)
-            .then(() => {
-                console.log('created');
+            .requestInternal<string>('projects/create', true, 'post', this.form)
+            .then((url) => {
+                this.$router.push(url);
             })
             .catch((err) => {
                 this.projectError = true;
@@ -344,7 +343,5 @@ export default class NewPage extends Vue {
                 this.projectLoading = false;
             });
     }
-
-    // TODO implement create project endpoint
 }
 </script>

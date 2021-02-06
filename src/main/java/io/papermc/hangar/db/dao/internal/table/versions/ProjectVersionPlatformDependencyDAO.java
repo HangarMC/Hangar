@@ -1,4 +1,4 @@
-package io.papermc.hangar.db.dao.internal.table;
+package io.papermc.hangar.db.dao.internal.table.versions;
 
 import io.papermc.hangar.model.db.versions.ProjectVersionPlatformDependencyTable;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;

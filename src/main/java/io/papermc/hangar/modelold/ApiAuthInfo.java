@@ -6,7 +6,7 @@ import io.papermc.hangar.modelold.generated.ApiKey;
 import org.jdbi.v3.core.mapper.Nested;
 
 import java.time.OffsetDateTime;
-
+@Deprecated(forRemoval = true)
 public class ApiAuthInfo {
 
     private UsersTable user;

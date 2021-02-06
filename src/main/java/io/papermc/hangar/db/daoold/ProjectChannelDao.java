@@ -22,12 +22,12 @@ import java.util.Map;
 @RegisterBeanMapper(ProjectChannelsTable.class)
 public interface ProjectChannelDao {
 
-    @SqlUpdate("insert into project_channels (created_at, name, color, project_id, is_non_reviewed) values (:now, :name, :color, :projectId, :isNonReviewed)")
+    @SqlUpdate("insert into project_channels (created_at, name, color, project_id, non_reviewed) values (:now, :name, :color, :projectId, :nonReviewed)")
     @Timestamped
     @GetGeneratedKeys
     ProjectChannelsTable insert(@BindBean ProjectChannelsTable projectChannel);
 
-    @SqlUpdate("UPDATE project_channels SET name = :name, color = :color, is_non_reviewed = :nonReviewed WHERE project_id = :projectId AND name = :oldName")
+    @SqlUpdate("UPDATE project_channels SET name = :name, color = :color, non_reviewed = :nonReviewed WHERE project_id = :projectId AND name = :oldName")
     void update(long projectId, String oldName, String name, @EnumByOrdinal Color color, boolean nonReviewed);
 
     @SqlQuery("SELECT * FROM project_channels WHERE project_id = :projectId ORDER BY created_at LIMIT 1")

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Service("oldChannelService")
 public class ChannelService {
 
     private final HangarConfig hangarConfig;
@@ -53,7 +53,7 @@ public class ChannelService {
     }
 
     public ProjectChannelsTable addProjectChannel(long projectId, String channelName, Color color, boolean isNonReviewed) {
-        InvalidChannelCreationReason reason = channelDao.get().validateChannelCreation(projectId, channelName, color.getValue(), hangarConfig.projects.getMaxChannels());
+        InvalidChannelCreationReason reason = channelDao.get().validateChannelCreation(projectId, channelName, color.ordinal(), hangarConfig.projects.getMaxChannels());
         checkInvalidChannelCreationReason(reason);
         return channelFactory.createChannel(projectId, channelName, color, isNonReviewed);
     }
@@ -63,7 +63,7 @@ public class ChannelService {
             throw new HangarException("error.channel.invalidName", channelName);
         }
 
-        InvalidChannelCreationReason reason = channelDao.get().validateChannelUpdate(projectId, oldChannel, channelName, color.getValue());
+        InvalidChannelCreationReason reason = channelDao.get().validateChannelUpdate(projectId, oldChannel, channelName, color.ordinal());
         checkInvalidChannelCreationReason(reason);
         channelDao.get().update(projectId, oldChannel, channelName, color, nonReviewed);
     }

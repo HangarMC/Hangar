@@ -1,8 +1,8 @@
 <template>
     <div>
-        <v-row v-if="!isPublic">
+        <template v-if="!isPublic">
             <!-- todo alert for visibility stuff -->
-            <v-alert v-if="needsChanges" type="error" style="col-12">
+            <v-alert v-if="needsChanges" type="error">
                 <!-- todo remove is no EditPage perm -->
                 <v-btn type="primary" :to="'/' + slug + '/manage/sendforapproval'">{{ $t('project.sendForApproval') }} </v-btn>
                 <strong>{{ $t('visibility.notice.' + project.visibility) }}</strong>
@@ -17,14 +17,14 @@
                 {{ $t('visibility.notice.' + project.visibility) }}
                 <Markdown v-if="visibilityComment" :input="visibilityComment" />
             </v-alert>
-        </v-row>
+        </template>
         <v-row>
             <v-col cols="1">
-                <UserAvatar :username="author.name" :avatar-url="$util.avatarUrl(author.name)" clazz="user-avatar-sm"></UserAvatar>
+                <UserAvatar :username="project.namespace.owner" :avatar-url="$util.avatarUrl(project.namespace.owner)" clazz="user-avatar-sm"></UserAvatar>
             </v-col>
             <v-col cols="auto">
                 <h1 class="d-inline">
-                    <NuxtLink :to="'/' + author.name">{{ author.name }}</NuxtLink> /
+                    <NuxtLink :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</NuxtLink> /
                     <NuxtLink :to="'/' + slug">{{ project.name }}</NuxtLink>
                 </h1>
                 <div>
@@ -34,7 +34,7 @@
             <v-spacer />
             <v-col cols="3">
                 <!-- todo if author, disable -->
-                <v-btn @click="toogleStar">
+                <v-btn @click="toggleStar">
                     <v-icon v-if="project.userActions.starred">mdi-star</v-icon>
                     <v-icon v-else>mdi-star-outline</v-icon>
                 </v-btn>
@@ -77,7 +77,7 @@
                             {{ $t('project.actions.userActionLogs') }}
                         </v-list-item-title>
                     </v-list-item>
-                    <v-list-item :href="$util.forumUrl(author.name)">
+                    <v-list-item :href="$util.forumUrl(project.namespace.owner)">
                         <v-list-item-title>
                             {{ $t('project.actions.forum') }}
                             <v-icon>mdi-open-in-new</v-icon>
@@ -87,25 +87,38 @@
             </v-col>
         </v-row>
         <v-row>
-            <v-tabs>
-                <v-tab v-for="tab in tabs" :key="tab.title" :to="tab.external ? null : tab.link" :href="tab.external ? tab.link : null">
+            <v-tabs active-class="other-class">
+                <v-tab
+                    v-for="tab in tabs"
+                    :key="tab.title"
+                    exact
+                    :to="tab.external ? null : tab.link"
+                    :href="tab.external ? tab.link : null"
+                    :nuxt="!tab.external"
+                >
                     <v-icon>{{ tab.icon }}</v-icon>
                     {{ tab.title }}
                     <v-icon v-if="tab.external">mdi-open-in-new</v-icon>
                 </v-tab>
             </v-tabs>
         </v-row>
-        <v-divider />
-        <slot />
+        <NuxtChild class="mt-4">
+            <v-tab-item>
+                {{ $route.name }}
+            </v-tab-item>
+        </NuxtChild>
     </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Project, User } from 'hangar-api';
-import { Visibility } from '~/types/enums';
+import { Component, Vue } from 'nuxt-property-decorator';
+import { Context } from '@nuxt/types';
+import { HangarApiException, Project } from 'hangar-api';
+import { AxiosError } from 'axios';
 import Markdown from '~/components/Markdown.vue';
 import FlagModal from '~/components/FlagModal.vue';
+import UserAvatar from '~/components/UserAvatar.vue';
+import { Visibility } from '~/types/enums';
 
 interface Tab {
     title: String;
@@ -115,21 +128,59 @@ interface Tab {
 }
 
 @Component({
-    components: { FlagModal, Markdown },
+    components: {
+        FlagModal,
+        Markdown,
+        UserAvatar,
+    },
 })
-export default class ProjectLayout extends Vue {
-    @Prop({ required: true })
+export default class ProjectPage extends Vue {
     project!: Project;
 
-    @Prop({ required: true })
-    author!: User;
+    head() {
+        return {
+            title: this.project?.name,
+        };
+    }
 
-    $refs!: {
-        flagModal: FlagModal;
-    };
+    async asyncData({ $api, params, error }: Context): Promise<{ project: Project } | void> {
+        return await $api
+            .request<Project>(`projects/${params.author}/${params.slug}`)
+            .then((project) => {
+                return Promise.resolve({ project });
+            })
+            .catch((err: AxiosError) => {
+                if (err.response?.data?.isHangarApiException) {
+                    const hangarError: HangarApiException = err.response?.data as HangarApiException;
+                    error({
+                        message: hangarError.message,
+                        statusCode: hangarError.httpError.statusCode,
+                    });
+                }
+            });
+    }
 
-    get slug(): String {
-        return this.author.name + '/' + this.project.name;
+    get tabs(): Tab[] {
+        const tabs = [] as Tab[];
+        tabs.push({ title: this.$t('project.tabs.docs') as String, icon: 'mdi-book', link: this.slug, external: false });
+        tabs.push({ title: this.$t('project.tabs.versions') as String, icon: 'mdi-download', link: this.slug + '/versions', external: false });
+        // todo check if has a discussion
+        tabs.push({ title: this.$t('project.tabs.discuss') as String, icon: 'mdi-account-group', link: this.slug + '/discuss', external: false });
+        // todo check if settings perm
+        tabs.push({ title: this.$t('project.tabs.settings') as String, icon: 'mdi-cog', link: this.slug + '/settings', external: false });
+        if (this.project.settings.homepage) {
+            tabs.push({ title: this.$t('project.tabs.homepage') as String, icon: 'mdi-home', link: this.project.settings.homepage, external: true });
+        }
+        if (this.project.settings.issues) {
+            tabs.push({ title: this.$t('project.tabs.issues') as String, icon: 'mdi-bug', link: this.project.settings.issues, external: true });
+        }
+        if (this.project.settings.sources) {
+            tabs.push({ title: this.$t('project.tabs.source') as String, icon: 'mdi-code-tags', link: this.project.settings.sources, external: true });
+        }
+        if (this.project.settings.support) {
+            tabs.push({ title: this.$t('project.tabs.support') as String, icon: 'mdi-chat-question', link: this.project.settings.support, external: true });
+        }
+        return tabs;
     }
 
     get isPublic(): Boolean {
@@ -149,30 +200,11 @@ export default class ProjectLayout extends Vue {
         return null;
     }
 
-    get tabs(): Tab[] {
-        const tabs = [] as Tab[];
-        tabs.push({ title: this.$t('project.tabs.docs') as String, icon: 'mdi-book', link: '/' + this.slug, external: false });
-        tabs.push({ title: this.$t('project.tabs.versions') as String, icon: 'mdi-download', link: '/' + this.slug + '/versions', external: false });
-        // todo check if has a discussion
-        tabs.push({ title: this.$t('project.tabs.discuss') as String, icon: 'mdi-account-group', link: '/' + this.slug + '/discuss', external: false });
-        // todo check if settings perm
-        tabs.push({ title: this.$t('project.tabs.settings') as String, icon: 'mdi-cog', link: '/' + this.slug + '/settings', external: false });
-        if (this.project.settings.homepage) {
-            tabs.push({ title: this.$t('project.tabs.homepage') as String, icon: 'mdi-home', link: this.project.settings.homepage, external: true });
-        }
-        if (this.project.settings.issues) {
-            tabs.push({ title: this.$t('project.tabs.issues') as String, icon: 'mdi-bug', link: this.project.settings.issues, external: true });
-        }
-        if (this.project.settings.sources) {
-            tabs.push({ title: this.$t('project.tabs.source') as String, icon: 'mdi-code-tags', link: this.project.settings.sources, external: true });
-        }
-        if (this.project.settings.support) {
-            tabs.push({ title: this.$t('project.tabs.support') as String, icon: 'mdi-chat-question', link: this.project.settings.support, external: true });
-        }
-        return tabs;
+    get slug(): String {
+        return `/${this.project.namespace.owner}/${this.project.namespace.slug}`;
     }
 
-    toogleStar() {
+    toggleStar() {
         // TODO toggle star
     }
 
@@ -180,14 +212,12 @@ export default class ProjectLayout extends Vue {
         // todo toggle watch
     }
 
+    $refs!: {
+        flagModal: FlagModal;
+    };
+
     showFlagModal() {
         this.$refs.flagModal.show();
     }
 }
 </script>
-<style lang="scss" scoped>
-.v-alert {
-    flex: 0 0 100%;
-    max-width: 100%;
-}
-</style>

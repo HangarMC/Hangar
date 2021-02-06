@@ -4,7 +4,7 @@
             <Editor
                 :save-call="ROUTES.parse('PAGES_SAVE', project.ownerName, project.slug, page.slug)"
                 :delete-call="ROUTES.parse('PAGES_DELETE', project.ownerName, project.slug, page.slug)"
-                :deletable="page.isDeletable"
+                :deletable="page.deletable"
                 :enabled="canEditPages"
                 :raw="page.contents"
                 subject="Page"

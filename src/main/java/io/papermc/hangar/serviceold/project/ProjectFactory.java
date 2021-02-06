@@ -6,8 +6,8 @@ import io.papermc.hangar.controllerold.forms.NewProjectForm;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.internal.table.ProjectVersionDependencyDAO;
-import io.papermc.hangar.db.dao.internal.table.ProjectVersionPlatformDependencyDAO;
+import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionDependencyDAO;
+import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionPlatformDependencyDAO;
 import io.papermc.hangar.db.daoold.PlatformVersionsDao;
 import io.papermc.hangar.db.daoold.ProjectChannelDao;
 import io.papermc.hangar.db.daoold.ProjectDao;
@@ -57,7 +57,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Component
+@Component("oldProjectFactory")
 public class ProjectFactory {
 
     private final HangarConfig hangarConfig;

@@ -18,7 +18,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Documented
-@Constraint(validatedBy = Validate.ValidateValueMatchValidator.class)
+@Constraint(validatedBy = Validate.ValidateConstraintValidator.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(Validate.List.class)
@@ -28,7 +28,7 @@ public @interface Validate {
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
-    class ValidateValueMatchValidator implements ConstraintValidator<Validate, Object> {
+    class ValidateConstraintValidator implements ConstraintValidator<Validate, Object> {
 
         @Autowired
         StandardEvaluationContext evaluationContext;

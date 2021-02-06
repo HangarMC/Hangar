@@ -41,7 +41,7 @@ public interface IProjectsController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping( "/projects/{author}/{slug}")
-    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.common.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
+//    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.common.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     ResponseEntity<Project> getProject(@ApiParam("The author of the project to return") @PathVariable String author,
                                        @ApiParam("The slug of the project to return") @PathVariable String slug);
 

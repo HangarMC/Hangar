@@ -2,6 +2,7 @@ package io.papermc.hangar.db.modelold;
 
 import java.time.OffsetDateTime;
 
+@Deprecated(forRemoval = true)
 public class ProjectPagesTable {
 
     private long id;
@@ -10,15 +11,15 @@ public class ProjectPagesTable {
     private String name;
     private String slug;
     private String contents;
-    private boolean isDeletable;
+    private boolean deletable;
     private Long parentId;
 
-    public ProjectPagesTable(long projectId, String name, String slug, String contents, boolean isDeletable, Long parentId) {
+    public ProjectPagesTable(long projectId, String name, String slug, String contents, boolean deletable, Long parentId) {
         this.projectId = projectId;
         this.name = name;
         this.slug = slug;
         this.contents = contents;
-        this.isDeletable = isDeletable;
+        this.deletable = deletable;
         this.parentId = parentId;
     }
 
@@ -80,12 +81,12 @@ public class ProjectPagesTable {
     }
 
 
-    public boolean getIsDeletable() {
-        return isDeletable;
+    public boolean isDeletable() {
+        return deletable;
     }
 
-    public void setIsDeletable(boolean isDeletable) {
-        this.isDeletable = isDeletable;
+    public void setDeletable(boolean isDeletable) {
+        this.deletable = isDeletable;
     }
 
 

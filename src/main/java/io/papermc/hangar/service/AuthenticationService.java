@@ -5,9 +5,9 @@ import io.papermc.hangar.controller.extras.ApiScope;
 import io.papermc.hangar.controller.extras.HangarApiRequest;
 import io.papermc.hangar.controller.extras.HangarRequest;
 import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.internal.table.ProjectDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.ApiKeyDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.ApiSessionDAO;
+import io.papermc.hangar.db.dao.internal.table.projects.ProjectDAO;
 import io.papermc.hangar.db.dao.session.HangarRequestDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.auth.ApiSession;
@@ -101,20 +101,6 @@ public class AuthenticationService extends HangarService {
             if (userTable != null) userId = userTable.getUserId();
         }
         return new HangarRequest(userTable, permissionService.getGlobalPermissions(userId));
-    }
-
-    /**
-     * For use in {@link org.springframework.security.access.prepost.PreAuthorize}.
-     *
-     * @param requiredPerms perms required for this controller method
-     * @param apiScope scope of required perms
-     * @return true if allowed, throws if not
-     */
-    public boolean handleApiRequest(Permission requiredPerms, ApiScope apiScope) {
-        if (!checkPerms(requiredPerms, apiScope, hangarApiRequest.getUserId())) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND, "Resource NOT FOUND");
-        }
-        return true;
     }
 
     private boolean checkPerms(Permission requiredPerms, ApiScope apiScope, Long userId) {

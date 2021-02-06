@@ -7,8 +7,8 @@ import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.util.StringUtils;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class NewProject {
 
@@ -30,11 +30,11 @@ public class NewProject {
     private final String licenseName;
     private final String licenseUrl;
     @NotNull
-    @Validate(SpEL = "#root.length le @hangarConfig.projects.maxKeywords", message = "Too many keywords") // TODO i18n
-    private final List<String> keywords;
+    @Validate(SpEL = "#root.size le @hangarConfig.projects.maxKeywords", message = "Too many keywords") // TODO i18n
+    private final Set<String> keywords;
 
     @JsonCreator
-    public NewProject(long ownerId, @NotNull String name, @NotNull String description, @NotNull Category category, String pageContent, @JsonProperty("links") Map<String, String> linkMap, @JsonProperty("license") Map<String, String> licenseMap, @NotNull List<String> keywords) {
+    public NewProject(long ownerId, @NotNull String name, @NotNull String description, @NotNull Category category, String pageContent, @JsonProperty("links") Map<String, String> linkMap, @JsonProperty("license") Map<String, String> licenseMap, @NotNull Set<String> keywords) {
         this.ownerId = ownerId;
         this.name = StringUtils.compact(name);
         this.description = description;
@@ -97,7 +97,7 @@ public class NewProject {
         return licenseUrl;
     }
 
-    public List<String> getKeywords() {
+    public Set<String> getKeywords() {
         return keywords;
     }
 

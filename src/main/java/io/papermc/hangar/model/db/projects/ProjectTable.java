@@ -1,12 +1,12 @@
 package io.papermc.hangar.model.db.projects;
 
-import io.papermc.hangar.controllerold.forms.NewProjectForm;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.Visible;
 import io.papermc.hangar.model.Visitable;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.Table;
+import io.papermc.hangar.model.internal.api.requests.projects.NewProject;
 import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
@@ -23,10 +23,8 @@ public class ProjectTable extends Table implements Visitable, Visible {
     private long ownerId;
     private long topicId;
     private long postId;
-    @EnumByOrdinal
     private Category category;
     private String description;
-    @EnumByOrdinal
     private Visibility visibility;
     private JSONB notes;
     private Collection<String> keywords;
@@ -38,21 +36,21 @@ public class ProjectTable extends Table implements Visitable, Visible {
     private String licenseUrl;
     private boolean forumSync;
 
-    public ProjectTable(ProjectOwner projectOwner, Category category, /*TODO make JSON*/NewProjectForm newProjectForm, Collection<String> keywords) {
-        this.name = StringUtils.compact(newProjectForm.getName());
-        this.slug = StringUtils.slugify(newProjectForm.getName());
+    public ProjectTable(ProjectOwner projectOwner, NewProject newProject) {
+        this.name = newProject.getName();
+        this.slug = StringUtils.slugify(this.name);
         this.ownerName = projectOwner.getName();
         this.ownerId = projectOwner.getUserId();
-        this.category = category;
-        this.description = newProjectForm.getDescription();
+        this.category = newProject.getCategory();
+        this.description = newProject.getDescription();
         this.visibility = Visibility.NEW;
-        this.homepage = StringUtils.stringOrNull(newProjectForm.getHomepageUrl());
-        this.issues = StringUtils.stringOrNull(newProjectForm.getIssueTrackerUrl());
-        this.source = StringUtils.stringOrNull(newProjectForm.getSourceUrl());
-        this.support = StringUtils.stringOrNull(newProjectForm.getExternalSupportUrl());
-        this.keywords = keywords;
-        this.licenseName = StringUtils.stringOrNull("custom".equalsIgnoreCase(newProjectForm.getLicenseType()) ? newProjectForm.getLicenseName() : newProjectForm.getLicenseType());
-        this.licenseUrl = StringUtils.stringOrNull(newProjectForm.getLicenseUrl());
+        this.homepage = newProject.getHomepageUrl();
+        this.issues = newProject.getIssuesUrl();
+        this.source = newProject.getSourceUrl();
+        this.support = newProject.getSupportUrl();
+        this.keywords = newProject.getKeywords();
+        this.licenseName = newProject.getLicenseName();
+        this.licenseUrl = newProject.getLicenseUrl();
     }
 
     protected ProjectTable(ProjectTable other) {
@@ -101,6 +99,8 @@ public class ProjectTable extends Table implements Visitable, Visible {
         this.forumSync = forumSync;
     }
 
+    // TODO remove a bunch of these setters and use a SettingsSave object or smth
+
     @Override
     public String getName() {
         return name;
@@ -146,18 +146,11 @@ public class ProjectTable extends Table implements Visitable, Visible {
         return topicId;
     }
 
-    public void setTopicId(long topicId) {
-        this.topicId = topicId;
-    }
-
     public long getPostId() {
         return postId;
     }
 
-    public void setPostId(long postId) {
-        this.postId = postId;
-    }
-
+    @EnumByOrdinal
     public Category getCategory() {
         return category;
     }
@@ -175,6 +168,7 @@ public class ProjectTable extends Table implements Visitable, Visible {
     }
 
     @Override
+    @EnumByOrdinal
     public Visibility getVisibility() {
         return visibility;
     }

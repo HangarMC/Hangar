@@ -1,5 +1,7 @@
 <template>
-    <div>{{ $nuxt.$route.name }}</div>
+    <div>
+        {{ $route.name }}
+    </div>
 </template>
 
 <script lang="ts">

@@ -77,11 +77,11 @@ const createUtil = ({ store, error }: Context) => {
             if (err.response) {
                 // response outside of 2xx
                 const statusCode = err.response.status;
-                if (err.response.data.isHangarException) {
+                if (err.response.data.isHangarApiException || err.response.data.isHangarValidationException) {
                     const data: HangarException = err.response.data;
                     error({
-                        statusCode: data.error.code,
-                        message: data.reason,
+                        statusCode: data.httpError.statusCode,
+                        message: data.message,
                     });
                 } else {
                     error({

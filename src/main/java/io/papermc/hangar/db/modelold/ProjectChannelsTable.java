@@ -13,17 +13,17 @@ public class ProjectChannelsTable {
     private String name;
     private Color color;
     private long projectId;
-    private boolean isNonReviewed;
+    private boolean nonReviewed;
 
     public ProjectChannelsTable() {
         //
     }
 
-    public ProjectChannelsTable(String name, Color color, long projectId, boolean isNonReviewed) {
+    public ProjectChannelsTable(String name, Color color, long projectId, boolean nonReviewed) {
         this.name = name;
         this.color = color;
         this.projectId = projectId;
-        this.isNonReviewed = isNonReviewed;
+        this.nonReviewed = nonReviewed;
     }
 
     public long getId() {
@@ -72,12 +72,12 @@ public class ProjectChannelsTable {
     }
 
 
-    public boolean getIsNonReviewed() {
-        return isNonReviewed;
+    public boolean isNonReviewed() {
+        return nonReviewed;
     }
 
-    public void setIsNonReviewed(boolean isNonReviewed) {
-        this.isNonReviewed = isNonReviewed;
+    public void setNonReviewed(boolean isNonReviewed) {
+        this.nonReviewed = isNonReviewed;
     }
 
 }

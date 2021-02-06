@@ -8,15 +8,6 @@ declare module 'hangar-api' {
         permission: bigint;
     }
 
-    interface ApiError {
-        message: string;
-        error: {
-            message: string;
-            code: number;
-        };
-        pathParams: Record<string, string>;
-    }
-
     interface Model {
         id: number;
         createdAt: string;
@@ -152,16 +143,5 @@ declare module 'hangar-api' {
         type: PermissionType;
         permissionBinString: string;
         permissions: IPermission[];
-    }
-
-    // Errors
-    interface HangarException {
-        reason: string;
-        error: {
-            message: string;
-            code: number;
-        };
-        pathParams: Record<string, any>;
-        isHangarException: boolean;
     }
 }

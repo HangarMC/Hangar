@@ -1,10 +1,9 @@
 package io.papermc.hangar.service;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.controller.extras.HangarApiRequest;
-import io.papermc.hangar.controller.extras.HangarRequest;
 import io.papermc.hangar.security.HangarAuthenticationToken;
 import io.papermc.hangar.security.HangarPrincipal;
+import org.jdbi.v3.core.internal.MemoizingSupplier;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,27 +25,19 @@ public abstract class HangarService {
     @Autowired
     protected HangarConfig hangarConfig;
 
-    @Autowired
-    @Deprecated(forRemoval = true)
-    protected HangarApiRequest hangarApiRequest;
-
-    @Autowired
-    @Deprecated(forRemoval = true)
-    protected HangarRequest hangarRequest;
-
     protected final HangarPrincipal getHangarPrincipal() {
-        return _getHangarPrincipal().orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authentication principal found"));
+        return _getHangarPrincipal().get().orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authentication principal found"));
     }
 
     @Nullable
     protected final Long getHangarUserId() {
-        return _getHangarPrincipal().map(HangarPrincipal::getId).orElse(null);
+        return _getHangarPrincipal().get().map(HangarPrincipal::getId).orElse(null);
     }
 
-    private Optional<HangarPrincipal> _getHangarPrincipal() {
-        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+    private MemoizingSupplier<Optional<HangarPrincipal>> _getHangarPrincipal() {
+        return MemoizingSupplier.of(() -> Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .filter(HangarAuthenticationToken.class::isInstance)
                 .map(HangarAuthenticationToken.class::cast)
-                .map(HangarAuthenticationToken::getPrincipal);
+                .map(HangarAuthenticationToken::getPrincipal));
     }
 }
