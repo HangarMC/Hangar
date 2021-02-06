@@ -2,6 +2,7 @@ version: '3.7'
 
 services:
   frontend:
+    image: "dum die dum" # todo figure out where I deployed the images
     build:
       context: ../../frontend
       dockerfile: ../docker/deployment/hangar-frontend/Dockerfile
@@ -21,6 +22,7 @@ services:
     networks:
       - web
   backend:
+    image: "dum die dum" # todo figure out where I deployed the images
     build:
       context: ../..
       dockerfile: docker/deployment/hangar-backend/Dockerfile
@@ -36,6 +38,7 @@ services:
     networks:
       - web
   db:
+    image: "dum die dum" # todo figure out where I deployed the images
     build: ./db
     environment:
       POSTGRES_MULTIPLE_DATABASES: hangarauth
