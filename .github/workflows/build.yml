@@ -74,5 +74,8 @@ jobs:
           base64 -d $GITHUB_WORKSPACE/cert.pem.base64 >> $GITHUB_WORKSPACE/cert.pem
           base64 -d $GITHUB_WORKSPACE/key.pem.base64 >> $GITHUB_WORKSPACE/key.pem
           cd docker/deployment
+          echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u ${{ secrets.CR_USER }} --password-stdin
           docker-compose build
-          docker -H tcp://bender.minidigger.me:4243 --tlsverify --tlscacert=$GITHUB_WORKSPACE/ca.pem --tlscert=$GITHUB_WORKSPACE/cert.pem --tlskey=$GITHUB_WORKSPACE/key.pem stack deploy --compose-file=docker-compose.yml hangar_new
+          docker-compose push
+          echo ${{ secrets.CR_PAT }} | docker -H tcp://bender.minidigger.me:4243 --tlsverify --tlscacert=$GITHUB_WORKSPACE/ca.pem --tlscert=$GITHUB_WORKSPACE/cert.pem --tlskey=$GITHUB_WORKSPACE/key.pem login ghcr.io -u ${{ secrets.CR_USER }} --password-stdin
+          docker -H tcp://bender.minidigger.me:4243 --tlsverify --tlscacert=$GITHUB_WORKSPACE/ca.pem --tlscert=$GITHUB_WORKSPACE/cert.pem --tlskey=$GITHUB_WORKSPACE/key.pem stack deploy --with-registry-auth --compose-file=docker-compose.yml hangar_new
