@@ -247,11 +247,12 @@ CREATE TABLE roles
     id bigint NOT NULL
         CONSTRAINT roles_pkey
             PRIMARY KEY,
+    created_at timestamp with time zone NOT NULL,
     name varchar(255) NOT NULL,
     category role_category NOT NULL,
     title varchar(255) NOT NULL,
     color varchar(255) NOT NULL,
-    is_assignable boolean NOT NULL,
+    assignable boolean NOT NULL,
     rank integer,
     permission bit(64) DEFAULT '0'::bit(64) NOT NULL
 );
@@ -297,7 +298,7 @@ CREATE TABLE project_flags
             REFERENCES users
             ON DELETE CASCADE,
     reason integer NOT NULL,
-    is_resolved boolean DEFAULT FALSE NOT NULL,
+    resolved boolean DEFAULT FALSE NOT NULL,
     comment text NOT NULL,
     resolved_at timestamp with time zone,
     resolved_by bigint
@@ -424,7 +425,7 @@ CREATE TABLE user_sign_ons
     nonce varchar(255) NOT NULL
         CONSTRAINT sign_ons_nonce_key
             UNIQUE,
-    is_completed boolean DEFAULT FALSE NOT NULL
+    completed boolean DEFAULT FALSE NOT NULL
 );
 
 CREATE TABLE project_version_unsafe_downloads
@@ -454,7 +455,7 @@ CREATE TABLE project_version_download_warnings
             REFERENCES project_versions
             ON DELETE CASCADE,
     address inet NOT NULL,
-    is_confirmed boolean DEFAULT FALSE NOT NULL,
+    confirmed boolean DEFAULT FALSE NOT NULL,
     download_id bigint
         CONSTRAINT project_version_download_warnings_download_id_fkey
             REFERENCES project_version_unsafe_downloads

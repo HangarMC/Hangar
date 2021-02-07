@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RegisterConstructorMapper(HangarApiRequest.class)
 @RegisterColumnMapper(PermissionMapper.class)
+@Deprecated
 public interface HangarRequestDAO {
 
     @SqlQuery("SELECT u.id u_id," +

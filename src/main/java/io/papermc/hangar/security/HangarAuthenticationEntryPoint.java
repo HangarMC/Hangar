@@ -15,6 +15,6 @@ public class HangarAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException {
         // All should-be-authenticated requests are NOT browser requests, so redirecting from here to login won't work.
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+        response.sendError(HttpServletResponse.SC_NOT_FOUND, "Not found");
     }
 }

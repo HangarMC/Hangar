@@ -1,7 +1,7 @@
 package io.papermc.hangar.service.internal.projects;
 
 import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.internal.table.projects.ProjectDAO;
+import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.db.members.ProjectMemberTable;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProjectFactory extends HangarService {
 
-    private final ProjectDAO projectDAO;
+    private final ProjectsDAO projectsDAO;
     private final ProjectService projectService;
     private final ChannelService channelService;
     private final PageService pageService;
@@ -28,8 +28,8 @@ public class ProjectFactory extends HangarService {
     private final UsersApiService usersApiService;
 
     @Autowired
-    public ProjectFactory(HangarDao<ProjectDAO> projectDAO, ProjectService projectService, ChannelService channelService, PageService pageService, MemberService.ProjectMemberService projectMemberService, UsersApiService usersApiService) {
-        this.projectDAO = projectDAO.get();
+    public ProjectFactory(HangarDao<ProjectsDAO> projectDAO, ProjectService projectService, ChannelService channelService, PageService pageService, MemberService.ProjectMemberService projectMemberService, UsersApiService usersApiService) {
+        this.projectsDAO = projectDAO.get();
         this.projectService = projectService;
         this.channelService = channelService;
         this.pageService = pageService;
@@ -45,7 +45,7 @@ public class ProjectFactory extends HangarService {
         checkProjectAvailability(projectOwner.getUserId(), newProject.getName());
         ProjectTable projectTable = null;
         try {
-            projectTable = projectDAO.insert(new ProjectTable(projectOwner, newProject));
+            projectTable = projectsDAO.insert(new ProjectTable(projectOwner, newProject));
             channelService.createProjectChannel(hangarConfig.channels.getNameDefault(), hangarConfig.channels.getColorDefault(), projectTable.getId(), false);
             projectMemberService.addMember(projectTable.getId(), ProjectRole.PROJECT_OWNER.create(projectTable.getId(), projectOwner.getUserId(), true), ProjectMemberTable::new);
             String newPageContent = newProject.getPageContent();
@@ -55,7 +55,7 @@ public class ProjectFactory extends HangarService {
             pageService.createPage(projectTable.getId(), hangarConfig.pages.home.getName(), StringUtils.slugify(hangarConfig.pages.home.getName()), newPageContent, false, null, true);
         } catch (Throwable exception) {
             if (projectTable != null) {
-                projectDAO.delete(projectTable);
+                projectsDAO.delete(projectTable);
             }
             throw exception;
         }
@@ -70,7 +70,7 @@ public class ProjectFactory extends HangarService {
         if (!hangarConfig.isValidProjectName(name)) {
             invalidProjectReason = InvalidProjectReason.INVALID_NAME;
         } else {
-            invalidProjectReason = projectDAO.checkProjectValidity(userId, name, StringUtils.slugify(name));
+            invalidProjectReason = projectsDAO.checkProjectValidity(userId, name, StringUtils.slugify(name));
         }
         if (invalidProjectReason != null) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, invalidProjectReason.key);

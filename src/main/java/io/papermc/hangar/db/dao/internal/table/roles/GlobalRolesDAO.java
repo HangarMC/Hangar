@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 @RegisterConstructorMapper(GlobalRoleTable.class)
 @RegisterColumnMapperFactory(RoleMapperFactory.class)
-public interface GlobalRoleDAO extends RoleDAO<GlobalRoleTable> {
+public interface GlobalRolesDAO extends IRolesDAO<GlobalRoleTable> {
 
     @GetGeneratedKeys
     @SqlUpdate("INSERT INTO user_global_roles VALUES (:userId, :roleId) ON CONFLICT DO NOTHING")

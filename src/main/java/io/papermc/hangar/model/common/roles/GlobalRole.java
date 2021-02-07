@@ -29,24 +29,24 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
     CONTRIBUTOR("Contributor", 12, Permission.None, "Contributor", Color.GREEN),
     ADVISOR("Advisor", 13, Permission.None, "Advisor", Color.AQUA),
 
-    STONE_DONOR("Stone_Donor", 14, Permission.None, "Stone Donor", Color.GRAY, 5L),
-    QUARTZ_DONOR("Quartz_Donor",15, Permission.None, "Quartz Donor", Color.QUARTZ, 4L),
-    IRON_DONOR("Iron_Donor",16, Permission.None, "Iron Donor", Color.SILVER, 3L),
-    GOLD_DONOR("Gold_Donor",17, Permission.None, "Gold Donor", Color.GOLD, 2L),
-    DIAMOND_DONOR("Diamond_Donor",18, Permission.None, "Diamond Donor", Color.LIGHTBLUE, 1L);
+    STONE_DONOR("Stone_Donor", 14, Permission.None, "Stone Donor", Color.GRAY, 5),
+    QUARTZ_DONOR("Quartz_Donor",15, Permission.None, "Quartz Donor", Color.QUARTZ, 4),
+    IRON_DONOR("Iron_Donor",16, Permission.None, "Iron Donor", Color.SILVER, 3),
+    GOLD_DONOR("Gold_Donor",17, Permission.None, "Gold Donor", Color.GOLD, 2),
+    DIAMOND_DONOR("Diamond_Donor",18, Permission.None, "Diamond Donor", Color.LIGHTBLUE, 1);
 
     private final String value;
     private final long roleId;
     private final Permission permissions;
     private final String title;
     private final Color color;
-    private final Long rank;
+    private final Integer rank;
 
     GlobalRole(String value, long roleId, Permission permissions, String title, Color color) {
         this(value, roleId, permissions, title, color, null);
     }
 
-    GlobalRole(String value, long roleId, Permission permissions, String title, Color color, Long rank) {
+    GlobalRole(String value, long roleId, Permission permissions, String title, Color color, Integer rank) {
         this.value = value;
         this.roleId = roleId;
         this.permissions = permissions;
@@ -96,9 +96,8 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
         return false;
     }
 
-    @Nullable
     @Override
-    public Long getRank() {
+    public Integer getRank() {
         return rank;
     }
 

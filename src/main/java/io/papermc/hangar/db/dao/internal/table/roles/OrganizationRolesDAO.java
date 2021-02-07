@@ -7,7 +7,7 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
-public interface OrganizationRoleDAO extends RoleDAO<OrganizationRoleTable> {
+public interface OrganizationRolesDAO extends IRolesDAO<OrganizationRoleTable> {
 
     @Override
     @Timestamped

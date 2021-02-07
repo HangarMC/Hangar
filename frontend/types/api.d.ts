@@ -38,11 +38,10 @@ declare module 'hangar-api' {
 
     interface HeaderData {
         globalPermission: string;
-        hasNotice: boolean;
-        hasProjectApprovals: boolean;
-        hasReviewQueue: boolean;
-        hasUnreadNotifications: boolean;
-        unresolvedFlags: boolean;
+        unreadNotifications: number;
+        unresolvedFlags: number;
+        projectApprovals: number;
+        reviewQueueCount: number;
     }
 
     interface User extends Model, Named {

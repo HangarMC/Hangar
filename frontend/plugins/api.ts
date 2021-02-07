@@ -106,7 +106,6 @@ const createApi = ({ $axios, store, app: { $cookies }, error }: Context) => {
                     })
                     .then(({ data }) => resolve(data))
                     .catch((error: AxiosError) => {
-                        // TODO error popup
                         reject(error);
                     });
             });

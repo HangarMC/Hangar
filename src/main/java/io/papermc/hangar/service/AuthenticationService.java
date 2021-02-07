@@ -7,7 +7,7 @@ import io.papermc.hangar.controller.extras.HangarRequest;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.auth.ApiKeyDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.ApiSessionDAO;
-import io.papermc.hangar.db.dao.internal.table.projects.ProjectDAO;
+import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.db.dao.session.HangarRequestDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.auth.ApiSession;
@@ -47,7 +47,7 @@ public class AuthenticationService extends HangarService {
     private final HangarConfig hangarConfig;
     private final HangarRequestDAO hangarRequestDAO;
     private final ApiSessionDAO apiSessionDAO;
-    private final ProjectDAO projectDAO;
+    private final ProjectsDAO projectsDAO;
     private final ApiKeyDAO apiKeyDAO;
     private final PermissionService permissionService;
     private final VisibilityService visibilityService;
@@ -57,11 +57,11 @@ public class AuthenticationService extends HangarService {
 
     private final HttpServletRequest request;
 
-    public AuthenticationService(HangarConfig hangarConfig, HangarDao<HangarRequestDAO> hangarRequestDAO, HangarDao<ApiSessionDAO> apiSessionDAO, HangarDao<ProjectDAO> projectDAO, HangarDao<ApiKeyDAO> apiKeyDAO, PermissionService permissionService, VisibilityService visibilityService, OrganizationService organizationService, UserService userService, GlobalRoleService globalRoleService, HttpServletRequest request) {
+    public AuthenticationService(HangarConfig hangarConfig, HangarDao<HangarRequestDAO> hangarRequestDAO, HangarDao<ApiSessionDAO> apiSessionDAO, HangarDao<ProjectsDAO> projectDAO, HangarDao<ApiKeyDAO> apiKeyDAO, PermissionService permissionService, VisibilityService visibilityService, OrganizationService organizationService, UserService userService, GlobalRoleService globalRoleService, HttpServletRequest request) {
         this.hangarConfig = hangarConfig;
         this.hangarRequestDAO = hangarRequestDAO.get();
         this.apiSessionDAO = apiSessionDAO.get();
-        this.projectDAO = projectDAO.get();
+        this.projectsDAO = projectDAO.get();
         this.apiKeyDAO = apiKeyDAO.get();
         this.permissionService = permissionService;
         this.visibilityService = visibilityService;
@@ -115,11 +115,11 @@ public class AuthenticationService extends HangarService {
                 Permission projectPermissions;
                 if (apiScope.getId() != null) {
                     projectPermissions = permissionService.getProjectPermissions(userId, apiScope.getId());
-                    projectTable = visibilityService.checkVisibility(projectDAO.getById(apiScope.getId()), projectPermissions);
+                    projectTable = visibilityService.checkVisibility(projectsDAO.getById(apiScope.getId()), projectPermissions);
                 }
                 else {
                     projectPermissions = permissionService.getProjectPermissions(userId, apiScope.getOwner(), apiScope.getSlug());
-                    projectTable = visibilityService.checkVisibility(projectDAO.getBySlug(apiScope.getOwner(), apiScope.getSlug()), projectPermissions);
+                    projectTable = visibilityService.checkVisibility(projectsDAO.getBySlug(apiScope.getOwner(), apiScope.getSlug()), projectPermissions);
                 }
                 if (projectTable == null) {
                     throw new HangarApiException(HttpStatus.NOT_FOUND, "Resource NOT FOUND");

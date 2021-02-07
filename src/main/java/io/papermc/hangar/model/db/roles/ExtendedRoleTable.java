@@ -6,7 +6,7 @@ import io.papermc.hangar.model.db.Table;
 
 import java.time.OffsetDateTime;
 
-public abstract class ExtendedRoleTable<R extends Role<? extends RoleTable<R>>> extends Table implements RoleTable<R> {
+public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>> extends Table implements IRoleTable<R> {
 
     protected final long userId;
     protected final R role;

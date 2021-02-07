@@ -8,6 +8,7 @@
                 :to="isRouterLink(control) ? control.link : null"
                 :nuxt="isRouterLink(control)"
                 :href="isRouterLink(control) ? null : control.link"
+                exact
                 @click="control.action ? control.action() : null"
             >
                 <v-list-item-icon>

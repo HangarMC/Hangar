@@ -137,7 +137,7 @@ export default class ProjectPage extends Vue {
     }
 
     async asyncData({ $api, params, $util }: Context) {
-        const project = await $api.requestInternal<HangarProject>(`projects/project/${params.author}/${params.slug}`).catch($util.handleAxiosError);
+        const project = await $api.requestInternal<HangarProject>(`projects/project/${params.author}/${params.slug}`, false).catch($util.handleAxiosError);
         return { project };
     }
 

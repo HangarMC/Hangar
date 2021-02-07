@@ -35,6 +35,7 @@ public enum OrganizationRole implements Role<OrganizationRoleTable> {
         this.title = title;
         this.color = color;
         this.isAssignable = isAssignable;
+        Role.registerRole(this);
     }
 
     @NotNull
@@ -75,12 +76,6 @@ public enum OrganizationRole implements Role<OrganizationRoleTable> {
     @Override
     public boolean isAssignable() {
         return isAssignable;
-    }
-
-    @Nullable
-    @Override
-    public Long getRank() {
-        return null;
     }
 
     @Override

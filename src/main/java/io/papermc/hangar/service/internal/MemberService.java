@@ -4,9 +4,9 @@ import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.members.MembersDAO;
 import io.papermc.hangar.db.dao.internal.table.members.OrganizationMembersDAO;
 import io.papermc.hangar.db.dao.internal.table.members.ProjectMembersDAO;
-import io.papermc.hangar.db.dao.internal.table.roles.OrganizationRoleDAO;
-import io.papermc.hangar.db.dao.internal.table.roles.ProjectRoleDAO;
-import io.papermc.hangar.db.dao.internal.table.roles.RoleDAO;
+import io.papermc.hangar.db.dao.internal.table.roles.IRolesDAO;
+import io.papermc.hangar.db.dao.internal.table.roles.OrganizationRolesDAO;
+import io.papermc.hangar.db.dao.internal.table.roles.ProjectRolesDAO;
 import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.common.roles.Role;
@@ -14,9 +14,9 @@ import io.papermc.hangar.model.db.members.MemberTable;
 import io.papermc.hangar.model.db.members.OrganizationMemberTable;
 import io.papermc.hangar.model.db.members.ProjectMemberTable;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
+import io.papermc.hangar.model.db.roles.IRoleTable;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
-import io.papermc.hangar.model.db.roles.RoleTable;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.internal.roles.OrganizationRoleService;
 import io.papermc.hangar.service.internal.roles.ProjectRoleService;
@@ -29,7 +29,7 @@ import java.util.function.BiFunction;
 public abstract class MemberService<
         R extends Role<RT>,
         RT extends ExtendedRoleTable<R>,
-        RD extends RoleDAO<RT>,
+        RD extends IRolesDAO<RT>,
         S extends RoleService<RT, R, RD>,
         MD extends MembersDAO<MT>,
         MT extends MemberTable
@@ -59,7 +59,7 @@ public abstract class MemberService<
     }
 
     /**
-     * Forwarding method to {@link RoleService#updateRole(RoleTable)}
+     * Forwarding method to {@link RoleService#updateRole(IRoleTable)}
      */
     public void updateRole(RT roleTable) {
         roleService.updateRole(roleTable);
@@ -70,7 +70,7 @@ public abstract class MemberService<
     public static class ProjectMemberService extends MemberService<
             ProjectRole,
             ProjectRoleTable,
-            ProjectRoleDAO,
+            ProjectRolesDAO,
             ProjectRoleService,
             ProjectMembersDAO,
             ProjectMemberTable
@@ -86,7 +86,7 @@ public abstract class MemberService<
     public static class OrganizationMemberService extends MemberService<
             OrganizationRole,
             OrganizationRoleTable,
-            OrganizationRoleDAO,
+            OrganizationRolesDAO,
             OrganizationRoleService,
             OrganizationMembersDAO,
             OrganizationMemberTable

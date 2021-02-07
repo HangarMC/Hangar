@@ -8,13 +8,13 @@ import java.time.OffsetDateTime;
 public class UserSignOnTable extends Table {
 
     private final String nonce;
-    private boolean isCompleted;
+    private boolean completed;
 
     @JdbiConstructor
-    public UserSignOnTable(OffsetDateTime createdAt, long id, String nonce, boolean isCompleted) {
+    public UserSignOnTable(OffsetDateTime createdAt, long id, String nonce, boolean completed) {
         super(createdAt, id);
         this.nonce = nonce;
-        this.isCompleted = isCompleted;
+        this.completed = completed;
     }
 
     public UserSignOnTable(String nonce) {
@@ -26,18 +26,18 @@ public class UserSignOnTable extends Table {
     }
 
     public boolean isCompleted() {
-        return isCompleted;
+        return completed;
     }
 
     public void setCompleted(boolean completed) {
-        isCompleted = completed;
+        this.completed = completed;
     }
 
     @Override
     public String toString() {
         return "UserSignOnTable{" +
                 "nonce='" + nonce + '\'' +
-                ", isCompleted=" + isCompleted +
+                ", completed=" + completed +
                 "} " + super.toString();
     }
 }
