@@ -4,9 +4,10 @@ WORKDIR hangar-frontend
 ENV TERM xterm-256color
 
 EXPOSE 3000
-ENTRYPOINT ["ls", "-ahl", "&&", "ls", "-ahl", "/hangar-frontend/node_modules/", "./node_modules/.bin/nuxt-ts", "run", "start"]
+ENTRYPOINT ["./entrypoint.sh"]
 
 COPY package.json /hangar-frontend/package.json
+COPY entrypoint.sh /hangar-frontend/entrypoint.sh
 COPY nuxt.config.ts /hangar-frontend/nuxt.config.ts
 COPY node_modules/ /hangar-frontend/node_modules/
 COPY .nuxt/ /hangar-frontend/.nuxt/
