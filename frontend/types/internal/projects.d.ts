@@ -5,6 +5,7 @@ declare module 'hangar-internal' {
         id: number;
         name: string;
         userId: number;
+        isOrganization: boolean;
     }
 
     interface HangarProjectInfo {

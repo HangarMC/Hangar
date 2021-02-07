@@ -13,8 +13,6 @@ public enum TagColor {
 
     UNSTABLE("#F54242", "#333333");
 
-    public static final TagColor[] VALUES = TagColor.values();
-
     private final String background;
     private final String foreground;
 
@@ -46,5 +44,11 @@ public enum TagColor {
             }
         }
         return null;
+    }
+
+    private static final TagColor[] VALUES = TagColor.values();
+
+    public static TagColor[] getValues() {
+        return VALUES;
     }
 }

@@ -41,4 +41,10 @@ public enum ReviewState {
         }
         return null;
     }
+
+    private static final ReviewState[] VALUES = values();
+
+    public static ReviewState[] getValues() {
+        return VALUES;
+    }
 }

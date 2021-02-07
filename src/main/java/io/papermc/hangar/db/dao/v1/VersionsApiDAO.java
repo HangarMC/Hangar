@@ -140,7 +140,7 @@ public interface VersionsApiDAO {
                 TagColor apiTagColor;
                 io.papermc.hangar.model.common.TagColor tagColor = io.papermc.hangar.model.common.TagColor.getByName(tagNames[i]);
                 if (tagColor == null) {
-                    Color color = Color.VALUES[tagColors[i]];
+                    Color color = Color.getValues()[tagColors[i]];
                     apiTagColor = new TagColor(null, color.getHex());
                 } else {
                     apiTagColor = tagColor.toTagColor();

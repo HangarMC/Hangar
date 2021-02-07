@@ -47,6 +47,11 @@ public class OrganizationTable extends Table implements Visitable, ProjectOwner 
     }
 
     @Override
+    public boolean isOrganization() {
+        return true;
+    }
+
+    @Override
     public String getUrl() {
         return "/" + getName();
     }

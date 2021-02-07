@@ -46,7 +46,7 @@ public class VersionMapper implements RowMapper<Version> {
             if (tagColor != null) {
                 tags.add(newTag.color(new TagColor().foreground(tagColor.getForeground()).background(tagColor.getBackground())));
             } else {
-                Color color = Color.VALUES[tagColors[i]];
+                Color color = Color.getValues()[tagColors[i]];
                 tags.add(newTag.color(new TagColor().background(color.getHex())));
             }
         }

@@ -1,21 +1,24 @@
 <template>
     <v-list dense>
-        <v-list-item
-            v-for="control in controls"
-            :key="control.title"
-            link
-            :to="isRouterLink(control) ? control.link : null"
-            :nuxt="isRouterLink(control)"
-            :href="isRouterLink(control) ? null : control.link"
-            @click="control.action ? control.action() : null"
-        >
-            <v-list-item-icon>
-                <v-icon color="white">{{ control.icon }}</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-                <v-list-item-title>{{ control.title }}</v-list-item-title>
-            </v-list-item-content>
-        </v-list-item>
+        <template v-for="(control, index) in controls">
+            <v-list-item
+                v-if="!control.isDivider"
+                :key="control.title"
+                link
+                :to="isRouterLink(control) ? control.link : null"
+                :nuxt="isRouterLink(control)"
+                :href="isRouterLink(control) ? null : control.link"
+                @click="control.action ? control.action() : null"
+            >
+                <v-list-item-icon>
+                    <v-icon color="white">{{ control.icon }}</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                    <v-list-item-title>{{ control.title }}</v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-divider v-else :key="index" class="my-2" />
+        </template>
     </v-list>
 </template>
 
@@ -26,10 +29,11 @@ import { PropType } from 'vue';
 import { TranslateResult } from 'vue-i18n';
 
 export interface Control {
-    icon: String;
-    title: String | TranslateResult;
+    icon?: String;
+    title?: String | TranslateResult;
     link?: String;
     action?: Function;
+    isDivider?: boolean;
 }
 
 @Component

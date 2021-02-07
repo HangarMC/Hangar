@@ -41,7 +41,7 @@ public class PromotedVersionMapper implements ColumnMapper<List<PromotedVersion>
                     exception.printStackTrace();
                 }
             }
-            TagColor color = TagColor.VALUES[json.get("tag_color").asInt()];
+            TagColor color = TagColor.getValues()[json.get("tag_color").asInt()];
             // TODO a whole bunch
 //            val displayAndMc = data.map { rawData =>
 //                lazy val lowerBoundVersion = for {

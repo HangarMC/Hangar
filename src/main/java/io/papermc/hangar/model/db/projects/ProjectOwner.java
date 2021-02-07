@@ -8,4 +8,8 @@ public interface ProjectOwner extends Identified, Named {
 
     @JsonIgnore
     long getUserId();
+
+    default boolean isOrganization() {
+        return false;
+    }
 }

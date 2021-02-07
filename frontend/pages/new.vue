@@ -235,16 +235,10 @@
 import { Component, Vue } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
 import { HangarValidationException } from 'hangar-api';
+import { ProjectOwner } from 'hangar-internal';
 import StepperStepContent from '~/components/steppers/StepperStepContent.vue';
 import { RootState } from '~/store';
 import { ProjectCategory } from '~/types/enums';
-
-interface ProjectOwner {
-    id: number;
-    userId: number;
-    name: string;
-    isOrganization: boolean;
-}
 
 interface NewProjectForm {
     ownerId: ProjectOwner['userId'];

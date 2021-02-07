@@ -7,15 +7,14 @@
                 <v-btn type="primary" :to="'/' + slug + '/manage/sendforapproval'">{{ $t('project.sendForApproval') }} </v-btn>
                 <strong>{{ $t('visibility.notice.' + project.visibility) }}</strong>
                 <br />
-                <Markdown :input="visibilityComment ? visibilityComment : 'Unknown'" />
+                <Markdown :input="project.lastVisibilityChangeComment || 'Unknown'" />
             </v-alert>
             <v-alert v-else-if="isSoftDeleted" type="error">
-                <!-- todo insert lastVisibilityChangeUser here -->
-                {{ $t('visibility.notice.' + project.visibility, ['Admin']) }}
+                {{ $t('visibility.notice.' + project.visibility, [project.lastVisibilityChangeUserName]) }}
             </v-alert>
             <v-alert v-else type="error">
                 {{ $t('visibility.notice.' + project.visibility) }}
-                <Markdown v-if="visibilityComment" :input="visibilityComment" />
+                <Markdown v-if="project.lastVisibilityChangeComment" :input="project.lastVisibilityChangeComment" />
             </v-alert>
         </template>
         <v-row>
@@ -25,7 +24,7 @@
             <v-col cols="auto">
                 <h1 class="d-inline">
                     <NuxtLink :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</NuxtLink> /
-                    <NuxtLink :to="'/' + slug">{{ project.name }}</NuxtLink>
+                    <NuxtLink :to="slug">{{ project.name }}</NuxtLink>
                 </h1>
                 <div>
                     <v-subheader>{{ project.description }}</v-subheader>
@@ -33,61 +32,56 @@
             </v-col>
             <v-spacer />
             <v-col cols="3">
-                <!-- todo if author, disable -->
-                <v-btn v-if="!$util.isCurrentUser(project.id)" @click="toggleStar">
-                    <v-icon v-if="project.userActions.starred">mdi-star</v-icon>
-                    <v-icon v-else>mdi-star-outline</v-icon>
-                </v-btn>
-                <!-- todo if author, remove -->
-                <v-btn v-if="!$util.isCurrentUser(project.id)" @click="toggleWatch">
-                    <template v-if="project.userActions.watching">
-                        <v-icon>mdi-eye-off</v-icon>
-                        {{ $t('project.actions.unwatch') }}
-                    </template>
-                    <template v-else>
-                        <v-icon>mdi-eye</v-icon>
-                        {{ $t('project.actions.watch') }}
-                    </template>
-                </v-btn>
-                <!-- todo if not logged in or author, remove both -->
-                <FlagModal ref="flagModal" :project="project" />
-                <v-btn @click="showFlagModal">
-                    <v-icon>mdi-flag</v-icon>
-                    {{ $t('project.actions.flag') }}
-                </v-btn>
-                <!-- todo only enable if has perms -->
-                <v-menu v-if="isStaff" bottom offset-y>
-                    <template #activator="{ on, attrs }">
-                        <v-btn v-bind="attrs" v-on="on">
-                            {{ $t('project.actions.adminActions') }}
-                        </v-btn>
-                    </template>
-                    <v-list-item :to="'/' + slug + '/flags'">
-                        <v-list-item-title>
-                            {{ $t('project.actions.flagHistory', []) }}
-                        </v-list-item-title>
-                    </v-list-item>
-                    <v-list-item :to="'/' + slug + '/notes'">
-                        <v-list-item-title>
-                            {{ $t('project.actions.staffNotes', []) }}
-                        </v-list-item-title>
-                    </v-list-item>
-                    <v-list-item :to="'/admin/log/?projectFilter=' + slug">
-                        <v-list-item-title>
-                            {{ $t('project.actions.userActionLogs') }}
-                        </v-list-item-title>
-                    </v-list-item>
-                    <v-list-item :href="$util.forumUrl(project.namespace.owner)">
-                        <v-list-item-title>
-                            {{ $t('project.actions.forum') }}
-                            <v-icon>mdi-open-in-new</v-icon>
-                        </v-list-item-title>
-                    </v-list-item>
-                </v-menu>
+                <v-row no-gutters justify="end">
+                    <v-btn v-if="!$util.isCurrentUser(project.owner.id)" @click="toggleStar">
+                        <v-icon v-if="project.userActions.starred">mdi-star</v-icon>
+                        <v-icon v-else>mdi-star-outline</v-icon>
+                    </v-btn>
+                    <v-btn v-if="!$util.isCurrentUser(project.owner.id)" @click="toggleWatch">
+                        <template v-if="project.userActions.watching">
+                            <v-icon>mdi-eye-off</v-icon>
+                            {{ $t('project.actions.unwatch') }}
+                        </template>
+                        <template v-else>
+                            <v-icon>mdi-eye</v-icon>
+                            {{ $t('project.actions.watch') }}
+                        </template>
+                    </v-btn>
+                    <!-- todo if not logged in or author, remove both -->
+                    <FlagModal :project="project" />
+                    <v-menu v-if="isStaff" bottom offset-y>
+                        <template #activator="{ on, attrs }">
+                            <v-btn v-bind="attrs" v-on="on">
+                                {{ $t('project.actions.adminActions') }}
+                            </v-btn>
+                        </template>
+                        <v-list-item :to="'/' + slug + '/flags'">
+                            <v-list-item-title>
+                                {{ $t('project.actions.flagHistory', []) }}
+                            </v-list-item-title>
+                        </v-list-item>
+                        <v-list-item :to="'/' + slug + '/notes'">
+                            <v-list-item-title>
+                                {{ $t('project.actions.staffNotes', []) }}
+                            </v-list-item-title>
+                        </v-list-item>
+                        <v-list-item :to="'/admin/log/?projectFilter=' + slug">
+                            <v-list-item-title>
+                                {{ $t('project.actions.userActionLogs') }}
+                            </v-list-item-title>
+                        </v-list-item>
+                        <v-list-item :href="$util.forumUrl(project.namespace.owner)">
+                            <v-list-item-title>
+                                {{ $t('project.actions.forum') }}
+                                <v-icon>mdi-open-in-new</v-icon>
+                            </v-list-item-title>
+                        </v-list-item>
+                    </v-menu>
+                </v-row>
             </v-col>
         </v-row>
         <v-row>
-            <v-tabs active-class="other-class">
+            <v-tabs>
                 <v-tab
                     v-for="tab in tabs"
                     :key="tab.title"
@@ -115,7 +109,7 @@ import { Component, Vue } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
 import { HangarProject } from 'hangar-internal';
 import Markdown from '~/components/Markdown.vue';
-import FlagModal from '~/components/FlagModal.vue';
+import FlagModal from '~/components/modals/FlagModal.vue';
 import UserAvatar from '~/components/UserAvatar.vue';
 import { NamedPermission, Visibility } from '~/types/enums';
 
@@ -152,9 +146,13 @@ export default class ProjectPage extends Vue {
         tabs.push({ title: this.$t('project.tabs.docs') as String, icon: 'mdi-book', link: this.slug, external: false });
         tabs.push({ title: this.$t('project.tabs.versions') as String, icon: 'mdi-download', link: this.slug + '/versions', external: false });
         // todo check if has a discussion
-        tabs.push({ title: this.$t('project.tabs.discuss') as String, icon: 'mdi-account-group', link: this.slug + '/discuss', external: false });
-        // todo check if settings perm
-        tabs.push({ title: this.$t('project.tabs.settings') as String, icon: 'mdi-cog', link: this.slug + '/settings', external: false });
+        if (this.project.settings.forumSync) {
+            tabs.push({ title: this.$t('project.tabs.discuss') as String, icon: 'mdi-account-group', link: this.slug + '/discuss', external: false });
+        }
+        if (this.$util.hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)) {
+            tabs.push({ title: this.$t('project.tabs.settings') as String, icon: 'mdi-cog', link: this.slug + '/settings', external: false });
+        }
+
         if (this.project.settings.homepage) {
             tabs.push({ title: this.$t('project.tabs.homepage') as String, icon: 'mdi-home', link: this.project.settings.homepage, external: true });
         }
@@ -201,14 +199,6 @@ export default class ProjectPage extends Vue {
 
     toggleWatch() {
         // todo toggle watch
-    }
-
-    $refs!: {
-        flagModal: FlagModal;
-    };
-
-    showFlagModal() {
-        this.$refs.flagModal.show();
     }
 }
 </script>

@@ -31,7 +31,6 @@ public enum Color {
     GRAY("#A9A9A9"),
     TRANSPARENT("transparent");
 
-    public static final Color[] VALUES = values();
     private static List<Color> CHANNEL_COLORS = null;
 
     private final String hex;
@@ -70,5 +69,11 @@ public enum Color {
             CHANNEL_COLORS = Arrays.stream(VALUES).filter(c -> c.ordinal() <= 15).collect(Collectors.toList());
         }
         return CHANNEL_COLORS;
+    }
+
+    private static final Color[] VALUES = values();
+
+    public static Color[] getValues() {
+        return VALUES;
     }
 }

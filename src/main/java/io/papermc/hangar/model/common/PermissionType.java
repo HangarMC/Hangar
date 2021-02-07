@@ -31,4 +31,10 @@ public enum PermissionType {
         }
         return null;
     }
+
+    private static final PermissionType[] VALUES = values();
+
+    public static PermissionType[] getValues() {
+        return VALUES;
+    }
 }

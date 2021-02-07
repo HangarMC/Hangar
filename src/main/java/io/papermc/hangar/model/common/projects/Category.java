@@ -31,8 +31,6 @@ public enum Category {
     private final boolean isVisible;
     private final String apiName;
 
-    public static final Category[] VALUES = values();
-
     Category(int value, String title, String icon, String apiName) {
         this(value, title, icon, apiName, true);
     }
@@ -97,12 +95,18 @@ public enum Category {
             try {
                 int id = Integer.parseInt(s);
                 categories.add(Category.VALUES[id]);
-            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) { }
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException ignored) { }
         });
         return categories;
     }
 
     public static Set<Category> visible() {
         return Arrays.stream(Category.values()).filter(Category::isVisible).collect(Collectors.toSet());
+    }
+
+    private static final Category[] VALUES = values();
+
+    public static Category[] getValues() {
+        return VALUES;
     }
 }

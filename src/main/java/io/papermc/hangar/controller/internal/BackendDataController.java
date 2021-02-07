@@ -7,12 +7,14 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.model.common.projects.Category;
+import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.modelold.NamedPermission;
 import io.papermc.hangar.security.annotations.Anyone;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,13 +45,13 @@ public class BackendDataController {
 
     @GetMapping("/categories")
     public ResponseEntity<ArrayNode> getCategories() {
-        return ResponseEntity.ok(mapper.valueToTree(Category.VALUES));
+        return ResponseEntity.ok(mapper.valueToTree(Category.getValues()));
     }
 
     @GetMapping("/permissions")
     public ResponseEntity<ArrayNode> getPermissions() {
         ArrayNode arrayNode = mapper.createArrayNode();
-        for (NamedPermission namedPermission : NamedPermission.VALUES) {
+        for (NamedPermission namedPermission : NamedPermission.getValues()) {
             ObjectNode namedPermissionObject = mapper.createObjectNode();
             namedPermissionObject.put("value", namedPermission.getValue());
             namedPermissionObject.put("frontendName", namedPermission.getFrontendName());
@@ -68,6 +70,19 @@ public class BackendDataController {
     @GetMapping("/colors")
     public ResponseEntity<ObjectNode> getColors() {
         throw new NotImplementedException("NOT IMPLEMENTED");
+    }
+
+    @Secured("ROLE_USER")
+    @GetMapping("/flagReasons")
+    public ResponseEntity<ArrayNode> getFlagReasons() {
+        ArrayNode arrayNode = mapper.createArrayNode();
+        for (FlagReason flagReason : FlagReason.getValues()) {
+            ObjectNode objectNode = mapper.createObjectNode()
+                    .put("type", flagReason.name())
+                    .put("title", flagReason.getTitle());
+            arrayNode.add(objectNode);
+        }
+        return ResponseEntity.ok(arrayNode);
     }
 }
 

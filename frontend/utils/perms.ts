@@ -56,6 +56,7 @@ export function ProjectPermission(...permissions: NamedPermission[]) {
             error({
                 statusCode: 404,
             });
+            return;
         }
         if (!$util.hasPerms(...permissions)) {
             error({

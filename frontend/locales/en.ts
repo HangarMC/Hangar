@@ -1,6 +1,11 @@
 import { LocaleMessageObject } from 'vue-i18n';
 
 const msgs: LocaleMessageObject = {
+    general: {
+        close: 'Close',
+        submit: 'Submit',
+        comment: 'Comment',
+    },
     hangar: {
         projectSearch: {
             query: 'Search in {0} projects, proudly made by the community...',
@@ -60,6 +65,9 @@ const msgs: LocaleMessageObject = {
             staffNotes: 'Staff notes ({0})',
             userActionLogs: 'User Action Logs',
             forum: 'Forum',
+        },
+        flag: {
+            flagProject: 'Flag {0}?',
         },
         tabs: {
             docs: 'Docs',

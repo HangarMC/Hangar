@@ -53,8 +53,6 @@ public enum NamedPermission {
     private final Permission permission;
     private final String frontendName;
 
-    public static final NamedPermission[] VALUES = values();
-
     NamedPermission(String value, Permission permission, String frontendName) {
         this.value = value;
         this.permission = permission;
@@ -100,5 +98,11 @@ public enum NamedPermission {
 
     public static List<NamedPermission> parseNamed(List<String> permStrings) {
         return permStrings.stream().map(s -> NamedPermission.valueOf(s.toUpperCase())).collect(Collectors.toList());
+    }
+
+    private static final NamedPermission[] VALUES = values();
+
+    public static NamedPermission[] getValues() {
+        return VALUES;
     }
 }

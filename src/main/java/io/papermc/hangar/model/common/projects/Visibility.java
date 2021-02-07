@@ -16,8 +16,6 @@ public enum Visibility {
 
     SOFTDELETE("softDelete", true, "striped project-hidden");
 
-    public static Visibility[] VALUES = values();
-
     private final String name;
     private final boolean showModal;
     private final String cssClass;
@@ -63,5 +61,11 @@ public enum Visibility {
             }
         }
         return null;
+    }
+
+    private static final Visibility[] VALUES = values();
+
+    public static Visibility[] getValues() {
+        return VALUES;
     }
 }

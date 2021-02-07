@@ -7,4 +7,9 @@ declare module 'hangar-internal' {
         apiName: ProjectCategory;
         visible: boolean;
     }
+
+    interface FlagReason {
+        type: string;
+        title: string;
+    }
 }

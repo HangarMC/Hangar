@@ -73,6 +73,10 @@ const createUtil = ({ store, error }: Context) => {
             return (store.state.auth as AuthState).user?.id === id;
         }
 
+        isLoggedIn(): boolean {
+            return (store.state.auth as AuthState).user != null;
+        }
+
         // TODO have boolean for doing error toast notification instead of error page;
         handleAxiosError(err: AxiosError) {
             if (err.response) {

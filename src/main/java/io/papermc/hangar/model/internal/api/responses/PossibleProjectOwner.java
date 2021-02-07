@@ -3,7 +3,7 @@ package io.papermc.hangar.model.internal.api.responses;
 import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 
-public class PossibleProjectOwner {
+public class PossibleProjectOwner implements ProjectOwner {
 
     private final long id;
     private final long userId;
@@ -17,18 +17,22 @@ public class PossibleProjectOwner {
         this.isOrganization = projectOwner instanceof OrganizationTable;
     }
 
+    @Override
     public long getId() {
         return id;
     }
 
+    @Override
     public long getUserId() {
         return userId;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public boolean isOrganization() {
         return isOrganization;
     }
