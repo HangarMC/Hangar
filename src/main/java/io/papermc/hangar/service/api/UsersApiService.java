@@ -131,21 +131,17 @@ public class UsersApiService extends HangarService {
     }
 
     public HangarUser supplyHeaderData(HangarUser hangarUser) {
-//        Permission globalPermission = hangarApiRequest.getGlobalPermissions();
         Permission globalPermission = permissionService.getGlobalPermissions(hangarUser.getId());
-
-//        boolean hasUnreadNotifs = notificationsDAO.hasUnreadNotifications(hangarApiRequest.getUserId());
-        boolean hasUnreadNotifs = notificationsDAO.hasUnreadNotifications(hangarUser.getId());
-        boolean hasUnresolvedFlags = globalPermission.has(Permission.ModNotesAndFlags) && notificationsDAO.hasUnresolvedFlags();
-        boolean hasProjectApprovals = globalPermission.has(Permission.ModNotesAndFlags.add(Permission.SeeHidden)) && notificationsDAO.hasProjectApprovals(getHangarPrincipal().getUserId());
-        boolean hasReviewQueue = globalPermission.has(Permission.Reviewer) && notificationsDAO.hasReviewQueue();
+        long unreadNotifs = notificationsDAO.getUnreadNotificationCount(hangarUser.getId());
+        long unresolvedFlags = globalPermission.has(Permission.ModNotesAndFlags) ? notificationsDAO.getUnresolvedFlagsCount() : 0;
+        long projectApprovals = globalPermission.has(Permission.ModNotesAndFlags.add(Permission.SeeHidden)) ? notificationsDAO.getProjectApprovalsCount() : 0;
+        long reviewQueueCount = globalPermission.has(Permission.Reviewer) ? notificationsDAO.getReviewQueueCount() : 0;
         hangarUser.setHeaderData(new HeaderData(
                 globalPermission,
-                hasUnreadNotifs || hasUnresolvedFlags || hasProjectApprovals || hasReviewQueue,
-                hasUnreadNotifs,
-                hasUnresolvedFlags,
-                hasProjectApprovals,
-                hasReviewQueue
+                unreadNotifs,
+                unresolvedFlags,
+                projectApprovals,
+                reviewQueueCount
         ));
         return hangarUser;
     }

@@ -33,6 +33,7 @@ public enum ProjectRole implements Role<ProjectRoleTable> {
         this.title = title;
         this.color = color;
         this.isAssignable = isAssignable;
+        Role.registerRole(this);
     }
 
     @NotNull
@@ -73,12 +74,6 @@ public enum ProjectRole implements Role<ProjectRoleTable> {
     @Override
     public boolean isAssignable() {
         return isAssignable;
-    }
-
-    @Nullable
-    @Override
-    public Long getRank() {
-        return null;
     }
 
     @NotNull

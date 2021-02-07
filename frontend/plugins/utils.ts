@@ -21,20 +21,17 @@ const createUtil = ({ store, error }: Context) => {
                 roles: [],
                 headerData: {
                     globalPermission: '',
-                    hasNotice: true,
-                    hasProjectApprovals: true,
-                    hasReviewQueue: true,
-                    hasUnreadNotifications: true,
-                    unresolvedFlags: true,
+                    unreadNotifications: 1,
+                    projectApprovals: 3,
+                    reviewQueueCount: 0,
+                    unresolvedFlags: 2,
                 },
                 joinDate: this.prettyDate(new Date()),
             };
         }
 
-        avatarUrl(_name: string): string {
-            return 'https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png';
-            // TODO avatar url
-            // return '/avatar/' + name + '?size=120x120';
+        avatarUrl(name: string): string {
+            return `/avatar/${name}?size=120x120`;
         }
 
         forumUrl(name: string): string {

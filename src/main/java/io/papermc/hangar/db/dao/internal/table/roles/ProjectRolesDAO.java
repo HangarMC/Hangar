@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RegisterConstructorMapper(ProjectRoleTable.class)
 @RegisterColumnMapperFactory(RoleMapperFactory.class)
-public interface ProjectRoleDAO extends RoleDAO<ProjectRoleTable> {
+public interface ProjectRolesDAO extends IRolesDAO<ProjectRoleTable> {
 
     @Override
     @Timestamped

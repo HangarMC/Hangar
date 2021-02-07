@@ -1,5 +1,6 @@
 import { Context } from '@nuxt/types';
 import { UserPermissions } from 'hangar-api';
+import { AuthState } from '~/store/auth';
 
 export default ({ store, route, $api, $util }: Context) => {
     if (route.params.author && route.params.slug) {
@@ -11,7 +12,14 @@ export default ({ store, route, $api, $util }: Context) => {
             .then((userPermissions) => {
                 store.commit('auth/SET_ROUTE_PERMISSIONS', userPermissions.permissionBinString);
             })
-            .catch($util.handleAxiosError);
+            .catch(() => {
+                store.commit('auth/SET_ROUTE_PERMISSIONS', null);
+            });
+    } else if ($util.isLoggedIn()) {
+        // Catch-all (just use global permissions)
+        store.commit('auth/SET_ROUTE_PERMISSIONS', (store.state.auth as AuthState).user!.headerData.globalPermission);
+    } else {
+        store.commit('auth/SET_ROUTE_PERMISSIONS', null);
     }
     // TODO other route permissions
 };

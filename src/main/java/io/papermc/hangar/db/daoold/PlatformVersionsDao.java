@@ -20,6 +20,7 @@ import java.util.TreeMap;
 
 @Repository
 @RegisterBeanMapper(PlatformVersionsTable.class)
+@Deprecated(forRemoval = true)
 public interface PlatformVersionsDao {
 
     @Timestamped

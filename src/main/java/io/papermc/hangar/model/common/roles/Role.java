@@ -3,14 +3,14 @@ package io.papermc.hangar.model.common.roles;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Permission;
-import io.papermc.hangar.model.db.roles.RoleTable;
+import io.papermc.hangar.model.db.roles.IRoleTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public interface Role<T extends RoleTable<? extends Role<T>>> {
+public interface Role<T extends IRoleTable<? extends Role<T>>> {
 
     Map<String, Role<?>> VALUE_ROLES = new HashMap<>();
     Map<Long, Role<?>> ID_ROLES = new HashMap<>();
@@ -42,7 +42,9 @@ public interface Role<T extends RoleTable<? extends Role<T>>> {
     boolean isAssignable();
 
     @Nullable
-    Long getRank();
+    default Integer getRank() {
+        return null;
+    }
 
     @NotNull
     T create(@Nullable Long principalId, long userId, boolean isAccepted);

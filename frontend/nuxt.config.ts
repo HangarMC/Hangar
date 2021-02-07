@@ -8,6 +8,7 @@ import fr from './locales/fr';
 require('dotenv').config();
 
 const proxyHost = process.env.proxyHost || 'http://localhost:8080';
+const authHost = process.env.authHost || 'http://localhost:8000';
 
 export default {
     telemetry: false,
@@ -67,7 +68,7 @@ export default {
     // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
     vuetify: {
         customVariables: ['~/assets/variables.scss'],
-        preset: 'vue-cli-plugin-vuetify-preset-reply/preset',
+        // preset: 'vue-cli-plugin-vuetify-preset-reply/preset',
         treeShake: true,
         theme: {
             default: 'dark',
@@ -109,6 +110,7 @@ export default {
     },
 
     proxy: [
+        // backend
         proxyHost + '/api/',
         proxyHost + '/signup',
         proxyHost + '/login',
@@ -116,6 +118,8 @@ export default {
         proxyHost + '/refresh',
         proxyHost + '/invalidate',
         proxyHost + '/v2/api-docs/',
+        // auth
+        authHost + '/avatar',
     ],
 
     i18n: {

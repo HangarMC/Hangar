@@ -4,6 +4,7 @@ package io.papermc.hangar.db.modelold;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.modelold.Role;
 
+@Deprecated(forRemoval = true)
 public class RolesTable {
 
     private long id;

@@ -2,39 +2,46 @@
     <v-app-bar fixed app>
         <v-menu bottom offset-y open-on-hover transition="slide-y-transition" close-delay="100">
             <template #activator="{ on, attrs }">
-                <v-toolbar-title v-bind="attrs" v-on="on">
-                    <NuxtLink to="/" :exact="true">
-                        <img src="https://papermc.io/images/logo-marker.svg" alt="Paper logo" />
+                <v-btn text x-large class="align-self-center px-1" v-bind="attrs" :ripple="false" v-on="on">
+                    <NuxtLink class="float-left" to="/" exact>
+                        <v-img height="55" width="220" src="https://papermc.io/images/logo-marker.svg" alt="Paper logo" />
                     </NuxtLink>
-                </v-toolbar-title>
-                <v-app-bar-nav-icon :plain="false" v-bind="attrs" v-on="on">
-                    <v-icon color="white" class="dropdown-icon">mdi-chevron-down</v-icon>
-                </v-app-bar-nav-icon>
+
+                    <v-icon>mdi-chevron-down</v-icon>
+                </v-btn>
             </template>
             <Dropdown :controls="dropdown" />
         </v-menu>
 
         <v-spacer></v-spacer>
 
-        <v-btn icon to="/authors"><v-icon color="white">mdi-account-group</v-icon></v-btn>
-        <v-btn icon to="/staff"><v-icon color="white">mdi-account-tie</v-icon></v-btn>
+        <v-btn icon to="/authors" nuxt active-class="text--primary"><v-icon>mdi-account-group</v-icon></v-btn>
+        <v-btn icon to="/staff" nuxt><v-icon>mdi-account-tie</v-icon></v-btn>
 
         <template v-if="$store.state.auth.user">
             <v-menu bottom offset-y transition="slide-y-transition">
                 <template #activator="{ on, attrs }">
                     <v-btn v-bind="attrs" v-on="on">
-                        <v-icon color="white" class="dropdown-icon">mdi-plus</v-icon>
-                        <v-icon small color="white" class="dropdown-icon">mdi-chevron-down</v-icon>
+                        <v-icon color="white">mdi-plus</v-icon>
+                        <v-icon small color="white">mdi-chevron-down</v-icon>
                     </v-btn>
                 </template>
                 <Dropdown :controls="newControls" />
             </v-menu>
 
-            <v-menu bottom offset-y transition="slide-y-transition">
+            <v-menu bottom offset-y transition="slide-y-transition" close-delay="100">
                 <template #activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on">
-                        <v-icon color="white" class="dropdown-icon">mdi-account-circle</v-icon>
-                        <v-icon small color="white" class="dropdown-icon">mdi-chevron-down</v-icon>
+                    <v-btn color="info" text class="px-3" x-large v-bind="attrs" v-on="on">
+                        {{ $store.state.auth.user.name }}
+                        <v-badge
+                            overlap
+                            :content="$store.state.auth.user.headerData.unreadNotifications"
+                            :value="$store.state.auth.user.headerData.unreadNotifications"
+                        >
+                            <v-avatar size="44" class="ml-2">
+                                <img :src="$util.avatarUrl($store.state.auth.user.name)" :alt="$store.state.auth.user.name" />
+                            </v-avatar>
+                        </v-badge>
                     </v-btn>
                 </template>
                 <Dropdown :controls="userControls" />
@@ -195,8 +202,14 @@ export default class Header extends Vue {
 }
 </script>
 
-<style lang="scss" scoped>
-img {
-    height: 40px;
+<style lang="scss">
+.v-badge--bordered.header-badge .v-badge__badge::after {
+    // TODO variable for header background
+    border-color: #272727 !important;
+}
+</style>
+<style lang="scss">
+.avatar-button {
+    //border: 2px white solid;
 }
 </style>

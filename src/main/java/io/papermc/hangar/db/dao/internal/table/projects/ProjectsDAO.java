@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RegisterConstructorMapper(ProjectTable.class)
-public interface ProjectDAO {
+public interface ProjectsDAO {
 
     @Timestamped
     @GetGeneratedKeys

@@ -3,7 +3,7 @@ package io.papermc.hangar.model.db.roles;
 import io.papermc.hangar.model.common.roles.GlobalRole;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
-public class GlobalRoleTable implements RoleTable<GlobalRole> {
+public class GlobalRoleTable implements IRoleTable<GlobalRole> {
 
     private final long userId;
     private final GlobalRole role;

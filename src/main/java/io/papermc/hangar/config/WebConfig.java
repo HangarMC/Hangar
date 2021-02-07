@@ -1,6 +1,8 @@
 package io.papermc.hangar.config;
 
+import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesAnnotationIntrospector;
 import freemarker.core.HTMLOutputFormat;
 import freemarker.template.TemplateException;
 import io.papermc.hangar.config.hangar.HangarConfig;
@@ -121,9 +123,16 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Override
     public void configureMessageConverters(@NotNull List<HttpMessageConverter<?>> converters) {
-        mapper.setAnnotationIntrospector(hangarAnnotationIntrospector);
+        // TODO kinda wack, but idk a better way rn
+        ParameterNamesAnnotationIntrospector sAnnotationIntrospector = (ParameterNamesAnnotationIntrospector) mapper.getSerializationConfig().getAnnotationIntrospector().allIntrospectors().stream().filter(ParameterNamesAnnotationIntrospector.class::isInstance).findFirst().get();
+        mapper.setAnnotationIntrospectors(
+                AnnotationIntrospector.pair(sAnnotationIntrospector, new HangarAnnotationIntrospector()),
+                mapper.getDeserializationConfig().getAnnotationIntrospector()
+        );
         converters.add(new MappingJackson2HttpMessageConverter(mapper));
         super.addDefaultHttpMessageConverters(converters);
+        System.out.println(mapper.getSerializationConfig().getAnnotationIntrospector().allIntrospectors());
+        System.out.println(mapper.getDeserializationConfig().getAnnotationIntrospector().allIntrospectors());
     }
 
     // TODO maybe? remove after freemarker is gone

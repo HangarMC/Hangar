@@ -66,43 +66,37 @@ public class HangarUser extends User implements Identified {
 
     public static class HeaderData {
         private final Permission globalPermission;
-        private final boolean hasNotice;
-        private final boolean hasUnreadNotifications;
-        private final boolean unresolvedFlags;
-        private final boolean hasProjectApprovals;
-        private final boolean hasReviewQueue;
+        private final long unreadNotifications;
+        private final long unresolvedFlags;
+        private final long projectApprovals;
+        private final long reviewQueueCount;
 
-        public HeaderData(Permission globalPermission, boolean hasNotice, boolean hasUnreadNotifications, boolean unresolvedFlags, boolean hasProjectApprovals, boolean hasReviewQueue) {
+        public HeaderData(Permission globalPermission, long unreadNotifications, long unresolvedFlags, long projectApprovals, long reviewQueueCount) {
             this.globalPermission = globalPermission;
-            this.hasNotice = hasNotice;
-            this.hasUnreadNotifications = hasUnreadNotifications;
+            this.unreadNotifications = unreadNotifications;
             this.unresolvedFlags = unresolvedFlags;
-            this.hasProjectApprovals = hasProjectApprovals;
-            this.hasReviewQueue = hasReviewQueue;
+            this.projectApprovals = projectApprovals;
+            this.reviewQueueCount = reviewQueueCount;
         }
 
         public Permission getGlobalPermission() {
             return globalPermission;
         }
 
-        public boolean isHasNotice() {
-            return hasNotice;
+        public long getUnreadNotifications() {
+            return unreadNotifications;
         }
 
-        public boolean isHasUnreadNotifications() {
-            return hasUnreadNotifications;
-        }
-
-        public boolean isUnresolvedFlags() {
+        public long getUnresolvedFlags() {
             return unresolvedFlags;
         }
 
-        public boolean isHasProjectApprovals() {
-            return hasProjectApprovals;
+        public long getProjectApprovals() {
+            return projectApprovals;
         }
 
-        public boolean isHasReviewQueue() {
-            return hasReviewQueue;
+        public long getReviewQueueCount() {
+            return reviewQueueCount;
         }
 
         @Override
@@ -110,23 +104,22 @@ public class HangarUser extends User implements Identified {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             HeaderData that = (HeaderData) o;
-            return hasNotice == that.hasNotice && hasUnreadNotifications == that.hasUnreadNotifications && unresolvedFlags == that.unresolvedFlags && hasProjectApprovals == that.hasProjectApprovals && hasReviewQueue == that.hasReviewQueue && globalPermission.equals(that.globalPermission);
+            return unreadNotifications == that.unreadNotifications && unresolvedFlags == that.unresolvedFlags && projectApprovals == that.projectApprovals && reviewQueueCount == that.reviewQueueCount && globalPermission.equals(that.globalPermission);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(globalPermission, hasNotice, hasUnreadNotifications, unresolvedFlags, hasProjectApprovals, hasReviewQueue);
+            return Objects.hash(globalPermission, unreadNotifications, unresolvedFlags, projectApprovals, reviewQueueCount);
         }
 
         @Override
         public String toString() {
             return "HeaderData{" +
                     "globalPermission=" + globalPermission +
-                    ", hasNotice=" + hasNotice +
-                    ", hasUnreadNotifications=" + hasUnreadNotifications +
+                    ", unreadNotifications=" + unreadNotifications +
                     ", unresolvedFlags=" + unresolvedFlags +
-                    ", hasProjectApprovals=" + hasProjectApprovals +
-                    ", hasReviewQueue=" + hasReviewQueue +
+                    ", projectApprovals=" + projectApprovals +
+                    ", reviewQueueCount=" + reviewQueueCount +
                     '}';
         }
     }

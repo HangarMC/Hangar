@@ -3,7 +3,7 @@ package io.papermc.hangar.service.internal.projects;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
-import io.papermc.hangar.db.dao.internal.table.projects.ProjectDAO;
+import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.OrganizationTable;
@@ -34,15 +34,15 @@ public class ProjectService extends HangarService {
     public static final String AUTHOR = "author";
     public static final String SLUG = "slug";
 
-    private final ProjectDAO projectDAO;
+    private final ProjectsDAO projectsDAO;
     private final HangarUsersDAO hangarUsersDAO;
     private final HangarProjectsDAO hangarProjectsDAO;
     private final VisibilityService visibilityService;
     private final OrganizationService organizationService;
 
     @Autowired
-    public ProjectService(HangarDao<ProjectDAO> projectDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, VisibilityService visibilityService, OrganizationService organizationService) {
-        this.projectDAO = projectDAO.get();
+    public ProjectService(HangarDao<ProjectsDAO> projectDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, VisibilityService visibilityService, OrganizationService organizationService) {
+        this.projectsDAO = projectDAO.get();
         this.hangarUsersDAO = hangarUsersDAO.get();
         this.hangarProjectsDAO = hangarProjectsDAO.get();
         this.visibilityService = visibilityService;
@@ -51,11 +51,11 @@ public class ProjectService extends HangarService {
 
     @Nullable
     public ProjectTable getProjectTable(@Nullable Long projectId) {
-        return getProjectTable(projectId, projectDAO::getById);
+        return getProjectTable(projectId, projectsDAO::getById);
     }
 
     public ProjectTable getProjectTable(@Nullable String author, @Nullable String slug) {
-        return getProjectTable(author, slug, projectDAO::getBySlug);
+        return getProjectTable(author, slug, projectsDAO::getBySlug);
     }
 
     @Nullable

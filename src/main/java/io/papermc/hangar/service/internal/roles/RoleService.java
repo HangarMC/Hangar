@@ -1,11 +1,11 @@
 package io.papermc.hangar.service.internal.roles;
 
-import io.papermc.hangar.db.dao.internal.table.roles.RoleDAO;
+import io.papermc.hangar.db.dao.internal.table.roles.IRolesDAO;
 import io.papermc.hangar.model.common.roles.Role;
-import io.papermc.hangar.model.db.roles.RoleTable;
+import io.papermc.hangar.model.db.roles.IRoleTable;
 import io.papermc.hangar.service.HangarService;
 
-public abstract class RoleService<T extends RoleTable<R>, R extends Role<T>, D extends RoleDAO<T>> extends HangarService {
+public abstract class RoleService<T extends IRoleTable<R>, R extends Role<T>, D extends IRolesDAO<T>> extends HangarService {
 
     protected final D roleDao;
 

@@ -2,7 +2,7 @@ package io.papermc.hangar.service.internal;
 
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarNotificationsDAO;
-import io.papermc.hangar.db.dao.internal.table.roles.ProjectRoleDAO;
+import io.papermc.hangar.db.dao.internal.table.roles.ProjectRolesDAO;
 import io.papermc.hangar.model.internal.user.notifications.HangarInvite;
 import io.papermc.hangar.service.HangarService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ public class InviteService extends HangarService {
     private final HangarNotificationsDAO hangarNotificationsDAO;
 
     @Autowired
-    public InviteService(HangarDao<HangarNotificationsDAO> hangarNotificationsDAO, HangarDao<ProjectRoleDAO> projectRoleDAO) {
+    public InviteService(HangarDao<HangarNotificationsDAO> hangarNotificationsDAO, HangarDao<ProjectRolesDAO> projectRoleDAO) {
         this.hangarNotificationsDAO = hangarNotificationsDAO.get();
     }
 
