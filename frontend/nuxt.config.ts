@@ -7,7 +7,7 @@ import fr from './locales/fr';
 
 require('dotenv').config();
 
-const proxyHost = process.env.proxyHost || "http://localhost:8080";
+const proxyHost = process.env.proxyHost || 'http://localhost:8080';
 
 export default {
     telemetry: false,
