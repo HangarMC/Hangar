@@ -13,14 +13,14 @@ services:
     stdin_open: true
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.hangar.loadbalancer.server.port=3000"
-      - "traefik.http.routers.hangar.rule=Host(`hangar-new.minidigger.me`)"
-      - "traefik.http.routers.hangar.entrypoints=web-secure"
-      - "traefik.http.routers.hangar.tls=true"
-      - "traefik.http.routers.hangar.tls.options=default"
-      - "traefik.http.routers.hangar.tls.certresolver=default"
-      - "traefik.http.routers.hangar.tls.domains[0].main=minidigger.me"
-      - "traefik.http.routers.hangar.tls.domains[0].sans=*.minidigger.me"
+      - "traefik.http.services.hangar-new.loadbalancer.server.port=3000"
+      - "traefik.http.routers.hangar-new.rule=Host(`hangar-new.minidigger.me`)"
+      - "traefik.http.routers.hangar-new.entrypoints=web-secure"
+      - "traefik.http.routers.hangar-new.tls=true"
+      - "traefik.http.routers.hangar-new.tls.options=default"
+      - "traefik.http.routers.hangar-new.tls.certresolver=default"
+      - "traefik.http.routers.hangar-new.tls.domains[0].main=minidigger.me"
+      - "traefik.http.routers.hangar-new.tls.domains[0].sans=*.minidigger.me"
     networks:
       - web
   backend:
@@ -59,15 +59,15 @@ services:
     image: mailhog/mailhog:latest
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.hangar-mail.loadbalancer.server.port=8025"
-      - "traefik.http.routers.hangar-mail.middlewares=basicauth@file"
-      - "traefik.http.routers.hangar-mail.rule=Host(`hangar-new-mail.minidigger.me`)"
-      - "traefik.http.routers.hangar-mail.entrypoints=web-secure"
-      - "traefik.http.routers.hangar-mail.tls=true"
-      - "traefik.http.routers.hangar-mail.tls.options=default"
-      - "traefik.http.routers.hangar-mail.tls.certresolver=default"
-      - "traefik.http.routers.hangar-mail.tls.domains[0].main=minidigger.me"
-      - "traefik.http.routers.hangar-mail.tls.domains[0].sans=*.minidigger.me"
+      - "traefik.http.services.hangar-new-mail.loadbalancer.server.port=8025"
+      - "traefik.http.routers.hangar-new-mail.middlewares=basicauth@file"
+      - "traefik.http.routers.hangar-new-mail.rule=Host(`hangar-new-mail.minidigger.me`)"
+      - "traefik.http.routers.hangar-new-mail.entrypoints=web-secure"
+      - "traefik.http.routers.hangar-new-mail.tls=true"
+      - "traefik.http.routers.hangar-new-mail.tls.options=default"
+      - "traefik.http.routers.hangar-new-mail.tls.certresolver=default"
+      - "traefik.http.routers.hangar-new-mail.tls.domains[0].main=minidigger.me"
+      - "traefik.http.routers.hangar-new-mail.tls.domains[0].sans=*.minidigger.me"
     networks:
       - web
   auth:
@@ -76,14 +76,14 @@ services:
       - 'db'
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.hangar-auth.loadbalancer.server.port=8000"
-      - "traefik.http.routers.hangar-auth.rule=Host(`hangar-new-auth.minidigger.me`)"
-      - "traefik.http.routers.hangar-auth.entrypoints=web-secure"
-      - "traefik.http.routers.hangar-auth.tls=true"
-      - "traefik.http.routers.hangar-auth.tls.options=default"
-      - "traefik.http.routers.hangar-auth.tls.certresolver=default"
-      - "traefik.http.routers.hangar-auth.tls.domains[0].main=minidigger.me"
-      - "traefik.http.routers.hangar-auth.tls.domains[0].sans=*.minidigger.me"
+      - "traefik.http.services.hangar-new-auth.loadbalancer.server.port=8000"
+      - "traefik.http.routers.hangar-new-auth.rule=Host(`hangar-new-auth.minidigger.me`)"
+      - "traefik.http.routers.hangar-new-auth.entrypoints=web-secure"
+      - "traefik.http.routers.hangar-new-auth.tls=true"
+      - "traefik.http.routers.hangar-new-auth.tls.options=default"
+      - "traefik.http.routers.hangar-new-auth.tls.certresolver=default"
+      - "traefik.http.routers.hangar-new-auth.tls.domains[0].main=minidigger.me"
+      - "traefik.http.routers.hangar-new-auth.tls.domains[0].sans=*.minidigger.me"
     environment:
       SECRET_KEY: "TzNc3RTpfVn1xxNV90PPGEfs7SZhy5"
       EMAIL_HOST: "mail"
