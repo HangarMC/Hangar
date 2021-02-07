@@ -62,6 +62,9 @@ export default {
     // PWA module configuration: https://go.nuxtjs.dev/pwa
     pwa: {
         manifest: {
+            name: 'Hangar | PaperMC',
+            short_name: 'Hangar',
+            description: 'Plugin repository for Paper plugins and more!',
             lang: 'en',
         },
     },
