@@ -2,7 +2,6 @@ FROM openjdk:16-jdk-alpine
 
 WORKDIR hangar
 
-
 ENV TERM xterm-256color
 
 EXPOSE 8080
