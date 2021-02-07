@@ -4,8 +4,8 @@ services:
   frontend:
     image: "ghcr.io/papermc/hangar_frontend"
     build:
-      context: ../../frontend
-      dockerfile: ../docker/deployment/hangar-frontend/Dockerfile
+      context: ../..
+      dockerfile: docker/deployment/hangar-frontend/Dockerfile
     depends_on:
       - 'backend'
     environment:
