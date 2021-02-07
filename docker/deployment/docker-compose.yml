@@ -2,12 +2,14 @@ version: '3.7'
 
 services:
   frontend:
-    image: "ghcr.io/minidigger/hangar_frontend"
+    image: "ghcr.io/papermc/hangar_frontend"
     build:
       context: ../../frontend
       dockerfile: ../docker/deployment/hangar-frontend/Dockerfile
     depends_on:
       - 'backend'
+    environment:
+      proxyHost: "http://hangar_new_backend:8080"
     stdin_open: true
     labels:
       - "traefik.enable=true"
@@ -22,7 +24,7 @@ services:
     networks:
       - web
   backend:
-    image: "ghcr.io/minidigger/hangar_backend"
+    image: "ghcr.io/papermc/hangar_backend"
     build:
       context: ../..
       dockerfile: docker/deployment/hangar-backend/Dockerfile
@@ -38,7 +40,7 @@ services:
     networks:
       - web
   db:
-    image: "ghcr.io/minidigger/hangar_db"
+    image: "ghcr.io/papermc/hangar_db"
     build: ./db
     environment:
       POSTGRES_MULTIPLE_DATABASES: hangarauth

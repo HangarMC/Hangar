@@ -4,7 +4,7 @@ WORKDIR hangar-frontend
 ENV TERM xterm-256color
 
 EXPOSE 3000
-ENTRYPOINT ["yarn", "run", "start"]
+ENTRYPOINT ["./node_modules/.bin/nuxt-ts", "run", "start"]
 
 COPY package.json /hangar-frontend/
 COPY nuxt.config.ts /hangar-frontend/

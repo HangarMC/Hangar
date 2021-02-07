@@ -7,6 +7,8 @@ import fr from './locales/fr';
 
 require('dotenv').config();
 
+const proxyHost = process.env.proxyHost || "http://localhost:8080";
+
 export default {
     telemetry: false,
     // Global page headers: https://go.nuxtjs.dev/config-head
@@ -107,13 +109,13 @@ export default {
     },
 
     proxy: [
-        'http://localhost:8080/api/',
-        'http://localhost:8080/signup',
-        'http://localhost:8080/login',
-        'http://localhost:8080/logout',
-        'http://localhost:8080/refresh',
-        'http://localhost:8080/invalidate',
-        'http://localhost:8080/v2/api-docs/',
+        proxyHost + '/api/',
+        proxyHost + '/signup',
+        proxyHost + '/login',
+        proxyHost + '/logout',
+        proxyHost + '/refresh',
+        proxyHost + '/invalidate',
+        proxyHost + '/v2/api-docs/',
     ],
 
     i18n: {
