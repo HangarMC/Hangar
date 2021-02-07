@@ -59,19 +59,16 @@ const createApi = ({ $axios, store, app: { $cookies }, error }: Context) => {
             method: AxiosRequestConfig['method'] = 'get',
             data: object = {}
         ): Promise<T> {
-            let promise: Promise<string | null>;
+            let tokenPromise: Promise<string | null>;
             if (token && !API.validateToken(token)) {
-                promise = this.getToken(true);
+                tokenPromise = this.getToken(true);
             } else {
-                promise = Promise.resolve(token);
+                tokenPromise = Promise.resolve(token);
             }
 
-            return promise.then((token) => {
+            return tokenPromise.then((token) => {
                 if (authed && !token) {
-                    error({
-                        statusCode: 401,
-                        message: 'Requires authorization',
-                    });
+                    // TODO this return doesn't match others
                     return Promise.reject(new Error('Requires authorization'));
                 } else {
                     return this._request(`internal/${url}`, token, method, data);

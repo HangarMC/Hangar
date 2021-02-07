@@ -1,5 +1,6 @@
 <template>
     <v-data-table
+        v-if="staff"
         :headers="headers"
         :items="staff.result"
         :options.sync="options"
@@ -22,11 +23,7 @@ import { PaginatedResult, User } from 'hangar-api';
 import { DataOptions, DataTableHeader } from 'vuetify';
 import { Context } from '@nuxt/types';
 
-@Component({
-    head: {
-        title: 'Staff',
-    },
-})
+@Component
 export default class StaffPage extends Vue {
     headers: DataTableHeader[] = [
         { text: 'Username', value: 'name' },
@@ -38,6 +35,12 @@ export default class StaffPage extends Vue {
     loading = false;
     options = { page: 1, itemsPerPage: 10 } as DataOptions;
     initialLoad = true;
+
+    head() {
+        return {
+            title: this.$t('pages.staff'),
+        };
+    }
 
     @Watch('options', { deep: true })
     onOptionsChanged() {
@@ -72,8 +75,11 @@ export default class StaffPage extends Vue {
         };
     }
 
-    async asyncData({ $api }: Context): Promise<{ staff: PaginatedResult<User> }> {
-        return { staff: await $api.request<PaginatedResult<User>>('staff', false, 'get', { limit: 10, offset: 0 }) };
+    async asyncData({ $api, $util }: Context): Promise<{ staff: PaginatedResult<User> | void }> {
+        const staff = await $api
+            .request<PaginatedResult<User>>('staff', false, 'get', { limit: 10, offset: 0 })
+            .catch((err) => $util.handleRequestError(err, 'Could not load staff'));
+        return { staff };
     }
 }
 </script>

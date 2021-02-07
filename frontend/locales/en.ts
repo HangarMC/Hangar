@@ -14,6 +14,10 @@ const msgs: LocaleMessageObject = {
         subtitle: 'A Minecraft package repository',
         sponsoredBy: 'Sponsored by',
     },
+    pages: {
+        authors: 'Authors',
+        staff: 'Staff',
+    },
     nav: {
         login: 'Login',
         signup: 'Signup',
@@ -28,6 +32,7 @@ const msgs: LocaleMessageObject = {
             platformVersions: 'Platform Versions',
             logout: 'Sign out',
         },
+        createNew: 'Create new...',
         new: {
             project: 'New Project',
             organization: 'New Organization',

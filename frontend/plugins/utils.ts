@@ -10,6 +10,34 @@ import { AuthState } from '~/store/auth';
 type Validation = (v: string) => boolean | string;
 type ValidationArgument = (field?: string) => Validation;
 
+function handleRequestError(err: AxiosError, error: Context['error']) {
+    if (!err.isAxiosError) {
+        // everything should be an AxiosError
+        error({
+            statusCode: 500,
+        });
+        console.log(err);
+    } else if (err.response) {
+        if (err.response.data.isHangarApiException || err.response.data.isHangarValidationException) {
+            const data: HangarException = err.response.data;
+            error({
+                statusCode: data.httpError.statusCode,
+                message: data.message,
+            });
+        } else {
+            error({
+                statusCode: err.response.status,
+                message: err.response.statusText,
+            });
+        }
+    } else {
+        error({
+            message: "This shouldn't happen...",
+        });
+        console.log(err);
+    }
+}
+
 const createUtil = ({ store, error }: Context) => {
     class Util {
         dummyUser(): User {
@@ -74,27 +102,45 @@ const createUtil = ({ store, error }: Context) => {
             return (store.state.auth as AuthState).user != null;
         }
 
-        // TODO have boolean for doing error toast notification instead of error page;
-        handleAxiosError(err: AxiosError) {
-            if (err.response) {
-                // response outside of 2xx
-                const statusCode = err.response.status;
-                if (err.response.data.isHangarApiException || err.response.data.isHangarValidationException) {
+        /**
+         * Used when an auth error should redirect to 404
+         * @param err the axios request error
+         */
+        handlePageRequestError(err: AxiosError) {
+            handleRequestError(err, error);
+        }
+
+        /**
+         * Used for showing error popups. See handlePageRequestError to show an error page.
+         * @param err the axios request error
+         * @param msg optional error message
+         */
+        handleRequestError(err: AxiosError, msg: string | undefined = 'Could not load data') {
+            if (process.server) {
+                handleRequestError(err, error);
+                return;
+            }
+            if (!err.isAxiosError) {
+                // everything should be an AxiosError
+                error({
+                    statusCode: 500,
+                });
+                console.log(err);
+            } else if (err.response) {
+                if (err.response.data.isHangarValidationException || err.response.data.isHangarApiException) {
                     const data: HangarException = err.response.data;
-                    error({
-                        statusCode: data.httpError.statusCode,
-                        message: data.message,
-                    });
+                    store.dispatch('snackbar/SHOW_ERROR', {
+                        message: msg || data.message,
+                        timeout: 3000,
+                    } as ErrorPayload);
                 } else {
-                    error({
-                        statusCode,
-                        message: err.response.statusText,
-                    });
+                    store.dispatch('snackbar/SHOW_ERROR', {
+                        message: msg || err.response.statusText,
+                        timeout: 2000,
+                    } as ErrorPayload);
                 }
             } else {
-                error({
-                    message: 'No response from the server: ' + err.message,
-                });
+                console.log(err);
             }
         }
 

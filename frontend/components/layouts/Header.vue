@@ -12,41 +12,47 @@
             </template>
             <Dropdown :controls="dropdown" />
         </v-menu>
+        <v-menu v-if="$util.isLoggedIn()" bottom offset-y transition="slide-y-transition">
+            <template #activator="{ on, attrs }">
+                <v-btn v-bind="attrs" color="primary" v-on="on">
+                    {{ $t('nav.createNew') }}
+                </v-btn>
+            </template>
+            <Dropdown :controls="newControls" />
+        </v-menu>
 
         <v-spacer></v-spacer>
 
-        <v-btn icon to="/authors" nuxt active-class="text--primary"><v-icon>mdi-account-group</v-icon></v-btn>
-        <v-btn icon to="/staff" nuxt><v-icon>mdi-account-tie</v-icon></v-btn>
+        <v-tooltip bottom>
+            <template #activator="{ on }">
+                <v-btn icon to="/authors" nuxt v-on="on"><v-icon>mdi-account-group</v-icon></v-btn>
+            </template>
+            <span>{{ $t('pages.authors') }}</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+            <template #activator="{ on }">
+                <v-btn icon to="/staff" nuxt v-on="on"><v-icon>mdi-account-tie</v-icon></v-btn>
+            </template>
+            <span>{{ $t('pages.staff') }}</span>
+        </v-tooltip>
 
-        <template v-if="$store.state.auth.user">
-            <v-menu bottom offset-y transition="slide-y-transition">
-                <template #activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on">
-                        <v-icon color="white">mdi-plus</v-icon>
-                        <v-icon small color="white">mdi-chevron-down</v-icon>
-                    </v-btn>
-                </template>
-                <Dropdown :controls="newControls" />
-            </v-menu>
-
-            <v-menu bottom offset-y transition="slide-y-transition" close-delay="100">
-                <template #activator="{ on, attrs }">
-                    <v-btn color="info" text class="px-3" x-large v-bind="attrs" v-on="on">
-                        {{ $store.state.auth.user.name }}
-                        <v-badge
-                            overlap
-                            :content="$store.state.auth.user.headerData.unreadNotifications"
-                            :value="$store.state.auth.user.headerData.unreadNotifications"
-                        >
-                            <v-avatar size="44" class="ml-2">
-                                <img :src="$util.avatarUrl($store.state.auth.user.name)" :alt="$store.state.auth.user.name" />
-                            </v-avatar>
-                        </v-badge>
-                    </v-btn>
-                </template>
-                <Dropdown :controls="userControls" />
-            </v-menu>
-        </template>
+        <v-menu v-if="$util.isLoggedIn()" bottom offset-y transition="slide-y-transition" close-delay="100">
+            <template #activator="{ on, attrs }">
+                <v-btn color="info" text class="px-3" x-large v-bind="attrs" v-on="on">
+                    {{ $store.state.auth.user.name }}
+                    <v-badge
+                        overlap
+                        :content="$store.state.auth.user.headerData.unreadNotifications"
+                        :value="$store.state.auth.user.headerData.unreadNotifications"
+                    >
+                        <v-avatar size="44" class="ml-2">
+                            <img :src="$util.avatarUrl($store.state.auth.user.name)" :alt="$store.state.auth.user.name" />
+                        </v-avatar>
+                    </v-badge>
+                </v-btn>
+            </template>
+            <Dropdown :controls="userControls" />
+        </v-menu>
         <template v-else>
             <v-btn href="/signup" class="mr-2" color="primary">{{ $t('nav.signup') }}</v-btn>
             <v-btn color="secondary" @click="$auth.login($route.fullPath)">{{ $t('nav.login') }}</v-btn>

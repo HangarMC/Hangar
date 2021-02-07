@@ -1,5 +1,6 @@
 <template>
     <v-data-table
+        v-if="authors"
         :headers="headers"
         :items="authors.result"
         :options.sync="options"
@@ -22,11 +23,7 @@ import { Context } from '@nuxt/types';
 import { PaginatedResult, User } from 'hangar-api';
 import { DataOptions, DataTableHeader } from 'vuetify';
 
-@Component({
-    head: {
-        title: 'Authors',
-    },
-})
+@Component
 export default class AuthorsPage extends Vue {
     headers: DataTableHeader[] = [
         { text: 'Username', value: 'name' },
@@ -39,6 +36,12 @@ export default class AuthorsPage extends Vue {
     loading = false;
     options = { page: 1, itemsPerPage: 10 } as DataOptions;
     initialLoad = true;
+
+    head() {
+        return {
+            title: this.$t('pages.authors'),
+        };
+    }
 
     @Watch('options', { deep: true })
     onOptionsChanged() {
@@ -73,8 +76,11 @@ export default class AuthorsPage extends Vue {
         };
     }
 
-    async asyncData({ $api }: Context): Promise<{ authors: PaginatedResult<User> }> {
-        return { authors: await $api.request<PaginatedResult<User>>('authors', false, 'get', { limit: 10, offset: 0 }) };
+    async asyncData({ $api, $util }: Context): Promise<{ authors: PaginatedResult<User> | void }> {
+        const authors = await $api
+            .request<PaginatedResult<User>>('authors', false, 'get', { limit: 10, offset: 0 })
+            .catch((err) => $util.handleRequestError(err, 'Could not load authors'));
+        return { authors };
     }
 }
 </script>
