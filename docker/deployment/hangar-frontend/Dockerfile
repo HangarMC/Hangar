@@ -11,3 +11,4 @@ COPY /docker/deployment/hangar-frontend/entrypoint.sh /hangar-frontend/entrypoin
 COPY /frontend/nuxt.config.ts /hangar-frontend/nuxt.config.ts
 COPY /frontend/node_modules/ /hangar-frontend/node_modules/
 COPY /frontend/.nuxt/ /hangar-frontend/.nuxt/
+RUN chmod +x /hangar-frontend/entrypoint.sh
