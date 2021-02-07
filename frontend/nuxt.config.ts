@@ -9,6 +9,7 @@ require('dotenv').config();
 
 const proxyHost = process.env.proxyHost || 'http://localhost:8080';
 const authHost = process.env.authHost || 'http://localhost:8000';
+const host = process.env.host || 'localhost';
 
 export default {
     telemetry: false,
@@ -142,7 +143,7 @@ export default {
 
     server: {
         port: 3000,
-        host: 'localhost',
+        host: host,
     },
 
     loading: {

@@ -10,6 +10,8 @@ services:
       - 'backend'
     environment:
       proxyHost: "http://hangar_new_backend:8080"
+      authHost: "http://hangar_new_auth:8000"
+      host: "0.0.0.0"
     stdin_open: true
     labels:
       - "traefik.enable=true"
