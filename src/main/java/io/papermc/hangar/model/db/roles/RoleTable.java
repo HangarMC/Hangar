@@ -9,4 +9,6 @@ public interface RoleTable<R extends Role<? extends RoleTable<R>>> {
     R getRole();
 
     long getRoleId();
+
+    String getRoleType();
 }

@@ -4,17 +4,13 @@ import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.roles.RoleTable;
-import org.jdbi.v3.core.argument.Argument;
-import org.jdbi.v3.core.statement.StatementContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-public interface Role<T extends RoleTable<? extends Role<T>>> extends Argument {
+public interface Role<T extends RoleTable<? extends Role<T>>> {
 
     Map<String, Role<?>> VALUE_ROLES = new HashMap<>();
     Map<Long, Role<?>> ID_ROLES = new HashMap<>();
@@ -50,9 +46,4 @@ public interface Role<T extends RoleTable<? extends Role<T>>> extends Argument {
 
     @NotNull
     T create(@Nullable Long principalId, long userId, boolean isAccepted);
-
-    @Override
-    default void apply(int position, PreparedStatement statement, StatementContext ctx) throws SQLException {
-        statement.setString(position, getValue());
-    }
 }

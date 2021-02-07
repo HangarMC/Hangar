@@ -90,6 +90,15 @@ public class Permission implements Comparable<Permission>, Argument {
         return (value & other.value) == other.value;
     }
 
+    public boolean hasAll(NamedPermission[] perms) {
+        for (NamedPermission perm : perms) {
+            if (!has(perm.getPermission())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean isNone() {
         return value == 0;
     }

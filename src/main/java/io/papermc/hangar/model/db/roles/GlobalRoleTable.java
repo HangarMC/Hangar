@@ -29,6 +29,11 @@ public class GlobalRoleTable implements RoleTable<GlobalRole> {
     }
 
     @Override
+    public String getRoleType() {
+        return role.getValue();
+    }
+
+    @Override
     public String toString() {
         return "GlobalRoleTable{" +
                 "userId=" + userId +

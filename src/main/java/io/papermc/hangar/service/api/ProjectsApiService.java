@@ -1,6 +1,5 @@
 package io.papermc.hangar.service.api;
 
-import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.v1.ProjectsApiDAO;
 import io.papermc.hangar.model.api.PaginatedResult;
@@ -13,14 +12,10 @@ import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
 import io.papermc.hangar.modelold.generated.Tag;
 import io.papermc.hangar.service.HangarService;
-import io.papermc.hangar.serviceold.pluginupload.ProjectFiles;
 import io.papermc.hangar.util.ApiUtil;
-import io.papermc.hangar.util.Routes;
-import io.papermc.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,20 +23,16 @@ import java.util.stream.Collectors;
 @Service
 public class ProjectsApiService extends HangarService {
 
-    private final HangarConfig hangarConfig;
     private final ProjectsApiDAO projectsApiDAO;
-    private final ProjectFiles projectFiles;
 
     @Autowired
-    public ProjectsApiService(HangarConfig hangarConfig, HangarDao<ProjectsApiDAO> projectsDAO, ProjectFiles projectFiles) {
-        this.hangarConfig = hangarConfig;
+    public ProjectsApiService(HangarDao<ProjectsApiDAO> projectsDAO) {
         this.projectsApiDAO = projectsDAO.get();
-        this.projectFiles = projectFiles;
     }
 
     public Project getProject(String author, String slug) {
         boolean seeHidden = getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden);
-        return projectsApiDAO.getProjects(author, slug, seeHidden, getHangarUserId(), null, null, null, null, null, 1, 0).stream().findFirst().map(this::setProjectIconUrl).orElse(null);
+        return projectsApiDAO.getProjects(author, slug, seeHidden, getHangarUserId(), null, null, null, null, null, 1, 0).stream().findFirst().orElse(null);
     }
 
     public PaginatedResult<ProjectMember> getProjectMembers(String author, String slug, RequestPagination requestPagination) {
@@ -86,7 +77,6 @@ public class ProjectsApiService extends HangarService {
         }
 
         List<Project> projects = projectsApiDAO.getProjects(owner, null, seeHidden, getHangarUserId(), ordering, getCategoryNumbers(categories), getTagsNames(parsedTags), trimQuery(query), getQueryStatement(query), pagination.getLimit(), pagination.getOffset());
-        projects.forEach(this::setProjectIconUrl);
         return new PaginatedResult<>(new Pagination(projectsApiDAO.countProjects(owner, null, seeHidden, getHangarUserId(), getCategoryNumbers(categories), getTagsNames(parsedTags), trimQuery(query), getQueryStatement(query)), pagination), projects);
     }
 
@@ -116,15 +106,5 @@ public class ProjectsApiService extends HangarService {
             }
         }
         return queryStatement;
-    }
-
-    private Project setProjectIconUrl(Project project) {
-        Path iconPath = projectFiles.getIconPath(project.getNamespace().getOwner(), project.getNamespace().getSlug());
-        if (iconPath != null) {
-            project.setIconUrl(hangarConfig.getBaseUrl() + Routes.getRouteUrlOf("projects.showIcon", project.getNamespace().getOwner(), project.getNamespace().getSlug()));
-        } else {
-            project.setIconUrl(StringUtils.avatarUrl(project.getNamespace().getOwner()));
-        }
-        return project;
     }
 }

@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 @SuppressWarnings("rawtypes")
+@Component
 public class StringToEnumConverterFactory implements ConverterFactory<String, Enum> {
 
     @SuppressWarnings("unchecked")

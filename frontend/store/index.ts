@@ -4,12 +4,15 @@ import { IProjectCategory } from 'hangar-internal';
 import { IPermission } from 'hangar-api';
 import { NamedPermission, ProjectCategory } from '~/types/enums';
 
-export const state = () => ({
+export interface RootState {
+    projectCategories: Map<ProjectCategory, IProjectCategory>;
+    permissions: Map<NamedPermission, IPermission>;
+}
+
+export const state: () => RootState = () => ({
     projectCategories: (null as unknown) as Map<ProjectCategory, IProjectCategory>,
     permissions: (null as unknown) as Map<NamedPermission, IPermission>,
 });
-
-export type RootState = ReturnType<typeof state>;
 
 export const mutations: MutationTree<RootState> = {
     SET_PROJECT_CATEGORIES: (state, payload: Map<ProjectCategory, IProjectCategory>) => {

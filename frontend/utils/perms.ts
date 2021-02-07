@@ -57,7 +57,7 @@ export function ProjectPermission(...permissions: NamedPermission[]) {
                 statusCode: 404,
             });
         }
-        if (!$util.hasPerms(<string>(store.state.auth as AuthState).routePermissions, ...permissions)) {
+        if (!$util.hasPerms(...permissions)) {
             error({
                 statusCode: 404,
             });

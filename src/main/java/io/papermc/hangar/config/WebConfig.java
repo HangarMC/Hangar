@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import freemarker.core.HTMLOutputFormat;
 import freemarker.template.TemplateException;
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.controller.extras.converters.ColorHexConverter;
-import io.papermc.hangar.controller.extras.converters.OffsetDateTimeConverter;
-import io.papermc.hangar.controller.extras.converters.StringToEnumConverterFactory;
+import io.papermc.hangar.config.jackson.HangarAnnotationIntrospector;
 import io.papermc.hangar.securityold.UserLockExceptionResolver;
 import no.api.freemarker.java8.Java8ObjectWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
-import org.springframework.format.FormatterRegistry;
 import org.springframework.http.CacheControl;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -41,11 +38,13 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     private final HangarConfig hangarConfig;
     private final ObjectMapper mapper;
+    private final HangarAnnotationIntrospector hangarAnnotationIntrospector;
 
     @Autowired
-    public WebConfig(HangarConfig hangarConfig, ObjectMapper mapper) {
+    public WebConfig(HangarConfig hangarConfig, ObjectMapper mapper, HangarAnnotationIntrospector hangarAnnotationIntrospector) {
         this.hangarConfig = hangarConfig;
         this.mapper = mapper;
+        this.hangarAnnotationIntrospector = hangarAnnotationIntrospector;
     }
 
     // TODO remove after freemarker is gone
@@ -122,6 +121,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Override
     public void configureMessageConverters(@NotNull List<HttpMessageConverter<?>> converters) {
+        mapper.setAnnotationIntrospector(hangarAnnotationIntrospector);
         converters.add(new MappingJackson2HttpMessageConverter(mapper));
         super.addDefaultHttpMessageConverters(converters);
     }
@@ -142,12 +142,6 @@ public class WebConfig extends WebMvcConfigurationSupport {
 //        };
 //    }
 
-    @Override
-    public void addFormatters(FormatterRegistry registry) {
-        registry.addConverterFactory(new StringToEnumConverterFactory());
-        registry.addConverter(new ColorHexConverter());
-        registry.addConverter(new OffsetDateTimeConverter());
-    }
 
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(ObjectMapper mapper) {

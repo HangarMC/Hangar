@@ -5,6 +5,7 @@ import io.papermc.hangar.db.customtypes.JobState;
 import io.papermc.hangar.db.customtypes.LoggedAction;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.mappers.PairMapperFactory;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.spi.JdbiPlugin;
@@ -53,6 +54,7 @@ public class JDBIConfig {
 
         jdbiPlugins.forEach(jdbi::installPlugin);
         rowMappers.forEach(jdbi::registerRowMapper);
+        jdbi.registerRowMapper(new PairMapperFactory());
 
         config.registerCustomType(LoggedAction.class, "logged_action_type");
         config.registerCustomType(RoleCategory.class, "role_category");

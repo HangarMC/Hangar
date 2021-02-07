@@ -1,4 +1,4 @@
-package io.papermc.hangar.serviceold.pluginupload;
+package io.papermc.hangar.service.internal.uploads;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
 import org.slf4j.Logger;

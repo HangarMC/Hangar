@@ -42,7 +42,4 @@ public interface ProjectDAO {
             "     FROM projects WHERE owner_id = :ownerId) sq" +
             " WHERE sq IS NOT NULL ")
     ProjectFactory.InvalidProjectReason checkProjectValidity(long ownerId, String name, String slug);
-
-    @SqlUpdate("REFRESH MATERIALIZED VIEW home_projects")
-    void refreshHomeProjects();
 }

@@ -16,7 +16,7 @@ public class Project extends ProjectCompact {
     private final OffsetDateTime lastUpdated;
     private final UserActions userActions;
     private final ProjectSettings settings;
-    private String iconUrl;
+    private final String iconUrl;
 
     @JdbiConstructor
     public Project(OffsetDateTime createdAt, String name, @Nested ProjectNamespace namespace, List<PromotedVersion> promotedVersions, @Nested ProjectStats stats, @EnumByOrdinal Category category, String description, OffsetDateTime lastUpdated, @EnumByOrdinal Visibility visibility, @Nested UserActions userActions, @Nested ProjectSettings settings) {
@@ -25,6 +25,7 @@ public class Project extends ProjectCompact {
         this.lastUpdated = lastUpdated;
         this.userActions = userActions;
         this.settings = settings;
+        this.iconUrl = "/api/v1/project/" + this.getNamespace().getOwner() + "/" + this.getNamespace().getSlug() + "/icon";
     }
 
     public String getDescription() {
@@ -45,10 +46,6 @@ public class Project extends ProjectCompact {
 
     public String getIconUrl() {
         return iconUrl;
-    }
-
-    public void setIconUrl(String iconUrl) {
-        this.iconUrl = iconUrl;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package io.papermc.hangar.model.db;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import org.jdbi.v3.core.mapper.PropagateNull;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
@@ -41,6 +42,7 @@ public class UserTable extends Table implements ProjectOwner {
         this.language = language;
     }
 
+    @JsonIgnore
     public String getFullName() {
         return fullName;
     }
@@ -58,6 +60,7 @@ public class UserTable extends Table implements ProjectOwner {
         this.name = name;
     }
 
+    @JsonIgnore
     public String getEmail() {
         return email;
     }

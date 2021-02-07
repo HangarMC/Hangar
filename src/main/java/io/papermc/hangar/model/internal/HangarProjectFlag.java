@@ -47,4 +47,15 @@ public class HangarProjectFlag extends ProjectFlagTable {
     public String getProjectNamespace() {
         return projectOwnerName + "/" + projectSlug;
     }
+
+    @Override
+    public String toString() {
+        return "HangarProjectFlag{" +
+                "reportedByName='" + reportedByName + '\'' +
+                ", resolvedByName='" + resolvedByName + '\'' +
+                ", projectOwnerName='" + projectOwnerName + '\'' +
+                ", projectSlug='" + projectSlug + '\'' +
+                ", projectVisibility=" + projectVisibility +
+                "} " + super.toString();
+    }
 }

@@ -20,7 +20,7 @@
         </template>
         <v-row>
             <v-col cols="1">
-                <UserAvatar :username="project.namespace.owner" :avatar-url="$util.avatarUrl(project.namespace.owner)" clazz="user-avatar-sm"></UserAvatar>
+                <UserAvatar :username="project.namespace.owner" :avatar-url="project.iconUrl" clazz="user-avatar-sm"></UserAvatar>
             </v-col>
             <v-col cols="auto">
                 <h1 class="d-inline">
@@ -34,12 +34,12 @@
             <v-spacer />
             <v-col cols="3">
                 <!-- todo if author, disable -->
-                <v-btn @click="toggleStar">
+                <v-btn v-if="!$util.isCurrentUser(project.id)" @click="toggleStar">
                     <v-icon v-if="project.userActions.starred">mdi-star</v-icon>
                     <v-icon v-else>mdi-star-outline</v-icon>
                 </v-btn>
                 <!-- todo if author, remove -->
-                <v-btn @click="toggleWatch">
+                <v-btn v-if="!$util.isCurrentUser(project.id)" @click="toggleWatch">
                     <template v-if="project.userActions.watching">
                         <v-icon>mdi-eye-off</v-icon>
                         {{ $t('project.actions.unwatch') }}
@@ -56,7 +56,7 @@
                     {{ $t('project.actions.flag') }}
                 </v-btn>
                 <!-- todo only enable if has perms -->
-                <v-menu bottom offset-y>
+                <v-menu v-if="isStaff" bottom offset-y>
                     <template #activator="{ on, attrs }">
                         <v-btn v-bind="attrs" v-on="on">
                             {{ $t('project.actions.adminActions') }}
@@ -91,9 +91,9 @@
                 <v-tab
                     v-for="tab in tabs"
                     :key="tab.title"
-                    exact
-                    :to="tab.external ? null : tab.link"
-                    :href="tab.external ? tab.link : null"
+                    :exact="!tab.external"
+                    :to="tab.external ? undefined : tab.link"
+                    :href="tab.external ? tab.link : undefined"
                     :nuxt="!tab.external"
                 >
                     <v-icon>{{ tab.icon }}</v-icon>
@@ -113,12 +113,11 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
-import { HangarApiException, Project } from 'hangar-api';
-import { AxiosError } from 'axios';
+import { HangarProject } from 'hangar-internal';
 import Markdown from '~/components/Markdown.vue';
 import FlagModal from '~/components/FlagModal.vue';
 import UserAvatar from '~/components/UserAvatar.vue';
-import { Visibility } from '~/types/enums';
+import { NamedPermission, Visibility } from '~/types/enums';
 
 interface Tab {
     title: String;
@@ -135,7 +134,7 @@ interface Tab {
     },
 })
 export default class ProjectPage extends Vue {
-    project!: Project;
+    project!: HangarProject;
 
     head() {
         return {
@@ -143,21 +142,9 @@ export default class ProjectPage extends Vue {
         };
     }
 
-    async asyncData({ $api, params, error }: Context): Promise<{ project: Project } | void> {
-        return await $api
-            .request<Project>(`projects/${params.author}/${params.slug}`)
-            .then((project) => {
-                return Promise.resolve({ project });
-            })
-            .catch((err: AxiosError) => {
-                if (err.response?.data?.isHangarApiException) {
-                    const hangarError: HangarApiException = err.response?.data as HangarApiException;
-                    error({
-                        message: hangarError.message,
-                        statusCode: hangarError.httpError.statusCode,
-                    });
-                }
-            });
+    async asyncData({ $api, params, $util }: Context) {
+        const project = await $api.requestInternal<HangarProject>(`projects/project/${params.author}/${params.slug}`).catch($util.handleAxiosError);
+        return { project };
     }
 
     get tabs(): Tab[] {
@@ -202,6 +189,10 @@ export default class ProjectPage extends Vue {
 
     get slug(): String {
         return `/${this.project.namespace.owner}/${this.project.namespace.slug}`;
+    }
+
+    get isStaff(): boolean {
+        return this.$util.hasPerms(NamedPermission.IS_STAFF);
     }
 
     toggleStar() {

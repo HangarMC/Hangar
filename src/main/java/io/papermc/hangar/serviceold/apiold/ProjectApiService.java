@@ -6,7 +6,7 @@ import io.papermc.hangar.db.daoold.api.ProjectsApiDao;
 import io.papermc.hangar.modelold.generated.Project;
 import io.papermc.hangar.modelold.generated.ProjectMember;
 import io.papermc.hangar.modelold.generated.ProjectStatsDay;
-import io.papermc.hangar.serviceold.pluginupload.ProjectFiles;
+import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.util.Routes;
 import io.papermc.hangar.util.TemplateHelper;
 import org.springframework.stereotype.Service;

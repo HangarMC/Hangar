@@ -5,12 +5,8 @@ import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
-import org.jdbi.v3.core.statement.StatementContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum GlobalRole implements Role<GlobalRoleTable> {
@@ -110,10 +106,5 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
     @Override
     public GlobalRoleTable create(@Nullable Long principalId, long userId, boolean isAccepted) {
         return new GlobalRoleTable(userId, this);
-    }
-
-    @Override
-    public void apply(int position, PreparedStatement statement, StatementContext ctx) throws SQLException {
-        statement.setLong(position, roleId);
     }
 }

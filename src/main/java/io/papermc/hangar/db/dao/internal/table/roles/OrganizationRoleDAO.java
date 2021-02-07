@@ -13,7 +13,7 @@ public interface OrganizationRoleDAO extends RoleDAO<OrganizationRoleTable> {
     @Timestamped
     @GetGeneratedKeys
     @SqlUpdate("INSERT INTO user_organization_roles (created_at, user_id, role_type, organization_id, accepted) " +
-               "VALUES (:now, :userId, :role, :organizationId, :accepted)")
+               "VALUES (:now, :userId, :roleType, :organizationId, :accepted)")
     OrganizationRoleTable insert(@BindBean OrganizationRoleTable table);
 
     @Override

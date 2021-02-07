@@ -11,19 +11,11 @@ public class ProjectFlagTable extends Table {
 
     private final long projectId;
     private final long userId;
-    @EnumByOrdinal
     private final FlagReason reason;
     private boolean isResolved;
     private final String comment;
     private OffsetDateTime resolvedAt;
     private long resolvedBy;
-
-    public ProjectFlagTable(long projectId, long userId, FlagReason reason, String comment) {
-        this.projectId = projectId;
-        this.userId = userId;
-        this.reason = reason;
-        this.comment = comment;
-    }
 
     @JdbiConstructor
     public ProjectFlagTable(OffsetDateTime createdAt, long id, long projectId, long userId, @EnumByOrdinal FlagReason reason, boolean isResolved, String comment, OffsetDateTime resolvedAt, long resolvedBy) {
@@ -37,6 +29,13 @@ public class ProjectFlagTable extends Table {
         this.resolvedBy = resolvedBy;
     }
 
+    public ProjectFlagTable(long projectId, long userId, FlagReason reason, String comment) {
+        this.projectId = projectId;
+        this.userId = userId;
+        this.reason = reason;
+        this.comment = comment;
+    }
+
     public long getProjectId() {
         return projectId;
     }
@@ -45,6 +44,7 @@ public class ProjectFlagTable extends Table {
         return userId;
     }
 
+    @EnumByOrdinal
     public FlagReason getReason() {
         return reason;
     }
@@ -75,5 +75,18 @@ public class ProjectFlagTable extends Table {
 
     public void setResolvedBy(long resolvedBy) {
         this.resolvedBy = resolvedBy;
+    }
+
+    @Override
+    public String toString() {
+        return "ProjectFlagTable{" +
+                "projectId=" + projectId +
+                ", userId=" + userId +
+                ", reason=" + reason +
+                ", isResolved=" + isResolved +
+                ", comment='" + comment + '\'' +
+                ", resolvedAt=" + resolvedAt +
+                ", resolvedBy=" + resolvedBy +
+                "} " + super.toString();
     }
 }

@@ -242,6 +242,23 @@ ALTER TABLE projects
         FOREIGN KEY (recommended_version_id) REFERENCES project_versions
             ON DELETE SET NULL;
 
+CREATE TABLE roles
+(
+    id bigint NOT NULL
+        CONSTRAINT roles_pkey
+            PRIMARY KEY,
+    name varchar(255) NOT NULL,
+    category role_category NOT NULL,
+    title varchar(255) NOT NULL,
+    color varchar(255) NOT NULL,
+    is_assignable boolean NOT NULL,
+    rank integer,
+    permission bit(64) DEFAULT '0'::bit(64) NOT NULL
+);
+
+CREATE UNIQUE INDEX role_name_idx
+    ON roles (name);
+
 CREATE TABLE user_project_roles
 (
     id bigserial NOT NULL
@@ -252,7 +269,10 @@ CREATE TABLE user_project_roles
         CONSTRAINT user_project_roles_user_id_fkey
             REFERENCES users
             ON DELETE CASCADE,
-    role_type varchar NOT NULL,
+    role_type varchar NOT NULL
+        CONSTRAINT user_project_roles_role_type_fkey
+            REFERENCES roles (name)
+            ON DELETE CASCADE,
     project_id bigint NOT NULL
         CONSTRAINT user_project_roles_project_id_fkey
             REFERENCES projects
@@ -368,7 +388,10 @@ CREATE TABLE user_organization_roles
         CONSTRAINT user_organization_roles_user_id_fkey
             REFERENCES users
             ON DELETE CASCADE,
-    role_type varchar NOT NULL,
+    role_type varchar NOT NULL
+        CONSTRAINT user_organization_roles_role_type_fkey
+            REFERENCES roles (name)
+            ON DELETE CASCADE,
     organization_id bigint NOT NULL
         CONSTRAINT user_organization_roles_organization_id_fkey
             REFERENCES organizations
@@ -536,23 +559,6 @@ CREATE INDEX projects_versions_tags_version_id
 
 CREATE INDEX project_version_tags_name_data_idx
     on project_version_tags (name, data);
-
-CREATE TABLE roles
-(
-    id bigint NOT NULL
-        CONSTRAINT roles_pkey
-            PRIMARY KEY,
-    name varchar(255) NOT NULL,
-    category role_category NOT NULL,
-    title varchar(255) NOT NULL,
-    color varchar(255) NOT NULL,
-    is_assignable boolean NOT NULL,
-    rank integer,
-    permission bit(64) DEFAULT '0'::bit(64) NOT NULL
-);
-
-CREATE UNIQUE INDEX role_name_idx
-    ON roles (name);
 
 CREATE TABLE user_global_roles
 (

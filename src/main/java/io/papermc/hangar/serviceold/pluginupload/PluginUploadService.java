@@ -6,6 +6,7 @@ import io.papermc.hangar.db.modelold.ProjectChannelsTable;
 import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.exceptions.HangarException;
+import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.serviceold.VersionService;
 import io.papermc.hangar.serviceold.plugindata.PluginDataService;
 import io.papermc.hangar.serviceold.plugindata.PluginFileData;

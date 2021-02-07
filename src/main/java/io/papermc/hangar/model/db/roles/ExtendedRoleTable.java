@@ -1,5 +1,6 @@
 package io.papermc.hangar.model.db.roles;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.Table;
 
@@ -30,13 +31,20 @@ public abstract class ExtendedRoleTable<R extends Role<? extends RoleTable<R>>> 
     }
 
     @Override
+    @JsonIgnore
     public R getRole() {
         return role;
     }
 
     @Override
+    @JsonIgnore
     public long getRoleId() {
         return role.getRoleId();
+    }
+
+    @Override
+    public String getRoleType() {
+        return role.getValue();
     }
 
     public boolean isAccepted() {
@@ -47,6 +55,7 @@ public abstract class ExtendedRoleTable<R extends Role<? extends RoleTable<R>>> 
         this.accepted = accepted;
     }
 
+    @JsonIgnore
     public abstract long getPrincipalId();
 
     @Override

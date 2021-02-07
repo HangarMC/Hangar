@@ -5,6 +5,7 @@ import { HangarException, User } from 'hangar-api';
 import { NamedPermission } from '~/types/enums';
 import { RootState } from '~/store';
 import { ErrorPayload } from '~/store/snackbar';
+import { AuthState } from '~/store/auth';
 
 type Validation = (v: string) => boolean | string;
 type ValidationArgument = (field?: string) => Validation;
@@ -50,26 +51,26 @@ const createUtil = ({ store, error }: Context) => {
 
         /**
          * Checks if the supplier permission has all named permissions.
-         * @param perms user permissions
          * @param namedPermission perms required
          */
-        hasPerms(perms: bigint | string, ...namedPermission: NamedPermission[]): boolean {
-            let _perms: bigint;
-            let result = false;
+        hasPerms(...namedPermission: NamedPermission[]): boolean {
+            const perms = (store.state.auth as AuthState).routePermissions;
+            if (perms === null) return false;
+            const _perms: bigint = BigInt('0b' + perms);
+            let result = true;
             for (const np of namedPermission) {
                 const perm = (store.state as RootState).permissions.get(np);
                 if (!perm) {
                     throw new Error(namedPermission + ' is not valid');
                 }
-                if (typeof perms === 'string') {
-                    _perms = BigInt('0b' + perm.value);
-                } else {
-                    _perms = perms;
-                }
-
-                result = result && (_perms & perm.permission) === perm.permission;
+                const val = BigInt('0b' + perm.permission.toString(2));
+                result = result && (_perms & val) === val;
             }
             return result;
+        }
+
+        isCurrentUser(id: number): boolean {
+            return (store.state.auth as AuthState).user?.id === id;
         }
 
         // TODO have boolean for doing error toast notification instead of error page;

@@ -3,6 +3,7 @@ package io.papermc.hangar.db.dao.v1;
 import io.papermc.hangar.db.mappers.PromotedVersionMapper;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.ProjectMember;
+import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.AllowUnusedBindings;
@@ -19,6 +20,7 @@ import java.util.List;
 @RegisterConstructorMapper(Project.class)
 public interface ProjectsApiDAO {
 
+    @KeyColumn("id")
     @UseStringTemplateEngine
     @SqlQuery("SELECT p.id," +
             "       p.created_at," +
