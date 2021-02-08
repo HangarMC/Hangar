@@ -4,7 +4,7 @@ import { AxiosError, AxiosRequestConfig } from 'axios';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import qs from 'qs';
 
-const createApi = ({ $axios, store, app: { $cookies }, error }: Context) => {
+const createApi = ({ $axios, store, app: { $cookies } }: Context) => {
     class API {
         getToken(forceFetch: boolean = true): Promise<string | null> {
             if (store.state.auth.token) {
@@ -46,7 +46,7 @@ const createApi = ({ $axios, store, app: { $cookies }, error }: Context) => {
             });
         }
 
-        requestInternal<T>(url: string, authed: boolean = true, method: AxiosRequestConfig['method'] = 'get', data: object = {}): Promise<T> {
+        requestInternal<T = void>(url: string, authed: boolean = true, method: AxiosRequestConfig['method'] = 'get', data: object = {}): Promise<T> {
             return this.getToken(authed).then((token) => {
                 return this.requestInternalWithToken<T>(url, token, authed, method, data);
             });

@@ -23,7 +23,11 @@ public interface UsersDAO {
             "       (SELECT count(*)" +
             "           FROM project_members_all pma" +
             "           WHERE pma.user_id = u.id" +
-            "       ) AS project_count" +
+            "       ) AS project_count," +
+            "       u.read_prompts," +
+            "       u.locked," +
+            "       u.language," +
+            "       exists(SELECT 1 FROM organizations o WHERE u.id = o.user_id) AS is_organization" +
             "   FROM users u" +
             "       JOIN user_global_roles ugr ON u.id = ugr.user_id" +
             "       JOIN roles r ON ugr.role_id = r.id" +
@@ -46,7 +50,11 @@ public interface UsersDAO {
             "       u.tagline," +
             "       u.join_date," +
             "       ARRAY(SELECT r.name FROM roles r JOIN user_global_roles ugr ON r.id = ugr.role_id WHERE u.id = ugr.user_id) roles," +
-            "       (SELECT count(*) FROM project_members_all pma WHERE pma.user_id = u.id) AS project_count" +
+            "       (SELECT count(*) FROM project_members_all pma WHERE pma.user_id = u.id) AS project_count," +
+            "       u.read_prompts," +
+            "       u.locked," +
+            "       u.language," +
+            "       exists(SELECT 1 FROM organizations o WHERE u.id = o.user_id) AS is_organization" +
             "   FROM users u" +
             "   WHERE u.name ILIKE '%' || :query || '%' " +
             "   GROUP BY u.id " +

@@ -75,17 +75,19 @@ public class ProjectService extends HangarService {
     }
 
     public HangarProject getHangarProject(String author, String slug) {
-        Pair<Long, Project> project = hangarProjectsDAO.getProject(author, slug);
+        Pair<Long, Project> project = hangarProjectsDAO.getProject(author, slug, getHangarUserId());
         ProjectOwner projectOwner = getProjectOwner(author);
         List<JoinableMember<ProjectRoleTable>> members = hangarProjectsDAO.getProjectMembers(project.getLeft());
         // only include visibility change if not public (and if so, only include the user and comment)
         HangarProject.HangarProjectInfo info = hangarProjectsDAO.getHangarProjectInfo(project.getLeft());
-        return new HangarProject(project.getRight(), projectOwner, members, "", "", info);
+        return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, "", "", info);
     }
 
     public List<HangarProjectFlag> getHangarProjectFlags(String author, String slug) {
         return hangarProjectsDAO.getHangarProjectFlags(author, slug);
     }
+
+
 
     public void refreshHomeProjects() {
         hangarProjectsDAO.refreshHomeProjects();

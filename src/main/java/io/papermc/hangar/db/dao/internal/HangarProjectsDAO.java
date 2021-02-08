@@ -39,8 +39,8 @@ public interface HangarProjectsDAO {
             "       p.description," +
             "       coalesce(p.last_updated, p.created_at) AS last_updated," +
             "       p.visibility, " +
-            "       exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = u.id) AS starred, " +
-            "       exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = u.id) AS watching, " +
+            "       exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS starred, " +
+            "       exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS watching, " +
             "       ps.homepage," +
             "       ps.issues," +
             "       ps.source," +
@@ -52,7 +52,7 @@ public interface HangarProjectsDAO {
             "         JOIN projects ps ON p.id = ps.id" +
             "         JOIN users u ON ps.owner_id = u.id" +
             "         WHERE p.slug = :slug AND p.owner_name = :author")
-    Pair<Long, Project> getProject(String author, String slug);
+    Pair<Long, Project> getProject(String author, String slug, Long currentUserId);
 
     @RegisterRowMapperFactory(JoinableMemberFactory.class)
     @RegisterConstructorMapper(UserTable.class)

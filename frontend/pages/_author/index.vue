@@ -2,10 +2,10 @@
     <div>
         <v-row>
             <v-col cols="1">
-                <UserAvatar :username="author.name" :avatar-url="$util.avatarUrl(author.name)" :clazz="avatarClazz"></UserAvatar>
+                <UserAvatar :username="user.name" :avatar-url="$util.avatarUrl(user.name)" :clazz="avatarClazz"></UserAvatar>
             </v-col>
             <v-col cols="auto">
-                <h1 class="d-inline">{{ author.name }}</h1>
+                <h1 class="d-inline">{{ user.name }}</h1>
                 <v-list dense flat class="d-inline-flex">
                     <v-list-item v-for="btn in buttons" :key="btn.name">
                         <v-list-item-content>
@@ -17,7 +17,7 @@
                 </v-list>
                 <div>
                     <v-subheader>
-                        <template v-if="author.tagline">{{ author.tagline }}</template>
+                        <template v-if="user.tagline">{{ user.tagline }}</template>
                         <!-- TODO tagline edit -->
                         <!--<template v-else-if="u.isCurrent() || canEditOrgSettings(u, o, so)">Add a tagline</template>-->
                         <v-btn icon>
@@ -28,9 +28,10 @@
             </v-col>
             <v-spacer />
             <v-col cols="2">
-                <v-subheader>{{ author.projectCount }} project(s)</v-subheader>
-                <v-subheader>A member since {{ $util.prettyDate(author.joinDate) }}</v-subheader>
-                <a :href="$util.forumUrl(author.name)">View on forums <v-icon>mdi-open-in-new</v-icon></a>
+                <!--TODO i18n-->
+                <v-subheader>{{ user.projectCount }} project(s)</v-subheader>
+                <v-subheader>A member since {{ $util.prettyDate(user.joinDate) }}</v-subheader>
+                <a :href="$util.forumUrl(user.name)">View on forums <v-icon>mdi-open-in-new</v-icon></a>
             </v-col>
         </v-row>
         <v-divider />
@@ -58,17 +59,11 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
-import { Color, Project, Role } from 'hangar-api';
-
-interface Author {
-    fullName: String;
-    name: String;
-    tagline: String;
-    joinDate: Date;
-    isLocked: boolean;
-    role: Role;
-    projectCount: Number;
-}
+import { PaginatedResult, Project } from 'hangar-api';
+import { Context } from '@nuxt/types';
+import { HangarUser } from 'hangar-internal';
+import UserAvatar from '~/components/UserAvatar.vue';
+import ProjectList from '~/components/ProjectList.vue';
 
 interface Button {
     icon: String;
@@ -77,20 +72,22 @@ interface Button {
     name: String;
 }
 
-@Component
+@Component({
+    components: {
+        UserAvatar,
+        ProjectList,
+    },
+})
 export default class AuthorPage extends Vue {
-    // TODO load author
-    author: Author = {
-        fullName: 'Martin',
-        name: 'MiniDigger',
-        tagline: 'This is a test',
-        joinDate: new Date(),
-        isLocked: false,
-        role: { title: 'Test', color: { hex: '#ffffff' } as Color } as Role,
-        projectCount: 2,
-    };
+    user!: HangarUser;
 
-    projects: Project[] = [];
+    projects!: PaginatedResult<Project>;
+
+    head() {
+        return {
+            title: this.user.name,
+        };
+    }
 
     get avatarClazz(): String {
         return 'user-avatar-md';
@@ -107,6 +104,16 @@ export default class AuthorPage extends Vue {
         buttons.push({ icon: 'mdi-calendar', url: '', name: 'Activity' });
         buttons.push({ icon: 'mdi-wrench', url: '', name: 'User Admin' });
         return buttons;
+    }
+
+    async asyncData({ $api, route, $util }: Context) {
+        const user = await $api.requestInternal<HangarUser>(`users/${route.params.author}`).catch($util.handlePageRequestError);
+        const projects = await $api
+            .request<PaginatedResult<Project>>(`projects`, false, 'get', {
+                owner: route.params.author,
+            })
+            .catch($util.handlePageRequestError);
+        return { user, projects };
     }
 }
 </script>

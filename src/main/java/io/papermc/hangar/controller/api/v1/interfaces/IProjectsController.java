@@ -6,6 +6,7 @@ import io.papermc.hangar.model.api.project.ProjectMember;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
+import io.papermc.hangar.security.annotations.Anyone;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+@Anyone
 @Api(tags = "Projects", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequestMapping(path ="/api/v1", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
 public interface IProjectsController {
@@ -78,13 +80,12 @@ public interface IProjectsController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/projects")
-    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.common.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
     ResponseEntity<PaginatedResult<Project>> getProjects(
             @ApiParam("The query to use when searching") @RequestParam(required = false) String q,
             @ApiParam("Restrict your search to a list of categories") @RequestParam(required = false) List<Category> categories,
             @ApiParam("A list of tags all the returned projects should have. Should be formated either as `tagname` or `tagname:tagdata`.") @RequestParam(value = "tags", required = false) List<String> tags,
             @ApiParam("Limit the search to a specific user") @RequestParam(required = false) String owner,
-            @ApiParam("How to sort the projects") @RequestParam(defaultValue = "updated") ProjectSortingStrategy sort,
+            @ApiParam("How to sort the projects") @RequestParam(defaultValue = "UPDATED") ProjectSortingStrategy sort,
             @ApiParam("If how relevant the project is to the given query should be used when sorting the projects") @RequestParam(defaultValue = "true") boolean relevance,
             @ApiParam("Pagination information") @NotNull RequestPagination pagination
     );

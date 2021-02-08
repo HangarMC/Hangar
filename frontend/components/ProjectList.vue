@@ -1,5 +1,10 @@
 <template>
-    <v-data-iterator :items="projects" :footer-props="{ itemsPerPageOptions: [5, 15, 25] }" :items-per-page="25">
+    <v-data-iterator
+        :items="projects.result"
+        :footer-props="{ itemsPerPageOptions: [5, 15, 25] }"
+        :options.sync="options"
+        :server-items-length="projects.pagination.count"
+    >
         <template #default="props">
             <v-hover v-for="project in props.items" :key="project.id" v-slot="{ hover }" style="width: 100%; height: 78px" class="d-block mb-3">
                 <NuxtLink :to="`/${project.namespace.owner}/${project.namespace.slug}`">
@@ -23,13 +28,19 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Project } from 'hangar-api';
+import { PaginatedResult, Project } from 'hangar-api';
 import { PropType } from 'vue';
+import { DataOptions } from 'vuetify';
 
 @Component
 export default class ProjectList extends Vue {
-    @Prop({ type: Array as PropType<Project[]>, required: true })
-    projects!: Project[];
+    @Prop({ type: Object as PropType<PaginatedResult<Project>>, required: true })
+    projects!: PaginatedResult<Project>;
+
+    options = {
+        page: 1,
+        itemsPerPage: 25,
+    } as DataOptions;
 }
 </script>
 <style lang="scss" scoped>

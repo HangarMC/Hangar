@@ -1,5 +1,6 @@
 declare module 'hangar-internal' {
-    import { Role } from 'hangar-api';
+    import { Role, User } from 'hangar-api';
+    import { Table } from 'hangar-internal';
 
     interface HangarNotification {
         id: number;
@@ -21,5 +22,21 @@ declare module 'hangar-internal' {
     interface Invites {
         projects: Invite[];
         organizations: Invite[];
+    }
+
+    interface HeaderData {
+        globalPermission: string;
+        unreadNotifications: number;
+        unresolvedFlags: number;
+        projectApprovals: number;
+        reviewQueueCount: number;
+    }
+
+    interface HangarUser extends User, Table {
+        headerData: HeaderData;
+        readPrompts: number[];
+        locked: boolean;
+        language: string;
+        isOrganization: boolean;
     }
 }

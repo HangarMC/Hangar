@@ -1,6 +1,7 @@
 package io.papermc.hangar.service.internal;
 
 import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.db.UserTable;
@@ -20,11 +21,13 @@ import java.util.function.Function;
 public class UserService extends HangarService {
 
     private final UserDAO userDAO;
+    private final HangarUsersDAO hangarUsersDAO;
     private final GlobalRoleService globalRoleService;
 
     @Autowired
-    public UserService(HangarDao<UserDAO> userDAO, GlobalRoleService globalRoleService) {
+    public UserService(HangarDao<UserDAO> userDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, GlobalRoleService globalRoleService) {
         this.userDAO = userDAO.get();
+        this.hangarUsersDAO = hangarUsersDAO.get();
         this.globalRoleService = globalRoleService;
     }
 
@@ -42,6 +45,21 @@ public class UserService extends HangarService {
         return getUserTable(userId, userDAO::getUserTable);
     }
 
+    public void toggleWatching(long projectId, boolean state) {
+        if (state) {
+            hangarUsersDAO.setWatching(projectId, getHangarPrincipal().getUserId());
+        } else {
+            hangarUsersDAO.setNotWatching(projectId, getHangarPrincipal().getUserId());
+        }
+    }
+
+    public void toggleStarred(long projectId, boolean state) {
+        if (state) {
+            hangarUsersDAO.setStarred(projectId, getHangarPrincipal().getUserId());
+        } else {
+            hangarUsersDAO.setNotStarred(projectId, getHangarPrincipal().getUserId());
+        }
+    }
     @Nullable
     private <T> UserTable getUserTable(@Nullable T identifier, @NotNull Function<T, UserTable> userTableFunction) {
         if (identifier == null) {

@@ -1,9 +1,9 @@
 import { MutationTree } from 'vuex';
-import { User } from 'hangar-api';
+import { HangarUser } from 'hangar-internal';
 
 export const state = () => ({
     authenticated: false,
-    user: null as User | null,
+    user: null as HangarUser | null,
     token: null as string | null,
     routePermissions: null as string | null,
 });
@@ -11,7 +11,7 @@ export const state = () => ({
 export type AuthState = ReturnType<typeof state>;
 
 export const mutations: MutationTree<AuthState> = {
-    SET_USER: (state: AuthState, user: User) => {
+    SET_USER: (state: AuthState, user: HangarUser) => {
         state.user = user;
     },
     SET_AUTHED: (state: AuthState, auth: boolean) => (state.authenticated = auth),

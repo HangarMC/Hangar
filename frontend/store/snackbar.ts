@@ -10,7 +10,7 @@ export const state = () => ({
 
 export type SnackbarState = ReturnType<typeof state>;
 
-export interface ErrorPayload {
+export interface NotifPayload {
     color?: string;
     timeout?: number;
     message: string;
@@ -21,7 +21,7 @@ function timeout(ms: number) {
 }
 
 export const actions: ActionTree<SnackbarState, RootState> = {
-    SHOW_ERROR: async ({ commit, state }, payload: ErrorPayload) => {
+    SHOW_NOTIF: async ({ commit, state }, payload: NotifPayload) => {
         commit('SET_COLOR', payload.color);
         commit('ADD_MESSAGE', payload.message);
         if (!state.enabled) {

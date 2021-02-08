@@ -12,19 +12,25 @@ import java.util.List;
 
 public class HangarProject extends Project implements Joinable<ProjectRoleTable> {
 
+    private final long id;
     private final ProjectOwner owner;
     private final List<JoinableMember<ProjectRoleTable>> members;
     private final String lastVisibilityChangeComment;
     private final String lastVisibilityChangeUserName;
     private final HangarProjectInfo info;
     
-    public HangarProject(Project project, ProjectOwner owner, List<JoinableMember<ProjectRoleTable>> members, String lastVisibilityChangeComment, String lastVisibilityChangeUserName, HangarProjectInfo info) {
+    public HangarProject(Project project, long id, ProjectOwner owner, List<JoinableMember<ProjectRoleTable>> members, String lastVisibilityChangeComment, String lastVisibilityChangeUserName, HangarProjectInfo info) {
         super(project.getCreatedAt(), project.getName(), project.getNamespace(), project.getPromotedVersions(), project.getStats(), project.getCategory(), project.getDescription(), project.getLastUpdated(), project.getVisibility(), project.getUserActions(), project.getSettings());
+        this.id = id;
         this.owner = owner;
         this.members = members;
         this.lastVisibilityChangeComment = lastVisibilityChangeComment;
         this.lastVisibilityChangeUserName = lastVisibilityChangeUserName;
         this.info = info;
+    }
+
+    public long getId() {
+        return id;
     }
 
     @Override
@@ -49,8 +55,21 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     public String getLastVisibilityChangeUserName() {
         return lastVisibilityChangeUserName;
     }
+
     public HangarProjectInfo getInfo() {
         return info;
+    }
+
+    @Override
+    public String toString() {
+        return "HangarProject{" +
+                "id=" + id +
+                ", owner=" + owner +
+                ", members=" + members +
+                ", lastVisibilityChangeComment='" + lastVisibilityChangeComment + '\'' +
+                ", lastVisibilityChangeUserName='" + lastVisibilityChangeUserName + '\'' +
+                ", info=" + info +
+                "} " + super.toString();
     }
 
     public static class HangarProjectInfo {

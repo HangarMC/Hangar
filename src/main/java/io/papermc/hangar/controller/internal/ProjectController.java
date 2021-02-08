@@ -8,9 +8,9 @@ import io.papermc.hangar.model.internal.api.requests.projects.NewProject;
 import io.papermc.hangar.model.internal.api.responses.PossibleProjectOwner;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.OrganizationService;
+import io.papermc.hangar.service.internal.UserService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.projects.ProjectService;
-import io.papermc.hangar.service.internal.uploads.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,15 +36,15 @@ public class ProjectController extends HangarController {
 
     private final ProjectFactory projectFactory;
     private final ProjectService projectService;
+    private final UserService userService;
     private final OrganizationService organizationService;
-    private final ImageService imageService;
 
     @Autowired
-    public ProjectController(ProjectFactory projectFactory, ProjectService projectService, OrganizationService organizationService, ImageService imageService) {
+    public ProjectController(ProjectFactory projectFactory, ProjectService projectService, UserService userService, OrganizationService organizationService) {
         this.projectFactory = projectFactory;
         this.projectService = projectService;
+        this.userService = userService;
         this.organizationService = organizationService;
-        this.imageService = imageService;
     }
 
     @GetMapping("/validateName")
@@ -74,8 +74,20 @@ public class ProjectController extends HangarController {
         return ResponseEntity.ok(projectService.getHangarProject(author, name));
     }
 
-    @GetMapping("/project/{author}/{name}/flags")
-    public void getProjectFlags(@PathVariable String author, @PathVariable String name) {
-
+    @PostMapping("/project/{id}/star/{state}")
+    @ResponseStatus(HttpStatus.OK)
+    public void setProjectStarred(@PathVariable("id") long projectId, @PathVariable boolean state) {
+        userService.toggleStarred(projectId, state);
     }
+
+    @PostMapping("/project/{id}/watch/{state}")
+    @ResponseStatus(HttpStatus.OK)
+    public void setProjectWatching(@PathVariable("id") long projectId, @PathVariable boolean state) {
+        userService.toggleWatching(projectId, state);
+    }
+
+//    @GetMapping("/project/{author}/{name}/flags")
+//    public void getProjectFlags(@PathVariable String author, @PathVariable String name) {
+//
+//    }
 }

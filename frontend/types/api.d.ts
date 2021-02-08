@@ -9,7 +9,6 @@ declare module 'hangar-api' {
     }
 
     interface Model {
-        id: number;
         createdAt: string;
     }
 
@@ -36,19 +35,11 @@ declare module 'hangar-api' {
         color: Color;
     }
 
-    interface HeaderData {
-        globalPermission: string;
-        unreadNotifications: number;
-        unresolvedFlags: number;
-        projectApprovals: number;
-        reviewQueueCount: number;
-    }
-
     interface User extends Model, Named {
         tagline: string | null;
         joinDate: string;
         roles: Role[];
-        headerData: HeaderData;
+        projectCount: number;
     }
 
     interface ApiSession {

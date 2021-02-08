@@ -1,10 +1,11 @@
 import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
 import { AxiosError } from 'axios';
-import { HangarException, User } from 'hangar-api';
+import { HangarException } from 'hangar-api';
+import { HangarUser } from 'hangar-internal';
 import { NamedPermission } from '~/types/enums';
 import { RootState } from '~/store';
-import { ErrorPayload } from '~/store/snackbar';
+import { NotifPayload } from '~/store/snackbar';
 import { AuthState } from '~/store/auth';
 
 type Validation = (v: string) => boolean | string;
@@ -40,8 +41,8 @@ function handleRequestError(err: AxiosError, error: Context['error']) {
 
 const createUtil = ({ store, error }: Context) => {
     class Util {
-        dummyUser(): User {
-            return {
+        dummyUser() {
+            return ({
                 name: 'Dummy',
                 id: 42,
                 tagline: null,
@@ -55,7 +56,7 @@ const createUtil = ({ store, error }: Context) => {
                     unresolvedFlags: 2,
                 },
                 joinDate: this.prettyDate(new Date()),
-            };
+            } as unknown) as HangarUser;
         }
 
         avatarUrl(name: string): string {
@@ -66,7 +67,10 @@ const createUtil = ({ store, error }: Context) => {
             return 'https://papermc.io/forums/u/' + name;
         }
 
-        prettyDate(date: Date): string {
+        prettyDate(date: Date | string): string {
+            if (typeof date === 'string') {
+                date = new Date(date);
+            }
             return date.toLocaleDateString(undefined, {
                 day: 'numeric',
                 month: 'long',
@@ -129,15 +133,17 @@ const createUtil = ({ store, error }: Context) => {
             } else if (err.response) {
                 if (err.response.data.isHangarValidationException || err.response.data.isHangarApiException) {
                     const data: HangarException = err.response.data;
-                    store.dispatch('snackbar/SHOW_ERROR', {
+                    store.dispatch('snackbar/SHOW_NOTIF', {
                         message: msg || data.message,
+                        color: 'error',
                         timeout: 3000,
-                    } as ErrorPayload);
+                    } as NotifPayload);
                 } else {
-                    store.dispatch('snackbar/SHOW_ERROR', {
+                    store.dispatch('snackbar/SHOW_NOTIF', {
                         message: msg || err.response.statusText,
+                        color: 'error',
                         timeout: 2000,
-                    } as ErrorPayload);
+                    } as NotifPayload);
                 }
             } else {
                 console.log(err);
@@ -150,12 +156,16 @@ const createUtil = ({ store, error }: Context) => {
 
         $v: Record<string, Validation> = {};
 
-        error(err: string | ErrorPayload) {
+        error(err: string | NotifPayload) {
             if (typeof err === 'string') {
-                store.dispatch('snackbar/SHOW_ERROR', { message: err });
+                store.dispatch('snackbar/SHOW_NOTIF', { message: err, color: 'error' } as NotifPayload);
             } else {
-                store.dispatch('snackbar/SHOW_ERROR', err);
+                store.dispatch('snackbar/SHOW_NOTIF', err);
             }
+        }
+
+        success(msg: string) {
+            store.dispatch('snackbar/SHOW_NOTIF', { message: msg, color: 'success' } as NotifPayload);
         }
     }
 

@@ -62,6 +62,11 @@ public class HangarUsersController extends HangarController {
         return ResponseEntity.ok(usersApiService.getUser(hangarAuthenticationToken.getName(), HangarUser.class));
     }
 
+    @GetMapping("/users/{user}")
+    public ResponseEntity<HangarUser> getUser(@PathVariable("user") String userName) {
+        return ResponseEntity.ok(usersApiService.getUser(userName, HangarUser.class));
+    }
+
     @GetMapping("/notifications")
     public ResponseEntity<List<HangarNotification>> getUserNotifications() {
         return ResponseEntity.ok(notificationService.getUsersNotifications());

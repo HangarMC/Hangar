@@ -1,4 +1,5 @@
 declare module 'hangar-internal' {
+    import { Table } from 'hangar-internal';
     import { Project } from 'hangar-api';
 
     interface ProjectOwner {
@@ -15,7 +16,7 @@ declare module 'hangar-internal' {
         watcherCount: number;
     }
 
-    interface HangarProject extends Project {
+    interface HangarProject extends Project, Table {
         owner: ProjectOwner;
         members: object[];
         lastVisibilityChangeComment: string;

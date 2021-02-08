@@ -65,6 +65,8 @@ const msgs: LocaleMessageObject = {
             unwatch: 'Unwatch',
             watch: 'Watch',
             flag: 'Flag',
+            star: 'Star',
+            unstar: 'Unstar',
             adminActions: 'Admin Actions',
             flagHistory: 'Flag history ({0})',
             staffNotes: 'Staff notes ({0})',

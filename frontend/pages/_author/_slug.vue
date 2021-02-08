@@ -31,22 +31,29 @@
                 </div>
             </v-col>
             <v-spacer />
-            <v-col cols="3">
+            <v-col v-if="$util.isLoggedIn()" cols="3">
                 <v-row no-gutters justify="end">
-                    <v-btn v-if="!$util.isCurrentUser(project.owner.id)" @click="toggleStar">
-                        <v-icon v-if="project.userActions.starred">mdi-star</v-icon>
-                        <v-icon v-else>mdi-star-outline</v-icon>
-                    </v-btn>
-                    <v-btn v-if="!$util.isCurrentUser(project.owner.id)" @click="toggleWatch">
-                        <template v-if="project.userActions.watching">
-                            <v-icon>mdi-eye-off</v-icon>
-                            {{ $t('project.actions.unwatch') }}
+                    <v-tooltip v-if="!$util.isCurrentUser(project.owner.id)" bottom>
+                        <template #activator="{ on }">
+                            <v-btn icon @click="toggleStar" v-on="on">
+                                <v-icon v-if="project.userActions.starred" color="amber">mdi-star</v-icon>
+                                <v-icon v-else color="amber">mdi-star-outline</v-icon>
+                            </v-btn>
                         </template>
-                        <template v-else>
-                            <v-icon>mdi-eye</v-icon>
-                            {{ $t('project.actions.watch') }}
+                        <span v-if="project.userActions.starred">{{ $t('project.actions.unstar') }}</span>
+                        <span v-else>{{ $t('project.actions.star') }}</span>
+                    </v-tooltip>
+
+                    <v-tooltip v-if="!$util.isCurrentUser(project.owner.id)" bottom>
+                        <template #activator="{ on }">
+                            <v-btn icon @click="toggleWatch" v-on="on">
+                                <v-icon v-if="project.userActions.watching">mdi-eye-off</v-icon>
+                                <v-icon v-else>mdi-eye</v-icon>
+                            </v-btn>
                         </template>
-                    </v-btn>
+                        <span v-if="project.userActions.watching">{{ $t('project.actions.unwatch') }}</span>
+                        <span v-else>{{ $t('project.actions.watch') }}</span>
+                    </v-tooltip>
                     <!-- todo if not logged in or author, remove both -->
                     <FlagModal :project="project" />
                     <v-menu v-if="isStaff" bottom offset-y>
@@ -196,11 +203,21 @@ export default class ProjectPage extends Vue {
     }
 
     toggleStar() {
-        // TODO toggle star
+        this.$api
+            .requestInternal<void>(`projects/project/${this.project.id}/star/${!this.project.userActions.starred}`, true, 'post')
+            .then(() => {
+                this.project.userActions.starred = !this.project.userActions.starred;
+            })
+            .catch((err) => this.$util.handleRequestError(err, 'Could not toggle starred'));
     }
 
     toggleWatch() {
-        // todo toggle watch
+        this.$api
+            .requestInternal(`projects/project/${this.project.id}/watch/${!this.project.userActions.watching}`, true, 'post')
+            .then(() => {
+                this.project.userActions.watching = !this.project.userActions.watching;
+            })
+            .catch((err) => this.$util.handleRequestError(err, 'Could not toggle watched'));
     }
 }
 </script>
