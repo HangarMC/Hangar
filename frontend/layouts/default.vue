@@ -5,6 +5,7 @@
             <v-container>
                 <Announcement v-for="(announcement, idx) in announcements" :key="idx" :announcement="announcement" />
 
+                <DonationResult />
                 <nuxt />
             </v-container>
         </v-main>
@@ -19,9 +20,11 @@ import Header from '~/components/layouts/Header.vue';
 import Footer from '~/components/layouts/Footer.vue';
 import Announcement from '~/components/layouts/Announcement.vue';
 import HangarSnackbar from '~/components/layouts/HangarSnackbar.vue';
+import DonationResult from '~/components/donation/DonationResult.vue';
 
 @Component({
     components: {
+        DonationResult,
         Header,
         Footer,
         Announcement,

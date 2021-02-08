@@ -65,7 +65,7 @@ declare module 'hangar-api' {
         recentViews: number;
         recentDownloads: number;
         stars: number;
-        waters: number;
+        watchers: number;
     }
 
     interface UserActions {
@@ -73,12 +73,17 @@ declare module 'hangar-api' {
         watching: boolean;
     }
 
+    interface Licence {
+        name: string | null;
+        url: string | null;
+    }
+
     interface ProjectSettings {
         homepage: string | null;
         issues: string | null;
         sources: string | null;
         support: string | null;
-        license: string | null;
+        license: Licence | null;
         forumSync: boolean;
     }
 
@@ -133,5 +138,16 @@ declare module 'hangar-api' {
         type: PermissionType;
         permissionBinString: string;
         permissions: IPermission[];
+    }
+
+    interface Page {
+        id: number;
+        createdAt: string;
+        projectId: number;
+        name: string;
+        slug: string;
+        isDeletable: false;
+        contents: string;
+        children: Array<Page>;
     }
 }

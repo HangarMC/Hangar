@@ -5,6 +5,7 @@ const msgs: LocaleMessageObject = {
         close: 'Close',
         submit: 'Submit',
         comment: 'Comment',
+        donate: 'Donate',
     },
     hangar: {
         projectSearch: {
@@ -50,6 +51,7 @@ const msgs: LocaleMessageObject = {
     },
     project: {
         category: {
+            info: 'Category: {0}',
             admin_tools: 'Admin Tools',
             chat: 'Chat',
             dev_tools: 'Developer Tools',
@@ -136,6 +138,16 @@ const msgs: LocaleMessageObject = {
             error: 'There was an error creating the project',
         },
         sendForApproval: 'Send for approval',
+        info: 'Information',
+        publishDate: 'Published on {0}',
+        views: '{0} views',
+        promotedVersions: 'Promoted Versions',
+        license: {
+            link: 'Licensed under ',
+        },
+    },
+    page: {
+        plural: 'Pages',
     },
     organization: {
         new: {

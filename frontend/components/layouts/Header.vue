@@ -12,6 +12,9 @@
             </template>
             <Dropdown :controls="dropdown" />
         </v-menu>
+
+        <v-spacer></v-spacer>
+
         <v-menu v-if="$util.isLoggedIn()" bottom offset-y transition="slide-y-transition">
             <template #activator="{ on, attrs }">
                 <v-btn v-bind="attrs" color="primary" v-on="on">
@@ -20,8 +23,6 @@
             </template>
             <Dropdown :controls="newControls" />
         </v-menu>
-
-        <v-spacer></v-spacer>
 
         <v-tooltip bottom>
             <template #activator="{ on }">

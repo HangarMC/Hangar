@@ -154,7 +154,6 @@ export default class ProjectPage extends Vue {
         const tabs = [] as Tab[];
         tabs.push({ title: this.$t('project.tabs.docs') as String, icon: 'mdi-book', link: this.slug, external: false });
         tabs.push({ title: this.$t('project.tabs.versions') as String, icon: 'mdi-download', link: this.slug + '/versions', external: false });
-        // todo check if has a discussion
         if (this.project.settings.forumSync) {
             tabs.push({ title: this.$t('project.tabs.discuss') as String, icon: 'mdi-account-group', link: this.slug + '/discuss', external: false });
         }
