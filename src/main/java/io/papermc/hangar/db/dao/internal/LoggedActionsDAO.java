@@ -1,13 +1,12 @@
-package io.papermc.hangar.db.daoold;
+package io.papermc.hangar.db.dao.internal;
 
 import io.papermc.hangar.db.mappers.LoggedActionViewModelMapper;
-import io.papermc.hangar.db.modelold.LoggedActionsOrganizationTable;
-import io.papermc.hangar.db.modelold.LoggedActionsPageTable;
-import io.papermc.hangar.db.modelold.LoggedActionsProjectTable;
-import io.papermc.hangar.db.modelold.LoggedActionsUserTable;
-import io.papermc.hangar.db.modelold.LoggedActionsVersionTable;
+import io.papermc.hangar.model.db.log.LoggedActionsOrganizationTable;
+import io.papermc.hangar.model.db.log.LoggedActionsPageTable;
+import io.papermc.hangar.model.db.log.LoggedActionsProjectTable;
+import io.papermc.hangar.model.db.log.LoggedActionsUserTable;
+import io.papermc.hangar.model.db.log.LoggedActionsVersionTable;
 import io.papermc.hangar.modelold.viewhelpers.LoggedActionViewModel;
-import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.DefineNamedBindings;
@@ -19,13 +18,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@RegisterBeanMapper(LoggedActionsOrganizationTable.class)
-@RegisterBeanMapper(LoggedActionsPageTable.class)
-@RegisterBeanMapper(LoggedActionsVersionTable.class)
-@RegisterBeanMapper(LoggedActionsUserTable.class)
-@RegisterBeanMapper(LoggedActionsProjectTable.class)
 @Repository
-public interface ActionsDao {
+public interface LoggedActionsDAO {
 
     @Timestamped
     @SqlUpdate("INSERT INTO logged_actions_project (created_at, user_id, address, action, project_id, new_state, old_state) VALUES (:now, :userId, :address, :action, :projectId, :newState, :oldState)")
@@ -47,6 +41,7 @@ public interface ActionsDao {
     @SqlUpdate("INSERT INTO logged_actions_organization (created_at, user_id, address, action, organization_id, new_state, old_state) VALUES (:now, :userId, :address, :action, :organizationId, :newState, :oldState)")
     void insertOrganizationLog(@BindBean LoggedActionsOrganizationTable loggedActionsOrganizationTable);
 
+    // TODO update
     @UseStringTemplateEngine
     @RegisterRowMapper(LoggedActionViewModelMapper.class)
     @SqlQuery("SELECT * FROM v_logged_actions la " +

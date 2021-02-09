@@ -1,16 +1,6 @@
 package io.papermc.hangar.security.configs;
 
-import io.papermc.hangar.securityold.metadatasources.GlobalPermissionSource;
 import io.papermc.hangar.securityold.metadatasources.HangarMetadataSources;
-import io.papermc.hangar.securityold.metadatasources.OrganizationPermissionSource;
-import io.papermc.hangar.securityold.metadatasources.ProjectPermissionSource;
-import io.papermc.hangar.securityold.metadatasources.UserLockSource;
-import io.papermc.hangar.securityold.voters.GlobalPermissionVoter;
-import io.papermc.hangar.securityold.voters.OrganizationPermissionVoter;
-import io.papermc.hangar.securityold.voters.ProjectPermissionVoter;
-import io.papermc.hangar.securityold.voters.UserLockVoter;
-import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.serviceold.UserService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -18,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.annotation.AnnotationMetadataExtractor;
 import org.springframework.security.access.annotation.Jsr250Voter;
 import org.springframework.security.access.expression.method.ExpressionBasedPreInvocationAdvice;
 import org.springframework.security.access.method.MethodSecurityMetadataSource;
@@ -38,19 +29,19 @@ import java.util.List;
 public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
 
     private final ApplicationContext applicationContext;
-    private final PermissionService permissionService;
-    private final UserService userService;
+    private final List<AnnotationMetadataExtractor> annotationMetadataExtractors;
+    private final List<AccessDecisionVoter<?>> accessDecisionVoters;
 
     @Autowired
-    public MethodSecurityConfig(ApplicationContext applicationContext, PermissionService permissionService, UserService userService) {
+    public MethodSecurityConfig(ApplicationContext applicationContext, List<AnnotationMetadataExtractor> annotationMetadataExtractors, List<AccessDecisionVoter<?>> accessDecisionVoters) {
         this.applicationContext = applicationContext;
-        this.permissionService = permissionService;
-        this.userService = userService;
+        this.annotationMetadataExtractors = annotationMetadataExtractors;
+        this.accessDecisionVoters = accessDecisionVoters;
     }
 
     @Override
     protected MethodSecurityMetadataSource customMethodSecurityMetadataSource() {
-        return new HangarMetadataSources(new GlobalPermissionSource(), new ProjectPermissionSource(), new UserLockSource(), new OrganizationPermissionSource());
+        return new HangarMetadataSources(annotationMetadataExtractors);
     }
 
     @Override
@@ -69,10 +60,7 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
         }
         decisionVoters.add(roleVoter);
         decisionVoters.add(new AuthenticatedVoter());
-        decisionVoters.add(new ProjectPermissionVoter(permissionService));
-        decisionVoters.add(new OrganizationPermissionVoter(permissionService));
-        decisionVoters.add(new GlobalPermissionVoter(permissionService));
-        decisionVoters.add(new UserLockVoter(userService));
+        decisionVoters.addAll(accessDecisionVoters);
         return new UnanimousBased(decisionVoters);
     }
 }

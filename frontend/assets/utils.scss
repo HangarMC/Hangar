@@ -1,0 +1,9 @@
+@import "variables";
+
+@mixin box-shadow4($x, $y, $blur, $color) {
+  box-shadow: $x, $y, $color;
+}
+
+@mixin basic-border() {
+  border: 1px solid $lighter;
+}

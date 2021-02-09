@@ -107,7 +107,7 @@ export default class AuthorPage extends Vue {
     }
 
     async asyncData({ $api, route, $util }: Context) {
-        const user = await $api.requestInternal<HangarUser>(`users/${route.params.author}`).catch($util.handlePageRequestError);
+        const user = await $api.requestInternal<HangarUser>(`users/${route.params.author}`, false).catch($util.handlePageRequestError);
         const projects = await $api
             .request<PaginatedResult<Project>>(`projects`, false, 'get', {
                 owner: route.params.author,

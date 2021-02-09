@@ -5,7 +5,7 @@ import io.papermc.hangar.db.mappers.factories.JoinableMemberFactory;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
-import io.papermc.hangar.model.internal.HangarProject;
+import io.papermc.hangar.model.internal.HangarProject.HangarProjectInfo;
 import io.papermc.hangar.model.internal.HangarProjectFlag;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import org.apache.commons.lang3.tuple.Pair;
@@ -69,7 +69,7 @@ public interface HangarProjectsDAO {
             "   WHERE upr.project_id = :projectId")
     List<JoinableMember<ProjectRoleTable>> getProjectMembers(long projectId);
 
-    @RegisterConstructorMapper(HangarProject.HangarProjectInfo.class)
+    @RegisterConstructorMapper(HangarProjectInfo.class)
     @SqlQuery("SELECT count(pv.*) public_versions," +
             "       count(ps.*) star_count," +
             "       count(pw.*) watcher_count," +
@@ -80,7 +80,7 @@ public interface HangarProjectsDAO {
             "       LEFT JOIN project_watchers pw ON p.id = pw.project_id" +
             "   WHERE p.id = :projectId" +
             "   GROUP BY p.id")
-    HangarProject.HangarProjectInfo getHangarProjectInfo(long projectId);
+    HangarProjectInfo getHangarProjectInfo(long projectId);
 
     @RegisterConstructorMapper(HangarProjectFlag.class)
     @SqlQuery("SELECT pf.*, " +

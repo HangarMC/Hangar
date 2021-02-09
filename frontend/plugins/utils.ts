@@ -134,13 +134,13 @@ const createUtil = ({ store, error }: Context) => {
                 if (err.response.data.isHangarValidationException || err.response.data.isHangarApiException) {
                     const data: HangarException = err.response.data;
                     store.dispatch('snackbar/SHOW_NOTIF', {
-                        message: msg || data.message,
+                        message: msg ? `${msg}: ${data.message}` : data.message,
                         color: 'error',
                         timeout: 3000,
                     } as NotifPayload);
                 } else {
                     store.dispatch('snackbar/SHOW_NOTIF', {
-                        message: msg || err.response.statusText,
+                        message: msg ? `${msg}: ${err.response.statusText}` : err.response.statusText,
                         color: 'error',
                         timeout: 2000,
                     } as NotifPayload);

@@ -2,12 +2,12 @@ package io.papermc.hangar.serviceold;
 
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.daoold.ActionsDao;
-import io.papermc.hangar.db.modelold.LoggedActionsOrganizationTable;
-import io.papermc.hangar.db.modelold.LoggedActionsPageTable;
-import io.papermc.hangar.db.modelold.LoggedActionsProjectTable;
-import io.papermc.hangar.db.modelold.LoggedActionsUserTable;
-import io.papermc.hangar.db.modelold.LoggedActionsVersionTable;
+import io.papermc.hangar.db.dao.internal.LoggedActionsDAO;
+import io.papermc.hangar.model.db.log.LoggedActionsOrganizationTable;
+import io.papermc.hangar.model.db.log.LoggedActionsPageTable;
+import io.papermc.hangar.model.db.log.LoggedActionsProjectTable;
+import io.papermc.hangar.model.db.log.LoggedActionsUserTable;
+import io.papermc.hangar.model.db.log.LoggedActionsVersionTable;
 import io.papermc.hangar.modelold.viewhelpers.LoggedActionViewModel;
 import io.papermc.hangar.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +17,13 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Objects;
 
-@Service
+@Service("oldUserActionLogService")
 public class UserActionLogService extends HangarService {
 
-    private final HangarDao<ActionsDao> actionsDao;
+    private final HangarDao<LoggedActionsDAO> actionsDao;
 
     @Autowired
-    public UserActionLogService(HangarDao<ActionsDao> actionsDao) {
+    public UserActionLogService(HangarDao<LoggedActionsDAO> actionsDao) {
         this.actionsDao = actionsDao;
     }
 
@@ -32,9 +32,9 @@ public class UserActionLogService extends HangarService {
                 getCurrentUser().getId(),
                 RequestUtil.getRemoteInetAddress(request),
                 loggedActionType.getValue(),
-                loggedActionType.getActionContext().getProjectId(),
                 newState,
-                oldState
+                oldState,
+                loggedActionType.getActionContext().getProjectId()
         );
         actionsDao.get().insertProjectLog(log);
     }
@@ -44,10 +44,10 @@ public class UserActionLogService extends HangarService {
                 getCurrentUser().getId(),
                 RequestUtil.getRemoteInetAddress(request),
                 loggedActionType.getValue(),
-                loggedActionType.getActionContext().getProjectId(),
-                loggedActionType.getActionContext().getPageId(),
                 Objects.toString(newState, ""),
-                Objects.toString(oldState, "")
+                Objects.toString(oldState, ""),
+                loggedActionType.getActionContext().getProjectId(),
+                loggedActionType.getActionContext().getPageId()
         );
         actionsDao.get().insertProjectPageLog(log);
     }
@@ -57,10 +57,10 @@ public class UserActionLogService extends HangarService {
                 getCurrentUser().getId(),
                 RequestUtil.getRemoteInetAddress(request),
                 loggedActionType.getValue(),
-                loggedActionType.getActionContext().getProjectId(),
-                loggedActionType.getActionContext().getVersionId(),
                 Objects.toString(newState, ""),
-                Objects.toString(oldState, "")
+                Objects.toString(oldState, ""),
+                loggedActionType.getActionContext().getProjectId(),
+                loggedActionType.getActionContext().getVersionId()
         );
         actionsDao.get().insertVersionLog(log);
     }
@@ -70,9 +70,9 @@ public class UserActionLogService extends HangarService {
                 getCurrentUser().getId(),
                 RequestUtil.getRemoteInetAddress(request),
                 loggedActionType.getValue(),
-                loggedActionType.getActionContext().getUserId(),
                 Objects.toString(newState, ""),
-                Objects.toString(oldState, "")
+                Objects.toString(oldState, ""),
+                loggedActionType.getActionContext().getUserId()
         );
         actionsDao.get().insertUserLog(log);
     }
@@ -82,9 +82,9 @@ public class UserActionLogService extends HangarService {
                 getCurrentUser().getId(),
                 RequestUtil.getRemoteInetAddress(request),
                 loggedActionType.getValue(),
-                loggedActionType.getActionContext().getOrganizationId(),
                 Objects.toString(newState, ""),
-                Objects.toString(oldState, "")
+                Objects.toString(oldState, ""),
+                loggedActionType.getActionContext().getOrganizationId()
         );
         actionsDao.get().insertOrganizationLog(log);
     }

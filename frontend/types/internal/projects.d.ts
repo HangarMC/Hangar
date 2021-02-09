@@ -16,11 +16,26 @@ declare module 'hangar-internal' {
         watcherCount: number;
     }
 
+    interface HangarProjectPage {
+        id: number;
+        name: string;
+        slug: string;
+        children: HangarProjectPage[];
+    }
+
     interface HangarProject extends Project, Table {
         owner: ProjectOwner;
         members: object[];
         lastVisibilityChangeComment: string;
         lastVisibilityChangeUserName: string;
         info: HangarProjectInfo;
+        pages: HangarProjectPage[];
+    }
+
+    interface ProjectPage extends Table {
+        name: string;
+        slug: string;
+        contents: string;
+        deletable: boolean;
     }
 }

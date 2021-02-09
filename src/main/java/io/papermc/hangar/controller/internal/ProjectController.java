@@ -7,6 +7,8 @@ import io.papermc.hangar.model.internal.HangarProject;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProject;
 import io.papermc.hangar.model.internal.api.responses.PossibleProjectOwner;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
+import io.papermc.hangar.security.annotations.visibility.Type;
+import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.service.internal.OrganizationService;
 import io.papermc.hangar.service.internal.UserService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
@@ -68,18 +70,21 @@ public class ProjectController extends HangarController {
         return ResponseEntity.ok(projectTable.getUrl());
     }
 
-    @GetMapping("/project/{author}/{name}")
+    @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
+    @GetMapping("/project/{author}/{slug}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<HangarProject> getHangarProject(@PathVariable String author, @PathVariable String name) {
-        return ResponseEntity.ok(projectService.getHangarProject(author, name));
+    public ResponseEntity<HangarProject> getHangarProject(@PathVariable String author, @PathVariable String slug) {
+        return ResponseEntity.ok(projectService.getHangarProject(author, slug));
     }
 
+    @VisibilityRequired(type = Type.PROJECT, args = "{#projectId}")
     @PostMapping("/project/{id}/star/{state}")
     @ResponseStatus(HttpStatus.OK)
     public void setProjectStarred(@PathVariable("id") long projectId, @PathVariable boolean state) {
         userService.toggleStarred(projectId, state);
     }
 
+    @VisibilityRequired(type = Type.PROJECT, args = "{#projectId}")
     @PostMapping("/project/{id}/watch/{state}")
     @ResponseStatus(HttpStatus.OK)
     public void setProjectWatching(@PathVariable("id") long projectId, @PathVariable boolean state) {

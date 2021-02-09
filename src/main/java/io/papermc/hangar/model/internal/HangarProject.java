@@ -8,6 +8,7 @@ import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.modelold.NamedPermission;
 
+import java.util.Collection;
 import java.util.List;
 
 public class HangarProject extends Project implements Joinable<ProjectRoleTable> {
@@ -18,8 +19,9 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     private final String lastVisibilityChangeComment;
     private final String lastVisibilityChangeUserName;
     private final HangarProjectInfo info;
+    private final Collection<HangarProjectPage> pages;
     
-    public HangarProject(Project project, long id, ProjectOwner owner, List<JoinableMember<ProjectRoleTable>> members, String lastVisibilityChangeComment, String lastVisibilityChangeUserName, HangarProjectInfo info) {
+    public HangarProject(Project project, long id, ProjectOwner owner, List<JoinableMember<ProjectRoleTable>> members, String lastVisibilityChangeComment, String lastVisibilityChangeUserName, HangarProjectInfo info, Collection<HangarProjectPage> pages) {
         super(project.getCreatedAt(), project.getName(), project.getNamespace(), project.getPromotedVersions(), project.getStats(), project.getCategory(), project.getDescription(), project.getLastUpdated(), project.getVisibility(), project.getUserActions(), project.getSettings());
         this.id = id;
         this.owner = owner;
@@ -27,6 +29,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         this.lastVisibilityChangeComment = lastVisibilityChangeComment;
         this.lastVisibilityChangeUserName = lastVisibilityChangeUserName;
         this.info = info;
+        this.pages = pages;
     }
 
     public long getId() {
@@ -58,6 +61,10 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
 
     public HangarProjectInfo getInfo() {
         return info;
+    }
+
+    public Collection<HangarProjectPage> getPages() {
+        return pages;
     }
 
     @Override

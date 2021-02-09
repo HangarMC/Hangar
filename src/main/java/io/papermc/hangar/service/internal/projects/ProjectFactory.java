@@ -23,16 +23,16 @@ public class ProjectFactory extends HangarService {
     private final ProjectsDAO projectsDAO;
     private final ProjectService projectService;
     private final ChannelService channelService;
-    private final PageService pageService;
+    private final ProjectPageService projectPageService;
     private final MemberService.ProjectMemberService projectMemberService;
     private final UsersApiService usersApiService;
 
     @Autowired
-    public ProjectFactory(HangarDao<ProjectsDAO> projectDAO, ProjectService projectService, ChannelService channelService, PageService pageService, MemberService.ProjectMemberService projectMemberService, UsersApiService usersApiService) {
+    public ProjectFactory(HangarDao<ProjectsDAO> projectDAO, ProjectService projectService, ChannelService channelService, ProjectPageService projectPageService, MemberService.ProjectMemberService projectMemberService, UsersApiService usersApiService) {
         this.projectsDAO = projectDAO.get();
         this.projectService = projectService;
         this.channelService = channelService;
-        this.pageService = pageService;
+        this.projectPageService = projectPageService;
         this.projectMemberService = projectMemberService;
         this.usersApiService = usersApiService;
     }
@@ -52,7 +52,7 @@ public class ProjectFactory extends HangarService {
             if (newPageContent == null) {
                 newPageContent = "# " + projectTable.getName() + "\n\n" + hangarConfig.pages.home.getMessage();
             }
-            pageService.createPage(projectTable.getId(), hangarConfig.pages.home.getName(), StringUtils.slugify(hangarConfig.pages.home.getName()), newPageContent, false, null, true);
+            projectPageService.createPage(projectTable.getId(), hangarConfig.pages.home.getName(), StringUtils.slugify(hangarConfig.pages.home.getName()), newPageContent, false, null, true);
         } catch (Throwable exception) {
             if (projectTable != null) {
                 projectsDAO.delete(projectTable);

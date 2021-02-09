@@ -13,7 +13,7 @@
                 </v-row>
                 <v-row justify="center" align="center">
                     <v-col cols="12">
-                        <ProjectList :projects="projects.result"></ProjectList>
+                        <!--<ProjectList :projects="projects"></ProjectList>-->
                     </v-col>
                 </v-row>
             </v-col>

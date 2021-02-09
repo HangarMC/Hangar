@@ -1,50 +1,69 @@
 <template>
-    <div>
-        <!-- todo fix this -->
-        <div class="modal-header">
-            <h4 v-show="!newPage.error" id="new-page-label" class="modal-title" v-text="$t('page.new.title')"></h4>
-            <h4 v-show="newPage.error" id="new-page-label-error" class="modal-title" v-text="$t('page.new.error')"></h4>
-            <button type="button" class="close" data-dismiss="modal" :aria-label="$t('general.close')">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body input-group">
-            <div class="setting">
-                <div class="setting-description">
-                    <h4 v-text="$t('project.page.name._')"></h4>
-                    <p v-text="$t('project.page.name.info')"></p>
-                </div>
-                <div class="setting-content">
-                    <label for="page-name" class="sr-only">Page Name</label>
-                    <input id="page-name" v-model="newPage.pageName" class="form-control" type="text" />
-                </div>
-                <div class="clearfix"></div>
-            </div>
-            <div class="setting setting-no-border">
-                <div class="setting-description">
-                    <h4 v-text="$t('project.page.parent._')"></h4>
-                    <p v-text="$t('project.page.parent.info')"></p>
-                </div>
-                <div class="setting-content">
-                    <label for="new-page-parent-select" class="sr-only"></label>
-                    <select id="new-page-parent-select" v-model="newPage.parentPage" class="form-control select-parent">
-                        <option disabled hidden :value="null">&lt;none&gt;</option>
-                        <option v-for="pg in noHomePage(rootPages)" :key="pg.id" :value="{ id: pg.id, slug: pg.slug }" v-text="pg.name"></option>
-                    </select>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal" v-text="$t('general.close')"></button>
-            <button id="continue-page" type="button" class="btn btn-primary" @click="createPage" v-text="$t('general.continue')"></button>
-        </div>
-    </div>
+    <v-dialog v-model="dialog" max-width="500" persistent>
+        <template #activator="{ on }">
+            <v-btn icon class="primary" v-on="on"><v-icon>mdi-plus</v-icon></v-btn>
+        </template>
+        <v-card>
+            <v-card-title>{{ $t('page.new.title') }}</v-card-title>
+            <v-card-text>
+                <v-form ref="pageForm" v-model="form.valid">
+                    <v-text-field v-model.trim="form.name" filled :rules="[$util.$vc.require('Page name')]" :label="$t('page.new.name')" />
+                    <v-select v-model="form.parent" :items="pages" filled clearable :label="$t('page.new.parent')" item-text="name" item-value="id" />
+                </v-form>
+            </v-card-text>
+            <v-card-actions class="justify-end">
+                <v-btn color="error" text @click="dialog = false">{{ $t('general.close') }}</v-btn>
+                <v-btn color="success" :disabled="!form.valid" :loading="loading" @click="createPage">{{ $t('general.create') }}</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
+import { Component, Prop, Vue, Watch } from 'nuxt-property-decorator';
+import { PropType } from 'vue';
+import { HangarProjectPage } from 'hangar-internal';
 
 @Component
-export default class NewPageModal extends Vue {}
+export default class NewPageModal extends Vue {
+    dialog = false;
+    loading = false;
+    form = {
+        valid: false,
+        name: '',
+        parent: null as number | null,
+    };
+
+    @Prop({ type: Number, required: true })
+    projectId!: number;
+
+    @Prop({ type: Array as PropType<HangarProjectPage[]>, required: true })
+    pages!: HangarProjectPage[];
+
+    @Watch('dialog')
+    onToggle() {
+        if (typeof this.$refs.pageForm !== 'undefined') {
+            // @ts-ignore // TODO how to fix this?
+            this.$refs.pageForm.reset();
+        }
+    }
+
+    createPage() {
+        this.loading = true;
+        this.$api
+            .requestInternal<string>(`pages/create/${this.projectId}`, true, 'post', {
+                name: this.form.name,
+                parentId: this.form.parent,
+            })
+            .then((slug) => {
+                this.dialog = false;
+                this.$nuxt.refresh(); // Might be needed to refresh the HangarProject w/the new page? idk - jake
+                this.$router.push(`/${this.$route.params.author}/${this.$route.params.slug}/pages/${slug}`);
+            })
+            .catch(this.$util.handleRequestError)
+            .finally(() => {
+                this.loading = false;
+            });
+    }
+}
 </script>

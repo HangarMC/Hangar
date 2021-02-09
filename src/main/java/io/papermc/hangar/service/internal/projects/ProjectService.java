@@ -12,7 +12,9 @@ import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.internal.HangarProject;
+import io.papermc.hangar.model.internal.HangarProject.HangarProjectInfo;
 import io.papermc.hangar.model.internal.HangarProjectFlag;
+import io.papermc.hangar.model.internal.HangarProjectPage;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.VisibilityService;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -39,14 +42,16 @@ public class ProjectService extends HangarService {
     private final HangarProjectsDAO hangarProjectsDAO;
     private final VisibilityService visibilityService;
     private final OrganizationService organizationService;
+    private final ProjectPageService projectPageService;
 
     @Autowired
-    public ProjectService(HangarDao<ProjectsDAO> projectDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, VisibilityService visibilityService, OrganizationService organizationService) {
+    public ProjectService(HangarDao<ProjectsDAO> projectDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, VisibilityService visibilityService, OrganizationService organizationService, ProjectPageService projectPageService) {
         this.projectsDAO = projectDAO.get();
         this.hangarUsersDAO = hangarUsersDAO.get();
         this.hangarProjectsDAO = hangarProjectsDAO.get();
         this.visibilityService = visibilityService;
         this.organizationService = organizationService;
+        this.projectPageService = projectPageService;
     }
 
     @Nullable
@@ -79,8 +84,9 @@ public class ProjectService extends HangarService {
         ProjectOwner projectOwner = getProjectOwner(author);
         List<JoinableMember<ProjectRoleTable>> members = hangarProjectsDAO.getProjectMembers(project.getLeft());
         // only include visibility change if not public (and if so, only include the user and comment)
-        HangarProject.HangarProjectInfo info = hangarProjectsDAO.getHangarProjectInfo(project.getLeft());
-        return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, "", "", info);
+        HangarProjectInfo info = hangarProjectsDAO.getHangarProjectInfo(project.getLeft());
+        Map<Long, HangarProjectPage> pages = projectPageService.getProjectPages(project.getLeft());
+        return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, "", "", info, pages.values());
     }
 
     public List<HangarProjectFlag> getHangarProjectFlags(String author, String slug) {

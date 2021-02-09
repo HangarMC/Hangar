@@ -3,6 +3,7 @@ package io.papermc.hangar.service;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.security.HangarAuthenticationToken;
 import io.papermc.hangar.security.HangarPrincipal;
+import io.papermc.hangar.service.internal.UserActionLogService;
 import org.jdbi.v3.core.internal.MemoizingSupplier;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public abstract class HangarService {
 
     @Autowired
     protected HangarConfig hangarConfig;
+
+    @Autowired
+    protected UserActionLogService userActionLogService;
 
     protected final HangarPrincipal getHangarPrincipal() {
         return _getHangarPrincipal().get().orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authentication principal found"));

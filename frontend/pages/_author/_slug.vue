@@ -103,7 +103,7 @@
                 </v-tab>
             </v-tabs>
         </v-row>
-        <NuxtChild class="mt-4">
+        <NuxtChild class="mt-4" :project="project">
             <v-tab-item>
                 {{ $route.name }}
             </v-tab-item>

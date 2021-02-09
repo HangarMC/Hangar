@@ -7,9 +7,7 @@ import io.papermc.hangar.modelold.NamedPermission;
 import io.papermc.hangar.security.HangarAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 
-@Component
 public class HangarAnnotationIntrospector extends JacksonAnnotationIntrospector {
 
     @Override

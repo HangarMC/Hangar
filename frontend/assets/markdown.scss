@@ -1,0 +1,84 @@
+@import "utils";
+
+// TODO fix header anchors not showing up correctly in Markdown.vue component
+.page-rendered {
+  //padding: 10px 20px 20px 20px;
+  overflow: hidden;
+  max-width: 100%;
+
+  table tr > th {
+    padding: 5px;
+  }
+  table tr:nth-child(2n) {
+    background-color: #f5f5f5;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: bold;
+  }
+  img {
+    max-width: 100%;
+  }
+
+  table tr > td,
+  .page-rendered table tr > th {
+    padding: 10px;
+    @include basic-border();
+  }
+
+  code {
+    background-color: #f5f5f5;
+    color: black;
+  }
+
+  a code {
+    color: #337ab7;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  h1,
+  h2 {
+    border-bottom: 1px solid $lighter;
+    padding-bottom: 5px;
+  }
+
+  .headeranchor {
+    display: none;
+    text-decoration: none;
+  }
+
+  h1:hover,
+  h2:hover,
+  h3:hover {
+    .headeranchor {
+      display: inline-block;
+      font-size: 16px;
+      margin-left: -18px;
+      width: 18px;
+    }
+  }
+
+  h4:hover,
+  h5:hover,
+  h6:hover {
+    .headeranchor {
+      display: inline-block;
+      font-size: 12px;
+      margin-left: -12px;
+      width: 12px;
+    }
+  }
+
+  .footnotes {
+    p {
+      display: inline-block;
+    }
+  }
+}

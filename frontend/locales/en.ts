@@ -6,6 +6,8 @@ const msgs: LocaleMessageObject = {
         submit: 'Submit',
         comment: 'Comment',
         donate: 'Donate',
+        continue: 'Continue',
+        create: 'Create',
     },
     hangar: {
         projectSearch: {
@@ -148,6 +150,16 @@ const msgs: LocaleMessageObject = {
     },
     page: {
         plural: 'Pages',
+        new: {
+            title: 'Create a new page',
+            error: {
+                minLength: 'Page name was too short',
+                invalidName: 'Page names must be between 3 and 25 alphanumeric (+ underscore & hyphen) characters',
+                duplicateName: 'A page with that name already exists',
+            },
+            name: 'Page Name',
+            parent: 'Parent Page (optional)',
+        },
     },
     organization: {
         new: {

@@ -40,13 +40,11 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     private final HangarConfig hangarConfig;
     private final ObjectMapper mapper;
-    private final HangarAnnotationIntrospector hangarAnnotationIntrospector;
 
     @Autowired
-    public WebConfig(HangarConfig hangarConfig, ObjectMapper mapper, HangarAnnotationIntrospector hangarAnnotationIntrospector) {
+    public WebConfig(HangarConfig hangarConfig, ObjectMapper mapper) {
         this.hangarConfig = hangarConfig;
         this.mapper = mapper;
-        this.hangarAnnotationIntrospector = hangarAnnotationIntrospector;
     }
 
     // TODO remove after freemarker is gone
@@ -131,8 +129,6 @@ public class WebConfig extends WebMvcConfigurationSupport {
         );
         converters.add(new MappingJackson2HttpMessageConverter(mapper));
         super.addDefaultHttpMessageConverters(converters);
-        System.out.println(mapper.getSerializationConfig().getAnnotationIntrospector().allIntrospectors());
-        System.out.println(mapper.getDeserializationConfig().getAnnotationIntrospector().allIntrospectors());
     }
 
     // TODO maybe? remove after freemarker is gone
