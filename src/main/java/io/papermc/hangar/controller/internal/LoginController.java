@@ -51,7 +51,7 @@ public class LoginController extends HangarController {
     @GetMapping(path = "/login", params = "returnUrl")
     public Object loginFromFrontend(@RequestParam(defaultValue = Routes.Paths.SHOW_HOME) String returnUrl, RedirectAttributes attributes) {
         if (hangarConfig.fakeUser.isEnabled()) {
-            hangarConfig.checkDebug();
+            hangarConfig.checkDev();
 
             UserTable fakeUser = authenticationService.loginAsFakeUser();
             tokenService.createTokenForUser(fakeUser);
@@ -78,7 +78,6 @@ public class LoginController extends HangarController {
         UserTable user = userService.getOrCreate(authUser.getUserName(), authUser);
         globalRoleService.removeAllGlobalRoles(user.getId());
         authUser.getGlobalRoles().forEach(globalRole -> globalRoleService.addRole(globalRole.create(null, user.getId(), true)));
-        authenticationService.setAuthenticatedUser(user);
         String token = tokenService.createTokenForUser(user);
         return redirectBackOnSuccessfulLogin(url + "?token=" + token, user);
     }

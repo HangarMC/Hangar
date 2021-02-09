@@ -42,9 +42,7 @@ fake-user:
 
 
 hangar:
-  debug: true
-  debug-level: 3
-  log-timings: false
+  dev: true
   auth-url: "http://localhost:8000"
   base-url: "http://localhost:8080"
   use-webpack: true
@@ -101,10 +99,8 @@ hangar:
     name-regex: "^[a-zA-Z0-9-_]{3,}$"
 
   users:
-    stars-per-page: 5
     max-tagline-len: 100
     author-page-size: 25
-    project-page-size: 5
     staff-roles:
       - Hangar_Admin
       - Hangar_Mod

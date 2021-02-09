@@ -1,67 +1,52 @@
 <template>
     <div>
-        <v-row class="mt-5">
-            <v-col v-if="!$fetchState.pending && page.contents" cols="12">
-                <MarkdownEditor v-if="canEdit" ref="editor" :raw="page.contents" :editing.sync="editingPage" :deletable="page.deletable" @save="savePage" />
+        <v-row>
+            <v-col v-if="page.contents" cols="12" md="8">
+                <MarkdownEditor
+                    v-if="canEdit"
+                    ref="editor"
+                    :raw="page.contents"
+                    :editing.sync="editingPage"
+                    :deletable="page.deletable"
+                    @save="savePage"
+                    @delete="deletePage"
+                />
                 <Markdown v-else :raw="page.contents" />
+            </v-col>
+            <v-col cols="12" md="4">
+                <ProjectPageList :project="project" />
             </v-col>
         </v-row>
     </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'nuxt-property-decorator';
-import { HangarProject, ProjectPage } from 'hangar-internal';
-import { PropType } from 'vue';
-import { NamedPermission } from '~/types/enums';
+import { Component } from 'nuxt-property-decorator';
+import { ProjectPage } from 'hangar-internal';
+import { Context } from '@nuxt/types';
 import MarkdownEditor from '~/components/MarkdownEditor.vue';
 import Markdown from '~/components/Markdown.vue';
+import { DocPageMixin } from '~/components/mixins';
+import ProjectPageList from '~/components/projects/ProjectPageList.vue';
 
 @Component({
     components: {
+        ProjectPageList,
         MarkdownEditor,
         Markdown,
     },
 })
-export default class VueProjectPage extends Vue {
-    editingPage: boolean = false;
-    page = {
-        contents: '',
-        deletable: false,
-    } as ProjectPage;
-
-    @Prop({ type: Object as PropType<HangarProject>, required: true })
-    project!: HangarProject;
-
-    async fetch() {
-        this.page = await this.$api
-            .requestInternal<ProjectPage>(`pages/page/${this.$route.params.author}/${this.$route.params.slug}/${this.$route.params.pathMatch}`, false)
-            .catch<any>(this.$util.handlePageRequestError);
-    }
-
-    get canEdit(): boolean {
-        return this.$util.hasPerms(NamedPermission.EDIT_PAGE);
-    }
-
-    $refs!: {
-        editor: MarkdownEditor;
-    };
-
-    savePage(content: string) {
-        this.$api
-            .requestInternal(`pages/save/${this.project.id}/${this.page.id}`, true, 'post', {
-                content,
-            })
-            .then(() => {
-                this.page.contents = content;
-                this.editingPage = false;
-            })
-            .catch((err) => {
-                this.$refs.editor.loading.save = false;
-                this.$util.handleRequestError(err, 'Unable to save page');
+export default class VueProjectPage extends DocPageMixin {
+    async asyncData({ $api, params, $util, beforeNuxtRender }: Context) {
+        if (process.server) {
+            beforeNuxtRender(({ nuxtState }) => {
+                console.log(nuxtState);
             });
+        }
+        const page = await $api
+            .requestInternal<ProjectPage>(`pages/page/${params.author}/${params.slug}/${params.pathMatch}`, false)
+            .catch<any>($util.handlePageRequestError);
+        return { page };
     }
 }
 </script>
-
-<style lang="scss" scoped></style>

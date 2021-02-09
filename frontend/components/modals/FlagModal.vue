@@ -1,7 +1,7 @@
 <template>
-    <v-dialog v-model="shown" width="500" persistent>
+    <v-dialog v-model="dialog" width="500" persistent>
         <template #activator="{ on, attrs }">
-            <v-btn v-bind="attrs" v-on="on">
+            <v-btn v-bind="attrs" :class="activatorClass" v-on="on">
                 <v-icon>mdi-flag</v-icon>
                 {{ $t('project.actions.flag') }}
             </v-btn>
@@ -9,7 +9,7 @@
         <v-card>
             <v-card-title> {{ $t('project.flag.flagProject', [project.name]) }} </v-card-title>
             <v-card-text>
-                <v-form ref="flagForm" v-model="form.valid">
+                <v-form ref="modalForm" v-model="validForm">
                     <v-radio-group v-model="form.selection" :rules="[$util.$vc.require('A reason')]">
                         <v-radio v-for="(reason, index) in flagReasons" :key="index" :label="reason.title" :value="reason.type" />
                     </v-radio-group>
@@ -17,51 +17,41 @@
                 </v-form>
             </v-card-text>
             <v-card-actions class="justify-end">
-                <v-btn text color="warning" @click.stop="shown = false">{{ $t('general.close') }}</v-btn>
-                <v-btn color="error" :disabled="!form.valid" :loading="loading" @click.stop="submitFlag">{{ $t('general.submit') }}</v-btn>
+                <v-btn text color="warning" @click.stop="dialog = false">{{ $t('general.close') }}</v-btn>
+                <v-btn color="error" :disabled="!validForm" :loading="loading" @click.stop="submitFlag">{{ $t('general.submit') }}</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'nuxt-property-decorator';
-import { Prop } from 'vue-property-decorator';
+import { Component, Prop } from 'nuxt-property-decorator';
 import { FlagReason, HangarProject } from 'hangar-internal';
+import { PropType } from 'vue';
+import { HangarFormModal } from '~/components/mixins';
 
 @Component
-export default class FlagModal extends Vue {
+export default class FlagModal extends HangarFormModal {
     flagReasons: FlagReason[] = [];
-    shown = false;
-    loading = false;
     form = {
-        valid: false,
         selection: null as string | null,
         comment: null as string | null,
     };
 
-    @Prop({ required: true })
+    @Prop({ required: true, type: Object as PropType<HangarProject> })
     project!: HangarProject;
 
     submitFlag() {
         this.loading = true;
-        // TODO endpoint
+        // TODO flag endpoint
         setTimeout(
             (self: FlagModal) => {
                 self.loading = false;
-                self.shown = false;
+                self.dialog = false;
             },
             1000,
             this
         );
-    }
-
-    @Watch('shown')
-    onToggle() {
-        if (this.$refs.flagForm) {
-            // @ts-ignore // TODO how to fix this?
-            this.$refs.flagForm.reset();
-        }
     }
 
     async fetch() {

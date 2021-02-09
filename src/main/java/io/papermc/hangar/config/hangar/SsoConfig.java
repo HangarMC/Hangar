@@ -9,6 +9,7 @@ import java.time.Duration;
 @ConfigurationProperties(prefix = "hangar.sso")
 public class SsoConfig {
 
+    // TODO weed out the useless settings
     private boolean enabled = true;
     private String loginUrl = "/sso/";
     private String signupUrl = "/sso/signup/";

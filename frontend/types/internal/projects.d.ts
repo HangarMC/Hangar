@@ -20,6 +20,7 @@ declare module 'hangar-internal' {
         id: number;
         name: string;
         slug: string;
+        home: boolean;
         children: HangarProjectPage[];
     }
 

@@ -8,19 +8,10 @@ import java.util.List;
 @Component
 @ConfigurationProperties(prefix = "hangar.users")
 public class UserConfig {
-    private int starsPerPage = 5;
     private int maxTaglineLen = 100;
+    @Deprecated
     private int authorPageSize = 25;
-    private int projectPageSize = 5;
     private List<String> staffRoles = List.of("Hangar_Admin", "Hangar_Mod");
-
-    public int getStarsPerPage() {
-        return starsPerPage;
-    }
-
-    public void setStarsPerPage(int starsPerPage) {
-        this.starsPerPage = starsPerPage;
-    }
 
     public int getMaxTaglineLen() {
         return maxTaglineLen;
@@ -36,14 +27,6 @@ public class UserConfig {
 
     public void setAuthorPageSize(int authorPageSize) {
         this.authorPageSize = authorPageSize;
-    }
-
-    public int getProjectPageSize() {
-        return projectPageSize;
-    }
-
-    public void setProjectPageSize(int projectPageSize) {
-        this.projectPageSize = projectPageSize;
     }
 
     public List<String> getStaffRoles() {

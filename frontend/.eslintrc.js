@@ -4,7 +4,7 @@ module.exports = {
         browser: true,
         node: true,
     },
-    extends: ['@nuxtjs/eslint-config-typescript', 'prettier', 'prettier/vue'],
+    extends: ['plugin:nuxt/recommended', 'plugin:prettier/recommended', '@nuxtjs/eslint-config-typescript', 'prettier', 'prettier/vue'],
     rules: {
         'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
         'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',

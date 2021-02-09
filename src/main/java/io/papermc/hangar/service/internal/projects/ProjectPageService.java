@@ -27,12 +27,6 @@ public class ProjectPageService extends HangarService {
     }
 
     public ProjectPageTable createPage(long projectId, String name, String slug, String contents, boolean deletable, @Nullable Long parentId, boolean isHome) {
-        // TODO below code was for ensuring no more than 1 level of nesting
-//        if (parentId != null) {
-//            if (!projectPagesDAO.getRootPages(projectId).containsKey(parentId)) {
-//                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-//            }
-//        }
 
         if ((!isHome && name.equalsIgnoreCase(hangarConfig.pages.home.getName())) && contents.length() < hangarConfig.pages.getMinLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.minLength");
@@ -54,20 +48,22 @@ public class ProjectPageService extends HangarService {
                 deletable,
                 parentId
         );
-        return projectPagesDAO.insert(projectPageTable);
+        projectPageTable = projectPagesDAO.insert(projectPageTable);
+        userActionLogService.projectPage(LoggedActionType.PROJECT_PAGE_CREATED.with(ProjectPageContext.of(projectPageTable.getProjectId(), projectPageTable.getId())), contents, "");
+        return projectPageTable;
     }
 
     public Map<Long, HangarProjectPage> getProjectPages(long projectId) {
         Map<Long, HangarProjectPage> hangarProjectPages = new LinkedHashMap<>();
         for (ProjectPageTable projectPage : projectPagesDAO.getProjectPages(projectId)) {
             if (projectPage.getParentId() == null) {
-                hangarProjectPages.put(projectPage.getId(), new HangarProjectPage(projectPage));
+                hangarProjectPages.put(projectPage.getId(), new HangarProjectPage(projectPage, projectPage.getName().equals(hangarConfig.pages.home.getName())));
             } else {
                 HangarProjectPage parent = findById(projectPage.getParentId(), hangarProjectPages);
                 if (parent == null) {
                     throw new IllegalStateException("Should always find a parent");
                 }
-                parent.getChildren().put(projectPage.getId(), new HangarProjectPage(projectPage));
+                parent.getChildren().put(projectPage.getId(), new HangarProjectPage(projectPage, projectPage.getName().equals(hangarConfig.pages.home.getName())));
             }
         }
 
@@ -130,7 +126,8 @@ public class ProjectPageService extends HangarService {
         if (!pageTable.isDeletable()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "Page is not deletable");
         }
-        projectPagesDAO.delete(pageTable);
+        // Log must come first otherwise db error
         userActionLogService.projectPage(LoggedActionType.PROJECT_PAGE_DELETED.with(ProjectPageContext.of(projectId, pageId)), "", pageTable.getContents());
+        projectPagesDAO.delete(pageTable);
     }
 }

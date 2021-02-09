@@ -23,14 +23,11 @@ public class HangarConfig {
     private String service = "Hangar";
     private List<Sponsor> sponsors;
 
-    private boolean useWebpack = false;
-    private boolean debug = false;
-    private int debugLevel = 3;
-    private boolean logTimings = false;
-    private String authUrl = "https://hangarauth.minidigger.me";
+    private boolean dev = true;
+    private String authUrl;
     private final ApplicationHome home = new ApplicationHome(HangarApplication.class);
     private String pluginUploadDir = home.getDir().toPath().resolve("work").toString();
-    private String baseUrl = "https://localhost:8080";
+    private String baseUrl;
     private String gaCode = "";
     private List<Announcement> announcements = new ArrayList<>();
 
@@ -56,8 +53,6 @@ public class HangarConfig {
     public HangarSecurityConfig security;
     @NestedConfigurationProperty
     public QueueConfig queue;
-    @NestedConfigurationProperty
-    public SessionConfig session;
 
     @Component
     public static class Sponsor {
@@ -91,7 +86,7 @@ public class HangarConfig {
     }
 
     @Autowired
-    public HangarConfig(FakeUserConfig fakeUser, HomepageConfig homepage, ChannelsConfig channels, PagesConfig pages, ProjectsConfig projects, UserConfig user, OrgConfig org, ApiConfig api, SsoConfig sso, HangarSecurityConfig security, QueueConfig queue, SessionConfig session) {
+    public HangarConfig(FakeUserConfig fakeUser, HomepageConfig homepage, ChannelsConfig channels, PagesConfig pages, ProjectsConfig projects, UserConfig user, OrgConfig org, ApiConfig api, SsoConfig sso, HangarSecurityConfig security, QueueConfig queue) {
         this.fakeUser = fakeUser;
         this.homepage = homepage;
         this.channels = channels;
@@ -103,7 +98,12 @@ public class HangarConfig {
         this.sso = sso;
         this.security = security;
         this.queue = queue;
-        this.session = session;
+    }
+
+    public void checkDev() {
+        if (!this.dev) {
+            throw new UnsupportedOperationException("Only supported in dev mode!");
+        }
     }
 
     public String getLogo() {
@@ -130,30 +130,6 @@ public class HangarConfig {
         this.sponsors = sponsors;
     }
 
-    public boolean isUseWebpack() {
-        return useWebpack;
-    }
-
-    public void setUseWebpack(boolean useWebpack) {
-        this.useWebpack = useWebpack;
-    }
-
-    public boolean isDebug() {
-        return debug;
-    }
-
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
-
-    public int getDebugLevel() {
-        return debugLevel;
-    }
-
-    public void setDebugLevel(int debugLevel) {
-        this.debugLevel = debugLevel;
-    }
-
     public List<Announcement> getAnnouncements() {
         return announcements;
     }
@@ -162,12 +138,12 @@ public class HangarConfig {
         this.announcements = announcements;
     }
 
-    public boolean isLogTimings() {
-        return logTimings;
+    public boolean isDev() {
+        return dev;
     }
 
-    public void setLogTimings(boolean logTimings) {
-        this.logTimings = logTimings;
+    public void setDev(boolean dev) {
+        this.dev = dev;
     }
 
     public String getAuthUrl() {
@@ -200,12 +176,6 @@ public class HangarConfig {
 
     public void setGaCode(String gaCode) {
         this.gaCode = gaCode;
-    }
-
-    public void checkDebug() {
-        if (!debug) {
-            throw new UnsupportedOperationException("this function is supported in debug mode only");
-        }
     }
 
     public boolean isValidProjectName(String name) {
@@ -256,9 +226,5 @@ public class HangarConfig {
 
     public QueueConfig getQueue() {
         return queue;
-    }
-
-    public SessionConfig getSession() {
-        return session;
     }
 }

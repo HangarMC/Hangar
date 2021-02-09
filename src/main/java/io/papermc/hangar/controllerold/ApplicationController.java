@@ -402,7 +402,7 @@ public class ApplicationController extends HangarController {
     @GetMapping(value = "/robots.txt", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public Object robots() {
-        if (hangarConfig.isUseWebpack()) {
+        if (hangarConfig.isDev()) {
             request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.MOVED_PERMANENTLY);
             return new ModelAndView("redirect:http://localhost:8081/robots.txt");
         } else {

@@ -28,6 +28,7 @@ public class ContentSecurityPolicyFilter extends OncePerRequestFilter {
 
     private final String cspHeader;
 
+    // TODO update for new frontend (probably dont even want this anymore)
     @Autowired
     public ContentSecurityPolicyFilter(HangarConfig hangarConfig) {
         this.hangarConfig = hangarConfig;
@@ -48,7 +49,7 @@ public class ContentSecurityPolicyFilter extends OncePerRequestFilter {
                 .base_uri(CSP.NONE)
                 .block_all_mixed_content();
 
-        if (hangarConfig.isUseWebpack()) {
+        if (hangarConfig.isDev()) {
             String webpack = "http://localhost:8081";
             String webSocket = "ws://*:8081";
             String socketIo = "http://*:8081";

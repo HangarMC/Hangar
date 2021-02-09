@@ -33,8 +33,4 @@ public interface IAuthenticationController {
     })
     @PostMapping("/authenticate")
     ResponseEntity<ApiSession> authenticate(@ApiParam("Session properties") @RequestBody(required = false) SessionProperties body);
-
-    @ApiOperation(value = "authenticateUser", hidden = true)
-    @PostMapping("/authenticate/user")
-    ResponseEntity<ApiSession> authenticateUser(@ApiParam @RequestBody(required = false) SessionProperties body);
 }

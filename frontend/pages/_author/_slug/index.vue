@@ -1,6 +1,6 @@
 <template>
-    <v-row class="mt-5">
-        <v-col v-if="!$fetchState.pending" cols="12" md="8">
+    <v-row>
+        <v-col v-if="page.contents" cols="12" md="8">
             <MarkdownEditor v-if="canEdit" ref="editor" :raw="page.contents" :editing.sync="editingPage" :deletable="page.deletable" @save="savePage" />
             <Markdown v-else :raw="page.contents" />
         </v-col>
@@ -35,7 +35,7 @@
                                 >
                                     <template #activator="{ on, attrs }">
                                         <v-btn v-bind="attrs" v-on="on">
-                                            <v-icon>mdi-currency-usd</v-icon>
+                                            <v-icon left>mdi-currency-usd</v-icon>
                                             {{ $t('general.donate') }}
                                         </v-btn>
                                     </template>
@@ -88,22 +88,7 @@
                     </v-card>
                 </v-col>
                 <v-col cols="12">
-                    <v-card>
-                        <v-card-title>
-                            {{ $t('page.plural') }}
-                            <!-- todo new page modal -->
-                            <NewPageModal :pages="project.pages" :project-id="project.id" />
-                        </v-card-title>
-                        <v-card-text>
-                            <!--TODO page tree view-->
-                            <v-list v-if="rootPages">
-                                <v-list-item v-for="page in rootPages" :key="page.id"> </v-list-item>
-                            </v-list>
-                            <div v-else class="text-center py-4">
-                                <v-progress-circular indeterminate />
-                            </div>
-                        </v-card-text>
-                    </v-card>
+                    <ProjectPageList :project="project" />
                 </v-col>
                 <!-- todo member list -->
                 <v-col cols="12">
@@ -120,74 +105,25 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'nuxt-property-decorator';
-import { Page } from 'hangar-api';
-import { HangarProject, ProjectPage } from 'hangar-internal';
-import { PropType } from 'vue';
+import { Component } from 'nuxt-property-decorator';
+import { ProjectPage } from 'hangar-internal';
+import { Context } from '@nuxt/types';
 import MarkdownEditor from '~/components/MarkdownEditor.vue';
 import Tag from '~/components/Tag.vue';
 import DonationModal from '~/components/donation/DonationModal.vue';
 import MemberList from '~/components/MemberList.vue';
-import { NamedPermission } from '~/types/enums';
 import Markdown from '~/components/Markdown.vue';
-import NewPageModal from '~/components/modals/NewPageModal.vue';
+import NewPageModal from '~/components/modals/pages/NewPageModal.vue';
+import { DocPageMixin } from '~/components/mixins';
+import ProjectPageList from '~/components/projects/ProjectPageList.vue';
 
 @Component({
-    components: { NewPageModal, Markdown, MemberList, DonationModal, MarkdownEditor, Tag },
+    components: { ProjectPageList, NewPageModal, Markdown, MemberList, DonationModal, MarkdownEditor, Tag },
 })
-export default class DocsPage extends Vue {
-    editingPage: boolean = false;
-    page = {} as ProjectPage;
-
-    @Prop({ type: Object as PropType<HangarProject>, required: true })
-    project!: HangarProject;
-
-    rootPages: Array<Page> = [];
-
-    async fetch() {
-        const page = await this.$api
-            .requestInternal<ProjectPage>(`pages/page/${this.$route.params.author}/${this.$route.params.slug}`, false)
-            .catch(this.$util.handleRequestError);
-        this.page = page || ({} as ProjectPage);
+export default class DocsPage extends DocPageMixin {
+    async asyncData({ $api, params, $util }: Context) {
+        const page = await $api.requestInternal<ProjectPage>(`pages/page/${params.author}/${params.slug}`, false).catch<any>($util.handlePageRequestError);
+        return { page };
     }
-
-    get canEdit(): boolean {
-        return this.$util.hasPerms(NamedPermission.EDIT_PAGE);
-    }
-
-    $refs!: {
-        editor: MarkdownEditor;
-    };
-
-    savePage(content: string) {
-        this.$api
-            .requestInternal(`pages/save/${this.project.id}/${this.page.id}`, true, 'post', {
-                content,
-            })
-            .then(() => {
-                this.page.contents = content;
-                this.editingPage = false;
-            })
-            .catch((err) => {
-                this.$refs.editor.loading.save = false;
-                this.$util.handleRequestError(err, 'Unable to save page');
-            });
-    }
-
-    // Jake: Project categories are stored in the global store, so just get the title from there
-    // formatCategory(apiName: string) {
-    //     const formatted = apiName.replace('_', ' ');
-    //     return this.capitalize(formatted);
-    // }
-    //
-    // capitalize(input: string) {
-    //     return input
-    //         .toLowerCase()
-    //         .split(' ')
-    //         .map((s: string) => s.charAt(0).toUpperCase() + s.substring(1))
-    //         .join(' ');
-    // }
 }
 </script>
-
-<style lang="scss" scoped></style>

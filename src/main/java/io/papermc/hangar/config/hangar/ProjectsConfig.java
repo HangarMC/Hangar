@@ -1,9 +1,11 @@
 package io.papermc.hangar.config.hangar;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.convert.DurationUnit;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -23,6 +25,7 @@ public class ProjectsConfig {
     private int maxDescLen = 120;
     private int maxKeywords = 5;
     private boolean fileValidate = true;
+    @DurationUnit(ChronoUnit.DAYS)
     private Duration staleAge = Duration.ofDays(28);
     private String checkInterval = "1h";
     private String draftExpire = "1d";

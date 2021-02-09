@@ -59,7 +59,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Override
     protected void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/internal/**").allowedOrigins(hangarConfig.isUseWebpack() ? "http://localhost:3000" : "https://hangar.minidigger.me");
+        registry.addMapping("/api/internal/**").allowedOrigins(hangarConfig.isDev() ? "http://localhost:3000" : "https://hangar.minidigger.me");
     }
 
     // TODO remove after freemarker is gone

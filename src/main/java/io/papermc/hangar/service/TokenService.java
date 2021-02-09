@@ -48,7 +48,7 @@ public class TokenService extends HangarService {
 
     public String createTokenForUser(UserTable userTable) {
         UserRefreshToken userRefreshToken = userRefreshTokenDAO.insert(new UserRefreshToken(userTable.getId(), UUID.randomUUID(), UUID.randomUUID()));
-        response.addCookie(CookieUtils.builder(SecurityConfig.AUTH_NAME_REFRESH_COOKIE, userRefreshToken.getToken().toString()).withComment("Refresh token for a JWT").setPath("/").setSecure(!hangarConfig.isUseWebpack()).setMaxAge((int) hangarConfig.security.getRefreshTokenExpiry().toSeconds()).build());
+        response.addCookie(CookieUtils.builder(SecurityConfig.AUTH_NAME_REFRESH_COOKIE, userRefreshToken.getToken().toString()).withComment("Refresh token for a JWT").setPath("/").setSecure(hangarConfig.security.isSecure()).setMaxAge((int) hangarConfig.security.getRefreshTokenExpiry().toSeconds()).build());
         return _newToken(userTable, userRefreshToken);
     }
 

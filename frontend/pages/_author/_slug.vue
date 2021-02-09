@@ -103,7 +103,7 @@
                 </v-tab>
             </v-tabs>
         </v-row>
-        <NuxtChild class="mt-4" :project="project">
+        <NuxtChild class="mt-5" :project="project">
             <v-tab-item>
                 {{ $route.name }}
             </v-tab-item>
@@ -115,6 +115,7 @@
 import { Component, Vue } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
 import { HangarProject } from 'hangar-internal';
+import { NavigationGuardNext, Route } from 'vue-router';
 import Markdown from '~/components/Markdown.vue';
 import FlagModal from '~/components/modals/FlagModal.vue';
 import UserAvatar from '~/components/UserAvatar.vue';
@@ -144,6 +145,7 @@ export default class ProjectPage extends Vue {
     }
 
     async asyncData({ $api, params, $util }: Context) {
+        console.log('asyncData ProjectPage');
         const project = await $api
             .requestInternal<HangarProject>(`projects/project/${params.author}/${params.slug}`, false)
             .catch($util.handlePageRequestError);
@@ -217,6 +219,14 @@ export default class ProjectPage extends Vue {
                 this.project.userActions.watching = !this.project.userActions.watching;
             })
             .catch((err) => this.$util.handleRequestError(err, 'Could not toggle watched'));
+    }
+
+    // Need to refresh the project if anything has changed. idk if this is the best way to do this
+    async beforeRouteUpdate(to: Route, _from: Route, next: NavigationGuardNext) {
+        this.project = await this.$api
+            .requestInternal<HangarProject>(`projects/project/${to.params.author}/${to.params.slug}`, false)
+            .catch<any>(this.$util.handlePageRequestError);
+        next();
     }
 }
 </script>

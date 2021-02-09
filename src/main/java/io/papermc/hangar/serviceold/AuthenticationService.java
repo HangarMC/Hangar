@@ -169,7 +169,7 @@ public class AuthenticationService extends HangarService {
 
     public ApiSessionResponse authenticateDev() {
         if (hangarConfig.fakeUser.isEnabled()) {
-            hangarConfig.checkDebug();
+            hangarConfig.checkDev();
             OffsetDateTime sessionExpiration = AuthUtils.expiration(hangarConfig.api.session.getExpiration(), null);
             String uuidToken = UUID.randomUUID().toString();
 

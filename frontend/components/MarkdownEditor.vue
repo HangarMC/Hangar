@@ -17,9 +17,24 @@
         <v-btn v-show="isEditing && preview" class="page-btn preview-btn info" fab absolute icon x-small @click="preview = false">
             <v-icon>mdi-eye-off</v-icon>
         </v-btn>
-        <v-btn v-show="isEditing && deletable" class="page-btn delete-btn error" fab absolute icon x-small :loading="loading.delete" @click="deletePage">
-            <v-icon>mdi-delete</v-icon>
-        </v-btn>
+        <DeletePageModal @delete="deletePage">
+            <template #activator="{ on, attrs }">
+                <v-btn
+                    v-show="isEditing && deletable"
+                    v-bind="attrs"
+                    class="page-btn delete-btn error"
+                    fab
+                    absolute
+                    icon
+                    x-small
+                    :loading="loading.delete"
+                    v-on="on"
+                >
+                    <v-icon>mdi-delete</v-icon>
+                </v-btn>
+            </template>
+        </DeletePageModal>
+
         <v-btn
             v-show="isEditing"
             class="page-btn cancel-btn warning red darken-2"
@@ -40,9 +55,11 @@
 <script lang="ts">
 import { Component, Prop, PropSync, Vue, Watch } from 'nuxt-property-decorator';
 import Markdown from '~/components/Markdown.vue';
+import DeletePageModal from '~/components/modals/pages/DeletePageModal.vue';
 
 @Component({
     components: {
+        DeletePageModal,
         Markdown,
     },
 })
@@ -75,12 +92,12 @@ export default class MarkdownEditor extends Vue {
     deletePage() {
         this.loading.delete = true;
         this.$emit('delete');
-        // TODO implement on parent
     }
 
     @Watch('isEditing')
     onEditChange(value: boolean) {
         if (!value) {
+            this.preview = false;
             this.loading.save = false;
             this.loading.delete = false;
         }

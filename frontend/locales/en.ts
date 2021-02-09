@@ -8,6 +8,7 @@ const msgs: LocaleMessageObject = {
         donate: 'Donate',
         continue: 'Continue',
         create: 'Create',
+        delete: 'Delete',
     },
     hangar: {
         projectSearch: {
@@ -159,6 +160,10 @@ const msgs: LocaleMessageObject = {
             },
             name: 'Page Name',
             parent: 'Parent Page (optional)',
+        },
+        delete: {
+            title: 'Delete page?',
+            text: 'Are you sure you want to delete this page? This cannot be undone.',
         },
     },
     organization: {

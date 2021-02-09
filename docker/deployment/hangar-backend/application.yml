@@ -12,8 +12,7 @@ fake-user:
   enabled: false
 
 hangar:
-  debug: true
-  use-webpack: false
+  dev: false
   auth-url: "https://hangar-new-auth.minidigger.me"
   base-url: "https://hangar-new.minidigger.me"
   plugin-upload-dir: "/hangar/uploads"
