@@ -7,8 +7,7 @@
     "build": "nuxt-ts build",
     "start": "nuxt-ts start",
     "generate": "nuxt-ts generate",
-    "lint:js": "eslint --ext \".js,.vue,.ts\" --ignore-path .gitignore .",
-    "lint": "yarn lint:js"
+    "lint": "eslint --ext \".js,.vue,.ts\" --ignore-path .gitignore ."
   },
   "lint-staged": {
     "*.{ts,js,vue}": "eslint"
@@ -43,11 +42,9 @@
     "@nuxtjs/vuetify": "^1.11.3",
     "@types/lodash-es": "^4.17.4",
     "@types/swagger-ui-dist": "^3.30.0",
-    "babel-eslint": "^10.1.0",
     "eslint": "^7.18.0",
     "eslint-config-prettier": "^7.1.0",
     "eslint-plugin-nuxt": "^2.0.0",
-    "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^7.4.1",
     "husky": "^4.3.8",
     "lint-staged": "^10.5.3",

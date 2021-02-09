@@ -25,10 +25,10 @@ import Markdown from '~/components/Markdown.vue';
 })
 export default class VueProjectPage extends Vue {
     editingPage: boolean = false;
-    page: ProjectPage = {
-        contents: null,
+    page = {
+        contents: '',
         deletable: false,
-    };
+    } as ProjectPage;
 
     @Prop({ type: Object as PropType<HangarProject>, required: true })
     project!: HangarProject;
@@ -42,6 +42,10 @@ export default class VueProjectPage extends Vue {
     get canEdit(): boolean {
         return this.$util.hasPerms(NamedPermission.EDIT_PAGE);
     }
+
+    $refs!: {
+        editor: MarkdownEditor;
+    };
 
     savePage(content: string) {
         this.$api

@@ -4,21 +4,15 @@ module.exports = {
         browser: true,
         node: true,
     },
-    extends: ['@nuxtjs/eslint-config-typescript', 'prettier', 'prettier/vue', 'plugin:prettier/recommended', 'plugin:nuxt/recommended'],
-    plugins: ['prettier'],
-    // add your custom rules here
+    extends: ['@nuxtjs/eslint-config-typescript', 'prettier', 'prettier/vue'],
     rules: {
         'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
         'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-        'no-unused-vars': 'warn',
-        '@typescript-eslint/no-unused-vars': 'warn',
-        'vue/no-unused-components': 'warn',
         'vue/valid-v-slot': [
             'error',
             {
                 allowModifiers: true,
             },
         ],
-        'vue/valid-template-root': 'off', // dum false positive
     },
 };
