@@ -1,9 +1,11 @@
 package io.papermc.hangar.serviceold.plugindata;
 
 import io.papermc.hangar.exceptions.HangarException;
-import io.papermc.hangar.serviceold.plugindata.handler.PaperPluginFileHandler;
-import io.papermc.hangar.serviceold.plugindata.handler.VelocityFileHandler;
-import io.papermc.hangar.serviceold.plugindata.handler.WaterfallPluginFileHandler;
+import io.papermc.hangar.service.internal.versions.PluginDataService;
+import io.papermc.hangar.service.internal.versions.plugindata.PluginFileData;
+import io.papermc.hangar.service.internal.versions.plugindata.handler.PaperPluginFileHandler;
+import io.papermc.hangar.service.internal.versions.plugindata.handler.VelocityFileHandler;
+import io.papermc.hangar.service.internal.versions.plugindata.handler.WaterfallPluginFileHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

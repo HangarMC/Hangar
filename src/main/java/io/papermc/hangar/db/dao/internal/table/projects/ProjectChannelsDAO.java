@@ -5,6 +5,7 @@ import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
+import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
@@ -16,4 +17,8 @@ public interface ProjectChannelsDAO {
     @GetGeneratedKeys
     @SqlUpdate("INSERT INTO project_channels (created_at, name, color, project_id, non_reviewed) VALUES (:now, :name, :color, :projectId, :nonReviewed)")
     ProjectChannelTable insert(@BindBean ProjectChannelTable projectChannelTable);
+
+
+    @SqlQuery("SELECT * FROM project_channels WHERE project_id = :projectId ORDER BY created_at LIMIT 1")
+    ProjectChannelTable getFirstChannel(long projectId);
 }

@@ -1,9 +1,14 @@
-package io.papermc.hangar.serviceold.plugindata;
+package io.papermc.hangar.service.internal.versions;
 
-import io.papermc.hangar.exceptions.HangarException;
-import io.papermc.hangar.modelold.Platform;
-import io.papermc.hangar.serviceold.plugindata.handler.FileTypeHandler;
+import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.service.internal.versions.plugindata.DataValue;
+import io.papermc.hangar.service.internal.versions.plugindata.PluginFileData;
+import io.papermc.hangar.service.internal.versions.plugindata.PluginFileWithData;
+import io.papermc.hangar.service.internal.versions.plugindata.handler.FileTypeHandler;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -33,6 +38,7 @@ public class PluginDataService {
         }
     }
 
+    @NotNull
     public PluginFileWithData loadMeta(Path file, long userId) throws IOException {
         try (JarInputStream jarInputStream = openJar(file)) {
 
@@ -48,12 +54,12 @@ public class PluginDataService {
             }
 
             if (dataValueMap.isEmpty() ) {
-                throw new HangarException("error.plugin.metaNotFound");
+                throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.metaNotFound");
             }
             else {
                 dataValueMap.forEach((platform, dataValues) -> {
                     if (dataValues.size() == 1) { // 1 = only dep was found = useless
-                        throw new HangarException("error.plugin.metaNotFound");
+                        throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.metaNotFound");
                     }
                 });
                 PluginFileWithData fileData = new PluginFileWithData(file, new PluginFileData(dataValueMap), userId);
@@ -78,7 +84,7 @@ public class PluginDataService {
                 }
             }
 
-            throw new HangarException("error.plugin.jarNotFound");
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.jarNotFound");
         }
     }
 }

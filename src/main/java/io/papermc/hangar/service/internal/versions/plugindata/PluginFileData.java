@@ -1,24 +1,24 @@
-package io.papermc.hangar.serviceold.plugindata;
+package io.papermc.hangar.service.internal.versions.plugindata;
 
-import io.papermc.hangar.db.modelold.ProjectVersionTagsTable;
-import io.papermc.hangar.exceptions.HangarException;
-import io.papermc.hangar.modelold.Platform;
-import io.papermc.hangar.modelold.generated.PlatformDependency;
-import io.papermc.hangar.modelold.viewhelpers.VersionDependencies;
-import io.papermc.hangar.serviceold.VersionService;
-import io.papermc.hangar.serviceold.plugindata.handler.FileTypeHandler;
+import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.api.project.version.PluginDependency;
+import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.internal.versions.PlatformDependency;
+import io.papermc.hangar.service.internal.versions.plugindata.handler.FileTypeHandler;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static io.papermc.hangar.serviceold.plugindata.DataValue.DependencyDataValue;
-import static io.papermc.hangar.serviceold.plugindata.DataValue.PlatformDependencyDataValue;
-import static io.papermc.hangar.serviceold.plugindata.DataValue.StringDataValue;
-import static io.papermc.hangar.serviceold.plugindata.DataValue.StringListDataValue;
+import static io.papermc.hangar.service.internal.versions.plugindata.DataValue.DependencyDataValue;
+import static io.papermc.hangar.service.internal.versions.plugindata.DataValue.PlatformDependencyDataValue;
+import static io.papermc.hangar.service.internal.versions.plugindata.DataValue.StringDataValue;
+import static io.papermc.hangar.service.internal.versions.plugindata.DataValue.StringListDataValue;
 
 public class PluginFileData {
     private final Map<String, DataValue> dataValues = new HashMap<>();
@@ -81,10 +81,10 @@ public class PluginFileData {
     }
 
     @Nullable
-    public VersionDependencies getDependencies() {
+    public Map<Platform, List<PluginDependency>> getDependencies() {
         DataValue dependencies = dataValues.get("dependencies");
         if (dependencies == null) {
-            return new VersionDependencies(getPlatformDependencies().stream().collect(Collectors.toMap(PlatformDependency::getPlatform, pd -> new ArrayList<>())));
+            return new EnumMap<>(getPlatformDependencies().stream().collect(Collectors.toMap(PlatformDependency::getPlatform, pd -> new ArrayList<>())));
         }
         return ((DependencyDataValue) dependencies).getValue();
     }
@@ -96,16 +96,11 @@ public class PluginFileData {
 
     public void validate() {
         if (getName() == null) {
-            throw new HangarException("error.plugin.incomplete", "name");
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.incomplete", "name");
         } else if (getVersion() == null) {
-            throw new HangarException("error.plugin.incomplete", "version");
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.incomplete", "version");
         } else if (getPlatformDependencies() == null || getPlatformDependencies().isEmpty()) {
-            throw new HangarException("error.plugin.incomplete", "platform");
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.incomplete", "platform");
         }
-    }
-
-    public List<ProjectVersionTagsTable> createTags(long versionId, VersionService versionService) {
-        // TODO not sure what is happening here in ore... it seems to only add tags if they contain mixins?
-        return new ArrayList<>();
     }
 }

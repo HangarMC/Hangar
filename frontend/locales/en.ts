@@ -9,6 +9,7 @@ const msgs: LocaleMessageObject = {
         continue: 'Continue',
         create: 'Create',
         delete: 'Delete',
+        or: 'Or',
     },
     hangar: {
         projectSearch: {
@@ -168,6 +169,26 @@ const msgs: LocaleMessageObject = {
         delete: {
             title: 'Delete page?',
             text: 'Are you sure you want to delete this page? This cannot be undone.',
+        },
+    },
+    version: {
+        new: {
+            upload: 'Upload File',
+            url: 'Enter a URL',
+            form: {
+                versionString: 'Version',
+                fileName: 'File name',
+                fileSize: 'File size',
+                externalUrl: 'External URL',
+                channel: 'Channel',
+                unstable: 'Unstable',
+                recommended: 'Recommended',
+                forumPost: 'Forum Post',
+                release: {
+                    bulletin: 'Release Bulletin',
+                    desc: "What's new in this release?",
+                },
+            },
         },
     },
     organization: {

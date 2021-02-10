@@ -14,7 +14,7 @@ public enum Platform {
     WATERFALL("Waterfall", Category.PROXY, TagColor.WATERFALL, "https://papermc.io/downloads#Waterfall"),
     VELOCITY("Velocity", Category.PROXY, TagColor.VELOCITY, "https://www.velocitypowered.com/downloads");
 
-    public static final Platform[] VALUES = values();
+    private static final Platform[] VALUES = values();
 
     private final String name;
     private final Category category;
@@ -42,6 +42,10 @@ public enum Platform {
 
     public String getUrl() {
         return url;
+    }
+
+    public static Platform[] getValues() {
+        return VALUES;
     }
 
     public enum Category {

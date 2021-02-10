@@ -28,7 +28,7 @@ import java.util.Map;
 @RegisterConstructorMapper(Version.class)
 public interface VersionsApiDAO {
 
-    @UseRowReducer(VersionsApiDAO.VersionTagReducer.class)
+    @UseRowReducer(VersionTagReducer.class)
     @SqlQuery("SELECT pv.id, pv.created_at," +
             "pv.version_string," +
             "pv.version_string || '.' || pv.id AS url_path," +
@@ -57,7 +57,7 @@ public interface VersionsApiDAO {
             "ORDER BY pv.created_at DESC LIMIT 1")
     Version getVersion(String author, String slug, long versionId, @Define boolean canSeeHidden, @Define Long userId);
 
-    @UseRowReducer(VersionsApiDAO.VersionTagReducer.class)
+    @UseRowReducer(VersionTagReducer.class)
     @SqlQuery("SELECT pv.id, pv.created_at," +
             "pv.version_string," +
             "pv.version_string || '.' || pv.id AS url_path," +
@@ -123,6 +123,7 @@ public interface VersionsApiDAO {
             "      AND (pvd IS NULL OR (pvd.project_id = p.id AND pvd.version_id = pv.id));")
     Map<String, VersionStats> getVersionStats(String author, String slug, long versionId, OffsetDateTime fromDate, OffsetDateTime toDate);
 
+    // TODO we aren't really using this well, but you'd have to mess w/the query to make it better
     class VersionTagReducer implements LinkedHashMapRowReducer<Long, Version> {
         @Override
         public void accumulate(Map<Long, Version> container, RowView rowView) {

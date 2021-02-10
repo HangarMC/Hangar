@@ -35,11 +35,11 @@ import io.papermc.hangar.modelold.viewhelpers.ProjectPage;
 import io.papermc.hangar.modelold.viewhelpers.VersionData;
 import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
+import io.papermc.hangar.service.internal.versions.plugindata.PluginFileWithData;
 import io.papermc.hangar.serviceold.NotificationService;
 import io.papermc.hangar.serviceold.RoleService;
 import io.papermc.hangar.serviceold.UserActionLogService;
 import io.papermc.hangar.serviceold.VersionService;
-import io.papermc.hangar.serviceold.plugindata.PluginFileWithData;
 import io.papermc.hangar.serviceold.pluginupload.PendingVersion;
 import io.papermc.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -191,10 +191,6 @@ public class ProjectFactory {
                 pendingVersion.getExternalUrl()/*,*/
 //                pendingVersion.getPlatforms()
         ));
-
-        if (pendingVersion.getPlugin() != null) {
-            pendingVersion.getPlugin().getData().createTags(version.getId(), versionService); // TODO not sure what this is for
-        }
 
         Platform.createPlatformTags(versionService, version.getId(), pendingVersion.getPlatforms());
 

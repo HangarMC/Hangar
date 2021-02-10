@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated(forRemoval = true)
 public class PlatformDependencyMapper implements ColumnMapper<List<PlatformDependency>> {
 
     private final ObjectMapper mapper = new ObjectMapper();

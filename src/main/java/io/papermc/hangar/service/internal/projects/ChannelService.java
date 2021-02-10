@@ -25,4 +25,8 @@ public class ChannelService extends HangarService {
 
         return projectChannelsDAO.insert(new ProjectChannelTable(name, color, projectId, nonReviewed));
     }
+
+    public ProjectChannelTable getFirstChannel(long projectId) {
+        return projectChannelsDAO.getFirstChannel(projectId);
+    }
 }

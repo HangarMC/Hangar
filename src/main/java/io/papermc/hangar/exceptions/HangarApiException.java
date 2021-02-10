@@ -11,30 +11,42 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 
-//@JsonSerialize(using = HangarApiException.HangarApiExceptionSerializer.class)
 public class HangarApiException extends ResponseStatusException {
 
     private final HttpHeaders httpHeaders;
+    private final String[] args;
 
     public HangarApiException(HttpStatus status) {
         super(status);
         this.httpHeaders = HttpHeaders.EMPTY;
+        this.args = new String[0];
     }
 
     public HangarApiException(HttpStatus status, String reason) {
         super(status, reason);
         this.httpHeaders = HttpHeaders.EMPTY;
+        this.args = new String[0];
     }
 
     public HangarApiException(HttpStatus status, HttpHeaders httpHeaders) {
         super(status);
         this.httpHeaders = httpHeaders;
+        this.args = new String[0];
     }
 
     public HangarApiException(HttpStatus status, String reason, HttpHeaders httpHeaders) {
         super(status, reason);
         this.httpHeaders = httpHeaders;
+        this.args = new String[0];
     }
+
+    public HangarApiException(HttpStatus status, String reason, String...args) {
+        super(status, reason);
+        this.httpHeaders = HttpHeaders.EMPTY;
+        this.args = args;
+    }
+
+
 
     @NotNull
     @Override
@@ -53,6 +65,11 @@ public class HangarApiException extends ResponseStatusException {
             }
             gen.writeStartObject();
             gen.writeStringField("message", message);
+            gen.writeArrayFieldStart("messageArgs");
+            for (String arg : exception.args) {
+                gen.writeString(arg);
+            }
+            gen.writeEndArray();
             gen.writeBooleanField("isHangarApiException", true);
             gen.writeObjectFieldStart("httpError");
             gen.writeNumberField("statusCode", exception.getStatus().value());

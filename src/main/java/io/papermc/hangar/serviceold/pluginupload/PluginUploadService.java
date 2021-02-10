@@ -7,12 +7,11 @@ import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.exceptions.HangarException;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
+import io.papermc.hangar.service.internal.versions.PluginDataService;
+import io.papermc.hangar.service.internal.versions.plugindata.PluginFileData;
+import io.papermc.hangar.service.internal.versions.plugindata.PluginFileWithData;
 import io.papermc.hangar.serviceold.VersionService;
-import io.papermc.hangar.serviceold.plugindata.PluginDataService;
-import io.papermc.hangar.serviceold.plugindata.PluginFileData;
-import io.papermc.hangar.serviceold.plugindata.PluginFileWithData;
 import io.papermc.hangar.serviceold.project.ChannelService;
-import io.papermc.hangar.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +89,7 @@ public class PluginUploadService {
             throw new HangarException("error.version.illegalVersion");
         }
 
+        if (true) throw new RuntimeException("STOP HERE");
         ProjectChannelsTable channel = channelService.getFirstChannel(project);
         PendingVersion pendingVersion = startVersion(plugin, project.getId(), project.getForumSync(), channel);
 
@@ -110,21 +110,23 @@ public class PluginUploadService {
 
         Path path = plugin.getPath();
 
-        return new PendingVersion(
-                StringUtils.slugify(metaData.getVersion()),
-                metaData.getDependencies(),
-                metaData.getPlatformDependencies(),
-                metaData.getDescription(),
-                projectId,
-                path.toFile().length(),
-                plugin.getMd5(),
-                path.getFileName().toString(),
-                plugin.getUserId(),
-                channel.getName(),
-                channel.getColor(),
-                plugin,
-                null,
-                forumSync,
-                versionService.getMostRelevantVersion(projectsTable.get()));
+        if (true) throw new RuntimeException("STOP HERE");
+//        return new PendingVersion(
+//                StringUtils.slugify(metaData.getVersion()),
+//                metaData.getDependencies(),
+//                metaData.getPlatformDependencies(),
+//                metaData.getDescription(),
+//                projectId,
+//                path.toFile().length(),
+//                plugin.getMd5(),
+//                path.getFileName().toString(),
+//                plugin.getUserId(),
+//                channel.getName(),
+//                channel.getColor(),
+//                plugin,
+//                null,
+//                forumSync,
+//                versionService.getMostRelevantVersion(projectsTable.get()));
+        return null;
     }
 }

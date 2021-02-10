@@ -34,7 +34,7 @@ import java.util.List;
 @Controller
 @Secured("ROLE_USER")
 @RequestMapping(path = "/api/internal", produces = MediaType.APPLICATION_JSON_VALUE, method = { RequestMethod.GET, RequestMethod.POST })
-public class HangarUsersController extends HangarController {
+public class HangarUserController extends HangarController {
 
     private final ObjectMapper mapper;
     private final UsersApiService usersApiService;
@@ -46,7 +46,7 @@ public class HangarUsersController extends HangarController {
     private final MemberService.OrganizationMemberService organizationMemberService;
 
     @Autowired
-    public HangarUsersController(ObjectMapper mapper, UsersApiService usersApiService, NotificationService notificationService, InviteService inviteService, ProjectRoleService projectRoleService, OrganizationRoleService organizationRoleService, MemberService.ProjectMemberService projectMemberService, MemberService.OrganizationMemberService organizationMemberService) {
+    public HangarUserController(ObjectMapper mapper, UsersApiService usersApiService, NotificationService notificationService, InviteService inviteService, ProjectRoleService projectRoleService, OrganizationRoleService organizationRoleService, MemberService.ProjectMemberService projectMemberService, MemberService.OrganizationMemberService organizationMemberService) {
         this.mapper = mapper;
         this.usersApiService = usersApiService;
         this.notificationService = notificationService;

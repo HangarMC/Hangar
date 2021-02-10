@@ -10,7 +10,7 @@ import io.papermc.hangar.db.modelold.ProjectVersionVisibilityChangesTable;
 import io.papermc.hangar.db.modelold.ProjectVersionsTable;
 import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.exceptions.HangarException;
-import io.papermc.hangar.model.api.project.version.Dependency;
+import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.TagColor;
 import io.papermc.hangar.model.common.projects.ReviewState;
@@ -20,7 +20,7 @@ import io.papermc.hangar.modelold.viewhelpers.ReviewQueueEntry;
 import io.papermc.hangar.modelold.viewhelpers.UserData;
 import io.papermc.hangar.modelold.viewhelpers.VersionData;
 import io.papermc.hangar.service.VisibilityService;
-import io.papermc.hangar.service.internal.VersionDependencyService;
+import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.serviceold.pluginupload.PendingVersion;
 import io.papermc.hangar.serviceold.project.ChannelService;
 import io.papermc.hangar.serviceold.project.ProjectService;
@@ -172,7 +172,7 @@ public class VersionService extends HangarService {
             }
         }
 
-        Map<Platform, Map<Dependency, String>> dependencies = new EnumMap<>(Platform.class);
+        Map<Platform, Map<PluginDependency, String>> dependencies = new EnumMap<>(Platform.class);
         versionDependencyService.getProjectVersionDependencyTables(projectVersion.getId()).forEach(pvdt -> {
             dependencies.computeIfAbsent(pvdt.getPlatform(), platform -> new HashMap<>());
             String path;
@@ -184,7 +184,7 @@ public class VersionService extends HangarService {
             } else {
                  path = null;
             }
-            dependencies.get(pvdt.getPlatform()).put(new Dependency(pvdt.getName(), pvdt.isRequired(), pvdt.getProjectId(), pvdt.getExternalUrl()), path);
+            dependencies.get(pvdt.getPlatform()).put(new PluginDependency(pvdt.getName(), pvdt.isRequired(), pvdt.getProjectId(), pvdt.getExternalUrl()), path);
         });
         return new VersionData(
                 projectData,

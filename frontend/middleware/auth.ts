@@ -20,6 +20,7 @@ export default async ({ app: { $cookies }, $auth, $api, store, redirect }: Conte
                 return $auth.processLogin(token);
             }
         } else {
+            console.log('LOGGING OUT VIA MIDDLEWARE');
             return $auth.logout(process.client);
         }
     }

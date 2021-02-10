@@ -1,9 +1,9 @@
-package io.papermc.hangar.serviceold.plugindata.handler;
+package io.papermc.hangar.service.internal.versions.plugindata.handler;
 
-import io.papermc.hangar.modelold.Platform;
-import io.papermc.hangar.modelold.generated.Dependency;
-import io.papermc.hangar.modelold.generated.PlatformDependency;
-import io.papermc.hangar.serviceold.plugindata.DataValue;
+import io.papermc.hangar.model.api.project.version.PluginDependency;
+import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.internal.versions.PlatformDependency;
+import io.papermc.hangar.service.internal.versions.plugindata.DataValue;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
 
@@ -57,11 +57,11 @@ public class VelocityFileHandler extends FileTypeHandler {
         if (authors != null) {
             result.add(new DataValue.StringListDataValue(FileTypeHandler.AUTHORS, authors));
         }
-        List<Dependency> dependencies;
+        List<PluginDependency> dependencies;
         //noinspection unchecked
         List<Map<String, Object>> deps = (List<Map<String, Object>>) data.get("dependencies");
         if (deps != null) {
-            dependencies = deps.stream().map(dep -> new Dependency((String) dep.get("id"), !(boolean) dep.getOrDefault("optional", false))).collect(Collectors.toList());
+            dependencies = deps.stream().map(dep -> new PluginDependency((String) dep.get("id"), !(boolean) dep.getOrDefault("optional", false), null, null)).collect(Collectors.toList());
         } else {
             dependencies = new ArrayList<>();
         }

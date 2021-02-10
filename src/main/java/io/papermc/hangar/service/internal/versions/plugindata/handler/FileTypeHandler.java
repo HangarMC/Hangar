@@ -1,7 +1,7 @@
-package io.papermc.hangar.serviceold.plugindata.handler;
+package io.papermc.hangar.service.internal.versions.plugindata.handler;
 
-import io.papermc.hangar.modelold.Platform;
-import io.papermc.hangar.serviceold.plugindata.DataValue;
+import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.service.internal.versions.plugindata.DataValue;
 
 import java.io.BufferedReader;
 import java.util.List;

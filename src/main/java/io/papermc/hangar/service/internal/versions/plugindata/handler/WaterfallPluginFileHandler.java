@@ -1,9 +1,9 @@
-package io.papermc.hangar.serviceold.plugindata.handler;
+package io.papermc.hangar.service.internal.versions.plugindata.handler;
 
-import io.papermc.hangar.modelold.Platform;
-import io.papermc.hangar.modelold.generated.Dependency;
-import io.papermc.hangar.modelold.generated.PlatformDependency;
-import io.papermc.hangar.serviceold.plugindata.DataValue;
+import io.papermc.hangar.model.api.project.version.PluginDependency;
+import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.internal.versions.PlatformDependency;
+import io.papermc.hangar.service.internal.versions.plugindata.DataValue;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
 
@@ -14,10 +14,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class PaperPluginFileHandler extends FileTypeHandler {
+public class WaterfallPluginFileHandler extends FileTypeHandler {
 
-    protected PaperPluginFileHandler() {
-        super("plugin.yml");
+    protected WaterfallPluginFileHandler() {
+        super("bungee.yml");
     }
 
     @Override
@@ -59,32 +59,28 @@ public class PaperPluginFileHandler extends FileTypeHandler {
             result.add(new DataValue.StringListDataValue(FileTypeHandler.AUTHORS, authors));
         }
 
-        List<Dependency> dependencies = new ArrayList<>();
+        List<PluginDependency> dependencies = new ArrayList<>();
         //noinspection unchecked
-        List<String> softdepend = (List<String>) data.get("softdepend");
+        List<String> softdepend = (List<String>) data.get("softDepends");
         if (softdepend != null) {
-            dependencies.addAll(softdepend.stream().map(depName -> new Dependency(depName, false)).collect(Collectors.toList()));
+            dependencies.addAll(softdepend.stream().map(depName -> new PluginDependency(depName, false, null, null)).collect(Collectors.toList()));
         }
         //noinspection unchecked
-        List<String> depend = (List<String>) data.get("depend");
+        List<String> depend = (List<String>) data.get("depends");
         if (depend != null) {
-            dependencies.addAll(depend.stream().map(depName -> new Dependency(depName, true)).collect(Collectors.toList()));
+            dependencies.addAll(depend.stream().map(depName -> new PluginDependency(depName, true, null, null)).collect(Collectors.toList()));
         }
 
         if (!dependencies.isEmpty()) {
             result.add(new DataValue.DependencyDataValue(FileTypeHandler.DEPENDENCIES, getPlatform(), dependencies));
         }
 
-        List<String> versions = new ArrayList<>();
-        if (data.containsKey("api-version")) {
-            versions.add(data.get("api-version").toString());
-        }
-        result.add(new DataValue.PlatformDependencyDataValue(FileTypeHandler.PLATFORM_DEPENDENCY, new PlatformDependency(getPlatform(), versions)));
+        result.add(new DataValue.PlatformDependencyDataValue(FileTypeHandler.PLATFORM_DEPENDENCY, new PlatformDependency(getPlatform(), new ArrayList<>())));
         return result;
     }
 
     @Override
     public Platform getPlatform() {
-        return Platform.PAPER;
+        return Platform.WATERFALL;
     }
 }

@@ -1,4 +1,4 @@
-package io.papermc.hangar.service.internal;
+package io.papermc.hangar.service.internal.versions;
 
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionDependencyDAO;

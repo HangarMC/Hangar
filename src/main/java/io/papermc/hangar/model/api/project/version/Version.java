@@ -20,7 +20,7 @@ public class Version extends Model implements Named, Visible {
 
     private final String name;
     private final String urlPath;
-    private final Map<Platform, List<Dependency>> dependencies;
+    private final Map<Platform, List<PluginDependency>> dependencies;
     private final Visibility visibility;
     private final String description;
     private final VersionStats stats;
@@ -52,7 +52,7 @@ public class Version extends Model implements Named, Visible {
         return urlPath;
     }
 
-    public Map<Platform, List<Dependency>> getDependencies() {
+    public Map<Platform, List<PluginDependency>> getDependencies() {
         return dependencies;
     }
 

@@ -1,11 +1,11 @@
-package io.papermc.hangar.serviceold.plugindata;
+package io.papermc.hangar.service.internal.versions.plugindata;
 
-import io.papermc.hangar.modelold.Platform;
-import io.papermc.hangar.modelold.generated.Dependency;
-import io.papermc.hangar.modelold.generated.PlatformDependency;
-import io.papermc.hangar.modelold.viewhelpers.VersionDependencies;
+import io.papermc.hangar.model.api.project.version.PluginDependency;
+import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.internal.versions.PlatformDependency;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,14 +51,14 @@ public abstract class DataValue {
 
     public static class DependencyDataValue extends DataValue {
 
-        private final VersionDependencies value;
+        private final Map<Platform, List<PluginDependency>> value;
 
-        public DependencyDataValue(String key, Platform platform, List<Dependency> dependencies) {
+        public DependencyDataValue(String key, Platform platform, List<PluginDependency> dependencies) {
             super(key);
-            this.value = new VersionDependencies(Map.of(platform, dependencies));
+            this.value = new EnumMap<>(Map.of(platform, dependencies));
         }
 
-        public VersionDependencies getValue() {
+        public Map<Platform, List<PluginDependency>> getValue() {
             return value;
         }
     }

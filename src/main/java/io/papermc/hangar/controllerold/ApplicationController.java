@@ -264,7 +264,7 @@ public class ApplicationController extends HangarController {
     public ModelAndView showPlatformVersions() {
         ModelAndView mav = new ModelAndView("users/admin/platformVersions");
         Map<Platform, List<String>> versions = platformVersionsDao.get().getVersions();
-        for (Platform p : Platform.VALUES) {
+        for (Platform p : Platform.getValues()) {
             versions.putIfAbsent(p, new ArrayList<>());
         }
         mav.addObject("platformVersions", mapper.valueToTree(versions));

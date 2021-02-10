@@ -1,4 +1,4 @@
-package io.papermc.hangar.serviceold.plugindata;
+package io.papermc.hangar.service.internal.versions.plugindata;
 
 import io.papermc.hangar.util.CryptoUtils;
 

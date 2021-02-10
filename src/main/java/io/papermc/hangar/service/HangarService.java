@@ -6,6 +6,8 @@ import io.papermc.hangar.security.HangarPrincipal;
 import io.papermc.hangar.service.internal.UserActionLogService;
 import org.jdbi.v3.core.internal.MemoizingSupplier;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 public abstract class HangarService {
+
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     protected HttpServletRequest request;

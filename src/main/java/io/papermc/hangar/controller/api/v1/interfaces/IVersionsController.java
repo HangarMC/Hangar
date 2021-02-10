@@ -4,6 +4,10 @@ import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
 import io.papermc.hangar.model.api.requests.RequestPagination;
+import io.papermc.hangar.model.common.PermissionType;
+import io.papermc.hangar.modelold.NamedPermission;
+import io.papermc.hangar.security.annotations.Anyone;
+import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -13,7 +17,6 @@ import io.swagger.annotations.Authorization;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +26,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 
+@Anyone
 @Api(tags = "Versions", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE)
 public interface IVersionsController {
@@ -55,7 +59,6 @@ public interface IVersionsController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping(value = "/projects/{author}/{slug}/versions/{name:.*}")
-    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.common.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     ResponseEntity<Version> getVersion(@ApiParam("The author of the project to return the version for") @PathVariable String author,
                                        @ApiParam("The slug of the project to return") @PathVariable String slug,
                                        @ApiParam("The name of the version to return") @PathVariable String name
@@ -74,7 +77,6 @@ public interface IVersionsController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/projects/{author}/{slug}/versions")
-    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.common.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
     ResponseEntity<PaginatedResult<Version>> getVersions(@ApiParam("The author of the project to return versions for") @PathVariable String author,
                                                          @ApiParam("The slug of the project to return versions for") @PathVariable String slug,
                                                          @ApiParam("A list of tags all the returned versions should have. Should be formatted either as `tagname` or `tagname:tagdata`.") @RequestParam(required = false) List<String> tags,
@@ -95,7 +97,7 @@ public interface IVersionsController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping(value = "/projects/{author}/{slug}/versions/{version}/stats", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.common.Permission).IsProjectMember, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#author, #slug}")
     ResponseEntity<Map<String, VersionStats>> getVersionStats(@ApiParam("The author of the version to return the stats for") @PathVariable String author,
                                                               @ApiParam("The slug of the project to return stats for") @PathVariable String slug,
                                                               @ApiParam("The version to return the stats for") @PathVariable String version,

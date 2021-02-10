@@ -7,7 +7,7 @@ import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.modelold.generated.PlatformDependency;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
 import io.papermc.hangar.modelold.viewhelpers.VersionDependencies;
-import io.papermc.hangar.serviceold.plugindata.PluginFileWithData;
+import io.papermc.hangar.service.internal.versions.plugindata.PluginFileWithData;
 import io.papermc.hangar.serviceold.project.ProjectFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

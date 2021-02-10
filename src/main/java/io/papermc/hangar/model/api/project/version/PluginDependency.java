@@ -2,14 +2,14 @@ package io.papermc.hangar.model.api.project.version;
 
 import io.papermc.hangar.model.Named;
 
-public class Dependency implements Named {
+public class PluginDependency implements Named {
 
     private final String name;
     private final boolean required;
     private final Long projectId;
     private final String externalUrl;
 
-    public Dependency(String name, boolean required, Long projectId, String externalUrl) {
+    public PluginDependency(String name, boolean required, Long projectId, String externalUrl) {
         this.name = name;
         this.required = required;
         this.projectId = projectId;

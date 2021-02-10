@@ -5,13 +5,6 @@ export enum RoleCategory {
     ORGANIZATION = 'organization',
 }
 
-export enum ApiSessionType {
-    KEY = 'key',
-    USER = 'user',
-    PUBLIC = 'public',
-    DEV = 'dev',
-}
-
 export enum ProjectCategory {
     ADMIN_TOOLS = 'admin_tools',
     CHAT = 'chat',
@@ -32,6 +25,13 @@ export enum Visibility {
     NEEDS_CHANGES = 'needsChanges',
     NEEDS_APPROVAL = 'needsApproval',
     SOFT_DELETE = 'softDelete',
+}
+
+export enum ReviewState {
+    UNREVIEWED = 'unreviewed',
+    REVIEWED = 'reviewed',
+    BACKLOG = 'backlog',
+    PARTIALLY_REVIEWED = 'partially_reviewed',
 }
 
 export enum PermissionType {
@@ -76,4 +76,10 @@ export enum NamedPermission {
     HARD_DELETE_PROJECT = 'hard_delete_project',
     HARD_DELETE_VERSION = 'hard_delete_version',
     EDIT_ALL_USER_SETTINGS = 'edit_all_user_settings',
+}
+
+export enum Platform {
+    PAPER = 'PAPER',
+    WATERFALL = 'WATERFALL',
+    VELOCITY = 'VELOCITY',
 }
