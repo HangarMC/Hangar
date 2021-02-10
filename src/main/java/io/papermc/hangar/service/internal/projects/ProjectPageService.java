@@ -96,18 +96,12 @@ public class ProjectPageService extends HangarService {
     }
 
     public String createProjectPage(long projectId, NewProjectPage newProjectPage) {
-        String slug = createSlug(projectId, StringUtils.slugify(newProjectPage.getName()), newProjectPage.getParentId());
+        String slug = StringUtils.slugify(newProjectPage.getName());
+        if (newProjectPage.getParentId() != null) {
+            slug = projectPagesDAO.getProjectPage(projectId, newProjectPage.getParentId()).getSlug() + "/" + slug;
+        }
         createPage(projectId, newProjectPage.getName(), slug, "# " + newProjectPage.getName() + "\n\nWelcome to your new page", true, newProjectPage.getParentId(), false);
         return slug;
-    }
-
-    private String createSlug(long projectId, String slug, @Nullable Long parentId) {
-        if (parentId == null) {
-            return slug;
-        } else {
-            ProjectPageTable pageTable = projectPagesDAO.getProjectPage(projectId, parentId);
-            return createSlug(projectId, pageTable.getSlug() + "/" + slug, pageTable.getParentId());
-        }
     }
 
     public void saveProjectPage(long projectId, long pageId, String newContents) {
