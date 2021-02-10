@@ -1,7 +1,7 @@
 import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
 import { AxiosError } from 'axios';
-import { HangarException } from 'hangar-api';
+import { HangarApiException, HangarValidationException } from 'hangar-api';
 import { HangarUser } from 'hangar-internal';
 import { NamedPermission } from '~/types/enums';
 import { RootState } from '~/store';
@@ -19,11 +19,17 @@ function handleRequestError(err: AxiosError, error: Context['error']) {
         });
         console.log(err);
     } else if (err.response) {
-        if (err.response.data.isHangarApiException || err.response.data.isHangarValidationException) {
-            const data: HangarException = err.response.data;
+        if (err.response.data.isHangarApiException) {
+            const data: HangarApiException = err.response.data;
             error({
                 statusCode: data.httpError.statusCode,
                 message: data.message,
+            });
+        } else if (err.response.data.isHangarValidationException) {
+            const data: HangarValidationException = err.response.data;
+            error({
+                statusCode: data.httpError.statusCode,
+                message: data.fieldErrors.map((f) => f.errorMsg).join(', '),
             });
         } else {
             error({
@@ -132,13 +138,29 @@ const createUtil = ({ store, error }: Context) => {
                 console.log(err);
             } else if (err.response) {
                 // TODO check is msg is a i18n key and use that instead
-                if (err.response.data.isHangarValidationException || err.response.data.isHangarApiException) {
-                    const data: HangarException = err.response.data;
+                if (err.response.data.isHangarApiException) {
+                    const data: HangarApiException = err.response.data;
                     store.dispatch('snackbar/SHOW_NOTIF', {
                         message: msg ? `${msg}: ${data.message}` : data.message,
                         color: 'error',
                         timeout: 3000,
                     } as NotifPayload);
+                } else if (err.response.data.isHangarValidationException) {
+                    const data: HangarValidationException = err.response.data;
+                    for (const fieldError of data.fieldErrors) {
+                        store.dispatch('snackbar/SHOW_NOTIF', {
+                            message: fieldError.errorMsg,
+                            color: 'error',
+                            timeout: 3000,
+                        } as NotifPayload);
+                    }
+                    if (msg) {
+                        store.dispatch('snackbar/SHOW_NOTIF', {
+                            message: msg,
+                            color: 'error',
+                            timeout: 3000,
+                        } as NotifPayload);
+                    }
                 } else {
                     store.dispatch('snackbar/SHOW_NOTIF', {
                         message: msg ? `${msg}: ${err.response.statusText}` : err.response.statusText,

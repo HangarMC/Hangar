@@ -234,7 +234,6 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
-import { HangarValidationException } from 'hangar-api';
 import { ProjectOwner } from 'hangar-internal';
 import StepperStepContent from '~/components/steppers/StepperStepContent.vue';
 import { RootState } from '~/store';
@@ -326,12 +325,7 @@ export default class NewPage extends Vue {
             })
             .catch((err) => {
                 this.projectError = true;
-                if (err.response?.data?.isHangarValidationException) {
-                    const validationError: HangarValidationException = err.response.data;
-                    for (const fieldError of validationError.fieldErrors) {
-                        this.$util.error(fieldError.errorMsg);
-                    }
-                }
+                this.$util.handleRequestError(err, 'Unable to create project');
             })
             .finally(() => {
                 this.projectLoading = false;

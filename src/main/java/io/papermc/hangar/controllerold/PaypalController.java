@@ -1,6 +1,6 @@
 package io.papermc.hangar.controllerold;
 
-import io.papermc.hangar.serviceold.PaypalService;
+import io.papermc.hangar.service.internal.PaypalService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;

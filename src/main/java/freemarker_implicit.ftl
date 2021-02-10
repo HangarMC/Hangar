@@ -4,7 +4,7 @@
 [#-- @ftlvariable name="mapper" type="com.fasterxml.jackson.databind.ObjectMapper" --]
 [#-- @ftlvariable name="_csrf" type="org.springframework.security.web.csrf.CsrfToken" --]
 [#-- @ftlvariable name="cu" type="io.papermc.hangar.db.modelold.UsersTable" --]
-[#-- @ftlvariable name="markdownService" type="io.papermc.hangar.serviceold.MarkdownService" --]
+[#-- @ftlvariable name="markdownService" type="io.papermc.hangar.service.internal.MarkdownService" --]
 [#-- @ftlvariable name="utils" type="io.papermc.hangar.util.TemplateHelper" --]
 [#-- @ftlvariable name="@helper" type="freemarker.template.TemplateHashModel" --]
 [#-- @ftlvariable name="alerts" type="java.util.Map" --]

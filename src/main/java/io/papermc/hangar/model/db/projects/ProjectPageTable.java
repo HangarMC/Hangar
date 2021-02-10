@@ -14,7 +14,7 @@ public class ProjectPageTable extends Table implements Named {
     private final String slug;
     private String contents;
     private final boolean deletable;
-    private final Long parentId;
+    private Long parentId;
 
     @JdbiConstructor
     public ProjectPageTable(OffsetDateTime createdAt, long id, long projectId, String name, String slug, String contents, boolean deletable, Long parentId) {
@@ -65,6 +65,10 @@ public class ProjectPageTable extends Table implements Named {
     @JsonIgnore
     public Long getParentId() {
         return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
     @Override

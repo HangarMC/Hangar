@@ -6,10 +6,12 @@ import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
+import org.jdbi.v3.sqlobject.statement.SqlBatch;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +27,9 @@ public interface ProjectPagesDAO {
     @SqlUpdate("UPDATE project_pages SET contents = :contents WHERE id = :id")
     void update(@BindBean ProjectPageTable projectPageTable);
 
+    @SqlBatch("UPDATE project_pages SET parent_id = :parentId WHERE id = :id")
+    void updateParents(@BindBean Collection<ProjectPageTable> projectPageTables);
+
     @SqlUpdate("DELETE FROM project_pages WHERE id = :id")
     void delete(@BindBean ProjectPageTable projectPageTable);
 
@@ -32,8 +37,11 @@ public interface ProjectPagesDAO {
     @SqlQuery("SELECT * FROM project_pages WHERE project_id = :projectId AND parent_id IS NULL")
     Map<Long, ProjectPageTable> getRootPages(long projectId);
 
-    @SqlQuery("SELECT slug FROM project_pages WHERE project_id = :projectId AND parent_id = :parentId")
-    List<String> getChildPages(long projectId, long parentId);
+    @SqlQuery("SELECT * FROM project_pages WHERE project_id = :projectId AND parent_id = :parentId")
+    List<ProjectPageTable> getChildPages(long projectId, long parentId);
+
+    @SqlQuery("SELECT * FROM project_pages WHERE project_id = :projectId AND parent_id = :parentId AND slug = :slug")
+    ProjectPageTable getChildPage(long projectId, long parentId, String slug);
 
     @SqlQuery("SELECT pp.* FROM project_pages pp" +
             "   WHERE pp.project_id = :projectId" +

@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-row>
-            <v-col v-if="page.contents" cols="12" md="8">
+            <v-col v-if="page.contents" cols="12" md="9">
                 <MarkdownEditor
                     v-if="canEdit"
                     ref="editor"
@@ -13,7 +13,7 @@
                 />
                 <Markdown v-else :raw="page.contents" />
             </v-col>
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="3">
                 <ProjectPageList :project="project" />
             </v-col>
         </v-row>
@@ -37,12 +37,7 @@ import ProjectPageList from '~/components/projects/ProjectPageList.vue';
     },
 })
 export default class VueProjectPage extends DocPageMixin {
-    async asyncData({ $api, params, $util, beforeNuxtRender }: Context) {
-        if (process.server) {
-            beforeNuxtRender(({ nuxtState }) => {
-                console.log(nuxtState);
-            });
-        }
+    async asyncData({ $api, params, $util }: Context) {
         const page = await $api
             .requestInternal<ProjectPage>(`pages/page/${params.author}/${params.slug}/${params.pathMatch}`, false)
             .catch<any>($util.handlePageRequestError);

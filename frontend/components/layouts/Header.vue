@@ -15,10 +15,11 @@
 
         <v-spacer></v-spacer>
 
-        <v-menu v-if="$util.isLoggedIn()" bottom offset-y transition="slide-y-transition">
+        <v-menu v-if="$util.isLoggedIn()" bottom offset-y transition="slide-y-transition" open-on-hover>
             <template #activator="{ on, attrs }">
                 <v-btn v-bind="attrs" color="primary" v-on="on">
                     {{ $t('nav.createNew') }}
+                    <v-icon right>mdi-chevron-down</v-icon>
                 </v-btn>
             </template>
             <Dropdown :controls="newControls" />

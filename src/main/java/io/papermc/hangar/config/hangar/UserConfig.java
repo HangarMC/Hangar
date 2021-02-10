@@ -9,7 +9,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = "hangar.users")
 public class UserConfig {
     private int maxTaglineLen = 100;
-    @Deprecated
+    @Deprecated(forRemoval = true)
     private int authorPageSize = 25;
     private List<String> staffRoles = List.of("Hangar_Admin", "Hangar_Mod");
 

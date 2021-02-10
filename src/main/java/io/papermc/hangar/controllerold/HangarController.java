@@ -7,7 +7,7 @@ import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateModelException;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.modelold.UsersTable;
-import io.papermc.hangar.serviceold.MarkdownService;
+import io.papermc.hangar.service.internal.MarkdownService;
 import io.papermc.hangar.serviceold.UserService;
 import io.papermc.hangar.util.TemplateHelper;
 import org.springframework.beans.factory.annotation.Autowired;

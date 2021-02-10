@@ -1,9 +1,13 @@
 package io.papermc.hangar.config.hangar;
 
+import io.papermc.hangar.exceptions.HangarApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+
+import java.util.regex.Pattern;
 
 @Component
 @ConfigurationProperties(prefix = "hangar.pages")
@@ -11,15 +15,15 @@ public class PagesConfig {
 
     @NestedConfigurationProperty
     public Home home;
+    private String nameRegex = "^[a-zA-Z0-9-_ ]+$";
+    private int minNameLen = 3;
+    private int maxNameLen = 25;
     private int minLen = 15;
     private int maxLen = 32000;
-    @NestedConfigurationProperty
-    public Page page;
 
     @Autowired
-    public PagesConfig(Home home, Page page) {
+    public PagesConfig(Home home) {
         this.home = home;
-        this.page = page;
     }
 
     @Component
@@ -45,26 +49,36 @@ public class PagesConfig {
         }
     }
 
-    @Component
-    @ConfigurationProperties(prefix = "hangar.pages.page")
-    public static class Page {
-        private int maxLen = 75000;
-
-        public int getMaxLen() {
-            return maxLen;
-        }
-
-        public void setMaxLen(int maxLen) {
-            this.maxLen = maxLen;
-        }
-    }
-
     public Home getHome() {
         return home;
     }
 
     public void setHome(Home home) {
         this.home = home;
+    }
+
+    public String getNameRegex() {
+        return nameRegex;
+    }
+
+    public void setNameRegex(String nameRegex) {
+        this.nameRegex = nameRegex;
+    }
+
+    public int getMinNameLen() {
+        return minNameLen;
+    }
+
+    public void setMinNameLen(int minNameLen) {
+        this.minNameLen = minNameLen;
+    }
+
+    public int getMaxNameLen() {
+        return maxNameLen;
+    }
+
+    public void setMaxNameLen(int maxNameLen) {
+        this.maxNameLen = maxNameLen;
     }
 
     public int getMinLen() {
@@ -83,11 +97,13 @@ public class PagesConfig {
         this.maxLen = maxLen;
     }
 
-    public Page getPage() {
-        return page;
-    }
-
-    public void setPage(Page page) {
-        this.page = page;
+    public void testPageName(String name) {
+        if (name.length() > maxNameLen) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.name.maxLength");
+        } else if (name.length() < minNameLen) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.name.minLength");
+        } else if (!Pattern.compile(nameRegex).matcher(name).matches()) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.name.invalidChars");
+        }
     }
 }

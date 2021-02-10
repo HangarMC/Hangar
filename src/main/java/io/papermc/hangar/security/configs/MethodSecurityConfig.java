@@ -61,6 +61,8 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
         decisionVoters.add(roleVoter);
         decisionVoters.add(new AuthenticatedVoter());
         decisionVoters.addAll(accessDecisionVoters);
-        return new UnanimousBased(decisionVoters);
+        UnanimousBased accessDecisionManager = new UnanimousBased(decisionVoters);
+        accessDecisionManager.setAllowIfAllAbstainDecisions(true);
+        return accessDecisionManager;
     }
 }

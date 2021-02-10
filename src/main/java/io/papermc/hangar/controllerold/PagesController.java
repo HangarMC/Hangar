@@ -14,7 +14,7 @@ import io.papermc.hangar.modelold.viewhelpers.ProjectPage;
 import io.papermc.hangar.modelold.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.securityold.annotations.ProjectPermission;
 import io.papermc.hangar.securityold.annotations.UserLock;
-import io.papermc.hangar.serviceold.MarkdownService;
+import io.papermc.hangar.service.internal.MarkdownService;
 import io.papermc.hangar.serviceold.StatsService;
 import io.papermc.hangar.serviceold.UserActionLogService;
 import io.papermc.hangar.serviceold.project.PagesFactory;

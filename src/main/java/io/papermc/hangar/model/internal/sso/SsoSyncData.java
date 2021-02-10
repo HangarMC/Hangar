@@ -1,7 +1,7 @@
 package io.papermc.hangar.model.internal.sso;
 
 import io.papermc.hangar.model.common.roles.GlobalRole;
-import io.papermc.hangar.util.SsoUtil;
+import io.papermc.hangar.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -71,7 +71,7 @@ public class SsoSyncData {
                 Integer.parseInt(payload.get("external_id")),
                 payload.get("email"),
                 payload.get("username"),
-                SsoUtil.parsePythonNullable(payload.get("name")),
+                StringUtils.parsePythonNullable(payload.get("name")),
                 payload.get("add_groups").split(","),
                 payload.get("remove_groups").split(","),
                 Boolean.parseBoolean(payload.get("admin")),

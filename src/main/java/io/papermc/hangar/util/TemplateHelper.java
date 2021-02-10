@@ -16,6 +16,7 @@ import java.time.format.FormatStyle;
 import java.util.Map;
 
 @Component
+@Deprecated
 public class TemplateHelper {
 
     private final ObjectMapper mapper;

@@ -8,7 +8,7 @@
             <v-card-text>
                 <v-form ref="modalForm" v-model="validForm">
                     <v-text-field v-model.trim="form.name" filled :rules="[$util.$vc.require('Page name')]" :label="$t('page.new.name')" />
-                    <v-select v-model="form.parent" :items="pages" filled clearable :label="$t('page.new.parent')" item-text="name" item-value="id" />
+                    <v-select v-model="form.parent" :items="pageRoots" filled clearable :label="$t('page.new.parent')" item-text="name" item-value="id" />
                 </v-form>
             </v-card-text>
             <v-card-actions class="justify-end">
@@ -38,6 +38,21 @@ export default class NewPageModal extends HangarFormModal {
     @Prop({ type: Array as PropType<HangarProjectPage[]>, required: true })
     pages!: HangarProjectPage[];
 
+    get pageRoots(): HangarProjectPage[] {
+        return this.flatDeep(this.pages);
+    }
+
+    flatDeep(pages: HangarProjectPage[]): HangarProjectPage[] {
+        let ps: HangarProjectPage[] = [];
+        for (const page of pages) {
+            if (page.children.length > 0) {
+                ps = ps.concat(this.flatDeep(page.children));
+            }
+            ps.push(page);
+        }
+        return ps;
+    }
+
     createPage() {
         this.loading = true;
         this.$api
@@ -47,7 +62,7 @@ export default class NewPageModal extends HangarFormModal {
             })
             .then((slug) => {
                 this.dialog = false;
-                this.$nuxt.refresh(); // Might be needed to refresh the HangarProject w/the new page? idk - jake
+                this.$nuxt.refresh();
                 this.$router.push(`/${this.$route.params.author}/${this.$route.params.slug}/pages/${slug}`);
             })
             .catch(this.$util.handleRequestError)

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "hangar.orgs")
-public class OrgConfig {
+public class OrganizationsConfig {
     private boolean enabled = true;
     private String dummyEmailDomain = "org.papermc.io";
     private int createLimit = 5;

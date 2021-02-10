@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -32,11 +33,13 @@ public class ProjectPageService extends HangarService {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.minLength");
         }
 
-        if (!hangarConfig.projects.getNameMatcher().test(name)) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.invalidName");
+        if (contents.length() >  hangarConfig.pages.getMaxLen()) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxLength");
         }
 
-        if (parentId != null && projectPagesDAO.getChildPages(projectId, parentId).contains(slug)) {
+        hangarConfig.pages.testPageName(name);
+
+        if (parentId != null && projectPagesDAO.getChildPage(projectId, parentId, slug) != null) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.duplicateName");
         }
 
@@ -125,6 +128,13 @@ public class ProjectPageService extends HangarService {
         }
         if (!pageTable.isDeletable()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "Page is not deletable");
+        }
+        List<ProjectPageTable> children = projectPagesDAO.getChildPages(projectId, pageId);
+        if (!children.isEmpty()) {
+            for (ProjectPageTable child : children) {
+                child.setParentId(pageTable.getParentId());
+            }
+            projectPagesDAO.updateParents(children);
         }
         // Log must come first otherwise db error
         userActionLogService.projectPage(LoggedActionType.PROJECT_PAGE_DELETED.with(ProjectPageContext.of(projectId, pageId)), "", pageTable.getContents());

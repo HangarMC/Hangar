@@ -1,5 +1,6 @@
-package io.papermc.hangar.serviceold;
+package io.papermc.hangar.service.internal;
 
+import io.papermc.hangar.serviceold.HangarService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

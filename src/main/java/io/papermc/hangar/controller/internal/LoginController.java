@@ -1,8 +1,8 @@
 package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.controller.HangarController;
-import io.papermc.hangar.controller.api.RefreshResponse;
 import io.papermc.hangar.exceptions.HangarException;
+import io.papermc.hangar.model.api.auth.RefreshResponse;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.sso.AuthUser;
 import io.papermc.hangar.model.internal.sso.URLWithNonce;

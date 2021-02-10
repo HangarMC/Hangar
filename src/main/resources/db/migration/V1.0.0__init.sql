@@ -125,7 +125,7 @@ CREATE TABLE project_pages
     parent_id bigint
         CONSTRAINT project_pages_parent_id_fkey
             REFERENCES project_pages
-            ON DELETE SET NULL
+            ON DELETE RESTRICT
 );
 
 CREATE INDEX page_slug_idx

@@ -163,4 +163,8 @@ public class StringUtils {
             }
         });
     }
+
+    public static String parsePythonNullable(String input) {
+        return input.equals("None") ? null : input;
+    }
 }

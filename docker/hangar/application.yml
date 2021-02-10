@@ -37,7 +37,6 @@ hangar:
   auth-url: "http://localhost:8000"
   base-url: "http://localhost:8080"
   plugin-upload-dir: "/uploads"
-  use-webpack: true
 
   sponsors:
     - name: Beer
@@ -53,7 +52,7 @@ hangar:
   channels:
     max-name-len: 15
     name-regex: "^[a-zA-Z0-9]+$"
-    color-default: 7
+    color-default: cyan
     name-default: "Release"
 
   pages:
@@ -61,9 +60,10 @@ hangar:
       name: "Home"
       message: "Welcome to your new project!"
     min-len: 15
-    max-len: 32000
-    page:
-      max-len: 75000
+    max-len: 75000
+    name-regex: "^[a-zA-Z0-9-_ ]+$"
+    max-name-len: 25
+    min-name-len: 3
 
   projects:
     max-name-len: 25
@@ -80,6 +80,11 @@ hangar:
     max-keywords: 5
     unsafe-download-max-age: 10
     name-regex: "^[a-zA-Z0-9-_]{3,}$"
+
+  orgs:
+    create-limit: 5
+    dummy-email-domain: "org.papermc.io"
+    enabled: true
 
   users:
     max-tagline-len: 100
@@ -115,7 +120,5 @@ hangar:
       avatar-url: "http://localhost:8000/avatar/%s?size=120x120" # only comment in if you run auth locally
       key: changeme
       timeout: 10000
-      breaker:
-        max-failures: 5
-        timeout: 10s
-        reset: 5m
+    safe-download-hosts:
+      - "github.com"

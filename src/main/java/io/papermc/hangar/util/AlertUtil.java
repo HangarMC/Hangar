@@ -7,6 +7,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated(forRemoval = true)
 public class AlertUtil {
 
     public enum AlertType {

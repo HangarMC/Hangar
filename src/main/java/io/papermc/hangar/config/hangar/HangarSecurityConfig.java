@@ -42,46 +42,6 @@ public class HangarSecurityConfig {
         private String avatarUrl = "http://localhost:8000/avatar/%s?size=120x120";
         private String key = "changeme";
         private long timeout = 10000;
-        @NestedConfigurationProperty
-        public SecurityApiConfig.ApiBreakerConfig breaker;
-
-        @Autowired
-        public SecurityApiConfig(SecurityApiConfig.ApiBreakerConfig breaker) {
-            this.breaker = breaker;
-        }
-
-        @Component
-        @ConfigurationProperties(prefix = "hangar.security.api.breaker")
-        public static class ApiBreakerConfig {
-
-            private int maxFailures = 5;
-            private String timeout = "10s";
-            private String reset = "5m";
-
-            public int getMaxFailures() {
-                return maxFailures;
-            }
-
-            public void setMaxFailures(int maxFailures) {
-                this.maxFailures = maxFailures;
-            }
-
-            public String getTimeout() {
-                return timeout;
-            }
-
-            public void setTimeout(String timeout) {
-                this.timeout = timeout;
-            }
-
-            public String getReset() {
-                return reset;
-            }
-
-            public void setReset(String reset) {
-                this.reset = reset;
-            }
-        }
 
         public String getUrl() {
             return url;
@@ -113,14 +73,6 @@ public class HangarSecurityConfig {
 
         public void setTimeout(long timeout) {
             this.timeout = timeout;
-        }
-
-        public SecurityApiConfig.ApiBreakerConfig getBreaker() {
-            return breaker;
-        }
-
-        public void setBreaker(SecurityApiConfig.ApiBreakerConfig breaker) {
-            this.breaker = breaker;
         }
     }
 

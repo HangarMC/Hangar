@@ -1,4 +1,4 @@
-package io.papermc.hangar.controller.api;
+package io.papermc.hangar.model.api.auth;
 
 public class RefreshResponse {
 

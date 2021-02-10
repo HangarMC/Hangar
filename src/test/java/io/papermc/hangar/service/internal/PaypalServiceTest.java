@@ -1,4 +1,4 @@
-package io.papermc.hangar.serviceold;
+package io.papermc.hangar.service.internal;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

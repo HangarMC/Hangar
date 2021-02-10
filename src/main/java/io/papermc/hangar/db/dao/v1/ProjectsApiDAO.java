@@ -1,6 +1,7 @@
 package io.papermc.hangar.db.dao.v1;
 
 import io.papermc.hangar.db.mappers.PromotedVersionMapper;
+import io.papermc.hangar.model.api.project.DayProjectStats;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.ProjectMember;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
@@ -14,7 +15,9 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @RegisterConstructorMapper(Project.class)
@@ -110,4 +113,18 @@ public interface ProjectsApiDAO {
             "   WHERE p.slug = :slug AND p.owner_name = :author " +
             "   GROUP BY u.name")
     long getProjectMembersCount(String author, String slug);
+
+    @KeyColumn("dateKey")
+    @RegisterConstructorMapper(DayProjectStats.class)
+    @SqlQuery("SELECT cast(dates.day AS date) dateKey, coalesce(sum(pvd.downloads), 0) AS downloads, coalesce(pv.views, 0) AS views" +
+            "   FROM projects p," +
+            "   (SELECT generate_series(:fromDate::date, :toDate::date, INTERVAL '1 DAY') as day) dates " +
+            "       LEFT JOIN project_versions_downloads pvd ON dates.day = pvd.day" +
+            "       LEFT JOIN project_views pv ON dates.day = pv.day AND pvd.project_id = pv.project_id" +
+            "   WHERE " +
+            "       p.owner_name = :author AND " +
+            "       p.slug = :slug AND" +
+            "       (pvd IS NULL OR pvd.project_id = p.id)" +
+            "   GROUP BY pv.views, dates.day")
+    Map<String, DayProjectStats> getProjectStats(String author, String slug, OffsetDateTime fromDate, OffsetDateTime toDate);
 }

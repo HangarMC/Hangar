@@ -4,6 +4,7 @@ import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.v1.ProjectsApiDAO;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
+import io.papermc.hangar.model.api.project.DayProjectStats;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.ProjectMember;
 import io.papermc.hangar.model.api.requests.RequestPagination;
@@ -12,12 +13,13 @@ import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
 import io.papermc.hangar.modelold.generated.Tag;
 import io.papermc.hangar.service.HangarService;
-import io.papermc.hangar.util.ApiUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,8 +28,8 @@ public class ProjectsApiService extends HangarService {
     private final ProjectsApiDAO projectsApiDAO;
 
     @Autowired
-    public ProjectsApiService(HangarDao<ProjectsApiDAO> projectsDAO) {
-        this.projectsApiDAO = projectsDAO.get();
+    public ProjectsApiService(HangarDao<ProjectsApiDAO> projectsApiDAO) {
+        this.projectsApiDAO = projectsApiDAO.get();
     }
 
     public Project getProject(String author, String slug) {
@@ -38,6 +40,10 @@ public class ProjectsApiService extends HangarService {
     public PaginatedResult<ProjectMember> getProjectMembers(String author, String slug, RequestPagination requestPagination) {
         List<ProjectMember> projectMembers = projectsApiDAO.getProjectMembers(author, slug, requestPagination.getLimit(), requestPagination.getOffset());
         return new PaginatedResult<>(new Pagination(projectsApiDAO.getProjectMembersCount(author, slug), requestPagination), projectMembers);
+    }
+
+    public Map<String, DayProjectStats> getProjectStats(String author, String slug, OffsetDateTime fromDate, OffsetDateTime toDate) {
+        return projectsApiDAO.getProjectStats(author, slug, fromDate, toDate);
     }
 
     public PaginatedResult<Project> getProjects(String query, List<Category> categories, List<String> tags, String owner, ProjectSortingStrategy sort, boolean orderWithRelevance, RequestPagination pagination) {
@@ -51,7 +57,7 @@ public class ProjectsApiService extends HangarService {
         }
         boolean seeHidden = getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden);
 
-        String ordering = ApiUtil.strategyOrDefault(sort).getSql();
+        String ordering = sort.getSql();
         if (orderWithRelevance && query != null && !query.isEmpty()) {
             String relevance = "ts_rank(p.search_words, websearch_to_tsquery_postfix('english', :query)) DESC";
             if(query.endsWith(" ")) {
@@ -61,7 +67,7 @@ public class ProjectsApiService extends HangarService {
             // 1483056000 is the Ore epoch TODO change to hangar epoch
             // 86400 seconds to days
             // 604800‬ seconds to weeks
-            switch(ApiUtil.strategyOrDefault(sort)){
+            switch(sort){
                 case STARS: orderingFirstHalf = "p.starts * "; break;
                 case DOWNLOADS: orderingFirstHalf ="(p.downloads / 100) * "; break;
                 case VIEWS: orderingFirstHalf ="(p.views / 200) *"; break;

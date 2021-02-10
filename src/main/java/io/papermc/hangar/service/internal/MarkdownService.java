@@ -1,4 +1,4 @@
-package io.papermc.hangar.serviceold;
+package io.papermc.hangar.service.internal;
 
 import com.vladsch.flexmark.ast.MailLink;
 import com.vladsch.flexmark.ext.admonition.AdmonitionExtension;

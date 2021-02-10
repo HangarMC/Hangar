@@ -1,17 +1,19 @@
 package io.papermc.hangar.config.hangar;
 
 import io.papermc.hangar.model.common.Color;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+
+import javax.validation.constraints.Size;
 
 @Component
 @ConfigurationProperties(prefix = "hangar.channels")
 public class ChannelsConfig {
+    @Size(min = 1)
     private int maxNameLen = 15;
     private String nameRegex = "^[a-zA-Z0-9]+$";
-    @Value("#{T(io.papermc.hangar.model.common.Color).getById(${hangar.channels.color-default})}")
-    private Color colorDefault = Color.getById(7);
+    private Color colorDefault = Color.CYAN;
+    @Size(min = 1, max = 15)
     private String nameDefault = "Release";
 
     public int getMaxNameLen() {
