@@ -22,4 +22,9 @@ declare module 'hangar-internal' {
         name: string;
         hex: string;
     }
+
+    interface Platform {
+        icon: string;
+        text: string;
+    }
 }

@@ -59,14 +59,9 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import { PaginatedResult, Project } from 'hangar-api';
-import ProjectList from '~/components/ProjectList.vue';
+import { Platform } from 'hangar-internal';
+import ProjectList from '~/components/projects/ProjectList.vue';
 import HangarSponsor from '~/components/layouts/Sponsor.vue';
-
-// TODO move somewhere else
-interface Platform {
-    icon: string;
-    text: string;
-}
 
 @Component({
     components: {

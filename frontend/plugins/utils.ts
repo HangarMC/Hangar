@@ -159,7 +159,7 @@ const createUtil = ({ store, error }: Context) => {
                 });
                 console.log(err);
             } else if (err.response) {
-                // TODO check is msg is a i18n key and use that instead
+                // TODO check is msg is a i18n key and use that instead (use $te to check existence of a key)
                 if (err.response.data.isHangarApiException) {
                     const data: HangarApiException = err.response.data;
                     store.dispatch('snackbar/SHOW_NOTIF', {

@@ -245,6 +245,21 @@ const msgs: LocaleMessageObject = {
             softDelete: 'Project deleted by {0}',
         },
     },
+    author: {
+        watching: 'Watching',
+        stars: 'Stars',
+        orgs: 'Organizations',
+        viewOnForums: 'View on forums ',
+        memberSince: 'A member since {}',
+        numProjects: '{0} project(s)',
+        addTagline: 'Add a tagline',
+    },
+    linkout: {
+        title: 'External Link Warning',
+        text: 'You have clicked on an external link to "{0}". If you did not intend to visit this link, please go back. Otherwise, click continue.',
+        abort: 'Go Back',
+        continue: 'Continue',
+    },
     message: 'Good morning!',
 };
 

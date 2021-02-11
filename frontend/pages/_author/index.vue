@@ -19,7 +19,7 @@
                     <v-subheader>
                         <template v-if="user.tagline">{{ user.tagline }}</template>
                         <!-- TODO tagline edit -->
-                        <!--<template v-else-if="u.isCurrent() || canEditOrgSettings(u, o, so)">Add a tagline</template>-->
+                        <!--<template v-else-if="u.isCurrent() || canEditOrgSettings(u, o, so)">{{ $t('author.addTagline') }}</template>-->
                         <v-btn icon>
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
@@ -28,10 +28,9 @@
             </v-col>
             <v-spacer />
             <v-col cols="2">
-                <!--TODO i18n-->
-                <v-subheader>{{ user.projectCount }} project(s)</v-subheader>
-                <v-subheader>A member since {{ $util.prettyDate(user.joinDate) }}</v-subheader>
-                <a :href="$util.forumUrl(user.name)">View on forums <v-icon>mdi-open-in-new</v-icon></a>
+                <v-subheader>{{ $t('author.numProjects', [user.projectCount]) }}</v-subheader>
+                <v-subheader>{{ $t('author.memberSince', [$util.prettyDate(user.joinDate)]) }}</v-subheader>
+                <a :href="$util.forumUrl(user.name)">{{ $t('author.viewForums') }}<v-icon>mdi-open-in-new</v-icon></a>
             </v-col>
         </v-row>
         <v-divider />
@@ -41,18 +40,15 @@
             </v-col>
             <v-col cols="12" md="4">
                 <v-list dense>
-                    <!-- todo i18n -->
-                    <v-subheader>Organizations</v-subheader>
+                    <v-subheader>{{ $t('author.orgs') }}</v-subheader>
                     <!-- todo display orgs -->
                 </v-list>
                 <v-list dense>
-                    <!-- todo i18n -->
-                    <v-subheader>Stars</v-subheader>
+                    <v-subheader>{{ $t('author.stars') }}</v-subheader>
                     <!-- todo display stars -->
                 </v-list>
                 <v-list dense>
-                    <!-- todo i18n -->
-                    <v-subheader>Watching</v-subheader>
+                    <v-subheader>{{ $t('author.watching') }}</v-subheader>
                     <!-- todo watching -->
                 </v-list>
             </v-col>
@@ -66,7 +62,7 @@ import { PaginatedResult, Project } from 'hangar-api';
 import { Context } from '@nuxt/types';
 import { HangarUser } from 'hangar-internal';
 import UserAvatar from '~/components/UserAvatar.vue';
-import ProjectList from '~/components/ProjectList.vue';
+import ProjectList from '~/components/projects/ProjectList.vue';
 
 interface Button {
     icon: String;

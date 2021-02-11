@@ -93,8 +93,7 @@
                     v-for="tab in tabs"
                     :key="tab.title"
                     :exact="!!tab.exact"
-                    :to="tab.external ? undefined : tab.link"
-                    :href="tab.external ? tab.link : undefined"
+                    :to="tab.external ? '/linkout?remoteUrl=' + tab.link : tab.link"
                     :nuxt="!tab.external"
                 >
                     <v-icon>{{ tab.icon }}</v-icon>
