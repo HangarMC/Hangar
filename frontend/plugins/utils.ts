@@ -1,6 +1,7 @@
 import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
 import { AxiosError } from 'axios';
+import filesize from 'filesize';
 import { HangarApiException, HangarValidationException } from 'hangar-api';
 import { HangarUser } from 'hangar-internal';
 import { TranslateResult } from 'vue-i18n';
@@ -83,6 +84,10 @@ const createUtil = ({ store, error }: Context) => {
                 month: 'long',
                 year: 'numeric',
             });
+        }
+
+        formatSize(input: any) {
+            return filesize(input);
         }
 
         /**

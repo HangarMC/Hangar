@@ -35,7 +35,7 @@
                     </v-col>
                     <v-col v-if="isFile" md="4" sm="6" cols="12">
                         <v-text-field
-                            :value="filesize(pendingVersion.fileInfo.sizeBytes)"
+                            :value="$util.formatSize(pendingVersion.fileInfo.sizeBytes)"
                             hide-details
                             :label="$t('version.new.form.fileSize')"
                             disabled
@@ -114,7 +114,6 @@
 
 <script lang="ts">
 import { Component } from 'nuxt-property-decorator';
-import filesize from 'filesize';
 import remove from 'lodash-es/remove';
 import { PendingVersion, ProjectChannel } from 'hangar-internal';
 import { HangarProjectMixin } from '~/components/mixins';
@@ -199,10 +198,6 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
 
     get isFile() {
         return this.pendingVersion?.isFile;
-    }
-
-    filesize(input: any) {
-        return filesize(input);
     }
 
     reset() {

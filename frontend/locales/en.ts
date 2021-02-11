@@ -176,6 +176,7 @@ const msgs: LocaleMessageObject = {
         new: {
             title: 'Create version...',
             upload: 'Upload File',
+            uploadNew: 'Upload a new Version',
             url: 'Enter a URL',
             form: {
                 versionString: 'Version',

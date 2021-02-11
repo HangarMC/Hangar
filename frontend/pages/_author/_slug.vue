@@ -7,14 +7,14 @@
                 <v-btn type="primary" :to="'/' + slug + '/manage/sendforapproval'">{{ $t('project.sendForApproval') }} </v-btn>
                 <strong>{{ $t('visibility.notice.' + project.visibility) }}</strong>
                 <br />
-                <Markdown :input="project.lastVisibilityChangeComment || 'Unknown'" />
+                <Markdown :raw="project.lastVisibilityChangeComment || 'Unknown'" />
             </v-alert>
             <v-alert v-else-if="isSoftDeleted" type="error">
                 {{ $t('visibility.notice.' + project.visibility, [project.lastVisibilityChangeUserName]) }}
             </v-alert>
             <v-alert v-else type="error">
                 {{ $t('visibility.notice.' + project.visibility) }}
-                <Markdown v-if="project.lastVisibilityChangeComment" :input="project.lastVisibilityChangeComment" />
+                <Markdown v-if="project.lastVisibilityChangeComment" :raw="project.lastVisibilityChangeComment" />
             </v-alert>
         </template>
         <v-row>
