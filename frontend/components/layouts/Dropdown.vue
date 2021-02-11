@@ -47,14 +47,3 @@ export default class Dropdown extends Vue {
     }
 }
 </script>
-
-<style lang="scss" scoped>
-.announcement {
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
-.announcement-text {
-    padding: 0.25rem 0;
-}
-</style>

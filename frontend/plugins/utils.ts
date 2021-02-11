@@ -2,6 +2,9 @@ import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
 import { AxiosError } from 'axios';
 import filesize from 'filesize';
+// TODO fix it complaining about no type declaration file
+// @ts-ignore
+import { contrastRatio, HexToRGBA, parseHex } from 'vuetify/es5/util/colorUtils';
 import { HangarApiException, HangarValidationException } from 'hangar-api';
 import { HangarUser } from 'hangar-internal';
 import { TranslateResult } from 'vue-i18n';
@@ -88,6 +91,19 @@ const createUtil = ({ store, error }: Context) => {
 
         formatSize(input: any) {
             return filesize(input);
+        }
+
+        white = HexToRGBA(parseHex('#ffffff'));
+        black = HexToRGBA(parseHex('#000000'));
+
+        isDark(hex: string): boolean {
+            const rgba = HexToRGBA(parseHex(hex));
+            return contrastRatio(rgba, this.white) > 2;
+        }
+
+        isLight(hex: string): boolean {
+            const rgba = HexToRGBA(parseHex(hex));
+            return contrastRatio(rgba, this.black) > 2;
         }
 
         /**

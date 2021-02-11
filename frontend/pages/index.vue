@@ -13,7 +13,7 @@
                 </v-row>
                 <v-row justify="center" align="center">
                     <v-col cols="12">
-                        <!--<ProjectList :projects="projects"></ProjectList>-->
+                        <ProjectList :projects="projects"></ProjectList>
                     </v-col>
                 </v-row>
             </v-col>
@@ -96,7 +96,7 @@ export default class Home extends Vue {
 
     asyncData() {
         // async asyncData({ $api }: Context): Promise<{ projects: [] }> {
-        return { projects: { result: [] } };
+        return { projects: { result: [], pagination: { limit: 10, offset: 0, count: 0 } } };
         // return { projects: await $api.request<PaginatedResult<Project>>('projects', 'get', { limit: 25, offset: 0 }) };
     }
 }

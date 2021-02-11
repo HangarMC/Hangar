@@ -23,6 +23,7 @@
                     <v-card-title v-if="$vuetify.breakpoint.smAndDown">
                         {{ $t('project.new.step1.title') }}
                     </v-card-title>
+                    <!-- eslint-disable-next-line vue/no-v-html -->
                     <v-card-text v-html="$t('project.new.step1.text')"></v-card-text>
                 </v-card>
             </StepperStepContent>
@@ -48,6 +49,7 @@
                                     />
                                 </v-col>
                                 <v-col cols="12" md="6">
+                                    <!-- todo custom rule to check if a name exist already -->
                                     <v-text-field
                                         v-model.trim="form.name"
                                         autofocus

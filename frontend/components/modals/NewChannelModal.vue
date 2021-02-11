@@ -17,8 +17,8 @@
                                         <v-card
                                             :color="color"
                                             class="d-flex align-center"
-                                            :dark="isDark(color)"
-                                            :light="isLight(color)"
+                                            :dark="$util.isDark(color)"
+                                            :light="$util.isLight(color)"
                                             height="20"
                                             width="40"
                                             @click="toggle"
@@ -46,9 +46,6 @@
 <script lang="ts">
 import { Component } from 'nuxt-property-decorator';
 import { Color, ProjectChannel } from 'hangar-internal';
-// TODO fix it complaining about no type declaration file
-// @ts-ignore
-import { contrastRatio, HexToRGBA, parseHex } from 'vuetify/es5/util/colorUtils';
 import { HangarFormModal } from '../mixins';
 
 @Component
@@ -82,20 +79,6 @@ export default class NewChannelModal extends HangarFormModal {
 
     get isValid() {
         return this.validForm && !!this.form.color;
-    }
-
-    white = HexToRGBA(parseHex('#ffffff'));
-    black = HexToRGBA(parseHex('#000000'));
-
-    // TODO util, this is probably super useful elsewhere
-    isDark(hex: string): boolean {
-        const rgba = HexToRGBA(parseHex(hex));
-        return contrastRatio(rgba, this.white) > 2;
-    }
-
-    isLight(hex: string): boolean {
-        const rgba = HexToRGBA(parseHex(hex));
-        return contrastRatio(rgba, this.black) > 2;
     }
 
     createChannel() {

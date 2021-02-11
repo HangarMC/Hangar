@@ -47,6 +47,7 @@ export default class ApiPage extends Vue {
 </script>
 
 <style lang="scss">
+//noinspection CssUnknownTarget - IJ you are dum
 @import '@/node_modules/swagger-ui/dist/swagger-ui.css';
 
 .swagger-ui .topbar .download-url-wrapper,

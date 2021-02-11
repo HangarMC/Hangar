@@ -122,8 +122,6 @@ import { NamedPermission } from '~/types/enums';
 import MarkdownEditor from '~/components/MarkdownEditor.vue';
 import NewChannelModal from '~/components/modals/NewChannelModal.vue';
 
-// TODO implement ProjectVersionsNewPage
-// was multiple pages before, now one
 @Component({
     components: { NewChannelModal, MarkdownEditor },
 })
@@ -175,6 +173,7 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
         }
     }
 
+    // todo handle errors better, for example "version.new.error.duplicateNameAndPlatform"
     async createPendingVersion() {
         this.loading.create = true;
         const data: FormData = new FormData();

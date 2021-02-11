@@ -50,7 +50,6 @@ import remove from 'lodash-es/remove';
 import { Component, Vue } from 'nuxt-property-decorator';
 import { HangarNotification, Invite, Invites } from 'hangar-internal';
 import { LoggedIn } from '~/utils/perms';
-// TODO implement NotificationsPage
 
 @Component({
     head: {
@@ -114,8 +113,7 @@ export default class NotificationsPage extends Vue {
                 }
             })
             .catch(() => {
-                // TODO error popup
-                console.error('Could not mark as read');
+                this.$util.error('Could not mark as read');
             });
     }
 
@@ -127,7 +125,7 @@ export default class NotificationsPage extends Vue {
                 // TODO actions on save
             })
             .catch(() => {
-                // TODO error popup
+                this.$util.error('Could update invite');
             });
     }
 

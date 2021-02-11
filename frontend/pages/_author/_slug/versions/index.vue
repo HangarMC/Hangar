@@ -4,12 +4,13 @@
             <v-data-iterator :items="versions.result" :server-items-length="versions.pagination.count">
                 <template #item="{ item: version }">
                     <v-sheet width="100%" color="accent" rounded>
-                        <!-- todo fix url -->
-                        <NuxtLink :to="'versions/' + version.urlPath">
+                        <!-- todo fix url, need to get platform -->
+                        <NuxtLink :to="'versions/Paper/' + version.urlPath">
                             <v-row>
                                 <v-col cols="4" md="2" lg="2">
                                     <v-row>
                                         <v-col cols="12">{{ version.name }}</v-col>
+                                        <!-- todo is this order always this way? -->
                                         <Tag :tag="version.tags[1]" />
                                     </v-row>
                                 </v-col>
@@ -53,6 +54,10 @@
             <v-btn v-if="canUpload" color="primary" block nuxt to="versions/new">
                 {{ $t('version.new.uploadNew') }}
             </v-btn>
+
+            <!-- todo channel filter -->
+            <!-- todo platform filter -->
+            <!-- todo member list -->
         </v-col>
     </v-row>
 </template>
