@@ -10,9 +10,9 @@ import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.Type;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.service.internal.OrganizationService;
-import io.papermc.hangar.service.internal.UserService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.projects.ProjectService;
+import io.papermc.hangar.service.internal.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -65,7 +65,6 @@ public class ProjectController extends HangarController {
     @Unlocked
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createProject(@RequestBody @Valid NewProject newProject) {
-        System.out.println(newProject);
         ProjectTable projectTable = projectFactory.createProject(newProject);
         return ResponseEntity.ok(projectTable.getUrl());
     }

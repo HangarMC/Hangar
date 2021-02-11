@@ -2,7 +2,6 @@ package io.papermc.hangar.service.internal.versions.plugindata.handler;
 
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.model.internal.versions.PlatformDependency;
 import io.papermc.hangar.service.internal.versions.plugindata.DataValue;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
@@ -75,7 +74,7 @@ public class WaterfallPluginFileHandler extends FileTypeHandler {
             result.add(new DataValue.DependencyDataValue(FileTypeHandler.DEPENDENCIES, getPlatform(), dependencies));
         }
 
-        result.add(new DataValue.PlatformDependencyDataValue(FileTypeHandler.PLATFORM_DEPENDENCY, new PlatformDependency(getPlatform(), new ArrayList<>())));
+        result.add(new DataValue.PlatformDependencyDataValue(FileTypeHandler.PLATFORM_DEPENDENCY, getPlatform(), new ArrayList<>()));
         return result;
     }
 

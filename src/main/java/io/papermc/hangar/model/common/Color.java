@@ -1,15 +1,13 @@
 package io.papermc.hangar.model.common;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonFormat.Shape;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@JsonFormat(shape = Shape.OBJECT)
 public enum Color {
 
     PURPLE("#B400FF"),
@@ -39,27 +37,17 @@ public enum Color {
         this.hex = hex;
     }
 
+    @JsonValue
     public String getHex() {
         return hex;
     }
 
-    @JsonCreator
-    public static Color getByIdAndHex(@JsonProperty("hex") String hex, @JsonProperty("value") int id) {
-        Color color = VALUES[id];
-        if (color.hex.equalsIgnoreCase(hex)) {
-            return color;
-        }
-        return null;
-    }
-
-    @JsonCreator
-    public static Color getById(@JsonProperty("value") int id) {
-        return VALUES[id];
-    }
-
-    public static Color getByHexStr(String hexStr) {
-        for (Color value : VALUES) {
-            if (value.hex.equalsIgnoreCase(hexStr)) return value;
+    @JsonCreator(mode = Mode.DELEGATING)
+    public static Color getByHex(String hex) {
+        for (Color color : VALUES) {
+            if (color.hex.equalsIgnoreCase(hex)) {
+                return color;
+            }
         }
         return null;
     }

@@ -1,5 +1,5 @@
 declare module 'hangar-internal' {
-    import { FileInfo } from 'hangar-api';
+    import { FileInfo, Named } from 'hangar-api';
     import { Platform } from '~/types/enums';
 
     interface PlatformDependency {
@@ -18,7 +18,16 @@ declare module 'hangar-internal' {
         externalUrl: string | null;
         channelName: string;
         channelColor: string;
+        channelNonReviewed: boolean;
         forumSync: boolean;
+        unstable: boolean;
+        recommended: boolean;
         isFile: boolean;
+    }
+
+    interface ProjectChannel extends Named {
+        color: string;
+        nonReviewed: boolean;
+        temp?: boolean;
     }
 }

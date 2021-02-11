@@ -92,7 +92,7 @@
                 <v-tab
                     v-for="tab in tabs"
                     :key="tab.title"
-                    :exact="!tab.external"
+                    :exact="!!tab.exact"
                     :to="tab.external ? undefined : tab.link"
                     :href="tab.external ? tab.link : undefined"
                     :nuxt="!tab.external"
@@ -116,16 +116,18 @@ import { Component, Vue } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
 import { HangarProject } from 'hangar-internal';
 import { NavigationGuardNext, Route } from 'vue-router';
+import { TranslateResult } from 'vue-i18n';
 import Markdown from '~/components/Markdown.vue';
 import FlagModal from '~/components/modals/FlagModal.vue';
 import UserAvatar from '~/components/UserAvatar.vue';
 import { NamedPermission, Visibility } from '~/types/enums';
 
 interface Tab {
-    title: String;
-    icon: String;
-    link: String;
-    external: Boolean;
+    title: string | TranslateResult;
+    icon: string;
+    link: string;
+    external: boolean;
+    exact?: boolean;
 }
 
 @Component({
@@ -153,26 +155,26 @@ export default class ProjectPage extends Vue {
 
     get tabs(): Tab[] {
         const tabs = [] as Tab[];
-        tabs.push({ title: this.$t('project.tabs.docs') as String, icon: 'mdi-book', link: this.slug, external: false });
-        tabs.push({ title: this.$t('project.tabs.versions') as String, icon: 'mdi-download', link: this.slug + '/versions', external: false });
+        tabs.push({ title: this.$t('project.tabs.docs'), icon: 'mdi-book', link: this.slug, external: false, exact: true });
+        tabs.push({ title: this.$t('project.tabs.versions'), icon: 'mdi-download', link: this.slug + '/versions', external: false });
         if (this.project.settings.forumSync) {
-            tabs.push({ title: this.$t('project.tabs.discuss') as String, icon: 'mdi-account-group', link: this.slug + '/discuss', external: false });
+            tabs.push({ title: this.$t('project.tabs.discuss'), icon: 'mdi-account-group', link: this.slug + '/discuss', external: false });
         }
         if (this.$util.hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)) {
-            tabs.push({ title: this.$t('project.tabs.settings') as String, icon: 'mdi-cog', link: this.slug + '/settings', external: false });
+            tabs.push({ title: this.$t('project.tabs.settings'), icon: 'mdi-cog', link: this.slug + '/settings', external: false });
         }
 
         if (this.project.settings.homepage) {
-            tabs.push({ title: this.$t('project.tabs.homepage') as String, icon: 'mdi-home', link: this.project.settings.homepage, external: true });
+            tabs.push({ title: this.$t('project.tabs.homepage'), icon: 'mdi-home', link: this.project.settings.homepage, external: true });
         }
         if (this.project.settings.issues) {
-            tabs.push({ title: this.$t('project.tabs.issues') as String, icon: 'mdi-bug', link: this.project.settings.issues, external: true });
+            tabs.push({ title: this.$t('project.tabs.issues'), icon: 'mdi-bug', link: this.project.settings.issues, external: true });
         }
         if (this.project.settings.sources) {
-            tabs.push({ title: this.$t('project.tabs.source') as String, icon: 'mdi-code-tags', link: this.project.settings.sources, external: true });
+            tabs.push({ title: this.$t('project.tabs.source'), icon: 'mdi-code-tags', link: this.project.settings.sources, external: true });
         }
         if (this.project.settings.support) {
-            tabs.push({ title: this.$t('project.tabs.support') as String, icon: 'mdi-chat-question', link: this.project.settings.support, external: true });
+            tabs.push({ title: this.$t('project.tabs.support'), icon: 'mdi-chat-question', link: this.project.settings.support, external: true });
         }
         return tabs;
     }
@@ -194,7 +196,7 @@ export default class ProjectPage extends Vue {
         return null;
     }
 
-    get slug(): String {
+    get slug(): string {
         return `/${this.project.namespace.owner}/${this.project.namespace.slug}`;
     }
 

@@ -10,6 +10,7 @@ const msgs: LocaleMessageObject = {
         create: 'Create',
         delete: 'Delete',
         or: 'Or',
+        reset: 'Reset',
     },
     hangar: {
         projectSearch: {
@@ -173,6 +174,7 @@ const msgs: LocaleMessageObject = {
     },
     version: {
         new: {
+            title: 'Create version...',
             upload: 'Upload File',
             url: 'Enter a URL',
             form: {
@@ -181,6 +183,7 @@ const msgs: LocaleMessageObject = {
                 fileSize: 'File size',
                 externalUrl: 'External URL',
                 channel: 'Channel',
+                addChannel: 'Add Channel',
                 unstable: 'Unstable',
                 recommended: 'Recommended',
                 forumPost: 'Forum Post',
@@ -189,6 +192,14 @@ const msgs: LocaleMessageObject = {
                     desc: "What's new in this release?",
                 },
             },
+        },
+    },
+    channel: {
+        new: {
+            title: 'Add a new channel',
+            name: 'Channel Name',
+            color: 'Channel Color',
+            reviewQueue: 'Exclude from moderation review queue?',
         },
     },
     organization: {

@@ -3,7 +3,6 @@ package io.papermc.hangar.service.internal.versions.plugindata;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.model.internal.versions.PlatformDependency;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.FileTypeHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
@@ -13,6 +12,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import static io.papermc.hangar.service.internal.versions.plugindata.DataValue.DependencyDataValue;
@@ -38,9 +38,10 @@ public class PluginFileData {
                     case FileTypeHandler.PLATFORM_DEPENDENCY:
                         if (this.dataValues.containsKey(value.getKey())) {
                             PlatformDependencyDataValue platformDependencyDataValue = (PlatformDependencyDataValue) this.dataValues.get(value.getKey());
-                            platformDependencyDataValue.getValue().addAll(((PlatformDependencyDataValue) value).getValue());
+                            platformDependencyDataValue.getValue().putAll(((PlatformDependencyDataValue) value).getValue());
                         } else {
-                            this.dataValues.put(value.getKey(), value);
+                            PlatformDependencyDataValue platformDependencyDataValue = (PlatformDependencyDataValue) value;
+                            this.dataValues.put(value.getKey(), new PlatformDependencyDataValue(value.getKey(), new HashMap<>(platformDependencyDataValue.getValue())));
                         }
                         break;
                     default:
@@ -84,12 +85,14 @@ public class PluginFileData {
     public Map<Platform, List<PluginDependency>> getDependencies() {
         DataValue dependencies = dataValues.get("dependencies");
         if (dependencies == null) {
-            return new EnumMap<>(getPlatformDependencies().stream().collect(Collectors.toMap(PlatformDependency::getPlatform, pd -> new ArrayList<>())));
+            // compiler needs the types here - Jake
+            //noinspection Convert2Diamond
+            return new EnumMap<Platform, List<PluginDependency>>(getPlatformDependencies().entrySet().stream().collect(Collectors.toMap(Entry::getKey, entry -> new ArrayList<>())));
         }
         return ((DependencyDataValue) dependencies).getValue();
     }
 
-    public List<PlatformDependency> getPlatformDependencies() {
+    public Map<Platform, List<String>> getPlatformDependencies() {
         DataValue platformDependencies = dataValues.get(FileTypeHandler.PLATFORM_DEPENDENCY);
         return platformDependencies != null ? ((PlatformDependencyDataValue) platformDependencies).getValue() : null;
     }

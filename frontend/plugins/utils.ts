@@ -3,13 +3,14 @@ import { Inject } from '@nuxt/types/app';
 import { AxiosError } from 'axios';
 import { HangarApiException, HangarValidationException } from 'hangar-api';
 import { HangarUser } from 'hangar-internal';
+import { TranslateResult } from 'vue-i18n';
 import { NamedPermission } from '~/types/enums';
 import { RootState } from '~/store';
 import { NotifPayload } from '~/store/snackbar';
 import { AuthState } from '~/store/auth';
 
 type Validation = (v: string) => boolean | string;
-type ValidationArgument = (field?: string) => Validation;
+type ValidationArgument = (field?: string | TranslateResult) => Validation;
 
 function handleRequestError(err: AxiosError, error: Context['error']) {
     if (!err.isAxiosError) {
@@ -174,7 +175,7 @@ const createUtil = ({ store, error }: Context) => {
         }
 
         $vc: Record<string, ValidationArgument> = {
-            require: ((name: string = 'Field') => (v: string) => !!v || `${name} is required`) as ValidationArgument,
+            require: ((name: string | TranslateResult = 'Field') => (v: string) => !!v || `${name} is required`) as ValidationArgument,
         };
 
         $v: Record<string, Validation> = {};

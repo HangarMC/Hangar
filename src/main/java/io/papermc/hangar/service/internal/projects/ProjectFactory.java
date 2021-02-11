@@ -10,7 +10,7 @@ import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProject;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.api.UsersApiService;
-import io.papermc.hangar.service.internal.MemberService;
+import io.papermc.hangar.service.internal.roles.MemberService;
 import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.springframework.beans.factory.annotation.Autowired;

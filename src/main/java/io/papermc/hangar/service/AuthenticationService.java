@@ -2,8 +2,8 @@ package io.papermc.hangar.service;
 
 import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.db.UserTable;
-import io.papermc.hangar.service.internal.UserService;
 import io.papermc.hangar.service.internal.roles.GlobalRoleService;
+import io.papermc.hangar.service.internal.users.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,10 +1,11 @@
 package io.papermc.hangar.model.db.projects;
 
 import io.papermc.hangar.db.customtypes.JSONB;
-import io.papermc.hangar.model.Visible;
+import io.papermc.hangar.model.ModelVisible;
 import io.papermc.hangar.model.Visitable;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.Visibility;
+import io.papermc.hangar.model.db.ProjectIdentified;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProject;
 import io.papermc.hangar.util.StringUtils;
@@ -14,7 +15,7 @@ import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 
-public class ProjectTable extends Table implements Visitable, Visible {
+public class ProjectTable extends Table implements Visitable, ModelVisible, ProjectIdentified {
 
     private String name;
     private String slug;
@@ -173,6 +174,7 @@ public class ProjectTable extends Table implements Visitable, Visible {
         return visibility;
     }
 
+    @Override
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
     }
@@ -247,6 +249,11 @@ public class ProjectTable extends Table implements Visitable, Visible {
 
     public void setForumSync(boolean forumSync) {
         this.forumSync = forumSync;
+    }
+
+    @Override
+    public long getProjectId() {
+        return id;
     }
 
     @Override

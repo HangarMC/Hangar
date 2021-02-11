@@ -1,17 +1,34 @@
 package io.papermc.hangar.service.internal.versions;
 
+import io.papermc.hangar.db.customtypes.LoggedActionType;
+import io.papermc.hangar.db.customtypes.LoggedActionType.VersionContext;
 import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionDAO;
+import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionDependencyDAO;
+import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionPlatformDependencyDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.version.FileInfo;
+import io.papermc.hangar.model.api.project.version.PluginDependency;
+import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.common.projects.Visibility;
+import io.papermc.hangar.model.db.PlatformVersionTable;
 import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
+import io.papermc.hangar.model.db.versions.ProjectVersionDependencyTable;
+import io.papermc.hangar.model.db.versions.ProjectVersionPlatformDependencyTable;
+import io.papermc.hangar.model.db.versions.ProjectVersionTable;
+import io.papermc.hangar.model.db.versions.ProjectVersionTagTable;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
 import io.papermc.hangar.service.HangarService;
+import io.papermc.hangar.service.VisibilityService.ProjectVisibilityService;
+import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.projects.ChannelService;
+import io.papermc.hangar.service.internal.projects.PlatformService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.versions.plugindata.PluginFileWithData;
+import io.papermc.hangar.util.CryptoUtils;
 import io.papermc.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,23 +38,41 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class VersionFactory extends HangarService {
 
+    private final ProjectVersionPlatformDependencyDAO projectVersionPlatformDependencyDAO;
+    private final ProjectVersionDependencyDAO projectVersionDependencyDAO;
+    private final PlatformVersionDAO platformVersionDAO;
     private final ProjectVersionDAO projectVersionDAO;
     private final ProjectFiles projectFiles;
     private final PluginDataService pluginDataService;
     private final ChannelService channelService;
+    private final ProjectVisibilityService projectVisibilityService;
     private final ProjectService projectService;
+    private final VersionService versionService;
+    private final PlatformService platformService;
+    private final UsersApiService usersApiService;
 
     @Autowired
-    public VersionFactory(HangarDao<ProjectVersionDAO> projectVersionDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectService projectService) {
+    public VersionFactory(HangarDao<ProjectVersionPlatformDependencyDAO> projectVersionPlatformDependencyDAO, HangarDao<ProjectVersionDependencyDAO> projectVersionDependencyDAO, HangarDao<PlatformVersionDAO> platformVersionDAO, HangarDao<ProjectVersionDAO> projectVersionDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, ProjectService projectService, VersionService versionService, PlatformService platformService, UsersApiService usersApiService) {
+        this.projectVersionPlatformDependencyDAO = projectVersionPlatformDependencyDAO.get();
+        this.projectVersionDependencyDAO = projectVersionDependencyDAO.get();
+        this.platformVersionDAO = platformVersionDAO.get();
         this.projectVersionDAO = projectVersionDAO.get();
         this.projectFiles = projectFiles;
         this.pluginDataService = pluginDataService;
         this.channelService = channelService;
+        this.projectVisibilityService = projectVisibilityService;
         this.projectService = projectService;
+        this.versionService = versionService;
+        this.platformService = platformService;
+        this.usersApiService = usersApiService;
     }
 
     public PendingVersion createPendingVersion(long projectId, MultipartFile file) {
@@ -63,6 +98,15 @@ public class VersionFactory extends HangarService {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.unexpected");
         }
 
+        String versionString = StringUtils.slugify(pluginDataFile.getData().getVersion());
+        if (!hangarConfig.projects.getVersionNameMatcher().test(versionString)) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidVersionString");
+        }
+
+        if (exists(projectId, versionString, pluginDataFile.getData().getPlatformDependencies().keySet())) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.duplicateNameAndPlatform");
+        }
+
         ProjectChannelTable projectChannelTable = channelService.getFirstChannel(projectId);
         PendingVersion pendingVersion = new PendingVersion(
                 StringUtils.slugify(pluginDataFile.getData().getVersion()),
@@ -85,5 +129,103 @@ public class VersionFactory extends HangarService {
         assert projectTable != null;
         ProjectChannelTable projectChannelTable = channelService.getFirstChannel(projectId);
         return new PendingVersion(url, projectChannelTable, projectTable.isForumSync());
+    }
+
+    public void publishPendingVersion(long projectId, PendingVersion pendingVersion) {
+        ProjectTable projectTable = projectService.getProjectTable(projectId);
+        assert projectTable != null;
+        if (pendingVersion.isFile()) { // verify file
+            Path versionJar = projectFiles.getTempDir(getHangarPrincipal().getName()).resolve(pendingVersion.getFileInfo().getName());
+            try {
+                if (!versionJar.toFile().exists()) {
+                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.noFile");
+                } else if (versionJar.toFile().length() != pendingVersion.getFileInfo().getSizeBytes()) {
+                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.mismatchedFileSize");
+                } else if (!Objects.equals(CryptoUtils.md5ToHex(Files.readAllBytes(versionJar)), pendingVersion.getFileInfo().getMd5Hash())) {
+                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.hashMismatch");
+                }
+            } catch (IOException e) {
+                logger.error("Could not publish version for {}", getHangarPrincipal().getName(), e);
+            }
+        } else if (exists(projectId, pendingVersion.getVersionString(), pendingVersion.getPlatformDependencies().keySet())) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.duplicateNameAndPlatform");
+        }
+
+        if (pendingVersion.getPlatformDependencies().entrySet().stream().anyMatch(entry -> !platformService.getVersionsForPlatform(entry.getKey()).containsAll(entry.getValue()))) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPlatformVersion");
+        }
+
+        ProjectVersionTable projectVersionTable = null;
+        try {
+            ProjectChannelTable projectChannelTable = channelService.getProjectChannel(projectId, pendingVersion.getChannelName(), pendingVersion.getChannelColor());
+            if (projectChannelTable == null) { // create new channel
+                projectChannelTable = channelService.createProjectChannel(pendingVersion.getChannelName(), pendingVersion.getChannelColor(), projectId, pendingVersion.isChannelNonReviewed());
+            }
+
+            projectVersionTable = projectVersionDAO.insert(new ProjectVersionTable(
+                    pendingVersion.getVersionString(),
+                    pendingVersion.getDescription(),
+                    projectId,
+                    projectChannelTable.getId(),
+                    pendingVersion.getFileInfo().getSizeBytes(),
+                    pendingVersion.getFileInfo().getMd5Hash(),
+                    pendingVersion.getFileInfo().getName(),
+                    getHangarPrincipal().getUserId(),
+                    pendingVersion.isForumSync(),
+                    pendingVersion.getExternalUrl()
+            ));
+
+            List<ProjectVersionTagTable> projectVersionTagTables = new ArrayList<>();
+            List<ProjectVersionPlatformDependencyTable> platformDependencyTables = new ArrayList<>();
+            for (var entry : pendingVersion.getPlatformDependencies().entrySet()) {
+                projectVersionTagTables.add(new ProjectVersionTagTable(projectVersionTable.getId(), entry.getKey().getName(), entry.getValue(), entry.getKey().getTagColor()));
+                for (String version : entry.getValue()) {
+                    PlatformVersionTable platformVersionTable = platformVersionDAO.getByPlatformAndVersion(entry.getKey(), version);
+                    platformDependencyTables.add(new ProjectVersionPlatformDependencyTable(projectVersionTable.getId(), platformVersionTable.getId()));
+                }
+            }
+            projectVersionDAO.insertTags(projectVersionTagTables);
+            projectVersionPlatformDependencyDAO.insertAll(platformDependencyTables);
+
+            List<ProjectVersionDependencyTable> pluginDependencyTables = new ArrayList<>();
+            for (var platformListEntry : pendingVersion.getPluginDependencies().entrySet()) {
+                for (PluginDependency pluginDependency : platformListEntry.getValue()) {
+                    pluginDependencyTables.add(new ProjectVersionDependencyTable(projectVersionTable.getId(), platformListEntry.getKey(), pluginDependency.getName(), pluginDependency.isRequired(), pluginDependency.getProjectId(), pluginDependency.getExternalUrl()));
+                }
+            }
+            projectVersionDependencyDAO.insertAll(pluginDependencyTables);
+
+
+            if (pendingVersion.isUnstable()) {
+                versionService.addUnstableTag(projectVersionTable.getId());
+            }
+
+
+            // TODO watcher notifs (bulk insert)
+
+            // TODO move file to final dest.
+
+            if (projectTable.getVisibility() == Visibility.NEW) {
+                projectVisibilityService.changeVisibility(projectTable, Visibility.PUBLIC, "First version");
+                // TODO add forum job
+            }
+
+            // TODO if recommended, update project's recommended version
+
+            userActionLogService.version(LoggedActionType.VERSION_UPLOADED.with(VersionContext.of(projectId, projectVersionTable.getId())), "published", "");
+
+            projectService.refreshHomeProjects();
+            usersApiService.clearAuthorsCache();
+        } catch (Throwable throwable) {
+            logger.error("Unable to create version {} for {}", pendingVersion.getVersionString(), getHangarPrincipal().getName(), throwable);
+            if (projectVersionTable != null) {
+                projectVersionDAO.delete(projectVersionTable);
+            }
+        }
+    }
+
+    private boolean exists(long projectId, String versionString, Collection<Platform> platforms) {
+        List<PlatformVersionTable> platformTables = platformVersionDAO.getPlatformsForVersionString(projectId, versionString);
+        return platformTables.stream().anyMatch(pt -> platforms.contains(pt.getPlatform()));
     }
 }

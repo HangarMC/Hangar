@@ -19,7 +19,7 @@ import io.papermc.hangar.modelold.viewhelpers.UserData;
 import io.papermc.hangar.modelold.viewhelpers.UserRole;
 import io.papermc.hangar.securityold.annotations.GlobalPermission;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.service.internal.SSOService;
+import io.papermc.hangar.service.internal.auth.SSOService;
 import io.papermc.hangar.serviceold.ApiKeyService;
 import io.papermc.hangar.serviceold.AuthenticationService;
 import io.papermc.hangar.serviceold.NotificationService;

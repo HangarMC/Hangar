@@ -24,6 +24,7 @@
     "@nuxtjs/pwa": "^3.3.4",
     "cookie-universal-nuxt": "^2.1.4",
     "core-js": "^3.8.2",
+    "filesize": "^6.1.0",
     "jwt-decode": "^3.1.2",
     "lodash-es": "^4.17.20",
     "nuxt": "^2.14.12",

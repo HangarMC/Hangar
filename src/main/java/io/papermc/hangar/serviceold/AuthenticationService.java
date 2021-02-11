@@ -12,8 +12,6 @@ import io.papermc.hangar.db.daoold.UserDao;
 import io.papermc.hangar.db.daoold.api.SessionsDao;
 import io.papermc.hangar.db.modelold.ApiKeysTable;
 import io.papermc.hangar.db.modelold.ApiSessionsTable;
-import io.papermc.hangar.db.modelold.OrganizationsTable;
-import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Permission;
@@ -22,10 +20,9 @@ import io.papermc.hangar.modelold.Role;
 import io.papermc.hangar.modelold.generated.ApiSessionResponse;
 import io.papermc.hangar.modelold.generated.SessionType;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.service.VisibilityService;
+import io.papermc.hangar.service.VisibilityService.ProjectVisibilityService;
 import io.papermc.hangar.serviceold.sso.ChangeAvatarToken;
 import io.papermc.hangar.util.AuthUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
@@ -63,7 +60,7 @@ public class AuthenticationService extends HangarService {
     private final AuthenticationManager authenticationManager;
     private final RoleService roleService;
     private final PermissionService permissionService;
-    private final VisibilityService visibilityService;
+    private final ProjectVisibilityService projectVisibilityService;
     private final OrgService orgService;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
@@ -76,7 +73,7 @@ public class AuthenticationService extends HangarService {
     private static final Pattern API_KEY_PATTERN = Pattern.compile("(" + UUID_REGEX + ").(" + UUID_REGEX + ")");
 
     @Autowired
-    public AuthenticationService(HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, HangarDao<ProjectDao> projectDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService, VisibilityService visibilityService, OrgService orgService, RestTemplate restTemplate, ObjectMapper objectMapper, HttpServletRequest request, Supplier<Optional<UsersTable>> currentUser) {
+    public AuthenticationService(HangarConfig hangarConfig, HangarDao<UserDao> userDao, HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, HangarDao<ProjectDao> projectDao, AuthenticationManager authenticationManager, RoleService roleService, PermissionService permissionService, ProjectVisibilityService projectVisibilityService, OrgService orgService, RestTemplate restTemplate, ObjectMapper objectMapper, HttpServletRequest request, Supplier<Optional<UsersTable>> currentUser) {
         this.hangarConfig = hangarConfig;
         this.userDao = userDao;
         this.sessionsDao = sessionsDao;
@@ -85,7 +82,7 @@ public class AuthenticationService extends HangarService {
         this.authenticationManager = authenticationManager;
         this.roleService = roleService;
         this.permissionService = permissionService;
-        this.visibilityService = visibilityService;
+        this.projectVisibilityService = projectVisibilityService;
         this.orgService = orgService;
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
@@ -132,7 +129,8 @@ public class AuthenticationService extends HangarService {
     }
 
     private boolean checkPerms(Permission perms, ApiScope apiScope, Long userId) {
-        switch (apiScope.getType()) {
+        return false;
+        /*switch (apiScope.getType()) {
             case GLOBAL:
                 return permissionService.getGlobalPermissions(userId).has(perms);
             case PROJECT:
@@ -143,11 +141,11 @@ public class AuthenticationService extends HangarService {
                 Permission projectPermissions;
                 if (apiScope.getId() != null) {
                     projectPermissions = permissionService.getProjectPermissions(userId, apiScope.getId());
-                    projectsTable = visibilityService.checkVisibility(projectDao.get().getById(apiScope.getId()), projectPermissions);
+                    projectsTable = projectVisibilityService.checkVisibility(projectDao.get().getById(apiScope.getId()), projectPermissions);
                 }
                 else {
                     projectPermissions = permissionService.getProjectPermissions(userId, apiScope.getOwner(), apiScope.getSlug());
-                    projectsTable = visibilityService.checkVisibility(projectDao.get().getBySlug(apiScope.getOwner(), apiScope.getSlug()), projectPermissions);
+                    projectsTable = projectVisibilityService.checkVisibility(projectDao.get().getBySlug(apiScope.getOwner(), apiScope.getSlug()), projectPermissions);
                 }
                 if (projectsTable == null) {
                     throw new HangarApiException(HttpStatus.NOT_FOUND);
@@ -164,7 +162,7 @@ public class AuthenticationService extends HangarService {
                 return permissionService.getOrganizationPermissions(userId, apiScope.getOwner()).has(perms);
             default:
                 throw new HangarApiException(HttpStatus.BAD_REQUEST);
-        }
+        }*/
     }
 
     public ApiSessionResponse authenticateDev() {

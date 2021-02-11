@@ -14,7 +14,7 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.auth.UserRefreshToken;
 import io.papermc.hangar.security.HangarPrincipal;
 import io.papermc.hangar.security.configs.SecurityConfig;
-import io.papermc.hangar.service.internal.UserService;
+import io.papermc.hangar.service.internal.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;

@@ -14,7 +14,7 @@ import java.io.IOException;
 public class HangarApiException extends ResponseStatusException {
 
     private final HttpHeaders httpHeaders;
-    private final String[] args;
+    private final Object[] args;
 
     public HangarApiException(HttpStatus status) {
         super(status);
@@ -40,7 +40,7 @@ public class HangarApiException extends ResponseStatusException {
         this.args = new String[0];
     }
 
-    public HangarApiException(HttpStatus status, String reason, String...args) {
+    public HangarApiException(HttpStatus status, String reason, Object...args) {
         super(status, reason);
         this.httpHeaders = HttpHeaders.EMPTY;
         this.args = args;
@@ -66,8 +66,8 @@ public class HangarApiException extends ResponseStatusException {
             gen.writeStartObject();
             gen.writeStringField("message", message);
             gen.writeArrayFieldStart("messageArgs");
-            for (String arg : exception.args) {
-                gen.writeString(arg);
+            for (Object arg : exception.args) {
+                provider.defaultSerializeValue(arg, gen);
             }
             gen.writeEndArray();
             gen.writeBooleanField("isHangarApiException", true);

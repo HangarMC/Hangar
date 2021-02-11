@@ -23,7 +23,7 @@ import io.papermc.hangar.modelold.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.modelold.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.modelold.viewhelpers.UserRole;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.service.VisibilityService;
+import io.papermc.hangar.service.VisibilityService.ProjectVisibilityService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.serviceold.HangarService;
 import io.papermc.hangar.serviceold.VersionService.RecommendedVersionService;
@@ -55,7 +55,7 @@ public class ProjectService extends HangarService {
     private final HangarDao<VisibilityDao> visibilityDao;
     private final HangarDao<GeneralDao> generalDao;
     private final FlagService flagService;
-    private final VisibilityService visibilityService;
+    private final ProjectVisibilityService visibilityService;
     private final PermissionService permissionService;
     private final RecommendedVersionService recommendedVersionService;
     private final ProjectFiles projectFiles;
@@ -63,7 +63,7 @@ public class ProjectService extends HangarService {
     private final HttpServletRequest request;
 
     @Autowired
-    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<GeneralDao> generalDao, ProjectFiles projectFiles, FlagService flagService, VisibilityService visibilityService, PermissionService permissionService, RecommendedVersionService recommendedVersionService, HttpServletRequest request) {
+    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<GeneralDao> generalDao, ProjectFiles projectFiles, FlagService flagService, ProjectVisibilityService visibilityService, PermissionService permissionService, RecommendedVersionService recommendedVersionService, HttpServletRequest request) {
         this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
         this.userDao = userDao;
@@ -122,7 +122,8 @@ public class ProjectService extends HangarService {
             noteCount = messages.size();
         }
         Map.Entry<String, ProjectVisibilityChangesTable> latestProjectVisibilityChangeWithUser = visibilityDao.get().getLatestProjectVisibilityChange(projectsTable.getId());
-        ProjectVersionsTable recommendedVersion = visibilityService.checkVisibility(recommendedVersionService.getRecommendedVersion(projectsTable), ProjectVersionsTable::getProjectId);
+//        ProjectVersionsTable recommendedVersion = visibilityService.checkVisibility(recommendedVersionService.getRecommendedVersion(projectsTable), ProjectVersionsTable::getProjectId);
+        ProjectVersionsTable recommendedVersion = null;
         String iconUrl = Routes.PROJECTS_SHOW_ICON.getRouteUrl(projectsTable.getOwnerName(), projectsTable.getSlug());
         long starCount = userDao.get().getProjectStargazers(projectsTable.getId(), 0, null).size();
         long watcherCount = userDao.get().getProjectWatchers(projectsTable.getId(), 0, null).size();
@@ -167,11 +168,13 @@ public class ProjectService extends HangarService {
     }
 
     public ProjectsTable getProjectsTable(long projectId) {
-        return visibilityService.checkVisibility(projectDao.get().getById(projectId), ProjectsTable::getId);
+        return null;
+//        return visibilityService.checkVisibility(projectDao.get().getById(projectId), ProjectsTable::getId);
     }
 
     public ProjectsTable getProjectsTable(String author, String name) {
-        return visibilityService.checkVisibility(projectDao.get().getBySlug(author, name), ProjectsTable::getId);
+        return null;
+//        return visibilityService.checkVisibility(projectDao.get().getBySlug(author, name), ProjectsTable::getId);
     }
 
     public void changeVisibility(ProjectsTable project, Visibility newVisibility, String comment) {

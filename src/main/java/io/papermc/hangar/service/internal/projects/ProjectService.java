@@ -17,7 +17,7 @@ import io.papermc.hangar.model.internal.HangarProjectFlag;
 import io.papermc.hangar.model.internal.HangarProjectPage;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.service.HangarService;
-import io.papermc.hangar.service.VisibilityService;
+import io.papermc.hangar.service.VisibilityService.ProjectVisibilityService;
 import io.papermc.hangar.service.internal.OrganizationService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -40,16 +40,16 @@ public class ProjectService extends HangarService {
     private final ProjectsDAO projectsDAO;
     private final HangarUsersDAO hangarUsersDAO;
     private final HangarProjectsDAO hangarProjectsDAO;
-    private final VisibilityService visibilityService;
+    private final ProjectVisibilityService projectVisibilityService;
     private final OrganizationService organizationService;
     private final ProjectPageService projectPageService;
 
     @Autowired
-    public ProjectService(HangarDao<ProjectsDAO> projectDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, VisibilityService visibilityService, OrganizationService organizationService, ProjectPageService projectPageService) {
+    public ProjectService(HangarDao<ProjectsDAO> projectDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService) {
         this.projectsDAO = projectDAO.get();
         this.hangarUsersDAO = hangarUsersDAO.get();
         this.hangarProjectsDAO = hangarProjectsDAO.get();
-        this.visibilityService = visibilityService;
+        this.projectVisibilityService = projectVisibilityService;
         this.organizationService = organizationService;
         this.projectPageService = projectPageService;
     }
@@ -93,8 +93,6 @@ public class ProjectService extends HangarService {
         return hangarProjectsDAO.getHangarProjectFlags(author, slug);
     }
 
-
-
     public void refreshHomeProjects() {
         hangarProjectsDAO.refreshHomeProjects();
     }
@@ -104,7 +102,7 @@ public class ProjectService extends HangarService {
         if (identifier == null) {
             return null;
         }
-        return visibilityService.checkVisibility(projectTableFunction.apply(identifier), ProjectTable::getId);
+        return projectVisibilityService.checkVisibility(projectTableFunction.apply(identifier));
     }
 
     @Nullable
@@ -112,6 +110,6 @@ public class ProjectService extends HangarService {
         if (identifierOne == null || identifierTwo == null) {
             return null;
         }
-        return visibilityService.checkVisibility(projectTableFunction.apply(identifierOne, identifierTwo), ProjectTable::getId);
+        return projectVisibilityService.checkVisibility(projectTableFunction.apply(identifierOne, identifierTwo));
     }
 }

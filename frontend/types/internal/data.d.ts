@@ -17,4 +17,9 @@ declare module 'hangar-internal' {
         type: string;
         title: string;
     }
+
+    interface Color {
+        name: string;
+        hex: string;
+    }
 }

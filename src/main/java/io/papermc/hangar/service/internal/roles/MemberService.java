@@ -1,4 +1,4 @@
-package io.papermc.hangar.service.internal;
+package io.papermc.hangar.service.internal.roles;
 
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.members.MembersDAO;
@@ -18,9 +18,6 @@ import io.papermc.hangar.model.db.roles.IRoleTable;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.service.HangarService;
-import io.papermc.hangar.service.internal.roles.OrganizationRoleService;
-import io.papermc.hangar.service.internal.roles.ProjectRoleService;
-import io.papermc.hangar.service.internal.roles.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

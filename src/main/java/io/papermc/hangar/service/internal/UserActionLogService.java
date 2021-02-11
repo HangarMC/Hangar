@@ -15,6 +15,7 @@ import io.papermc.hangar.model.db.log.LoggedActionsUserTable;
 import io.papermc.hangar.model.db.log.LoggedActionsVersionTable;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.util.RequestUtil;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class UserActionLogService extends HangarService {
         this.loggedActionsDAO = loggedActionsDAO.get();
     }
 
-    public void project(LoggedActionType<ProjectContext> loggedActionType, String newState, String oldState) {
+    public void project(LoggedActionType<ProjectContext> loggedActionType, @NotNull String newState, @NotNull String oldState) {
         loggedActionsDAO.insertProjectLog(new LoggedActionsProjectTable(
                 getHangarPrincipal().getUserId(),
                 RequestUtil.getRemoteInetAddress(request),
@@ -39,7 +40,7 @@ public class UserActionLogService extends HangarService {
         ));
     }
 
-    public void projectPage(LoggedActionType<ProjectPageContext> loggedActionType, String newState, String oldState) {
+    public void projectPage(LoggedActionType<ProjectPageContext> loggedActionType, @NotNull String newState, @NotNull String oldState) {
         loggedActionsDAO.insertProjectPageLog(new LoggedActionsPageTable(
                 getHangarPrincipal().getUserId(),
                 RequestUtil.getRemoteInetAddress(request),
@@ -51,7 +52,7 @@ public class UserActionLogService extends HangarService {
         ));
     }
 
-    public void version(LoggedActionType<VersionContext> loggedActionType, String newState, String oldState) {
+    public void version(LoggedActionType<VersionContext> loggedActionType, @NotNull String newState, @NotNull String oldState) {
         loggedActionsDAO.insertVersionLog(new LoggedActionsVersionTable(
                 getHangarPrincipal().getUserId(),
                 RequestUtil.getRemoteInetAddress(request),
@@ -63,7 +64,7 @@ public class UserActionLogService extends HangarService {
         ));
     }
 
-    public void user(LoggedActionType<UserContext> loggedActionType, String newState, String oldState) {
+    public void user(LoggedActionType<UserContext> loggedActionType, @NotNull String newState, @NotNull String oldState) {
         loggedActionsDAO.insertUserLog(new LoggedActionsUserTable(
                 getHangarPrincipal().getUserId(),
                 RequestUtil.getRemoteInetAddress(request),
@@ -74,7 +75,7 @@ public class UserActionLogService extends HangarService {
         ));
     }
 
-    public void organization(LoggedActionType<OrganizationContext> loggedActionType, String newState, String oldState) {
+    public void organization(LoggedActionType<OrganizationContext> loggedActionType, @NotNull String newState, @NotNull String oldState) {
         loggedActionsDAO.insertOrganizationLog(new LoggedActionsOrganizationTable(
                 getHangarPrincipal().getUserId(),
                 RequestUtil.getRemoteInetAddress(request),

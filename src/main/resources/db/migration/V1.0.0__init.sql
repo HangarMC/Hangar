@@ -218,7 +218,7 @@ CREATE TABLE project_version_dependencies
     CONSTRAINT project_version_dependencies_project_id_fkey
         FOREIGN KEY (project_id)
             REFERENCES projects
-            ON DELETE CASCADE
+            ON DELETE SET NULL
 );
 
 CREATE TABLE project_version_platform_dependencies
@@ -546,6 +546,7 @@ CREATE TABLE project_version_tags
     id bigserial NOT NULL
         CONSTRAINT project_version_tags_pkey
             PRIMARY KEY,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
     version_id bigint NOT NULL
         CONSTRAINT project_version_tags_version_id_fkey
             REFERENCES project_versions

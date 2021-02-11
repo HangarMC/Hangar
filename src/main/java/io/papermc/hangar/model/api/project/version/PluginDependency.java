@@ -1,9 +1,14 @@
 package io.papermc.hangar.model.api.project.version;
 
+import io.papermc.hangar.controller.validations.AtLeastOneNotNull;
 import io.papermc.hangar.model.Named;
 
+import javax.validation.constraints.NotBlank;
+
+@AtLeastOneNotNull(fieldNames = {"projectId", "externalUrl"}, message = "Must specify a projectId or external URL for a dependency")
 public class PluginDependency implements Named {
 
+    @NotBlank(message = "Must have a dependency name")
     private final String name;
     private final boolean required;
     private final Long projectId;
@@ -35,7 +40,7 @@ public class PluginDependency implements Named {
 
     @Override
     public String toString() {
-        return "Dependency{" +
+        return "PluginDependency{" +
                 "name='" + name + '\'' +
                 ", required=" + required +
                 ", projectId=" + projectId +

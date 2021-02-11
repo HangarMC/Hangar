@@ -1,16 +1,17 @@
 package io.papermc.hangar.model.db.versions;
 
+import io.papermc.hangar.model.ModelVisible;
 import io.papermc.hangar.model.Named;
-import io.papermc.hangar.model.Visible;
 import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.common.projects.Visibility;
+import io.papermc.hangar.model.db.ProjectIdentified;
 import io.papermc.hangar.model.db.Table;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 import java.time.OffsetDateTime;
 
-public class ProjectVersionTable extends Table implements Named, Visible {
+public class ProjectVersionTable extends Table implements Named, ModelVisible, ProjectIdentified {
 
     private final String versionString;
     private String description;
@@ -73,6 +74,7 @@ public class ProjectVersionTable extends Table implements Named, Visible {
         this.description = description;
     }
 
+    @Override
     public long getProjectId() {
         return projectId;
     }
@@ -122,6 +124,7 @@ public class ProjectVersionTable extends Table implements Named, Visible {
         return visibility;
     }
 
+    @Override
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
     }

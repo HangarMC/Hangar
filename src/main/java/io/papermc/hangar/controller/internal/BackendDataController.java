@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.modelold.NamedPermission;
@@ -67,9 +68,16 @@ public class BackendDataController {
         throw new NotImplementedException("NOT IMPLEMENTED");
     }
 
-    @GetMapping("/colors")
-    public ResponseEntity<ObjectNode> getColors() {
-        throw new NotImplementedException("NOT IMPLEMENTED");
+    @GetMapping("/channelColors")
+    public ResponseEntity<ArrayNode> getColors() {
+        ArrayNode arrayNode = mapper.createArrayNode();
+        for (Color color : Color.getNonTransparentValues()) {
+            ObjectNode objectNode = mapper.createObjectNode()
+                    .put("name", color.name())
+                    .put("hex", color.getHex());
+            arrayNode.add(objectNode);
+        }
+        return ResponseEntity.ok(arrayNode);
     }
 
     @Secured("ROLE_USER")

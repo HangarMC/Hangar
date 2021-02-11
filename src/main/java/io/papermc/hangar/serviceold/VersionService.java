@@ -19,13 +19,14 @@ import io.papermc.hangar.modelold.viewhelpers.ProjectData;
 import io.papermc.hangar.modelold.viewhelpers.ReviewQueueEntry;
 import io.papermc.hangar.modelold.viewhelpers.UserData;
 import io.papermc.hangar.modelold.viewhelpers.VersionData;
-import io.papermc.hangar.service.VisibilityService;
+import io.papermc.hangar.service.VisibilityService.ProjectVersionVisibilityService;
 import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.serviceold.pluginupload.PendingVersion;
 import io.papermc.hangar.serviceold.project.ChannelService;
 import io.papermc.hangar.serviceold.project.ProjectService;
 import io.papermc.hangar.util.RequestUtil;
 import io.papermc.hangar.util.StringUtils;
+import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -43,7 +44,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
-@Service
+@Service("oldVersionService")
+@Deprecated(forRemoval = true)
 public class VersionService extends HangarService {
 
     private final HangarDao<ProjectVersionDao> versionDao;
@@ -51,7 +53,7 @@ public class VersionService extends HangarService {
     private final HangarDao<VisibilityDao> visibilityDao;
     private final ProjectService projectService;
     private final ChannelService channelService;
-    private final VisibilityService visibilityService;
+    private final ProjectVersionVisibilityService projectVersionVisibilityService;
     private final RecommendedVersionService recommendedVersionService;
     private final UserService userService;
     private final VersionDependencyService versionDependencyService;
@@ -59,13 +61,13 @@ public class VersionService extends HangarService {
     private final HttpServletRequest request;
 
     @Autowired
-    public VersionService(HangarDao<ProjectVersionDao> versionDao, HangarDao<ProjectDao> projectDao, HangarDao<VisibilityDao> visibilityDao, ProjectService projectService, ChannelService channelService, VisibilityService visibilityService, RecommendedVersionService recommendedVersionService, UserService userService, VersionDependencyService versionDependencyService, HttpServletRequest request) {
+    public VersionService(HangarDao<ProjectVersionDao> versionDao, HangarDao<ProjectDao> projectDao, HangarDao<VisibilityDao> visibilityDao, ProjectService projectService, ChannelService channelService, ProjectVersionVisibilityService projectVersionVisibilityService, RecommendedVersionService recommendedVersionService, UserService userService, VersionDependencyService versionDependencyService, HttpServletRequest request) {
         this.versionDao = versionDao;
         this.projectDao = projectDao;
         this.visibilityDao = visibilityDao;
         this.projectService = projectService;
         this.channelService = channelService;
-        this.visibilityService = visibilityService;
+        this.projectVersionVisibilityService = projectVersionVisibilityService;
         this.recommendedVersionService = recommendedVersionService;
         this.userService = userService;
         this.versionDependencyService = versionDependencyService;
@@ -107,7 +109,8 @@ public class VersionService extends HangarService {
 
 
     public ProjectVersionsTable getVersion(long projectId, long versionId) {
-        return visibilityService.checkVisibility(versionDao.get().getProjectVersion(projectId, "", versionId), ProjectVersionsTable::getProjectId);
+        return null;
+//        return projectVersionVisibilityService.checkVisibility(versionDao.get().getProjectVersion(projectId, "", versionId));
     }
 
     public ProjectVersionsTable getVersion(String author, String slug, long versionId) {
@@ -186,13 +189,14 @@ public class VersionService extends HangarService {
             }
             dependencies.get(pvdt.getPlatform()).put(new PluginDependency(pvdt.getName(), pvdt.isRequired(), pvdt.getProjectId(), pvdt.getExternalUrl()), path);
         });
+        if (true) throw new NotImplementedException();
         return new VersionData(
                 projectData,
                 projectVersion,
                 projectChannel,
                 approvedBy,
-                dependencies,
-                versionDependencyService.getProjectVersionPlatformDependencies(projectVersion.getId()));
+                dependencies, null
+                /*versionDependencyService.getProjectVersionPlatformDependencies(projectVersion.getId())*/);
     }
 
     public Map<ProjectVersionVisibilityChangesTable, String> getVersionVisibilityChanges(long versionId) {
@@ -202,11 +206,11 @@ public class VersionService extends HangarService {
     @Service
     public static class RecommendedVersionService {
 
-        private final VisibilityService visibilityService;
+        private final ProjectVersionVisibilityService visibilityService;
         private final HangarDao<ProjectVersionDao> versionDao;
 
         @Autowired
-        public RecommendedVersionService(VisibilityService visibilityService, HangarDao<ProjectVersionDao> versionDao) {
+        public RecommendedVersionService(ProjectVersionVisibilityService visibilityService, HangarDao<ProjectVersionDao> versionDao) {
             this.visibilityService = visibilityService;
             this.versionDao = versionDao;
         }
@@ -216,7 +220,8 @@ public class VersionService extends HangarService {
             if (project.getRecommendedVersionId() == null) {
                 return null;
             }
-            return visibilityService.checkVisibility(versionDao.get().getProjectVersion(project.getId(), "", project.getRecommendedVersionId()), ProjectVersionsTable::getProjectId);
+//            return visibilityService.checkVisibility(versionDao.get().getProjectVersion(project.getId(), "", project.getRecommendedVersionId()), ProjectVersionsTable::getProjectId);
+            return null;
         }
 
     }

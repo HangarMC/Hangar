@@ -1,4 +1,4 @@
-package io.papermc.hangar.service.internal;
+package io.papermc.hangar.service.internal.auth;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;

@@ -8,7 +8,7 @@
         <v-btn v-show="!isEditing" class="page-btn edit-btn info" fab absolute icon x-small @click="isEditing = true">
             <v-icon>mdi-pencil</v-icon>
         </v-btn>
-        <v-btn v-show="isEditing" class="page-btn save-btn success darken-2" fab absolute icon x-small :loading="loading.save" @click="savePage">
+        <v-btn v-show="isEditing && saveable" class="page-btn save-btn success darken-2" fab absolute icon x-small :loading="loading.save" @click="savePage">
             <v-icon>mdi-content-save</v-icon>
         </v-btn>
         <v-btn v-show="isEditing" class="page-btn preview-btn info" fab absolute icon x-small @click="preview = true">
@@ -36,7 +36,7 @@
         </DeletePageModal>
 
         <v-btn
-            v-show="isEditing"
+            v-show="isEditing && cancellable"
             class="page-btn cancel-btn warning red darken-2"
             fab
             absolute
@@ -79,6 +79,12 @@ export default class MarkdownEditor extends Vue {
 
     @Prop({ default: true, type: Boolean })
     deletable!: boolean;
+
+    @Prop({ default: true, type: Boolean })
+    cancellable!: boolean;
+
+    @Prop({ default: true, type: Boolean })
+    saveable!: boolean;
 
     created() {
         this.rawEdited = this.raw || '';
