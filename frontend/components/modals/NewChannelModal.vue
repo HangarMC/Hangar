@@ -46,6 +46,8 @@
 <script lang="ts">
 import { Component } from 'nuxt-property-decorator';
 import { Color, ProjectChannel } from 'hangar-internal';
+// TODO fix it complaining about no type declaration file
+// @ts-ignore
 import { contrastRatio, HexToRGBA, parseHex } from 'vuetify/es5/util/colorUtils';
 import { HangarFormModal } from '../mixins';
 
@@ -53,8 +55,8 @@ import { HangarFormModal } from '../mixins';
 export default class NewChannelModal extends HangarFormModal {
     colors: Color[] = [];
     form: ProjectChannel = {
-        name: null as null | string,
-        color: null as null | string,
+        name: '',
+        color: '',
         nonReviewed: false,
         temp: true,
     };
@@ -63,8 +65,8 @@ export default class NewChannelModal extends HangarFormModal {
         this.colors = await this.$api.requestInternal<Color[]>('data/channelColors', false).catch<any>(this.$util.handleRequestError);
     }
 
-    get swatches(): Color[Color[]] {
-        const swatches = [];
+    get swatches(): string[][] {
+        const swatches: string[][] = [];
         const columns = Math.floor(Math.sqrt(this.colors.length));
         const rows = Math.ceil(Math.sqrt(this.colors.length));
         for (let i = 0; i < rows; i++) {

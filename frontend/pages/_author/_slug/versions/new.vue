@@ -169,8 +169,8 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
     createVersion() {
         if (this.pendingVersion) {
             this.pendingVersion.description = this.$refs.editor.rawEdited;
-            this.pendingVersion.channelColor = this.currentChannel.color;
-            this.pendingVersion.channelNonReviewed = this.currentChannel.nonReviewed;
+            this.pendingVersion.channelColor = this.currentChannel!.color;
+            this.pendingVersion.channelNonReviewed = this.currentChannel!.nonReviewed;
             console.log(this.pendingVersion);
             this.$api.requestInternal(`versions/version/${this.project.id}/create`, true, 'post', this.pendingVersion).catch(this.$util.handleRequestError);
         }
