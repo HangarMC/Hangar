@@ -8,11 +8,14 @@
         :loading="loading"
         class="elevation-1"
     >
+        <template #item.pic="{ item }">
+            <UserAvatar :username="item.name" :avatar-url="$util.avatarUrl(item.name)" clazz="user-avatar-xs" />
+        </template>
         <template #item.roles="{ item }">
             {{ item.roles.map((r) => r.title).join(', ') }}
         </template>
         <template #item.joinDate="{ item }">
-            {{ $util.prettyDate(new Date(item.joinDate)) }}
+            {{ $util.prettyDate(item.joinDate) }}
         </template>
     </v-data-table>
 </template>
@@ -22,10 +25,13 @@ import { Component, Vue, Watch } from 'nuxt-property-decorator';
 import { PaginatedResult, User } from 'hangar-api';
 import { DataOptions, DataTableHeader } from 'vuetify';
 import { Context } from '@nuxt/types';
-
-@Component
+import UserAvatar from '~/components/UserAvatar.vue';
+@Component({
+    components: { UserAvatar },
+})
 export default class StaffPage extends Vue {
     headers: DataTableHeader[] = [
+        { text: '', value: 'pic' },
         { text: 'Username', value: 'name' },
         { text: 'Roles', value: 'roles' },
         { text: 'Joined', value: 'joinDate' },
