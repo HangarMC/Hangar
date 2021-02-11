@@ -89,12 +89,17 @@ public class ProjectService extends HangarService {
         return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, "", "", info, pages.values());
     }
 
+    // TODO implement flag view
     public List<HangarProjectFlag> getHangarProjectFlags(String author, String slug) {
         return hangarProjectsDAO.getHangarProjectFlags(author, slug);
     }
 
     public void refreshHomeProjects() {
         hangarProjectsDAO.refreshHomeProjects();
+    }
+
+    public List<UserTable> getProjectWatchers(long projectId) {
+        return projectsDAO.getProjectWatchers(projectId);
     }
 
     @Nullable

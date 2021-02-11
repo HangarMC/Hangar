@@ -20,7 +20,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
     private String name;
     private String slug;
     private String ownerName;
-    private Long recommendedVersionId;
     private long ownerId;
     private long topicId;
     private long postId;
@@ -58,7 +57,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.name = other.name;
         this.slug = other.slug;
         this.ownerName = other.ownerName;
-        this.recommendedVersionId = other.recommendedVersionId;
         this.ownerId = other.ownerId;
         this.topicId = other.topicId;
         this.postId = other.postId;
@@ -77,12 +75,11 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
     }
 
     @JdbiConstructor
-    public ProjectTable(OffsetDateTime createdAt, long id, String name, String slug, String ownerName, Long recommendedVersionId, long ownerId, long topicId, long postId, @EnumByOrdinal Category category, String description, @EnumByOrdinal Visibility visibility, JSONB notes, Collection<String> keywords, String homepage, String issues, String source, String support, String licenseName, String licenseUrl, boolean forumSync) {
+    public ProjectTable(OffsetDateTime createdAt, long id, String name, String slug, String ownerName, long ownerId, long topicId, long postId, @EnumByOrdinal Category category, String description, @EnumByOrdinal Visibility visibility, JSONB notes, Collection<String> keywords, String homepage, String issues, String source, String support, String licenseName, String licenseUrl, boolean forumSync) {
         super(createdAt, id);
         this.name = name;
         this.slug = slug;
         this.ownerName = ownerName;
-        this.recommendedVersionId = recommendedVersionId;
         this.ownerId = ownerId;
         this.topicId = topicId;
         this.postId = postId;
@@ -125,14 +122,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
 
     public void setOwnerName(String ownerName) {
         this.ownerName = ownerName;
-    }
-
-    public Long getRecommendedVersionId() {
-        return recommendedVersionId;
-    }
-
-    public void setRecommendedVersionId(Long recommendedVersionId) {
-        this.recommendedVersionId = recommendedVersionId;
     }
 
     public long getOwnerId() {
@@ -267,7 +256,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
                 "name='" + name + '\'' +
                 ", slug='" + slug + '\'' +
                 ", ownerName='" + ownerName + '\'' +
-                ", recommendedVersionId=" + recommendedVersionId +
                 ", ownerId=" + ownerId +
                 ", topicId=" + topicId +
                 ", postId=" + postId +

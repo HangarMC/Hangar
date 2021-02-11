@@ -174,6 +174,7 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
     }
 
     // todo handle errors better, for example "version.new.error.duplicateNameAndPlatform"
+    // TODO should have a set of validate name endpoints to provide this check while the user is changing the name (Project name, Version name, page name, channel name, etc)
     async createPendingVersion() {
         this.loading.create = true;
         const data: FormData = new FormData();

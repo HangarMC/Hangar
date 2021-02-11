@@ -27,11 +27,11 @@ public class NotificationTable extends Table {
         this.messageArgs = messageArgs;
     }
 
-    public NotificationTable(long userId, NotificationType notificationType, String action, boolean read, Long originId, String[] messageArgs) {
+    public NotificationTable(long userId, NotificationType notificationType, String action, Long originId, String[] messageArgs) {
         this.userId = userId;
         this.notificationType = notificationType;
         this.action = action;
-        this.read = read;
+        this.read = false;
         this.originId = originId;
         this.messageArgs = messageArgs;
     }

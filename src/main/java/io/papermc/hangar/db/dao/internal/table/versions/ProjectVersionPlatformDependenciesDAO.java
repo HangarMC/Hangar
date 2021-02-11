@@ -14,7 +14,7 @@ import java.util.List;
 
 @Repository
 @RegisterConstructorMapper(ProjectVersionPlatformDependencyTable.class)
-public interface ProjectVersionPlatformDependencyDAO {
+public interface ProjectVersionPlatformDependenciesDAO {
 
     @Timestamped
     @GetGeneratedKeys

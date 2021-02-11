@@ -5,7 +5,7 @@ import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.VisibilityDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
-import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionDAO;
+import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.model.ModelVisible;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.projects.Visibility;
@@ -89,7 +89,7 @@ public abstract class VisibilityService<M extends Table & ModelVisible & Project
     public static class ProjectVersionVisibilityService extends VisibilityService<ProjectVersionTable, ProjectVersionVisibilityChangeTable> {
 
         @Autowired
-        public ProjectVersionVisibilityService(HangarDao<VisibilityDAO> visibilityDAO, HangarDao<ProjectVersionDAO> projectVersionDAO) {
+        public ProjectVersionVisibilityService(HangarDao<VisibilityDAO> visibilityDAO, HangarDao<ProjectVersionsDAO> projectVersionDAO) {
             super(visibilityDAO.get()::insert, visibilityDAO.get()::updateLatestVersionChange, ProjectVersionVisibilityChangeTable::new, projectVersionDAO.get()::update);
         }
     }

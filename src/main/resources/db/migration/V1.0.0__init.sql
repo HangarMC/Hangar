@@ -63,7 +63,6 @@ CREATE TABLE projects
         CONSTRAINT projects_owner_name_fkey
             REFERENCES users (name)
             ON UPDATE CASCADE,
-    recommended_version_id bigint,
     owner_id bigint NOT NULL
         CONSTRAINT projects_owner_id_fkey
             REFERENCES users
@@ -87,9 +86,6 @@ CREATE TABLE projects
     CONSTRAINT projects_owner_name_slug_key
         UNIQUE (owner_name, slug)
 );
-
-CREATE INDEX projects_recommended_version_id
-    ON projects (recommended_version_id);
 
 CREATE INDEX projects_owner_id
     on projects (owner_id);
@@ -190,6 +186,28 @@ CREATE TABLE project_versions
     post_id integer
 );
 
+CREATE INDEX project_version_version_string_idx
+    ON project_versions (version_string);
+
+CREATE TABLE recommended_project_versions
+(
+    id bigserial NOT NULL
+        CONSTRAINT recommended_project_versions_pkey
+            PRIMARY KEY,
+    created_at timestamp with time zone NOT NULL,
+    version_id bigint NOT NULL
+        CONSTRAINT recommended_project_versions_version_id_fkey
+            REFERENCES project_versions
+            ON DELETE CASCADE,
+    project_id bigint NOT NULL
+        CONSTRAINT recommended_project_versions_project_id_fkey
+            REFERENCES projects
+            ON DELETE CASCADE,
+    platform bigint NOT NULL,
+    CONSTRAINT recommended_project_versions_unique
+        UNIQUE (project_id, platform)
+);
+
 CREATE TABLE platform_versions
 (
     id         bigserial                NOT NULL
@@ -236,11 +254,6 @@ CREATE TABLE project_version_platform_dependencies
             REFERENCES platform_versions
             ON DELETE CASCADE
 );
-
-ALTER TABLE projects
-    ADD CONSTRAINT projects_recommended_version_id_fkey
-        FOREIGN KEY (recommended_version_id) REFERENCES project_versions
-            ON DELETE SET NULL;
 
 CREATE TABLE roles
 (
