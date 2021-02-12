@@ -86,10 +86,6 @@ const createApi = ({ $axios, store, app: { $cookies } }: Context) => {
 
         private _request<T>(url: string, token: string | null, method: AxiosRequestConfig['method'], data: object): Promise<T> {
             const headers: Record<string, string> = token ? { Authorization: `HangarAuth ${token}` } : {};
-            // if (data instanceof FormData) {
-            //     headers['Content-Type'] = 'multipart/form-data';
-            // }
-
             return new Promise<T>((resolve, reject) => {
                 return $axios
                     .request<T>({

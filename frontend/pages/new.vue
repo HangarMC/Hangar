@@ -44,7 +44,7 @@
                                         item-text="name"
                                         item-value="userId"
                                         :label="$t('project.new.step2.userselect')"
-                                        :rules="[$util.$vc.require()]"
+                                        :rules="[$util.$vc.require('Project owner')]"
                                         :append-icon="createAsIcon"
                                     />
                                 </v-col>
@@ -55,6 +55,7 @@
                                         autofocus
                                         dense
                                         filled
+                                        :error-messages="nameErrors"
                                         :label="$t('project.new.step2.projectname')"
                                         :rules="[$util.$vc.require('Name')]"
                                         append-icon="mdi-form-textbox"
@@ -234,9 +235,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
+import { Component, Vue, Watch } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
 import { ProjectOwner } from 'hangar-internal';
+import { AxiosError } from 'axios';
 import StepperStepContent from '~/components/steppers/StepperStepContent.vue';
 import { RootState } from '~/store';
 import { ProjectCategory } from '~/types/enums';
@@ -282,6 +284,8 @@ export default class NewPage extends Vue {
         license: {},
         keywords: [],
     } as unknown) as NewProjectForm;
+
+    nameErrors: string[] = [];
 
     forms = {
         step2: false,
@@ -331,6 +335,30 @@ export default class NewPage extends Vue {
             })
             .finally(() => {
                 this.projectLoading = false;
+            });
+    }
+
+    // This is very useful. Prob should have a generalization of this that works elsewhere. I didn't make it a rule because it relies on other input (the ownerId)
+    @Watch('form.name')
+    onProjectNameChange(val: string) {
+        if (!val) {
+            this.nameErrors = [];
+            return;
+        }
+        this.$api
+            .requestInternal('projects/validateName', false, 'get', {
+                userId: this.form.ownerId,
+                value: val,
+            })
+            .then(() => {
+                this.nameErrors = [];
+            })
+            .catch((err: AxiosError) => {
+                this.nameErrors = [];
+                if (!err.response?.data.isHangarApiException) {
+                    return this.$util.handleRequestError(err);
+                }
+                this.nameErrors.push(err.response.data.message);
             });
     }
 }

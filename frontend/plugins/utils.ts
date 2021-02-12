@@ -14,7 +14,7 @@ import { NotifPayload } from '~/store/snackbar';
 import { AuthState } from '~/store/auth';
 
 type Validation = (v: string) => boolean | string;
-type ValidationArgument = (field?: string | TranslateResult) => Validation;
+type ValidationArgument = (any: any) => Validation;
 
 function handleRequestError(err: AxiosError, error: Context['error']) {
     if (!err.isAxiosError) {

@@ -73,16 +73,16 @@ public class ProjectFactory extends HangarService {
             invalidProjectReason = projectsDAO.checkProjectValidity(userId, name, StringUtils.slugify(name));
         }
         if (invalidProjectReason != null) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, invalidProjectReason.key);
+            throw new HangarApiException(HttpStatus.CONFLICT, invalidProjectReason.key);
         }
     }
 
     @EnumByName
     public enum InvalidProjectReason {
 
-        OWNER_NAME("error.project.nameExists"),
-        OWNER_SLUG("error.project.slugExists"),
-        INVALID_NAME("error.project.invalidName");
+        OWNER_NAME("project.new.error.nameExists"),
+        OWNER_SLUG("project.new.error.slugExists"),
+        INVALID_NAME("project.new.error.invalidName");
 
         private final String key;
 

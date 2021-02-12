@@ -51,8 +51,8 @@ public class ProjectController extends HangarController {
 
     @GetMapping("/validateName")
     @ResponseStatus(HttpStatus.OK)
-    public void validateProjectName(@RequestParam long userId, @RequestParam String projectName) {
-        projectFactory.checkProjectAvailability(userId, projectName);
+    public void validateProjectName(@RequestParam long userId, @RequestParam String value) {
+        projectFactory.checkProjectAvailability(userId, value);
     }
 
     @GetMapping("/possibleOwners")
