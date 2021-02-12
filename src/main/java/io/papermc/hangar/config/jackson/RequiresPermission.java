@@ -1,6 +1,6 @@
 package io.papermc.hangar.config.jackson;
 
-import io.papermc.hangar.modelold.NamedPermission;
+import io.papermc.hangar.model.common.NamedPermission;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

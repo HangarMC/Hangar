@@ -7,17 +7,17 @@ import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 import java.time.OffsetDateTime;
-import java.util.List;
+import java.util.Set;
 
 public class ProjectVersionTagTable extends Table implements Named {
 
     private final long versionId;
     private final String name;
-    private final List<String> data;
+    private final Set<String> data;
     private final TagColor color;
 
     @JdbiConstructor
-    public ProjectVersionTagTable(OffsetDateTime createdAt, long id, long versionId, String name, List<String> data, @EnumByOrdinal TagColor color) {
+    public ProjectVersionTagTable(OffsetDateTime createdAt, long id, long versionId, String name, Set<String> data, @EnumByOrdinal TagColor color) {
         super(createdAt, id);
         this.versionId = versionId;
         this.name = name;
@@ -25,7 +25,7 @@ public class ProjectVersionTagTable extends Table implements Named {
         this.color = color;
     }
 
-    public ProjectVersionTagTable(long versionId, String name, List<String> data, TagColor color) {
+    public ProjectVersionTagTable(long versionId, String name, Set<String> data, TagColor color) {
         this.versionId = versionId;
         this.name = name;
         this.data = data;
@@ -41,7 +41,7 @@ public class ProjectVersionTagTable extends Table implements Named {
         return name;
     }
 
-    public List<String> getData() {
+    public Set<String> getData() {
         return data;
     }
 

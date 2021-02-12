@@ -4,6 +4,7 @@ import io.papermc.hangar.controller.validations.AtLeastOneNotNull;
 import io.papermc.hangar.model.Named;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Objects;
 
 @AtLeastOneNotNull(fieldNames = {"projectId", "externalUrl"}, message = "Must specify a projectId or external URL for a dependency")
 public class PluginDependency implements Named {
@@ -46,5 +47,18 @@ public class PluginDependency implements Named {
                 ", projectId=" + projectId +
                 ", externalUrl='" + externalUrl + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PluginDependency that = (PluginDependency) o;
+        return required == that.required && name.equals(that.name) && Objects.equals(projectId, that.projectId) && Objects.equals(externalUrl, that.externalUrl);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, required, projectId, externalUrl);
     }
 }

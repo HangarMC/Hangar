@@ -5,7 +5,7 @@
                 <template #item="{ item: version }">
                     <v-sheet width="100%" color="accent" rounded>
                         <!-- todo fix url, need to get platform -->
-                        <NuxtLink :to="'versions/Paper/' + version.urlPath">
+                        <NuxtLink :to="`versions/${Object.keys(version.platformDependencies)[0].toLowerCase()}/${version.name}`">
                             <v-row>
                                 <v-col cols="4" md="2" lg="2">
                                     <v-row>

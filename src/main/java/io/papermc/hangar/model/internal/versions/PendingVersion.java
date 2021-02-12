@@ -9,15 +9,15 @@ import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.projects.ProjectChannelTable;
+import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class PendingVersion {
 
@@ -25,9 +25,9 @@ public class PendingVersion {
     @Validate(SpEL = "#root matches @hangarConfig.projects.versionNameRegex", message = "Version string contains invalid characters")
     private final String versionString;
     // TODO validate below by uncommenting the @Valid annotation
-    private final Map<Platform, List</*@Valid */PluginDependency>> pluginDependencies;
+    private final Map<Platform, Set</*@Valid */PluginDependency>> pluginDependencies;
     @Size(min = 1, max = 3, message = "Must specify between 1 and 3 platforms")
-    private final Map<Platform, List<String>> platformDependencies;
+    private final Map<Platform, @Size(min = 1, message = "Empty platform version list") Set<@NotBlank(message = "Empty platform version string") String>> platformDependencies;
     @NotBlank(message = "Must have a description")
     private final String description;
     private final FileInfo fileInfo;
@@ -44,7 +44,7 @@ public class PendingVersion {
     private final boolean isFile;
 
     @JsonCreator(mode = Mode.PROPERTIES)
-    public PendingVersion(String versionString, Map<Platform, List<PluginDependency>> pluginDependencies, Map<Platform, List<String>> platformDependencies, String description, FileInfo fileInfo, String externalUrl, String channelName, Color channelColor, boolean channelNonReviewed, boolean forumSync, boolean unstable, boolean recommended, boolean isFile) {
+    public PendingVersion(String versionString, Map<Platform, Set<PluginDependency>> pluginDependencies, EnumMap<Platform, Set<String>> platformDependencies, String description, FileInfo fileInfo, String externalUrl, String channelName, Color channelColor, boolean channelNonReviewed, boolean forumSync, boolean unstable, boolean recommended, boolean isFile) {
         this.versionString = versionString;
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
@@ -60,7 +60,7 @@ public class PendingVersion {
         this.isFile = isFile;
     }
 
-    public PendingVersion(String versionString, Map<Platform, List<PluginDependency>> pluginDependencies, Map<Platform, List<String>> platformDependencies, String description, FileInfo fileInfo, ProjectChannelTable projectChannelTable, boolean forumSync) {
+    public PendingVersion(String versionString, Map<Platform, Set<PluginDependency>> pluginDependencies, Map<Platform, Set<String>> platformDependencies, String description, FileInfo fileInfo, ProjectChannelTable projectChannelTable, boolean forumSync) {
         this.versionString = versionString;
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
@@ -80,10 +80,11 @@ public class PendingVersion {
         this.forumSync = forumSync;
         this.versionString = null;
         this.pluginDependencies = new EnumMap<>(Platform.class);
+        this.platformDependencies = new EnumMap<>(Platform.class);
         for (Platform platform : Platform.getValues()) {
-            this.pluginDependencies.put(platform, new ArrayList<>());
+            this.pluginDependencies.put(platform, new HashSet<>());
+            this.platformDependencies.put(platform, new HashSet<>());
         }
-        this.platformDependencies = new HashMap<>();
         this.description = null;
         this.fileInfo = null;
         this.externalUrl = externalUrl;
@@ -99,11 +100,11 @@ public class PendingVersion {
         return versionString;
     }
 
-    public Map<Platform, List<PluginDependency>> getPluginDependencies() {
+    public Map<Platform, Set<PluginDependency>> getPluginDependencies() {
         return pluginDependencies;
     }
 
-    public Map<Platform, List<String>> getPlatformDependencies() {
+    public Map<Platform, Set<String>> getPlatformDependencies() {
         return platformDependencies;
     }
 
@@ -111,6 +112,7 @@ public class PendingVersion {
         return description;
     }
 
+    @Nullable
     public FileInfo getFileInfo() {
         return fileInfo;
     }

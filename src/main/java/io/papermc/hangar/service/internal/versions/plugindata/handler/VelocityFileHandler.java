@@ -8,8 +8,10 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -56,20 +58,20 @@ public class VelocityFileHandler extends FileTypeHandler {
         if (authors != null) {
             result.add(new DataValue.StringListDataValue(FileTypeHandler.AUTHORS, authors));
         }
-        List<PluginDependency> dependencies;
+        Set<PluginDependency> dependencies;
         //noinspection unchecked
         List<Map<String, Object>> deps = (List<Map<String, Object>>) data.get("dependencies");
         if (deps != null) {
-            dependencies = deps.stream().map(dep -> new PluginDependency((String) dep.get("id"), !(boolean) dep.getOrDefault("optional", false), null, null)).collect(Collectors.toList());
+            dependencies = deps.stream().map(dep -> new PluginDependency((String) dep.get("id"), !(boolean) dep.getOrDefault("optional", false), null, null)).collect(Collectors.toSet());
         } else {
-            dependencies = new ArrayList<>();
+            dependencies = new HashSet<>();
         }
 
         if (!dependencies.isEmpty()) {
             result.add(new DataValue.DependencyDataValue(FileTypeHandler.DEPENDENCIES, getPlatform(), dependencies));
         }
 
-        result.add(new DataValue.PlatformDependencyDataValue(FileTypeHandler.PLATFORM_DEPENDENCY, getPlatform(), new ArrayList<>()));
+        result.add(new DataValue.PlatformDependencyDataValue(FileTypeHandler.PLATFORM_DEPENDENCY, getPlatform(), new HashSet<>()));
         return result;
     }
 

@@ -7,12 +7,13 @@ import io.papermc.hangar.service.internal.versions.plugindata.handler.FileTypeHa
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static io.papermc.hangar.service.internal.versions.plugindata.DataValue.DependencyDataValue;
@@ -82,17 +83,17 @@ public class PluginFileData {
     }
 
     @Nullable
-    public Map<Platform, List<PluginDependency>> getDependencies() {
+    public Map<Platform, Set<PluginDependency>> getDependencies() {
         DataValue dependencies = dataValues.get("dependencies");
         if (dependencies == null) {
             // compiler needs the types here - Jake
             //noinspection Convert2Diamond
-            return new EnumMap<Platform, List<PluginDependency>>(getPlatformDependencies().entrySet().stream().collect(Collectors.toMap(Entry::getKey, entry -> new ArrayList<>())));
+            return new EnumMap<Platform, Set<PluginDependency>>(getPlatformDependencies().entrySet().stream().collect(Collectors.toMap(Entry::getKey, entry -> new HashSet<>())));
         }
         return ((DependencyDataValue) dependencies).getValue();
     }
 
-    public Map<Platform, List<String>> getPlatformDependencies() {
+    public Map<Platform, Set<String>> getPlatformDependencies() {
         DataValue platformDependencies = dataValues.get(FileTypeHandler.PLATFORM_DEPENDENCY);
         return platformDependencies != null ? ((PlatformDependencyDataValue) platformDependencies).getValue() : null;
     }

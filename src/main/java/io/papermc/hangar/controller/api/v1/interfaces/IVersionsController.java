@@ -4,8 +4,9 @@ import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
 import io.papermc.hangar.model.api.requests.RequestPagination;
+import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
-import io.papermc.hangar.modelold.NamedPermission;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.swagger.annotations.Api;
@@ -58,9 +59,10 @@ public interface IVersionsController {
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
-    @GetMapping(value = "/projects/{author}/{slug}/versions/{name:.*}")
+    @GetMapping(value = "/projects/{author}/{slug}/versions/{platform}/{name:.*}")
     ResponseEntity<Version> getVersion(@ApiParam("The author of the project to return the version for") @PathVariable String author,
                                        @ApiParam("The slug of the project to return") @PathVariable String slug,
+                                       @ApiParam("The platform of the version to return") @PathVariable Platform platform,
                                        @ApiParam("The name of the version to return") @PathVariable String name
     );
 

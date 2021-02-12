@@ -27,7 +27,7 @@
                         {{ $t('notifications.invited', [invite.name]) }}
                     </v-list-item-title>
                     <v-list-item-action>
-                        <v-btn icon class="success" light @click="updateInvite(invite, 'accept')">
+                        <v-btn icon class="success" @click="updateInvite(invite, 'accept')">
                             <v-icon>mdi-check</v-icon>
                         </v-btn>
                     </v-list-item-action>

@@ -1,9 +1,9 @@
 package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.controller.HangarController;
+import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
-import io.papermc.hangar.modelold.NamedPermission;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.versions.VersionFactory;
@@ -46,7 +46,9 @@ public class VersionController extends HangarController {
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE, params = "url")
     public ResponseEntity<PendingVersion> createFromUrl(@PathVariable("id") long projectId, @RequestParam String url) {
-        return ResponseEntity.ok(versionFactory.createPendingVersion(projectId, url));
+        PendingVersion pendingVersion = versionFactory.createPendingVersion(projectId, url);
+        System.out.println(pendingVersion);
+        return ResponseEntity.ok(pendingVersion);
     }
 
     @Unlocked

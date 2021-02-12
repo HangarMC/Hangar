@@ -40,7 +40,7 @@
 
         <v-menu v-if="$util.isLoggedIn()" bottom offset-y transition="slide-y-transition" close-delay="100">
             <template #activator="{ on, attrs }">
-                <v-btn color="info" text class="px-3" x-large v-bind="attrs" v-on="on">
+                <v-btn color="info" text class="px-3 text-transform-unset" x-large v-bind="attrs" v-on="on">
                     {{ $store.state.auth.user.name }}
                     <v-badge
                         overlap

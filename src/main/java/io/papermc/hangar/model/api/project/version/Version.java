@@ -11,36 +11,36 @@ import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class Version extends Model implements Named, Visible {
 
     private final String name;
-    private final String urlPath;
-    private final Map<Platform, List<PluginDependency>> dependencies;
+    private final Map<Platform, Set<PluginDependency>> pluginDependencies;
+    private final Map<Platform, Set<String>> platformDependencies;
     private final Visibility visibility;
     private final String description;
     private final VersionStats stats;
     private final FileInfo fileInfo;
     private final String author;
     private final ReviewState reviewState;
-    private final List<Tag> tags;
+    private final Set<Tag> tags;
 
-    public Version(OffsetDateTime createdAt, @ColumnName("version_string") String name, String urlPath, @EnumByOrdinal Visibility visibility, String description, @Nested("vs") VersionStats stats, @Nested("fi") FileInfo fileInfo, String author, @EnumByOrdinal ReviewState reviewState) {
+    public Version(OffsetDateTime createdAt, @ColumnName("version_string") String name, Visibility visibility, String description, @Nested("vs") VersionStats stats, @Nested("fi") FileInfo fileInfo, String author, @EnumByOrdinal ReviewState reviewState) {
         super(createdAt);
         this.name = name;
-        this.urlPath = urlPath;
-        this.dependencies = new HashMap<>();
+        this.tags = new HashSet<>();
+        this.pluginDependencies = new EnumMap<>(Platform.class);
+        this.platformDependencies = new EnumMap<>(Platform.class);
         this.visibility = visibility;
         this.description = description;
         this.stats = stats;
         this.fileInfo = fileInfo;
         this.author = author;
         this.reviewState = reviewState;
-        this.tags = new ArrayList<>();
     }
 
     @Override
@@ -48,12 +48,12 @@ public class Version extends Model implements Named, Visible {
         return name;
     }
 
-    public String getUrlPath() {
-        return urlPath;
+    public Map<Platform, Set<PluginDependency>> getPluginDependencies() {
+        return pluginDependencies;
     }
 
-    public Map<Platform, List<PluginDependency>> getDependencies() {
-        return dependencies;
+    public Map<Platform, Set<String>> getPlatformDependencies() {
+        return platformDependencies;
     }
 
     @Override
@@ -81,15 +81,16 @@ public class Version extends Model implements Named, Visible {
         return reviewState;
     }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
     @Override
     public String toString() {
         return "Version{" +
-                "name='" + name + '\'' +
-                ", urlPath='" + urlPath + '\'' +
+                "versionString='" + name + '\'' +
+                ", pluginDependencies=" + pluginDependencies +
+                ", platformDependencies=" + platformDependencies +
                 ", visibility=" + visibility +
                 ", description='" + description + '\'' +
                 ", stats=" + stats +

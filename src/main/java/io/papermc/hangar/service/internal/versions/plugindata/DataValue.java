@@ -6,6 +6,7 @@ import io.papermc.hangar.model.common.Platform;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class DataValue {
 
@@ -49,33 +50,33 @@ public abstract class DataValue {
 
     public static class DependencyDataValue extends DataValue {
 
-        private final Map<Platform, List<PluginDependency>> value;
+        private final Map<Platform, Set<PluginDependency>> value;
 
-        public DependencyDataValue(String key, Platform platform, List<PluginDependency> dependencies) {
+        public DependencyDataValue(String key, Platform platform, Set<PluginDependency> dependencies) {
             super(key);
             this.value = new EnumMap<>(Map.of(platform, dependencies));
         }
 
-        public Map<Platform, List<PluginDependency>> getValue() {
+        public Map<Platform, Set<PluginDependency>> getValue() {
             return value;
         }
     }
 
     public static class PlatformDependencyDataValue extends DataValue {
 
-        private final Map<Platform, List<String>> value;
+        private final Map<Platform, Set<String>> value;
 
-        public PlatformDependencyDataValue(String key, Platform platform, List<String> versions) {
+        public PlatformDependencyDataValue(String key, Platform platform, Set<String> versions) {
             super(key);
             this.value = Map.of(platform, versions);
         }
 
-        public PlatformDependencyDataValue(String key, Map<Platform, List<String>> map) {
+        public PlatformDependencyDataValue(String key, Map<Platform, Set<String>> map) {
             super(key);
             this.value = map;
         }
 
-        public Map<Platform, List<String>> getValue() {
+        public Map<Platform, Set<String>> getValue() {
             return value;
         }
     }

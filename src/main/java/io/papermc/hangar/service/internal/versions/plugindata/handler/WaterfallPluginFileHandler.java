@@ -8,8 +8,10 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -58,7 +60,7 @@ public class WaterfallPluginFileHandler extends FileTypeHandler {
             result.add(new DataValue.StringListDataValue(FileTypeHandler.AUTHORS, authors));
         }
 
-        List<PluginDependency> dependencies = new ArrayList<>();
+        Set<PluginDependency> dependencies = new HashSet<>();
         //noinspection unchecked
         List<String> softdepend = (List<String>) data.get("softDepends");
         if (softdepend != null) {
@@ -74,7 +76,7 @@ public class WaterfallPluginFileHandler extends FileTypeHandler {
             result.add(new DataValue.DependencyDataValue(FileTypeHandler.DEPENDENCIES, getPlatform(), dependencies));
         }
 
-        result.add(new DataValue.PlatformDependencyDataValue(FileTypeHandler.PLATFORM_DEPENDENCY, getPlatform(), new ArrayList<>()));
+        result.add(new DataValue.PlatformDependencyDataValue(FileTypeHandler.PLATFORM_DEPENDENCY, getPlatform(), new HashSet<>()));
         return result;
     }
 

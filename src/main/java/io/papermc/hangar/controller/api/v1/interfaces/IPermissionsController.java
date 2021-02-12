@@ -2,7 +2,7 @@ package io.papermc.hangar.controller.api.v1.interfaces;
 
 import io.papermc.hangar.model.api.permissions.PermissionCheck;
 import io.papermc.hangar.model.api.permissions.UserPermissions;
-import io.papermc.hangar.modelold.NamedPermission;
+import io.papermc.hangar.model.common.NamedPermission;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

@@ -1,11 +1,11 @@
 <template>
     <v-col cols="12" md="6" offset-md="3">
         <v-card>
-            <v-card-title v-text="$t('linkout.title')" />
+            <v-card-title>{{ $t('linkout.title') }}</v-card-title>
             <v-card-text v-text="$t('linkout.text', [target])" />
             <v-card-actions>
-                <v-btn @click="goBack" v-text="$t('linkout.abort')" />
-                <v-btn :href="target" v-text="$t('linkout.continue')" />
+                <v-btn @click="goBack">{{ $t('linkout.abort') }}</v-btn>
+                <v-btn :href="target" replace>{{ $t('linkout.continue') }}</v-btn>
             </v-card-actions>
         </v-card>
     </v-col>

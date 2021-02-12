@@ -73,6 +73,7 @@ public class StringUtils {
         return input == null ? Set.of() : Set.of(input.split("\\s+"));
     }
 
+    @Deprecated(forRemoval = true)
     public static <T extends Throwable> long getVersionId(@NotNull String versionString, T error) throws T {
         int index = versionString.lastIndexOf('.');
         try {

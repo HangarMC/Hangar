@@ -1,7 +1,6 @@
 package io.papermc.hangar.model.common;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.papermc.hangar.modelold.NamedPermission;
 import org.jdbi.v3.core.argument.Argument;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import org.jdbi.v3.core.statement.StatementContext;

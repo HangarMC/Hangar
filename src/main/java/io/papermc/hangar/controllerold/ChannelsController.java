@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.model.common.Color;
-import io.papermc.hangar.modelold.NamedPermission;
+import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
 import io.papermc.hangar.securityold.annotations.ProjectPermission;
 import io.papermc.hangar.securityold.annotations.UserLock;

@@ -9,8 +9,8 @@ import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.service.HangarService;
-import io.papermc.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,22 +29,20 @@ public class VersionsApiService extends HangarService {
         this.versionsApiDAO = versionsApiDAO.get();
     }
 
-    public Version getVersion(String author, String slug, String name) {
-        long versionId = StringUtils.getVersionId(name, new HangarApiException(HttpStatus.BAD_REQUEST, "badly formatted version string"));
-        return versionsApiDAO.getVersion(author, slug, versionId, getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
+    public Version getVersion(String author, String slug, Platform platform, String versionString) {
+        return versionsApiDAO.getVersion(author, slug, platform,versionString, getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
     }
 
     public PaginatedResult<Version> getVersions(String author, String slug, List<String> tags, RequestPagination pagination) {
         List<Version> versions = versionsApiDAO.getVersions(author, slug, tags, getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId(), pagination.getLimit(), pagination.getOffset());
         Long versionCount = versionsApiDAO.getVersionCount(author, slug, tags, getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
-        return new PaginatedResult<>(new Pagination(versionCount == null ? 0 : versionCount.longValue(), pagination), versions);
+        return new PaginatedResult<>(new Pagination(versionCount == null ? 0 : versionCount, pagination), versions);
     }
 
-    public Map<String, VersionStats> getVersionStats(String author, String slug, String version, OffsetDateTime fromDate, OffsetDateTime toDate) {
+    public Map<String, VersionStats> getVersionStats(String author, String slug, String versionString, OffsetDateTime fromDate, OffsetDateTime toDate) {
         if (fromDate.isAfter(toDate)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "From date is after to date");
         }
-        long versionId = StringUtils.getVersionId(version, new HangarApiException(HttpStatus.BAD_REQUEST, "badly formatted version string"));
-        return versionsApiDAO.getVersionStats(author, slug, versionId, fromDate, toDate);
+        return versionsApiDAO.getVersionStats(author, slug, versionString, fromDate, toDate);
     }
 }

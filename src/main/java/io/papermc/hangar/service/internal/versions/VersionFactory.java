@@ -97,7 +97,6 @@ public class VersionFactory extends HangarService {
             }
 
             Path tmpPluginFile = tmpDir.resolve(pluginFileName);
-            System.out.println(tmpPluginFile);
             file.transferTo(tmpPluginFile);
             pluginDataFile = pluginDataService.loadMeta(tmpPluginFile, getHangarPrincipal().getUserId());
         } catch (IOException e) {
@@ -138,8 +137,8 @@ public class VersionFactory extends HangarService {
         return new PendingVersion(url, projectChannelTable, projectTable.isForumSync());
     }
 
-    public void publishPendingVersion(long projectId, PendingVersion pendingVersion) {
-        ProjectTable projectTable = projectService.getProjectTable(projectId);
+    public void publishPendingVersion(long projectId, final PendingVersion pendingVersion) {
+        final ProjectTable projectTable = projectService.getProjectTable(projectId);
         assert projectTable != null;
         Path tmpVersionJar = null;
         if (pendingVersion.isFile()) { // verify file
@@ -166,18 +165,26 @@ public class VersionFactory extends HangarService {
         ProjectVersionTable projectVersionTable = null;
         try {
             ProjectChannelTable projectChannelTable = channelService.getProjectChannel(projectId, pendingVersion.getChannelName(), pendingVersion.getChannelColor());
-            if (projectChannelTable == null) { // create new channel
+            if (projectChannelTable == null) {
                 projectChannelTable = channelService.createProjectChannel(pendingVersion.getChannelName(), pendingVersion.getChannelColor(), projectId, pendingVersion.isChannelNonReviewed());
             }
 
+            Long fileSize = null;
+            String fileHash = null;
+            String fileName = null;
+            if (pendingVersion.getFileInfo() != null) {
+                fileSize = pendingVersion.getFileInfo().getSizeBytes();
+                fileHash = pendingVersion.getFileInfo().getMd5Hash();
+                fileName = pendingVersion.getFileInfo().getName();
+            }
             projectVersionTable = projectVersionsDAO.insert(new ProjectVersionTable(
                     pendingVersion.getVersionString(),
                     pendingVersion.getDescription(),
                     projectId,
                     projectChannelTable.getId(),
-                    pendingVersion.getFileInfo().getSizeBytes(),
-                    pendingVersion.getFileInfo().getMd5Hash(),
-                    pendingVersion.getFileInfo().getName(),
+                    fileSize,
+                    fileHash,
+                    fileName,
                     getHangarPrincipal().getUserId(),
                     pendingVersion.isForumSync(),
                     pendingVersion.getExternalUrl()
@@ -211,15 +218,18 @@ public class VersionFactory extends HangarService {
             notificationService.notifyUsersNewVersion(projectTable, projectVersionTable);
 
             if (tmpVersionJar != null) {
-                Path newJarPath = projectFiles.getVersionDir(projectTable.getOwnerName(), projectTable.getName(), projectVersionTable.getVersionString()).resolve(tmpVersionJar.getFileName());
-                if (Files.notExists(newJarPath)) {
-                    Files.createDirectories(newJarPath.getParent());
-                }
+                for (Platform platform : pendingVersion.getPlatformDependencies().keySet()) {
+                    if (pendingVersion.getPlatformDependencies().get(platform).size() < 1) continue;
+                    Path newVersionJarPath = projectFiles.getVersionDir(projectTable.getOwnerName(), projectTable.getName(), pendingVersion.getVersionString()).resolve(platform.name()).resolve(tmpVersionJar.getFileName());
+                    if (Files.notExists(newVersionJarPath)) {
+                        Files.createDirectories(newVersionJarPath.getParent());
+                    }
 
-                Files.move(tmpVersionJar, newJarPath, StandardCopyOption.REPLACE_EXISTING);
-                Files.deleteIfExists(tmpVersionJar);
-                if (Files.notExists(newJarPath)) {
-                    throw new IOException("Didn't successfully move the jar");
+                    Files.move(tmpVersionJar, newVersionJarPath, StandardCopyOption.REPLACE_EXISTING);
+                    Files.deleteIfExists(tmpVersionJar);
+                    if (Files.notExists(newVersionJarPath)) {
+                        throw new IOException("Didn't successfully move the jar");
+                    }
                 }
             }
 

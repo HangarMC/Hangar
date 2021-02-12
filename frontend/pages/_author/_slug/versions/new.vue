@@ -118,10 +118,11 @@ import remove from 'lodash-es/remove';
 import { PendingVersion, ProjectChannel } from 'hangar-internal';
 import { HangarProjectMixin } from '~/components/mixins';
 import { ProjectPermission } from '~/utils/perms';
-import { NamedPermission } from '~/types/enums';
+import { NamedPermission, Platform } from '~/types/enums';
 import MarkdownEditor from '~/components/MarkdownEditor.vue';
 import NewChannelModal from '~/components/modals/NewChannelModal.vue';
 
+// TODO implement setting up dependencies
 @Component({
     components: { NewChannelModal, MarkdownEditor },
 })
@@ -168,8 +169,26 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
             this.pendingVersion.description = this.$refs.editor.rawEdited;
             this.pendingVersion.channelColor = this.currentChannel!.color;
             this.pendingVersion.channelNonReviewed = this.currentChannel!.nonReviewed;
+            // TODO remove debug values
+            this.pendingVersion.platformDependencies.PAPER = ['1.13', '1.14', '1.15'];
+            // played around trying to get this to happen in jackson's deserialization, but couldn't figure it out.
+            for (const platform in this.pendingVersion.platformDependencies) {
+                if (this.pendingVersion.platformDependencies[platform as Platform].length < 1) {
+                    delete this.pendingVersion.platformDependencies[platform as Platform];
+                }
+            }
+            for (const platform in this.pendingVersion.pluginDependencies) {
+                if (this.pendingVersion.pluginDependencies[platform as Platform].length < 1) {
+                    delete this.pendingVersion.pluginDependencies[platform as Platform];
+                }
+            }
             console.log(this.pendingVersion);
-            this.$api.requestInternal(`versions/version/${this.project.id}/create`, true, 'post', this.pendingVersion).catch(this.$util.handleRequestError);
+            this.$api
+                .requestInternal(`versions/version/${this.project.id}/create`, true, 'post', this.pendingVersion)
+                .then(() => {
+                    this.$router.push(`/${this.$route.params.author}/${this.$route.params.slug}/versions`);
+                })
+                .catch(this.$util.handleRequestError);
         }
     }
 

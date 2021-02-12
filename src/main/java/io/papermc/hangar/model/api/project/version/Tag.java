@@ -3,6 +3,8 @@ package io.papermc.hangar.model.api.project.version;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.api.color.TagColor;
 
+import java.util.Objects;
+
 public class Tag implements Named {
 
     private final String name;
@@ -26,6 +28,19 @@ public class Tag implements Named {
 
     public TagColor getColor() {
         return color;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tag tag = (Tag) o;
+        return name.equals(tag.name) && data.equals(tag.data) && color.equals(tag.color);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, data, color);
     }
 
     @Override

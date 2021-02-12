@@ -1,7 +1,7 @@
 package io.papermc.hangar.modelold.viewhelpers;
 
+import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
-import io.papermc.hangar.modelold.NamedPermission;
 import org.jdbi.v3.core.mapper.Nested;
 
 import java.util.Collection;

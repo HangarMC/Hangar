@@ -18,8 +18,8 @@ import { Component, Prop, PropSync, Vue, Watch } from 'nuxt-property-decorator';
 export default class Markdown extends Vue {
     loading = true;
     renderedMarkdown: string = '';
-    @PropSync('raw', { required: true, type: String })
-    rawMarkdown!: String;
+    @PropSync('raw', { required: true })
+    rawMarkdown!: string | null;
 
     @Prop({ default: 'accent', type: String })
     color!: string;
@@ -33,6 +33,7 @@ export default class Markdown extends Vue {
     }
 
     async fetch() {
+        if (!this.rawMarkdown) return;
         this.renderedMarkdown = await this.$api
             .requestInternal<string>('pages/render', false, 'post', {
                 content: this.rawMarkdown,

@@ -5,6 +5,7 @@ import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
 import io.papermc.hangar.model.api.requests.RequestPagination;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.service.api.VersionsApiService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,8 @@ public class VersionsController implements IVersionsController {
     }
 
     @Override
-    public ResponseEntity<Version> getVersion(String author, String slug, String name) {
-        return ResponseEntity.ok(versionsApiService.getVersion(author, slug, name));
+    public ResponseEntity<Version> getVersion(String author, String slug, Platform platform, String name) {
+        return ResponseEntity.ok(versionsApiService.getVersion(author, slug, platform, name));
     }
 
     @Override

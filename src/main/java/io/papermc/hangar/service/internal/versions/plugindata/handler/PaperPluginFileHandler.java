@@ -8,8 +8,10 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -58,7 +60,7 @@ public class PaperPluginFileHandler extends FileTypeHandler {
             result.add(new DataValue.StringListDataValue(FileTypeHandler.AUTHORS, authors));
         }
 
-        List<PluginDependency> dependencies = new ArrayList<>();
+        Set<PluginDependency> dependencies = new HashSet<>();
         //noinspection unchecked
         List<String> softdepend = (List<String>) data.get("softdepend");
         if (softdepend != null) {
@@ -74,7 +76,7 @@ public class PaperPluginFileHandler extends FileTypeHandler {
             result.add(new DataValue.DependencyDataValue(FileTypeHandler.DEPENDENCIES, getPlatform(), dependencies));
         }
 
-        List<String> versions = new ArrayList<>();
+        Set<String> versions = new HashSet<>();
         if (data.containsKey("api-version")) {
             versions.add(data.get("api-version").toString());
         }

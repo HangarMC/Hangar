@@ -8,7 +8,7 @@ import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.daoold.ProjectPageDao;
 import io.papermc.hangar.db.modelold.ProjectPagesTable;
 import io.papermc.hangar.db.modelold.ProjectsTable;
-import io.papermc.hangar.modelold.NamedPermission;
+import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
 import io.papermc.hangar.modelold.viewhelpers.ProjectPage;
 import io.papermc.hangar.modelold.viewhelpers.ScopedProjectData;

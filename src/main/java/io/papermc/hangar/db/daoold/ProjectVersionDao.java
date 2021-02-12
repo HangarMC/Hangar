@@ -77,8 +77,8 @@ public interface ProjectVersionDao {
             "                 LEFT JOIN project_version_reviews r ON v.id = r.version_id" +
             "                 LEFT JOIN users ru ON ru.id = r.user_id" +
             "          WHERE v.review_state = :reviewState" +
-            "            AND p.visibility != 5" +
-            "            AND v.visibility != 5) sq" +
+            "            AND p.visibility != 4" +
+            "            AND v.visibility != 4) sq" +
             "  WHERE row = 1" +
             "  ORDER BY sq.project_name DESC, sq.version_string DESC")
     List<ReviewQueueEntry> getQueue(@EnumByOrdinal ReviewState reviewState);

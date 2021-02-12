@@ -1,7 +1,7 @@
 package io.papermc.hangar.model.api.permissions;
 
+import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
-import io.papermc.hangar.modelold.NamedPermission;
 
 import java.util.List;
 
