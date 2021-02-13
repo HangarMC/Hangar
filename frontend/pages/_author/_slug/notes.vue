@@ -13,7 +13,7 @@
                 </template>
             </v-text-field>
             <h2>{{ $t('notes.notes') }}</h2>
-            <v-data-table v-if="notes && notes.length > 0" :headers="headers" :items="notes" disable-filtering disable-sort disable-pagination>
+            <v-data-table v-if="notes && notes.length > 0" :headers="headers" :items="notes" disable-filtering disable-sort hide-default-footer>
                 <template #item.message="{ item }">{{ item.message }}</template>
                 <template #item.user="{ item }">{{ item.user.name }}</template>
                 <template #item.createdAt="{ item }">{{ $util.prettyDate(item.createdAt) }}</template>
@@ -29,11 +29,7 @@ import { Prop } from 'vue-property-decorator';
 import { Project } from 'hangar-api';
 import { Note } from 'hangar-internal';
 
-@Component({
-    meta: {
-        hideHeader: true,
-    },
-})
+@Component
 export default class ProjectNotesPage extends Vue {
     @Prop({ required: true })
     project!: Project;

@@ -5,7 +5,7 @@
             <NuxtLink :to="'/' + project.namespace.owner + '/' + project.namespace.slug">{{ project.namespace.owner + '/' + project.namespace.slug }}</NuxtLink>
         </v-card-title>
         <v-card-text>
-            <v-data-table v-if="flags && flags.length > 0" :headers="headers" :items="flags" disable-filtering disable-sort disable-pagination>
+            <v-data-table v-if="flags && flags.length > 0" :headers="headers" :items="flags" disable-filtering disable-sort hide-default-footer>
                 <template #item.user="{ item }">{{ item.user.name }}</template>
                 <template #item.reason="{ item }">{{ item.reason.title }}</template>
                 <template #item.createdAt="{ item }">{{ $util.prettyDate(item.createdAt) }}</template>
@@ -24,10 +24,8 @@ import { Component, Vue } from 'nuxt-property-decorator';
 import { Project } from 'hangar-api';
 import { Prop } from 'vue-property-decorator';
 import { Flag } from 'hangar-internal';
-import Sponsor from '~/components/layouts/Sponsor.vue';
-@Component({
-    components: { Sponsor },
-})
+
+@Component
 export default class ProjectFlagsPage extends Vue {
     @Prop({ required: true })
     project!: Project;
@@ -45,10 +43,6 @@ export default class ProjectFlagsPage extends Vue {
             resolvedBy: this.$util.dummyUser(),
         },
     ] as Array<Flag>;
-
-    meta = {
-        hideHeader: true,
-    };
 
     get headers() {
         return [
