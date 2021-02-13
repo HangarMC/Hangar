@@ -11,7 +11,8 @@ export default async ({ app: { $cookies }, $auth, $api, store, redirect }: Conte
             path: '/',
         });
         redirect(returnRoute);
-    } else if ($cookies.get('HangarAuth_REFRESH', { parseJSON: false })) {
+    }
+    if ($cookies.get('HangarAuth_REFRESH', { parseJSON: false })) {
         const token = await $api.getToken(true);
         if (token != null) {
             if (store.state.auth.authenticated) {
