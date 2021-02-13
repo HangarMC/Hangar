@@ -171,6 +171,8 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
             this.pendingVersion.channelNonReviewed = this.currentChannel!.nonReviewed;
             // TODO remove debug values
             this.pendingVersion.platformDependencies.PAPER = ['1.13', '1.14', '1.15'];
+            this.pendingVersion.platformDependencies.VELOCITY = ['1.0'];
+            this.pendingVersion.platformDependencies.WATERFALL = ['1.13', '1.14', '1.15'];
             // played around trying to get this to happen in jackson's deserialization, but couldn't figure it out.
             for (const platform in this.pendingVersion.platformDependencies) {
                 if (this.pendingVersion.platformDependencies[platform as Platform].length < 1) {

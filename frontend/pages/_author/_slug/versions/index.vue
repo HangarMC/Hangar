@@ -5,17 +5,17 @@
                 <template #item="{ item: version }">
                     <v-sheet width="100%" color="accent" rounded>
                         <!-- todo fix url, need to get platform -->
-                        <NuxtLink :to="`versions/${Object.keys(version.platformDependencies)[0].toLowerCase()}/${version.name}`">
+                        <NuxtLink :to="`versions/${version.name}`">
                             <v-row>
                                 <v-col cols="4" md="2" lg="2">
                                     <v-row>
                                         <v-col cols="12">{{ version.name }}</v-col>
                                         <!-- todo is this order always this way? -->
-                                        <Tag :tag="version.tags[1]" />
+                                        <Tag :tag="version.tags[version.tags.length - 1]" />
                                     </v-row>
                                 </v-col>
                                 <v-col cols="8" md="6" lg="4">
-                                    <Tag :tag="version.tags[0]" />
+                                    <Tag v-for="(tag, index) in version.tags.slice(0, version.tags.length - 1)" :key="index" :tag="tag" />
                                 </v-col>
                                 <v-col cols="0" md="4" lg="3">
                                     <v-row>

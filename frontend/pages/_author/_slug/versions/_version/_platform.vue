@@ -1,13 +1,14 @@
 <template>
-    <div>{{ $nuxt.$route.name }}</div>
+    <div>
+        {{ $route.name }}
+    </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 
-// TODO implement ProjectVersionsVersionPage
 @Component
-export default class ProjectVersionsVersionPage extends Vue {}
+export default class PlatformVersionPage extends Vue {}
 </script>
 
 <style lang="scss" scoped></style>
