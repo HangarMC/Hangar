@@ -1,6 +1,6 @@
 declare module 'hangar-internal' {
-    import { Table } from 'hangar-internal';
-    import { Project } from 'hangar-api';
+    import { Table, FlagReason } from 'hangar-internal';
+    import { Project, User } from 'hangar-api';
 
     interface ProjectOwner {
         id: number;
@@ -39,5 +39,19 @@ declare module 'hangar-internal' {
         slug: string;
         contents: string;
         deletable: boolean;
+    }
+
+    interface Flag extends Table {
+        user: User;
+        reason: FlagReason;
+        resolved: boolean;
+        comment: string;
+        resolvedAt: string;
+        resolvedBy: User;
+    }
+
+    interface Note extends Table {
+        message: string;
+        user: User;
     }
 }

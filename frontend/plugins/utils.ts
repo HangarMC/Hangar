@@ -126,6 +126,10 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
             return result;
         }
 
+        getCurrentUser(): HangarUser | null {
+            return (store.state.auth as AuthState).user;
+        }
+
         isCurrentUser(id: number): boolean {
             return (store.state.auth as AuthState).user?.id === id;
         }

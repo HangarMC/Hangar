@@ -293,6 +293,19 @@ const msgs: LocaleMessageObject = {
         abort: 'Go Back',
         continue: 'Continue',
     },
+    flags: {
+        header: 'Flags for',
+        noFlags: 'No flags found',
+        resolved: 'Yes, by {0} on {1}',
+        notResolved: 'No',
+    },
+    notes: {
+        header: 'Notes for',
+        noNotes: 'No notes found',
+        addNote: 'Add notes',
+        notes: 'Notes',
+        placeholder: 'Add a note...',
+    },
     message: 'Good morning!',
 };
 

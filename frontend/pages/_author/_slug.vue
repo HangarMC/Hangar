@@ -1,101 +1,103 @@
 <template>
     <div>
-        <template v-if="!isPublic">
-            <!-- todo alert for visibility stuff -->
-            <v-alert v-if="needsChanges" type="error">
-                <!-- todo remove is no EditPage perm -->
-                <v-btn type="primary" :to="'/' + slug + '/manage/sendforapproval'">{{ $t('project.sendForApproval') }} </v-btn>
-                <strong>{{ $t('visibility.notice.' + project.visibility) }}</strong>
-                <br />
-                <Markdown :raw="project.lastVisibilityChangeComment || 'Unknown'" />
-            </v-alert>
-            <v-alert v-else-if="isSoftDeleted" type="error">
-                {{ $t('visibility.notice.' + project.visibility, [project.lastVisibilityChangeUserName]) }}
-            </v-alert>
-            <v-alert v-else type="error">
-                {{ $t('visibility.notice.' + project.visibility) }}
-                <Markdown v-if="project.lastVisibilityChangeComment" :raw="project.lastVisibilityChangeComment" />
-            </v-alert>
-        </template>
-        <v-row>
-            <v-col cols="1">
-                <UserAvatar :username="project.namespace.owner" :avatar-url="project.iconUrl" clazz="user-avatar-sm"></UserAvatar>
-            </v-col>
-            <v-col cols="auto">
-                <h1 class="d-inline">
-                    <NuxtLink :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</NuxtLink> /
-                    <NuxtLink :to="slug">{{ project.name }}</NuxtLink>
-                </h1>
-                <div>
-                    <v-subheader>{{ project.description }}</v-subheader>
-                </div>
-            </v-col>
-            <v-spacer />
-            <v-col v-if="$util.isLoggedIn()" cols="3">
-                <v-row no-gutters justify="end">
-                    <v-tooltip v-if="!$util.isCurrentUser(project.owner.id)" bottom>
-                        <template #activator="{ on }">
-                            <v-btn icon @click="toggleStar" v-on="on">
-                                <v-icon v-if="project.userActions.starred" color="amber">mdi-star</v-icon>
-                                <v-icon v-else color="amber">mdi-star-outline</v-icon>
-                            </v-btn>
-                        </template>
-                        <span v-if="project.userActions.starred">{{ $t('project.actions.unstar') }}</span>
-                        <span v-else>{{ $t('project.actions.star') }}</span>
-                    </v-tooltip>
+        <template v-if="$route.meta.hideHeader !== true">
+            <template v-if="!isPublic">
+                <!-- todo alert for visibility stuff -->
+                <v-alert v-if="needsChanges" type="error">
+                    <!-- todo remove is no EditPage perm -->
+                    <v-btn type="primary" :to="'/' + slug + '/manage/sendforapproval'">{{ $t('project.sendForApproval') }} </v-btn>
+                    <strong>{{ $t('visibility.notice.' + project.visibility) }}</strong>
+                    <br />
+                    <Markdown :raw="project.lastVisibilityChangeComment || 'Unknown'" />
+                </v-alert>
+                <v-alert v-else-if="isSoftDeleted" type="error">
+                    {{ $t('visibility.notice.' + project.visibility, [project.lastVisibilityChangeUserName]) }}
+                </v-alert>
+                <v-alert v-else type="error">
+                    {{ $t('visibility.notice.' + project.visibility) }}
+                    <Markdown v-if="project.lastVisibilityChangeComment" :raw="project.lastVisibilityChangeComment" />
+                </v-alert>
+            </template>
+            <v-row>
+                <v-col cols="1">
+                    <UserAvatar :username="project.namespace.owner" :avatar-url="project.iconUrl" clazz="user-avatar-sm"></UserAvatar>
+                </v-col>
+                <v-col cols="auto">
+                    <h1 class="d-inline">
+                        <NuxtLink :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</NuxtLink> /
+                        <NuxtLink :to="slug">{{ project.name }}</NuxtLink>
+                    </h1>
+                    <div>
+                        <v-subheader>{{ project.description }}</v-subheader>
+                    </div>
+                </v-col>
+                <v-spacer />
+                <v-col v-if="$util.isLoggedIn()" cols="3">
+                    <v-row no-gutters justify="end">
+                        <v-tooltip v-if="!$util.isCurrentUser(project.owner.id)" bottom>
+                            <template #activator="{ on }">
+                                <v-btn icon @click="toggleStar" v-on="on">
+                                    <v-icon v-if="project.userActions.starred" color="amber">mdi-star</v-icon>
+                                    <v-icon v-else color="amber">mdi-star-outline</v-icon>
+                                </v-btn>
+                            </template>
+                            <span v-if="project.userActions.starred">{{ $t('project.actions.unstar') }}</span>
+                            <span v-else>{{ $t('project.actions.star') }}</span>
+                        </v-tooltip>
 
-                    <v-tooltip v-if="!$util.isCurrentUser(project.owner.id)" bottom>
-                        <template #activator="{ on }">
-                            <v-btn icon @click="toggleWatch" v-on="on">
-                                <v-icon v-if="project.userActions.watching">mdi-eye-off</v-icon>
-                                <v-icon v-else>mdi-eye</v-icon>
-                            </v-btn>
-                        </template>
-                        <span v-if="project.userActions.watching">{{ $t('project.actions.unwatch') }}</span>
-                        <span v-else>{{ $t('project.actions.watch') }}</span>
-                    </v-tooltip>
-                    <!-- todo if not logged in or author, remove both -->
-                    <FlagModal :project="project" />
-                    <v-menu v-if="isStaff" bottom offset-y>
-                        <template #activator="{ on, attrs }">
-                            <v-btn v-bind="attrs" v-on="on">
-                                {{ $t('project.actions.adminActions') }}
-                            </v-btn>
-                        </template>
-                        <v-list-item :to="slug + '/flags'">
-                            <v-list-item-title>
-                                {{ $t('project.actions.flagHistory', [project.info.flagCount]) }}
-                            </v-list-item-title>
-                        </v-list-item>
-                        <v-list-item :to="slug + '/notes'">
-                            <v-list-item-title>
-                                {{ $t('project.actions.staffNotes', [project.info.noteCount]) }}
-                            </v-list-item-title>
-                        </v-list-item>
-                        <v-list-item :to="'/admin/log/?projectFilter=' + slug">
-                            <v-list-item-title>
-                                {{ $t('project.actions.userActionLogs') }}
-                            </v-list-item-title>
-                        </v-list-item>
-                        <v-list-item :href="$util.forumUrl(project.namespace.owner)">
-                            <v-list-item-title>
-                                {{ $t('project.actions.forum') }}
-                                <v-icon>mdi-open-in-new</v-icon>
-                            </v-list-item-title>
-                        </v-list-item>
-                    </v-menu>
-                </v-row>
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-tabs>
-                <v-tab v-for="tab in tabs" :key="tab.title" :exact="!!tab.exact" :to="tab.external ? '/linkout?remoteUrl=' + tab.link : tab.link" nuxt>
-                    <v-icon left>{{ tab.icon }}</v-icon>
-                    {{ tab.title }}
-                    <v-icon v-if="tab.external" x-small>mdi-open-in-new</v-icon>
-                </v-tab>
-            </v-tabs>
-        </v-row>
+                        <v-tooltip v-if="!$util.isCurrentUser(project.owner.id)" bottom>
+                            <template #activator="{ on }">
+                                <v-btn icon @click="toggleWatch" v-on="on">
+                                    <v-icon v-if="project.userActions.watching">mdi-eye-off</v-icon>
+                                    <v-icon v-else>mdi-eye</v-icon>
+                                </v-btn>
+                            </template>
+                            <span v-if="project.userActions.watching">{{ $t('project.actions.unwatch') }}</span>
+                            <span v-else>{{ $t('project.actions.watch') }}</span>
+                        </v-tooltip>
+                        <!-- todo if not logged in or author, remove both -->
+                        <FlagModal :project="project" />
+                        <v-menu v-if="isStaff" bottom offset-y>
+                            <template #activator="{ on, attrs }">
+                                <v-btn v-bind="attrs" v-on="on">
+                                    {{ $t('project.actions.adminActions') }}
+                                </v-btn>
+                            </template>
+                            <v-list-item :to="slug + '/flags'">
+                                <v-list-item-title>
+                                    {{ $t('project.actions.flagHistory', [project.info.flagCount]) }}
+                                </v-list-item-title>
+                            </v-list-item>
+                            <v-list-item :to="slug + '/notes'">
+                                <v-list-item-title>
+                                    {{ $t('project.actions.staffNotes', [project.info.noteCount]) }}
+                                </v-list-item-title>
+                            </v-list-item>
+                            <v-list-item :to="'/admin/log/?projectFilter=' + slug">
+                                <v-list-item-title>
+                                    {{ $t('project.actions.userActionLogs') }}
+                                </v-list-item-title>
+                            </v-list-item>
+                            <v-list-item :href="$util.forumUrl(project.namespace.owner)">
+                                <v-list-item-title>
+                                    {{ $t('project.actions.forum') }}
+                                    <v-icon>mdi-open-in-new</v-icon>
+                                </v-list-item-title>
+                            </v-list-item>
+                        </v-menu>
+                    </v-row>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-tabs>
+                    <v-tab v-for="tab in tabs" :key="tab.title" :exact="!!tab.exact" :to="tab.external ? '/linkout?remoteUrl=' + tab.link : tab.link" nuxt>
+                        <v-icon left>{{ tab.icon }}</v-icon>
+                        {{ tab.title }}
+                        <v-icon v-if="tab.external" x-small>mdi-open-in-new</v-icon>
+                    </v-tab>
+                </v-tabs>
+            </v-row>
+        </template>
         <NuxtChild class="mt-5" :project="project">
             <v-tab-item>
                 {{ $route.name }}
