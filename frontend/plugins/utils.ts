@@ -16,7 +16,7 @@ import { AuthState } from '~/store/auth';
 type Validation = (v: string) => boolean | string;
 type ValidationArgument = (any: any) => Validation;
 
-function handleRequestError(err: AxiosError, error: Context['error']) {
+function handleRequestError(err: AxiosError, error: Context['error'], i18n: Context['app']['i18n']) {
     if (!err.isAxiosError) {
         // everything should be an AxiosError
         error({
@@ -28,7 +28,7 @@ function handleRequestError(err: AxiosError, error: Context['error']) {
             const data: HangarApiException = err.response.data;
             error({
                 statusCode: data.httpError.statusCode,
-                message: data.message,
+                message: i18n.te(data.message) ? <string>i18n.t(data.message) : data.message,
             });
         } else if (err.response.data.isHangarValidationException) {
             const data: HangarValidationException = err.response.data;
@@ -50,7 +50,7 @@ function handleRequestError(err: AxiosError, error: Context['error']) {
     }
 }
 
-const createUtil = ({ store, error }: Context) => {
+const createUtil = ({ store, error, app: { i18n } }: Context) => {
     class Util {
         dummyUser() {
             return ({
@@ -139,17 +139,17 @@ const createUtil = ({ store, error }: Context) => {
          * @param err the axios request error
          */
         handlePageRequestError(err: AxiosError) {
-            handleRequestError(err, error);
+            handleRequestError(err, error, i18n);
         }
 
         /**
          * Used for showing error popups. See handlePageRequestError to show an error page.
          * @param err the axios request error
-         * @param msg optional error message
+         * @param msg optional error message (should be i18n)
          */
-        handleRequestError(err: AxiosError, msg: string | undefined = 'Could not load data') {
+        handleRequestError(err: AxiosError, msg: string | undefined = undefined) {
             if (process.server) {
-                handleRequestError(err, error);
+                handleRequestError(err, error, i18n);
                 return;
             }
             if (!err.isAxiosError) {
@@ -162,8 +162,9 @@ const createUtil = ({ store, error }: Context) => {
                 // TODO check is msg is a i18n key and use that instead (use $te to check existence of a key)
                 if (err.response.data.isHangarApiException) {
                     const data: HangarApiException = err.response.data;
+                    const dataMessage = i18n.te(data.message) ? i18n.t(data.message) : data.message;
                     store.dispatch('snackbar/SHOW_NOTIF', {
-                        message: msg ? `${msg}: ${data.message}` : data.message,
+                        message: msg ? `${i18n.t(msg)}: ${dataMessage}` : dataMessage,
                         color: 'error',
                         timeout: 3000,
                     } as NotifPayload);
@@ -178,14 +179,14 @@ const createUtil = ({ store, error }: Context) => {
                     }
                     if (msg) {
                         store.dispatch('snackbar/SHOW_NOTIF', {
-                            message: msg,
+                            message: i18n.t(msg),
                             color: 'error',
                             timeout: 3000,
                         } as NotifPayload);
                     }
                 } else {
                     store.dispatch('snackbar/SHOW_NOTIF', {
-                        message: msg ? `${msg}: ${err.response.statusText}` : err.response.statusText,
+                        message: msg ? `${i18n.t(msg)}: ${err.response.statusText}` : err.response.statusText,
                         color: 'error',
                         timeout: 2000,
                     } as NotifPayload);

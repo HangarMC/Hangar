@@ -27,8 +27,13 @@ public class VersionsController implements IVersionsController {
     }
 
     @Override
-    public ResponseEntity<Version> getVersion(String author, String slug, Platform platform, String name) {
-        return ResponseEntity.ok(versionsApiService.getVersion(author, slug, platform, name));
+    public ResponseEntity<Version> getVersion(String author, String slug, String versionString, Platform platform) {
+        return ResponseEntity.ok(versionsApiService.getVersion(author, slug, versionString, platform));
+    }
+
+    @Override
+    public ResponseEntity<List<Version>> getVersions(String author, String slug, String name) {
+        return ResponseEntity.ok(versionsApiService.getVersions(author, slug, name));
     }
 
     @Override
@@ -37,7 +42,7 @@ public class VersionsController implements IVersionsController {
     }
 
     @Override
-    public ResponseEntity<Map<String, VersionStats>> getVersionStats(String author, String slug, String version, @NotNull OffsetDateTime fromDate, @NotNull OffsetDateTime toDate) {
-        return ResponseEntity.ok(versionsApiService.getVersionStats(author, slug, version, fromDate, toDate));
+    public ResponseEntity<Map<String, VersionStats>> getVersionStats(String author, String slug, String versionString, Platform platform, @NotNull OffsetDateTime fromDate, @NotNull OffsetDateTime toDate) {
+        return ResponseEntity.ok(versionsApiService.getVersionStats(author, slug, versionString, platform, fromDate, toDate));
     }
 }

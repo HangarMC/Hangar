@@ -217,15 +217,8 @@
                         <v-progress-circular v-if="projectLoading" indeterminate color="red" size="50"></v-progress-circular>
                         <div v-if="!projectError" class="text-h5 mt-2">{{ $t('project.new.step5.text') }}</div>
                         <template v-else>
-                            <div class="text-h5 mt-2">{{ $t('project.new.error') }}</div>
-                            <v-btn
-                                @click="
-                                    step = 1;
-                                    projectLoading = true;
-                                    projectError = false;
-                                "
-                                >Retry</v-btn
-                            >
+                            <div class="text-h5 mt-2">{{ $t('project.new.error.create') }}</div>
+                            <v-btn @click="retry">Retry</v-btn>
                         </template>
                     </v-card-text>
                 </v-card>
@@ -239,6 +232,7 @@ import { Component, Vue, Watch } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
 import { ProjectOwner } from 'hangar-internal';
 import { AxiosError } from 'axios';
+import { TranslateResult } from 'vue-i18n';
 import StepperStepContent from '~/components/steppers/StepperStepContent.vue';
 import { RootState } from '~/store';
 import { ProjectCategory } from '~/types/enums';
@@ -285,7 +279,7 @@ export default class NewPage extends Vue {
         keywords: [],
     } as unknown) as NewProjectForm;
 
-    nameErrors: string[] = [];
+    nameErrors: TranslateResult[] = [];
 
     forms = {
         step2: false,
@@ -331,11 +325,17 @@ export default class NewPage extends Vue {
             })
             .catch((err) => {
                 this.projectError = true;
-                this.$util.handleRequestError(err, 'Unable to create project');
+                this.$util.handleRequestError(err, 'project.new.error.create');
             })
             .finally(() => {
                 this.projectLoading = false;
             });
+    }
+
+    retry() {
+        this.step = 1;
+        this.projectLoading = true;
+        this.projectError = false;
     }
 
     // This is very useful. Prob should have a generalization of this that works elsewhere. I didn't make it a rule because it relies on other input (the ownerId)
@@ -358,7 +358,7 @@ export default class NewPage extends Vue {
                 if (!err.response?.data.isHangarApiException) {
                     return this.$util.handleRequestError(err);
                 }
-                this.nameErrors.push(err.response.data.message);
+                this.nameErrors.push(this.$t(err.response.data.message));
             });
     }
 }

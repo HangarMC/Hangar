@@ -59,11 +59,29 @@ public interface IVersionsController {
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
-    @GetMapping(value = "/projects/{author}/{slug}/versions/{platform}/{name:.*}")
+    @GetMapping(value = "/projects/{author}/{slug}/versions/{name}/{platform}/")
     ResponseEntity<Version> getVersion(@ApiParam("The author of the project to return the version for") @PathVariable String author,
                                        @ApiParam("The slug of the project to return") @PathVariable String slug,
-                                       @ApiParam("The platform of the version to return") @PathVariable Platform platform,
-                                       @ApiParam("The name of the version to return") @PathVariable String name
+                                       @ApiParam("The name of the version to return") @PathVariable("name") String versionString,
+                                       @ApiParam("The platform of the version to return") @PathVariable Platform platform
+    );
+
+    @ApiOperation(
+            value = "Returns versions of a project with the specified version string",
+            nickname = "showVersion",
+            notes = "Returns versions of a project with the specified version string. Requires the `view_public_info` permission in the project or owning organization.",
+            authorizations = @Authorization("Session"),
+            tags = "Versions"
+    )
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Ok"),
+            @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
+            @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
+    })
+    @GetMapping(value = "/projects/{author}/{slug}/versions/{name}")
+    ResponseEntity<List<Version>> getVersions(@ApiParam("The author of the project to return the versions for") @PathVariable String author,
+                                              @ApiParam("The slug of the project to return") @PathVariable String slug,
+                                              @ApiParam("The name of the versions to return") @PathVariable("name") String versionString
     );
 
     @ApiOperation(
@@ -98,11 +116,12 @@ public interface IVersionsController {
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
-    @GetMapping(value = "/projects/{author}/{slug}/versions/{version}/stats", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/projects/{author}/{slug}/versions/{name}/{platform}/stats", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#author, #slug}")
     ResponseEntity<Map<String, VersionStats>> getVersionStats(@ApiParam("The author of the version to return the stats for") @PathVariable String author,
                                                               @ApiParam("The slug of the project to return stats for") @PathVariable String slug,
-                                                              @ApiParam("The version to return the stats for") @PathVariable String version,
+                                                              @ApiParam("The version to return the stats for") @PathVariable("name") String versionString,
+                                                              @ApiParam("The platform of the version to return") @PathVariable Platform platform,
                                                               @ApiParam(value = "The first date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime fromDate,
                                                               @ApiParam(value = "The last date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime toDate
     );

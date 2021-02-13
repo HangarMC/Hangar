@@ -29,8 +29,12 @@ public class VersionsApiService extends HangarService {
         this.versionsApiDAO = versionsApiDAO.get();
     }
 
-    public Version getVersion(String author, String slug, Platform platform, String versionString) {
-        return versionsApiDAO.getVersion(author, slug, platform,versionString, getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
+    public Version getVersion(String author, String slug, String versionString, Platform platform) {
+        return versionsApiDAO.getVersion(author, slug, versionString, platform, getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
+    }
+
+    public List<Version> getVersions(String author, String slug, String versionString) {
+        return versionsApiDAO.getVersions(author, slug, versionString, getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
     }
 
     public PaginatedResult<Version> getVersions(String author, String slug, List<String> tags, RequestPagination pagination) {
@@ -39,10 +43,10 @@ public class VersionsApiService extends HangarService {
         return new PaginatedResult<>(new Pagination(versionCount == null ? 0 : versionCount, pagination), versions);
     }
 
-    public Map<String, VersionStats> getVersionStats(String author, String slug, String versionString, OffsetDateTime fromDate, OffsetDateTime toDate) {
+    public Map<String, VersionStats> getVersionStats(String author, String slug, String versionString, Platform platform, OffsetDateTime fromDate, OffsetDateTime toDate) {
         if (fromDate.isAfter(toDate)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "From date is after to date");
         }
-        return versionsApiDAO.getVersionStats(author, slug, versionString, fromDate, toDate);
+        return versionsApiDAO.getVersionStats(author, slug, versionString, platform, fromDate, toDate);
     }
 }

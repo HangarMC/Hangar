@@ -38,7 +38,7 @@ export default class Markdown extends Vue {
             .requestInternal<string>('pages/render', false, 'post', {
                 content: this.rawMarkdown,
             })
-            .catch<any>((err) => this.$util.handleRequestError(err, 'Unable to fetch page'));
+            .catch<any>(this.$util.handleRequestError);
         this.loading = false;
     }
 }

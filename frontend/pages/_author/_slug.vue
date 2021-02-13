@@ -89,16 +89,10 @@
         </v-row>
         <v-row>
             <v-tabs>
-                <v-tab
-                    v-for="tab in tabs"
-                    :key="tab.title"
-                    :exact="!!tab.exact"
-                    :to="tab.external ? '/linkout?remoteUrl=' + tab.link : tab.link"
-                    :nuxt="!tab.external"
-                >
-                    <v-icon>{{ tab.icon }}</v-icon>
+                <v-tab v-for="tab in tabs" :key="tab.title" :exact="!!tab.exact" :to="tab.external ? '/linkout?remoteUrl=' + tab.link : tab.link" nuxt>
+                    <v-icon left>{{ tab.icon }}</v-icon>
                     {{ tab.title }}
-                    <v-icon v-if="tab.external">mdi-open-in-new</v-icon>
+                    <v-icon v-if="tab.external" x-small>mdi-open-in-new</v-icon>
                 </v-tab>
             </v-tabs>
         </v-row>
@@ -209,7 +203,7 @@ export default class ProjectPage extends Vue {
             .then(() => {
                 this.project.userActions.starred = !this.project.userActions.starred;
             })
-            .catch((err) => this.$util.handleRequestError(err, 'Could not toggle starred'));
+            .catch((err) => this.$util.handleRequestError(err, 'project.error.star'));
     }
 
     toggleWatch() {
@@ -218,7 +212,7 @@ export default class ProjectPage extends Vue {
             .then(() => {
                 this.project.userActions.watching = !this.project.userActions.watching;
             })
-            .catch((err) => this.$util.handleRequestError(err, 'Could not toggle watched'));
+            .catch((err) => this.$util.handleRequestError(err, 'project.error.watch'));
     }
 
     // Need to refresh the project if anything has changed. idk if this is the best way to do this

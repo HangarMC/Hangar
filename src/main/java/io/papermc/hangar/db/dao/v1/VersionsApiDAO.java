@@ -77,7 +77,52 @@ public interface VersionsApiDAO {
             "       lower(pv.version_string) = lower(:versionString)" +
             "   GROUP BY p.id, pv.id, u.id, pc.id, d.id, plv.id, pvt.id " +
             "   ORDER BY pv.created_at DESC")
-    Version getVersion(String author, String slug, @EnumByOrdinal Platform platform, String versionString, @Define boolean canSeeHidden, @Define Long userId);
+    Version getVersion(String author, String slug, String versionString, @EnumByOrdinal Platform platform, @Define boolean canSeeHidden, @Define Long userId);
+
+    @UseEnumStrategy(EnumStrategy.BY_ORDINAL)
+    @UseRowReducer(VersionReducer.class)
+    @RegisterConstructorMapper(value = PluginDependency.class, prefix = "pd_")
+    @SqlQuery("SELECT pv.id," +
+            "         pv.created_at," +
+            "         pv.version_string," +
+            "         pv.visibility," +
+            "         pv.description," +
+            "         coalesce((SELECT sum(pvd.downloads) FROM project_versions_downloads pvd WHERE p.id = pvd.project_id AND pv.id = pvd.version_id), 0) vs_downloads," +
+            "         pv.file_name fi_name," +
+            "         pv.file_size fi_size_bytes," +
+            "         pv.hash fi_md5_hash," +
+            "         u.name author," +
+            "         pv.review_state," +
+            "         pvt.name AS tag_name," +
+            "         pvt.data AS tag_data," +
+            "         pvt.color AS tag_color," +
+            "         'Channel' AS ch_tag_name," +
+            "         pc.name AS ch_tag_data," +
+            "         pc.color AS ch_tag_color," +
+            "         d.platform pd_platform," +
+            "         d.name pd_name," +
+            "         d.required pd_required," +
+            "         d.project_id pd_project_id," +
+            "         d.external_url pd_external_url," +
+            "         plv.platform p_platform," +
+            "         plv.version p_version" +
+            "   FROM project_versions pv" +
+            "       JOIN projects p ON pv.project_id = p.id" +
+            "       LEFT JOIN users u ON pv.author_id = u.id" +
+            "       LEFT JOIN project_version_tags pvt ON pv.id = pvt.version_id" +
+            "       LEFT JOIN project_channels pc ON pv.channel_id = pc.id " +
+            "       JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id" +
+            "       JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
+            "       LEFT JOIN project_version_dependencies d ON pv.id = d.version_id" +
+            "   WHERE <if(!canSeeHidden)>(pv.visibility = 0 " +
+            "       <if(userId)>OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4) <endif>) AND <endif> " +
+            "       pvt.name IS NOT NULL AND" +
+            "       lower(p.owner_name) = lower(:author) AND" +
+            "       lower(p.slug) = lower(:slug) AND" +
+            "       lower(pv.version_string) = lower(:versionString)" +
+            "   GROUP BY p.id, pv.id, u.id, pc.id, d.id, plv.id, pvt.id " +
+            "   ORDER BY pv.created_at DESC")
+    List<Version> getVersions(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
 
     class VersionReducer implements LinkedHashMapRowReducer<Long, Version> { // What a mess really
         @Override
@@ -171,16 +216,20 @@ public interface VersionsApiDAO {
             "GROUP BY p.id, pv.id, u.id, pc.id")
     Long getVersionCount(String author, String slug, @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<String> tags, @Define boolean canSeeHidden, @Define Long userId);
 
+    // TODO this might be totally screwed up by adding the platform check
     @KeyColumn("date")
     @RegisterConstructorMapper(value = VersionStats.class, prefix = "vs")
     @SqlQuery("SELECT CAST(dates.day as DATE) date, coalesce(pvd.downloads, 0) vs_downloads" +
             "    FROM projects p," +
-            "         project_versions pv," +
+            "         project_versions pv" +
+            "           JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id" +
+            "           JOIN platform_versions plv ON pvpd.platform_version_id = plv.id," +
             "         (SELECT generate_series(:fromDate::DATE, :toDate::DATE, INTERVAL '1 DAY') AS day) dates" +
             "             LEFT JOIN project_versions_downloads pvd ON dates.day = pvd.day" +
             "    WHERE p.owner_name = :author" +
             "      AND p.slug = :slug" +
             "      AND pv.version_string = :versionString" +
+            "      AND plv.platform = :platform" +
             "      AND (pvd IS NULL OR (pvd.project_id = p.id AND pvd.version_id = pv.id));")
-    Map<String, VersionStats> getVersionStats(String author, String slug, String versionString, OffsetDateTime fromDate, OffsetDateTime toDate);
+    Map<String, VersionStats> getVersionStats(String author, String slug, String versionString, @EnumByOrdinal Platform platform, OffsetDateTime fromDate, OffsetDateTime toDate);
 }

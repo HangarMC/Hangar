@@ -37,7 +37,7 @@ export class DocPageMixin extends HangarProjectMixin {
             })
             .catch((err) => {
                 this.$refs.editor.loading.save = false;
-                this.$util.handleRequestError(err, 'Unable to save page');
+                this.$util.handleRequestError(err, 'page.new.error.save');
             });
     }
 

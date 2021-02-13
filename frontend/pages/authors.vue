@@ -26,6 +26,7 @@ import { Context } from '@nuxt/types';
 import { PaginatedResult, User } from 'hangar-api';
 import { DataOptions, DataTableHeader } from 'vuetify';
 import UserAvatar from '~/components/UserAvatar.vue';
+
 @Component({
     components: { UserAvatar },
 })
@@ -85,7 +86,7 @@ export default class AuthorsPage extends Vue {
     async asyncData({ $api, $util }: Context): Promise<{ authors: PaginatedResult<User> | void }> {
         const authors = await $api
             .request<PaginatedResult<User>>('authors', false, 'get', { limit: 10, offset: 0 })
-            .catch((err) => $util.handleRequestError(err, 'Could not load authors'));
+            .catch($util.handlePageRequestError);
         return { authors };
     }
 }

@@ -140,7 +140,12 @@ const msgs: LocaleMessageObject = {
                 title: 'Finishing',
                 text: 'Creating...',
             },
-            error: 'There was an error creating the project',
+            error: {
+                create: 'There was an error creating the project',
+                nameExists: 'A project with this name already exists',
+                slugExists: 'A project with this slug already exists',
+                invalidName: 'This name contains invalid characters',
+            },
         },
         sendForApproval: 'Send for approval',
         info: 'Information',
@@ -150,19 +155,25 @@ const msgs: LocaleMessageObject = {
         license: {
             link: 'Licensed under ',
         },
+        error: {
+            star: 'Could not toggle starred',
+            watch: 'Could not toggle watched',
+        },
     },
     page: {
         plural: 'Pages',
         new: {
             title: 'Create a new page',
             error: {
-                minLength: 'Page name was too short',
+                minLength: 'Page contents are too short',
+                maxLength: 'Page contents are too long',
                 duplicateName: 'A page with that name already exists',
                 name: {
                     maxLength: 'Page name too long',
                     minLength: 'Page name too short',
                     invalidChars: 'Page name contained invalid characters',
                 },
+                save: 'Unable to save page',
             },
             name: 'Page Name',
             parent: 'Parent Page (optional)',
@@ -193,6 +204,22 @@ const msgs: LocaleMessageObject = {
                     desc: "What's new in this release?",
                 },
             },
+            error: {
+                metaNotFound: 'Could not load metadata from uploaded file',
+                jarNotFound: 'Could not open jar file',
+                fileExtension: 'Incorrect file extension',
+                unexpected: 'An unexpected error occurred',
+                invalidVersionString: 'Invalid version string found',
+                duplicateNameAndPlatform: 'A version with this name and compatible platform already exists',
+                duplicate: 'A version with this file already exists',
+                noFile: 'Could not find uploaded file',
+                mismatchedFileSize: 'File sizes do not match',
+                hashMismatch: 'File hashes do not match',
+                invalidPlatformVersion: 'Invalid MC version for a platform specified',
+                fileIOError: 'File IO Error',
+                unknown: 'An unknown error has occurred',
+                incomplete: 'Plugin file missing {0}',
+            },
         },
     },
     channel: {
@@ -201,6 +228,12 @@ const msgs: LocaleMessageObject = {
             name: 'Channel Name',
             color: 'Channel Color',
             reviewQueue: 'Exclude from moderation review queue?',
+            error: {
+                invalidName: 'Invalid channel name',
+                maxChannels: 'This project already has the maximum number of channels: {0}',
+                duplicateColor: 'This project already has a channel with this color',
+                duplicateName: 'This project already has a channel with this name',
+            },
         },
     },
     organization: {

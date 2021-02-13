@@ -26,6 +26,7 @@ import { PaginatedResult, User } from 'hangar-api';
 import { DataOptions, DataTableHeader } from 'vuetify';
 import { Context } from '@nuxt/types';
 import UserAvatar from '~/components/UserAvatar.vue';
+
 @Component({
     components: { UserAvatar },
 })
@@ -84,7 +85,7 @@ export default class StaffPage extends Vue {
     async asyncData({ $api, $util }: Context): Promise<{ staff: PaginatedResult<User> | void }> {
         const staff = await $api
             .request<PaginatedResult<User>>('staff', false, 'get', { limit: 10, offset: 0 })
-            .catch((err) => $util.handleRequestError(err, 'Could not load staff'));
+            .catch($util.handlePageRequestError);
         return { staff };
     }
 }
