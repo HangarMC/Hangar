@@ -42,28 +42,24 @@
                                 </DonationModal>
                             </div>
 
-                            <div>
+                            <div class="project-info">
                                 <p>{{ $t('project.category.info', [$store.state.projectCategories.get(project.category).title]) }}</p>
                                 <p>{{ $t('project.publishDate', [$util.prettyDate(project.createdAt)]) }}</p>
                                 <p v-if="project">
                                     <span id="view-count">{{ $t('project.views', [project.stats.views]) }}</span>
+                                    ,&nbsp;
+                                    <span id="download-count">{{ project.stats.downloads }} total download{{ project.stats.downloads !== 1 ? 's' : '' }}</span>
                                 </p>
                                 <p v-if="project">
                                     <span id="star-count">{{ project.stats.stars }}</span>
-                                    <NuxtLink :to="project.namespace.slug + '/stars'">
-                                        {{ project.stats.views !== 1 ? ' stars' : ' star' }}
-                                    </NuxtLink>
-                                </p>
-                                <p v-if="project">
+                                    <NuxtLink :to="project.namespace.slug + '/stars'"> {{ project.stats.views !== 1 ? ' stars' : ' star' }}</NuxtLink>
+                                    ,&nbsp;
                                     <span id="watcher-count">{{ project.stats.watchers }}</span>
                                     <NuxtLink :to="project.namespace.slug + '/watchers'">
                                         {{ project.stats.views !== 1 ? ' watchers' : ' watcher' }}
                                     </NuxtLink>
                                 </p>
-                                <p v-if="project">
-                                    <span id="download-count">{{ project.stats.downloads }} total download{{ project.stats.downloads !== 1 ? 's' : '' }}</span>
-                                </p>
-                                <p v-if="project && project.settings.license">
+                                <p v-if="project && project.settings.license && project.settings.license.name">
                                     {{ $t('project.license.link') }}
                                     <a ref="noopener" :href="project.settings.license.url" target="_blank">{{ project.settings.license.name }}</a>
                                 </p>
@@ -127,3 +123,9 @@ export default class DocsPage extends DocPageMixin {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.project-info p {
+    margin-bottom: 3px;
+}
+</style>
