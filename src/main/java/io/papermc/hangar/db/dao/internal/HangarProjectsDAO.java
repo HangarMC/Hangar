@@ -71,6 +71,7 @@ public interface HangarProjectsDAO {
 
     @RegisterConstructorMapper(HangarProjectInfo.class)
     @SqlQuery("SELECT count(pv.*) public_versions," +
+            "       count(pf.*) flag_count," +
             "       count(ps.*) star_count," +
             "       count(pw.*) watcher_count," +
             "       coalesce(jsonb_array_length(p.notes->'messages'), 0) note_count" +
@@ -78,6 +79,7 @@ public interface HangarProjectsDAO {
             "       LEFT JOIN project_versions pv ON p.id = pv.project_id AND pv.visibility = 0" +
             "       LEFT JOIN project_stars ps ON p.id = ps.project_id" +
             "       LEFT JOIN project_watchers pw ON p.id = pw.project_id" +
+            "       LEFT JOIN project_flags pf ON p.id = pf.project_id" +
             "   WHERE p.id = :projectId" +
             "   GROUP BY p.id")
     HangarProjectInfo getHangarProjectInfo(long projectId);

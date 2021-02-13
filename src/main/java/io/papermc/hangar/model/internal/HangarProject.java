@@ -20,7 +20,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     private final String lastVisibilityChangeUserName;
     private final HangarProjectInfo info;
     private final Collection<HangarProjectPage> pages;
-    
+
     public HangarProject(Project project, long id, ProjectOwner owner, List<JoinableMember<ProjectRoleTable>> members, String lastVisibilityChangeComment, String lastVisibilityChangeUserName, HangarProjectInfo info, Collection<HangarProjectPage> pages) {
         super(project.getCreatedAt(), project.getName(), project.getNamespace(), project.getPromotedVersions(), project.getStats(), project.getCategory(), project.getDescription(), project.getLastUpdated(), project.getVisibility(), project.getUserActions(), project.getSettings());
         this.id = id;
@@ -82,12 +82,14 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     public static class HangarProjectInfo {
 
         private final int publicVersions;
+        private final int flagCount;
         private final int noteCount;
         private final long starCount;
         private final long watcherCount;
 
-        public HangarProjectInfo(int publicVersions, int noteCount, long starCount, long watcherCount) {
+        public HangarProjectInfo(int publicVersions, int flagCount, int noteCount, long starCount, long watcherCount) {
             this.publicVersions = publicVersions;
+            this.flagCount = flagCount;
             this.noteCount = noteCount;
             this.starCount = starCount;
             this.watcherCount = watcherCount;
@@ -95,6 +97,11 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
 
         public int getPublicVersions() {
             return publicVersions;
+        }
+
+        @RequiresPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
+        public int getFlagCount() {
+            return flagCount;
         }
 
         @RequiresPermission(NamedPermission.MOD_NOTES_AND_FLAGS)

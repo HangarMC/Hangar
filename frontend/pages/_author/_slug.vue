@@ -62,14 +62,14 @@
                                 {{ $t('project.actions.adminActions') }}
                             </v-btn>
                         </template>
-                        <v-list-item :to="'/' + slug + '/flags'">
+                        <v-list-item :to="slug + '/flags'">
                             <v-list-item-title>
-                                {{ $t('project.actions.flagHistory', []) }}
+                                {{ $t('project.actions.flagHistory', [project.info.flagCount]) }}
                             </v-list-item-title>
                         </v-list-item>
-                        <v-list-item :to="'/' + slug + '/notes'">
+                        <v-list-item :to="slug + '/notes'">
                             <v-list-item-title>
-                                {{ $t('project.actions.staffNotes', []) }}
+                                {{ $t('project.actions.staffNotes', [project.info.noteCount]) }}
                             </v-list-item-title>
                         </v-list-item>
                         <v-list-item :to="'/admin/log/?projectFilter=' + slug">

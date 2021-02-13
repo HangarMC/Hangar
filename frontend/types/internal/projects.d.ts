@@ -11,6 +11,7 @@ declare module 'hangar-internal' {
 
     interface HangarProjectInfo {
         publicVersions: number;
+        flagCount: number;
         noteCount: number;
         starCount: number;
         watcherCount: number;
