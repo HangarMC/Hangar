@@ -19,7 +19,7 @@
             </v-col>
 
             <v-col cols="12" sm="2" md="2">
-                <HangarSponsor />
+                <HangarSponsor :sponsor="sponsor" />
 
                 <v-select></v-select>
 
@@ -58,8 +58,9 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
-import { PaginatedResult, Project } from 'hangar-api';
-import { Platform } from 'hangar-internal';
+import { PaginatedResult, Project, Sponsor } from 'hangar-api';
+import { Platform, ProjectPage } from 'hangar-internal';
+import { Context } from '@nuxt/types';
 import ProjectList from '~/components/projects/ProjectList.vue';
 import HangarSponsor from '~/components/layouts/Sponsor.vue';
 
@@ -74,6 +75,7 @@ export default class Home extends Vue {
     projects?: PaginatedResult<Project>;
     totalProjects: Number = 1337;
     projectFilter: String | null = null;
+    sponsor!: Sponsor;
 
     // TODO get platforms from server
     platforms: Platform[] = [
@@ -89,9 +91,10 @@ export default class Home extends Vue {
         };
     }
 
-    asyncData() {
+    async asyncData({ $api, $util }: Context) {
+        const sponsor = await $api.requestInternal<ProjectPage>(`data/sponsor`, false).catch<any>($util.handlePageRequestError);
         // async asyncData({ $api }: Context): Promise<{ projects: [] }> {
-        return { projects: { result: [], pagination: { limit: 10, offset: 0, count: 0 } } };
+        return { projects: { result: [], pagination: { limit: 10, offset: 0, count: 0 } }, sponsor };
         // return { projects: await $api.request<PaginatedResult<Project>>('projects', 'get', { limit: 25, offset: 0 }) };
     }
 }

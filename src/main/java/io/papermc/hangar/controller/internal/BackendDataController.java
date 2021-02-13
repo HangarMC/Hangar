@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.projects.Category;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.lang.annotation.Annotation;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Controller
 @Anyone
@@ -29,9 +32,11 @@ import java.lang.annotation.Annotation;
 public class BackendDataController {
 
     private final ObjectMapper mapper;
+    private final HangarConfig config;
 
     @Autowired
-    public BackendDataController(ObjectMapper mapper) {
+    public BackendDataController(ObjectMapper mapper, HangarConfig config) {
+        this.config = config;
         this.mapper = mapper.copy();
         this.mapper.setAnnotationIntrospector(new JacksonAnnotationIntrospector() {
             @Override
@@ -91,6 +96,11 @@ public class BackendDataController {
             arrayNode.add(objectNode);
         }
         return ResponseEntity.ok(arrayNode);
+    }
+
+    @GetMapping("/sponsor")
+    public ResponseEntity<HangarConfig.Sponsor> getSponsor() {
+        return ResponseEntity.ok(config.getSponsors().get(ThreadLocalRandom.current().nextInt(config.getSponsors().size())));
     }
 }
 

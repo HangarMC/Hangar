@@ -33,8 +33,8 @@ declare module 'hangar-api' {
     }
 
     interface Sponsor {
-        img: String;
-        title: String;
+        image: String;
+        name: String;
         link: String;
     }
 }
