@@ -59,4 +59,13 @@ declare module 'hangar-api' {
         settings: ProjectSettings;
         iconUrl: string;
     }
+
+    interface Job extends Model {
+        jobType: string;
+        state: string;
+        lastError: string;
+        lastErrorDescriptor: string;
+        retryAt: Date;
+        lastUpdated: Date;
+    }
 }

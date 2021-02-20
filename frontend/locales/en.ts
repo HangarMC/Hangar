@@ -279,6 +279,9 @@ const msgs: LocaleMessageObject = {
             needsApproval: 'You have sent the project for review',
             softDelete: 'Project deleted by {0}',
         },
+        name: {
+            new: 'New',
+        },
     },
     author: {
         watching: 'Watching',
@@ -319,6 +322,17 @@ const msgs: LocaleMessageObject = {
         flags: 'Flags',
         openedFlags: 'Opened Flags',
         closedFlags: 'Closed Flags',
+    },
+    health: {
+        title: 'Hangar Health Report',
+        noTopicProject: 'Missing discussion topic',
+        erroredJobs: 'Failed jobs',
+        jobText: 'Job type: {0}, Error Type: {1}, Happened: {2}',
+        staleProject: 'Stale projects',
+        notPublicProjects: 'Hidden projects',
+        noPlatform: 'No platform detected',
+        missingFileProjects: 'Missing File',
+        empty: 'Empty! All good!',
     },
     message: 'Good morning!',
 };
