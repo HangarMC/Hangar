@@ -308,6 +308,18 @@ const msgs: LocaleMessageObject = {
         notes: 'Notes',
         placeholder: 'Add a note...',
     },
+    stats: {
+        title: 'Stats',
+        plugins: 'Plugins',
+        reviews: 'Reviews',
+        uploads: 'Uploads',
+        downloads: 'Downloads',
+        totalDownloads: 'Total Downloads',
+        unsafeDownloads: 'Unsafe Downloads',
+        flags: 'Flags',
+        openedFlags: 'Opened Flags',
+        closedFlags: 'Closed Flags',
+    },
     message: 'Good morning!',
 };
 

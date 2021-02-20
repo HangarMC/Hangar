@@ -19,7 +19,7 @@
         </template>
         <v-row>
             <v-col cols="1">
-                <UserAvatar :username="project.namespace.owner" :avatar-url="project.iconUrl" clazz="user-avatar-sm"></UserAvatar>
+                <UserAvatar :username="project.namespace.owner" :avatar-url="project.iconUrl" clazz="user-avatar-md"></UserAvatar>
             </v-col>
             <v-col cols="auto">
                 <h1 class="d-inline">

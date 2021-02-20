@@ -78,8 +78,8 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
             return 'https://papermc.io/forums/u/' + name;
         }
 
-        prettyDate(date: Date | string): string {
-            if (typeof date === 'string') {
+        prettyDate(date: Date | string | number): string {
+            if (typeof date === 'string' || typeof date === 'number') {
                 date = new Date(date);
             }
             return date.toLocaleDateString(undefined, {
