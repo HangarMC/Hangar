@@ -1,5 +1,5 @@
 <template>
-    <div style="position: relative">
+    <div class="markdown-editor">
         <div v-show="isEditing && !preview" class="ml-4">
             <v-textarea v-model="rawEdited" outlined :rows="rawEdited.split(/\r\n|\r|\n/g).length + 3" />
         </div>
@@ -132,6 +132,11 @@ export default class MarkdownEditor extends Vue {
     &.cancel-btn {
         top: 102px;
     }
+}
+
+.markdown-editor {
+    position: relative;
+    min-height: 200px;
 }
 </style>
 <style lang="scss">

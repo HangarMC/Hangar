@@ -262,6 +262,21 @@ const msgs: LocaleMessageObject = {
                 incomplete: 'Plugin file missing {0}',
             },
         },
+        page: {
+            subheader: '{0} released this version on {1}',
+            dependencies: 'Dependencies',
+            required: '(required)',
+            adminMsg: '{0} approved this version on {1}',
+            reviewLogs: 'Review logs',
+            delete: 'Delete',
+            download: 'Download',
+            downloadExternal: 'Download External',
+            adminActions: 'Admin actions',
+            recommended: 'Recommended version',
+            partiallyApproved: 'Partially approved',
+            approved: 'Approved',
+            userAdminLogs: 'User Admin Logs',
+        },
     },
     channel: {
         new: {

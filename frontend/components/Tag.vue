@@ -1,5 +1,5 @@
 <template>
-    <div class="tags" :class="{ 'has-addons': cData }">
+    <div class="tags" :class="{ 'has-addons': cData && !shortForm }">
         <span
             :style="{
                 color: cColor.foreground,
@@ -8,9 +8,9 @@
             }"
             class="tag"
         >
-            {{ cName }}
+            {{ shortForm && cData ? cData : cName }}
         </span>
-        <span v-if="cData" class="tag">{{ cData }}</span>
+        <span v-if="cData && !shortForm" class="tag">{{ cData }}</span>
     </div>
 </template>
 
@@ -31,6 +31,9 @@ export default class DocsPage extends Vue {
 
     @Prop()
     tag!: Tag;
+
+    @Prop({ default: false })
+    shortForm!: boolean;
 
     get cName() {
         return this.tag ? this.tag.name : this.name;
