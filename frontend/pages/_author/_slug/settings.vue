@@ -203,7 +203,7 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import { ProjectPermission } from '~/utils/perms';
-import { NamedPermission } from '~/types/enums';
+import { NamedPermission, ProjectCategory } from '~/types/enums';
 import { RootState } from '~/store';
 
 @Component
@@ -225,6 +225,7 @@ export default class ProjectManagePage extends Vue {
             url: '',
             customName: '',
         },
+        category: ProjectCategory.UNDEFINED,
     };
 
     get categoryIcon() {

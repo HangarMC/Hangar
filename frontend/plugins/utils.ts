@@ -6,9 +6,9 @@ import filesize from 'filesize';
 // @ts-ignore
 import { contrastRatio, HexToRGBA, parseHex } from 'vuetify/es5/util/colorUtils';
 import { HangarApiException, HangarValidationException } from 'hangar-api';
-import { HangarUser } from 'hangar-internal';
+import { HangarProject, HangarUser } from 'hangar-internal';
 import { TranslateResult } from 'vue-i18n';
-import { NamedPermission } from '~/types/enums';
+import { NamedPermission, Visibility } from '~/types/enums';
 import { RootState } from '~/store';
 import { NotifPayload } from '~/store/snackbar';
 import { AuthState } from '~/store/auth';
@@ -52,7 +52,7 @@ function handleRequestError(err: AxiosError, error: Context['error'], i18n: Cont
 
 const createUtil = ({ store, error, app: { i18n } }: Context) => {
     class Util {
-        dummyUser() {
+        dummyUser(): HangarUser {
             return ({
                 name: 'Dummy',
                 id: 42,
@@ -68,6 +68,10 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
                 },
                 joinDate: this.prettyDate(new Date()),
             } as unknown) as HangarUser;
+        }
+
+        dummyProject(): HangarProject {
+            return ({ namespace: { owner: 'test', slug: 'test2' }, visibility: Visibility.NEW } as unknown) as HangarProject;
         }
 
         avatarUrl(name: string): string {

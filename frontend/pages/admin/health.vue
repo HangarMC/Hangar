@@ -60,17 +60,16 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import { Job, Project } from 'hangar-api';
-import { Visibility } from '~/types/enums';
 
 @Component
 export default class AdminHealthPage extends Vue {
     // TODO get these from the server
-    noTopicProject: Array<Project> = [{ namespace: { owner: 'test', slug: 'test2' } }];
-    erroredJobs: Array<Job> = [{ jobType: 'Test', lastErrorDescriptor: 'Dum', lastUpdated: new Date() }];
-    staleProjects: Array<Project> = [{ namespace: { owner: 'test', slug: 'test2' } }];
-    notPublicProjects: Array<Project> = [{ namespace: { owner: 'test', slug: 'test2' }, visibility: Visibility.NEW }];
-    noPlatform: Array<Project> = [{ namespace: { owner: 'test', slug: 'test2' } }];
-    missingFileProjects: Array<Project> = [{ namespace: { owner: 'test', slug: 'test2' } }];
+    noTopicProject: Array<Project> = [this.$util.dummyProject()];
+    erroredJobs: Array<Job> = [({ jobType: 'Test', lastErrorDescriptor: 'Dum', lastUpdated: new Date() } as unknown) as Job];
+    staleProjects: Array<Project> = [this.$util.dummyProject()];
+    notPublicProjects: Array<Project> = [this.$util.dummyProject()];
+    noPlatform: Array<Project> = [this.$util.dummyProject()];
+    missingFileProjects: Array<Project> = [this.$util.dummyProject()];
 }
 </script>
 
