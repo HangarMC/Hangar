@@ -72,7 +72,6 @@ export default {
     // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
     vuetify: {
         customVariables: ['~/assets/variables.scss'],
-        // preset: 'vue-cli-plugin-vuetify-preset-reply/preset',
         treeShake: true,
         theme: {
             default: 'dark',
@@ -106,7 +105,7 @@ export default {
 
     // Build Configuration: https://go.nuxtjs.dev/config-build
     build: {
-        transpile: ['vue-cli-plugin-vuetify-preset-reply', 'lodash-es'],
+        transpile: ['lodash-es'],
     },
 
     router: {
