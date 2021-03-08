@@ -34,7 +34,7 @@
         <flexmark-all.version>0.62.2</flexmark-all.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
 
-        <apache-commons-lang.version>3.11</apache-commons-lang.version>
+        <apache-commons-lang.version>3.12.0</apache-commons-lang.version>
 
         <!-- plugins -->
         <frontend-maven-plugin.version>1.11.0</frontend-maven-plugin.version>
