@@ -48,7 +48,11 @@
                         :value="$store.state.auth.user.headerData.unreadNotifications"
                     >
                         <v-avatar size="44" class="ml-2">
-                            <img :src="$util.avatarUrl($store.state.auth.user.name)" :alt="$store.state.auth.user.name" />
+                            <img
+                                :src="$util.avatarUrl($store.state.auth.user.name)"
+                                :alt="$store.state.auth.user.name"
+                                @error="$event.target.src = 'https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png'"
+                            />
                         </v-avatar>
                     </v-badge>
                 </v-btn>
