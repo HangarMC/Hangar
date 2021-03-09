@@ -55,7 +55,7 @@ public class ProjectsApiService extends HangarService {
             String[] split = tag.split(":", 2);
             parsedTags.add(new Tag().name(split[0]).data(split.length > 1 ? split[1] : null));
         }
-        boolean seeHidden = getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden);
+        boolean seeHidden = getOptionalHangarPrincipal().map(u -> u.getGlobalPermissions().has(Permission.SeeHidden)).orElse(false);
 
         String ordering = sort.getSql();
         if (orderWithRelevance && query != null && !query.isEmpty()) {

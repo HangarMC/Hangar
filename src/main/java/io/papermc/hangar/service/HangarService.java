@@ -33,6 +33,10 @@ public abstract class HangarService {
     @Autowired
     protected UserActionLogService userActionLogService;
 
+    protected final Optional<HangarPrincipal> getOptionalHangarPrincipal() {
+        return _getHangarPrincipal().get();
+    }
+
     protected final HangarPrincipal getHangarPrincipal() {
         return _getHangarPrincipal().get().orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authentication principal found"));
     }

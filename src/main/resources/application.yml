@@ -140,3 +140,12 @@ hangar:
       timeout: 10000
     safe-download-hosts:
       - "github.com"
+
+
+#################
+# Debug Logging #
+#################
+logging:
+  level:
+    root: INFO
+#    org.springframework: DEBUG

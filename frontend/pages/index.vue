@@ -93,9 +93,8 @@ export default class Home extends Vue {
 
     async asyncData({ $api, $util }: Context) {
         const sponsor = await $api.requestInternal<ProjectPage>(`data/sponsor`, false).catch<any>($util.handlePageRequestError);
-        // async asyncData({ $api }: Context): Promise<{ projects: [] }> {
-        return { projects: { result: [], pagination: { limit: 10, offset: 0, count: 0 } }, sponsor };
-        // return { projects: await $api.request<PaginatedResult<Project>>('projects', 'get', { limit: 25, offset: 0 }) };
+        const projects = await $api.request<PaginatedResult<Project>>('projects', false, 'get', { limit: 25, offset: 0 });
+        return { projects, sponsor };
     }
 }
 </script>
