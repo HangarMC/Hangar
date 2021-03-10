@@ -30,8 +30,10 @@ declare module 'hangar-api' {
         description: string;
         stats: VersionStats;
         fileInfo: FileInfo;
+        externalUrl: string | null;
         author: String;
         reviewState: ReviewState;
         tags: Tag[];
+        recommended: boolean;
     }
 }

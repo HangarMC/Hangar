@@ -3,6 +3,7 @@ package io.papermc.hangar.controller;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.security.HangarAuthenticationToken;
 import io.papermc.hangar.security.HangarPrincipal;
+import io.papermc.hangar.service.internal.UserActionLogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public abstract class HangarController {
 
     @Autowired
     protected HttpServletResponse response;
+
+    @Autowired
+    protected UserActionLogService userActionLogService;
 
     protected final HangarPrincipal getHangarPrincipal() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

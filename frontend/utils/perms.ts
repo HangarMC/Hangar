@@ -24,7 +24,6 @@ export function GlobalPermission(...permissions: NamedPermission[]) {
                 permissions,
             })
             .then((check) => {
-                console.log(check);
                 if (check.type !== PermissionType.GLOBAL || !check.result) {
                     error({
                         message: 'Not Found',

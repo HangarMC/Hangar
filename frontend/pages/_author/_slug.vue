@@ -58,31 +58,33 @@
                     <FlagModal :project="project" />
                     <v-menu v-if="isStaff" bottom offset-y>
                         <template #activator="{ on, attrs }">
-                            <v-btn v-bind="attrs" v-on="on">
+                            <v-btn v-bind="attrs" class="ml-1" v-on="on">
                                 {{ $t('project.actions.adminActions') }}
                             </v-btn>
                         </template>
-                        <v-list-item :to="slug + '/flags'">
-                            <v-list-item-title>
-                                {{ $t('project.actions.flagHistory', [project.info.flagCount]) }}
-                            </v-list-item-title>
-                        </v-list-item>
-                        <v-list-item :to="slug + '/notes'">
-                            <v-list-item-title>
-                                {{ $t('project.actions.staffNotes', [project.info.noteCount]) }}
-                            </v-list-item-title>
-                        </v-list-item>
-                        <v-list-item :to="'/admin/log/?projectFilter=' + slug">
-                            <v-list-item-title>
-                                {{ $t('project.actions.userActionLogs') }}
-                            </v-list-item-title>
-                        </v-list-item>
-                        <v-list-item :href="$util.forumUrl(project.namespace.owner)">
-                            <v-list-item-title>
-                                {{ $t('project.actions.forum') }}
-                                <v-icon>mdi-open-in-new</v-icon>
-                            </v-list-item-title>
-                        </v-list-item>
+                        <v-list>
+                            <v-list-item :to="slug + '/flags'" nuxt>
+                                <v-list-item-title>
+                                    {{ $t('project.actions.flagHistory', [project.info.flagCount]) }}
+                                </v-list-item-title>
+                            </v-list-item>
+                            <v-list-item :to="slug + '/notes'" nuxt>
+                                <v-list-item-title>
+                                    {{ $t('project.actions.staffNotes', [project.info.noteCount]) }}
+                                </v-list-item-title>
+                            </v-list-item>
+                            <v-list-item :to="'/admin/log/?projectFilter=' + slug" nuxt>
+                                <v-list-item-title>
+                                    {{ $t('project.actions.userActionLogs') }}
+                                </v-list-item-title>
+                            </v-list-item>
+                            <v-list-item :href="$util.forumUrl(project.namespace.owner)">
+                                <v-list-item-title>
+                                    {{ $t('project.actions.forum') }}
+                                    <v-icon>mdi-open-in-new</v-icon>
+                                </v-list-item-title>
+                            </v-list-item>
+                        </v-list>
                     </v-menu>
                 </v-row>
             </v-col>

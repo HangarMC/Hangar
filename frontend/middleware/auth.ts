@@ -11,8 +11,8 @@ export default async ({ app: { $cookies }, $auth, $api, store, redirect }: Conte
             path: '/',
         });
         redirect(returnRoute);
-    }
-    if ($cookies.get('HangarAuth_REFRESH', { parseJSON: false })) {
+        // TODO if not running hangarauth locally, this needs to just be a regular if not an else-if (idk what a good fix for that is)
+    } else if ($cookies.get('HangarAuth_REFRESH', { parseJSON: false })) {
         const token = await $api.getToken(true);
         if (token != null) {
             if (store.state.auth.authenticated) {

@@ -35,6 +35,9 @@ public interface ProjectVersionsDAO {
     @SqlQuery("SELECT * FROM project_versions WHERE project_id = :projectId AND hash = :hash AND version_string = :versionString")
     ProjectVersionTable getProjectVersionTable(long projectId, String hash, String versionString);
 
+    @SqlQuery("SELECT * FROM project_versions pv WHERE pv.id = :versionId")
+    ProjectVersionTable getProjectVersionTable(long versionId);
+
     @Timestamped
     @SqlBatch("INSERT INTO project_version_tags (created_at, version_id, name, data, color) VALUES (:now, :versionId, :name, :data, :color)")
     void insertTags(@BindBean Collection<ProjectVersionTagTable> projectVersionTagTables);

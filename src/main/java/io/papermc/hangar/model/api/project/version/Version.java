@@ -25,13 +25,17 @@ public class Version extends Model implements Named, Visible {
     private final String description;
     private final VersionStats stats;
     private final FileInfo fileInfo;
+    private final String externalUrl;
     private final String author;
     private final ReviewState reviewState;
     private final Set<Tag> tags;
+    private final boolean recommended;
 
-    public Version(OffsetDateTime createdAt, @ColumnName("version_string") String name, Visibility visibility, String description, @Nested("vs") VersionStats stats, @Nested("fi") FileInfo fileInfo, String author, @EnumByOrdinal ReviewState reviewState) {
+    public Version(OffsetDateTime createdAt, @ColumnName("version_string") String name, Visibility visibility, String description, @Nested("vs") VersionStats stats, @Nested("fi") FileInfo fileInfo, String externalUrl, String author, @EnumByOrdinal ReviewState reviewState, boolean recommended) {
         super(createdAt);
         this.name = name;
+        this.externalUrl = externalUrl;
+        this.recommended = recommended;
         this.tags = new HashSet<>();
         this.pluginDependencies = new EnumMap<>(Platform.class);
         this.platformDependencies = new EnumMap<>(Platform.class);
@@ -73,6 +77,10 @@ public class Version extends Model implements Named, Visible {
         return fileInfo;
     }
 
+    public String getExternalUrl() {
+        return externalUrl;
+    }
+
     public String getAuthor() {
         return author;
     }
@@ -85,19 +93,25 @@ public class Version extends Model implements Named, Visible {
         return tags;
     }
 
+    public boolean isRecommended() {
+        return recommended;
+    }
+
     @Override
     public String toString() {
         return "Version{" +
-                "versionString='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", pluginDependencies=" + pluginDependencies +
                 ", platformDependencies=" + platformDependencies +
                 ", visibility=" + visibility +
                 ", description='" + description + '\'' +
                 ", stats=" + stats +
                 ", fileInfo=" + fileInfo +
+                ", externalUrl='" + externalUrl + '\'' +
                 ", author='" + author + '\'' +
                 ", reviewState=" + reviewState +
                 ", tags=" + tags +
+                ", recommended=" + recommended +
                 "} " + super.toString();
     }
 }

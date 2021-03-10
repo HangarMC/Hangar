@@ -22,15 +22,15 @@ public class VisibilityRequiredMetadataExtractor implements AnnotationMetadataEx
 
     static class VisibilityRequiredAttribute implements ConfigAttribute {
 
-        private final Type type;
+        private final VisibilityRequired.Type type;
         private final Expression expression;
 
-        VisibilityRequiredAttribute(Type type, Expression expression) {
+        VisibilityRequiredAttribute(VisibilityRequired.Type type, Expression expression) {
             this.type = type;
             this.expression = expression;
         }
 
-        public Type getType() {
+        public VisibilityRequired.Type getType() {
             return type;
         }
 

@@ -11,11 +11,11 @@
                                     <v-row>
                                         <v-col cols="12">{{ version.name }}</v-col>
                                         <!-- todo is this order always this way? -->
-                                        <Tag :tag="version.tags[version.tags.length - 1]" />
+                                        <Tag :tag="getChannelTag(version)" />
                                     </v-row>
                                 </v-col>
                                 <v-col cols="8" md="6" lg="4">
-                                    <Tag v-for="(tag, index) in version.tags.slice(0, version.tags.length - 1)" :key="index" :tag="tag" />
+                                    <Tag v-for="(tag, index) in getNonChannelTags(version)" :key="index" :tag="tag" />
                                 </v-col>
                                 <v-col cols="0" md="4" lg="3">
                                     <v-row>
@@ -67,7 +67,7 @@ import { Component, Prop, Vue } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
 import { HangarProject } from 'hangar-internal';
 import { Context } from '@nuxt/types';
-import { PaginatedResult, Version } from 'hangar-api';
+import { PaginatedResult, Tag as ApiTag, Version } from 'hangar-api';
 import { NamedPermission } from '~/types/enums';
 import Tag from '~/components/Tag.vue';
 
@@ -93,6 +93,18 @@ export default class ProjectVersionsPage extends Vue {
 
     get canUpload() {
         return this.$util.hasPerms(NamedPermission.CREATE_VERSION);
+    }
+
+    getChannelTag(version: Version): ApiTag {
+        const channelTag = version.tags.find((t) => t.name === 'Channel');
+        if (typeof channelTag === 'undefined') {
+            throw new TypeError('Version missing a channel tag');
+        }
+        return channelTag;
+    }
+
+    getNonChannelTags(version: Version): ApiTag[] {
+        return version.tags.filter((t) => t.name !== 'Channel');
     }
 }
 </script>

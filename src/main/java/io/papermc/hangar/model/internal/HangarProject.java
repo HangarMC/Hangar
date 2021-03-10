@@ -76,6 +76,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
                 ", lastVisibilityChangeComment='" + lastVisibilityChangeComment + '\'' +
                 ", lastVisibilityChangeUserName='" + lastVisibilityChangeUserName + '\'' +
                 ", info=" + info +
+                ", pages=" + pages +
                 "} " + super.toString();
     }
 

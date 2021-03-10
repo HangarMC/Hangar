@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Repository
 @UseStringTemplateEngine
@@ -45,6 +46,7 @@ public interface VersionsApiDAO {
             "         pv.file_name fi_name," +
             "         pv.file_size fi_size_bytes," +
             "         pv.hash fi_md5_hash," +
+            "         pv.external_url," +
             "         u.name author," +
             "         pv.review_state," +
             "         pvt.name AS tag_name," +
@@ -59,7 +61,9 @@ public interface VersionsApiDAO {
             "         d.project_id pd_project_id," +
             "         d.external_url pd_external_url," +
             "         plv.platform p_platform," +
-            "         plv.version p_version" +
+            "         plv.version p_version," +
+            "         exists(SELECT 1 FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id) as recommended," +
+            "         ru.name approved_by" +
             "   FROM project_versions pv" +
             "       JOIN projects p ON pv.project_id = p.id" +
             "       LEFT JOIN users u ON pv.author_id = u.id" +
@@ -68,6 +72,7 @@ public interface VersionsApiDAO {
             "       JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id" +
             "       JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
             "       LEFT JOIN project_version_dependencies d ON pv.id = d.version_id" +
+            "       LEFT JOIN users ru ON pv.reviewer_id = ru.id" +
             "   WHERE <if(!canSeeHidden)>(pv.visibility = 0 " +
             "       <if(userId)>OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4) <endif>) AND <endif> " +
             "       plv.platform = :platform AND" +
@@ -75,7 +80,7 @@ public interface VersionsApiDAO {
             "       lower(p.owner_name) = lower(:author) AND" +
             "       lower(p.slug) = lower(:slug) AND" +
             "       lower(pv.version_string) = lower(:versionString)" +
-            "   GROUP BY p.id, pv.id, u.id, pc.id, d.id, plv.id, pvt.id " +
+            "   GROUP BY p.id, pv.id, u.id, pc.id, d.id, plv.id, pvt.id, ru.id " +
             "   ORDER BY pv.created_at DESC")
     Version getVersion(String author, String slug, String versionString, @EnumByOrdinal Platform platform, @Define boolean canSeeHidden, @Define Long userId);
 
@@ -91,6 +96,7 @@ public interface VersionsApiDAO {
             "         pv.file_name fi_name," +
             "         pv.file_size fi_size_bytes," +
             "         pv.hash fi_md5_hash," +
+            "         pv.external_url," +
             "         u.name author," +
             "         pv.review_state," +
             "         pvt.name AS tag_name," +
@@ -105,7 +111,9 @@ public interface VersionsApiDAO {
             "         d.project_id pd_project_id," +
             "         d.external_url pd_external_url," +
             "         plv.platform p_platform," +
-            "         plv.version p_version" +
+            "         plv.version p_version," +
+            "         exists(SELECT 1 FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id) as recommended," +
+            "         ru.name approved_by" +
             "   FROM project_versions pv" +
             "       JOIN projects p ON pv.project_id = p.id" +
             "       LEFT JOIN users u ON pv.author_id = u.id" +
@@ -114,37 +122,41 @@ public interface VersionsApiDAO {
             "       JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id" +
             "       JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
             "       LEFT JOIN project_version_dependencies d ON pv.id = d.version_id" +
+            "       LEFT JOIN users ru ON pv.reviewer_id = ru.id" +
             "   WHERE <if(!canSeeHidden)>(pv.visibility = 0 " +
             "       <if(userId)>OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4) <endif>) AND <endif> " +
             "       pvt.name IS NOT NULL AND" +
             "       lower(p.owner_name) = lower(:author) AND" +
             "       lower(p.slug) = lower(:slug) AND" +
             "       lower(pv.version_string) = lower(:versionString)" +
-            "   GROUP BY p.id, pv.id, u.id, pc.id, d.id, plv.id, pvt.id " +
+            "   GROUP BY p.id, pv.id, u.id, pc.id, d.id, plv.id, pvt.id, ru.id" +
             "   ORDER BY pv.created_at DESC")
     List<Version> getVersions(String author, String slug, String versionString, @Define boolean canSeeHidden, @Define Long userId);
 
-    class VersionReducer implements LinkedHashMapRowReducer<Long, Version> { // What a mess really
+    class VersionReducer implements LinkedHashMapRowReducer<Long, Version> {
         @Override
         public void accumulate(Map<Long, Version> container, RowView rowView) {
             final Version version = container.computeIfAbsent(rowView.getColumn("id", Long.class), id -> rowView.getRow(Version.class));
+            VersionReducer._accumulateVersion(rowView, version.getPluginDependencies(), version.getPlatformDependencies(), version.getTags(), version);
+        }
 
+        public static <T extends Version> void _accumulateVersion(RowView rowView, Map<Platform, Set<PluginDependency>> pluginDependencies, Map<Platform, Set<String>> platformDependencies, Set<Tag> tags, T version) { // What a mess really
             Platform pluginPlatform = rowView.getColumn("pd_platform", Platform.class);
             if (pluginPlatform != null) {
-                version.getPluginDependencies().computeIfAbsent(pluginPlatform, _pl -> new HashSet<>());
-                version.getPluginDependencies().get(pluginPlatform).add(rowView.getRow(PluginDependency.class));
+                pluginDependencies.computeIfAbsent(pluginPlatform, _pl -> new HashSet<>());
+                pluginDependencies.get(pluginPlatform).add(rowView.getRow(PluginDependency.class));
             }
 
             Platform platformPlatform = rowView.getColumn("p_platform", Platform.class);
-            version.getPlatformDependencies().computeIfAbsent(platformPlatform, _pl -> new HashSet<>());
-            version.getPlatformDependencies().get(platformPlatform).add(rowView.getColumn("p_version", String.class));
+            platformDependencies.computeIfAbsent(platformPlatform, _pl -> new HashSet<>());
+            platformDependencies.get(platformPlatform).add(rowView.getColumn("p_version", String.class));
 
             if (rowView.getColumn("ch_tag_name", String.class) != null) {
-                version.getTags().add(new Tag(rowView.getColumn("ch_tag_name", String.class), rowView.getColumn("ch_tag_data", String.class), new TagColor(null, rowView.getColumn("ch_tag_color", Color.class).getHex())));
+                tags.add(new Tag(rowView.getColumn("ch_tag_name", String.class), rowView.getColumn("ch_tag_data", String.class), new TagColor(null, rowView.getColumn("ch_tag_color", Color.class).getHex())));
             }
 
             if (rowView.getColumn("tag_name", String.class) != null) {
-                version.getTags().add(new Tag(
+                tags.add(new Tag(
                         rowView.getColumn("tag_name", String.class),
                         StringUtils.formatVersionNumbers(Arrays.asList(rowView.getColumn("tag_data", String[].class))),
                         rowView.getColumn("tag_color", io.papermc.hangar.model.common.TagColor.class).toTagColor()
@@ -165,6 +177,7 @@ public interface VersionsApiDAO {
             "         pv.file_name fi_name," +
             "         pv.file_size fi_size_bytes," +
             "         pv.hash fi_md5_hash," +
+            "         pv.external_url," +
             "         u.name author," +
             "         pv.review_state," +
             "         pvt.name AS tag_name," +
@@ -179,7 +192,9 @@ public interface VersionsApiDAO {
             "         d.project_id pd_project_id," +
             "         d.external_url pd_external_url," +
             "         plv.platform p_platform," +
-            "         plv.version p_version" +
+            "         plv.version p_version," +
+            "         exists(SELECT 1 FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id) as recommended," +
+            "         ru.name approved_by" +
             "   FROM project_versions pv" +
             "       JOIN projects p ON pv.project_id = p.id" +
             "       LEFT JOIN users u ON pv.author_id = u.id" +
@@ -188,12 +203,13 @@ public interface VersionsApiDAO {
             "       JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id" +
             "       JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
             "       LEFT JOIN project_version_dependencies d ON pv.id = d.version_id" +
+            "       LEFT JOIN users ru ON pv.reviewer_id = ru.id" +
             "   WHERE <if(!canSeeHidden)>(pv.visibility = 0 " +
             "       <if(userId)>OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4) <endif>) AND <endif> " +
             "       pvt.name IS NOT NULL AND" +
             "       lower(p.owner_name) = lower(:author) AND" +
             "       lower(p.slug) = lower(:slug)" +
-            "   GROUP BY p.id, pv.id, u.id, pc.id, d.id, plv.id, pvt.id " +
+            "   GROUP BY p.id, pv.id, u.id, pc.id, d.id, plv.id, pvt.id, ru.id " +
             "   ORDER BY pv.created_at DESC LIMIT :limit OFFSET :offset")
     List<Version> getVersions(String author, String slug, @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<String> tags, @Define boolean canSeeHidden, @Define Long userId, long limit, long offset);
 

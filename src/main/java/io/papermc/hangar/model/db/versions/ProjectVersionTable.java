@@ -120,6 +120,7 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
     }
 
     @Override
+    @EnumByOrdinal
     public Visibility getVisibility() {
         return visibility;
     }
@@ -129,6 +130,7 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
         this.visibility = visibility;
     }
 
+    @EnumByOrdinal
     public ReviewState getReviewState() {
         return reviewState;
     }

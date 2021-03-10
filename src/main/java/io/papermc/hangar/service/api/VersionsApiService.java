@@ -30,16 +30,20 @@ public class VersionsApiService extends HangarService {
     }
 
     public Version getVersion(String author, String slug, String versionString, Platform platform) {
-        return versionsApiDAO.getVersion(author, slug, versionString, platform, getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
+        return versionsApiDAO.getVersion(author, slug, versionString, platform, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
     }
 
     public List<Version> getVersions(String author, String slug, String versionString) {
-        return versionsApiDAO.getVersions(author, slug, versionString, getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
+        List<Version> versions = versionsApiDAO.getVersions(author, slug, versionString, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
+        if (versions.isEmpty()) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+        return versions;
     }
 
     public PaginatedResult<Version> getVersions(String author, String slug, List<String> tags, RequestPagination pagination) {
-        List<Version> versions = versionsApiDAO.getVersions(author, slug, tags, getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId(), pagination.getLimit(), pagination.getOffset());
-        Long versionCount = versionsApiDAO.getVersionCount(author, slug, tags, getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
+        List<Version> versions = versionsApiDAO.getVersions(author, slug, tags, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId(), pagination.getLimit(), pagination.getOffset());
+        Long versionCount = versionsApiDAO.getVersionCount(author, slug, tags, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
         return new PaginatedResult<>(new Pagination(versionCount == null ? 0 : versionCount, pagination), versions);
     }
 

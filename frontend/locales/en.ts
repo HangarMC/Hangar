@@ -268,6 +268,7 @@ const msgs: LocaleMessageObject = {
             required: '(required)',
             adminMsg: '{0} approved this version on {1}',
             reviewLogs: 'Review logs',
+            reviewStart: 'Start review',
             delete: 'Delete',
             download: 'Download',
             downloadExternal: 'Download External',

@@ -252,7 +252,9 @@ CREATE TABLE project_version_platform_dependencies
     CONSTRAINT project_version_platform_dependencies_platform_version_id_fkey
         FOREIGN KEY (platform_version_id)
             REFERENCES platform_versions
-            ON DELETE CASCADE
+            ON DELETE CASCADE,
+    CONSTRAINT project_version_platform_dependencies_unique
+        UNIQUE (version_id, platform_version_id)
 );
 
 CREATE TABLE roles

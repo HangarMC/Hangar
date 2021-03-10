@@ -1,5 +1,5 @@
 declare module 'hangar-internal' {
-    import { FileInfo, Named } from 'hangar-api';
+    import { FileInfo, Named, Version } from 'hangar-api';
     import { Platform } from '~/types/enums';
 
     interface PlatformDependency {
@@ -29,5 +29,10 @@ declare module 'hangar-internal' {
         color: string;
         nonReviewed: boolean;
         temp?: boolean;
+    }
+
+    interface HangarVersion extends Version {
+        id: number;
+        approvedBy?: string;
     }
 }
