@@ -10,7 +10,6 @@
                                 <v-col cols="4" md="2" lg="2">
                                     <v-row>
                                         <v-col cols="12">{{ version.name }}</v-col>
-                                        <!-- todo is this order always this way? -->
                                         <Tag :tag="getChannelTag(version)" />
                                     </v-row>
                                 </v-col>
