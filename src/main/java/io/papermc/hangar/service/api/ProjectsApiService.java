@@ -33,7 +33,7 @@ public class ProjectsApiService extends HangarService {
     }
 
     public Project getProject(String author, String slug) {
-        boolean seeHidden = getHangarPrincipal().getGlobalPermissions().has(Permission.SeeHidden);
+        boolean seeHidden = getGlobalPermissions().has(Permission.SeeHidden);
         return projectsApiDAO.getProjects(author, slug, seeHidden, getHangarUserId(), null, null, null, null, null, 1, 0).stream().findFirst().orElse(null);
     }
 
@@ -55,7 +55,7 @@ public class ProjectsApiService extends HangarService {
             String[] split = tag.split(":", 2);
             parsedTags.add(new Tag().name(split[0]).data(split.length > 1 ? split[1] : null));
         }
-        boolean seeHidden = getOptionalHangarPrincipal().map(u -> u.getGlobalPermissions().has(Permission.SeeHidden)).orElse(false);
+        boolean seeHidden = getGlobalPermissions().has(Permission.SeeHidden);
 
         String ordering = sort.getSql();
         if (orderWithRelevance && query != null && !query.isEmpty()) {
