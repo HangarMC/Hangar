@@ -389,6 +389,20 @@ const msgs: LocaleMessageObject = {
         missingFileProjects: 'Missing File',
         empty: 'Empty! All good!',
     },
+    reviews: {
+        headline: '{0} released this version on {1}',
+        title: 'Review logs',
+        removeFromQueue: 'Remove from queue',
+        projectPage: 'Project Page',
+        downloadFile: 'Download File',
+        startReview: 'Start review',
+        stopReview: 'Stop review',
+        approve: 'Approve',
+        approvePartial: 'Approve Partial',
+        notUnderReview: 'This version is not under review',
+        reviewMessage: 'Review Message',
+        addMessage: 'Add Message',
+    },
     message: 'Good morning!',
 };
 
