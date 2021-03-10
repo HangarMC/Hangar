@@ -6,14 +6,14 @@ import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.NamedPermission;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.security.annotations.Anyone;
-import org.apache.commons.lang3.NotImplementedException;
+import io.papermc.hangar.service.internal.projects.PlatformService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,11 +33,13 @@ public class BackendDataController {
 
     private final ObjectMapper mapper;
     private final HangarConfig config;
+    private final PlatformService platformService;
 
     @Autowired
-    public BackendDataController(ObjectMapper mapper, HangarConfig config) {
+    public BackendDataController(ObjectMapper mapper, HangarConfig config, PlatformService platformService) {
         this.config = config;
         this.mapper = mapper.copy();
+        this.platformService = platformService;
         this.mapper.setAnnotationIntrospector(new JacksonAnnotationIntrospector() {
             @Override
             protected <A extends Annotation> A _findAnnotation(Annotated annotated, Class<A> annoClass) {
@@ -69,8 +71,18 @@ public class BackendDataController {
 
     @GetMapping("/platforms")
     // TODO include valid versions (equivalent of PlatformInfo)
-    public ResponseEntity<ObjectNode> getPlatforms() {
-        throw new NotImplementedException("NOT IMPLEMENTED");
+    public ResponseEntity<ArrayNode> getPlatforms() {
+        ArrayNode arrayNode = mapper.createArrayNode();
+        for (Platform platform : Platform.getValues()) {
+            ObjectNode objectNode = mapper.createObjectNode()
+                    .put("name", platform.getName())
+                    .put("category", platform.getCategory().getTagName())
+                    .put("url", platform.getUrl());
+            objectNode.set("tagColor", mapper.valueToTree(platform.getTagColor()));
+            objectNode.set("possibleVersions", mapper.valueToTree(platformService.getVersionsForPlatform(platform)));
+            arrayNode.add(objectNode);
+        }
+        return ResponseEntity.ok(arrayNode);
     }
 
     @GetMapping("/channelColors")

@@ -85,7 +85,7 @@ public interface IProjectsController {
             @ApiParam("Restrict your search to a list of categories") @RequestParam(required = false) List<Category> categories,
             @ApiParam("A list of tags all the returned projects should have. Should be formated either as `tagname` or `tagname:tagdata`.") @RequestParam(value = "tags", required = false) List<String> tags,
             @ApiParam("Limit the search to a specific user") @RequestParam(required = false) String owner,
-            @ApiParam("How to sort the projects") @RequestParam(defaultValue = "UPDATED") ProjectSortingStrategy sort,
+            @ApiParam("How to sort the projects") @RequestParam(defaultValue = "updated") ProjectSortingStrategy sort,
             @ApiParam("If how relevant the project is to the given query should be used when sorting the projects") @RequestParam(defaultValue = "true") boolean relevance,
             @ApiParam("Pagination information") @NotNull RequestPagination pagination
     );

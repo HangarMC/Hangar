@@ -1,13 +1,23 @@
 import { Component, Prop, Vue, Watch } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
-import { HangarProject, ProjectPage } from 'hangar-internal';
+import { HangarProject, HangarVersion, ProjectPage } from 'hangar-internal';
 import MarkdownEditor from '~/components/MarkdownEditor.vue';
-import { NamedPermission } from '~/types/enums';
+import { NamedPermission, Platform } from '~/types/enums';
 
 @Component
 export class HangarProjectMixin extends Vue {
     @Prop({ type: Object as PropType<HangarProject>, required: true })
     project!: HangarProject;
+}
+
+@Component
+export class HangarProjectVersionMixin extends HangarProjectMixin {
+    @Prop({ type: Map as PropType<Map<Platform, HangarVersion>>, required: true })
+    versions!: Map<Platform, HangarVersion>;
+
+    get version(): HangarVersion {
+        return this.versions.get(<Platform>this.$route.params.platform.toUpperCase())!;
+    }
 }
 
 @Component

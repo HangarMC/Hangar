@@ -44,36 +44,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'nuxt-property-decorator';
-import { Version } from 'hangar-api';
-import { PropType } from 'vue';
-import { HangarProject, ReviewEvent } from 'hangar-internal';
-import { Context } from '@nuxt/types';
+import { Component } from 'nuxt-property-decorator';
+import { ReviewEvent } from 'hangar-internal';
+import { HangarProjectVersionMixin } from '~/components/mixins';
 
 // TODO implement ProjectVersionsVersionReviewPage
 @Component
-export default class ProjectVersionsVersionReviewPage extends Vue {
-    version!: Version;
-
-    @Prop({ type: Object as PropType<HangarProject>, required: true })
-    project!: HangarProject;
-
+export default class ProjectVersionsVersionReviewPage extends HangarProjectVersionMixin {
     hasReviewStarted: Boolean = false;
     message: String = '';
 
     reviewEvents: ReviewEvent[] = [];
-
-    async asyncData({ params, $api, $util }: Context) {
-        // TODO platform
-        const version = await $api
-            .request<Version>(`projects/${params.author}/${params.slug}/versions/${params.version}/PAPER/`, false, 'get', {
-                limit: 25,
-                offset: 0,
-                // TODO pagination
-            })
-            .catch<any>($util.handlePageRequestError);
-        return { version };
-    }
 
     // TODO send all these to server
     startReview() {

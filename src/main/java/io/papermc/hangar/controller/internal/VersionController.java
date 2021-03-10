@@ -6,6 +6,7 @@ import io.papermc.hangar.db.customtypes.LoggedActionType.VersionContext;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
@@ -52,6 +53,12 @@ public class VersionController extends HangarController {
     @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<HangarVersion>> getVersions(@PathVariable String author, @PathVariable String slug, @PathVariable String versionString) {
         return ResponseEntity.ok(versionService.getHangarVersions(author, slug, versionString));
+    }
+
+    @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
+    @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HangarVersion> getVersion(@PathVariable String author, @PathVariable String slug, @PathVariable String versionString, @PathVariable Platform platform) {
+        return ResponseEntity.ok(versionService.getHangarVersion(author, slug, versionString, platform));
     }
 
     @Unlocked

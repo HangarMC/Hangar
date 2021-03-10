@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @JsonFormat(shape = Shape.OBJECT)
+@Deprecated(forRemoval = true)
 public enum Platform {
 
     PAPER("Paper", PlatformCategory.SERVER_CATEGORY, 0, TagColor.PAPER, "https://papermc.io/downloads"),
@@ -108,6 +109,7 @@ public enum Platform {
         return versionService.insertTags(getGhostTags(versionId, platformDependencies).stream().map(Pair::getRight).collect(Collectors.toList()));
     }
 
+    @Deprecated(forRemoval = true)
     public enum PlatformCategory {
         SERVER_CATEGORY("Server Plugins", "Server"),
         PROXY_CATEGORY("Proxy Plugins", "Proxy");
@@ -135,6 +137,7 @@ public enum Platform {
     }
 
     @Component
+    @Deprecated(forRemoval = true)
     public static class PlatformInjector {
 
         private final HangarDao<PlatformVersionsDao> platformVersionsDao;

@@ -5,6 +5,7 @@ import io.papermc.hangar.db.dao.internal.HangarVersionsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.TagColor;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTagTable;
@@ -41,8 +42,17 @@ public class VersionService extends HangarService {
         return projectVersionVisibilityService.checkVisibility(projectVersionsDAO.getProjectVersionTable(versionId));
     }
 
+    @Nullable
+    public ProjectVersionTable getProjectVersionTable(String author, String slug, String versionString, Platform platform) {
+        return projectVersionVisibilityService.checkVisibility(projectVersionsDAO.getProjectVersionTable(author, slug, versionString, platform));
+    }
+
     public void updateProjectVersionTable(ProjectVersionTable projectVersionTable) {
         projectVersionsDAO.update(projectVersionTable);
+    }
+
+    public HangarVersion getHangarVersion(String author, String slug, String versionString, Platform platform) {
+        return hangarVersionsDAO.getVersion(author, slug, versionString, platform, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId()).orElseThrow(() -> new HangarApiException(HttpStatus.NOT_FOUND));
     }
 
     public List<HangarVersion> getHangarVersions(String author, String slug, String versionString) {

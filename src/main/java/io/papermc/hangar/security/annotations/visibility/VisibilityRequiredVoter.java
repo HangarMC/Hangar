@@ -1,11 +1,12 @@
 package io.papermc.hangar.security.annotations.visibility;
 
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.security.annotations.HangarDecisionVoter;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequiredMetadataExtractor.VisibilityRequiredAttribute;
 import io.papermc.hangar.service.internal.projects.ProjectService;
+import io.papermc.hangar.service.internal.versions.VersionService;
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.http.HttpStatus;
@@ -19,11 +20,13 @@ import java.util.Collection;
 public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequiredAttribute> {
 
     private final ProjectService projectService;
+    private final VersionService versionService;
 
     @Autowired
-    public VisibilityRequiredVoter(ProjectService projectService) {
+    public VisibilityRequiredVoter(ProjectService projectService, VersionService versionService) {
         super(VisibilityRequiredAttribute.class);
         this.projectService = projectService;
+        this.versionService = versionService;
     }
 
     @Override
@@ -51,8 +54,13 @@ public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequi
                     throw new HangarApiException(HttpStatus.NOT_FOUND);
                 }
             case VERSION:
-                throw new NotImplementedException();
-
+                if (arguments.length == 1 && versionService.getProjectVersionTable((long) arguments[0]) != null) {
+                    return ACCESS_GRANTED;
+                } else if (versionService.getProjectVersionTable((String) arguments[0], (String) arguments[1], (String) arguments[2], (Platform) arguments[3]) != null) {
+                    return ACCESS_GRANTED;
+                } else {
+                    throw new HangarApiException(HttpStatus.NOT_FOUND);
+                }
         }
         return ACCESS_ABSTAIN;
     }

@@ -124,7 +124,7 @@ public class VersionFactory extends HangarService {
                 projectTable.isForumSync()
         );
 
-        if (projectVersionsDAO.getProjectVersionTable(projectId, pluginDataFile.getMd5(), pendingVersion.getVersionString()) != null && hangarConfig.projects.isFileValidate()) {
+        if (projectVersionsDAO.getProjectVersionTableFromHashAndName(projectId, pluginDataFile.getMd5(), pendingVersion.getVersionString()) != null && hangarConfig.projects.isFileValidate()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.duplicate");
         }
         return pendingVersion;

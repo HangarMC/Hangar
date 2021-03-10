@@ -1,5 +1,3 @@
-// @ts-ignore
-import colors from 'vuetify/es5/util/colors';
 import { NuxtConfig } from '@nuxt/types';
 
 import en from './locales/en';
@@ -72,35 +70,8 @@ export default {
     // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
     vuetify: {
         customVariables: ['~/assets/variables.scss'],
+        optionsPath: '~/plugins/vuetify.ts',
         treeShake: true,
-        theme: {
-            default: 'dark',
-            dark: true,
-            disable: false,
-            options: {},
-            themes: {
-                dark: {
-                    anchor: colors.blue.lighten3,
-                    primary: colors.blue.darken2,
-                    accent: colors.grey.darken3,
-                    secondary: colors.amber.darken3,
-                    info: colors.lightBlue.base,
-                    warning: colors.orange.darken3,
-                    error: colors.deepOrange.accent4,
-                    success: colors.lightGreen.darken2,
-                },
-                light: {
-                    anchor: colors.blue.lighten3,
-                    primary: colors.blue.darken2,
-                    accent: colors.grey.darken3,
-                    secondary: colors.amber.darken3,
-                    info: colors.teal.lighten1,
-                    warning: colors.amber.base,
-                    error: colors.deepOrange.accent4,
-                    success: colors.green.accent3,
-                },
-            },
-        },
     },
 
     // Build Configuration: https://go.nuxtjs.dev/config-build

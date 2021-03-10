@@ -14,7 +14,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.expression.BeanFactoryResolver;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.http.CacheControl;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -41,10 +44,15 @@ public class WebConfig extends WebMvcConfigurationSupport {
     private final HangarConfig hangarConfig;
     private final ObjectMapper mapper;
 
+    private final List<Converter<?,?>> converters;
+    private final List<ConverterFactory<?,?>> converterFactories;
+
     @Autowired
-    public WebConfig(HangarConfig hangarConfig, ObjectMapper mapper) {
+    public WebConfig(HangarConfig hangarConfig, ObjectMapper mapper, List<Converter<?, ?>> converters, List<ConverterFactory<?, ?>> converterFactories) {
         this.hangarConfig = hangarConfig;
         this.mapper = mapper;
+        this.converters = converters;
+        this.converterFactories = converterFactories;
     }
 
     // TODO remove after freemarker is gone
@@ -117,6 +125,12 @@ public class WebConfig extends WebMvcConfigurationSupport {
     @Bean
     public Filter shallowEtagHeaderFilter() {
         return new ShallowEtagHeaderFilter();
+    }
+
+    @Override
+    protected void addFormatters(FormatterRegistry registry) {
+        converters.forEach(registry::addConverter);
+        converterFactories.forEach(registry::addConverterFactory);
     }
 
     @Override

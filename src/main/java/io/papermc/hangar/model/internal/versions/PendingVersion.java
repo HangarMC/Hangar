@@ -21,21 +21,21 @@ import java.util.Set;
 
 public class PendingVersion {
 
-    @NotBlank(message = "Must specify a version")
-    @Validate(SpEL = "#root matches @hangarConfig.projects.versionNameRegex", message = "Version string contains invalid characters")
+    @NotBlank(message = "version.new.error.invalidVersionString")
+    @Validate(SpEL = "#root matches @hangarConfig.projects.versionNameRegex", message = "version.new.error.invalidVersionString")
     private final String versionString;
     // TODO validate below by uncommenting the @Valid annotation
     private final Map<Platform, Set</*@Valid */PluginDependency>> pluginDependencies;
-    @Size(min = 1, max = 3, message = "Must specify between 1 and 3 platforms")
-    private final Map<Platform, @Size(min = 1, message = "Empty platform version list") Set<@NotBlank(message = "Empty platform version string") String>> platformDependencies;
-    @NotBlank(message = "Must have a description")
+    @Validate(SpEL = "#root.size lt 1 or #root.size gt T(io.papermc.hangar.model.common.Platform).getValues().length", message = "version.new.error.invalidNumOfPlatforms")
+    private final Map<Platform, @Size(min = 1, message = "Empty platform version list") Set<@NotBlank(message = "version.new.error.invalidPlatformVersion") String>> platformDependencies;
+    @NotBlank(message = "version.new.error.noDescription")
     private final String description;
     private final FileInfo fileInfo;
     private final String externalUrl;
-    @NotBlank(message = "Must have a channel name specified")
-    @Validate(SpEL = "#root matches @hangarConfig.channels.nameRegex")
+    @NotBlank(message = "version.new.error.channel.noName")
+    @Validate(SpEL = "#root matches @hangarConfig.channels.nameRegex", message = "channel.new.error.invalidName")
     private final String channelName;
-    @NotNull(message = "Must have a channel color specified")
+    @NotNull(message = "version.new.error.channel.noColor")
     private final Color channelColor;
     private final boolean channelNonReviewed;
     private final boolean forumSync;

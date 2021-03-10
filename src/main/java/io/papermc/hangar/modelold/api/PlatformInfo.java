@@ -14,6 +14,7 @@ import java.util.Objects;
 
 @Validated
 @ApiModel(value = "PlatformInfo", description = "Information on a supported platform")
+@Deprecated(forRemoval = true)
 public class PlatformInfo {
 
     @JsonProperty("name")

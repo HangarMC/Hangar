@@ -5,6 +5,7 @@ import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 import java.time.OffsetDateTime;
 
+@Deprecated(forRemoval = true)
 public class PlatformVersionsTable {
     private long id;
     private OffsetDateTime createdAt;

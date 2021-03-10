@@ -42,14 +42,15 @@
                 <v-list dense>
                     <v-subheader>Platforms</v-subheader>
                     <v-list-item-group>
-                        <v-list-item v-for="(cat, i) in platforms" :key="i">
+                        <v-list-item v-for="(platform, i) in platforms" :key="i">
                             <v-list-item-icon>
-                                <v-icon v-text="cat.icon" />
+                                <v-icon v-text="`$vuetify.icons.${platform.name.toLowerCase()}`" />
                             </v-list-item-icon>
                             <v-list-item-content>
-                                <v-list-item-title v-text="cat.text"></v-list-item-title>
-                            </v-list-item-content> </v-list-item
-                    ></v-list-item-group>
+                                <v-list-item-title v-text="platform.name"></v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list-item-group>
                 </v-list>
             </v-col>
         </v-row>
@@ -59,10 +60,11 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import { PaginatedResult, Project, Sponsor } from 'hangar-api';
-import { Platform, ProjectPage } from 'hangar-internal';
+import { IPlatform, ProjectPage } from 'hangar-internal';
 import { Context } from '@nuxt/types';
 import ProjectList from '~/components/projects/ProjectList.vue';
 import HangarSponsor from '~/components/layouts/Sponsor.vue';
+import { RootState } from '~/store';
 
 @Component({
     components: {
@@ -77,13 +79,9 @@ export default class Home extends Vue {
     projectFilter: String | null = null;
     sponsor!: Sponsor;
 
-    // TODO get platforms from server
-    platforms: Platform[] = [
-        {
-            icon: 'mdi-home',
-            text: 'Test',
-        },
-    ];
+    get platforms(): IPlatform[] {
+        return Array.from((this.$store.state as RootState).platforms.values());
+    }
 
     head() {
         return {

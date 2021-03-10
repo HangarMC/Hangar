@@ -1,17 +1,19 @@
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
 import { Context } from '@nuxt/types';
-import { IProjectCategory } from 'hangar-internal';
+import { IPlatform, IProjectCategory } from 'hangar-internal';
 import { IPermission } from 'hangar-api';
-import { NamedPermission, ProjectCategory } from '~/types/enums';
+import { NamedPermission, Platform, ProjectCategory } from '~/types/enums';
 
 export interface RootState {
     projectCategories: Map<ProjectCategory, IProjectCategory>;
     permissions: Map<NamedPermission, IPermission>;
+    platforms: Map<Platform, IPlatform>;
 }
 
 export const state: () => RootState = () => ({
     projectCategories: (null as unknown) as Map<ProjectCategory, IProjectCategory>,
     permissions: (null as unknown) as Map<NamedPermission, IPermission>,
+    platforms: (null as unknown) as Map<Platform, IPlatform>,
 });
 
 export const mutations: MutationTree<RootState> = {
@@ -20,6 +22,9 @@ export const mutations: MutationTree<RootState> = {
     },
     SET_PERMISSIONS: (state, payload: Map<NamedPermission, IPermission>) => {
         state.permissions = payload;
+    },
+    SET_PLATFORMS: (state, payload: Map<Platform, IPlatform>) => {
+        state.platforms = payload;
     },
 };
 
@@ -43,6 +48,11 @@ export const actions: ActionTree<RootState, RootState> = {
             commit(
                 'SET_PERMISSIONS',
                 convertToMap<NamedPermission, IPermission>(permissionResult, (value) => value.value)
+            );
+            const platformResult: IPlatform[] = await $api.requestInternal<IPlatform[]>('data/platforms', false);
+            commit(
+                'SET_PLATFORMS',
+                convertToMap<Platform, IPlatform>(platformResult, (value) => value.name.toUpperCase())
             );
             // others
         } catch (e) {

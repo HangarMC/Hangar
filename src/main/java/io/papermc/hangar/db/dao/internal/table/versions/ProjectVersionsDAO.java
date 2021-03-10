@@ -1,7 +1,9 @@
 package io.papermc.hangar.db.dao.internal.table.versions;
 
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTagTable;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
@@ -32,11 +34,23 @@ public interface ProjectVersionsDAO {
     @SqlUpdate("DELETE FROM project_versions WHERE id = :id")
     void delete(@BindBean ProjectVersionTable projectVersionTable);
 
-    @SqlQuery("SELECT * FROM project_versions WHERE project_id = :projectId AND hash = :hash AND version_string = :versionString")
-    ProjectVersionTable getProjectVersionTable(long projectId, String hash, String versionString);
-
     @SqlQuery("SELECT * FROM project_versions pv WHERE pv.id = :versionId")
     ProjectVersionTable getProjectVersionTable(long versionId);
+
+    @SqlQuery("SELECT pv.* FROM project_versions pv" +
+            "   JOIN projects p ON pv.project_id = p.id" +
+            "   JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id" +
+            "   JOIN platform_versions v ON pvpd.platform_version_id = v.id" +
+            "   WHERE" +
+            "       lower(p.owner_name) = lower(:author) AND" +
+            "       lower(p.slug) = lower(:slug) AND" +
+            "       pv.version_string = :versionString AND" +
+            "       v.platform = :platform" +
+            "   LIMIT 1")
+    ProjectVersionTable getProjectVersionTable(String author, String slug, String versionString, @EnumByOrdinal Platform platform);
+
+    @SqlQuery("SELECT * FROM project_versions WHERE project_id = :projectId AND hash = :hash AND version_string = :versionString")
+    ProjectVersionTable getProjectVersionTableFromHashAndName(long projectId, String hash, String versionString);
 
     @Timestamped
     @SqlBatch("INSERT INTO project_version_tags (created_at, version_id, name, data, color) VALUES (:now, :versionId, :name, :data, :color)")

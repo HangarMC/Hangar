@@ -40,6 +40,5 @@ public class StringToEnumConverterFactory implements ConverterFactory<String, En
             // fall back to value of
             return (T) Enum.valueOf(targetType, s.trim().toUpperCase());
         };
-//        return new StringtoEnumConverter<>(targetType);
     }
 }
