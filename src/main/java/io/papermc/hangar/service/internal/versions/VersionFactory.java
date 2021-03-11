@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class VersionFactory extends HangarService {
@@ -205,7 +206,15 @@ public class VersionFactory extends HangarService {
             List<ProjectVersionDependencyTable> pluginDependencyTables = new ArrayList<>();
             for (var platformListEntry : pendingVersion.getPluginDependencies().entrySet()) {
                 for (PluginDependency pluginDependency : platformListEntry.getValue()) {
-                    pluginDependencyTables.add(new ProjectVersionDependencyTable(projectVersionTable.getId(), platformListEntry.getKey(), pluginDependency.getName(), pluginDependency.isRequired(), pluginDependency.getProjectId(), pluginDependency.getExternalUrl()));
+                    Long depProjectId = null;
+                    if (pluginDependency.getNamespace() != null) {
+                        Optional<ProjectTable> depProjectTable = Optional.ofNullable(projectService.getProjectTable(pluginDependency.getNamespace().getOwner(), pluginDependency.getNamespace().getSlug()));
+                        if (depProjectTable.isEmpty()) {
+                            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPluginDependencyNamespace");
+                        }
+                        depProjectId = depProjectTable.get().getProjectId();
+                    }
+                    pluginDependencyTables.add(new ProjectVersionDependencyTable(projectVersionTable.getId(), platformListEntry.getKey(), pluginDependency.getName(), pluginDependency.isRequired(), depProjectId, pluginDependency.getExternalUrl()));
                 }
             }
             projectVersionDependenciesDAO.insertAll(pluginDependencyTables);

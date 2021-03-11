@@ -1,7 +1,7 @@
 <template>
     <div class="markdown-editor">
         <div v-show="isEditing && !preview" class="ml-4">
-            <v-textarea v-model="rawEdited" outlined :rows="rawEdited.split(/\r\n|\r|\n/g).length + 3" />
+            <v-textarea v-model="rawEdited" outlined :rows="rawEdited.split(/\r\n|\r|\n/g).length + 3" :rules="rules" />
         </div>
         <Markdown v-show="!isEditing" :raw="raw" class="ml-4" />
         <Markdown v-if="preview" :raw="rawEdited" class="ml-4" inner-class="pl-5" />
@@ -54,6 +54,7 @@
 
 <script lang="ts">
 import { Component, Prop, PropSync, Vue, Watch } from 'nuxt-property-decorator';
+import { PropType } from 'vue';
 import Markdown from '~/components/Markdown.vue';
 import DeletePageModal from '~/components/modals/pages/DeletePageModal.vue';
 
@@ -85,6 +86,9 @@ export default class MarkdownEditor extends Vue {
 
     @Prop({ default: true, type: Boolean })
     saveable!: boolean;
+
+    @Prop({ default: () => [], type: Array as PropType<Function[]> })
+    rules!: Function[];
 
     created() {
         this.rawEdited = this.raw || '';

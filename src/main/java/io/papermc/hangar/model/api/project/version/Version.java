@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+// TODO CompactVersion w/o dependencies for the version list page
 public class Version extends Model implements Named, Visible {
 
     private final String name;

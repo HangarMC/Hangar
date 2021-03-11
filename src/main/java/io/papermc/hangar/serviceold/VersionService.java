@@ -187,7 +187,7 @@ public class VersionService extends HangarService {
             } else {
                  path = null;
             }
-            dependencies.get(pvdt.getPlatform()).put(new PluginDependency(pvdt.getName(), pvdt.isRequired(), pvdt.getProjectId(), pvdt.getExternalUrl()), path);
+//            dependencies.get(pvdt.getPlatform()).put(new PluginDependency(pvdt.getName(), pvdt.isRequired(), pvdt.getProjectId(), pvdt.getExternalUrl()), path);
         });
         if (true) throw new NotImplementedException();
         return new VersionData(

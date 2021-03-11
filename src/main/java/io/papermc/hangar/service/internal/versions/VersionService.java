@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class VersionService extends HangarService {
@@ -26,12 +27,14 @@ public class VersionService extends HangarService {
     private final ProjectVersionsDAO projectVersionsDAO;
     private final HangarVersionsDAO hangarVersionsDAO;
     private final ProjectVersionVisibilityService projectVersionVisibilityService;
+    private final VersionDependencyService versionDependencyService;
 
     @Autowired
-    public VersionService(HangarDao<ProjectVersionsDAO> projectVersionDAO, HangarDao<HangarVersionsDAO> hangarProjectsDAO, ProjectVersionVisibilityService projectVersionVisibilityService) {
+    public VersionService(HangarDao<ProjectVersionsDAO> projectVersionDAO, HangarDao<HangarVersionsDAO> hangarProjectsDAO, ProjectVersionVisibilityService projectVersionVisibilityService, VersionDependencyService versionDependencyService) {
         this.projectVersionsDAO = projectVersionDAO.get();
         this.hangarVersionsDAO = hangarProjectsDAO.get();
         this.projectVersionVisibilityService = projectVersionVisibilityService;
+        this.versionDependencyService = versionDependencyService;
     }
 
     @Nullable
@@ -52,15 +55,20 @@ public class VersionService extends HangarService {
     }
 
     public HangarVersion getHangarVersion(String author, String slug, String versionString, Platform platform) {
-        return hangarVersionsDAO.getVersion(author, slug, versionString, platform, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId()).orElseThrow(() -> new HangarApiException(HttpStatus.NOT_FOUND));
+        ProjectVersionTable projectVersionTable = getProjectVersionTable(author, slug, versionString, platform);
+        if (projectVersionTable == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+        HangarVersion hangarVersion = hangarVersionsDAO.getVersion(projectVersionTable.getId(), getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
+        return versionDependencyService.addDependenciesAndTags(hangarVersion.getId(), hangarVersion);
     }
 
     public List<HangarVersion> getHangarVersions(String author, String slug, String versionString) {
-        List<HangarVersion> versions = hangarVersionsDAO.getVersions(author, slug, versionString, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
+        List<HangarVersion> versions = hangarVersionsDAO.getVersionsWithVersionString(author, slug, versionString, getGlobalPermissions().has(Permission.SeeHidden), getHangarUserId());
         if (versions.isEmpty()) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        return versions;
+        return versions.stream().map(v -> versionDependencyService.addDependenciesAndTags(v.getId(), v)).collect(Collectors.toList());
     }
 
     public void addUnstableTag(long versionId) {

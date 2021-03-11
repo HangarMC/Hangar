@@ -23,7 +23,9 @@ export default {
         default: 'dark',
         dark: true,
         disable: false,
-        options: {},
+        options: {
+            customProperties: true,
+        },
         themes: {
             dark: {
                 anchor: colors.blue.lighten3,

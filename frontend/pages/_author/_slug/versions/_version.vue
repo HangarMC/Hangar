@@ -1,7 +1,13 @@
 <template>
     <div>
         <v-tabs>
-            <v-tab v-for="version in versionPlatforms" :key="`platform-${version}`" nuxt :to="version.toLowerCase()">
+            <v-tab
+                v-for="version in versionPlatforms"
+                :key="`platform-${version}`"
+                nuxt
+                :to="{ name: `author-slug-versions-version-platform`, params: { ...$route.params, platform: version.toLowerCase() } }"
+            >
+                <v-icon left v-text="`$vuetify.icons.${version.toLowerCase()}`"></v-icon>
                 {{ version }}
             </v-tab>
         </v-tabs>

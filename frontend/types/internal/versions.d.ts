@@ -1,11 +1,11 @@
 declare module 'hangar-internal' {
-    import { FileInfo, Named, Version } from 'hangar-api';
+    import { FileInfo, Named, ProjectNamespace, Version } from 'hangar-api';
     import { Platform } from '~/types/enums';
 
     interface PlatformDependency {
         name: string;
         required: boolean;
-        projectId: number | null;
+        namespace: ProjectNamespace | null;
         externalUrl: string | null;
     }
 

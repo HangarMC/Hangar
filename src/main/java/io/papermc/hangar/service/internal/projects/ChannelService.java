@@ -49,6 +49,10 @@ public class ChannelService extends HangarService {
         return projectChannelsDAO.getProjectChannel(projectId, name, color);
     }
 
+    public ProjectChannelTable getProjectChannelForVersion(long versionId) {
+        return projectChannelsDAO.getProjectChannelForVersion(versionId);
+    }
+
     public ProjectChannelTable getFirstChannel(long projectId) {
         return projectChannelsDAO.getFirstChannel(projectId);
     }

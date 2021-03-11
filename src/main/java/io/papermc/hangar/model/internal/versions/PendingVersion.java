@@ -11,6 +11,7 @@ import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -24,9 +25,8 @@ public class PendingVersion {
     @NotBlank(message = "version.new.error.invalidVersionString")
     @Validate(SpEL = "#root matches @hangarConfig.projects.versionNameRegex", message = "version.new.error.invalidVersionString")
     private final String versionString;
-    // TODO validate below by uncommenting the @Valid annotation
-    private final Map<Platform, Set</*@Valid */PluginDependency>> pluginDependencies;
-    @Validate(SpEL = "#root.size lt 1 or #root.size gt T(io.papermc.hangar.model.common.Platform).getValues().length", message = "version.new.error.invalidNumOfPlatforms")
+    private final Map<Platform, Set<@Valid PluginDependency>> pluginDependencies;
+    @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
     private final Map<Platform, @Size(min = 1, message = "Empty platform version list") Set<@NotBlank(message = "version.new.error.invalidPlatformVersion") String>> platformDependencies;
     @NotBlank(message = "version.new.error.noDescription")
     private final String description;
@@ -64,7 +64,7 @@ public class PendingVersion {
         this.versionString = versionString;
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
-        this.description = "## " + this.versionString + "\n\n" + description;
+        this.description = "## " + this.versionString + (description != null ? "\n\n" + description : "");
         this.fileInfo = fileInfo;
         this.forumSync = forumSync;
         this.externalUrl = null;

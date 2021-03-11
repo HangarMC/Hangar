@@ -235,6 +235,7 @@ const msgs: LocaleMessageObject = {
                 fileName: 'File name',
                 fileSize: 'File size',
                 externalUrl: 'External URL',
+                hangarProject: 'Hangar Project',
                 channel: 'Channel',
                 addChannel: 'Add Channel',
                 unstable: 'Unstable',
@@ -244,6 +245,8 @@ const msgs: LocaleMessageObject = {
                     bulletin: 'Release Bulletin',
                     desc: "What's new in this release?",
                 },
+                platforms: 'Platforms',
+                dependencies: 'Plugin Dependencies',
             },
             error: {
                 metaNotFound: 'Could not load metadata from uploaded file',
@@ -262,6 +265,7 @@ const msgs: LocaleMessageObject = {
                 unknown: 'An unknown error has occurred',
                 incomplete: 'Plugin file missing {0}',
                 noDescription: 'Must have a description',
+                invalidPluginDependencyNamespace: 'Declared plugin dependency has an invalid project namespace',
                 channel: {
                     noName: 'Must have a channel name specified',
                     noColor: 'Must have a channel color specified',

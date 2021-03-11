@@ -1,3 +1,13 @@
+@import '~vuetify/src/styles/styles.sass';
+
 .text-transform-unset {
   text-transform: unset;
+}
+
+.platform-logo {
+  fill: map-deep-get($material-dark, 'tabs');
+}
+
+.v-tab--active .platform-logo {
+  fill: map-get($blue, 'base')
 }
