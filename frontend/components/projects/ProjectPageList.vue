@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <v-card-title>
-            <NewPageModal v-if="canCreate" :pages="project.pages" :project-id="project.id" activator-class="mr-2" />
+            <NewPageModal v-if="$perms.canEditPage" :pages="project.pages" :project-id="project.id" activator-class="mr-2" />
             {{ $t('page.plural') }}
         </v-card-title>
         <v-card-text>
@@ -32,16 +32,11 @@
 import { Component } from 'nuxt-property-decorator';
 import { HangarProjectMixin } from '../mixins';
 import NewPageModal from '~/components/modals/pages/NewPageModal.vue';
-import { NamedPermission } from '~/types/enums';
 
 @Component({
     components: {
         NewPageModal,
     },
 })
-export default class ProjectPageList extends HangarProjectMixin {
-    get canCreate() {
-        return this.$util.hasPerms(NamedPermission.EDIT_PAGE);
-    }
-}
+export default class ProjectPageList extends HangarProjectMixin {}
 </script>

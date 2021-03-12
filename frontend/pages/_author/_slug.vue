@@ -56,7 +56,7 @@
                     </v-tooltip>
                     <!-- todo if not logged in or author, remove both -->
                     <FlagModal :project="project" />
-                    <v-menu v-if="isStaff" bottom offset-y>
+                    <v-menu v-if="$perms.isStaff" bottom offset-y>
                         <template #activator="{ on, attrs }">
                             <v-btn v-bind="attrs" class="ml-1" v-on="on">
                                 {{ $t('project.actions.adminActions') }}
@@ -115,7 +115,7 @@ import { TranslateResult } from 'vue-i18n';
 import Markdown from '~/components/Markdown.vue';
 import FlagModal from '~/components/modals/FlagModal.vue';
 import UserAvatar from '~/components/UserAvatar.vue';
-import { NamedPermission, Visibility } from '~/types/enums';
+import { Visibility } from '~/types/enums';
 
 interface Tab {
     title: string | TranslateResult;
@@ -155,7 +155,7 @@ export default class ProjectPage extends Vue {
         if (this.project.settings.forumSync) {
             tabs.push({ title: this.$t('project.tabs.discuss'), icon: 'mdi-account-group', link: this.slug + '/discuss', external: false });
         }
-        if (this.$util.hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)) {
+        if (this.$perms.canEditSubjectSettings) {
             tabs.push({ title: this.$t('project.tabs.settings'), icon: 'mdi-cog', link: this.slug + '/settings', external: false });
         }
 
@@ -193,10 +193,6 @@ export default class ProjectPage extends Vue {
 
     get slug(): string {
         return `/${this.project.namespace.owner}/${this.project.namespace.slug}`;
-    }
-
-    get isStaff(): boolean {
-        return this.$util.hasPerms(NamedPermission.IS_STAFF);
     }
 
     toggleStar() {

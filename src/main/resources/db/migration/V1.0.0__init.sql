@@ -236,7 +236,9 @@ CREATE TABLE project_version_dependencies
     CONSTRAINT project_version_dependencies_project_id_fkey
         FOREIGN KEY (project_id)
             REFERENCES projects
-            ON DELETE SET NULL
+            ON DELETE SET NULL,
+    CONSTRAINT project_version_dependencies_unique
+        UNIQUE (version_id, name, platform)
 );
 
 CREATE TABLE project_version_platform_dependencies
@@ -568,7 +570,8 @@ CREATE TABLE project_version_tags
             ON DELETE CASCADE,
     name varchar(255) NOT NULL,
     data varchar(255)[],
-    color integer NOT NULL
+    color integer NOT NULL,
+    CONSTRAINT project_version_tags_unique UNIQUE (version_id, name)
 );
 
 CREATE INDEX projects_versions_tags_version_id

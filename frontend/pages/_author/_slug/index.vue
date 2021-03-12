@@ -1,7 +1,14 @@
 <template>
     <v-row>
         <v-col v-if="page.contents" cols="12" md="8">
-            <MarkdownEditor v-if="canEdit" ref="editor" :raw="page.contents" :editing.sync="editingPage" :deletable="page.deletable" @save="savePage" />
+            <MarkdownEditor
+                v-if="$perms.canEditPage"
+                ref="editor"
+                :raw="page.contents"
+                :editing.sync="editingPage"
+                :deletable="page.deletable"
+                @save="savePage"
+            />
             <Markdown v-else :raw="page.contents" />
         </v-col>
         <v-col v-else>

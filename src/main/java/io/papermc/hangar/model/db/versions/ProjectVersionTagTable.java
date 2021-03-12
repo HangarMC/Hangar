@@ -13,7 +13,7 @@ public class ProjectVersionTagTable extends Table implements Named {
 
     private final long versionId;
     private final String name;
-    private final Set<String> data;
+    private Set<String> data;
     private final TagColor color;
 
     @JdbiConstructor
@@ -43,6 +43,10 @@ public class ProjectVersionTagTable extends Table implements Named {
 
     public Set<String> getData() {
         return data;
+    }
+
+    public void setData(Set<String> data) {
+        this.data = data;
     }
 
     @EnumByOrdinal

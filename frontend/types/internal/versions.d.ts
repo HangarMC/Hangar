@@ -1,5 +1,5 @@
 declare module 'hangar-internal' {
-    import { FileInfo, Named, ProjectNamespace, Version } from 'hangar-api';
+    import { DependencyVersion, FileInfo, Named, ProjectNamespace, Version } from 'hangar-api';
     import { Platform } from '~/types/enums';
 
     interface PlatformDependency {
@@ -9,10 +9,9 @@ declare module 'hangar-internal' {
         externalUrl: string | null;
     }
 
-    interface PendingVersion {
-        versionString: string | null;
-        pluginDependencies: Record<Platform, PlatformDependency[]>;
+    interface PendingVersion extends DependencyVersion {
         platformDependencies: Record<Platform, string[]>;
+        versionString: string | null;
         description: string | null;
         fileInfo: FileInfo;
         externalUrl: string | null;

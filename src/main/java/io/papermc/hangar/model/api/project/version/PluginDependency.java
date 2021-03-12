@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
-@AtLeastOneNotNull(fieldNames = {"projectId", "externalUrl"}, message = "Must specify a projectId or external URL for a dependency")
+@AtLeastOneNotNull(fieldNames = {"namespace", "externalUrl"}, message = "Must specify a projectId or external URL for a dependency")
 public class PluginDependency implements Named {
 
     @NotBlank(message = "Must have a dependency name")

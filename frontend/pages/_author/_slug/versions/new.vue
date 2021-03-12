@@ -128,6 +128,7 @@
                     <v-card-title class="pb-0">{{ $t('version.new.form.dependencies') }}</v-card-title>
                     <template v-for="platform in platformsForPluginDeps">
                         <v-card-subtitle :key="`${platform}-deps`" class="mt-3 pb-0">{{ $store.state.platforms.get(platform).name }}</v-card-subtitle>
+                        <!--TODO figure out how to make this work with the DependencyTable component-->
                         <v-simple-table :key="`${platform}-deps-table`" class="ma-2">
                             <thead>
                                 <tr>
@@ -230,7 +231,6 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
     channels: ProjectChannel[] = [];
     selectedPlatforms: string[] = [];
     hangarProjectSearchResults: ProjectNamespace[] = [];
-
     loading = {
         create: false,
         submit: false,
@@ -332,7 +332,7 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
             this.$api
                 .requestInternal(`versions/version/${this.project.id}/create`, true, 'post', this.pendingVersion)
                 .then(() => {
-                    // this.$router.push(`/${this.$route.params.author}/${this.$route.params.slug}/versions`);
+                    this.$router.push(`/${this.$route.params.author}/${this.$route.params.slug}/versions`);
                 })
                 .catch(this.$util.handleRequestError);
         }

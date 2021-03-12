@@ -61,11 +61,12 @@ public class VersionFactory extends HangarService {
     private final ProjectService projectService;
     private final NotificationService notificationService;
     private final VersionService versionService;
+    private final VersionTagService versionTagService;
     private final PlatformService platformService;
     private final UsersApiService usersApiService;
 
     @Autowired
-    public VersionFactory(HangarDao<ProjectVersionPlatformDependenciesDAO> projectVersionPlatformDependencyDAO, HangarDao<ProjectVersionDependenciesDAO> projectVersionDependencyDAO, HangarDao<PlatformVersionDAO> platformVersionDAO, HangarDao<ProjectVersionsDAO> projectVersionDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, RecommendedVersionService recommendedVersionService, ProjectService projectService, NotificationService notificationService, VersionService versionService, PlatformService platformService, UsersApiService usersApiService) {
+    public VersionFactory(HangarDao<ProjectVersionPlatformDependenciesDAO> projectVersionPlatformDependencyDAO, HangarDao<ProjectVersionDependenciesDAO> projectVersionDependencyDAO, HangarDao<PlatformVersionDAO> platformVersionDAO, HangarDao<ProjectVersionsDAO> projectVersionDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, RecommendedVersionService recommendedVersionService, ProjectService projectService, NotificationService notificationService, VersionService versionService, VersionTagService versionTagService, PlatformService platformService, UsersApiService usersApiService) {
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO.get();
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO.get();
         this.platformVersionDAO = platformVersionDAO.get();
@@ -78,6 +79,7 @@ public class VersionFactory extends HangarService {
         this.projectService = projectService;
         this.notificationService = notificationService;
         this.versionService = versionService;
+        this.versionTagService = versionTagService;
         this.platformService = platformService;
         this.usersApiService = usersApiService;
     }
@@ -200,7 +202,7 @@ public class VersionFactory extends HangarService {
                     platformDependencyTables.add(new ProjectVersionPlatformDependencyTable(projectVersionTable.getId(), platformVersionTable.getId()));
                 }
             }
-            projectVersionsDAO.insertTags(projectVersionTagTables);
+            versionTagService.addTags(projectVersionTagTables);
             projectVersionPlatformDependenciesDAO.insertAll(platformDependencyTables);
 
             List<ProjectVersionDependencyTable> pluginDependencyTables = new ArrayList<>();
@@ -221,7 +223,7 @@ public class VersionFactory extends HangarService {
 
 
             if (pendingVersion.isUnstable()) {
-                versionService.addUnstableTag(projectVersionTable.getId());
+                versionTagService.addUnstableTag(projectVersionTable.getId());
             }
 
             notificationService.notifyUsersNewVersion(projectTable, projectVersionTable);

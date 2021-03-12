@@ -31,7 +31,7 @@ export default class ProjectVersionPageParent extends HangarProjectMixin {
         const versions = await $api
             .requestInternal<HangarVersion[]>(`versions/version/${params.author}/${params.slug}/versions/${params.version}`)
             .catch<any>($util.handlePageRequestError);
-        if (versions.length < 1) {
+        if (typeof versions === 'undefined' || versions.length < 1) {
             return error({
                 statusCode: 404,
             });

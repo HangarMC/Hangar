@@ -9,12 +9,15 @@ import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
+import io.papermc.hangar.model.internal.api.requests.versions.UpdatePlatformVersions;
+import io.papermc.hangar.model.internal.api.requests.versions.UpdatePluginDependencies;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
+import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.service.internal.versions.VersionFactory;
 import io.papermc.hangar.service.internal.versions.VersionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,11 +45,13 @@ public class VersionController extends HangarController {
 
     private final VersionFactory versionFactory;
     private final VersionService versionService;
+    private final VersionDependencyService versionDependencyService;
 
     @Autowired
-    public VersionController(VersionFactory versionFactory, VersionService versionService) {
+    public VersionController(VersionFactory versionFactory, VersionService versionService, VersionDependencyService versionDependencyService) {
         this.versionFactory = versionFactory;
         this.versionService = versionService;
+        this.versionDependencyService = versionDependencyService;
     }
 
     @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
@@ -100,5 +105,21 @@ public class VersionController extends HangarController {
         projectVersionTable.setDescription(newDesc);
         versionService.updateProjectVersionTable(projectVersionTable);
         userActionLogService.version(LoggedActionType.VERSION_DESCRIPTION_CHANGED.with(VersionContext.of(projectId, versionId)), newDesc, oldDesc);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
+    @PostMapping(path = "/version/{projectId}/{versionId}/savePlatformVersions", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void savePlatformVersions(@PathVariable long projectId, @PathVariable long versionId, @Valid @RequestBody UpdatePlatformVersions updatePlatformVersions) {
+        versionDependencyService.updateVersionPlatformVersions(versionId, updatePlatformVersions);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
+    @PostMapping(path = "/version/{projectId}/{versionId}/savePluginDependencies", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void savePluginDependencies(@PathVariable long projectId, @PathVariable long versionId, @Valid @RequestBody UpdatePluginDependencies updatePluginDependencies) {
+        versionDependencyService.updateVersionPluginDependencies(versionId, updatePluginDependencies);
     }
 }

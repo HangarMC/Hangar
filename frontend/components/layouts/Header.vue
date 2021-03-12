@@ -69,7 +69,6 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import Dropdown, { Control } from '~/components/layouts/Dropdown.vue';
-import { NamedPermission } from '~/types/enums';
 
 @Component({
     components: {
@@ -152,7 +151,7 @@ export default class Header extends Vue {
         controls.push({
             isDivider: true,
         });
-        if (this.$util.hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)) {
+        if (this.$perms.canAccessModNotesAndFlags) {
             controls.push({
                 link: '/admin/flags',
                 icon: 'mdi-flag',
@@ -164,35 +163,35 @@ export default class Header extends Vue {
                 title: this.$t('nav.user.projectApprovals'),
             });
         }
-        if (this.$util.hasPerms(NamedPermission.REVIEWER)) {
+        if (this.$perms.isReviewer) {
             controls.push({
                 link: '/admin/approval/versions',
                 icon: 'mdi-thumb-up-outline',
                 title: this.$t('nav.user.versionApprovals'),
             });
         }
-        if (this.$util.hasPerms(NamedPermission.VIEW_STATS)) {
+        if (this.$perms.canViewStats) {
             controls.push({
                 link: '/admin/stats',
                 icon: 'mdi-chart-line',
                 title: this.$t('nav.user.stats'),
             });
         }
-        if (this.$util.hasPerms(NamedPermission.VIEW_HEALTH)) {
+        if (this.$perms.canViewHealth) {
             controls.push({
                 link: '/admin/health',
                 icon: 'mdi-heart-plus',
                 title: this.$t('nav.user.health'),
             });
         }
-        if (this.$util.hasPerms(NamedPermission.VIEW_HEALTH)) {
+        if (this.$perms.canViewLogs) {
             controls.push({
                 link: '/admin/log',
                 icon: 'mdi-format-list-bulleted',
                 title: this.$t('nav.user.log'),
             });
         }
-        if (this.$util.hasPerms(NamedPermission.VIEW_HEALTH)) {
+        if (this.$perms.canDoManualValueChanges) {
             controls.push({
                 link: '/admin/versions',
                 icon: 'mdi-tag-multiple',

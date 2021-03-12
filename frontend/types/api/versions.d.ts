@@ -1,10 +1,10 @@
 declare module 'hangar-api' {
-    import { Model, Named, TagColor } from 'hangar-api';
+    import { Model, Named, ProjectNamespace, TagColor } from 'hangar-api';
     import { Platform, ReviewState, Visibility } from '~/types/enums';
 
     interface PluginDependency extends Named {
         required: boolean;
-        projectId: number | null;
+        namespace: ProjectNamespace | null;
         externalUrl: string | null;
     }
 
@@ -23,8 +23,11 @@ declare module 'hangar-api' {
         color: TagColor;
     }
 
-    interface Version extends Model, Named {
+    interface DependencyVersion {
         pluginDependencies: Record<Platform, PluginDependency[]>;
+    }
+
+    interface Version extends Model, Named, DependencyVersion {
         platformDependencies: Record<Platform, string[]>;
         visibility: Visibility;
         description: string;

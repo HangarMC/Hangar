@@ -6,9 +6,7 @@ import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.model.common.TagColor;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
-import io.papermc.hangar.model.db.versions.ProjectVersionTagTable;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.VisibilityService.ProjectVersionVisibilityService;
@@ -18,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,11 +66,5 @@ public class VersionService extends HangarService {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
         return versions.stream().map(v -> versionDependencyService.addDependenciesAndTags(v.getId(), v)).collect(Collectors.toList());
-    }
-
-    public void addUnstableTag(long versionId) {
-        projectVersionsDAO.insertTags(Set.of(
-                new ProjectVersionTagTable(versionId, "Unstable", null, TagColor.UNSTABLE)
-        ));
     }
 }

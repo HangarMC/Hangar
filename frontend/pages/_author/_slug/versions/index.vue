@@ -50,7 +50,7 @@
             </v-data-iterator>
         </v-col>
         <v-col cols="12" md="3">
-            <v-btn v-if="canUpload" color="primary" block nuxt to="versions/new">
+            <v-btn v-if="$perms.canCreateVersion" color="primary" block nuxt to="versions/new">
                 {{ $t('version.new.uploadNew') }}
             </v-btn>
 
@@ -67,7 +67,6 @@ import { PropType } from 'vue';
 import { HangarProject } from 'hangar-internal';
 import { Context } from '@nuxt/types';
 import { PaginatedResult, Tag as ApiTag, Version } from 'hangar-api';
-import { NamedPermission } from '~/types/enums';
 import Tag from '~/components/Tag.vue';
 
 @Component({
@@ -88,10 +87,6 @@ export default class ProjectVersionsPage extends Vue {
             })
             .catch<any>($util.handlePageRequestError);
         return { versions };
-    }
-
-    get canUpload() {
-        return this.$util.hasPerms(NamedPermission.CREATE_VERSION);
     }
 
     getChannelTag(version: Version): ApiTag {

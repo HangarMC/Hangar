@@ -1,8 +1,9 @@
 import { Component, Prop, Vue, Watch } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
-import { HangarProject, HangarVersion, ProjectPage } from 'hangar-internal';
+import { HangarProject, HangarVersion, IPlatform, ProjectPage } from 'hangar-internal';
 import MarkdownEditor from '~/components/MarkdownEditor.vue';
-import { NamedPermission, Platform } from '~/types/enums';
+import { Platform } from '~/types/enums';
+import { RootState } from '~/store';
 
 @Component
 export class HangarProjectMixin extends Vue {
@@ -15,8 +16,12 @@ export class HangarProjectVersionMixin extends HangarProjectMixin {
     @Prop({ type: Map as PropType<Map<Platform, HangarVersion>>, required: true })
     versions!: Map<Platform, HangarVersion>;
 
-    get version(): HangarVersion {
+    get projectVersion(): HangarVersion {
         return this.versions.get(<Platform>this.$route.params.platform.toUpperCase())!;
+    }
+
+    get platform(): IPlatform {
+        return (this.$store.state as RootState).platforms.get(this.$route.params.platform.toUpperCase() as Platform)!;
     }
 }
 
@@ -31,10 +36,6 @@ export class DocPageMixin extends HangarProjectMixin {
     $refs!: {
         editor: MarkdownEditor;
     };
-
-    get canEdit(): boolean {
-        return this.$util.hasPerms(NamedPermission.EDIT_PAGE);
-    }
 
     savePage(content: string) {
         this.$api

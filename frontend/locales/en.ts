@@ -4,6 +4,7 @@ const msgs: LocaleMessageObject = {
     general: {
         close: 'Close',
         submit: 'Submit',
+        save: 'Save',
         comment: 'Comment',
         donate: 'Donate',
         continue: 'Continue',
@@ -11,6 +12,11 @@ const msgs: LocaleMessageObject = {
         delete: 'Delete',
         or: 'Or',
         reset: 'Reset',
+        edit: 'Edit',
+        required: 'Required',
+        add: 'Add',
+        name: 'Name',
+        link: 'Link',
     },
     hangar: {
         projectSearch: {
@@ -270,6 +276,15 @@ const msgs: LocaleMessageObject = {
                     noName: 'Must have a channel name specified',
                     noColor: 'Must have a channel color specified',
                 },
+            },
+        },
+        edit: {
+            platformVersions: 'Edit Platform Versions: {0}',
+            pluginDeps: 'Edit Plugin Dependencies: {0}',
+            error: {
+                noPlatformVersions: 'Must supply at least one valid platform version',
+                invalidVersionForPlatform: '{0} is an invalid version for {1}',
+                invalidProjectNamespace: '{0} is not a valid project namespace',
             },
         },
         page: {

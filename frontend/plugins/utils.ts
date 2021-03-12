@@ -13,7 +13,7 @@ import { RootState } from '~/store';
 import { NotifPayload } from '~/store/snackbar';
 import { AuthState } from '~/store/auth';
 
-type Validation = (v: string) => boolean | string;
+type Validation = (v: any) => boolean | string;
 type ValidationArgument = (any: any) => Validation;
 
 function handleRequestError(err: AxiosError, error: Context['error'], i18n: Context['app']['i18n']) {
@@ -206,6 +206,7 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
 
         $vc: Record<string, ValidationArgument> = {
             require: ((name: string | TranslateResult = 'Field') => (v: string) => !!v || `${name} is required`) as ValidationArgument,
+            requireNonEmptyArray: ((name: string | TranslateResult = 'Field') => (v: any[]) => v.length > 0 || `${name} is required`) as ValidationArgument,
         };
 
         $v: Record<string, Validation> = {};

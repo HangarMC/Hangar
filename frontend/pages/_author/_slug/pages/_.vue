@@ -3,7 +3,7 @@
         <v-row>
             <v-col v-if="page.contents" cols="12" md="9">
                 <MarkdownEditor
-                    v-if="canEdit"
+                    v-if="$perms.canEditPage"
                     ref="editor"
                     :raw="page.contents"
                     :editing.sync="editingPage"

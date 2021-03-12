@@ -27,7 +27,7 @@ public class PendingVersion {
     private final String versionString;
     private final Map<Platform, Set<@Valid PluginDependency>> pluginDependencies;
     @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
-    private final Map<Platform, @Size(min = 1, message = "Empty platform version list") Set<@NotBlank(message = "version.new.error.invalidPlatformVersion") String>> platformDependencies;
+    private final Map<Platform, @Size(min = 1, message = "version.edit.error.noPlatformVersions") Set<@NotBlank(message = "version.new.error.invalidPlatformVersion") String>> platformDependencies;
     @NotBlank(message = "version.new.error.noDescription")
     private final String description;
     private final FileInfo fileInfo;

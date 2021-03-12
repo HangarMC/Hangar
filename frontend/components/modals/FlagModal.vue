@@ -25,21 +25,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from 'nuxt-property-decorator';
-import { FlagReason, HangarProject } from 'hangar-internal';
-import { PropType } from 'vue';
-import { HangarFormModal } from '~/components/mixins';
+import { Component, mixins } from 'nuxt-property-decorator';
+import { FlagReason } from 'hangar-internal';
+import { HangarFormModal, HangarProjectMixin } from '~/components/mixins';
 
 @Component
-export default class FlagModal extends HangarFormModal {
+export default class FlagModal extends mixins(HangarFormModal, HangarProjectMixin) {
     flagReasons: FlagReason[] = [];
     form = {
         selection: null as string | null,
         comment: null as string | null,
     };
-
-    @Prop({ required: true, type: Object as PropType<HangarProject> })
-    project!: HangarProject;
 
     submitFlag() {
         this.loading = true;

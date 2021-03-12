@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-row>
-            <v-col>{{ $t('reviews.headline', [version.author, $util.prettyDate(version.createdAt)]) }}</v-col>
+            <v-col>{{ $t('reviews.headline', [projectVersion.author, $util.prettyDate(projectVersion.createdAt)]) }}</v-col>
             <v-col>
                 <v-btn color="secondary" @click="removeFromQueue">{{ $t('reviews.removeFromQueue') }}</v-btn>
                 <v-btn color="secondary" :to="{ name: 'author-slug', params: $route.params }" nuxt exact>{{ $t('reviews.projectPage') }}</v-btn>

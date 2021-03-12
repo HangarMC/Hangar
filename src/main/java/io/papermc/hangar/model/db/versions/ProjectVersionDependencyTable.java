@@ -10,9 +10,9 @@ public class ProjectVersionDependencyTable extends VersionDependencyTable {
 
     private final Platform platform;
     private final String name;
-    private final boolean required;
-    private final Long projectId;
-    private final String externalUrl;
+    private boolean required;
+    private Long projectId;
+    private String externalUrl;
 
     @JdbiConstructor
     public ProjectVersionDependencyTable(OffsetDateTime createdAt, long id, long versionId, @EnumByOrdinal Platform platform, String name, boolean required, Long projectId, String externalUrl) {
@@ -46,12 +46,24 @@ public class ProjectVersionDependencyTable extends VersionDependencyTable {
         return required;
     }
 
+    public void setRequired(boolean required) {
+        this.required = required;
+    }
+
     public Long getProjectId() {
         return projectId;
     }
 
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
     public String getExternalUrl() {
         return externalUrl;
+    }
+
+    public void setExternalUrl(String externalUrl) {
+        this.externalUrl = externalUrl;
     }
 
     @Override
