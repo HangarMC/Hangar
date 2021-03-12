@@ -9,21 +9,33 @@ We would like the thank all Ore contributors, without them, this project would n
 There may or may not be a staging instance running at https://hangar-new.minidigger.me or https://hangar.minidigger.me
 It may or may not allow you to log in, please don't create too much of a mess so that I don't always need to nuke the DB when I want to use it.
 
-## Building
+## Contributing
+## Hangar
+The project consists out of 4 parts. The frontend(Nuxt and Vue), the backend (Spring Boot), the database (PostgreSQL) and an optional [HangarAuth](https://github.com/MiniDigger/HangarAuth) project.
+Which will be discussed below. 
 
-The project uses maven and should be straight forward (we even include a wrapper for you, wow!)  
-The frontend is located in `frontend` and uses webpack. You will need yarn to build that. Initially install dependencies via `yarn`, then start the dev environment using `yarn run dev`.
+### Fork the project
+Fork the project and pull it in your IDE.
+### Prerequisites
+- Docker is required in order to run the PostgreSQL database.
+- Java 11 or higher.
+### Setting up
+To get the project running locally you need to follow a few steps:
+1. To get the dummy database up and running move to the docker folder `cd docker` then run `docker-compose up -f dev-db.yml -d`.
+   Alternatively if you are using Intellij you can press the green arrow in the `docker/dev-db.yml` file.
+2. Run the Spring Boot application. You can do it in the CLI with `mvn spring-boot:run` or if you're using intellij it's included in the run configurations.
+3. Move to the `frontend` directory: `cd ../frontend`. In that directory run `yarn install`. This will install all the needed Node modules.
+5. After the installation you run `yarn run dev` which will initiate the build and launch.
+6. After that browse to http://localhost:3000 and if all went well Hangar should be up and running.
 
-Additionally, you will need a postgresql database. For your convenience, this repo contains a dev-db docker compose stack in the docker folder that will get you setup.
+### Hangar Auth
 
-This project currently uses java 11.
-
-### Building with Docker
+#### Building with Docker
 If you want to build both Hangar and [HangarAuth](https://github.com/MiniDigger/HangarAuth)
 to run together (without a fakeuser), clone both this repo, and [this](https://github.com/PaperMC/HangarAuth).
 Make sure both Hangar and HangarAuth directories are siblings in your file system. cd into Hangar/docker and run `docker-compose up -d`. That should set everything up for you. You can view the logs via Intellij's docker integration.
-I find its better to view the logs there, so that the Hangar logs and HangarAuth logs are separated. 
-Note that when using docker, a different spring configuration file is used, `Hangar/docker/hangar/application.yml`. To reload changes to Hangar, just CTRL+F9 (rebuild) in Intellij. To rebuild changes to HangarAuth, just run `docker-compose up -d --build` 
+I find its better to view the logs there, so that the Hangar logs and HangarAuth logs are separated.
+Note that when using docker, a different spring configuration file is used, `Hangar/docker/hangar/application.yml`. To reload changes to Hangar, just CTRL+F9 (rebuild) in Intellij. To rebuild changes to HangarAuth, just run `docker-compose up -d --build`
 and that will rebuild if there were any changes.
 
 ## Deployment
