@@ -1,10 +1,11 @@
 package io.papermc.hangar.db.modelold;
 
 
-import java.time.OffsetDateTime;
-
 import io.papermc.hangar.db.customtypes.JSONB;
 
+import java.time.OffsetDateTime;
+
+@Deprecated(forRemoval = true)
 public class ProjectVersionReviewsTable {
 
     private long id;

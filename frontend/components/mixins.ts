@@ -2,7 +2,7 @@ import { Component, Prop, Vue, Watch } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
 import { HangarProject, HangarVersion, IPlatform, ProjectPage } from 'hangar-internal';
 import MarkdownEditor from '~/components/MarkdownEditor.vue';
-import { Platform } from '~/types/enums';
+import { Platform, ReviewState } from '~/types/enums';
 import { RootState } from '~/store';
 
 @Component
@@ -22,6 +22,14 @@ export class HangarProjectVersionMixin extends HangarProjectMixin {
 
     get platform(): IPlatform {
         return (this.$store.state as RootState).platforms.get(this.$route.params.platform.toUpperCase() as Platform)!;
+    }
+
+    get isReviewStateChecked(): boolean {
+        return this.projectVersion.reviewState === ReviewState.PARTIALLY_REVIEWED || this.projectVersion.reviewState === ReviewState.REVIEWED;
+    }
+
+    get isUnderReview(): boolean {
+        return this.projectVersion.reviewState === ReviewState.UNDER_REVIEW;
     }
 }
 

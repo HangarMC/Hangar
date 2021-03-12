@@ -499,6 +499,7 @@ CREATE TABLE project_version_reviews
     id bigserial NOT NULL
         CONSTRAINT project_version_reviews_pkey
             PRIMARY KEY,
+    created_at timestamp with time zone NOT NULL,
     version_id bigint NOT NULL
         CONSTRAINT project_version_reviews_version_id_fkey
             REFERENCES project_versions
@@ -507,9 +508,21 @@ CREATE TABLE project_version_reviews
         CONSTRAINT project_version_reviews_user_id_fkey
             REFERENCES users
             ON DELETE CASCADE,
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
-    ended_at timestamp with time zone,
-    comment jsonb DEFAULT '{}'::jsonb NOT NULL
+    ended_at timestamp with time zone
+);
+
+CREATE TABLE project_version_review_messages
+(
+    id bigserial NOT NULL
+        CONSTRAINT project_version_review_messages_pkey
+            PRIMARY KEY,
+    created_at timestamp with time zone NOT NULL,
+    review_id bigint NOT NULL
+        CONSTRAINT project_version_review_messages_review_id_fkey
+            REFERENCES project_version_reviews
+            ON DELETE CASCADE,
+    message text NOT NULL,
+    action bigint NOT NULL
 );
 
 CREATE TABLE project_visibility_changes

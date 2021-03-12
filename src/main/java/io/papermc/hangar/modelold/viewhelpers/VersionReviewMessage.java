@@ -8,6 +8,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
+@Deprecated(forRemoval = true)
 public class VersionReviewMessage {
 
     private String message;

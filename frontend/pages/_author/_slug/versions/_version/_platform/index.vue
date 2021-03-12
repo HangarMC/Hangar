@@ -17,7 +17,8 @@
                 <!-- todo maybe move the review logs to the admin actions dropdown? -->
                 <template v-if="$perms.isReviewer">
                     <v-btn v-if="isReviewStateChecked" color="secondary" :to="$route.path + '/reviews'" nuxt>{{ $t('version.page.reviewLogs') }}</v-btn>
-                    <v-btn v-else color="secondary" :to="$route.path + '/reviews'" nuxt>
+                    <v-btn v-else-if="isUnderReview" color="info" :to="$route.path + '/reviews'" nuxt>{{ $t('version.page.reviewLogs') }}</v-btn>
+                    <v-btn v-else color="success" :to="$route.path + '/reviews'" nuxt>
                         <v-icon left>mdi-play</v-icon>
                         {{ $t('version.page.reviewStart') }}
                     </v-btn>
@@ -124,10 +125,6 @@ export default class ProjectVersionPage extends HangarProjectVersionMixin {
 
     get channel(): Tag | null {
         return this.projectVersion.tags?.find((t) => t.name === 'Channel') || null;
-    }
-
-    get isReviewStateChecked(): boolean {
-        return this.projectVersion.reviewState === ReviewState.PARTIALLY_REVIEWED || this.projectVersion.reviewState === ReviewState.REVIEWED;
     }
 
     get approvalTooltip(): TranslateResult {

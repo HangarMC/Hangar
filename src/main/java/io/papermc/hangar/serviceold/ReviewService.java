@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-@Service
+@Service("oldReviewService")
+@Deprecated(forRemoval = true)
 public class ReviewService {
 
     private final HangarDao<ProjectVersionReviewDao> projectVersionReviewDao;

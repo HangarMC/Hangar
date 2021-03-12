@@ -428,6 +428,7 @@ const msgs: LocaleMessageObject = {
         notUnderReview: 'This version is not under review',
         reviewMessage: 'Review Message',
         addMessage: 'Add Message',
+        undoApproval: 'Undo approval',
     },
     message: 'Good morning!',
 };

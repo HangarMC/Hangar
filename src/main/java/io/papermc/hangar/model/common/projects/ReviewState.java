@@ -8,6 +8,8 @@ public enum ReviewState {
 
     REVIEWED("reviewed"),
 
+    UNDER_REVIEW("under_review"),
+
     BACKLOG("backlog"),
 
     PARTIALLY_REVIEWED("partially_reviewed");

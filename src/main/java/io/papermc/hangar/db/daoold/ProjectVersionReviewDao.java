@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 
 @Repository
 @RegisterBeanMapper(ProjectVersionReviewsTable.class)
+@Deprecated(forRemoval = true)
 public interface ProjectVersionReviewDao {
 
     @Timestamped

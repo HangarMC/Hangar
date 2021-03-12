@@ -12,6 +12,7 @@ import io.papermc.hangar.serviceold.ReviewService;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated(forRemoval = true)
 public class VersionReview extends ProjectVersionReviewsTable {
 
     private final String userName;

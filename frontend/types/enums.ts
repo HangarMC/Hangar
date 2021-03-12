@@ -30,6 +30,7 @@ export enum Visibility {
 export enum ReviewState {
     UNREVIEWED = 'unreviewed',
     REVIEWED = 'reviewed',
+    UNDER_REVIEW = 'under_review',
     BACKLOG = 'backlog',
     PARTIALLY_REVIEWED = 'partially_reviewed',
 }
@@ -82,4 +83,11 @@ export enum Platform {
     PAPER = 'PAPER',
     WATERFALL = 'WATERFALL',
     VELOCITY = 'VELOCITY',
+}
+
+export enum ReviewAction {
+    START = 'START',
+    MESSAGE = 'MESSAGE',
+    STOP = 'STOP',
+    TAKEOVER = 'TAKEOVER',
 }
