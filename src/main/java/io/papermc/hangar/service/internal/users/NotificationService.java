@@ -58,12 +58,18 @@ public class NotificationService extends HangarService {
         notificationsDAO.insert(notificationTables);
     }
 
-    public void notifyUsersVersionReviewed(ProjectVersionTable projectVersionTable) {
+    public void notifyUsersVersionReviewed(ProjectVersionTable projectVersionTable, boolean partial) {
         List<NotificationTable> notificationTables = new ArrayList<>();
         ProjectTable projectTable = projectsDAO.getById(projectVersionTable.getProjectId());
         permissionService.getProjectMemberPermissions(projectVersionTable.getProjectId()).forEach((user, perm) -> {
             if (perm.has(Permission.EditVersion)) {
-                notificationTables.add(new NotificationTable(user.getId(), NotificationType.VERSION_REVIEWED, null, null, new String[]{"notifications.project.reviewed", projectTable.getSlug(), projectVersionTable.getVersionString()}));
+                if (partial) {
+                    notificationTables.add(new NotificationTable(user.getId(), NotificationType.VERSION_REVIEWED_PARTIAL, null, null,
+                            new String[]{"notifications.project.reviewedPartial", projectTable.getSlug(), projectVersionTable.getVersionString()}));
+                } else {
+                    notificationTables.add(new NotificationTable(user.getId(), NotificationType.VERSION_REVIEWED, null, null,
+                            new String[]{"notifications.project.reviewed", projectTable.getSlug(), projectVersionTable.getVersionString()}));
+                }
             }
         });
         notificationsDAO.insert(notificationTables);

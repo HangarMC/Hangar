@@ -359,6 +359,7 @@ const msgs: LocaleMessageObject = {
         },
         project: {
             reviewed: '{0} {1} has been reviewed and is approved',
+            reviewedPartial: '{0} {1} has been reviewed and is partially approved',
         },
     },
     visibility: {

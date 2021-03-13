@@ -98,7 +98,7 @@ public class ReviewService extends HangarService {
         projectVersionReviewsDAO.insertMessage(new ProjectVersionReviewMessageTable(latestUnfinishedReview.getId(), msg.getMessage(), new JSONB(msg.getArgs()), reviewAction));
         projectVersionReviewsDAO.update(latestUnfinishedReview);
         ProjectVersionTable projectVersionTable = projectVersionsDAO.getProjectVersionTable(versionId);
-        notificationService.notifyUsersVersionReviewed(projectVersionTable);
+        notificationService.notifyUsersVersionReviewed(projectVersionTable, reviewAction == ReviewAction.PARTIALLY_APPROVE);
     }
 
     public void undoApproval(long versionId, ReviewMessage msg) {
