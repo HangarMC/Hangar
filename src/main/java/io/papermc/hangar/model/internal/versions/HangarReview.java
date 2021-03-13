@@ -1,5 +1,7 @@
 package io.papermc.hangar.model.internal.versions;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.common.ReviewAction;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
@@ -12,12 +14,14 @@ public class HangarReview extends Model {
 
     private final OffsetDateTime endedAt;
     private final String userName;
+    private final long userId;
     private final List<HangarReviewMessage> messages;
 
-    public HangarReview(OffsetDateTime createdAt, OffsetDateTime endedAt, String userName) {
+    public HangarReview(OffsetDateTime createdAt, OffsetDateTime endedAt, String userName, long userId) {
         super(createdAt);
         this.endedAt = endedAt;
         this.userName = userName;
+        this.userId = userId;
         this.messages = new ArrayList<>();
     }
 
@@ -29,6 +33,10 @@ public class HangarReview extends Model {
         return userName;
     }
 
+    public long getUserId() {
+        return userId;
+    }
+
     public List<HangarReviewMessage> getMessages() {
         return messages;
     }
@@ -38,6 +46,7 @@ public class HangarReview extends Model {
         return "HangarReview{" +
                 "endedAt=" + endedAt +
                 ", userName='" + userName + '\'' +
+                ", userId=" + userId +
                 ", messages=" + messages +
                 "} " + super.toString();
     }
@@ -45,16 +54,22 @@ public class HangarReview extends Model {
     public static class HangarReviewMessage extends Model {
 
         private final String message;
+        private final ObjectNode args;
         private final ReviewAction action;
 
-        public HangarReviewMessage(OffsetDateTime createdAt, String message, @EnumByOrdinal ReviewAction action) {
+        public HangarReviewMessage(OffsetDateTime createdAt, String message, JSONB args, @EnumByOrdinal ReviewAction action) {
             super(createdAt);
             this.message = message;
+            this.args = (ObjectNode) args.getJson();
             this.action = action;
         }
 
         public String getMessage() {
             return message;
+        }
+
+        public ObjectNode getArgs() {
+            return args;
         }
 
         public ReviewAction getAction() {
@@ -65,7 +80,8 @@ public class HangarReview extends Model {
         public String toString() {
             return "HangarReviewMessage{" +
                     "message='" + message + '\'' +
-                    ", reviewAction=" + action +
+                    ", args=" + args +
+                    ", action=" + action +
                     "} " + super.toString();
         }
     }

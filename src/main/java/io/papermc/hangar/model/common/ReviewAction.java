@@ -4,5 +4,12 @@ public enum ReviewAction {
     START,
     MESSAGE,
     STOP,
-    TAKEOVER
+    REOPEN,
+    APPROVE,
+    PARTIALLY_APPROVE,
+    UNDO_APPROVAL;
+
+    public boolean isApproval() {
+        return this == APPROVE || this == PARTIALLY_APPROVE;
+    }
 }

@@ -44,6 +44,20 @@ const createAuth = ({ app: { $cookies }, $axios, store, $api, redirect }: Contex
                     this.logout(process.client);
                 });
         }
+
+        refreshUser(): Promise<void> {
+            return $api.getToken(true).then((token) => {
+                if (token != null) {
+                    if (store.state.auth.authenticated) {
+                        return this.updateUser(token);
+                    } else {
+                        return this.processLogin(token);
+                    }
+                } else {
+                    return this.logout(process.client);
+                }
+            });
+        }
     }
 
     return new Auth();

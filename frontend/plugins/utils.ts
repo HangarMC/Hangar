@@ -93,6 +93,19 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
             });
         }
 
+        prettyDateTime(date: Date | string | number): string {
+            if (typeof date === 'string' || typeof date === 'number') {
+                date = new Date(date);
+            }
+            return date.toLocaleDateString(undefined, {
+                day: 'numeric',
+                month: '2-digit',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+            });
+        }
+
         formatSize(input: any) {
             return filesize(input);
         }

@@ -3,10 +3,12 @@ package io.papermc.hangar.service;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.PermissionsDAO;
 import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.db.UserTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -39,6 +41,10 @@ public class PermissionService extends HangarService {
 
     public Permission getProjectPermissions(@Nullable Long userId, @NotNull String author, @NotNull String slug) {
         return getPermissions(userId, (id) -> permissionsDAO.getProjectPermission(id, author, slug));
+    }
+
+    public Map<UserTable, Permission> getProjectMemberPermissions(long projectId) {
+        return permissionsDAO.getProjectMemberPermissions(projectId);
     }
 
     // Organization permissions

@@ -40,6 +40,7 @@ public class NotificationTable extends Table {
         return userId;
     }
 
+    @EnumByOrdinal
     public NotificationType getNotificationType() {
         return notificationType;
     }

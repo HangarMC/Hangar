@@ -22,10 +22,11 @@ public interface ProjectVersionsDAO {
             "(:now, :versionString, :description, :projectId, :channelId, :fileSize, :hash, :fileName, :externalUrl, :authorId, :createForumPost)")
     ProjectVersionTable insert(@BindBean ProjectVersionTable projectVersionTable);
 
+    @GetGeneratedKeys
     @SqlUpdate("UPDATE project_versions SET visibility = :visibility, reviewer_id = :reviewerId, approved_at = :approvedAt, description = :description, " +
             "review_state = :reviewState, external_url = :externalUrl " +
             "WHERE id = :id")
-    void update(@BindBean ProjectVersionTable projectVersionsTable);
+    ProjectVersionTable update(@BindBean ProjectVersionTable projectVersionsTable);
 
     @SqlUpdate("DELETE FROM project_versions WHERE id = :id")
     void delete(@BindBean ProjectVersionTable projectVersionTable);

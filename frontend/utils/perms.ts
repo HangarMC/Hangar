@@ -3,17 +3,17 @@ import { PermissionCheck } from 'hangar-api';
 import { NamedPermission, PermissionType } from '~/types/enums';
 import { AuthState } from '~/store/auth';
 
-const loggedInMiddleware: Middleware = ({ store, error }: Context) => {
+const loggedInMiddleware = (code: number, msg?: string): Middleware => ({ store, error }: Context) => {
     if (!store.state.auth.authenticated) {
         error({
-            message: 'You must be logged in to perform this action',
-            statusCode: 401,
+            message: msg,
+            statusCode: code,
         });
     }
 };
 
 export function LoggedIn(constructor: Function) {
-    addMiddleware(constructor, loggedInMiddleware);
+    addMiddleware(constructor, loggedInMiddleware(401, 'You must be logged in to perform this action'));
 }
 
 // TODO this maybe should use the global permissions store in the JWT to reduce db lookups?
@@ -42,7 +42,7 @@ export function GlobalPermission(...permissions: NamedPermission[]) {
     };
 
     return function (constructor: Function) {
-        addMiddleware(constructor, loggedInMiddleware, middleware);
+        addMiddleware(constructor, loggedInMiddleware(404), middleware);
     };
 }
 
@@ -65,7 +65,7 @@ export function ProjectPermission(...permissions: NamedPermission[]) {
     };
 
     return function (constructor: Function) {
-        addMiddleware(constructor, loggedInMiddleware, middleware);
+        addMiddleware(constructor, loggedInMiddleware(404), middleware);
     };
 }
 

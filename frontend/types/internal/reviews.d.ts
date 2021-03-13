@@ -4,12 +4,14 @@ declare module 'hangar-internal' {
 
     interface HangarReviewMessage extends Model {
         message: string;
+        args: Record<string, string>;
         action: ReviewAction;
     }
 
     interface HangarReview extends Model {
         endedAt: string | null;
         userName: string;
+        userId: number;
         messages: HangarReviewMessage[];
     }
 }

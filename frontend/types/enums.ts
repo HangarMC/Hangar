@@ -89,5 +89,8 @@ export enum ReviewAction {
     START = 'START',
     MESSAGE = 'MESSAGE',
     STOP = 'STOP',
-    TAKEOVER = 'TAKEOVER',
+    REOPEN = 'REOPEN',
+    APPROVE = 'APPROVE',
+    PARTIALLY_APPROVE = 'PARTIALLY_APPROVE',
+    UNDO_APPROVAL = 'UNDO_APPROVAL',
 }

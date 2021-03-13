@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public abstract class VisibilityService<M extends Table & ModelVisible & ProjectIdentified, VT extends VisibilityChangeTable> extends HangarService {
 
@@ -31,24 +32,24 @@ public abstract class VisibilityService<M extends Table & ModelVisible & Project
     private final Consumer<VT> dbInsertion;
     private final BiConsumer<Long, Long> lastUpdater;
     private final VisibilityChangeTableConstructor<VT> changeTableConstructor;
-    private final Consumer<M> modelUpdater;
+    private final Function<M, M> modelUpdater;
 
-    protected VisibilityService(Consumer<VT> dbInsertion, BiConsumer<Long, Long> lastUpdater, VisibilityChangeTableConstructor<VT> changeTableConstructor, Consumer<M> modelUpdater) {
+    protected VisibilityService(Consumer<VT> dbInsertion, BiConsumer<Long, Long> lastUpdater, VisibilityChangeTableConstructor<VT> changeTableConstructor, Function<M, M> modelUpdater) {
         this.dbInsertion = dbInsertion;
         this.lastUpdater = lastUpdater;
         this.changeTableConstructor = changeTableConstructor;
         this.modelUpdater = modelUpdater;
     }
 
-    public void changeVisibility(M model, Visibility newVisibility, String comment) {
-        if (model.getVisibility() == newVisibility) return;
+    public M changeVisibility(M model, Visibility newVisibility, String comment) {
+        if (model.getVisibility() == newVisibility) return model;
 
         lastUpdater.accept(getHangarPrincipal().getUserId(), model.getId());
 
         dbInsertion.accept(changeTableConstructor.create(getHangarPrincipal().getUserId(), comment, newVisibility, model.getId()));
 
         model.setVisibility(newVisibility);
-        modelUpdater.accept(model);
+        return modelUpdater.apply(model);
     }
 
     public final M checkVisibility(@Nullable M model) {
@@ -77,11 +78,11 @@ public abstract class VisibilityService<M extends Table & ModelVisible & Project
         }
 
         @Override
-        public void changeVisibility(ProjectTable model, Visibility newVisibility, String comment) {
+        public ProjectTable changeVisibility(ProjectTable model, Visibility newVisibility, String comment) {
             Visibility oldVis = model.getVisibility();
             // TODO add logging for visibility for versions and move this to the abstract class
-            super.changeVisibility(model, newVisibility, comment);
             userActionLogService.project(LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(model.getId())), newVisibility.getName(), oldVis.getName());
+            return super.changeVisibility(model, newVisibility, comment);
         }
     }
 

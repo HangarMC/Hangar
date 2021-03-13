@@ -1,16 +1,20 @@
 <template>
     <v-row>
-        <v-col v-if="!$fetchState.pending" cols="12" md="7">
+        <v-col cols="12" md="7">
             <h1>{{ $t('notifications.title') }}</h1>
             <v-select v-model="filters.notification" :items="filter"></v-select>
-            <v-btn v-if="filteredNotifications.length && filters.notification === 'unread'">{{ $t('notifications.readAll') }}</v-btn>
-            <v-list v-if="filteredNotifications.length">
+            <v-btn v-if="filteredNotifications.length && filters.notification === 'unread'" color="info" text @click.stop="markAllAsRead">{{
+                $t('notifications.readAll')
+            }}</v-btn>
+            <v-list v-if="filteredNotifications.length" class="mt-2">
                 <v-list-item v-for="notification in filteredNotifications" :key="notification.id">
                     <v-list-item-title>
                         {{ $t(notification.message[0], notification.message.slice(1)) }}
                     </v-list-item-title>
                     <v-list-item-action v-if="!notification.read">
-                        <v-icon @click="markNotificationRead(notification)">mdi-check</v-icon>
+                        <v-btn icon class="success" @click.stop="markNotificationRead(notification)">
+                            <v-icon>mdi-check</v-icon>
+                        </v-btn>
                     </v-list-item-action>
                 </v-list-item>
             </v-list>
@@ -46,7 +50,6 @@
 </template>
 
 <script lang="ts">
-import remove from 'lodash-es/remove';
 import { Component, Vue } from 'nuxt-property-decorator';
 import { HangarNotification, Invite, Invites } from 'hangar-internal';
 import { LoggedIn } from '~/utils/perms';
@@ -103,14 +106,26 @@ export default class NotificationsPage extends Vue {
         ];
     }
 
-    markNotificationRead(notification: HangarNotification) {
+    markAllAsRead() {
+        this.notifications
+            .filter((n) => !n.read)
+            .forEach((n) => {
+                this.markNotificationRead(n, false);
+            });
+    }
+
+    markNotificationRead(notification: HangarNotification, router: boolean = true) {
         this.$api
             .requestInternal(`notifications/${notification.id}`, true, 'post')
             .then(() => {
-                remove(this.notifications, (n: HangarNotification) => n.id === notification.id);
-                if (notification.action) {
+                this.$delete(
+                    this.notifications,
+                    this.notifications.findIndex((n) => n.id === notification.id)
+                );
+                if (notification.action && router) {
                     this.$router.push(notification.action);
                 }
+                this.$auth.refreshUser();
             })
             .catch(() => {
                 this.$util.error('Could not mark as read');

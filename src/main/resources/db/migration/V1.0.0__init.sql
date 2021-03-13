@@ -508,7 +508,9 @@ CREATE TABLE project_version_reviews
         CONSTRAINT project_version_reviews_user_id_fkey
             REFERENCES users
             ON DELETE CASCADE,
-    ended_at timestamp with time zone
+    ended_at timestamp with time zone,
+    CONSTRAINT project_version_reviews_unique
+        UNIQUE (version_id, user_id)
 );
 
 CREATE TABLE project_version_review_messages
@@ -522,6 +524,7 @@ CREATE TABLE project_version_review_messages
             REFERENCES project_version_reviews
             ON DELETE CASCADE,
     message text NOT NULL,
+    args jsonb NOT NULL,
     action bigint NOT NULL
 );
 

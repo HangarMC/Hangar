@@ -1,4 +1,4 @@
-import { Component, Prop, Vue, Watch } from 'nuxt-property-decorator';
+import { Component, mixins, Prop, Vue, Watch } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
 import { HangarProject, HangarVersion, IPlatform, ProjectPage } from 'hangar-internal';
 import MarkdownEditor from '~/components/MarkdownEditor.vue';
@@ -88,7 +88,10 @@ export class HangarModal extends Vue {
 }
 
 @Component
-export class HangarFormModal extends HangarModal {
+export class HangarForm extends Vue {
     loading: boolean = false;
     validForm: boolean = false;
 }
+
+@Component
+export class HangarFormModal extends mixins(HangarModal, HangarForm) {}

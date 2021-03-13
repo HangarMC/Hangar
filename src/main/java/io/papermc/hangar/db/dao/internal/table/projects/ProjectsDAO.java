@@ -23,10 +23,11 @@ public interface ProjectsDAO {
             "values (:now, :name, :slug, :ownerName,:ownerId, :category, :description, :visibility, :homepage, :issues, :source, :support, :keywords, :licenseName, :licenseUrl)")
     ProjectTable insert(@BindBean ProjectTable project);
 
+    @GetGeneratedKeys
     @SqlUpdate("UPDATE projects SET name = :name, slug = :slug, category = :category, keywords = :keywords, issues = :issues, source = :source, " +
             "license_name = :licenseName, license_url = :licenseUrl, forum_sync = :forumSync, description = :description, visibility = :visibility, " +
             "notes = :notes, support = :support, homepage = :homepage WHERE id = :id")
-    void update(@BindBean ProjectTable project);
+    ProjectTable update(@BindBean ProjectTable project);
 
     @SqlUpdate("DELETE FROM projects WHERE id = :id")
     void delete(@BindBean ProjectTable project);

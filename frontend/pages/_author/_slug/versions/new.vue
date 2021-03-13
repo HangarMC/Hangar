@@ -201,7 +201,7 @@
             <v-btn v-if="!pendingVersion" color="primary" :disabled="!canCreate" :loading="loading.create" @click="createPendingVersion">
                 {{ $t('general.continue') }}
             </v-btn>
-            <v-btn v-else color="primary" :disabled="!validForm" @click="createVersion">{{ $t('general.create') }}</v-btn>
+            <v-btn v-else color="primary" :disabled="!validForm" :loading="loading.submit" @click="createVersion">{{ $t('general.create') }}</v-btn>
         </v-card-actions>
     </v-card>
 </template>
@@ -314,6 +314,7 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
             if (!this.$refs.newVersionForm.validate()) {
                 return;
             }
+            this.loading.submit = true;
             this.pendingVersion.description = this.$refs.editor.rawEdited;
             this.pendingVersion.channelColor = this.currentChannel!.color;
             this.pendingVersion.channelNonReviewed = this.currentChannel!.nonReviewed;
@@ -334,7 +335,10 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
                 .then(() => {
                     this.$router.push(`/${this.$route.params.author}/${this.$route.params.slug}/versions`);
                 })
-                .catch(this.$util.handleRequestError);
+                .catch(this.$util.handleRequestError)
+                .finally(() => {
+                    this.loading.submit = false;
+                });
         }
     }
 

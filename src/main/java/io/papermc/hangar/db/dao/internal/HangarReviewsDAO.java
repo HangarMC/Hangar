@@ -23,14 +23,16 @@ public interface HangarReviewsDAO {
             "       pvr.created_at," +
             "       pvr.ended_at," +
             "       u.name user_name," +
+            "       pvr.user_id," +
             "       pvrm.created_at hrm_created_at," +
             "       pvrm.message hrm_message," +
+            "       pvrm.args hrm_args," +
             "       pvrm.action hrm_action" +
             "   FROM project_version_reviews pvr" +
             "       JOIN users u ON pvr.user_id = u.id" +
             "       LEFT JOIN project_version_review_messages pvrm ON pvr.id = pvrm.review_id" +
             "   WHERE pvr.version_id = :versionId" +
-            "   ORDER BY pvr.created_at DESC")
+            "   ORDER BY pvr.created_at DESC, pvrm.created_at")
     List<HangarReview> getReviews(long versionId);
 
     class HangarReviewReducer implements LinkedHashMapRowReducer<Long, HangarReview> {

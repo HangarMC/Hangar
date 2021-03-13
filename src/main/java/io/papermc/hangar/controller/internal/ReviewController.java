@@ -2,7 +2,9 @@ package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
-import io.papermc.hangar.model.internal.api.requests.StringContent;
+import io.papermc.hangar.model.common.ReviewAction;
+import io.papermc.hangar.model.common.projects.ReviewState;
+import io.papermc.hangar.model.internal.api.requests.versions.ReviewMessage;
 import io.papermc.hangar.model.internal.versions.HangarReview;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
@@ -26,6 +28,7 @@ import java.util.List;
 @Controller
 @Secured("ROLE_USER")
 @RequestMapping(path = "/api/internal/reviews")
+@PermissionRequired(type = PermissionType.GLOBAL, perms = NamedPermission.REVIEWER)
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -35,17 +38,57 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @PermissionRequired(type = PermissionType.GLOBAL, perms = NamedPermission.REVIEWER)
-    @GetMapping(value = "/{versionId}/reviews", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{versionId}/reviews", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<HangarReview>> getVersionReviews(@PathVariable long versionId) {
         return ResponseEntity.ok(reviewService.getHangarReviews(versionId));
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(type = PermissionType.GLOBAL, perms = NamedPermission.REVIEWER)
-    @PostMapping("/{versionId}/reviews/start")
-    public void startVersionReview(@PathVariable long versionId, @Valid @RequestBody StringContent msg) {
-        reviewService.startReview(versionId, msg.getContent());
+    @PostMapping(path = "/{versionId}/reviews/start", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void startVersionReview(@PathVariable long versionId, @Valid @RequestBody ReviewMessage message) {
+        reviewService.startReview(versionId, message);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(path = "/{versionId}/reviews/message", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void addVersionReviewMessage(@PathVariable long versionId, @Valid @RequestBody ReviewMessage message) {
+        reviewService.addReviewMessage(versionId, message);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(path = "/{versionId}/reviews/stop", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void stopVersionReview(@PathVariable long versionId, @Valid @RequestBody ReviewMessage message) {
+        reviewService.stopReview(versionId, message);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(path = "/{versionId}/reviews/reopen", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void reopenVersionReview(@PathVariable long versionId, @Valid @RequestBody ReviewMessage message) {
+        reviewService.reopenReview(versionId, message, ReviewAction.REOPEN);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(path = "/{versionId}/reviews/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void approveVersionReview(@PathVariable long versionId, @Valid @RequestBody ReviewMessage message) {
+        reviewService.approveReview(versionId, message, ReviewState.REVIEWED, ReviewAction.APPROVE);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(path = "/{versionId}/reviews/approvePartial", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void approvePartialVersionReview(@PathVariable long versionId, @Valid @RequestBody ReviewMessage message) {
+        reviewService.approveReview(versionId, message, ReviewState.PARTIALLY_REVIEWED, ReviewAction.PARTIALLY_APPROVE);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(path = "/{versionId}/reviews/undoApproval", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void undoApproval(@PathVariable long versionId, @Valid @RequestBody ReviewMessage message) {
+        reviewService.undoApproval(versionId, message);
     }
 }

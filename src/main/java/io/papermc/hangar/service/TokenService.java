@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import io.papermc.hangar.controller.utils.CookieUtils;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.auth.UserRefreshTokenDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -16,7 +15,9 @@ import io.papermc.hangar.security.HangarPrincipal;
 import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.internal.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +49,7 @@ public class TokenService extends HangarService {
 
     public String createTokenForUser(UserTable userTable) {
         UserRefreshToken userRefreshToken = userRefreshTokenDAO.insert(new UserRefreshToken(userTable.getId(), UUID.randomUUID(), UUID.randomUUID()));
-        response.addCookie(CookieUtils.builder(SecurityConfig.AUTH_NAME_REFRESH_COOKIE, userRefreshToken.getToken().toString()).withComment("Refresh token for a JWT").setPath("/").setSecure(hangarConfig.security.isSecure()).setMaxAge((int) hangarConfig.security.getRefreshTokenExpiry().toSeconds()).build());
+        response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(SecurityConfig.AUTH_NAME_REFRESH_COOKIE, userRefreshToken.getToken().toString()).path("/").secure(hangarConfig.security.isSecure()).maxAge(hangarConfig.security.getRefreshTokenExpiry().toSeconds()).sameSite("Strict").build().toString());
         return _newToken(userTable, userRefreshToken);
     }
 

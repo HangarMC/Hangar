@@ -17,6 +17,9 @@ const msgs: LocaleMessageObject = {
         add: 'Add',
         name: 'Name',
         link: 'Link',
+        send: 'Send',
+        message: 'Message',
+        refresh: 'Refresh',
     },
     hangar: {
         projectSearch: {
@@ -351,6 +354,9 @@ const msgs: LocaleMessageObject = {
             all: 'You have no notifications.',
             invites: 'You have no invites',
         },
+        project: {
+            reviewed: '{0} {1} has been reviewed and is approved',
+        },
     },
     visibility: {
         notice: {
@@ -362,6 +368,11 @@ const msgs: LocaleMessageObject = {
         },
         name: {
             new: 'New',
+        },
+        changes: {
+            version: {
+                reviewed: 'due to approved reviews',
+            },
         },
     },
     author: {
@@ -421,14 +432,40 @@ const msgs: LocaleMessageObject = {
         removeFromQueue: 'Remove from queue',
         projectPage: 'Project Page',
         downloadFile: 'Download File',
-        startReview: 'Start review',
-        stopReview: 'Stop review',
+        startReview: 'Start Review',
+        stopReview: 'Stop Review',
         approve: 'Approve',
         approvePartial: 'Approve Partial',
         notUnderReview: 'This version is not under review',
         reviewMessage: 'Review Message',
         addMessage: 'Add Message',
-        undoApproval: 'Undo approval',
+        reopenReview: 'Reopen Review',
+        undoApproval: 'Undo Approval',
+        hideClosed: 'Hide all finished reviews',
+        error: {
+            noReviewStarted: 'There is no unfinished review to add a message to',
+            notCorrectUser: 'You are not the user that started this review',
+            cannotReopen: 'Unable to reopen this review',
+            onlyOneReview: 'Cannot have more than 1 review for a version',
+            badUndo: 'Can only undo approval after an approval',
+        },
+        presets: {
+            message: '{msg}',
+            start: '{name} started a review',
+            stop: '{name} stopped a review: {msg}',
+            reopen: '{name} reopened a review',
+            approve: '{name} approved this version',
+            approvePartial: '{name} partially approved this version',
+            undoApproval: '{name} has undone their approval',
+            reviewTitle: "{name}'s Review",
+        },
+        state: {
+            ongoing: 'Ongoing',
+            stopped: 'Stopped',
+            approved: 'Approved',
+            partiallyApproved: 'Partially Approved',
+            lastUpdate: 'Last Update: {0}',
+        },
     },
     message: 'Good morning!',
 };

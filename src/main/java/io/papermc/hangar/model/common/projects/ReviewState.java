@@ -4,20 +4,22 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum ReviewState {
-    UNREVIEWED("unreviewed"),
+    UNREVIEWED("unreviewed", "Unreviewed"),
 
-    REVIEWED("reviewed"),
+    REVIEWED("reviewed", "Reviewed"),
 
-    UNDER_REVIEW("under_review"),
+    UNDER_REVIEW("under_review", "Under Review"),
 
-    BACKLOG("backlog"),
+    BACKLOG("backlog", "Backlog"),
 
-    PARTIALLY_REVIEWED("partially_reviewed");
+    PARTIALLY_REVIEWED("partially_reviewed", "Partially Reviewed");
 
     private final String apiName;
+    private final String frontendName;
 
-    ReviewState(String apiName) {
+    ReviewState(String apiName, String frontendName) {
         this.apiName = apiName;
+        this.frontendName = frontendName;
     }
 
     @Override
@@ -28,6 +30,10 @@ public enum ReviewState {
 
     public String getApiName() {
         return apiName;
+    }
+
+    public String getFrontendName() {
+        return frontendName;
     }
 
     public boolean isChecked() {
