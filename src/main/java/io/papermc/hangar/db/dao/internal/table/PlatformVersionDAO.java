@@ -35,8 +35,7 @@ public interface PlatformVersionDAO {
     @SqlQuery("SELECT platform, (array_agg(version ORDER BY string_to_array(version, '.')::INT[])) versions FROM platform_versions GROUP BY platform")
     TreeMap<Platform, List<String>> getVersions();
 
-    // TODO lexicographic sorting?
-    @SqlQuery("SELECT version FROM platform_versions WHERE platform = :platform ORDER BY created_at DESC")
+    @SqlQuery("SELECT version FROM platform_versions WHERE platform = :platform ORDER BY string_to_array(version, '.')::INT[]")
     List<String> getVersionsForPlatform(@EnumByOrdinal Platform platform);
 
     @SqlQuery("SELECT pv.*" +
