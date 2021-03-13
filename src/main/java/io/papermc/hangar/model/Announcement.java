@@ -1,4 +1,4 @@
-package io.papermc.hangar.modelold;
+package io.papermc.hangar.model;
 
 import java.util.Objects;
 import java.util.StringJoiner;

@@ -1,5 +1,7 @@
 package io.papermc.hangar.model.common.roles;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Permission;
@@ -8,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ProjectRole implements Role<ProjectRoleTable> {
 
     PROJECT_SUPPORT("Project_Support", 22, Permission.IsProjectMember, "Support", Color.TRANSPARENT),

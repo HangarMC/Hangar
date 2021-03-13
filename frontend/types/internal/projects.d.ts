@@ -1,6 +1,6 @@
 declare module 'hangar-internal' {
     import { Table, FlagReason } from 'hangar-internal';
-    import { Project, User } from 'hangar-api';
+    import { Project, Role, User } from 'hangar-api';
 
     interface ProjectOwner {
         id: number;
@@ -25,9 +25,19 @@ declare module 'hangar-internal' {
         children: HangarProjectPage[];
     }
 
+    interface ProjectRole extends Table {
+        accepted: true;
+        role: Role;
+    }
+
+    interface ProjectMember {
+        user: User;
+        role: ProjectRole;
+    }
+
     interface HangarProject extends Project, Table {
         owner: ProjectOwner;
-        members: object[];
+        members: ProjectMember[];
         lastVisibilityChangeComment: string;
         lastVisibilityChangeUserName: string;
         info: HangarProjectInfo;

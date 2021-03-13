@@ -29,10 +29,6 @@ export default class UserAvatar extends Vue {
     @Prop()
     clazz!: PropType<'user-avatar-md' | 'user-avatar-sm' | 'user-avatar-xs'>;
 
-    // attribute map // TODO implement
-    @Prop()
-    attr!: Object;
-
     @Prop()
     href!: String;
 

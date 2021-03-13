@@ -215,7 +215,6 @@ export default class Header extends Vue {
 
 <style lang="scss">
 .v-badge--bordered.header-badge .v-badge__badge::after {
-    // TODO variable for header background
     border-color: #272727 !important;
 }
 </style>

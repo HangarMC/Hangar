@@ -117,7 +117,6 @@ export default class MarkdownEditor extends Vue {
 
 <style lang="scss" scoped>
 .page-btn {
-    // TODO dynamic based on which buttons are shown
     left: 0;
 
     &.edit-btn,

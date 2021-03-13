@@ -3,8 +3,7 @@
         <v-container>
             <v-row align="center" justify="center">
                 <v-col cols="12" class="d-flex justify-center">
-                    By using this site you're accepting our <a href="#"> Terms of Service</a
-                    ><!-- todo tos link -->
+                    By using this site you're accepting our <a href="https://papermc.io/community-guidelines"> Terms of Service</a>
                 </v-col>
             </v-row>
 

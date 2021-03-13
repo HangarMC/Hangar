@@ -1,5 +1,6 @@
 package io.papermc.hangar.model.db.roles;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.Table;
@@ -9,6 +10,7 @@ import java.time.OffsetDateTime;
 public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>> extends Table implements IRoleTable<R> {
 
     protected final long userId;
+    @JsonFormat(shape = JsonFormat.Shape.OBJECT)
     protected final R role;
     protected boolean accepted;
 

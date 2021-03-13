@@ -191,10 +191,13 @@
             </v-card>
         </v-col>
         <v-col cols="12" md="4">
-            <!-- todo memberlist (like index page -->
             <v-card>
-                <v-card-title>Members</v-card-title>
-                <v-card-text>...</v-card-text>
+                <v-card-title>
+                    {{ $t('project.members') }}
+                </v-card-title>
+                <v-card-text>
+                    <UserSelectionForm :users="project.members" />
+                </v-card-text>
             </v-card>
         </v-col>
     </v-row>
@@ -202,11 +205,16 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
+import { HangarProject } from 'hangar-internal';
+import { Prop } from 'vue-property-decorator';
 import { ProjectPermission } from '~/utils/perms';
 import { NamedPermission, ProjectCategory } from '~/types/enums';
 import { RootState } from '~/store';
-
-@Component
+import MemberList from '~/components/MemberList.vue';
+import UserSelectionForm from '~/components/UserSelectionForm.vue';
+@Component({
+    components: { UserSelectionForm, MemberList },
+})
 @ProjectPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)
 export default class ProjectManagePage extends Vue {
     apiKey = '';
@@ -227,6 +235,9 @@ export default class ProjectManagePage extends Vue {
         },
         category: ProjectCategory.UNDEFINED,
     };
+
+    @Prop()
+    project!: HangarProject;
 
     get categoryIcon() {
         return (this.$store.state as RootState).projectCategories.get(this.form.category)?.icon;

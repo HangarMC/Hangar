@@ -93,14 +93,12 @@
                 <v-col cols="12">
                     <ProjectPageList :project="project" />
                 </v-col>
-                <!-- todo member list -->
                 <v-col cols="12">
-                    <MemberList />
-                    <!--                    <MemberList-->
-                    <!--                        :filtered-members-prop="filteredMembers"-->
-                    <!--                        :can-manage-members="canManageMembers"-->
-                    <!--                        :settings-call="ROUTES.parse('PROJECTS_SHOW_SETTINGS', project.ownerName, project.slug)"-->
-                    <!--                    ></MemberList>-->
+                    <MemberList
+                        :members="project.members"
+                        :can-edit="$perms.canManageSubjectMembers"
+                        :manage-url="`/${project.namespace.owner}/${project.namespace.slug}/manage`"
+                    />
                 </v-col>
             </v-row>
         </v-col>
@@ -109,8 +107,9 @@
 
 <script lang="ts">
 import { Component } from 'nuxt-property-decorator';
-import { ProjectPage } from 'hangar-internal';
+import { HangarProject, ProjectPage } from 'hangar-internal';
 import { Context } from '@nuxt/types';
+import { Prop } from 'vue-property-decorator';
 import MarkdownEditor from '~/components/MarkdownEditor.vue';
 import Tag from '~/components/Tag.vue';
 import DonationModal from '~/components/donation/DonationModal.vue';
@@ -124,6 +123,9 @@ import ProjectPageList from '~/components/projects/ProjectPageList.vue';
     components: { ProjectPageList, NewPageModal, Markdown, MemberList, DonationModal, MarkdownEditor, Tag },
 })
 export default class DocsPage extends DocPageMixin {
+    @Prop()
+    project!: HangarProject;
+
     async asyncData({ $api, params, $util }: Context) {
         const page = await $api.requestInternal<ProjectPage>(`pages/page/${params.author}/${params.slug}`, false).catch<any>($util.handlePageRequestError);
         return { page };

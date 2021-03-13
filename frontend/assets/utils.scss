@@ -7,3 +7,8 @@
 @mixin basic-border() {
   border: 1px solid $lighter;
 }
+
+.flex-right {
+  margin-left: auto;
+  order: 2;
+}

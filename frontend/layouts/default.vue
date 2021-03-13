@@ -3,7 +3,9 @@
         <Header />
         <v-main>
             <v-container>
-                <Announcement v-for="(announcement, idx) in announcements" :key="idx" :announcement="announcement" />
+                <template v-if="announcements">
+                    <Announcement v-for="(announcement, idx) in announcements" :key="idx" :announcement="announcement" />
+                </template>
 
                 <DonationResult />
                 <nuxt />
@@ -33,13 +35,10 @@ import DonationResult from '~/components/donation/DonationResult.vue';
 })
 export default class DefaultLayout extends Vue {
     title = 'Hangar';
-    // TODO fetch from server
-    announcements = [
-        {
-            text:
-                'This is a staging server for testing purposes. Data could be deleted at any time. email confirmations are disabled. If you wanna help test, sneak into #hangar-dev',
-            color: 'red lighten-1',
-        },
-    ];
+    announcements: Announcement[] = [];
+
+    async fetch() {
+        this.announcements = await this.$api.requestInternal<Announcement[]>('data/announcements', false).catch<any>(this.$util.handlePageRequestError);
+    }
 }
 </script>
