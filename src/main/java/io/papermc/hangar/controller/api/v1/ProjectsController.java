@@ -4,6 +4,7 @@ import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.controller.api.v1.interfaces.IProjectsController;
 import io.papermc.hangar.exceptions.InternalHangarException;
 import io.papermc.hangar.model.api.PaginatedResult;
+import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.project.DayProjectStats;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.ProjectMember;
@@ -54,6 +55,16 @@ public class ProjectsController extends HangarController implements IProjectsCon
     @Override
     public ResponseEntity<Map<String, DayProjectStats>> getProjectStats(String author, String slug, @NotNull OffsetDateTime fromDate, @NotNull OffsetDateTime toDate) {
         return ResponseEntity.ok(projectsApiService.getProjectStats(author, slug, fromDate, toDate));
+    }
+
+    @Override
+    public ResponseEntity<PaginatedResult<User>> getProjectStargazers(String author, String slug, @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(projectsApiService.getProjectStargazers(author, slug, pagination));
+    }
+
+    @Override
+    public ResponseEntity<PaginatedResult<User>> getProjectWatchers(String author, String slug, @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(projectsApiService.getProjectWatchers(author, slug, pagination));
     }
 
     // TODO move to internal project api

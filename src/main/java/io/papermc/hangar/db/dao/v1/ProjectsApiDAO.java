@@ -1,6 +1,7 @@
 package io.papermc.hangar.db.dao.v1;
 
 import io.papermc.hangar.db.mappers.PromotedVersionMapper;
+import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.project.DayProjectStats;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.ProjectMember;
@@ -113,6 +114,56 @@ public interface ProjectsApiDAO {
             "   WHERE p.slug = :slug AND p.owner_name = :author " +
             "   GROUP BY u.name")
     long getProjectMembersCount(String author, String slug);
+
+    @RegisterConstructorMapper(User.class)
+    @SqlQuery("SELECT u.id," +
+              "       u.created_at," +
+              "       u.name," +
+              "       u.tagline," +
+              "       u.join_date," +
+              "       array_agg(r.name) roles," +
+              "       -1 as projectCount" + // no need to query this
+              "   FROM projects p " +
+              "       JOIN project_stars ps ON p.id = ps.project_id " +
+              "       JOIN users u ON ps.user_id = u.id " +
+              "       JOIN user_global_roles ugr ON u.id = ugr.user_id" +
+              "       JOIN roles r ON ugr.role_id = r.id" +
+              "   WHERE p.slug = :slug AND p.owner_name = :author " +
+              "   GROUP BY u.id" +
+              "   LIMIT :limit OFFSET :offset")
+    List<User> getProjectStargazers(String author, String slug, long limit, long offset);
+
+    @SqlQuery("SELECT count(ps.user_id) " +
+              "   FROM projects p " +
+              "       JOIN project_stars ps ON p.id = ps.project_id " +
+              "   WHERE p.slug = :slug AND p.owner_name = :author " +
+              "   GROUP BY ps.user_id")
+    long getProjectStargazersCount(String author, String slug);
+
+    @RegisterConstructorMapper(User.class)
+    @SqlQuery("SELECT u.id," +
+              "       u.created_at," +
+              "       u.name," +
+              "       u.tagline," +
+              "       u.join_date," +
+              "       array_agg(r.name) roles," +
+              "       -1 as projectCount" + // no need to query this
+              "   FROM projects p " +
+              "       JOIN project_watchers pw ON p.id = pw.project_id " +
+              "       JOIN users u ON pw.user_id = u.id " +
+              "       JOIN user_global_roles ugr ON u.id = ugr.user_id" +
+              "       JOIN roles r ON ugr.role_id = r.id" +
+              "   WHERE p.slug = :slug AND p.owner_name = :author" +
+              "   GROUP BY u.id" +
+              "   LIMIT :limit OFFSET :offset")
+    List<User> getProjectWatchers(String author, String slug, long limit, long offset);
+
+    @SqlQuery("SELECT count(pw.user_id) " +
+              "   FROM projects p " +
+              "       JOIN project_watchers pw ON p.id = pw.project_id " +
+              "   WHERE p.slug = :slug AND p.owner_name = :author " +
+              "   GROUP BY pw.user_id")
+    long getProjectWatchersCount(String author, String slug);
 
     @KeyColumn("dateKey")
     @RegisterConstructorMapper(DayProjectStats.class)

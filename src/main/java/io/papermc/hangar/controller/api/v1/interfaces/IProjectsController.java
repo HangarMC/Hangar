@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller.api.v1.interfaces;
 
 import io.papermc.hangar.model.api.PaginatedResult;
+import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.project.DayProjectStats;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.ProjectMember;
@@ -107,5 +108,43 @@ public interface IProjectsController {
                                                                  @ApiParam("The slug of the project to return") @PathVariable String slug,
                                                                  @NotNull @ApiParam(value = "The first date to include in the result", required = true) @RequestParam OffsetDateTime fromDate,
                                                                  @NotNull @ApiParam(value = "The last date to include in the result", required = true) @RequestParam OffsetDateTime toDate
+    );
+
+    @ApiOperation(
+            value = "Returns the stargazers of a project",
+            nickname = "getProjectStargazers",
+            notes = "Returns the stargazers of a project. Requires the `view_public_info` permission.",
+            authorizations = @Authorization(value = "Session"),
+            tags = "Projects"
+    )
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Ok"),
+            @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
+            @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
+    })
+    @GetMapping("/projects/{author}/{slug}/stargazers")
+    ResponseEntity<PaginatedResult<User>> getProjectStargazers(
+            @ApiParam("The author of the project to return stargazers for") @PathVariable("author") String author,
+            @ApiParam("The slug of the project to return") @PathVariable("slug") String slug,
+            @ApiParam("Pagination information") @NotNull RequestPagination pagination
+    );
+
+    @ApiOperation(
+            value = "Returns the watchers of a project",
+            nickname = "getProjectWatchers",
+            notes = "Returns the watchers of a project. Requires the `view_public_info` permission.",
+            authorizations = @Authorization(value = "Session"),
+            tags = "Projects"
+    )
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Ok"),
+            @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
+            @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
+    })
+    @GetMapping("/projects/{author}/{slug}/watchers")
+    ResponseEntity<PaginatedResult<User>> getProjectWatchers(
+            @ApiParam("The author of the project to return watchers for") @PathVariable("author") String author,
+            @ApiParam("The slug of the project to return") @PathVariable("slug") String slug,
+            @ApiParam("Pagination information") @NotNull RequestPagination pagination
     );
 }

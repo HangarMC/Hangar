@@ -65,7 +65,9 @@ const msgs: LocaleMessageObject = {
     },
     project: {
         stargazers: 'Stargazers',
+        noStargazers: 'There are no stargazers on this project yet :/',
         watchers: 'Watchers',
+        noWatchers: 'There are no watchers on this project yet :/',
         category: {
             info: 'Category: {0}',
             admin_tools: 'Admin Tools',
