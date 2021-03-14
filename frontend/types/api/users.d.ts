@@ -23,4 +23,8 @@ declare module 'hangar-api' {
         identifier: string;
         permissions: NamedPermission[];
     }
+
+    interface Organization extends Model, Named {
+        owner: User;
+    }
 }

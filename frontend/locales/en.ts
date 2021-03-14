@@ -387,6 +387,9 @@ const msgs: LocaleMessageObject = {
         memberSince: 'A member since {0}',
         numProjects: '{0} project(s)',
         addTagline: 'Add a tagline',
+        noOrgs: '{0} is not part of any organizations. 😢',
+        noWatching: '{0} has not starred any projects. 😢',
+        noStarred: '{0} is not watching any projects. 😢',
     },
     linkout: {
         title: 'External Link Warning',

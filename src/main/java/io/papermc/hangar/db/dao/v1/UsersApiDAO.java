@@ -42,6 +42,7 @@ public interface UsersApiDAO {
             " ORDER BY :sortOrder LIMIT :limit OFFSET :offset")
     List<ProjectCompact> getUserStarred(String user, @Define boolean canSeeHidden, @Define Long userId, String sortOrder, long limit, long offset);
 
+    @UseStringTemplateEngine
     @SqlQuery("SELECT count(*)" +
             " FROM users u " +
             "     JOIN project_stars ps ON u.id = ps.user_id" +
@@ -78,6 +79,7 @@ public interface UsersApiDAO {
             " ORDER BY :sortOrder LIMIT :limit OFFSET :offset")
     List<ProjectCompact> getUserWatching(String user, @Define boolean canSeeHidden, @Define Long userId, String sortOrder, long limit, long offset);
 
+    @UseStringTemplateEngine
     @SqlQuery("SELECT count(*)" +
             " FROM users u " +
             "     JOIN project_watchers pw ON u.id = pw.user_id" +
