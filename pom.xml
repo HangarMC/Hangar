@@ -35,7 +35,7 @@
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
 
         <apache-commons-lang.version>3.11</apache-commons-lang.version>
-        <jwt.version>3.12.1</jwt.version>
+        <jwt.version>3.14.0</jwt.version>
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
