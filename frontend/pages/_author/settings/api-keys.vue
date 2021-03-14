@@ -2,16 +2,16 @@
     <UserProfile :user="user">
         <v-col cols="12" md="6">
             <h2>{{ $t('apiKeys.createNew') }}</h2>
-            <v-row>
-                <v-col v-for="perm in perms" :key="perm.frontendName" cols="6">
-                    <v-checkbox v-model="selectedPerms" :label="perm.frontendName" :value="perm.value"> </v-checkbox>
-                </v-col>
-            </v-row>
             <v-text-field v-model="name" :label="$t('apiKeys.name')" type="text">
                 <template #append-outer>
                     <v-btn @click="create">{{ $t('apiKeys.createKey') }}</v-btn>
                 </template>
             </v-text-field>
+            <v-row>
+                <v-col v-for="perm in perms" :key="perm.frontendName" cols="6">
+                    <v-checkbox v-model="selectedPerms" :label="perm.frontendName" :value="perm.value" dense hide-details> </v-checkbox>
+                </v-col>
+            </v-row>
         </v-col>
         <v-col cols="12" md="6">
             <h2>{{ $t('apiKeys.existing') }}</h2>
@@ -90,9 +90,6 @@ export default class AuthorSettingsApiKeysPage extends Vue {
 <style lang="scss" scoped>
 .v-input--checkbox {
     margin-top: 0;
-}
-.v-messages {
-    min-height: 0;
 }
 .col {
     padding-top: 0;
