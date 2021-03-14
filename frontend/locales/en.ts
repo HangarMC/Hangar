@@ -384,7 +384,7 @@ const msgs: LocaleMessageObject = {
         stars: 'Stars',
         orgs: 'Organizations',
         viewOnForums: 'View on forums ',
-        memberSince: 'A member since {}',
+        memberSince: 'A member since {0}',
         numProjects: '{0} project(s)',
         addTagline: 'Add a tagline',
     },

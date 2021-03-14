@@ -30,7 +30,7 @@
             <v-col cols="2">
                 <v-subheader>{{ $t('author.numProjects', [user.projectCount]) }}</v-subheader>
                 <v-subheader>{{ $t('author.memberSince', [$util.prettyDate(user.joinDate)]) }}</v-subheader>
-                <a :href="$util.forumUrl(user.name)">{{ $t('author.viewForums') }}<v-icon>mdi-open-in-new</v-icon></a>
+                <a :href="$util.forumUrl(user.name)">{{ $t('author.viewOnForums') }}<v-icon>mdi-open-in-new</v-icon></a>
             </v-col>
         </v-row>
         <v-divider />
