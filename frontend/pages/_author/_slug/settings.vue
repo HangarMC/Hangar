@@ -204,19 +204,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
-import { HangarProject } from 'hangar-internal';
-import { Prop } from 'vue-property-decorator';
+import { Component } from 'nuxt-property-decorator';
 import { ProjectPermission } from '~/utils/perms';
 import { NamedPermission, ProjectCategory } from '~/types/enums';
 import { RootState } from '~/store';
 import MemberList from '~/components/MemberList.vue';
 import UserSelectionForm from '~/components/UserSelectionForm.vue';
+import { HangarProjectMixin } from '~/components/mixins';
 @Component({
     components: { UserSelectionForm, MemberList },
 })
 @ProjectPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)
-export default class ProjectManagePage extends Vue {
+export default class ProjectManagePage extends HangarProjectMixin {
     apiKey = '';
     newName = '';
     form = {
@@ -235,9 +234,6 @@ export default class ProjectManagePage extends Vue {
         },
         category: ProjectCategory.UNDEFINED,
     };
-
-    @Prop()
-    project!: HangarProject;
 
     get categoryIcon() {
         return (this.$store.state as RootState).projectCategories.get(this.form.category)?.icon;
