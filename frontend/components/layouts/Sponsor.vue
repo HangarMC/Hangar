@@ -10,9 +10,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
+import { Component, Prop, Vue } from 'nuxt-property-decorator';
 import { Sponsor } from 'hangar-api';
-import { Prop } from 'vue-property-decorator';
 
 @Component
 export default class HangarSponsor extends Vue {

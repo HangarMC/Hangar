@@ -9,8 +9,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
-import { Prop } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'nuxt-property-decorator';
 
 @Component
 export default class StepperStepContent extends Vue {

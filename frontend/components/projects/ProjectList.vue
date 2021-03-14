@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'nuxt-property-decorator';
 import { PaginatedResult, Project } from 'hangar-api';
 import { PropType } from 'vue';
 import { DataOptions } from 'vuetify';

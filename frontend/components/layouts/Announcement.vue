@@ -5,8 +5,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
-import { Prop } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'nuxt-property-decorator';
 import { Announcement as AnnouncementObject } from 'hangar-api';
 import { PropType } from 'vue';
 

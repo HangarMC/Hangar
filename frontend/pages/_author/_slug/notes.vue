@@ -24,8 +24,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
-import { Prop } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'nuxt-property-decorator';
 import { Project } from 'hangar-api';
 import { Note } from 'hangar-internal';
 

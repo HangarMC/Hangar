@@ -13,8 +13,7 @@
 
 <script lang="ts">
 import { PropType } from 'vue';
-import { Component, Vue } from 'nuxt-property-decorator';
-import { Prop } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'nuxt-property-decorator';
 import { NuxtError } from '@nuxt/types';
 
 @Component({

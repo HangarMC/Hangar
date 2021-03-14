@@ -92,13 +92,16 @@ public class ReviewService extends HangarService {
     public void approveReview(long versionId, ReviewMessage msg, ReviewState reviewState, ReviewAction reviewAction) {
         ProjectVersionReviewTable latestUnfinishedReview = getLatestUnfinishedReviewAndValidate(versionId);
         latestUnfinishedReview.setEndedAt(OffsetDateTime.now());
-        if (projectVersionReviewsDAO.getUnfinishedReviews(versionId).size() == 1) { // only unfinished is the one about to be finished
+        boolean isLastUnfinished = projectVersionReviewsDAO.getUnfinishedReviews(versionId).size() == 1;
+        if (isLastUnfinished) { // only unfinished is the one about to be finished
             changeVersionReviewState(versionId, reviewState, true);
         }
         projectVersionReviewsDAO.insertMessage(new ProjectVersionReviewMessageTable(latestUnfinishedReview.getId(), msg.getMessage(), new JSONB(msg.getArgs()), reviewAction));
         projectVersionReviewsDAO.update(latestUnfinishedReview);
         ProjectVersionTable projectVersionTable = projectVersionsDAO.getProjectVersionTable(versionId);
-        notificationService.notifyUsersVersionReviewed(projectVersionTable, reviewAction == ReviewAction.PARTIALLY_APPROVE);
+        if (isLastUnfinished) {
+            notificationService.notifyUsersVersionReviewed(projectVersionTable, reviewAction == ReviewAction.PARTIALLY_APPROVE);
+        }
     }
 
     public void undoApproval(long versionId, ReviewMessage msg) {

@@ -3,10 +3,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
-import { IChartistBase, IChartistData, IChartOptions } from 'chartist';
+import { Component, Prop, Vue } from 'nuxt-property-decorator';
 import * as Chartist from 'chartist';
-import { Prop } from 'vue-property-decorator';
+import { IChartistBase, IChartistData, IChartOptions } from 'chartist';
 import { PropType } from 'vue';
 
 require('chartist-plugin-legend');

@@ -15,9 +15,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
-import { Prop } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'nuxt-property-decorator';
 import { Tag } from 'hangar-api';
+
 @Component({})
 export default class DocsPage extends Vue {
     @Prop()

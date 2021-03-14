@@ -208,11 +208,10 @@ import { Component } from 'nuxt-property-decorator';
 import { ProjectPermission } from '~/utils/perms';
 import { NamedPermission, ProjectCategory } from '~/types/enums';
 import { RootState } from '~/store';
-import MemberList from '~/components/MemberList.vue';
 import UserSelectionForm from '~/components/UserSelectionForm.vue';
 import { HangarProjectMixin } from '~/components/mixins';
 @Component({
-    components: { UserSelectionForm, MemberList },
+    components: { UserSelectionForm },
 })
 @ProjectPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)
 export default class ProjectManagePage extends HangarProjectMixin {

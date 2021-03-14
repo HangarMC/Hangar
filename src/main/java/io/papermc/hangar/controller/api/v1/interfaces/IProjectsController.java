@@ -53,7 +53,7 @@ public interface IProjectsController {
             value = "Returns the members of a project",
             nickname = "getProjectMembers",
             notes = "Returns the members of a project. Requires the `view_public_info` permission.",
-            authorizations = @Authorization(value = "Session"),
+            authorizations = @Authorization("Session"),
             tags = "Projects"
     )
     @ApiResponses({
@@ -72,7 +72,7 @@ public interface IProjectsController {
             value = "Searches the projects on Hangar",
             nickname = "getProjects",
             notes = "Searches all the projects on Hangar, or for a single user. Requires the `view_public_info` permission.",
-            authorizations = @Authorization(value = "Session"),
+            authorizations = @Authorization("Session"),
             tags = "Projects"
     )
     @ApiResponses({
@@ -114,7 +114,7 @@ public interface IProjectsController {
             value = "Returns the stargazers of a project",
             nickname = "getProjectStargazers",
             notes = "Returns the stargazers of a project. Requires the `view_public_info` permission.",
-            authorizations = @Authorization(value = "Session"),
+            authorizations = @Authorization("Session"),
             tags = "Projects"
     )
     @ApiResponses({
@@ -133,7 +133,7 @@ public interface IProjectsController {
             value = "Returns the watchers of a project",
             nickname = "getProjectWatchers",
             notes = "Returns the watchers of a project. Requires the `view_public_info` permission.",
-            authorizations = @Authorization(value = "Session"),
+            authorizations = @Authorization("Session"),
             tags = "Projects"
     )
     @ApiResponses({

@@ -24,8 +24,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
-import { Prop } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
 import { TranslateResult } from 'vue-i18n';
 
