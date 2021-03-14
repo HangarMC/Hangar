@@ -471,6 +471,18 @@ const msgs: LocaleMessageObject = {
             lastUpdate: 'Last Update: {0}',
         },
     },
+    apiKeys: {
+        createNew: 'Create new key',
+        existing: 'Existing keys',
+        name: 'Name',
+        key: 'Key',
+        keyIdentifier: 'Key Identifier',
+        permissions: 'Permissions',
+        delete: 'Delete',
+        deleteKey: 'Delete Key',
+        createKey: 'Create key',
+        noKeys: 'There are no api keys yet. You can create one on the right side',
+    },
     message: 'Good morning!',
 };
 
