@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const proxyHost = process.env.proxyHost || 'http://localhost:8080';
 const authHost = process.env.authHost || 'http://localhost:8000';
+const publicHost = process.env.PUBLIC_HOST || 'http://localhost:3000';
 const host = process.env.host || 'localhost';
 
 export default {
@@ -121,5 +122,17 @@ export default {
 
     loading: {
         continuous: true,
+    },
+
+    publicRuntimeConfig: {
+        axios: {
+            browserBaseURL: publicHost,
+        },
+    },
+
+    privateRuntimeConfig: {
+        axios: {
+            baseURL: proxyHost,
+        },
     },
 } as NuxtConfig;
