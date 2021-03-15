@@ -72,7 +72,7 @@ export default class AuthorPage extends Vue {
 
     projects!: PaginatedResult<Project>;
     // todo load orgs from server
-    orgs: PaginatedResult<Organization> = { result: [] };
+    orgs: PaginatedResult<Organization> = { result: [], pagination: { offset: 0, count: 0, limit: 20 } };
     starred!: PaginatedResult<Project>;
     watching!: PaginatedResult<Project>;
 
