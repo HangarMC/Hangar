@@ -72,6 +72,7 @@ jobs:
       - name: Docker
         if: github.event_name == 'push'
         run: |
+          echo ${{ secrets.DOCKER_HOST_SSH_SIG }} > ~/.ssh/known_hosts
           cd docker/deployment
           echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u ${{ secrets.CR_USER }} --password-stdin
           docker-compose build
