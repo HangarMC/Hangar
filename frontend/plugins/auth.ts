@@ -2,6 +2,8 @@ import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
 import { User } from 'hangar-api';
 
+const publicHost = process.env.PUBLIC_HOST ? process.env.PUBLIC_HOST : 'http://localhost:3000';
+
 const createAuth = ({ app: { $cookies }, $axios, store, $api, redirect }: Context) => {
     class Auth {
         login(redirect: string): void {
@@ -10,7 +12,7 @@ const createAuth = ({ app: { $cookies }, $axios, store, $api, redirect }: Contex
                 maxAge: 120,
                 secure: process.env.NODE_ENV === 'production',
             });
-            location.replace(`/login?returnUrl=http://localhost:3000${redirect}`);
+            location.replace(`/login?returnUrl=${publicHost}${redirect}`);
         }
 
         processLogin(token: string): Promise<void> {
