@@ -127,9 +127,7 @@ export default class NotificationsPage extends Vue {
                 }
                 this.$auth.refreshUser();
             })
-            .catch(() => {
-                this.$util.error('Could not mark as read');
-            });
+            .catch(this.$util.handleRequestError);
     }
 
     updateInvite(invite: Invite, status: 'accept' | 'decline' | 'unaccept') {
@@ -139,9 +137,7 @@ export default class NotificationsPage extends Vue {
                 console.log('successful');
                 // TODO actions on save
             })
-            .catch(() => {
-                this.$util.error('Could update invite');
-            });
+            .catch(this.$util.handleRequestError);
     }
 
     async fetch() {

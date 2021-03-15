@@ -76,7 +76,7 @@ public class HangarUserController extends HangarController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void markNotificationAsRead(@PathVariable long id) {
         if (!notificationService.markNotificationAsRead(id)) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND, "No notification found");
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -102,7 +102,7 @@ public class HangarUserController extends HangarController {
     private <RT extends ExtendedRoleTable<? extends Role<RT>>, RS extends RoleService<RT, ?, ?>, MS extends MemberService<?, RT, ?, RS, ?, ?>> void updateRole(RS roleService, MS memberService,  long id, InviteStatus status) {
         RT table = roleService.getRole(id);
         if (table == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND, "Invalid role id");
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
         switch (status) {
             case DECLINE:
