@@ -486,6 +486,13 @@ const msgs: LocaleMessageObject = {
         createKey: 'Create key',
         noKeys: 'There are no api keys yet. You can create one on the right side',
     },
+    platformVersions: {
+        title: 'Configure Platform Versions',
+        platform: 'Platform',
+        versions: 'Versions',
+        addVersion: 'Add Version',
+        saveChanges: 'Save Changes',
+    },
     message: 'Good morning!',
 };
 
