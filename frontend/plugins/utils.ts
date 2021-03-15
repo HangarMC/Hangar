@@ -4,7 +4,7 @@ import { AxiosError } from 'axios';
 import filesize from 'filesize';
 // TODO fix it complaining about no type declaration file
 // @ts-ignore
-import { contrastRatio, HexToRGBA, parseHex } from 'vuetify/es5/util/colorUtils';
+// import { contrastRatio, HexToRGBA, parseHex } from 'vuetify/es5/util/colorUtils'; // TODO remove or fix
 import { HangarApiException, HangarValidationException } from 'hangar-api';
 import { HangarProject, HangarUser } from 'hangar-internal';
 import { TranslateResult } from 'vue-i18n';
@@ -110,17 +110,20 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
             return filesize(input);
         }
 
-        white = HexToRGBA(parseHex('#ffffff'));
-        black = HexToRGBA(parseHex('#000000'));
+        // TODO either fix or remove this
+        // white = HexToRGBA(parseHex('#ffffff'));
+        // black = HexToRGBA(parseHex('#000000'));
 
         isDark(hex: string): boolean {
-            const rgba = HexToRGBA(parseHex(hex));
-            return contrastRatio(rgba, this.white) > 2;
+            // const rgba = HexToRGBA(parseHex(hex));
+            // return contrastRatio(rgba, this.white) > 2;
+            return hex === null;
         }
 
         isLight(hex: string): boolean {
-            const rgba = HexToRGBA(parseHex(hex));
-            return contrastRatio(rgba, this.black) > 2;
+            // const rgba = HexToRGBA(parseHex(hex));
+            // return contrastRatio(rgba, this.black) > 2;
+            return hex === null;
         }
 
         /**
