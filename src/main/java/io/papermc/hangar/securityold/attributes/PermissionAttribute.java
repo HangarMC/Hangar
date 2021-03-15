@@ -6,6 +6,10 @@ import org.springframework.util.Assert;
 
 public abstract class PermissionAttribute implements ConfigAttribute {
 
+    public static final String GLOBAL_TYPE = "GLOBAL";
+    public static final String PROJECT_TYPE = "PROJECT";
+    public static final String ORG_TYPE = "ORGANIZATION";
+
     private final NamedPermission permission;
     private final String type;
 
@@ -46,8 +50,4 @@ public abstract class PermissionAttribute implements ConfigAttribute {
     public String toString() {
         return this.permission.toString();
     }
-
-    public static final String GLOBAL_TYPE = "GLOBAL";
-    public static final String PROJECT_TYPE = "PROJECT";
-    public static final String ORG_TYPE = "ORGANIZATION";
 }
