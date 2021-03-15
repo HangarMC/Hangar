@@ -11,8 +11,8 @@ It may or may not allow you to log in, please don't create too much of a mess so
 
 ## Contributing
 ## Hangar
-The project consists out of 4 parts. The frontend(Nuxt and Vue), the backend (Spring Boot), the database (PostgreSQL) and an optional [HangarAuth](https://github.com/MiniDigger/HangarAuth) project.
-Which will be discussed below. 
+The project consists out of 4 parts. The frontend(Nuxt and Vue), the backend (Spring Boot), the database (PostgreSQL) and an optional [HangarAuth] project.
+Which will be discussed below.
 
 ### Fork the project
 Fork the project and pull it in your IDE.
@@ -31,8 +31,8 @@ To get the project running locally you need to follow a few steps:
 ### Hangar Auth
 
 #### Building with Docker
-If you want to build both Hangar and [HangarAuth](https://github.com/MiniDigger/HangarAuth)
-to run together (without a fakeuser), clone both this repo, and [this](https://github.com/PaperMC/HangarAuth).
+If you want to build both Hangar and [HangarAuth]
+to run together (without a fakeuser), clone both this repo, and [HangarAuth]
 Make sure both Hangar and HangarAuth directories are siblings in your file system. cd into Hangar/docker and run `docker-compose up -d`. That should set everything up for you. You can view the logs via Intellij's docker integration.
 I find its better to view the logs there, so that the Hangar logs and HangarAuth logs are separated.
 Note that when using docker, a different spring configuration file is used, `Hangar/docker/hangar/application.yml`. To reload changes to Hangar, just CTRL+F9 (rebuild) in Intellij. To rebuild changes to HangarAuth, just run `docker-compose up -d --build`
@@ -52,3 +52,5 @@ All contributions are very welcome, we will not be able to finish this alone!
 
 Most of the frontend is a fork of Ore, licensed under MIT [here](https://github.com/SpongePowered/Ore/blob/staging/LICENSE.txt). 
 The rest is new code (but created in reference of Ore) and is licenced under the MIT licence too.
+
+[HangarAuth]: https://github.com/PaperMC/HangarAuth
