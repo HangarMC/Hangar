@@ -21,7 +21,7 @@ Fork the project and pull it in your IDE.
 - Java 11 or higher.
 ### Setting up
 To get the project running locally you need to follow a few steps:
-1. To get the dummy database up and running move to the docker folder `cd docker` then run `docker-compose up -f dev-db.yml -d`.
+1. To get the dummy database up and running move to the docker folder `cd docker` then run `docker-compose -f dev-db.yml up -d`.
    Alternatively if you are using Intellij you can press the green arrow in the `docker/dev-db.yml` file.
 2. Run the Spring Boot application. You can do it in the CLI with `mvn spring-boot:run` or if you're using intellij it's included in the run configurations.
 3. Move to the `frontend` directory: `cd ../frontend`. In that directory run `yarn install`. This will install all the needed Node modules.

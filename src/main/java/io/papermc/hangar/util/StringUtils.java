@@ -14,7 +14,8 @@ import java.util.stream.Collectors;
 
 public class StringUtils {
 
-    private StringUtils() { }
+    private StringUtils() {
+    }
 
     private static final HangarConfig hangarConfig = StaticContextAccessor.getBean(HangarConfig.class);
 
@@ -40,6 +41,7 @@ public class StringUtils {
 
     /**
      * Returns a version number split into an ordered list of numbers
+     *
      * @param str version string to check (e.g. 2.3.1) MUST BE ALL NUMBERS
      * @return the list of integers in ltr order
      */
@@ -49,6 +51,7 @@ public class StringUtils {
 
     /**
      * Takes a nullable input and returns itself or if blank, null
+     *
      * @param input input string
      * @return itself or null
      */
@@ -90,6 +93,7 @@ public class StringUtils {
 
     /**
      * Format a list of version numbers (will do sorting)
+     *
      * @param versionNumbers version numbers
      * @return formatted string
      */
@@ -97,14 +101,14 @@ public class StringUtils {
         versionNumbers.sort((version1, version2) -> {
             int vnum1 = 0, vnum2 = 0;
 
-            for (int i = 0, j = 0; (i < version1.length() || j < version2.length());) {
+            for (int i = 0, j = 0; (i < version1.length() || j < version2.length()); ) {
 
                 while (i < version1.length() && version1.charAt(i) != '.') {
                     vnum1 = vnum1 * 10 + (version1.charAt(i) - '0');
                     i++;
                 }
 
-                while(j < version2.length() && version2.charAt(j) != '.') {
+                while (j < version2.length() && version2.charAt(j) != '.') {
                     vnum2 = vnum2 * 10 + (version2.charAt(j) - '0');
                     j++;
                 }
@@ -167,5 +171,19 @@ public class StringUtils {
 
     public static String parsePythonNullable(String input) {
         return input.equals("None") ? null : input;
+    }
+
+    public static boolean isAnyEqualIgnoreCase(@NotNull String lhs, String @NotNull ... rhs) {
+        if (rhs.length == 0) {
+            return false;
+        }
+
+        for (String string : rhs) {
+            if (lhs.equalsIgnoreCase(string)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
