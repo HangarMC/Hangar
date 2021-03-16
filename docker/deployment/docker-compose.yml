@@ -106,7 +106,7 @@ services:
     networks:
       - web
   redis:
-    image: redis:6.0.6
+    image: redis:6.2.1
     networks:
       - web
 
