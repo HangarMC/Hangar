@@ -30,7 +30,7 @@ const createApi = ({ $axios, store, app: { $cookies } }: Context) => {
                             path: '/',
                             expires: new Date(Date.now() + value.data.expiresIn * 1000),
                             sameSite: 'strict',
-                            secure: process.env.NODE_ENV === 'production',
+                            secure: process.env.nodeEnv === 'production',
                         });
                         resolve(value.data.token);
                     })
