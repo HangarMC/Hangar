@@ -2,6 +2,7 @@
   "extends": [
     "config:base"
   ],
+  "ignorePaths": ["**/frontend-old/package.json"],
   "rangeStrategy": "pin",
   "baseBranches": ["nuxt-frontend"]
 }
