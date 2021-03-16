@@ -23,6 +23,12 @@
                 </NuxtLink>
             </v-hover>
         </template>
+        <template #no-data>
+            <div>{{ $t('hangar.projectSearch.noProjects') }}</div>
+        </template>
+        <template #no-results>
+            <div>{{ $t('hangar.projectSearch.noProjectsFound') }}</div>
+        </template>
     </v-data-iterator>
 </template>
 

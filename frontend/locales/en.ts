@@ -25,6 +25,8 @@ const msgs: LocaleMessageObject = {
         projectSearch: {
             query: 'Search in {0} projects, proudly made by the community...',
             relevanceSort: 'Sort with relevance',
+            noProjects: 'There are no projects. :/',
+            noProjectsFound: 'Found 0 projects. :/',
         },
         subtitle: 'A Minecraft package repository',
         sponsoredBy: 'Sponsored by',

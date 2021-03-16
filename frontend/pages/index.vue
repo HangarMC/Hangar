@@ -8,7 +8,7 @@
                 </v-row>
                 <v-row justify="center" align="center">
                     <v-col cols="12">
-                        <v-text-field v-model="projectFilter" :label="$t('hangar.projectSearch.query', [totalProjects])" clearable></v-text-field>
+                        <v-text-field v-model="projectFilter" :label="$t('hangar.projectSearch.query', [projects.pagination.count])" clearable></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row justify="center" align="center">
@@ -60,7 +60,7 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import { PaginatedResult, Project, Sponsor } from 'hangar-api';
-import { IPlatform, ProjectPage } from 'hangar-internal';
+import { IPlatform } from 'hangar-internal';
 import { Context } from '@nuxt/types';
 import ProjectList from '~/components/projects/ProjectList.vue';
 import HangarSponsor from '~/components/layouts/Sponsor.vue';
@@ -74,8 +74,7 @@ import { RootState } from '~/store';
 })
 export default class Home extends Vue {
     // TODO implement filtering
-    projects?: PaginatedResult<Project>;
-    totalProjects: Number = 1337;
+    projects!: PaginatedResult<Project>;
     projectFilter: String | null = null;
     sponsor!: Sponsor;
 
@@ -90,11 +89,14 @@ export default class Home extends Vue {
     }
 
     async asyncData({ $api, $util }: Context) {
-        const sponsor = await $api.requestInternal<ProjectPage>(`data/sponsor`, false).catch<any>($util.handleRequestError);
-        const projects = await $api
-            .request<PaginatedResult<Project>>('projects', false, 'get', { limit: 25, offset: 0 })
-            .catch<any>($util.handlePageRequestError);
-        return { projects, sponsor };
+        const res = await Promise.all<Sponsor, PaginatedResult<Project>>([
+            $api.requestInternal<Sponsor>(`data/sponsor`, false),
+            $api.request<PaginatedResult<Project>>('projects', false, 'get', { limit: 25, offset: 0 }),
+        ]).catch($util.handlePageRequestError);
+        if (typeof res === 'undefined') {
+            return;
+        }
+        return { sponsor: res[0], projects: res[1] };
     }
 }
 </script>
