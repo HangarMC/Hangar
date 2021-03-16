@@ -7,15 +7,11 @@
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
-    "lint": "eslint --ext \".js,.vue,.ts\" --ignore-path .gitignore ."
+    "lint": "eslint --ext \".js,.vue,.ts\" --ignore-path .gitignore .",
+    "prepare": "cd .. && husky install frontend/.husky"
   },
   "lint-staged": {
     "*.{ts,js,vue}": "eslint"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "dependencies": {
     "@nuxtjs/axios": "5.13.1",
