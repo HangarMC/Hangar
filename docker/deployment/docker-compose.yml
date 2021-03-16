@@ -9,6 +9,7 @@ services:
     depends_on:
       - 'backend'
     environment:
+      # keep these in sync with gh-action!
       proxyHost: "http://hangar_new_backend:8080"
       authHost: "http://hangar_new_auth:8000"
       host: "0.0.0.0"

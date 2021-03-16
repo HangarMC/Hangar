@@ -62,6 +62,11 @@ jobs:
       - name: Build frontend
         env:
           CI: true
+          # keep these in sync with compose!
+          proxyHost: "http://hangar_new_backend:8080"
+          authHost: "http://hangar_new_auth:8000"
+          host: "0.0.0.0"
+          PUBLIC_HOST: "https://hangar-new.minidigger.me"
         run: (cd frontend && yarn build)
 
       - name: SSH
