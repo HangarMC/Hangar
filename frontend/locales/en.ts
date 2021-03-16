@@ -312,6 +312,9 @@ const msgs: LocaleMessageObject = {
             approved: 'Approved',
             userAdminLogs: 'User Admin Logs',
         },
+        channels: 'Channels',
+        editChannels: 'Edit',
+        platforms: 'Platforms',
     },
     channel: {
         new: {
