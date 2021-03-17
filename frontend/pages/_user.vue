@@ -9,9 +9,20 @@
                 <v-list dense flat class="d-inline-flex">
                     <v-list-item v-for="btn in buttons" :key="btn.name">
                         <v-list-item-content>
-                            <v-btn icon :to="btn.url">
-                                <v-icon>{{ btn.icon }}</v-icon>
-                            </v-btn>
+                            <v-tooltip bottom>
+                                <template #activator="{ on }">
+                                    <v-btn
+                                        icon
+                                        :href="btn.external ? btn.url : undefined"
+                                        :to="btn.external ? undefined : btn.url"
+                                        :nuxt="!btn.external"
+                                        v-on="on"
+                                    >
+                                        <v-icon>{{ btn.icon }}</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{ $t(`author.tooltips.${btn.name}`) }}</span>
+                            </v-tooltip>
                         </v-list-item-content>
                     </v-list-item>
                 </v-list>
@@ -28,7 +39,7 @@
             </v-col>
             <v-spacer />
             <v-col cols="2">
-                <v-subheader>{{ $t('author.numProjects', [user.projectCount]) }}</v-subheader>
+                <v-subheader>{{ $tc('author.numProjects', user.projectCount, [user.projectCount]) }}</v-subheader>
                 <v-subheader>{{ $t('author.memberSince', [$util.prettyDate(user.joinDate)]) }}</v-subheader>
                 <a :href="$util.forumUrl(user.name)">{{ $t('author.viewOnForums') }}<v-icon>mdi-open-in-new</v-icon></a>
             </v-col>
@@ -45,10 +56,11 @@ import { Context } from '@nuxt/types';
 import UserAvatar from '../components/UserAvatar.vue';
 
 interface Button {
-    icon: String;
+    icon: string;
     action?: Function;
-    url: String;
-    name: String;
+    external?: boolean;
+    url: string;
+    name: string;
 }
 
 @Component({
@@ -59,13 +71,12 @@ export default class UserParentPage extends Vue {
 
     get buttons(): Button[] {
         const buttons = [] as Button[];
-        // TODO user admin
-        buttons.push({ icon: 'mdi-cog', url: '', name: 'Settings' });
-        buttons.push({ icon: 'mdi-lock-open-outline', url: '', name: 'Lock Account' });
-        buttons.push({ icon: 'mdi-lock-outline', url: '', name: 'Unlock Account' });
-        buttons.push({ icon: 'mdi-key', url: '/' + this.user.name + '/settings/api-keys', name: 'API Keys' });
-        buttons.push({ icon: 'mdi-calendar', url: '', name: 'Activity' });
-        buttons.push({ icon: 'mdi-wrench', url: '', name: 'User Admin' });
+        buttons.push({ icon: 'mdi-cog', url: `${process.env.authHost}/accounts/settings`, external: true, name: 'settings' });
+        buttons.push({ icon: 'mdi-lock-open-outline', url: '', name: 'lock' });
+        buttons.push({ icon: 'mdi-lock-outline', url: '', name: 'unlock' });
+        buttons.push({ icon: 'mdi-key', url: '/' + this.user.name + '/settings/api-keys', name: 'apiKeys' });
+        buttons.push({ icon: 'mdi-calendar', url: '', name: 'activity' });
+        buttons.push({ icon: 'mdi-wrench', url: '', name: 'admin' });
         return buttons;
     }
 

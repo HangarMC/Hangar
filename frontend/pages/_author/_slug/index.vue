@@ -18,7 +18,7 @@
             <v-row>
                 <v-col cols="12">
                     <v-card>
-                        <v-card-title v-text="$t('project.info')"></v-card-title>
+                        <v-card-title v-text="$t('project.info.title')"></v-card-title>
                         <v-card-text>
                             <!-- todo where do we get this from? -->
                             <v-btn-toggle v-if="project.recommendedVersionId">
@@ -51,20 +51,21 @@
 
                             <div class="project-info">
                                 <p>{{ $t('project.category.info', [$store.state.projectCategories.get(project.category).title]) }}</p>
-                                <p>{{ $t('project.publishDate', [$util.prettyDate(project.createdAt)]) }}</p>
+                                <p>{{ $t('project.info.publishDate', [$util.prettyDate(project.createdAt)]) }}</p>
                                 <p v-if="project">
-                                    <span id="view-count">{{ $t('project.views', [project.stats.views]) }}</span>
+                                    <span id="view-count">{{ $tc('project.info.views', project.stats.views, [project.stats.views]) }}</span>
                                     ,&nbsp;
-                                    <span id="download-count">{{ project.stats.downloads }} total download{{ project.stats.downloads !== 1 ? 's' : '' }}</span>
+                                    <span id="download-count"
+                                        >{{ $tc('project.info.totalDownloads', project.stats.downloads, [project.stats.downloads]) }}
+                                    </span>
                                 </p>
                                 <p v-if="project">
-                                    <span id="star-count">{{ project.stats.stars }}</span>
-                                    <NuxtLink :to="project.namespace.slug + '/stars'"> {{ project.stats.views !== 1 ? ' stars' : ' star' }}</NuxtLink>
-                                    ,&nbsp;
-                                    <span id="watcher-count">{{ project.stats.watchers }}</span>
-                                    <NuxtLink :to="project.namespace.slug + '/watchers'">
-                                        {{ project.stats.views !== 1 ? ' watchers' : ' watcher' }}
-                                    </NuxtLink>
+                                    <v-btn to="stars" nuxt small>
+                                        {{ $tc('project.info.stars', project.stats.stars, [project.stats.stars]) }}
+                                    </v-btn>
+                                    <v-btn to="watchers" nuxt small>
+                                        {{ $tc('project.info.watchers', project.stats.watchers, [project.stats.watchers]) }}
+                                    </v-btn>
                                 </p>
                                 <p v-if="project && project.settings.license && project.settings.license.name">
                                     {{ $t('project.license.link') }}
