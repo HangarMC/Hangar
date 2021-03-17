@@ -83,15 +83,16 @@ export default class AuthorPage extends Vue {
     }
 
     async asyncData({ $api, route, $util }: Context) {
-        const user = await $api.requestInternal<HangarUser>(`users/${route.params.author}`, false).catch($util.handlePageRequestError);
-        const starred = await $api.request<Project>(`users/${route.params.author}/starred`, false).catch($util.handlePageRequestError);
-        const watching = await $api.request<Project>(`users/${route.params.author}/watching`, false).catch($util.handlePageRequestError);
-        const projects = await $api
-            .request<PaginatedResult<Project>>(`projects`, false, 'get', {
+        const data = await Promise.all([
+            await $api.requestInternal<HangarUser>(`users/${route.params.author}`, false),
+            await $api.request<PaginatedResult<Project>>(`users/${route.params.author}/starred`, false),
+            await $api.request<PaginatedResult<Project>>(`users/${route.params.author}/watching`, false),
+            await $api.request<PaginatedResult<Project>>(`projects`, false, 'get', {
                 owner: route.params.author,
-            })
-            .catch($util.handlePageRequestError);
-        return { user, projects, starred, watching };
+            }),
+        ]).catch($util.handlePageRequestError);
+        if (typeof data === 'undefined') return;
+        return { user: data[0], starred: data[2], watching: data[1], projects: data[3] };
     }
 }
 </script>

@@ -16,28 +16,26 @@
         <v-col cols="12" md="6">
             <h2>{{ $t('apiKeys.existing') }}</h2>
             <v-simple-table>
-                <template #default>
-                    <thead>
-                        <tr>
-                            <th class="text-left">{{ $t('apiKeys.name') }}</th>
-                            <th class="text-left">{{ $t('apiKeys.key') }}</th>
-                            <th class="text-left">{{ $t('apiKeys.keyIdentifier') }}</th>
-                            <th class="text-left">{{ $t('apiKeys.permissions') }}</th>
-                            <th class="text-left">{{ $t('apiKeys.delete') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="key in apiKeys" :key="key.name">
-                            <td>{{ key.name }}</td>
-                            <td>{{ key.key }}</td>
-                            <td>{{ key.identifier }}</td>
-                            <td>{{ key.permissions }}</td>
-                            <td>
-                                <v-btn color="red" @click="deleteKey(key.key)">{{ $t('apiKeys.deleteKey') }}</v-btn>
-                            </td>
-                        </tr>
-                    </tbody>
-                </template>
+                <thead>
+                    <tr>
+                        <th class="text-left">{{ $t('apiKeys.name') }}</th>
+                        <th class="text-left">{{ $t('apiKeys.key') }}</th>
+                        <th class="text-left">{{ $t('apiKeys.keyIdentifier') }}</th>
+                        <th class="text-left">{{ $t('apiKeys.permissions') }}</th>
+                        <th class="text-left">{{ $t('apiKeys.delete') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="key in apiKeys" :key="key.name">
+                        <td>{{ key.name }}</td>
+                        <td>{{ key.key }}</td>
+                        <td>{{ key.identifier }}</td>
+                        <td>{{ key.permissions }}</td>
+                        <td>
+                            <v-btn color="red" @click="deleteKey(key.key)">{{ $t('apiKeys.deleteKey') }}</v-btn>
+                        </td>
+                    </tr>
+                </tbody>
             </v-simple-table>
             <v-alert v-if="apiKeys.length === 0" type="info">{{ $t('apiKeys.noKeys') }}</v-alert>
         </v-col>
