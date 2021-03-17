@@ -1,5 +1,5 @@
 <template>
-    <UserProfile :user="user">
+    <v-row>
         <v-col cols="12" md="8">
             <ProjectList :projects="projects" />
         </v-col>
@@ -48,28 +48,24 @@
                 </v-card-text>
             </v-card>
         </v-col>
-    </UserProfile>
+    </v-row>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
+import { Component } from 'nuxt-property-decorator';
 import { Organization, PaginatedResult, Project, ProjectCompact } from 'hangar-api';
 import { Context } from '@nuxt/types';
-import { HangarUser } from 'hangar-internal';
 import UserAvatar from '~/components/UserAvatar.vue';
 import ProjectList from '~/components/projects/ProjectList.vue';
-import UserProfile from '~/components/layouts/UserProfile.vue';
+import { HangarUserMixin } from '~/components/mixins';
 
 @Component({
     components: {
-        UserProfile,
         UserAvatar,
         ProjectList,
     },
 })
-export default class AuthorPage extends Vue {
-    user!: HangarUser;
-
+export default class AuthorPage extends HangarUserMixin {
     projects!: PaginatedResult<Project>;
     // todo load orgs from server
     orgs: PaginatedResult<Organization> = { result: [], pagination: { offset: 0, count: 0, limit: 20 } };
@@ -84,15 +80,14 @@ export default class AuthorPage extends Vue {
 
     async asyncData({ $api, route, $util }: Context) {
         const data = await Promise.all([
-            $api.requestInternal<HangarUser>(`users/${route.params.author}`, false),
-            $api.request<PaginatedResult<ProjectCompact>>(`users/${route.params.author}/starred`, false),
-            $api.request<PaginatedResult<ProjectCompact>>(`users/${route.params.author}/watching`, false),
+            $api.request<PaginatedResult<ProjectCompact>>(`users/${route.params.user}/starred`, false),
+            $api.request<PaginatedResult<ProjectCompact>>(`users/${route.params.user}/watching`, false),
             $api.request<PaginatedResult<Project>>(`projects`, false, 'get', {
-                owner: route.params.author,
+                owner: route.params.user,
             }),
         ]).catch($util.handlePageRequestError);
         if (typeof data === 'undefined') return;
-        return { user: data[0], starred: data[2], watching: data[1], projects: data[3] };
+        return { starred: data[1], watching: data[0], projects: data[2] };
     }
 }
 </script>

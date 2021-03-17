@@ -1,8 +1,8 @@
 <template>
-    <UserProfile :user="user">
+    <v-row>
         <v-col cols="12" md="6">
             <h2>{{ $t('apiKeys.createNew') }}</h2>
-            <v-text-field v-model="name" :label="$t('apiKeys.name')" type="text">
+            <v-text-field v-model="name" :label="$t('apiKeys.name')">
                 <template #append-outer>
                     <v-btn @click="create">{{ $t('apiKeys.createKey') }}</v-btn>
                 </template>
@@ -39,24 +39,17 @@
             </v-simple-table>
             <v-alert v-if="apiKeys.length === 0" type="info">{{ $t('apiKeys.noKeys') }}</v-alert>
         </v-col>
-    </UserProfile>
+    </v-row>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
-import { HangarUser } from 'hangar-internal';
-import { Context } from '@nuxt/types';
 import { ApiKey, IPermission } from 'hangar-api';
-import UserProfile from '~/components/layouts/UserProfile.vue';
 import { RootState } from '~/store';
 import { NamedPermission } from '~/types/enums';
 
-@Component({
-    components: { UserProfile },
-})
+@Component
 export default class AuthorSettingsApiKeysPage extends Vue {
-    user!: HangarUser;
-
     selectedPerms: NamedPermission[] = [];
     name: string = '';
 
@@ -65,11 +58,6 @@ export default class AuthorSettingsApiKeysPage extends Vue {
 
     get perms(): IPermission[] {
         return Array.from((this.$store.state as RootState).permissions.values());
-    }
-
-    async asyncData({ $api, route, $util }: Context) {
-        const user = await $api.requestInternal<HangarUser>(`users/${route.params.author}`, false).catch($util.handlePageRequestError);
-        return { user };
     }
 
     create() {

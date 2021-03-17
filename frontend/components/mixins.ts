@@ -6,7 +6,7 @@ import { Platform, ReviewState } from '~/types/enums';
 import { RootState } from '~/store';
 
 @Component
-export class HangarAuthorMixin extends Vue {
+export class HangarUserMixin extends Vue {
     @Prop({ type: Object as PropType<HangarUser>, required: true })
     user!: HangarUser;
 }

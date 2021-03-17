@@ -34,16 +34,15 @@
             </v-col>
         </v-row>
         <v-divider />
-        <v-row>
-            <slot></slot>
-        </v-row>
+        <NuxtChild :user="user" />
     </div>
 </template>
 
 <script lang="ts">
-import { Component } from 'nuxt-property-decorator';
-import UserAvatar from '~/components/UserAvatar.vue';
-import { HangarAuthorMixin } from '~/components/mixins';
+import { Component, Vue } from 'nuxt-property-decorator';
+import { HangarUser } from 'hangar-internal';
+import { Context } from '@nuxt/types';
+import UserAvatar from '../components/UserAvatar.vue';
 
 interface Button {
     icon: String;
@@ -55,11 +54,8 @@ interface Button {
 @Component({
     components: { UserAvatar },
 })
-export default class UserProfile extends HangarAuthorMixin {
-    get avatarClazz(): String {
-        return 'user-avatar-md';
-        // todo check org an add 'organization-avatar'
-    }
+export default class UserParentPage extends Vue {
+    user!: HangarUser;
 
     get buttons(): Button[] {
         const buttons = [] as Button[];
@@ -71,6 +67,17 @@ export default class UserProfile extends HangarAuthorMixin {
         buttons.push({ icon: 'mdi-calendar', url: '', name: 'Activity' });
         buttons.push({ icon: 'mdi-wrench', url: '', name: 'User Admin' });
         return buttons;
+    }
+
+    get avatarClazz(): String {
+        return 'user-avatar-md';
+        // todo check org an add 'organization-avatar'
+    }
+
+    async asyncData({ $api, $util, params }: Context) {
+        const user = await $api.requestInternal<HangarUser>(`users/${params.user}`, false).catch<any>($util.handlePageRequestError);
+        if (typeof user === 'undefined') return;
+        return { user };
     }
 }
 </script>
