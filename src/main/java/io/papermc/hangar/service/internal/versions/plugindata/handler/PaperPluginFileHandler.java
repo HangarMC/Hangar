@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @Component
@@ -76,7 +78,7 @@ public class PaperPluginFileHandler extends FileTypeHandler {
             result.add(new DataValue.DependencyDataValue(FileTypeHandler.DEPENDENCIES, getPlatform(), dependencies));
         }
 
-        Set<String> versions = new HashSet<>();
+        SortedSet<String> versions = new TreeSet<>();
         if (data.containsKey("api-version")) {
             versions.add(data.get("api-version").toString());
         }

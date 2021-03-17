@@ -7,6 +7,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 
 public abstract class DataValue {
 
@@ -64,19 +65,19 @@ public abstract class DataValue {
 
     public static class PlatformDependencyDataValue extends DataValue {
 
-        private final Map<Platform, Set<String>> value;
+        private final Map<Platform, SortedSet<String>> value;
 
-        public PlatformDependencyDataValue(String key, Platform platform, Set<String> versions) {
+        public PlatformDependencyDataValue(String key, Platform platform, SortedSet<String> versions) {
             super(key);
             this.value = Map.of(platform, versions);
         }
 
-        public PlatformDependencyDataValue(String key, Map<Platform, Set<String>> map) {
+        public PlatformDependencyDataValue(String key, Map<Platform, SortedSet<String>> map) {
             super(key);
             this.value = map;
         }
 
-        public Map<Platform, Set<String>> getValue() {
+        public Map<Platform, SortedSet<String>> getValue() {
             return value;
         }
     }

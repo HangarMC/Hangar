@@ -111,14 +111,14 @@
                                 <v-checkbox
                                     v-for="version in platform.possibleVersions"
                                     :key="`${platform.name}-${version}`"
-                                    v-model="pendingVersion.platformDependencies[platform.name.toUpperCase()]"
+                                    v-model="pendingVersion.platformDependencies[platform.enumName]"
                                     :rules="platformVersionRules"
                                     class="platform-version-checkbox"
                                     dense
                                     hide-details
                                     :label="version"
                                     :value="version"
-                                    @change="togglePlatformVersion($event, platform.name.toUpperCase())"
+                                    @change="togglePlatformVersion($event, platform.enumName)"
                                 />
                             </v-col>
                         </v-row>
@@ -128,54 +128,14 @@
                     <v-card-title class="pb-0">{{ $t('version.new.form.dependencies') }}</v-card-title>
                     <template v-for="platform in platformsForPluginDeps">
                         <v-card-subtitle :key="`${platform}-deps`" class="mt-3 pb-0">{{ $store.state.platforms.get(platform).name }}</v-card-subtitle>
-                        <!--TODO figure out how to make this work with the DependencyTable component-->
-                        <v-simple-table :key="`${platform}-deps-table`" class="ma-2">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Required?</th>
-                                    <th>Link</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="dep in pendingVersion.pluginDependencies[platform]" :key="`${platform}-${dep.name}`">
-                                    <td>{{ dep.name }}</td>
-                                    <!--TODO having ripple here produces console errors?-->
-                                    <td><v-simple-checkbox v-model="dep.required" :ripple="false" /></td>
-                                    <td>
-                                        <v-text-field
-                                            v-model="dep.externalUrl"
-                                            dense
-                                            hide-details
-                                            placeholder="External Link"
-                                            :disabled="dep.namespace !== null && Object.keys(dep.namespace).length !== 0"
-                                            :rules="
-                                                dep.namespace !== null && Object.keys(dep.namespace).length !== 0
-                                                    ? []
-                                                    : [$util.$vc.require('version.new.form.externalUrl')]
-                                            "
-                                            clearable
-                                        />
-                                        <v-autocomplete
-                                            v-model="dep.namespace"
-                                            dense
-                                            hide-details
-                                            hide-no-data
-                                            placeholder="Hangar Project"
-                                            class="mb-2"
-                                            :items="hangarProjectSearchResults"
-                                            :item-text="getNamespace"
-                                            return-object
-                                            clearable
-                                            auto-select-first
-                                            :disabled="!!dep.externalUrl"
-                                            :rules="!!dep.externalUrl ? [] : [$util.$vc.require('version.new.form.hangarProject')]"
-                                            @update:search-input="onSearch"
-                                        />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </v-simple-table>
+                        <DependencyTable
+                            :key="`${platform}-deps-table`"
+                            :platform="platform"
+                            :version="pendingVersion"
+                            :no-editing="pendingVersion.isFile"
+                            :new-deps-prop="pendingVersion.pluginDependencies[platform]"
+                            :is-new="!pendingVersion.isFile"
+                        />
                     </template>
                 </v-card>
                 <v-row class="mt-3">
@@ -210,17 +170,18 @@
 import { Component } from 'nuxt-property-decorator';
 import remove from 'lodash-es/remove';
 import { IPlatform, PendingVersion, ProjectChannel } from 'hangar-internal';
-import { PaginatedResult, Project, ProjectNamespace } from 'hangar-api';
+import { ProjectNamespace } from 'hangar-api';
 import { HangarProjectMixin } from '~/components/mixins';
 import { ProjectPermission } from '~/utils/perms';
 import { NamedPermission, Platform } from '~/types/enums';
 import MarkdownEditor from '~/components/MarkdownEditor.vue';
 import NewChannelModal from '~/components/modals/NewChannelModal.vue';
 import { RootState } from '~/store';
+import DependencyTable from '~/components/modals/versions/DependencyTable.vue';
 
 // TODO implement setting up dependencies
 @Component({
-    components: { NewChannelModal, MarkdownEditor },
+    components: { DependencyTable, NewChannelModal, MarkdownEditor },
 })
 @ProjectPermission(NamedPermission.CREATE_VERSION)
 export default class ProjectVersionsNewPage extends HangarProjectMixin {
@@ -229,8 +190,7 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
     pendingVersion: PendingVersion | null = null;
     validForm: boolean = false;
     channels: ProjectChannel[] = [];
-    selectedPlatforms: string[] = [];
-    hangarProjectSearchResults: ProjectNamespace[] = [];
+    selectedPlatforms: Platform[] = [];
     loading = {
         create: false,
         submit: false,
@@ -240,19 +200,6 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
         return {
             title: this.$t('version.new.title'),
         };
-    }
-
-    onSearch(val: string) {
-        if (val) {
-            console.log(val);
-            this.$api
-                .request<PaginatedResult<Project>>(`projects?relevance=true&limit=25&offset=0&q=${val}`)
-                .then((projects) => {
-                    // console.log(projects.result);
-                    this.hangarProjectSearchResults = projects.result.map((p) => p.namespace);
-                })
-                .catch(console.error);
-        }
     }
 
     get canCreate(): boolean {
@@ -276,10 +223,14 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
 
     get platformsForPluginDeps(): Platform[] {
         const platforms: Platform[] = [];
-        for (const key of Object.keys(this.pendingVersion!.pluginDependencies)) {
-            if (this.pendingVersion?.pluginDependencies[key as Platform].length) {
-                platforms.push(key as Platform);
+        if (this.pendingVersion?.isFile) {
+            for (const key of Object.keys(this.pendingVersion!.pluginDependencies)) {
+                if (this.pendingVersion?.pluginDependencies[key as Platform].length) {
+                    platforms.push(key as Platform);
+                }
             }
+        } else {
+            platforms.push(...this.selectedPlatforms);
         }
         return platforms;
     }
@@ -342,7 +293,7 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
         }
     }
 
-    togglePlatformVersion(value: string[], platform: string) {
+    togglePlatformVersion(value: string[], platform: Platform) {
         if (value.length === 0 && this.selectedPlatforms.includes(platform)) {
             this.$delete(this.selectedPlatforms, this.selectedPlatforms.indexOf(platform));
         } else if (!this.selectedPlatforms.includes(platform)) {
@@ -371,7 +322,7 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
             .catch<any>(this.$util.handlePageRequestError);
         for (const platformDependenciesKey in this.pendingVersion?.platformDependencies) {
             if (this.pendingVersion?.platformDependencies[platformDependenciesKey as Platform].length) {
-                this.selectedPlatforms.push(platformDependenciesKey);
+                this.selectedPlatforms.push(platformDependenciesKey as Platform);
             }
         }
         this.loading.create = false;

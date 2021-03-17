@@ -19,6 +19,8 @@ import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class PendingVersion {
 
@@ -27,7 +29,7 @@ public class PendingVersion {
     private final String versionString;
     private final Map<Platform, Set<@Valid PluginDependency>> pluginDependencies;
     @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
-    private final Map<Platform, @Size(min = 1, message = "version.edit.error.noPlatformVersions") Set<@NotBlank(message = "version.new.error.invalidPlatformVersion") String>> platformDependencies;
+    private final Map<Platform, @Size(min = 1, message = "version.edit.error.noPlatformVersions") SortedSet<@NotBlank(message = "version.new.error.invalidPlatformVersion") String>> platformDependencies;
     @NotBlank(message = "version.new.error.noDescription")
     private final String description;
     private final FileInfo fileInfo;
@@ -44,7 +46,7 @@ public class PendingVersion {
     private final boolean isFile;
 
     @JsonCreator(mode = Mode.PROPERTIES)
-    public PendingVersion(String versionString, Map<Platform, Set<PluginDependency>> pluginDependencies, EnumMap<Platform, Set<String>> platformDependencies, String description, FileInfo fileInfo, String externalUrl, String channelName, Color channelColor, boolean channelNonReviewed, boolean forumSync, boolean unstable, boolean recommended, boolean isFile) {
+    public PendingVersion(String versionString, Map<Platform, Set<PluginDependency>> pluginDependencies, EnumMap<Platform, SortedSet<String>> platformDependencies, String description, FileInfo fileInfo, String externalUrl, String channelName, Color channelColor, boolean channelNonReviewed, boolean forumSync, boolean unstable, boolean recommended, boolean isFile) {
         this.versionString = versionString;
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
@@ -60,7 +62,7 @@ public class PendingVersion {
         this.isFile = isFile;
     }
 
-    public PendingVersion(String versionString, Map<Platform, Set<PluginDependency>> pluginDependencies, Map<Platform, Set<String>> platformDependencies, String description, FileInfo fileInfo, ProjectChannelTable projectChannelTable, boolean forumSync) {
+    public PendingVersion(String versionString, Map<Platform, Set<PluginDependency>> pluginDependencies, Map<Platform, SortedSet<String>> platformDependencies, String description, FileInfo fileInfo, ProjectChannelTable projectChannelTable, boolean forumSync) {
         this.versionString = versionString;
         this.pluginDependencies = pluginDependencies;
         this.platformDependencies = platformDependencies;
@@ -76,14 +78,14 @@ public class PendingVersion {
         this.isFile = true;
     }
 
-    public PendingVersion(String externalUrl, ProjectChannelTable projectChannelTable, boolean forumSync) {
+    public PendingVersion(Map<Platform, Set<PluginDependency>> pluginDependencies, Map<Platform, SortedSet<String>> platformDependencies, String externalUrl, ProjectChannelTable projectChannelTable, boolean forumSync) {
         this.forumSync = forumSync;
         this.versionString = null;
-        this.pluginDependencies = new EnumMap<>(Platform.class);
-        this.platformDependencies = new EnumMap<>(Platform.class);
+        this.pluginDependencies = pluginDependencies;
+        this.platformDependencies = platformDependencies;
         for (Platform platform : Platform.getValues()) {
             this.pluginDependencies.put(platform, new HashSet<>());
-            this.platformDependencies.put(platform, new HashSet<>());
+            this.platformDependencies.put(platform, new TreeSet<>());
         }
         this.description = null;
         this.fileInfo = null;
@@ -104,7 +106,7 @@ public class PendingVersion {
         return pluginDependencies;
     }
 
-    public Map<Platform, Set<String>> getPlatformDependencies() {
+    public Map<Platform, SortedSet<String>> getPlatformDependencies() {
         return platformDependencies;
     }
 

@@ -6,111 +6,119 @@
                     <th>{{ $t('general.name') }}</th>
                     <th>{{ $t('general.required') }}</th>
                     <th>{{ $t('general.link') }}</th>
-                    <th>{{ $t('general.delete') }}</th>
+                    <th v-if="!noEditing">{{ $t('general.delete') }}</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="dep in version.pluginDependencies[platform]" :key="`${platform}-${dep.name}`">
-                    <td>{{ dep.name }}</td>
-                    <!--TODO having ripple here produces console errors?-->
-                    <td><v-simple-checkbox v-model="dep.required" :ripple="false" /></td>
-                    <td>
-                        <v-text-field
-                            v-model.trim="dep.externalUrl"
-                            dense
-                            hide-details
-                            :placeholder="$t('version.new.form.externalUrl')"
-                            :disabled="dep.namespace !== null && Object.keys(dep.namespace).length !== 0"
-                            :rules="
-                                dep.namespace !== null && Object.keys(dep.namespace).length !== 0 ? [] : [$util.$vc.require('version.new.form.externalUrl')]
-                            "
-                            clearable
-                        />
-                        <v-autocomplete
-                            v-model="dep.namespace"
-                            dense
-                            hide-details
-                            hide-no-data
-                            :placeholder="$t('version.new.form.hangarProject')"
-                            class="mb-2"
-                            :items="results[dep.name]"
-                            :item-text="getNamespace"
-                            :item-value="getNamespace"
-                            return-object
-                            clearable
-                            auto-select-first
-                            :disabled="!!dep.externalUrl"
-                            :rules="!!dep.externalUrl ? [] : [$util.$vc.require('version.new.form.hangarProject')]"
-                            @update:search-input="onSearch($event, dep.name)"
-                        />
-                    </td>
-                    <td>
-                        <v-btn icon color="error" @click="deleteDep(dep.name)">
-                            <v-icon>mdi-delete</v-icon>
-                        </v-btn>
-                    </td>
-                </tr>
-                <tr v-for="(newDep, index) in newDeps" :key="`newDep-${index}`">
-                    <td>
-                        <v-text-field
-                            v-model.trim="newDep.name"
-                            dense
-                            hide-details
-                            flat
-                            :label="$t('general.name')"
-                            :rules="[$util.$vc.require($t('general.name'))]"
-                        />
-                    </td>
-                    <td><v-simple-checkbox v-model="newDep.required" :ripple="false" /></td>
-                    <td>
-                        <v-text-field
-                            v-model.trim="newDep.externalUrl"
-                            dense
-                            hide-details
-                            :placeholder="$t('version.new.form.externalUrl')"
-                            :disabled="newDep.namespace !== null && Object.keys(newDep.namespace).length !== 0"
-                            :rules="
-                                newDep.namespace !== null && Object.keys(newDep.namespace).length !== 0
-                                    ? []
-                                    : [$util.$vc.require('version.new.form.externalUrl')]
-                            "
-                            clearable
-                        />
-                        <v-autocomplete
-                            v-model="newDep.namespace"
-                            dense
-                            hide-details
-                            hide-no-data
-                            :placeholder="$t('version.new.form.hangarProject')"
-                            class="mb-2"
-                            :items="newDepResults[index]"
-                            :item-text="getNamespace"
-                            :item-value="getNamespace"
-                            return-object
-                            clearable
-                            auto-select-first
-                            :disabled="!!newDep.externalUrl"
-                            :rules="!!newDep.externalUrl ? [] : [$util.$vc.require('version.new.form.hangarProject')]"
-                            @update:search-input="onNewDepSearch($event, index)"
-                        />
-                    </td>
-                    <td>
-                        <v-btn icon color="error" @click="deleteNewDep(index)">
-                            <v-icon>mdi-delete</v-icon>
-                        </v-btn>
-                    </td>
-                </tr>
+                <template v-if="!isNew">
+                    <tr v-for="dep in version.pluginDependencies[platform]" :key="`${platform}-${dep.name}`">
+                        <td>{{ dep.name }}</td>
+                        <!--TODO having ripple here produces console errors?-->
+                        <td><v-simple-checkbox v-model="dep.required" :ripple="false" /></td>
+                        <td>
+                            <v-text-field
+                                v-model.trim="dep.externalUrl"
+                                dense
+                                hide-details
+                                :placeholder="$t('version.new.form.externalUrl')"
+                                :disabled="dep.namespace !== null && Object.keys(dep.namespace).length !== 0"
+                                :rules="
+                                    dep.namespace !== null && Object.keys(dep.namespace).length !== 0 ? [] : [$util.$vc.require('version.new.form.externalUrl')]
+                                "
+                                clearable
+                            />
+                            <v-autocomplete
+                                v-model="dep.namespace"
+                                dense
+                                hide-details
+                                hide-no-data
+                                :placeholder="$t('version.new.form.hangarProject')"
+                                class="mb-2"
+                                :items="results[dep.name]"
+                                :item-text="getNamespace"
+                                :item-value="getNamespace"
+                                return-object
+                                clearable
+                                auto-select-first
+                                :disabled="!!dep.externalUrl"
+                                :rules="!!dep.externalUrl ? [] : [$util.$vc.require('version.new.form.hangarProject')]"
+                                @update:search-input="onSearch($event, dep.name)"
+                            />
+                        </td>
+                        <td v-if="!noEditing">
+                            <v-btn icon color="error" @click="deleteDep(dep.name)">
+                                <v-icon>mdi-delete</v-icon>
+                            </v-btn>
+                        </td>
+                    </tr>
+                </template>
+
+                <template v-if="!noEditing || isNew">
+                    <tr v-for="(newDep, index) in newDeps" :key="`newDep-${index}`">
+                        <td>
+                            <v-text-field
+                                v-model.trim="newDep.name"
+                                dense
+                                hide-details
+                                flat
+                                :label="$t('general.name')"
+                                :rules="[$util.$vc.require($t('general.name'))]"
+                                :disabled="noEditing"
+                            />
+                        </td>
+                        <td><v-simple-checkbox v-model="newDep.required" :ripple="false" /></td>
+                        <td>
+                            <v-text-field
+                                v-model.trim="newDep.externalUrl"
+                                dense
+                                hide-details
+                                :placeholder="$t('version.new.form.externalUrl')"
+                                :disabled="newDep.namespace !== null && Object.keys(newDep.namespace).length !== 0"
+                                :rules="
+                                    newDep.namespace !== null && Object.keys(newDep.namespace).length !== 0
+                                        ? []
+                                        : [$util.$vc.require('version.new.form.externalUrl')]
+                                "
+                                clearable
+                            />
+                            <v-autocomplete
+                                v-model="newDep.namespace"
+                                dense
+                                hide-details
+                                hide-no-data
+                                :placeholder="$t('version.new.form.hangarProject')"
+                                class="mb-2"
+                                :items="newDepResults[index]"
+                                :item-text="getNamespace"
+                                :item-value="getNamespace"
+                                return-object
+                                clearable
+                                auto-select-first
+                                :disabled="!!newDep.externalUrl"
+                                :rules="!!newDep.externalUrl ? [] : [$util.$vc.require('version.new.form.hangarProject')]"
+                                @update:search-input="onNewDepSearch($event, index)"
+                            />
+                        </td>
+                        <td v-if="!noEditing">
+                            <v-btn icon color="error" @click="deleteNewDep(index)">
+                                <v-icon>mdi-delete</v-icon>
+                            </v-btn>
+                        </td>
+                    </tr>
+                </template>
             </tbody>
         </v-simple-table>
-        <v-btn block color="primary" @click="addNewDep">
-            <v-icon left>mdi-plus</v-icon>
-            {{ $t('general.add') }}
-        </v-btn>
+        <div v-if="!noEditing" class="ma-2">
+            <v-btn color="primary" block @click="addNewDep">
+                <v-icon left>mdi-plus</v-icon>
+                {{ $t('general.add') }}
+            </v-btn>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'nuxt-property-decorator';
+import { Component, Prop, PropSync, Vue, Watch } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
 import { DependencyVersion, PaginatedResult, PluginDependency, Project, ProjectNamespace } from 'hangar-api';
 import { Platform } from '~/types/enums';
@@ -119,13 +127,21 @@ import { Platform } from '~/types/enums';
 export default class DependencyTable extends Vue {
     results: Record<string, ProjectNamespace[]> = {};
     newDepResults: ProjectNamespace[][] = [];
-    newDeps: Partial<PluginDependency>[] = [];
 
     @Prop({ type: Object as PropType<DependencyVersion>, required: true })
     version!: DependencyVersion;
 
     @Prop({ type: String as PropType<Platform>, required: true })
     platform!: Platform;
+
+    @Prop({ type: Boolean, default: false })
+    noEditing!: boolean;
+
+    @Prop({ type: Boolean, default: false })
+    isNew!: boolean;
+
+    @PropSync('newDepsProp', { type: Array as PropType<Partial<PluginDependency>[]>, default: () => [] })
+    newDeps!: Partial<PluginDependency>[];
 
     addNewDep() {
         this.newDeps.push({
@@ -146,7 +162,14 @@ export default class DependencyTable extends Vue {
             this.$api
                 .request<PaginatedResult<Project>>(`projects?relevance=true&limit=25&offset=0&q=${val}`)
                 .then((projects) => {
-                    this.results[name].push(...projects.result.map((p) => p.namespace));
+                    if (!this.results[name]) {
+                        this.$set(this.results, name, []);
+                    }
+                    this.results[name].push(
+                        ...projects.result
+                            .filter((p) => p.namespace.owner !== this.$route.params.author || p.namespace.slug !== this.$route.params.slug)
+                            .map((p) => p.namespace)
+                    );
                 })
                 .catch(console.error);
         }

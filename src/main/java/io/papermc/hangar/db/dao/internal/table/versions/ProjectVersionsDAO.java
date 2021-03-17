@@ -34,6 +34,13 @@ public interface ProjectVersionsDAO {
     @SqlQuery("SELECT * FROM project_versions pv WHERE pv.id = :versionId")
     ProjectVersionTable getProjectVersionTable(long versionId);
 
+    @SqlQuery("SELECT pv.*" +
+            "   FROM project_versions pv" +
+            "       JOIN project_channels pc ON pv.channel_id = pc.id" +
+            "   WHERE pc.id = :channelId" +
+            "   ORDER BY pv.created_at DESC")
+    ProjectVersionTable getLastVersionOnChannel(long channelId);
+
     @SqlQuery("SELECT pv.* FROM project_versions pv" +
             "   JOIN projects p ON pv.project_id = p.id" +
             "   JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id" +

@@ -7,12 +7,12 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.model.Announcement;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.FlagReason;
-import io.papermc.hangar.model.Announcement;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.service.internal.projects.PlatformService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,12 +72,12 @@ public class BackendDataController {
     }
 
     @GetMapping("/platforms")
-    // TODO include valid versions (equivalent of PlatformInfo)
     public ResponseEntity<ArrayNode> getPlatforms() {
         ArrayNode arrayNode = mapper.createArrayNode();
         for (Platform platform : Platform.getValues()) {
             ObjectNode objectNode = mapper.createObjectNode()
                     .put("name", platform.getName())
+                    .put("enumName", platform.name())
                     .put("category", platform.getCategory().getTagName())
                     .put("url", platform.getUrl());
             objectNode.set("tagColor", mapper.valueToTree(platform.getTagColor()));

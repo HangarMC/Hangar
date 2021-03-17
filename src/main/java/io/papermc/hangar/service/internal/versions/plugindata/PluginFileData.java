@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 import static io.papermc.hangar.service.internal.versions.plugindata.DataValue.DependencyDataValue;
@@ -93,7 +94,7 @@ public class PluginFileData {
         return ((DependencyDataValue) dependencies).getValue();
     }
 
-    public Map<Platform, Set<String>> getPlatformDependencies() {
+    public Map<Platform, SortedSet<String>> getPlatformDependencies() {
         DataValue platformDependencies = dataValues.get(FileTypeHandler.PLATFORM_DEPENDENCY);
         return platformDependencies != null ? ((PlatformDependencyDataValue) platformDependencies).getValue() : null;
     }

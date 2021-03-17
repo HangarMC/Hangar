@@ -7,6 +7,7 @@ import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionDependenciesDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionPlatformDependenciesDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
+import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.version.FileInfo;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
@@ -42,9 +43,13 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
 
 @Service
 public class VersionFactory extends HangarService {
@@ -53,6 +58,7 @@ public class VersionFactory extends HangarService {
     private final ProjectVersionDependenciesDAO projectVersionDependenciesDAO;
     private final PlatformVersionDAO platformVersionDAO;
     private final ProjectVersionsDAO projectVersionsDAO;
+    private final VersionsApiDAO versionsApiDAO;
     private final ProjectFiles projectFiles;
     private final PluginDataService pluginDataService;
     private final ChannelService channelService;
@@ -60,17 +66,17 @@ public class VersionFactory extends HangarService {
     private final RecommendedVersionService recommendedVersionService;
     private final ProjectService projectService;
     private final NotificationService notificationService;
-    private final VersionService versionService;
     private final VersionTagService versionTagService;
     private final PlatformService platformService;
     private final UsersApiService usersApiService;
 
     @Autowired
-    public VersionFactory(HangarDao<ProjectVersionPlatformDependenciesDAO> projectVersionPlatformDependencyDAO, HangarDao<ProjectVersionDependenciesDAO> projectVersionDependencyDAO, HangarDao<PlatformVersionDAO> platformVersionDAO, HangarDao<ProjectVersionsDAO> projectVersionDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, RecommendedVersionService recommendedVersionService, ProjectService projectService, NotificationService notificationService, VersionService versionService, VersionTagService versionTagService, PlatformService platformService, UsersApiService usersApiService) {
+    public VersionFactory(HangarDao<ProjectVersionPlatformDependenciesDAO> projectVersionPlatformDependencyDAO, HangarDao<ProjectVersionDependenciesDAO> projectVersionDependencyDAO, HangarDao<PlatformVersionDAO> platformVersionDAO, HangarDao<ProjectVersionsDAO> projectVersionDAO, HangarDao<VersionsApiDAO> versionsApiDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, RecommendedVersionService recommendedVersionService, ProjectService projectService, NotificationService notificationService, VersionTagService versionTagService, PlatformService platformService, UsersApiService usersApiService) {
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO.get();
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO.get();
         this.platformVersionDAO = platformVersionDAO.get();
         this.projectVersionsDAO = projectVersionDAO.get();
+        this.versionsApiDAO = versionsApiDAO.get();
         this.projectFiles = projectFiles;
         this.pluginDataService = pluginDataService;
         this.channelService = channelService;
@@ -78,7 +84,6 @@ public class VersionFactory extends HangarService {
         this.recommendedVersionService = recommendedVersionService;
         this.projectService = projectService;
         this.notificationService = notificationService;
-        this.versionService = versionService;
         this.versionTagService = versionTagService;
         this.platformService = platformService;
         this.usersApiService = usersApiService;
@@ -137,7 +142,18 @@ public class VersionFactory extends HangarService {
         ProjectTable projectTable = projectService.getProjectTable(projectId);
         assert projectTable != null;
         ProjectChannelTable projectChannelTable = channelService.getFirstChannel(projectId);
-        return new PendingVersion(url, projectChannelTable, projectTable.isForumSync());
+        ProjectVersionTable lastVersionOnChannel = projectVersionsDAO.getProjectVersionTable(projectChannelTable.getId());
+        Map<Platform, Set<PluginDependency>> pluginDependencies = new EnumMap<>(Platform.class);
+        Map<Platform, SortedSet<String>> platformDependencies;
+        if (lastVersionOnChannel == null) {
+            platformDependencies = new EnumMap<>(Platform.class);
+        } else {
+            for (Platform platform : Platform.getValues()) {
+                pluginDependencies.put(platform, versionsApiDAO.getPluginDependencies(lastVersionOnChannel.getId(), platform));
+            }
+            platformDependencies = versionsApiDAO.getPlatformDependencies(lastVersionOnChannel.getId());
+        }
+        return new PendingVersion(pluginDependencies, platformDependencies, url, projectChannelTable, projectTable.isForumSync());
     }
 
     public void publishPendingVersion(long projectId, final PendingVersion pendingVersion) {
