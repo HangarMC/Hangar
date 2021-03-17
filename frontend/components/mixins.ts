@@ -1,9 +1,15 @@
 import { Component, mixins, Prop, Vue, Watch } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
-import { HangarProject, HangarVersion, IPlatform, ProjectPage } from 'hangar-internal';
+import { HangarProject, HangarUser, HangarVersion, IPlatform, ProjectPage } from 'hangar-internal';
 import MarkdownEditor from '~/components/MarkdownEditor.vue';
 import { Platform, ReviewState } from '~/types/enums';
 import { RootState } from '~/store';
+
+@Component
+export class HangarAuthorMixin extends Vue {
+    @Prop({ type: Object as PropType<HangarUser>, required: true })
+    user!: HangarUser;
+}
 
 @Component
 export class HangarProjectMixin extends Vue {

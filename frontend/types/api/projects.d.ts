@@ -47,17 +47,20 @@ declare module 'hangar-api' {
         tags: PromotedVersionTag[];
     }
 
-    interface Project extends Model, Named {
+    interface ProjectCompact extends Model, Named {
         namespace: ProjectNamespace;
-        promotedVersions: PromotedVersion[];
         stats: ProjectStats;
         category: ProjectCategory;
+        visibility: Visibility;
+    }
+
+    interface Project extends ProjectCompact {
         description: string;
         lastUpdated: Date;
-        visibility: Visibility;
         userActions: UserActions;
         settings: ProjectSettings;
         iconUrl: string;
+        promotedVersions: PromotedVersion[];
     }
 
     interface Job extends Model {

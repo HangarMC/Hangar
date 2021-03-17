@@ -17,14 +17,16 @@ public class Project extends ProjectCompact {
     private final UserActions userActions;
     private final ProjectSettings settings;
     private final String iconUrl;
+    protected final List<PromotedVersion> promotedVersions;
 
     @JdbiConstructor
-    public Project(OffsetDateTime createdAt, String name, @Nested ProjectNamespace namespace, List<PromotedVersion> promotedVersions, @Nested ProjectStats stats, @EnumByOrdinal Category category, String description, OffsetDateTime lastUpdated, @EnumByOrdinal Visibility visibility, @Nested UserActions userActions, @Nested ProjectSettings settings) {
-        super(createdAt, name, namespace, promotedVersions, stats, category, visibility);
+    public Project(OffsetDateTime createdAt, String name, @Nested ProjectNamespace namespace, @Nested ProjectStats stats, @EnumByOrdinal Category category, String description, OffsetDateTime lastUpdated, @EnumByOrdinal Visibility visibility, @Nested UserActions userActions, @Nested ProjectSettings settings, List<PromotedVersion> promotedVersions) {
+        super(createdAt, name, namespace, stats, category, visibility);
         this.description = description;
         this.lastUpdated = lastUpdated;
         this.userActions = userActions;
         this.settings = settings;
+        this.promotedVersions = promotedVersions;
         this.iconUrl = "/api/v1/project/" + this.getNamespace().getOwner() + "/" + this.getNamespace().getSlug() + "/icon";
     }
 
@@ -48,6 +50,10 @@ public class Project extends ProjectCompact {
         return iconUrl;
     }
 
+    public List<PromotedVersion> getPromotedVersions() {
+        return promotedVersions;
+    }
+
     @Override
     public String toString() {
         return "Project{" +
@@ -56,6 +62,7 @@ public class Project extends ProjectCompact {
                 ", userActions=" + userActions +
                 ", settings=" + settings +
                 ", iconUrl='" + iconUrl + '\'' +
+                ", promotedVersions=" + promotedVersions +
                 "} " + super.toString();
     }
 }

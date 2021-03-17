@@ -22,7 +22,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     private final Collection<HangarProjectPage> pages;
 
     public HangarProject(Project project, long id, ProjectOwner owner, List<JoinableMember<ProjectRoleTable>> members, String lastVisibilityChangeComment, String lastVisibilityChangeUserName, HangarProjectInfo info, Collection<HangarProjectPage> pages) {
-        super(project.getCreatedAt(), project.getName(), project.getNamespace(), project.getPromotedVersions(), project.getStats(), project.getCategory(), project.getDescription(), project.getLastUpdated(), project.getVisibility(), project.getUserActions(), project.getSettings());
+        super(project.getCreatedAt(), project.getName(), project.getNamespace(), project.getStats(), project.getCategory(), project.getDescription(), project.getLastUpdated(), project.getVisibility(), project.getUserActions(), project.getSettings(), project.getPromotedVersions());
         this.id = id;
         this.owner = owner;
         this.members = members;

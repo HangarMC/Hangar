@@ -41,10 +41,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
-import { Prop } from 'vue-property-decorator';
-import { HangarUser } from 'hangar-internal';
+import { Component } from 'nuxt-property-decorator';
 import UserAvatar from '~/components/UserAvatar.vue';
+import { HangarAuthorMixin } from '~/components/mixins';
 
 interface Button {
     icon: String;
@@ -56,10 +55,7 @@ interface Button {
 @Component({
     components: { UserAvatar },
 })
-export default class UserProfile extends Vue {
-    @Prop()
-    user!: HangarUser;
-
+export default class UserProfile extends HangarAuthorMixin {
     get avatarClazz(): String {
         return 'user-avatar-md';
         // todo check org an add 'organization-avatar'

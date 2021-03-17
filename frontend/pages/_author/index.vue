@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
-import { Organization, PaginatedResult, Project } from 'hangar-api';
+import { Organization, PaginatedResult, Project, ProjectCompact } from 'hangar-api';
 import { Context } from '@nuxt/types';
 import { HangarUser } from 'hangar-internal';
 import UserAvatar from '~/components/UserAvatar.vue';
@@ -73,8 +73,8 @@ export default class AuthorPage extends Vue {
     projects!: PaginatedResult<Project>;
     // todo load orgs from server
     orgs: PaginatedResult<Organization> = { result: [], pagination: { offset: 0, count: 0, limit: 20 } };
-    starred!: PaginatedResult<Project>;
-    watching!: PaginatedResult<Project>;
+    starred!: PaginatedResult<ProjectCompact>;
+    watching!: PaginatedResult<ProjectCompact>;
 
     head() {
         return {
@@ -84,10 +84,10 @@ export default class AuthorPage extends Vue {
 
     async asyncData({ $api, route, $util }: Context) {
         const data = await Promise.all([
-            await $api.requestInternal<HangarUser>(`users/${route.params.author}`, false),
-            await $api.request<PaginatedResult<Project>>(`users/${route.params.author}/starred`, false),
-            await $api.request<PaginatedResult<Project>>(`users/${route.params.author}/watching`, false),
-            await $api.request<PaginatedResult<Project>>(`projects`, false, 'get', {
+            $api.requestInternal<HangarUser>(`users/${route.params.author}`, false),
+            $api.request<PaginatedResult<ProjectCompact>>(`users/${route.params.author}/starred`, false),
+            $api.request<PaginatedResult<ProjectCompact>>(`users/${route.params.author}/watching`, false),
+            $api.request<PaginatedResult<Project>>(`projects`, false, 'get', {
                 owner: route.params.author,
             }),
         ]).catch($util.handlePageRequestError);

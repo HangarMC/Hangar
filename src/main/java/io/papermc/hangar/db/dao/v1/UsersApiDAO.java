@@ -1,9 +1,7 @@
 package io.papermc.hangar.db.dao.v1;
 
-import io.papermc.hangar.db.mappers.PromotedVersionMapper;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.project.ProjectCompact;
-import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.customizer.Define;
@@ -17,13 +15,11 @@ import java.util.List;
 public interface UsersApiDAO {
 
     @RegisterConstructorMapper(ProjectCompact.class)
-    @RegisterColumnMapper(PromotedVersionMapper.class)
     @UseStringTemplateEngine
     @SqlQuery("SELECT p.created_at," +
             " p.name," +
             " p.owner_name \"owner\"," +
             " p.slug," +
-            " p.promoted_versions," +
             " p.views," +
             " p.downloads," +
             " p.recent_views," +
@@ -54,13 +50,11 @@ public interface UsersApiDAO {
     long getUserStarredCount(String user, @Define boolean canSeeHidden, @Define Long userId);
 
     @RegisterConstructorMapper(ProjectCompact.class)
-    @RegisterColumnMapper(PromotedVersionMapper.class)
     @UseStringTemplateEngine
     @SqlQuery("SELECT p.created_at," +
             " p.name," +
             " p.owner_name \"owner\"," +
             " p.slug," +
-            " p.promoted_versions," +
             " p.views," +
             " p.downloads," +
             " p.recent_views," +
