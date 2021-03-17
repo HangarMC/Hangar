@@ -3,6 +3,7 @@ package io.papermc.hangar.controller.extras;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@Deprecated(forRemoval = true)
 public class ApiScope {
 
     private final ApiScopeType type;
@@ -65,6 +66,7 @@ public class ApiScope {
         return new ApiScope(ApiScopeType.ORGANIZATION, organizationName);
     }
 
+    @Deprecated(forRemoval = true)
     public enum ApiScopeType {
         GLOBAL,
         PROJECT,

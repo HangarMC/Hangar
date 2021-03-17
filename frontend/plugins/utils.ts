@@ -14,7 +14,6 @@ import { NotifPayload } from '~/store/snackbar';
 import { AuthState } from '~/store/auth';
 
 type Validation = (v: any) => boolean | string;
-type ValidationArgument = (any: any) => Validation;
 
 function handleRequestError(err: AxiosError, error: Context['error'], i18n: Context['app']['i18n']) {
     if (!err.isAxiosError) {
@@ -220,9 +219,10 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
             }
         }
 
-        $vc: Record<string, ValidationArgument> = {
-            require: ((name: string | TranslateResult = 'Field') => (v: string) => !!v || `${name} is required`) as ValidationArgument,
-            requireNonEmptyArray: ((name: string | TranslateResult = 'Field') => (v: any[]) => v.length > 0 || `${name} is required`) as ValidationArgument,
+        $vc = {
+            require: (name: TranslateResult = 'Field') => (v: string) => !!v || i18n.t('validation.required', [name]),
+            maxLength: (maxLength: number) => (v: string) => (!!v && v.length <= maxLength) || i18n.t('validation.maxLength', [maxLength]),
+            requireNonEmptyArray: (name: TranslateResult = 'Field') => (v: any[]) => v.length > 0 || i18n.t('validation.required', [name]),
         };
 
         $v: Record<string, Validation> = {};

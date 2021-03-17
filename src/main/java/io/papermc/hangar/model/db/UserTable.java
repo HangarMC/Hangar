@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import org.jdbi.v3.core.mapper.PropagateNull;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -69,6 +70,7 @@ public class UserTable extends Table implements ProjectOwner {
         this.email = email;
     }
 
+    @Nullable
     public String getTagline() {
         return tagline;
     }

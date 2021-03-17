@@ -28,12 +28,34 @@
                 </v-list>
                 <div>
                     <v-subheader>
-                        <template v-if="user.tagline">{{ user.tagline }}</template>
-                        <!-- TODO tagline edit -->
-                        <!--<template v-else-if="u.isCurrent() || canEditOrgSettings(u, o, so)">{{ $t('author.addTagline') }}</template>-->
-                        <v-btn icon>
-                            <v-icon>mdi-pencil</v-icon>
-                        </v-btn>
+                        <span v-if="user.tagline">{{ user.tagline }}</span>
+                        <span v-else-if="canEditCurrent">{{ $t('author.addTagline') }}</span>
+                        <HangarModal
+                            v-if="canEditCurrent"
+                            ref="taglineModal"
+                            :title="$t('author.editTagline')"
+                            :submit-label="$t('general.change')"
+                            :submit-disabled="taglineForm === user.tagline"
+                            :submit="changeTagline"
+                            @open="taglineForm = user.tagline"
+                        >
+                            <template #activator="{ on, attrs }">
+                                <v-btn icon small color="warning" v-bind="attrs" v-on="on">
+                                    <v-icon small>mdi-pencil</v-icon>
+                                </v-btn>
+                            </template>
+                            <v-text-field
+                                v-model.trim="taglineForm"
+                                counter="100"
+                                :label="$t('author.taglineLabel')"
+                                :rules="[$util.$vc.require($t('author.taglineLabel')), $util.$vc.maxLength(100)]"
+                            />
+                            <template #other-btns>
+                                <v-btn color="info" text :loading="loading.resetTagline" :disabled="!user.tagline" @click.stop="resetTagline">{{
+                                    $t('general.reset')
+                                }}</v-btn>
+                            </template>
+                        </HangarModal>
                     </v-subheader>
                 </div>
             </v-col>
@@ -41,7 +63,7 @@
             <v-col cols="2">
                 <v-subheader>{{ $tc('author.numProjects', user.projectCount, [user.projectCount]) }}</v-subheader>
                 <v-subheader>{{ $t('author.memberSince', [$util.prettyDate(user.joinDate)]) }}</v-subheader>
-                <a :href="$util.forumUrl(user.name)">{{ $t('author.viewOnForums') }}<v-icon>mdi-open-in-new</v-icon></a>
+                <a :href="$util.forumUrl(user.name)">{{ $t('author.viewOnForums') }}<v-icon small>mdi-open-in-new</v-icon></a>
             </v-col>
         </v-row>
         <v-divider />
@@ -54,6 +76,7 @@ import { Component, Vue } from 'nuxt-property-decorator';
 import { HangarUser } from 'hangar-internal';
 import { Context } from '@nuxt/types';
 import UserAvatar from '../components/UserAvatar.vue';
+import HangarModal from '~/components/modals/HangarModal.vue';
 
 interface Button {
     icon: string;
@@ -64,10 +87,14 @@ interface Button {
 }
 
 @Component({
-    components: { UserAvatar },
+    components: { HangarModal, UserAvatar },
 })
 export default class UserParentPage extends Vue {
     user!: HangarUser;
+    taglineForm: string | null = null;
+    loading = {
+        resetTagline: false,
+    };
 
     get buttons(): Button[] {
         const buttons = [] as Button[];
@@ -80,9 +107,42 @@ export default class UserParentPage extends Vue {
         return buttons;
     }
 
+    get canEditCurrent() {
+        return this.user.id === this.$store.state.auth.user.id /* || org perms */;
+    }
+
     get avatarClazz(): String {
         return 'user-avatar-md';
         // todo check org an add 'organization-avatar'
+    }
+
+    changeTagline() {
+        return this.$api
+            .requestInternal(`users/${this.user.id}/settings/tagline`, true, 'post', {
+                content: this.taglineForm,
+            })
+            .then(() => {
+                this.$nuxt.refresh();
+            })
+            .catch(this.$util.handleRequestError);
+    }
+
+    $refs!: {
+        taglineModal: HangarModal;
+    };
+
+    resetTagline() {
+        this.loading.resetTagline = true;
+        this.$api
+            .requestInternal(`users/${this.user.id}/settings/resetTagline`, true, 'post')
+            .then(() => {
+                this.$refs.taglineModal.close();
+                this.$nuxt.refresh();
+            })
+            .catch(this.$util.handleRequestError)
+            .finally(() => {
+                this.loading.resetTagline = false;
+            });
     }
 
     async asyncData({ $api, $util, params }: Context) {

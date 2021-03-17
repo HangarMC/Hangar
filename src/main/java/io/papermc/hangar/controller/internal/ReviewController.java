@@ -1,7 +1,6 @@
 package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.model.common.NamedPermission;
-import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.common.ReviewAction;
 import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.internal.api.requests.versions.ReviewMessage;
@@ -28,7 +27,7 @@ import java.util.List;
 @Controller
 @Secured("ROLE_USER")
 @RequestMapping(path = "/api/internal/reviews")
-@PermissionRequired(type = PermissionType.GLOBAL, perms = NamedPermission.REVIEWER)
+@PermissionRequired(perms = NamedPermission.REVIEWER)
 public class ReviewController {
 
     private final ReviewService reviewService;

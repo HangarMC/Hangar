@@ -6,6 +6,7 @@ const msgs: LocaleMessageObject = {
         submit: 'Submit',
         save: 'Save',
         comment: 'Comment',
+        change: 'Change',
         donate: 'Donate',
         continue: 'Continue',
         create: 'Create',
@@ -25,8 +26,8 @@ const msgs: LocaleMessageObject = {
         projectSearch: {
             query: 'Search in {0} projects, proudly made by the community...',
             relevanceSort: 'Sort with relevance',
-            noProjects: 'There are no projects. :/',
-            noProjectsFound: 'Found 0 projects. :/',
+            noProjects: 'There are no projects. 😢',
+            noProjectsFound: 'Found 0 projects. 😢',
         },
         subtitle: 'A Minecraft package repository',
         sponsoredBy: 'Sponsored by',
@@ -67,9 +68,9 @@ const msgs: LocaleMessageObject = {
     },
     project: {
         stargazers: 'Stargazers',
-        noStargazers: 'There are no stargazers on this project yet :/',
+        noStargazers: 'There are no stargazers on this project yet 😢',
         watchers: 'Watchers',
-        noWatchers: 'There are no watchers on this project yet :/',
+        noWatchers: 'There are no watchers on this project yet 😢',
         members: 'Members',
         category: {
             info: 'Category: {0}',
@@ -394,6 +395,8 @@ const msgs: LocaleMessageObject = {
         stars: 'Stars',
         orgs: 'Organizations',
         viewOnForums: 'View on forums ',
+        taglineLabel: 'User Tagline',
+        editTagline: 'Edit Tagline',
         memberSince: 'A member since {0}',
         numProjects: 'No projects | {0} project | {0} projects',
         addTagline: 'Add a tagline',
@@ -407,6 +410,9 @@ const msgs: LocaleMessageObject = {
             apiKeys: 'API Keys',
             activity: 'User Activity',
             admin: 'User Admin',
+        },
+        error: {
+            invalidTagline: 'Invalid tagline',
         },
     },
     linkout: {
@@ -511,7 +517,10 @@ const msgs: LocaleMessageObject = {
         addVersion: 'Add Version',
         saveChanges: 'Save Changes',
     },
-    message: 'Good morning!',
+    validation: {
+        required: '{0} is required',
+        maxLength: 'Max length is {0}',
+    },
 };
 
 export default msgs;

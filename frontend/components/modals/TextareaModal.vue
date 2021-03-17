@@ -6,7 +6,7 @@
         <v-card>
             <v-card-title>{{ title }}</v-card-title>
             <v-card-text>
-                <v-form ref="messageForm" v-model="validForm">
+                <v-form ref="modalForm" v-model="validForm">
                     <v-textarea
                         v-model.trim="message"
                         autofocus
@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch } from 'nuxt-property-decorator';
+import { Component, Prop } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
 import { TranslateResult } from 'vue-i18n';
 import { HangarFormModal } from '~/components/mixins';
@@ -56,19 +56,6 @@ export default class TextareaModal extends HangarFormModal {
             this.loading = false;
             this.dialog = false;
         });
-    }
-
-    @Watch('dialog')
-    onToggle(val: boolean) {
-        if (val) {
-            this.loading = false;
-            this.$nextTick(() => {
-                if (document.activeElement instanceof HTMLElement) {
-                    document.activeElement.blur();
-                }
-                this.$refs.messageForm.reset();
-            });
-        }
     }
 }
 </script>

@@ -60,6 +60,11 @@ public class UserService extends HangarService {
             hangarUsersDAO.setNotStarred(projectId, getHangarPrincipal().getUserId());
         }
     }
+
+    public void updateUser(UserTable userTable) {
+        userDAO.update(userTable);
+    }
+
     @Nullable
     private <T> UserTable getUserTable(@Nullable T identifier, @NotNull Function<T, UserTable> userTableFunction) {
         if (identifier == null) {

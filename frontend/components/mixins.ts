@@ -85,10 +85,17 @@ export class HangarModal extends Vue {
     activatorClass!: string;
 
     @Watch('dialog')
-    onToggleView() {
-        if (typeof this.$refs.modalForm !== 'undefined') {
-            // @ts-ignore
-            this.$refs.modalForm.reset();
+    onToggleView(val: boolean) {
+        if (!val) {
+            this.$nextTick(() => {
+                if (document.activeElement instanceof HTMLElement) {
+                    document.activeElement.blur();
+                }
+                if (typeof this.$refs.modalForm !== 'undefined') {
+                    // @ts-ignore
+                    this.$refs.modalForm.reset();
+                }
+            });
         }
     }
 }

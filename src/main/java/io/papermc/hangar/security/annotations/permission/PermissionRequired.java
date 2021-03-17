@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface PermissionRequired {
-    PermissionType type();
+    PermissionType type() default PermissionType.GLOBAL;
     NamedPermission[] perms();
     String args() default "{}";
 }
