@@ -104,7 +104,7 @@
                         <v-row>
                             <v-col cols="12">
                                 <v-text-field
-                                    v-model.trim="form.links.homepage"
+                                    v-model.trim="form.settings.homepage"
                                     dense
                                     hide-details
                                     filled
@@ -114,7 +114,7 @@
                             </v-col>
                             <v-col cols="12">
                                 <v-text-field
-                                    v-model.trim="form.links.issues"
+                                    v-model.trim="form.settings.issues"
                                     dense
                                     hide-details
                                     filled
@@ -124,7 +124,7 @@
                             </v-col>
                             <v-col cols="12">
                                 <v-text-field
-                                    v-model.trim="form.links.source"
+                                    v-model.trim="form.settings.source"
                                     dense
                                     hide-details
                                     filled
@@ -134,7 +134,7 @@
                             </v-col>
                             <v-col cols="12">
                                 <v-text-field
-                                    v-model.trim="form.links.support"
+                                    v-model.trim="form.settings.support"
                                     dense
                                     hide-details
                                     filled
@@ -151,7 +151,7 @@
                         <v-row>
                             <v-col cols="12" :md="isCustomLicense ? 4 : 6">
                                 <v-select
-                                    v-model="form.license.type"
+                                    v-model="form.settings.license.type"
                                     dense
                                     hide-details
                                     filled
@@ -161,10 +161,16 @@
                                 />
                             </v-col>
                             <v-col v-if="isCustomLicense" cols="12" md="8">
-                                <v-text-field v-model.trim="form.license.customName" dense hide-details filled :label="$t('project.new.step3.customName')" />
+                                <v-text-field
+                                    v-model.trim="form.settings.license.customName"
+                                    dense
+                                    hide-details
+                                    filled
+                                    :label="$t('project.new.step3.customName')"
+                                />
                             </v-col>
                             <v-col cols="12" :md="isCustomLicense ? 12 : 6">
-                                <v-text-field v-model.trim="form.license.url" dense hide-details filled :label="$t('project.new.step3.url')" />
+                                <v-text-field v-model.trim="form.settings.license.url" dense hide-details filled :label="$t('project.new.step3.url')" />
                             </v-col>
                         </v-row>
                         <div class="text-h6 pt-5">
@@ -175,7 +181,7 @@
                         <v-row>
                             <v-col cols="12">
                                 <v-combobox
-                                    v-model="form.keywords"
+                                    v-model="form.settings.keywords"
                                     small-chips
                                     deletable-chips
                                     multiple
@@ -230,31 +236,17 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
-import { ProjectOwner } from 'hangar-internal';
+import { ProjectOwner, ProjectSettingsForm } from 'hangar-internal';
 import { AxiosError } from 'axios';
 import { TranslateResult } from 'vue-i18n';
 import StepperStepContent from '~/components/steppers/StepperStepContent.vue';
 import { RootState } from '~/store';
 import { ProjectCategory } from '~/types/enums';
 
-interface NewProjectForm {
+interface NewProjectForm extends ProjectSettingsForm {
     ownerId: ProjectOwner['userId'];
     name: string;
-    description: string;
-    category: ProjectCategory;
     pageContent: string | null;
-    links: {
-        homepage: string | null;
-        issues: string | null;
-        source: string | null;
-        support: string | null;
-    };
-    license: {
-        type: string | null;
-        url: string | null;
-        customName: string | null;
-    };
-    keywords: string[];
 }
 
 @Component({
@@ -272,12 +264,13 @@ export default class NewPage extends Vue {
     projectError = false;
     projectOwners!: ProjectOwner[];
     error = null as string | null;
-    form = ({
+    form: NewProjectForm = {
         category: ProjectCategory.ADMIN_TOOLS,
-        links: {},
-        license: {},
-        keywords: [],
-    } as unknown) as NewProjectForm;
+        settings: ({
+            license: {} as ProjectSettingsForm['settings']['license'],
+            keywords: [],
+        } as unknown) as ProjectSettingsForm['settings'],
+    } as NewProjectForm;
 
     nameErrors: TranslateResult[] = [];
 
@@ -294,7 +287,7 @@ export default class NewPage extends Vue {
     }
 
     get isCustomLicense() {
-        return this.form.license.type === '(custom)';
+        return this.form.settings.license.type === '(custom)';
     }
 
     get noBasicSettingsError() {

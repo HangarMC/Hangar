@@ -1,9 +1,12 @@
 package io.papermc.hangar.service.internal.projects;
 
+import io.papermc.hangar.db.customtypes.LoggedActionType;
+import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.OrganizationTable;
@@ -15,6 +18,7 @@ import io.papermc.hangar.model.internal.HangarProject;
 import io.papermc.hangar.model.internal.HangarProject.HangarProjectInfo;
 import io.papermc.hangar.model.internal.HangarProjectFlag;
 import io.papermc.hangar.model.internal.HangarProjectPage;
+import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.VisibilityService.ProjectVisibilityService;
@@ -23,6 +27,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -87,6 +92,28 @@ public class ProjectService extends HangarService {
         HangarProjectInfo info = hangarProjectsDAO.getHangarProjectInfo(project.getLeft());
         Map<Long, HangarProjectPage> pages = projectPageService.getProjectPages(project.getLeft());
         return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, "", "", info, pages.values());
+    }
+
+    public void saveSettings(String author, String slug, ProjectSettingsForm settingsForm) {
+        ProjectTable projectTable = getProjectTable(author, slug);
+        if (projectTable == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+        projectTable.setCategory(settingsForm.getCategory());
+        projectTable.setKeywords(settingsForm.getSettings().getKeywords());
+        projectTable.setHomepage(settingsForm.getSettings().getHomepage());
+        projectTable.setIssues(settingsForm.getSettings().getIssues());
+        projectTable.setSource(settingsForm.getSettings().getSource());
+        projectTable.setSupport(settingsForm.getSettings().getSupport());
+        projectTable.setLicenseName(settingsForm.getSettings().getLicense().getName());
+        projectTable.setLicenseUrl(settingsForm.getSettings().getLicense().getUrl());
+        projectTable.setForumSync(settingsForm.getSettings().isForumSync());
+        projectTable.setDescription(settingsForm.getDescription());
+        projectsDAO.update(projectTable);
+        // TODO is icon change?
+        // TODO role updates
+        refreshHomeProjects();
+        userActionLogService.project(LoggedActionType.PROJECT_SETTINGS_CHANGED.with(ProjectContext.of(projectTable.getId())), "", "");
     }
 
     // TODO implement flag view

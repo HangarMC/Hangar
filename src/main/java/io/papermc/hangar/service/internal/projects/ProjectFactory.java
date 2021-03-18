@@ -7,7 +7,7 @@ import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.db.members.ProjectMemberTable;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.projects.ProjectTable;
-import io.papermc.hangar.model.internal.api.requests.projects.NewProject;
+import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.roles.MemberService;
@@ -37,7 +37,7 @@ public class ProjectFactory extends HangarService {
         this.usersApiService = usersApiService;
     }
 
-    public ProjectTable createProject(NewProject newProject) {
+    public ProjectTable createProject(NewProjectForm newProject) {
         ProjectOwner projectOwner = projectService.getProjectOwner(newProject.getOwnerId());
         if (projectOwner == null) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "error.project.ownerNotFound");

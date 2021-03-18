@@ -7,7 +7,7 @@ import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.ProjectIdentified;
 import io.papermc.hangar.model.db.Table;
-import io.papermc.hangar.model.internal.api.requests.projects.NewProject;
+import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
 import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
@@ -36,21 +36,21 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
     private String licenseUrl;
     private boolean forumSync;
 
-    public ProjectTable(ProjectOwner projectOwner, NewProject newProject) {
-        this.name = newProject.getName();
+    public ProjectTable(ProjectOwner projectOwner, NewProjectForm form) {
+        this.name = form.getName();
         this.slug = StringUtils.slugify(this.name);
         this.ownerName = projectOwner.getName();
         this.ownerId = projectOwner.getUserId();
-        this.category = newProject.getCategory();
-        this.description = newProject.getDescription();
+        this.category = form.getCategory();
+        this.description = form.getDescription();
         this.visibility = Visibility.NEW;
-        this.homepage = newProject.getHomepageUrl();
-        this.issues = newProject.getIssuesUrl();
-        this.source = newProject.getSourceUrl();
-        this.support = newProject.getSupportUrl();
-        this.keywords = newProject.getKeywords();
-        this.licenseName = newProject.getLicenseName();
-        this.licenseUrl = newProject.getLicenseUrl();
+        this.homepage = form.getSettings().getHomepage();
+        this.issues = form.getSettings().getIssues();
+        this.source = form.getSettings().getSource();
+        this.support = form.getSettings().getSupport();
+        this.keywords = form.getSettings().getKeywords();
+        this.licenseName = form.getSettings().getLicense().getName();
+        this.licenseUrl = form.getSettings().getLicense().getUrl();
     }
 
     protected ProjectTable(ProjectTable other) {

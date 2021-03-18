@@ -4,7 +4,7 @@
             <v-card>
                 <v-card-title class="sticky">
                     {{ $t('project.settings.title') }}
-                    <v-btn class="flex-right" color="success" @click="save">
+                    <v-btn class="flex-right" color="success" :loading="loading.save" @click="save">
                         <v-icon left>mdi-check</v-icon>
                         {{ $t('project.settings.save') }}
                     </v-btn>
@@ -30,7 +30,7 @@
                         </h2>
                         <p>{{ $t('project.settings.keywordsSub') }}</p>
                         <v-combobox
-                            v-model="form.keywords"
+                            v-model="form.settings.keywords"
                             small-chips
                             deletable-chips
                             multiple
@@ -47,7 +47,7 @@
                             {{ $t('project.settings.homepage') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
                         </h2>
                         <p>{{ $t('project.settings.homepageSub') }}</p>
-                        <v-text-field v-model.trim="form.links.homepage" dense hide-details filled prepend-inner-icon="mdi-home-search" />
+                        <v-text-field v-model.trim="form.settings.homepage" dense hide-details filled prepend-inner-icon="mdi-home-search" />
                     </div>
                     <v-divider />
                     <div>
@@ -55,7 +55,7 @@
                             {{ $t('project.settings.issues') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
                         </h2>
                         <p>{{ $t('project.settings.issuesSub') }}</p>
-                        <v-text-field v-model.trim="form.links.issues" dense hide-details filled prepend-inner-icon="mdi-bug" />
+                        <v-text-field v-model.trim="form.settings.issues" dense hide-details filled prepend-inner-icon="mdi-bug" />
                     </div>
                     <v-divider />
                     <div>
@@ -63,7 +63,7 @@
                             {{ $t('project.settings.source') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
                         </h2>
                         <p>{{ $t('project.settings.sourceSub') }}</p>
-                        <v-text-field v-model.trim="form.links.source" dense hide-details filled prepend-inner-icon="mdi-source-branch" />
+                        <v-text-field v-model.trim="form.settings.source" dense hide-details filled prepend-inner-icon="mdi-source-branch" />
                     </div>
                     <v-divider />
                     <div>
@@ -71,10 +71,11 @@
                             {{ $t('project.settings.support') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
                         </h2>
                         <p>{{ $t('project.settings.supportSub') }}</p>
-                        <v-text-field v-model.trim="form.links.support" dense hide-details filled prepend-inner-icon="mdi-face-agent" />
+                        <v-text-field v-model.trim="form.settings.support" dense hide-details filled prepend-inner-icon="mdi-face-agent" />
                     </div>
                     <v-divider />
                     <div>
+                        <!--TODO license stuff is outta whack. Different object schema on request and post-->
                         <h2>
                             {{ $t('project.settings.license') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
                         </h2>
@@ -82,7 +83,7 @@
                         <v-row>
                             <v-col cols="12" :md="isCustomLicense ? 4 : 6">
                                 <v-select
-                                    v-model="form.license.type"
+                                    v-model="form.settings.license.type"
                                     dense
                                     hide-details
                                     filled
@@ -92,10 +93,16 @@
                                 />
                             </v-col>
                             <v-col v-if="isCustomLicense" cols="12" md="8">
-                                <v-text-field v-model.trim="form.license.customName" dense hide-details filled :label="$t('project.settings.licenceCustom')" />
+                                <v-text-field
+                                    v-model.trim="form.settings.license.customName"
+                                    dense
+                                    hide-details
+                                    filled
+                                    :label="$t('project.settings.licenceCustom')"
+                                />
                             </v-col>
                             <v-col cols="12" :md="isCustomLicense ? 12 : 6">
-                                <v-text-field v-model.trim="form.license.url" dense hide-details filled :label="$t('project.settings.licenceUrl')" />
+                                <v-text-field v-model.trim="form.settings.license.url" dense hide-details filled :label="$t('project.settings.licenceUrl')" />
                             </v-col>
                         </v-row>
                     </div>
@@ -107,7 +114,7 @@
                                 <p>{{ $t('project.settings.forumSub') }}</p>
                             </v-col>
                             <v-col cols="12" md="4">
-                                <v-switch v-model="form.forumSync"></v-switch>
+                                <v-switch v-model="form.settings.forumSync"></v-switch>
                             </v-col>
                         </v-row>
                     </div>
@@ -189,7 +196,7 @@
                     <v-divider />
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn color="success" @click="save">
+                    <v-btn color="success" :loading="loading.save" @click="save">
                         <v-icon left>mdi-check</v-icon>
                         {{ $t('project.settings.save') }}
                     </v-btn>
@@ -211,6 +218,7 @@
 
 <script lang="ts">
 import { Component } from 'nuxt-property-decorator';
+import { ProjectSettingsForm } from 'hangar-internal';
 import { ProjectPermission } from '~/utils/perms';
 import { NamedPermission, ProjectCategory } from '~/types/enums';
 import { RootState } from '~/store';
@@ -224,33 +232,32 @@ import { HangarProjectMixin } from '~/components/mixins';
 export default class ProjectManagePage extends HangarProjectMixin {
     apiKey = '';
     newName = '';
-    form = {
-        keywords: [] as string[],
-        links: {
-            homepage: null as string | null,
-            issues: null as string | null,
-            source: null as string | null,
-            support: null as string | null,
+    form: ProjectSettingsForm = {
+        settings: {
+            homepage: null,
+            issues: null,
+            source: null,
+            support: null,
+            keywords: [],
+            license: {
+                type: '',
+                url: '',
+                customName: '',
+            },
+            forumSync: false,
         },
-        forumSync: false,
         description: '',
-        license: {
-            type: '',
-            url: '',
-            customName: '',
-        },
         category: ProjectCategory.UNDEFINED,
     };
 
+    loading = {
+        save: false,
+    };
+
     created() {
-        this.form.keywords = this.project.settings.keywords;
-        this.form.links.homepage = this.project.settings.homepage;
-        this.form.links.issues = this.project.settings.issues;
-        this.form.links.source = this.project.settings.sources;
-        this.form.links.support = this.project.settings.support;
+        Object.assign(this.form.settings, this.project.settings);
+        Object.assign(this.form.settings.license, this.project.settings.license);
         this.form.description = this.project.description;
-        this.form.forumSync = this.project.settings.forumSync;
-        Object.assign(this.form.license, this.project.settings.license);
         this.form.category = this.project.category;
     }
 
@@ -259,7 +266,7 @@ export default class ProjectManagePage extends HangarProjectMixin {
     }
 
     get isCustomLicense() {
-        return this.form.license.type === '(custom)';
+        return this.form.settings.license.type === '(custom)';
     }
 
     // TODO do we want to get those from the server? Jake: I think so, it'd be nice to admins to be able to configure default licenses, but not needed for MVP
@@ -268,7 +275,20 @@ export default class ProjectManagePage extends HangarProjectMixin {
     }
 
     // TODO implement
-    save() {}
+    save() {
+        this.loading.save = true;
+        this.$api
+            .requestInternal(`projects/project/${this.$route.params.author}/${this.$route.params.slug}/settings`, true, 'post', {
+                ...this.form,
+            })
+            .then(() => {
+                this.$nuxt.refresh();
+            })
+            .catch(this.$util.handleRequestError)
+            .finally(() => {
+                this.loading.save = false;
+            });
+    }
 
     rename() {}
 

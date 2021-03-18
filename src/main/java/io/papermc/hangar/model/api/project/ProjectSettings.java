@@ -1,8 +1,11 @@
 package io.papermc.hangar.model.api.project;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.papermc.hangar.controller.validations.Validate;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
 public class ProjectSettings {
@@ -12,9 +15,12 @@ public class ProjectSettings {
     private final String source;
     private final String support;
     private final ProjectLicense license;
+    @NotNull
+    @Validate(SpEL = "#root.size le @hangarConfig.projects.maxKeywords", message = "project.new.error.tooManyKeywords")
     private final Collection<String> keywords;
     private final boolean forumSync;
 
+    @JsonCreator
     public ProjectSettings(@Nullable String homepage, @Nullable String issues, @Nullable String source, @Nullable String support, @Nullable @Nested("license") ProjectLicense license, Collection<String> keywords, boolean forumSync) {
         this.homepage = homepage;
         this.issues = issues;

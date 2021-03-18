@@ -1,11 +1,15 @@
 package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.controller.HangarController;
+import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.HangarProject;
-import io.papermc.hangar.model.internal.api.requests.projects.NewProject;
+import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
+import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
 import io.papermc.hangar.model.internal.api.responses.PossibleProjectOwner;
+import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
@@ -64,7 +68,7 @@ public class ProjectController extends HangarController {
 
     @Unlocked
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> createProject(@RequestBody @Valid NewProject newProject) {
+    public ResponseEntity<String> createProject(@RequestBody @Valid NewProjectForm newProject) {
         ProjectTable projectTable = projectFactory.createProject(newProject);
         return ResponseEntity.ok(projectTable.getUrl());
     }
@@ -76,6 +80,15 @@ public class ProjectController extends HangarController {
         return ResponseEntity.ok(projectService.getHangarProject(author, slug));
     }
 
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
+    @PostMapping(path = "/project/{author}/{slug}/settings", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void saveProjectSettings(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody ProjectSettingsForm settingsForm) {
+        projectService.saveSettings(author, slug, settingsForm);
+    }
+
+    @Unlocked
     @VisibilityRequired(type = Type.PROJECT, args = "{#projectId}")
     @PostMapping("/project/{id}/star/{state}")
     @ResponseStatus(HttpStatus.OK)
@@ -83,6 +96,7 @@ public class ProjectController extends HangarController {
         userService.toggleStarred(projectId, state);
     }
 
+    @Unlocked
     @VisibilityRequired(type = Type.PROJECT, args = "{#projectId}")
     @PostMapping("/project/{id}/watch/{state}")
     @ResponseStatus(HttpStatus.OK)
