@@ -94,7 +94,7 @@
                             </v-col>
                             <v-col v-if="isCustomLicense" cols="12" md="8">
                                 <v-text-field
-                                    v-model.trim="form.settings.license.customName"
+                                    v-model.trim="form.settings.license.name"
                                     dense
                                     hide-details
                                     filled
@@ -240,9 +240,9 @@ export default class ProjectManagePage extends HangarProjectMixin {
             support: null,
             keywords: [],
             license: {
-                type: '',
-                url: '',
-                customName: '',
+                type: null,
+                url: null,
+                name: null,
             },
             forumSync: false,
         },
@@ -256,7 +256,16 @@ export default class ProjectManagePage extends HangarProjectMixin {
 
     created() {
         Object.assign(this.form.settings, this.project.settings);
-        Object.assign(this.form.settings.license, this.project.settings.license);
+        this.$set(this.form.settings, 'license', {});
+        const index = this.project.settings.license.name ? this.licences.indexOf(this.project.settings.license.name) : -2;
+        if (this.project.settings.license.name && index > -1 && index < this.licences.length - 1) {
+            // license is NOT custom
+            this.$set(this.form.settings.license, 'type', this.project.settings.license.name);
+        } else if (this.project.settings.license.name) {
+            this.$set(this.form.settings.license, 'type', '(custom)');
+            this.$set(this.form.settings.license, 'name', this.project.settings.license.name);
+        }
+        this.$set(this.form.settings.license, 'url', this.project.settings.license.url);
         this.form.description = this.project.description;
         this.form.category = this.project.category;
     }

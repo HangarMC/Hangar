@@ -74,9 +74,9 @@ declare module 'hangar-internal' {
             support: string | null;
             keywords: string[];
             license: {
-                type: string;
-                url: string;
-                customName: string;
+                type?: string | null;
+                url: string | null;
+                name: string | null;
             };
             forumSync: false;
         };

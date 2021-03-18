@@ -21,7 +21,7 @@ declare module 'hangar-api' {
         watching: boolean;
     }
 
-    interface Licence {
+    interface License {
         name: string | null;
         url: string | null;
     }
@@ -31,7 +31,7 @@ declare module 'hangar-api' {
         issues: string | null;
         sources: string | null;
         support: string | null;
-        license: Licence | null;
+        license: License;
         keywords: string[];
         forumSync: boolean;
     }

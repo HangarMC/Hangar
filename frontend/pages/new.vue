@@ -161,13 +161,7 @@
                                 />
                             </v-col>
                             <v-col v-if="isCustomLicense" cols="12" md="8">
-                                <v-text-field
-                                    v-model.trim="form.settings.license.customName"
-                                    dense
-                                    hide-details
-                                    filled
-                                    :label="$t('project.new.step3.customName')"
-                                />
+                                <v-text-field v-model.trim="form.settings.license.name" dense hide-details filled :label="$t('project.new.step3.customName')" />
                             </v-col>
                             <v-col cols="12" :md="isCustomLicense ? 12 : 6">
                                 <v-text-field v-model.trim="form.settings.license.url" dense hide-details filled :label="$t('project.new.step3.url')" />

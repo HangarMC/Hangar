@@ -20,7 +20,7 @@ public class ProjectLicense {
 
     @JsonCreator(mode = Mode.DELEGATING)
     public ProjectLicense(Map<String, String> map) {
-        String licenseName = StringUtils.stringOrNull(map.get("customName"));
+        String licenseName = StringUtils.stringOrNull(map.get("name"));
         if (licenseName == null) {
             licenseName = map.get("type");
         }
