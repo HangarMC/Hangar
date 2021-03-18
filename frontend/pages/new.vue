@@ -75,7 +75,7 @@
                                 <v-col cols="12" md="4">
                                     <v-select
                                         v-model="form.category"
-                                        :append-icon="categoryIcon"
+                                        :prepend-inner-icon="categoryIcon"
                                         :items="$store.getters.visibleCategories"
                                         dense
                                         filled

@@ -32,6 +32,7 @@ declare module 'hangar-api' {
         sources: string | null;
         support: string | null;
         license: Licence | null;
+        keywords: string[];
         forumSync: boolean;
     }
 

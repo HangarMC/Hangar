@@ -4,8 +4,8 @@
             <v-card>
                 <v-card-title class="sticky">
                     {{ $t('project.settings.title') }}
-                    <v-btn @click="save">
-                        <v-icon>mdi-check</v-icon>
+                    <v-btn class="flex-right" color="success" @click="save">
+                        <v-icon left>mdi-check</v-icon>
                         {{ $t('project.settings.save') }}
                     </v-btn>
                 </v-card-title>
@@ -15,7 +15,7 @@
                         <p>{{ $t('project.settings.categorySub') }}</p>
                         <v-select
                             v-model="form.category"
-                            :append-icon="categoryIcon"
+                            :prepend-inner-icon="categoryIcon"
                             :items="$store.getters.visibleCategories"
                             dense
                             filled
@@ -38,7 +38,7 @@
                             hide-details
                             filled
                             :delimiters="[' ', ',', '.']"
-                            append-icon="mdi-file-word-box"
+                            prepend-inner-icon="mdi-file-word-box"
                         />
                     </div>
                     <v-divider />
@@ -47,7 +47,7 @@
                             {{ $t('project.settings.homepage') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
                         </h2>
                         <p>{{ $t('project.settings.homepageSub') }}</p>
-                        <v-text-field v-model.trim="form.links.homepage" dense hide-details filled append-icon="mdi-home-search" />
+                        <v-text-field v-model.trim="form.links.homepage" dense hide-details filled prepend-inner-icon="mdi-home-search" />
                     </div>
                     <v-divider />
                     <div>
@@ -55,7 +55,7 @@
                             {{ $t('project.settings.issues') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
                         </h2>
                         <p>{{ $t('project.settings.issuesSub') }}</p>
-                        <v-text-field v-model.trim="form.links.issues" dense hide-details filled append-icon="mdi-bug" />
+                        <v-text-field v-model.trim="form.links.issues" dense hide-details filled prepend-inner-icon="mdi-bug" />
                     </div>
                     <v-divider />
                     <div>
@@ -63,7 +63,7 @@
                             {{ $t('project.settings.source') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
                         </h2>
                         <p>{{ $t('project.settings.sourceSub') }}</p>
-                        <v-text-field v-model.trim="form.links.source" dense hide-details filled append-icon="mdi-source-branch" />
+                        <v-text-field v-model.trim="form.links.source" dense hide-details filled prepend-inner-icon="mdi-source-branch" />
                     </div>
                     <v-divider />
                     <div>
@@ -71,7 +71,7 @@
                             {{ $t('project.settings.support') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
                         </h2>
                         <p>{{ $t('project.settings.supportSub') }}</p>
-                        <v-text-field v-model.trim="form.links.support" dense hide-details filled append-icon="mdi-face-agent" />
+                        <v-text-field v-model.trim="form.links.support" dense hide-details filled prepend-inner-icon="mdi-face-agent" />
                     </div>
                     <v-divider />
                     <div>
@@ -107,7 +107,7 @@
                                 <p>{{ $t('project.settings.forumSub') }}</p>
                             </v-col>
                             <v-col cols="12" md="4">
-                                <v-switch v-model="form.forumPost"></v-switch>
+                                <v-switch v-model="form.forumSync"></v-switch>
                             </v-col>
                         </v-row>
                     </div>
@@ -115,7 +115,7 @@
                     <div>
                         <h2>{{ $t('project.settings.description') }}</h2>
                         <p>{{ $t('project.settings.descriptionSub') }}</p>
-                        <v-text-field v-model.trim="form.description" dense filled clearable append-icon="mdi-card-text" />
+                        <v-text-field v-model.trim="form.description" dense filled clearable prepend-inner-icon="mdi-card-text" />
                     </div>
                     <v-divider />
                     <div>
@@ -123,10 +123,14 @@
                         <v-row>
                             <v-col cols="12" md="8">
                                 <p>{{ $t('project.settings.iconSub') }}</p>
-                                <v-file-input chips show-size></v-file-input>
+                                <v-file-input chips show-size dense filled prepend-inner-icon="$file" prepend-icon="">
+                                    <template #append-outer>
+                                        <v-btn @click="uploadIcon">{{ $t('project.settings.iconUpload') }}</v-btn>
+                                    </template>
+                                </v-file-input>
                             </v-col>
                             <v-col cols="12" md="4">
-                                <v-btn @click="uploadIcon">{{ $t('project.settings.iconUpload') }}</v-btn>
+                                <!-- preview image-->
                             </v-col>
                         </v-row>
                     </div>
@@ -134,12 +138,13 @@
                     <div>
                         <h2>{{ $t('project.settings.apiKey') }}</h2>
                         <v-row>
-                            <v-col cols="12" md="8">
+                            <v-col cols="12">
                                 <p>{{ $t('project.settings.apiKeySub') }}</p>
-                                <v-text-field v-model.trim="apiKey" dense hide-details filled />
-                            </v-col>
-                            <v-col cols="12" md="4">
-                                <v-btn @click="generateApiKey">{{ $t('project.settings.apiKeyGenerate') }}</v-btn>
+                                <v-text-field v-model.trim="apiKey" dense hide-details filled>
+                                    <template #append-outer>
+                                        <v-btn @click="generateApiKey">{{ $t('project.settings.apiKeyGenerate') }}</v-btn>
+                                    </template>
+                                </v-text-field>
                             </v-col>
                         </v-row>
                     </div>
@@ -147,12 +152,13 @@
                     <div>
                         <h2>{{ $t('project.settings.rename') }}</h2>
                         <v-row>
-                            <v-col cols="12" md="8">
+                            <v-col cols="12">
                                 <p>{{ $t('project.settings.renameSub') }}</p>
-                                <v-text-field v-model.trim="newName" dense hide-details filled />
-                            </v-col>
-                            <v-col cols="12" md="4">
-                                <v-btn color="warning" @click="rename">{{ $t('project.settings.rename') }}</v-btn>
+                                <v-text-field v-model.trim="newName" dense hide-details filled>
+                                    <template #append-outer>
+                                        <v-btn color="warning" @click="rename">{{ $t('project.settings.rename') }}</v-btn>
+                                    </template>
+                                </v-text-field>
                             </v-col>
                         </v-row>
                     </div>
@@ -169,7 +175,7 @@
                         </v-row>
                     </div>
                     <v-divider />
-                    <div>
+                    <div class="error darken-4">
                         <h2>{{ $t('project.settings.hardDelete') }}</h2>
                         <v-row>
                             <v-col cols="12" md="8">
@@ -183,8 +189,8 @@
                     <v-divider />
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn @click="save">
-                        <v-icon>mdi-check</v-icon>
+                    <v-btn color="success" @click="save">
+                        <v-icon left>mdi-check</v-icon>
                         {{ $t('project.settings.save') }}
                     </v-btn>
                 </v-card-actions>
@@ -210,6 +216,7 @@ import { NamedPermission, ProjectCategory } from '~/types/enums';
 import { RootState } from '~/store';
 import UserSelectionForm from '~/components/UserSelectionForm.vue';
 import { HangarProjectMixin } from '~/components/mixins';
+
 @Component({
     components: { UserSelectionForm },
 })
@@ -218,13 +225,14 @@ export default class ProjectManagePage extends HangarProjectMixin {
     apiKey = '';
     newName = '';
     form = {
-        keywords: '',
+        keywords: [] as string[],
         links: {
-            homepage: '',
-            issues: '',
-            source: '',
-            support: '',
+            homepage: null as string | null,
+            issues: null as string | null,
+            source: null as string | null,
+            support: null as string | null,
         },
+        forumSync: false,
         description: '',
         license: {
             type: '',
@@ -233,6 +241,18 @@ export default class ProjectManagePage extends HangarProjectMixin {
         },
         category: ProjectCategory.UNDEFINED,
     };
+
+    created() {
+        this.form.keywords = this.project.settings.keywords;
+        this.form.links.homepage = this.project.settings.homepage;
+        this.form.links.issues = this.project.settings.issues;
+        this.form.links.source = this.project.settings.sources;
+        this.form.links.support = this.project.settings.support;
+        this.form.description = this.project.description;
+        this.form.forumSync = this.project.settings.forumSync;
+        Object.assign(this.form.license, this.project.settings.license);
+        this.form.category = this.project.category;
+    }
 
     get categoryIcon() {
         return (this.$store.state as RootState).projectCategories.get(this.form.category)?.icon;

@@ -47,6 +47,7 @@ public interface HangarProjectsDAO {
             "       ps.support," +
             "       ps.license_name," +
             "       ps.license_url," +
+            "       ps.keywords," +
             "       ps.forum_sync" +
             "  FROM home_projects p" +
             "         JOIN projects ps ON p.id = ps.id" +
