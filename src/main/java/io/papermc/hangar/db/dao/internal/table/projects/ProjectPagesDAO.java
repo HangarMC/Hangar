@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.dao.internal.table.projects;
 
+import io.papermc.hangar.model.db.projects.ProjectHomePageTable;
 import io.papermc.hangar.model.db.projects.ProjectPageTable;
-import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 @RegisterConstructorMapper(ProjectPageTable.class)
@@ -33,9 +32,9 @@ public interface ProjectPagesDAO {
     @SqlUpdate("DELETE FROM project_pages WHERE id = :id")
     void delete(@BindBean ProjectPageTable projectPageTable);
 
-    @KeyColumn("id")
-    @SqlQuery("SELECT * FROM project_pages WHERE project_id = :projectId AND parent_id IS NULL")
-    Map<Long, ProjectPageTable> getRootPages(long projectId);
+    @Timestamped
+    @SqlUpdate("INSERT INTO project_home_pages (created_at, project_id, page_id) VALUES (:now, :projectId, :pageId)")
+    void insertHomePage(@BindBean ProjectHomePageTable projectHomePageTable);
 
     @SqlQuery("SELECT * FROM project_pages WHERE project_id = :projectId AND parent_id = :parentId")
     List<ProjectPageTable> getChildPages(long projectId, long parentId);
@@ -43,16 +42,6 @@ public interface ProjectPagesDAO {
     @SqlQuery("SELECT * FROM project_pages WHERE project_id = :projectId AND parent_id = :parentId AND slug = :slug")
     ProjectPageTable getChildPage(long projectId, long parentId, String slug);
 
-    @SqlQuery("SELECT pp.* FROM project_pages pp" +
-            "   WHERE pp.project_id = :projectId" +
-            "   ORDER BY created_at")
-    List<ProjectPageTable> getProjectPages(long projectId);
-
     @SqlQuery("SELECT * FROM project_pages WHERE project_id = :projectId AND id = :pageId")
     ProjectPageTable getProjectPage(long projectId, long pageId);
-
-    @SqlQuery("SELECT pp.* FROM project_pages pp" +
-            "   JOIN projects p ON pp.project_id = p.id" +
-            "   WHERE p.owner_name = :author AND p.slug = :slug AND pp.slug = :pageSlug")
-    ProjectPageTable getProjectPage(String author, String slug, String pageSlug);
 }

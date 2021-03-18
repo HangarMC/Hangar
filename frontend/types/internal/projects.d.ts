@@ -50,6 +50,7 @@ declare module 'hangar-internal' {
         slug: string;
         contents: string;
         deletable: boolean;
+        isHome: boolean;
     }
 
     interface Flag extends Table {

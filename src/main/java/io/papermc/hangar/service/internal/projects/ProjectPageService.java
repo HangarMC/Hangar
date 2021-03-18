@@ -3,10 +3,13 @@ package io.papermc.hangar.service.internal.projects;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectPageContext;
 import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.dao.internal.HangarProjectPagesDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectPagesDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.db.projects.ProjectHomePageTable;
 import io.papermc.hangar.model.db.projects.ProjectPageTable;
 import io.papermc.hangar.model.internal.HangarProjectPage;
+import io.papermc.hangar.model.internal.HangarViewProjectPage;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectPage;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.util.StringUtils;
@@ -22,17 +25,21 @@ import java.util.Map;
 public class ProjectPageService extends HangarService {
 
     private final ProjectPagesDAO projectPagesDAO;
+    private final HangarProjectPagesDAO hangarProjectPagesDAO;
 
-    public ProjectPageService(HangarDao<ProjectPagesDAO> projectPagesDAO) {
+    public ProjectPageService(HangarDao<ProjectPagesDAO> projectPagesDAO, HangarDao<HangarProjectPagesDAO> hangarProjectPagesDAO) {
         this.projectPagesDAO = projectPagesDAO.get();
+        this.hangarProjectPagesDAO = hangarProjectPagesDAO.get();
     }
 
     public ProjectPageTable createPage(long projectId, String name, String slug, String contents, boolean deletable, @Nullable Long parentId, boolean isHome) {
-
-        if ((!isHome && name.equalsIgnoreCase(hangarConfig.pages.home.getName())) && contents.length() < hangarConfig.pages.getMinLen()) {
+        if (!isHome && contents.length() < hangarConfig.pages.getMinLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.minLength");
         }
 
+//        if ((!isHome && name.equalsIgnoreCase(hangarConfig.pages.home.getName())) && contents.length() < hangarConfig.pages.getMinLen()) {
+//            throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.minLength");
+//        }
         if (contents.length() >  hangarConfig.pages.getMaxLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxLength");
         }
@@ -52,21 +59,24 @@ public class ProjectPageService extends HangarService {
                 parentId
         );
         projectPageTable = projectPagesDAO.insert(projectPageTable);
+        if (isHome) {
+            projectPagesDAO.insertHomePage(new ProjectHomePageTable(projectPageTable.getProjectId(), projectPageTable.getId()));
+        }
         userActionLogService.projectPage(LoggedActionType.PROJECT_PAGE_CREATED.with(ProjectPageContext.of(projectPageTable.getProjectId(), projectPageTable.getId())), contents, "");
         return projectPageTable;
     }
 
     public Map<Long, HangarProjectPage> getProjectPages(long projectId) {
         Map<Long, HangarProjectPage> hangarProjectPages = new LinkedHashMap<>();
-        for (ProjectPageTable projectPage : projectPagesDAO.getProjectPages(projectId)) {
+        for (HangarViewProjectPage projectPage : hangarProjectPagesDAO.getProjectPages(projectId)) {
             if (projectPage.getParentId() == null) {
-                hangarProjectPages.put(projectPage.getId(), new HangarProjectPage(projectPage, projectPage.getName().equals(hangarConfig.pages.home.getName())));
+                hangarProjectPages.put(projectPage.getId(), new HangarProjectPage(projectPage, projectPage.isHome()));
             } else {
                 HangarProjectPage parent = findById(projectPage.getParentId(), hangarProjectPages);
                 if (parent == null) {
                     throw new IllegalStateException("Should always find a parent");
                 }
-                parent.getChildren().put(projectPage.getId(), new HangarProjectPage(projectPage, projectPage.getName().equals(hangarConfig.pages.home.getName())));
+                parent.getChildren().put(projectPage.getId(), new HangarProjectPage(projectPage, projectPage.isHome()));
             }
         }
 
@@ -87,8 +97,14 @@ public class ProjectPageService extends HangarService {
         }
     }
 
-    public ProjectPageTable getProjectPage(String author, String slug, String pageSlug) {
-        ProjectPageTable pageTable = projectPagesDAO.getProjectPage(author, slug, pageSlug);
+    public HangarViewProjectPage getProjectPage(String author, String slug, String requestUri) {
+        String[] path = requestUri.split("/", 8);
+        HangarViewProjectPage pageTable;
+        if (path.length < 8) {
+            pageTable = hangarProjectPagesDAO.getHomePage(author, slug);
+        } else {
+            pageTable = hangarProjectPagesDAO.getProjectPage(author, slug, path[7]);
+        }
         if (pageTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "Page not found");
         }

@@ -37,10 +37,13 @@ import ProjectPageList from '~/components/projects/ProjectPageList.vue';
     },
 })
 export default class VueProjectPage extends DocPageMixin {
-    async asyncData({ $api, params, $util }: Context) {
+    async asyncData({ $api, params, $util, redirect }: Context) {
         const page = await $api
             .requestInternal<ProjectPage>(`pages/page/${params.author}/${params.slug}/${params.pathMatch}`, false)
             .catch<any>($util.handlePageRequestError);
+        if (page.isHome) {
+            return redirect(`/${params.author}/${params.slug}`);
+        }
         return { page };
     }
 }

@@ -88,7 +88,7 @@ CREATE TABLE projects
 );
 
 CREATE INDEX projects_owner_id
-    on projects (owner_id);
+    ON projects (owner_id);
 
 CREATE TABLE project_stars
 (
@@ -125,10 +125,31 @@ CREATE TABLE project_pages
 );
 
 CREATE INDEX page_slug_idx
-    on project_pages (lower(slug::text));
+    ON project_pages (lower(slug::text));
 
 CREATE INDEX page_parent_id_idx
-    on project_pages (parent_id);
+    ON project_pages (parent_id);
+
+CREATE TABLE project_home_pages
+(
+    id bigserial NOT NULL
+        CONSTRAINT home_pages_pkey
+            PRIMARY KEY,
+    created_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL
+        CONSTRAINT home_pages_project_id_fkey
+            REFERENCES projects
+            ON DELETE CASCADE,
+    page_id bigint NOT NULL
+        CONSTRAINT home_pages_page_id_fkey
+            REFERENCES project_pages
+            ON DELETE RESTRICT,
+    CONSTRAINT home_pages_project_id_unique
+        UNIQUE (project_id)
+);
+
+CREATE INDEX page_project_id_idx
+    ON project_home_pages (project_id);
 
 CREATE TABLE project_channels
 (
@@ -591,10 +612,10 @@ CREATE TABLE project_version_tags
 );
 
 CREATE INDEX projects_versions_tags_version_id
-    on project_version_tags (version_id);
+    ON project_version_tags (version_id);
 
 CREATE INDEX project_version_tags_name_data_idx
-    on project_version_tags (name, data);
+    ON project_version_tags (name, data);
 
 CREATE TABLE user_global_roles
 (
@@ -796,7 +817,7 @@ CREATE TABLE project_versions_downloads
 );
 
 CREATE INDEX project_versions_downloads_project_id_version_id_idx
-    on project_versions_downloads (project_id, version_id);
+    ON project_versions_downloads (project_id, version_id);
 
 CREATE TABLE project_views_individual
 (

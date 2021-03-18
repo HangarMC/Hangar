@@ -3,7 +3,7 @@ package io.papermc.hangar.controller.internal;
 import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
-import io.papermc.hangar.model.db.projects.ProjectPageTable;
+import io.papermc.hangar.model.internal.HangarViewProjectPage;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectPage;
 import io.papermc.hangar.security.annotations.Anyone;
@@ -48,8 +48,8 @@ public class ProjectPageController extends HangarController {
 
     @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
     @GetMapping(path = "/page/{author}/{slug}/**", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProjectPageTable> getProjectPage(@PathVariable String author, @PathVariable String slug) {
-        return ResponseEntity.ok(projectPageService.getProjectPage(author, slug, getPageSlug()));
+    public ResponseEntity<HangarViewProjectPage> getProjectPage(@PathVariable String author, @PathVariable String slug) {
+        return ResponseEntity.ok(projectPageService.getProjectPage(author, slug, request.getRequestURI()));
     }
 
     @Unlocked
@@ -74,13 +74,5 @@ public class ProjectPageController extends HangarController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteProjectPage(@PathVariable long projectId, @PathVariable long pageId) {
         projectPageService.deleteProjectPage(projectId, pageId);
-    }
-
-    private String getPageSlug() {
-        String[] path = request.getRequestURI().split("/", 8);
-        if (path.length < 8) {
-            return hangarConfig.pages.home.getName();
-        }
-        return path[7];
     }
 }
