@@ -98,7 +98,7 @@
                     <MemberList
                         :members="project.members"
                         :can-edit="$perms.canManageSubjectMembers"
-                        :manage-url="`/${project.namespace.owner}/${project.namespace.slug}/manage`"
+                        :manage-url="`/${project.namespace.owner}/${project.namespace.slug}/settings`"
                     />
                 </v-col>
             </v-row>
