@@ -25,8 +25,8 @@ public interface OrganizationRolesDAO extends IRolesDAO<OrganizationRoleTable> {
     void delete(@BindBean OrganizationRoleTable table);
 
     @Override
-    @SqlQuery("SELECT * FROM user_organization_roles WHERE id = :id")
-    OrganizationRoleTable getTable(long id);
+    @SqlQuery("SELECT * FROM user_organization_roles WHERE id = :id AND user_id = :userId")
+    OrganizationRoleTable getTable(long id, long userId);
 
     @Override
     @SqlQuery("SELECT * FROM user_organization_roles WHERE organization_id = :organizationId AND user_id = :userId")

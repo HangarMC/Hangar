@@ -122,6 +122,7 @@ public class HangarUserController extends HangarController {
         return ResponseEntity.ok(notificationService.getUsersNotifications());
     }
 
+    @Unlocked
     @PostMapping("/notifications/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void markNotificationAsRead(@PathVariable long id) {
@@ -138,12 +139,15 @@ public class HangarUserController extends HangarController {
         return ResponseEntity.ok(invites);
     }
 
-    @PostMapping("/invites/projects/{id}/{status}")
+    @Unlocked
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping("/invites/projects/{id}/{status}")
     public void updateProjectInviteStatus(@PathVariable long id, @PathVariable InviteStatus status) {
         updateRole(projectRoleService, projectMemberService, id, status);
     }
 
+    @Unlocked
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/invites/organizations/{id}/{status}")
     public void updateOrganizationInviteStatus(@PathVariable long id, @PathVariable InviteStatus status) {
         updateRole(organizationRoleService, organizationMemberService, id, status);

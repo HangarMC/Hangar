@@ -32,8 +32,8 @@ public interface ProjectRolesDAO extends IRolesDAO<ProjectRoleTable> {
     void delete(@BindBean ProjectRoleTable table);
 
     @Override
-    @SqlQuery("SELECT * FROM user_project_roles WHERE id = :id")
-    ProjectRoleTable getTable(long id);
+    @SqlQuery("SELECT * FROM user_project_roles WHERE id = :id AND user_id = :userId")
+    ProjectRoleTable getTable(long id, long userId);
 
     @Override
     @SqlQuery("SELECT * FROM user_project_roles WHERE project_id = :projectId AND user_id = :userId")
