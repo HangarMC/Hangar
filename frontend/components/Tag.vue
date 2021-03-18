@@ -17,22 +17,23 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'nuxt-property-decorator';
 import { Tag } from 'hangar-api';
+import { PropType } from 'vue';
 
-@Component({})
+@Component
 export default class DocsPage extends Vue {
-    @Prop()
-    name!: String;
+    @Prop({ type: String })
+    name!: string;
 
-    @Prop()
-    data!: String;
+    @Prop({ type: String })
+    data!: string;
 
-    @Prop()
-    color!: Object;
+    @Prop({ type: Object as PropType<{ foreground?: string; background: string }> })
+    color!: { foreground?: string; background: string };
 
-    @Prop()
+    @Prop({ type: Object as PropType<Tag> })
     tag!: Tag;
 
-    @Prop({ default: false })
+    @Prop({ type: Boolean, default: false })
     shortForm!: boolean;
 
     get cName() {

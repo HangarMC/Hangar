@@ -319,7 +319,7 @@ const msgs: LocaleMessageObject = {
             userAdminLogs: 'User Admin Logs',
         },
         channels: 'Channels',
-        editChannels: 'Edit',
+        editChannels: 'Edit Channels',
         platforms: 'Platforms',
     },
     channel: {
