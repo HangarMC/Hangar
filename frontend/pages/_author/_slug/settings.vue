@@ -75,7 +75,6 @@
                     </div>
                     <v-divider />
                     <div>
-                        <!--TODO license stuff is outta whack. Different object schema on request and post-->
                         <h2>
                             {{ $t('project.settings.license') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
                         </h2>
@@ -283,7 +282,6 @@ export default class ProjectManagePage extends HangarProjectMixin {
         return ['MIT', 'Apache 2.0', 'GPL', 'LGPL', '(custom)'];
     }
 
-    // TODO implement
     save() {
         this.loading.save = true;
         this.$api
@@ -299,6 +297,7 @@ export default class ProjectManagePage extends HangarProjectMixin {
             });
     }
 
+    // TODO implement
     rename() {}
 
     softDelete() {}

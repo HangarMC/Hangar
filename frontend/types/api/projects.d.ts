@@ -29,7 +29,7 @@ declare module 'hangar-api' {
     interface ProjectSettings {
         homepage: string | null;
         issues: string | null;
-        sources: string | null;
+        source: string | null;
         support: string | null;
         license: License;
         keywords: string[];
