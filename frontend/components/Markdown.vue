@@ -1,5 +1,5 @@
 <template>
-    <div class="markdown">
+    <div>
         <v-sheet :color="color" class="darken-1" rounded elevation="2">
             <!-- eslint-disable-next-line vue/no-v-html -->
             <div v-if="!$fetchState.pending" class="page-rendered" :class="innerClass" v-html="renderedMarkdown" />
@@ -43,11 +43,3 @@ export default class Markdown extends Vue {
     }
 }
 </script>
-
-<style lang="scss">
-@import 'assets/markdown';
-
-.markdown {
-    min-height: 200px;
-}
-</style>
