@@ -45,7 +45,7 @@ public class MarkdownService {
 
         options = new MutableDataSet()
                 .set(HtmlRenderer.ESCAPE_HTML, true)
-                .set(AnchorLinkExtension.ANCHORLINKS_TEXT_PREFIX, "<i class=\"fas fa-link\"></i>")
+                .set(AnchorLinkExtension.ANCHORLINKS_TEXT_PREFIX, "<i class='v-icon notranslate mdi mdi-link-variant' aria-hidden='true'></i>")
                 .set(AnchorLinkExtension.ANCHORLINKS_ANCHOR_CLASS, "headeranchor")
                 .set(AnchorLinkExtension.ANCHORLINKS_WRAP_TEXT, false)
                 // GFM table compatibility

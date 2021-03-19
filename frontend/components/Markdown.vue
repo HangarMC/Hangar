@@ -2,7 +2,7 @@
     <div class="markdown">
         <v-sheet :color="color" class="darken-1" rounded elevation="2">
             <!-- eslint-disable-next-line vue/no-v-html -->
-            <div v-if="!$fetchState.pending" class="pa-3 page-rendered" :class="innerClass" v-html="renderedMarkdown" />
+            <div v-if="!$fetchState.pending" class="page-rendered" :class="innerClass" v-html="renderedMarkdown" />
             <v-row v-else no-gutters justify="center">
                 <v-progress-circular indeterminate color="primary" size="64" class="my-3" />
             </v-row>
