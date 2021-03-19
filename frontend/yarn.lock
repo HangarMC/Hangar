@@ -835,7 +835,7 @@
     "@babel/types" "^7.4.4"
     esutils "^2.0.2"
 
-"@babel/runtime-corejs3@^7.11.2", "@babel/runtime-corejs3@^7.13.9":
+"@babel/runtime-corejs3@^7.11.2", "@babel/runtime-corejs3@^7.13.10":
   version "7.13.10"
   resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.13.10.tgz#14c3f4c85de22ba88e8e86685d13e8861a82fe86"
   integrity sha512-x/XYVQ1h684pp1mJwOV4CyvqZXqbc8CMsMGUnAbuc82ZCdv1U63w5RSUzgDSXQHG5Rps/kiksH6g2D5BuaKyXg==
@@ -3822,7 +3822,7 @@ domhandler@^2.3.0:
   dependencies:
     domelementtype "1"
 
-dompurify@^2.2.6:
+dompurify@^2.2.7:
   version "2.2.7"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.2.7.tgz#a5f055a2a471638680e779bd08fc334962d11fd8"
   integrity sha512-jdtDffdGNY+C76jvodNTu9jt5yYj59vuTUyx+wXdzcSwAGTYZDAQkQ7Iwx9zcGrA4ixC1syU4H3RZROqRxokxg==
@@ -9316,12 +9316,12 @@ swagger-client@^3.13.1:
     traverse "~0.6.6"
     url "~0.11.0"
 
-swagger-ui@3.45.0:
-  version "3.45.0"
-  resolved "https://registry.yarnpkg.com/swagger-ui/-/swagger-ui-3.45.0.tgz#6d021698e3f1c2268368ce1535b040259de98a73"
-  integrity sha512-JxpxLFSt04IP5TCcQfR9Vfjp1Oae9P6sgKDnV7KUY2bTSsWug1JJpmdg7yr+jwNRZe9ap47ALwvEhHF0HP41Bw==
+swagger-ui@3.45.1:
+  version "3.45.1"
+  resolved "https://registry.yarnpkg.com/swagger-ui/-/swagger-ui-3.45.1.tgz#7d6e37673a8a6c9f2134e4d40b4ed059937b40af"
+  integrity sha512-hzGEZBs+vuOvA9lQldJVq6ZZK9DxpUWJLE1xfwl/U8AGMiI4+d8vK/YVVzmZd5GGwN445UAFdZSqqxKyIgxLQA==
   dependencies:
-    "@babel/runtime-corejs3" "^7.13.9"
+    "@babel/runtime-corejs3" "^7.13.10"
     "@braintree/sanitize-url" "^5.0.0"
     "@kyleshockey/object-assign-deep" "^0.4.2"
     "@kyleshockey/xml" "^1.0.2"
@@ -9329,7 +9329,7 @@ swagger-ui@3.45.0:
     classnames "^2.2.6"
     css.escape "1.5.1"
     deep-extend "0.6.0"
-    dompurify "^2.2.6"
+    dompurify "^2.2.7"
     ieee754 "^1.2.1"
     immutable "^3.x.x"
     js-file-download "^0.4.12"
