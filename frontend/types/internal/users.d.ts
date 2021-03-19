@@ -1,5 +1,5 @@
 declare module 'hangar-internal' {
-    import { Role, User } from 'hangar-api';
+    import { Named, Role, User } from 'hangar-api';
     import { Table } from 'hangar-internal';
 
     interface HangarNotification {
@@ -38,5 +38,20 @@ declare module 'hangar-internal' {
         locked: boolean;
         language: string;
         isOrganization: boolean;
+    }
+
+    interface UserTable extends Table, Named {
+        tagline: string;
+        joinDate: string;
+        readPrompts: number[];
+        locked: boolean;
+        language: string;
+    }
+
+    interface RoleTable extends Table {
+        accepted: boolean;
+        projectId: number;
+        userId: number;
+        role: Role;
     }
 }

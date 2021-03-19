@@ -21,6 +21,9 @@ const msgs: LocaleMessageObject = {
         send: 'Send',
         message: 'Message',
         refresh: 'Refresh',
+        error: {
+            invalidUrl: 'Invalid URL format',
+        },
     },
     hangar: {
         projectSearch: {
@@ -206,7 +209,7 @@ const msgs: LocaleMessageObject = {
             forum: 'Create posts on the forums',
             forumSub: 'Sets if events like a new release should automatically create a post on the forums',
             description: 'Description',
-            descriptionSub: 'A short description of your project (max 120)',
+            descriptionSub: 'A short description of your project',
             icon: 'Icon',
             iconSub: 'Upload an image representative of your project.',
             iconUpload: 'Upload',
@@ -221,7 +224,7 @@ const msgs: LocaleMessageObject = {
             hardDeleteSub: 'Once you delete a project, it cannot be recovered.',
             save: 'Save changes',
             optional: '(optional)',
-            licenceCustom: 'Custom',
+            licenceCustom: 'Custom Name',
             licenceType: 'Type',
             licenceUrl: 'URL',
         },

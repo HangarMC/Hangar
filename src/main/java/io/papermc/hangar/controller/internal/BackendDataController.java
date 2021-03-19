@@ -1,5 +1,7 @@
 package io.papermc.hangar.controller.internal;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.Annotated;
@@ -120,6 +122,52 @@ public class BackendDataController {
     @GetMapping("/announcements")
     public ResponseEntity<List<Announcement>> getAnnouncements() {
         return ResponseEntity.ok(config.getAnnouncements());
+    }
+
+    @GetMapping("/validations")
+    public ResponseEntity<ObjectNode> getValidations() {
+        ObjectNode validations = mapper.createObjectNode();
+        ObjectNode projectValidations = mapper.createObjectNode();
+        projectValidations.set("name", mapper.valueToTree(new Validation(config.projects.getNameRegex(), config.projects.getMaxNameLen(), null)));
+        projectValidations.set("desc", mapper.valueToTree(new Validation(null, config.projects.getMaxDescLen(), null)));
+        projectValidations.set("keywords", mapper.valueToTree(new Validation(null, config.projects.getMaxKeywords(), null)));
+        projectValidations.set("channels", mapper.valueToTree(new Validation(config.channels.getNameRegex(), config.channels.getMaxNameLen(), null)));
+        projectValidations.set("pageName", mapper.valueToTree(new Validation(config.pages.getNameRegex(), config.pages.getMaxNameLen(), config.pages.getMinNameLen())));
+        projectValidations.set("pageContent", mapper.valueToTree(new Validation(null, config.pages.getMaxLen(), config.pages.getMinLen())));
+        projectValidations.put("maxPageCount", config.projects.getMaxPages());
+        projectValidations.put("maxChannelCount", config.projects.getMaxChannels());
+        validations.set("project", projectValidations);
+        validations.set("userTagline", mapper.valueToTree(new Validation(null, config.user.getMaxTaglineLen(), null)));
+        validations.set("version", mapper.valueToTree(new Validation(config.projects.getVersionNameRegex(), null, null)));
+        validations.put("maxOrgCount", config.org.getCreateLimit());
+        validations.put("urlRegex", config.getUrlRegex());
+        return ResponseEntity.ok(validations);
+    }
+
+    @JsonInclude(Include.NON_NULL)
+    private static class Validation {
+
+        private final String regex;
+        private final Integer max;
+        private final Integer min;
+
+        public Validation(String regex, Integer max, Integer min) {
+            this.regex = regex;
+            this.max = max;
+            this.min = min;
+        }
+
+        public String getRegex() {
+            return regex;
+        }
+
+        public Integer getMax() {
+            return max;
+        }
+
+        public Integer getMin() {
+            return min;
+        }
     }
 }
 

@@ -21,14 +21,14 @@ public class AuthenticationService extends HangarService {
     }
 
     public UserTable loginAsFakeUser() {
-        String userName = hangarConfig.fakeUser.getUsername();
+        String userName = config.fakeUser.getUsername();
         UserTable userTable = userService.getUserTable(userName);
         if (userTable == null) {
             userTable = new UserTable(
-                    hangarConfig.fakeUser.getId(),
-                    hangarConfig.fakeUser.getName(),
+                    config.fakeUser.getId(),
+                    config.fakeUser.getName(),
                     userName,
-                    hangarConfig.fakeUser.getEmail(),
+                    config.fakeUser.getEmail(),
                     List.of(),
                     false,
                     Locale.ENGLISH.toLanguageTag()

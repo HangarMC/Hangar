@@ -46,13 +46,13 @@ public class ProjectFactory extends HangarService {
         ProjectTable projectTable = null;
         try {
             projectTable = projectsDAO.insert(new ProjectTable(projectOwner, newProject));
-            channelService.createProjectChannel(hangarConfig.channels.getNameDefault(), hangarConfig.channels.getColorDefault(), projectTable.getId(), false);
+            channelService.createProjectChannel(config.channels.getNameDefault(), config.channels.getColorDefault(), projectTable.getId(), false);
             projectMemberService.addMember(projectTable.getId(), ProjectRole.PROJECT_OWNER.create(projectTable.getId(), projectOwner.getUserId(), true), ProjectMemberTable::new);
             String newPageContent = newProject.getPageContent();
             if (newPageContent == null) {
-                newPageContent = "# " + projectTable.getName() + "\n\n" + hangarConfig.pages.home.getMessage();
+                newPageContent = "# " + projectTable.getName() + "\n\n" + config.pages.home.getMessage();
             }
-            projectPageService.createPage(projectTable.getId(), hangarConfig.pages.home.getName(), StringUtils.slugify(hangarConfig.pages.home.getName()), newPageContent, false, null, true);
+            projectPageService.createPage(projectTable.getId(), config.pages.home.getName(), StringUtils.slugify(config.pages.home.getName()), newPageContent, false, null, true);
         } catch (Throwable exception) {
             if (projectTable != null) {
                 projectsDAO.delete(projectTable);
@@ -67,7 +67,7 @@ public class ProjectFactory extends HangarService {
 
     public void checkProjectAvailability(long userId, String name) {
         InvalidProjectReason invalidProjectReason;
-        if (!hangarConfig.isValidProjectName(name)) {
+        if (StringUtils.compact(name).length() < 1 || StringUtils.compact(name).length() > config.projects.getMaxNameLen() || !config.projects.getNameMatcher().test(name)) {
             invalidProjectReason = InvalidProjectReason.INVALID_NAME;
         } else {
             invalidProjectReason = projectsDAO.checkProjectValidity(userId, name, StringUtils.slugify(name));

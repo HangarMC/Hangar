@@ -112,6 +112,7 @@ public class UserTable extends Table implements ProjectOwner {
     }
 
     @Override
+    @JsonIgnore
     public long getUserId() {
         return id;
     }

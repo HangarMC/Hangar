@@ -4,16 +4,39 @@ import { IPlatform, IProjectCategory } from 'hangar-internal';
 import { IPermission } from 'hangar-api';
 import { NamedPermission, Platform, ProjectCategory } from '~/types/enums';
 
+interface Validation {
+    regex?: string;
+    max?: number;
+    min?: number;
+}
+
 export interface RootState {
     projectCategories: Map<ProjectCategory, IProjectCategory>;
     permissions: Map<NamedPermission, IPermission>;
     platforms: Map<Platform, IPlatform>;
+    validations: {
+        project: {
+            name: Validation;
+            desc: Validation;
+            keywords: Validation;
+            channels: Validation;
+            pageName: Validation;
+            pageContent: Validation;
+            maxPageCount: number;
+            maxChannelCount: number;
+        };
+        userTagline: Validation;
+        version: Validation;
+        maxOrgCount: number;
+        urlRegex: string;
+    };
 }
 
 export const state: () => RootState = () => ({
     projectCategories: (null as unknown) as Map<ProjectCategory, IProjectCategory>,
     permissions: (null as unknown) as Map<NamedPermission, IPermission>,
     platforms: (null as unknown) as Map<Platform, IPlatform>,
+    validations: (null as unknown) as RootState['validations'],
 });
 
 export const mutations: MutationTree<RootState> = {
@@ -25,6 +48,9 @@ export const mutations: MutationTree<RootState> = {
     },
     SET_PLATFORMS: (state, payload: Map<Platform, IPlatform>) => {
         state.platforms = payload;
+    },
+    SET_VALIDATIONS: (state, payload: RootState['validations']) => {
+        state.validations = payload;
     },
 };
 
@@ -54,6 +80,7 @@ export const actions: ActionTree<RootState, RootState> = {
                 'SET_PLATFORMS',
                 convertToMap<Platform, IPlatform>(platformResult, (value) => value.name.toUpperCase())
             );
+            commit('SET_VALIDATIONS', await $api.requestInternal('data/validations', false));
             // others
         } catch (e) {
             console.error('ERROR FETCHING BACKEND DATA');

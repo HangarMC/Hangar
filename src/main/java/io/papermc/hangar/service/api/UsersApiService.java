@@ -86,8 +86,8 @@ public class UsersApiService extends HangarService {
 
     @Cacheable(CacheConfig.STAFF_CACHE)
     public PaginatedResult<User> getStaff(String sort, RequestPagination pagination) {
-        List<User> users = usersApiDAO.getStaff(pagination.getLimit(), pagination.getOffset(), userOrder(sort), hangarConfig.user.getStaffRoles());
-        long count = usersApiDAO.getStaffCount(hangarConfig.user.getStaffRoles());
+        List<User> users = usersApiDAO.getStaff(pagination.getLimit(), pagination.getOffset(), userOrder(sort), config.user.getStaffRoles());
+        long count = usersApiDAO.getStaffCount(config.user.getStaffRoles());
         return new PaginatedResult<>(new Pagination(count, pagination), users);
     }
 

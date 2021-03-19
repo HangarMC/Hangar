@@ -7,10 +7,6 @@ declare module 'hangar-api' {
         name: string;
     }
 
-    interface Color {
-        hex: string;
-    }
-
     interface TagColor {
         background: string;
         foreground: string;

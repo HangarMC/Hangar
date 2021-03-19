@@ -5,15 +5,21 @@ import io.papermc.hangar.controller.validations.Validate;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
 public class ProjectSettings {
 
+    @Validate(SpEL = "#root matches @hangarConfig.urlRegex", message = "general.error.invalidUrl")
     private final String homepage;
+    @Validate(SpEL = "#root matches @hangarConfig.urlRegex", message = "general.error.invalidUrl")
     private final String issues;
+    @Validate(SpEL = "#root matches @hangarConfig.urlRegex", message = "general.error.invalidUrl")
     private final String source;
+    @Validate(SpEL = "#root matches @hangarConfig.urlRegex", message = "general.error.invalidUrl")
     private final String support;
+    @Valid
     private final ProjectLicense license;
     @NotNull
     @Validate(SpEL = "#root.size le @hangarConfig.projects.maxKeywords", message = "project.new.error.tooManyKeywords")

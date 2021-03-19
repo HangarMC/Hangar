@@ -49,7 +49,7 @@ public class TokenService extends HangarService {
 
     public String createTokenForUser(UserTable userTable) {
         UserRefreshToken userRefreshToken = userRefreshTokenDAO.insert(new UserRefreshToken(userTable.getId(), UUID.randomUUID(), UUID.randomUUID()));
-        response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(SecurityConfig.AUTH_NAME_REFRESH_COOKIE, userRefreshToken.getToken().toString()).path("/").secure(hangarConfig.security.isSecure()).maxAge(hangarConfig.security.getRefreshTokenExpiry().toSeconds()).sameSite("Strict").build().toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(SecurityConfig.AUTH_NAME_REFRESH_COOKIE, userRefreshToken.getToken().toString()).path("/").secure(config.security.isSecure()).maxAge(config.security.getRefreshTokenExpiry().toSeconds()).sameSite("Strict").build().toString());
         return _newToken(userTable, userRefreshToken);
     }
 
@@ -66,7 +66,7 @@ public class TokenService extends HangarService {
         if (userRefreshToken == null) {
             throw new HangarApiException(HttpStatus.UNAUTHORIZED, "Unrecognized refresh token");
         }
-        if (userRefreshToken.getLastUpdated().isBefore(OffsetDateTime.now().minus(hangarConfig.security.getRefreshTokenExpiry()))) {
+        if (userRefreshToken.getLastUpdated().isBefore(OffsetDateTime.now().minus(config.security.getRefreshTokenExpiry()))) {
             throw new HangarApiException(HttpStatus.UNAUTHORIZED, "Expired refresh token");
         }
         userRefreshToken.setToken(UUID.randomUUID());
@@ -74,7 +74,7 @@ public class TokenService extends HangarService {
         UserTable userTable = userService.getUserTable(userRefreshToken.getUserId());
         assert userTable != null;
         String token = _newToken(userTable, userRefreshToken);
-        return new RefreshResponse(token, userRefreshToken.getToken().toString(), hangarConfig.security.getRefreshTokenExpiry().toSeconds(), SecurityConfig.AUTH_NAME_REFRESH_COOKIE);
+        return new RefreshResponse(token, userRefreshToken.getToken().toString(), config.security.getRefreshTokenExpiry().toSeconds(), SecurityConfig.AUTH_NAME_REFRESH_COOKIE);
     }
 
     public void invalidateToken(String refreshToken) {
@@ -83,8 +83,8 @@ public class TokenService extends HangarService {
 
     public String expiring(UserTable userTable, Permission globalPermission) {
         return JWT.create()
-                .withIssuer(hangarConfig.security.getTokenIssuer())
-                .withExpiresAt(new Date(Instant.now().plus(hangarConfig.security.getTokenExpiry()).toEpochMilli()))
+                .withIssuer(config.security.getTokenIssuer())
+                .withExpiresAt(new Date(Instant.now().plus(config.security.getTokenExpiry()).toEpochMilli()))
                 .withSubject(userTable.getName())
                 .withClaim("id", userTable.getId())
                 .withClaim("permissions", globalPermission.toBinString())
@@ -107,7 +107,7 @@ public class TokenService extends HangarService {
         if (verifier == null) {
             verifier = JWT.require(getAlgo())
                     .acceptLeeway(10)
-                    .withIssuer(hangarConfig.security.getTokenIssuer())
+                    .withIssuer(config.security.getTokenIssuer())
                     .build();
         }
         return verifier;
@@ -115,7 +115,7 @@ public class TokenService extends HangarService {
 
     private Algorithm getAlgo() {
         if (algo == null) {
-            algo = Algorithm.HMAC256(hangarConfig.security.getTokenSecret());
+            algo = Algorithm.HMAC256(config.security.getTokenSecret());
         }
         return algo;
     }

@@ -21,13 +21,13 @@ public class ChannelService extends HangarService {
     }
 
     public ProjectChannelTable createProjectChannel(String name, Color color, long projectId, boolean nonReviewed) {
-        if (!hangarConfig.channels.isValidChannelName(name)) {
+        if (!config.channels.isValidChannelName(name)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.new.error.invalidName");
         }
 
         List<ProjectChannelTable> existingTables = projectChannelsDAO.getProjectChannels(projectId);
-        if (existingTables.size() >= hangarConfig.projects.getMaxChannels()) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.new.error.maxChannels", hangarConfig.projects.getMaxChannels());
+        if (existingTables.size() >= config.projects.getMaxChannels()) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.new.error.maxChannels", config.projects.getMaxChannels());
         }
 
         if (existingTables.stream().anyMatch(ch -> ch.getColor() == color)) {

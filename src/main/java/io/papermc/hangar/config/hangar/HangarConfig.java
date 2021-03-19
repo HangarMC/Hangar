@@ -25,11 +25,11 @@ public class HangarConfig {
 
     private boolean dev = true;
     private String authUrl;
-    private final ApplicationHome home = new ApplicationHome(HangarApplication.class);
-    private String pluginUploadDir = home.getDir().toPath().resolve("work").toString();
+    private String pluginUploadDir = new ApplicationHome(HangarApplication.class).getDir().toPath().resolve("work").toString();
     private String baseUrl;
     private String gaCode = "";
     private List<Announcement> announcements = new ArrayList<>();
+    private String urlRegex = "^(https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9]+\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]+\\.[^\\s]{2,})";
 
     @NestedConfigurationProperty
     public final FakeUserConfig fakeUser;
@@ -178,12 +178,22 @@ public class HangarConfig {
         this.gaCode = gaCode;
     }
 
+    public String getUrlRegex() {
+        return urlRegex;
+    }
+
+    public void setUrlRegex(String urlRegex) {
+        this.urlRegex = urlRegex;
+    }
+
+    @Deprecated(forRemoval = true)
     public boolean isValidProjectName(String name) {
         String sanitized = StringUtils.compact(name);
         return sanitized.length() >= 1 && sanitized.length() <= projects.getMaxNameLen() && projects.getNameMatcher().test(name);
     }
 
     // Added to make freemarker realize they are here
+    // TODO remove cause they are only needed for freemarker
     public FakeUserConfig getFakeUser() {
         return fakeUser;
     }

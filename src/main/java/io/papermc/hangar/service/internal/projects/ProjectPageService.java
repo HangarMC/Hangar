@@ -33,18 +33,18 @@ public class ProjectPageService extends HangarService {
     }
 
     public ProjectPageTable createPage(long projectId, String name, String slug, String contents, boolean deletable, @Nullable Long parentId, boolean isHome) {
-        if (!isHome && contents.length() < hangarConfig.pages.getMinLen()) {
+        if (!isHome && contents.length() < config.pages.getMinLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.minLength");
         }
 
 //        if ((!isHome && name.equalsIgnoreCase(hangarConfig.pages.home.getName())) && contents.length() < hangarConfig.pages.getMinLen()) {
 //            throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.minLength");
 //        }
-        if (contents.length() >  hangarConfig.pages.getMaxLen()) {
+        if (contents.length() >  config.pages.getMaxLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxLength");
         }
 
-        hangarConfig.pages.testPageName(name);
+        config.pages.testPageName(name);
 
         if (parentId != null && projectPagesDAO.getChildPage(projectId, parentId, slug) != null) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.duplicateName");

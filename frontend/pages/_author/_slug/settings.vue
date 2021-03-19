@@ -4,126 +4,176 @@
             <v-card>
                 <v-card-title class="sticky">
                     {{ $t('project.settings.title') }}
-                    <v-btn class="flex-right" color="success" :loading="loading.save" @click="save">
+                    <v-btn class="flex-right" color="success" :loading="loading.save" :disabled="!validForm.settings" @click="save">
                         <v-icon left>mdi-check</v-icon>
                         {{ $t('project.settings.save') }}
                     </v-btn>
                 </v-card-title>
                 <v-card-text>
-                    <div>
-                        <h2>{{ $t('project.settings.category') }}</h2>
-                        <p>{{ $t('project.settings.categorySub') }}</p>
-                        <v-select
-                            v-model="form.category"
-                            :prepend-inner-icon="categoryIcon"
-                            :items="$store.getters.visibleCategories"
-                            dense
-                            filled
-                            item-text="title"
-                            item-value="apiName"
-                        />
-                    </div>
-                    <v-divider />
-                    <div>
-                        <h2>
-                            {{ $t('project.settings.keywords') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
-                        </h2>
-                        <p>{{ $t('project.settings.keywordsSub') }}</p>
-                        <v-combobox
-                            v-model="form.settings.keywords"
-                            small-chips
-                            deletable-chips
-                            multiple
-                            dense
-                            hide-details
-                            filled
-                            :delimiters="[' ', ',', '.']"
-                            prepend-inner-icon="mdi-file-word-box"
-                        />
-                    </div>
-                    <v-divider />
-                    <div>
-                        <h2>
-                            {{ $t('project.settings.homepage') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
-                        </h2>
-                        <p>{{ $t('project.settings.homepageSub') }}</p>
-                        <v-text-field v-model.trim="form.settings.homepage" dense hide-details filled prepend-inner-icon="mdi-home-search" />
-                    </div>
-                    <v-divider />
-                    <div>
-                        <h2>
-                            {{ $t('project.settings.issues') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
-                        </h2>
-                        <p>{{ $t('project.settings.issuesSub') }}</p>
-                        <v-text-field v-model.trim="form.settings.issues" dense hide-details filled prepend-inner-icon="mdi-bug" />
-                    </div>
-                    <v-divider />
-                    <div>
-                        <h2>
-                            {{ $t('project.settings.source') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
-                        </h2>
-                        <p>{{ $t('project.settings.sourceSub') }}</p>
-                        <v-text-field v-model.trim="form.settings.source" dense hide-details filled prepend-inner-icon="mdi-source-branch" />
-                    </div>
-                    <v-divider />
-                    <div>
-                        <h2>
-                            {{ $t('project.settings.support') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
-                        </h2>
-                        <p>{{ $t('project.settings.supportSub') }}</p>
-                        <v-text-field v-model.trim="form.settings.support" dense hide-details filled prepend-inner-icon="mdi-face-agent" />
-                    </div>
-                    <v-divider />
-                    <div>
-                        <h2>
-                            {{ $t('project.settings.license') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
-                        </h2>
-                        <p>{{ $t('project.settings.licenceSub') }}</p>
-                        <v-row>
-                            <v-col cols="12" :md="isCustomLicense ? 4 : 6">
-                                <v-select
-                                    v-model="form.settings.license.type"
-                                    dense
-                                    hide-details
-                                    filled
-                                    clearable
-                                    :items="licences"
-                                    :label="$t('project.settings.licenceType')"
-                                />
-                            </v-col>
-                            <v-col v-if="isCustomLicense" cols="12" md="8">
-                                <v-text-field
-                                    v-model.trim="form.settings.license.name"
-                                    dense
-                                    hide-details
-                                    filled
-                                    :label="$t('project.settings.licenceCustom')"
-                                />
-                            </v-col>
-                            <v-col cols="12" :md="isCustomLicense ? 12 : 6">
-                                <v-text-field v-model.trim="form.settings.license.url" dense hide-details filled :label="$t('project.settings.licenceUrl')" />
-                            </v-col>
-                        </v-row>
-                    </div>
-                    <v-divider />
-                    <div>
-                        <h2>{{ $t('project.settings.forum') }}</h2>
-                        <v-row>
-                            <v-col cols="12" md="8">
-                                <p>{{ $t('project.settings.forumSub') }}</p>
-                            </v-col>
-                            <v-col cols="12" md="4">
-                                <v-switch v-model="form.settings.forumSync"></v-switch>
-                            </v-col>
-                        </v-row>
-                    </div>
-                    <v-divider />
-                    <div>
-                        <h2>{{ $t('project.settings.description') }}</h2>
-                        <p>{{ $t('project.settings.descriptionSub') }}</p>
-                        <v-text-field v-model.trim="form.description" dense filled clearable prepend-inner-icon="mdi-card-text" />
-                    </div>
-                    <v-divider />
+                    <v-form v-model="validForm.settings">
+                        <div>
+                            <h2>{{ $t('project.settings.category') }}</h2>
+                            <p>{{ $t('project.settings.categorySub') }}</p>
+                            <v-select
+                                v-model="form.category"
+                                :prepend-inner-icon="categoryIcon"
+                                :items="$store.getters.visibleCategories"
+                                dense
+                                hide-details
+                                filled
+                                item-text="title"
+                                item-value="apiName"
+                                :rules="[$util.$vc.require()]"
+                            />
+                        </div>
+                        <v-divider />
+                        <div>
+                            <h2>
+                                {{ $t('project.settings.keywords') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
+                            </h2>
+                            <p>{{ $t('project.settings.keywordsSub') }}</p>
+                            <v-combobox
+                                v-model="form.settings.keywords"
+                                small-chips
+                                deletable-chips
+                                multiple
+                                dense
+                                hide-details
+                                filled
+                                :delimiters="[' ', ',', '.']"
+                                prepend-inner-icon="mdi-file-word-box"
+                            />
+                        </div>
+                        <v-divider />
+                        <div>
+                            <h2>
+                                {{ $t('project.settings.homepage') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
+                            </h2>
+                            <p>{{ $t('project.settings.homepageSub') }}</p>
+                            <v-text-field
+                                v-model.trim="form.settings.homepage"
+                                dense
+                                filled
+                                prepend-inner-icon="mdi-home-search"
+                                :label="$t('project.new.step3.homepage')"
+                                :rules="[$util.$vc.url(false)]"
+                            />
+                        </div>
+                        <v-divider />
+                        <div>
+                            <h2>
+                                {{ $t('project.settings.issues') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
+                            </h2>
+                            <p>{{ $t('project.settings.issuesSub') }}</p>
+                            <v-text-field
+                                v-model.trim="form.settings.issues"
+                                dense
+                                filled
+                                prepend-inner-icon="mdi-bug"
+                                :label="$t('project.new.step3.issues')"
+                                :rules="[$util.$vc.url(false)]"
+                            />
+                        </div>
+                        <v-divider />
+                        <div>
+                            <h2>
+                                {{ $t('project.settings.source') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
+                            </h2>
+                            <p>{{ $t('project.settings.sourceSub') }}</p>
+                            <v-text-field
+                                v-model.trim="form.settings.source"
+                                dense
+                                filled
+                                prepend-inner-icon="mdi-source-branch"
+                                :label="$t('project.new.step3.source')"
+                                :rules="[$util.$vc.url(false)]"
+                            />
+                        </div>
+                        <v-divider />
+                        <div>
+                            <h2>
+                                {{ $t('project.settings.support') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
+                            </h2>
+                            <p>{{ $t('project.settings.supportSub') }}</p>
+                            <v-text-field
+                                v-model.trim="form.settings.support"
+                                dense
+                                filled
+                                prepend-inner-icon="mdi-face-agent"
+                                :label="$t('project.new.step3.support')"
+                                :rules="[$util.$vc.url(false)]"
+                            />
+                        </div>
+                        <v-divider />
+                        <div>
+                            <h2>
+                                {{ $t('project.settings.license') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
+                            </h2>
+                            <p>{{ $t('project.settings.licenceSub') }}</p>
+                            <v-row>
+                                <v-col cols="12" :md="isCustomLicense ? 4 : 6">
+                                    <v-select
+                                        v-model="form.settings.license.type"
+                                        dense
+                                        hide-details
+                                        filled
+                                        clearable
+                                        :items="licences"
+                                        :label="$t('project.settings.licenceType')"
+                                    />
+                                </v-col>
+                                <v-col v-if="isCustomLicense" cols="12" md="8">
+                                    <v-text-field
+                                        v-model.trim="form.settings.license.name"
+                                        dense
+                                        hide-details
+                                        filled
+                                        :label="$t('project.settings.licenceCustom')"
+                                    />
+                                </v-col>
+                                <v-col cols="12" :md="isCustomLicense ? 12 : 6">
+                                    <v-text-field
+                                        v-model.trim="form.settings.license.url"
+                                        dense
+                                        clearable
+                                        filled
+                                        :rules="[$util.$vc.url(false)]"
+                                        :label="$t('project.settings.licenceUrl')"
+                                    />
+                                </v-col>
+                            </v-row>
+                        </div>
+                        <v-divider />
+                        <div>
+                            <h2>{{ $t('project.settings.forum') }}</h2>
+                            <v-row>
+                                <v-col cols="12" md="8">
+                                    <p>{{ $t('project.settings.forumSub') }}</p>
+                                </v-col>
+                                <v-col cols="12" md="4">
+                                    <v-switch v-model="form.settings.forumSync" hide-details dense />
+                                </v-col>
+                            </v-row>
+                        </div>
+                        <v-divider />
+                        <div>
+                            <h2>{{ $t('project.settings.description') }}</h2>
+                            <p>{{ $t('project.settings.descriptionSub') }}</p>
+                            <v-text-field
+                                v-model.trim="form.description"
+                                dense
+                                filled
+                                clearable
+                                :counter="validations.project.desc.max"
+                                :rules="[$util.$vc.maxLength(validations.project.desc.max)]"
+                                prepend-inner-icon="mdi-card-text"
+                            />
+                        </div>
+                    </v-form>
+                </v-card-text>
+            </v-card>
+            <v-card class="mt-3">
+                <v-card-text>
                     <div>
                         <h2>{{ $t('project.settings.icon') }}</h2>
                         <v-row>
@@ -136,7 +186,7 @@
                                 </v-file-input>
                             </v-col>
                             <v-col cols="12" md="4">
-                                <!-- preview image-->
+                                <!-- TODO preview image-->
                             </v-col>
                         </v-row>
                     </div>
@@ -194,12 +244,6 @@
                     </div>
                     <v-divider />
                 </v-card-text>
-                <v-card-actions>
-                    <v-btn color="success" :loading="loading.save" @click="save">
-                        <v-icon left>mdi-check</v-icon>
-                        {{ $t('project.settings.save') }}
-                    </v-btn>
-                </v-card-actions>
             </v-card>
         </v-col>
         <v-col cols="12" md="4">
@@ -216,7 +260,7 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'nuxt-property-decorator';
+import { Component, State } from 'nuxt-property-decorator';
 import { ProjectSettingsForm } from 'hangar-internal';
 import { ProjectPermission } from '~/utils/perms';
 import { NamedPermission, ProjectCategory } from '~/types/enums';
@@ -247,6 +291,10 @@ export default class ProjectManagePage extends HangarProjectMixin {
         },
         description: '',
         category: ProjectCategory.UNDEFINED,
+    };
+
+    validForm = {
+        settings: false,
     };
 
     loading = {
@@ -307,8 +355,15 @@ export default class ProjectManagePage extends HangarProjectMixin {
     uploadIcon() {}
 
     generateApiKey() {}
+
+    @State((state: RootState) => state.validations)
+    validations!: RootState['validations'];
 }
 </script>
+<style lang="scss">
+$text-field-details-margin-bottom: 0;
+@import '~vuetify/src/components/VTextField/VTextField';
+</style>
 
 <style lang="scss" scoped>
 hr {
@@ -340,5 +395,9 @@ h2 {
 
 .col-12 .v-input--selection-controls {
     margin-top: 0;
+}
+
+.v-text-field .v-text-field__details {
+    margin-bottom: 0;
 }
 </style>

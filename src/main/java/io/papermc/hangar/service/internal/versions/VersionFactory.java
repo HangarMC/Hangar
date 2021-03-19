@@ -113,7 +113,7 @@ public class VersionFactory extends HangarService {
         }
 
         String versionString = StringUtils.slugify(pluginDataFile.getData().getVersion());
-        if (!hangarConfig.projects.getVersionNameMatcher().test(versionString)) {
+        if (!config.projects.getVersionNameMatcher().test(versionString)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidVersionString");
         }
 
@@ -132,7 +132,7 @@ public class VersionFactory extends HangarService {
                 projectTable.isForumSync()
         );
 
-        if (projectVersionsDAO.getProjectVersionTableFromHashAndName(projectId, pluginDataFile.getMd5(), pendingVersion.getVersionString()) != null && hangarConfig.projects.isFileValidate()) {
+        if (projectVersionsDAO.getProjectVersionTableFromHashAndName(projectId, pluginDataFile.getMd5(), pendingVersion.getVersionString()) != null && config.projects.isFileValidate()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.duplicate");
         }
         return pendingVersion;

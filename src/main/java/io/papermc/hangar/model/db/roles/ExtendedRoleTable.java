@@ -45,6 +45,7 @@ public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>>
     }
 
     @Override
+    @JsonIgnore
     public String getRoleType() {
         return role.getValue();
     }

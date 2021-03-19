@@ -30,7 +30,7 @@ public abstract class HangarService {
     protected HttpServletResponse response;
 
     @Autowired
-    protected HangarConfig hangarConfig;
+    protected HangarConfig config;
 
     @Autowired
     protected UserActionLogService userActionLogService;

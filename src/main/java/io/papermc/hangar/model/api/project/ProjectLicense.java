@@ -2,6 +2,7 @@ package io.papermc.hangar.model.api.project;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;
+import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 public class ProjectLicense {
 
     private final String name;
+    @Validate(SpEL = "#root matches @hangarConfig.urlRegex", message = "general.error.invalidUrl")
     private final String url;
 
     @JdbiConstructor

@@ -1,14 +1,16 @@
 declare module 'hangar-api' {
-    import { Color, Model, Named } from 'hangar-api';
+    import { Model, Named } from 'hangar-api';
     import { NamedPermission, RoleCategory } from '~/types/enums';
 
     interface Role {
+        assignable: boolean;
+        rank: number | null;
         value: string;
         roleId: number;
         category: RoleCategory;
-        permission: string;
+        permissions: string;
         title: string;
-        color: Color;
+        color: string;
     }
 
     interface User extends Model, Named {

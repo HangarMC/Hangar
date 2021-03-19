@@ -13,8 +13,6 @@ import { RootState } from '~/store';
 import { NotifPayload } from '~/store/snackbar';
 import { AuthState } from '~/store/auth';
 
-type Validation = (v: any) => boolean | string;
-
 function handleRequestError(err: AxiosError, error: Context['error'], i18n: Context['app']['i18n']) {
     if (!err.isAxiosError) {
         // everything should be an AxiosError
@@ -223,9 +221,13 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
             require: (name: TranslateResult = 'Field') => (v: string) => !!v || i18n.t('validation.required', [name]),
             maxLength: (maxLength: number) => (v: string) => (!!v && v.length <= maxLength) || i18n.t('validation.maxLength', [maxLength]),
             requireNonEmptyArray: (name: TranslateResult = 'Field') => (v: any[]) => v.length > 0 || i18n.t('validation.required', [name]),
+            url: (require: boolean) => (v: string) => {
+                if (!require && !v) {
+                    return true;
+                }
+                return new RegExp((store.state as RootState).validations.urlRegex).test(v) || i18n.t('general.error.invalidUrl');
+            },
         };
-
-        $v: Record<string, Validation> = {};
 
         error(err: string | NotifPayload) {
             if (typeof err === 'string') {

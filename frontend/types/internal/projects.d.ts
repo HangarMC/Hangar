@@ -1,6 +1,6 @@
 declare module 'hangar-internal' {
-    import { FlagReason, Table } from 'hangar-internal';
-    import { Project, Role, User } from 'hangar-api';
+    import { FlagReason, RoleTable, Table, UserTable } from 'hangar-internal';
+    import { Project, User } from 'hangar-api';
     import { ProjectCategory } from '~/types/enums';
 
     interface ProjectOwner {
@@ -26,14 +26,9 @@ declare module 'hangar-internal' {
         children: HangarProjectPage[];
     }
 
-    interface ProjectRole extends Table {
-        accepted: true;
-        role: Role;
-    }
-
     interface ProjectMember {
-        user: User;
-        role: ProjectRole;
+        user: UserTable;
+        role: RoleTable;
     }
 
     interface HangarProject extends Project, Table {

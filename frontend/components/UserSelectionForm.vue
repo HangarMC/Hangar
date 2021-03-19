@@ -15,27 +15,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
+import { Component, Prop, Vue } from 'nuxt-property-decorator';
 import { ProjectMember } from 'hangar-internal';
+import { PropType } from 'vue';
 import UserAvatar from '~/components/UserAvatar.vue';
-import { RoleCategory } from '~/types/enums';
 
 // TODO v-model for users
 @Component({
     components: { UserAvatar },
 })
 export default class UserSelectionForm extends Vue {
-    users: Array<ProjectMember> = [
-        {
-            user: this.$util.dummyUser(),
-            role: {
-                accepted: true,
-                id: -1,
-                createdAt: '',
-                role: { title: 'Owner', value: 'owner', roleId: -1, category: RoleCategory.PROJECT, permission: '', color: { hex: '' } },
-            },
-        },
-    ];
+    @Prop({ type: Array as PropType<ProjectMember[]>, required: true })
+    users!: ProjectMember[];
 }
 </script>
 
