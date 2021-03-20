@@ -221,7 +221,7 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
             require: (name: TranslateResult = 'Field') => (v: string) => !!v || i18n.t('validation.required', [name]),
             maxLength: (maxLength: number) => (v: string | any[]) => {
                 return (
-                    ((v === null || typeof v === 'string') && !v) ||
+                    ((v === null || typeof v === 'undefined' || typeof v === 'string') && !v) ||
                     (Array.isArray(v) && v.length === 0) ||
                     v.length <= maxLength ||
                     i18n.t('validation.maxLength', [maxLength])

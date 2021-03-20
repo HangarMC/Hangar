@@ -182,7 +182,6 @@
                         <v-row>
                             <v-col>
                                 <p>{{ $t('project.settings.iconSub') }}</p>
-                                <!-- TODO what kind of files to accept -->
                                 <v-file-input
                                     v-model="projectIcon"
                                     chips
@@ -228,11 +227,22 @@
                         <v-row>
                             <v-col cols="12">
                                 <p>{{ $t('project.settings.renameSub') }}</p>
-                                <v-text-field v-model.trim="newName" dense hide-details filled>
-                                    <template #append-outer>
-                                        <v-btn class="input-append-btn" color="warning" @click="rename">{{ $t('project.settings.rename') }}</v-btn>
-                                    </template>
-                                </v-text-field>
+                                <v-form v-model="nameForm">
+                                    <v-text-field v-model.trim="newName" dense filled :error-messages="nameErrors">
+                                        <template #append-outer>
+                                            <v-btn
+                                                class="input-append-btn"
+                                                color="warning"
+                                                :disabled="!newName || !nameForm"
+                                                :loading="loading.rename"
+                                                @click="rename"
+                                            >
+                                                <v-icon left>mdi-rename-box</v-icon>
+                                                {{ $t('project.settings.rename') }}
+                                            </v-btn>
+                                        </template>
+                                    </v-text-field>
+                                </v-form>
                             </v-col>
                         </v-row>
                     </div>
@@ -278,8 +288,10 @@
 </template>
 
 <script lang="ts">
-import { Component, State } from 'nuxt-property-decorator';
+import { Component, State, Watch } from 'nuxt-property-decorator';
 import { ProjectSettingsForm } from 'hangar-internal';
+import { TranslateResult } from 'vue-i18n';
+import { AxiosError } from 'axios';
 import { ProjectPermission } from '~/utils/perms';
 import { NamedPermission, ProjectCategory } from '~/types/enums';
 import { RootState } from '~/store';
@@ -293,7 +305,8 @@ import { HangarProjectMixin } from '~/components/mixins';
 export default class ProjectManagePage extends HangarProjectMixin {
     apiKey = '';
     newName = '';
-    // TODO load project icon;
+    nameErrors: TranslateResult[] = [];
+    nameForm = false;
     projectIcon: File | null = null;
     form: ProjectSettingsForm = {
         settings: {
@@ -321,6 +334,7 @@ export default class ProjectManagePage extends HangarProjectMixin {
         save: false,
         uploadIcon: false,
         resetIcon: false,
+        rename: false,
     };
 
     created() {
@@ -379,9 +393,52 @@ export default class ProjectManagePage extends HangarProjectMixin {
             });
     }
 
-    // TODO implement
-    rename() {}
+    @Watch('newName')
+    onNewNameChange(val: string) {
+        if (!val) {
+            this.nameErrors = [];
+        } else {
+            this.$api
+                .requestInternal('projects/validateName', false, 'get', {
+                    userId: this.project.owner.userId,
+                    value: val,
+                })
+                .then(() => {
+                    this.nameErrors = [];
+                })
+                .catch((err: AxiosError) => {
+                    this.nameErrors = [];
+                    if (!err.response?.data.isHangarApiException) {
+                        return;
+                    }
+                    this.nameErrors.push(this.$t(err.response.data.message));
+                });
+        }
+    }
 
+    rename() {
+        this.loading.rename = true;
+        this.$api
+            .requestInternal<string>(`projects/project/${this.$route.params.author}/${this.$route.params.slug}/rename`, true, 'post', {
+                content: this.newName,
+            })
+            .then((newSlug) => {
+                this.$util.success(this.$t('project.settings.success.rename', [this.newName]));
+                this.$router.push({
+                    name: 'author-slug',
+                    params: {
+                        author: this.$route.params.author,
+                        slug: newSlug,
+                    },
+                });
+            })
+            .catch(this.$util.handleRequestError)
+            .finally(() => {
+                this.loading.rename = false;
+            });
+    }
+
+    // TODO implement
     softDelete() {}
 
     hardDelete() {}

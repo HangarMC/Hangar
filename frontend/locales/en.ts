@@ -235,6 +235,7 @@ const msgs: LocaleMessageObject = {
             success: {
                 changedIcon: 'Successfully changed the project icon',
                 resetIcon: 'Successfully reset the project icon',
+                rename: 'Successfully renamed the project to {0}',
             },
         },
     },

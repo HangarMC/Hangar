@@ -57,11 +57,7 @@
                                         filled
                                         :error-messages="nameErrors"
                                         :label="$t('project.new.step2.projectname')"
-                                        :rules="[
-                                            $util.$vc.require($t('project.new.step2.projectname')),
-                                            $util.$vc.regex($t('project.new.step2.projectname'), validations.project.name.regex),
-                                            $util.$vc.maxLength(validations.project.name.max),
-                                        ]"
+                                        :rules="[$util.$vc.require($t('project.new.step2.projectname'))]"
                                         append-icon="mdi-form-textbox"
                                     />
                                 </v-col>

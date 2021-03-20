@@ -6,6 +6,7 @@ import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.HangarProject;
+import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
 import io.papermc.hangar.model.internal.api.responses.PossibleProjectOwner;
@@ -103,6 +104,13 @@ public class ProjectController extends HangarController {
     @PostMapping("/project/{author}/{slug}/resetIcon")
     public void resetProjectIcon(@PathVariable String author, @PathVariable String slug) {
         projectService.resetIcon(author, slug);
+    }
+
+    @Unlocked
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
+    @PostMapping(path = "/project/{author}/{slug}/rename", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> renameProject(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody StringContent nameContent) {
+        return ResponseEntity.ok(projectFactory.renameProject(author, slug, nameContent.getContent()));
     }
 
     @Unlocked

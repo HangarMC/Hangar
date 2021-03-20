@@ -1,5 +1,7 @@
 package io.papermc.hangar.service.internal.projects;
 
+import io.papermc.hangar.db.customtypes.LoggedActionType;
+import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -63,6 +65,20 @@ public class ProjectFactory extends HangarService {
         usersApiService.clearAuthorsCache();
         projectService.refreshHomeProjects();
         return projectTable;
+    }
+
+
+    public String renameProject(String author, String slug, String newName) {
+        String compactNewName = StringUtils.compact(newName);
+        ProjectTable projectTable = projectService.getProjectTable(author, slug);
+        String oldName = projectTable.getName();
+        checkProjectAvailability(projectTable.getOwnerId(), compactNewName);
+        projectTable.setName(compactNewName);
+        projectTable.setSlug(StringUtils.slugify(compactNewName));
+        projectsDAO.update(projectTable);
+        userActionLogService.project(LoggedActionType.PROJECT_RENAMED.with(ProjectContext.of(projectTable.getId())), author + "/" + compactNewName, author + "/" + oldName);
+        projectService.refreshHomeProjects();
+        return StringUtils.slugify(compactNewName);
     }
 
     public void checkProjectAvailability(long userId, String name) {
