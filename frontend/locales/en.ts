@@ -550,6 +550,14 @@ const msgs: LocaleMessageObject = {
         addVersion: 'Add Version',
         saveChanges: 'Save Changes',
     },
+    flagReview: {
+        title: 'Flags',
+        noFlags: 'There are no flags to review.',
+        msgUser: 'Message user',
+        msgProjectOwner: 'Message owner',
+        markResolved: 'Mark resolved',
+        visibilityActions: 'Visibility actions',
+    },
     validation: {
         required: '{0} is required',
         maxLength: 'Maximum length is {0}',
