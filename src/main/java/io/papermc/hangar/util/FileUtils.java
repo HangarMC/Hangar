@@ -26,11 +26,13 @@ public class FileUtils {
         }
     }
 
-    public static void delete(Path path) {
-        if (path == null) return;
+    public static boolean delete(Path path) {
+        if (path == null) return false;
         try {
-            Files.deleteIfExists(path);
-        } catch (IOException ignored) { }
+            return Files.deleteIfExists(path);
+        } catch (IOException ignored) {
+            return false;
+        }
     }
 
     public static void deleteDirectory(Path dir) {

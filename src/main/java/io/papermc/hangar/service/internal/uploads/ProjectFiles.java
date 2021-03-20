@@ -63,10 +63,12 @@ public class ProjectFiles {
         return findFirstFile(getIconDir(owner, name));
     }
 
+    @Deprecated(forRemoval = true)
     public Path getPendingIconDir(String owner, String name) {
         return getIconDir(owner, name).resolve("pending");
     }
 
+    @Deprecated(forRemoval = true)
     public Path getPendingIconPath(String owner, String name) {
         return findFirstFile(getPendingIconDir(owner, name));
     }

@@ -1,7 +1,7 @@
 <template>
     <v-row>
         <v-col cols="12" md="8">
-            <v-card>
+            <v-card class="settings-card">
                 <v-card-title class="sticky">
                     {{ $t('project.settings.title') }}
                     <v-btn class="flex-right" color="success" :loading="loading.save" :disabled="!validForm.settings" @click="save">
@@ -38,12 +38,12 @@
                                 deletable-chips
                                 multiple
                                 dense
-                                hide-details
                                 filled
                                 clearable
                                 :counter="validations.project.keywords.max"
                                 :rules="[$util.$vc.maxLength(validations.project.keywords.max)]"
                                 :delimiters="[' ', ',', '.']"
+                                :label="$t('project.new.step3.keywords')"
                                 prepend-inner-icon="mdi-file-word-box"
                             />
                         </div>
@@ -175,21 +175,36 @@
                     </v-form>
                 </v-card-text>
             </v-card>
-            <v-card class="mt-3">
+            <v-card class="mt-3 settings-card">
                 <v-card-text>
                     <div>
                         <h2>{{ $t('project.settings.icon') }}</h2>
                         <v-row>
-                            <v-col cols="12" md="8">
+                            <v-col>
                                 <p>{{ $t('project.settings.iconSub') }}</p>
-                                <v-file-input chips show-size dense filled prepend-inner-icon="$file" prepend-icon="">
-                                    <template #append-outer>
-                                        <v-btn @click="uploadIcon">{{ $t('project.settings.iconUpload') }}</v-btn>
-                                    </template>
-                                </v-file-input>
+                                <!-- TODO what kind of files to accept -->
+                                <v-file-input
+                                    v-model="projectIcon"
+                                    chips
+                                    show-size
+                                    dense
+                                    filled
+                                    prepend-inner-icon="$file"
+                                    accept="image/png, image/jpeg"
+                                    prepend-icon=""
+                                    @change="onFileChange"
+                                />
+                                <v-btn color="info" :disabled="!projectIcon" :loading="loading.uploadIcon" @click="uploadIcon">
+                                    <v-icon left>mdi-upload</v-icon>
+                                    {{ $t('project.settings.iconUpload') }}
+                                </v-btn>
+                                <v-btn color="warning" :loading="loading.resetIcon" @click="resetIcon">
+                                    <v-icon left>mdi-upload</v-icon>
+                                    {{ $t('project.settings.iconReset') }}
+                                </v-btn>
                             </v-col>
-                            <v-col cols="12" md="4">
-                                <!-- TODO preview image-->
+                            <v-col>
+                                <img id="project-icon-preview" :src="project.iconUrl" alt="Project Icon" width="150" height="150" />
                             </v-col>
                         </v-row>
                     </div>
@@ -201,7 +216,7 @@
                                 <p>{{ $t('project.settings.apiKeySub') }}</p>
                                 <v-text-field v-model.trim="apiKey" dense hide-details filled>
                                     <template #append-outer>
-                                        <v-btn @click="generateApiKey">{{ $t('project.settings.apiKeyGenerate') }}</v-btn>
+                                        <v-btn class="input-append-btn" @click="generateApiKey">{{ $t('project.settings.apiKeyGenerate') }}</v-btn>
                                     </template>
                                 </v-text-field>
                             </v-col>
@@ -215,7 +230,7 @@
                                 <p>{{ $t('project.settings.renameSub') }}</p>
                                 <v-text-field v-model.trim="newName" dense hide-details filled>
                                     <template #append-outer>
-                                        <v-btn color="warning" @click="rename">{{ $t('project.settings.rename') }}</v-btn>
+                                        <v-btn class="input-append-btn" color="warning" @click="rename">{{ $t('project.settings.rename') }}</v-btn>
                                     </template>
                                 </v-text-field>
                             </v-col>
@@ -250,7 +265,7 @@
             </v-card>
         </v-col>
         <v-col cols="12" md="4">
-            <v-card>
+            <v-card class="settings-card">
                 <v-card-title>
                     {{ $t('project.members') }}
                 </v-card-title>
@@ -278,6 +293,8 @@ import { HangarProjectMixin } from '~/components/mixins';
 export default class ProjectManagePage extends HangarProjectMixin {
     apiKey = '';
     newName = '';
+    // TODO load project icon;
+    projectIcon: File | null = null;
     form: ProjectSettingsForm = {
         settings: {
             homepage: null,
@@ -302,6 +319,8 @@ export default class ProjectManagePage extends HangarProjectMixin {
 
     loading = {
         save: false,
+        uploadIcon: false,
+        resetIcon: false,
     };
 
     created() {
@@ -333,6 +352,18 @@ export default class ProjectManagePage extends HangarProjectMixin {
         return ['MIT', 'Apache 2.0', 'GPL', 'LGPL', '(custom)'];
     }
 
+    onFileChange() {
+        if (this.projectIcon) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                document.getElementById('project-icon-preview')!.setAttribute('src', ev.target!.result as string);
+            };
+            reader.readAsDataURL(this.projectIcon);
+        } else {
+            document.getElementById('project-icon-preview')!.setAttribute('src', this.project.iconUrl);
+        }
+    }
+
     save() {
         this.loading.save = true;
         this.$api
@@ -355,7 +386,38 @@ export default class ProjectManagePage extends HangarProjectMixin {
 
     hardDelete() {}
 
-    uploadIcon() {}
+    uploadIcon() {
+        const data = new FormData();
+        data.append('projectIcon', this.projectIcon!);
+        this.loading.uploadIcon = true;
+        this.$api
+            .requestInternal(`projects/project/${this.$route.params.author}/${this.$route.params.slug}/saveIcon`, true, 'post', data)
+            .then(() => {
+                this.projectIcon = null;
+                this.$util.success(this.$t('project.settings.success.changedIcon'));
+                this.$nuxt.refresh();
+            })
+            .catch(this.$util.handleRequestError)
+            .finally(() => {
+                this.loading.uploadIcon = false;
+            });
+    }
+
+    resetIcon() {
+        // TODO some way of disabling the reset icon button if not using a custom image
+        this.loading.resetIcon = true;
+        this.$api
+            .requestInternal(`projects/project/${this.$route.params.author}/${this.$route.params.slug}/resetIcon`, true, 'post')
+            .then(() => {
+                this.$util.success(this.$t('project.settings.success.resetIcon'));
+                document.getElementById('project-icon-preview')!.setAttribute('src', `${this.project.iconUrl}?noCache=${Math.random()}`);
+                this.$nuxt.refresh();
+            })
+            .catch(this.$util.handleRequestError)
+            .finally(() => {
+                this.loading.resetIcon = false;
+            });
+    }
 
     generateApiKey() {}
 
@@ -364,13 +426,25 @@ export default class ProjectManagePage extends HangarProjectMixin {
 }
 </script>
 <style lang="scss">
-$text-field-details-margin-bottom: 0;
-@import '~vuetify/src/components/VTextField/VTextField';
+.v-file-input {
+    .v-text-field__slot {
+        position: absolute !important;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.settings-card {
+    .v-text-field .v-text-field__details {
+        margin-bottom: 0;
+    }
+}
 </style>
 
 <style lang="scss" scoped>
 hr {
-    margin-top: 10px;
+    margin-top: 6px;
     margin-bottom: 5px;
 }
 
@@ -398,9 +472,5 @@ h2 {
 
 .col-12 .v-input--selection-controls {
     margin-top: 0;
-}
-
-.v-text-field .v-text-field__details {
-    margin-bottom: 0;
 }
 </style>

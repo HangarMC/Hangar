@@ -4,6 +4,7 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.exceptions.InternalHangarException;
 import io.papermc.hangar.service.HangarService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ImageService extends HangarService {
@@ -36,7 +38,10 @@ public class ImageService extends HangarService {
             byte[] lastModified = Files.getLastModifiedTime(iconPath).toString().getBytes(StandardCharsets.UTF_8);
             byte[] lastModifiedHash = MessageDigest.getInstance("MD5").digest(lastModified);
             String hashString = Base64.getEncoder().encodeToString(lastModifiedHash);
-            return ResponseEntity.ok().header(HttpHeaders.ETAG, hashString).header(HttpHeaders.CACHE_CONTROL, "max-age=" + 3600).body(Files.readAllBytes(iconPath));
+            HttpHeaders headers = new HttpHeaders();
+            headers.setCacheControl(CacheControl.maxAge(3600, TimeUnit.SECONDS).getHeaderValue());
+            headers.setETag("\"" + hashString + "\"");
+            return ResponseEntity.ok().headers(headers).body(Files.readAllBytes(iconPath));
         } catch (IOException | NoSuchAlgorithmException e) {
             e.printStackTrace();
             throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to fetch project icon");

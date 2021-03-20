@@ -1,10 +1,11 @@
 import { ActionTree, MutationTree } from 'vuex';
+import { TranslateResult } from 'vue-i18n';
 import { RootState } from '~/store/index';
 
 export const state = () => ({
     enabled: false,
     color: null as string | null,
-    messages: [] as string[],
+    messages: [] as TranslateResult[],
     timeout: 3000 as number,
 });
 
@@ -13,7 +14,7 @@ export type SnackbarState = ReturnType<typeof state>;
 export interface NotifPayload {
     color?: string;
     timeout?: number;
-    message: string;
+    message: TranslateResult;
 }
 
 function timeout(ms: number) {
@@ -41,7 +42,7 @@ export const mutations: MutationTree<SnackbarState> = {
     SET_TIMEOUT: (state: SnackbarState, timeout: number | null) => {
         state.timeout = timeout || 3000;
     },
-    ADD_MESSAGE: (state: SnackbarState, message: string) => {
+    ADD_MESSAGE: (state: SnackbarState, message: TranslateResult) => {
         state.messages.push(message);
     },
     SHOW_SNACKBAR: (state: SnackbarState, show: boolean) => {

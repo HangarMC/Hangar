@@ -2,3 +2,12 @@
   margin-left: auto;
   order: 2;
 }
+
+.v-input {
+  &.v-input--dense .v-input__append-outer {
+    .input-append-btn {
+      margin-top: -6px;
+    }
+  }
+}
+

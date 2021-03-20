@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -86,6 +87,22 @@ public class ProjectController extends HangarController {
     @PostMapping(path = "/project/{author}/{slug}/settings", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void saveProjectSettings(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody ProjectSettingsForm settingsForm) {
         projectService.saveSettings(author, slug, settingsForm);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
+    @PostMapping(path = "/project/{author}/{slug}/saveIcon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void saveProjectIcon(@PathVariable String author, @PathVariable String slug, @RequestParam MultipartFile projectIcon) {
+        projectService.saveIcon(author, slug, projectIcon);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
+    @PostMapping("/project/{author}/{slug}/resetIcon")
+    public void resetProjectIcon(@PathVariable String author, @PathVariable String slug) {
+        projectService.resetIcon(author, slug);
     }
 
     @Unlocked

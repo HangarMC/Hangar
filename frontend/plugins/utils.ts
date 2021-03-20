@@ -242,7 +242,7 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
             },
         };
 
-        error(err: string | NotifPayload) {
+        error(err: TranslateResult | NotifPayload) {
             if (typeof err === 'string') {
                 store.dispatch('snackbar/SHOW_NOTIF', { message: err, color: 'error' } as NotifPayload);
             } else {
@@ -250,7 +250,7 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
             }
         }
 
-        success(msg: string) {
+        success(msg: TranslateResult) {
             store.dispatch('snackbar/SHOW_NOTIF', { message: msg, color: 'success' } as NotifPayload);
         }
     }

@@ -213,6 +213,7 @@ const msgs: LocaleMessageObject = {
             icon: 'Icon',
             iconSub: 'Upload an image representative of your project.',
             iconUpload: 'Upload',
+            iconReset: 'Reset Icon',
             apiKey: 'API Keys',
             apiKeySub: 'Generate a unique deployment key to enable build deployment from Gradle',
             apiKeyGenerate: 'Generate',
@@ -227,6 +228,14 @@ const msgs: LocaleMessageObject = {
             licenceCustom: 'Custom Name',
             licenceType: 'Type',
             licenceUrl: 'URL',
+            error: {
+                invalidFile: '{0} is an invalid file type',
+                noFile: 'No file submitted',
+            },
+            success: {
+                changedIcon: 'Successfully changed the project icon',
+                resetIcon: 'Successfully reset the project icon',
+            },
         },
     },
     page: {

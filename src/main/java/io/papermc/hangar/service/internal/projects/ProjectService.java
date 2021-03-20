@@ -23,13 +23,20 @@ import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.VisibilityService.ProjectVisibilityService;
 import io.papermc.hangar.service.internal.OrganizationService;
+import io.papermc.hangar.service.internal.uploads.ProjectFiles;
+import io.papermc.hangar.util.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -48,15 +55,17 @@ public class ProjectService extends HangarService {
     private final ProjectVisibilityService projectVisibilityService;
     private final OrganizationService organizationService;
     private final ProjectPageService projectPageService;
+    private final ProjectFiles projectFiles;
 
     @Autowired
-    public ProjectService(HangarDao<ProjectsDAO> projectDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService) {
+    public ProjectService(HangarDao<ProjectsDAO> projectDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles) {
         this.projectsDAO = projectDAO.get();
         this.hangarUsersDAO = hangarUsersDAO.get();
         this.hangarProjectsDAO = hangarProjectsDAO.get();
         this.projectVisibilityService = projectVisibilityService;
         this.organizationService = organizationService;
         this.projectPageService = projectPageService;
+        this.projectFiles = projectFiles;
     }
 
     @Nullable
@@ -96,9 +105,6 @@ public class ProjectService extends HangarService {
 
     public void saveSettings(String author, String slug, ProjectSettingsForm settingsForm) {
         ProjectTable projectTable = getProjectTable(author, slug);
-        if (projectTable == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
-        }
         projectTable.setCategory(settingsForm.getCategory());
         projectTable.setKeywords(settingsForm.getSettings().getKeywords());
         projectTable.setHomepage(settingsForm.getSettings().getHomepage());
@@ -110,10 +116,39 @@ public class ProjectService extends HangarService {
         projectTable.setForumSync(settingsForm.getSettings().isForumSync());
         projectTable.setDescription(settingsForm.getDescription());
         projectsDAO.update(projectTable);
-        // TODO is icon change?
-        // TODO role updates
         refreshHomeProjects();
         userActionLogService.project(LoggedActionType.PROJECT_SETTINGS_CHANGED.with(ProjectContext.of(projectTable.getId())), "", "");
+    }
+
+    public void saveIcon(String author, String slug, MultipartFile icon) {
+        ProjectTable projectTable = getProjectTable(author, slug);
+        if (icon.getContentType() == null || (!icon.getContentType().equals(MediaType.IMAGE_PNG_VALUE) && !icon.getContentType().equals(MediaType.IMAGE_JPEG_VALUE))) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.error.invalidFile", icon.getContentType());
+        }
+        if (icon.getOriginalFilename() == null || icon.getOriginalFilename().isBlank()) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.error.noFile");
+        }
+        try {
+            Path iconDir = projectFiles.getIconDir(author, slug);
+            if (Files.notExists(iconDir)) {
+                Files.createDirectories(iconDir);
+            }
+            FileUtils.deletedFiles(iconDir);
+            Files.copy(icon.getInputStream(), iconDir.resolve(icon.getOriginalFilename()));
+            // TODO store old images in log somehow?
+            userActionLogService.project(LoggedActionType.PROJECT_ICON_CHANGED.with(ProjectContext.of(projectTable.getId())), "", "");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public void resetIcon(String author, String slug) {
+        ProjectTable projectTable = getProjectTable(author, slug);
+        if (FileUtils.delete(projectFiles.getIconPath(author, slug))) {
+            // TODO store old images in log somehow?
+            userActionLogService.project(LoggedActionType.PROJECT_ICON_CHANGED.with(ProjectContext.of(projectTable.getId())), "", "");
+        }
     }
 
     // TODO implement flag view

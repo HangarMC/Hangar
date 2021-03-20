@@ -69,7 +69,7 @@ public class VersionController extends HangarController {
     @Unlocked
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PendingVersion> createFromFile(@PathVariable("id") long projectId, @RequestParam("pluginFile") MultipartFile pluginFile) {
+    public ResponseEntity<PendingVersion> createFromFile(@PathVariable("id") long projectId, @RequestParam MultipartFile pluginFile) {
         return ResponseEntity.ok(versionFactory.createPendingVersion(projectId, pluginFile));
     }
 

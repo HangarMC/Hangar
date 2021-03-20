@@ -11,10 +11,12 @@ import io.papermc.hangar.model.api.project.ProjectMember;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
+import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.service.api.ProjectsApiService;
 import io.papermc.hangar.service.internal.uploads.ImageService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,7 +70,8 @@ public class ProjectsController extends HangarController implements IProjectsCon
     }
 
     // TODO move to internal project api
-    @GetMapping(value = "/project/{author}/{name}/icon")
+    @Anyone
+    @GetMapping(value = "/project/{author}/{name}/icon", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     public Object getProjectIcon(@PathVariable String author, @PathVariable String name) {
         try {
             return imageService.getProjectIcon(author, name);
