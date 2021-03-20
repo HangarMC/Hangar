@@ -48,7 +48,7 @@
                                 v-model.trim="taglineForm"
                                 counter="100"
                                 :label="$t('author.taglineLabel')"
-                                :rules="[$util.$vc.require($t('author.taglineLabel')), $util.$vc.maxLength(100)]"
+                                :rules="[$util.$vc.require($t('author.taglineLabel')), $util.$vc.maxLength(validations.userTagline.max)]"
                             />
                             <template #other-btns>
                                 <v-btn color="info" text :loading="loading.resetTagline" :disabled="!user.tagline" @click.stop="resetTagline">{{
@@ -72,11 +72,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
+import { Component, State, Vue } from 'nuxt-property-decorator';
 import { HangarUser } from 'hangar-internal';
 import { Context } from '@nuxt/types';
 import UserAvatar from '../components/UserAvatar.vue';
 import HangarModal from '~/components/modals/HangarModal.vue';
+import { RootState } from '~/store';
 
 interface Button {
     icon: string;
@@ -150,6 +151,9 @@ export default class UserParentPage extends Vue {
         if (typeof user === 'undefined') return;
         return { user };
     }
+
+    @State((state: RootState) => state.validations)
+    validations!: RootState['validations'];
 }
 </script>
 

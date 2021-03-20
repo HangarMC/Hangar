@@ -219,13 +219,26 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
 
         $vc = {
             require: (name: TranslateResult = 'Field') => (v: string) => !!v || i18n.t('validation.required', [name]),
-            maxLength: (maxLength: number) => (v: string) => (!!v && v.length <= maxLength) || i18n.t('validation.maxLength', [maxLength]),
+            maxLength: (maxLength: number) => (v: string | any[]) => {
+                return (
+                    ((v === null || typeof v === 'string') && !v) ||
+                    (Array.isArray(v) && v.length === 0) ||
+                    v.length <= maxLength ||
+                    i18n.t('validation.maxLength', [maxLength])
+                );
+            },
+            minLength: (minLength: number) => (v: string | any[]) => {
+                return (
+                    ((v === null || typeof v === 'string') && !v) ||
+                    (Array.isArray(v) && v.length === 0) ||
+                    v.length >= minLength ||
+                    i18n.t('validation.minLength', [minLength])
+                );
+            },
             requireNonEmptyArray: (name: TranslateResult = 'Field') => (v: any[]) => v.length > 0 || i18n.t('validation.required', [name]),
-            url: (require: boolean) => (v: string) => {
-                if (!require && !v) {
-                    return true;
-                }
-                return new RegExp((store.state as RootState).validations.urlRegex).test(v) || i18n.t('general.error.invalidUrl');
+            url: (v: string) => !v || new RegExp((store.state as RootState).validations.urlRegex).test(v) || i18n.t('general.error.invalidUrl'),
+            regex: (name: TranslateResult = 'Field', regexp: string) => (v: string) => {
+                return !v || new RegExp(regexp).test(v) || i18n.t('validation.invalidFormat', [name]);
             },
         };
 

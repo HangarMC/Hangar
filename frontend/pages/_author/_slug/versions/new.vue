@@ -21,6 +21,7 @@
                         <v-btn color="warning" block @click="reset">{{ $t('general.reset') }}</v-btn>
                     </v-col>
                     <v-col :md="isFile ? 4 : 6" sm="6" cols="12">
+                        <!-- TODO validate version string against existing versions. complex because they only have to be unique per-platform -->
                         <v-text-field
                             v-model="pendingVersion.versionString"
                             :hide-details="isFile"
@@ -28,7 +29,10 @@
                             :disabled="isFile"
                             :autofocus="!isFile"
                             filled
-                            :rules="[$util.$vc.require('Version string')]"
+                            :rules="[
+                                $util.$vc.require($t('version.new.form.versionString')),
+                                $util.$vc.regex($t('version.new.form.versionString'), validations.version.regex),
+                            ]"
                         />
                     </v-col>
                     <v-col v-if="isFile" md="4" sm="6" cols="12">
@@ -48,7 +52,7 @@
                             v-model="pendingVersion.externalUrl"
                             :label="$t('version.new.form.externalUrl')"
                             filled
-                            :rules="[$util.$vc.require('External URL')]"
+                            :rules="[$util.$vc.require($t('version.new.form.externalUrl'))]"
                         />
                     </v-col>
                 </v-row>
@@ -72,7 +76,7 @@
                     <v-col class="flex-grow-0 pl-0 pr-4" align-self="center">
                         <NewChannelModal @create="addChannel">
                             <template #activator="{ on, attrs }">
-                                <v-btn color="info" v-bind="attrs" v-on="on">
+                                <v-btn v-if="channels.length < validations.project.maxChannelCount" color="info" v-bind="attrs" v-on="on">
                                     {{ $t('version.new.form.addChannel') }}
                                     <v-icon right>mdi-plus</v-icon>
                                 </v-btn>
@@ -167,7 +171,7 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'nuxt-property-decorator';
+import { Component, State } from 'nuxt-property-decorator';
 import remove from 'lodash-es/remove';
 import { IPlatform, PendingVersion, ProjectChannel } from 'hangar-internal';
 import { ProjectNamespace } from 'hangar-api';
@@ -337,6 +341,9 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
         this.file = null;
         this.pendingVersion = null;
     }
+
+    @State((state: RootState) => state.validations)
+    validations!: RootState['validations'];
 }
 </script>
 <style lang="scss" scoped>

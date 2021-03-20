@@ -7,7 +7,15 @@
             <v-card-title>{{ $t('channel.new.title') }}</v-card-title>
             <v-card-text>
                 <v-form v-model="validForm">
-                    <v-text-field v-model.trim="form.name" :label="$t('channel.new.name')" :rules="[$util.$vc.require($t('channel.new.name'))]" />
+                    <v-text-field
+                        v-model.trim="form.name"
+                        :label="$t('channel.new.name')"
+                        :rules="[
+                            $util.$vc.require($t('channel.new.name')),
+                            $util.$vc.regex($t('channel.new.name'), validations.project.channels.regex),
+                            $util.$vc.maxLength(validations.project.channels.max),
+                        ]"
+                    />
                     <v-card-subtitle class="pa-0 text-center">{{ $t('channel.new.color') }}</v-card-subtitle>
                     <v-item-group v-model="form.color" mandatory>
                         <v-container>
@@ -44,9 +52,10 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'nuxt-property-decorator';
+import { Component, State } from 'nuxt-property-decorator';
 import { Color, ProjectChannel } from 'hangar-internal';
 import { HangarFormModal } from '../mixins';
+import { RootState } from '~/store';
 
 @Component
 export default class NewChannelModal extends HangarFormModal {
@@ -82,9 +91,13 @@ export default class NewChannelModal extends HangarFormModal {
     }
 
     createChannel() {
+        // TODO check channel name against existing channels
         this.$emit('create', this.form);
         this.dialog = false;
     }
+
+    @State((state: RootState) => state.validations)
+    validations!: RootState['validations'];
 }
 </script>
 

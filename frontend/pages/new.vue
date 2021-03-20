@@ -44,7 +44,7 @@
                                         item-text="name"
                                         item-value="userId"
                                         :label="$t('project.new.step2.userselect')"
-                                        :rules="[$util.$vc.require('Project owner')]"
+                                        :rules="[$util.$vc.require($t('project.new.step2.userselect'))]"
                                         :append-icon="createAsIcon"
                                     />
                                 </v-col>
@@ -57,7 +57,11 @@
                                         filled
                                         :error-messages="nameErrors"
                                         :label="$t('project.new.step2.projectname')"
-                                        :rules="[$util.$vc.require('Name')]"
+                                        :rules="[
+                                            $util.$vc.require($t('project.new.step2.projectname')),
+                                            $util.$vc.regex($t('project.new.step2.projectname'), validations.project.name.regex),
+                                            $util.$vc.maxLength(validations.project.name.max),
+                                        ]"
                                         append-icon="mdi-form-textbox"
                                     />
                                 </v-col>
@@ -68,7 +72,7 @@
                                         filled
                                         clearable
                                         :label="$t('project.new.step2.projectsummary')"
-                                        :rules="[$util.$vc.require('Description')]"
+                                        :rules="[$util.$vc.require($t('project.new.step2.projectsummary')), $util.$vc.maxLength(validations.project.desc.max)]"
                                         append-icon="mdi-card-text"
                                     />
                                 </v-col>
@@ -82,7 +86,7 @@
                                         :label="$t('project.new.step2.projectcategory')"
                                         item-text="title"
                                         item-value="apiName"
-                                        :rules="[$util.$vc.require('Category')]"
+                                        :rules="[$util.$vc.require($t('project.new.step2.projectcategory'))]"
                                     />
                                 </v-col>
                             </v-row>
@@ -109,6 +113,7 @@
                                     hide-details
                                     filled
                                     :label="$t('project.new.step3.homepage')"
+                                    :rules="[$util.$vc.url]"
                                     append-icon="mdi-home-search"
                                 />
                             </v-col>
@@ -119,6 +124,7 @@
                                     hide-details
                                     filled
                                     :label="$t('project.new.step3.issues')"
+                                    :rules="[$util.$vc.url]"
                                     append-icon="mdi-bug"
                                 />
                             </v-col>
@@ -129,6 +135,7 @@
                                     hide-details
                                     filled
                                     :label="$t('project.new.step3.source')"
+                                    :rules="[$util.$vc.url]"
                                     append-icon="mdi-source-branch"
                                 />
                             </v-col>
@@ -139,6 +146,7 @@
                                     hide-details
                                     filled
                                     :label="$t('project.new.step3.support')"
+                                    :rules="[$util.$vc.url]"
                                     append-icon="mdi-face-agent"
                                 />
                             </v-col>
@@ -164,7 +172,14 @@
                                 <v-text-field v-model.trim="form.settings.license.name" dense hide-details filled :label="$t('project.new.step3.customName')" />
                             </v-col>
                             <v-col cols="12" :md="isCustomLicense ? 12 : 6">
-                                <v-text-field v-model.trim="form.settings.license.url" dense hide-details filled :label="$t('project.new.step3.url')" />
+                                <v-text-field
+                                    v-model.trim="form.settings.license.url"
+                                    dense
+                                    hide-details
+                                    filled
+                                    :label="$t('project.new.step3.url')"
+                                    :rules="[$util.$vc.url]"
+                                />
                             </v-col>
                         </v-row>
                         <div class="text-h6 pt-5">
@@ -182,6 +197,7 @@
                                     dense
                                     hide-details
                                     filled
+                                    clearable
                                     :delimiters="[' ', ',', '.']"
                                     :label="$t('project.new.step3.keywords')"
                                     append-icon="mdi-file-word-box"
@@ -228,7 +244,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'nuxt-property-decorator';
+import { Component, State, Vue, Watch } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
 import { ProjectOwner, ProjectSettingsForm } from 'hangar-internal';
 import { AxiosError } from 'axios';
@@ -292,6 +308,9 @@ export default class NewPage extends Vue {
     get licences() {
         return ['MIT', 'Apache 2.0', 'GPL', 'LGPL', '(custom)'];
     }
+
+    @State((state: RootState) => state.validations)
+    validations!: RootState['validations'];
 
     async asyncData({ $api }: Context) {
         return {

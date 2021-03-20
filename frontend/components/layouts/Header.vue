@@ -67,8 +67,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
+import { Component, State, Vue } from 'nuxt-property-decorator';
 import Dropdown, { Control } from '~/components/layouts/Dropdown.vue';
+import { RootState } from '~/store';
 
 @Component({
     components: {
@@ -128,11 +129,14 @@ export default class Header extends Vue {
             icon: 'mdi-book',
             title: this.$t('nav.new.project'),
         });
-        controls.push({
-            link: '/organizations/new',
-            icon: 'mdi-account-group',
-            title: this.$t('nav.new.organization'),
-        });
+        // TODO get user orgs count
+        if (0 - 1 < this.validations.maxOrgCount) {
+            controls.push({
+                link: '/organizations/new',
+                icon: 'mdi-account-group',
+                title: this.$t('nav.new.organization'),
+            });
+        }
         return controls;
     }
 
@@ -210,6 +214,9 @@ export default class Header extends Vue {
         });
         return controls;
     }
+
+    @State((state: RootState) => state.validations)
+    validations!: RootState['validations'];
 }
 </script>
 

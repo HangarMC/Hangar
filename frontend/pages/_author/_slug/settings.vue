@@ -40,6 +40,9 @@
                                 dense
                                 hide-details
                                 filled
+                                clearable
+                                :counter="validations.project.keywords.max"
+                                :rules="[$util.$vc.maxLength(validations.project.keywords.max)]"
                                 :delimiters="[' ', ',', '.']"
                                 prepend-inner-icon="mdi-file-word-box"
                             />
@@ -56,7 +59,7 @@
                                 filled
                                 prepend-inner-icon="mdi-home-search"
                                 :label="$t('project.new.step3.homepage')"
-                                :rules="[$util.$vc.url(false)]"
+                                :rules="[$util.$vc.url]"
                             />
                         </div>
                         <v-divider />
@@ -71,7 +74,7 @@
                                 filled
                                 prepend-inner-icon="mdi-bug"
                                 :label="$t('project.new.step3.issues')"
-                                :rules="[$util.$vc.url(false)]"
+                                :rules="[$util.$vc.url]"
                             />
                         </div>
                         <v-divider />
@@ -86,7 +89,7 @@
                                 filled
                                 prepend-inner-icon="mdi-source-branch"
                                 :label="$t('project.new.step3.source')"
-                                :rules="[$util.$vc.url(false)]"
+                                :rules="[$util.$vc.url]"
                             />
                         </div>
                         <v-divider />
@@ -101,7 +104,7 @@
                                 filled
                                 prepend-inner-icon="mdi-face-agent"
                                 :label="$t('project.new.step3.support')"
-                                :rules="[$util.$vc.url(false)]"
+                                :rules="[$util.$vc.url]"
                             />
                         </div>
                         <v-divider />
@@ -137,7 +140,7 @@
                                         dense
                                         clearable
                                         filled
-                                        :rules="[$util.$vc.url(false)]"
+                                        :rules="[$util.$vc.url]"
                                         :label="$t('project.settings.licenceUrl')"
                                     />
                                 </v-col>

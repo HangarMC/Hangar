@@ -115,12 +115,11 @@ import Tag from '~/components/Tag.vue';
 import DonationModal from '~/components/donation/DonationModal.vue';
 import MemberList from '~/components/MemberList.vue';
 import Markdown from '~/components/Markdown.vue';
-import NewPageModal from '~/components/modals/pages/NewPageModal.vue';
 import { DocPageMixin } from '~/components/mixins';
 import ProjectPageList from '~/components/projects/ProjectPageList.vue';
 
 @Component({
-    components: { ProjectPageList, NewPageModal, Markdown, MemberList, DonationModal, MarkdownEditor, Tag },
+    components: { ProjectPageList, Markdown, MemberList, DonationModal, MarkdownEditor, Tag },
 })
 export default class DocsPage extends DocPageMixin {
     async asyncData({ $api, params, $util }: Context) {

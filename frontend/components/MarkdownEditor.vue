@@ -1,6 +1,7 @@
 <template>
     <div class="markdown-editor">
         <div v-show="isEditing && !preview" class="ml-4">
+            <!-- TODO validations for pageContent min/max length from validations state -->
             <v-textarea v-model="rawEdited" outlined :rows="rawEdited.split(/\r\n|\r|\n/g).length + 3" :rules="rules" />
         </div>
         <Markdown v-show="!isEditing" :raw="raw" class="ml-4" />

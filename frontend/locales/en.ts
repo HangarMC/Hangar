@@ -527,7 +527,9 @@ const msgs: LocaleMessageObject = {
     },
     validation: {
         required: '{0} is required',
-        maxLength: 'Max length is {0}',
+        maxLength: 'Maximum length is {0}',
+        minLength: 'Minimum length is {0}',
+        invalidFormat: '{0} is invalid',
     },
 };
 
