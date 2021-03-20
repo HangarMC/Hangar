@@ -1,12 +1,12 @@
 <template>
-    <v-dialog v-model="dialog" max-width="500" persistent>
+    <v-dialog v-model="dialog" max-width="500" persistent @input="reset">
         <template #activator="{ on, attrs }">
             <slot name="activator" :on="on" :attrs="attrs" />
         </template>
         <v-card>
             <v-card-title>{{ edit ? $t('channel.modal.titleEdit') : $t('channel.modal.titleNew') }}</v-card-title>
             <v-card-text>
-                <v-form v-model="validForm">
+                <v-form ref="modalForm" v-model="validForm">
                     <v-text-field
                         v-model.trim="form.name"
                         :label="$t('channel.modal.name')"
@@ -63,7 +63,7 @@ export default class ChannelModal extends HangarFormModal {
     edit!: Boolean;
 
     @Prop()
-    channel!: ProjectChannel;
+    channel!: ProjectChannel | undefined;
 
     colors: Color[] = [];
     form: ProjectChannel = {
@@ -74,7 +74,13 @@ export default class ChannelModal extends HangarFormModal {
     };
 
     mounted() {
-        this.form = { ...this.channel };
+        this.reset();
+    }
+
+    reset() {
+        if (this.channel) {
+            this.form = { ...this.channel };
+        }
     }
 
     async fetch() {

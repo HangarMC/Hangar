@@ -484,15 +484,6 @@ export default class ProjectManagePage extends HangarProjectMixin {
 }
 </script>
 <style lang="scss">
-.v-file-input {
-    .v-text-field__slot {
-        position: absolute !important;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
-}
-
 .settings-card {
     .v-text-field .v-text-field__details {
         margin-bottom: 0;

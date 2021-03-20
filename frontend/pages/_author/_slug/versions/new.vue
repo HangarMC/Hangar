@@ -4,13 +4,13 @@
         <v-card-text v-if="!pendingVersion">
             <v-row justify="space-around">
                 <v-col cols="12">
-                    <v-file-input v-model="file" filled :label="$t('version.new.upload')" accept=".jar,.zip" />
+                    <v-file-input v-model="file" filled :label="$t('version.new.upload')" accept=".jar,.zip" prepend-inner-icon="$file" prepend-icon="" />
                 </v-col>
                 <v-col cols="12">
                     {{ $t('general.or') }}
                 </v-col>
                 <v-col cols="12">
-                    <v-text-field v-model.trim="url" filled clearable :label="$t('version.new.url')" />
+                    <v-text-field v-model.trim="url" filled clearable :label="$t('version.new.url')" :rules="[$util.$vc.url]" />
                 </v-col>
             </v-row>
         </v-card-text>
@@ -52,7 +52,7 @@
                             v-model="pendingVersion.externalUrl"
                             :label="$t('version.new.form.externalUrl')"
                             filled
-                            :rules="[$util.$vc.require($t('version.new.form.externalUrl'))]"
+                            :rules="[$util.$vc.require($t('version.new.form.externalUrl')), $util.$vc.url]"
                         />
                     </v-col>
                 </v-row>
@@ -318,7 +318,7 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
             return;
         }
         this.channels = await this.$api
-            .requestInternal<ProjectChannel[]>(`channels/all/${this.project.id}`, false)
+            .requestInternal<ProjectChannel[]>(`channels/${this.$route.params.author}/${this.$route.params.slug}`, false)
             .catch<any>(this.$util.handlePageRequestError);
         this.pendingVersion = await this.$api
             .requestInternal<PendingVersion>(`versions/version/${this.project.id}/upload`, true, 'post', data)

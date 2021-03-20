@@ -43,10 +43,4 @@ public class ChannelController extends HangarController {
         }
         return ResponseEntity.ok(channelService.getProjectChannels(projectTable.getId()));
     }
-
-    // TODO visibility
-    @GetMapping(path = "/all/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ProjectChannelTable>> getProjectChannelsById(@PathVariable long id) {
-        return ResponseEntity.ok(channelService.getProjectChannels(id));
-    }
 }
