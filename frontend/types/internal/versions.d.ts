@@ -1,5 +1,6 @@
 declare module 'hangar-internal' {
     import { DependencyVersion, FileInfo, Named, ProjectNamespace, Version } from 'hangar-api';
+    import { Table } from 'hangar-internal';
     import { Platform } from '~/types/enums';
 
     interface PlatformDependency {
@@ -24,7 +25,7 @@ declare module 'hangar-internal' {
         isFile: boolean;
     }
 
-    interface ProjectChannel extends Named {
+    interface ProjectChannel extends Named, Partial<Table> {
         color: string;
         nonReviewed: boolean;
         temp?: boolean;

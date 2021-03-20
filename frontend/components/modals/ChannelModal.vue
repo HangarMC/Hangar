@@ -70,7 +70,6 @@ export default class ChannelModal extends HangarFormModal {
         name: '',
         color: '',
         nonReviewed: false,
-        temp: true,
         versionCount: 0,
     };
 

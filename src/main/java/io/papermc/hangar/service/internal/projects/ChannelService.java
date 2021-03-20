@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ChannelService extends HangarService {
@@ -24,25 +25,39 @@ public class ChannelService extends HangarService {
         this.hangarProjectsDAO = hangarProjectsDAO.get();
     }
 
-    public ProjectChannelTable createProjectChannel(String name, Color color, long projectId, boolean nonReviewed) {
+    private void validateChannel(String name, Color color, long projectId, boolean nonReviewed, List<ProjectChannelTable> existingChannels) {
         if (!config.channels.isValidChannelName(name)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.invalidName");
         }
 
-        List<ProjectChannelTable> existingTables = projectChannelsDAO.getProjectChannels(projectId);
-        if (existingTables.size() >= config.projects.getMaxChannels()) {
+        if (existingChannels.size() >= config.projects.getMaxChannels()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.maxChannels", config.projects.getMaxChannels());
         }
 
-        if (existingTables.stream().anyMatch(ch -> ch.getColor() == color)) {
+        if (existingChannels.stream().anyMatch(ch -> ch.getColor() == color)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.duplicateColor");
         }
 
-        if (existingTables.stream().anyMatch(ch -> ch.getName().equalsIgnoreCase(name))) {
+        if (existingChannels.stream().anyMatch(ch -> ch.getName().equalsIgnoreCase(name))) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.duplicateName");
         }
+    }
 
+    public ProjectChannelTable createProjectChannel(String name, Color color, long projectId, boolean nonReviewed) {
+        validateChannel(name, color, projectId, nonReviewed, projectChannelsDAO.getProjectChannels(projectId));
         return projectChannelsDAO.insert(new ProjectChannelTable(name, color, projectId, nonReviewed));
+    }
+
+    public void editProjectChannel(long channelId, String name, Color color, long projectId, boolean nonReviewed) {
+        ProjectChannelTable projectChannelTable = getProjectChannel(channelId);
+        if (projectChannelTable == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+        validateChannel(name, color, projectId, nonReviewed, projectChannelsDAO.getProjectChannels(projectId).stream().filter(ch -> ch.getId() != channelId).collect(Collectors.toList()));
+        projectChannelTable.setName(name);
+        projectChannelTable.setColor(color);
+        projectChannelTable.setNonReviewed(nonReviewed);
+        projectChannelsDAO.update(projectChannelTable);
     }
 
     public List<HangarChannel> getProjectChannels(long projectId) {
@@ -51,6 +66,10 @@ public class ChannelService extends HangarService {
 
     public ProjectChannelTable getProjectChannel(long projectId, String name, Color color) {
         return projectChannelsDAO.getProjectChannel(projectId, name, color);
+    }
+
+    public ProjectChannelTable getProjectChannel(long channelId) {
+        return projectChannelsDAO.getProjectChannel(channelId);
     }
 
     public ProjectChannelTable getProjectChannelForVersion(long versionId) {

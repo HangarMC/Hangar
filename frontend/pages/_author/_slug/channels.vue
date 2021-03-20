@@ -25,7 +25,9 @@
                             <td>
                                 <ChannelModal :edit="true" :channel="channel" @create="editChannel">
                                     <template #activator="{ on, attrs }">
-                                        <v-btn small color="warning" v-bind="attrs" v-on="on">{{ $t('channel.manage.editButton') }}</v-btn>
+                                        <v-btn small color="warning" v-bind="attrs" v-on="on">
+                                            {{ $t('channel.manage.editButton') }}
+                                        </v-btn>
                                     </template>
                                 </ChannelModal>
                             </td>
@@ -40,7 +42,14 @@
             <v-card-actions>
                 <ChannelModal @create="addChannel">
                     <template #activator="{ on, attrs }">
-                        <v-btn v-if="channels.length < validations.project.maxChannelCount" color="primary" v-bind="attrs" v-on="on">
+                        <v-btn
+                            v-if="channels.length < validations.project.maxChannelCount"
+                            :loading="loading.add"
+                            :disabled="channels.length >= validations.project.maxChannelCount"
+                            color="primary"
+                            v-bind="attrs"
+                            v-on="on"
+                        >
                             <v-icon left>mdi-plus</v-icon>
                             {{ $t('channel.manage.add') }}
                         </v-btn>
@@ -65,10 +74,24 @@ import { RootState } from '~/store';
 })
 export default class ProjectChannelsPage extends HangarProjectMixin {
     channels!: ProjectChannel[];
+    loading = {
+        add: false,
+    };
 
-    // TODO editChannel
-    editChannel(name: String) {
-        console.log('edit channel ', name);
+    editChannel(channel: ProjectChannel) {
+        if (!channel.id) return;
+        const id = channel.id;
+        this.$api
+            .requestInternal(`channels/${this.project.id}/edit`, true, 'post', {
+                id,
+                name: channel.name,
+                color: channel.color,
+                nonReviewed: channel.nonReviewed,
+            })
+            .then(() => {
+                this.$nuxt.refresh();
+            })
+            .catch(this.$util.handleRequestError);
     }
 
     // TODO deleteChannel
@@ -76,9 +99,21 @@ export default class ProjectChannelsPage extends HangarProjectMixin {
         console.log('delete channel ', name);
     }
 
-    // TODO addChannel
     addChannel(channel: ProjectChannel) {
-        this.channels.push(Object.assign({}, channel));
+        this.loading.add = true;
+        this.$api
+            .requestInternal(`channels/${this.project.id}/create`, true, 'post', {
+                name: channel.name,
+                color: channel.color,
+                nonReviewed: channel.nonReviewed,
+            })
+            .then(() => {
+                this.$nuxt.refresh();
+            })
+            .catch(this.$util.handleRequestError)
+            .finally(() => {
+                this.loading.add = false;
+            });
     }
 
     async asyncData({ $api, $util, params }: Context) {

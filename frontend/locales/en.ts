@@ -352,6 +352,7 @@ const msgs: LocaleMessageObject = {
                 maxChannels: 'This project already has the maximum number of channels: {0}',
                 duplicateColor: 'This project already has a channel with this color',
                 duplicateName: 'This project already has a channel with this name',
+                tooLongName: 'Channel name is too long',
             },
         },
         manage: {

@@ -1,10 +1,15 @@
 package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.controller.HangarController;
-import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.common.NamedPermission;
+import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.db.projects.ProjectTable;
+import io.papermc.hangar.model.internal.api.requests.projects.ChannelForm;
+import io.papermc.hangar.model.internal.api.requests.projects.EditChannelForm;
 import io.papermc.hangar.model.internal.projects.HangarChannel;
 import io.papermc.hangar.security.annotations.Anyone;
+import io.papermc.hangar.security.annotations.permission.PermissionRequired;
+import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
 import io.papermc.hangar.service.internal.projects.ChannelService;
@@ -16,11 +21,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.validation.Valid;
 import java.util.List;
 
-@Anyone
 @Controller
 @RequestMapping(value = "/api/internal/channels", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ChannelController extends HangarController {
@@ -34,13 +42,27 @@ public class ChannelController extends HangarController {
         this.projectService = projectService;
     }
 
+    @Anyone
     @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
     @GetMapping(path = "/{author}/{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<HangarChannel>> getProjectChannels(@PathVariable String author, @PathVariable String slug) {
+    public ResponseEntity<List<HangarChannel>> getChannels(@PathVariable String author, @PathVariable String slug) {
         ProjectTable projectTable = projectService.getProjectTable(author, slug);
-        if (projectTable == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
-        }
         return ResponseEntity.ok(channelService.getProjectChannels(projectTable.getId()));
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
+    @PostMapping(path = "/{projectId}/create", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void createChannel(@PathVariable long projectId, @Valid @RequestBody ChannelForm channelForm) {
+        channelService.createProjectChannel(channelForm.getName(), channelForm.getColor(), projectId, channelForm.isNonReviewed());
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
+    @PostMapping(path = "/{projectId}/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void editChannel(@PathVariable long projectId, @Valid @RequestBody EditChannelForm channelForm) {
+        channelService.editProjectChannel(channelForm.getId(), channelForm.getName(), channelForm.getColor(), projectId, channelForm.isNonReviewed());
     }
 }

@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
+@Deprecated(forRemoval = true)
 public @interface UserLock {
     @AliasFor("route")
     Routes value() default Routes.SHOW_HOME;

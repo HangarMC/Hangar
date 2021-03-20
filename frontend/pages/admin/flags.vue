@@ -40,6 +40,7 @@ import { Component, Vue } from 'nuxt-property-decorator';
 import { Flag } from 'hangar-internal';
 import UserAvatar from '~/components/users/UserAvatar.vue';
 import { Visibility } from '~/types/enums';
+
 @Component({
     components: { UserAvatar },
 })
@@ -59,7 +60,7 @@ export default class AdminFlagsPage extends Vue {
     ];
 
     get visibilities(): Visibility[] {
-        return Object.keys(Visibility);
+        return Object.keys(Visibility) as Visibility[];
     }
 
     // todo send to server
