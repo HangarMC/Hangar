@@ -28,6 +28,7 @@ declare module 'hangar-internal' {
         color: string;
         nonReviewed: boolean;
         temp?: boolean;
+        versionCount: number;
     }
 
     interface HangarVersion extends Version {

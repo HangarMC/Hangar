@@ -2,8 +2,8 @@ package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
+import io.papermc.hangar.model.internal.projects.HangarChannel;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
@@ -36,7 +36,7 @@ public class ChannelController extends HangarController {
 
     @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
     @GetMapping(path = "/{author}/{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ProjectChannelTable>> getProjectChannels(@PathVariable String author, @PathVariable String slug) {
+    public ResponseEntity<List<HangarChannel>> getProjectChannels(@PathVariable String author, @PathVariable String slug) {
         ProjectTable projectTable = projectService.getProjectTable(author, slug);
         if (projectTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);

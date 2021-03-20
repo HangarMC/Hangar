@@ -7,18 +7,17 @@
                 <v-simple-table>
                     <thead>
                         <tr>
-                            <th><v-icon>mdi-tag</v-icon>{{ $t('channel.manage.channelName') }}</th>
-                            <th><v-icon>mdi-format-list-numbered</v-icon>{{ $t('channel.manage.versionCount') }}</th>
-                            <th><v-icon>mdi-file-find</v-icon>{{ $t('channel.manage.reviewed') }}</th>
-                            <th><v-icon>mdi-pencil</v-icon>{{ $t('channel.manage.edit') }}</th>
-                            <th><v-icon>mdi-delete</v-icon>{{ $t('channel.manage.trash') }}</th>
+                            <th><v-icon small left>mdi-tag</v-icon>{{ $t('channel.manage.channelName') }}</th>
+                            <th><v-icon small left>mdi-format-list-numbered</v-icon>{{ $t('channel.manage.versionCount') }}</th>
+                            <th><v-icon small left>mdi-file-find</v-icon>{{ $t('channel.manage.reviewed') }}</th>
+                            <th><v-icon small left>mdi-pencil</v-icon>{{ $t('channel.manage.edit') }}</th>
+                            <th><v-icon small left>mdi-delete</v-icon>{{ $t('channel.manage.trash') }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="channel in channels" :key="channel.name">
                             <td><Tag :name="channel.name" :color="{ background: channel.color }"></Tag></td>
-                            <!-- todo get number of versions in channel -->
-                            <td>X</td>
+                            <td>{{ channel.versionCount }}</td>
                             <td>
                                 <v-icon v-if="channel.nonReviewed">mdi-checkbox-blank-circle-outline</v-icon>
                                 <v-icon v-else>mdi-check-circle</v-icon>
@@ -26,13 +25,13 @@
                             <td>
                                 <ChannelModal :edit="true" :channel="channel" @create="editChannel">
                                     <template #activator="{ on, attrs }">
-                                        <v-btn color="warning" v-bind="attrs" v-on="on">{{ $t('channel.manage.editButton') }}</v-btn>
+                                        <v-btn small color="warning" v-bind="attrs" v-on="on">{{ $t('channel.manage.editButton') }}</v-btn>
                                     </template>
                                 </ChannelModal>
                             </td>
                             <td>
                                 <!-- todo we need to properly think about how channel deletion works -->
-                                <v-btn color="error" @click="deleteChannel(channel.name)">{{ $t('channel.manage.deleteButton') }}</v-btn>
+                                <v-btn small color="error" @click="deleteChannel(channel.name)">{{ $t('channel.manage.deleteButton') }}</v-btn>
                             </td>
                         </tr>
                     </tbody>
@@ -42,8 +41,8 @@
                 <ChannelModal @create="addChannel">
                     <template #activator="{ on, attrs }">
                         <v-btn v-if="channels.length < validations.project.maxChannelCount" color="primary" v-bind="attrs" v-on="on">
+                            <v-icon left>mdi-plus</v-icon>
                             {{ $t('channel.manage.add') }}
-                            <v-icon right>mdi-plus</v-icon>
                         </v-btn>
                     </template>
                 </ChannelModal>

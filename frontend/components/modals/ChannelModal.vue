@@ -45,14 +45,14 @@
             </v-card-text>
             <v-card-actions class="justify-end">
                 <v-btn color="error" text @click="dialog = false">{{ $t('general.close') }}</v-btn>
-                <v-btn color="success" :disabled="!isValid" @click="createChannel">{{ edit ? $t('general.save') : $t('general.create') }}</v-btn>
+                <v-btn color="success" :disabled="!isValid" @click="create">{{ edit ? $t('general.save') : $t('general.create') }}</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
 </template>
 
 <script lang="ts">
-import { Component, Prop, State } from 'nuxt-property-decorator';
+import { Component, Emit, Prop, State } from 'nuxt-property-decorator';
 import { Color, ProjectChannel } from 'hangar-internal';
 import { HangarFormModal } from '../mixins';
 import { RootState } from '~/store';
@@ -71,6 +71,7 @@ export default class ChannelModal extends HangarFormModal {
         color: '',
         nonReviewed: false,
         temp: true,
+        versionCount: 0,
     };
 
     mounted() {
@@ -106,10 +107,11 @@ export default class ChannelModal extends HangarFormModal {
         return this.validForm && !!this.form.color;
     }
 
-    createChannel() {
+    @Emit()
+    create() {
         // TODO check channel name against existing channels
-        this.$emit('create', this.form);
         this.dialog = false;
+        return this.form;
     }
 
     @State((state: RootState) => state.validations)

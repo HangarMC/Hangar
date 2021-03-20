@@ -5,8 +5,9 @@ import io.papermc.hangar.db.mappers.factories.JoinableMemberFactory;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
-import io.papermc.hangar.model.internal.HangarProject.HangarProjectInfo;
-import io.papermc.hangar.model.internal.HangarProjectFlag;
+import io.papermc.hangar.model.internal.projects.HangarChannel;
+import io.papermc.hangar.model.internal.projects.HangarProject.HangarProjectInfo;
+import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
@@ -98,6 +99,13 @@ public interface HangarProjectsDAO {
             "       JOIN projects p ON pf.project_id = p.id" +
             "   WHERE lower(p.owner_name) = lower(:author) AND lower(p.slug) = lower(:slug)")
     List<HangarProjectFlag> getHangarProjectFlags(String author, String slug);
+
+    @RegisterConstructorMapper(HangarChannel.class)
+    @SqlQuery("SELECT pc.*," +
+            "   (SELECT count(*) FROM project_versions pv WHERE pv.channel_id = pc.id) as version_count" +
+            "   FROM project_channels pc" +
+            "   WHERE pc.project_id = :projectId")
+    List<HangarChannel> getHangarChannels(long projectId);
 
     @SqlUpdate("REFRESH MATERIALIZED VIEW home_projects")
     void refreshHomeProjects();

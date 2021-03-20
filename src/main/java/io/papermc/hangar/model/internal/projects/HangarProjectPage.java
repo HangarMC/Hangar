@@ -1,4 +1,4 @@
-package io.papermc.hangar.model.internal;
+package io.papermc.hangar.model.internal.projects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

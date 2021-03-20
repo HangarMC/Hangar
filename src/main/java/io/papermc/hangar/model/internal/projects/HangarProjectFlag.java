@@ -1,4 +1,4 @@
-package io.papermc.hangar.model.internal;
+package io.papermc.hangar.model.internal.projects;
 
 import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.model.common.projects.Visibility;

@@ -1,6 +1,6 @@
 package io.papermc.hangar.db.dao.internal;
 
-import io.papermc.hangar.model.internal.HangarViewProjectPage;
+import io.papermc.hangar.model.internal.projects.HangarViewProjectPage;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.springframework.stereotype.Repository;

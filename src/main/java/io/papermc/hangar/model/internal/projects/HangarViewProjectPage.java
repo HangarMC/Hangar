@@ -1,4 +1,4 @@
-package io.papermc.hangar.model.internal;
+package io.papermc.hangar.model.internal.projects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.model.db.projects.ProjectPageTable;

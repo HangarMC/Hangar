@@ -1,10 +1,12 @@
 package io.papermc.hangar.service.internal.projects;
 
 import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.dao.internal.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectChannelsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.db.projects.ProjectChannelTable;
+import io.papermc.hangar.model.internal.projects.HangarChannel;
 import io.papermc.hangar.service.HangarService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,9 +17,11 @@ import java.util.List;
 public class ChannelService extends HangarService {
 
     private final ProjectChannelsDAO projectChannelsDAO;
+    private final HangarProjectsDAO hangarProjectsDAO;
 
-    public ChannelService(HangarDao<ProjectChannelsDAO> projectChannelsDAO) {
+    public ChannelService(HangarDao<ProjectChannelsDAO> projectChannelsDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO) {
         this.projectChannelsDAO = projectChannelsDAO.get();
+        this.hangarProjectsDAO = hangarProjectsDAO.get();
     }
 
     public ProjectChannelTable createProjectChannel(String name, Color color, long projectId, boolean nonReviewed) {
@@ -41,8 +45,8 @@ public class ChannelService extends HangarService {
         return projectChannelsDAO.insert(new ProjectChannelTable(name, color, projectId, nonReviewed));
     }
 
-    public List<ProjectChannelTable> getProjectChannels(long projectId) {
-        return projectChannelsDAO.getProjectChannels(projectId);
+    public List<HangarChannel> getProjectChannels(long projectId) {
+        return hangarProjectsDAO.getHangarChannels(projectId);
     }
 
     public ProjectChannelTable getProjectChannel(long projectId, String name, Color color) {
