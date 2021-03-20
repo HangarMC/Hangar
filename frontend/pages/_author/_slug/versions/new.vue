@@ -74,14 +74,14 @@
                         </v-select>
                     </v-col>
                     <v-col class="flex-grow-0 pl-0 pr-4" align-self="center">
-                        <NewChannelModal @create="addChannel">
+                        <ChannelModal @create="addChannel">
                             <template #activator="{ on, attrs }">
                                 <v-btn v-if="channels.length < validations.project.maxChannelCount" color="info" v-bind="attrs" v-on="on">
                                     {{ $t('version.new.form.addChannel') }}
                                     <v-icon right>mdi-plus</v-icon>
                                 </v-btn>
                             </template>
-                        </NewChannelModal>
+                        </ChannelModal>
                     </v-col>
                 </v-row>
                 <v-sheet color="accent darken-1" elevation="1" rounded class="mt-2">
@@ -179,12 +179,12 @@ import { HangarProjectMixin } from '~/components/mixins';
 import { ProjectPermission } from '~/utils/perms';
 import { NamedPermission, Platform } from '~/types/enums';
 import { MarkdownEditor } from '~/components/markdown';
-import NewChannelModal from '~/components/modals/NewChannelModal.vue';
+import ChannelModal from '~/components/modals/ChannelModal.vue';
 import { RootState } from '~/store';
 import DependencyTable from '~/components/modals/versions/DependencyTable.vue';
 
 @Component({
-    components: { DependencyTable, NewChannelModal, MarkdownEditor },
+    components: { DependencyTable, ChannelModal, MarkdownEditor },
 })
 @ProjectPermission(NamedPermission.CREATE_VERSION)
 export default class ProjectVersionsNewPage extends HangarProjectMixin {

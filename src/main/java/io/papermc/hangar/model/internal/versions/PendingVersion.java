@@ -36,7 +36,7 @@ public class PendingVersion {
     @Validate(SpEL = "@validate.optionalRegex(#root, @hangarConfig.urlRegex)", message = "general.error.invalidUrl")
     private final String externalUrl;
     @NotBlank(message = "version.new.error.channel.noName")
-    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.new.error.invalidName")
+    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName")
     private final String channelName;
     @NotNull(message = "version.new.error.channel.noColor")
     private final Color channelColor;

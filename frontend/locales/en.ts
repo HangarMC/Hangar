@@ -341,8 +341,9 @@ const msgs: LocaleMessageObject = {
         platforms: 'Platforms',
     },
     channel: {
-        new: {
-            title: 'Add a new channel',
+        modal: {
+            titleNew: 'Add a new channel',
+            titleEdit: 'Edit channel',
             name: 'Channel Name',
             color: 'Channel Color',
             reviewQueue: 'Exclude from moderation review queue?',
@@ -352,6 +353,18 @@ const msgs: LocaleMessageObject = {
                 duplicateColor: 'This project already has a channel with this color',
                 duplicateName: 'This project already has a channel with this name',
             },
+        },
+        manage: {
+            title: 'Release channels',
+            subtitle: 'Release channels represent the state of a plugin release. A project may have up to five release channels.',
+            channelName: 'Channel Name',
+            versionCount: 'Version Count',
+            reviewed: 'Reviewed',
+            edit: 'Edit',
+            trash: 'Trash',
+            editButton: 'Edit',
+            deleteButton: 'Delete',
+            add: 'Add Channel',
         },
     },
     organization: {

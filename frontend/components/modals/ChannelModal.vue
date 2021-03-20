@@ -4,19 +4,19 @@
             <slot name="activator" :on="on" :attrs="attrs" />
         </template>
         <v-card>
-            <v-card-title>{{ $t('channel.new.title') }}</v-card-title>
+            <v-card-title>{{ edit ? $t('channel.modal.titleEdit') : $t('channel.modal.titleNew') }}</v-card-title>
             <v-card-text>
                 <v-form v-model="validForm">
                     <v-text-field
                         v-model.trim="form.name"
-                        :label="$t('channel.new.name')"
+                        :label="$t('channel.modal.name')"
                         :rules="[
-                            $util.$vc.require($t('channel.new.name')),
-                            $util.$vc.regex($t('channel.new.name'), validations.project.channels.regex),
+                            $util.$vc.require($t('channel.modal.name')),
+                            $util.$vc.regex($t('channel.modal.name'), validations.project.channels.regex),
                             $util.$vc.maxLength(validations.project.channels.max),
                         ]"
                     />
-                    <v-card-subtitle class="pa-0 text-center">{{ $t('channel.new.color') }}</v-card-subtitle>
+                    <v-card-subtitle class="pa-0 text-center">{{ $t('channel.modal.color') }}</v-card-subtitle>
                     <v-item-group v-model="form.color" mandatory>
                         <v-container>
                             <v-row v-for="(arr, arrIndex) in swatches" :key="arrIndex" justify="center">
@@ -32,7 +32,7 @@
                                             @click="toggle"
                                         >
                                             <v-fade-transition>
-                                                <v-icon v-show="active" small class="ma-auto"> mdi-checkbox-marked-circle </v-icon>
+                                                <v-icon v-show="active" small class="ma-auto"> mdi-checkbox-marked-circle</v-icon>
                                             </v-fade-transition>
                                         </v-card>
                                     </v-item>
@@ -40,25 +40,31 @@
                             </v-row>
                         </v-container>
                     </v-item-group>
-                    <v-checkbox v-model="form.nonReviewed" :label="$t('channel.new.reviewQueue')" />
+                    <v-checkbox v-model="form.nonReviewed" :label="$t('channel.modal.reviewQueue')" />
                 </v-form>
             </v-card-text>
             <v-card-actions class="justify-end">
                 <v-btn color="error" text @click="dialog = false">{{ $t('general.close') }}</v-btn>
-                <v-btn color="success" :disabled="!isValid" @click="createChannel">{{ $t('general.create') }}</v-btn>
+                <v-btn color="success" :disabled="!isValid" @click="createChannel">{{ edit ? $t('general.save') : $t('general.create') }}</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
 </template>
 
 <script lang="ts">
-import { Component, State } from 'nuxt-property-decorator';
+import { Component, Prop, State } from 'nuxt-property-decorator';
 import { Color, ProjectChannel } from 'hangar-internal';
 import { HangarFormModal } from '../mixins';
 import { RootState } from '~/store';
 
 @Component
-export default class NewChannelModal extends HangarFormModal {
+export default class ChannelModal extends HangarFormModal {
+    @Prop({ default: false })
+    edit!: Boolean;
+
+    @Prop()
+    channel!: ProjectChannel;
+
     colors: Color[] = [];
     form: ProjectChannel = {
         name: '',
@@ -66,6 +72,10 @@ export default class NewChannelModal extends HangarFormModal {
         nonReviewed: false,
         temp: true,
     };
+
+    mounted() {
+        this.form = { ...this.channel };
+    }
 
     async fetch() {
         this.colors = await this.$api.requestInternal<Color[]>('data/channelColors', false).catch<any>(this.$util.handleRequestError);

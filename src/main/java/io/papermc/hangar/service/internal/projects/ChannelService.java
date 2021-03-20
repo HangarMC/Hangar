@@ -22,20 +22,20 @@ public class ChannelService extends HangarService {
 
     public ProjectChannelTable createProjectChannel(String name, Color color, long projectId, boolean nonReviewed) {
         if (!config.channels.isValidChannelName(name)) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.new.error.invalidName");
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.invalidName");
         }
 
         List<ProjectChannelTable> existingTables = projectChannelsDAO.getProjectChannels(projectId);
         if (existingTables.size() >= config.projects.getMaxChannels()) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.new.error.maxChannels", config.projects.getMaxChannels());
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.maxChannels", config.projects.getMaxChannels());
         }
 
         if (existingTables.stream().anyMatch(ch -> ch.getColor() == color)) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.new.error.duplicateColor");
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.duplicateColor");
         }
 
         if (existingTables.stream().anyMatch(ch -> ch.getName().equalsIgnoreCase(name))) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.new.error.duplicateName");
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.duplicateName");
         }
 
         return projectChannelsDAO.insert(new ProjectChannelTable(name, color, projectId, nonReviewed));

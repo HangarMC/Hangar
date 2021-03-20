@@ -20,7 +20,7 @@ import { Tag } from 'hangar-api';
 import { PropType } from 'vue';
 
 @Component
-export default class DocsPage extends Vue {
+export default class TagComponent extends Vue {
     @Prop({ type: String })
     name!: string;
 
