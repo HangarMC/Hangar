@@ -24,10 +24,9 @@
 import { Component } from 'nuxt-property-decorator';
 import { ProjectPage } from 'hangar-internal';
 import { Context } from '@nuxt/types';
-import MarkdownEditor from '~/components/MarkdownEditor.vue';
-import Markdown from '~/components/Markdown.vue';
+import { Markdown, MarkdownEditor } from '~/components/markdown';
 import { DocPageMixin } from '~/components/mixins';
-import ProjectPageList from '~/components/projects/ProjectPageList.vue';
+import { ProjectPageList } from '~/components/projects';
 
 @Component({
     components: {

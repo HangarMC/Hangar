@@ -104,14 +104,15 @@
                         </v-card-text>
                     </v-card>
                 </v-col>
-                <v-col md="4" lg="12">
+                <!-- TODO I'm not sure the versions page needs to have this? It's got a bunch of stuff with the filters and this stuff is on the docs page -->
+                <!--<v-col md="4" lg="12">
                     <MemberList
                         :can-edit="$perms.canManageSubjectMembers"
                         :manage-url="`/${project.namespace.owner}/${project.namespace.slug}/settings`"
                         :members="project.members"
                         class="sidebar-card"
                     />
-                </v-col>
+                </v-col>-->
             </v-row>
         </v-col>
     </v-row>
@@ -123,7 +124,7 @@ import { IPlatform, ProjectChannel } from 'hangar-internal';
 import { Context } from '@nuxt/types';
 import { PaginatedResult, Tag as ApiTag, Version } from 'hangar-api';
 import Tag from '~/components/Tag.vue';
-import MemberList from '~/components/MemberList.vue';
+import { MemberList } from '~/components/projects';
 import { RootState } from '~/store';
 import { HangarProjectMixin } from '~/components/mixins';
 import { Platform } from '~/types/enums';

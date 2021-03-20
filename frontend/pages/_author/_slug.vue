@@ -112,9 +112,9 @@ import { Context } from '@nuxt/types';
 import { HangarProject } from 'hangar-internal';
 import { NavigationGuardNext, Route } from 'vue-router';
 import { TranslateResult } from 'vue-i18n';
-import Markdown from '~/components/Markdown.vue';
+import { Markdown } from '~/components/markdown';
 import FlagModal from '~/components/modals/FlagModal.vue';
-import UserAvatar from '~/components/UserAvatar.vue';
+import { UserAvatar } from '~/components/users';
 import { Visibility } from '~/types/enums';
 
 interface Tab {

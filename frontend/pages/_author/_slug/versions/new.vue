@@ -178,12 +178,11 @@ import { ProjectNamespace } from 'hangar-api';
 import { HangarProjectMixin } from '~/components/mixins';
 import { ProjectPermission } from '~/utils/perms';
 import { NamedPermission, Platform } from '~/types/enums';
-import MarkdownEditor from '~/components/MarkdownEditor.vue';
+import { MarkdownEditor } from '~/components/markdown';
 import NewChannelModal from '~/components/modals/NewChannelModal.vue';
 import { RootState } from '~/store';
 import DependencyTable from '~/components/modals/versions/DependencyTable.vue';
 
-// TODO implement setting up dependencies
 @Component({
     components: { DependencyTable, NewChannelModal, MarkdownEditor },
 })

@@ -15,6 +15,7 @@ import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.FlagReason;
+import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.service.internal.projects.PlatformService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -122,6 +124,11 @@ public class BackendDataController {
     @GetMapping("/announcements")
     public ResponseEntity<List<Announcement>> getAnnouncements() {
         return ResponseEntity.ok(config.getAnnouncements());
+    }
+
+    @GetMapping("/projectRoles")
+    public ResponseEntity<List<ProjectRole>> getAssignableProjectRoles() {
+        return ResponseEntity.ok(/*ProjectRole.getAssignableRoles()*/ Arrays.asList(ProjectRole.getValues().clone()));
     }
 
     @GetMapping("/validations")

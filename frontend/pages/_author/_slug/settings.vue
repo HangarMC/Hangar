@@ -275,14 +275,7 @@
             </v-card>
         </v-col>
         <v-col cols="12" md="4">
-            <v-card class="settings-card">
-                <v-card-title>
-                    {{ $t('project.members') }}
-                </v-card-title>
-                <v-card-text>
-                    <UserSelectionForm :users="project.members" />
-                </v-card-text>
-            </v-card>
+            <MemberList :joinable="project" :roles="roles" always-editing />
         </v-col>
     </v-row>
 </template>
@@ -292,17 +285,20 @@ import { Component, State, Watch } from 'nuxt-property-decorator';
 import { ProjectSettingsForm } from 'hangar-internal';
 import { TranslateResult } from 'vue-i18n';
 import { AxiosError } from 'axios';
+import { Context } from '@nuxt/types';
+import { Role } from 'hangar-api';
 import { ProjectPermission } from '~/utils/perms';
 import { NamedPermission, ProjectCategory } from '~/types/enums';
 import { RootState } from '~/store';
-import UserSelectionForm from '~/components/UserSelectionForm.vue';
 import { HangarProjectMixin } from '~/components/mixins';
+import { MemberList } from '~/components/projects';
 
 @Component({
-    components: { UserSelectionForm },
+    components: { MemberList },
 })
 @ProjectPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)
 export default class ProjectManagePage extends HangarProjectMixin {
+    roles!: Role[];
     apiKey = '';
     newName = '';
     nameErrors: TranslateResult[] = [];
@@ -477,6 +473,11 @@ export default class ProjectManagePage extends HangarProjectMixin {
     }
 
     generateApiKey() {}
+
+    async asyncData({ $api, $util }: Context) {
+        const roles = await $api.requestInternal('data/projectRoles', false).catch($util.handlePageRequestError);
+        return { roles };
+    }
 
     @State((state: RootState) => state.validations)
     validations!: RootState['validations'];

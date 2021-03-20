@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.Table;
+import org.jdbi.v3.core.annotation.Unmappable;
 
 import java.time.OffsetDateTime;
 
@@ -58,7 +59,7 @@ public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>>
         this.accepted = accepted;
     }
 
-    @JsonIgnore
+    @Unmappable
     public abstract long getPrincipalId();
 
     @Override

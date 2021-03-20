@@ -6,10 +6,10 @@
                 {{ $t('organization.new.text') }}
                 <v-text-field type="text" :label="$t('organization.new.name')"></v-text-field>
                 <v-divider />
-                <UserSelectionForm />
+                <!--<UserSelectionForm />-->
             </v-card-text>
             <v-card-actions>
-                <v-btn>{{ $t('form.userSelection.create') }}</v-btn>
+                <v-btn>{{ $t('form.memberList.create') }}</v-btn>
             </v-card-actions>
         </v-card>
     </v-col>
@@ -17,12 +17,9 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
-import UserSelectionForm from '~/components/UserSelectionForm.vue';
 
 // TODO implement OrganizationsNewPage
-@Component({
-    components: { UserSelectionForm },
-})
+@Component
 export default class OrganizationsNewPage extends Vue {}
 </script>
 

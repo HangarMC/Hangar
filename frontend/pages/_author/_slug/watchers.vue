@@ -21,7 +21,7 @@
 import { Component, Vue } from 'nuxt-property-decorator';
 import { PaginatedResult, User } from 'hangar-api';
 import { Context } from '@nuxt/types';
-import UserAvatar from '~/components/UserAvatar.vue';
+import { UserAvatar } from '~/components/users';
 
 @Component({
     components: { UserAvatar },

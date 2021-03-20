@@ -55,8 +55,8 @@
 import { Component } from 'nuxt-property-decorator';
 import { Organization, PaginatedResult, Project, ProjectCompact } from 'hangar-api';
 import { Context } from '@nuxt/types';
-import UserAvatar from '~/components/UserAvatar.vue';
-import ProjectList from '~/components/projects/ProjectList.vue';
+import { UserAvatar } from '~/components/users';
+import { ProjectList } from '~/components/projects';
 import { HangarUserMixin } from '~/components/mixins';
 
 @Component({

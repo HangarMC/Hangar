@@ -62,7 +62,7 @@ import { Component, Vue } from 'nuxt-property-decorator';
 import { PaginatedResult, Project, Sponsor } from 'hangar-api';
 import { IPlatform } from 'hangar-internal';
 import { Context } from '@nuxt/types';
-import ProjectList from '~/components/projects/ProjectList.vue';
+import { ProjectList } from '~/components/projects';
 import HangarSponsor from '~/components/layouts/Sponsor.vue';
 import { RootState } from '~/store';
 

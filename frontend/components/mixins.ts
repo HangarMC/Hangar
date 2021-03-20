@@ -1,7 +1,7 @@
 import { Component, mixins, Prop, Vue, Watch } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
 import { HangarProject, HangarUser, HangarVersion, IPlatform, ProjectPage } from 'hangar-internal';
-import MarkdownEditor from '~/components/MarkdownEditor.vue';
+import MarkdownEditor from '~/components/markdown/MarkdownEditor.vue';
 import { Platform, ReviewState } from '~/types/enums';
 import { RootState } from '~/store';
 

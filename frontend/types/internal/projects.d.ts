@@ -1,5 +1,5 @@
 declare module 'hangar-internal' {
-    import { FlagReason, RoleTable, Table, UserTable } from 'hangar-internal';
+    import { FlagReason, Joinable, Table } from 'hangar-internal';
     import { Project, User } from 'hangar-api';
     import { ProjectCategory } from '~/types/enums';
 
@@ -26,14 +26,7 @@ declare module 'hangar-internal' {
         children: HangarProjectPage[];
     }
 
-    interface ProjectMember {
-        user: UserTable;
-        role: RoleTable;
-    }
-
-    interface HangarProject extends Project, Table {
-        owner: ProjectOwner;
-        members: ProjectMember[];
+    interface HangarProject extends Joinable, Project, Table {
         lastVisibilityChangeComment: string;
         lastVisibilityChangeUserName: string;
         info: HangarProjectInfo;

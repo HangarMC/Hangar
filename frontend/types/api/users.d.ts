@@ -4,7 +4,7 @@ declare module 'hangar-api' {
 
     interface Role {
         assignable: boolean;
-        rank: number | null;
+        rank?: number | null;
         value: string;
         roleId: number;
         category: RoleCategory;

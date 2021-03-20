@@ -362,9 +362,11 @@ const msgs: LocaleMessageObject = {
         },
     },
     form: {
-        userSelection: {
+        memberList: {
             addUser: 'Add User...',
             create: 'Create',
+            editUser: 'Edit User',
+            invitedAs: '(Invited as {0})',
         },
     },
     notifications: {

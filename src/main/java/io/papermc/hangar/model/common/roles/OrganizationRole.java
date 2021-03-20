@@ -1,7 +1,7 @@
 package io.papermc.hangar.model.common.roles;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Permission;
@@ -26,6 +26,10 @@ public enum OrganizationRole implements Role<OrganizationRoleTable> {
     private final String title;
     private final Color color;
     private final boolean isAssignable;
+
+    private final static OrganizationRole[] VALUES = values();
+
+    public static OrganizationRole[] getValues() { return VALUES; }
 
     OrganizationRole(String value, long roleId, Permission permissions, String title, Color color) {
         this(value, roleId, permissions, title, color, true);
@@ -79,6 +83,13 @@ public enum OrganizationRole implements Role<OrganizationRoleTable> {
     @Override
     public boolean isAssignable() {
         return isAssignable;
+    }
+
+    @Nullable
+    @Override
+    @JsonIgnore
+    public Integer getRank() {
+        return Role.super.getRank();
     }
 
     @Override

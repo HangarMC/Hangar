@@ -95,11 +95,7 @@
                     <ProjectPageList :project="project" />
                 </v-col>
                 <v-col cols="12">
-                    <MemberList
-                        :members="project.members"
-                        :can-edit="$perms.canManageSubjectMembers"
-                        :manage-url="`/${project.namespace.owner}/${project.namespace.slug}/settings`"
-                    />
+                    <MemberList :joinable="project" />
                 </v-col>
             </v-row>
         </v-col>
@@ -110,21 +106,23 @@
 import { Component } from 'nuxt-property-decorator';
 import { ProjectPage } from 'hangar-internal';
 import { Context } from '@nuxt/types';
-import MarkdownEditor from '~/components/MarkdownEditor.vue';
+import { Role } from 'hangar-api';
 import Tag from '~/components/Tag.vue';
 import DonationModal from '~/components/donation/DonationModal.vue';
-import MemberList from '~/components/MemberList.vue';
-import Markdown from '~/components/Markdown.vue';
+import { Markdown, MarkdownEditor } from '~/components/markdown';
 import { DocPageMixin } from '~/components/mixins';
-import ProjectPageList from '~/components/projects/ProjectPageList.vue';
+import { MemberList, ProjectPageList } from '~/components/projects';
 
 @Component({
     components: { ProjectPageList, Markdown, MemberList, DonationModal, MarkdownEditor, Tag },
 })
 export default class DocsPage extends DocPageMixin {
+    roles!: Role[];
+
     async asyncData({ $api, params, $util }: Context) {
         const page = await $api.requestInternal<ProjectPage>(`pages/page/${params.author}/${params.slug}`, false).catch<any>($util.handlePageRequestError);
-        return { page };
+        const roles = await $api.requestInternal('data/projectRoles', false).catch($util.handlePageRequestError);
+        return { page, roles };
     }
 }
 </script>

@@ -1,6 +1,7 @@
 declare module 'hangar-internal' {
     import { Named, Role, User } from 'hangar-api';
-    import { Table } from 'hangar-internal';
+    import { ProjectOwner, Table } from 'hangar-internal';
+    import { RoleCategory } from '~/types/enums';
 
     interface HangarNotification {
         id: number;
@@ -50,8 +51,19 @@ declare module 'hangar-internal' {
 
     interface RoleTable extends Table {
         accepted: boolean;
-        projectId: number;
+        principalId: number;
         userId: number;
         role: Role;
+    }
+
+    interface JoinableMember {
+        user: UserTable;
+        role: RoleTable;
+    }
+
+    interface Joinable {
+        owner: ProjectOwner;
+        roleCategory: RoleCategory;
+        members: JoinableMember[];
     }
 }

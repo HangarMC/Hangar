@@ -25,7 +25,7 @@ import { Component, Vue, Watch } from 'nuxt-property-decorator';
 import { PaginatedResult, User } from 'hangar-api';
 import { DataOptions, DataTableHeader } from 'vuetify';
 import { Context } from '@nuxt/types';
-import UserAvatar from '~/components/UserAvatar.vue';
+import { UserAvatar } from '~/components/users';
 
 @Component({
     components: { UserAvatar },

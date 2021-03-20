@@ -75,7 +75,7 @@
 import { Component, State, Vue } from 'nuxt-property-decorator';
 import { HangarUser } from 'hangar-internal';
 import { Context } from '@nuxt/types';
-import UserAvatar from '../components/UserAvatar.vue';
+import UserAvatar from '../components/users/UserAvatar.vue';
 import HangarModal from '~/components/modals/HangarModal.vue';
 import { RootState } from '~/store';
 

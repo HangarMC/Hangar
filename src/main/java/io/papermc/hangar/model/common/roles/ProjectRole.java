@@ -1,7 +1,7 @@
 package io.papermc.hangar.model.common.roles;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Permission;
@@ -9,6 +9,10 @@ import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ProjectRole implements Role<ProjectRoleTable> {
@@ -24,6 +28,17 @@ public enum ProjectRole implements Role<ProjectRoleTable> {
     private final String title;
     private final Color color;
     private final boolean isAssignable;
+
+    private final static ProjectRole[] VALUES = values();
+    private final static List<ProjectRole> ASSIGNABLE_ROLES = Arrays.stream(VALUES).filter(ProjectRole::isAssignable).collect(Collectors.toList());
+
+    public static ProjectRole[] getValues() {
+        return VALUES;
+    }
+
+    public static List<ProjectRole> getAssignableRoles() {
+        return ASSIGNABLE_ROLES;
+    }
 
     ProjectRole(String value, long roleId, Permission permissions, String title, Color color) {
         this(value, roleId, permissions, title, color, true);
@@ -78,6 +93,14 @@ public enum ProjectRole implements Role<ProjectRoleTable> {
     public boolean isAssignable() {
         return isAssignable;
     }
+
+    @Nullable
+    @Override
+    @JsonIgnore
+    public Integer getRank() {
+        return Role.super.getRank();
+    }
+
 
     @NotNull
     @Override

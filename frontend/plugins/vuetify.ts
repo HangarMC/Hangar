@@ -1,21 +1,19 @@
 import colors from 'vuetify/es5/util/colors';
 import { VuetifyPreset } from 'vuetify';
-import PaperLogo from '~/components/logos/PaperLogo.vue';
-import WaterfallLogo from '~/components/logos/WaterfallLogo.vue';
-import VelocityLogo from '~/components/logos/VelocityLogo.vue';
+import { Paper, Velocity, Waterfall } from '~/components/logos';
 
 export default {
     icons: {
         iconfont: 'mdi',
         values: {
             paper: {
-                component: PaperLogo,
+                component: Paper,
             },
             waterfall: {
-                component: WaterfallLogo,
+                component: Waterfall,
             },
             velocity: {
-                component: VelocityLogo,
+                component: Velocity,
             },
         },
     },

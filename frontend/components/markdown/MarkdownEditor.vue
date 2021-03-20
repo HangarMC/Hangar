@@ -56,7 +56,7 @@
 <script lang="ts">
 import { Component, Prop, PropSync, Vue, Watch } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
-import Markdown from '~/components/Markdown.vue';
+import { Markdown } from '~/components/markdown';
 import DeletePageModal from '~/components/modals/pages/DeletePageModal.vue';
 
 @Component({

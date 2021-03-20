@@ -112,8 +112,7 @@ import { TranslateResult } from 'vue-i18n';
 import { HangarProjectVersionMixin } from '~/components/mixins';
 import { ReviewState } from '~/types/enums';
 import TagComponent from '~/components/Tag.vue';
-import Markdown from '~/components/Markdown.vue';
-import MarkdownEditor from '~/components/MarkdownEditor.vue';
+import { Markdown, MarkdownEditor } from '~/components/markdown';
 import PlatformVersionEditModal from '~/components/modals/versions/PlatformVersionEditModal.vue';
 import DependencyEditModal from '~/components/modals/versions/DependencyEditModal.vue';
 

@@ -1,7 +1,9 @@
 package io.papermc.hangar.model.db.roles;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.model.common.roles.OrganizationRole;
+import org.jdbi.v3.core.annotation.Unmappable;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
@@ -22,11 +24,13 @@ public class OrganizationRoleTable extends ExtendedRoleTable<OrganizationRole> {
         this.organizationId = organizationId;
     }
 
+    @JsonIgnore
     public long getOrganizationId() {
         return organizationId;
     }
 
     @Override
+    @Unmappable
     public long getPrincipalId() {
         return organizationId;
     }
