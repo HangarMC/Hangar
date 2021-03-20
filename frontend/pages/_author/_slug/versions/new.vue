@@ -4,7 +4,7 @@
         <v-card-text v-if="!pendingVersion">
             <v-row justify="space-around">
                 <v-col cols="12">
-                    <v-file-input v-model="file" filled :label="$t('version.new.upload')" accepts=".jar,.zip" />
+                    <v-file-input v-model="file" filled :label="$t('version.new.upload')" accept=".jar,.zip" />
                 </v-col>
                 <v-col cols="12">
                     {{ $t('general.or') }}
