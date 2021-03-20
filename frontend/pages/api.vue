@@ -37,6 +37,11 @@ export default class ApiPage extends Vue {
                     // @ts-ignore
                     // promise.url = req.url;
                     // return promise;
+                    // just fix url for now
+                    if (req.url.startsWith('http://localhost:8080')) {
+                        req.url = req.url.replace('http://localhost:8080', 'http://localhost:3000');
+                    }
+                    return req;
                 } else {
                     return req;
                 }
@@ -50,37 +55,34 @@ export default class ApiPage extends Vue {
 //noinspection CssUnknownTarget - IJ you are dum
 @import '@/node_modules/swagger-ui/dist/swagger-ui.css';
 
-.swagger-ui .topbar .download-url-wrapper,
-.swagger-ui .info hgroup.main a {
-    display: none;
+.swagger-ui {
+    .topbar .download-url-wrapper,
+    .info hgroup.main a {
+        display: none;
+    }
+    .info {
+        background-color: unset !important;
+        border-color: unset !important;
+        margin: 2rem 0;
+        .title small pre {
+            background-color: unset;
+            border: unset;
+        }
+        .description h2 {
+            padding-top: 1.5rem;
+            margin: 1.5rem 0 0;
+            border-top: 3px solid #333333;
+        }
+        .scheme-container {
+            border-top: 1px solid rgba(0, 0, 0, 0.15);
+        }
+        .markdown {
+            min-height: 0;
+        }
+    }
 }
-
-.swagger-ui .info {
-    margin: 2rem 0;
-}
-
-.swagger-ui .info .title small pre {
-    background-color: unset;
-    border: unset;
-}
-
 .model-container,
 .responses-inner {
     overflow-x: auto;
-}
-
-.swagger-ui .info .description h2 {
-    padding-top: 1.5rem;
-    margin: 1.5rem 0 0;
-    border-top: 3px solid #333333;
-}
-
-.swagger-ui .scheme-container {
-    border-top: 1px solid rgba(0, 0, 0, 0.15);
-}
-
-.swagger-ui .info {
-    background-color: unset !important;
-    border-color: unset !important;
 }
 </style>

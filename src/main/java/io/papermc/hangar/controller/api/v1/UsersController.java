@@ -44,8 +44,8 @@ public class UsersController extends HangarController implements IUsersControlle
     }
 
     @Override
-    public ResponseEntity<PaginatedResult<User>> getAuthors(String sort, @NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(usersApiService.getAuthors(sort, pagination));
+    public ResponseEntity<PaginatedResult<User>> getAuthors(@NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(usersApiService.getAuthors(pagination));
     }
 
     @Override

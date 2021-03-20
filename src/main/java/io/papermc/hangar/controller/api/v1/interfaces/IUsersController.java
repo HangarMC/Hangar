@@ -105,8 +105,7 @@ public interface IUsersController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/authors")
-    ResponseEntity<PaginatedResult<User>> getAuthors(@ApiParam("How to sort the authors") @RequestParam(defaultValue = "projects") String sort,
-                                                     @ApiParam("Pagination information") @NotNull RequestPagination pagination);
+    ResponseEntity<PaginatedResult<User>> getAuthors(@ApiParam("Pagination information") @NotNull RequestPagination pagination);
 
     @ApiOperation(
             value = "Gets all staff on the platform",

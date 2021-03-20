@@ -49,7 +49,7 @@ public class SwaggerConfig {
     public Docket customImplementation() {
         return new Docket(DocumentationType.OAS_30)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("io.papermc.hangar.controller.api"))
+                .apis(RequestHandlerSelectors.basePackage("io.papermc.hangar.controller.api.v1"))
                 .build()
                 .directModelSubstitute(LocalDate.class, java.sql.Date.class)
                 .directModelSubstitute(OffsetDateTime.class, Date.class)

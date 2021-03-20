@@ -1,5 +1,12 @@
 package io.papermc.hangar.model.api.requests;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import io.papermc.hangar.controller.extras.ApiUtils;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -9,6 +16,11 @@ public class RequestPagination {
     private long limit = ApiUtils.limitOrDefault(null);
     @ApiModelProperty(value = "Where to start searching", example = "0", allowEmptyValue = true, allowableValues = "range[0, infinity]")
     private long offset = 0;
+
+    @JsonIgnore
+    private Map<String, String> filters = new HashMap<>();
+    @JsonIgnore
+    private List<String> sorts = new ArrayList<>();
 
     public RequestPagination() { }
 
@@ -31,6 +43,22 @@ public class RequestPagination {
 
     public void setOffset(Long offset) {
         this.offset = ApiUtils.offsetOrZero(offset);
+    }
+
+    public Map<String, String> getFilters() {
+        return filters;
+    }
+
+    public void setFilters(Map<String, String> filters) {
+        this.filters = filters;
+    }
+
+    public List<String> getSorts() {
+        return sorts;
+    }
+
+    public void setSorts(List<String> sorts) {
+        this.sorts = sorts;
     }
 
     @Override

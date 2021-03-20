@@ -27,6 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 
 @Service
@@ -75,8 +76,8 @@ public class UsersApiService extends HangarService {
     public void clearAuthorsCache() {}
 
     @Cacheable(CacheConfig.AUTHORS_CACHE)
-    public PaginatedResult<User> getAuthors(String sort, RequestPagination pagination) {
-        List<User> users = usersApiDAO.getAuthors(pagination.getLimit(), pagination.getOffset(), userOrder(sort));
+    public PaginatedResult<User> getAuthors(RequestPagination pagination) {
+        List<User> users = usersApiDAO.getAuthors(pagination);
         long count = usersApiDAO.getAuthorsCount();
         return new PaginatedResult<>(new Pagination(count, pagination), users);
     }
