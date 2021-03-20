@@ -11,7 +11,7 @@
                             <th><v-icon small left>mdi-format-list-numbered</v-icon>{{ $t('channel.manage.versionCount') }}</th>
                             <th><v-icon small left>mdi-file-find</v-icon>{{ $t('channel.manage.reviewed') }}</th>
                             <th><v-icon small left>mdi-pencil</v-icon>{{ $t('channel.manage.edit') }}</th>
-                            <th><v-icon small left>mdi-delete</v-icon>{{ $t('channel.manage.trash') }}</th>
+                            <th v-if="channels.length !== 1"><v-icon small left>mdi-delete</v-icon>{{ $t('channel.manage.trash') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -31,9 +31,10 @@
                                     </template>
                                 </ChannelModal>
                             </td>
-                            <td>
-                                <!-- todo we need to properly think about how channel deletion works -->
-                                <v-btn small color="error" @click="deleteChannel(channel.name)">{{ $t('channel.manage.deleteButton') }}</v-btn>
+                            <td v-if="channels.length !== 1">
+                                <v-btn v-if="channel.versionCount === 0" small color="error" @click="deleteChannel(channel)">
+                                    {{ $t('channel.manage.deleteButton') }}
+                                </v-btn>
                             </td>
                         </tr>
                     </tbody>
@@ -80,10 +81,9 @@ export default class ProjectChannelsPage extends HangarProjectMixin {
 
     editChannel(channel: ProjectChannel) {
         if (!channel.id) return;
-        const id = channel.id;
         this.$api
             .requestInternal(`channels/${this.project.id}/edit`, true, 'post', {
-                id,
+                id: channel.id,
                 name: channel.name,
                 color: channel.color,
                 nonReviewed: channel.nonReviewed,
@@ -94,9 +94,14 @@ export default class ProjectChannelsPage extends HangarProjectMixin {
             .catch(this.$util.handleRequestError);
     }
 
-    // TODO deleteChannel
-    deleteChannel(name: String) {
-        console.log('delete channel ', name);
+    deleteChannel(channel: ProjectChannel) {
+        if (!channel.id) return;
+        this.$api
+            .requestInternal(`channels/${this.project.id}/delete/${channel.id}`, true, 'post')
+            .then(() => {
+                this.$nuxt.refresh();
+            })
+            .catch(this.$util.handleRequestError);
     }
 
     addChannel(channel: ProjectChannel) {

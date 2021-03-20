@@ -25,6 +25,9 @@ public interface ProjectChannelsDAO {
     @SqlUpdate("UPDATE project_channels SET name = :name, color = :color, non_reviewed = :nonReviewed WHERE id = :id")
     void update(@BindBean ProjectChannelTable projectChannelTable);
 
+    @SqlUpdate("DELETE FROM project_channels WHERE id = :id")
+    void delete(@BindBean ProjectChannelTable projectChannelTable);
+
     @SqlQuery("SELECT * FROM project_channels WHERE project_id = :projectId")
     List<ProjectChannelTable> getProjectChannels(long projectId);
 

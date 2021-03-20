@@ -353,6 +353,7 @@ const msgs: LocaleMessageObject = {
                 duplicateColor: 'This project already has a channel with this color',
                 duplicateName: 'This project already has a channel with this name',
                 tooLongName: 'Channel name is too long',
+                cannotDelete: 'You cannot delete this channel',
             },
         },
         manage: {

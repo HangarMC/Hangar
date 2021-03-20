@@ -104,6 +104,13 @@ public interface HangarProjectsDAO {
     @SqlQuery("SELECT pc.*," +
             "   (SELECT count(*) FROM project_versions pv WHERE pv.channel_id = pc.id) as version_count" +
             "   FROM project_channels pc" +
+            "   WHERE pc.id = :channelId")
+    HangarChannel getHangarChannel(long channelId);
+
+    @RegisterConstructorMapper(HangarChannel.class)
+    @SqlQuery("SELECT pc.*," +
+            "   (SELECT count(*) FROM project_versions pv WHERE pv.channel_id = pc.id) as version_count" +
+            "   FROM project_channels pc" +
             "   WHERE pc.project_id = :projectId" +
             "   ORDER BY pc.created_at")
     List<HangarChannel> getHangarChannels(long projectId);

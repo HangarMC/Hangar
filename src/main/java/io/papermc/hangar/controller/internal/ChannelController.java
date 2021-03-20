@@ -51,7 +51,7 @@ public class ChannelController extends HangarController {
     }
 
     @Unlocked
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
     @PostMapping(path = "/{projectId}/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void createChannel(@PathVariable long projectId, @Valid @RequestBody ChannelForm channelForm) {
@@ -64,5 +64,13 @@ public class ChannelController extends HangarController {
     @PostMapping(path = "/{projectId}/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void editChannel(@PathVariable long projectId, @Valid @RequestBody EditChannelForm channelForm) {
         channelService.editProjectChannel(channelForm.getId(), channelForm.getName(), channelForm.getColor(), projectId, channelForm.isNonReviewed());
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT,perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
+    @PostMapping("/{projectId}/delete/{channelId}")
+    public void deleteChannel(@PathVariable long projectId, @PathVariable long channelId) {
+        channelService.deleteProjectChannel(projectId, channelId);
     }
 }

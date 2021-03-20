@@ -35,16 +35,17 @@ public class ChannelService extends HangarService {
         }
 
         if (existingChannels.stream().anyMatch(ch -> ch.getColor() == color)) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.duplicateColor");
+            throw new HangarApiException(HttpStatus.CONFLICT, "channel.modal.error.duplicateColor");
         }
 
         if (existingChannels.stream().anyMatch(ch -> ch.getName().equalsIgnoreCase(name))) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.duplicateName");
+            throw new HangarApiException(HttpStatus.CONFLICT, "channel.modal.error.duplicateName");
         }
     }
 
     public ProjectChannelTable createProjectChannel(String name, Color color, long projectId, boolean nonReviewed) {
         validateChannel(name, color, projectId, nonReviewed, projectChannelsDAO.getProjectChannels(projectId));
+        // TODO user action logging
         return projectChannelsDAO.insert(new ProjectChannelTable(name, color, projectId, nonReviewed));
     }
 
@@ -58,6 +59,20 @@ public class ChannelService extends HangarService {
         projectChannelTable.setColor(color);
         projectChannelTable.setNonReviewed(nonReviewed);
         projectChannelsDAO.update(projectChannelTable);
+        // TODO user action logging
+    }
+
+    public void deleteProjectChannel(long projectId, long channelId) {
+        HangarChannel hangarChannel = hangarProjectsDAO.getHangarChannel(channelId);
+        if (hangarChannel == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+        if (hangarChannel.getVersionCount() != 0 || getProjectChannels(projectId).size() == 1) {
+            // Cannot delete channels with versions or if its the last channel
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.cannotDelete");
+        }
+        projectChannelsDAO.delete(hangarChannel);
+        // TODO user action logging
     }
 
     public List<HangarChannel> getProjectChannels(long projectId) {
