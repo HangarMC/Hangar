@@ -42,7 +42,6 @@ public @interface Validate {
 
         @Override
         public boolean isValid(Object value, ConstraintValidatorContext context) {
-            if (value == null) return false;
             Boolean bool = expression.getValue(evaluationContext, value, boolean.class);
             return bool != null && bool;
         }

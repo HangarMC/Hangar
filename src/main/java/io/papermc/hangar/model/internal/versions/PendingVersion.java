@@ -25,7 +25,7 @@ import java.util.TreeSet;
 public class PendingVersion {
 
     @NotBlank(message = "version.new.error.invalidVersionString")
-    @Validate(SpEL = "#root matches @hangarConfig.projects.versionNameRegex", message = "version.new.error.invalidVersionString")
+    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.projects.versionNameRegex)", message = "version.new.error.invalidVersionString")
     private final String versionString;
     private final Map<Platform, Set<@Valid PluginDependency>> pluginDependencies;
     @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
@@ -33,10 +33,10 @@ public class PendingVersion {
     @NotBlank(message = "version.new.error.noDescription")
     private final String description;
     private final FileInfo fileInfo;
-    @Validate(SpEL = "#root matches @hangarConfig.urlRegex", message = "general.error.invalidUrl")
+    @Validate(SpEL = "@validate.optionalRegex(#root, @hangarConfig.urlRegex)", message = "general.error.invalidUrl")
     private final String externalUrl;
     @NotBlank(message = "version.new.error.channel.noName")
-    @Validate(SpEL = "#root matches @hangarConfig.channels.nameRegex", message = "channel.new.error.invalidName")
+    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.new.error.invalidName")
     private final String channelName;
     @NotNull(message = "version.new.error.channel.noColor")
     private final Color channelColor;

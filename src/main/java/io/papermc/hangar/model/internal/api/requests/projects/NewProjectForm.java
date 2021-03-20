@@ -10,8 +10,8 @@ public class NewProjectForm extends ProjectSettingsForm {
 
     private final long ownerId;
     @NotNull(message = "project.new.error.invalidName")
-    @Validate(SpEL = "#root.length le @hangarConfig.projects.maxNameLen", message = "project.new.error.tooLongName")
-    @Validate(SpEL = "#root matches @hangarConfig.projects.nameRegex", message = "project.new.error.invalidName")
+    @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxNameLen)", message = "project.new.error.tooLongName")
+    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.projects.nameRegex)", message = "project.new.error.invalidName")
     private final String name;
     private final String pageContent;
 

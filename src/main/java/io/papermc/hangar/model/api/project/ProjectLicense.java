@@ -11,7 +11,7 @@ import java.util.Map;
 public class ProjectLicense {
 
     private final String name;
-    @Validate(SpEL = "#root matches @hangarConfig.urlRegex", message = "general.error.invalidUrl")
+    @Validate(SpEL = "@validate.regex(#root, @hangarConfig.urlRegex)", message = "general.error.invalidUrl")
     private final String url;
 
     @JdbiConstructor

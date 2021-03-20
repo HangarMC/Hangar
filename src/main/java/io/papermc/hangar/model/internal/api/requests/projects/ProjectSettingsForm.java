@@ -15,7 +15,7 @@ public class ProjectSettingsForm {
     @NotNull(message = "project.new.error.noCategory")
     private final Category category;
     @NotNull(message = "project.new.error.noDescription")
-    @Validate(SpEL = "#root.length le @hangarConfig.projects.maxDescLen", message = "project.new.error.tooLongDesc")
+    @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxDescLen)", message = "project.new.error.tooLongDesc")
     private final String description;
 
     @JsonCreator

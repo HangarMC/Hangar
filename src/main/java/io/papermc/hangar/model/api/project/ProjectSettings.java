@@ -11,18 +11,18 @@ import java.util.Collection;
 
 public class ProjectSettings {
 
-    @Validate(SpEL = "#root matches @hangarConfig.urlRegex", message = "general.error.invalidUrl")
+    @Validate(SpEL = "@validate.optionalRegex(#root, @hangarConfig.urlRegex)", message = "general.error.invalidUrl")
     private final String homepage;
-    @Validate(SpEL = "#root matches @hangarConfig.urlRegex", message = "general.error.invalidUrl")
+    @Validate(SpEL = "@validate.optionalRegex(#root, @hangarConfig.urlRegex)", message = "general.error.invalidUrl")
     private final String issues;
-    @Validate(SpEL = "#root matches @hangarConfig.urlRegex", message = "general.error.invalidUrl")
+    @Validate(SpEL = "@validate.optionalRegex(#root, @hangarConfig.urlRegex)", message = "general.error.invalidUrl")
     private final String source;
-    @Validate(SpEL = "#root matches @hangarConfig.urlRegex", message = "general.error.invalidUrl")
+    @Validate(SpEL = "@validate.optionalRegex(#root, @hangarConfig.urlRegex)", message = "general.error.invalidUrl")
     private final String support;
     @Valid
     private final ProjectLicense license;
     @NotNull
-    @Validate(SpEL = "#root.size le @hangarConfig.projects.maxKeywords", message = "project.new.error.tooManyKeywords")
+    @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxKeywords)", message = "project.new.error.tooManyKeywords")
     private final Collection<String> keywords;
     private final boolean forumSync;
 
