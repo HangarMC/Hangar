@@ -2,11 +2,20 @@
     <v-row>
         <v-col cols="12" md="7">
             <h1>{{ $t('notifications.title') }}</h1>
-            <v-select v-model="filters.notification" :items="filter"></v-select>
-            <v-btn v-if="filteredNotifications.length && filters.notification === 'unread'" color="info" text @click.stop="markAllAsRead">{{
-                $t('notifications.readAll')
-            }}</v-btn>
-            <v-list v-if="filteredNotifications.length" class="mt-2">
+            <v-select v-model="filters.notification" dense filled :items="filter">
+                <template #append-outer>
+                    <v-btn
+                        v-if="filteredNotifications.length && filters.notification === 'unread'"
+                        color="info"
+                        text
+                        class="input-append-btn"
+                        @click.stop="markAllAsRead"
+                    >
+                        {{ $t('notifications.readAll') }}
+                    </v-btn>
+                </template>
+            </v-select>
+            <v-list v-if="filteredNotifications.length">
                 <v-list-item v-for="notification in filteredNotifications" :key="notification.id">
                     <v-list-item-title>
                         {{ $t(notification.message[0], notification.message.slice(1)) }}
@@ -22,13 +31,15 @@
                 {{ $t(`notifications.empty.${filters.notification}`) }}
             </div>
         </v-col>
+        <v-divider vertical class="mt-2" />
         <v-col v-if="!$fetchState.pending" cols="12" md="5">
             <h1>{{ $t('notifications.invites') }}</h1>
-            <v-select v-model="filters.invite" :items="inviteFilter"></v-select>
+            <v-select v-model="filters.invite" dense filled :items="inviteFilter"></v-select>
             <v-list v-if="filteredInvites.length">
                 <v-list-item v-for="(invite, index) in filteredInvites" :key="index">
                     <v-list-item-title>
-                        {{ $t('notifications.invited', [invite.name]) }}
+                        {{ $t('notifications.invited', [invite.type]) }}:
+                        <NuxtLink :to="`/${invite.url}`" exact>{{ invite.name }}</NuxtLink>
                     </v-list-item-title>
                     <v-list-item-action>
                         <v-btn icon class="success" @click="updateInvite(invite, 'accept')">
@@ -142,15 +153,8 @@ export default class NotificationsPage extends HangarComponent {
     }
 
     async fetch() {
-        this.notifications = await this.$api.requestInternal<HangarNotification[]>('notifications');
-        this.invites = await this.$api.requestInternal<Invites>('invites');
-        // TODO remove this test article
-        this.invites.projects.push({
-            name: 'TestProject',
-            roleTableId: 4,
-            type: 'project',
-            url: '/Machine_Maker/TestProject',
-        } as Invite);
+        this.notifications = (await this.$api.requestInternal<HangarNotification[]>('notifications').catch(this.$util.handleRequestError)) || [];
+        this.invites = (await this.$api.requestInternal<Invites>('invites').catch(this.$util.handleRequestError)) || { projects: [], organizations: [] };
     }
 }
 </script>

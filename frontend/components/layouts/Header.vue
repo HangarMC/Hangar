@@ -42,7 +42,7 @@
             <template #activator="{ on, attrs }">
                 <v-btn color="info" text class="px-3 text-transform-unset" x-large v-bind="attrs" v-on="on">
                     {{ currentUser.name }}
-                    <v-badge overlap :content="currentUser.headerData.unreadNotifications" :value="currentUser.headerData.unreadNotifications">
+                    <v-badge overlap :content="totalNotificationCount" :value="totalNotificationCount">
                         <v-avatar size="44" class="ml-2">
                             <img
                                 :src="$util.avatarUrl(currentUser.name)"
@@ -53,7 +53,29 @@
                     </v-badge>
                 </v-btn>
             </template>
-            <Dropdown :controls="userControls" />
+            <Dropdown :controls="userControls">
+                <template #pre>
+                    <v-list-item :to="`/${currentUser.name}`" nuxt exact>
+                        <v-list-item-icon>
+                            <v-icon color="white">mdi-account</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>{{ currentUser.name }}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item to="/notifications" nuxt exact>
+                        <v-list-item-icon>
+                            <v-badge left :content="currentUser.headerData.unansweredInvites + currentUser.headerData.unreadNotifications">
+                                <v-icon color="white">mdi-bell</v-icon>
+                            </v-badge>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>{{ $t('nav.user.notifications') }}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-divider class="my-2" />
+                </template>
+            </Dropdown>
         </v-menu>
         <template v-else>
             <v-btn href="/signup" class="mr-2" color="primary">{{ $t('nav.signup') }}</v-btn>
@@ -138,19 +160,6 @@ export default class Header extends HangarComponent {
 
     get userControls(): Control[] {
         const controls: Control[] = [];
-        controls.push({
-            link: '/' + this.currentUser.name,
-            icon: 'mdi-account',
-            title: this.currentUser.name,
-        });
-        controls.push({
-            link: '/notifications',
-            icon: 'mdi-bell',
-            title: this.$t('nav.user.notifications'),
-        });
-        controls.push({
-            isDivider: true,
-        });
         if (this.$perms.canAccessModNotesAndFlags) {
             controls.push({
                 link: '/admin/flags',
@@ -209,6 +218,16 @@ export default class Header extends HangarComponent {
             title: this.$t('nav.user.logout'),
         });
         return controls;
+    }
+
+    get totalNotificationCount() {
+        return (
+            this.currentUser.headerData.unreadNotifications +
+            this.currentUser.headerData.unansweredInvites +
+            this.currentUser.headerData.unresolvedFlags +
+            this.currentUser.headerData.reviewQueueCount +
+            this.currentUser.headerData.projectApprovals
+        );
     }
 }
 </script>

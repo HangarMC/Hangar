@@ -75,6 +75,6 @@ public class NotificationService extends HangarService {
     }
 
     public void notifyNewProjectMember(Member<ProjectRole> member, long userId, ProjectTable projectTable) {
-        notificationsDAO.insert(new NotificationTable(userId, NotificationType.PROJECT_INVITE, null, projectTable.getId(), new String[]{"notification.project.invite", member.getRole().getTitle(), projectTable.getName()}));
+        notificationsDAO.insert(new NotificationTable(userId, NotificationType.PROJECT_INVITE, null, projectTable.getId(), new String[]{"notifications.project.invite", member.getRole().getTitle(), projectTable.getName()}));
     }
 }

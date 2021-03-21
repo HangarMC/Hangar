@@ -1,5 +1,6 @@
 <template>
     <v-list dense>
+        <slot name="pre" />
         <template v-for="(control, index) in controls">
             <v-list-item
                 v-if="!control.isDivider"
@@ -20,6 +21,7 @@
             </v-list-item>
             <v-divider v-else :key="index" class="my-2" />
         </template>
+        <slot name="post" />
     </v-list>
 </template>
 

@@ -393,7 +393,7 @@ const msgs: LocaleMessageObject = {
     notifications: {
         title: 'Notifications',
         invites: 'Invites',
-        invited: 'You have been invited to join {0}',
+        invited: 'You have been invited to join the {0}',
         readAll: 'Mark all as read',
         unread: 'Unread',
         read: 'Read',
@@ -413,6 +413,7 @@ const msgs: LocaleMessageObject = {
             reviewed: '{0} {1} has been reviewed and is approved',
             reviewedPartial: '{0} {1} has been reviewed and is partially approved',
             invite: 'You have been invited to join the group {0} on the project {1}',
+            newVersion: 'A new version has been released for {0}: {1}',
         },
     },
     visibility: {
