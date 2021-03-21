@@ -1,6 +1,7 @@
 declare module 'hangar-api' {
     interface HangarException {
         message: string;
+        messageArgs: any[];
         httpError: {
             statusCode: number;
             statusPhrase: string;
@@ -9,6 +10,13 @@ declare module 'hangar-api' {
 
     interface HangarApiException extends HangarException {
         isHangarApiException: true;
+        isMultiException: false;
+    }
+
+    interface MultiHangarApiException {
+        isMultiException: true;
+        isHangarApiException: true;
+        exceptions: HangarApiException[];
     }
 
     interface ObjectError {

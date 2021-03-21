@@ -1,6 +1,7 @@
 package io.papermc.hangar.exceptions.handlers;
 
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.exceptions.MultiHangarApiException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,11 @@ public class HangarEntityExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(HangarApiException.class)
     public ResponseEntity<HangarApiException> handleException(HangarApiException exception) {
+        return new ResponseEntity<>(exception, exception.getResponseHeaders(), exception.getStatus());
+    }
+
+    @ExceptionHandler(MultiHangarApiException.class)
+    public ResponseEntity<MultiHangarApiException> handleException(MultiHangarApiException exception) {
         return new ResponseEntity<>(exception, exception.getResponseHeaders(), exception.getStatus());
     }
 

@@ -16,6 +16,14 @@ public class HangarApiException extends ResponseStatusException {
     private final HttpHeaders httpHeaders;
     private final Object[] args;
 
+    public HangarApiException(String reason) {
+        this(HttpStatus.BAD_REQUEST, reason);
+    }
+
+    public HangarApiException(String reason, Object...args) {
+        this(HttpStatus.BAD_REQUEST, reason, args);
+    }
+
     public HangarApiException(HttpStatus status) {
         super(status);
         this.httpHeaders = HttpHeaders.EMPTY;
@@ -46,7 +54,9 @@ public class HangarApiException extends ResponseStatusException {
         this.args = args;
     }
 
-
+    public Object[] getArgs() {
+        return args;
+    }
 
     @NotNull
     @Override

@@ -5,7 +5,7 @@ import filesize from 'filesize';
 // TODO fix it complaining about no type declaration file
 // @ts-ignore
 // import { contrastRatio, HexToRGBA, parseHex } from 'vuetify/es5/util/colorUtils'; // TODO remove or fix
-import { HangarApiException, HangarValidationException } from 'hangar-api';
+import { HangarApiException, HangarValidationException, MultiHangarApiException } from 'hangar-api';
 import { HangarProject, HangarUser } from 'hangar-internal';
 import { TranslateResult } from 'vue-i18n';
 import { NamedPermission, Visibility } from '~/types/enums';
@@ -13,6 +13,7 @@ import { RootState } from '~/store';
 import { NotifPayload } from '~/store/snackbar';
 import { AuthState } from '~/store/auth';
 
+// for page request errors
 function handleRequestError(err: AxiosError, error: Context['error'], i18n: Context['app']['i18n']) {
     if (!err.isAxiosError) {
         // everything should be an AxiosError
@@ -22,7 +23,7 @@ function handleRequestError(err: AxiosError, error: Context['error'], i18n: Cont
         console.log(err);
     } else if (err.response) {
         if (err.response.data.isHangarApiException) {
-            const data: HangarApiException = err.response.data;
+            const data: HangarApiException = err.response.data.isMultiException ? err.response.data.exceptions[0] : err.response.data;
             error({
                 statusCode: data.httpError.statusCode,
                 message: i18n.te(data.message) ? <string>i18n.t(data.message) : data.message,
@@ -44,6 +45,18 @@ function handleRequestError(err: AxiosError, error: Context['error'], i18n: Cont
             message: "This shouldn't happen...",
         });
         console.log(err);
+    }
+}
+
+function collectErrors(exception: HangarApiException | MultiHangarApiException, i18n: Context['app']['i18n']): TranslateResult[] {
+    if (!exception.isMultiException) {
+        return [i18n.te(exception.message) ? i18n.t(exception.message, [exception.messageArgs]) : exception.message];
+    } else {
+        const res: TranslateResult[] = [];
+        for (const ex of exception.exceptions) {
+            res.push(i18n.te(ex.message) ? i18n.t(ex.message, ex.messageArgs) : ex.message);
+        }
+        return res;
     }
 }
 
@@ -180,15 +193,14 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
                 });
                 console.log(err);
             } else if (err.response) {
-                // TODO check is msg is a i18n key and use that instead (use $te to check existence of a key)
                 if (err.response.data.isHangarApiException) {
-                    const data: HangarApiException = err.response.data;
-                    const dataMessage = i18n.te(data.message) ? i18n.t(data.message) : data.message;
-                    store.dispatch('snackbar/SHOW_NOTIF', {
-                        message: msg ? `${i18n.t(msg)}: ${dataMessage}` : dataMessage,
-                        color: 'error',
-                        timeout: 3000,
-                    } as NotifPayload);
+                    for (const errorMsg of collectErrors(err.response.data, i18n)) {
+                        store.dispatch('snackbar/SHOW_NOTIF', {
+                            message: msg ? `${i18n.t(msg)}: ${errorMsg}` : errorMsg,
+                            color: 'error',
+                            timeout: 3000,
+                        } as NotifPayload);
+                    }
                 } else if (err.response.data.isHangarValidationException) {
                     const data: HangarValidationException = err.response.data;
                     for (const fieldError of data.fieldErrors) {
