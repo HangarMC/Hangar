@@ -27,7 +27,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiFunction;
 
 @Service
@@ -134,12 +133,14 @@ public class UsersApiService extends HangarService {
     public HangarUser supplyHeaderData(HangarUser hangarUser) {
         Permission globalPermission = permissionService.getGlobalPermissions(hangarUser.getId());
         long unreadNotifs = notificationsDAO.getUnreadNotificationCount(hangarUser.getId());
+        long unansweredInvites = notificationsDAO.getUnansweredInvites(hangarUser.getId());
         long unresolvedFlags = globalPermission.has(Permission.ModNotesAndFlags) ? notificationsDAO.getUnresolvedFlagsCount() : 0;
         long projectApprovals = globalPermission.has(Permission.ModNotesAndFlags.add(Permission.SeeHidden)) ? notificationsDAO.getProjectApprovalsCount() : 0;
         long reviewQueueCount = globalPermission.has(Permission.Reviewer) ? notificationsDAO.getReviewQueueCount() : 0;
         hangarUser.setHeaderData(new HeaderData(
                 globalPermission,
                 unreadNotifs,
+                unansweredInvites,
                 unresolvedFlags,
                 projectApprovals,
                 reviewQueueCount

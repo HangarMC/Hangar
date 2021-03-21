@@ -70,13 +70,15 @@ public class HangarUser extends User implements Identified {
     public static class HeaderData {
         private final Permission globalPermission;
         private final long unreadNotifications;
+        private final long unansweredInvites;
         private final long unresolvedFlags;
         private final long projectApprovals;
         private final long reviewQueueCount;
 
-        public HeaderData(Permission globalPermission, long unreadNotifications, long unresolvedFlags, long projectApprovals, long reviewQueueCount) {
+        public HeaderData(Permission globalPermission, long unreadNotifications, long unansweredInvites, long unresolvedFlags, long projectApprovals, long reviewQueueCount) {
             this.globalPermission = globalPermission;
             this.unreadNotifications = unreadNotifications;
+            this.unansweredInvites = unansweredInvites;
             this.unresolvedFlags = unresolvedFlags;
             this.projectApprovals = projectApprovals;
             this.reviewQueueCount = reviewQueueCount;
@@ -88,6 +90,10 @@ public class HangarUser extends User implements Identified {
 
         public long getUnreadNotifications() {
             return unreadNotifications;
+        }
+
+        public long getUnansweredInvites() {
+            return unansweredInvites;
         }
 
         public long getUnresolvedFlags() {
@@ -107,6 +113,7 @@ public class HangarUser extends User implements Identified {
             return "HeaderData{" +
                     "globalPermission=" + globalPermission +
                     ", unreadNotifications=" + unreadNotifications +
+                    ", unansweredInvites=" + unansweredInvites +
                     ", unresolvedFlags=" + unresolvedFlags +
                     ", projectApprovals=" + projectApprovals +
                     ", reviewQueueCount=" + reviewQueueCount +

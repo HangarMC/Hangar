@@ -50,8 +50,8 @@ public class LoginController extends HangarController {
 
     @GetMapping(path = "/login", params = "returnUrl")
     public Object loginFromFrontend(@RequestParam(defaultValue = Routes.Paths.SHOW_HOME) String returnUrl, RedirectAttributes attributes) {
-        if (hangarConfig.fakeUser.isEnabled()) {
-            hangarConfig.checkDev();
+        if (config.fakeUser.isEnabled()) {
+            config.checkDev();
 
             UserTable fakeUser = authenticationService.loginAsFakeUser();
             tokenService.createTokenForUser(fakeUser);
@@ -59,7 +59,7 @@ public class LoginController extends HangarController {
         } else {
             try {
                 response.addCookie(new Cookie("url", returnUrl));
-                return redirectToSso(ssoService.getLoginUrl(hangarConfig.getBaseUrl() + "/login"), attributes);
+                return redirectToSso(ssoService.getLoginUrl(config.getBaseUrl() + "/login"), attributes);
             } catch (HangarException e) {
                 AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, e.getMessageKey(), e.getArgs());
                 return Routes.SHOW_HOME.getRedirect();
@@ -131,7 +131,7 @@ public class LoginController extends HangarController {
     @PostMapping("/verify")
     public ModelAndView verify(@RequestParam String returnPath, RedirectAttributes attributes) {
         try {
-            return redirectToSso(ssoService.getVerifyUrl(hangarConfig.getBaseUrl() + returnPath), attributes);
+            return redirectToSso(ssoService.getVerifyUrl(config.getBaseUrl() + returnPath), attributes);
         } catch (HangarException e) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, e.getMessageKey(), e.getArgs());
             return Routes.SHOW_HOME.getRedirect();
@@ -142,7 +142,7 @@ public class LoginController extends HangarController {
     public ModelAndView logout(HttpSession session) {
         // TODO flash
         session.invalidate();
-        return Routes.getRedirectToUrl(hangarConfig.getAuthUrl() + "/accounts/logout/");
+        return Routes.getRedirectToUrl(config.getAuthUrl() + "/accounts/logout/");
     }
 
     @GetMapping("/signup")
@@ -158,9 +158,9 @@ public class LoginController extends HangarController {
     private ModelAndView redirectBackOnSuccessfulLogin(String url, UserTable user) {
         if (!url.startsWith("http")) {
             if (url.startsWith("/")) {
-                url = hangarConfig.getBaseUrl() + url;
+                url = config.getBaseUrl() + url;
             } else {
-                url = hangarConfig.getBaseUrl() + "/" + url;
+                url = config.getBaseUrl() + "/" + url;
             }
         }
 //        response.addCookie(CookieUtils.builder(HangarAuthenticationFilter.AUTH_NAME, tokenService.expiring()));
@@ -168,7 +168,7 @@ public class LoginController extends HangarController {
     }
 
     private ModelAndView redirectToSso(URLWithNonce urlWithNonce, RedirectAttributes attributes) {
-        if (!hangarConfig.sso.isEnabled()) {
+        if (!config.sso.isEnabled()) {
             AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.noLogin");
             return Routes.SHOW_HOME.getRedirect();
         }

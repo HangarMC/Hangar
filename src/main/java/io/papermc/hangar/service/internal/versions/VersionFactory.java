@@ -242,7 +242,7 @@ public class VersionFactory extends HangarService {
                 versionTagService.addUnstableTag(projectVersionTable.getId());
             }
 
-            notificationService.notifyUsersNewVersion(projectTable, projectVersionTable);
+            notificationService.notifyUsersNewVersion(projectTable, projectVersionTable, projectService.getProjectWatchers(projectTable.getId()));
 
             if (tmpVersionJar != null) {
                 for (Platform platform : pendingVersion.getPlatformDependencies().keySet()) {

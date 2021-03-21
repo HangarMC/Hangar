@@ -128,6 +128,7 @@ public class BackendDataController {
 
     @GetMapping("/projectRoles")
     public ResponseEntity<List<ProjectRole>> getAssignableProjectRoles() {
+        // TODO only assignable roles here
         return ResponseEntity.ok(/*ProjectRole.getAssignableRoles()*/ Arrays.asList(ProjectRole.getValues().clone()));
     }
 

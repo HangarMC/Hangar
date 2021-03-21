@@ -34,6 +34,10 @@ public interface NotificationsDAO {
             "       AND n.read IS FALSE")
     long getUnreadNotificationCount(long userId);
 
+    @SqlQuery("SELECT (SELECT count(*) FROM user_project_roles upr WHERE upr.user_id = :userId AND upr.accepted IS FALSE) + " +
+              "       (SELECT count(*) FROM user_organization_roles uor WHERE uor.user_id = :userId AND uor.accepted IS FALSE) AS count")
+    long getUnansweredInvites(long userId);
+
     @SqlQuery("SELECT count(*)" +
             "   FROM project_flags pf" +
             "   WHERE pf.resolved IS FALSE")

@@ -7,6 +7,7 @@ import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.UserContext;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
+import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
@@ -20,9 +21,9 @@ import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.roles.MemberService;
 import io.papermc.hangar.service.internal.roles.MemberService.OrganizationMemberService;
 import io.papermc.hangar.service.internal.roles.MemberService.ProjectMemberService;
-import io.papermc.hangar.service.internal.roles.OrganizationRoleService;
-import io.papermc.hangar.service.internal.roles.ProjectRoleService;
 import io.papermc.hangar.service.internal.roles.RoleService;
+import io.papermc.hangar.service.internal.roles.RoleService.OrganizationRoleService;
+import io.papermc.hangar.service.internal.roles.RoleService.ProjectRoleService;
 import io.papermc.hangar.service.internal.users.InviteService;
 import io.papermc.hangar.service.internal.users.NotificationService;
 import io.papermc.hangar.service.internal.users.UserService;
@@ -76,35 +77,34 @@ public class HangarUserController extends HangarController {
         return ResponseEntity.ok(usersApiService.getUser(hangarAuthenticationToken.getName(), HangarUser.class));
     }
 
-    @GetMapping("/users/{user}")
-    public ResponseEntity<HangarUser> getUser(@PathVariable("user") String userName) {
-        return ResponseEntity.ok(usersApiService.getUser(userName, HangarUser.class));
-    }
-
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(perms = NamedPermission.EDIT_OWN_USER_SETTINGS)
-    @PostMapping(path = "/users/{userId}/settings/tagline", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveTagline(@PathVariable long userId, @Valid @RequestBody StringContent content) {
-        UserTable userTable = userService.getUserTable(userId);
+    @PostMapping(path = "/users/{userName}/settings/tagline", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void saveTagline(@PathVariable String userName, @Valid @RequestBody StringContent content) {
+        UserTable userTable = userService.getUserTable(userName);
         if (userTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        if (content.getContent().length() > hangarConfig.user.getMaxTaglineLen()) {
+        // TODO what perm to check here
+        if (userTable.getId() != getHangarPrincipal().getId() && !getGlobalPermissions().has(Permission.ManualValueChanges)) {
+            throw new HangarApiException(HttpStatus.FORBIDDEN);
+        }
+        if (content.getContent().length() > config.user.getMaxTaglineLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "author.error.invalidTagline");
         }
         String oldTagline = userTable.getTagline() == null ? "" : userTable.getTagline();
         userTable.setTagline(content.getContent());
         userService.updateUser(userTable);
-        userActionLogService.user(LoggedActionType.USER_TAGLINE_CHANGED.with(UserContext.of(userId)), userTable.getTagline(), oldTagline);
+        userActionLogService.user(LoggedActionType.USER_TAGLINE_CHANGED.with(UserContext.of(userTable.getId())), userTable.getTagline(), oldTagline);
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(perms = NamedPermission.EDIT_OWN_USER_SETTINGS)
-    @PostMapping("/users/{userId}/settings/resetTagline")
-    public void resetTagline(@PathVariable long userId) {
-        UserTable userTable = userService.getUserTable(userId);
+    @PostMapping("/users/{userName}/settings/resetTagline")
+    public void resetTagline(@PathVariable String userName) {
+        UserTable userTable = userService.getUserTable(userName);
         if (userTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
@@ -114,7 +114,7 @@ public class HangarUserController extends HangarController {
         }
         userTable.setTagline(null);
         userService.updateUser(userTable);
-        userActionLogService.user(LoggedActionType.USER_TAGLINE_CHANGED.with(UserContext.of(userId)), "", oldTagline);
+        userActionLogService.user(LoggedActionType.USER_TAGLINE_CHANGED.with(UserContext.of(userTable.getId())), "", oldTagline);
     }
 
     @GetMapping("/notifications")
