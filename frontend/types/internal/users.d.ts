@@ -18,11 +18,12 @@ declare module 'hangar-internal' {
         type: 'project' | 'organization';
         name: string;
         url: string;
+        accepted?: boolean;
     }
 
     interface Invites {
-        projects: Invite[];
-        organizations: Invite[];
+        project: Invite[];
+        organization: Invite[];
     }
 
     interface HeaderData {

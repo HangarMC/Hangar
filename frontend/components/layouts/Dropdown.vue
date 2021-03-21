@@ -6,14 +6,17 @@
                 v-if="!control.isDivider"
                 :key="control.title"
                 link
-                :to="isRouterLink(control) ? control.link : null"
+                :to="isRouterLink(control) ? control.link : undefined"
                 :nuxt="isRouterLink(control)"
-                :href="isRouterLink(control) ? null : control.link"
+                :href="isRouterLink(control) ? undefined : control.link"
                 exact
-                @click="control.action ? control.action() : null"
+                @click="control.action ? control.action() : undefined"
             >
                 <v-list-item-icon>
-                    <v-icon color="white">{{ control.icon }}</v-icon>
+                    <v-badge v-if="control.badge" offset-y="7" offset-x="7" left :content="control.badgeContent" :value="control.badgeContent">
+                        <v-icon color="white">{{ control.icon }}</v-icon>
+                    </v-badge>
+                    <v-icon v-else color="white">{{ control.icon }}</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
                     <v-list-item-title>{{ control.title }}</v-list-item-title>
@@ -31,9 +34,11 @@ import { PropType } from 'vue';
 import { TranslateResult } from 'vue-i18n';
 
 export interface Control {
-    icon?: String;
-    title?: String | TranslateResult;
-    link?: String;
+    icon?: string;
+    title?: TranslateResult;
+    badge?: boolean;
+    badgeContent?: any;
+    link?: string;
     action?: Function;
     isDivider?: boolean;
 }

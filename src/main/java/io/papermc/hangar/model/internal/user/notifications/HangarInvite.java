@@ -1,22 +1,23 @@
 package io.papermc.hangar.model.internal.user.notifications;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.roles.IRoleTable;
 
+import java.util.Locale;
+
 public abstract class HangarInvite<R extends Role<? extends IRoleTable<R>>> {
 
     private final long roleTableId;
     private final R role;
-    private final String type;
     private final String name;
     private final String url;
 
-    public HangarInvite(long roleTableId, R role, String type, String name, String url) {
+    public HangarInvite(long roleTableId, R role, String name, String url) {
         this.role = role;
         this.roleTableId = roleTableId;
-        this.type = type;
         this.name = name;
         this.url = url;
     }
@@ -29,9 +30,7 @@ public abstract class HangarInvite<R extends Role<? extends IRoleTable<R>>> {
         return role;
     }
 
-    public String getType() {
-        return type;
-    }
+    public abstract InviteType getType();
 
     public String getName() {
         return name;
@@ -43,15 +42,36 @@ public abstract class HangarInvite<R extends Role<? extends IRoleTable<R>>> {
 
     public static class HangarProjectInvite extends HangarInvite<ProjectRole> {
 
-        public HangarProjectInvite(long roleTableId, ProjectRole role, String type, String name, String url) {
-            super(roleTableId, role, type, name, url);
+        public HangarProjectInvite(long roleTableId, ProjectRole role, String name, String url) {
+            super(roleTableId, role, name, url);
+        }
+
+        @Override
+        public InviteType getType() {
+            return InviteType.PROJECT;
         }
     }
 
     public static class HangarOrganizationInvite extends HangarInvite<OrganizationRole> {
 
-        public HangarOrganizationInvite(long roleTableId, OrganizationRole role, String type, String name, String url) {
-            super(roleTableId, role, type, name, url);
+        public HangarOrganizationInvite(long roleTableId, OrganizationRole role, String name, String url) {
+            super(roleTableId, role, name, url);
+        }
+
+        @Override
+        public InviteType getType() {
+            return InviteType.ORGANIZATION;
+        }
+    }
+
+    public enum InviteType {
+        PROJECT,
+        ORGANIZATION;
+
+        @Override
+        @JsonValue
+        public String toString() {
+            return this.name().toLowerCase(Locale.ROOT);
         }
     }
 }

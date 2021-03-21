@@ -394,6 +394,7 @@ const msgs: LocaleMessageObject = {
         title: 'Notifications',
         invites: 'Invites',
         invited: 'You have been invited to join the {0}',
+        inviteAccepted: 'You have accepted an invitation to the {0}',
         readAll: 'Mark all as read',
         unread: 'Unread',
         read: 'Read',
@@ -402,6 +403,16 @@ const msgs: LocaleMessageObject = {
             all: 'All',
             projects: 'Projects',
             organizations: 'Organizations',
+            btns: {
+                accept: 'Accept',
+                decline: 'Decline',
+                unaccept: 'Unaccept',
+            },
+            msgs: {
+                accept: 'You have joined {0}',
+                decline: 'You have declined to join {0}',
+                unaccept: 'You have left {0}',
+            },
         },
         empty: {
             unread: 'You have no unread notifications.',

@@ -22,7 +22,6 @@ public interface HangarNotificationsDAO {
     @RegisterConstructorMapper(HangarInvite.HangarProjectInvite.class)
     @SqlQuery("SELECT upr.id roleTableId," +
             "   upr.role_type AS role," +
-            "   'project' AS type," +
             "   p.name," +
             "   p.owner_name || '/' || p.slug url" +
             "   FROM user_project_roles upr" +
@@ -35,7 +34,6 @@ public interface HangarNotificationsDAO {
     @RegisterConstructorMapper(HangarInvite.HangarOrganizationInvite.class)
     @SqlQuery("SELECT uor.id roleTableId," +
             "   uor.role_type AS role," +
-            "   'organization' AS type," +
             "   o.name," +
             "   '/' || o.name url" +
             "   FROM user_organization_roles uor" +

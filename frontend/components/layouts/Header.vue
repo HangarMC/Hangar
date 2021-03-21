@@ -53,29 +53,7 @@
                     </v-badge>
                 </v-btn>
             </template>
-            <Dropdown :controls="userControls">
-                <template #pre>
-                    <v-list-item :to="`/${currentUser.name}`" nuxt exact>
-                        <v-list-item-icon>
-                            <v-icon color="white">mdi-account</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ currentUser.name }}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item to="/notifications" nuxt exact>
-                        <v-list-item-icon>
-                            <v-badge left :content="currentUser.headerData.unansweredInvites + currentUser.headerData.unreadNotifications">
-                                <v-icon color="white">mdi-bell</v-icon>
-                            </v-badge>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ $t('nav.user.notifications') }}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-divider class="my-2" />
-                </template>
-            </Dropdown>
+            <Dropdown :controls="userControls" />
         </v-menu>
         <template v-else>
             <v-btn href="/signup" class="mr-2" color="primary">{{ $t('nav.signup') }}</v-btn>
@@ -160,16 +138,35 @@ export default class Header extends HangarComponent {
 
     get userControls(): Control[] {
         const controls: Control[] = [];
+        controls.push({
+            link: `/${this.currentUser.name}`,
+            icon: 'mdi-account',
+            title: this.currentUser.name,
+        });
+        controls.push({
+            link: '/notifications',
+            icon: 'mdi-bell',
+            title: this.$t('nav.user.notifications'),
+            badge: true,
+            badgeContent: this.currentUser.headerData.unansweredInvites + this.currentUser.headerData.unreadNotifications,
+        });
+        controls.push({
+            isDivider: true,
+        });
         if (this.$perms.canAccessModNotesAndFlags) {
             controls.push({
                 link: '/admin/flags',
                 icon: 'mdi-flag',
                 title: this.$t('nav.user.flags'),
+                badge: true,
+                badgeContent: this.currentUser.headerData.unresolvedFlags,
             });
             controls.push({
                 link: '/admin/approval/projects',
                 icon: 'mdi-thumb-up',
                 title: this.$t('nav.user.projectApprovals'),
+                badge: true,
+                badgeContent: this.currentUser.headerData.projectApprovals,
             });
         }
         if (this.$perms.isReviewer) {
@@ -177,6 +174,8 @@ export default class Header extends HangarComponent {
                 link: '/admin/approval/versions',
                 icon: 'mdi-thumb-up-outline',
                 title: this.$t('nav.user.versionApprovals'),
+                badge: true,
+                badgeContent: this.currentUser.headerData.reviewQueueCount,
             });
         }
         if (this.$perms.canViewStats) {

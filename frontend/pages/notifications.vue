@@ -38,18 +38,40 @@
             <v-list v-if="filteredInvites.length">
                 <v-list-item v-for="(invite, index) in filteredInvites" :key="index">
                     <v-list-item-title>
-                        {{ $t('notifications.invited', [invite.type]) }}:
+                        {{ $t(!invite.accepted ? 'notifications.invited' : 'notifications.inviteAccepted', [invite.type]) }}:
                         <NuxtLink :to="`/${invite.url}`" exact>{{ invite.name }}</NuxtLink>
                     </v-list-item-title>
-                    <v-list-item-action>
-                        <v-btn icon class="success" @click="updateInvite(invite, 'accept')">
-                            <v-icon>mdi-check</v-icon>
-                        </v-btn>
-                    </v-list-item-action>
-                    <v-list-item-action>
-                        <v-btn icon color="error" @click="updateInvite(invite, 'decline')">
-                            <v-icon>mdi-close</v-icon>
-                        </v-btn>
+                    <template v-if="!invite.accepted">
+                        <v-list-item-action>
+                            <v-tooltip bottom>
+                                <template #activator="{ on }">
+                                    <v-btn icon class="success" v-on="on" @click="updateInvite(invite, 'accept')">
+                                        <v-icon>mdi-check</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{ $t('notifications.invite.btns.accept') }}</span>
+                            </v-tooltip>
+                        </v-list-item-action>
+                        <v-list-item-action>
+                            <v-tooltip bottom>
+                                <template #activator="{ on }">
+                                    <v-btn icon color="error" v-on="on" @click="updateInvite(invite, 'decline')">
+                                        <v-icon>mdi-close</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{ $t('notifications.invite.btns.decline') }}</span>
+                            </v-tooltip>
+                        </v-list-item-action>
+                    </template>
+                    <v-list-item-action v-else>
+                        <v-tooltip bottom>
+                            <template #activator="{ on }">
+                                <v-btn icon class="warning" v-on="on" @click="updateInvite(invite, 'unaccept')">
+                                    <v-icon>mdi-undo</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>{{ $t('notifications.invite.btns.unaccept') }}</span>
+                        </v-tooltip>
                     </v-list-item-action>
                 </v-list-item>
             </v-list>
@@ -94,11 +116,11 @@ export default class NotificationsPage extends HangarComponent {
     get filteredInvites(): Invite[] {
         switch (this.filters.invite) {
             case 'projects':
-                return this.invites.projects;
+                return this.invites.project;
             case 'organizations':
-                return this.invites.organizations;
+                return this.invites.organization;
             case 'all':
-                return [...this.invites.projects, ...this.invites.organizations];
+                return [...this.invites.project, ...this.invites.organization];
         }
     }
 
@@ -144,17 +166,24 @@ export default class NotificationsPage extends HangarComponent {
 
     updateInvite(invite: Invite, status: 'accept' | 'decline' | 'unaccept') {
         this.$api
-            .requestInternal(`invites/${invite.type}/${invite.roleTableId}/${status}`)
+            .requestInternal(`invites/${invite.type}/${invite.roleTableId}/${status}`, true, 'post')
             .then(() => {
-                console.log('successful');
-                // TODO actions on save
+                if (status === 'accept') {
+                    this.$set(invite, 'accepted', true);
+                } else if (status === 'unaccept') {
+                    this.$set(invite, 'accepted', false);
+                } else {
+                    this.$delete(this.invites[invite.type], this.invites[invite.type].indexOf(invite));
+                }
+                this.$auth.refreshUser();
+                this.$util.success(this.$t(`notifications.invite.msgs.${status}`, [invite.name]));
             })
             .catch(this.$util.handleRequestError);
     }
 
     async fetch() {
         this.notifications = (await this.$api.requestInternal<HangarNotification[]>('notifications').catch(this.$util.handleRequestError)) || [];
-        this.invites = (await this.$api.requestInternal<Invites>('invites').catch(this.$util.handleRequestError)) || { projects: [], organizations: [] };
+        this.invites = (await this.$api.requestInternal<Invites>('invites').catch(this.$util.handleRequestError)) || { project: [], organization: [] };
     }
 }
 </script>

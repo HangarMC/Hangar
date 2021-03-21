@@ -13,6 +13,7 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.user.HangarUser;
+import io.papermc.hangar.model.internal.user.notifications.HangarInvite.InviteType;
 import io.papermc.hangar.model.internal.user.notifications.HangarNotification;
 import io.papermc.hangar.security.HangarAuthenticationToken;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
@@ -134,21 +135,21 @@ public class HangarUserController extends HangarController {
     @GetMapping("/invites")
     public ResponseEntity<ObjectNode> getUserInvites() {
         ObjectNode invites = mapper.createObjectNode();
-        invites.set("projects", mapper.valueToTree(inviteService.getProjectInvites()));
-        invites.set("organizations", mapper.valueToTree(inviteService.getOrganizationInvites()));
+        invites.set(InviteType.PROJECT.toString(), mapper.valueToTree(inviteService.getProjectInvites()));
+        invites.set(InviteType.ORGANIZATION.toString(), mapper.valueToTree(inviteService.getOrganizationInvites()));
         return ResponseEntity.ok(invites);
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PostMapping("/invites/projects/{id}/{status}")
+    @PostMapping("/invites/project/{id}/{status}")
     public void updateProjectInviteStatus(@PathVariable long id, @PathVariable InviteStatus status) {
         updateRole(projectRoleService, projectMemberService, id, status);
     }
 
     @Unlocked
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PostMapping("/invites/organizations/{id}/{status}")
+    @PostMapping("/invites/organization/{id}/{status}")
     public void updateOrganizationInviteStatus(@PathVariable long id, @PathVariable InviteStatus status) {
         updateRole(organizationRoleService, organizationMemberService, id, status);
     }
