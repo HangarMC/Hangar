@@ -281,7 +281,7 @@
 </template>
 
 <script lang="ts">
-import { Component, State, Watch } from 'nuxt-property-decorator';
+import { Component, Watch } from 'nuxt-property-decorator';
 import { ProjectSettingsForm } from 'hangar-internal';
 import { TranslateResult } from 'vue-i18n';
 import { AxiosError } from 'axios';
@@ -478,9 +478,6 @@ export default class ProjectManagePage extends HangarProjectMixin {
         const roles = await $api.requestInternal('data/projectRoles', false).catch($util.handlePageRequestError);
         return { roles };
     }
-
-    @State((state: RootState) => state.validations)
-    validations!: RootState['validations'];
 }
 </script>
 <style lang="scss">

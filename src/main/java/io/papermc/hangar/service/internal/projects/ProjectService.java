@@ -5,15 +5,19 @@ import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
+import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.exceptions.MultiHangarApiException;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
+import io.papermc.hangar.model.internal.api.requests.EditMembersForm;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
 import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.model.internal.projects.HangarProject.HangarProjectInfo;
@@ -23,7 +27,10 @@ import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.VisibilityService.ProjectVisibilityService;
 import io.papermc.hangar.service.internal.OrganizationService;
+import io.papermc.hangar.service.internal.roles.MemberService.ProjectMemberService;
+import io.papermc.hangar.service.internal.roles.RoleService.ProjectRoleService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
+import io.papermc.hangar.service.internal.users.NotificationService;
 import io.papermc.hangar.util.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +44,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -50,22 +58,30 @@ public class ProjectService extends HangarService {
     public static final String SLUG = "slug";
 
     private final ProjectsDAO projectsDAO;
+    private final UserDAO userDAO;
     private final HangarUsersDAO hangarUsersDAO;
     private final HangarProjectsDAO hangarProjectsDAO;
     private final ProjectVisibilityService projectVisibilityService;
     private final OrganizationService organizationService;
     private final ProjectPageService projectPageService;
     private final ProjectFiles projectFiles;
+    private final NotificationService notificationService;
+    private final ProjectMemberService projectMemberService;
+    private final ProjectRoleService projectRoleService;
 
     @Autowired
-    public ProjectService(HangarDao<ProjectsDAO> projectDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles) {
+    public ProjectService(HangarDao<ProjectsDAO> projectDAO, HangarDao<UserDAO> userDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, NotificationService notificationService, ProjectMemberService projectMemberService, ProjectRoleService projectRoleService) {
         this.projectsDAO = projectDAO.get();
+        this.userDAO = userDAO.get();
         this.hangarUsersDAO = hangarUsersDAO.get();
         this.hangarProjectsDAO = hangarProjectsDAO.get();
         this.projectVisibilityService = projectVisibilityService;
         this.organizationService = organizationService;
         this.projectPageService = projectPageService;
         this.projectFiles = projectFiles;
+        this.notificationService = notificationService;
+        this.projectMemberService = projectMemberService;
+        this.projectRoleService = projectRoleService;
     }
 
     @Nullable
@@ -149,6 +165,50 @@ public class ProjectService extends HangarService {
             // TODO store old images in log somehow?
             userActionLogService.project(LoggedActionType.PROJECT_ICON_CHANGED.with(ProjectContext.of(projectTable.getId())), "", "");
         }
+    }
+
+    public void editMembers(String author, String slug, EditMembersForm<ProjectRole> editMembersForm) {
+        ProjectTable projectTable = getProjectTable(author, slug);
+        List<HangarApiException> errors = new ArrayList<>();
+        editMembersForm.getNewMembers().forEach(member -> {
+            UserTable userTable = userDAO.getUserTable(member.getName());
+            if (userTable == null) {
+                errors.add(new HangarApiException("project.settings.error.members.invalidUser", member.getName()));
+                return;
+            }
+            if (projectMemberService.addMember(projectTable.getId(), member.getRole().create(projectTable.getId(), userTable.getId(), false)) == null) {
+                errors.add(new HangarApiException("project.settings.error.members.alreadyMember", member.getName()));
+                return;
+            }
+            notificationService.notifyNewProjectMember(member, userTable.getId(), projectTable);
+        });
+
+        editMembersForm.getEditedMembers().forEach(member -> {
+            UserTable userTable = userDAO.getUserTable(member.getName());
+            if (userTable == null) {
+                errors.add(new HangarApiException("project.settings.error.members.invalidUser", member.getName()));
+                return;
+            }
+            ProjectRoleTable projectRoleTable = projectRoleService.getRole(projectTable.getId(), userTable.getId());
+            if (projectRoleTable == null) {
+                errors.add(new HangarApiException("project.settings.error.members.notMember", member.getName()));
+                return;
+            }
+            if (projectRoleTable.getRole() == ProjectRole.PROJECT_OWNER) {
+                errors.add(new HangarApiException("project.settings.error.members.isOwner"));
+                return;
+            }
+            projectRoleTable.setRole(member.getRole());
+            projectRoleService.updateRole(projectRoleTable);
+            // TODO notification of updated role
+        });
+
+        // TODO delete members
+
+        if (!errors.isEmpty()) {
+            throw new MultiHangarApiException(errors);
+        }
+        // TODO user action logging
     }
 
     // TODO implement flag view

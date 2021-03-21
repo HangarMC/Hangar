@@ -41,16 +41,12 @@
         <v-menu v-if="$util.isLoggedIn()" bottom offset-y transition="slide-y-transition" close-delay="100">
             <template #activator="{ on, attrs }">
                 <v-btn color="info" text class="px-3 text-transform-unset" x-large v-bind="attrs" v-on="on">
-                    {{ $store.state.auth.user.name }}
-                    <v-badge
-                        overlap
-                        :content="$store.state.auth.user.headerData.unreadNotifications"
-                        :value="$store.state.auth.user.headerData.unreadNotifications"
-                    >
+                    {{ currentUser.name }}
+                    <v-badge overlap :content="currentUser.headerData.unreadNotifications" :value="currentUser.headerData.unreadNotifications">
                         <v-avatar size="44" class="ml-2">
                             <img
-                                :src="$util.avatarUrl($store.state.auth.user.name)"
-                                :alt="$store.state.auth.user.name"
+                                :src="$util.avatarUrl(currentUser.name)"
+                                :alt="currentUser.name"
                                 @error="$event.target.src = 'https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png'"
                             />
                         </v-avatar>
@@ -67,16 +63,16 @@
 </template>
 
 <script lang="ts">
-import { Component, State, Vue } from 'nuxt-property-decorator';
+import { Component } from 'nuxt-property-decorator';
 import Dropdown, { Control } from '~/components/layouts/Dropdown.vue';
-import { RootState } from '~/store';
+import { HangarComponent } from '~/components/mixins';
 
 @Component({
     components: {
         Dropdown,
     },
 })
-export default class Header extends Vue {
+export default class Header extends HangarComponent {
     get dropdown(): Control[] {
         const controls: Control[] = [];
         controls.push({
@@ -143,9 +139,9 @@ export default class Header extends Vue {
     get userControls(): Control[] {
         const controls: Control[] = [];
         controls.push({
-            link: '/' + this.$store.state.auth.user.name,
+            link: '/' + this.currentUser.name,
             icon: 'mdi-account',
-            title: this.$store.state.auth.user.name,
+            title: this.currentUser.name,
         });
         controls.push({
             link: '/notifications',
@@ -214,9 +210,6 @@ export default class Header extends Vue {
         });
         return controls;
     }
-
-    @State((state: RootState) => state.validations)
-    validations!: RootState['validations'];
 }
 </script>
 

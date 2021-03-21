@@ -1,9 +1,18 @@
 package io.papermc.hangar.service.internal.roles;
 
+import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.roles.IRolesDAO;
+import io.papermc.hangar.db.dao.internal.table.roles.OrganizationRolesDAO;
+import io.papermc.hangar.db.dao.internal.table.roles.ProjectRolesDAO;
+import io.papermc.hangar.model.common.roles.OrganizationRole;
+import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.roles.IRoleTable;
+import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
+import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.service.HangarService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 public abstract class RoleService<T extends IRoleTable<R>, R extends Role<T>, D extends IRolesDAO<T>> extends HangarService {
 
@@ -22,7 +31,13 @@ public abstract class RoleService<T extends IRoleTable<R>, R extends Role<T>, D 
     }
 
     public void updateRole(T roleTable) {
-        roleDao.update(roleTable);
+        if (isUpdatable(roleTable)) {
+            roleDao.update(roleTable);
+        }
+    }
+
+    protected boolean isUpdatable(T roleTable) {
+        return true;
     }
 
     public void deleteRole(T roleTable) {
@@ -31,5 +46,37 @@ public abstract class RoleService<T extends IRoleTable<R>, R extends Role<T>, D 
 
     public T getRole(long id) {
         return roleDao.getTable(id, getHangarPrincipal().getUserId());
+    }
+
+    public T getRole(long principalId, long userId) {
+        return roleDao.getTableByPrincipal(principalId, userId);
+    }
+
+    @Service
+    public static class ProjectRoleService extends RoleService<ProjectRoleTable, ProjectRole, ProjectRolesDAO> {
+
+        @Autowired
+        public ProjectRoleService(HangarDao<ProjectRolesDAO> roleDao) {
+            super(roleDao.get());
+        }
+
+        @Override
+        public ProjectRoleTable getRole(long projectId, long userId) {
+            return super.getRole(projectId, userId);
+        }
+    }
+
+    @Service
+    public static class OrganizationRoleService extends RoleService<OrganizationRoleTable, OrganizationRole, OrganizationRolesDAO> {
+
+        @Autowired
+        public OrganizationRoleService(HangarDao<OrganizationRolesDAO> roleDao) {
+            super(roleDao.get());
+        }
+
+        @Override
+        public OrganizationRoleTable getRole(long organizationId, long userId) {
+            return super.getRole(organizationId, userId);
+        }
     }
 }

@@ -37,5 +37,9 @@ public interface ProjectRolesDAO extends IRolesDAO<ProjectRoleTable> {
 
     @Override
     @SqlQuery("SELECT * FROM user_project_roles WHERE project_id = :projectId AND user_id = :userId")
+    ProjectRoleTable getTableByPrincipal(long projectId, long userId);
+
+    @Override
+    @SqlQuery("SELECT * FROM user_project_roles WHERE project_id = :projectId AND user_id = :userId")
     ProjectRoleTable getTable(@BindBean ProjectRoleTable table);
 }

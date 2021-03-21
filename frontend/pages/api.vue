@@ -5,9 +5,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
+import { Component } from 'nuxt-property-decorator';
 import SwaggerUIBundle from 'swagger-ui';
 import { SwaggerConfigs, SwaggerUIBundle as SwaggerUIBundleType } from 'swagger-ui-dist';
+import { HangarComponent } from '~/components/mixins';
 
 declare global {
     interface Window {
@@ -16,7 +17,7 @@ declare global {
 }
 
 @Component
-export default class ApiPage extends Vue {
+export default class ApiPage extends HangarComponent {
     mounted() {
         window.ui = SwaggerUIBundle({
             url: '/v2/api-docs/',

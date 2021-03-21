@@ -172,7 +172,7 @@ export default class ProjectVersionsVersionReviewPage extends mixins(HangarProje
     }
 
     get currentUserReview(): HangarReview | undefined {
-        return this.reviews.find((r) => r.userId === this.$store.state.auth.user.id);
+        return this.reviews.find((r) => r.userId === this.currentUser.id);
     }
 
     get isCurrentReviewOpen(): boolean {
@@ -220,17 +220,17 @@ export default class ProjectVersionsVersionReviewPage extends mixins(HangarProje
     startReview() {
         const message = 'reviews.presets.start';
         const args = {
-            name: this.$store.state.auth.user.name,
+            name: this.currentUser.name,
         };
         this.loadingValues.start = true;
         this.sendReviewRequest(
             'start',
-            { name: this.$store.state.auth.user.name },
+            { name: this.currentUser.name },
             ReviewAction.START,
             () => {
                 this.reviews.push({
-                    userName: this.$store.state.auth.user.name,
-                    userId: this.$store.state.auth.user.id,
+                    userName: this.currentUser.name,
+                    userId: this.currentUser.id,
                     createdAt: new Date().toISOString(),
                     endedAt: null,
                     messages: [
@@ -332,10 +332,10 @@ export default class ProjectVersionsVersionReviewPage extends mixins(HangarProje
         this.loadingValues.undoApproval = true;
         this.sendReviewRequest(
             'undoApproval',
-            { name: this.$store.state.auth.user.name },
+            { name: this.currentUser.name },
             ReviewAction.UNDO_APPROVAL,
             () => {
-                this.reviews.find((r) => r.userId === this.$store.state.auth.user.id)!.endedAt = null;
+                this.reviews.find((r) => r.userId === this.currentUser.id)!.endedAt = null;
             },
             () => {
                 this.loadingValues.undoApproval = false;

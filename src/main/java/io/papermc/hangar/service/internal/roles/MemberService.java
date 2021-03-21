@@ -18,6 +18,7 @@ import io.papermc.hangar.model.db.roles.IRoleTable;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.service.HangarService;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,17 +35,24 @@ public abstract class MemberService<
 
     protected final S roleService;
     protected final MD membersDao;
+    protected final BiFunction<Long, Long, MT> constructor;
 
-    protected MemberService(S roleService, MD membersDao) {
+    protected MemberService(S roleService, MD membersDao, BiFunction<Long, Long, MT> constructor) {
         this.roleService = roleService;
         this.membersDao = membersDao;
+        this.constructor = constructor;
     }
 
-    public RT addMember(long principalId, RT newRoleTable, BiFunction<Long, Long, MT> constructor) {
+    @Nullable
+    public RT addMember(long principalId, RT newRoleTable) {
         MT existingMember = membersDao.getMemberTable(principalId, newRoleTable.getUserId());
         if (existingMember != null) {
-            throw new IllegalArgumentException(getClass().getName() + " One user cannot be a member twice");
+            return null;
         }
+        // TODO should this fail loudly?
+//        if (existingMember != null) {
+//            throw new IllegalArgumentException(getClass().getName() + " One user cannot be a member twice");
+//        }
         RT roleTable = roleService.addRole(newRoleTable);
         membersDao.insert(constructor.apply(roleTable.getUserId(), principalId));
         return roleTable;
@@ -68,14 +76,14 @@ public abstract class MemberService<
             ProjectRole,
             ProjectRoleTable,
             ProjectRolesDAO,
-            ProjectRoleService,
+            RoleService.ProjectRoleService,
             ProjectMembersDAO,
             ProjectMemberTable
             > {
 
         @Autowired
-        public ProjectMemberService(ProjectRoleService projectRoleService, HangarDao<ProjectMembersDAO> projectMembersDAO) {
-            super(projectRoleService, projectMembersDAO.get());
+        public ProjectMemberService(RoleService.ProjectRoleService projectRoleService, HangarDao<ProjectMembersDAO> projectMembersDAO) {
+            super(projectRoleService, projectMembersDAO.get(), ProjectMemberTable::new);
         }
     }
 
@@ -84,14 +92,14 @@ public abstract class MemberService<
             OrganizationRole,
             OrganizationRoleTable,
             OrganizationRolesDAO,
-            OrganizationRoleService,
+            RoleService.OrganizationRoleService,
             OrganizationMembersDAO,
             OrganizationMemberTable
             > {
 
         @Autowired
-        public OrganizationMemberService(OrganizationRoleService roleService, HangarDao<OrganizationMembersDAO> organizationMembersDAO) {
-            super(roleService, organizationMembersDAO.get());
+        public OrganizationMemberService(RoleService.OrganizationRoleService roleService, HangarDao<OrganizationMembersDAO> organizationMembersDAO) {
+            super(roleService, organizationMembersDAO.get(), OrganizationMemberTable::new);
         }
     }
 }

@@ -30,5 +30,9 @@ public interface OrganizationRolesDAO extends IRolesDAO<OrganizationRoleTable> {
 
     @Override
     @SqlQuery("SELECT * FROM user_organization_roles WHERE organization_id = :organizationId AND user_id = :userId")
+    OrganizationRoleTable getTableByPrincipal(long organizationId, long userId);
+
+    @Override
+    @SqlQuery("SELECT * FROM user_organization_roles WHERE organization_id = :organizationId AND user_id = :userId")
     OrganizationRoleTable getTable(@BindBean OrganizationRoleTable table);
 }

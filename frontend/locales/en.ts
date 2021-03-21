@@ -231,6 +231,12 @@ const msgs: LocaleMessageObject = {
             error: {
                 invalidFile: '{0} is an invalid file type',
                 noFile: 'No file submitted',
+                members: {
+                    invalidUser: '{0} is not a valid user',
+                    alreadyMember: '{0} is already a member, cannot add them',
+                    notMember: '{0} is not a member, therefore you cannot edit their role',
+                    isOwner: 'Cannot change the role of the project owner',
+                },
             },
             success: {
                 changedIcon: 'Successfully changed the project icon',
@@ -406,6 +412,7 @@ const msgs: LocaleMessageObject = {
         project: {
             reviewed: '{0} {1} has been reviewed and is approved',
             reviewedPartial: '{0} {1} has been reviewed and is partially approved',
+            invite: 'You have been invited to join the group {0} on the project {1}',
         },
     },
     visibility: {

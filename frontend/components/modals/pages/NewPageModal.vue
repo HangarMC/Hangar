@@ -41,11 +41,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, State } from 'nuxt-property-decorator';
+import { Component, Prop } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
 import { HangarProjectPage } from 'hangar-internal';
 import { HangarFormModal } from '~/components/mixins';
-import { RootState } from '~/store';
 
 @Component
 export default class NewPageModal extends HangarFormModal {
@@ -93,8 +92,5 @@ export default class NewPageModal extends HangarFormModal {
                 this.loading = false;
             });
     }
-
-    @State((state: RootState) => state.validations)
-    validations!: RootState['validations'];
 }
 </script>

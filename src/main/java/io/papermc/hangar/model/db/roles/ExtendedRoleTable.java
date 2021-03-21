@@ -12,7 +12,7 @@ public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>>
 
     protected final long userId;
     @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-    protected final R role;
+    protected R role;
     protected boolean accepted;
 
     protected ExtendedRoleTable(OffsetDateTime createdAt, long id, long userId, R role, boolean accepted) {
@@ -37,6 +37,10 @@ public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>>
     @JsonIgnore
     public R getRole() {
         return role;
+    }
+
+    public void setRole(R role) {
+        this.role = role;
     }
 
     @Override

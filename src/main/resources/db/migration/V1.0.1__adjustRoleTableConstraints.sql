@@ -1,0 +1,8 @@
+ALTER TABLE user_project_roles DROP CONSTRAINT user_project_roles_user_id_role_type_id_project_id_key;
+ALTER TABLE user_organization_roles DROP CONSTRAINT user_organization_roles_user_id_role_type_id_organization_id_ke;
+
+ALTER TABLE user_project_roles ADD CONSTRAINT project_roles_user_id_role_type UNIQUE (user_id, role_type);
+ALTER TABLE user_project_roles ADD CONSTRAINT project_roles_user_id_project_id UNIQUE (user_id, project_id);
+
+ALTER TABLE user_organization_roles ADD CONSTRAINT organization_roles_user_id_role_type UNIQUE (user_id, role_type);
+ALTER TABLE user_organization_roles ADD CONSTRAINT organization_roles_user_id_organization_id UNIQUE (user_id, organization_id);

@@ -62,13 +62,12 @@
 </template>
 
 <script lang="ts">
-import { Component, State } from 'nuxt-property-decorator';
+import { Component } from 'nuxt-property-decorator';
 import { ProjectChannel } from 'hangar-internal';
 import { Context } from '@nuxt/types';
 import { HangarProjectMixin } from '~/components/mixins';
 import Tag from '~/components/Tag.vue';
 import ChannelModal from '~/components/modals/ChannelModal.vue';
-import { RootState } from '~/store';
 
 @Component({
     components: { ChannelModal, Tag },
@@ -127,9 +126,6 @@ export default class ProjectChannelsPage extends HangarProjectMixin {
             .catch<any>($util.handlePageRequestError);
         return { channels };
     }
-
-    @State((state: RootState) => state.validations)
-    validations!: RootState['validations'];
 }
 </script>
 

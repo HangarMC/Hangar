@@ -115,13 +115,12 @@ import { IPlatform, ProjectChannel } from 'hangar-internal';
 import { Context } from '@nuxt/types';
 import { PaginatedResult, Tag as ApiTag, Version } from 'hangar-api';
 import Tag from '~/components/Tag.vue';
-import { MemberList } from '~/components/projects';
 import { RootState } from '~/store';
 import { HangarProjectMixin } from '~/components/mixins';
 import { Platform } from '~/types/enums';
 
 @Component({
-    components: { MemberList, Tag },
+    components: { Tag },
 })
 export default class ProjectVersionsPage extends HangarProjectMixin {
     versions!: PaginatedResult<Version>;

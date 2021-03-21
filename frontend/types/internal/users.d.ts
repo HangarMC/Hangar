@@ -28,6 +28,7 @@ declare module 'hangar-internal' {
     interface HeaderData {
         globalPermission: string;
         unreadNotifications: number;
+        unansweredInvites: number;
         unresolvedFlags: number;
         projectApprovals: number;
         reviewQueueCount: number;

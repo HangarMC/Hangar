@@ -12,10 +12,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
+import { Component } from 'nuxt-property-decorator';
+import { HangarComponent } from '~/components/mixins';
 
 @Component
-export default class LinkoutPage extends Vue {
+export default class LinkoutPage extends HangarComponent {
     get target() {
         return this.$route.query.remoteUrl;
     }

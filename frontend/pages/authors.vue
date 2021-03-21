@@ -21,16 +21,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'nuxt-property-decorator';
+import { Component, Watch } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
 import { PaginatedResult, User } from 'hangar-api';
 import { DataOptions, DataTableHeader } from 'vuetify';
 import { UserAvatar } from '~/components/users';
+import { HangarComponent } from '~/components/mixins';
 
 @Component({
     components: { UserAvatar },
 })
-export default class AuthorsPage extends Vue {
+export default class AuthorsPage extends HangarComponent {
     headers: DataTableHeader[] = [
         { text: '', value: 'pic' },
         { text: 'Username', value: 'name' },

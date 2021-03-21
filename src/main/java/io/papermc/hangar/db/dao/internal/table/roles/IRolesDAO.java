@@ -13,5 +13,7 @@ public interface IRolesDAO<T extends IRoleTable<? extends Role<T>>> {
 
     T getTable(long id, long userId);
 
+    T getTableByPrincipal(long principalId, long userId);
+
     T getTable(T table);
 }

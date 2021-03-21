@@ -240,7 +240,7 @@
 </template>
 
 <script lang="ts">
-import { Component, State, Vue, Watch } from 'nuxt-property-decorator';
+import { Component, Watch } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
 import { ProjectOwner, ProjectSettingsForm } from 'hangar-internal';
 import { AxiosError } from 'axios';
@@ -248,6 +248,7 @@ import { TranslateResult } from 'vue-i18n';
 import StepperStepContent from '~/components/steppers/StepperStepContent.vue';
 import { RootState } from '~/store';
 import { ProjectCategory } from '~/types/enums';
+import { HangarComponent } from '~/components/mixins';
 
 interface NewProjectForm extends ProjectSettingsForm {
     ownerId: ProjectOwner['userId'];
@@ -263,7 +264,7 @@ interface NewProjectForm extends ProjectSettingsForm {
         title: 'New Project',
     },
 })
-export default class NewPage extends Vue {
+export default class NewProjectPage extends HangarComponent {
     step = 1;
     spigotConvertTab = 0;
     projectLoading = true;
@@ -304,9 +305,6 @@ export default class NewPage extends Vue {
     get licences() {
         return ['MIT', 'Apache 2.0', 'GPL', 'LGPL', '(custom)'];
     }
-
-    @State((state: RootState) => state.validations)
-    validations!: RootState['validations'];
 
     async asyncData({ $api }: Context) {
         return {

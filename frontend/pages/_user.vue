@@ -72,12 +72,12 @@
 </template>
 
 <script lang="ts">
-import { Component, State, Vue } from 'nuxt-property-decorator';
-import { HangarUser } from 'hangar-internal';
+import { Component } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
+import { User } from 'hangar-api';
 import UserAvatar from '../components/users/UserAvatar.vue';
 import HangarModal from '~/components/modals/HangarModal.vue';
-import { RootState } from '~/store';
+import { HangarComponent } from '~/components/mixins';
 
 interface Button {
     icon: string;
@@ -90,8 +90,8 @@ interface Button {
 @Component({
     components: { HangarModal, UserAvatar },
 })
-export default class UserParentPage extends Vue {
-    user!: HangarUser;
+export default class UserParentPage extends HangarComponent {
+    user!: User;
     taglineForm: string | null = null;
     loading = {
         resetTagline: false,
@@ -109,7 +109,7 @@ export default class UserParentPage extends Vue {
     }
 
     get canEditCurrent() {
-        return this.user.id === this.$store.state.auth.user.id /* || org perms */;
+        return this.$perms.canDoManualValueChanges || this.user.name === this.currentUser.name /* || org perms */;
     }
 
     get avatarClazz(): String {
@@ -119,7 +119,7 @@ export default class UserParentPage extends Vue {
 
     changeTagline() {
         return this.$api
-            .requestInternal(`users/${this.user.id}/settings/tagline`, true, 'post', {
+            .requestInternal(`users/${this.user.name}/settings/tagline`, true, 'post', {
                 content: this.taglineForm,
             })
             .then(() => {
@@ -135,7 +135,7 @@ export default class UserParentPage extends Vue {
     resetTagline() {
         this.loading.resetTagline = true;
         this.$api
-            .requestInternal(`users/${this.user.id}/settings/resetTagline`, true, 'post')
+            .requestInternal(`users/${this.user.name}/settings/resetTagline`, true, 'post')
             .then(() => {
                 this.$refs.taglineModal.close();
                 this.$nuxt.refresh();
@@ -147,13 +147,10 @@ export default class UserParentPage extends Vue {
     }
 
     async asyncData({ $api, $util, params }: Context) {
-        const user = await $api.requestInternal<HangarUser>(`users/${params.user}`, false).catch<any>($util.handlePageRequestError);
+        const user = await $api.request<User>(`users/${params.user}`, false).catch<any>($util.handlePageRequestError);
         if (typeof user === 'undefined') return;
         return { user };
     }
-
-    @State((state: RootState) => state.validations)
-    validations!: RootState['validations'];
 }
 </script>
 

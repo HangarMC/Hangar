@@ -52,10 +52,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, State } from 'nuxt-property-decorator';
+import { Component, Emit, Prop } from 'nuxt-property-decorator';
 import { Color, ProjectChannel } from 'hangar-internal';
 import { HangarFormModal } from '../mixins';
-import { RootState } from '~/store';
 
 @Component
 export default class ChannelModal extends HangarFormModal {
@@ -112,9 +111,6 @@ export default class ChannelModal extends HangarFormModal {
         this.dialog = false;
         return this.form;
     }
-
-    @State((state: RootState) => state.validations)
-    validations!: RootState['validations'];
 }
 </script>
 

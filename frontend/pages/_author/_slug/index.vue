@@ -95,7 +95,7 @@
                     <ProjectPageList :project="project" />
                 </v-col>
                 <v-col cols="12">
-                    <MemberList :joinable="project" />
+                    <MemberList :joinable="project" :roles="roles" />
                 </v-col>
             </v-row>
         </v-col>

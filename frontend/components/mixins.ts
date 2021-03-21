@@ -1,18 +1,29 @@
-import { Component, mixins, Prop, Vue, Watch } from 'nuxt-property-decorator';
+import { Component, mixins, Prop, State, Vue, Watch } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
 import { HangarProject, HangarUser, HangarVersion, IPlatform, ProjectPage } from 'hangar-internal';
+import { User } from 'hangar-api';
 import MarkdownEditor from '~/components/markdown/MarkdownEditor.vue';
 import { Platform, ReviewState } from '~/types/enums';
 import { RootState } from '~/store';
+import { AuthState } from '~/store/auth';
 
 @Component
-export class HangarUserMixin extends Vue {
-    @Prop({ type: Object as PropType<HangarUser>, required: true })
-    user!: HangarUser;
+export class HangarComponent extends Vue {
+    @State((state: AuthState) => state.user, { namespace: 'auth' })
+    currentUser!: HangarUser;
+
+    @State((state: RootState) => state.validations)
+    validations!: RootState['validations'];
 }
 
 @Component
-export class HangarProjectMixin extends Vue {
+export class HangarUserMixin extends HangarComponent {
+    @Prop({ type: Object as PropType<User>, required: true })
+    user!: User;
+}
+
+@Component
+export class HangarProjectMixin extends HangarComponent {
     @Prop({ type: Object as PropType<HangarProject>, required: true })
     project!: HangarProject;
 }
@@ -78,7 +89,7 @@ export class DocPageMixin extends HangarProjectMixin {
 }
 
 @Component
-export class HangarModal extends Vue {
+export class HangarModal extends HangarComponent {
     dialog: boolean = false;
 
     @Prop({ type: String, default: '' })
@@ -101,7 +112,7 @@ export class HangarModal extends Vue {
 }
 
 @Component
-export class HangarForm extends Vue {
+export class HangarForm extends HangarComponent {
     loading: boolean = false;
     validForm: boolean = false;
 }

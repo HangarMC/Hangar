@@ -50,9 +50,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
+import { Component } from 'nuxt-property-decorator';
 import { HangarNotification, Invite, Invites } from 'hangar-internal';
 import { LoggedIn } from '~/utils/perms';
+import { HangarComponent } from '~/components/mixins';
 
 @Component({
     head: {
@@ -60,7 +61,7 @@ import { LoggedIn } from '~/utils/perms';
     },
 })
 @LoggedIn
-export default class NotificationsPage extends Vue {
+export default class NotificationsPage extends HangarComponent {
     notifications: HangarNotification[] = [];
     invites = {} as Invites;
     filters = {

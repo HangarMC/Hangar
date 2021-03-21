@@ -6,7 +6,6 @@ import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.roles.ProjectRole;
-import io.papermc.hangar.model.db.members.ProjectMemberTable;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
@@ -49,7 +48,7 @@ public class ProjectFactory extends HangarService {
         try {
             projectTable = projectsDAO.insert(new ProjectTable(projectOwner, newProject));
             channelService.createProjectChannel(config.channels.getNameDefault(), config.channels.getColorDefault(), projectTable.getId(), false);
-            projectMemberService.addMember(projectTable.getId(), ProjectRole.PROJECT_OWNER.create(projectTable.getId(), projectOwner.getUserId(), true), ProjectMemberTable::new);
+            projectMemberService.addMember(projectTable.getId(), ProjectRole.PROJECT_OWNER.create(projectTable.getId(), projectOwner.getUserId(), true));
             String newPageContent = newProject.getPageContent();
             if (newPageContent == null) {
                 newPageContent = "# " + projectTable.getName() + "\n\n" + config.pages.home.getMessage();

@@ -58,13 +58,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
+import { Component } from 'nuxt-property-decorator';
 import { PaginatedResult, Project, Sponsor } from 'hangar-api';
 import { IPlatform } from 'hangar-internal';
 import { Context } from '@nuxt/types';
 import { ProjectList } from '~/components/projects';
 import HangarSponsor from '~/components/layouts/Sponsor.vue';
 import { RootState } from '~/store';
+import { HangarComponent } from '~/components/mixins';
 
 @Component({
     components: {
@@ -72,7 +73,7 @@ import { RootState } from '~/store';
         HangarSponsor,
     },
 })
-export default class Home extends Vue {
+export default class Home extends HangarComponent {
     // TODO implement filtering
     projects!: PaginatedResult<Project>;
     projectFilter: String | null = null;

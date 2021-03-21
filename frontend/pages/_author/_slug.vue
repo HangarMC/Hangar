@@ -107,7 +107,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
+import { Component } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
 import { HangarProject } from 'hangar-internal';
 import { NavigationGuardNext, Route } from 'vue-router';
@@ -116,6 +116,7 @@ import { Markdown } from '~/components/markdown';
 import FlagModal from '~/components/modals/FlagModal.vue';
 import { UserAvatar } from '~/components/users';
 import { Visibility } from '~/types/enums';
+import { HangarComponent } from '~/components/mixins';
 
 interface Tab {
     title: string | TranslateResult;
@@ -132,7 +133,7 @@ interface Tab {
         UserAvatar,
     },
 })
-export default class ProjectPage extends Vue {
+export default class ProjectPage extends HangarComponent {
     project!: HangarProject;
 
     head() {

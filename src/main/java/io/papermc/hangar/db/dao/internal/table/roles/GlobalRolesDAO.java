@@ -39,6 +39,11 @@ public interface GlobalRolesDAO extends IRolesDAO<GlobalRoleTable> {
     }
 
     @Override
+    default GlobalRoleTable getTableByPrincipal(long principalId, long userId) {
+        throw new UnsupportedOperationException("Cannot get global roles with a principal id");
+    }
+
+    @Override
     @SqlQuery("SELECT * FROM user_global_roles WHERE user_id = :userId AND role_id = :roleId")
     GlobalRoleTable getTable(@BindBean GlobalRoleTable table);
 

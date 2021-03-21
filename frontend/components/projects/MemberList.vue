@@ -15,7 +15,7 @@
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
             </template>
-            <v-btn v-else color="success" small class="flex-right" :loading="loading.save">
+            <v-btn v-else color="success" small class="flex-right" :loading="loading.save" :disabled="!isEdited" @click="save">
                 <v-icon left>mdi-check</v-icon>
                 {{ $t('general.save') }}
             </v-btn>
@@ -146,6 +146,10 @@ export default class MemberList extends Vue {
         return this.alwaysEditing || this.editing;
     }
 
+    get isEdited() {
+        return this.editedMembers.length;
+    }
+
     setupEditing() {
         this.editingMembers = [];
         this.editingMembers = this.convertMembers(this.joinable.members);
@@ -161,6 +165,15 @@ export default class MemberList extends Vue {
             toDelete: false,
             new: false,
         }));
+    }
+
+    get editedMembers(): EditableMember[] {
+        return this.editingMembers.filter(
+            (em) =>
+                em.toDelete ||
+                (em.new && em.roleId) ||
+                (em.editing && !em.new && em.roleId !== this.joinable.members.find((jm) => jm.user.name === em.name)!.role.role.roleId)
+        );
     }
 
     stopEditing(member: EditableMember) {
@@ -187,6 +200,26 @@ export default class MemberList extends Vue {
             toDelete: false,
         });
         this.selectedUser = null;
+    }
+
+    save() {
+        const editedMembers = this.editedMembers;
+        const deletedMembers = editedMembers.filter((em) => em.toDelete);
+        if (deletedMembers.length) {
+            // TODO confirm deletion of these members
+        }
+        this.loading.save = true;
+        this.$api
+            .requestInternal(`projects/project/${this.$route.params.author}/${this.$route.params.slug}/members`, true, 'post', editedMembers)
+            .then(() => {
+                this.$nuxt.refresh().then(() => {
+                    this.setupEditing();
+                });
+            })
+            .catch(this.$util.handleRequestError)
+            .finally(() => {
+                this.loading.save = false;
+            });
     }
 
     @Watch('userSearch')

@@ -4,7 +4,9 @@ import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.PermissionType;
+import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.db.projects.ProjectTable;
+import io.papermc.hangar.model.internal.api.requests.EditMembersForm;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
@@ -111,6 +113,14 @@ public class ProjectController extends HangarController {
     @PostMapping(path = "/project/{author}/{slug}/rename", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> renameProject(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody StringContent nameContent) {
         return ResponseEntity.ok(projectFactory.renameProject(author, slug, nameContent.getContent()));
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#author, #slug}")
+    @PostMapping(path = "/project/{author}/{slug}/members", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void editProjectMembers(@PathVariable String author, @PathVariable String slug, @Valid @RequestBody EditMembersForm<ProjectRole> editMembersForm) {
+        projectService.editMembers(author, slug, editMembersForm);
     }
 
     @Unlocked
