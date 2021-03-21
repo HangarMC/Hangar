@@ -13,8 +13,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapperFactory;
+import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
+import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -59,6 +61,7 @@ public interface HangarProjectsDAO {
     @RegisterRowMapperFactory(JoinableMemberFactory.class)
     @RegisterConstructorMapper(UserTable.class)
     @RegisterConstructorMapper(value = ProjectRoleTable.class, prefix = "upr_")
+    @UseStringTemplateEngine
     @SqlQuery("SELECT u.*," +
             "       upr.id upr_id," +
             "       upr.created_at upr_created_at," +
@@ -68,8 +71,8 @@ public interface HangarProjectsDAO {
             "       upr.accepted upr_accepted" +
             "   FROM user_project_roles upr" +
             "       JOIN users u ON upr.user_id = u.id" +
-            "   WHERE upr.project_id = :projectId")
-    List<JoinableMember<ProjectRoleTable>> getProjectMembers(long projectId);
+            "   WHERE upr.project_id = :projectId <if(!canSeePending)>AND (upr.accepted IS TRUE OR upr.user_id = :userId)<endif>")
+    List<JoinableMember<ProjectRoleTable>> getProjectMembers(long projectId, Long userId, @Define boolean canSeePending);
 
     @RegisterConstructorMapper(HangarProjectInfo.class)
     @SqlQuery("SELECT count(pv.*) public_versions," +

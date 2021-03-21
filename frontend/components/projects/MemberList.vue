@@ -5,17 +5,17 @@
             <template v-if="!alwaysEditing">
                 <v-tooltip v-if="!editing" bottom>
                     <template #activator="{ on }">
-                        <v-btn icon color="info" class="flex-right" v-on="on" @click="editing = true">
+                        <v-btn v-if="$perms.canEditSubjectSettings" icon color="info" class="flex-right" v-on="on" @click="editing = true">
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
                     </template>
                     <span>{{ $t('general.edit') }}</span>
                 </v-tooltip>
-                <v-btn v-else icon color="error" class="flex-right" @click="editing = false">
+                <v-btn v-else-if="!isEdited" icon color="error" class="flex-right" @click="editing = false">
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
             </template>
-            <v-btn v-else color="success" small class="flex-right" :loading="loading.save" :disabled="!isEdited" @click="save">
+            <v-btn v-if="alwaysEditing || isEdited" color="success" small class="flex-right" :loading="loading.save" :disabled="!isEdited" @click="save">
                 <v-icon left>mdi-check</v-icon>
                 {{ $t('general.save') }}
             </v-btn>

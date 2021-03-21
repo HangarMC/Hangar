@@ -25,6 +25,7 @@ import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.service.HangarService;
+import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.VisibilityService.ProjectVisibilityService;
 import io.papermc.hangar.service.internal.OrganizationService;
 import io.papermc.hangar.service.internal.roles.MemberService.ProjectMemberService;
@@ -68,9 +69,10 @@ public class ProjectService extends HangarService {
     private final NotificationService notificationService;
     private final ProjectMemberService projectMemberService;
     private final ProjectRoleService projectRoleService;
+    private final PermissionService permissionService;
 
     @Autowired
-    public ProjectService(HangarDao<ProjectsDAO> projectDAO, HangarDao<UserDAO> userDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, NotificationService notificationService, ProjectMemberService projectMemberService, ProjectRoleService projectRoleService) {
+    public ProjectService(HangarDao<ProjectsDAO> projectDAO, HangarDao<UserDAO> userDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, NotificationService notificationService, ProjectMemberService projectMemberService, ProjectRoleService projectRoleService, PermissionService permissionService) {
         this.projectsDAO = projectDAO.get();
         this.userDAO = userDAO.get();
         this.hangarUsersDAO = hangarUsersDAO.get();
@@ -82,6 +84,7 @@ public class ProjectService extends HangarService {
         this.notificationService = notificationService;
         this.projectMemberService = projectMemberService;
         this.projectRoleService = projectRoleService;
+        this.permissionService = permissionService;
     }
 
     @Nullable
@@ -112,8 +115,8 @@ public class ProjectService extends HangarService {
     public HangarProject getHangarProject(String author, String slug) {
         Pair<Long, Project> project = hangarProjectsDAO.getProject(author, slug, getHangarUserId());
         ProjectOwner projectOwner = getProjectOwner(author);
-        List<JoinableMember<ProjectRoleTable>> members = hangarProjectsDAO.getProjectMembers(project.getLeft());
-        // only include visibility change if not public (and if so, only include the user and comment)
+        List<JoinableMember<ProjectRoleTable>> members = hangarProjectsDAO.getProjectMembers(project.getLeft(), getHangarUserId(), permissionService.getProjectPermissions(getHangarUserId(), author, slug).has(Permission.EditSubjectSettings));
+        // TODO only include visibility change if not public (and if so, only include the user and comment)
         HangarProjectInfo info = hangarProjectsDAO.getHangarProjectInfo(project.getLeft());
         Map<Long, HangarProjectPage> pages = projectPageService.getProjectPages(project.getLeft());
         return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, "", "", info, pages.values());
