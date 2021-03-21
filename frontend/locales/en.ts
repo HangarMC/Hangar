@@ -235,7 +235,7 @@ const msgs: LocaleMessageObject = {
                     invalidUser: '{0} is not a valid user',
                     alreadyMember: '{0} is already a member, cannot add them',
                     notMember: '{0} is not a member, therefore you cannot edit their role',
-                    isOwner: 'Cannot change the role of the project owner',
+                    isOwner: 'Cannot edit/remove the project owner',
                 },
             },
             success: {

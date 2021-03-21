@@ -31,7 +31,7 @@
                     <NuxtLink v-if="!isEditing" :to="'/' + member.name">{{ member.name }}</NuxtLink>
                     <span v-else>{{ member.name }}</span>
 
-                    <template v-if="isEditing && (!member.editing || member.new)">
+                    <template v-if="isEditing && (!member.editing || member.new) && member.roleAssignable">
                         <v-btn v-if="!member.toDelete" icon x-small color="error" class="ml-1" @click="removeMember(member)">
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
@@ -55,7 +55,7 @@
                         style="max-width: 120px"
                     />
 
-                    <template v-if="isEditing && !member.toDelete && !member.new">
+                    <template v-if="isEditing && !member.toDelete && !member.new && member.roleAssignable">
                         <v-tooltip v-if="!member.editing" bottom>
                             <template #activator="{ on }">
                                 <v-btn class="flex-right ml-1" icon x-small color="info" v-on="on" @click="member.editing = true">
@@ -113,6 +113,7 @@ interface EditableMember {
     name: string;
     roleTitle?: string;
     roleId?: number;
+    roleAssignable: boolean;
     roleAccepted?: boolean;
     editing: boolean;
     toDelete: boolean;
@@ -161,6 +162,7 @@ export default class MemberList extends Vue {
             roleTitle: jm.role.role.title,
             roleId: jm.role.role.roleId,
             roleAccepted: jm.role.accepted,
+            roleAssignable: jm.role.role.assignable,
             editing: false,
             toDelete: false,
             new: false,
@@ -197,6 +199,7 @@ export default class MemberList extends Vue {
             name: this.selectedUser.name,
             new: true,
             editing: true,
+            roleAssignable: true,
             toDelete: false,
         });
         this.selectedUser = null;
@@ -206,7 +209,7 @@ export default class MemberList extends Vue {
         const editedMembers = this.editedMembers;
         const deletedMembers = editedMembers.filter((em) => em.toDelete);
         if (deletedMembers.length) {
-            // TODO confirm deletion of these members
+            // TODO should we confirm the deletion? You are already queuing up the deletion so maybe that's enough
         }
         this.loading.save = true;
         this.$api

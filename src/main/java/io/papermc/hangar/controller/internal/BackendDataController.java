@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -128,8 +127,7 @@ public class BackendDataController {
 
     @GetMapping("/projectRoles")
     public ResponseEntity<List<ProjectRole>> getAssignableProjectRoles() {
-        // TODO only assignable roles here
-        return ResponseEntity.ok(/*ProjectRole.getAssignableRoles()*/ Arrays.asList(ProjectRole.getValues().clone()));
+        return ResponseEntity.ok(ProjectRole.getAssignableRoles());
     }
 
     @GetMapping("/validations")

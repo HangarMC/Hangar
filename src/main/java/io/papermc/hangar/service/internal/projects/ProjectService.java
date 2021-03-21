@@ -18,6 +18,7 @@ import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.internal.api.requests.EditMembersForm;
+import io.papermc.hangar.model.internal.api.requests.EditMembersForm.Member;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
 import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.model.internal.projects.HangarProject.HangarProjectInfo;
@@ -49,6 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -187,31 +189,42 @@ public class ProjectService extends HangarService {
         });
 
         editMembersForm.getEditedMembers().forEach(member -> {
-            UserTable userTable = userDAO.getUserTable(member.getName());
-            if (userTable == null) {
-                errors.add(new HangarApiException("project.settings.error.members.invalidUser", member.getName()));
-                return;
-            }
-            ProjectRoleTable projectRoleTable = projectRoleService.getRole(projectTable.getId(), userTable.getId());
-            if (projectRoleTable == null) {
-                errors.add(new HangarApiException("project.settings.error.members.notMember", member.getName()));
-                return;
-            }
-            if (projectRoleTable.getRole() == ProjectRole.PROJECT_OWNER) {
-                errors.add(new HangarApiException("project.settings.error.members.isOwner"));
-                return;
-            }
-            projectRoleTable.setRole(member.getRole());
-            projectRoleService.updateRole(projectRoleTable);
-            // TODO notification of updated role
+            handleEditOrDelete(member, errors, projectTable, (pm, prt) -> {
+                prt.setRole(pm.getRole());
+                projectRoleService.updateRole(prt);
+                // TODO notification of updated role
+            });
         });
 
-        // TODO delete members
+        editMembersForm.getDeletedMembers().forEach(member -> {
+            handleEditOrDelete(member, errors, projectTable, (pm, prt) -> {
+                projectMemberService.removeMember(prt);
+                // TODO notification of removed role (if not accepted and prev notification is unread, remove that notif?)
+            });
+        });
 
         if (!errors.isEmpty()) {
             throw new MultiHangarApiException(errors);
         }
         // TODO user action logging
+    }
+
+    private void handleEditOrDelete(Member<ProjectRole> member, List<HangarApiException> errors, ProjectTable projectTable, BiConsumer<Member<ProjectRole>, ProjectRoleTable> consumer) {
+        UserTable userTable = userDAO.getUserTable(member.getName());
+        if (userTable == null) {
+            errors.add(new HangarApiException("project.settings.error.members.invalidUser", member.getName()));
+            return;
+        }
+        ProjectRoleTable projectRoleTable = projectRoleService.getRole(projectTable.getId(), userTable.getId());
+        if (projectRoleTable == null) {
+            errors.add(new HangarApiException("project.settings.error.members.notMember", member.getName()));
+            return;
+        }
+        if (projectRoleTable.getRole() == ProjectRole.PROJECT_OWNER) {
+            errors.add(new HangarApiException("project.settings.error.members.isOwner"));
+            return;
+        }
+        consumer.accept(member, projectRoleTable);
     }
 
     // TODO implement flag view
