@@ -1,8 +1,7 @@
 <template>
     <v-snackbar v-model="enabled" app :timeout="timeout" :color="color" top @input="onClose">
-        <div v-for="(message, index) in messages" :key="index" class="pb-1">
-            {{ message }}
-        </div>
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <div v-for="(message, index) in messages" :key="index" class="pb-1" v-html="message" />
     </v-snackbar>
 </template>
 
