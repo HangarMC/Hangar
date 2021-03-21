@@ -43,6 +43,13 @@ public class Validations {
         return false;
     }
 
+    public boolean min(String value, int min) {
+        if (value != null) {
+            return value.length() >= min;
+        }
+        return false;
+    }
+
     private boolean isEmpty(String value) {
         return value == null || value.isBlank() || value.isEmpty();
     }

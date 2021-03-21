@@ -2,6 +2,7 @@ package io.papermc.hangar.model.db;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
+import io.papermc.hangar.model.internal.sso.AuthUser;
 import org.jdbi.v3.core.mapper.PropagateNull;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import org.jetbrains.annotations.Nullable;
@@ -41,6 +42,15 @@ public class UserTable extends Table implements ProjectOwner {
         this.readPrompts = readPrompts;
         this.locked = locked;
         this.language = language;
+    }
+
+    // For use when creating orgs (when fake user is enabled)
+    public UserTable(AuthUser authUser) {
+        super(authUser.getId());
+        this.name = authUser.getUserName();
+        this.email = authUser.getEmail();
+        this.readPrompts = List.of();
+        this.language = authUser.getLang().toLanguageTag();
     }
 
     @JsonIgnore

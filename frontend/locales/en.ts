@@ -380,6 +380,15 @@ const msgs: LocaleMessageObject = {
             title: 'Create a new Organization',
             text: 'Organizations allow you group users provide closer collaboration between them within your projects on Hangar.',
             name: 'Organization Name',
+            error: {
+                duplicateName: 'An organization/user with that name already exists',
+                invalidName: 'Invalid organization name',
+                tooManyOrgs: 'You can only create a maximum of {0} organizations',
+                notEnabled: 'Organizations are not enabled!',
+                jsonError: 'Error parsing the JSON response from HangarAuth',
+                hangarAuthValidationError: 'Validation Error: {0}',
+                unknownError: 'Unknown error while creating organization',
+            },
         },
     },
     form: {
@@ -425,6 +434,9 @@ const msgs: LocaleMessageObject = {
             reviewedPartial: '{0} {1} has been reviewed and is partially approved',
             invite: 'You have been invited to join the group {0} on the project {1}',
             newVersion: 'A new version has been released for {0}: {1}',
+        },
+        organization: {
+            invite: 'You have been invited to join the group {0} in the organization {1}',
         },
     },
     visibility: {

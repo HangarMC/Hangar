@@ -28,7 +28,7 @@ import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.VisibilityService.ProjectVisibilityService;
-import io.papermc.hangar.service.internal.OrganizationService;
+import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.roles.MemberService.ProjectMemberService;
 import io.papermc.hangar.service.internal.roles.RoleService.ProjectRoleService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;

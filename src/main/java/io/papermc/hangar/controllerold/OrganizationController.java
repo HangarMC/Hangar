@@ -49,7 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@Controller("oldOrganizationController")
 public class OrganizationController extends HangarController {
 
     private static final String STATUS_DECLINE = "decline";

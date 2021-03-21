@@ -15,7 +15,15 @@
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
             </template>
-            <v-btn v-if="alwaysEditing || isEdited" color="success" small class="flex-right" :loading="loading.save" :disabled="!isEdited" @click="save">
+            <v-btn
+                v-if="(alwaysEditing || isEdited) && !noSaveBtn"
+                color="success"
+                small
+                class="flex-right"
+                :loading="loading.save"
+                :disabled="!isEdited"
+                @click="save"
+            >
                 <v-icon left>mdi-check</v-icon>
                 {{ $t('general.save') }}
             </v-btn>
@@ -105,7 +113,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
-import { Joinable, JoinableMember } from 'hangar-internal';
+import { JoinableMember } from 'hangar-internal';
 import { PaginatedResult, Role, User } from 'hangar-api';
 import { UserAvatar } from '~/components/users';
 
@@ -124,14 +132,20 @@ interface EditableMember {
     components: { UserAvatar },
 })
 export default class MemberList extends Vue {
-    @Prop({ type: Object as PropType<Joinable>, required: true })
-    joinable!: Joinable;
+    @Prop({ type: Array as PropType<JoinableMember[]>, default: () => [] })
+    members!: JoinableMember[];
 
     @Prop({ type: Boolean, default: false })
     alwaysEditing!: boolean;
 
     @Prop({ type: Array as PropType<Role[]>, required: true })
     roles!: Role[];
+
+    @Prop({ type: Function as PropType<(name: User) => boolean>, default: () => (_: User) => true })
+    searchFilter!: (user: User) => boolean;
+
+    @Prop({ type: Boolean, default: false })
+    noSaveBtn!: boolean;
 
     editing: boolean = false;
     editingMembers: EditableMember[] = [];
@@ -153,7 +167,7 @@ export default class MemberList extends Vue {
 
     setupEditing() {
         this.editingMembers = [];
-        this.editingMembers = this.convertMembers(this.joinable.members);
+        this.editingMembers = this.convertMembers(this.members);
     }
 
     convertMembers(jms: JoinableMember[]): EditableMember[] {
@@ -174,12 +188,12 @@ export default class MemberList extends Vue {
             (em) =>
                 em.toDelete ||
                 (em.new && em.roleId) ||
-                (em.editing && !em.new && em.roleId !== this.joinable.members.find((jm) => jm.user.name === em.name)!.role.role.roleId)
+                (em.editing && !em.new && em.roleId !== this.members.find((jm) => jm.user.name === em.name)!.role.role.roleId)
         );
     }
 
     stopEditing(member: EditableMember) {
-        const originalMember = this.joinable.members.find((jm) => jm.user.name === member.name)!;
+        const originalMember = this.members.find((jm) => jm.user.name === member.name)!;
         member.roleTitle = originalMember.role.role.title;
         member.roleId = originalMember.role.role.roleId;
         member.editing = false;
@@ -240,7 +254,7 @@ export default class MemberList extends Vue {
                 offset: 0,
             })
             .then((users) => {
-                this.users = users.result.filter((u) => this.editingMembers.findIndex((em) => em.name === u.name) === -1);
+                this.users = users.result.filter(this.searchFilter).filter((u) => this.editingMembers.findIndex((em) => em.name === u.name) === -1);
             })
             .catch(this.$util.handleRequestError)
             .finally(() => {

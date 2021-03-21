@@ -1,4 +1,4 @@
-package io.papermc.hangar.service.internal;
+package io.papermc.hangar.service.internal.organizations;
 
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.OrganizationDAO;
@@ -26,5 +26,9 @@ public class OrganizationService extends HangarService {
 
     public List<OrganizationTable> getOrganizationTablesWithPermission(long userId, Permission permission) {
         return organizationDAO.getOrganizationsWithPermission(userId, permission);
+    }
+
+    public List<OrganizationTable> getOrganizationsOwnedBy(long ownerId) {
+        return organizationDAO.getOrganizationsOwnedBy(ownerId);
     }
 }

@@ -15,6 +15,7 @@ import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.FlagReason;
+import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.service.internal.projects.PlatformService;
@@ -130,6 +131,11 @@ public class BackendDataController {
         return ResponseEntity.ok(ProjectRole.getAssignableRoles());
     }
 
+    @GetMapping("/orgRoles")
+    public ResponseEntity<List<OrganizationRole>> getAssignableOrganizationRoles() {
+        return ResponseEntity.ok(OrganizationRole.getAssignableRoles());
+    }
+
     @GetMapping("/validations")
     public ResponseEntity<ObjectNode> getValidations() {
         ObjectNode validations = mapper.createObjectNode();
@@ -145,6 +151,7 @@ public class BackendDataController {
         validations.set("project", projectValidations);
         validations.set("userTagline", mapper.valueToTree(new Validation(null, config.user.getMaxTaglineLen(), null)));
         validations.set("version", mapper.valueToTree(new Validation(config.projects.getVersionNameRegex(), null, null)));
+        validations.set("org", mapper.valueToTree(new Validation(config.org.getNameRegex(), config.org.getMaxNameLen(), config.org.getMinNameLen())));
         validations.put("maxOrgCount", config.org.getCreateLimit());
         validations.put("urlRegex", config.getUrlRegex());
         return ResponseEntity.ok(validations);

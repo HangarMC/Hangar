@@ -25,6 +25,7 @@ export interface RootState {
             maxPageCount: number;
             maxChannelCount: number;
         };
+        org: Validation;
         userTagline: Validation;
         version: Validation;
         maxOrgCount: number;

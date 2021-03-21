@@ -27,7 +27,7 @@
                     </v-list-item-action>
                 </v-list-item>
             </v-list>
-            <div v-else>
+            <div v-else class="red--text text--lighten-2">
                 {{ $t(`notifications.empty.${filters.notification}`) }}
             </div>
         </v-col>
@@ -75,7 +75,7 @@
                     </v-list-item-action>
                 </v-list-item>
             </v-list>
-            <div v-else>
+            <div v-else class="red--text text--lighten-2">
                 {{ $t('notifications.empty.invites') }}
             </div>
         </v-col>

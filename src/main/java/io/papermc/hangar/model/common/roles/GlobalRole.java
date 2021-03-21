@@ -33,7 +33,9 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
     QUARTZ_DONOR("Quartz_Donor",15, Permission.None, "Quartz Donor", Color.QUARTZ, 4),
     IRON_DONOR("Iron_Donor",16, Permission.None, "Iron Donor", Color.SILVER, 3),
     GOLD_DONOR("Gold_Donor",17, Permission.None, "Gold Donor", Color.GOLD, 2),
-    DIAMOND_DONOR("Diamond_Donor",18, Permission.None, "Diamond Donor", Color.LIGHTBLUE, 1);
+    DIAMOND_DONOR("Diamond_Donor",18, Permission.None, "Diamond Donor", Color.LIGHTBLUE, 1),
+
+    ORGANIZATION("Organization", 23, OrganizationRole.ORGANIZATION_OWNER.getPermissions(), "Organization", Color.PURPLE);
 
     private final String value;
     private final long roleId;
@@ -103,7 +105,7 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
 
     @NotNull
     @Override
-    public GlobalRoleTable create(@Nullable Long principalId, long userId, boolean isAccepted) {
+    public GlobalRoleTable create(@Nullable Long __ignoreThis, long userId, boolean __ignoreThisToo) {
         return new GlobalRoleTable(userId, this);
     }
 }

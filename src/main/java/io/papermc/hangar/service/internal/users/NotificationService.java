@@ -5,8 +5,10 @@ import io.papermc.hangar.db.dao.internal.HangarNotificationsDAO;
 import io.papermc.hangar.db.dao.internal.table.NotificationsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.db.NotificationTable;
+import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
@@ -76,5 +78,9 @@ public class NotificationService extends HangarService {
 
     public void notifyNewProjectMember(Member<ProjectRole> member, long userId, ProjectTable projectTable) {
         notificationsDAO.insert(new NotificationTable(userId, NotificationType.PROJECT_INVITE, null, projectTable.getId(), new String[]{"notifications.project.invite", member.getRole().getTitle(), projectTable.getName()}));
+    }
+
+    public void notifyNewOrganizationMember(Member<OrganizationRole> member, long userId, OrganizationTable organizationTable) {
+        notificationsDAO.insert(new NotificationTable(userId, NotificationType.ORGANIZATION_INVITE, null, organizationTable.getId(), new String[]{"notifications.organization.invite", member.getRole().getTitle(), organizationTable.getName()}));
     }
 }

@@ -33,6 +33,15 @@ public class AuthUser {
         }
     }
 
+    public AuthUser(String userName, String email) {
+        this.id = -100;
+        this.userName = userName;
+        this.email = email;
+        this.avatarUrl = "";
+        this.lang = Locale.ENGLISH;
+        this.globalRoles = new ArrayList<>();
+    }
+
     public long getId() {
         return id;
     }

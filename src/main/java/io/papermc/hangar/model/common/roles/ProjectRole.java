@@ -104,8 +104,8 @@ public enum ProjectRole implements Role<ProjectRoleTable> {
 
     @NotNull
     @Override
-    public ProjectRoleTable create(@Nullable Long principalId, long userId, boolean isAccepted) {
-        Preconditions.checkNotNull(principalId, "project id");
-        return new ProjectRoleTable(userId, this, isAccepted, principalId);
+    public ProjectRoleTable create(Long projectId, long userId, boolean isAccepted) {
+        Preconditions.checkNotNull(projectId, "project id");
+        return new ProjectRoleTable(userId, this, isAccepted, projectId);
     }
 }

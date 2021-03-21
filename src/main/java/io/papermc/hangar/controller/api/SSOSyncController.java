@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.Map;
 
 @Controller
@@ -55,8 +56,8 @@ public class SSOSyncController {
             @ApiResponse(code = 200, message = "Ok"),
             @ApiResponse(code = 401, message = "Sent if the signature or API key missing or invalid.")
     })
-    @PostMapping(value = "/sync_sso")
-    public ResponseEntity<MultiValueMap<String, String>> syncSso(@RequestParam String sso, @RequestParam String sig, @RequestParam String apiKey) {
+    @PostMapping(value = "/sync_sso", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<MultiValueMap<String, String>> syncSso(@RequestParam @NotEmpty String sso, @RequestParam @NotEmpty String sig, @RequestParam("api_key") @NotEmpty String apiKey) {
         if (!apiKey.equals(ssoConfig.getApiKey())) {
             log.warn("SSO sync failed: bad API key (" + apiKey + " provided, " + ssoConfig.getApiKey() + " expected)");
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "SSO sync failed: bad API key (" + apiKey + " provided, " + ssoConfig.getApiKey() + " expected)");

@@ -1,12 +1,19 @@
 package io.papermc.hangar.db.dao.internal.table.roles;
 
+import io.papermc.hangar.db.mappers.RoleMapperFactory;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
+import org.jdbi.v3.sqlobject.config.RegisterColumnMapperFactory;
+import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
+import org.springframework.stereotype.Repository;
 
+@Repository
+@RegisterConstructorMapper(OrganizationRoleTable.class)
+@RegisterColumnMapperFactory(RoleMapperFactory.class)
 public interface OrganizationRolesDAO extends IRolesDAO<OrganizationRoleTable> {
 
     @Override
