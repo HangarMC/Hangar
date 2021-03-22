@@ -34,7 +34,7 @@ public interface OrganizationDAO {
             "   FROM organization_trust ot" +
             "       JOIN organizations o ON ot.organization_id = o.id" +
             "   WHERE ot.user_id = :userId" +
-            "       AND (ot.permission & :permission::bit(64)) = ot.permission")
+            "       AND (ot.permission & :permission::bit(64)) = :permission::bit(64)")
     List<OrganizationTable> getOrganizationsWithPermission(long userId, Permission permission);
 
     @SqlQuery("SELECT * FROM organizations WHERE owner_id = :ownerId")
