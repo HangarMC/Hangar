@@ -1,72 +1,72 @@
 <template>
     <div>
         <v-row>
-            <v-col cols="1">
+            <v-col class="flex-grow-0">
                 <UserAvatar :username="user.name" :avatar-url="$util.avatarUrl(user.name)" :clazz="avatarClazz"></UserAvatar>
             </v-col>
-            <v-col cols="auto">
-                <h1 class="d-inline">{{ user.name }}</h1>
-                <v-list dense flat class="d-inline-flex">
-                    <v-list-item v-for="btn in buttons" :key="btn.name">
-                        <v-list-item-content>
-                            <v-tooltip bottom>
-                                <template #activator="{ on }">
-                                    <v-btn
-                                        icon
-                                        :href="btn.external ? btn.url : undefined"
-                                        :to="btn.external ? undefined : btn.url"
-                                        :nuxt="!btn.external"
-                                        v-on="on"
-                                    >
-                                        <v-icon>{{ btn.icon }}</v-icon>
-                                    </v-btn>
-                                </template>
-                                <span>{{ $t(`author.tooltips.${btn.name}`) }}</span>
-                            </v-tooltip>
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-list>
-                <div>
-                    <v-subheader>
-                        <span v-if="user.tagline">{{ user.tagline }}</span>
-                        <span v-else-if="canEditCurrent">{{ $t('author.addTagline') }}</span>
-                        <HangarModal
-                            v-if="canEditCurrent"
-                            ref="taglineModal"
-                            :title="$t('author.editTagline')"
-                            :submit-label="$t('general.change')"
-                            :submit-disabled="taglineForm === user.tagline"
-                            :submit="changeTagline"
-                            @open="taglineForm = user.tagline"
-                        >
-                            <template #activator="{ on, attrs }">
-                                <v-btn icon small color="warning" v-bind="attrs" v-on="on">
-                                    <v-icon small>mdi-pencil</v-icon>
-                                </v-btn>
-                            </template>
-                            <v-text-field
-                                v-model.trim="taglineForm"
-                                counter="100"
-                                :label="$t('author.taglineLabel')"
-                                :rules="[$util.$vc.require($t('author.taglineLabel')), $util.$vc.maxLength(validations.userTagline.max)]"
-                            />
-                            <template #other-btns>
-                                <v-btn color="info" text :loading="loading.resetTagline" :disabled="!user.tagline" @click.stop="resetTagline">{{
-                                    $t('general.reset')
-                                }}</v-btn>
-                            </template>
-                        </HangarModal>
-                    </v-subheader>
+            <v-col>
+                <h1>
+                    {{ user.name }}
+                    <v-tooltip bottom>
+                        <template #activator="{ on }">
+                            <v-btn icon small color="info" class="ml-n2" :href="$util.forumUrl(user.name)" v-on="on">
+                                <v-icon small>mdi-open-in-new</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{ $t('author.viewOnForums') }}</span>
+                    </v-tooltip>
+                </h1>
+                <div class="text--secondary">
+                    <span v-if="user.tagline">{{ user.tagline }}</span>
+                    <span v-else-if="canEditCurrent">{{ $t('author.addTagline') }}</span>
+                    <HangarModal
+                        v-if="canEditCurrent"
+                        ref="taglineModal"
+                        :title="$t('author.editTagline')"
+                        :submit-label="$t('general.change')"
+                        :submit-disabled="taglineForm === user.tagline"
+                        :submit="changeTagline"
+                        @open="taglineForm = user.tagline"
+                    >
+                        <template #activator="{ on, attrs }">
+                            <v-btn icon small color="warning" v-bind="attrs" v-on="on">
+                                <v-icon small>mdi-pencil</v-icon>
+                            </v-btn>
+                        </template>
+                        <v-text-field
+                            v-model.trim="taglineForm"
+                            :counter="validations.userTagline.max"
+                            :label="$t('author.taglineLabel')"
+                            :rules="[$util.$vc.require($t('author.taglineLabel')), $util.$vc.maxLength(validations.userTagline.max)]"
+                        />
+                        <template #other-btns>
+                            <v-btn color="info" text :loading="loading.resetTagline" :disabled="!user.tagline" @click.stop="resetTagline">
+                                {{ $t('general.reset') }}
+                            </v-btn>
+                        </template>
+                    </HangarModal>
                 </div>
+                <v-tooltip v-for="btn in buttons" :key="btn.name" bottom>
+                    <template #activator="{ on }">
+                        <v-btn icon small :href="btn.external ? btn.url : undefined" :to="btn.external ? undefined : btn.url" :nuxt="!btn.external" v-on="on">
+                            <v-icon small>{{ btn.icon }}</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>{{ $t(`author.tooltips.${btn.name}`) }}</span>
+                </v-tooltip>
             </v-col>
             <v-spacer />
-            <v-col cols="2">
-                <v-subheader>{{ $tc('author.numProjects', user.projectCount, [user.projectCount]) }}</v-subheader>
-                <v-subheader>{{ $t('author.memberSince', [$util.prettyDate(user.joinDate)]) }}</v-subheader>
-                <a :href="$util.forumUrl(user.name)">{{ $t('author.viewOnForums') }}<v-icon small>mdi-open-in-new</v-icon></a>
+            <v-col cols="auto">
+                <v-sheet rounded color="lighten-1" class="text--secondary px-3 py-2 text-right">
+                    <span>{{ $tc('author.numProjects', user.projectCount, [user.projectCount]) }}</span>
+                    <br />
+                    <span>{{ $t('author.memberSince', [$util.prettyDate(user.joinDate)]) }}</span>
+                    <br />
+                    <span v-for="role in user.roles" :key="role.roleId" :style="{ backgroundColor: role.color }" class="user-role-badge">{{ role.title }}</span>
+                </v-sheet>
             </v-col>
         </v-row>
-        <v-divider />
+        <v-divider class="my-3" />
         <NuxtChild :user="user" />
     </div>
 </template>
@@ -154,4 +154,16 @@ export default class UserParentPage extends HangarComponent {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@import '~vuetify/src/styles/styles';
+
+.user-role-badge {
+    padding: 2px 4px;
+    border-radius: 2px;
+    color: map-deep-get($material-dark, 'text', 'primary');
+
+    &:not(:last-child) {
+        margin-right: 5px;
+    }
+}
+</style>
