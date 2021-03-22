@@ -6,11 +6,11 @@
         </v-card-title>
         <v-card-text>
             <v-data-table v-if="flags && flags.length > 0" :headers="headers" :items="flags" disable-filtering disable-sort hide-default-footer>
-                <template #item.user="{ item }">{{ item.user.name }}</template>
-                <template #item.reason="{ item }">{{ item.reason.title }}</template>
-                <template #item.createdAt="{ item }">{{ $util.prettyDate(item.createdAt) }}</template>
+                <template #item.user="{ item }">{{ item.reportedByName }}</template>
+                <template #item.reason="{ item }">{{ item.reason }}</template>
+                <template #item.createdAt="{ item }">{{ $util.prettyDateTime(item.createdAt) }}</template>
                 <template #item.resolved="{ item }">
-                    <span v-if="item.resolved">{{ $t('flags.resolved', [item.resolvedBy.name, $util.prettyDate(item.resolvedAt)]) }}</span>
+                    <span v-if="item.resolved">{{ $t('flags.resolved', [item.resolvedByName, $util.prettyDate(item.resolvedAt)]) }}</span>
                     <span v-else v-text="$t('flags.notResolved')"></span>
                 </template>
             </v-data-table>
@@ -23,6 +23,7 @@
 import { Component, Prop, Vue } from 'nuxt-property-decorator';
 import { Project } from 'hangar-api';
 import { Flag } from 'hangar-internal';
+import { Context } from '@nuxt/types';
 import { GlobalPermission } from '~/utils/perms';
 import { NamedPermission } from '~/types/enums';
 
@@ -32,19 +33,7 @@ export default class ProjectFlagsPage extends Vue {
     @Prop({ required: true })
     project!: Project;
 
-    // todo load flags
-    flags: Array<Flag> = [
-        {
-            id: 1,
-            createdAt: '2021-02-13T12:18:52.456Z',
-            user: this.$util.dummyUser(),
-            comment: 'Naughty',
-            reason: { title: 'Test', type: 'Test' },
-            resolved: true,
-            resolvedAt: '2021-02-13T12:18:52.456Z',
-            resolvedBy: this.$util.dummyUser(),
-        },
-    ] as Array<Flag>;
+    flags!: Flag[];
 
     get headers() {
         return [
@@ -54,6 +43,11 @@ export default class ProjectFlagsPage extends Vue {
             { text: 'When', value: 'createdAt' },
             { text: 'Resolved', value: 'resolved' },
         ];
+    }
+
+    async asyncData({ $api, $util }: Context) {
+        const flags = await $api.requestInternal<Flag[]>(`flags/`, false).catch<any>($util.handlePageRequestError);
+        return { flags };
     }
 }
 </script>

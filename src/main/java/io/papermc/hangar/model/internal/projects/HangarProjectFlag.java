@@ -15,8 +15,8 @@ public class HangarProjectFlag extends ProjectFlagTable {
     private final String projectSlug;
     private final Visibility projectVisibility;
 
-    public HangarProjectFlag(OffsetDateTime createdAt, long id, long projectId, long userId, FlagReason reason, boolean isResolved, String comment, OffsetDateTime resolvedAt, long resolvedBy, String reportedByName, String resolvedByName, String projectOwnerName, String projectSlug, @EnumByOrdinal Visibility projectVisibility) {
-        super(createdAt, id, projectId, userId, reason, isResolved, comment, resolvedAt, resolvedBy);
+    public HangarProjectFlag(OffsetDateTime createdAt, long id, long projectId, long userId, @EnumByOrdinal FlagReason reason, boolean resolved, String comment, OffsetDateTime resolvedAt, long resolvedBy, String reportedByName, String resolvedByName, String projectOwnerName, String projectSlug, @EnumByOrdinal Visibility projectVisibility) {
+        super(createdAt, id, projectId, userId, reason, resolved, comment, resolvedAt, resolvedBy);
         this.reportedByName = reportedByName;
         this.resolvedByName = resolvedByName;
         this.projectOwnerName = projectOwnerName;

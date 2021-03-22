@@ -12,18 +12,18 @@ public class ProjectFlagTable extends Table {
     private final long projectId;
     private final long userId;
     private final FlagReason reason;
-    private boolean isResolved;
+    private boolean resolved;
     private final String comment;
     private OffsetDateTime resolvedAt;
     private long resolvedBy;
 
     @JdbiConstructor
-    public ProjectFlagTable(OffsetDateTime createdAt, long id, long projectId, long userId, @EnumByOrdinal FlagReason reason, boolean isResolved, String comment, OffsetDateTime resolvedAt, long resolvedBy) {
+    public ProjectFlagTable(OffsetDateTime createdAt, long id, long projectId, long userId, @EnumByOrdinal FlagReason reason, boolean resolved, String comment, OffsetDateTime resolvedAt, long resolvedBy) {
         super(createdAt, id);
         this.projectId = projectId;
         this.userId = userId;
         this.reason = reason;
-        this.isResolved = isResolved;
+        this.resolved = resolved;
         this.comment = comment;
         this.resolvedAt = resolvedAt;
         this.resolvedBy = resolvedBy;
@@ -50,11 +50,11 @@ public class ProjectFlagTable extends Table {
     }
 
     public boolean isResolved() {
-        return isResolved;
+        return resolved;
     }
 
     public void setResolved(boolean resolved) {
-        isResolved = resolved;
+        this.resolved = resolved;
     }
 
     public String getComment() {
@@ -80,13 +80,13 @@ public class ProjectFlagTable extends Table {
     @Override
     public String toString() {
         return "ProjectFlagTable{" +
-                "projectId=" + projectId +
-                ", userId=" + userId +
-                ", reason=" + reason +
-                ", isResolved=" + isResolved +
-                ", comment='" + comment + '\'' +
-                ", resolvedAt=" + resolvedAt +
-                ", resolvedBy=" + resolvedBy +
-                "} " + super.toString();
+               "projectId=" + projectId +
+               ", userId=" + userId +
+               ", reason=" + reason +
+               ", isResolved=" + resolved +
+               ", comment='" + comment + '\'' +
+               ", resolvedAt=" + resolvedAt +
+               ", resolvedBy=" + resolvedBy +
+               "} " + super.toString();
     }
 }

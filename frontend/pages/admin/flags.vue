@@ -5,17 +5,17 @@
             <v-list v-if="flags.length > 0">
                 <v-list-item v-for="flag in flags" :key="flag.id">
                     <v-list-item-avatar>
-                        <UserAvatar :username="flag.user.name" clazz="user-avatar-xs"></UserAvatar>
+                        <UserAvatar :username="flag.reportedByName" clazz="user-avatar-xs"></UserAvatar>
                     </v-list-item-avatar>
-                    <!-- todo flag content -->
                     <v-list-item-content>
-                        <v-list-item-title>dddddddd</v-list-item-title>
-                        <v-list-item-title>dddddddd</v-list-item-title>
+                        <v-list-item-title>{{
+                            $t('flagReview.line1', [flag.reportedByName, flag.projectNamespace, $util.prettyDateTime(flag.createdAt)])
+                        }}</v-list-item-title>
+                        <v-list-item-subtitle>{{ $t('flagReview.line2', [flag.reason, flag.comment]) }}</v-list-item-subtitle>
                     </v-list-item-content>
                     <v-list-item-action>
-                        <v-btn small :to="$util.forumUrl(flag.user.name)"><v-icon>mdi-reply</v-icon>{{ $t('flagReview.msgUser') }}</v-btn>
-                        <!-- todo the subject isnt part of the model? -->
-                        <v-btn small :to="$util.forumUrl(flag.user.name)"><v-icon>mdi-reply</v-icon>{{ $t('flagReview.msgProjectOwner') }}</v-btn>
+                        <v-btn small :href="$util.forumUrl(flag.reportedByName)"><v-icon>mdi-reply</v-icon>{{ $t('flagReview.msgUser') }}</v-btn>
+                        <v-btn small :href="$util.forumUrl(flag.projectOwnerName)"><v-icon>mdi-reply</v-icon>{{ $t('flagReview.msgProjectOwner') }}</v-btn>
                         <v-menu offset-y>
                             <template #activator="{ on, attrs }">
                                 <v-btn small v-bind="attrs" v-on="on"><v-icon>mdi-eye</v-icon>{{ $t('flagReview.visibilityActions') }}</v-btn>
@@ -38,6 +38,7 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import { Flag } from 'hangar-internal';
+import { Context } from '@nuxt/types';
 import UserAvatar from '~/components/users/UserAvatar.vue';
 import { NamedPermission, Visibility } from '~/types/enums';
 import { GlobalPermission } from '~/utils/perms';
@@ -47,19 +48,12 @@ import { GlobalPermission } from '~/utils/perms';
 })
 @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
 export default class AdminFlagsPage extends Vue {
-    // todo load from server
-    flags: Flag[] = [
-        {
-            createdAt: new Date().toString(),
-            id: 1,
-            resolvedBy: this.$util.dummyUser(),
-            resolved: false,
-            resolvedAt: '',
-            user: this.$util.dummyUser(),
-            reason: { type: 'TEST', title: 'TEST' },
-            comment: 'Test',
-        },
-    ];
+    flags!: Flag[];
+
+    async asyncData({ $api, $util }: Context) {
+        const flags = await $api.requestInternal<Flag[]>(`flags/`, false).catch<any>($util.handlePageRequestError);
+        return { flags };
+    }
 
     get visibilities(): Visibility[] {
         return Object.keys(Visibility) as Visibility[];

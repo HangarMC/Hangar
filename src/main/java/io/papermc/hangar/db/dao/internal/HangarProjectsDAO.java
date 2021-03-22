@@ -7,7 +7,6 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.internal.projects.HangarChannel;
 import io.papermc.hangar.model.internal.projects.HangarProject.HangarProjectInfo;
-import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
@@ -88,20 +87,6 @@ public interface HangarProjectsDAO {
             "   WHERE p.id = :projectId" +
             "   GROUP BY p.id")
     HangarProjectInfo getHangarProjectInfo(long projectId);
-
-    @RegisterConstructorMapper(HangarProjectFlag.class)
-    @SqlQuery("SELECT pf.*, " +
-            "       u.name reported_by_name," +
-            "       u2.name resolved_by_name," +
-            "       p.owner_name project_owner_name," +
-            "       p.slug project_slug," +
-            "       p.visibility project_visibility" +
-            "   FROM project_flags pf" +
-            "       JOIN users u ON pf.user_id = u.id" +
-            "       LEFT JOIN users u2 ON pf.resolved_by = u2.id" +
-            "       JOIN projects p ON pf.project_id = p.id" +
-            "   WHERE lower(p.owner_name) = lower(:author) AND lower(p.slug) = lower(:slug)")
-    List<HangarProjectFlag> getHangarProjectFlags(String author, String slug);
 
     @RegisterConstructorMapper(HangarChannel.class)
     @SqlQuery("SELECT pc.*," +

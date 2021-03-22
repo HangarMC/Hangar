@@ -22,7 +22,6 @@ import io.papermc.hangar.model.internal.api.requests.EditMembersForm.Member;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
 import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.model.internal.projects.HangarProject.HangarProjectInfo;
-import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.PermissionService;
@@ -224,11 +223,6 @@ public class ProjectService extends HangarService {
             return;
         }
         consumer.accept(member, projectRoleTable);
-    }
-
-    // TODO implement flag view
-    public List<HangarProjectFlag> getHangarProjectFlags(String author, String slug) {
-        return hangarProjectsDAO.getHangarProjectFlags(author, slug);
     }
 
     public void refreshHomeProjects() {

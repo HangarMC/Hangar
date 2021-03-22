@@ -39,19 +39,25 @@ export default class FlagModal extends mixins(HangarFormModal, HangarProjectMixi
 
     submitFlag() {
         this.loading = true;
-        // TODO flag endpoint
-        setTimeout(
-            (self: FlagModal) => {
-                self.loading = false;
-                self.dialog = false;
-            },
-            1000,
-            this
-        );
+        this.$api
+            .requestInternal('flags/', true, 'POST', {
+                project_id: this.project.id,
+                reason: this.form.selection,
+                comment: this.form.comment,
+            })
+            .then(() => {
+                this.loading = false;
+                this.dialog = false;
+                this.$util.success(this.$t('project.flag.flagSend'));
+            })
+            .catch((e) => {
+                this.$util.handleRequestError(e);
+                this.loading = false;
+            });
     }
 
     async fetch() {
-        this.flagReasons.push(...(await this.$api.requestInternal<FlagReason[]>('data/flagReasons', true)));
+        this.flagReasons.push(...(await this.$api.requestInternal<FlagReason[]>('data/flagReasons', true).catch(this.$util.handleRequestError)));
     }
 }
 </script>

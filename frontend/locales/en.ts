@@ -102,6 +102,7 @@ const msgs: LocaleMessageObject = {
         },
         flag: {
             flagProject: 'Flag {0}?',
+            flagSend: 'Successfully flagged, thanks for making this community a better place!',
         },
         tabs: {
             docs: 'Docs',
@@ -590,6 +591,8 @@ const msgs: LocaleMessageObject = {
         msgProjectOwner: 'Message owner',
         markResolved: 'Mark resolved',
         visibilityActions: 'Visibility actions',
+        line1: '{0} reported {1} on {2}',
+        line2: 'Reason: {0}, Comment: {1}',
     },
     validation: {
         required: '{0} is required',

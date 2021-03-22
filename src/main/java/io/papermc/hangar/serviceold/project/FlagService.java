@@ -13,7 +13,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Deprecated
+@Service("flagServiceOld")
 public class FlagService extends HangarService {
 
     private final HangarDao<FlagDao> flagDao;
