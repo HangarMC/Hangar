@@ -40,7 +40,6 @@ declare module 'hangar-internal' {
         readPrompts: number[];
         locked: boolean;
         language: string;
-        isOrganization: boolean;
     }
 
     interface UserTable extends Table, Named {
@@ -67,5 +66,9 @@ declare module 'hangar-internal' {
         owner: ProjectOwner;
         roleCategory: RoleCategory;
         members: JoinableMember[];
+    }
+
+    interface Organization extends Joinable {
+        id: number;
     }
 }

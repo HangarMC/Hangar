@@ -142,7 +142,7 @@
 <script lang="ts">
 import { Component, mixins } from 'nuxt-property-decorator';
 import { HangarReview, HangarReviewMessage } from 'hangar-internal';
-import { HangarForm, HangarProjectVersionMixin } from '~/components/mixins';
+import { Authed, HangarForm, HangarProjectVersionMixin } from '~/components/mixins';
 import { GlobalPermission } from '~/utils/perms';
 import { NamedPermission, ReviewAction } from '~/types/enums';
 import TextareaModal from '~/components/modals/TextareaModal.vue';
@@ -152,7 +152,7 @@ import TextareaModal from '~/components/modals/TextareaModal.vue';
     components: { TextareaModal },
 })
 @GlobalPermission(NamedPermission.REVIEWER)
-export default class ProjectVersionsVersionReviewPage extends mixins(HangarProjectVersionMixin, HangarForm) {
+export default class ProjectVersionsVersionReviewPage extends mixins(Authed, HangarProjectVersionMixin, HangarForm) {
     message: string = '';
     hideClosed: boolean = false;
     reviews: HangarReview[] = [];

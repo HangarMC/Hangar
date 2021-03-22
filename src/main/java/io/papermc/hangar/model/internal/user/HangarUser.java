@@ -1,6 +1,5 @@
 package io.papermc.hangar.model.internal.user;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.model.Identified;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.common.Permission;
@@ -16,15 +15,13 @@ public class HangarUser extends User implements Identified {
     private final List<Integer> readPrompts;
     private final boolean locked;
     private final String language;
-    private final boolean isOrganization;
 
-    public HangarUser(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<GlobalRole> roles, long projectCount, long id, List<Integer> readPrompts, boolean locked, String language, boolean isOrganization) {
+    public HangarUser(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<GlobalRole> roles, long projectCount, long id, List<Integer> readPrompts, boolean locked, String language) {
         super(createdAt, name, tagline, joinDate, roles, projectCount);
         this.id = id;
         this.readPrompts = readPrompts;
         this.locked = locked;
         this.language = language;
-        this.isOrganization = isOrganization;
     }
 
     @Override
@@ -50,11 +47,6 @@ public class HangarUser extends User implements Identified {
 
     public String getLanguage() {
         return language;
-    }
-
-    @JsonProperty("isOrganization")
-    public boolean isOrganization() {
-        return isOrganization;
     }
 
     public User toUser() {

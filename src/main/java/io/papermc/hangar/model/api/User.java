@@ -1,5 +1,6 @@
 package io.papermc.hangar.model.api;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.common.roles.GlobalRole;
@@ -16,6 +17,7 @@ public class User extends Model implements Named {
     private final OffsetDateTime joinDate;
     private final List<GlobalRole> roles;
     private final long projectCount;
+    private final boolean isOrganization;
 
     @JdbiConstructor
     public User(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<GlobalRole> roles, long projectCount) {
@@ -25,6 +27,7 @@ public class User extends Model implements Named {
         this.joinDate = joinDate;
         this.roles = roles;
         this.projectCount = projectCount;
+        this.isOrganization = roles.contains(GlobalRole.ORGANIZATION);
     }
 
     @Override
@@ -48,18 +51,23 @@ public class User extends Model implements Named {
         return projectCount;
     }
 
+    @JsonProperty("isOrganization")
+    public boolean isOrganization() {
+        return isOrganization;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         User user = (User) o;
-        return projectCount == user.projectCount && name.equals(user.name) && Objects.equals(tagline, user.tagline) && joinDate.equals(user.joinDate) && roles.equals(user.roles);
+        return projectCount == user.projectCount && isOrganization == user.isOrganization && name.equals(user.name) && Objects.equals(tagline, user.tagline) && joinDate.equals(user.joinDate) && roles.equals(user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), name, tagline, joinDate, roles, projectCount);
+        return Objects.hash(super.hashCode(), name, tagline, joinDate, roles, projectCount, isOrganization);
     }
 
     @Override
@@ -70,6 +78,7 @@ public class User extends Model implements Named {
                 ", joinDate=" + joinDate +
                 ", roles=" + roles +
                 ", projectCount=" + projectCount +
+                ", isOrganization=" + isOrganization +
                 "} " + super.toString();
     }
 }

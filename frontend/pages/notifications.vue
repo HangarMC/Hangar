@@ -39,7 +39,7 @@
                 <v-list-item v-for="(invite, index) in filteredInvites" :key="index">
                     <v-list-item-title>
                         {{ $t(!invite.accepted ? 'notifications.invited' : 'notifications.inviteAccepted', [invite.type]) }}:
-                        <NuxtLink :to="`/${invite.url}`" exact>{{ invite.name }}</NuxtLink>
+                        <NuxtLink :to="invite.url" exact>{{ invite.name }}</NuxtLink>
                     </v-list-item-title>
                     <template v-if="!invite.accepted">
                         <v-list-item-action>

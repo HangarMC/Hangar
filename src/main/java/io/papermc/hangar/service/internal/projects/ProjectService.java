@@ -24,7 +24,6 @@ import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.model.internal.projects.HangarProject.HangarProjectInfo;
 import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
-import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.VisibilityService.ProjectVisibilityService;
@@ -117,7 +116,7 @@ public class ProjectService extends HangarService {
     public HangarProject getHangarProject(String author, String slug) {
         Pair<Long, Project> project = hangarProjectsDAO.getProject(author, slug, getHangarUserId());
         ProjectOwner projectOwner = getProjectOwner(author);
-        List<JoinableMember<ProjectRoleTable>> members = hangarProjectsDAO.getProjectMembers(project.getLeft(), getHangarUserId(), permissionService.getProjectPermissions(getHangarUserId(), author, slug).has(Permission.EditSubjectSettings));
+        var members = hangarProjectsDAO.getProjectMembers(project.getLeft(), getHangarUserId(), permissionService.getProjectPermissions(getHangarUserId(), project.getLeft()).has(Permission.EditProjectSettings));
         // TODO only include visibility change if not public (and if so, only include the user and comment)
         HangarProjectInfo info = hangarProjectsDAO.getHangarProjectInfo(project.getLeft());
         Map<Long, HangarProjectPage> pages = projectPageService.getProjectPages(project.getLeft());

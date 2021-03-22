@@ -27,8 +27,8 @@ public interface OrganizationDAO {
     @SqlQuery("SELECT * FROM organizations WHERE user_id = :userId")
     OrganizationTable getByUserId(long userId);
 
-    @SqlQuery("SELECT * FROM organizations WHERE name = :username")
-    OrganizationTable getByUserName(String username);
+    @SqlQuery("SELECT * FROM organizations WHERE name = :name")
+    OrganizationTable getByName(String name);
 
     @SqlQuery("SELECT o.*" +
             "   FROM organization_trust ot" +

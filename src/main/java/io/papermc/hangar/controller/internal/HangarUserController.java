@@ -87,8 +87,7 @@ public class HangarUserController extends HangarController {
         if (userTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        // TODO what perm to check here
-        if (userTable.getId() != getHangarPrincipal().getId() && !getGlobalPermissions().has(Permission.ManualValueChanges)) {
+        if (userTable.getId() != getHangarPrincipal().getId() && !getGlobalPermissions().has(Permission.EditAllUserSettings)) {
             throw new HangarApiException(HttpStatus.FORBIDDEN);
         }
         if (content.getContent().length() > config.user.getMaxTaglineLen()) {

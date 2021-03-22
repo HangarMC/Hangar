@@ -35,11 +35,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch } from 'nuxt-property-decorator';
+import { Component, mixins, Watch } from 'nuxt-property-decorator';
 import { TranslateResult } from 'vue-i18n';
 import { Context } from '@nuxt/types';
 import { Role, User } from 'hangar-api';
-import { HangarForm } from '~/components/mixins';
+import { Authed, HangarForm } from '~/components/mixins';
 import MemberList from '~/components/projects/MemberList.vue';
 import { LoggedIn } from '~/utils/perms';
 
@@ -48,7 +48,7 @@ import { LoggedIn } from '~/utils/perms';
     components: { MemberList },
 })
 @LoggedIn
-export default class OrganizationsNewPage extends HangarForm {
+export default class OrganizationsNewPage extends mixins(Authed, HangarForm) {
     head() {
         return {
             title: this.$t('organization.new.title'),

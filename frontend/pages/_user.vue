@@ -7,7 +7,7 @@
             <v-col>
                 <h1>
                     {{ user.name }}
-                    <v-tooltip bottom>
+                    <v-tooltip v-if="!user.isOrganization" bottom>
                         <template #activator="{ on }">
                             <v-btn icon small color="info" class="ml-n2" :href="$util.forumUrl(user.name)" v-on="on">
                                 <v-icon small>mdi-open-in-new</v-icon>
@@ -18,9 +18,9 @@
                 </h1>
                 <div class="text--secondary">
                     <span v-if="user.tagline">{{ user.tagline }}</span>
-                    <span v-else-if="canEditCurrent">{{ $t('author.addTagline') }}</span>
+                    <span v-else-if="canEditCurrentUser">{{ $t('author.addTagline') }}</span>
                     <HangarModal
-                        v-if="canEditCurrent"
+                        v-if="canEditCurrentUser"
                         ref="taglineModal"
                         :title="$t('author.editTagline')"
                         :submit-label="$t('general.change')"
@@ -67,7 +67,7 @@
             </v-col>
         </v-row>
         <v-divider class="my-3" />
-        <NuxtChild :user="user" />
+        <NuxtChild :user="user" :organization="organization" />
     </div>
 </template>
 
@@ -75,9 +75,10 @@
 import { Component } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
 import { User } from 'hangar-api';
+import { Organization } from 'hangar-internal';
 import UserAvatar from '../components/users/UserAvatar.vue';
 import HangarModal from '~/components/modals/HangarModal.vue';
-import { HangarComponent } from '~/components/mixins';
+import { UserPage } from '~/components/mixins';
 
 interface Button {
     icon: string;
@@ -90,8 +91,7 @@ interface Button {
 @Component({
     components: { HangarModal, UserAvatar },
 })
-export default class UserParentPage extends HangarComponent {
-    user!: User;
+export default class UserParentPage extends UserPage {
     taglineForm: string | null = null;
     loading = {
         resetTagline: false,
@@ -99,17 +99,24 @@ export default class UserParentPage extends HangarComponent {
 
     get buttons(): Button[] {
         const buttons = [] as Button[];
-        buttons.push({ icon: 'mdi-cog', url: `${process.env.authHost}/accounts/settings`, external: true, name: 'settings' });
-        buttons.push({ icon: 'mdi-lock-open-outline', url: '', name: 'lock' });
-        buttons.push({ icon: 'mdi-lock-outline', url: '', name: 'unlock' });
-        buttons.push({ icon: 'mdi-key', url: '/' + this.user.name + '/settings/api-keys', name: 'apiKeys' });
-        buttons.push({ icon: 'mdi-calendar', url: '', name: 'activity' });
-        buttons.push({ icon: 'mdi-wrench', url: '', name: 'admin' });
+        if (this.isCurrentUser && !this.user.isOrganization) {
+            buttons.push({ icon: 'mdi-cog', url: `${process.env.authHost}/accounts/settings`, external: true, name: 'settings' });
+            buttons.push({ icon: 'mdi-lock-open-outline', url: '', name: 'lock' });
+            buttons.push({ icon: 'mdi-lock-outline', url: '', name: 'unlock' });
+            buttons.push({ icon: 'mdi-key', url: '/' + this.user.name + '/settings/api-keys', name: 'apiKeys' });
+        }
+        if (this.$perms.canAccessModNotesAndFlags || this.$perms.isReviewer) {
+            buttons.push({ icon: 'mdi-calendar', url: '', name: 'activity' });
+        }
+        if (this.$perms.canEditAllUserSettings) {
+            buttons.push({ icon: 'mdi-wrench', url: '', name: 'admin' });
+        }
+
         return buttons;
     }
 
-    get canEditCurrent() {
-        return this.$perms.canDoManualValueChanges || this.user.name === this.currentUser.name /* || org perms */;
+    get canEditCurrentUser() {
+        return this.$perms.canEditAllUserSettings || this.isCurrentUser /* || org perms */;
     }
 
     get avatarClazz(): String {
@@ -149,7 +156,11 @@ export default class UserParentPage extends HangarComponent {
     async asyncData({ $api, $util, params }: Context) {
         const user = await $api.request<User>(`users/${params.user}`, false).catch<any>($util.handlePageRequestError);
         if (typeof user === 'undefined') return;
-        return { user };
+        let org: Organization | null = null;
+        if (user.isOrganization) {
+            org = await $api.requestInternal(`organizations/org/${params.user}`, false).catch<any>($util.handlePageRequestError);
+        }
+        return { user, organization: org };
     }
 }
 </script>

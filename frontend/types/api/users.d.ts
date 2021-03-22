@@ -18,15 +18,12 @@ declare module 'hangar-api' {
         joinDate: string;
         roles: Role[];
         projectCount: number;
+        isOrganization: boolean;
     }
 
     interface ApiKey extends Model, Named {
         key: string;
         identifier: string;
         permissions: NamedPermission[];
-    }
-
-    interface Organization extends Model, Named {
-        owner: User;
     }
 }

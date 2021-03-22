@@ -1,6 +1,6 @@
 import { Component, mixins, Prop, State, Vue, Watch } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
-import { HangarProject, HangarUser, HangarVersion, IPlatform, ProjectPage } from 'hangar-internal';
+import { HangarProject, HangarUser, HangarVersion, IPlatform, Organization, ProjectPage } from 'hangar-internal';
 import { User } from 'hangar-api';
 import MarkdownEditor from '~/components/markdown/MarkdownEditor.vue';
 import { Platform, ReviewState } from '~/types/enums';
@@ -10,16 +10,33 @@ import { AuthState } from '~/store/auth';
 @Component
 export class HangarComponent extends Vue {
     @State((state: AuthState) => state.user, { namespace: 'auth' })
-    currentUser!: HangarUser;
+    currentUser!: HangarUser | null;
 
     @State((state: RootState) => state.validations)
     validations!: RootState['validations'];
 }
 
+export class Authed extends HangarComponent {
+    @State((state: AuthState) => state.user, { namespace: 'auth' })
+    currentUser!: HangarUser;
+}
+
+export class UserPage extends HangarComponent {
+    user!: User;
+    organization!: Organization | null;
+
+    get isCurrentUser() {
+        return this.currentUser && this.currentUser.name === this.user.name;
+    }
+}
+
 @Component
-export class HangarUserMixin extends HangarComponent {
+export class UserPropPage extends UserPage {
     @Prop({ type: Object as PropType<User>, required: true })
     user!: User;
+
+    @Prop({ type: Object as PropType<Organization>, required: true })
+    organization!: Organization | null;
 }
 
 @Component

@@ -23,7 +23,7 @@ public interface HangarNotificationsDAO {
     @SqlQuery("SELECT upr.id roleTableId," +
             "   upr.role_type AS role," +
             "   p.name," +
-            "   p.owner_name || '/' || p.slug url" +
+            "   '/' || p.owner_name || '/' || p.slug url" +
             "   FROM user_project_roles upr" +
             "   JOIN projects p ON p.id = upr.project_id" +
             "   WHERE upr.user_id = :userId " +

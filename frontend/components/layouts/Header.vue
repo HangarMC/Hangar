@@ -139,16 +139,16 @@ export default class Header extends HangarComponent {
     get userControls(): Control[] {
         const controls: Control[] = [];
         controls.push({
-            link: `/${this.currentUser.name}`,
+            link: `/${this.currentUser!.name}`,
             icon: 'mdi-account',
-            title: this.currentUser.name,
+            title: this.currentUser!.name,
         });
         controls.push({
             link: '/notifications',
             icon: 'mdi-bell',
             title: this.$t('nav.user.notifications'),
             badge: true,
-            badgeContent: this.currentUser.headerData.unansweredInvites + this.currentUser.headerData.unreadNotifications,
+            badgeContent: this.currentUser!.headerData.unansweredInvites + this.currentUser!.headerData.unreadNotifications,
         });
         controls.push({
             isDivider: true,
@@ -159,14 +159,14 @@ export default class Header extends HangarComponent {
                 icon: 'mdi-flag',
                 title: this.$t('nav.user.flags'),
                 badge: true,
-                badgeContent: this.currentUser.headerData.unresolvedFlags,
+                badgeContent: this.currentUser!.headerData.unresolvedFlags,
             });
             controls.push({
                 link: '/admin/approval/projects',
                 icon: 'mdi-thumb-up',
                 title: this.$t('nav.user.projectApprovals'),
                 badge: true,
-                badgeContent: this.currentUser.headerData.projectApprovals,
+                badgeContent: this.currentUser!.headerData.projectApprovals,
             });
         }
         if (this.$perms.isReviewer) {
@@ -175,7 +175,7 @@ export default class Header extends HangarComponent {
                 icon: 'mdi-thumb-up-outline',
                 title: this.$t('nav.user.versionApprovals'),
                 badge: true,
-                badgeContent: this.currentUser.headerData.reviewQueueCount,
+                badgeContent: this.currentUser!.headerData.reviewQueueCount,
             });
         }
         if (this.$perms.canViewStats) {
@@ -221,11 +221,11 @@ export default class Header extends HangarComponent {
 
     get totalNotificationCount() {
         return (
-            this.currentUser.headerData.unreadNotifications +
-            this.currentUser.headerData.unansweredInvites +
-            this.currentUser.headerData.unresolvedFlags +
-            this.currentUser.headerData.reviewQueueCount +
-            this.currentUser.headerData.projectApprovals
+            this.currentUser!.headerData.unreadNotifications +
+            this.currentUser!.headerData.unansweredInvites +
+            this.currentUser!.headerData.unresolvedFlags +
+            this.currentUser!.headerData.reviewQueueCount +
+            this.currentUser!.headerData.projectApprovals
         );
     }
 }
