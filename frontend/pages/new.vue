@@ -249,6 +249,7 @@ import StepperStepContent from '~/components/steppers/StepperStepContent.vue';
 import { RootState } from '~/store';
 import { ProjectCategory } from '~/types/enums';
 import { HangarComponent } from '~/components/mixins';
+import { LoggedIn } from '~/utils/perms';
 
 interface NewProjectForm extends ProjectSettingsForm {
     ownerId: ProjectOwner['userId'];
@@ -264,6 +265,7 @@ interface NewProjectForm extends ProjectSettingsForm {
         title: 'New Project',
     },
 })
+@LoggedIn
 export default class NewProjectPage extends HangarComponent {
     step = 1;
     spigotConvertTab = 0;

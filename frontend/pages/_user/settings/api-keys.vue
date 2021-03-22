@@ -47,8 +47,10 @@ import { Component, Vue } from 'nuxt-property-decorator';
 import { ApiKey, IPermission } from 'hangar-api';
 import { RootState } from '~/store';
 import { NamedPermission } from '~/types/enums';
+import { GlobalPermission } from '~/utils/perms';
 
 @Component
+@GlobalPermission(NamedPermission.EDIT_API_KEYS)
 export default class AuthorSettingsApiKeysPage extends Vue {
     selectedPerms: NamedPermission[] = [];
     name: string = '';

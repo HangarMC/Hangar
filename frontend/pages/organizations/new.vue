@@ -41,11 +41,13 @@ import { Context } from '@nuxt/types';
 import { Role, User } from 'hangar-api';
 import { HangarForm } from '~/components/mixins';
 import MemberList from '~/components/projects/MemberList.vue';
+import { LoggedIn } from '~/utils/perms';
 
 // TODO implement OrganizationsNewPage
 @Component({
     components: { MemberList },
 })
+@LoggedIn
 export default class OrganizationsNewPage extends HangarForm {
     head() {
         return {

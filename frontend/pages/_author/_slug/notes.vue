@@ -27,8 +27,11 @@
 import { Component, Prop, Vue } from 'nuxt-property-decorator';
 import { Project } from 'hangar-api';
 import { Note } from 'hangar-internal';
+import { GlobalPermission } from '~/utils/perms';
+import { NamedPermission } from '~/types/enums';
 
 @Component
+@GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
 export default class ProjectNotesPage extends Vue {
     @Prop({ required: true })
     project!: Project;

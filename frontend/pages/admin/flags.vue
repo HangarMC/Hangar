@@ -39,11 +39,13 @@
 import { Component, Vue } from 'nuxt-property-decorator';
 import { Flag } from 'hangar-internal';
 import UserAvatar from '~/components/users/UserAvatar.vue';
-import { Visibility } from '~/types/enums';
+import { NamedPermission, Visibility } from '~/types/enums';
+import { GlobalPermission } from '~/utils/perms';
 
 @Component({
     components: { UserAvatar },
 })
+@GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
 export default class AdminFlagsPage extends Vue {
     // todo load from server
     flags: Flag[] = [

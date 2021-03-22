@@ -60,8 +60,11 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import { Job, Project } from 'hangar-api';
+import { GlobalPermission } from '~/utils/perms';
+import { NamedPermission } from '~/types/enums';
 
 @Component
+@GlobalPermission(NamedPermission.VIEW_HEALTH)
 export default class AdminHealthPage extends Vue {
     // TODO get these from the server
     noTopicProject: Array<Project> = [this.$util.dummyProject()];

@@ -40,8 +40,11 @@
 import { Component, Vue } from 'nuxt-property-decorator';
 import { IPlatform } from 'hangar-internal';
 import { RootState } from '~/store';
+import { GlobalPermission } from '~/utils/perms';
+import { NamedPermission } from '~/types/enums';
 
 @Component
+@GlobalPermission(NamedPermission.MANUAL_VALUE_CHANGES)
 export default class AdminVersionsPage extends Vue {
     get platforms(): IPlatform[] {
         return Array.from((this.$store.state as RootState).platforms.values());

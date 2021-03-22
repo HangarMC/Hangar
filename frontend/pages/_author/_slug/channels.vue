@@ -68,10 +68,13 @@ import { Context } from '@nuxt/types';
 import { HangarProjectMixin } from '~/components/mixins';
 import Tag from '~/components/Tag.vue';
 import ChannelModal from '~/components/modals/ChannelModal.vue';
+import { ProjectPermission } from '~/utils/perms';
+import { NamedPermission } from '~/types/enums';
 
 @Component({
     components: { ChannelModal, Tag },
 })
+@ProjectPermission(NamedPermission.EDIT_TAGS)
 export default class ProjectChannelsPage extends HangarProjectMixin {
     channels!: ProjectChannel[];
     loading = {

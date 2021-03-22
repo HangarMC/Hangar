@@ -25,11 +25,14 @@ import { Component, Vue } from 'nuxt-property-decorator';
 import * as Chartist from 'chartist';
 import { IChartistData, ILineChartOptions } from 'chartist';
 import Chart from '~/components/chart/Chart.vue';
+import { GlobalPermission } from '~/utils/perms';
+import { NamedPermission } from '~/types/enums';
 
 // TODO implement AdminStatsPage
 @Component({
     components: { Chart },
 })
+@GlobalPermission(NamedPermission.VIEW_STATS)
 export default class AdminStatsPage extends Vue {
     dates: Array<Date> | null;
     dateMenu = false;

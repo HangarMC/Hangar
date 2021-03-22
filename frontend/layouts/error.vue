@@ -20,6 +20,7 @@ import { NuxtError } from '@nuxt/types';
     layout: 'empty',
 })
 export default class ErrorPage extends Vue {
+    // TODO i18n
     pageNotFound = '404 Not Found';
     unknownError = 'An error occurred';
 
@@ -40,7 +41,15 @@ export default class ErrorPage extends Vue {
     }
 
     head() {
-        const title = this.error.statusCode === 404 ? this.pageNotFound : this.unknownError;
+        let title = this.unknownError;
+        switch (this.error.statusCode) {
+            case 404:
+                title = this.pageNotFound;
+                break;
+            case 401:
+                title = this.error.message!;
+                break;
+        }
         return {
             title,
         };

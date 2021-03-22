@@ -68,11 +68,26 @@ const createApi = ({ $axios, store, app: { $cookies } }: Context) => {
 
             return tokenPromise.then((token) => {
                 if (authed && !token) {
-                    // TODO this return doesn't match others
-                    return Promise.reject(new Error('Requires authorization'));
-                } else {
-                    return this._request(`internal/${url}`, token, method, data);
+                    // TODO figure out how to not have to make the request if you know its going to fail
                 }
+                // if (authed && !token) {
+                //     // TODO this return doesn't match others
+                //     return Promise.reject({
+                //         isAxiosError: true,
+                //         respose: {
+                //             data: {
+                //                 isHangarApiException: true,
+                //                 httpError: {
+                //                     statusCode: 401,
+                //                 },
+                //                 message: 'You must be logged in',
+                //             },
+                //         },
+                //     });
+                // } else {
+                //     return this._request(`internal/${url}`, token, method, data);
+                // }
+                return this._request(`internal/${url}`, token, method, data);
             });
         }
 
