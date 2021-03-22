@@ -11,6 +11,8 @@ import io.papermc.hangar.model.db.roles.IRoleTable;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.service.HangarService;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +24,21 @@ public abstract class RoleService<T extends IRoleTable<R>, R extends Role<T>, D 
         this.roleDao = roleDao;
     }
 
+    @NotNull
     public T addRole(T newRoleTable) {
+        return addRole(newRoleTable, false);
+    }
+
+    @Contract("_, true -> !null")
+    public T addRole(T newRoleTable, boolean ignoreIfDuplicate) {
         T existingRoleTable = roleDao.getTable(newRoleTable);
         if (existingRoleTable == null) {
             return roleDao.insert(newRoleTable);
         }
-        throw new IllegalArgumentException("User already has a role there");
+        if (!ignoreIfDuplicate) {
+            throw new IllegalArgumentException("User already has a role there");
+        }
+        return null;
     }
 
     public void updateRole(T roleTable) {

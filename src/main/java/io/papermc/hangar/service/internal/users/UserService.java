@@ -111,7 +111,7 @@ public class UserService extends HangarService {
         }
 
         for (GlobalRole addGroup : syncData.getAddGroups()) {
-            globalRoleService.addRole(addGroup.create(null, user.getId(), true));
+            globalRoleService.addRole(addGroup.create(null, user.getId(), true), true);
         }
 
         for (GlobalRole removeGroup : syncData.getRemoveGroups()) {

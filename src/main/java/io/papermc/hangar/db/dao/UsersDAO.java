@@ -19,7 +19,7 @@ public interface UsersDAO {
             "       u.name," +
             "       u.tagline," +
             "       u.join_date, " +
-            "       array_agg(r.name) roles," +
+            "       array(SELECT r.name FROM roles r JOIN user_global_roles ugr ON r.id = ugr.role_id WHERE u.id = ugr.user_id) roles," +
             "       (SELECT count(*)" +
             "           FROM project_members_all pma" +
             "           WHERE pma.user_id = u.id" +
@@ -29,14 +29,12 @@ public interface UsersDAO {
             "       u.language," +
             "       exists(SELECT 1 FROM organizations o WHERE u.id = o.user_id) AS is_organization" +
             "   FROM users u" +
-            "       JOIN user_global_roles ugr ON u.id = ugr.user_id" +
-            "       JOIN roles r ON ugr.role_id = r.id" +
             "   WHERE u.name = :name" +
             "       OR u.id = :id" +
             "   GROUP BY u.id")
     <T extends User> T _getUser(String name, Long id, @MapTo Class<T> type);
 
-    default  <T extends User> T getUser(String name, Class<T> type) {
+    default <T extends User> T getUser(String name, Class<T> type) {
         return _getUser(name, null, type);
     }
 
@@ -49,7 +47,7 @@ public interface UsersDAO {
             "       u.name," +
             "       u.tagline," +
             "       u.join_date," +
-            "       ARRAY(SELECT r.name FROM roles r JOIN user_global_roles ugr ON r.id = ugr.role_id WHERE u.id = ugr.user_id) roles," +
+            "       array(SELECT r.name FROM roles r JOIN user_global_roles ugr ON r.id = ugr.role_id WHERE u.id = ugr.user_id) roles," +
             "       (SELECT count(*) FROM project_members_all pma WHERE pma.user_id = u.id) AS project_count," +
             "       u.read_prompts," +
             "       u.locked," +
