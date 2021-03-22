@@ -8,6 +8,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import io.papermc.hangar.model.db.projects.ProjectFlagTable;
@@ -41,4 +42,9 @@ public interface HangarFlagsDAO {
               "WHERE NOT pf.resolved " +
               "GROUP BY pf.id, fu.id, ru.id, p.id")
     List<HangarProjectFlag> getFlags();
+
+    @SqlUpdate("UPDATE project_flags SET resolved = :resolved, resolved_by = :resolvedBy, resolved_at = :resolvedAt WHERE id = :flagId")
+    @GetGeneratedKeys
+    @RegisterConstructorMapper(ProjectFlagTable.class)
+    ProjectFlagTable markAsResolved(long flagId, boolean resolved, Long resolvedBy, OffsetDateTime resolvedAt);
 }

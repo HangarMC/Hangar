@@ -30,11 +30,16 @@ public class FlagController extends HangarController {
         this.flagService = flagService;
     }
 
-
     @PostMapping("/")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void flag(@RequestBody FlagForm form) {
-        flagService.createFlag(form.getProjectId(), getHangarUserId(), form.getReason(), form.getComment());
+        flagService.createFlag(form.getProjectId(), form.getReason(), form.getComment());
+    }
+
+    @PostMapping("/{id}/resolve/{resolve}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void resolve(@PathVariable("id") long id, @PathVariable("resolve") boolean resolve) {
+        flagService.markAsResolved(id, resolve);
     }
 
     @ResponseBody

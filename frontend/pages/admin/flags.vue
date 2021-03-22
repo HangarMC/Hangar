@@ -65,7 +65,12 @@ export default class AdminFlagsPage extends Vue {
     }
 
     resolve(flag: Flag) {
-        console.log('resolve ', flag);
+        this.$api
+            .requestInternal<Flag[]>(`flags/${flag.id}/resolve/true`, false, 'POST')
+            .catch<any>(this.$util.handlePageRequestError)
+            .then(() => {
+                this.flags = this.flags.filter((f) => f.id !== flag.id);
+            });
     }
 }
 </script>

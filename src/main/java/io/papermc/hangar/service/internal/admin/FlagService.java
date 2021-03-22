@@ -2,6 +2,7 @@ package io.papermc.hangar.service.internal.admin;
 
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import io.papermc.hangar.db.dao.HangarDao;
@@ -20,9 +21,14 @@ public class FlagService extends HangarService {
         this.flagsDAO = flagsDAO.get();
     }
 
-    public void createFlag(long projectId, long userId, FlagReason reason, String comment) {
+    public void createFlag(long projectId, FlagReason reason, String comment) {
         // TODO idk, we prolly need more checking here, plus notification? logs?
-        flagsDAO.insert(new ProjectFlagTable( projectId, userId, reason, comment));
+        flagsDAO.insert(new ProjectFlagTable( projectId, getHangarUserId(), reason, comment));
+    }
+
+    public ProjectFlagTable markAsResolved(long flagId, boolean resolved) {
+        OffsetDateTime resolvedAt = resolved ? OffsetDateTime.now() : null;
+        return flagsDAO.markAsResolved(flagId, resolved, getHangarUserId(), resolvedAt);
     }
 
     public List<HangarProjectFlag> getFlags(String author, String slug) {

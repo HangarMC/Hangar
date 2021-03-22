@@ -45,8 +45,8 @@ export default class ProjectFlagsPage extends Vue {
         ];
     }
 
-    async asyncData({ $api, $util }: Context) {
-        const flags = await $api.requestInternal<Flag[]>(`flags/`, false).catch<any>($util.handlePageRequestError);
+    async asyncData({ $api, $util, params }: Context) {
+        const flags = await $api.requestInternal<Flag[]>(`flags/${params.author}/${params.slug}`, false).catch<any>($util.handlePageRequestError);
         return { flags };
     }
 }
