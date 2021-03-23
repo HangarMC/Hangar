@@ -83,7 +83,7 @@ public class ProjectFlagTable extends Table {
                "projectId=" + projectId +
                ", userId=" + userId +
                ", reason=" + reason +
-               ", isResolved=" + resolved +
+               ", resolved=" + resolved +
                ", comment='" + comment + '\'' +
                ", resolvedAt=" + resolvedAt +
                ", resolvedBy=" + resolvedBy +
