@@ -35,7 +35,7 @@ export class UserPropPage extends UserPage {
     @Prop({ type: Object as PropType<User>, required: true })
     user!: User;
 
-    @Prop({ type: Object as PropType<Organization>, required: true })
+    @Prop({ type: Object as PropType<Organization> })
     organization!: Organization | null;
 }
 

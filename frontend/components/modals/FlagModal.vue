@@ -57,7 +57,7 @@ export default class FlagModal extends mixins(HangarFormModal, HangarProjectMixi
     }
 
     async fetch() {
-        this.flagReasons.push(...(await this.$api.requestInternal<FlagReason[]>('data/flagReasons', true).catch(this.$util.handleRequestError)));
+        this.flagReasons.push(...(await this.$api.requestInternal<FlagReason[]>('data/flagReasons', true).catch<any>(this.$util.handleRequestError)));
     }
 }
 </script>

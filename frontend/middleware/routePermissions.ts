@@ -33,6 +33,7 @@ export default ({ store, params, $api, $util }: Context) => {
     } else if ($util.isLoggedIn()) {
         // Catch-all (just use global permissions)
         store.commit('auth/SET_ROUTE_PERMISSIONS', (store.state.auth as AuthState).user!.headerData.globalPermission);
+        return;
     }
     store.commit('auth/SET_ROUTE_PERMISSIONS', null);
     // TODO other route permissions
