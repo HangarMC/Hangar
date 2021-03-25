@@ -109,7 +109,7 @@ export default class UserParentPage extends UserPage {
             buttons.push({ icon: 'mdi-calendar', url: '', name: 'activity' });
         }
         if (this.$perms.canEditAllUserSettings) {
-            buttons.push({ icon: 'mdi-wrench', url: '', name: 'admin' });
+            buttons.push({ icon: 'mdi-wrench', url: '/admin/user/' + this.user.name, name: 'admin' });
         }
 
         return buttons;
@@ -120,7 +120,7 @@ export default class UserParentPage extends UserPage {
     }
 
     get avatarClazz(): String {
-        return 'user-avatar-md' + this.user.isOrganization ? ' organization-avatar' : '';
+        return 'user-avatar-md' + (this.user.isOrganization ? ' organization-avatar' : '');
     }
 
     changeTagline() {
