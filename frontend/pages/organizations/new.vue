@@ -43,7 +43,6 @@ import { Authed, HangarForm } from '~/components/mixins';
 import MemberList from '~/components/projects/MemberList.vue';
 import { LoggedIn } from '~/utils/perms';
 
-// TODO implement OrganizationsNewPage
 @Component({
     components: { MemberList },
 })

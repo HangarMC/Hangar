@@ -28,7 +28,6 @@ import Chart from '~/components/chart/Chart.vue';
 import { GlobalPermission } from '~/utils/perms';
 import { NamedPermission } from '~/types/enums';
 
-// TODO implement AdminStatsPage
 @Component({
     components: { Chart },
 })
@@ -62,6 +61,7 @@ export default class AdminStatsPage extends Vue {
         plugins: [Chartist.plugins.legend()],
     };
 
+    // todo load all the data from the server
     pluginData: IChartistData = {
         series: [
             {

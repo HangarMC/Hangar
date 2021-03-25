@@ -27,8 +27,7 @@ const createAuth = ({ app: { $cookies }, $axios, store, $api, redirect }: Contex
                 path: '/',
             });
             if (shouldRedirect) {
-                // TODO redirect home because they may have been on authed page and a reload would just show an error
-                redirect('/');
+                redirect('/logged-out');
             }
         }
 

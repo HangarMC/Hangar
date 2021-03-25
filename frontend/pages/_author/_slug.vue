@@ -3,8 +3,7 @@
         <template v-if="!isPublic">
             <!-- todo alert for visibility stuff -->
             <v-alert v-if="needsChanges" type="error">
-                <!-- todo remove is no EditPage perm -->
-                <v-btn type="primary" :to="'/' + slug + '/manage/sendforapproval'">{{ $t('project.sendForApproval') }} </v-btn>
+                <v-btn v-if="$perms.canEditPage" type="primary" :to="'/' + slug + '/manage/sendforapproval'">{{ $t('project.sendForApproval') }} </v-btn>
                 <strong>{{ $t('visibility.notice.' + project.visibility) }}</strong>
                 <br />
                 <Markdown :raw="project.lastVisibilityChangeComment || 'Unknown'" />
@@ -54,8 +53,7 @@
                         <span v-if="project.userActions.watching">{{ $t('project.actions.unwatch') }}</span>
                         <span v-else>{{ $t('project.actions.watch') }}</span>
                     </v-tooltip>
-                    <!-- todo if not logged in or author, remove both -->
-                    <FlagModal :project="project" />
+                    <FlagModal v-if="$util.isLoggedIn() && !$perms.isSubjectMember" :project="project" />
                     <v-menu v-if="$perms.isStaff" bottom offset-y>
                         <template #activator="{ on, attrs }">
                             <v-btn v-bind="attrs" class="ml-1" v-on="on">

@@ -147,7 +147,6 @@ import { GlobalPermission } from '~/utils/perms';
 import { NamedPermission, ReviewAction } from '~/types/enums';
 import TextareaModal from '~/components/modals/TextareaModal.vue';
 
-// TODO implement ProjectVersionsVersionReviewPage
 @Component({
     components: { TextareaModal },
 })
@@ -363,7 +362,7 @@ export default class ProjectVersionsVersionReviewPage extends mixins(Authed, Han
             .finally(final);
     }
 
-    // TODO this
+    // TODO implement removeFromQueue
     removeFromQueue() {}
 }
 </script>

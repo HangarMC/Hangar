@@ -4,8 +4,7 @@
             <v-data-iterator :items="filteredVersions">
                 <template #item="{ item: version }">
                     <v-sheet width="100%" color="accent" rounded class="version mt-2">
-                        <!-- todo fix url, need to get platform -->
-                        <NuxtLink :to="`versions/${version.name}`">
+                        <NuxtLink :to="`/${project.namespace.owner}/${project.namespace.slug}/versions/${version.name}`">
                             <v-row>
                                 <v-col cols="4" md="2" lg="2">
                                     <v-row>

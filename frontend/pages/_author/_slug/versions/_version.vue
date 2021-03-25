@@ -45,7 +45,11 @@ export default class ProjectVersionPageParent extends HangarProjectMixin {
             }
         }
         if (!params.platform) {
-            redirect(`${route.path}/${versionMap.keys().next().value.toLowerCase()}`);
+            let path = route.path;
+            if (path.endsWith('/')) {
+                path = path.substring(0, path.length - 1);
+            }
+            redirect(`${path}/${versionMap.keys().next().value.toLowerCase()}`);
         }
         return { versions: versionMap, versionPlatforms };
     }

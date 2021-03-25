@@ -120,8 +120,7 @@ export default class UserParentPage extends UserPage {
     }
 
     get avatarClazz(): String {
-        return 'user-avatar-md';
-        // todo check org an add 'organization-avatar'
+        return 'user-avatar-md' + this.user.isOrganization ? ' organization-avatar' : '';
     }
 
     changeTagline() {
