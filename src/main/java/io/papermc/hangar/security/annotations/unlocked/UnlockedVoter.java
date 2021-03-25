@@ -35,7 +35,7 @@ public class UnlockedVoter implements AccessDecisionVoter<MethodInvocation> {
             return ACCESS_DENIED;
         }
         if (((HangarAuthenticationToken) authentication).getPrincipal().isLocked()) {
-            throw new HangarApiException(HttpStatus.UNAUTHORIZED, "error.user.locked");
+            throw new HangarApiException(HttpStatus.UNAUTHORIZED, "error.userLocked");
         }
         return ACCESS_GRANTED;
     }
