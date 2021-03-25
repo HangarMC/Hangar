@@ -613,6 +613,9 @@ const msgs: LocaleMessageObject = {
         minLength: 'Minimum length is {0}',
         invalidFormat: '{0} is invalid',
     },
+    error: {
+        userLocked: 'Your account is locked.',
+    },
 };
 
 export default msgs;
