@@ -1,5 +1,8 @@
 package io.papermc.hangar.controller.extras.resolver;
 
+import io.papermc.hangar.controller.extras.pagination.Filter;
+import io.papermc.hangar.controller.extras.pagination.ProjectCategoryFilter;
+import io.papermc.hangar.model.api.requests.RequestPagination;
 import org.springframework.core.MethodParameter;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -14,12 +17,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import io.papermc.hangar.model.api.requests.RequestPagination;
+import java.util.function.Predicate;
 
 public class PaginationResolver implements HandlerMethodArgumentResolver {
 
     private final HandlerMethodArgumentResolver delegate;
+
+    Map<Predicate<NativeWebRequest>, FilterConstructor> map = Map.of(
+            ProjectCategoryFilter::supports, ProjectCategoryFilter::new
+    );
+
+    @FunctionalInterface
+    interface FilterConstructor {
+        Filter create(NativeWebRequest webRequest);
+    }
 
     public PaginationResolver(HandlerMethodArgumentResolver delegate) {
         this.delegate = delegate;
@@ -33,6 +44,13 @@ public class PaginationResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(@NonNull MethodParameter parameter, ModelAndViewContainer mavContainer, @NonNull NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         Object result = delegate.resolveArgument(parameter, mavContainer, webRequest, binderFactory);
+
+        map.forEach((nativeWebRequestPredicate, filterConstructor) -> {
+            if (nativeWebRequestPredicate.test(webRequest)) {
+                Filter filter = filterConstructor.create(webRequest);
+                // add filter to RequestPagination object
+            }
+        });
 
         if (result instanceof RequestPagination) {
             RequestPagination pagination = (RequestPagination) result;

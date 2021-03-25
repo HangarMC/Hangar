@@ -1,5 +1,6 @@
 package io.papermc.hangar.db.extras;
 
+import io.papermc.hangar.model.api.requests.RequestPagination;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jdbi.v3.sqlobject.customizer.SqlStatementCustomizerFactory;
 import org.jdbi.v3.sqlobject.customizer.SqlStatementCustomizingAnnotation;
@@ -14,8 +15,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.regex.Pattern;
-
-import io.papermc.hangar.model.api.requests.RequestPagination;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER})
@@ -37,6 +36,7 @@ public @interface BindPagination {
                 sort(pagination, sb);
                 offsetLimit(pagination, sb, q);
 
+                // use filters/sort here
                 // set the sql
                 q.define("pagination", sb.toString());
             };
