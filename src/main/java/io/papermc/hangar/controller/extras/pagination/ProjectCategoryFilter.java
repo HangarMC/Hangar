@@ -10,13 +10,13 @@ public class ProjectCategoryFilter implements Filter<ProjectCategoryFilterInstan
     private static final String QUERY_PARAM = "projectCategory";
 
     @Override
-    public boolean supports(NativeWebRequest webRequest) {
-        return webRequest.getParameterMap().containsKey(QUERY_PARAM);
+    public ProjectCategoryFilterInstance create(NativeWebRequest webRequest) {
+        return new ProjectCategoryFilterInstance(webRequest);
     }
 
     @Override
-    public ProjectCategoryFilterInstance create(NativeWebRequest webRequest) {
-        return new ProjectCategoryFilterInstance(webRequest);
+    public String getQueryParamName() {
+        return QUERY_PARAM;
     }
 
     static class ProjectCategoryFilterInstance implements FilterInstance {
