@@ -4,10 +4,12 @@ import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarOrganizationsDAO;
 import io.papermc.hangar.db.dao.internal.table.OrganizationDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
+import io.papermc.hangar.db.dao.internal.table.roles.OrganizationRolesDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.internal.HangarOrganization;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.PermissionService;
@@ -16,18 +18,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrganizationService extends HangarService {
 
     private final HangarOrganizationsDAO hangarOrganizationsDAO;
+    private final OrganizationRolesDAO organizationRolesDAO;
     private final OrganizationDAO organizationDAO;
     private final UserDAO userDAO;
     private final PermissionService permissionService;
 
     @Autowired
-    public OrganizationService(HangarDao<HangarOrganizationsDAO> hangarOrganizationsDAO, HangarDao<OrganizationDAO> organizationDAO, HangarDao<UserDAO> userDAO, PermissionService permissionService) {
+    public OrganizationService(HangarDao<HangarOrganizationsDAO> hangarOrganizationsDAO, HangarDao<OrganizationRolesDAO> organizationRolesDAO, HangarDao<OrganizationDAO> organizationDAO, HangarDao<UserDAO> userDAO, PermissionService permissionService) {
         this.hangarOrganizationsDAO = hangarOrganizationsDAO.get();
+        this.organizationRolesDAO = organizationRolesDAO.get();
         this.organizationDAO = organizationDAO.get();
         this.userDAO = userDAO.get();
         this.permissionService = permissionService;
@@ -53,5 +58,9 @@ public class OrganizationService extends HangarService {
         UserTable owner = userDAO.getUserTable(organizationTable.getOwnerId());
         var members = hangarOrganizationsDAO.getOrganizationMembers(organizationTable.getId(), getHangarUserId(), permissionService.getOrganizationPermissions(getHangarUserId(), organizationTable.getId()).has(Permission.ManageOrganizationMembers));
         return new HangarOrganization(organizationTable.getId(), owner, members);
+    }
+
+    public Map<String, OrganizationRoleTable> getUserOrganizationRoles(String user) {
+        return organizationRolesDAO.getUserOrganizationRoles(user, getHangarUserId());
     }
 }

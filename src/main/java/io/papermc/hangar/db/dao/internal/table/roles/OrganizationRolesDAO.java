@@ -2,6 +2,7 @@ package io.papermc.hangar.db.dao.internal.table.roles;
 
 import io.papermc.hangar.db.mappers.RoleMapperFactory;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
+import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapperFactory;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -10,6 +11,8 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
+
+import java.util.Map;
 
 @Repository
 @RegisterConstructorMapper(OrganizationRoleTable.class)
@@ -42,4 +45,12 @@ public interface OrganizationRolesDAO extends IRolesDAO<OrganizationRoleTable> {
     @Override
     @SqlQuery("SELECT * FROM user_organization_roles WHERE organization_id = :organizationId AND user_id = :userId")
     OrganizationRoleTable getTable(@BindBean OrganizationRoleTable table);
+
+    @KeyColumn("name")
+    @SqlQuery("SELECT o.name, uor.*" +
+            "   FROM user_organization_roles uor" +
+            "       JOIN organizations o ON o.id = uor.organization_id" +
+            "       JOIN users u ON uor.user_id = u.id" +
+            "   WHERE u.name = :user AND uor.accepted IS TRUE")
+    Map<String, OrganizationRoleTable> getUserOrganizationRoles(String user, Long userId);
 }

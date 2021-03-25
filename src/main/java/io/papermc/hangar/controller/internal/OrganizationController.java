@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.internal.HangarOrganization;
 import io.papermc.hangar.model.internal.api.requests.CreateOrganizationForm;
 import io.papermc.hangar.security.annotations.Anyone;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api/internal/organizations")
@@ -58,5 +60,11 @@ public class OrganizationController {
     public void create(@Valid @RequestBody CreateOrganizationForm createOrganizationForm) {
         System.out.println(createOrganizationForm);
         organizationFactory.createOrganization(createOrganizationForm.getName(), createOrganizationForm.getNewMembers());
+    }
+
+    @Anyone
+    @GetMapping(path = "/{user}/userOrganizations", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, OrganizationRoleTable>> getUserOrganizationRoles(@PathVariable String user) {
+        return ResponseEntity.ok(organizationService.getUserOrganizationRoles(user));
     }
 }
