@@ -1,4 +1,4 @@
-# Hangar - Papers upcoming Plugin Repository
+# Hangar - Paper's upcoming Plugin Repository
 
 This is the repository for Hangar, a plugin repository used for paper plugins and similar pieces of software.
 
@@ -45,7 +45,7 @@ Deployment happens via Docker, checkout the stack in the docker folder. You will
 ## Contributing
 
 There is a bunch of stuff to do, some of that is noted in the [**Roadmap Project**](https://github.com/PaperMC/Hangar/projects/1). 
-Your best bet is joining #hangar-dev on the [paper discord](https://discord.gg/papermc) and just discussing with us.
+Your best bet is joining #hangar-dev on the [Paper Discord](https://discord.com/invite/papermc) and just discussing with us.
 All contributions are very welcome, we will not be able to finish this alone!
 
 ## Licence
