@@ -47,6 +47,13 @@ hangar:
   base-url: "http://localhost:8080"
   ga-code: "UA-38006759-9"
 
+  licences:
+    - "MIT"
+    - "Apache 2.0"
+    - "GPL"
+    - "LPGL"
+    - "(custom)"
+
   announcements:
       -
         text: "This is a staging server for testing purposes. Data could be deleted at any time. Please use our production server at (TODO: prod url, lol) for uploading your plugins!"

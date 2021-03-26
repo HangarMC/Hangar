@@ -13,7 +13,6 @@
                 <template v-if="!isNew">
                     <tr v-for="dep in version.pluginDependencies[platform]" :key="`${platform}-${dep.name}`">
                         <td>{{ dep.name }}</td>
-                        <!--TODO having ripple here produces console errors?-->
                         <td><v-simple-checkbox v-model="dep.required" :ripple="false" /></td>
                         <td>
                             <v-text-field
