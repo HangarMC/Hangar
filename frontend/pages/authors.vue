@@ -5,6 +5,7 @@
         :items="authors.result"
         :options.sync="options"
         :server-items-length="authors.pagination.count"
+        multi-sort
         :loading="loading"
         class="elevation-1"
     >
@@ -33,9 +34,9 @@ import { HangarComponent } from '~/components/mixins';
 })
 export default class AuthorsPage extends HangarComponent {
     headers: DataTableHeader[] = [
-        { text: '', value: 'pic' },
+        { text: '', value: 'pic', sortable: false },
         { text: 'Username', value: 'name' },
-        { text: 'Roles', value: 'roles' },
+        { text: 'Roles', value: 'roles', sortable: false },
         { text: 'Joined', value: 'joinDate' },
         { text: 'Projects', value: 'projectCount' },
     ];
@@ -59,10 +60,15 @@ export default class AuthorsPage extends HangarComponent {
         }
         this.loading = true;
 
-        this.$api.request<PaginatedResult<User>>('authors', false, 'get', this.requestOptions).then((authors) => {
-            this.authors = authors;
-            this.loading = false;
-        });
+        this.$api
+            .request<PaginatedResult<User>>('authors', false, 'get', this.requestOptions)
+            .then((authors) => {
+                this.authors = authors;
+            })
+            .catch(this.$util.handleRequestError)
+            .finally(() => {
+                this.loading = false;
+            });
     }
 
     get requestOptions() {
@@ -70,12 +76,16 @@ export default class AuthorsPage extends HangarComponent {
             return {};
         }
 
-        let sort = '';
-        if (this.options.sortBy.length === 1) {
-            sort = this.options.sortBy[0];
-            if (this.options.sortDesc[0]) {
-                sort = '-' + sort;
+        const sort: string[] = [];
+        for (let i = 0; i < this.options.sortBy.length; i++) {
+            let sortStr = this.options.sortBy[i];
+            if (sortStr === 'name') {
+                sortStr = 'username'; // TODO how to get around this... should we change the field on User to be username?
             }
+            if (this.options.sortDesc[i]) {
+                sortStr = '-' + sortStr;
+            }
+            sort.push(sortStr);
         }
         return {
             limit: this.options.itemsPerPage,

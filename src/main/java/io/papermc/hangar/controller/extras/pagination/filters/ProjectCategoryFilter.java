@@ -1,6 +1,6 @@
-package io.papermc.hangar.controller.extras.pagination;
+package io.papermc.hangar.controller.extras.pagination.filters;
 
-import io.papermc.hangar.controller.extras.pagination.ProjectCategoryFilter.ProjectCategoryFilterInstance;
+import io.papermc.hangar.controller.extras.pagination.filters.ProjectCategoryFilter.ProjectCategoryFilterInstance;
 import io.papermc.hangar.model.common.projects.Category;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -21,6 +21,7 @@ public class ProjectCategoryFilter implements Filter<ProjectCategoryFilterInstan
 
     static class ProjectCategoryFilterInstance implements FilterInstance {
 
+        // TODO multiple categories
         private final Category category;
 
         public ProjectCategoryFilterInstance(NativeWebRequest webRequest) {

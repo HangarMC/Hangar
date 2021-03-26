@@ -4,7 +4,6 @@ import io.papermc.hangar.db.extras.BindPagination;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.project.ProjectCompact;
 import io.papermc.hangar.model.api.requests.RequestPagination;
-
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.customizer.Define;
@@ -97,7 +96,8 @@ public interface UsersApiDAO {
             "   FROM users u" +
             "   WHERE u.id IN " +
             "       (SELECT DISTINCT p.owner_id FROM projects p WHERE p.visibility != 1)" +
-            "   <pagination>")
+            "   <sorters>" +
+            "   <offsetLimit>")
     List<User> getAuthors(@BindPagination RequestPagination pagination);
 
     @SqlQuery("SELECT count(DISTINCT p.owner_id) FROM projects p WHERE p.visibility != 1")

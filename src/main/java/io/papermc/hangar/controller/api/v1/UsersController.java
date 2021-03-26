@@ -2,6 +2,8 @@ package io.papermc.hangar.controller.api.v1;
 
 import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.controller.api.v1.interfaces.IUsersController;
+import io.papermc.hangar.controller.extras.pagination.sorters.ApplicableSorters;
+import io.papermc.hangar.controller.extras.pagination.sorters.Sorters;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.project.ProjectCompact;
@@ -44,6 +46,7 @@ public class UsersController extends HangarController implements IUsersControlle
     }
 
     @Override
+    @ApplicableSorters({ Sorters.USERNAME_VALUE, Sorters.JOINED_VALUE, Sorters.PROJECT_COUNT_VALUE })
     public ResponseEntity<PaginatedResult<User>> getAuthors(@NotNull RequestPagination pagination) {
         return ResponseEntity.ok(usersApiService.getAuthors(pagination));
     }

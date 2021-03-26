@@ -14,7 +14,6 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
-import java.util.regex.Pattern;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER})
@@ -23,71 +22,42 @@ public @interface BindPagination {
 
     class BindPaginationFactory implements SqlStatementCustomizerFactory {
 
-        private static final Pattern valid = Pattern.compile("[a-zA-Z_]+");
-        private static final Pattern dot = Pattern.compile("\\.");
-
         @Override
         public SqlStatementParameterCustomizer createForParameter(final Annotation annotation, final Class<?> sqlObjectType, final Method method, final Parameter param, final int index, final Type paramType) {
             return (q, arg) -> {
                 RequestPagination pagination = (RequestPagination) arg;
-                StringBuilder sb = new StringBuilder();
 
-                filter(pagination, sb, q);
-                sort(pagination, sb);
-                offsetLimit(pagination, sb, q);
-
-                // use filters/sort here
-                // set the sql
-                q.define("pagination", sb.toString());
+                filter(pagination, q);
+                sorters(pagination, q);
+                offsetLimit(pagination, q);
             };
         }
 
-        private void filter(RequestPagination pagination, StringBuilder sb, SqlStatement<?> q) {
-            pagination.getFilters().forEach((key, value) -> {
-                if (validate(key)) {
-                    sb.append(" AND ").append(key).append(" = :").append(key);
-                    q.bind(key, value);
-                }
-            });
+        private void filter(RequestPagination pagination, SqlStatement<?> q) {
+            StringBuilder sb = new StringBuilder();
+            pagination.getFilters().forEach(filter -> filter.createSql(sb, q));
+            q.define("filters", sb.toString());
         }
 
-        private void sort(RequestPagination pagination, StringBuilder sb) {
-            if (!pagination.getSorts().isEmpty()) {
+        private void sorters(RequestPagination pagination, SqlStatement<?> q) {
+            StringBuilder sb = new StringBuilder();
+            if (!pagination.getSorters().isEmpty()) {
                 sb.append(" ORDER BY ");
-                boolean first = true;
-                for (String sort : pagination.getSorts()) {
-                    if (first) {
-                        first = false;
-                    } else {
-                        sb.append(", ");
-                    }
-
-                    boolean desc = sort.startsWith("-");
-                    if (desc) {
-                        sort = sort.substring(1);
-                    }
-                    if (validate(sort)) {
-                        sb.append(sort).append(" ").append(desc ? "DESC" : "ASC");
-                    }
+            }
+            var iter = pagination.getSorters().iterator();
+            while (iter.hasNext()) {
+                iter.next().accept(sb);
+                if (iter.hasNext()) {
+                    sb.append(", ");
                 }
             }
+            q.define("sorters", sb.toString());
         }
 
-        private void offsetLimit(RequestPagination pagination, StringBuilder sb, SqlStatement<?> q) {
-            sb.append(" LIMIT :limit OFFSET :offset ");
+        private void offsetLimit(RequestPagination pagination, SqlStatement<?> q) {
             q.bind("limit", pagination.getLimit());
             q.bind("offset", pagination.getOffset());
-        }
-
-        private boolean validate(String key) {
-            if (key.contains(".")) {
-                String[] keys = dot.split(key);
-                if (keys.length == 2) {
-                    return validate(keys[0]) && validate(keys[1]);
-                } else {
-                    return false;
-                }
-            } else return valid.matcher(key).matches();
+            q.define("offsetLimit", " LIMIT :limit OFFSET :offset ");
         }
     }
 }

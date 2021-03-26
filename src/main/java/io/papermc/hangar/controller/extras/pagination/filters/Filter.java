@@ -1,10 +1,12 @@
-package io.papermc.hangar.controller.extras.pagination;
+package io.papermc.hangar.controller.extras.pagination.filters;
 
-import io.papermc.hangar.controller.extras.pagination.Filter.FilterInstance;
+import io.papermc.hangar.controller.extras.pagination.filters.Filter.FilterInstance;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.springframework.web.context.request.NativeWebRequest;
 
-public interface Filter<F extends FilterInstance> extends QueryIdentified {
+public interface Filter<F extends FilterInstance> {
+
+    String getQueryParamName();
 
     default boolean supports(NativeWebRequest webRequest) {
         return webRequest.getParameterMap().containsKey(getQueryParamName());
@@ -13,6 +15,7 @@ public interface Filter<F extends FilterInstance> extends QueryIdentified {
     F create(NativeWebRequest webRequest);
 
     interface FilterInstance {
+
         void createSql(StringBuilder sb, SqlStatement<?> q);
     }
 
