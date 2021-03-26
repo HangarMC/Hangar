@@ -11,13 +11,13 @@ import java.util.Collection;
 
 public class ProjectSettings {
 
-    @Validate(SpEL = "@validate.optionalRegex(#root, @hangarConfig.urlRegex)", message = "general.error.invalidUrl")
+    @Validate(SpEL = "@validate.optionalRegex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl")
     private final String homepage;
-    @Validate(SpEL = "@validate.optionalRegex(#root, @hangarConfig.urlRegex)", message = "general.error.invalidUrl")
+    @Validate(SpEL = "@validate.optionalRegex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl")
     private final String issues;
-    @Validate(SpEL = "@validate.optionalRegex(#root, @hangarConfig.urlRegex)", message = "general.error.invalidUrl")
+    @Validate(SpEL = "@validate.optionalRegex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl")
     private final String source;
-    @Validate(SpEL = "@validate.optionalRegex(#root, @hangarConfig.urlRegex)", message = "general.error.invalidUrl")
+    @Validate(SpEL = "@validate.optionalRegex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl")
     private final String support;
     @Valid
     private final ProjectLicense license;

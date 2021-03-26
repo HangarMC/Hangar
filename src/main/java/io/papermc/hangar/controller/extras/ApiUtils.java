@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller.extras;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.util.StaticContextAccessor;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public class ApiUtils {
      * @return actual limit
      */
     public static long limitOrDefault(@Nullable Long limit) {
-        if (limit != null && limit < 1) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Limit should be greater than 0");
+        if (limit != null && limit < 1) throw new HangarApiException(HttpStatus.BAD_REQUEST, "Limit should be greater than 0");
         return Math.min(limit == null ? hangarConfig.projects.getInitLoad() : limit, hangarConfig.projects.getInitLoad());
     }
 

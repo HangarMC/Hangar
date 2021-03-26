@@ -248,7 +248,7 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
                 );
             },
             requireNonEmptyArray: (name: TranslateResult = 'Field') => (v: any[]) => v.length > 0 || i18n.t('validation.required', [name]),
-            url: (v: string) => !v || new RegExp((store.state as RootState).validations.urlRegex).test(v) || i18n.t('general.error.invalidUrl'),
+            url: (v: string) => !v || new RegExp((store.state as RootState).validations.urlRegex).test(v) || i18n.t('validation.invalidUrl'),
             regex: (name: TranslateResult = 'Field', regexp: string) => (v: string) => {
                 return !v || new RegExp(regexp).test(v) || i18n.t('validation.invalidFormat', [name]);
             },

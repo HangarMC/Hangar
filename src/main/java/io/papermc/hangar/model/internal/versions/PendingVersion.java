@@ -33,7 +33,7 @@ public class PendingVersion {
     @NotBlank(message = "version.new.error.noDescription")
     private final String description;
     private final FileInfo fileInfo;
-    @Validate(SpEL = "@validate.optionalRegex(#root, @hangarConfig.urlRegex)", message = "general.error.invalidUrl")
+    @Validate(SpEL = "@validate.optionalRegex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl")
     private final String externalUrl;
     @NotBlank(message = "version.new.error.channel.noName")
     @Validate(SpEL = "@validate.regex(#root, @hangarConfig.channels.nameRegex)", message = "channel.modal.error.invalidName")

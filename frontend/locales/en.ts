@@ -612,6 +612,7 @@ const msgs: LocaleMessageObject = {
         maxLength: 'Maximum length is {0}',
         minLength: 'Minimum length is {0}',
         invalidFormat: '{0} is invalid',
+        invalidUrl: 'Invalid URL format',
     },
     error: {
         userLocked: 'Your account is locked.',
