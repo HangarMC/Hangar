@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.model.Announcement;
+import io.papermc.hangar.model.api.project.ProjectLicense;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Platform;
@@ -134,6 +135,11 @@ public class BackendDataController {
     @GetMapping("/orgRoles")
     public ResponseEntity<List<OrganizationRole>> getAssignableOrganizationRoles() {
         return ResponseEntity.ok(OrganizationRole.getAssignableRoles());
+    }
+
+    @GetMapping("/licences")
+    public ResponseEntity<List<String>> getLicences() {
+        return ResponseEntity.ok(config.getLicences());
     }
 
     @GetMapping("/validations")

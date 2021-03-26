@@ -299,6 +299,7 @@ import { MemberList } from '~/components/projects';
 @ProjectPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)
 export default class ProjectManagePage extends HangarProjectMixin {
     roles!: Role[];
+    licences!: String[];
     apiKey = '';
     newName = '';
     nameErrors: TranslateResult[] = [];
@@ -355,11 +356,6 @@ export default class ProjectManagePage extends HangarProjectMixin {
 
     get isCustomLicense() {
         return this.form.settings.license.type === '(custom)';
-    }
-
-    // TODO do we want to get those from the server? Jake: I think so, it'd be nice to admins to be able to configure default licenses, but not needed for MVP
-    get licences() {
-        return ['MIT', 'Apache 2.0', 'GPL', 'LGPL', '(custom)'];
     }
 
     onFileChange() {
@@ -475,8 +471,11 @@ export default class ProjectManagePage extends HangarProjectMixin {
     generateApiKey() {}
 
     async asyncData({ $api, $util }: Context) {
-        const roles = await $api.requestInternal('data/projectRoles', false).catch($util.handlePageRequestError);
-        return { roles };
+        const data = await Promise.all([$api.requestInternal('data/projectRoles', false), $api.requestInternal('data/licences', false)]).catch(
+            $util.handlePageRequestError
+        );
+        if (typeof data === 'undefined') return;
+        return { roles: data[0], licences: data[1] };
     }
 }
 </script>
