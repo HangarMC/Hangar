@@ -607,6 +607,16 @@ const msgs: LocaleMessageObject = {
         hangarAuth: 'HangarAuth Profile',
         forum: 'Forum Profile',
     },
+    versionApproval: {
+        inReview: 'In Review',
+        approvalQueue: 'Approval queue',
+        projectVersion: 'Project version',
+        queuedBy: 'Queued by',
+        status: 'Status',
+        project: 'Project',
+        date: 'Date',
+        version: 'Version',
+    },
     validation: {
         required: '{0} is required',
         maxLength: 'Maximum length is {0}',
