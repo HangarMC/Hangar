@@ -113,6 +113,11 @@ public interface VersionsApiDAO {
             "       JOIN projects p ON pv.project_id = p.id" +
             "       JOIN project_channels pc ON pv.channel_id = pc.id" +
             "       LEFT JOIN users u ON pv.author_id = u.id" +
+            "       INNER JOIN (SELECT array_agg(DISTINCT plv.platform) platforms, pvpd.version_id" +
+            "           FROM project_version_platform_dependencies pvpd" +
+            "               JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
+            "           GROUP BY pvpd.version_id" +
+            "       ) sq ON pv.id = sq.version_id" +
             "   WHERE TRUE <filters>" +
             "       <if(!canSeeHidden)>" +
             "           AND (pv.visibility = 0 " +
@@ -135,12 +140,16 @@ public interface VersionsApiDAO {
     )
     SortedMap<Long, Version> getVersions(String author, String slug, /*@BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<String> tags,*/ @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
 
-    @SqlQuery("SELECT COUNT(*) " +
+    @SqlQuery("SELECT COUNT(*)" +
             "   FROM project_versions pv" +
             "       JOIN projects p ON pv.project_id = p.id" +
             "       JOIN project_channels pc ON pv.channel_id = pc.id" +
+            "       INNER JOIN (SELECT array_agg(DISTINCT plv.platform) platforms, pvpd.version_id" +
+            "           FROM project_version_platform_dependencies pvpd" +
+            "               JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
+            "           GROUP BY pvpd.version_id" +
+            "       ) sq ON pv.id = sq.version_id" +
 //            "   LEFT JOIN project_version_tags pvt ON pv.id = pvt.version_id" +
-//            "   LEFT JOIN project_channels pc ON pv.channel_id = pc.id " +
             "   WHERE TRUE <filters> " +
             "       <if(!canSeeHidden)>" +
             "           AND (pv.visibility = 0 " +

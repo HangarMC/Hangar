@@ -2,12 +2,14 @@ package io.papermc.hangar.model.common;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@EnumByOrdinal
 public enum Platform {
 
     PAPER("Paper", Category.SERVER, TagColor.PAPER, "https://papermc.io/downloads"),

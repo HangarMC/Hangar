@@ -10,8 +10,6 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import java.util.Arrays;
-
 @Component
 public class ProjectCategoryFilter implements Filter<ProjectCategoryFilterInstance> {
 
@@ -39,7 +37,6 @@ public class ProjectCategoryFilter implements Filter<ProjectCategoryFilterInstan
 
         public ProjectCategoryFilterInstance(Category[] categories) {
             this.categories = categories;
-            System.out.println(Arrays.toString(categories));
         }
 
         @Override
