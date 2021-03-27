@@ -1,4 +1,6 @@
-package io.papermc.hangar.controller.extras.pagination.sorters;
+package io.papermc.hangar.controller.extras.pagination.annotations;
+
+import io.papermc.hangar.controller.extras.pagination.SorterRegistry;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,7 +12,7 @@ import java.lang.annotation.Target;
 public @interface ApplicableSorters {
 
     /**
-     * use {@link Sorters} static final strings
+     * use {@link SorterRegistry} static final strings
      */
     String[] value();
 }

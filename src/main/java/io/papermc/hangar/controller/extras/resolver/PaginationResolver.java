@@ -1,11 +1,11 @@
 package io.papermc.hangar.controller.extras.resolver;
 
-import io.papermc.hangar.controller.extras.pagination.filters.ApplicableFilters;
-import io.papermc.hangar.controller.extras.pagination.filters.Filter;
-import io.papermc.hangar.controller.extras.pagination.filters.Filter.FilterInstance;
-import io.papermc.hangar.controller.extras.pagination.filters.Filters;
-import io.papermc.hangar.controller.extras.pagination.sorters.ApplicableSorters;
-import io.papermc.hangar.controller.extras.pagination.sorters.Sorters;
+import io.papermc.hangar.controller.extras.pagination.Filter;
+import io.papermc.hangar.controller.extras.pagination.Filter.FilterInstance;
+import io.papermc.hangar.controller.extras.pagination.FilterRegistry;
+import io.papermc.hangar.controller.extras.pagination.SorterRegistry;
+import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
+import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSorters;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import org.jetbrains.annotations.NotNull;
@@ -23,9 +23,11 @@ import java.util.Optional;
 public class PaginationResolver implements HandlerMethodArgumentResolver {
 
     private final HandlerMethodArgumentResolver delegate;
+    private final FilterRegistry filterRegistry;
 
-    public PaginationResolver(HandlerMethodArgumentResolver delegate) {
+    public PaginationResolver(HandlerMethodArgumentResolver delegate, FilterRegistry filterRegistry) {
         this.delegate = delegate;
+        this.filterRegistry = filterRegistry;
     }
 
     @Override
@@ -41,11 +43,11 @@ public class PaginationResolver implements HandlerMethodArgumentResolver {
             RequestPagination pagination = (RequestPagination) result;
 
             Class<? extends Filter<? extends FilterInstance>>[] applicableFilters = Optional.ofNullable(parameter.getMethodAnnotation(ApplicableFilters.class)).map(ApplicableFilters::value).orElse(null);
-
+            // TODO this doesn't inform the user if they used an invalid filter since it only checks if any of the applicable filters are present on the query
             if (applicableFilters != null) {
                 for (Class<? extends Filter<? extends FilterInstance>> filter : applicableFilters) {
-                    if (Filters.getFilter(filter).supports(webRequest)) {
-                        pagination.getFilters().add(Filters.getFilter(filter).create(webRequest));
+                    if (filterRegistry.get(filter).supports(webRequest)) {
+                        pagination.getFilters().add(filterRegistry.get(filter).create(webRequest));
                     }
                 }
             }
@@ -57,51 +59,9 @@ public class PaginationResolver implements HandlerMethodArgumentResolver {
                 if (!applicableSorters.contains(sortKey)) {
                     throw new HangarApiException(sortKey + " is an invalid sort type for this request");
                 }
-                pagination.getSorters().add(sorter.startsWith("-") ? Sorters.getSorter(sortKey).descending() : Sorters.getSorter(sortKey).ascending());
+                pagination.getSorters().add(sorter.startsWith("-") ? SorterRegistry.getSorter(sortKey).descending() : SorterRegistry.getSorter(sortKey).ascending());
             }
-
-//
-//            if (applicableSorters != null) {
-//                for (String sorter : applicableSorters) {
-//                    if (webRequest.getParameterMap().containsKey(sorter)) {
-//
-//                    }
-//                }
-//            }
         }
-
-
-
-
-//        if (result instanceof RequestPagination) {
-//            RequestPagination pagination = (RequestPagination) result;
-//            Set<String> knownParams = new HashSet<>();
-//            knownParams.add("limit");
-//            knownParams.add("offset");
-//            knownParams.add("sort");
-//            for (Parameter param : parameter.getExecutable().getParameters()) {
-//                knownParams.add(param.getName());
-//            }
-//
-//            Map<String, String> filters = new HashMap<>();
-//            for (String key : webRequest.getParameterMap().keySet()) {
-//                if (!knownParams.contains(key)) {
-//                    filters.put(key, String.join(",", webRequest.getParameterValues(key)));
-//                }
-//            }
-//            pagination.setFilters(filters);
-//
-//            String[] sorts = webRequest.getParameterMap().get("sort");
-//            List<String> sort = new ArrayList<>();
-//            if (sorts != null && sorts.length > 0) {
-//                for (String s : sorts) {
-//                    if (s != null && s.length() > 0) {
-//                        sort.add(s);
-//                    }
-//                }
-//                pagination.setSorts(sort);
-//            }
-//        }
 
         return result;
     }

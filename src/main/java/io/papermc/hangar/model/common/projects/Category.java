@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@EnumByOrdinal
 public enum Category {
     ADMIN_TOOLS(0, "Admin Tools", "mdi-server", "admin_tools"),
     CHAT(1, "Chat", "mdi-chat", "chat"),

@@ -2,7 +2,7 @@ package io.papermc.hangar.model.api.requests;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.controller.extras.ApiUtils;
-import io.papermc.hangar.controller.extras.pagination.filters.Filter.FilterInstance;
+import io.papermc.hangar.controller.extras.pagination.Filter.FilterInstance;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class RequestPagination {
         this.sorters = new ArrayList<>();
     }
 
-    protected RequestPagination(long limit, long offset) {
+    public RequestPagination(long limit, long offset) {
         this.limit = limit;
         this.offset = offset;
         this.filters = new ArrayList<>();

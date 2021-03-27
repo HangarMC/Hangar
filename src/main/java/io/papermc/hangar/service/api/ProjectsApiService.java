@@ -10,7 +10,6 @@ import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.ProjectMember;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
-import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
 import io.papermc.hangar.modelold.generated.Tag;
 import io.papermc.hangar.service.HangarService;
@@ -35,7 +34,7 @@ public class ProjectsApiService extends HangarService {
 
     public Project getProject(String author, String slug) {
         boolean seeHidden = getGlobalPermissions().has(Permission.SeeHidden);
-        return projectsApiDAO.getProjects(author, slug, seeHidden, getHangarUserId(), null, null, null, null, null, 1, 0).stream().findFirst().orElse(null);
+        return projectsApiDAO.getProject(author, slug, seeHidden, getHangarUserId());
     }
 
     public PaginatedResult<ProjectMember> getProjectMembers(String author, String slug, RequestPagination requestPagination) {
@@ -57,7 +56,7 @@ public class ProjectsApiService extends HangarService {
         return new PaginatedResult<>(new Pagination(projectsApiDAO.getProjectWatchersCount(author, slug), pagination), watchers);
     }
 
-    public PaginatedResult<Project> getProjects(String query, List<Category> categories, List<String> tags, String owner, ProjectSortingStrategy sort, boolean orderWithRelevance, RequestPagination pagination) {
+    public PaginatedResult<Project> getProjects(String query, List<String> tags, ProjectSortingStrategy sort, boolean orderWithRelevance, RequestPagination pagination) {
         List<Tag> parsedTags = new ArrayList<>();
         if (tags == null) {
             tags = new ArrayList<>();
@@ -93,35 +92,12 @@ public class ProjectsApiService extends HangarService {
             ordering = orderingFirstHalf + relevance;
         }
 
-        List<Project> projects = projectsApiDAO.getProjects(owner, null, seeHidden, getHangarUserId(), ordering, getCategoryNumbers(categories), getTagsNames(parsedTags), trimQuery(query), getQueryStatement(query), pagination.getLimit(), pagination.getOffset());
-        return new PaginatedResult<>(new Pagination(projectsApiDAO.countProjects(owner, null, seeHidden, getHangarUserId(), getCategoryNumbers(categories), getTagsNames(parsedTags), trimQuery(query), getQueryStatement(query)), pagination), projects);
-    }
-
-    private List<Integer> getCategoryNumbers(List<Category> categories){
-        return categories == null ? null : categories.stream().map(Category::getValue).collect(Collectors.toList());
+        // TODO the tags part of the query isn't 100% correct, its only using the tag name, not the data if its present
+        List<Project> projects = projectsApiDAO.getProjects(seeHidden, getHangarUserId(), ordering, getTagsNames(parsedTags), pagination);
+        return new PaginatedResult<>(new Pagination(projectsApiDAO.countProjects(seeHidden, getHangarUserId(),getTagsNames(parsedTags), pagination), pagination), projects);
     }
 
     private List<String> getTagsNames(List<Tag> tags){
         return tags == null ? null : tags.stream().filter(tag -> tag.getData() == null).map(Tag::getName).collect(Collectors.toList());
-    }
-
-    private String trimQuery(String query){
-        String trimmedQuery = null;
-        if(query != null && !query.isBlank()) {
-            trimmedQuery = query.trim(); // Ore#APIV2Queries line 169 && 200
-        }
-        return trimmedQuery;
-    }
-
-    private String getQueryStatement(String query){
-        String queryStatement = null;
-        if(query != null && !query.isBlank()){
-            if(query.endsWith(" ")) {
-                queryStatement = "p.search_words @@ websearch_to_tsquery('english', :query)";
-            } else {
-                queryStatement =  "p.search_words @@ websearch_to_tsquery_postfix('english', :query)";
-            }
-        }
-        return queryStatement;
     }
 }

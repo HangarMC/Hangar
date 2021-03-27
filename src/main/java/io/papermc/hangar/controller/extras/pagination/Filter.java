@@ -1,7 +1,8 @@
-package io.papermc.hangar.controller.extras.pagination.filters;
+package io.papermc.hangar.controller.extras.pagination;
 
-import io.papermc.hangar.controller.extras.pagination.filters.Filter.FilterInstance;
+import io.papermc.hangar.controller.extras.pagination.Filter.FilterInstance;
 import org.jdbi.v3.core.statement.SqlStatement;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.web.context.request.NativeWebRequest;
 
 public interface Filter<F extends FilterInstance> {
@@ -12,6 +13,7 @@ public interface Filter<F extends FilterInstance> {
         return webRequest.getParameterMap().containsKey(getQueryParamName());
     }
 
+    @NotNull
     F create(NativeWebRequest webRequest);
 
     interface FilterInstance {

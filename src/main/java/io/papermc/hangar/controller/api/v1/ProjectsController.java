@@ -2,6 +2,10 @@ package io.papermc.hangar.controller.api.v1;
 
 import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.controller.api.v1.interfaces.IProjectsController;
+import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
+import io.papermc.hangar.controller.extras.pagination.filters.ProjectAuthorFilter;
+import io.papermc.hangar.controller.extras.pagination.filters.ProjectCategoryFilter;
+import io.papermc.hangar.controller.extras.pagination.filters.ProjectQueryFilter;
 import io.papermc.hangar.exceptions.InternalHangarException;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.User;
@@ -9,7 +13,6 @@ import io.papermc.hangar.model.api.project.DayProjectStats;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.ProjectMember;
 import io.papermc.hangar.model.api.requests.RequestPagination;
-import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.service.api.ProjectsApiService;
@@ -50,8 +53,9 @@ public class ProjectsController extends HangarController implements IProjectsCon
     }
 
     @Override
-    public ResponseEntity<PaginatedResult<Project>> getProjects(String q, List<Category> categories, List<String> tags, String owner, ProjectSortingStrategy sort, boolean orderWithRelevance, @NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(projectsApiService.getProjects(q, categories, tags, owner, sort, orderWithRelevance, pagination));
+    @ApplicableFilters({ProjectCategoryFilter.class, ProjectAuthorFilter.class, ProjectQueryFilter.class})
+    public ResponseEntity<PaginatedResult<Project>> getProjects(String q, /*List<Category> categories,*/ List<String> tags, /*String owner,*/ ProjectSortingStrategy sort, boolean orderWithRelevance, @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(projectsApiService.getProjects(q, /*categories,*/ tags, /*owner,*/ sort, orderWithRelevance, pagination));
     }
 
     @Override

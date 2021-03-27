@@ -16,6 +16,7 @@ public class Project extends ProjectCompact {
     private final OffsetDateTime lastUpdated;
     private final UserActions userActions;
     private final ProjectSettings settings;
+    // TODO remove this as they should all be standardized based on the project namespace
     private final String iconUrl;
     protected final List<PromotedVersion> promotedVersions;
 

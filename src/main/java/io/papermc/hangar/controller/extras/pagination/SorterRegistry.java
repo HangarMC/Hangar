@@ -1,4 +1,4 @@
-package io.papermc.hangar.controller.extras.pagination.sorters;
+package io.papermc.hangar.controller.extras.pagination;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class Sorters {
+public class SorterRegistry {
 
     private static final Map<String, ApplySorter> SORTERS = new HashMap<>();
 
@@ -47,6 +47,22 @@ public class Sorters {
 
         default Consumer<StringBuilder> descending() {
             return sb -> applySorting(sb, SortDirection.DESCENDING);
+        }
+    }
+
+    public enum SortDirection {
+        ASCENDING(" ASC"),
+        DESCENDING(" DESC");
+
+        private final String sql;
+
+        SortDirection(String sql) {
+            this.sql = sql;
+        }
+
+        @Override
+        public String toString() {
+            return sql;
         }
     }
 }
