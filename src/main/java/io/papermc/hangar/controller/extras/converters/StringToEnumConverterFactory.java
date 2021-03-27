@@ -1,9 +1,11 @@
 package io.papermc.hangar.controller.extras.converters;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import io.papermc.hangar.exceptions.HangarApiException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
@@ -38,7 +40,12 @@ public class StringToEnumConverterFactory implements ConverterFactory<String, En
             }
 
             // fall back to value of
-            return (T) Enum.valueOf(targetType, s.trim().toUpperCase());
+            try {
+                return (T) Enum.valueOf(targetType, s.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new HangarApiException(HttpStatus.BAD_REQUEST, s + " did not match a valid " + targetType);
+            }
+
         };
     }
 }

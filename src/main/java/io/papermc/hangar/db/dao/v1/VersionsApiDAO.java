@@ -118,29 +118,20 @@ public interface VersionsApiDAO {
             "               JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
             "           GROUP BY pvpd.version_id" +
             "       ) sq ON pv.id = sq.version_id" +
+            "       INNER JOIN (SELECT pvt.name, pvt.data, pvt.version_id FROM project_version_tags pvt) vtsq ON pv.id = vtsq.version_id" +
             "   WHERE TRUE <filters>" +
             "       <if(!canSeeHidden)>" +
             "           AND (pv.visibility = 0 " +
             "           <if(userId)>" +
             "               OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4) " +
             "           <endif>)" +
-            "           AND" +
             "       <endif>" +
-            "       lower(p.owner_name) = lower(:author) AND" +
+            "       AND lower(p.owner_name) = lower(:author) AND" +
             "       lower(p.slug) = lower(:slug) " +
-            // TODO tags
-            /*"       <if(tags)> AND (" +
-            "           pvt.name || ':' || pvt.data IN (<tags>) OR " +
-            "           pvt.name IN (<tags>) OR " +
-            "           'Channel:' || pc.name IN (<tags>) OR " +
-            "           'Channel' IN (<tags>)" +
-            "           )" +
-            "       <endif> " +*/
-            "   ORDER BY pv.created_at DESC LIMIT :limit OFFSET :offset"
-    )
-    SortedMap<Long, Version> getVersions(String author, String slug, /*@BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<String> tags,*/ @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
+            " GROUP BY pv.id, p.id, u.name, pv.created_at ORDER BY pv.created_at DESC <offsetLimit>")
+    SortedMap<Long, Version> getVersions(String author, String slug, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
 
-    @SqlQuery("SELECT COUNT(*)" +
+    @SqlQuery("SELECT COUNT(pv.id)" +
             "   FROM project_versions pv" +
             "       JOIN projects p ON pv.project_id = p.id" +
             "       JOIN project_channels pc ON pv.channel_id = pc.id" +
@@ -149,25 +140,17 @@ public interface VersionsApiDAO {
             "               JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
             "           GROUP BY pvpd.version_id" +
             "       ) sq ON pv.id = sq.version_id" +
-//            "   LEFT JOIN project_version_tags pvt ON pv.id = pvt.version_id" +
+            "       INNER JOIN (SELECT pvt.name, pvt.data, pvt.version_id FROM project_version_tags pvt) vtsq ON pv.id = vtsq.version_id" +
             "   WHERE TRUE <filters> " +
             "       <if(!canSeeHidden)>" +
             "           AND (pv.visibility = 0 " +
             "           <if(userId)>" +
             "              OR (<userId> IN (SELECT pm.user_id FROM project_members_all pm WHERE pm.id = p.id) AND pv.visibility != 4)" +
             "           <endif>)" +
-            "         AND " +
             "       <endif> " +
-            "   lower(p.slug) = lower(:slug) AND " +
-            "   lower(p.owner_name) = lower(:author)" /* <if(tags)> AND " +
-            // TODO tags
-            "(" +
-            "   pvt.name || ':' || pvt.data IN (<tags>) OR " +
-            "   pvt.name IN (<tags>) OR " +
-            "   'Channel:' || pc.name IN (<tags>) OR " +
-            "   'Channel' IN (<tags>)" +
-            "  )<endif> " */)
-    Long getVersionCount(String author, String slug, /*@BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<String> tags,*/ @Define boolean canSeeHidden, @Define Long userId, @BindPagination(isCount = true) RequestPagination pagination);
+            "   AND lower(p.slug) = lower(:slug) AND " +
+            "   lower(p.owner_name) = lower(:author)")
+    Long getVersionCount(String author, String slug, @Define boolean canSeeHidden, @Define Long userId, @BindPagination(isCount = true) RequestPagination pagination);
 
     @KeyColumn("platform")
     @SqlQuery("SELECT " +
@@ -213,36 +196,4 @@ public interface VersionsApiDAO {
             "      AND plv.platform = :platform" +
             "      AND (pvd IS NULL OR (pvd.project_id = p.id AND pvd.version_id = pv.id));")
     Map<String, VersionStats> getVersionStats(String author, String slug, String versionString, @EnumByOrdinal Platform platform, OffsetDateTime fromDate, OffsetDateTime toDate);
-
-    /*class VersionReducer implements LinkedHashMapRowReducer<Long, Version> {
-        @Override
-        public void accumulate(Map<Long, Version> container, RowView rowView) {
-            final Version version = container.computeIfAbsent(rowView.getColumn("id", Long.class), id -> rowView.getRow(Version.class));
-            VersionReducer._accumulateVersion(rowView, version);
-        }
-
-        public static <T extends Version> void _accumulateVersion(RowView rowView, T version) { // What a mess really
-            Platform pluginPlatform = rowView.getColumn("pd_platform", Platform.class);
-            if (pluginPlatform != null) {
-                version.getPluginDependencies().computeIfAbsent(pluginPlatform, _pl -> new HashSet<>());
-                version.getPluginDependencies().get(pluginPlatform).add(rowView.getRow(PluginDependency.class));
-            }
-
-            Platform platformPlatform = rowView.getColumn("p_platform", Platform.class);
-            version.getPlatformDependencies().computeIfAbsent(platformPlatform, _pl -> new HashSet<>());
-            version.getPlatformDependencies().get(platformPlatform).add(rowView.getColumn("p_version", String.class));
-
-            if (rowView.getColumn("ch_tag_name", String.class) != null) {
-                version.getTags().add(new Tag(rowView.getColumn("ch_tag_name", String.class), rowView.getColumn("ch_tag_data", String.class), new TagColor(null, rowView.getColumn("ch_tag_color", Color.class).getHex())));
-            }
-
-            if (rowView.getColumn("tag_name", String.class) != null) {
-                version.getTags().add(new Tag(
-                        rowView.getColumn("tag_name", String.class),
-                        StringUtils.formatVersionNumbers(Arrays.asList(rowView.getColumn("tag_data", String[].class))),
-                        rowView.getColumn("tag_color", io.papermc.hangar.model.common.TagColor.class).toTagColor()
-                ));
-            }
-        }
-    }*/
 }

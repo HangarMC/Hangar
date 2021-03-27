@@ -15,7 +15,10 @@ public class TagMapper implements RowMapper<Tag> {
     @Override
     public Tag map(ResultSet rs, StatementContext ctx) throws SQLException {
         String name = rs.getString("name");
-        String[] data = (String[]) rs.getArray("data").getArray();
+        String[] data = null;
+        if (rs.getArray("data") != null) {
+            data = (String[]) rs.getArray("data").getArray();
+        }
         TagColor tagColor = io.papermc.hangar.model.common.TagColor.getValues()[rs.getInt("color")].toTagColor();
         return new Tag(name, data != null ? StringUtils.formatVersionNumbers(Arrays.asList(data)) : null, tagColor);
     }

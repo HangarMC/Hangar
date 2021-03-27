@@ -4,6 +4,7 @@ import io.papermc.hangar.controller.api.v1.interfaces.IVersionsController;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionChannelFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionPlatformFilter;
+import io.papermc.hangar.controller.extras.pagination.filters.versions.VersionTagFilter;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
@@ -40,9 +41,9 @@ public class VersionsController implements IVersionsController {
     }
 
     @Override
-    @ApplicableFilters({VersionChannelFilter.class, VersionPlatformFilter.class})
-    public ResponseEntity<PaginatedResult<Version>> getVersions(String author, String slug, /*List<String> tags,*/ @NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(versionsApiService.getVersions(author, slug, /*tags,*/ pagination));
+    @ApplicableFilters({VersionChannelFilter.class, VersionPlatformFilter.class, VersionTagFilter.class})
+    public ResponseEntity<PaginatedResult<Version>> getVersions(String author, String slug, @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(versionsApiService.getVersions(author, slug, pagination));
     }
 
     @Override
