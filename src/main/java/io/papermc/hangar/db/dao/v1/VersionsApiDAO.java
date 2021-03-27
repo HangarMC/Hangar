@@ -131,7 +131,7 @@ public interface VersionsApiDAO {
             " GROUP BY pv.id, p.id, u.name, pv.created_at ORDER BY pv.created_at DESC <offsetLimit>")
     SortedMap<Long, Version> getVersions(String author, String slug, @Define boolean canSeeHidden, @Define Long userId, @BindPagination RequestPagination pagination);
 
-    @SqlQuery("SELECT COUNT(pv.id)" +
+    @SqlQuery("SELECT COUNT(DISTINCT pv.id)" +
             "   FROM project_versions pv" +
             "       JOIN projects p ON pv.project_id = p.id" +
             "       JOIN project_channels pc ON pv.channel_id = pc.id" +

@@ -1,7 +1,7 @@
 <template>
     <v-row>
         <v-col cols="12" lg="9">
-            <v-data-iterator :items="filteredVersions">
+            <v-data-iterator :items="versions.result" :loading="loading" :server-items-length="versions.pagination.count" :options.sync="options">
                 <template #item="{ item: version }">
                     <v-sheet width="100%" color="accent" rounded class="version mt-2">
                         <NuxtLink :to="`/${project.namespace.owner}/${project.namespace.slug}/versions/${version.name}`">
@@ -109,10 +109,11 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'nuxt-property-decorator';
+import { Component, Watch } from 'nuxt-property-decorator';
 import { IPlatform, ProjectChannel } from 'hangar-internal';
 import { Context } from '@nuxt/types';
 import { PaginatedResult, Tag as ApiTag, Version } from 'hangar-api';
+import { DataOptions } from 'vuetify';
 import Tag from '~/components/Tag.vue';
 import { RootState } from '~/store';
 import { HangarProjectMixin } from '~/components/mixins';
@@ -124,7 +125,9 @@ import { Platform } from '~/types/enums';
 export default class ProjectVersionsPage extends HangarProjectMixin {
     versions!: PaginatedResult<Version>;
     channels!: ProjectChannel[];
-
+    // TODO loading slot for v-data-iterator
+    loading = false;
+    options = { page: 1, itemsPerPage: 10 } as DataOptions;
     filter = {
         channels: [] as string[],
         platforms: [] as Platform[],
@@ -134,23 +137,42 @@ export default class ProjectVersionsPage extends HangarProjectMixin {
         },
     };
 
+    @Watch('filter', { deep: true })
+    onFilterChange() {
+        if (process.server) return;
+        if (this.filter.channels.length === 0 || this.filter.platforms.length === 0) {
+            this.versions.pagination.count = 0;
+            this.versions.result = [];
+            return;
+        }
+        this.loading = true;
+        this.$api
+            .request<PaginatedResult<Version>>(`projects/${this.$route.params.author}/${this.$route.params.slug}/versions`, false, 'get', this.requestOptions)
+            .then((versions) => {
+                this.versions = versions;
+            })
+            .catch(this.$util.handleRequestError)
+            .finally(() => {
+                this.loading = false;
+            });
+    }
+
+    get requestOptions() {
+        return {
+            limit: this.options.itemsPerPage,
+            offset: (this.options.page - 1) * this.options.itemsPerPage,
+            channel: this.filter.channels,
+            platform: this.filter.platforms,
+        };
+    }
+
     get platforms(): IPlatform[] {
         return Array.from((this.$store.state as RootState).platforms.values());
     }
 
-    get filteredVersions(): Version[] {
-        return this.versions.result
-            .filter((v) => (Object.keys(v.platformDependencies) as Platform[]).some((pl) => this.filter.platforms.includes(pl)))
-            .filter((v) => this.filter.channels.includes(v.tags.find((t) => t.name === 'Channel')!.data));
-    }
-
     async asyncData({ params, $api, $util }: Context) {
         const data = await Promise.all([
-            $api.request<PaginatedResult<Version>>(`projects/${params.author}/${params.slug}/versions`, false, 'get', {
-                limit: 25,
-                offset: 0,
-                // TODO pagination
-            }),
+            $api.request<PaginatedResult<Version>>(`projects/${params.author}/${params.slug}/versions`, false),
             $api.requestInternal(`channels/${params.author}/${params.slug}`, false),
         ]).catch<any>($util.handlePageRequestError);
         return { versions: data[0], channels: data[1] };

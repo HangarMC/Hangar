@@ -9,6 +9,9 @@
         :loading="loading"
         class="elevation-1"
     >
+        <template #item.username="{ item }">
+            {{ item.name }}
+        </template>
         <template #item.pic="{ item }">
             <UserAvatar :username="item.name" :avatar-url="$util.avatarUrl(item.name)" clazz="user-avatar-xs" />
         </template>
@@ -35,7 +38,7 @@ import { HangarComponent } from '~/components/mixins';
 export default class AuthorsPage extends HangarComponent {
     headers: DataTableHeader[] = [
         { text: '', value: 'pic', sortable: false },
-        { text: 'Username', value: 'name' },
+        { text: 'Username', value: 'username' },
         { text: 'Roles', value: 'roles', sortable: false },
         { text: 'Joined', value: 'joinDate' },
         { text: 'Projects', value: 'projectCount' },
@@ -79,9 +82,6 @@ export default class AuthorsPage extends HangarComponent {
         const sort: string[] = [];
         for (let i = 0; i < this.options.sortBy.length; i++) {
             let sortStr = this.options.sortBy[i];
-            if (sortStr === 'name') {
-                sortStr = 'username'; // TODO how to get around this... should we change the field on User to be username?
-            }
             if (this.options.sortDesc[i]) {
                 sortStr = '-' + sortStr;
             }

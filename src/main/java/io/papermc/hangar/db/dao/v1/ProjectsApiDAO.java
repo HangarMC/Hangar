@@ -110,7 +110,7 @@ public interface ProjectsApiDAO {
 
     // This query can be shorter because it doesnt need all those column values as above does, just a single column for the amount of rows to be counted
     @UseStringTemplateEngine
-    @SqlQuery("SELECT count(hp.id) " +
+    @SqlQuery("SELECT count(DISTINCT hp.id) " +
             "  FROM home_projects hp" +
             "         JOIN projects p ON hp.id = p.id" +
             "         WHERE true <filters>" + // Not sure how else to get here a single Where
