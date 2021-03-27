@@ -116,7 +116,7 @@ public interface ProjectsApiDAO {
             "         WHERE true <filters>" + // Not sure how else to get here a single Where
             "         <if(!seeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif> ")
     long countProjects(@Define boolean seeHidden, @Define Long requesterId,
-                       @BindPagination(offsetLimit = false, sorters = false) RequestPagination pagination);
+                       @BindPagination(isCount = true) RequestPagination pagination);
 
     @RegisterConstructorMapper(ProjectMember.class)
     @SqlQuery("SELECT u.name AS \"user\", array_agg(r.name) roles " +

@@ -1,7 +1,7 @@
-package io.papermc.hangar.controller.extras.pagination.filters;
+package io.papermc.hangar.controller.extras.pagination.filters.projects;
 
 import io.papermc.hangar.controller.extras.pagination.Filter;
-import io.papermc.hangar.controller.extras.pagination.filters.ProjectTagFilter.ProjectTagFilterInstance;
+import io.papermc.hangar.controller.extras.pagination.filters.projects.ProjectTagFilter.ProjectTagFilterInstance;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;

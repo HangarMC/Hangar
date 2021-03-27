@@ -20,9 +20,7 @@ import java.lang.reflect.Type;
 @SqlStatementCustomizingAnnotation(BindPagination.BindPaginationFactory.class)
 public @interface BindPagination {
 
-    boolean offsetLimit() default true;
-    boolean filters() default true;
-    boolean sorters() default true;
+    boolean isCount() default false;
 
     class BindPaginationFactory implements SqlStatementCustomizerFactory {
 
@@ -31,13 +29,9 @@ public @interface BindPagination {
             return (q, arg) -> {
                 RequestPagination pagination = (RequestPagination) arg;
                 BindPagination paginationConfig = param.getAnnotation(BindPagination.class);
-                if (paginationConfig.filters()) {
-                    filter(pagination, q);
-                }
-                if (paginationConfig.sorters()) {
+                filter(pagination, q);
+                if (!paginationConfig.isCount()) {
                     sorters(pagination, q);
-                }
-                if (paginationConfig.offsetLimit()) {
                     offsetLimit(pagination, q);
                 }
             };

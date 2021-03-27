@@ -51,6 +51,7 @@ public class UsersController extends HangarController implements IUsersControlle
         return ResponseEntity.ok(usersApiService.getAuthors(pagination));
     }
 
+    // TODO does this really need to be a paginated response? not gonna have 1000 staff right?
     @Override
     public ResponseEntity<PaginatedResult<User>> getStaff(String sort, @NotNull RequestPagination pagination) {
         return ResponseEntity.ok(usersApiService.getStaff(sort, pagination));

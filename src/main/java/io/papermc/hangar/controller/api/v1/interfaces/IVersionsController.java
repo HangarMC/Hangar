@@ -99,7 +99,7 @@ public interface IVersionsController {
     @GetMapping("/projects/{author}/{slug}/versions")
     ResponseEntity<PaginatedResult<Version>> getVersions(@ApiParam("The author of the project to return versions for") @PathVariable String author,
                                                          @ApiParam("The slug of the project to return versions for") @PathVariable String slug,
-                                                         @ApiParam("A list of tags all the returned versions should have. Should be formatted either as `tagname` or `tagname:tagdata`.") @RequestParam(required = false) List<String> tags,
+//                                                         @ApiParam("A list of tags all the returned versions should have. Should be formatted either as `tagname` or `tagname:tagdata`.") @RequestParam(required = false) List<String> tags,
                                                          @ApiParam("Pagination information") @NotNull RequestPagination pagination
     );
 
