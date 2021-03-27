@@ -31,7 +31,7 @@ public class ProjectAuthorFilter implements Filter<ProjectAuthorFilterInstance> 
 
         @Override
         public void createSql(StringBuilder sb, SqlStatement<?> q) {
-            sb.append(" AND ").append("p.owner_name").append(" LIKE ").append("'%' || :ownerName || '%'");
+            sb.append(" AND ").append("p.owner_name").append(" = ").append(":ownerName");
             q.bind("ownerName", ownerName);
         }
     }
