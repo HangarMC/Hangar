@@ -2,30 +2,32 @@ package io.papermc.hangar.model.api.project.version;
 
 import io.papermc.hangar.model.common.TagColor;
 
+import java.util.List;
+
 public class PromotedVersionTag extends Tag {
 
     private final String displayData;
-    private final String minecraftVersion;
+    private final List<String> minecraftVersions;
 
-    public PromotedVersionTag(String name, String data, String displayData, String minecraftVersion, TagColor color) {
+    public PromotedVersionTag(String name, String data, String displayData, List<String> minecraftVersions, TagColor color) {
         super(name, data, color.toTagColor());
         this.displayData = displayData;
-        this.minecraftVersion = minecraftVersion;
+        this.minecraftVersions = minecraftVersions;
     }
 
     public String getDisplayData() {
         return displayData;
     }
 
-    public String getMinecraftVersion() {
-        return minecraftVersion;
+    public List<String> getMinecraftVersions() {
+        return minecraftVersions;
     }
 
     @Override
     public String toString() {
         return "PromotedVersionTag{" +
                 "displayData='" + displayData + '\'' +
-                ", minecraftVersion='" + minecraftVersion + '\'' +
+                ", minecraftVersions=" + minecraftVersions +
                 "} " + super.toString();
     }
 }

@@ -6,6 +6,7 @@ import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilt
 import io.papermc.hangar.controller.extras.pagination.filters.ProjectAuthorFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.ProjectCategoryFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.ProjectQueryFilter;
+import io.papermc.hangar.controller.extras.pagination.filters.ProjectTagFilter;
 import io.papermc.hangar.exceptions.InternalHangarException;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.User;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -53,9 +53,9 @@ public class ProjectsController extends HangarController implements IProjectsCon
     }
 
     @Override
-    @ApplicableFilters({ProjectCategoryFilter.class, ProjectAuthorFilter.class, ProjectQueryFilter.class})
-    public ResponseEntity<PaginatedResult<Project>> getProjects(String q, /*List<Category> categories,*/ List<String> tags, /*String owner,*/ ProjectSortingStrategy sort, boolean orderWithRelevance, @NotNull RequestPagination pagination) {
-        return ResponseEntity.ok(projectsApiService.getProjects(q, /*categories,*/ tags, /*owner,*/ sort, orderWithRelevance, pagination));
+    @ApplicableFilters({ProjectCategoryFilter.class, ProjectAuthorFilter.class, ProjectQueryFilter.class, ProjectTagFilter.class})
+    public ResponseEntity<PaginatedResult<Project>> getProjects(String q, ProjectSortingStrategy sort, boolean orderWithRelevance, @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(projectsApiService.getProjects(q, sort, orderWithRelevance, pagination));
     }
 
     @Override

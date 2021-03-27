@@ -10,7 +10,6 @@ import io.papermc.hangar.model.api.requests.RequestPagination;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
-import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.customizer.DefineNamedBindings;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -28,103 +27,96 @@ public interface ProjectsApiDAO {
 
     @UseStringTemplateSqlLocator
     @RegisterColumnMapper(PromotedVersionMapper.class)
-    @SqlQuery("SELECT p.id," +
-            "       p.created_at," +
-            "       p.name," +
-            "       p.owner_name \"owner\"," +
-            "       p.slug," +
-            "       p.promoted_versions," +
-            "       p.views," +
-            "       p.downloads," +
-            "       p.recent_views," +
-            "       p.recent_downloads," +
-            "       p.stars," +
-            "       p.watchers," +
-            "       p.category," +
-            "       p.description," +
-            "       COALESCE(p.last_updated, p.created_at) AS last_updated," +
-            "       p.visibility, " +
+    @SqlQuery("SELECT hp.id," +
+            "       hp.created_at," +
+            "       hp.name," +
+            "       hp.owner_name \"owner\"," +
+            "       hp.slug," +
+            "       hp.promoted_versions," +
+            "       hp.views," +
+            "       hp.downloads," +
+            "       hp.recent_views," +
+            "       hp.recent_downloads," +
+            "       hp.stars," +
+            "       hp.watchers," +
+            "       hp.category," +
+            "       hp.description," +
+            "       COALESCE(hp.last_updated, hp.created_at) AS last_updated," +
+            "       hp.visibility, " +
             "       <if(requesterId)> " +
-            "         EXISTS(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS starred, " +
-            "         EXISTS(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS watching, " +
+            "         EXISTS(SELECT * FROM project_stars s WHERE s.project_id = hp.id AND s.user_id = :requesterId) AS starred, " +
+            "         EXISTS(SELECT * FROM project_watchers s WHERE s.project_id = hp.id AND s.user_id = :requesterId) AS watching, " +
             "       <else>" +
             "         null as starred," +
             "         null as watching," +
             "       <endif>" +
-            "       ps.homepage," +
-            "       ps.issues," +
-            "       ps.source," +
-            "       ps.support," +
-            "       ps.license_name," +
-            "       ps.license_url," +
-            "       ps.keywords," +
-            "       ps.forum_sync" +
-            "  FROM home_projects p" +
-            "         JOIN projects ps ON p.id = ps.id" +
-            "         WHERE lower(p.slug) = lower(:slug) AND" +
-            "           lower(p.owner_name) = lower(:author)" +
-            "         <if(!seeHidden)> AND (p.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(p.project_members) AND p.visibility != 4)<endif>) <endif>")
+            "       p.homepage," +
+            "       p.issues," +
+            "       p.source," +
+            "       p.support," +
+            "       p.license_name," +
+            "       p.license_url," +
+            "       p.keywords," +
+            "       p.forum_sync" +
+            "  FROM home_projects hp" +
+            "         JOIN projects p ON hp.id = p.id" +
+            "         WHERE lower(hp.slug) = lower(:slug) AND" +
+            "           lower(hp.owner_name) = lower(:author)" +
+            "         <if(!seeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif>")
     Project getProject(String author, String slug, @Define boolean canSeeHidden, @Define Long requesterId);
 
     @UseStringTemplateEngine
-    @SqlQuery("SELECT p.id," +
-            "       p.created_at," +
-            "       p.name," +
-            "       p.owner_name \"owner\"," +
-            "       p.slug," +
-            "       p.promoted_versions," +
-            "       p.views," +
-            "       p.downloads," +
-            "       p.recent_views," +
-            "       p.recent_downloads," +
-            "       p.stars," +
-            "       p.watchers," +
-            "       p.category," +
-            "       p.description," +
-            "       COALESCE(p.last_updated, p.created_at) AS last_updated," +
-            "       p.visibility, " +
+    @SqlQuery("SELECT hp.id," +
+            "       hp.created_at," +
+            "       hp.name," +
+            "       hp.owner_name \"owner\"," +
+            "       hp.slug," +
+            "       hp.promoted_versions," +
+            "       hp.views," +
+            "       hp.downloads," +
+            "       hp.recent_views," +
+            "       hp.recent_downloads," +
+            "       hp.stars," +
+            "       hp.watchers," +
+            "       hp.category," +
+            "       hp.description," +
+            "       COALESCE(hp.last_updated, hp.created_at) AS last_updated," +
+            "       hp.visibility, " +
             "       <if(requesterId)> " +
-            "         EXISTS(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS starred, " +
-            "         EXISTS(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS watching, " +
+            "         EXISTS(SELECT * FROM project_stars s WHERE s.project_id = hp.id AND s.user_id = :requesterId) AS starred, " +
+            "         EXISTS(SELECT * FROM project_watchers s WHERE s.project_id = hp.id AND s.user_id = :requesterId) AS watching, " +
             "       <else>" +
             "         null as starred," +
             "         null as watching," +
             "       <endif>" +
-            "       ps.homepage," +
-            "       ps.issues," +
-            "       ps.source," +
-            "       ps.support," +
-            "       ps.license_name," +
-            "       ps.license_url," +
-            "       ps.keywords," +
-            "       ps.forum_sync" +
-            "  FROM home_projects p" +
-            "         JOIN projects ps ON p.id = ps.id" +
+            "       p.homepage," +
+            "       p.issues," +
+            "       p.source," +
+            "       p.support," +
+            "       p.license_name," +
+            "       p.license_url," +
+            "       p.keywords," +
+            "       p.forum_sync" +
+            "  FROM home_projects hp" +
+            "         JOIN projects p ON hp.id = p.id" +
             "         WHERE true <filters>" + // Not sure how else to get here a single Where
-            "         <if(!seeHidden)> AND (p.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(p.project_members) AND p.visibility != 4)<endif>) <endif> " +
-            "         <if(tags)> AND EXISTS ( SELECT pv.tag_name FROM jsonb_to_recordset(p.promoted_versions) " +
-            "           AS pv(tag_name TEXT, tag_version TEXT) WHERE (pv.tag_name) in (<tags>) ) <endif> " +
+            "         <if(!seeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif> " +
             "         <if(orderBy)>ORDER BY :orderBy<endif> " +
             "         <offsetLimit>")
     @RegisterColumnMapper(PromotedVersionMapper.class)
     @DefineNamedBindings
-    List<Project> getProjects(boolean seeHidden, Long requesterId, String orderBy,
-                              @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<String> tags, //TODO: implement tags with mc_version('data')
+    List<Project> getProjects(@Define boolean seeHidden, Long requesterId, String orderBy,
                               @BindPagination RequestPagination pagination);
 
     // This query can be shorter because it doesnt need all those column values as above does, just a single column for the amount of rows to be counted
     @UseStringTemplateEngine
-    @SqlQuery("SELECT count(p.id) " +
-            "  FROM home_projects p" +
-            "         JOIN projects ps ON p.id = ps.id" +
+    @SqlQuery("SELECT count(hp.id) " +
+            "  FROM home_projects hp" +
+            "         JOIN projects p ON hp.id = p.id" +
             "         WHERE true <filters>" + // Not sure how else to get here a single Where
-            "         <if(!seeHidden)> AND (p.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(p.project_members) AND p.visibility != 4)<endif>) <endif> " +
-            "         <if(tags)> AND EXISTS ( SELECT pv.tag_name FROM jsonb_to_recordset(p.promoted_versions) " +
-            "           AS pv(tag_name TEXT, tag_version TEXT) WHERE (pv.tag_name) in (<tags>) ) <endif> ")
-    @DefineNamedBindings
-    long countProjects(@Define boolean seeHidden, Long requesterId,
-                       @BindList(onEmpty = BindList.EmptyHandling.NULL_VALUE) List<String> tags, //TODO: implement tags with mc_version('data')
-                       @BindPagination RequestPagination pagination);
+            "         <if(!seeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif> ")
+    long countProjects(@Define boolean seeHidden, @Define Long requesterId,
+                       @BindPagination(offsetLimit = false, sorters = false) RequestPagination pagination);
 
     @RegisterConstructorMapper(ProjectMember.class)
     @SqlQuery("SELECT u.name AS \"user\", array_agg(r.name) roles " +

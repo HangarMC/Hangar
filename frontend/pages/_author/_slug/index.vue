@@ -79,15 +79,12 @@
                     <v-card>
                         <v-card-title v-text="$t('project.promotedVersions')"></v-card-title>
                         <v-card-text>
-                            <v-list v-if="project">
+                            <v-list>
                                 <v-list-item v-for="(version, index) in project.promotedVersions" :key="`${index}-${version.version}`">
-                                    {{ version.version.substring(0, version.version.lastIndexOf('.')) }}
+                                    {{ version.version }}
                                     <Tag v-for="(tag, idx) in version.tags" :key="idx" :color="tag.color" :data="tag.displayData" :name="tag.name"></Tag>
                                 </v-list-item>
                             </v-list>
-                            <div v-else class="text-center py-4">
-                                <v-progress-circular indeterminate />
-                            </div>
                         </v-card-text>
                     </v-card>
                 </v-col>

@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Map;
 
 @Anyone
@@ -82,7 +81,6 @@ public interface IProjectsController {
     @GetMapping("/projects")
     ResponseEntity<PaginatedResult<Project>> getProjects(
             @ApiParam("The query to use when searching") @RequestParam(required = false) String q,
-            @ApiParam("A list of tags all the returned projects should have. Should be formated either as `tagname` or `tagname:tagdata`.") @RequestParam(value = "tags", required = false) List<String> tags,
             @ApiParam("How to sort the projects") @RequestParam(defaultValue = "updated") ProjectSortingStrategy sort,
             @ApiParam("If how relevant the project is to the given query should be used when sorting the projects") @RequestParam(defaultValue = "true") boolean relevance,
             @ApiParam("Pagination information") @NotNull RequestPagination pagination

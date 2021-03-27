@@ -31,7 +31,7 @@ public class ProjectQueryFilter implements Filter<ProjectQueryFilterInstance> {
 
         @Override
         public void createSql(StringBuilder sb, SqlStatement<?> q) {
-            sb.append(" AND (p.search_words @@ websearch_to_tsquery");
+            sb.append(" AND (hp.search_words @@ websearch_to_tsquery");
             if (!query.endsWith(" ")) {
                  sb.append("_postfix");
             }

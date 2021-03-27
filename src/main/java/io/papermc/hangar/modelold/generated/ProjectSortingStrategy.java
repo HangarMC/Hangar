@@ -8,14 +8,14 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum ProjectSortingStrategy {
 
-    STARS(0, "Most stars", "p.stars DESC, p.name ASC", "stars"),
-    DOWNLOADS(1, "Most downloads", "p.downloads DESC", "downloads"),
-    VIEWS(2, "Most views", "p.views DESC", "views"),
-    NEWEST(3, "Newest", "p.created_at DESC", "newest"),
-    UPDATED(4, "Recently updated", "p.last_updated DESC", "updated"),
-    ONLY_RELEVANCE(5, "Only relevance", "p.last_updated DESC", "only_relevance"),
-    RECENT_DOWNLOADS(6, "Recent views", "p.recent_views DESC", "recent_views"),
-    RECENT_VIEWS(7, "Recent downloads", "p.recent_downloads DESC", "recent_downloads");
+    STARS(0, "Most stars", "hp.stars DESC, hp.name ASC", "stars"),
+    DOWNLOADS(1, "Most downloads", "hp.downloads DESC", "downloads"),
+    VIEWS(2, "Most views", "hp.views DESC", "views"),
+    NEWEST(3, "Newest", "hp.created_at DESC", "newest"),
+    UPDATED(4, "Recently updated", "hp.last_updated DESC", "updated"),
+    ONLY_RELEVANCE(5, "Only relevance", "hp.last_updated DESC", "only_relevance"),
+    RECENT_DOWNLOADS(6, "Recent views", "hp.recent_views DESC", "recent_views"),
+    RECENT_VIEWS(7, "Recent downloads", "hp.recent_downloads DESC", "recent_downloads");
 
     public static final ProjectSortingStrategy Default = UPDATED;
 

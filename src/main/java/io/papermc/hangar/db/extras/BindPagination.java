@@ -20,16 +20,26 @@ import java.lang.reflect.Type;
 @SqlStatementCustomizingAnnotation(BindPagination.BindPaginationFactory.class)
 public @interface BindPagination {
 
+    boolean offsetLimit() default true;
+    boolean filters() default true;
+    boolean sorters() default true;
+
     class BindPaginationFactory implements SqlStatementCustomizerFactory {
 
         @Override
         public SqlStatementParameterCustomizer createForParameter(final Annotation annotation, final Class<?> sqlObjectType, final Method method, final Parameter param, final int index, final Type paramType) {
             return (q, arg) -> {
                 RequestPagination pagination = (RequestPagination) arg;
-
-                filter(pagination, q);
-                sorters(pagination, q);
-                offsetLimit(pagination, q);
+                BindPagination paginationConfig = param.getAnnotation(BindPagination.class);
+                if (paginationConfig.filters()) {
+                    filter(pagination, q);
+                }
+                if (paginationConfig.sorters()) {
+                    sorters(pagination, q);
+                }
+                if (paginationConfig.offsetLimit()) {
+                    offsetLimit(pagination, q);
+                }
             };
         }
 
