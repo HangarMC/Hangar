@@ -1,10 +1,11 @@
 <template>
     <v-data-table
-        v-if="authors"
         :headers="headers"
-        :items="authors.result"
+        :items="users.result"
         :options.sync="options"
-        :server-items-length="authors.pagination.count"
+        :server-items-length="users.pagination.count"
+        :items-per-page="25"
+        :footer-props="{ itemsPerPageOptions: [5, 15, 25] }"
         multi-sort
         :loading="loading"
         class="elevation-1"
@@ -25,17 +26,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch } from 'nuxt-property-decorator';
+import { Component } from 'nuxt-property-decorator';
 import { Context } from '@nuxt/types';
 import { PaginatedResult, User } from 'hangar-api';
-import { DataOptions, DataTableHeader } from 'vuetify';
+import { DataTableHeader } from 'vuetify';
 import { UserAvatar } from '~/components/users';
-import { HangarComponent } from '~/components/mixins';
+import { UserListPage } from '~/components/mixins';
 
 @Component({
     components: { UserAvatar },
 })
-export default class AuthorsPage extends HangarComponent {
+export default class AuthorsPage extends UserListPage {
     headers: DataTableHeader[] = [
         { text: '', value: 'pic', sortable: false },
         { text: 'Username', value: 'username' },
@@ -44,61 +45,19 @@ export default class AuthorsPage extends HangarComponent {
         { text: 'Projects', value: 'projectCount' },
     ];
 
-    authors?: PaginatedResult<User>;
-    loading = false;
-    options = { page: 1, itemsPerPage: 10 } as DataOptions;
-    initialLoad = true;
-
     head() {
         return {
             title: this.$t('pages.authors'),
         };
     }
 
-    @Watch('options', { deep: true })
-    onOptionsChanged() {
-        if (this.initialLoad) {
-            this.initialLoad = false;
-            return;
-        }
-        this.loading = true;
-
-        this.$api
-            .request<PaginatedResult<User>>('authors', false, 'get', this.requestOptions)
-            .then((authors) => {
-                this.authors = authors;
-            })
-            .catch(this.$util.handleRequestError)
-            .finally(() => {
-                this.loading = false;
-            });
+    get url(): string {
+        return 'authors';
     }
 
-    get requestOptions() {
-        if (!this.options) {
-            return {};
-        }
-
-        const sort: string[] = [];
-        for (let i = 0; i < this.options.sortBy.length; i++) {
-            let sortStr = this.options.sortBy[i];
-            if (this.options.sortDesc[i]) {
-                sortStr = '-' + sortStr;
-            }
-            sort.push(sortStr);
-        }
-        return {
-            limit: this.options.itemsPerPage,
-            offset: (this.options.page - 1) * this.options.itemsPerPage,
-            sort,
-        };
-    }
-
-    async asyncData({ $api, $util }: Context): Promise<{ authors: PaginatedResult<User> | void }> {
-        const authors = await $api
-            .request<PaginatedResult<User>>('authors', false, 'get', { limit: 10, offset: 0 })
-            .catch($util.handlePageRequestError);
-        return { authors };
+    async asyncData({ $api, $util }: Context) {
+        const users = await $api.request<PaginatedResult<User>>('authors', false).catch<any>($util.handlePageRequestError);
+        return { users };
     }
 }
 </script>

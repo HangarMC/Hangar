@@ -1,13 +1,18 @@
 <template>
     <v-data-table
-        v-if="staff"
         :headers="headers"
-        :items="staff.result"
+        :items="users.result"
         :options.sync="options"
-        :server-items-length="staff.pagination.count"
+        :server-items-length="users.pagination.count"
+        :items-per-page="25"
+        :footer-props="{ itemsPerPageOptions: [5, 15, 25] }"
+        multi-sort
         :loading="loading"
         class="elevation-1"
     >
+        <template #item.username="{ item }">
+            {{ item.name }}
+        </template>
         <template #item.pic="{ item }">
             <UserAvatar :username="item.name" :avatar-url="$util.avatarUrl(item.name)" clazz="user-avatar-xs" />
         </template>
@@ -21,28 +26,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch } from 'nuxt-property-decorator';
+import { Component } from 'nuxt-property-decorator';
 import { PaginatedResult, User } from 'hangar-api';
-import { DataOptions, DataTableHeader } from 'vuetify';
+import { DataTableHeader } from 'vuetify';
 import { Context } from '@nuxt/types';
 import { UserAvatar } from '~/components/users';
-import { HangarComponent } from '~/components/mixins';
+import { UserListPage } from '~/components/mixins';
 
 @Component({
     components: { UserAvatar },
 })
-export default class StaffPage extends HangarComponent {
+export default class StaffPage extends UserListPage {
     headers: DataTableHeader[] = [
-        { text: '', value: 'pic' },
-        { text: 'Username', value: 'name' },
-        { text: 'Roles', value: 'roles' },
+        { text: '', value: 'pic', sortable: false },
+        { text: 'Username', value: 'username' },
+        { text: 'Roles', value: 'roles', sortable: false },
         { text: 'Joined', value: 'joinDate' },
     ];
-
-    staff?: PaginatedResult<User>;
-    loading = false;
-    options = { page: 1, itemsPerPage: 10 } as DataOptions;
-    initialLoad = true;
 
     head() {
         return {
@@ -50,44 +50,13 @@ export default class StaffPage extends HangarComponent {
         };
     }
 
-    @Watch('options', { deep: true })
-    onOptionsChanged() {
-        if (this.initialLoad) {
-            this.initialLoad = false;
-            return;
-        }
-        this.loading = true;
-
-        this.$api.request<PaginatedResult<User>>('staff', false, 'get', this.requestOptions).then((staff) => {
-            this.staff = staff;
-            this.loading = false;
-        });
+    get url(): string {
+        return 'staff';
     }
 
-    get requestOptions() {
-        if (!this.options) {
-            return {};
-        }
-
-        let sort = '';
-        if (this.options.sortBy.length === 1) {
-            sort = this.options.sortBy[0];
-            if (this.options.sortDesc[0]) {
-                sort = '-' + sort;
-            }
-        }
-        return {
-            limit: this.options.itemsPerPage,
-            offset: (this.options.page - 1) * this.options.itemsPerPage,
-            sort,
-        };
-    }
-
-    async asyncData({ $api, $util }: Context): Promise<{ staff: PaginatedResult<User> | void }> {
-        const staff = await $api
-            .request<PaginatedResult<User>>('staff', false, 'get', { limit: 10, offset: 0 })
-            .catch($util.handlePageRequestError);
-        return { staff };
+    async asyncData({ $api, $util }: Context) {
+        const users = await $api.request<PaginatedResult<User>>('staff', false).catch<any>($util.handlePageRequestError);
+        return { users };
     }
 }
 </script>

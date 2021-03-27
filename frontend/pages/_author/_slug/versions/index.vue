@@ -1,7 +1,12 @@
 <template>
     <v-row>
         <v-col cols="12" lg="9">
-            <v-data-iterator :items="versions.result" :loading="loading" :server-items-length="versions.pagination.count" :options.sync="options">
+            <v-data-iterator
+                :items="versions.result"
+                :server-items-length="versions.pagination.count"
+                :options.sync="options"
+                :footer-props="{ itemsPerPageOptions: [5, 15, 25] }"
+            >
                 <template #item="{ item: version }">
                     <v-sheet width="100%" color="accent" rounded class="version mt-2">
                         <NuxtLink :to="`/${project.namespace.owner}/${project.namespace.slug}/versions/${version.name}`">
@@ -125,8 +130,6 @@ import { Platform } from '~/types/enums';
 export default class ProjectVersionsPage extends HangarProjectMixin {
     versions!: PaginatedResult<Version>;
     channels!: ProjectChannel[];
-    // TODO loading slot for v-data-iterator
-    loading = false;
     options = { page: 1, itemsPerPage: 10 } as DataOptions;
     filter = {
         channels: [] as string[],
@@ -145,16 +148,12 @@ export default class ProjectVersionsPage extends HangarProjectMixin {
             this.versions.result = [];
             return;
         }
-        this.loading = true;
         this.$api
             .request<PaginatedResult<Version>>(`projects/${this.$route.params.author}/${this.$route.params.slug}/versions`, false, 'get', this.requestOptions)
             .then((versions) => {
                 this.versions = versions;
             })
-            .catch(this.$util.handleRequestError)
-            .finally(() => {
-                this.loading = false;
-            });
+            .catch(this.$util.handleRequestError);
     }
 
     get requestOptions() {

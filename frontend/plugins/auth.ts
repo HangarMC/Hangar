@@ -40,7 +40,7 @@ const createAuth = ({ app: { $cookies }, $axios, store, $api, redirect }: Contex
                 .catch((err) => {
                     console.log(err);
                     console.log('LOGGING OUT ON updateUser');
-                    this.logout(process.client);
+                    return this.logout(process.client);
                 });
         }
 

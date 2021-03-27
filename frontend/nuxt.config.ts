@@ -1,4 +1,5 @@
 import { NuxtConfig } from '@nuxt/types';
+import colors from 'vuetify/lib/util/colors';
 
 import en from './locales/en';
 import fr from './locales/fr';
@@ -130,6 +131,7 @@ export default {
     },
 
     loading: {
+        color: colors.blue.lighten2,
         continuous: true,
     },
 

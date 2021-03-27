@@ -1,43 +1,10 @@
-import { Component, mixins, Prop, State, Vue, Watch } from 'nuxt-property-decorator';
+import { Component, Prop } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
-import { HangarProject, HangarUser, HangarVersion, IPlatform, Organization, ProjectPage } from 'hangar-internal';
-import { User } from 'hangar-api';
-import MarkdownEditor from '~/components/markdown/MarkdownEditor.vue';
+import { HangarProject, HangarVersion, IPlatform, ProjectPage } from 'hangar-internal';
+import { HangarComponent } from './base';
 import { Platform, ReviewState } from '~/types/enums';
 import { RootState } from '~/store';
-import { AuthState } from '~/store/auth';
-
-@Component
-export class HangarComponent extends Vue {
-    @State((state: AuthState) => state.user, { namespace: 'auth' })
-    currentUser!: HangarUser | null;
-
-    @State((state: RootState) => state.validations)
-    validations!: RootState['validations'];
-}
-
-export class Authed extends HangarComponent {
-    @State((state: AuthState) => state.user, { namespace: 'auth' })
-    currentUser!: HangarUser;
-}
-
-export class UserPage extends HangarComponent {
-    user!: User;
-    organization!: Organization | null;
-
-    get isCurrentUser() {
-        return this.currentUser && this.currentUser.name === this.user.name;
-    }
-}
-
-@Component
-export class UserPropPage extends UserPage {
-    @Prop({ type: Object as PropType<User>, required: true })
-    user!: User;
-
-    @Prop({ type: Object as PropType<Organization> })
-    organization!: Organization | null;
-}
+import MarkdownEditor from '~/components/markdown/MarkdownEditor.vue';
 
 @Component
 export class HangarProjectMixin extends HangarComponent {
@@ -104,35 +71,3 @@ export class DocPageMixin extends HangarProjectMixin {
             .catch(this.$util.handleRequestError);
     }
 }
-
-@Component
-export class HangarModal extends HangarComponent {
-    dialog: boolean = false;
-
-    @Prop({ type: String, default: '' })
-    activatorClass!: string;
-
-    @Watch('dialog')
-    onToggleView(val: boolean) {
-        if (!val) {
-            this.$nextTick(() => {
-                if (document.activeElement instanceof HTMLElement) {
-                    document.activeElement.blur();
-                }
-                if (typeof this.$refs.modalForm !== 'undefined') {
-                    // @ts-ignore
-                    this.$refs.modalForm.reset();
-                }
-            });
-        }
-    }
-}
-
-@Component
-export class HangarForm extends HangarComponent {
-    loading: boolean = false;
-    validForm: boolean = false;
-}
-
-@Component
-export class HangarFormModal extends mixins(HangarModal, HangarForm) {}
