@@ -5,12 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.daoold.PlatformVersionsDao;
-import io.papermc.hangar.db.modelold.ProjectVersionTagsTable;
 import io.papermc.hangar.model.common.TagColor;
-import io.papermc.hangar.modelold.generated.PlatformDependency;
-import io.papermc.hangar.serviceold.VersionService;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -72,24 +67,10 @@ public enum Platform {
         this.platformVersionsDao = platformVersionsDao;
     }
 
-    public ProjectVersionTagsTable createGhostTag(long versionId, List<String> version) {
-        return new ProjectVersionTagsTable(-1, versionId, name, version, tagColor);
-    }
-
     private static final Platform[] VALUES = Platform.values();
 
     public static Platform[] getValues() {
         return VALUES;
-    }
-
-    public static List<Pair<Platform, ProjectVersionTagsTable>> getGhostTags(long versionId, List<PlatformDependency> platformDependencies) {
-        return platformDependencies.stream().map(dep -> new ImmutablePair<>(
-                dep.getPlatform(),
-                dep.getPlatform().createGhostTag(
-                        versionId,
-                        dep.getVersions()
-                )
-        )).collect(Collectors.toList());
     }
 
     @Nullable
@@ -103,10 +84,6 @@ public enum Platform {
             }
         }
         return null;
-    }
-
-    public static List<ProjectVersionTagsTable> createPlatformTags(VersionService versionService, long versionId, List<PlatformDependency> platformDependencies) {
-        return versionService.insertTags(getGhostTags(versionId, platformDependencies).stream().map(Pair::getRight).collect(Collectors.toList()));
     }
 
     @Deprecated(forRemoval = true)

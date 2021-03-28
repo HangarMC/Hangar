@@ -1,53 +1,42 @@
 package io.papermc.hangar.controllerold;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controllerold.forms.JoinableRoleUpdates;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.OrganizationContext;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.db.modelold.OrganizationsTable;
-import io.papermc.hangar.db.modelold.UserOrganizationRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
-import io.papermc.hangar.exceptions.HangarException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.internal.user.notifications.NotificationType;
-import io.papermc.hangar.modelold.Role;
 import io.papermc.hangar.modelold.viewhelpers.UserData;
 import io.papermc.hangar.securityold.annotations.OrganizationPermission;
-import io.papermc.hangar.securityold.annotations.UserLock;
 import io.papermc.hangar.serviceold.AuthenticationService;
 import io.papermc.hangar.serviceold.NotificationService;
-import io.papermc.hangar.serviceold.OrgFactory;
 import io.papermc.hangar.serviceold.OrgService;
 import io.papermc.hangar.serviceold.RoleService;
 import io.papermc.hangar.serviceold.UserActionLogService;
 import io.papermc.hangar.serviceold.UserService;
 import io.papermc.hangar.util.AlertUtil;
 import io.papermc.hangar.util.AlertUtil.AlertType;
-import io.papermc.hangar.util.ListUtils;
 import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Controller("oldOrganizationController")
 public class OrganizationController extends HangarController {
@@ -58,86 +47,22 @@ public class OrganizationController extends HangarController {
 
     private final AuthenticationService authenticationService;
     private final OrgService orgService;
-    private final OrgFactory orgFactory;
     private final UserService userService;
     private final RoleService roleService;
     private final UserActionLogService userActionLogService;
     private final NotificationService notificationService;
-    private final HangarConfig hangarConfig;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public OrganizationController(AuthenticationService authenticationService, OrgService orgService, OrgFactory orgFactory, UserService userService, RoleService roleService, UserActionLogService userActionLogService, NotificationService notificationService, HangarConfig hangarConfig, HttpServletRequest request) {
+    public OrganizationController(AuthenticationService authenticationService, OrgService orgService, UserService userService, RoleService roleService, UserActionLogService userActionLogService, NotificationService notificationService, HttpServletRequest request) {
         this.authenticationService = authenticationService;
         this.orgService = orgService;
-        this.orgFactory = orgFactory;
         this.userService = userService;
         this.roleService = roleService;
         this.userActionLogService = userActionLogService;
         this.notificationService = notificationService;
-        this.hangarConfig = hangarConfig;
         this.request = request;
-    }
-
-    @Secured("ROLE_USER")
-    @PostMapping("/organizations/invite/{id}/{status}")
-    @ResponseStatus(HttpStatus.OK)
-    public void setInviteStatus(@PathVariable long id, @PathVariable String status) {
-        UserOrganizationRolesTable orgRole = roleService.getUserOrgRole(id);
-        if (orgRole == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        switch (status) {
-            case STATUS_DECLINE:
-                roleService.removeRole(orgRole.getOrganizationId(), orgRole.getUserId());
-                break;
-            case STATUS_ACCEPT:
-            case STATUS_UNACCEPT:
-                orgRole.setAccepted(status.equals(STATUS_ACCEPT));
-                orgRole.setAccepted(true);
-                roleService.updateRole(orgRole);
-                break;
-            default:
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @UserLock
-    @Secured("ROLE_USER")
-    @GetMapping("/organizations/new")
-    public ModelAndView showCreator(RedirectAttributes attributes, ModelMap modelMap) {
-        if (orgService.getUserOwnedOrgs(getCurrentUser().getId()).size() >= hangarConfig.org.getCreateLimit()) {
-            AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.org.createLimit", String.valueOf(hangarConfig.org.getCreateLimit()));
-            return Routes.SHOW_HOME.getRedirect();
-        }
-        return fillModel(AlertUtil.transferAlerts(new ModelAndView("createOrganization"), modelMap));
-    }
-
-    @UserLock
-    @Secured("ROLE_USER")
-    @PostMapping(value = "/organizations/new", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ModelAndView create(@RequestParam String name, @RequestParam(required = false) List<Long> users, @RequestParam(required = false) List<Role> roles, RedirectAttributes attributes) {
-        UsersTable currUser = getCurrentUser();
-        if (orgService.getUserOwnedOrgs(getCurrentUser().getId()).size() >= hangarConfig.org.getCreateLimit()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "at create limit");
-        }
-        if (currUser.isLocked()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        if (!hangarConfig.org.isEnabled()) {
-            AlertUtil.showAlert(attributes, AlertType.ERROR, "error.org.disabled");
-            return Routes.ORG_SHOW_CREATOR.getRedirect();
-        } else {
-            Map<Long, Role> userRoles = ListUtils.zip(users, roles);
-
-            OrganizationsTable org;
-            try {
-                org = orgFactory.createOrganization(name, currUser.getId(), userRoles);
-            } catch (HangarException e) {
-                AlertUtil.showAlert(attributes, AlertType.ERROR, e.getMessageKey(), e.getArgs());
-                return Routes.ORG_SHOW_CREATOR.getRedirect();
-            }
-            return Routes.USERS_SHOW_PROJECTS.getRedirect(org.getName());
-        }
     }
 
     @OrganizationPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)

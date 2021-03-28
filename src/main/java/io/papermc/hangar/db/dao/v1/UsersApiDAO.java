@@ -116,9 +116,9 @@ public interface UsersApiDAO {
             "       JOIN roles r ON ugr.role_id = r.id" +
             "   WHERE r.name IN (<staffRoles>)" +
             "   GROUP BY u.id" +
-            "   <userOrder>" +
-            "   OFFSET :offset LIMIT :limit")
-    List<User> getStaff(long limit, long offset, @Define String userOrder, @BindList(onEmpty = BindList.EmptyHandling.NULL_STRING) List<String> staffRoles);
+            "   <sorters>" +
+            "   <offsetLimit>")
+    List<User> getStaff(@BindList(onEmpty = BindList.EmptyHandling.NULL_STRING) List<String> staffRoles, @BindPagination RequestPagination pagination);
 
     @SqlQuery(" SELECT count(u.id)" +
             "   FROM users u " +

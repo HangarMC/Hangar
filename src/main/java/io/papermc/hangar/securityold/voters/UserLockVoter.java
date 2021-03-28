@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Deprecated(forRemoval = true)
 public class UserLockVoter implements AccessDecisionVoter {
 
     private final UserService userService;

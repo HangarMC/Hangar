@@ -1,13 +1,11 @@
 package io.papermc.hangar.db.modelold;
 
 
-import io.papermc.hangar.controllerold.forms.NewProjectForm;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.Visible;
 import io.papermc.hangar.model.Visitable;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.Visibility;
-import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.annotation.Unmappable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 
@@ -39,23 +37,6 @@ public class ProjectsTable implements Visitable, Visible {
     private boolean forumSync;
 
     public ProjectsTable() { }
-
-    public ProjectsTable(ProjectOwner projectOwner, Category category, NewProjectForm newProjectForm, Collection<String> keywords) {
-        this.name = StringUtils.compact(newProjectForm.getName());
-        this.slug = StringUtils.slugify(newProjectForm.getName());
-        this.ownerName = projectOwner.getName();
-        this.ownerId = projectOwner.getUserId();
-        this.category = category;
-        this.description = newProjectForm.getDescription();
-        this.visibility = Visibility.NEW;
-        this.homepage = StringUtils.stringOrNull(newProjectForm.getHomepageUrl());
-        this.issues = StringUtils.stringOrNull(newProjectForm.getIssueTrackerUrl());
-        this.source = StringUtils.stringOrNull(newProjectForm.getSourceUrl());
-        this.support = StringUtils.stringOrNull(newProjectForm.getExternalSupportUrl());
-        this.keywords = keywords;
-        this.licenseName = StringUtils.stringOrNull("custom".equalsIgnoreCase(newProjectForm.getLicenseType()) ? newProjectForm.getLicenseName() : newProjectForm.getLicenseType());
-        this.licenseUrl = StringUtils.stringOrNull(newProjectForm.getLicenseUrl());
-    }
 
     public long getId() {
         return id;

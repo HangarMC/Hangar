@@ -10,26 +10,21 @@ import io.papermc.hangar.db.modelold.OrganizationMembersTable;
 import io.papermc.hangar.db.modelold.OrganizationsTable;
 import io.papermc.hangar.db.modelold.UserOrganizationRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
-import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.modelold.viewhelpers.OrgMember;
 import io.papermc.hangar.modelold.viewhelpers.OrganizationData;
 import io.papermc.hangar.modelold.viewhelpers.ScopedOrganizationData;
 import io.papermc.hangar.service.PermissionService;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 @Service
+@Deprecated(forRemoval = true)
 public class OrgService extends HangarService {
 
     private final PermissionService permissionService;
-    private final UserService userService;
     private final HangarDao<OrganizationDao> organizationDao;
     private final HangarDao<UserDao> userDao;
     private final HangarDao<ProjectDao> projectDao;
@@ -37,27 +32,13 @@ public class OrgService extends HangarService {
     private final HangarDao<OrganizationMembersDao> organizationMembersDao;
 
     @Autowired
-    public OrgService(PermissionService permissionService, @Lazy UserService userService, HangarDao<OrganizationDao> organizationDao, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao, HangarDao<UserOrganizationRolesDao> userOrganizationRolesDao, HangarDao<OrganizationMembersDao> organizationMembersDao) {
+    public OrgService(PermissionService permissionService, HangarDao<OrganizationDao> organizationDao, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao, HangarDao<UserOrganizationRolesDao> userOrganizationRolesDao, HangarDao<OrganizationMembersDao> organizationMembersDao) {
         this.permissionService = permissionService;
-        this.userService = userService;
         this.organizationDao = organizationDao;
         this.userDao = userDao;
         this.projectDao = projectDao;
         this.userOrganizationRolesDao = userOrganizationRolesDao;
         this.organizationMembersDao = organizationMembersDao;
-    }
-
-    public List<OrganizationsTable> getOrgsWithPerm(UsersTable user, Permission permission) {
-        Map<OrganizationsTable, Permission> orgs = organizationDao.get().getUserOrganizationsAndPermissions(user.getId());
-        return orgs.entrySet().stream().filter(entry -> entry.getValue().has(permission)).map(Entry::getKey).collect(Collectors.toList());
-    }
-
-    public List<OrganizationsTable> getUserOwnedOrgs(long userId) {
-        return organizationDao.get().getUserOwnedOrgs(userId);
-    }
-
-    public List<OrganizationsTable> getUsersOrgs(long userId) {
-        return organizationDao.get().getUserOrgs(userId);
     }
 
     public OrgMember getOrganizationMember(long orgId, long userId) {

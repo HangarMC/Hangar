@@ -60,10 +60,10 @@
                                     </span>
                                 </p>
                                 <p v-if="project">
-                                    <v-btn to="stars" nuxt small>
+                                    <v-btn :to="`${$route.params.slug}/stars`" nuxt small>
                                         {{ $tc('project.info.stars', project.stats.stars, [project.stats.stars]) }}
                                     </v-btn>
-                                    <v-btn to="watchers" nuxt small>
+                                    <v-btn :to="`${$route.params.slug}/watchers`" nuxt small>
                                         {{ $tc('project.info.watchers', project.stats.watchers, [project.stats.watchers]) }}
                                     </v-btn>
                                 </p>

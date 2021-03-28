@@ -3,26 +3,16 @@ package io.papermc.hangar.db.daoold;
 import io.papermc.hangar.db.modelold.OrganizationsTable;
 import io.papermc.hangar.db.modelold.UserOrganizationRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
-import io.papermc.hangar.model.common.Permission;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
-import org.jdbi.v3.sqlobject.customizer.BindBean;
-import org.jdbi.v3.sqlobject.customizer.Timestamped;
-import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
-import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Map;
 
 @Repository
+@Deprecated(forRemoval = true)
 @RegisterBeanMapper(OrganizationsTable.class)
 public interface OrganizationDao {
-
-    @SqlUpdate("insert into organizations (id, created_at, name, owner_id, user_id) values (:id, :now, :name, :ownerId, :userId)")
-    @Timestamped
-    @GetGeneratedKeys
-    OrganizationsTable insert(@BindBean OrganizationsTable organization);
 
     @SqlQuery("SELECT * FROM organizations WHERE id = :orgId")
     OrganizationsTable getById(long orgId);
@@ -32,9 +22,6 @@ public interface OrganizationDao {
 
     @SqlQuery("SELECT * FROM organizations WHERE name = :username")
     OrganizationsTable getByUserName(String username);
-
-    @SqlQuery("SELECT o.id, o.created_at, o.name, o.owner_id, o.user_id FROM organization_members om JOIN organizations o ON om.organization_id = o.id WHERE om.user_id = :id")
-    List<OrganizationsTable> getUserOrgs(long id);
 
     @RegisterBeanMapper(value = OrganizationsTable.class, prefix = "o")
     @RegisterBeanMapper(value = UserOrganizationRolesTable.class, prefix = "r")
@@ -46,11 +33,6 @@ public interface OrganizationDao {
             "WHERE uor.user_id = :userId")
     Map<OrganizationsTable, UserOrganizationRolesTable> getUserOrganizationsAndRoles(long userId);
 
-    @RegisterBeanMapper(value = Permission.class, prefix = "perm")
-    @RegisterBeanMapper(OrganizationsTable.class)
-    @SqlQuery("SELECT o.*, ot.permission::BIGINT perm_value FROM organization_trust ot JOIN organizations o ON ot.organization_id = o.id WHERE ot.user_id = :userId")
-    Map<OrganizationsTable, Permission> getUserOrganizationsAndPermissions(long userId);
-
     @RegisterBeanMapper(value = UserOrganizationRolesTable.class, prefix = "r")
     @RegisterBeanMapper(UsersTable.class)
     @SqlQuery("SELECT u.*, " +
@@ -60,12 +42,4 @@ public interface OrganizationDao {
               "WHERE uor.organization_id = :orgId")
     Map<UserOrganizationRolesTable, UsersTable> getOrgMembers(long orgId);
 
-    @SqlQuery("SELECT * FROM organizations WHERE owner_id = :userId")
-    List<OrganizationsTable> getUserOwnedOrgs(long userId);
-
-    @SqlQuery("SELECT o.* FROM organizations o" +
-              "     JOIN organization_trust ot ON o.id = ot.organization_id" +
-              " WHERE ot.\"permission\" & (1::BIT(64) << 8) = (1::BIT(64) << 8) AND " +
-              " ot.user_id = :userId")
-    List<OrganizationsTable> getOrgsUserCanUploadTo(long userId);
 }

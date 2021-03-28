@@ -1,14 +1,11 @@
 package io.papermc.hangar.controllerold.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.modelold.ApiAuthInfo;
 import io.papermc.hangar.modelold.Platform;
 import io.papermc.hangar.modelold.api.PlatformInfo;
 import io.papermc.hangar.modelold.generated.DeployVersionInfo;
 import io.papermc.hangar.modelold.generated.TagColor;
 import io.papermc.hangar.modelold.generated.Version;
-import io.papermc.hangar.serviceold.apiold.VersionApiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,17 +26,11 @@ public class VersionsApiController implements VersionsApi {
 
     private static final Logger log = LoggerFactory.getLogger(VersionsApiController.class);
 
-    private final HangarConfig hangarConfig;
     private final ObjectMapper objectMapper;
-    private final ApiAuthInfo apiAuthInfo;
-    private final VersionApiService versionApiService;
 
     @Autowired
-    public VersionsApiController(HangarConfig hangarConfig, ObjectMapper objectMapper, ApiAuthInfo apiAuthInfo, VersionApiService versionApiService) {
-        this.hangarConfig = hangarConfig;
+    public VersionsApiController(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
-        this.apiAuthInfo = apiAuthInfo;
-        this.versionApiService = versionApiService;
     }
 
     @Override

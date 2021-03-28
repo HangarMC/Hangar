@@ -1,6 +1,5 @@
 package io.papermc.hangar.serviceold;
 
-import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.UserContext;
 import io.papermc.hangar.db.dao.HangarDao;
@@ -41,28 +40,25 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 @Service("oldUserService")
+@Deprecated(forRemoval = true)
 public class UserService extends HangarService {
 
     private final HangarDao<UserDao> userDao;
     private final HangarDao<OrganizationDao> orgDao;
     private final HangarDao<ProjectDao> projectDao;
-    private final HangarDao<OrganizationDao> organizationDao;
     private final HangarDao<NotificationsDao> notificationsDao;
     private final RoleService roleService;
     private final PermissionService permissionService;
     private final OrgService orgService;
     private final UserActionLogService userActionLogService;
-    private final HangarConfig config;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public UserService(HangarDao<UserDao> userDao, HangarConfig config, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, HangarDao<OrganizationDao> organizationDao, HangarDao<NotificationsDao> notificationsDao, RoleService roleService, PermissionService permissionService, OrgService orgService, UserActionLogService userActionLogService, HttpServletRequest request) {
+    public UserService(HangarDao<UserDao> userDao, HangarDao<OrganizationDao> orgDao, HangarDao<ProjectDao> projectDao, HangarDao<NotificationsDao> notificationsDao, RoleService roleService, PermissionService permissionService, OrgService orgService, UserActionLogService userActionLogService, HttpServletRequest request) {
         this.userDao = userDao;
-        this.config = config;
         this.orgDao = orgDao;
         this.projectDao = projectDao;
-        this.organizationDao = organizationDao;
         this.notificationsDao = notificationsDao;
         this.roleService = roleService;
         this.permissionService = permissionService;
@@ -166,10 +162,6 @@ public class UserService extends HangarService {
         return userDao.get().getById(userId);
     }
 
-    public List<UsersTable> getUsers(List<String> userNames) {
-        return userDao.get().getUsers(userNames);
-    }
-
     public List<ReviewActivity> getReviewActivity(String username) {
         return userDao.get().getReviewActivity(username);
     }
@@ -186,9 +178,5 @@ public class UserService extends HangarService {
             }
             userDao.get().update(currUser.get());
         }
-    }
-
-    public List<OrganizationsTable> getOrganizationsUserCanUploadTo(UsersTable usersTable) {
-        return organizationDao.get().getOrgsUserCanUploadTo(usersTable.getId());
     }
 }

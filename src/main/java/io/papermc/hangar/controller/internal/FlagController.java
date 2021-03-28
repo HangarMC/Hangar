@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @LoggedIn
@@ -33,7 +34,7 @@ public class FlagController extends HangarController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void flag(@RequestBody FlagForm form) {
+    public void flag(@RequestBody @Valid FlagForm form) {
         flagService.createFlag(form.getProjectId(), form.getReason(), form.getComment());
     }
 

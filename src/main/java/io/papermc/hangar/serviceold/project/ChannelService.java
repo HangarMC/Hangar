@@ -1,39 +1,20 @@
 package io.papermc.hangar.serviceold.project;
 
-import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.daoold.ProjectChannelDao;
 import io.papermc.hangar.db.modelold.ProjectChannelsTable;
-import io.papermc.hangar.db.modelold.ProjectsTable;
-import io.papermc.hangar.exceptions.HangarException;
-import io.papermc.hangar.model.common.Color;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-
 @Service("oldChannelService")
+@Deprecated(forRemoval = true)
 public class ChannelService {
 
-    private final HangarConfig hangarConfig;
-    private final ChannelFactory channelFactory;
     private final HangarDao<ProjectChannelDao> channelDao;
 
     @Autowired
-    public ChannelService(HangarConfig hangarConfig, ChannelFactory channelFactory, HangarDao<ProjectChannelDao> channelDao) {
-        this.hangarConfig = hangarConfig;
-        this.channelFactory = channelFactory;
+    public ChannelService(HangarDao<ProjectChannelDao> channelDao) {
         this.channelDao = channelDao;
-    }
-
-    public ProjectChannelsTable getFirstChannel(ProjectsTable project) {
-        return channelDao.get().getFirstChannel(project.getId());
-    }
-
-    public ProjectChannelsTable getProjectChannel(long projectId, String channelName) {
-        return channelDao.get().getProjectChannel(projectId, channelName, null);
     }
 
     public ProjectChannelsTable getProjectChannel(long projectId, long channelId) {
@@ -44,49 +25,4 @@ public class ChannelService {
         return channelDao.get().getVersionsChannel(projectId, versionId);
     }
 
-    public List<ProjectChannelsTable> getProjectChannels(long projectId) {
-        return channelDao.get().getProjectChannels(projectId);
-    }
-
-    public Map<ProjectChannelsTable, Integer> getChannelsWithVersionCount(long projectId) {
-        return channelDao.get().getChannelsWithVersionCount(projectId);
-    }
-
-    public ProjectChannelsTable addProjectChannel(long projectId, String channelName, Color color, boolean isNonReviewed) {
-        InvalidChannelCreationReason reason = channelDao.get().validateChannelCreation(projectId, channelName, color.ordinal(), hangarConfig.projects.getMaxChannels());
-        checkInvalidChannelCreationReason(reason);
-        return channelFactory.createChannel(projectId, channelName, color, isNonReviewed);
-    }
-
-    public void updateProjectChannel(long projectId, String oldChannel, String channelName, Color color, boolean nonReviewed) {
-        if (!hangarConfig.channels.isValidChannelName(channelName)) {
-            throw new HangarException("error.channel.invalidName", channelName);
-        }
-
-        InvalidChannelCreationReason reason = channelDao.get().validateChannelUpdate(projectId, oldChannel, channelName, color.ordinal());
-        checkInvalidChannelCreationReason(reason);
-        channelDao.get().update(projectId, oldChannel, channelName, color, nonReviewed);
-    }
-
-    private void checkInvalidChannelCreationReason(@Nullable InvalidChannelCreationReason reason) {
-        if (reason != null) {
-            if (reason == InvalidChannelCreationReason.MAX_CHANNELS) {
-                throw new HangarException(reason.reason, String.valueOf(hangarConfig.projects.getMaxChannels()));
-            } else {
-                throw new HangarException(reason.reason);
-            }
-        }
-    }
-
-    public enum InvalidChannelCreationReason {
-        MAX_CHANNELS("error.channel.maxChannels"),
-        DUPLICATE_NAME("error.channel.duplicateName"),
-        UNIQUE_COLOR("error.channel.duplicateColor");
-
-        private final String reason;
-
-        InvalidChannelCreationReason(String reason) {
-            this.reason = reason;
-        }
-    }
 }

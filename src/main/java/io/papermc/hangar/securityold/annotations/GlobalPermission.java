@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
 
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
+@Deprecated(forRemoval = true)
 public @interface GlobalPermission {
     NamedPermission[] value();
 }

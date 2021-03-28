@@ -11,6 +11,7 @@ import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Permission;
 
 @JsonFormat(shape = Shape.OBJECT)
+@Deprecated(forRemoval = true)
 public enum Role {
 
     HANGAR_ADMIN("Hangar_Admin", 1, RoleCategory.GLOBAL, Permission.All, "Hangar Admin", Color.RED),

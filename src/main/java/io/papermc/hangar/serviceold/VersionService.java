@@ -5,14 +5,11 @@ import io.papermc.hangar.db.daoold.ProjectDao;
 import io.papermc.hangar.db.daoold.ProjectVersionDao;
 import io.papermc.hangar.db.daoold.VisibilityDao;
 import io.papermc.hangar.db.modelold.ProjectChannelsTable;
-import io.papermc.hangar.db.modelold.ProjectVersionTagsTable;
 import io.papermc.hangar.db.modelold.ProjectVersionVisibilityChangesTable;
 import io.papermc.hangar.db.modelold.ProjectVersionsTable;
 import io.papermc.hangar.db.modelold.ProjectsTable;
-import io.papermc.hangar.exceptions.HangarException;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.model.common.TagColor;
 import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
@@ -21,7 +18,6 @@ import io.papermc.hangar.modelold.viewhelpers.UserData;
 import io.papermc.hangar.modelold.viewhelpers.VersionData;
 import io.papermc.hangar.service.VisibilityService.ProjectVersionVisibilityService;
 import io.papermc.hangar.service.internal.versions.VersionDependencyService;
-import io.papermc.hangar.serviceold.pluginupload.PendingVersion;
 import io.papermc.hangar.serviceold.project.ChannelService;
 import io.papermc.hangar.serviceold.project.ProjectService;
 import io.papermc.hangar.util.RequestUtil;
@@ -40,7 +36,6 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -53,22 +48,18 @@ public class VersionService extends HangarService {
     private final HangarDao<VisibilityDao> visibilityDao;
     private final ProjectService projectService;
     private final ChannelService channelService;
-    private final ProjectVersionVisibilityService projectVersionVisibilityService;
-    private final RecommendedVersionService recommendedVersionService;
     private final UserService userService;
     private final VersionDependencyService versionDependencyService;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public VersionService(HangarDao<ProjectVersionDao> versionDao, HangarDao<ProjectDao> projectDao, HangarDao<VisibilityDao> visibilityDao, ProjectService projectService, ChannelService channelService, ProjectVersionVisibilityService projectVersionVisibilityService, RecommendedVersionService recommendedVersionService, UserService userService, VersionDependencyService versionDependencyService, HttpServletRequest request) {
+    public VersionService(HangarDao<ProjectVersionDao> versionDao, HangarDao<ProjectDao> projectDao, HangarDao<VisibilityDao> visibilityDao, ProjectService projectService, ChannelService channelService, UserService userService, VersionDependencyService versionDependencyService, HttpServletRequest request) {
         this.versionDao = versionDao;
         this.projectDao = projectDao;
         this.visibilityDao = visibilityDao;
         this.projectService = projectService;
         this.channelService = channelService;
-        this.projectVersionVisibilityService = projectVersionVisibilityService;
-        this.recommendedVersionService = recommendedVersionService;
         this.userService = userService;
         this.versionDependencyService = versionDependencyService;
         this.request = request;
@@ -96,16 +87,6 @@ public class VersionService extends HangarService {
         //noinspection SpringConfigurationProxyMethods
         return () -> this.getVersionData(projectDataSupplier.get(), projectVersionsTable().get());
     }
-
-    public ProjectVersionsTable getMostRelevantVersion(ProjectsTable project) {
-        Optional<ProjectVersionsTable> version = Optional.ofNullable(recommendedVersionService.getRecommendedVersion(project));
-        return version.or(() -> Optional.ofNullable(getMostRecentVersion(project))).orElse(null);
-    }
-
-    public ProjectVersionsTable getMostRecentVersion(ProjectsTable project) {
-        return versionDao.get().getMostRecentVersion(project.getId());
-    }
-
 
 
     public ProjectVersionsTable getVersion(long projectId, long versionId) {
@@ -138,29 +119,6 @@ public class VersionService extends HangarService {
 
     public List<ReviewQueueEntry> getReviewQueue() {
         return versionDao.get().getQueue(ReviewState.UNREVIEWED);
-    }
-
-    public boolean exists(PendingVersion pendingVersion) {
-        ProjectsTable project = projectDao.get().getById(pendingVersion.getProjectId());
-        if (project == null) {
-            throw new HangarException("error.project.notFound", String.valueOf(pendingVersion.getProjectId()));
-        }
-        ProjectVersionsTable version = versionDao.get().getProjectVersion(pendingVersion.getProjectId(), pendingVersion.getHash(), pendingVersion.getVersionString());
-        return version != null;
-    }
-
-    public List<ProjectVersionTagsTable> insertTags(List<ProjectVersionTagsTable> tags) {
-        return versionDao.get().insertTags(tags);
-    }
-
-    public void addUnstableTag(long versionId) {
-        versionDao.get().insertTag(new ProjectVersionTagsTable(
-                -1,
-                versionId,
-                "Unstable",
-                null,
-                TagColor.UNSTABLE
-        ));
     }
 
     public VersionData getVersionData(ProjectData projectData, ProjectVersionsTable projectVersion) {

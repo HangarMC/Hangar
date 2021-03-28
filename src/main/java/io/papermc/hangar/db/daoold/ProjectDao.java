@@ -4,17 +4,13 @@ import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.model.common.Permission;
-import io.papermc.hangar.modelold.generated.ProjectStatsAll;
 import io.papermc.hangar.modelold.viewhelpers.ProjectApprovalData;
 import io.papermc.hangar.modelold.viewhelpers.ProjectMissingFile;
 import io.papermc.hangar.modelold.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.modelold.viewhelpers.UnhealthyProject;
-import io.papermc.hangar.serviceold.project.ProjectFactory.InvalidProjectReason;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Define;
-import org.jdbi.v3.sqlobject.customizer.Timestamped;
-import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
@@ -24,14 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@Deprecated(forRemoval = true)
 @RegisterBeanMapper(ProjectsTable.class)
 public interface ProjectDao {
-
-    @SqlUpdate("insert into projects (created_at, name, slug, owner_name, owner_id, category, description, visibility, homepage, issues, source, support, keywords, license_name, license_url) " +
-               "values (:now, :name, :slug, :ownerName,:ownerId, :category, :description, :visibility, :homepage, :issues, :source, :support, :keywords, :licenseName, :licenseUrl)")
-    @Timestamped
-    @GetGeneratedKeys
-    ProjectsTable insert(@BindBean ProjectsTable project);
 
     // TODO expand as needed
     @SqlUpdate("UPDATE projects SET name = :name, slug = :slug, category = :category, keywords = :keywords, issues = :issues, source = :source, " +
@@ -45,35 +36,14 @@ public interface ProjectDao {
     @SqlUpdate("DELETE FROM projects WHERE id = :id")
     void delete(@BindBean ProjectsTable project);
 
-    @SqlQuery("SELECT * FROM " +
-              "     (SELECT CASE " +
-              "         WHEN \"name\" = :name THEN 'OWNER_NAME'" +
-              "         WHEN slug = :slug THEN 'OWNER_SLUG'" +
-              "     END" +
-              "     FROM projects WHERE owner_id = :ownerId) sq" +
-              " WHERE sq IS NOT NULL ")
-    InvalidProjectReason checkNamespace(long ownerId, String name, String slug);
-
     @SqlQuery("select * from projects where lower(owner_name) = lower(:author) AND lower(slug) = lower(:slug)")
     ProjectsTable getBySlug(String author, String slug);
-
-    @SqlQuery("SELECT * FROM projects WHERE id = :projectId")
-    ProjectsTable getById(long projectId);
 
     @SqlQuery("SELECT COUNT(*) FROM projects WHERE owner_id = :id")
     int getProjectCountByUserId(long id);
 
     @SqlQuery("SELECT * FROM projects WHERE owner_id = :id")
     List<ProjectsTable> getProjectsByUserId(long id);
-
-    @RegisterBeanMapper(ProjectStatsAll.class)
-    @SqlQuery("SELECT * FROM " +
-              "(SELECT COUNT(*) as watchers FROM project_watchers pw WHERE pw.project_id = :id) as w, " +
-              "(SELECT COUNT(*) as stars FROM project_stars ps WHERE ps.project_id = :id) as s, " +
-              "(SELECT COUNT(*) as views FROM project_views_individual pvi WHERE pvi.project_id = :id) as v, " +
-              "(SELECT COUNT(*) as downloads FROM project_versions_downloads_individual pvdi WHERE pvdi.project_id = :id) as d"
-    )
-    ProjectStatsAll getProjectStats(long id);
 
     @RegisterBeanMapper(value = ScopedProjectData.class)
     @RegisterBeanMapper(value = Permission.class, prefix = "perm")
@@ -172,19 +142,4 @@ public interface ProjectDao {
     @RegisterBeanMapper(value = ProjectMissingFile.class)
     List<ProjectMissingFile> allProjectsForMissingFiles();
 
-    @RegisterBeanMapper(value = Permission.class, prefix = "perm")
-    @RegisterBeanMapper(UsersTable.class)
-    @SqlQuery("SELECT u.*, (coalesce(gt.permission, B'0'::BIT(64)) | coalesce(pt.permission, B'0'::BIT(64)) | coalesce(ot.permission, B'0'::BIT(64)))::BIGINT AS perm_value" +
-            " FROM users u " +
-            "     LEFT JOIN global_trust gt ON u.id = gt.user_id" +
-            "     LEFT JOIN projects p ON p.id = :projectId" +
-            "     LEFT JOIN project_trust pt ON u.id = pt.user_id AND pt.project_id = p.id" +
-            "     LEFT JOIN organization_trust ot ON u.id = ot.user_id AND ot.organization_id = p.owner_id" +
-            " WHERE " +
-            "     (" +
-            "         u.id IN (SELECT pm.user_id FROM project_members pm WHERE pm.project_id = p.id) OR " +
-            "         u.id IN (SELECT om.user_id FROM organization_members om WHERE om.organization_id = ot.organization_id)" +
-            "     ) AND " +
-            "     u.id NOT IN (SELECT o.user_id FROM organizations o)")
-    Map<UsersTable, Permission> getAllUsersPermissions(long projectId);
 }

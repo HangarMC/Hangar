@@ -13,7 +13,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Deprecated
+@Deprecated(forRemoval = true)
 @Service("flagServiceOld")
 public class FlagService extends HangarService {
 

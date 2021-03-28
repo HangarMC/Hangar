@@ -12,7 +12,6 @@ import io.papermc.hangar.db.modelold.ProjectVisibilityChangesTable;
 import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
-import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.modelold.viewhelpers.ProjectApprovalData;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
@@ -23,10 +22,8 @@ import io.papermc.hangar.modelold.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.modelold.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.modelold.viewhelpers.UserRole;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.service.VisibilityService.ProjectVisibilityService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.serviceold.HangarService;
-import io.papermc.hangar.serviceold.VersionService.RecommendedVersionService;
 import io.papermc.hangar.util.RequestUtil;
 import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,15 +52,13 @@ public class ProjectService extends HangarService {
     private final HangarDao<VisibilityDao> visibilityDao;
     private final HangarDao<GeneralDao> generalDao;
     private final FlagService flagService;
-    private final ProjectVisibilityService visibilityService;
     private final PermissionService permissionService;
-    private final RecommendedVersionService recommendedVersionService;
     private final ProjectFiles projectFiles;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<GeneralDao> generalDao, ProjectFiles projectFiles, FlagService flagService, ProjectVisibilityService visibilityService, PermissionService permissionService, RecommendedVersionService recommendedVersionService, HttpServletRequest request) {
+    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<GeneralDao> generalDao, ProjectFiles projectFiles, FlagService flagService, PermissionService permissionService, HttpServletRequest request) {
         this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
         this.userDao = userDao;
@@ -71,9 +66,7 @@ public class ProjectService extends HangarService {
         this.generalDao = generalDao;
         this.projectFiles = projectFiles;
         this.flagService = flagService;
-        this.visibilityService = visibilityService;
         this.permissionService = permissionService;
-        this.recommendedVersionService = recommendedVersionService;
         this.request = request;
     }
 
@@ -224,7 +217,4 @@ public class ProjectService extends HangarService {
                 }).collect(Collectors.toList());
     }
 
-    public Map<UsersTable, Permission> getUsersPermissions(long projectId) {
-        return projectDao.get().getAllUsersPermissions(projectId);
-    }
 }

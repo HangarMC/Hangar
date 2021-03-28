@@ -40,7 +40,6 @@ import io.papermc.hangar.serviceold.UserService;
 import io.papermc.hangar.serviceold.VersionService;
 import io.papermc.hangar.serviceold.project.FlagService;
 import io.papermc.hangar.serviceold.project.ProjectService;
-import io.papermc.hangar.util.AlertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -49,7 +48,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -110,13 +108,6 @@ public class ApplicationController extends HangarController {
         this.request = request;
         this.statsService = statsService;
         this.userData = userData;
-    }
-
-    @GetMapping("/")
-    public ModelAndView showHome(ModelMap modelMap) {
-        ModelAndView mav = new ModelAndView("home");
-        AlertUtil.transferAlerts(mav, modelMap);
-        return fillModel(mav);
     }
 
     @RequestMapping("/statusz")
@@ -373,11 +364,6 @@ public class ApplicationController extends HangarController {
             default:
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-    }
-
-    @GetMapping("/api") // TODO move to Apiv1Controller maybe
-    public ModelAndView swagger() {
-        return fillModel(new ModelAndView("swagger"));
     }
 
     @GetMapping(value = "/favicon.ico", produces = "images/x-icon")

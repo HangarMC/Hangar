@@ -10,12 +10,11 @@ import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.project.ProjectCompact;
+import io.papermc.hangar.model.api.project.ProjectSortingStrategy;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.model.internal.user.HangarUser.HeaderData;
-import io.papermc.hangar.modelold.UserOrdering;
-import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.PermissionService;
 import org.jetbrains.annotations.NotNull;
@@ -85,37 +84,10 @@ public class UsersApiService extends HangarService {
     public void clearStaffCache() {}
 
     @Cacheable(CacheConfig.STAFF_CACHE)
-    public PaginatedResult<User> getStaff(String sort, RequestPagination pagination) {
-        List<User> users = usersApiDAO.getStaff(pagination.getLimit(), pagination.getOffset(), userOrder(sort), config.user.getStaffRoles());
+    public PaginatedResult<User> getStaff(RequestPagination pagination) {
+        List<User> users = usersApiDAO.getStaff(config.user.getStaffRoles(), pagination);
         long count = usersApiDAO.getStaffCount(config.user.getStaffRoles());
         return new PaginatedResult<>(new Pagination(count, pagination), users);
-    }
-
-    private String userOrder(String sortStr) {
-        boolean reverse = false;
-        if (sortStr.startsWith("-")) {
-            sortStr = sortStr.substring(1);
-            reverse = true;
-        }
-
-        String sort = reverse ? " ASC" : " DESC";
-
-        String sortUserName = "name" + sort;
-        String thenSortUserName = "," + sortUserName;
-
-        switch (sortStr) {
-            case UserOrdering.JoinDate:
-                return "ORDER BY join_date" + sort;
-            case UserOrdering.UserName:
-                return "ORDER BY " + sortUserName;
-            case UserOrdering.Projects:
-                return "ORDER BY project_count" + sort + thenSortUserName;
-                // TODO this is gonna be a bit trickier... perhaps this whole ordering bit should be done entirely on frontend?
-//            case UserOrdering.Role:
-//                return "ORDER BY sq.permission::BIGINT" + sort + " NULLS LAST" + ", sq.role" + sort + thenSortUserName;
-            default:
-                return " ";
-        }
     }
 
     @NotNull

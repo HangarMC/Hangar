@@ -3,8 +3,8 @@ package io.papermc.hangar.controller.api.v1.interfaces;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.project.ProjectCompact;
+import io.papermc.hangar.model.api.project.ProjectSortingStrategy;
 import io.papermc.hangar.model.api.requests.RequestPagination;
-import io.papermc.hangar.modelold.generated.ProjectSortingStrategy;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -119,6 +119,5 @@ public interface IUsersController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/staff")
-    ResponseEntity<PaginatedResult<User>> getStaff(@ApiParam("How to sort the staff") @RequestParam(defaultValue = "roles") String sort,
-                                                     @ApiParam("Pagination information") @NotNull RequestPagination pagination);
+    ResponseEntity<PaginatedResult<User>> getStaff(@ApiParam("Pagination information") @NotNull RequestPagination pagination);
 }

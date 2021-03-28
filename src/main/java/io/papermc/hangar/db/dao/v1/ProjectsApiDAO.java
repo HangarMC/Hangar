@@ -160,7 +160,7 @@ public interface ProjectsApiDAO {
               "       JOIN project_stars ps ON p.id = ps.project_id " +
               "   WHERE p.slug = :slug AND p.owner_name = :author " +
               "   GROUP BY ps.user_id")
-    long getProjectStargazersCount(String author, String slug);
+    Long getProjectStargazersCount(String author, String slug);
 
     @RegisterConstructorMapper(User.class)
     @SqlQuery("SELECT u.id," +
@@ -185,7 +185,7 @@ public interface ProjectsApiDAO {
               "       JOIN project_watchers pw ON p.id = pw.project_id " +
               "   WHERE p.slug = :slug AND p.owner_name = :author " +
               "   GROUP BY pw.user_id")
-    long getProjectWatchersCount(String author, String slug);
+    Long getProjectWatchersCount(String author, String slug);
 
     @KeyColumn("dateKey")
     @RegisterConstructorMapper(DayProjectStats.class)

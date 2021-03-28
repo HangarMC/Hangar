@@ -30,10 +30,10 @@ export default class ProjectStarsPage extends Vue {
     stargazers!: PaginatedResult<User>;
 
     async asyncData({ $api, params, $util }: Context) {
-        const watchers = await $api
-            .request<PaginatedResult<User>>(`projects/${params.author}/${params.slug}/watchers`, false)
-            .catch($util.handlePageRequestError);
-        return { watchers };
+        const stargazers = await $api
+            .request<PaginatedResult<User>>(`projects/${params.author}/${params.slug}/stargazers`, false)
+            .catch<any>($util.handlePageRequestError);
+        return { stargazers };
     }
 }
 </script>

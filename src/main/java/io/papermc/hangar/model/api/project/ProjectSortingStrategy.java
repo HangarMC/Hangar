@@ -1,4 +1,4 @@
-package io.papermc.hangar.modelold.generated;
+package io.papermc.hangar.model.api.project;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

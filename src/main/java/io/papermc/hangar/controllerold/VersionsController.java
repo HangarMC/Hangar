@@ -2,9 +2,7 @@ package io.papermc.hangar.controllerold;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.controllerold.forms.NewVersion;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.VersionContext;
 import io.papermc.hangar.db.dao.HangarDao;
@@ -22,7 +20,6 @@ import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.modelold.DownloadType;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
-import io.papermc.hangar.modelold.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.modelold.viewhelpers.VersionData;
 import io.papermc.hangar.securityold.annotations.GlobalPermission;
 import io.papermc.hangar.securityold.annotations.ProjectPermission;
@@ -33,19 +30,14 @@ import io.papermc.hangar.serviceold.StatsService;
 import io.papermc.hangar.serviceold.UserActionLogService;
 import io.papermc.hangar.serviceold.VersionService;
 import io.papermc.hangar.serviceold.VersionService.RecommendedVersionService;
-import io.papermc.hangar.serviceold.pluginupload.PendingVersion;
-import io.papermc.hangar.serviceold.pluginupload.PluginUploadService;
 import io.papermc.hangar.serviceold.project.ChannelService;
 import io.papermc.hangar.serviceold.project.ProjectFactory;
-import io.papermc.hangar.serviceold.project.ProjectService;
 import io.papermc.hangar.util.AlertUtil;
 import io.papermc.hangar.util.AlertUtil.AlertType;
 import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.RequestUtil;
 import io.papermc.hangar.util.Routes;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.FileSystemResource;
@@ -56,15 +48,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -76,25 +65,20 @@ import javax.servlet.http.HttpServletResponse;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 
 @Controller("oldVersionsController")
 public class VersionsController extends HangarController {
 
-    private final ProjectService projectService;
     private final VersionService versionService;
     private final RecommendedVersionService recommendedVersionService;
     private final ProjectFactory projectFactory;
     private final StatsService statsService;
-    private final PluginUploadService pluginUploadService;
     private final ChannelService channelService;
     private final DownloadsService downloadsService;
     private final UserActionLogService userActionLogService;
-    private final CacheManager cacheManager;
     private final HangarConfig hangarConfig;
     private final HangarDao<ProjectDao> projectDao;
     private final ProjectFiles projectFiles;
@@ -111,17 +95,14 @@ public class VersionsController extends HangarController {
 
 
     @Autowired
-    public VersionsController(ProjectService projectService, VersionService versionService, RecommendedVersionService recommendedVersionService, ProjectFactory projectFactory, StatsService statsService, PluginUploadService pluginUploadService, ChannelService channelService, DownloadsService downloadsService, UserActionLogService userActionLogService, CacheManager cacheManager, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, MessageSource messageSource, ObjectMapper mapper, HttpServletRequest request, HttpServletResponse response, Supplier<ProjectVersionsTable> projectVersionsTable, Supplier<VersionData> versionData, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
-        this.projectService = projectService;
+    public VersionsController(VersionService versionService, RecommendedVersionService recommendedVersionService, ProjectFactory projectFactory, StatsService statsService, ChannelService channelService, DownloadsService downloadsService, UserActionLogService userActionLogService, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, MessageSource messageSource, ObjectMapper mapper, HttpServletRequest request, HttpServletResponse response, Supplier<ProjectVersionsTable> projectVersionsTable, Supplier<VersionData> versionData, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
         this.versionService = versionService;
         this.recommendedVersionService = recommendedVersionService;
         this.projectFactory = projectFactory;
         this.statsService = statsService;
-        this.pluginUploadService = pluginUploadService;
         this.channelService = channelService;
         this.downloadsService = downloadsService;
         this.userActionLogService = userActionLogService;
-        this.cacheManager = cacheManager;
         this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
         this.projectFiles = projectFiles;
@@ -147,119 +128,6 @@ public class VersionsController extends HangarController {
         return fillModel(mv);
     }
 
-    @GetMapping("/{author}/{slug}/versions")
-    public ModelAndView showList(@PathVariable String author, @PathVariable String slug) {
-        ModelAndView mav = new ModelAndView("projects/versions/list");
-        ProjectData projData = projectData.get();
-        ScopedProjectData sp = projectService.getScopedProjectData(projData.getProject().getId());
-        mav.addObject("sp", sp);
-        mav.addObject("p", projectData.get());
-        mav.addObject("channels", channelService.getProjectChannels(projData.getProject().getId()));
-        statsService.addProjectView(projData.getProject());
-        return fillModel(mav);
-    }
-
-    @ProjectPermission(NamedPermission.CREATE_VERSION)
-    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
-    @Secured("ROLE_USER")
-    @GetMapping("/{author}/{slug}/versions/new")
-    public ModelAndView showCreator(@PathVariable String author, @PathVariable String slug, ModelMap modelMap) {
-        ModelAndView mav = _showCreator(author, slug, null);
-        AlertUtil.transferAlerts(mav, modelMap);
-        return mav;
-    }
-
-    @ProjectPermission(NamedPermission.CREATE_VERSION)
-    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
-    @Secured("ROLE_USER")
-    @PostMapping(value = "/{author}/{slug}/versions/new/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ModelAndView upload(@PathVariable String author, @PathVariable String slug, @RequestParam("pluginFile") MultipartFile file) {
-        ProjectData projData = projectData.get();
-        String uploadError = projectFactory.getUploadError(getCurrentUser());
-        if (uploadError != null) {
-            if (file == null) {
-                uploadError = "error.noFile";
-            }
-        }
-        if (uploadError != null) {
-            ModelAndView mav = _showCreator(author, slug, null);
-            AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, uploadError);
-            return fillModel(mav);
-        }
-
-        PendingVersion pendingVersion;
-        try {
-            pendingVersion = pluginUploadService.processSubsequentPluginUpload(file, getCurrentUser(), projData.getProject());
-        } catch (HangarException e) {
-            ModelAndView mav = _showCreator(author, slug, null);
-            AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, e.getMessageKey(), e.getArgs());
-            return fillModel(mav);
-        }
-        return _showCreator(author, slug, pendingVersion);
-    }
-
-    private static final Pattern URL_PATTERN = Pattern.compile("(https?://(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?://(?:www\\.|(?!www))[a-zA-Z0-9]+\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]+\\.[^\\s]{2,})");
-
-    @ProjectPermission(NamedPermission.CREATE_VERSION)
-    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
-    @Secured("ROLE_USER")
-    @PostMapping(value = "/{author}/{slug}/versions/new/create", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ModelAndView create(@PathVariable String author, @PathVariable String slug, @RequestParam String externalUrl) {
-        ProjectData projData = projectData.get();
-        if (!URL_PATTERN.matcher(externalUrl).matches()) {
-            ModelAndView mav = _showCreator(author, slug, null);
-            return fillModel(AlertUtil.showAlert(mav, AlertType.ERROR, "error.invalidUrl"));
-        }
-
-        ProjectChannelsTable channel = channelService.getFirstChannel(projData.getProject());
-        PendingVersion pendingVersion = new PendingVersion(
-                null,
-                null,
-                null,
-                "",
-                projData.getProject().getId(),
-                null,
-                null,
-                null,
-                projData.getProjectOwner().getId(),
-                channel.getName(),
-                channel.getColor(),
-                null,
-                externalUrl,
-                false,
-                versionService.getMostRelevantVersion(projData.getProject()));
-        return _showCreator(author, slug, pendingVersion);
-    }
-
-    @ProjectPermission(NamedPermission.CREATE_VERSION)
-    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
-    @Secured("ROLE_USER")
-    @GetMapping("/{author}/{slug}/versions/new/{versionName}")
-    public ModelAndView showCreatorWithMeta(@PathVariable String author, @PathVariable String slug, @PathVariable String versionName) {
-        PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(projectsTable.get().getId() + "/" + versionName, PendingVersion.class);
-
-        if (pendingVersion == null) {
-            ModelAndView mav = _showCreator(author, slug, null);
-            AlertUtil.showAlert(mav, AlertUtil.AlertType.ERROR, "error.plugin.timeout");
-            return fillModel(mav);
-        }
-
-        return _showCreator(author, slug, pendingVersion);
-    }
-
-    private ModelAndView _showCreator(String author, String slug, PendingVersion pendingVersion) {
-        ProjectData projData = projectData.get();
-        ModelAndView mav = new ModelAndView("projects/versions/create");
-        mav.addObject("projectName", projData.getProject().getName());
-        mav.addObject("projectSlug", slug);
-        mav.addObject("ownerName", author);
-        mav.addObject("projectDescription", projData.getProject().getDescription());
-        mav.addObject("forumSync", projData.getProject().getForumSync());
-        mav.addObject("pending", pendingVersion);
-        mav.addObject("channels", channelService.getProjectChannels(projData.getProject().getId()));
-        return fillModel(mav);
-    }
-
     @GetMapping(value = "/{author}/{slug}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object downloadRecommended(@PathVariable String author, @PathVariable String slug, @RequestParam(required = false) String token) {
@@ -282,154 +150,6 @@ public class VersionsController extends HangarController {
         } else {
             return sendJar(project, recommendedVersion, token, false);
         }
-    }
-
-    @ProjectPermission(NamedPermission.CREATE_VERSION)
-    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
-    @Secured("ROLE_USER")
-    @PostMapping(value = "/{author}/{slug}/versions/new/{version:.+}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public void saveNewVersion(@PathVariable String author, @PathVariable String slug, @PathVariable("version") String versionName, @RequestBody NewVersion newVersion) {
-        ProjectsTable project = projectsTable.get();
-        cacheManager.getCache(CacheConfig.NEW_VERSION_CACHE).put(project.getId() + "/" + versionName, newVersion);
-    }
-
-    @ProjectPermission(NamedPermission.CREATE_VERSION)
-    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
-    @Secured("ROLE_USER")
-    @PostMapping(value = "/{author}/{slug}/versions/{version:.+}")
-    public ModelAndView publish(@PathVariable String author, @PathVariable String slug, @PathVariable("version") String versionName, RedirectAttributes attributes) {
-        ProjectsTable project = projectsTable.get();
-        PendingVersion pendingVersion = cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).get(project.getId() + "/" + versionName, PendingVersion.class);
-        NewVersion newVersion = cacheManager.getCache(CacheConfig.NEW_VERSION_CACHE).get(project.getId() + "/" + versionName, NewVersion.class);
-        if (newVersion == null || (pendingVersion == null && newVersion.getExternalUrl() == null)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        } else if (pendingVersion == null && newVersion.getExternalUrl() != null) {
-            pendingVersion = new PendingVersion(
-                    newVersion.getVersionString(),
-                    null,
-                    null,
-                    "",
-                    project.getId(),
-                    null,
-                    null,
-                    null,
-                    getCurrentUser().getId(),
-                    newVersion.getChannel().getName(),
-                    newVersion.getChannel().getColor(),
-                    null,
-                    newVersion.getExternalUrl(),
-                    newVersion.isForumSync(),
-                    null
-            );
-        }
-        return __publish(attributes, author, slug, versionName, newVersion, pendingVersion);
-    }
-
-    private ModelAndView __publish(RedirectAttributes attributes, String author, String slug, String versionName, @NotNull NewVersion newVersion, @NotNull PendingVersion pendingVersion) {
-        ProjectData projData = projectData.get();
-
-        if (newVersion.getPlatformDependencies().stream().anyMatch(s -> !s.getPlatform().getPossibleVersions().containsAll(s.getVersions()))) {
-            AlertUtil.showAlert(attributes, AlertType.ERROR, "error.plugin.invalidVersion");
-            return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
-        }
-
-        List<ProjectChannelsTable> projectChannels = channelService.getProjectChannels(projData.getProject().getId());
-        String alertMsg = null;
-        String[] alertArgs = new String[0];
-        Optional<ProjectChannelsTable> channelOptional = projectChannels.stream().filter(ch -> ch.getName().equals(newVersion.getChannel().getName().trim())).findAny();
-        ProjectChannelsTable channel;
-        if (channelOptional.isEmpty()) {
-            if (projectChannels.size() >= hangarConfig.projects.getMaxChannels()) {
-                alertMsg = "error.channel.maxChannels";
-                alertArgs = new String[]{String.valueOf(hangarConfig.projects.getMaxChannels())};
-            } else if (projectChannels.stream().anyMatch(ch -> ch.getColor() == newVersion.getChannel().getColor())) {
-                alertMsg = "error.channel.duplicateColor";
-            }
-            if (alertMsg != null) {
-                AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, alertMsg, alertArgs);
-                return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
-            }
-            channel = channelService.addProjectChannel(projData.getProject().getId(), newVersion.getChannel().getName().trim(), newVersion.getChannel().getColor(), newVersion.getChannel().isNonReviewed());
-        } else {
-            channel = channelOptional.get();
-        }
-        newVersion.getChannel().setColor(channel.getColor());
-        newVersion.getChannel().setName(channel.getName());
-        newVersion.getChannel().setNonReviewed(channel.isNonReviewed());
-
-        PendingVersion updatedVersion = pendingVersion.update(newVersion);
-
-        if (versionService.exists(updatedVersion)) {
-            AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.plugin.versionExists");
-            return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
-        }
-
-        ProjectVersionsTable version;
-        try {
-            version = updatedVersion.complete(request, projData, projectFactory);
-        } catch (HangarException e) {
-            AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, e.getMessage(), e.getArgs());
-            return Routes.VERSIONS_SHOW_CREATOR.getRedirect(author, slug);
-        }
-
-        if (newVersion.isRecommended()) {
-            projData.getProject().setRecommendedVersionId(version.getId());
-            projectDao.get().update(projData.getProject());
-        }
-
-        if (newVersion.isUnstable()) {
-            versionService.addUnstableTag(version.getId());
-        }
-
-        userActionLogService.version(request, LoggedActionType.VERSION_UPLOADED.with(VersionContext.of(projData.getProject().getId(), version.getId())), "published", "");
-
-        cacheManager.getCache(CacheConfig.NEW_VERSION_CACHE).evict(projData.getProject().getId() + "/" + versionName);
-        cacheManager.getCache(CacheConfig.PENDING_VERSION_CACHE).evict(projData.getProject().getId() + "/" + versionName);
-        return Routes.VERSIONS_SHOW.getRedirect(author, slug, version.getVersionStringUrl());
-    }
-
-    @GetMapping("/{author}/{slug}/versions/{version:.*}")
-    public ModelAndView show(@PathVariable String author, @PathVariable String slug, @PathVariable String version, ModelMap modelMap) {
-        ModelAndView mav = new ModelAndView("projects/versions/view");
-        VersionData vData = versionData.get();
-        AlertUtil.transferAlerts(mav, modelMap);
-        ScopedProjectData sp = projectService.getScopedProjectData(vData.getP().getProject().getId());
-        mav.addObject("v", vData);
-        mav.addObject("sp", sp);
-        statsService.addProjectView(vData.getP().getProject());
-        return fillModel(mav);
-    }
-
-    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
-    @GlobalPermission(NamedPermission.REVIEWER)
-    @Secured("ROLE_USER")
-    @PostMapping("/{author}/{slug}/versions/{version}/approve")
-    public ModelAndView approve(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
-        return _approve(projectVersionsTable.get(), author, slug, version, false);
-    }
-
-    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
-    @GlobalPermission(NamedPermission.REVIEWER)
-    @Secured("ROLE_USER")
-    @PostMapping("/{author}/{slug}/versions/{version}/approvePartial")
-    public ModelAndView approvePartial(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
-        return _approve(projectVersionsTable.get(), author, slug, version, true);
-    }
-
-    private ModelAndView _approve(ProjectVersionsTable projectVersion, String author, String slug, String version, boolean partial) {
-        if (projectVersion == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        ReviewState newState = partial ? ReviewState.PARTIALLY_REVIEWED : ReviewState.REVIEWED;
-        ReviewState oldState = projectVersion.getReviewState();
-        projectVersion.setReviewState(newState);
-        projectVersion.setReviewerId(getCurrentUser().getId());
-        projectVersion.setApprovedAt(OffsetDateTime.now());
-        projectVersion.setVisibility(Visibility.PUBLIC);
-        versionService.update(projectVersion);
-        userActionLogService.version(request, LoggedActionType.VERSION_REVIEW_STATE_CHANGED.with(VersionContext.of(projectVersion.getProjectId(), projectVersion.getId())), newState.name(), oldState.name());
-        return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
     }
 
     @GetMapping("/{author}/{slug}/versions/{version}/confirm")
@@ -708,20 +428,5 @@ public class VersionsController extends HangarController {
         userActionLogService.version(request, LoggedActionType.VERSION_DELETED.with(VersionContext.of(vData.getP().getProject().getId(), vData.getV().getId())), "Restore: " + comment, "");
         return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
     }
-
-    @ProjectPermission(NamedPermission.EDIT_VERSION)
-    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
-    @Secured("ROLE_USER")
-    @PostMapping(value = "/{author}/{slug}/versions/{version}/save", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ModelAndView saveDescription(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String content) {
-        VersionData vData = versionData.get();
-        String oldDesc = vData.getV().getDescription();
-        String newDesc = content.trim();
-        vData.getV().setDescription(newDesc);
-        versionService.update(vData.getV());
-        userActionLogService.version(request, LoggedActionType.VERSION_DESCRIPTION_CHANGED.with(VersionContext.of(vData.getP().getProject().getId(), vData.getV().getId())), newDesc, oldDesc);
-        return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
-    }
-
 }
 
