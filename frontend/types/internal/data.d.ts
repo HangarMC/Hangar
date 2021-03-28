@@ -1,6 +1,6 @@
 declare module 'hangar-internal' {
     import { Model, TagColor } from 'hangar-api';
-    import { Platform, ProjectCategory } from '~/types/enums';
+    import { Platform, ProjectCategory, Visibility } from '~/types/enums';
 
     interface Table extends Model {
         id: number;
@@ -30,5 +30,12 @@ declare module 'hangar-internal' {
         url: string;
         tagColor: TagColor;
         possibleVersions: string[];
+    }
+
+    interface IVisibility {
+        name: Visibility;
+        showModal: boolean;
+        cssClass: string;
+        title: string;
     }
 }

@@ -6,15 +6,16 @@
         <v-card>
             <v-card-title>{{ title }}</v-card-title>
             <v-card-text>
-                <v-form ref="modalForm" v-model="validForm">
+                <v-form v-if="!noForm" ref="modalForm" v-model="validForm">
                     <slot />
                 </v-form>
+                <slot v-else />
             </v-card-text>
             <v-card-actions class="justify-end">
                 <v-btn text color="warning" @click.stop="close">{{ $t('general.close') }}</v-btn>
                 <slot name="other-btns" />
-                <v-btn color="success" :disabled="!validForm || submitDisabled" :loading="loading" @click.stop="submit0">
-                    {{ submitLabel }}
+                <v-btn color="success" :disabled="(!noForm && !validForm) || submitDisabled" :loading="loading" @click.stop="submit0">
+                    {{ submitLabel || $t('general.submit') }}
                 </v-btn>
             </v-card-actions>
         </v-card>
@@ -35,8 +36,8 @@ export default class HangarModal extends HangarFormModal {
     @Prop({ type: String as PropType<TranslateResult>, required: true })
     title!: TranslateResult;
 
-    @Prop({ type: String as PropType<TranslateResult>, required: true })
-    submitLabel!: TranslateResult;
+    @Prop({ type: String as PropType<TranslateResult> })
+    submitLabel!: TranslateResult | null;
 
     @Prop({ type: Function as PropType<() => Promise<void>>, required: true })
     submit!: () => Promise<void>;
@@ -44,12 +45,18 @@ export default class HangarModal extends HangarFormModal {
     @Prop({ type: Boolean, default: false })
     submitDisabled!: boolean;
 
+    @Prop({ type: Boolean, default: false })
+    noForm!: boolean;
+
     $refs!: {
         modalForm: any;
     };
 
     close() {
-        this.$refs.modalForm.reset();
+        if (!this.noForm) {
+            this.$refs.modalForm.reset();
+        }
+
         this.dialog = false;
         this.$emit('close');
     }
@@ -59,7 +66,9 @@ export default class HangarModal extends HangarFormModal {
         this.submit()
             .then(() => {
                 this.dialog = false;
-                this.$refs.modalForm.reset();
+                if (!this.noForm) {
+                    this.$refs.modalForm.reset();
+                }
             })
             .finally(() => {
                 this.loading = false;

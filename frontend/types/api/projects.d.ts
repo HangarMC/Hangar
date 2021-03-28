@@ -1,6 +1,6 @@
 declare module 'hangar-api' {
-    import { Model, Named, TagColor } from 'hangar-api';
-    import { ProjectCategory, Visibility } from '~/types/enums';
+    import { Model, Named, TagColor, Visible } from 'hangar-api';
+    import { ProjectCategory } from '~/types/enums';
 
     interface ProjectNamespace {
         owner: string;
@@ -48,11 +48,10 @@ declare module 'hangar-api' {
         tags: PromotedVersionTag[];
     }
 
-    interface ProjectCompact extends Model, Named {
+    interface ProjectCompact extends Model, Named, Visible {
         namespace: ProjectNamespace;
         stats: ProjectStats;
         category: ProjectCategory;
-        visibility: Visibility;
     }
 
     interface Project extends ProjectCompact {

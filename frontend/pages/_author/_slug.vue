@@ -2,11 +2,18 @@
     <div>
         <template v-if="!isPublic">
             <!-- todo alert for visibility stuff -->
-            <v-alert v-if="needsChanges" type="error">
-                <v-btn v-if="$perms.canEditPage" type="primary" :to="'/' + slug + '/manage/sendforapproval'">{{ $t('project.sendForApproval') }} </v-btn>
-                <strong>{{ $t('visibility.notice.' + project.visibility) }}</strong>
-                <br />
-                <Markdown :raw="project.lastVisibilityChangeComment || 'Unknown'" />
+            <v-alert v-if="needsChanges" type="error" text>
+                <v-row>
+                    <v-col class="grow">
+                        <strong>{{ $t('visibility.notice.' + project.visibility) }}</strong>
+                    </v-col>
+                    <v-col v-if="$perms.canEditPage" class="shrink">
+                        <v-btn v-if="$perms.canEditPage" :loading="loading.approval" color="warning" @click.stop="sendForApproval">
+                            {{ $t('project.sendForApproval') }}
+                        </v-btn>
+                    </v-col>
+                </v-row>
+                <Markdown :raw="project.lastVisibilityChangeComment || 'Unknown'" style="z-index: 10; position: relative" class="mt-2" />
             </v-alert>
             <v-alert v-else-if="isSoftDeleted" type="error">
                 {{ $t('visibility.notice.' + project.visibility, [project.lastVisibilityChangeUserName]) }}
@@ -111,7 +118,7 @@ import { HangarProject } from 'hangar-internal';
 import { NavigationGuardNext, Route } from 'vue-router';
 import { TranslateResult } from 'vue-i18n';
 import { Markdown } from '~/components/markdown';
-import FlagModal from '~/components/modals/FlagModal.vue';
+import FlagModal from '~/components/modals/projects/FlagModal.vue';
 import { UserAvatar } from '~/components/users';
 import { Visibility } from '~/types/enums';
 import { HangarComponent } from '~/components/mixins';
@@ -133,6 +140,9 @@ interface Tab {
 })
 export default class ProjectPage extends HangarComponent {
     project!: HangarProject;
+    loading = {
+        approval: false,
+    };
 
     head() {
         return {
@@ -210,6 +220,20 @@ export default class ProjectPage extends HangarComponent {
                 this.project.userActions.watching = !this.project.userActions.watching;
             })
             .catch((err) => this.$util.handleRequestError(err, 'project.error.watch'));
+    }
+
+    sendForApproval() {
+        this.loading.approval = true;
+        this.$api
+            .requestInternal(`projects/visibility/${this.project.id}/sendforapproval`, true, 'post')
+            .then(() => {
+                this.$util.success('SUCCESS');
+                this.$nuxt.refresh();
+            })
+            .catch(this.$util.handleRequestError)
+            .finally(() => {
+                this.loading.approval = false;
+            });
     }
 
     // Need to refresh the project if anything has changed. idk if this is the best way to do this

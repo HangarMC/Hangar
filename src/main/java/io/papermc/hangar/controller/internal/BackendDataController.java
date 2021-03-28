@@ -10,12 +10,12 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.model.Announcement;
-import io.papermc.hangar.model.api.project.ProjectLicense;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.FlagReason;
+import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.security.annotations.Anyone;
@@ -140,6 +140,20 @@ public class BackendDataController {
     @GetMapping("/licences")
     public ResponseEntity<List<String>> getLicences() {
         return ResponseEntity.ok(config.getLicences());
+    }
+
+    @GetMapping("/visibilities")
+    public ResponseEntity<ArrayNode> getVisibilities() {
+        ArrayNode arrayNode = mapper.createArrayNode();
+        for (Visibility value : Visibility.getValues()) {
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("name", value.getName())
+                    .put("showModal", value.getShowModal())
+                    .put("cssClass", value.getCssClass())
+                    .put("title", value.getTitle());
+            arrayNode.add(objectNode);
+        }
+        return ResponseEntity.ok(arrayNode);
     }
 
     @GetMapping("/validations")

@@ -4,7 +4,21 @@
             <v-card class="settings-card">
                 <v-card-title class="sticky">
                     {{ $t('project.settings.title') }}
-                    <v-btn class="flex-right" color="success" :loading="loading.save" :disabled="!validForm.settings" @click="save">
+                    <VisibilityChangerModal
+                        v-if="$perms.canSeeHidden"
+                        type="project"
+                        :prop-visibility="project.visibility"
+                        activator-class="flex-right"
+                        :post-url="`projects/visibility/${project.id}`"
+                    />
+                    <v-btn
+                        class="flex-right"
+                        :class="{ 'ml-1': $perms.canSeeHidden }"
+                        color="success"
+                        :loading="loading.save"
+                        :disabled="!validForm.settings"
+                        @click="save"
+                    >
                         <v-icon left>mdi-check</v-icon>
                         {{ $t('project.settings.save') }}
                     </v-btn>
@@ -292,9 +306,10 @@ import { NamedPermission, ProjectCategory } from '~/types/enums';
 import { RootState } from '~/store';
 import { HangarProjectMixin } from '~/components/mixins';
 import { MemberList } from '~/components/projects';
+import VisibilityChangerModal from '~/components/modals/VisibilityChangerModal.vue';
 
 @Component({
-    components: { MemberList },
+    components: { VisibilityChangerModal, MemberList },
 })
 @ProjectPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)
 export default class ProjectManagePage extends HangarProjectMixin {

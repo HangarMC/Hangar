@@ -11,6 +11,7 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.exceptions.MultiHangarApiException;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
@@ -25,12 +26,12 @@ import io.papermc.hangar.model.internal.projects.HangarProject.HangarProjectInfo
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.PermissionService;
-import io.papermc.hangar.service.VisibilityService.ProjectVisibilityService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.roles.MemberService.ProjectMemberService;
 import io.papermc.hangar.service.internal.roles.RoleService.ProjectRoleService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.users.NotificationService;
+import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -116,10 +117,18 @@ public class ProjectService extends HangarService {
         Pair<Long, Project> project = hangarProjectsDAO.getProject(author, slug, getHangarUserId());
         ProjectOwner projectOwner = getProjectOwner(author);
         var members = hangarProjectsDAO.getProjectMembers(project.getLeft(), getHangarUserId(), permissionService.getProjectPermissions(getHangarUserId(), project.getLeft()).has(Permission.EditProjectSettings));
-        // TODO only include visibility change if not public (and if so, only include the user and comment)
+        String lastVisibilityChangeComment = "";
+        String lastVisibilityChangeUserName = "";
+        if (project.getRight().getVisibility() == Visibility.NEEDSCHANGES || project.getRight().getVisibility() == Visibility.SOFTDELETE) {
+            var projectVisibilityChangeTable = projectVisibilityService.getLastVisibilityChange(project.getLeft());
+            lastVisibilityChangeComment = projectVisibilityChangeTable.getValue().getComment();
+            if (project.getRight().getVisibility() == Visibility.SOFTDELETE) {
+                lastVisibilityChangeUserName = projectVisibilityChangeTable.getKey();
+            }
+        }
         HangarProjectInfo info = hangarProjectsDAO.getHangarProjectInfo(project.getLeft());
         Map<Long, HangarProjectPage> pages = projectPageService.getProjectPages(project.getLeft());
-        return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, "", "", info, pages.values());
+        return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values());
     }
 
     public void saveSettings(String author, String slug, ProjectSettingsForm settingsForm) {
@@ -231,6 +240,17 @@ public class ProjectService extends HangarService {
 
     public List<UserTable> getProjectWatchers(long projectId) {
         return projectsDAO.getProjectWatchers(projectId);
+    }
+
+    public void sendProjectForApproval(long projectId) {
+        ProjectTable projectTable = getProjectTable(projectId);
+        if (projectTable == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+        if (projectTable.getVisibility() != Visibility.NEEDSCHANGES) {
+            throw new HangarApiException();
+        }
+        projectVisibilityService.changeVisibility(projectTable, Visibility.NEEDSAPPROVAL, "");
     }
 
     @Nullable

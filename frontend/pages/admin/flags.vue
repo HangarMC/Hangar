@@ -2,7 +2,6 @@
     <v-card>
         <v-card-title>{{ $t('flagReview.title') }}</v-card-title>
         <v-card-text>
-            <!-- TODO link to project -->
             <v-list v-if="flags.length > 0">
                 <v-list-item v-for="flag in flags" :key="flag.id">
                     <v-list-item-avatar>
@@ -17,6 +16,9 @@
                                     $util.prettyDateTime(flag.createdAt),
                                 ])
                             }}
+                            <v-btn small icon color="primary" :to="`/${flag.projectNamespace.owner}/${flag.projectNamespace.slug}`" nuxt target="_blank">
+                                <v-icon small>mdi-open-in-new</v-icon>
+                            </v-btn>
                         </v-list-item-title>
                         <v-list-item-subtitle>{{ $t('flagReview.line2', [$t(flag.reason)]) }}</v-list-item-subtitle>
                         <v-list-item-subtitle>{{ $t('flagReview.line3', [flag.comment]) }}</v-list-item-subtitle>
@@ -30,22 +32,16 @@
                             <v-icon small left>mdi-reply</v-icon>
                             {{ $t('flagReview.msgProjectOwner') }}
                         </v-btn>
-                        <v-menu offset-y>
-                            <template #activator="{ on, attrs }">
-                                <v-btn small v-bind="attrs" color="warning" class="mr-1" v-on="on">
-                                    <v-icon small left>mdi-eye</v-icon>
-                                    {{ $t('flagReview.visibilityActions') }}
-                                </v-btn>
-                            </template>
-                            <v-list>
-                                <v-list-item v-for="(v, index) in visibilities" :key="index" @click="visibility(flag, v)">
-                                    <v-list-item-title>{{ v }}</v-list-item-title>
-                                </v-list-item>
-                            </v-list>
-                        </v-menu>
-                        <v-btn small color="success" :loading="loading[flag.id]" @click="resolve(flag)"
-                            ><v-icon small left>mdi-check</v-icon>{{ $t('flagReview.markResolved') }}</v-btn
-                        >
+                        <VisibilityChangerModal
+                            :prop-visibility="flag.projectVisibility"
+                            type="project"
+                            :post-url="`projects/visibility/${flag.projectId}`"
+                            small-btn
+                        />
+                        <v-btn small color="success" :loading="loading[flag.id]" @click="resolve(flag)">
+                            <v-icon small left>mdi-check</v-icon>
+                            {{ $t('flagReview.markResolved') }}
+                        </v-btn>
                     </v-list-item-action>
                 </v-list-item>
             </v-list>
@@ -59,25 +55,17 @@ import { Component, Vue } from 'nuxt-property-decorator';
 import { Flag } from 'hangar-internal';
 import { Context } from '@nuxt/types';
 import UserAvatar from '~/components/users/UserAvatar.vue';
-import { NamedPermission, Visibility } from '~/types/enums';
+import { NamedPermission } from '~/types/enums';
 import { GlobalPermission } from '~/utils/perms';
+import VisibilityChangerModal from '~/components/modals/VisibilityChangerModal.vue';
 
 @Component({
-    components: { UserAvatar },
+    components: { VisibilityChangerModal, UserAvatar },
 })
 @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
 export default class AdminFlagsPage extends Vue {
     flags!: Flag[];
     loading: { [key: number]: boolean } = {};
-
-    get visibilities(): Visibility[] {
-        return Object.keys(Visibility) as Visibility[];
-    }
-
-    // todo send to server
-    visibility(flag: Flag, visibility: Visibility) {
-        console.log('changing visibility of ', flag, 'to ', visibility);
-    }
 
     resolve(flag: Flag) {
         this.loading[flag.id] = true;

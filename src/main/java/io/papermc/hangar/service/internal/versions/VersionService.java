@@ -9,7 +9,7 @@ import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.service.HangarService;
-import io.papermc.hangar.service.VisibilityService.ProjectVersionVisibilityService;
+import io.papermc.hangar.service.internal.visibility.ProjectVersionVisibilityService;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

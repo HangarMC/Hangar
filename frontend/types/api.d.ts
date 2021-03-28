@@ -1,4 +1,6 @@
 declare module 'hangar-api' {
+    import { Visibility } from '~/types/enums';
+
     interface Model {
         createdAt: string;
     }
@@ -32,5 +34,9 @@ declare module 'hangar-api' {
         image: String;
         name: String;
         link: String;
+    }
+
+    interface Visible {
+        visibility: Visibility;
     }
 }

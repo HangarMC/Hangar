@@ -26,7 +26,7 @@ public interface ProjectsDAO {
     @GetGeneratedKeys
     @SqlUpdate("UPDATE projects SET name = :name, slug = :slug, category = :category, keywords = :keywords, issues = :issues, source = :source, " +
             "license_name = :licenseName, license_url = :licenseUrl, forum_sync = :forumSync, description = :description, visibility = :visibility, " +
-            "notes = :notes, support = :support, homepage = :homepage WHERE id = :id")
+            "support = :support, homepage = :homepage WHERE id = :id")
     ProjectTable update(@BindBean ProjectTable project);
 
     @SqlUpdate("DELETE FROM projects WHERE id = :id")

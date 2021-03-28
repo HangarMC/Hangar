@@ -455,17 +455,27 @@ const msgs: LocaleMessageObject = {
         notice: {
             new:
                 'This project is new, and will not be shown to others until a version has been uploaded. If a version is not uploaded over a longer time the project will be deleted.',
-            needsChanges: 'This project requires changes: {0}',
+            needsChanges: 'This project requires changes',
             needsApproval: 'You have sent the project for review',
             softDelete: 'Project deleted by {0}',
         },
         name: {
             new: 'New',
+            public: 'Public',
+            needsChanges: 'Needs Changes',
+            needsApproval: 'Needs Approval',
+            softDelete: 'Soft Delete',
         },
         changes: {
             version: {
                 reviewed: 'due to approved reviews',
             },
+        },
+        modal: {
+            activatorBtn: 'Visibility Actions',
+            title: "Change {0}'s visibility",
+            reason: 'Reason for change',
+            success: "You changed the {0}'s visibility to {1}",
         },
     },
     author: {
@@ -601,7 +611,6 @@ const msgs: LocaleMessageObject = {
         msgUser: 'Message user',
         msgProjectOwner: 'Message owner',
         markResolved: 'Mark resolved',
-        visibilityActions: 'Visibility actions',
         line1: '{0} reported {1} on {2}',
         line2: 'Reason: {0}',
         line3: 'Comment: {0}',

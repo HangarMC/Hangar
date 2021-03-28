@@ -10,6 +10,7 @@ import io.papermc.hangar.model.internal.api.requests.EditMembersForm;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
+import io.papermc.hangar.model.internal.api.requests.projects.VisibilityChangeForm;
 import io.papermc.hangar.model.internal.api.responses.PossibleProjectOwner;
 import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.model.internal.projects.HangarProjectNote;
@@ -22,6 +23,7 @@ import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.projects.ProjectNoteService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.users.UserService;
+import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -51,14 +53,16 @@ public class ProjectController extends HangarController {
     private final UserService userService;
     private final OrganizationService organizationService;
     private final ProjectNoteService projectNoteService;
+    private final ProjectVisibilityService projectVisibilityService;
 
     @Autowired
-    public ProjectController(ProjectFactory projectFactory, ProjectService projectService, UserService userService, OrganizationService organizationService, ProjectNoteService projectNoteService) {
+    public ProjectController(ProjectFactory projectFactory, ProjectService projectService, UserService userService, OrganizationService organizationService, ProjectNoteService projectNoteService, ProjectVisibilityService projectVisibilityService) {
         this.projectFactory = projectFactory;
         this.projectService = projectService;
         this.userService = userService;
         this.organizationService = organizationService;
         this.projectNoteService = projectNoteService;
+        this.projectVisibilityService = projectVisibilityService;
     }
 
     @GetMapping("/validateName")
@@ -155,5 +159,21 @@ public class ProjectController extends HangarController {
     @PostMapping(path = "/notes/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void addProjectNote(@PathVariable long projectId, @RequestBody @Valid StringContent content) {
         projectNoteService.addNote(projectId, content.getContent());
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(perms = NamedPermission.REVIEWER)
+    @PostMapping(path = "/visibility/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void changeProjectVisibility(@PathVariable long projectId, @Valid @RequestBody VisibilityChangeForm visibilityChangeForm) {
+        projectVisibilityService.changeVisibility(projectId, visibilityChangeForm.getVisibility(), visibilityChangeForm.getComment());
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_PAGE, args = "{#projectId}")
+    @PostMapping("/visibility/{projectId}/sendforapproval")
+    public void sendProjectForApproval(@PathVariable long projectId) {
+        projectService.sendProjectForApproval(projectId);
     }
 }
