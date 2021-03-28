@@ -1,6 +1,9 @@
 package io.papermc.hangar.model.common.projects;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import java.util.Locale;
 
 public enum FlagReason {
 
@@ -19,6 +22,11 @@ public enum FlagReason {
     @JsonValue
     public String getTitle() {
         return title;
+    }
+
+    @JsonCreator
+    public static FlagReason creator(String name) {
+        return FlagReason.valueOf(name.toUpperCase(Locale.ROOT));
     }
 
     private static final FlagReason[] VALUES = values();

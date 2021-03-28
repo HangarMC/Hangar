@@ -11,7 +11,7 @@
             <v-card-text>
                 <v-form ref="modalForm" v-model="validForm">
                     <v-radio-group v-model="form.selection" :rules="[$util.$vc.require('A reason')]">
-                        <v-radio v-for="(reason, index) in flagReasons" :key="index" :label="reason.title" :value="reason.type" />
+                        <v-radio v-for="(reason, index) in flagReasons" :key="index" :label="$t(reason.title)" :value="reason.type" />
                     </v-radio-group>
                     <v-textarea v-model.trim="form.comment" rows="3" filled :rules="[$util.$vc.require('A comment')]" :label="$t('general.comment')" />
                 </v-form>
