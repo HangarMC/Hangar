@@ -4,9 +4,9 @@ import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.VersionContext;
 import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.dao.internal.HangarReviewsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionReviewsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
+import io.papermc.hangar.db.dao.internal.versions.HangarReviewsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.ReviewAction;
 import io.papermc.hangar.model.common.projects.ReviewState;
@@ -16,6 +16,7 @@ import io.papermc.hangar.model.db.versions.reviews.ProjectVersionReviewMessageTa
 import io.papermc.hangar.model.db.versions.reviews.ProjectVersionReviewTable;
 import io.papermc.hangar.model.internal.api.requests.versions.ReviewMessage;
 import io.papermc.hangar.model.internal.versions.HangarReview;
+import io.papermc.hangar.model.internal.versions.HangarReviewQueueEntry;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.internal.users.NotificationService;
 import io.papermc.hangar.service.internal.visibility.ProjectVersionVisibilityService;
@@ -106,7 +107,6 @@ public class ReviewService extends HangarService {
 
     public void undoApproval(long versionId, ReviewMessage msg) {
         ProjectVersionReviewMessageTable reviewMessageTable = projectVersionReviewsDAO.getLatestMessage(versionId, getHangarPrincipal().getUserId());
-        System.out.println(reviewMessageTable);
         if (!reviewMessageTable.getAction().isApproval()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "reviews.error.badUndo");
         }
@@ -139,5 +139,9 @@ public class ReviewService extends HangarService {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "reviews.error.notCorrectUser");
         }
         return latestUnfinishedReview;
+    }
+
+    public List<HangarReviewQueueEntry> getReviewQueue() {
+        return hangarReviewsDAO.getReviewQueue(ReviewState.UNREVIEWED);
     }
 }

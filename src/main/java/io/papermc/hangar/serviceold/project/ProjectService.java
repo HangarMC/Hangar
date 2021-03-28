@@ -13,7 +13,6 @@ import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.model.common.projects.Visibility;
-import io.papermc.hangar.modelold.viewhelpers.ProjectApprovalData;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
 import io.papermc.hangar.modelold.viewhelpers.ProjectFlag;
 import io.papermc.hangar.modelold.viewhelpers.ProjectMissingFile;
@@ -193,14 +192,6 @@ public class ProjectService extends HangarService {
         Map<ProjectData, UserRole<UserProjectRolesTable>> map = new HashMap<>();
         dbMap.forEach((projectsTable, role) -> map.put(getProjectData(projectsTable), new UserRole<>(role)));
         return map;
-    }
-
-    public List<ProjectApprovalData> getProjectsNeedingApproval() {
-        return projectDao.get().getVisibilityNeedsApproval();
-    }
-
-    public List<ProjectApprovalData> getProjectsWaitingForChanges() {
-        return projectDao.get().getVisibilityWaitingProject();
     }
 
     public List<UnhealthyProject> getUnhealthyProjects() {

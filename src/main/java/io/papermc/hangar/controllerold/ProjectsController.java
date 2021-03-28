@@ -153,33 +153,5 @@ public class ProjectsController extends HangarController {
         return Routes.SHOW_HOME.getRedirect();
     }
 
-    @ProjectPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)
-    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
-    @Secured("ROLE_USER")
-    @GetMapping("/{author}/{slug}/manage/sendforapproval")
-    public ModelAndView sendForApproval(@PathVariable String author, @PathVariable String slug) {
-        ProjectsTable project = projectsTable.get();
-        if (project.getVisibility() == Visibility.NEEDSCHANGES) {
-            projectService.changeVisibility(project, Visibility.NEEDSAPPROVAL, "");
-            userActionLogService.project(request, LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(project.getId())), Visibility.NEEDSAPPROVAL.getName(), Visibility.NEEDSCHANGES.getName());
-        }
-        return Routes.PROJECTS_SHOW.getRedirect(author, slug);
-    }
-
-    @GlobalPermission(NamedPermission.REVIEWER)
-    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
-    @Secured("ROLE_USER")
-    @PostMapping(value = "/{author}/{slug}/visible/{visibility}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public void setVisible(@PathVariable String author,
-                           @PathVariable String slug,
-                           @PathVariable Visibility visibility,
-                           @RequestParam(required = false) String comment) {
-        ProjectsTable project = projectsTable.get();
-        Visibility oldVisibility = project.getVisibility();
-        projectService.changeVisibility(project, visibility, comment);
-        userActionLogService.project(request, LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(project.getId())), visibility.getName(), oldVisibility.getName());
-        projectService.refreshHomePage();
-    }
 }
 

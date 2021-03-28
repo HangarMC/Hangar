@@ -1,4 +1,4 @@
-package io.papermc.hangar.db.dao.internal;
+package io.papermc.hangar.db.dao.internal.versions;
 
 import io.papermc.hangar.model.internal.versions.HangarVersion;
 import org.jdbi.v3.core.enums.EnumStrategy;

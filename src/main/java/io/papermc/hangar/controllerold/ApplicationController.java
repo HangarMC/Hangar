@@ -124,16 +124,6 @@ public class ApplicationController extends HangarController {
 
     @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
-    @GetMapping("/admin/approval/projects")
-    public Object showProjectVisibility() {
-        ModelAndView mv = new ModelAndView("users/admin/visibility");
-        mv.addObject("needsApproval", projectService.getProjectsNeedingApproval());
-        mv.addObject("waitingProjects", projectService.getProjectsWaitingForChanges());
-        return fillModel(mv);
-    }
-
-    @GlobalPermission(NamedPermission.REVIEWER)
-    @Secured("ROLE_USER")
     @GetMapping("/admin/approval/versions")
     public ModelAndView showQueue() {
         ModelAndView mv = new ModelAndView("users/admin/queue");

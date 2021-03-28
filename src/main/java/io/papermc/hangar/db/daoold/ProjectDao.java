@@ -4,7 +4,6 @@ import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.model.common.Permission;
-import io.papermc.hangar.modelold.viewhelpers.ProjectApprovalData;
 import io.papermc.hangar.modelold.viewhelpers.ProjectMissingFile;
 import io.papermc.hangar.modelold.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.modelold.viewhelpers.UnhealthyProject;
@@ -81,37 +80,6 @@ public interface ProjectDao {
     @SqlQuery("SELECT p.*, upr.id upr_id, upr.created_at upr_created_at, upr.user_id upr_user_id, upr.role_type upr_role_type, upr.project_id upr_project_id, upr.accepted upr_accepted FROM user_project_roles upr JOIN projects p ON p.id = upr.project_id JOIN roles r ON upr.role_type = r.name WHERE upr.user_id = :userId")
     Map<ProjectsTable, UserProjectRolesTable> getProjectsAndRoles(long userId);
 
-
-    @RegisterBeanMapper(ProjectApprovalData.class)
-    @SqlQuery("SELECT sq.owner_name pn_owner," +
-            "       sq.slug pn_slug," +
-            "       sq.visibility visibility," +
-            "       sq.last_comment \"comment\"," +
-            "       u.name change_requester" +
-            "  FROM (SELECT p.owner_name," +
-            "               p.slug," +
-            "               p.visibility," +
-            "               vc.resolved_at," +
-            "               lag(vc.comment) OVER last_vc    AS last_comment," +
-            "               lag(vc.visibility) OVER last_vc AS last_visibility," +
-            "               lag(vc.created_by) OVER last_vc AS last_changer" +
-            "          FROM projects p" +
-            "                 JOIN project_visibility_changes vc ON p.id = vc.project_id" +
-            "          WHERE p.visibility = 3 WINDOW last_vc AS (PARTITION BY p.id ORDER BY vc.created_at)) sq" +
-            "         JOIN users u ON sq.last_changer = u.id" +
-            "  WHERE sq.resolved_at IS NULL" +
-            "    AND sq.last_visibility = 2" +
-            "  ORDER BY sq.owner_name || sq.slug")
-    List<ProjectApprovalData> getVisibilityNeedsApproval();
-
-    @RegisterBeanMapper(value = ProjectApprovalData.class)
-    @SqlQuery("SELECT p.owner_name pn_owner, p.slug pn_slug, p.visibility visibility, vc.comment \"comment\", u.name change_requester" +
-            "  FROM projects p" +
-            "         JOIN project_visibility_changes vc ON p.id = vc.project_id" +
-            "         JOIN users u ON vc.created_by = u.id" +
-            "  WHERE vc.resolved_at IS NULL" +
-            "    AND p.visibility = 2")
-    List<ProjectApprovalData> getVisibilityWaitingProject();
 
     @RegisterBeanMapper(UnhealthyProject.class)
     @UseStringTemplateEngine
