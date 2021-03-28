@@ -143,7 +143,7 @@ public class ProjectController extends HangarController {
         userService.toggleWatching(projectId, state);
     }
 
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MOD_NOTES_AND_FLAGS, args = "{#projectId}")
+    @PermissionRequired(perms = NamedPermission.MOD_NOTES_AND_FLAGS)
     @GetMapping(path = "/notes/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<HangarProjectNote>> getProjectNotes(@PathVariable long projectId) {
         return ResponseEntity.ok(projectNoteService.getNotes(projectId));
@@ -151,7 +151,7 @@ public class ProjectController extends HangarController {
 
     @Unlocked
     @ResponseStatus(HttpStatus.CREATED)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MOD_NOTES_AND_FLAGS, args = "{#projectId}")
+    @PermissionRequired(perms = NamedPermission.MOD_NOTES_AND_FLAGS)
     @PostMapping(path = "/notes/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void addProjectNote(@PathVariable long projectId, @RequestBody @Valid StringContent content) {
         projectNoteService.addNote(projectId, content.getContent());
