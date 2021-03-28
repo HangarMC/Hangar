@@ -11,13 +11,13 @@
         class="elevation-1"
     >
         <template #item.username="{ item }">
-            {{ item.name }}
+            <NuxtLink :to="'/' + item.name">{{ item.name }}</NuxtLink>
         </template>
         <template #item.pic="{ item }">
             <UserAvatar :username="item.name" :avatar-url="$util.avatarUrl(item.name)" clazz="user-avatar-xs" />
         </template>
         <template #item.roles="{ item }">
-            {{ item.roles.map((r) => r.title).join(', ') }}
+            <span v-for="role in item.roles" :key="role.roleId" :style="{ backgroundColor: role.color }" class="user-role-badge">{{ role.title }}</span>
         </template>
         <template #item.joinDate="{ item }">
             {{ $util.prettyDate(item.joinDate) }}

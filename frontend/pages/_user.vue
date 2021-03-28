@@ -164,16 +164,4 @@ export default class UserParentPage extends UserPage {
 }
 </script>
 
-<style lang="scss" scoped>
-@import '~vuetify/src/styles/styles';
-
-.user-role-badge {
-    padding: 2px 4px;
-    border-radius: 2px;
-    color: map-deep-get($material-dark, 'text', 'primary');
-
-    &:not(:last-child) {
-        margin-right: 5px;
-    }
-}
-</style>
+<style lang="scss" scoped></style>
