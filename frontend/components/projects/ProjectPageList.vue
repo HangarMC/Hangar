@@ -5,7 +5,7 @@
             {{ $t('page.plural') }}
         </v-card-title>
         <v-card-text>
-            <v-treeview :items="project.pages">
+            <v-treeview :items="project.pages" item-key="name" :open="initialPage">
                 <template #label="props">
                     <v-btn
                         v-if="!props.item.home"
@@ -38,5 +38,11 @@ import NewPageModal from '~/components/modals/pages/NewPageModal.vue';
         NewPageModal,
     },
 })
-export default class ProjectPageList extends HangarProjectMixin {}
+export default class ProjectPageList extends HangarProjectMixin {
+    initialPage!: string[];
+
+    created() {
+        this.initialPage = this.$route.fullPath.split('/').slice(4);
+    }
+}
 </script>
