@@ -61,7 +61,7 @@
                     </v-card-text>
                 </v-card>
             </template>
-            <MemberList v-else :roles="orgRoles" :members="organization.members" />
+            <MemberList v-else :members="organization.members" :roles="orgRoles" />
         </v-col>
     </v-row>
 </template>

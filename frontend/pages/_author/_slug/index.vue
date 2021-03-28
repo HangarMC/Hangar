@@ -92,7 +92,7 @@
                     <ProjectPageList :project="project" />
                 </v-col>
                 <v-col cols="12">
-                    <MemberList :joinable="project" :roles="roles" />
+                    <MemberList :members="project.members" :roles="roles" />
                 </v-col>
             </v-row>
         </v-col>

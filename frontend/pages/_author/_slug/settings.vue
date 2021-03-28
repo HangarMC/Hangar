@@ -289,7 +289,7 @@
             </v-card>
         </v-col>
         <v-col cols="12" md="4">
-            <MemberList :joinable="project" :roles="roles" always-editing />
+            <MemberList :members="project.members" :roles="roles" always-editing />
         </v-col>
     </v-row>
 </template>
