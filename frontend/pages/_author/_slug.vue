@@ -13,7 +13,7 @@
                         </v-btn>
                     </v-col>
                 </v-row>
-                <Markdown :raw="project.lastVisibilityChangeComment || 'Unknown'" style="z-index: 10; position: relative" class="mt-2" />
+                <Markdown :raw="project.lastVisibilityChangeComment || 'Unknown'" style="z-index: 1; position: relative" class="mt-2" />
             </v-alert>
             <v-alert v-else-if="isSoftDeleted" type="error">
                 {{ $t('visibility.notice.' + project.visibility, [project.lastVisibilityChangeUserName]) }}
@@ -227,7 +227,7 @@ export default class ProjectPage extends HangarComponent {
         this.$api
             .requestInternal(`projects/visibility/${this.project.id}/sendforapproval`, true, 'post')
             .then(() => {
-                this.$util.success('SUCCESS');
+                this.$util.success(this.$t('projectApproval.sendForApproval'));
                 this.$nuxt.refresh();
             })
             .catch(this.$util.handleRequestError)

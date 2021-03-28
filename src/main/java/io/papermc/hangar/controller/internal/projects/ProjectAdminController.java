@@ -1,0 +1,88 @@
+package io.papermc.hangar.controller.internal.projects;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.papermc.hangar.controller.HangarController;
+import io.papermc.hangar.model.common.NamedPermission;
+import io.papermc.hangar.model.common.PermissionType;
+import io.papermc.hangar.model.internal.api.requests.StringContent;
+import io.papermc.hangar.model.internal.api.requests.projects.VisibilityChangeForm;
+import io.papermc.hangar.model.internal.projects.HangarProjectNote;
+import io.papermc.hangar.security.annotations.LoggedIn;
+import io.papermc.hangar.security.annotations.permission.PermissionRequired;
+import io.papermc.hangar.security.annotations.unlocked.Unlocked;
+import io.papermc.hangar.service.internal.projects.ProjectAdminService;
+import io.papermc.hangar.service.internal.projects.ProjectNoteService;
+import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import javax.validation.Valid;
+import java.util.List;
+
+@LoggedIn
+@Controller
+@RequestMapping("/api/internal/projects")
+public class ProjectAdminController extends HangarController {
+
+    private final ProjectAdminService projectAdminService;
+    private final ProjectNoteService projectNoteService;
+    private final ProjectVisibilityService projectVisibilityService;
+    private final ObjectMapper mapper;
+
+    @Autowired
+    public ProjectAdminController(ProjectAdminService projectAdminService, ProjectNoteService projectNoteService, ProjectVisibilityService projectVisibilityService, ObjectMapper mapper) {
+        this.projectAdminService = projectAdminService;
+        this.projectNoteService = projectNoteService;
+        this.projectVisibilityService = projectVisibilityService;
+        this.mapper = mapper;
+    }
+
+    @PermissionRequired(perms = NamedPermission.MOD_NOTES_AND_FLAGS)
+    @GetMapping(path = "/notes/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<HangarProjectNote>> getProjectNotes(@PathVariable long projectId) {
+        return ResponseEntity.ok(projectNoteService.getNotes(projectId));
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.CREATED)
+    @PermissionRequired(perms = NamedPermission.MOD_NOTES_AND_FLAGS)
+    @PostMapping(path = "/notes/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void addProjectNote(@PathVariable long projectId, @RequestBody @Valid StringContent content) {
+        projectNoteService.addNote(projectId, content.getContent());
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(perms = NamedPermission.REVIEWER)
+    @PostMapping(path = "/visibility/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void changeProjectVisibility(@PathVariable long projectId, @Valid @RequestBody VisibilityChangeForm visibilityChangeForm) {
+        projectVisibilityService.changeVisibility(projectId, visibilityChangeForm.getVisibility(), visibilityChangeForm.getComment());
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_PAGE, args = "{#projectId}")
+    @PostMapping("/visibility/{projectId}/sendforapproval")
+    public void sendProjectForApproval(@PathVariable long projectId) {
+        projectAdminService.sendProjectForApproval(projectId);
+    }
+
+    @PermissionRequired(perms = NamedPermission.REVIEWER)
+    @GetMapping(value = "/admin/approval", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ObjectNode> getProjectApprovals() {
+        ObjectNode objectNode = mapper.createObjectNode();
+        objectNode.set("needsApproval", mapper.valueToTree(projectAdminService.getProjectsNeedingApproval()));
+        objectNode.set("waitingProjects", mapper.valueToTree(projectAdminService.getProjectsWaitingForChanges()));
+        return ResponseEntity.ok(objectNode);
+    }
+}

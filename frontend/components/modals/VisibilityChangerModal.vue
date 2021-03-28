@@ -67,6 +67,7 @@ export default class VisibilityChangerModal extends HangarFormModal {
                 this.reason = '';
                 this.$util.success(this.$t('visibility.modal.success', [this.type, this.$t(this.currentIVis?.title)]));
                 this.$nuxt.refresh();
+                this.$auth.refreshUser();
             })
             .catch(this.$util.handleRequestError);
     }

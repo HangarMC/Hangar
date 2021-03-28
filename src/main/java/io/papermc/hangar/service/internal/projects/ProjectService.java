@@ -242,17 +242,6 @@ public class ProjectService extends HangarService {
         return projectsDAO.getProjectWatchers(projectId);
     }
 
-    public void sendProjectForApproval(long projectId) {
-        ProjectTable projectTable = getProjectTable(projectId);
-        if (projectTable == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
-        }
-        if (projectTable.getVisibility() != Visibility.NEEDSCHANGES) {
-            throw new HangarApiException();
-        }
-        projectVisibilityService.changeVisibility(projectTable, Visibility.NEEDSAPPROVAL, "");
-    }
-
     @Nullable
     private <T> ProjectTable getProjectTable(@Nullable T identifier, @NotNull Function<T, ProjectTable> projectTableFunction) {
         if (identifier == null) {

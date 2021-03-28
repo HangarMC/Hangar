@@ -1,4 +1,4 @@
-package io.papermc.hangar.controller.internal;
+package io.papermc.hangar.controller.internal.projects;
 
 import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.model.api.requests.FlagForm;

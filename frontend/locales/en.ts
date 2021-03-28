@@ -638,6 +638,13 @@ const msgs: LocaleMessageObject = {
         date: 'Date',
         version: 'Version',
     },
+    projectApproval: {
+        sendForApproval: 'You have sent the project for approval',
+        noProjects: 'No projects',
+        needsApproval: 'Needs Approval',
+        awaitingChanges: 'Awaiting Changes',
+        description: '{0} requested changes on {1}',
+    },
     validation: {
         required: '{0} is required',
         maxLength: 'Maximum length is {0}',

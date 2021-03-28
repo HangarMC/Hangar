@@ -79,4 +79,12 @@ declare module 'hangar-internal' {
         category: ProjectCategory;
         description: string;
     }
+
+    interface ProjectApproval {
+        projectId: number;
+        namespace: ProjectNamespace;
+        visibility: Visibility;
+        comment: string;
+        changeRequester: string;
+    }
 }

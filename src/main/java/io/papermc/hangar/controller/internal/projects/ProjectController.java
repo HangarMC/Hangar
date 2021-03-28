@@ -1,4 +1,4 @@
-package io.papermc.hangar.controller.internal;
+package io.papermc.hangar.controller.internal.projects;
 
 import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.model.common.NamedPermission;
@@ -10,10 +10,9 @@ import io.papermc.hangar.model.internal.api.requests.EditMembersForm;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
-import io.papermc.hangar.model.internal.api.requests.projects.VisibilityChangeForm;
 import io.papermc.hangar.model.internal.api.responses.PossibleProjectOwner;
 import io.papermc.hangar.model.internal.projects.HangarProject;
-import io.papermc.hangar.model.internal.projects.HangarProjectNote;
+import io.papermc.hangar.security.annotations.LoggedIn;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
@@ -28,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,7 +42,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@Secured("ROLE_USER")
 @RequestMapping(path = "/api/internal/projects", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProjectController extends HangarController {
 
@@ -52,8 +49,6 @@ public class ProjectController extends HangarController {
     private final ProjectService projectService;
     private final UserService userService;
     private final OrganizationService organizationService;
-    private final ProjectNoteService projectNoteService;
-    private final ProjectVisibilityService projectVisibilityService;
 
     @Autowired
     public ProjectController(ProjectFactory projectFactory, ProjectService projectService, UserService userService, OrganizationService organizationService, ProjectNoteService projectNoteService, ProjectVisibilityService projectVisibilityService) {
@@ -61,8 +56,6 @@ public class ProjectController extends HangarController {
         this.projectService = projectService;
         this.userService = userService;
         this.organizationService = organizationService;
-        this.projectNoteService = projectNoteService;
-        this.projectVisibilityService = projectVisibilityService;
     }
 
     @GetMapping("/validateName")
@@ -71,6 +64,7 @@ public class ProjectController extends HangarController {
         projectFactory.checkProjectAvailability(userId, value);
     }
 
+    @LoggedIn
     @GetMapping("/possibleOwners")
     public ResponseEntity<List<PossibleProjectOwner>> possibleProjectCreators() {
         List<PossibleProjectOwner> possibleProjectOwners = organizationService.getOrganizationTablesWithPermission(getHangarPrincipal().getId(), Permission.CreateProject).stream().map(PossibleProjectOwner::new).collect(Collectors.toList());
@@ -145,35 +139,5 @@ public class ProjectController extends HangarController {
     @ResponseStatus(HttpStatus.OK)
     public void setProjectWatching(@PathVariable("id") long projectId, @PathVariable boolean state) {
         userService.toggleWatching(projectId, state);
-    }
-
-    @PermissionRequired(perms = NamedPermission.MOD_NOTES_AND_FLAGS)
-    @GetMapping(path = "/notes/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<HangarProjectNote>> getProjectNotes(@PathVariable long projectId) {
-        return ResponseEntity.ok(projectNoteService.getNotes(projectId));
-    }
-
-    @Unlocked
-    @ResponseStatus(HttpStatus.CREATED)
-    @PermissionRequired(perms = NamedPermission.MOD_NOTES_AND_FLAGS)
-    @PostMapping(path = "/notes/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addProjectNote(@PathVariable long projectId, @RequestBody @Valid StringContent content) {
-        projectNoteService.addNote(projectId, content.getContent());
-    }
-
-    @Unlocked
-    @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(perms = NamedPermission.REVIEWER)
-    @PostMapping(path = "/visibility/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void changeProjectVisibility(@PathVariable long projectId, @Valid @RequestBody VisibilityChangeForm visibilityChangeForm) {
-        projectVisibilityService.changeVisibility(projectId, visibilityChangeForm.getVisibility(), visibilityChangeForm.getComment());
-    }
-
-    @Unlocked
-    @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_PAGE, args = "{#projectId}")
-    @PostMapping("/visibility/{projectId}/sendforapproval")
-    public void sendProjectForApproval(@PathVariable long projectId) {
-        projectService.sendProjectForApproval(projectId);
     }
 }
