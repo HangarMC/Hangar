@@ -10,14 +10,14 @@
             <v-row align="center" justify="center">
                 <v-col cols="12" sm="2" class="d-flex justify-center">
                     <div>
-                        <h5>Hangar API</h5>
+                        <h5 class="d-flex justify-center pb-2">Hangar API</h5>
                         <v-btn color="primary" to="/api">API</v-btn>
                     </div>
                 </v-col>
 
                 <v-col cols="12" sm="2" class="d-flex justify-center">
                     <div>
-                        <h5>Help Needed?</h5>
+                        <h5 class="d-flex justify-center pb-2">Help Needed?</h5>
                         <v-btn color="primary" href="https://papermc.io/forums">Forum</v-btn>
                     </div>
                 </v-col>
@@ -30,22 +30,22 @@
 
                 <v-col cols="12" sm="2" class="d-flex justify-center">
                     <div>
-                        <h5>Found an Issue?</h5>
+                        <h5 class="d-flex justify-center pb-2">Found an Issue?</h5>
                         <v-btn color="primary" href="https://github.com/PaperMC/Hangar/issues" target="_blank" rel="noopener">Issues</v-btn>
                     </div>
                 </v-col>
 
                 <v-col cols="12" sm="2" class="d-flex justify-center">
                     <div>
-                        <h5>Our Sponsors</h5>
+                        <h5 class="d-flex justify-center pb-2">Our Sponsors</h5>
                         <v-btn color="primary" href="https://papermc.io/sponsors">Sponsors</v-btn>
                     </div>
                 </v-col>
             </v-row>
 
             <v-row align="center" justify="center">
-                <v-col cols="12" class="d-flex justify-center"
-                    >Copyright © <a href="https://papermc.io">PaperMC</a> 2016 - {{ new Date().getFullYear() }}
+                <v-col cols="12" class="d-flex justify-center">
+                    Copyright © <a href="https://papermc.io">PaperMC</a> 2016 - {{ new Date().getFullYear() }}
                 </v-col>
             </v-row>
         </v-container>
