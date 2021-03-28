@@ -9,6 +9,7 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePlatformVersions;
@@ -40,7 +41,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -135,9 +135,8 @@ public class VersionController extends HangarController {
     @PermissionRequired(perms = NamedPermission.REVIEWER)
     @GetMapping(path = "/admin/approval", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ObjectNode> getReviewQueue() {
-        List<HangarReviewQueueEntry> underReviewEntries = new ArrayList<>();
-        List<HangarReviewQueueEntry> notStartedEntries = new ArrayList<>();
-        reviewService.getReviewQueue().forEach(entry -> (entry.getReviewerName() != null ? underReviewEntries : notStartedEntries).add(entry));
+        List<HangarReviewQueueEntry> underReviewEntries = reviewService.getReviewQueue(ReviewState.UNDER_REVIEW);
+        List<HangarReviewQueueEntry> notStartedEntries = reviewService.getReviewQueue(ReviewState.UNREVIEWED);
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.set("underReview", mapper.valueToTree(underReviewEntries));
         objectNode.set("notStarted", mapper.valueToTree(notStartedEntries));

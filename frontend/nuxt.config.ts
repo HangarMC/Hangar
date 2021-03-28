@@ -16,6 +16,9 @@ export default {
     telemetry: false,
     // Global page headers: https://go.nuxtjs.dev/config-head
     head: {
+        htmlAttrs: {
+            dir: 'ltr',
+        },
         titleTemplate: (titleChunk: string) => {
             return titleChunk ? `${titleChunk} | Hangar` : 'Hangar';
         },

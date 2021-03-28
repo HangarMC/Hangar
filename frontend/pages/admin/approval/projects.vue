@@ -24,7 +24,6 @@ import { NamedPermission } from '~/types/enums';
 import { HangarComponent } from '~/components/mixins';
 import AdminList from '~/components/projects/AdminList.vue';
 
-// TODO implement AdminApprovalProjectsPage
 @Component({
     components: { AdminList },
 })
@@ -32,6 +31,12 @@ import AdminList from '~/components/projects/AdminList.vue';
 export default class AdminApprovalProjectsPage extends HangarComponent {
     needsApproval!: ProjectApproval[];
     waitingProjects!: ProjectApproval[];
+
+    head() {
+        return {
+            title: this.$t('projectApproval.title'),
+        };
+    }
 
     async asyncData({ $api, $util }: Context) {
         const data = await $api

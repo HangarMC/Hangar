@@ -10,8 +10,6 @@ public enum ReviewState {
 
     UNDER_REVIEW("under_review", "Under Review"),
 
-    BACKLOG("backlog", "Backlog"),
-
     PARTIALLY_REVIEWED("partially_reviewed", "Partially Reviewed");
 
     private final String apiName;

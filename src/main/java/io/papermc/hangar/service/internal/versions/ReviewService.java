@@ -141,7 +141,7 @@ public class ReviewService extends HangarService {
         return latestUnfinishedReview;
     }
 
-    public List<HangarReviewQueueEntry> getReviewQueue() {
-        return hangarReviewsDAO.getReviewQueue(ReviewState.UNREVIEWED);
+    public List<HangarReviewQueueEntry> getReviewQueue(ReviewState reviewState) {
+        return hangarReviewsDAO.getReviewQueue(reviewState);
     }
 }

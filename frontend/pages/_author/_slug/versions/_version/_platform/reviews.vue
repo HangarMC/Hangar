@@ -5,10 +5,6 @@
         </div>
         <div class="float-right">
             <template v-if="!isReviewStateChecked">
-                <v-btn x-small color="secondary" @click="removeFromQueue">
-                    <v-icon left>mdi-layers-remove</v-icon>
-                    {{ $t('reviews.removeFromQueue') }}
-                </v-btn>
                 <v-btn x-small color="info" :to="{ name: 'author-slug', params: $route.params }" nuxt exact>
                     <v-icon left>mdi-home</v-icon>
                     {{ $t('reviews.projectPage') }}
@@ -361,9 +357,6 @@ export default class ProjectVersionsVersionReviewPage extends mixins(Authed, Han
             .catch(this.$util.handleRequestError)
             .finally(final);
     }
-
-    // TODO implement removeFromQueue
-    removeFromQueue() {}
 }
 </script>
 

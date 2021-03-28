@@ -1,4 +1,5 @@
 declare module 'hangar-internal' {
+    import { IPlatform } from 'hangar-internal';
     import { Model, ProjectNamespace } from 'hangar-api';
     import { ReviewAction } from '~/types/enums';
 
@@ -15,15 +16,22 @@ declare module 'hangar-internal' {
         messages: HangarReviewMessage[];
     }
 
+    interface Review {
+        reviewerName: string;
+        reviewStarted: string;
+        reviewEnded: string | null;
+        lastAction: ReviewAction;
+    }
+
     interface ReviewQueueEntry {
         namespace: ProjectNamespace;
+        versionId: number;
         versionString: string;
+        platforms: IPlatform[];
         versionCreatedAt: string;
         versionAuthor: string;
         channelName: string;
         channelColor: string;
-        reviewerName: string | null;
-        reviewStarted: string | null;
-        reviewEnded: string | null;
+        reviews: Review[];
     }
 }

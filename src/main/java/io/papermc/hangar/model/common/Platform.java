@@ -34,6 +34,8 @@ public enum Platform {
         return name;
     }
 
+    public String getEnumName() { return name(); }
+
     public Category getCategory() {
         return category;
     }

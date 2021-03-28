@@ -16,8 +16,14 @@
                 </v-subheader>
                 <!-- todo maybe move the review logs to the admin actions dropdown? -->
                 <template v-if="$perms.isReviewer">
-                    <v-btn v-if="isReviewStateChecked" color="secondary" :to="$route.path + '/reviews'" nuxt>{{ $t('version.page.reviewLogs') }}</v-btn>
-                    <v-btn v-else-if="isUnderReview" color="info" :to="$route.path + '/reviews'" nuxt>{{ $t('version.page.reviewLogs') }}</v-btn>
+                    <v-btn v-if="isReviewStateChecked" color="success" :to="$route.path + '/reviews'" nuxt>
+                        <v-icon left>mdi-list-status</v-icon>
+                        {{ $t('version.page.reviewLogs') }}
+                    </v-btn>
+                    <v-btn v-else-if="isUnderReview" color="info" :to="$route.path + '/reviews'" nuxt>
+                        <v-icon left>mdi-list-status</v-icon>
+                        {{ $t('version.page.reviewLogs') }}
+                    </v-btn>
                     <v-btn v-else color="success" :to="$route.path + '/reviews'" nuxt>
                         <v-icon left>mdi-play</v-icon>
                         {{ $t('version.page.reviewStart') }}

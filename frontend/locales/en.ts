@@ -548,7 +548,6 @@ const msgs: LocaleMessageObject = {
     reviews: {
         headline: '{0} released this version on {1}',
         title: 'Review logs',
-        removeFromQueue: 'Remove from queue',
         projectPage: 'Project Page',
         downloadFile: 'Download File',
         startReview: 'Start Review',
@@ -641,16 +640,24 @@ const msgs: LocaleMessageObject = {
         diffView: 'Diff View',
     },
     versionApproval: {
+        title: 'Version Approvals',
         inReview: 'In Review',
         approvalQueue: 'Approval queue',
-        projectVersion: 'Project version',
         queuedBy: 'Queued by',
         status: 'Status',
         project: 'Project',
         date: 'Date',
         version: 'Version',
+        started: 'Started: {0}',
+        ended: 'Ended: {0}',
+        statuses: {
+            ongoing: '{0} ongoing',
+            stopped: '{0} stopped',
+            approved: '{0} approved',
+        },
     },
     projectApproval: {
+        title: 'Project Approvals',
         sendForApproval: 'You have sent the project for approval',
         noProjects: 'No projects',
         needsApproval: 'Needs Approval',

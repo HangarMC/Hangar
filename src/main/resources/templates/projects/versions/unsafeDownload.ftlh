@@ -22,7 +22,7 @@
                     <div class="alert alert-danger" style="margin-bottom: 10px">
                         <#assign ReviewState=@helper["io.papermc.hangar.model.generated.ReviewState"] />
                         <#-- @ftlvariable name="ReviewState" type="io.papermc.hangar.model.common.projects.ReviewState" -->
-                        <#if isTargetChannelNonReviewed || target.reviewState == ReviewState.BACKLOG>
+                        <#if isTargetChannelNonReviewed <#--|| target.reviewState == ReviewState.BACKLOG-->>
                             <@spring.message "version.download.confirm.nonReviewedChannel" />
                         <#elseif target.reviewState != ReviewState.UNREVIEWED>
                             <@spring.message "version.download.confirm.reviewedChannel" />

@@ -80,11 +80,7 @@ public class BackendDataController {
     public ResponseEntity<ArrayNode> getPlatforms() {
         ArrayNode arrayNode = mapper.createArrayNode();
         for (Platform platform : Platform.getValues()) {
-            ObjectNode objectNode = mapper.createObjectNode()
-                    .put("name", platform.getName())
-                    .put("enumName", platform.name())
-                    .put("category", platform.getCategory().getTagName())
-                    .put("url", platform.getUrl());
+            ObjectNode objectNode = mapper.valueToTree(platform);
             objectNode.set("tagColor", mapper.valueToTree(platform.getTagColor()));
             objectNode.set("possibleVersions", mapper.valueToTree(platformService.getVersionsForPlatform(platform)));
             arrayNode.add(objectNode);

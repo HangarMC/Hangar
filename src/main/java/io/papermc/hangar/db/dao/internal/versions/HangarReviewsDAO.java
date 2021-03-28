@@ -38,41 +38,6 @@ public interface HangarReviewsDAO {
             "   ORDER BY pvr.created_at DESC, pvrm.created_at")
     List<HangarReview> getReviews(long versionId);
 
-    @RegisterConstructorMapper(HangarReviewQueueEntry.class)
-    @SqlQuery("SELECT sq.project_author pn_owner," +
-            "       sq.project_slug pn_slug," +
-            "       sq.version_string," +
-            "       sq.version_created_at," +
-            "       sq.channel_name," +
-            "       sq.channel_color," +
-            "       sq.version_author," +
-            "       sq.reviewer_name," +
-            "       sq.review_started," +
-            "       sq.review_ended" +
-            "  FROM (SELECT p.owner_name                                                             AS project_author," +
-            "               p.slug                                                                   AS project_slug," +
-            "               v.version_string," +
-            "               v.created_at                                                             AS version_created_at," +
-            "               c.name                                                                   AS channel_name," +
-            "               c.color                                                                  AS channel_color," +
-            "               vu.name                                                                  AS version_author," +
-            "               ru.name                                                                  AS reviewer_name," +
-            "               r.created_at                                                             AS review_started," +
-            "               r.ended_at                                                               AS review_ended," +
-            "               row_number() OVER (PARTITION BY (p.id, v.id) ORDER BY r.created_at DESC) AS row" +
-            "          FROM project_versions v" +
-            "                 LEFT JOIN users vu ON v.author_id = vu.id" +
-            "                 INNER JOIN project_channels c ON v.channel_id = c.id" +
-            "                 INNER JOIN projects p ON v.project_id = p.id" +
-            "                 LEFT JOIN project_version_reviews r ON v.id = r.version_id" +
-            "                 LEFT JOIN users ru ON ru.id = r.user_id" +
-            "          WHERE v.review_state = :reviewState" +
-            "            AND p.visibility != 4" +
-            "            AND v.visibility != 4) sq" +
-            "  WHERE row = 1" +
-            "  ORDER BY sq.review_started")
-    List<HangarReviewQueueEntry> getReviewQueue(@EnumByOrdinal ReviewState reviewState);
-
     class HangarReviewReducer implements LinkedHashMapRowReducer<Long, HangarReview> {
         @Override
         public void accumulate(Map<Long, HangarReview> container, RowView rowView) {
@@ -84,4 +49,46 @@ public interface HangarReviewsDAO {
         }
     }
 
+    @UseRowReducer(ReviewQueueReducer.class)
+    @RegisterConstructorMapper(HangarReviewQueueEntry.class)
+    @RegisterConstructorMapper(value = HangarReviewQueueEntry.Review.class, prefix = "r_")
+    @SqlQuery("SELECT pv.id version_id," +
+            "       p.owner_name pn_owner," +
+            "       p.slug pn_slug," +
+            "       pv.version_string," +
+            "       array(SELECT DISTINCT plv.platform " +
+            "               FROM project_version_platform_dependencies pvpd " +
+            "                   JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
+            "               WHERE pv.id = pvpd.version_id" +
+            "       ) platforms," +
+            "       pv.created_at version_created_at," +
+            "       coalesce(pvu.name, 'DELETED USER') version_author," +
+            "       pc.name channel_name," +
+            "       pc.color channel_color," +
+            "       ru.name r_reviewer_name," +
+            "       pvr.created_at r_review_started," +
+            "       pvr.ended_at r_review_ended," +
+            "       (SELECT pvrm.action FROM project_version_review_messages pvrm WHERE pvr.id = pvrm.review_id ORDER BY pvrm.created_at DESC LIMIT 1) r_last_action" +
+            "   FROM project_version_reviews pvr" +
+            "       JOIN users ru ON pvr.user_id = ru.id" +
+            "       JOIN project_versions pv ON pvr.version_id = pv.id" +
+            "       LEFT JOIN users pvu ON pv.author_id = pvu.id" +
+            "       JOIN project_channels pc ON pv.channel_id = pc.id" +
+            "       JOIN projects p ON pv.project_id = p.id" +
+            "   WHERE pv.review_state = :reviewState AND" +
+            "         p.visibility != 4 AND" +
+            "         pv.visibility != 4" +
+            "   GROUP BY pv.id, p.id, pvu.id, pc.id, pvr.id, ru.id")
+    List<HangarReviewQueueEntry> getReviewQueue(@EnumByOrdinal ReviewState reviewState);
+
+    class ReviewQueueReducer implements LinkedHashMapRowReducer<Long, HangarReviewQueueEntry> {
+        @Override
+        public void accumulate(Map<Long, HangarReviewQueueEntry> container, RowView rowView) {
+            HangarReviewQueueEntry entry = container.computeIfAbsent(rowView.getColumn("version_id", Long.class), id -> rowView.getRow(HangarReviewQueueEntry.class));
+
+            if (rowView.getColumn("r_reviewer_name", String.class) != null) {
+                entry.getReviews().add(rowView.getRow(HangarReviewQueueEntry.Review.class));
+            }
+        }
+    }
 }
