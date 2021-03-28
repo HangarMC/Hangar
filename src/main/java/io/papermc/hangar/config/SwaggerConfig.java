@@ -1,17 +1,41 @@
 package io.papermc.hangar.config;
 
+import com.fasterxml.classmate.TypeResolver;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import io.papermc.hangar.controller.extras.pagination.Filter;
+import io.papermc.hangar.controller.extras.pagination.FilterRegistry;
+import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
+import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSorters;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.ExampleBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.builders.RequestParameterBuilder;
+import springfox.documentation.schema.Example;
+import springfox.documentation.schema.ModelRef;
+import springfox.documentation.schema.ModelSpecification;
+import springfox.documentation.schema.ScalarType;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.ParameterSpecification;
+import springfox.documentation.service.ParameterStyle;
+import springfox.documentation.service.ParameterType;
+import springfox.documentation.service.RequestParameter;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.OperationBuilderPlugin;
+import springfox.documentation.spi.service.contexts.OperationContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -56,4 +80,51 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo());
     }
 
+    @Bean
+    public CustomScanner customScanner(FilterRegistry filterRegistry) {
+        return new CustomScanner(filterRegistry);
+    }
+
+    static class CustomScanner implements OperationBuilderPlugin {
+
+        private final FilterRegistry filterRegistry;
+
+        public CustomScanner(FilterRegistry filterRegistry) {
+            this.filterRegistry = filterRegistry;
+        }
+
+        @Override
+        public void apply(OperationContext context) {
+            Optional<ApplicableSorters> sorters = context.findAnnotation(ApplicableSorters.class);
+            if (sorters.isPresent()) {
+                Set<RequestParameter> requestParameters = context.operationBuilder().build().getRequestParameters();
+                requestParameters.add(new RequestParameterBuilder()
+                        .name("sortBy")
+                        .in(ParameterType.QUERY)
+                        .description("Used to sort the result")
+                        .query(q -> q.style(ParameterStyle.SIMPLE).model(m -> m.scalarModel(ScalarType.STRING)).enumerationFacet(e -> e.allowedValues(Arrays.asList(sorters.get().value())))).build());
+                context.operationBuilder().requestParameters(requestParameters);
+            }
+            Optional<ApplicableFilters> filters = context.findAnnotation(ApplicableFilters.class);
+            if (filters.isPresent()) {
+                Set<RequestParameter> requestParameters = context.operationBuilder().build().getRequestParameters();
+
+                for (var clazz : filters.get().value()) {
+                    var filter = filterRegistry.get(clazz);
+
+                    requestParameters.add(new RequestParameterBuilder()
+                            .name(filter.getQueryParamName())
+                            .in(ParameterType.QUERY)
+                            .description(filter.getDescription())
+                            .query(q -> q.style(ParameterStyle.SIMPLE).model(m -> m.scalarModel(ScalarType.STRING))).build());
+                }
+                context.operationBuilder().requestParameters(requestParameters);
+            }
+        }
+
+        @Override
+        public boolean supports(DocumentationType documentationType) {
+            return true;
+        }
+    }
 }

@@ -20,6 +20,11 @@ public class ProjectTagFilter implements Filter<ProjectTagFilterInstance> {
         return "tag";
     }
 
+    @Override
+    public String getDescription() {
+        return "A tag name to filter for";
+    }
+
     @NotNull
     @Override
     public ProjectTagFilterInstance create(NativeWebRequest webRequest) {

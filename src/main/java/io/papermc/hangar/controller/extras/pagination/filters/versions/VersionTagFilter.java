@@ -19,6 +19,11 @@ public class VersionTagFilter implements Filter<VersionTagFilterInstance> {
         return "vTag";
     }
 
+    @Override
+    public String getDescription() {
+        return "A version tag to filter for";
+    }
+
     @NotNull
     @Override
     public VersionTagFilterInstance create(NativeWebRequest webRequest) {

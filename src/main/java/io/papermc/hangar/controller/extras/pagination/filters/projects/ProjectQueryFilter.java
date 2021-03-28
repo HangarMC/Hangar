@@ -15,6 +15,11 @@ public class ProjectQueryFilter implements Filter<ProjectQueryFilterInstance> {
         return "q";
     }
 
+    @Override
+    public String getDescription() {
+        return "The query to use when searching";
+    }
+
     @NotNull
     @Override
     public ProjectQueryFilterInstance create(NativeWebRequest webRequest) {

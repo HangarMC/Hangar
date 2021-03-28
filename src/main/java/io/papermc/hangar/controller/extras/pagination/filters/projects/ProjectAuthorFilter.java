@@ -15,6 +15,11 @@ public class ProjectAuthorFilter implements Filter<ProjectAuthorFilterInstance> 
         return "owner";
     }
 
+    @Override
+    public String getDescription() {
+        return "The author of the project";
+    }
+
     @NotNull
     @Override
     public ProjectAuthorFilterInstance create(NativeWebRequest webRequest) {

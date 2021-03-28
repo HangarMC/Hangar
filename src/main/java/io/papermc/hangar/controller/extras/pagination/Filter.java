@@ -9,6 +9,8 @@ public interface Filter<F extends FilterInstance> {
 
     String getQueryParamName();
 
+    String getDescription();
+
     default boolean supports(NativeWebRequest webRequest) {
         return webRequest.getParameterMap().containsKey(getQueryParamName());
     }

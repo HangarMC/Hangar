@@ -25,6 +25,11 @@ public class VersionPlatformFilter implements Filter<VersionPlatformFilterInstan
         return "platform";
     }
 
+    @Override
+    public String getDescription() {
+        return "A platform name to filter for";
+    }
+
     @NotNull
     @Override
     public VersionPlatformFilterInstance create(NativeWebRequest webRequest) {

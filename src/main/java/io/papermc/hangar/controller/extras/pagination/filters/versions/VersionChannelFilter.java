@@ -15,6 +15,11 @@ public class VersionChannelFilter implements Filter<VersionChannelFilterInstance
         return "channel";
     }
 
+    @Override
+    public String getDescription() {
+        return "A name of a version channel to filter for";
+    }
+
     @NotNull
     @Override
     public VersionChannelFilterInstance create(NativeWebRequest webRequest) {

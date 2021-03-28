@@ -15,6 +15,11 @@ public class ProjectCategoryFilter implements Filter<ProjectCategoryFilterInstan
 
     private final ConversionService conversionService;
 
+    @Override
+    public String getDescription() {
+        return "A category to filter for";
+    }
+
     @Autowired
     public ProjectCategoryFilter(ConversionService conversionService) {
         this.conversionService = conversionService;
@@ -41,7 +46,6 @@ public class ProjectCategoryFilter implements Filter<ProjectCategoryFilterInstan
 
         @Override
         public void createSql(StringBuilder sb, SqlStatement<?> q) {
-            // TODO this is hacky af but idk a better way. Can't use defined arguments inside another defined argument apparently
             sb.append(" AND ").append("p.category").append(" IN (");
             for (int i = 0; i < categories.length; i++) {
                 sb.append(":__category__").append(i);
