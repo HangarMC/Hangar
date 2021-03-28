@@ -1,4 +1,4 @@
-package io.papermc.hangar.db.dao.internal;
+package io.papermc.hangar.db.dao.internal.projects;
 
 import io.papermc.hangar.model.internal.projects.HangarViewProjectPage;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;

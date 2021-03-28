@@ -7,15 +7,21 @@
             </NuxtLink>
         </v-card-title>
         <v-card-text>
-            <v-text-field v-model="text" :placeholder="$t('notes.placeholder')">
+            <v-text-field v-model.trim="text" filled :placeholder="$t('notes.placeholder')" dense hide-details @keyup.enter="addNote">
                 <template #append-outer>
-                    <v-btn @click="addNote">{{ $t('notes.addNote') }}</v-btn>
+                    <v-btn class="input-append-btn" color="primary" :disabled="!text" :loading="loading" @click="addNote">{{ $t('notes.addNote') }}</v-btn>
                 </template>
             </v-text-field>
-            <h2>{{ $t('notes.notes') }}</h2>
-            <v-data-table v-if="notes && notes.length > 0" :headers="headers" :items="notes" disable-filtering disable-sort hide-default-footer>
-                <template #item.message="{ item }">{{ item.message }}</template>
-                <template #item.user="{ item }">{{ item.user.name }}</template>
+            <h2 class="mt-2">{{ $t('notes.notes') }}</h2>
+            <v-data-table
+                v-if="notes && notes.length > 0"
+                :headers="headers"
+                :items="notes"
+                :loading="$fetchState.pending"
+                disable-filtering
+                disable-sort
+                hide-default-footer
+            >
                 <template #item.createdAt="{ item }">{{ $util.prettyDate(item.createdAt) }}</template>
             </v-data-table>
             <v-alert v-else type="info" prominent v-text="$t('notes.noNotes')" />
@@ -24,41 +30,48 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'nuxt-property-decorator';
-import { Project } from 'hangar-api';
+import { Component } from 'nuxt-property-decorator';
 import { Note } from 'hangar-internal';
 import { GlobalPermission } from '~/utils/perms';
 import { NamedPermission } from '~/types/enums';
+import { HangarProjectMixin } from '~/components/mixins';
 
 @Component
 @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
-export default class ProjectNotesPage extends Vue {
-    @Prop({ required: true })
-    project!: Project;
-
-    // todo load notes
-    notes: Array<Note> = [];
-
+export default class ProjectNotesPage extends HangarProjectMixin {
+    notes: Note[] = [];
+    loading = false;
     text: string = '';
 
     addNote() {
-        const note = {
-            id: -1,
-            message: this.text,
-            user: this.$util.getCurrentUser(),
-            createdAt: new Date().toISOString(),
-        } as Note;
-        this.text = '';
-        this.notes.push(note);
-        // TODO add new note to server
+        if (!this.text) {
+            return;
+        }
+        this.loading = true;
+        this.$api
+            .requestInternal(`projects/notes/${this.project.id}`, true, 'post', {
+                content: this.text,
+            })
+            .then(() => {
+                this.$nuxt.refresh();
+                this.text = '';
+            })
+            .catch(this.$util.handleRequestError)
+            .finally(() => {
+                this.loading = false;
+            });
     }
 
     get headers() {
         return [
             { text: 'Date', value: 'createdAt', width: '10%' },
-            { text: 'User', value: 'user', width: '10%' },
+            { text: 'User', value: 'userName', width: '10%' },
             { text: 'Message', value: 'message', width: '80%' },
         ];
+    }
+
+    async fetch() {
+        this.notes = (await this.$api.requestInternal<Note[]>(`projects/notes/${this.project.id}`, true).catch<any>(this.$util.handleRequestError)) || [];
     }
 }
 </script>

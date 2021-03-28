@@ -1,6 +1,6 @@
 declare module 'hangar-internal' {
     import { FlagReason, Joinable, Table } from 'hangar-internal';
-    import { Project, User } from 'hangar-api';
+    import { Project } from 'hangar-api';
     import { ProjectCategory, Visibility } from '~/types/enums';
 
     interface ProjectOwner {
@@ -58,8 +58,10 @@ declare module 'hangar-internal' {
     }
 
     interface Note extends Table {
+        projectId: number;
         message: string;
-        user: User;
+        userId: number;
+        userName: string | null;
     }
 
     interface ProjectSettingsForm {

@@ -1,6 +1,5 @@
 package io.papermc.hangar.model.db.projects;
 
-import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.ModelVisible;
 import io.papermc.hangar.model.Visitable;
 import io.papermc.hangar.model.common.projects.Category;
@@ -26,7 +25,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
     private Category category;
     private String description;
     private Visibility visibility;
-    private JSONB notes;
     private Collection<String> keywords;
     private String homepage;
     private String issues;
@@ -63,7 +61,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.category = other.category;
         this.description = other.description;
         this.visibility = other.visibility;
-        this.notes = other.notes;
         this.keywords = other.keywords;
         this.homepage = other.homepage;
         this.issues = other.issues;
@@ -75,7 +72,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
     }
 
     @JdbiConstructor
-    public ProjectTable(OffsetDateTime createdAt, long id, String name, String slug, String ownerName, long ownerId, long topicId, long postId, @EnumByOrdinal Category category, String description, @EnumByOrdinal Visibility visibility, JSONB notes, Collection<String> keywords, String homepage, String issues, String source, String support, String licenseName, String licenseUrl, boolean forumSync) {
+    public ProjectTable(OffsetDateTime createdAt, long id, String name, String slug, String ownerName, long ownerId, long topicId, long postId, @EnumByOrdinal Category category, String description, @EnumByOrdinal Visibility visibility, Collection<String> keywords, String homepage, String issues, String source, String support, String licenseName, String licenseUrl, boolean forumSync) {
         super(createdAt, id);
         this.name = name;
         this.slug = slug;
@@ -86,7 +83,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.category = category;
         this.description = description;
         this.visibility = visibility;
-        this.notes = notes;
         this.keywords = keywords;
         this.homepage = homepage;
         this.issues = issues;
@@ -166,14 +162,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
     @Override
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
-    }
-
-    public JSONB getNotes() {
-        return notes;
-    }
-
-    public void setNotes(JSONB notes) {
-        this.notes = notes;
     }
 
     public Collection<String> getKeywords() {
@@ -262,7 +250,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
                 ", category=" + category +
                 ", description='" + description + '\'' +
                 ", visibility=" + visibility +
-                ", notes=" + notes +
                 ", keywords=" + keywords +
                 ", homepage='" + homepage + '\'' +
                 ", issues='" + issues + '\'' +

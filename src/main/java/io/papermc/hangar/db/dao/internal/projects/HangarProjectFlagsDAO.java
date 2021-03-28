@@ -1,5 +1,7 @@
-package io.papermc.hangar.db.dao.internal;
+package io.papermc.hangar.db.dao.internal.projects;
 
+import io.papermc.hangar.model.db.projects.ProjectFlagTable;
+import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
@@ -11,11 +13,8 @@ import org.springframework.stereotype.Repository;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import io.papermc.hangar.model.db.projects.ProjectFlagTable;
-import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
-
 @Repository
-public interface HangarFlagsDAO {
+public interface HangarProjectFlagsDAO {
 
     @Timestamped
     @GetGeneratedKeys

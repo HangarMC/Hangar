@@ -12,12 +12,14 @@ import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
 import io.papermc.hangar.model.internal.api.responses.PossibleProjectOwner;
 import io.papermc.hangar.model.internal.projects.HangarProject;
+import io.papermc.hangar.model.internal.projects.HangarProjectNote;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
+import io.papermc.hangar.service.internal.projects.ProjectNoteService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,13 +50,15 @@ public class ProjectController extends HangarController {
     private final ProjectService projectService;
     private final UserService userService;
     private final OrganizationService organizationService;
+    private final ProjectNoteService projectNoteService;
 
     @Autowired
-    public ProjectController(ProjectFactory projectFactory, ProjectService projectService, UserService userService, OrganizationService organizationService) {
+    public ProjectController(ProjectFactory projectFactory, ProjectService projectService, UserService userService, OrganizationService organizationService, ProjectNoteService projectNoteService) {
         this.projectFactory = projectFactory;
         this.projectService = projectService;
         this.userService = userService;
         this.organizationService = organizationService;
+        this.projectNoteService = projectNoteService;
     }
 
     @GetMapping("/validateName")
@@ -139,8 +143,17 @@ public class ProjectController extends HangarController {
         userService.toggleWatching(projectId, state);
     }
 
-//    @GetMapping("/project/{author}/{name}/flags")
-//    public void getProjectFlags(@PathVariable String author, @PathVariable String name) {
-//
-//    }
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MOD_NOTES_AND_FLAGS, args = "{#projectId}")
+    @GetMapping(path = "/notes/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<HangarProjectNote>> getProjectNotes(@PathVariable long projectId) {
+        return ResponseEntity.ok(projectNoteService.getNotes(projectId));
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.CREATED)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.MOD_NOTES_AND_FLAGS, args = "{#projectId}")
+    @PostMapping(path = "/notes/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void addProjectNote(@PathVariable long projectId, @RequestBody @Valid StringContent content) {
+        projectNoteService.addNote(projectId, content.getContent());
+    }
 }

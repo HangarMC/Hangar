@@ -497,7 +497,7 @@ const msgs: LocaleMessageObject = {
     notes: {
         header: 'Notes for',
         noNotes: 'No notes found',
-        addNote: 'Add notes',
+        addNote: 'Add note',
         notes: 'Notes',
         placeholder: 'Add a note...',
     },

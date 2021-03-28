@@ -1,8 +1,5 @@
 package io.papermc.hangar.controllerold;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
@@ -15,11 +12,9 @@ import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.model.common.projects.Visibility;
-import io.papermc.hangar.modelold.generated.Note;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
 import io.papermc.hangar.modelold.viewhelpers.ScopedOrganizationData;
 import io.papermc.hangar.modelold.viewhelpers.ScopedProjectData;
-import io.papermc.hangar.modelold.viewhelpers.UserData;
 import io.papermc.hangar.securityold.annotations.GlobalPermission;
 import io.papermc.hangar.securityold.annotations.ProjectPermission;
 import io.papermc.hangar.securityold.annotations.UserLock;
@@ -36,7 +31,6 @@ import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,8 +43,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
@@ -210,44 +202,6 @@ public class ProjectsController extends HangarController {
             userActionLogService.project(request, LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(project.getId())), Visibility.NEEDSAPPROVAL.getName(), Visibility.NEEDSCHANGES.getName());
         }
         return Routes.PROJECTS_SHOW.getRedirect(author, slug);
-    }
-
-    @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
-    @Secured("ROLE_USER")
-    @GetMapping("/{author}/{slug}/notes")
-    public ModelAndView showNotes(@PathVariable String author, @PathVariable String slug) {
-        ModelAndView mv = new ModelAndView("projects/admin/notes");
-        ProjectsTable project = projectsTable.get();
-
-        List<Note> notes = new ArrayList<>();
-        ArrayNode messages = (ArrayNode) project.getNotes().getJson().get("messages");
-        if (messages != null) {
-            for (JsonNode message : messages) {
-                Note note = new Note().message(message.get("message").asText());
-                notes.add(note);
-                UserData user = userService.getUserData(message.get("user").asLong());
-                note.user(user.getUser().getName());
-            }
-        }
-
-        mv.addObject("project", project);
-        mv.addObject("notes", notes);
-        return fillModel(mv);
-    }
-
-    @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
-    @Secured("ROLE_USER")
-    @PostMapping("/{author}/{slug}/notes/addmessage")
-    public ResponseEntity<String> addMessage(@PathVariable String author, @PathVariable String slug, @RequestParam String content) {
-        ProjectsTable project = projectsTable.get();
-        ArrayNode messages = project.getNotes().getJson().withArray("messages");
-        ObjectNode note = messages.addObject();
-        note.put("message", content);
-        note.put("user", getCurrentUser().getId());
-
-        String json = project.getNotes().getJson().toString();
-        projectDao.get().updateNotes(json, project.getId());
-        return ResponseEntity.ok("Review");
     }
 
     @GlobalPermission(NamedPermission.REVIEWER)

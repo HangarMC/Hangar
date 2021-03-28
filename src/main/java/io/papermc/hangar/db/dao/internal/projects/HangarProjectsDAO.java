@@ -1,4 +1,4 @@
-package io.papermc.hangar.db.dao.internal;
+package io.papermc.hangar.db.dao.internal.projects;
 
 import io.papermc.hangar.db.mappers.PromotedVersionMapper;
 import io.papermc.hangar.db.mappers.factories.JoinableMemberFactory;
@@ -74,16 +74,17 @@ public interface HangarProjectsDAO {
     List<JoinableMember<ProjectRoleTable>> getProjectMembers(long projectId, Long userId, @Define boolean canSeePending);
 
     @RegisterConstructorMapper(HangarProjectInfo.class)
-    @SqlQuery("SELECT count(pv.*) public_versions," +
-            "       count(pf.*) flag_count," +
-            "       count(ps.*) star_count," +
-            "       count(pw.*) watcher_count," +
-            "       coalesce(jsonb_array_length(p.notes->'messages'), 0) note_count" +
+    @SqlQuery("SELECT count(DISTINCT pv.id) public_versions," +
+            "       count(DISTINCT pf.id) flag_count," +
+            "       count(DISTINCT ps.user_id) star_count," +
+            "       count(DISTINCT pw.user_id) watcher_count," +
+            "       count(DISTINCT pn.id) note_count" +
             "   FROM projects p" +
             "       LEFT JOIN project_versions pv ON p.id = pv.project_id AND pv.visibility = 0" +
             "       LEFT JOIN project_stars ps ON p.id = ps.project_id" +
             "       LEFT JOIN project_watchers pw ON p.id = pw.project_id" +
             "       LEFT JOIN project_flags pf ON p.id = pf.project_id" +
+            "       LEFT JOIN project_notes pn ON p.id = pn.project_id" +
             "   WHERE p.id = :projectId" +
             "   GROUP BY p.id")
     HangarProjectInfo getHangarProjectInfo(long projectId);
