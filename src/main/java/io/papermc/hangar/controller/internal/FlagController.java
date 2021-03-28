@@ -32,8 +32,8 @@ public class FlagController extends HangarController {
         this.flagService = flagService;
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void flag(@RequestBody @Valid FlagForm form) {
         flagService.createFlag(form.getProjectId(), form.getReason(), form.getComment());
     }
@@ -46,14 +46,14 @@ public class FlagController extends HangarController {
     }
 
     @ResponseBody
-    @GetMapping(value = "/{author}/{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(perms = NamedPermission.MOD_NOTES_AND_FLAGS)
-    public List<HangarProjectFlag> getFlags(@PathVariable String author, @PathVariable String slug) {
-        return flagService.getFlags(author, slug);
+    public List<HangarProjectFlag> getFlags(@PathVariable long projectId) {
+        return flagService.getFlags(projectId);
     }
 
     @ResponseBody
-    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(perms = NamedPermission.MOD_NOTES_AND_FLAGS)
     public List<HangarProjectFlag> getFlags() {
         return flagService.getFlags();

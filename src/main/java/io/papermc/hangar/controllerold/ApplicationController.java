@@ -7,8 +7,6 @@ import com.vladsch.flexmark.ext.admonition.AdmonitionExtension;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controllerold.forms.UserAdminForm;
 import io.papermc.hangar.controllerold.util.StatusZ;
-import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.daoold.PlatformVersionsDao;
@@ -25,7 +23,6 @@ import io.papermc.hangar.modelold.Role;
 import io.papermc.hangar.modelold.viewhelpers.Activity;
 import io.papermc.hangar.modelold.viewhelpers.LoggedActionViewModel;
 import io.papermc.hangar.modelold.viewhelpers.OrganizationData;
-import io.papermc.hangar.modelold.viewhelpers.ProjectFlag;
 import io.papermc.hangar.modelold.viewhelpers.ReviewQueueEntry;
 import io.papermc.hangar.modelold.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.modelold.viewhelpers.UserData;
@@ -38,7 +35,6 @@ import io.papermc.hangar.serviceold.StatsService;
 import io.papermc.hangar.serviceold.UserActionLogService;
 import io.papermc.hangar.serviceold.UserService;
 import io.papermc.hangar.serviceold.VersionService;
-import io.papermc.hangar.serviceold.project.FlagService;
 import io.papermc.hangar.serviceold.project.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -75,7 +71,6 @@ public class ApplicationController extends HangarController {
     private final HangarDao<PlatformVersionsDao> platformVersionsDao;
     private final UserService userService;
     private final ProjectService projectService;
-    private final FlagService flagService;
     private final OrgService orgService;
     private final UserActionLogService userActionLogService;
     private final VersionService versionService;
@@ -91,12 +86,11 @@ public class ApplicationController extends HangarController {
     private final Supplier<UserData> userData;
 
     @Autowired
-    public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, FlagService flagService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, RoleService roleService, StatusZ statusZ, ObjectMapper mapper, HangarConfig hangarConfig, HttpServletRequest request, Supplier<UserData> userData) {
+    public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, RoleService roleService, StatusZ statusZ, ObjectMapper mapper, HangarConfig hangarConfig, HttpServletRequest request, Supplier<UserData> userData) {
         this.platformVersionsDao = platformVersionsDao;
         this.userService = userService;
         this.projectService = projectService;
         this.orgService = orgService;
-        this.flagService = flagService;
         this.userActionLogService = userActionLogService;
         this.versionService = versionService;
         this.jobService = jobService;
@@ -149,31 +143,6 @@ public class ApplicationController extends HangarController {
         mv.addObject("underReview", reviewQueueEntries);
         mv.addObject("versions", notStartedQueueEntries);
         return fillModel(mv);
-    }
-
-    @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
-    @Secured("ROLE_USER")
-    @GetMapping("/admin/flags")
-    public ModelAndView showFlags() {
-        ModelAndView mav = new ModelAndView("users/admin/flags");
-        mav.addObject("flags", flagService.getAllProjectFlags());
-        return fillModel(mav);
-    }
-
-    @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
-    @Secured("ROLE_USER")
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/admin/flags/{id}/resolve/{resolved}")
-    public void setFlagResolved(@PathVariable long id, @PathVariable boolean resolved) {
-        ProjectFlag flag = flagService.getProjectFlag(id);
-        if (flag == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        if (flag.getFlag().getIsResolved() == resolved) return; // No change
-
-        flagService.markAsResolved(id, resolved);
-        String userName = getCurrentUser().getName();
-        userActionLogService.project(request, LoggedActionType.PROJECT_FLAG_RESOLVED.with(ProjectContext.of(flag.getFlag().getProjectId())), "Flag resovled by " + userName, "Flagged by " + flag.getReportedBy());
     }
 
     @GlobalPermission(NamedPermission.VIEW_HEALTH)

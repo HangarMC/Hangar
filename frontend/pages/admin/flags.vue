@@ -2,31 +2,50 @@
     <v-card>
         <v-card-title>{{ $t('flagReview.title') }}</v-card-title>
         <v-card-text>
+            <!-- TODO link to project -->
             <v-list v-if="flags.length > 0">
                 <v-list-item v-for="flag in flags" :key="flag.id">
                     <v-list-item-avatar>
                         <UserAvatar :username="flag.reportedByName" clazz="user-avatar-xs"></UserAvatar>
                     </v-list-item-avatar>
                     <v-list-item-content>
-                        <v-list-item-title>{{
-                            $t('flagReview.line1', [flag.reportedByName, flag.projectNamespace, $util.prettyDateTime(flag.createdAt)])
-                        }}</v-list-item-title>
-                        <v-list-item-subtitle>{{ $t('flagReview.line2', [flag.reason, flag.comment]) }}</v-list-item-subtitle>
+                        <v-list-item-title>
+                            {{
+                                $t('flagReview.line1', [
+                                    flag.reportedByName,
+                                    `${flag.projectNamespace.owner}/${flag.projectNamespace.slug}`,
+                                    $util.prettyDateTime(flag.createdAt),
+                                ])
+                            }}
+                        </v-list-item-title>
+                        <v-list-item-subtitle>{{ $t('flagReview.line2', [$t(flag.reason)]) }}</v-list-item-subtitle>
+                        <v-list-item-subtitle>{{ $t('flagReview.line3', [flag.comment]) }}</v-list-item-subtitle>
                     </v-list-item-content>
                     <v-list-item-action>
-                        <v-btn small :href="$util.forumUrl(flag.reportedByName)"><v-icon>mdi-reply</v-icon>{{ $t('flagReview.msgUser') }}</v-btn>
-                        <v-btn small :href="$util.forumUrl(flag.projectOwnerName)"><v-icon>mdi-reply</v-icon>{{ $t('flagReview.msgProjectOwner') }}</v-btn>
+                        <v-btn small :href="$util.forumUrl(flag.reportedByName)" class="mr-1">
+                            <v-icon small left>mdi-reply</v-icon>
+                            {{ $t('flagReview.msgUser') }}
+                        </v-btn>
+                        <v-btn small :href="$util.forumUrl(flag.projectNamespace.owner)" class="mr-1">
+                            <v-icon small left>mdi-reply</v-icon>
+                            {{ $t('flagReview.msgProjectOwner') }}
+                        </v-btn>
                         <v-menu offset-y>
                             <template #activator="{ on, attrs }">
-                                <v-btn small v-bind="attrs" v-on="on"><v-icon>mdi-eye</v-icon>{{ $t('flagReview.visibilityActions') }}</v-btn>
+                                <v-btn small v-bind="attrs" color="warning" class="mr-1" v-on="on">
+                                    <v-icon small left>mdi-eye</v-icon>
+                                    {{ $t('flagReview.visibilityActions') }}
+                                </v-btn>
                             </template>
                             <v-list>
-                                <v-list-item v-for="(v, index) in visibilities" :key="index">
-                                    <v-list-item-title @click="visibility(flag, v)">{{ v }}</v-list-item-title>
+                                <v-list-item v-for="(v, index) in visibilities" :key="index" @click="visibility(flag, v)">
+                                    <v-list-item-title>{{ v }}</v-list-item-title>
                                 </v-list-item>
                             </v-list>
                         </v-menu>
-                        <v-btn small color="primary" @click="resolve(flag)"><v-icon>mdi-check</v-icon>{{ $t('flagReview.markResolved') }}</v-btn>
+                        <v-btn small color="success" :loading="loading[flag.id]" @click="resolve(flag)"
+                            ><v-icon small left>mdi-check</v-icon>{{ $t('flagReview.markResolved') }}</v-btn
+                        >
                     </v-list-item-action>
                 </v-list-item>
             </v-list>
@@ -49,11 +68,7 @@ import { GlobalPermission } from '~/utils/perms';
 @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
 export default class AdminFlagsPage extends Vue {
     flags!: Flag[];
-
-    async asyncData({ $api, $util }: Context) {
-        const flags = await $api.requestInternal<Flag[]>(`flags/`, false).catch<any>($util.handlePageRequestError);
-        return { flags };
-    }
+    loading: { [key: number]: boolean } = {};
 
     get visibilities(): Visibility[] {
         return Object.keys(Visibility) as Visibility[];
@@ -65,12 +80,28 @@ export default class AdminFlagsPage extends Vue {
     }
 
     resolve(flag: Flag) {
+        this.loading[flag.id] = true;
         this.$api
             .requestInternal<Flag[]>(`flags/${flag.id}/resolve/true`, false, 'POST')
-            .catch<any>(this.$util.handlePageRequestError)
+            .catch<any>(this.$util.handleRequestError)
             .then(() => {
-                this.flags = this.flags.filter((f) => f.id !== flag.id);
+                this.$nuxt.refresh();
+                this.$auth.refreshUser();
+            })
+            .finally(() => {
+                this.loading[flag.id] = false;
             });
+    }
+
+    created() {
+        for (const flag of this.flags) {
+            this.loading[flag.id] = false;
+        }
+    }
+
+    async asyncData({ $api, $util }: Context) {
+        const flags = await $api.requestInternal<Flag[]>(`flags/`, false).catch<any>($util.handlePageRequestError);
+        return { flags };
     }
 }
 </script>

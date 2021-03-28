@@ -1,16 +1,12 @@
 package io.papermc.hangar.controllerold;
 
-import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.customtypes.LoggedActionType;
 import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
-import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.daoold.ProjectDao;
 import io.papermc.hangar.db.modelold.OrganizationsTable;
 import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
-import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
 import io.papermc.hangar.modelold.viewhelpers.ScopedOrganizationData;
@@ -22,8 +18,6 @@ import io.papermc.hangar.serviceold.OrgService;
 import io.papermc.hangar.serviceold.RoleService;
 import io.papermc.hangar.serviceold.StatsService;
 import io.papermc.hangar.serviceold.UserActionLogService;
-import io.papermc.hangar.serviceold.UserService;
-import io.papermc.hangar.serviceold.project.FlagService;
 import io.papermc.hangar.serviceold.project.ProjectFactory;
 import io.papermc.hangar.serviceold.project.ProjectService;
 import io.papermc.hangar.util.AlertUtil;
@@ -55,33 +49,25 @@ public class ProjectsController extends HangarController {
     private static final String STATUS_ACCEPT = "accept";
     private static final String STATUS_UNACCEPT = "unaccept";
 
-    private final HangarConfig hangarConfig;
-    private final UserService userService;
     private final OrgService orgService;
-    private final FlagService flagService;
     private final ProjectService projectService;
     private final ProjectFactory projectFactory;
     private final RoleService roleService;
     private final UserActionLogService userActionLogService;
     private final StatsService statsService;
-    private final HangarDao<ProjectDao> projectDao;
 
     private final HttpServletRequest request;
     private final Supplier<ProjectsTable> projectsTable;
     private final Supplier<ProjectData> projectData;
 
     @Autowired
-    public ProjectsController(HangarConfig hangarConfig, UserService userService, OrgService orgService, FlagService flagService, ProjectService projectService, ProjectFactory projectFactory, RoleService roleService, UserActionLogService userActionLogService, StatsService statsService, HangarDao<ProjectDao> projectDao, HttpServletRequest request, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
-        this.hangarConfig = hangarConfig;
-        this.userService = userService;
+    public ProjectsController(OrgService orgService, ProjectService projectService, ProjectFactory projectFactory, RoleService roleService, UserActionLogService userActionLogService, StatsService statsService, HttpServletRequest request, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
         this.orgService = orgService;
-        this.flagService = flagService;
         this.projectService = projectService;
         this.projectFactory = projectFactory;
         this.roleService = roleService;
         this.userActionLogService = userActionLogService;
         this.statsService = statsService;
-        this.projectDao = projectDao;
         this.request = request;
         this.projectsTable = projectsTable;
         this.projectData = projectData;
@@ -138,30 +124,6 @@ public class ProjectsController extends HangarController {
     @PostMapping("/{author}/{slug}/discuss/reply")
     public Object postDiscussionReply(@PathVariable String author, @PathVariable String slug) {
         return null; // TODO implement postDiscussionReply request controller
-    }
-
-    @Secured("ROLE_USER")
-    @PostMapping(value = "/{author}/{slug}/flag", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ModelAndView flag(@PathVariable String author, @PathVariable String slug, @RequestParam("flag-reason") FlagReason flagReason, @RequestParam String comment) {
-        ProjectsTable project = projectsTable.get();
-        if (flagService.hasUnresolvedFlag(project.getId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only 1 flag at a time per project per user");
-        } else if (comment.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Comment must not be blank");
-        }
-        flagService.flagProject(project.getId(), flagReason, comment);
-        String userName = getCurrentUser().getName();
-        userActionLogService.project(request, LoggedActionType.PROJECT_FLAGGED.with(ProjectContext.of(project.getId())), "Flagged by " + userName, "Not flagged by " + userName);
-        return Routes.PROJECTS_SHOW.getRedirect(author, slug); // TODO flashing
-    }
-
-    @GlobalPermission(NamedPermission.MOD_NOTES_AND_FLAGS)
-    @Secured("ROLE_USER")
-    @GetMapping("/{author}/{slug}/flags")
-    public ModelAndView showFlags(@PathVariable String author, @PathVariable String slug) {
-        ModelAndView mav = new ModelAndView("projects/admin/flags");
-        mav.addObject("p", projectData.get());
-        return fillModel(mav);
     }
 
     @ProjectPermission(NamedPermission.DELETE_PROJECT)

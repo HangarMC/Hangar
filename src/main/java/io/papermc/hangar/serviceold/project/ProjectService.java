@@ -35,6 +35,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,21 +52,19 @@ public class ProjectService extends HangarService {
     private final HangarDao<UserDao> userDao;
     private final HangarDao<VisibilityDao> visibilityDao;
     private final HangarDao<GeneralDao> generalDao;
-    private final FlagService flagService;
     private final PermissionService permissionService;
     private final ProjectFiles projectFiles;
 
     private final HttpServletRequest request;
 
     @Autowired
-    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<GeneralDao> generalDao, ProjectFiles projectFiles, FlagService flagService, PermissionService permissionService, HttpServletRequest request) {
+    public ProjectService(HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, HangarDao<UserDao> userDao, HangarDao<VisibilityDao> visibilityDao, HangarDao<GeneralDao> generalDao, ProjectFiles projectFiles, PermissionService permissionService, HttpServletRequest request) {
         this.hangarConfig = hangarConfig;
         this.projectDao = projectDao;
         this.userDao = userDao;
         this.visibilityDao = visibilityDao;
         this.generalDao = generalDao;
         this.projectFiles = projectFiles;
-        this.flagService = flagService;
         this.permissionService = permissionService;
         this.request = request;
     }
@@ -106,7 +105,7 @@ public class ProjectService extends HangarService {
 
         int publicVersions = 0;
         Map<UserProjectRolesTable, UsersTable> projectMembers = projectDao.get().getProjectMembers(projectsTable.getId());
-        List<ProjectFlag> flags = flagService.getProjectFlags(projectsTable.getId());
+        List<ProjectFlag> flags = /*flagService.getProjectFlags(projectsTable.getId());*/ new ArrayList<>();
         ArrayNode messages = (ArrayNode) projectsTable.getNotes().getJson().get("messages");
         int noteCount;
         if (messages == null) {

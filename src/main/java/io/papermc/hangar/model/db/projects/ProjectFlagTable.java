@@ -15,10 +15,10 @@ public class ProjectFlagTable extends Table {
     private boolean resolved;
     private final String comment;
     private OffsetDateTime resolvedAt;
-    private long resolvedBy;
+    private Long resolvedBy;
 
     @JdbiConstructor
-    public ProjectFlagTable(OffsetDateTime createdAt, long id, long projectId, long userId, @EnumByOrdinal FlagReason reason, boolean resolved, String comment, OffsetDateTime resolvedAt, long resolvedBy) {
+    public ProjectFlagTable(OffsetDateTime createdAt, long id, long projectId, long userId, @EnumByOrdinal FlagReason reason, boolean resolved, String comment, OffsetDateTime resolvedAt, Long resolvedBy) {
         super(createdAt, id);
         this.projectId = projectId;
         this.userId = userId;
@@ -69,11 +69,11 @@ public class ProjectFlagTable extends Table {
         this.resolvedAt = resolvedAt;
     }
 
-    public long getResolvedBy() {
+    public Long getResolvedBy() {
         return resolvedBy;
     }
 
-    public void setResolvedBy(long resolvedBy) {
+    public void setResolvedBy(Long resolvedBy) {
         this.resolvedBy = resolvedBy;
     }
 

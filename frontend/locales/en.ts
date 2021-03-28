@@ -103,6 +103,17 @@ const msgs: LocaleMessageObject = {
         flag: {
             flagProject: 'Flag {0}?',
             flagSend: 'Successfully flagged, thanks for making this community a better place!',
+            flags: {
+                inappropriateContent: 'Inappropriate Content',
+                impersonation: 'Impersonation or Deception',
+                spam: 'Spam',
+                malIntent: 'Malicious Intent',
+                other: 'Other',
+            },
+            error: {
+                alreadyOpen: 'You can only have 1 unresolved flag on a project',
+                alreadyResolved: 'This flag is already resolved',
+            },
         },
         tabs: {
             docs: 'Docs',
@@ -592,7 +603,8 @@ const msgs: LocaleMessageObject = {
         markResolved: 'Mark resolved',
         visibilityActions: 'Visibility actions',
         line1: '{0} reported {1} on {2}',
-        line2: 'Reason: {0}, Comment: {1}',
+        line2: 'Reason: {0}',
+        line3: 'Comment: {0}',
     },
     userAdmin: {
         title: 'Edit User',

@@ -1,6 +1,6 @@
 declare module 'hangar-internal' {
-    import { FlagReason, Joinable, Table } from 'hangar-internal';
-    import { Project } from 'hangar-api';
+    import { Joinable, Table } from 'hangar-internal';
+    import { Project, ProjectNamespace } from 'hangar-api';
     import { ProjectCategory, Visibility } from '~/types/enums';
 
     interface ProjectOwner {
@@ -42,18 +42,16 @@ declare module 'hangar-internal' {
     }
 
     interface Flag extends Table {
-        userId: number;
-        reportedByName: string;
-        reason: FlagReason;
-        isResolved: boolean;
-        comment: string;
-        resolvedAt: string;
-        resolvedBy: number;
-        resolvedByName: string;
-        projectId: number;
-        projectOwnerName: string;
-        projectSlug: string;
-        projectNamespace: string;
+        userId: number; //
+        reportedByName: string; //
+        reason: string; //
+        resolved: boolean; //
+        comment: string; //
+        resolvedAt: string | null; //
+        resolvedBy: number | null; //
+        resolvedByName: string | null; //
+        projectId: number; //
+        projectNamespace: ProjectNamespace;
         projectVisibility: Visibility;
     }
 

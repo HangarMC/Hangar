@@ -41,7 +41,7 @@ export default class FlagModal extends mixins(HangarFormModal, HangarProjectMixi
         this.loading = true;
         this.$api
             .requestInternal('flags/', true, 'POST', {
-                project_id: this.project.id,
+                projectId: this.project.id,
                 reason: this.form.selection,
                 comment: this.form.comment,
             })
