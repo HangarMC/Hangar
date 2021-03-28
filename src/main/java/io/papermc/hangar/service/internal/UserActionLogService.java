@@ -13,11 +13,14 @@ import io.papermc.hangar.model.db.log.LoggedActionsPageTable;
 import io.papermc.hangar.model.db.log.LoggedActionsProjectTable;
 import io.papermc.hangar.model.db.log.LoggedActionsUserTable;
 import io.papermc.hangar.model.db.log.LoggedActionsVersionTable;
+import io.papermc.hangar.modelold.viewhelpers.LoggedActionViewModel;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.util.RequestUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserActionLogService extends HangarService {
@@ -84,5 +87,16 @@ public class UserActionLogService extends HangarService {
                 oldState,
                 loggedActionType.getActionContext().getOrganizationId()
         ));
+    }
+
+    public List<LoggedActionViewModel<?>> getLog(Integer oPage, String userFilter, String projectFilter, String versionFilter, String pageFilter, String actionFilter, String subjectFilter) {
+        long pageSize = 50L;
+        long offset;
+        if (oPage == null) {
+            offset = 0;
+        } else {
+            offset = oPage * pageSize;
+        }
+        return loggedActionsDAO.getLog(userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter, offset, pageSize);
     }
 }

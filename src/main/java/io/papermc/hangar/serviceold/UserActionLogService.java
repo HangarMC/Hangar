@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service("oldUserActionLogService")
+@Deprecated(forRemoval = true)
 public class UserActionLogService extends HangarService {
 
     private final HangarDao<LoggedActionsDAO> actionsDao;

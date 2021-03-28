@@ -628,6 +628,18 @@ const msgs: LocaleMessageObject = {
         hangarAuth: 'HangarAuth Profile',
         forum: 'Forum Profile',
     },
+    userActionLog: {
+        title: 'User Action Log',
+        user: 'User',
+        address: 'IP Address',
+        time: 'Time',
+        action: 'Action',
+        context: 'Context',
+        oldState: 'Old State',
+        newState: 'New State',
+        markdownView: 'Markdown View',
+        diffView: 'Diff View',
+    },
     versionApproval: {
         inReview: 'In Review',
         approvalQueue: 'Approval queue',
