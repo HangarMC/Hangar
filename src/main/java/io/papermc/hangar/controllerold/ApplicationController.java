@@ -23,7 +23,6 @@ import io.papermc.hangar.modelold.Role;
 import io.papermc.hangar.modelold.viewhelpers.Activity;
 import io.papermc.hangar.modelold.viewhelpers.LoggedActionViewModel;
 import io.papermc.hangar.modelold.viewhelpers.OrganizationData;
-import io.papermc.hangar.modelold.viewhelpers.ReviewQueueEntry;
 import io.papermc.hangar.modelold.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.modelold.viewhelpers.UserData;
 import io.papermc.hangar.securityold.annotations.GlobalPermission;
@@ -119,19 +118,6 @@ public class ApplicationController extends HangarController {
         activities.addAll(userService.getFlagActivity(user));
         activities.addAll(userService.getReviewActivity(user));
         mv.addObject("activities", activities);
-        return fillModel(mv);
-    }
-
-    @GlobalPermission(NamedPermission.REVIEWER)
-    @Secured("ROLE_USER")
-    @GetMapping("/admin/approval/versions")
-    public ModelAndView showQueue() {
-        ModelAndView mv = new ModelAndView("users/admin/queue");
-        List<ReviewQueueEntry> reviewQueueEntries = new ArrayList<>();
-        List<ReviewQueueEntry> notStartedQueueEntries = new ArrayList<>();
-        versionService.getReviewQueue().forEach(entry -> (entry.hasReviewer() ? reviewQueueEntries : notStartedQueueEntries).add(entry));
-        mv.addObject("underReview", reviewQueueEntries);
-        mv.addObject("versions", notStartedQueueEntries);
         return fillModel(mv);
     }
 

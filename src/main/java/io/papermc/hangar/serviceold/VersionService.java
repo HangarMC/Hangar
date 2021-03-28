@@ -10,10 +10,8 @@ import io.papermc.hangar.db.modelold.ProjectVersionsTable;
 import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
-import io.papermc.hangar.modelold.viewhelpers.ReviewQueueEntry;
 import io.papermc.hangar.modelold.viewhelpers.UserData;
 import io.papermc.hangar.modelold.viewhelpers.VersionData;
 import io.papermc.hangar.service.internal.versions.VersionDependencyService;
@@ -34,7 +32,6 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -99,10 +96,6 @@ public class VersionService extends HangarService {
         return getVersion(projectsTable.getId(), versionId);
     }
 
-    public void update(ProjectVersionsTable projectVersionsTable) {
-        versionDao.get().update(projectVersionsTable);
-    }
-
     public void deleteVersion(long versionId) {
         versionDao.get().deleteVersion(versionId);
     }
@@ -115,10 +108,6 @@ public class VersionService extends HangarService {
 
         versionData.getV().setVisibility(visibility);
         versionDao.get().update(versionData.getV());
-    }
-
-    public List<ReviewQueueEntry> getReviewQueue() {
-        return versionDao.get().getQueue(ReviewState.UNREVIEWED);
     }
 
     public VersionData getVersionData(ProjectData projectData, ProjectVersionsTable projectVersion) {
