@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -157,13 +158,14 @@ public class ProjectService extends HangarService {
         }
         try {
             Path iconDir = projectFiles.getIconDir(author, slug);
+            String oldBase64 = getBase64(author, slug, "old", projectFiles.getIconPath(author, slug));
             if (Files.notExists(iconDir)) {
                 Files.createDirectories(iconDir);
             }
             FileUtils.deletedFiles(iconDir);
             Files.copy(icon.getInputStream(), iconDir.resolve(icon.getOriginalFilename()));
-            // TODO store old images in log somehow?
-            userActionLogService.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), "", ""));
+            String newBase64 = getBase64(author, slug, "new", iconDir.resolve(icon.getOriginalFilename()));
+            userActionLogService.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), newBase64, oldBase64));
         } catch (IOException e) {
             e.printStackTrace();
             throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -172,10 +174,23 @@ public class ProjectService extends HangarService {
 
     public void resetIcon(String author, String slug) {
         ProjectTable projectTable = getProjectTable(author, slug);
+        String base64 = getBase64(author, slug, "old", projectFiles.getIconPath(author, slug));
         if (FileUtils.delete(projectFiles.getIconPath(author, slug))) {
-            // TODO store old images in log somehow?
-            userActionLogService.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), "", ""));
+            userActionLogService.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), "#empty", base64));
         }
+    }
+
+    private String getBase64(String author, String slug, String old, Path path) {
+        String base64 = "#empty";
+        if (path == null || !Files.exists(path)) {
+            return base64;
+        }
+        try {
+            base64 = Base64.getEncoder().encodeToString(Files.readAllBytes(path));
+        } catch (IOException e) {
+            logger.warn("Error while loading {} icon for project {}/{}: {}:{}", old, author, slug, e.getClass().getSimpleName(), e.getMessage());
+        }
+        return base64;
     }
 
     public void editMembers(String author, String slug, EditMembersForm<ProjectRole> editMembersForm) {

@@ -38,6 +38,10 @@
                             </template>
                         </MarkdownModal>
                     </template>
+                    <template v-else-if="item.action.pgLoggedAction === 'project_icon_changed'">
+                        <span v-if="item.oldState === '#empty'">default</span>
+                        <img v-else class="inline-img" :src="'data:image/png;base64,' + item.oldState" alt="" />
+                    </template>
                     <template v-else>
                         {{ item.oldState }}
                     </template>
@@ -54,6 +58,10 @@
                                 <v-btn small color="primary" v-bind="attrs" v-on="on">{{ $t('userActionLog.diffView') }}</v-btn>
                             </template>
                         </DiffModal>
+                    </template>
+                    <template v-else-if="item.action.pgLoggedAction === 'project_icon_changed'">
+                        <span v-if="item.newState === '#empty'">default</span>
+                        <img v-else class="inline-img" :src="'data:image/png;base64,' + item.newState" alt="" />
                     </template>
                     <template v-else>
                         {{ item.newState }}
@@ -98,4 +106,8 @@ export default class AdminLogPage extends Vue {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.inline-img {
+    height: 100%;
+}
+</style>

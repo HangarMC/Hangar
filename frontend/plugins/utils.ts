@@ -89,7 +89,7 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
         }
 
         projectUrl(owner: string, slug: string): string {
-            return `/api/v1/project/${owner}/${slug}/icon`;
+            return `/api/internal/projects/project/${owner}/${slug}/icon`;
         }
 
         forumUrl(name: string): string {

@@ -26,7 +26,8 @@
         <v-row>
             <v-col cols="1">
                 <UserAvatar
-                    :username="project.namespace.owner"
+                    :username="project.name"
+                    :href="'/' + project.namespace.owner + '/' + project.namespace.slug"
                     :avatar-url="$util.projectUrl(project.namespace.owner, project.namespace.slug)"
                     clazz="user-avatar-md"
                 ></UserAvatar>
