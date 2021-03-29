@@ -53,6 +53,7 @@ public class LogAction<LC extends LogContext<? extends LoggedActionTable, LC>> {
     public static final LogAction<VersionContext> VERSION_PLUGIN_DEPENDENCY_EDITED = new LogAction<>(PGLoggedAction.VERSION_PLUGIN_DEPENDENCY_EDITED, "Version Plugin Dependency Edited");
     public static final LogAction<VersionContext> VERSION_PLUGIN_DEPENDENCY_REMOVED = new LogAction<>(PGLoggedAction.VERSION_PLUGIN_DEPENDENCY_REMOVED, "Version Plugin Dependency Removed");
     public static final LogAction<VersionContext> VERSION_PLATFORM_DEPENDENCY_ADDED = new LogAction<>(PGLoggedAction.VERSION_PLATFORM_DEPENDENCY_ADDED, "Version Platform Dependency Added");
+    public static final LogAction<VersionContext> VERSION_PLATFORM_DEPENDENCY_CHANGED = new LogAction<>(PGLoggedAction.VERSION_PLATFORM_DEPENDENCY_CHANGED, "Version Platform Dependency Changed");
     public static final LogAction<VersionContext> VERSION_PLATFORM_DEPENDENCY_REMOVED = new LogAction<>(PGLoggedAction.VERSION_PLATFORM_DEPENDENCY_REMOVED, "Version Platform Dependency Removed");
 
     // Users

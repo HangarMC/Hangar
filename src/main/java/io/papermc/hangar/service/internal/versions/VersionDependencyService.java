@@ -5,6 +5,7 @@ import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionDependenciesDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionPlatformDependenciesDAO;
+import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.color.TagColor;
@@ -17,9 +18,12 @@ import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionDependencyTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionPlatformDependencyTable;
+import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTagTable;
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePlatformVersions;
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePluginDependencies;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.internal.projects.ChannelService;
 import org.springframework.http.HttpStatus;
@@ -42,8 +46,9 @@ public class VersionDependencyService extends HangarService {
     private final PlatformVersionDAO platformVersionDAO;
     private final ChannelService channelService;
     private final VersionTagService versionTagService;
+    private final ProjectVersionsDAO projectVersionsDAO;
 
-    public VersionDependencyService(HangarDao<ProjectVersionDependenciesDAO> projectVersionDependencyDAO, HangarDao<VersionsApiDAO> versionsApiDAO, HangarDao<ProjectsDAO> projectsDAO, HangarDao<ProjectVersionPlatformDependenciesDAO> projectVersionPlatformDependencyDAO, HangarDao<PlatformVersionDAO> platformVersionDAO, ChannelService channelService, VersionTagService versionTagService) {
+    public VersionDependencyService(HangarDao<ProjectVersionDependenciesDAO> projectVersionDependencyDAO, HangarDao<VersionsApiDAO> versionsApiDAO, HangarDao<ProjectsDAO> projectsDAO, HangarDao<ProjectVersionPlatformDependenciesDAO> projectVersionPlatformDependencyDAO, HangarDao<PlatformVersionDAO> platformVersionDAO, ChannelService channelService, VersionTagService versionTagService, HangarDao<ProjectVersionsDAO> projectVersionsDAO) {
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO.get();
         this.versionsApiDAO = versionsApiDAO.get();
         this.projectsDAO = projectsDAO.get();
@@ -51,6 +56,7 @@ public class VersionDependencyService extends HangarService {
         this.platformVersionDAO = platformVersionDAO.get();
         this.channelService = channelService;
         this.versionTagService = versionTagService;
+        this.projectVersionsDAO = projectVersionsDAO.get();
     }
 
     public List<ProjectVersionDependencyTable> getProjectVersionDependencyTables(long versionId) {
@@ -102,7 +108,10 @@ public class VersionDependencyService extends HangarService {
         }
         projectVersionTagTable.setData(form.getVersions());
         versionTagService.updateTag(projectVersionTagTable);
-        // TODO action logging here
+
+        // TODO comment back in when log action is created
+        ProjectVersionTable projectVersionTable = projectVersionsDAO.getProjectVersionTable(versionId);
+        // userActionLogService.version(LogAction.VERSION_PLATFORM_DEPENDENCY_CHANGED.create(VersionContext.of(projectVersionTable.getProjectId(), versionId), String.join(", " , newVersions), String.join(", ", oldVersions)));
     }
 
     public void updateVersionPluginDependencies(long versionId, UpdatePluginDependencies form) {
