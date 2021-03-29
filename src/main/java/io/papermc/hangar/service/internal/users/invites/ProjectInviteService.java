@@ -39,16 +39,16 @@ public class ProjectInviteService extends InviteService<ProjectRole, ProjectRole
 
     @Override
     void logInviteAccepted(ProjectRoleTable roleTable, UserTable userTable) {
-        userActionLogService.project(LogAction.PROJECT_MEMBER_ADDED.create(ProjectContext.of(roleTable.getProjectId()), userTable.getName() + " accepted an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(/*TODO check this is right formatter*/DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
+        userActionLogService.project(LogAction.PROJECT_MEMBER_ADDED.create(ProjectContext.of(roleTable.getProjectId()), userTable.getName() + " accepted an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME)));
     }
 
     @Override
     void logInviteUnaccepted(ProjectRoleTable roleTable, UserTable userTable) {
-        userActionLogService.project(LogAction.PROJECT_INVITE_UNACCEPTED.create(ProjectContext.of(roleTable.getProjectId()), userTable.getName() + " unaccepted an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(/*TODO check this is right formatter*/DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
+        userActionLogService.project(LogAction.PROJECT_INVITE_UNACCEPTED.create(ProjectContext.of(roleTable.getProjectId()), userTable.getName() + " unaccepted an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME)));
     }
 
     @Override
     void logInviteDeclined(ProjectRoleTable roleTable, UserTable userTable) {
-        userActionLogService.project(LogAction.PROJECT_INVITE_DECLINED.create(ProjectContext.of(roleTable.getProjectId()), userTable.getName() + " declined an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(/*TODO check this is right formatter*/DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
+        userActionLogService.project(LogAction.PROJECT_INVITE_DECLINED.create(ProjectContext.of(roleTable.getProjectId()), userTable.getName() + " declined an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME)));
     }
 }

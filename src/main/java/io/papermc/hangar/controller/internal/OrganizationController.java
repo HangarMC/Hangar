@@ -1,10 +1,15 @@
 package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.common.NamedPermission;
+import io.papermc.hangar.model.common.PermissionType;
+import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.internal.HangarOrganization;
 import io.papermc.hangar.model.internal.api.requests.CreateOrganizationForm;
+import io.papermc.hangar.model.internal.api.requests.EditMembersForm;
 import io.papermc.hangar.security.annotations.Anyone;
+import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.organizations.OrganizationFactory;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
@@ -52,6 +57,14 @@ public class OrganizationController {
     @GetMapping(value = "/org/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HangarOrganization> getOrganization(@PathVariable String name) {
         return ResponseEntity.ok(organizationService.getHangarOrganization(name));
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
+    @PostMapping(path = "/org/{name}/members", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void editProjectMembers(@PathVariable String name, @Valid @RequestBody EditMembersForm<OrganizationRole> editMembersForm) {
+        organizationService.editMembers(name, editMembersForm);
     }
 
     @Unlocked

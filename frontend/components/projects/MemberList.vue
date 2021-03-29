@@ -147,6 +147,9 @@ export default class MemberList extends Vue {
     @Prop({ type: Boolean, default: false })
     noSaveBtn!: boolean;
 
+    @Prop({ type: Boolean, default: false })
+    org!: boolean;
+
     editing: boolean = false;
     editingMembers: EditableMember[] = [];
     userSearch: string = '';
@@ -226,8 +229,11 @@ export default class MemberList extends Vue {
             // TODO should we confirm the deletion? You are already queuing up the deletion so maybe that's enough
         }
         this.loading.save = true;
+        const url = this.org
+            ? `organizations/org/${this.$route.params.user}/members`
+            : `projects/project/${this.$route.params.author}/${this.$route.params.slug}/members`;
         this.$api
-            .requestInternal(`projects/project/${this.$route.params.author}/${this.$route.params.slug}/members`, true, 'post', editedMembers)
+            .requestInternal(url, true, 'post', editedMembers)
             .then(() => {
                 this.editing = false;
                 this.$nuxt.refresh().then(() => {

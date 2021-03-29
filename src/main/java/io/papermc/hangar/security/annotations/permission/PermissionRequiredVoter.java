@@ -56,7 +56,11 @@ public class PermissionRequiredVoter extends HangarDecisionVoter<PermissionRequi
                     throw new HangarApiException(HttpStatus.NOT_FOUND);
                 }
             case ORGANIZATION:
-                throw new NotImplementedException();
+                if (arguments.length == 1 && permissionService.getOrganizationPermissions(hangarAuthenticationToken.getUserId(), (String) arguments[0]).hasAll(attribute.getPermissions())) {
+                    return ACCESS_GRANTED;
+                } else {
+                    throw new HangarApiException(HttpStatus.NOT_FOUND);
+                }
             case GLOBAL:
                 if (permissionService.getGlobalPermissions(hangarAuthenticationToken.getUserId()).hasAll(attribute.getPermissions())) {
                     return ACCESS_GRANTED;
