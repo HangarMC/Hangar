@@ -99,7 +99,7 @@ public class SwaggerConfig {
             if (sorters.isPresent()) {
                 Set<RequestParameter> requestParameters = context.operationBuilder().build().getRequestParameters();
                 requestParameters.add(new RequestParameterBuilder()
-                        .name("sortBy")
+                        .name("sort")
                         .in(ParameterType.QUERY)
                         .description("Used to sort the result")
                         .query(q -> q.style(ParameterStyle.SIMPLE).model(m -> m.scalarModel(ScalarType.STRING)).enumerationFacet(e -> e.allowedValues(Arrays.asList(sorters.get().value())))).build());
