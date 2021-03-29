@@ -27,7 +27,7 @@
                         <NuxtLink :to="'/' + item.project.owner + '/' + item.project.slug">{{ item.project.owner + '/' + item.project.slug }}</NuxtLink>
                     </span>
                     <span v-else-if="item.subject">
-                        <NuxtLink :to="'/' + item.subject.username">{{ item.subject.username }}</NuxtLink>
+                        <NuxtLink :to="'/' + item.subject.name">{{ item.subject.name }}</NuxtLink>
                     </span>
                 </template>
                 <template #item.oldState="{ item }">
