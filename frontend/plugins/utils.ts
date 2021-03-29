@@ -88,6 +88,10 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
             return `/avatar/${name}?size=120x120`;
         }
 
+        projectUrl(owner: string, slug: string): string {
+            return `/api/v1/project/${owner}/${slug}/icon`;
+        }
+
         forumUrl(name: string): string {
             return 'https://papermc.io/forums/u/' + name;
         }

@@ -22,7 +22,7 @@ public class HangarException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return messageKey; // TODO implement message api
+        return messageKey;
     }
 
     public String[] getArgs() {

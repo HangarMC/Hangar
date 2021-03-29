@@ -16,8 +16,6 @@ public class Project extends ProjectCompact {
     private final OffsetDateTime lastUpdated;
     private final UserActions userActions;
     private final ProjectSettings settings;
-    // TODO remove this as they should all be standardized based on the project namespace
-    private final String iconUrl;
     protected final List<PromotedVersion> promotedVersions;
 
     @JdbiConstructor
@@ -28,7 +26,6 @@ public class Project extends ProjectCompact {
         this.userActions = userActions;
         this.settings = settings;
         this.promotedVersions = promotedVersions;
-        this.iconUrl = "/api/v1/project/" + this.getNamespace().getOwner() + "/" + this.getNamespace().getSlug() + "/icon";
     }
 
     public String getDescription() {
@@ -47,10 +44,6 @@ public class Project extends ProjectCompact {
         return settings;
     }
 
-    public String getIconUrl() {
-        return iconUrl;
-    }
-
     public List<PromotedVersion> getPromotedVersions() {
         return promotedVersions;
     }
@@ -62,7 +55,6 @@ public class Project extends ProjectCompact {
                 ", lastUpdated=" + lastUpdated +
                 ", userActions=" + userActions +
                 ", settings=" + settings +
-                ", iconUrl='" + iconUrl + '\'' +
                 ", promotedVersions=" + promotedVersions +
                 "} " + super.toString();
     }
