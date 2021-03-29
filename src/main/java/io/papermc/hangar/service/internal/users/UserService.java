@@ -8,7 +8,7 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.sso.AuthUser;
 import io.papermc.hangar.model.internal.sso.SsoSyncData;
 import io.papermc.hangar.service.HangarService;
-import io.papermc.hangar.service.internal.roles.GlobalRoleService;
+import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;

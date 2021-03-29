@@ -64,7 +64,7 @@
                     <v-card class="sidebar-card">
                         <v-card-title>
                             {{ $t('version.channels') }}
-                            <v-tooltip bottom>
+                            <v-tooltip v-if="$perms.canEditTags" bottom>
                                 <template #activator="{ on }">
                                     <v-btn
                                         icon

@@ -1,28 +1,46 @@
-import { Model } from 'hangar-api';
-import { HangarProject, HangarVersion, HangarProjectPage } from 'hangar-internal';
-
 declare module 'hangar-internal' {
-    interface LoggedSubject {
+    import { Model } from 'hangar-api';
+    import { LogContext } from '~/types/enums';
+
+    interface LogProject {
         id: number;
-        userName: String;
+        slug: string;
+        owner: string;
+    }
+
+    interface LogVersion {
+        id: number;
+        versionString: string;
+    }
+
+    interface LogPage {
+        id: number;
+        name: string;
+        slug: string;
+    }
+
+    interface LogSubject {
+        id: number;
+        name: string;
     }
 
     interface LoggedActionType {
-        name: String;
-        description: String;
+        pgLoggedAction: string;
+        name: string;
+        description: string;
     }
 
     interface LoggedAction extends Model {
-        userId: number;
-        userName: String;
-        address: String;
+        userId: number | null;
+        userName: string | null;
+        address: string;
         action: LoggedActionType;
-        actionContext: any;
-        newState: String;
-        oldState: String;
-        project: HangarProject;
-        version: HangarVersion;
-        page: HangarProjectPage;
-        subject: LoggedSubject;
+        contextType: LogContext;
+        newState: string;
+        oldState: string;
+        project: LogProject | null;
+        version: LogVersion | null;
+        page: LogPage | null;
+        subject: LogSubject | null;
     }
 }

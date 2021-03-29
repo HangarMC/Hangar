@@ -1,7 +1,8 @@
 package io.papermc.hangar.model.db.log;
 
 
-import io.papermc.hangar.db.customtypes.LoggedAction;
+import io.papermc.hangar.model.internal.logs.LoggedAction;
+import io.papermc.hangar.model.internal.logs.contexts.OrganizationContext;
 
 import java.net.InetAddress;
 
@@ -9,9 +10,9 @@ public class LoggedActionsOrganizationTable extends LoggedActionTable {
 
     private final long organizationId;
 
-    public LoggedActionsOrganizationTable(long userId, InetAddress address, LoggedAction action, String newState, String oldState, long organizationId) {
-        super(userId, address, action, newState, oldState);
-        this.organizationId = organizationId;
+    public LoggedActionsOrganizationTable(long userId, InetAddress address, LoggedAction<OrganizationContext> action) {
+        super(userId, address, action);
+        this.organizationId = action.getContext().getOrganizationId();
     }
 
     public long getOrganizationId() {

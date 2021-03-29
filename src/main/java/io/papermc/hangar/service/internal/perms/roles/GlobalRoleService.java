@@ -1,4 +1,4 @@
-package io.papermc.hangar.service.internal.roles;
+package io.papermc.hangar.service.internal.perms.roles;
 
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.roles.GlobalRolesDAO;

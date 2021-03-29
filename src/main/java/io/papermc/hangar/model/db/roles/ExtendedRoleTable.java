@@ -39,6 +39,7 @@ public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>>
         return role;
     }
 
+    @Override
     public void setRole(R role) {
         this.role = role;
     }
@@ -55,10 +56,12 @@ public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>>
         return role.getValue();
     }
 
+    @Override
     public boolean isAccepted() {
         return accepted;
     }
 
+    @Override
     public void setAccepted(boolean accepted) {
         this.accepted = accepted;
     }

@@ -1,6 +1,7 @@
 package io.papermc.hangar.model.db.log;
 
-import io.papermc.hangar.db.customtypes.LoggedAction;
+import io.papermc.hangar.model.internal.logs.LoggedAction;
+import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 
 import java.net.InetAddress;
 
@@ -9,10 +10,10 @@ public class LoggedActionsVersionTable extends LoggedActionTable {
     private final long projectId;
     private final long versionId;
 
-    public LoggedActionsVersionTable(long userId, InetAddress address, LoggedAction action, String newState, String oldState, long projectId, long versionId) {
-        super(userId, address, action, newState, oldState);
-        this.projectId = projectId;
-        this.versionId = versionId;
+    public LoggedActionsVersionTable(long userId, InetAddress address, LoggedAction<VersionContext> action) {
+        super(userId, address, action);
+        this.projectId = action.getContext().getProjectId();
+        this.versionId = action.getContext().getVersionId();
     }
 
     public long getProjectId() {

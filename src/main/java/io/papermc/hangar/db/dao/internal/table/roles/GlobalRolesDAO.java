@@ -22,7 +22,7 @@ public interface GlobalRolesDAO extends IRolesDAO<GlobalRoleTable> {
     GlobalRoleTable insert(@BindBean GlobalRoleTable table);
 
     @Override
-    default void update(GlobalRoleTable table) {
+    default GlobalRoleTable update(GlobalRoleTable table) {
         throw new UnsupportedOperationException("Cannot update global roles, just delete them");
     }
 

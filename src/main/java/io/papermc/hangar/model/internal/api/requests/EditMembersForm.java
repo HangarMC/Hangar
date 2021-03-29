@@ -16,20 +16,20 @@ import java.util.stream.Collectors;
 
 public class EditMembersForm<R extends Role<? extends ExtendedRoleTable<R>>> {
 
-    private final List<@Valid Member<R>> newMembers;
+    private final List<@Valid Member<R>> newInvitees;
     private final List<@Valid Member<R>> editedMembers;
     private final List<@Valid Member<R>> deletedMembers;
 
     @JsonCreator
     public EditMembersForm(List<Member<R>> members) {
         Predicate<Member<R>> editPredicate = Member::isEditing;
-        newMembers = members.stream().filter(Member::isNewMember).collect(Collectors.toList());
+        newInvitees = members.stream().filter(Member::isNewMember).collect(Collectors.toList());
         editedMembers = members.stream().filter(editPredicate.and(Predicate.not(Member::isNewMember))).collect(Collectors.toList());
         deletedMembers = members.stream().filter(Member::isToDelete).collect(Collectors.toList());
     }
 
-    public List<Member<R>> getNewMembers() {
-        return newMembers;
+    public List<Member<R>> getNewInvitees() {
+        return newInvitees;
     }
 
     public List<Member<R>> getEditedMembers() {
@@ -43,7 +43,7 @@ public class EditMembersForm<R extends Role<? extends ExtendedRoleTable<R>>> {
     @Override
     public String toString() {
         return "EditMembersForm{" +
-                "newMembers=" + newMembers +
+                "newInvitees=" + newInvitees +
                 ", editedMembers=" + editedMembers +
                 ", deletedMembers=" + deletedMembers +
                 '}';

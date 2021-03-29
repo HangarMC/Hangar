@@ -2,12 +2,12 @@ package io.papermc.hangar.config;
 
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.customtypes.JobState;
-import io.papermc.hangar.db.customtypes.LoggedAction;
+import io.papermc.hangar.db.customtypes.PGLoggedAction;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.mappers.PairMapperFactory;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.RowMapper;
+import org.jdbi.v3.core.mapper.RowMapperFactory;
 import org.jdbi.v3.core.spi.JdbiPlugin;
 import org.jdbi.v3.core.statement.SqlLogger;
 import org.jdbi.v3.core.statement.StatementContext;
@@ -40,7 +40,7 @@ public class JDBIConfig {
     }
 
     @Bean
-    public Jdbi jdbi(DataSource dataSource, List<JdbiPlugin> jdbiPlugins, List<RowMapper> rowMappers) {
+    public Jdbi jdbi(DataSource dataSource, List<JdbiPlugin> jdbiPlugins, List<RowMapper> rowMappers, List<RowMapperFactory> rowMapperFactories) {
         SqlLogger myLogger = new SqlLogger() {
             @Override
             public void logAfterExecution(StatementContext context) {
@@ -54,9 +54,9 @@ public class JDBIConfig {
 
         jdbiPlugins.forEach(jdbi::installPlugin);
         rowMappers.forEach(jdbi::registerRowMapper);
-        jdbi.registerRowMapper(new PairMapperFactory());
+        rowMapperFactories.forEach(jdbi::registerRowMapper);
 
-        config.registerCustomType(LoggedAction.class, "logged_action_type");
+        config.registerCustomType(PGLoggedAction.class, "logged_action_type");
         config.registerCustomType(RoleCategory.class, "role_category");
         config.registerCustomType(JobState.class, "job_state");
         config.registerCustomType(JSONB.class, "jsonb");

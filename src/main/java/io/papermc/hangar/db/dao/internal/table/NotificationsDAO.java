@@ -48,8 +48,9 @@ public interface NotificationsDAO {
             "   WHERE p.visibility = 3")
     long getProjectApprovalsCount();
 
+    // TODO I think this should count both UNREVIEWED and UNDER_REVIEW states
     @SqlQuery("SELECT count(*)" +
             "   FROM project_versions pv" +
-            "   WHERE pv.review_state = 0")
+            "   WHERE pv.review_state = 0 OR pv.review_state = 2")
     long getReviewQueueCount();
 }

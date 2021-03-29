@@ -1,7 +1,8 @@
 package io.papermc.hangar.model.db.log;
 
-import io.papermc.hangar.db.customtypes.LoggedAction;
+import io.papermc.hangar.db.customtypes.PGLoggedAction;
 import io.papermc.hangar.model.db.Table;
+import io.papermc.hangar.model.internal.logs.LoggedAction;
 
 import java.net.InetAddress;
 
@@ -9,16 +10,16 @@ public abstract class LoggedActionTable extends Table {
 
     private final long userId;
     private final InetAddress address;
-    private final LoggedAction action;
+    private final PGLoggedAction action;
     private final String newState;
     private final String oldState;
 
-    public LoggedActionTable(long userId, InetAddress address, LoggedAction action, String newState, String oldState) {
+    public LoggedActionTable(long userId, InetAddress address, LoggedAction<?> action) {
         this.userId = userId;
         this.address = address;
-        this.action = action;
-        this.newState = newState;
-        this.oldState = oldState;
+        this.action = action.getType().getPgLoggedAction();
+        this.newState = action.getNewState();
+        this.oldState = action.getOldState();
     }
 
     public long getUserId() {
@@ -29,7 +30,7 @@ public abstract class LoggedActionTable extends Table {
         return address;
     }
 
-    public LoggedAction getAction() {
+    public PGLoggedAction getAction() {
         return action;
     }
 

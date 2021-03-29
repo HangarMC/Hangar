@@ -40,11 +40,15 @@ public abstract class VisibilityService<M extends Table & ModelVisible & Project
 
         insertNewVisibilityEntry(changeTableConstructor.create(getHangarPrincipal().getUserId(), comment == null ? "" : comment, newVisibility, model.getId()));
 
+        Visibility oldVis = model.getVisibility();
         model.setVisibility(newVisibility);
         model = updateModel(model);
+        logVisibilityChange(model, oldVis);
         postUpdate();
         return model;
     }
+
+    abstract void logVisibilityChange(M model, Visibility oldVisibility);
 
     public final M checkVisibility(@Nullable M model) {
         if (model == null) {

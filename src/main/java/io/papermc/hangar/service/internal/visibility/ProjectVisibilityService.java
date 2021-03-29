@@ -1,17 +1,15 @@
 package io.papermc.hangar.service.internal.visibility;
 
-import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.VisibilityDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
-import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.visibility.ProjectVisibilityChangeTable;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Map.Entry;
@@ -32,14 +30,8 @@ public class ProjectVisibilityService extends VisibilityService<ProjectTable, Pr
     }
 
     @Override
-    public ProjectTable changeVisibility(ProjectTable model, Visibility newVisibility, String comment) {
-        if (model == null) {
-            throw new HangarApiException(HttpStatus.NOT_FOUND);
-        }
-        Visibility oldVis = model.getVisibility();
-        // TODO add logging for visibility for versions and move this to the abstract class
-        userActionLogService.project(LoggedActionType.PROJECT_VISIBILITY_CHANGE.with(ProjectContext.of(model.getId())), newVisibility.getName(), oldVis.getName());
-        return super.changeVisibility(model, newVisibility, comment);
+    void logVisibilityChange(ProjectTable model, Visibility oldVisibility) {
+        userActionLogService.project(LogAction.PROJECT_VISIBILITY_CHANGED.create(ProjectContext.of(model.getId()), model.getVisibility().getName(), oldVisibility.getName()));
     }
 
     @Override

@@ -298,6 +298,7 @@ export default class ProjectVersionsVersionReviewPage extends mixins(Authed, Han
             { name: this.currentUserReview!.userName },
             ReviewAction.APPROVE,
             () => {
+                this.$auth.refreshUser();
                 this.currentUserReview!.endedAt = new Date().toISOString();
             },
             () => {
@@ -314,6 +315,7 @@ export default class ProjectVersionsVersionReviewPage extends mixins(Authed, Han
             { name: this.currentUserReview!.userName },
             ReviewAction.PARTIALLY_APPROVE,
             () => {
+                this.$auth.refreshUser();
                 this.currentUserReview!.endedAt = new Date().toISOString();
             },
             () => {

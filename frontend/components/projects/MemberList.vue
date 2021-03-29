@@ -229,6 +229,7 @@ export default class MemberList extends Vue {
         this.$api
             .requestInternal(`projects/project/${this.$route.params.author}/${this.$route.params.slug}/members`, true, 'post', editedMembers)
             .then(() => {
+                this.editing = false;
                 this.$nuxt.refresh().then(() => {
                     this.setupEditing();
                 });

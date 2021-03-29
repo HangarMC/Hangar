@@ -5,12 +5,10 @@ import io.papermc.hangar.model.common.roles.Role;
 import org.jdbi.v3.core.config.ConfigRegistry;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.mapper.ColumnMapperFactory;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
 import java.util.Optional;
 
-@Component
 public class RoleMapperFactory implements ColumnMapperFactory {
 
     @Override

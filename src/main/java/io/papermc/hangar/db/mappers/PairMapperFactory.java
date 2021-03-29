@@ -10,10 +10,12 @@ import org.jdbi.v3.core.mapper.NoSuchMapperException;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.mapper.RowMapperFactory;
 import org.jdbi.v3.core.mapper.RowMappers;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
 import java.util.Optional;
 
+@Component
 public class PairMapperFactory implements RowMapperFactory {
 
     @Override

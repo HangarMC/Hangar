@@ -24,8 +24,9 @@ public interface ProjectRolesDAO extends IRolesDAO<ProjectRoleTable> {
     ProjectRoleTable insert(@BindBean ProjectRoleTable table);
 
     @Override
+    @GetGeneratedKeys
     @SqlUpdate("UPDATE user_project_roles SET role_type = :roleType, accepted = :accepted WHERE id = :id")
-    void update(@BindBean ProjectRoleTable table);
+    ProjectRoleTable update(@BindBean ProjectRoleTable table);
 
     @Override
     @SqlUpdate("DELETE FROM user_project_roles WHERE project_id = :projectId AND user_id = :userId")

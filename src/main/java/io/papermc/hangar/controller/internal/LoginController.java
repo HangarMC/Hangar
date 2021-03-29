@@ -10,7 +10,7 @@ import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.AuthenticationService;
 import io.papermc.hangar.service.TokenService;
 import io.papermc.hangar.service.internal.auth.SSOService;
-import io.papermc.hangar.service.internal.roles.GlobalRoleService;
+import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.users.UserService;
 import io.papermc.hangar.util.AlertUtil;
 import io.papermc.hangar.util.Routes;

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.customtypes.LoggedActionType.OrganizationContext;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.OrganizationDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
@@ -18,9 +16,11 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.api.requests.EditMembersForm.Member;
 import io.papermc.hangar.model.internal.sso.AuthUser;
 import io.papermc.hangar.service.HangarService;
-import io.papermc.hangar.service.internal.roles.GlobalRoleService;
-import io.papermc.hangar.service.internal.roles.MemberService.OrganizationMemberService;
+import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
+import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
+import io.papermc.hangar.service.internal.perms.roles.OrganizationRoleService;
 import io.papermc.hangar.service.internal.users.NotificationService;
+import io.papermc.hangar.service.internal.users.invites.OrganizationInviteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -43,17 +43,21 @@ public class OrganizationFactory extends HangarService {
     private final OrganizationDAO organizationDAO;
     private final OrganizationService organizationService;
     private final OrganizationMemberService organizationMemberService;
+    private final OrganizationInviteService organizationInviteService;
+    private final OrganizationRoleService organizationRoleService;
     private final GlobalRoleService globalRoleService;
     private final NotificationService notificationService;
     private final ObjectMapper mapper;
     private final RestTemplate restTemplate;
 
     @Autowired
-    public OrganizationFactory(HangarDao<UserDAO> userDAO, HangarDao<OrganizationDAO> organizationDAO, OrganizationService organizationService, OrganizationMemberService organizationMemberService, GlobalRoleService globalRoleService, NotificationService notificationService, ObjectMapper mapper, RestTemplate restTemplate) {
+    public OrganizationFactory(HangarDao<UserDAO> userDAO, HangarDao<OrganizationDAO> organizationDAO, OrganizationService organizationService, OrganizationMemberService organizationMemberService, OrganizationInviteService organizationInviteService, OrganizationRoleService organizationRoleService, GlobalRoleService globalRoleService, NotificationService notificationService, ObjectMapper mapper, RestTemplate restTemplate) {
         this.userDAO = userDAO.get();
         this.organizationDAO = organizationDAO.get();
         this.organizationService = organizationService;
         this.organizationMemberService = organizationMemberService;
+        this.organizationInviteService = organizationInviteService;
+        this.organizationRoleService = organizationRoleService;
         this.globalRoleService = globalRoleService;
         this.notificationService = notificationService;
         this.mapper = mapper;
@@ -108,19 +112,13 @@ public class OrganizationFactory extends HangarService {
         UserTable userTable = userDAO.getUserTable(authOrganizationUser.getId());
         OrganizationTable organizationTable = organizationDAO.insert(new OrganizationTable(authOrganizationUser.getId(), name, getHangarPrincipal().getId(), userTable.getId()));
         globalRoleService.addRole(GlobalRole.ORGANIZATION.create(null, userTable.getId(), false));
-        organizationMemberService.addMember(organizationTable.getId(), OrganizationRole.ORGANIZATION_OWNER.create(organizationTable.getId(), getHangarPrincipal().getId(), true));
+        organizationMemberService.addNewAcceptedByDefaultMember(OrganizationRole.ORGANIZATION_OWNER.create(organizationTable.getId(), getHangarPrincipal().getId(), true));
 
-        List<String> newLogState = new ArrayList<>();
-        members.forEach(member -> {
-            UserTable memberTable = userDAO.getUserTable(member.getName());
-            if (memberTable == null) {
-                // TODO errors
-                return;
-            }
-            newLogState.add(member.getName() + ": " + member.getRole().getTitle());
-            organizationMemberService.addMember(organizationTable.getId(), member.getRole().create(organizationTable.getId(), memberTable.getId(), false));
-            notificationService.notifyNewOrganizationMember(member, memberTable.getId(), organizationTable);
-        });
-        userActionLogService.organization(LoggedActionType.ORG_MEMBERS_ADDED.with(OrganizationContext.of(organizationTable.getId())), String.join("<br>", newLogState), "<i>No Members</i>");
+        List<HangarApiException> errors = new ArrayList<>();
+        organizationInviteService.sendInvites(errors, members, organizationTable.getId(), organizationTable.getName());
+
+        if (!errors.isEmpty()) {
+            throw new MultiHangarApiException(errors);
+        }
     }
 }

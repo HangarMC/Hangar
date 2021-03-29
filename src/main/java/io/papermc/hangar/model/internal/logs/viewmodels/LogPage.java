@@ -1,14 +1,14 @@
-package io.papermc.hangar.modelold.viewhelpers;
+package io.papermc.hangar.model.internal.logs.viewmodels;
 
-import org.jetbrains.annotations.Nullable;
+import org.jdbi.v3.core.mapper.PropagateNull;
 
-public class LoggedProjectPage {
+public class LogPage {
 
     private final Long id;
     private final String name;
     private final String slug;
 
-    public LoggedProjectPage(@Nullable Long id, @Nullable String name, @Nullable String slug) {
+    public LogPage(@PropagateNull Long id, String name, String slug) {
         this.id = id;
         this.name = name;
         this.slug = slug;
@@ -28,7 +28,7 @@ public class LoggedProjectPage {
 
     @Override
     public String toString() {
-        return "LoggedProjectPage{" +
+        return "LogPage{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", slug='" + slug + '\'' +

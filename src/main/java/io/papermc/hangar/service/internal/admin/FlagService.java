@@ -1,13 +1,13 @@
 package io.papermc.hangar.service.internal.admin;
 
-import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectFlagsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectFlagsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.model.db.projects.ProjectFlagTable;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
 import io.papermc.hangar.service.HangarService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class FlagService extends HangarService {
             throw new HangarApiException("project.flag.error.alreadyOpen");
         }
         projectFlagsDAO.insert(new ProjectFlagTable( projectId, getHangarPrincipal().getId(), reason, comment));
-        userActionLogService.project(LoggedActionType.PROJECT_FLAGGED.with(ProjectContext.of(projectId)), "Flagged by " + getHangarPrincipal().getName(), "");
+        userActionLogService.project(LogAction.PROJECT_FLAGGED.create(ProjectContext.of(projectId), "Flagged by " + getHangarPrincipal().getName(), ""));
     }
 
     public boolean hasUnresolvedFlag(long projectId, long userId) {
@@ -52,7 +52,7 @@ public class FlagService extends HangarService {
         Long resolvedBy = resolved ? getHangarPrincipal().getId() : null;
         OffsetDateTime resolvedAt = resolved ? OffsetDateTime.now() : null;
         projectFlagsDAO.markAsResolved(flagId, resolved, resolvedBy, resolvedAt);
-        userActionLogService.project(LoggedActionType.PROJECT_FLAG_RESOLVED.with(ProjectContext.of(hangarProjectFlag.getProjectId())), "Flag resolved by " + getHangarPrincipal().getName(), "Flag reported by " + hangarProjectFlag.getReportedByName());
+        userActionLogService.project(LogAction.PROJECT_FLAG_RESOLVED.create(ProjectContext.of(hangarProjectFlag.getProjectId()),"Flag resolved by " + getHangarPrincipal().getName(), "Flag reported by " + hangarProjectFlag.getReportedByName()));
     }
 
     public List<HangarProjectFlag> getFlags(long projectId) {

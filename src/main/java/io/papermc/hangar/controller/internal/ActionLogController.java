@@ -1,5 +1,11 @@
 package io.papermc.hangar.controller.internal;
 
+import io.papermc.hangar.model.api.PaginatedResult;
+import io.papermc.hangar.model.api.Pagination;
+import io.papermc.hangar.model.common.NamedPermission;
+import io.papermc.hangar.model.internal.logs.HangarLoggedAction;
+import io.papermc.hangar.security.annotations.permission.PermissionRequired;
+import io.papermc.hangar.service.internal.UserActionLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
@@ -9,13 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
-
-import io.papermc.hangar.model.api.PaginatedResult;
-import io.papermc.hangar.model.api.Pagination;
-import io.papermc.hangar.model.common.NamedPermission;
-import io.papermc.hangar.modelold.viewhelpers.LoggedActionViewModel;
-import io.papermc.hangar.security.annotations.permission.PermissionRequired;
-import io.papermc.hangar.service.internal.UserActionLogService;
 
 @Controller
 @Secured("ROLE_USER")
@@ -33,8 +32,8 @@ public class ActionLogController {
     @ResponseBody
     @GetMapping("/")
     @PermissionRequired(perms = NamedPermission.REVIEWER)
-    public PaginatedResult<LoggedActionViewModel<?>> actionlog() {
-        List<LoggedActionViewModel<?>> log = userActionLogService.getLog(0, null, null, null, null, null, null);
+    public PaginatedResult<HangarLoggedAction> actionlog() {
+        List<HangarLoggedAction> log = userActionLogService.getLog(0, null, null, null, null, null, null);
         return new PaginatedResult<>(new Pagination(0, 0, (long) log.size()), log);
     }
 }

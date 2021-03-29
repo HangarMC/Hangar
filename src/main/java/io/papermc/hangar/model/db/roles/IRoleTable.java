@@ -8,7 +8,13 @@ public interface IRoleTable<R extends Role<? extends IRoleTable<R>>> {
 
     R getRole();
 
+    void setRole(R role);
+
     long getRoleId();
 
     String getRoleType();
+
+    boolean isAccepted();
+
+    void setAccepted(boolean accepted);
 }

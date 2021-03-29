@@ -24,6 +24,11 @@ public class GlobalRoleTable implements IRoleTable<GlobalRole> {
     }
 
     @Override
+    public void setRole(GlobalRole role) {
+        throw new UnsupportedOperationException("Delete the global role and add a new one to change it");
+    }
+
+    @Override
     public long getRoleId() {
         return role.getRoleId();
     }
@@ -31,6 +36,16 @@ public class GlobalRoleTable implements IRoleTable<GlobalRole> {
     @Override
     public String getRoleType() {
         return role.getValue();
+    }
+
+    @Override
+    public boolean isAccepted() {
+        return true;
+    }
+
+    @Override
+    public void setAccepted(boolean accepted) {
+        throw new UnsupportedOperationException("Cannot change the acceptance of global roles");
     }
 
     @Override

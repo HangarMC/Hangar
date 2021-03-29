@@ -3,8 +3,11 @@ package io.papermc.hangar.service.internal.visibility;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.VisibilityDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
+import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.visibility.ProjectVersionVisibilityChangeTable;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,11 @@ public class ProjectVersionVisibilityService extends VisibilityService<ProjectVe
         super(ProjectVersionVisibilityChangeTable::new);
         this.visibilityDAO = visibilityDAO.get();
         this.projectVersionsDAO = projectVersionDAO.get();
+    }
+
+    @Override
+    void logVisibilityChange(ProjectVersionTable model, Visibility oldVisibility) {
+        userActionLogService.version(LogAction.VERSION_VISIBILITY_CHANGED.create(VersionContext.of(model.getProjectId(), model.getId()), model.getVisibility().getName(), oldVisibility.getName()));
     }
 
     @Override

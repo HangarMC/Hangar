@@ -27,8 +27,9 @@ public interface OrganizationRolesDAO extends IRolesDAO<OrganizationRoleTable> {
     OrganizationRoleTable insert(@BindBean OrganizationRoleTable table);
 
     @Override
+    @GetGeneratedKeys
     @SqlUpdate("UPDATE user_organization_roles SET accepted = :accepted WHERE id = :id")
-    void update(@BindBean OrganizationRoleTable table);
+    OrganizationRoleTable update(@BindBean OrganizationRoleTable table);
 
     @Override
     @SqlUpdate("DELETE FROM user_organization_roles WHERE organization_id = :organizationId AND user_id = :userId")

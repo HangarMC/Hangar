@@ -1,14 +1,15 @@
-package io.papermc.hangar.modelold.viewhelpers;
+package io.papermc.hangar.model.internal.logs.viewmodels;
 
-import org.jetbrains.annotations.Nullable;
+import org.jdbi.v3.core.mapper.PropagateNull;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
-public class LoggedProject {
+public class LogProject {
 
     private final Long id;
     private final String slug;
     private final String owner;
 
-    public LoggedProject(@Nullable Long id, @Nullable String slug, @Nullable String owner) {
+    public LogProject(@PropagateNull Long id, String slug, @ColumnName("owner_name") String owner) {
         this.id = id;
         this.slug = slug;
         this.owner = owner;
@@ -28,7 +29,7 @@ public class LoggedProject {
 
     @Override
     public String toString() {
-        return "LoggedProject{" +
+        return "LogProject{" +
                 "id=" + id +
                 ", slug='" + slug + '\'' +
                 ", owner='" + owner + '\'' +

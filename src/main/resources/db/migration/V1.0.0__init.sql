@@ -3,29 +3,46 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE TYPE role_category AS ENUM ('global', 'project', 'organization');
 
-CREATE TYPE logged_action_type AS ENUM (
-    'project_visibility_change',
+CREATE TYPE logged_action_type AS ENUM(
+    'project_visibility_changed',
     'project_renamed',
     'project_flagged',
     'project_settings_changed',
-    'project_member_removed',
     'project_icon_changed',
     'project_flag_resolved',
+    'project_channel_created',
+    'project_channel_edited',
+    'project_channel_deleted',
+    'project_invites_sent',
+    'project_invite_declined',
+    'project_invite_unaccepted',
+    'project_member_added',
+    'project_members_removed',
+    'project_member_roles_changed',
     'project_page_created',
     'project_page_deleted',
     'project_page_edited',
+    'version_visibility_changed',
     'version_deleted',
-    'version_uploaded',
+    'version_created',
     'version_description_changed',
     'version_review_state_changed',
+    'version_plugin_dependency_added',
+    'version_plugin_dependency_edited',
+    'version_plugin_dependency_removed',
+    'version_platform_dependency_added',
+    'version_platform_dependency_removed',
     'user_tagline_changed',
     'user_locked',
     'user_unlocked',
-    'user_apikey_create',
-    'user_apikey_delete',
-    'org_members_added',
-    'org_member_removed',
-    'org_member_roles_updated'
+    'user_apikey_created',
+    'user_apikey_deleted',
+    'organization_invites_sent',
+    'organization_invite_declined',
+    'organization_invite_unaccepted',
+    'organization_member_added',
+    'organization_members_removed',
+    'organization_member_roles_changed'
     );
 
 CREATE TYPE job_state AS ENUM ('not_started', 'started', 'done', 'fatal_failure');
@@ -72,7 +89,6 @@ CREATE TABLE projects
     category integer NOT NULL,
     description varchar(255),
     visibility integer default 1 NOT NULL,
-    notes jsonb default '{}'::jsonb NOT NULL,
     keywords text[] default ARRAY[]::text[] NOT NULL,
     homepage varchar(255),
     issues varchar(255),
@@ -89,6 +105,20 @@ CREATE TABLE projects
 
 CREATE INDEX projects_owner_id
     ON projects (owner_id);
+
+CREATE TABLE project_notes
+(
+    id bigserial NOT NULL
+        CONSTRAINT notes_pkey PRIMARY KEY,
+    created_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL
+        CONSTRAINT notes_project_id_fkey
+            REFERENCES projects ON DELETE CASCADE,
+    message text NOT NULL,
+    user_id bigint
+        CONSTRAINT notes_user_id
+            REFERENCES users ON DELETE SET NULL
+);
 
 CREATE TABLE project_stars
 (
@@ -317,8 +347,8 @@ CREATE TABLE user_project_roles
             REFERENCES projects
             ON DELETE CASCADE,
     accepted boolean DEFAULT FALSE NOT NULL,
-    CONSTRAINT user_project_roles_user_id_role_type_id_project_id_key
-        UNIQUE (user_id, role_type, project_id)
+    CONSTRAINT project_roles_user_id_role_type UNIQUE (user_id, role_type),
+    CONSTRAINT project_roles_user_id_project_id UNIQUE (user_id, project_id)
 );
 
 CREATE TABLE project_flags
@@ -436,8 +466,8 @@ CREATE TABLE user_organization_roles
             REFERENCES organizations
             ON DELETE CASCADE,
     accepted boolean default false NOT NULL,
-    CONSTRAINT user_organization_roles_user_id_role_type_id_organization_id_ke
-        UNIQUE (user_id, role_type, organization_id)
+    CONSTRAINT organization_roles_user_id_role_type UNIQUE (user_id, role_type),
+    CONSTRAINT organization_roles_user_id_organization_id UNIQUE (user_id, organization_id)
 );
 
 CREATE TABLE project_members
@@ -558,7 +588,7 @@ CREATE TABLE project_visibility_changes
     created_by bigint NOT NULL
         CONSTRAINT project_visibility_changes_created_by_fkey
             REFERENCES users
-            ON DELETE CASCADE,
+            ON DELETE SET NULL,
     project_id bigint NOT NULL
         CONSTRAINT project_visibility_changes_project_id_fkey
             REFERENCES projects
@@ -568,7 +598,7 @@ CREATE TABLE project_visibility_changes
     resolved_by bigint
         CONSTRAINT project_visibility_changes_resolved_by_fkey
             REFERENCES users
-            ON DELETE CASCADE,
+            ON DELETE SET NULL,
     visibility integer NOT NULL
 );
 
@@ -581,7 +611,7 @@ CREATE TABLE project_version_visibility_changes
     created_by bigint NOT NULL
         CONSTRAINT project_version_visibility_changes_created_by_fkey
             REFERENCES users
-            ON DELETE CASCADE,
+            ON DELETE SET NULL,
     version_id bigint NOT NULL
         CONSTRAINT project_version_visibility_changes_version_id_fkey
             REFERENCES project_versions
@@ -591,7 +621,7 @@ CREATE TABLE project_version_visibility_changes
     resolved_by bigint
         CONSTRAINT project_version_visibility_changes_resolved_by_fkey
             REFERENCES users
-            ON DELETE CASCADE,
+            ON DELETE SET NULL,
     visibility integer NOT NULL
 );
 
@@ -897,14 +927,12 @@ WHERE om.user_id IS NOT NULL;
 
 CREATE MATERIALIZED VIEW home_projects AS
 WITH tags AS (
-    SELECT sq.version_id,
-           sq.project_id,
+    SELECT sq.project_id,
            sq.version_string,
            sq.tag_name,
            sq.tag_version,
            sq.tag_color
-    FROM (SELECT pv.id                                                                                            AS version_id,
-                 pv.project_id,
+    FROM (SELECT pv.project_id,
                  pv.version_string,
                  pvt.name                                                                                         AS tag_name,
                  pvt.data                                                                                         AS tag_version,
@@ -950,7 +978,7 @@ SELECT p.id,
        p.name,
        p.created_at,
        max(lv.created_at)                        AS last_updated,
-       to_jsonb(ARRAY(SELECT jsonb_build_object('version_string', tags.version_string || '.' || tags.version_id, 'tag_name', tags.tag_name,
+       to_jsonb(ARRAY(SELECT jsonb_build_object('version_string', tags.version_string, 'tag_name', tags.tag_name,
                                                 'tag_version', tags.tag_version, 'tag_color',
                                                 tags.tag_color) AS jsonb_build_object
                       FROM tags
@@ -1194,33 +1222,6 @@ CREATE TRIGGER project_owner_name_updater
     FOR EACH ROW
     WHEN  (old.owner_id <> new.owner_id)
 EXECUTE PROCEDURE update_project_name_trigger();
-
-CREATE FUNCTION logged_action_type_from_int(id integer) RETURNS logged_action_type
-    IMMUTABLE
-    STRICT
-    LANGUAGE plpgsql
-AS $$
-BEGIN
-    CASE id
-        WHEN 0 THEN RETURN 'project_visibility_change';
-        WHEN 2 THEN RETURN 'project_renamed';
-        WHEN 3 THEN RETURN 'project_flagged';
-        WHEN 4 THEN RETURN 'project_settings_changed';
-        WHEN 5 THEN RETURN 'project_member_removed';
-        WHEN 6 THEN RETURN 'project_icon_changed';
-        WHEN 7 THEN RETURN 'project_page_edited';
-        WHEN 13 THEN RETURN 'project_flag_resolved';
-        WHEN 8 THEN RETURN 'version_deleted';
-        WHEN 9 THEN RETURN 'version_uploaded';
-        WHEN 12 THEN RETURN 'version_description_changed';
-        WHEN 17 THEN RETURN 'version_review_state_changed';
-        WHEN 14 THEN RETURN 'user_tagline_changed';
-        ELSE
-        END CASE;
-
-    RETURN NULL;
-END;
-$$;
 
 CREATE FUNCTION websearch_to_tsquery_postfix(dictionary regconfig, query text) RETURNS tsquery
     IMMUTABLE

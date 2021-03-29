@@ -1,7 +1,5 @@
 package io.papermc.hangar.service.internal.versions;
 
-import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.customtypes.LoggedActionType.VersionContext;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionDependenciesDAO;
@@ -20,6 +18,8 @@ import io.papermc.hangar.model.db.versions.ProjectVersionDependencyTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionPlatformDependencyTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTagTable;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.api.UsersApiService;
@@ -271,7 +271,7 @@ public class VersionFactory extends HangarService {
                 }
             }
 
-            userActionLogService.version(LoggedActionType.VERSION_UPLOADED.with(VersionContext.of(projectId, projectVersionTable.getId())), "published", "");
+            userActionLogService.version(LogAction.VERSION_CREATED.create(VersionContext.of(projectId, projectVersionTable.getId()), "published", ""));
 
             projectService.refreshHomeProjects();
             usersApiService.clearAuthorsCache();

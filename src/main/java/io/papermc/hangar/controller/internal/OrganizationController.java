@@ -59,7 +59,7 @@ public class OrganizationController {
     @PostMapping(path = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void create(@Valid @RequestBody CreateOrganizationForm createOrganizationForm) {
         System.out.println(createOrganizationForm);
-        organizationFactory.createOrganization(createOrganizationForm.getName(), createOrganizationForm.getNewMembers());
+        organizationFactory.createOrganization(createOrganizationForm.getName(), createOrganizationForm.getNewInvitees());
     }
 
     @Anyone

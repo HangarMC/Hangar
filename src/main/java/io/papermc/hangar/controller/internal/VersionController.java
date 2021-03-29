@@ -3,8 +3,6 @@ package io.papermc.hangar.controller.internal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.controller.HangarController;
-import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.customtypes.LoggedActionType.VersionContext;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
@@ -14,6 +12,8 @@ import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePlatformVersions;
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePluginDependencies;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.HangarReviewQueueEntry;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
@@ -113,7 +113,7 @@ public class VersionController extends HangarController {
         String newDesc = stringContent.getContent().trim();
         projectVersionTable.setDescription(newDesc);
         versionService.updateProjectVersionTable(projectVersionTable);
-        userActionLogService.version(LoggedActionType.VERSION_DESCRIPTION_CHANGED.with(VersionContext.of(projectId, versionId)), newDesc, oldDesc);
+        userActionLogService.version(LogAction.VERSION_DESCRIPTION_EDITED.create(VersionContext.of(projectId, versionId), newDesc, oldDesc));
     }
 
     @Unlocked

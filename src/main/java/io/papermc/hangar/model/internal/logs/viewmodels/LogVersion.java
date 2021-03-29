@@ -1,13 +1,14 @@
-package io.papermc.hangar.modelold.viewhelpers;
+package io.papermc.hangar.model.internal.logs.viewmodels;
 
-import org.jetbrains.annotations.Nullable;
+import org.jdbi.v3.core.mapper.PropagateNull;
 
-public class LoggedProjectVersion {
+public class LogVersion {
 
     private final Long id;
+    // TODO maybe need the platform in here eventually?
     private final String versionString;
 
-    public LoggedProjectVersion(@Nullable Long id, @Nullable String versionString) {
+    public LogVersion(@PropagateNull Long id, String versionString) {
         this.id = id;
         this.versionString = versionString;
     }
@@ -22,7 +23,7 @@ public class LoggedProjectVersion {
 
     @Override
     public String toString() {
-        return "LoggedProjectVersion{" +
+        return "LogProjectVersion{" +
                 "id=" + id +
                 ", versionString='" + versionString + '\'' +
                 '}';

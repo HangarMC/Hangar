@@ -6,6 +6,8 @@ import io.papermc.hangar.db.dao.internal.table.projects.ProjectChannelsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.db.projects.ProjectChannelTable;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.projects.HangarChannel;
 import io.papermc.hangar.service.HangarService;
 import org.springframework.http.HttpStatus;
@@ -45,8 +47,9 @@ public class ChannelService extends HangarService {
 
     public ProjectChannelTable createProjectChannel(String name, Color color, long projectId, boolean nonReviewed) {
         validateChannel(name, color, projectId, nonReviewed, projectChannelsDAO.getProjectChannels(projectId));
-        // TODO user action logging
-        return projectChannelsDAO.insert(new ProjectChannelTable(name, color, projectId, nonReviewed));
+        ProjectChannelTable channelTable = projectChannelsDAO.insert(new ProjectChannelTable(name, color, projectId, nonReviewed));
+        userActionLogService.project(LogAction.PROJECT_CHANNEL_CREATED.create(ProjectContext.of(projectId), formatChannelChange(channelTable), ""));
+        return channelTable;
     }
 
     public void editProjectChannel(long channelId, String name, Color color, long projectId, boolean nonReviewed) {
@@ -55,11 +58,12 @@ public class ChannelService extends HangarService {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
         validateChannel(name, color, projectId, nonReviewed, projectChannelsDAO.getProjectChannels(projectId).stream().filter(ch -> ch.getId() != channelId).collect(Collectors.toList()));
+        String old = formatChannelChange(projectChannelTable);
         projectChannelTable.setName(name);
         projectChannelTable.setColor(color);
         projectChannelTable.setNonReviewed(nonReviewed);
         projectChannelsDAO.update(projectChannelTable);
-        // TODO user action logging
+        userActionLogService.project(LogAction.PROJECT_CHANNEL_EDITED.create(ProjectContext.of(projectId), formatChannelChange(projectChannelTable), old));
     }
 
     public void deleteProjectChannel(long projectId, long channelId) {
@@ -72,7 +76,11 @@ public class ChannelService extends HangarService {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.cannotDelete");
         }
         projectChannelsDAO.delete(hangarChannel);
-        // TODO user action logging
+        userActionLogService.project(LogAction.PROJECT_CHANNEL_DELETED.create(ProjectContext.of(projectId), "<i>Deleted</i>", formatChannelChange(hangarChannel)));
+    }
+
+    private String formatChannelChange(ProjectChannelTable channelTable) {
+        return "Name: " + channelTable.getName() + " Color: " + channelTable.getColor().getHex() + " NonReviewed: " + channelTable.isNonReviewed();
     }
 
     public List<HangarChannel> getProjectChannels(long projectId) {

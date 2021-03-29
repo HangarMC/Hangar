@@ -1,7 +1,5 @@
 package io.papermc.hangar.service.internal.projects;
 
-import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
@@ -21,16 +19,19 @@ import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.internal.api.requests.EditMembersForm;
 import io.papermc.hangar.model.internal.api.requests.EditMembersForm.Member;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.model.internal.projects.HangarProject.HangarProjectInfo;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
-import io.papermc.hangar.service.internal.roles.MemberService.ProjectMemberService;
-import io.papermc.hangar.service.internal.roles.RoleService.ProjectRoleService;
+import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
+import io.papermc.hangar.service.internal.perms.roles.ProjectRoleService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.users.NotificationService;
+import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -56,9 +57,6 @@ import java.util.function.Function;
 @Service
 public class ProjectService extends HangarService {
 
-    public static final String AUTHOR = "author";
-    public static final String SLUG = "slug";
-
     private final ProjectsDAO projectsDAO;
     private final UserDAO userDAO;
     private final HangarUsersDAO hangarUsersDAO;
@@ -67,13 +65,13 @@ public class ProjectService extends HangarService {
     private final OrganizationService organizationService;
     private final ProjectPageService projectPageService;
     private final ProjectFiles projectFiles;
-    private final NotificationService notificationService;
+    private final ProjectInviteService projectInviteService;
     private final ProjectMemberService projectMemberService;
     private final ProjectRoleService projectRoleService;
     private final PermissionService permissionService;
 
     @Autowired
-    public ProjectService(HangarDao<ProjectsDAO> projectDAO, HangarDao<UserDAO> userDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, NotificationService notificationService, ProjectMemberService projectMemberService, ProjectRoleService projectRoleService, PermissionService permissionService) {
+    public ProjectService(HangarDao<ProjectsDAO> projectDAO, HangarDao<UserDAO> userDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, NotificationService notificationService, ProjectInviteService projectInviteService, ProjectMemberService projectMemberService, ProjectRoleService projectRoleService, PermissionService permissionService) {
         this.projectsDAO = projectDAO.get();
         this.userDAO = userDAO.get();
         this.hangarUsersDAO = hangarUsersDAO.get();
@@ -82,7 +80,7 @@ public class ProjectService extends HangarService {
         this.organizationService = organizationService;
         this.projectPageService = projectPageService;
         this.projectFiles = projectFiles;
-        this.notificationService = notificationService;
+        this.projectInviteService = projectInviteService;
         this.projectMemberService = projectMemberService;
         this.projectRoleService = projectRoleService;
         this.permissionService = permissionService;
@@ -145,7 +143,8 @@ public class ProjectService extends HangarService {
         projectTable.setDescription(settingsForm.getDescription());
         projectsDAO.update(projectTable);
         refreshHomeProjects();
-        userActionLogService.project(LoggedActionType.PROJECT_SETTINGS_CHANGED.with(ProjectContext.of(projectTable.getId())), "", "");
+        // TODO what settings changed
+        userActionLogService.project(LogAction.PROJECT_SETTINGS_CHANGED.create(ProjectContext.of(projectTable.getId()), "", ""));
     }
 
     public void saveIcon(String author, String slug, MultipartFile icon) {
@@ -164,7 +163,7 @@ public class ProjectService extends HangarService {
             FileUtils.deletedFiles(iconDir);
             Files.copy(icon.getInputStream(), iconDir.resolve(icon.getOriginalFilename()));
             // TODO store old images in log somehow?
-            userActionLogService.project(LoggedActionType.PROJECT_ICON_CHANGED.with(ProjectContext.of(projectTable.getId())), "", "");
+            userActionLogService.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), "", ""));
         } catch (IOException e) {
             e.printStackTrace();
             throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -175,45 +174,21 @@ public class ProjectService extends HangarService {
         ProjectTable projectTable = getProjectTable(author, slug);
         if (FileUtils.delete(projectFiles.getIconPath(author, slug))) {
             // TODO store old images in log somehow?
-            userActionLogService.project(LoggedActionType.PROJECT_ICON_CHANGED.with(ProjectContext.of(projectTable.getId())), "", "");
+            userActionLogService.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), "", ""));
         }
     }
 
     public void editMembers(String author, String slug, EditMembersForm<ProjectRole> editMembersForm) {
         ProjectTable projectTable = getProjectTable(author, slug);
         List<HangarApiException> errors = new ArrayList<>();
-        editMembersForm.getNewMembers().forEach(member -> {
-            UserTable userTable = userDAO.getUserTable(member.getName());
-            if (userTable == null) {
-                errors.add(new HangarApiException("project.settings.error.members.invalidUser", member.getName()));
-                return;
-            }
-            if (projectMemberService.addMember(projectTable.getId(), member.getRole().create(projectTable.getId(), userTable.getId(), false)) == null) {
-                errors.add(new HangarApiException("project.settings.error.members.alreadyMember", member.getName()));
-                return;
-            }
-            notificationService.notifyNewProjectMember(member, userTable.getId(), projectTable);
-        });
 
-        editMembersForm.getEditedMembers().forEach(member -> {
-            handleEditOrDelete(member, errors, projectTable, (pm, prt) -> {
-                prt.setRole(pm.getRole());
-                projectRoleService.updateRole(prt);
-                // TODO notification of updated role
-            });
-        });
-
-        editMembersForm.getDeletedMembers().forEach(member -> {
-            handleEditOrDelete(member, errors, projectTable, (pm, prt) -> {
-                projectMemberService.removeMember(prt);
-                // TODO notification of removed role (if not accepted and prev notification is unread, remove that notif?)
-            });
-        });
+        projectInviteService.sendInvites(errors, editMembersForm.getNewInvitees(), projectTable.getId(), projectTable.getName());
+        projectMemberService.editMembers(errors, editMembersForm.getEditedMembers(), projectTable.getId());
+        projectMemberService.removeMembers(errors, editMembersForm.getDeletedMembers(), projectTable.getId());
 
         if (!errors.isEmpty()) {
             throw new MultiHangarApiException(errors);
         }
-        // TODO user action logging
     }
 
     private void handleEditOrDelete(Member<ProjectRole> member, List<HangarApiException> errors, ProjectTable projectTable, BiConsumer<Member<ProjectRole>, ProjectRoleTable> consumer) {
@@ -228,7 +203,7 @@ public class ProjectService extends HangarService {
             return;
         }
         if (projectRoleTable.getRole() == ProjectRole.PROJECT_OWNER) {
-            errors.add(new HangarApiException("project.settings.error.members.isOwner"));
+            errors.add(new HangarApiException("project.settings.error.members.invalidRole", projectRoleTable.getRole().getTitle()));
             return;
         }
         consumer.accept(member, projectRoleTable);

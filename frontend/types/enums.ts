@@ -94,3 +94,11 @@ export enum ReviewAction {
     PARTIALLY_APPROVE = 'PARTIALLY_APPROVE',
     UNDO_APPROVAL = 'UNDO_APPROVAL',
 }
+
+export enum LogContext {
+    PROJECT = 'PROJECT',
+    VERSION = 'VERSION',
+    PAGE = 'PAGE',
+    USER = 'USER',
+    ORGANIZATION = 'ORGANIZATION',
+}

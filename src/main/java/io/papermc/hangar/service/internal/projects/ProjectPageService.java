@@ -1,7 +1,5 @@
 package io.papermc.hangar.service.internal.projects;
 
-import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectPageContext;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectPagesDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectPagesDAO;
@@ -9,6 +7,8 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.projects.ProjectHomePageTable;
 import io.papermc.hangar.model.db.projects.ProjectPageTable;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectPage;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.PageContext;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.model.internal.projects.HangarViewProjectPage;
 import io.papermc.hangar.service.HangarService;
@@ -62,7 +62,7 @@ public class ProjectPageService extends HangarService {
         if (isHome) {
             projectPagesDAO.insertHomePage(new ProjectHomePageTable(projectPageTable.getProjectId(), projectPageTable.getId()));
         }
-        userActionLogService.projectPage(LoggedActionType.PROJECT_PAGE_CREATED.with(ProjectPageContext.of(projectPageTable.getProjectId(), projectPageTable.getId())), contents, "");
+        userActionLogService.projectPage(LogAction.PROJECT_PAGE_CREATED.create(PageContext.of(projectPageTable.getProjectId(), projectPageTable.getId()), contents, ""));
         return projectPageTable;
     }
 
@@ -128,7 +128,7 @@ public class ProjectPageService extends HangarService {
         String oldContent = pageTable.getContents();
         pageTable.setContents(newContents);
         projectPagesDAO.update(pageTable);
-        userActionLogService.projectPage(LoggedActionType.PROJECT_PAGE_EDITED.with(ProjectPageContext.of(projectId, pageId)), newContents, oldContent);
+        userActionLogService.projectPage(LogAction.PROJECT_PAGE_EDITED.create(PageContext.of(projectId, pageId), newContents, oldContent));
     }
 
     public void deleteProjectPage(long projectId, long pageId) {
@@ -147,7 +147,7 @@ public class ProjectPageService extends HangarService {
             projectPagesDAO.updateParents(children);
         }
         // Log must come first otherwise db error
-        userActionLogService.projectPage(LoggedActionType.PROJECT_PAGE_DELETED.with(ProjectPageContext.of(projectId, pageId)), "", pageTable.getContents());
+        userActionLogService.projectPage(LogAction.PROJECT_PAGE_DELETED.create(PageContext.of(projectId, pageId), "", pageTable.getContents()));
         projectPagesDAO.delete(pageTable);
     }
 }

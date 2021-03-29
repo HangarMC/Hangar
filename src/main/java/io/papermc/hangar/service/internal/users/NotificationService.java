@@ -8,7 +8,6 @@ import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.db.NotificationTable;
-import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
@@ -76,11 +75,11 @@ public class NotificationService extends HangarService {
         notificationsDAO.insert(notificationTables);
     }
 
-    public void notifyNewProjectMember(Member<ProjectRole> member, long userId, ProjectTable projectTable) {
-        notificationsDAO.insert(new NotificationTable(userId, NotificationType.PROJECT_INVITE, null, projectTable.getId(), new String[]{"notifications.project.invite", member.getRole().getTitle(), projectTable.getName()}));
+    public void notifyNewProjectInvite(Member<ProjectRole> member, long userId, long projectId, String projectName) {
+        notificationsDAO.insert(new NotificationTable(userId, NotificationType.PROJECT_INVITE, null, projectId, new String[]{"notifications.project.invite", member.getRole().getTitle(), projectName}));
     }
 
-    public void notifyNewOrganizationMember(Member<OrganizationRole> member, long userId, OrganizationTable organizationTable) {
-        notificationsDAO.insert(new NotificationTable(userId, NotificationType.ORGANIZATION_INVITE, null, organizationTable.getId(), new String[]{"notifications.organization.invite", member.getRole().getTitle(), organizationTable.getName()}));
+    public void notifyNewOrganizationInvite(Member<OrganizationRole> member, long userId, long organizationId, String organizationName) {
+        notificationsDAO.insert(new NotificationTable(userId, NotificationType.ORGANIZATION_INVITE, null, organizationId, new String[]{"notifications.organization.invite", member.getRole().getTitle(), organizationName}));
     }
 }

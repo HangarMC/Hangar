@@ -68,7 +68,7 @@ public class ProjectController extends HangarController {
     @GetMapping("/possibleOwners")
     public ResponseEntity<List<PossibleProjectOwner>> possibleProjectCreators() {
         List<PossibleProjectOwner> possibleProjectOwners = organizationService.getOrganizationTablesWithPermission(getHangarPrincipal().getId(), Permission.CreateProject).stream().map(PossibleProjectOwner::new).collect(Collectors.toList());
-        possibleProjectOwners.add(new PossibleProjectOwner(getHangarPrincipal()));
+        possibleProjectOwners.add(0, new PossibleProjectOwner(getHangarPrincipal()));
         return ResponseEntity.ok(possibleProjectOwners);
     }
 

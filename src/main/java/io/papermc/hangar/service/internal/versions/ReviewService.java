@@ -1,8 +1,6 @@
 package io.papermc.hangar.service.internal.versions;
 
 import io.papermc.hangar.db.customtypes.JSONB;
-import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.customtypes.LoggedActionType.VersionContext;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionReviewsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
@@ -15,6 +13,8 @@ import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.versions.reviews.ProjectVersionReviewMessageTable;
 import io.papermc.hangar.model.db.versions.reviews.ProjectVersionReviewTable;
 import io.papermc.hangar.model.internal.api.requests.versions.ReviewMessage;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.HangarReview;
 import io.papermc.hangar.model.internal.versions.HangarReviewQueueEntry;
 import io.papermc.hangar.service.HangarService;
@@ -94,6 +94,7 @@ public class ReviewService extends HangarService {
         ProjectVersionReviewTable latestUnfinishedReview = getLatestUnfinishedReviewAndValidate(versionId);
         latestUnfinishedReview.setEndedAt(OffsetDateTime.now());
         boolean isLastUnfinished = projectVersionReviewsDAO.getUnfinishedReviews(versionId).size() == 1;
+        System.out.println(isLastUnfinished);
         if (isLastUnfinished) { // only unfinished is the one about to be finished
             changeVersionReviewState(versionId, reviewState, true);
         }
@@ -118,10 +119,11 @@ public class ReviewService extends HangarService {
         if (projectVersionTable.getReviewState() != reviewState) {
             ReviewState oldState = projectVersionTable.getReviewState();
             projectVersionTable.setReviewState(reviewState);
-            userActionLogService.version(LoggedActionType.VERSION_REVIEW_STATE_CHANGED.with(VersionContext.of(projectVersionTable.getProjectId(), versionId)), reviewState.getFrontendName(), oldState.getFrontendName());
+            userActionLogService.version(LogAction.VERSION_REVIEW_STATE_CHANGED.create(VersionContext.of(projectVersionTable.getProjectId(), versionId), reviewState.getFrontendName(), oldState.getFrontendName()));
             if (approve) {
                 projectVersionTable.setReviewerId(getHangarPrincipal().getUserId());
                 projectVersionTable.setApprovedAt(OffsetDateTime.now());
+                projectVersionTable = projectVersionsDAO.update(projectVersionTable);
                 projectVersionVisibilityService.changeVisibility(projectVersionTable, Visibility.PUBLIC, "visibility.changes.version.reviewed");
             }
             else {

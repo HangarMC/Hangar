@@ -1,7 +1,5 @@
 package io.papermc.hangar.service.internal.projects;
 
-import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.customtypes.LoggedActionType.ProjectContext;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -9,9 +7,11 @@ import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.api.UsersApiService;
-import io.papermc.hangar.service.internal.roles.MemberService;
+import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
 import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +25,11 @@ public class ProjectFactory extends HangarService {
     private final ProjectService projectService;
     private final ChannelService channelService;
     private final ProjectPageService projectPageService;
-    private final MemberService.ProjectMemberService projectMemberService;
+    private final ProjectMemberService projectMemberService;
     private final UsersApiService usersApiService;
 
     @Autowired
-    public ProjectFactory(HangarDao<ProjectsDAO> projectDAO, ProjectService projectService, ChannelService channelService, ProjectPageService projectPageService, MemberService.ProjectMemberService projectMemberService, UsersApiService usersApiService) {
+    public ProjectFactory(HangarDao<ProjectsDAO> projectDAO, ProjectService projectService, ChannelService channelService, ProjectPageService projectPageService, ProjectMemberService projectMemberService, UsersApiService usersApiService) {
         this.projectsDAO = projectDAO.get();
         this.projectService = projectService;
         this.channelService = channelService;
@@ -48,7 +48,7 @@ public class ProjectFactory extends HangarService {
         try {
             projectTable = projectsDAO.insert(new ProjectTable(projectOwner, newProject));
             channelService.createProjectChannel(config.channels.getNameDefault(), config.channels.getColorDefault(), projectTable.getId(), false);
-            projectMemberService.addMember(projectTable.getId(), ProjectRole.PROJECT_OWNER.create(projectTable.getId(), projectOwner.getUserId(), true));
+            projectMemberService.addNewAcceptedByDefaultMember(ProjectRole.PROJECT_OWNER.create(projectTable.getId(), projectOwner.getUserId(), true));
             String newPageContent = newProject.getPageContent();
             if (newPageContent == null) {
                 newPageContent = "# " + projectTable.getName() + "\n\n" + config.pages.home.getMessage();
@@ -75,7 +75,7 @@ public class ProjectFactory extends HangarService {
         projectTable.setName(compactNewName);
         projectTable.setSlug(StringUtils.slugify(compactNewName));
         projectsDAO.update(projectTable);
-        userActionLogService.project(LoggedActionType.PROJECT_RENAMED.with(ProjectContext.of(projectTable.getId())), author + "/" + compactNewName, author + "/" + oldName);
+        userActionLogService.project(LogAction.PROJECT_RENAMED.create(ProjectContext.of(projectTable.getId()), author + "/" + compactNewName, author + "/" + oldName));
         projectService.refreshHomeProjects();
         return StringUtils.slugify(compactNewName);
     }

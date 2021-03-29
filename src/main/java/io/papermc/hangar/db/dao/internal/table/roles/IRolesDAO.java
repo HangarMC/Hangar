@@ -7,7 +7,7 @@ public interface IRolesDAO<T extends IRoleTable<? extends Role<T>>> {
 
     T insert(T table);
 
-    void update(T table);
+    T update(T table);
 
     void delete(T table);
 

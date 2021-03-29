@@ -1,6 +1,7 @@
 package io.papermc.hangar.model.db.log;
 
-import io.papermc.hangar.db.customtypes.LoggedAction;
+import io.papermc.hangar.model.internal.logs.LoggedAction;
+import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 
 import java.net.InetAddress;
 
@@ -8,9 +9,9 @@ public class LoggedActionsProjectTable extends LoggedActionTable {
 
     private final long projectId;
 
-    public LoggedActionsProjectTable(long userId, InetAddress address, LoggedAction action, String newState, String oldState, long projectId) {
-        super(userId, address, action, newState, oldState);
-        this.projectId = projectId;
+    public LoggedActionsProjectTable(long userId, InetAddress address, LoggedAction<ProjectContext> action) {
+        super(userId, address, action);
+        this.projectId = action.getContext().getProjectId();
     }
 
     public long getProjectId() {

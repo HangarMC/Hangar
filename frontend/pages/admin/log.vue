@@ -10,7 +10,7 @@
                     {{ $util.prettyDateTime(item.createdAt) }}
                 </template>
                 <template #item.action="{ item }">
-                    {{ item.action.description }}
+                    {{ $t(item.action.description) }}
                 </template>
                 <template #item.context="{ item }">
                     <span v-if="item.page">

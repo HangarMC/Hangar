@@ -69,9 +69,9 @@ public interface HangarReviewsDAO {
             "       pvr.created_at r_review_started," +
             "       pvr.ended_at r_review_ended," +
             "       (SELECT pvrm.action FROM project_version_review_messages pvrm WHERE pvr.id = pvrm.review_id ORDER BY pvrm.created_at DESC LIMIT 1) r_last_action" +
-            "   FROM project_version_reviews pvr" +
-            "       JOIN users ru ON pvr.user_id = ru.id" +
-            "       JOIN project_versions pv ON pvr.version_id = pv.id" +
+            "   FROM project_versions pv" +
+            "       LEFT JOIN project_version_reviews pvr ON pv.id = pvr.version_id" +
+            "       LEFT JOIN users ru ON pvr.user_id = ru.id" +
             "       LEFT JOIN users pvu ON pv.author_id = pvu.id" +
             "       JOIN project_channels pc ON pv.channel_id = pc.id" +
             "       JOIN projects p ON pv.project_id = p.id" +
