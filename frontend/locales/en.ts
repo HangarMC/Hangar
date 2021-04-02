@@ -19,6 +19,7 @@ const msgs: LocaleMessageObject = {
         name: 'Name',
         link: 'Link',
         send: 'Send',
+        home: 'Home',
         message: 'Message',
         refresh: 'Refresh',
         error: {
@@ -722,6 +723,10 @@ const msgs: LocaleMessageObject = {
     },
     error: {
         userLocked: 'Your account is locked.',
+        401: 'You must be logged in for this',
+        403: 'You do not have permission to do that',
+        404: '404 Not found',
+        unknown: 'An error occurred',
     },
 };
 

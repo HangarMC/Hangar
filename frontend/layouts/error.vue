@@ -5,7 +5,7 @@
         <v-card-actions class="text-center">
             <v-btn nuxt to="/" color="secondary">
                 <v-icon left>mdi-home</v-icon>
-                Home
+                {{ $t('general.home') }}
             </v-btn>
         </v-card-actions>
     </v-card>
@@ -20,31 +20,27 @@ import { NuxtError } from '@nuxt/types';
     layout: 'empty',
 })
 export default class ErrorPage extends Vue {
-    // TODO i18n
-    pageNotFound = '404 Not Found';
-    unknownError = 'An error occurred';
-
     @Prop({ type: Object as PropType<NuxtError>, default: () => null })
     error!: NuxtError;
 
     get text() {
         switch (this.error.statusCode) {
             case 404:
-                return this.pageNotFound;
+                return this.$t('error.404');
             case 401:
-                return 'You must be logged in for this';
+                return this.$t('error.401');
             case 403:
-                return 'You do not have permission to do that';
+                return this.$t('error.403');
             default:
-                return this.unknownError;
+                return this.$t('error.unknown');
         }
     }
 
     head() {
-        let title = this.unknownError;
+        let title = this.$t('error.unknown');
         switch (this.error.statusCode) {
             case 404:
-                title = this.pageNotFound;
+                title = this.$t('error.404');
                 break;
             case 401:
                 title = this.error.message!;
