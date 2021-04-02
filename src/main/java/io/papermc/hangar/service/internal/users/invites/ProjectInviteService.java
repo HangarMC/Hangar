@@ -2,13 +2,14 @@ package io.papermc.hangar.service.internal.users.invites;
 
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
-import io.papermc.hangar.model.internal.api.requests.EditMembersForm.Member;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.user.notifications.HangarInvite.HangarProjectInvite;
 import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
 import io.papermc.hangar.service.internal.perms.roles.ProjectRoleService;
+import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService.ProjectNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,20 +17,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
-public class ProjectInviteService extends InviteService<ProjectRole, ProjectRoleTable> {
+public class ProjectInviteService extends InviteService<ProjectRole, ProjectRoleTable, ProjectTable> {
 
     @Autowired
-    public ProjectInviteService(ProjectRoleService roleService, ProjectMemberService memberService) {
-        super(roleService, memberService, "project.settings.error.members.");
+    public ProjectInviteService(ProjectRoleService roleService, ProjectMemberService memberService, ProjectNotificationService projectNotificationService) {
+        super(roleService, memberService, projectNotificationService, "project.settings.error.members.");
     }
 
     public List<HangarProjectInvite> getProjectInvites() {
         return hangarNotificationsDAO.get().getProjectInvites(getHangarPrincipal().getId());
-    }
-
-    @Override
-    void notifyNewInvites(Member<ProjectRole> invitee, long userId, long principalId, String principalName) {
-        notificationService.notifyNewProjectInvite(invitee, userId, principalId, principalName);
     }
 
     @Override

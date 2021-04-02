@@ -3,7 +3,7 @@ package io.papermc.hangar.serviceold;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.daoold.NotificationsDao;
 import io.papermc.hangar.db.modelold.NotificationsTable;
-import io.papermc.hangar.model.internal.user.notifications.NotificationType;
+import io.papermc.hangar.modelold.NotificationType;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

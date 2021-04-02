@@ -1,5 +1,6 @@
-package io.papermc.hangar.model.internal.user.notifications;
+package io.papermc.hangar.modelold;
 
+@Deprecated(forRemoval = true)
 public enum NotificationType {
 
     PROJECT_INVITE,
@@ -7,4 +8,6 @@ public enum NotificationType {
     NEW_PROJECT_VERSION,
     VERSION_REVIEWED,
     VERSION_REVIEWED_PARTIAL,
+
+
 }

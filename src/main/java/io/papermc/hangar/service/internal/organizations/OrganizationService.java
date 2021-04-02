@@ -18,7 +18,6 @@ import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
 import io.papermc.hangar.service.internal.users.invites.OrganizationInviteService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -79,9 +78,9 @@ public class OrganizationService extends HangarService {
         OrganizationTable organizationTable = getOrganizationTable(name);
         List<HangarApiException> errors = new ArrayList<>();
 
-        organizationInviteService.sendInvites(errors, editMembersForm.getNewInvitees(), organizationTable.getId(), organizationTable.getName());
-        organizationMemberService.editMembers(errors, editMembersForm.getEditedMembers(), organizationTable.getId());
-        organizationMemberService.removeMembers(errors, editMembersForm.getDeletedMembers(), organizationTable.getId());
+        organizationInviteService.sendInvites(errors, editMembersForm.getNewInvitees(), organizationTable);
+        organizationMemberService.editMembers(errors, editMembersForm.getEditedMembers(), organizationTable);
+        organizationMemberService.removeMembers(errors, editMembersForm.getDeletedMembers(), organizationTable);
 
         if (!errors.isEmpty()) {
             throw new MultiHangarApiException(errors);

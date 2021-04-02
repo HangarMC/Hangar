@@ -4,12 +4,14 @@ import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.members.OrganizationMembersDAO;
 import io.papermc.hangar.db.dao.internal.table.roles.OrganizationRolesDAO;
 import io.papermc.hangar.model.common.roles.OrganizationRole;
+import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.members.OrganizationMemberTable;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.OrganizationContext;
 import io.papermc.hangar.service.internal.perms.roles.OrganizationRoleService;
+import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService.OrganizationNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +23,15 @@ public class OrganizationMemberService extends MemberService<
         OrganizationRoleTable,
         OrganizationRolesDAO,
         OrganizationRoleService,
+        OrganizationTable,
+        OrganizationNotificationService,
         OrganizationMembersDAO,
         OrganizationMemberTable
         > {
 
     @Autowired
-    public OrganizationMemberService(OrganizationRoleService roleService, HangarDao<OrganizationMembersDAO> organizationMembersDAO) {
-        super(roleService, organizationMembersDAO.get(), OrganizationMemberTable::new, "organization.settings.members.");
+    public OrganizationMemberService(OrganizationRoleService roleService, HangarDao<OrganizationMembersDAO> organizationMembersDAO, OrganizationNotificationService organizationNotificationService) {
+        super(roleService, organizationMembersDAO.get(), organizationNotificationService, OrganizationMemberTable::new, "organization.settings.members.");
     }
 
     @Override

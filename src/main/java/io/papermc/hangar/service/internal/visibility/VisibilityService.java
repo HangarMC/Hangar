@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Map.Entry;
 
-public abstract class VisibilityService<M extends Table & ModelVisible & ProjectIdentified, VT extends VisibilityChangeTable> extends HangarService {
+abstract class VisibilityService<M extends Table & ModelVisible & ProjectIdentified, VT extends VisibilityChangeTable> extends HangarService {
 
     @Autowired
     private PermissionService permissionService;

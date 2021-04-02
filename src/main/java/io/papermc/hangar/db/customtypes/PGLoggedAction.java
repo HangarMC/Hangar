@@ -42,7 +42,7 @@ public class PGLoggedAction extends PGobject {
     public static final PGLoggedAction VERSION_PLUGIN_DEPENDENCY_EDITED = new PGLoggedAction("version_plugin_dependency_edited");
     public static final PGLoggedAction VERSION_PLUGIN_DEPENDENCY_REMOVED = new PGLoggedAction("version_plugin_dependency_removed");
     public static final PGLoggedAction VERSION_PLATFORM_DEPENDENCY_ADDED = new PGLoggedAction("version_platform_dependency_added");
-    // public static final PGLoggedAction VERSION_PLATFORM_DEPENDENCY_CHANGED = new PGLoggedAction("version_platform_dependency_changed"); // TODO add to sql
+    // public static final PGLoggedAction VERSION_PLATFORM_DEPENDENCY_CHANGED = new PGLoggedAction("version_platform_dependency_changed"); // TODO add to sql (is this needed? you only ever add or remove them, not change them)
     public static final PGLoggedAction VERSION_PLATFORM_DEPENDENCY_REMOVED = new PGLoggedAction("version_platform_dependency_removed");
 
     // Users

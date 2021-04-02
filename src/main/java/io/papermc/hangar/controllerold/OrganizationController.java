@@ -8,7 +8,7 @@ import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.db.modelold.OrganizationsTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.model.common.NamedPermission;
-import io.papermc.hangar.model.internal.user.notifications.NotificationType;
+import io.papermc.hangar.modelold.NotificationType;
 import io.papermc.hangar.modelold.viewhelpers.UserData;
 import io.papermc.hangar.securityold.annotations.OrganizationPermission;
 import io.papermc.hangar.serviceold.AuthenticationService;

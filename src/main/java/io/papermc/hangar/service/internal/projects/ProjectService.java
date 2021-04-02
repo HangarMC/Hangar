@@ -197,9 +197,9 @@ public class ProjectService extends HangarService {
         ProjectTable projectTable = getProjectTable(author, slug);
         List<HangarApiException> errors = new ArrayList<>();
 
-        projectInviteService.sendInvites(errors, editMembersForm.getNewInvitees(), projectTable.getId(), projectTable.getName());
-        projectMemberService.editMembers(errors, editMembersForm.getEditedMembers(), projectTable.getId());
-        projectMemberService.removeMembers(errors, editMembersForm.getDeletedMembers(), projectTable.getId());
+        projectInviteService.sendInvites(errors, editMembersForm.getNewInvitees(), projectTable);
+        projectMemberService.editMembers(errors, editMembersForm.getEditedMembers(), projectTable);
+        projectMemberService.removeMembers(errors, editMembersForm.getDeletedMembers(), projectTable);
 
         if (!errors.isEmpty()) {
             throw new MultiHangarApiException(errors);

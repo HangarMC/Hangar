@@ -5,15 +5,19 @@ import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.members.MembersDAO;
 import io.papermc.hangar.db.dao.internal.table.roles.IRolesDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.common.roles.Role;
+import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.members.MemberTable;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 import io.papermc.hangar.model.internal.api.requests.EditMembersForm.Member;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.internal.perms.roles.RoleService;
+import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +27,8 @@ public abstract class MemberService<
         RT extends ExtendedRoleTable<R>,
         RD extends IRolesDAO<RT>,
         S extends RoleService<RT, R, RD>,
+        J extends Table & Named,
+        JNS extends JoinableNotificationService<RT, J>,
         MD extends MembersDAO<MT>,
         MT extends MemberTable
         > extends HangarService {
@@ -30,14 +36,16 @@ public abstract class MemberService<
     @Autowired
     private HangarDao<UserDAO> userDAO;
 
-    protected final S roleService;
-    protected final MD membersDao;
-    protected final MemberTableConstructor<MT> constructor;
+    private final S roleService;
+    private final MD membersDao;
+    private final JNS joinableNotificationService;
+    private final MemberTableConstructor<MT> constructor;
     private final String errorPrefix;
 
-    protected MemberService(S roleService, MD membersDao, MemberTableConstructor<MT> constructor, String errorPrefix) {
+    protected MemberService(S roleService, MD membersDao, JNS joinableNotificationService, MemberTableConstructor<MT> constructor, String errorPrefix) {
         this.roleService = roleService;
         this.membersDao = membersDao;
+        this.joinableNotificationService = joinableNotificationService;
         this.constructor = constructor;
         this.errorPrefix = errorPrefix;
     }
@@ -74,10 +82,11 @@ public abstract class MemberService<
         logMemberRemoval(roleTable.getPrincipalId(), sb);
     }
 
-    public void removeMembers(List<HangarApiException> errors, List<Member<R>> members, long principalId) {
+    @Transactional
+    public void removeMembers(List<HangarApiException> errors, List<Member<R>> members, J joinable) {
         List<RT> toBeRemoved = new ArrayList<>();
         StringBuilder sb = new StringBuilder("Removed: ");
-        handleEditOrRemoval(errors, toBeRemoved, members, principalId, (member, rt, notLast) -> {
+        handleEditOrRemoval(errors, toBeRemoved, members, joinable.getId(), (member, rt, notLast) -> {
             sb.append(member.getName()).append(" (").append(member.getRole().getTitle()).append(")");
             if (notLast) {
                 sb.append(", ");
@@ -88,19 +97,20 @@ public abstract class MemberService<
             membersDao.delete(rt.getPrincipalId(), rt.getUserId());
             roleService.deleteRole(rt);
         }
-        // TODO notifications for removal
         if (!toBeRemoved.isEmpty()) {
-            logMemberRemoval(principalId, sb.toString());
+            joinableNotificationService.removedFrom(toBeRemoved, joinable);
+            logMemberRemoval(joinable.getId(), sb.toString());
         }
     }
 
     abstract void logMemberRemoval(long principalId, String logEntry);
 
-    public void editMembers(List<HangarApiException> errors, List<Member<R>> members, long principalId) {
+    @Transactional
+    public void editMembers(List<HangarApiException> errors, List<Member<R>> members, J joinable) {
         List<RT> toBeUpdated = new ArrayList<>();
         StringBuilder oldState = new StringBuilder("Old Roles: ");
         StringBuilder newState = new StringBuilder("New Roles: ");
-        handleEditOrRemoval(errors, toBeUpdated, members, principalId, (member, rt, notLast) -> {
+        handleEditOrRemoval(errors, toBeUpdated, members, joinable.getId(), (member, rt, notLast) -> {
             if (member.getRole() == rt.getRole()) {
                 return false;
             }
@@ -118,9 +128,9 @@ public abstract class MemberService<
         for (RT rt : toBeUpdated) {
             roleService.updateRoles(toBeUpdated);
         }
-        // TODO notifications for new role
         if (!toBeUpdated.isEmpty()) {
-            logMemberUpdate(principalId, oldState.toString(), newState.toString());
+            joinableNotificationService.roleChanged(toBeUpdated, joinable);
+            logMemberUpdate(joinable.getId(), oldState.toString(), newState.toString());
         }
     }
 

@@ -5,15 +5,11 @@ import io.papermc.hangar.db.dao.internal.HangarNotificationsDAO;
 import io.papermc.hangar.db.dao.internal.table.NotificationsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.model.common.Permission;
-import io.papermc.hangar.model.common.roles.OrganizationRole;
-import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.db.NotificationTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
-import io.papermc.hangar.model.internal.api.requests.EditMembersForm.Member;
 import io.papermc.hangar.model.internal.user.notifications.HangarNotification;
-import io.papermc.hangar.model.internal.user.notifications.NotificationType;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.PermissionService;
 import org.springframework.stereotype.Service;
@@ -49,7 +45,6 @@ public class NotificationService extends HangarService {
         for (UserTable projectWatcher : projectWatchers) {
             notificationTables.add(new NotificationTable(
                     projectWatcher.getId(),
-                    NotificationType.NEW_PROJECT_VERSION,
                     projectTable.getOwnerName() + "/" + projectTable.getSlug(),
                     projectTable.getId(),
                     new String[]{"notifications.project.newVersion", projectTable.getName(), projectVersionTable.getVersionString()})
@@ -64,22 +59,14 @@ public class NotificationService extends HangarService {
         permissionService.getProjectMemberPermissions(projectVersionTable.getProjectId()).forEach((user, perm) -> {
             if (perm.has(Permission.EditVersion)) {
                 if (partial) {
-                    notificationTables.add(new NotificationTable(user.getId(), NotificationType.VERSION_REVIEWED_PARTIAL, null, null,
+                    notificationTables.add(new NotificationTable(user.getId(), null, null,
                             new String[]{"notifications.project.reviewedPartial", projectTable.getSlug(), projectVersionTable.getVersionString()}));
                 } else {
-                    notificationTables.add(new NotificationTable(user.getId(), NotificationType.VERSION_REVIEWED, null, null,
+                    notificationTables.add(new NotificationTable(user.getId(), null, null,
                             new String[]{"notifications.project.reviewed", projectTable.getSlug(), projectVersionTable.getVersionString()}));
                 }
             }
         });
         notificationsDAO.insert(notificationTables);
-    }
-
-    public void notifyNewProjectInvite(Member<ProjectRole> member, long userId, long projectId, String projectName) {
-        notificationsDAO.insert(new NotificationTable(userId, NotificationType.PROJECT_INVITE, null, projectId, new String[]{"notifications.project.invite", member.getRole().getTitle(), projectName}));
-    }
-
-    public void notifyNewOrganizationInvite(Member<OrganizationRole> member, long userId, long organizationId, String organizationName) {
-        notificationsDAO.insert(new NotificationTable(userId, NotificationType.ORGANIZATION_INVITE, null, organizationId, new String[]{"notifications.organization.invite", member.getRole().getTitle(), organizationName}));
     }
 }

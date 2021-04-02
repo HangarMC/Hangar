@@ -5,7 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.auth.UserSignOnDAO;
-import io.papermc.hangar.exceptions.HangarException;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.auth.UserSignOnTable;
 import io.papermc.hangar.model.internal.sso.AuthUser;
 import io.papermc.hangar.model.internal.sso.URLWithNonce;
@@ -114,7 +114,7 @@ public class SSOService {
             return CryptoUtils.hmacSha256(hangarConfig.sso.getSecret(), payload.getBytes(StandardCharsets.UTF_8));
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             LOGGER.warn("Error while singing sso key", e);
-            throw new HangarException("error.loginFailed");
+            throw new HangarApiException("nav.user.error.loginFailed");
         }
     }
 
@@ -137,9 +137,9 @@ public class SSOService {
         return returnUrls.getIfPresent(nonce);
     }
 
-    public static class SignatureException extends HangarException {
+    public static class SignatureException extends HangarApiException {
         SignatureException(String payload, String signature) {
-            super("error.spongeauth.auth", payload, signature);
+            super("nav.user.error.hangarAuth", payload, signature);
         }
     }
 }

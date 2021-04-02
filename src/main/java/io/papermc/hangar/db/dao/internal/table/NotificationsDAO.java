@@ -18,11 +18,11 @@ public interface NotificationsDAO {
 
     @Timestamped
     @GetGeneratedKeys
-    @SqlUpdate("INSERT INTO notifications (created_at, user_id, notification_type, action, origin_id, message_args) VALUES (:now, :userId, :notificationType, :action, :originId, :messageArgs)")
+    @SqlUpdate("INSERT INTO notifications (created_at, user_id, action, origin_id, message_args) VALUES (:now, :userId, :action, :originId, :messageArgs)")
     NotificationTable insert(@BindBean NotificationTable notificationTable);
 
     @Timestamped
-    @SqlBatch("INSERT INTO notifications (created_at, user_id, notification_type, action, origin_id, message_args) VALUES (:now, :userId, :notificationType, :action, :originId, :messageArgs)")
+    @SqlBatch("INSERT INTO notifications (created_at, user_id, action, origin_id, message_args) VALUES (:now, :userId, :action, :originId, :messageArgs)")
     void insert(@BindBean Collection<NotificationTable> notificationTables);
 
     @SqlUpdate("UPDATE notifications SET read = TRUE WHERE id = :notificationId AND user_id = :userId")

@@ -5,7 +5,6 @@ declare module 'hangar-internal' {
 
     interface HangarNotification {
         id: number;
-        type: 'PROJECT_INVITE' | 'ORGANIZATION_INVITE' | 'NEW_PROJECT_VERSION' | 'VERSION_REVIEWED';
         action: string;
         message: string[];
         read: boolean;

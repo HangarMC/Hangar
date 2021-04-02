@@ -53,6 +53,12 @@ const msgs: LocaleMessageObject = {
             log: 'User Action Log',
             platformVersions: 'Platform Versions',
             logout: 'Sign out',
+            error: {
+                loginFailed: 'Authentication Failed',
+                hangarAuth: "Couldn't connect to HangarAuth",
+                loginDisabled: 'Login is temporarily unavailable, please try again later',
+                fakeUserEnabled: 'Fake user is enabled. {0} is therefore disabled',
+            },
         },
         createNew: 'Create new...',
         new: {
@@ -453,11 +459,17 @@ const msgs: LocaleMessageObject = {
         project: {
             reviewed: '{0} {1} has been reviewed and is approved',
             reviewedPartial: '{0} {1} has been reviewed and is partially approved',
-            invite: 'You have been invited to join the group {0} on the project {1}',
             newVersion: 'A new version has been released for {0}: {1}',
+            invite: 'You have been invited to join the group {0} on the project {1}',
+            inviteRescinded: 'Your invite to you the group {0} in the project {1} has been rescinded',
+            removed: 'You have been removed from the group {0} in the project {1}',
+            roleChanged: 'You have been added to the {0} group in the project {1}',
         },
         organization: {
             invite: 'You have been invited to join the group {0} in the organization {1}',
+            inviteRescinded: 'Your invite to you the group {0} in the organization {1} has been rescinded',
+            removed: 'You have been removed from the group {0} in the organization {1}',
+            roleChanged: 'You have been added to the {0} group in the organization {1}',
         },
     },
     visibility: {

@@ -115,7 +115,7 @@ public class OrganizationFactory extends HangarService {
         organizationMemberService.addNewAcceptedByDefaultMember(OrganizationRole.ORGANIZATION_OWNER.create(organizationTable.getId(), getHangarPrincipal().getId(), true));
 
         List<HangarApiException> errors = new ArrayList<>();
-        organizationInviteService.sendInvites(errors, members, organizationTable.getId(), organizationTable.getName());
+        organizationInviteService.sendInvites(errors, members, organizationTable);
 
         if (!errors.isEmpty()) {
             throw new MultiHangarApiException(errors);

@@ -1,7 +1,7 @@
 package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.controller.HangarController;
-import io.papermc.hangar.exceptions.HangarException;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.auth.RefreshResponse;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.sso.AuthUser;
@@ -12,7 +12,6 @@ import io.papermc.hangar.service.TokenService;
 import io.papermc.hangar.service.internal.auth.SSOService;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.users.UserService;
-import io.papermc.hangar.util.AlertUtil;
 import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,7 +48,7 @@ public class LoginController extends HangarController {
     }
 
     @GetMapping(path = "/login", params = "returnUrl")
-    public Object loginFromFrontend(@RequestParam(defaultValue = Routes.Paths.SHOW_HOME) String returnUrl, RedirectAttributes attributes) {
+    public Object loginFromFrontend(@RequestParam(defaultValue = Routes.Paths.SHOW_HOME) String returnUrl) {
         if (config.fakeUser.isEnabled()) {
             config.checkDev();
 
@@ -57,13 +56,8 @@ public class LoginController extends HangarController {
             tokenService.createTokenForUser(fakeUser);
             return new RedirectView(returnUrl);
         } else {
-            try {
-                response.addCookie(new Cookie("url", returnUrl));
-                return redirectToSso(ssoService.getLoginUrl(config.getBaseUrl() + "/login"), attributes);
-            } catch (HangarException e) {
-                AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, e.getMessageKey(), e.getArgs());
-                return Routes.SHOW_HOME.getRedirect();
-            }
+            response.addCookie(new Cookie("url", returnUrl));
+            return redirectToSso(ssoService.getLoginUrl(config.getBaseUrl() + "/login"));
         }
     }
 
@@ -71,8 +65,7 @@ public class LoginController extends HangarController {
     public ModelAndView loginFromAuth(@RequestParam String sso, @RequestParam String sig, @CookieValue String url, RedirectAttributes attributes) {
         AuthUser authUser = ssoService.authenticate(sso, sig);
         if (authUser == null) {
-            AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.loginFailed");
-            return Routes.SHOW_HOME.getRedirect();
+            throw new HangarApiException("nav.user.error.loginFailed");
         }
 
         UserTable user = userService.getOrCreate(authUser.getUserName(), authUser);
@@ -93,66 +86,28 @@ public class LoginController extends HangarController {
         tokenService.invalidateToken(refreshToken);
     }
 
-//    @GetMapping("/login")
-//    public ModelAndView login(@RequestParam(defaultValue = "") String sso, @RequestParam(defaultValue = "") String sig, @RequestParam(defaultValue = "") String returnUrl, @CookieValue(value = "url", required = false) String redirectUrl, RedirectAttributes attributes) {
-//        if (hangarConfig.fakeUser.isEnabled()) {
-//            hangarConfig.checkDebug();
-//
-//            UserTable fakeUser = authenticationService.loginAsFakeUser();
-//
-//            return redirectBackOnSuccessfulLogin(returnUrl, fakeUser);
-//        } else if (sso.isEmpty()) {
-//            String returnPath = returnUrl.isBlank() ? request.getRequestURI() : returnUrl;
-//            try {
-//                response.addCookie(new Cookie("url", returnPath));
-//                return redirectToSso(ssoService.getLoginUrl(hangarConfig.getBaseUrl() + "/login"), attributes);
-//            } catch (HangarException e) {
-//                AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, e.getMessageKey(), e.getArgs());
-//                return Routes.SHOW_HOME.getRedirect();
-//            }
-//
-//        } else {
-//            AuthUser authUser = ssoService.authenticate(sso, sig);
-//            if (authUser == null) {
-//                AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.loginFailed");
-//                return Routes.SHOW_HOME.getRedirect();
-//            }
-//
-//            UserTable user = userService.getOrCreate(authUser.getUserName(), authUser);
-//            roleService.removeAllGlobalRoles(user.getId());
-//            authUser.getGlobalRoles().forEach(globalRole -> roleService.addRole(globalRole.create(null, user.getId(), true)));
-//            authenticationService.setAuthenticatedUser(user);
-//
-//            String redirectPath = redirectUrl != null ? redirectUrl : Routes.getRouteUrlOf("showHome");
-//            return redirectBackOnSuccessfulLogin(redirectPath, user);
-//        }
-//    }
-
+    // TODO needed?
     @PostMapping("/verify")
-    public ModelAndView verify(@RequestParam String returnPath, RedirectAttributes attributes) {
-        try {
-            return redirectToSso(ssoService.getVerifyUrl(config.getBaseUrl() + returnPath), attributes);
-        } catch (HangarException e) {
-            AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, e.getMessageKey(), e.getArgs());
-            return Routes.SHOW_HOME.getRedirect();
+    public ModelAndView verify(@RequestParam String returnPath) {
+        if (config.fakeUser.isEnabled()) {
+            throw new HangarApiException("nav.user.error.fakeUserEnabled", "Verififcation");
         }
+        return redirectToSso(ssoService.getVerifyUrl(config.getBaseUrl() + returnPath));
     }
 
+    // TODO needed?
     @GetMapping("/logout")
     public ModelAndView logout(HttpSession session) {
-        // TODO flash
         session.invalidate();
         return Routes.getRedirectToUrl(config.getAuthUrl() + "/accounts/logout/");
     }
 
     @GetMapping("/signup")
-    public ModelAndView signUp(@RequestParam(defaultValue = "") String returnUrl, RedirectAttributes attributes) {
-        try {
-            return redirectToSso(ssoService.getSignupUrl(returnUrl), attributes);
-        } catch (HangarException e) {
-            AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, e.getMessageKey(), e.getArgs());
-            return Routes.SHOW_HOME.getRedirect();
+    public ModelAndView signUp(@RequestParam(defaultValue = "") String returnUrl) {
+        if (config.fakeUser.isEnabled()) {
+            throw new HangarApiException("nav.user.error.fakeUserEnabled", "Signup");
         }
+        return redirectToSso(ssoService.getSignupUrl(returnUrl));
     }
 
     private ModelAndView redirectBackOnSuccessfulLogin(String url, UserTable user) {
@@ -163,14 +118,12 @@ public class LoginController extends HangarController {
                 url = config.getBaseUrl() + "/" + url;
             }
         }
-//        response.addCookie(CookieUtils.builder(HangarAuthenticationFilter.AUTH_NAME, tokenService.expiring()));
         return Routes.getRedirectToUrl(url);
     }
 
-    private ModelAndView redirectToSso(URLWithNonce urlWithNonce, RedirectAttributes attributes) {
+    private ModelAndView redirectToSso(URLWithNonce urlWithNonce) {
         if (!config.sso.isEnabled()) {
-            AlertUtil.showAlert(attributes, AlertUtil.AlertType.ERROR, "error.noLogin");
-            return Routes.SHOW_HOME.getRedirect();
+            throw new HangarApiException("nav.user.error.loginDisabled");
         }
         ssoService.insert(urlWithNonce.getNonce());
         return Routes.getRedirectToUrl(urlWithNonce.getUrl());

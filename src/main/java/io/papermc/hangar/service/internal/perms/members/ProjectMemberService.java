@@ -6,10 +6,12 @@ import io.papermc.hangar.db.dao.internal.table.roles.ProjectRolesDAO;
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.members.ProjectMemberTable;
+import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.service.internal.perms.roles.ProjectRoleService;
+import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService.ProjectNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +23,15 @@ public class ProjectMemberService extends MemberService<
         ProjectRoleTable,
         ProjectRolesDAO,
         ProjectRoleService,
+        ProjectTable,
+        ProjectNotificationService,
         ProjectMembersDAO,
         ProjectMemberTable
         > {
 
     @Autowired
-    public ProjectMemberService(ProjectRoleService projectRoleService, HangarDao<ProjectMembersDAO> projectMembersDAO) {
-        super(projectRoleService, projectMembersDAO.get(), ProjectMemberTable::new, "project.settings.error.members.");
+    public ProjectMemberService(ProjectRoleService projectRoleService, HangarDao<ProjectMembersDAO> projectMembersDAO, ProjectNotificationService projectNotificationService) {
+        super(projectRoleService, projectMembersDAO.get(), projectNotificationService, ProjectMemberTable::new, "project.settings.error.members.");
     }
 
     @Override

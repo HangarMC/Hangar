@@ -1,14 +1,15 @@
 package io.papermc.hangar.service.internal.users.invites;
 
 import io.papermc.hangar.model.common.roles.OrganizationRole;
+import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
-import io.papermc.hangar.model.internal.api.requests.EditMembersForm.Member;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.OrganizationContext;
 import io.papermc.hangar.model.internal.user.notifications.HangarInvite.HangarOrganizationInvite;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
 import io.papermc.hangar.service.internal.perms.roles.OrganizationRoleService;
+import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService.OrganizationNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,20 +17,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
-public class OrganizationInviteService extends InviteService<OrganizationRole, OrganizationRoleTable> {
+public class OrganizationInviteService extends InviteService<OrganizationRole, OrganizationRoleTable, OrganizationTable> {
 
     @Autowired
-    public OrganizationInviteService(OrganizationRoleService roleService, OrganizationMemberService memberService) {
-        super(roleService, memberService, "organization.settings.members.");
+    public OrganizationInviteService(OrganizationRoleService roleService, OrganizationMemberService memberService, OrganizationNotificationService organizationNotificationService) {
+        super(roleService, memberService, organizationNotificationService, "organization.settings.members.");
     }
 
     public List<HangarOrganizationInvite> getOrganizationInvites() {
         return hangarNotificationsDAO.get().getOrganizationInvites(getHangarPrincipal().getId());
-    }
-
-    @Override
-    void notifyNewInvites(Member<OrganizationRole> invitee, long userId, long principalId, String principalName) {
-        notificationService.notifyNewOrganizationInvite(invitee, userId, principalId, principalName);
     }
 
     @Override
