@@ -66,7 +66,7 @@ jobs:
           proxyHost: "http://hangar_new_backend:8080"
           authHost: "http://hangar_new_auth:8000"
           host: "0.0.0.0"
-          PUBLIC_HOST: "https://hangar-new.minidigger.me"
+          PUBLIC_HOST: "https://hangar.benndorf.dev"
         run: (cd frontend && yarn build)
 
       - name: SSH

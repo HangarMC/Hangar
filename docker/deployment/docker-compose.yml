@@ -18,7 +18,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.hangar-new.loadbalancer.server.port=3000"
-      - "traefik.http.routers.hangar-new.rule=Host(`hangar-new.minidigger.me`)"
+      - "traefik.http.routers.hangar-new.rule=Host(`hangar-new.minidigger.me`) || Host=(`hangar.benndorf.dev`)"
       - "traefik.http.routers.hangar-new.entrypoints=web-secure"
       - "traefik.http.routers.hangar-new.tls=true"
       - "traefik.http.routers.hangar-new.tls.options=default"
@@ -65,7 +65,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.services.hangar-new-mail.loadbalancer.server.port=8025"
       - "traefik.http.routers.hangar-new-mail.middlewares=basicauth@file"
-      - "traefik.http.routers.hangar-new-mail.rule=Host(`hangar-new-mail.minidigger.me`)"
+      - "traefik.http.routers.hangar-new-mail.rule=Host(`hangar-new-mail.minidigger.me`) || Host=(`hangar-mail.benndorf.dev`)"
       - "traefik.http.routers.hangar-new-mail.entrypoints=web-secure"
       - "traefik.http.routers.hangar-new-mail.tls=true"
       - "traefik.http.routers.hangar-new-mail.tls.options=default"
@@ -81,7 +81,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.hangar-new-auth.loadbalancer.server.port=8000"
-      - "traefik.http.routers.hangar-new-auth.rule=Host(`hangar-new-auth.minidigger.me`)"
+      - "traefik.http.routers.hangar-new-auth.rule=Host(`hangar-new-auth.minidigger.me`) || Host=(`hangar-auth.benndorf.dev`)"
       - "traefik.http.routers.hangar-new-auth.entrypoints=web-secure"
       - "traefik.http.routers.hangar-new-auth.tls=true"
       - "traefik.http.routers.hangar-new-auth.tls.options=default"

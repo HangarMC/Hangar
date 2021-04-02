@@ -35,11 +35,14 @@ spring:
 #############
 fake-user:
   enabled: true
-  id: -2
-  name: paper
-  username: paper
-  email: paper@papermc.io
-
+#  id: -2
+#  name: paper
+#  username: paper
+#  email: paper@papermc.io
+  id: -3
+  name: paper2
+  username: paper2
+  email: paper2@papermc.io
 
 hangar:
   dev: true

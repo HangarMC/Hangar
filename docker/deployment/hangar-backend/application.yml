@@ -13,8 +13,8 @@ fake-user:
 
 hangar:
   dev: false
-  auth-url: "https://hangar-new-auth.minidigger.me"
-  base-url: "https://hangar-new.minidigger.me"
+  auth-url: "https://hangar-auth.benndorf.dev"
+  base-url: "https://hangar.benndorf.dev"
   plugin-upload-dir: "/hangar/uploads"
 
   announcements:
@@ -28,8 +28,8 @@ hangar:
 
   security:
     api:
-      url: "https://hangar-new-auth.minidigger.me"
-      avatar-url: "https://hangar-new-auth.minidigger.me/avatar/%s?size=120x120"
+      url: "https://hangar-new.benndorf.dev"
+      avatar-url: "https://hangar-auth.benndorf.dev/avatar/%s?size=120x120"
 
   projects:
     name-regex: "^[a-zA-Z0-9-_]{3,}$"
