@@ -41,9 +41,6 @@ public interface ProjectDao {
     @SqlQuery("SELECT COUNT(*) FROM projects WHERE owner_id = :id")
     int getProjectCountByUserId(long id);
 
-    @SqlQuery("SELECT * FROM projects WHERE owner_id = :id")
-    List<ProjectsTable> getProjectsByUserId(long id);
-
     @RegisterBeanMapper(value = ScopedProjectData.class)
     @RegisterBeanMapper(value = Permission.class, prefix = "perm")
     @SqlQuery("SELECT sq1.watching, sq2.starred, sq3.uproject_flags FROM" +

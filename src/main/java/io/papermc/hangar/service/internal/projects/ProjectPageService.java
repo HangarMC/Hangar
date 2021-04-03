@@ -9,8 +9,8 @@ import io.papermc.hangar.model.db.projects.ProjectPageTable;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectPage;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.PageContext;
+import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
-import io.papermc.hangar.model.internal.projects.HangarViewProjectPage;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.util.StringUtils;
 import org.jetbrains.annotations.Nullable;
@@ -68,7 +68,7 @@ public class ProjectPageService extends HangarService {
 
     public Map<Long, HangarProjectPage> getProjectPages(long projectId) {
         Map<Long, HangarProjectPage> hangarProjectPages = new LinkedHashMap<>();
-        for (HangarViewProjectPage projectPage : hangarProjectPagesDAO.getProjectPages(projectId)) {
+        for (ExtendedProjectPage projectPage : hangarProjectPagesDAO.getProjectPages(projectId)) {
             if (projectPage.getParentId() == null) {
                 hangarProjectPages.put(projectPage.getId(), new HangarProjectPage(projectPage, projectPage.isHome()));
             } else {
@@ -97,9 +97,9 @@ public class ProjectPageService extends HangarService {
         }
     }
 
-    public HangarViewProjectPage getProjectPage(String author, String slug, String requestUri) {
+    public ExtendedProjectPage getProjectPage(String author, String slug, String requestUri) {
         String[] path = requestUri.split("/", 8);
-        HangarViewProjectPage pageTable;
+        ExtendedProjectPage pageTable;
         if (path.length < 8) {
             pageTable = hangarProjectPagesDAO.getHomePage(author, slug);
         } else {

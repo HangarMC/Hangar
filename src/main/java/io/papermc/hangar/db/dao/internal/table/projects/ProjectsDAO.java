@@ -38,6 +38,9 @@ public interface ProjectsDAO {
     @SqlQuery("SELECT * FROM projects WHERE id = :projectId")
     ProjectTable getById(long projectId);
 
+    @SqlQuery("SELECT * FROM projects WHERE owner_id = :userId")
+    List<ProjectTable> getUserProjects(long userId);
+
     @SqlQuery("SELECT * FROM " +
             "     (SELECT CASE " +
             "         WHEN \"name\" = :name THEN 'OWNER_NAME'" +

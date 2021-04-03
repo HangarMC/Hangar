@@ -4,6 +4,7 @@ import colors from 'vuetify/lib/util/colors';
 import en from './locales/en';
 import fr from './locales/fr';
 
+require('events').EventEmitter.defaultMaxListeners = 20;
 require('dotenv').config();
 
 const proxyHost = process.env.proxyHost || 'http://localhost:8080';
@@ -106,6 +107,10 @@ export default {
         proxyHost + '/refresh',
         proxyHost + '/invalidate',
         proxyHost + '/v2/api-docs/',
+        proxyHost + '/robots.txt',
+        proxyHost + '/sitemap.xml',
+        proxyHost + '/global-sitemap.xml',
+        proxyHost + '/*/sitemap.xml',
         // auth
         authHost + '/avatar',
     ],

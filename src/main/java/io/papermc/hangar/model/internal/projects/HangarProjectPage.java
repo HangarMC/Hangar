@@ -13,14 +13,14 @@ public class HangarProjectPage {
     private final long id;
     private final String name;
     private final String slug;
-    private final boolean isHome;
+    private final boolean home;
     private final Map<Long, HangarProjectPage> children;
 
-    public HangarProjectPage(ProjectPageTable projectPageTable, boolean isHome) {
+    public HangarProjectPage(ProjectPageTable projectPageTable, boolean home) {
         this.id = projectPageTable.getId();
         this.name = projectPageTable.getName();
         this.slug = projectPageTable.getSlug();
-        this.isHome = isHome;
+        this.home = home;
         this.children = new LinkedHashMap<>();
     }
 
@@ -37,7 +37,7 @@ public class HangarProjectPage {
     }
 
     public boolean isHome() {
-        return isHome;
+        return home;
     }
 
     @JsonIgnore

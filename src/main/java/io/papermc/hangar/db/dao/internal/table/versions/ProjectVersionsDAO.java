@@ -3,13 +3,18 @@ package io.papermc.hangar.db.dao.internal.table.versions;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
+import org.jdbi.v3.core.enums.EnumStrategy;
+import org.jdbi.v3.sqlobject.SingleValue;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
+import org.jdbi.v3.sqlobject.config.UseEnumStrategy;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 @RegisterConstructorMapper(ProjectVersionTable.class)
@@ -34,6 +39,9 @@ public interface ProjectVersionsDAO {
     @SqlQuery("SELECT * FROM project_versions pv WHERE pv.id = :versionId")
     ProjectVersionTable getProjectVersionTable(long versionId);
 
+    @SqlQuery("SELECT * FROM project_versions WHERE project_id = :projectId")
+    List<ProjectVersionTable> getProjectVersions(long projectId);
+
     @SqlQuery("SELECT pv.*" +
             "   FROM project_versions pv" +
             "       JOIN project_channels pc ON pv.channel_id = pc.id" +
@@ -55,4 +63,13 @@ public interface ProjectVersionsDAO {
 
     @SqlQuery("SELECT * FROM project_versions WHERE project_id = :projectId AND hash = :hash AND version_string = :versionString")
     ProjectVersionTable getProjectVersionTableFromHashAndName(long projectId, String hash, String versionString);
+
+    @SingleValue
+    @UseEnumStrategy(EnumStrategy.BY_ORDINAL)
+    @SqlQuery("SELECT array_agg(DISTINCT plv.platform)" +
+            "   FROM project_versions pv" +
+            "       JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id" +
+            "       JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
+            "   WHERE pv.id = :versionId GROUP BY pv.id")
+    List<Platform> getVersionPlatforms(long versionId);
 }

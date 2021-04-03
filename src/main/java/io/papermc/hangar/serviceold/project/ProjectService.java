@@ -17,7 +17,6 @@ import io.papermc.hangar.modelold.viewhelpers.ProjectData;
 import io.papermc.hangar.modelold.viewhelpers.ProjectFlag;
 import io.papermc.hangar.modelold.viewhelpers.ProjectMissingFile;
 import io.papermc.hangar.modelold.viewhelpers.ProjectViewSettings;
-import io.papermc.hangar.modelold.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.modelold.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.modelold.viewhelpers.UserRole;
 import io.papermc.hangar.service.PermissionService;
@@ -38,7 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -144,20 +142,6 @@ public class ProjectService extends HangarService {
         );
     }
 
-    public ScopedProjectData getScopedProjectData(long projectId) {
-        Optional<UsersTable> curUser = currentUser.get();
-        if (curUser.isEmpty()) {
-            return new ScopedProjectData();
-        } else {
-            ScopedProjectData sp = projectDao.get().getScopedProjectData(projectId, curUser.get().getId());
-            if (sp == null) {
-                return new ScopedProjectData();
-            }
-            sp.setPermissions(permissionService.getProjectPermissions(curUser.get().getId(), projectId));
-            return sp;
-        }
-    }
-
     public ProjectsTable getProjectsTable(long projectId) {
         return null;
 //        return visibilityService.checkVisibility(projectDao.get().getById(projectId), ProjectsTable::getId);
@@ -177,14 +161,6 @@ public class ProjectService extends HangarService {
 
         project.setVisibility(newVisibility);
         projectDao.get().update(project);
-    }
-
-    public List<UsersTable> getProjectWatchers(long projectId, int offset, Integer limit) {
-        return userDao.get().getProjectWatchers(projectId, offset, limit);
-    }
-
-    public List<UsersTable> getProjectStargazers(long projectId, int offset, int limit) {
-        return userDao.get().getProjectStargazers(projectId, offset, limit);
     }
 
     public Map<ProjectData, UserRole<UserProjectRolesTable>> getProjectsAndRoles(long userId) {

@@ -5,7 +5,7 @@ import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectPage;
-import io.papermc.hangar.model.internal.projects.HangarViewProjectPage;
+import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
@@ -48,7 +48,7 @@ public class ProjectPageController extends HangarController {
 
     @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
     @GetMapping(path = "/page/{author}/{slug}/**", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HangarViewProjectPage> getProjectPage(@PathVariable String author, @PathVariable String slug) {
+    public ResponseEntity<ExtendedProjectPage> getProjectPage(@PathVariable String author, @PathVariable String slug) {
         return ResponseEntity.ok(projectPageService.getProjectPage(author, slug, request.getRequestURI()));
     }
 

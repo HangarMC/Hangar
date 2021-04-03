@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vladsch.flexmark.ext.admonition.AdmonitionExtension;
-import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controllerold.forms.UserAdminForm;
 import io.papermc.hangar.controllerold.util.StatusZ;
 import io.papermc.hangar.db.customtypes.RoleCategory;
@@ -29,11 +28,9 @@ import io.papermc.hangar.securityold.annotations.GlobalPermission;
 import io.papermc.hangar.serviceold.JobService;
 import io.papermc.hangar.serviceold.OrgService;
 import io.papermc.hangar.serviceold.RoleService;
-import io.papermc.hangar.serviceold.SitemapService;
 import io.papermc.hangar.serviceold.StatsService;
 import io.papermc.hangar.serviceold.UserActionLogService;
 import io.papermc.hangar.serviceold.UserService;
-import io.papermc.hangar.serviceold.VersionService;
 import io.papermc.hangar.serviceold.project.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -53,9 +50,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -72,33 +67,25 @@ public class ApplicationController extends HangarController {
     private final ProjectService projectService;
     private final OrgService orgService;
     private final UserActionLogService userActionLogService;
-    private final VersionService versionService;
     private final JobService jobService;
-    private final SitemapService sitemapService;
     private final StatsService statsService;
     private final RoleService roleService;
     private final StatusZ statusZ;
     private final ObjectMapper mapper;
-    private final HangarConfig hangarConfig;
 
-    private final HttpServletRequest request;
     private final Supplier<UserData> userData;
 
     @Autowired
-    public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, VersionService versionService, UserActionLogService userActionLogService, JobService jobService, SitemapService sitemapService, StatsService statsService, RoleService roleService, StatusZ statusZ, ObjectMapper mapper, HangarConfig hangarConfig, HttpServletRequest request, Supplier<UserData> userData) {
+    public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, UserActionLogService userActionLogService, JobService jobService, StatsService statsService, RoleService roleService, StatusZ statusZ, ObjectMapper mapper, Supplier<UserData> userData) {
         this.platformVersionsDao = platformVersionsDao;
         this.userService = userService;
         this.projectService = projectService;
         this.orgService = orgService;
         this.userActionLogService = userActionLogService;
-        this.versionService = versionService;
         this.jobService = jobService;
-        this.sitemapService = sitemapService;
         this.roleService = roleService;
         this.statusZ = statusZ;
         this.mapper = mapper;
-        this.hangarConfig = hangarConfig;
-        this.request = request;
         this.statsService = statsService;
         this.userData = userData;
     }
@@ -311,18 +298,6 @@ public class ApplicationController extends HangarController {
         }
     }
 
-    @GetMapping(value = "/favicon.ico", produces = "images/x-icon")
-    @ResponseBody
-    public ClassPathResource faviconRedirect() {
-        return new ClassPathResource("public/images/favicon/favicon.ico");
-    }
-
-    @GetMapping(value = "/global-sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
-    @ResponseBody
-    public String globalSitemap() {
-        return sitemapService.getGlobalSitemap();
-    }
-
     @GetMapping("/linkout")
     public ModelAndView linkOut(@RequestParam(defaultValue = "") String remoteUrl) {
         ModelAndView view = new ModelAndView("linkout");
@@ -332,19 +307,8 @@ public class ApplicationController extends HangarController {
 
     @GetMapping(value = "/robots.txt", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
-    public Object robots() {
-        if (hangarConfig.isDev()) {
-            request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.MOVED_PERMANENTLY);
-            return new ModelAndView("redirect:http://localhost:8081/robots.txt");
-        } else {
-            return new ClassPathResource("public/robots.txt");
-        }
-    }
-
-    @GetMapping(value = "/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
-    @ResponseBody
-    public String sitemapIndex() {
-        return sitemapService.getSitemap();
+    public ClassPathResource robots() {
+        return new ClassPathResource("WEB-INF/robots.txt");
     }
 
     @GetMapping(value = "/assets-ext/css/admonition.css", produces = "text/css")

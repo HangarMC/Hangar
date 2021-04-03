@@ -14,27 +14,23 @@ import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.auth.SSOService;
 import io.papermc.hangar.serviceold.ApiKeyService;
 import io.papermc.hangar.serviceold.OrgService;
-import io.papermc.hangar.serviceold.SitemapService;
 import io.papermc.hangar.serviceold.SsoService.SignatureException;
 import io.papermc.hangar.serviceold.UserService;
 import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Controller("oldUsersController")
@@ -47,13 +43,10 @@ public class UsersController extends HangarController {
     private final ApiKeyService apiKeyService;
     private final PermissionService permissionService;
     private final SSOService ssoService;
-    private final SitemapService sitemapService;
-
-    private final Supplier<UsersTable> usersTable;
 
 
     @Autowired
-    public UsersController(ObjectMapper mapper, HangarConfig hangarConfig, UserService userService, OrgService orgService, ApiKeyService apiKeyService, PermissionService permissionService, SSOService ssoService, SitemapService sitemapService, Supplier<UsersTable> usersTable) {
+    public UsersController(ObjectMapper mapper, HangarConfig hangarConfig, UserService userService, OrgService orgService, ApiKeyService apiKeyService, PermissionService permissionService, SSOService ssoService) {
         this.mapper = mapper;
         this.hangarConfig = hangarConfig;
         this.userService = userService;
@@ -61,8 +54,6 @@ public class UsersController extends HangarController {
         this.apiKeyService = apiKeyService;
         this.permissionService = permissionService;
         this.ssoService = ssoService;
-        this.sitemapService = sitemapService;
-        this.usersTable = usersTable;
     }
 
     @Secured("ROLE_USER")
@@ -114,13 +105,6 @@ public class UsersController extends HangarController {
         }
         userService.setLocked(curUser, locked);
         return Routes.USERS_SHOW_PROJECTS.getRedirect(user);
-    }
-
-    @GetMapping(value = "/{user}/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
-    @ResponseBody
-    public String userSitemap(@PathVariable("user") String username) {
-        UsersTable user = usersTable.get();
-        return sitemapService.getUserSitemap(user);
     }
 
 }

@@ -19,8 +19,6 @@ import io.papermc.hangar.security.HangarAuthenticationToken;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.api.UsersApiService;
-import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
-import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
 import io.papermc.hangar.service.internal.perms.roles.OrganizationRoleService;
 import io.papermc.hangar.service.internal.perms.roles.ProjectRoleService;
 import io.papermc.hangar.service.internal.perms.roles.RoleService;
@@ -61,7 +59,7 @@ public class HangarUserController extends HangarController {
     private final OrganizationInviteService organizationInviteService;
 
     @Autowired
-    public HangarUserController(ObjectMapper mapper, UsersApiService usersApiService, UserService userService, NotificationService notificationService, ProjectRoleService projectRoleService, OrganizationRoleService organizationRoleService, ProjectMemberService projectMemberService, OrganizationMemberService organizationMemberService, ProjectInviteService projectInviteService, OrganizationInviteService organizationInviteService) {
+    public HangarUserController(ObjectMapper mapper, UsersApiService usersApiService, UserService userService, NotificationService notificationService, ProjectRoleService projectRoleService, OrganizationRoleService organizationRoleService, ProjectInviteService projectInviteService, OrganizationInviteService organizationInviteService) {
         this.mapper = mapper;
         this.usersApiService = usersApiService;
         this.userService = userService;
@@ -175,5 +173,4 @@ public class HangarUserController extends HangarController {
         DECLINE,
         UNACCEPT,
     }
-
 }

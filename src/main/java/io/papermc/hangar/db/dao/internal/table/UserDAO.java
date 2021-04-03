@@ -10,6 +10,8 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RegisterConstructorMapper(UserTable.class)
 public interface UserDAO {
@@ -24,7 +26,7 @@ public interface UserDAO {
     @SqlUpdate("UPDATE users SET full_name = :fullName, name = :name, email = :email, tagline = :tagline, read_prompts = :readPrompts, locked = :locked, language = :language WHERE id = :id")
     UserTable update(@BindBean UserTable user);
 
-    @SqlQuery("SELECT * FROM users WHERE id = :id OR name = :name")
+    @SqlQuery("SELECT * FROM users WHERE id = :id OR lower(name) = lower(:name)")
     UserTable _getUserTable(Long id, String name);
     default UserTable getUserTable(long id) {
         return _getUserTable(id, null);
@@ -33,6 +35,9 @@ public interface UserDAO {
         return _getUserTable(null, name);
     }
 
-    @SqlQuery("SELECT * FROM users WHERE LOWER(name) = LOWER(:name)")
-    UserTable getByName(String name);
+    @SqlQuery("SELECT u.name" +
+            "    FROM users u" +
+            "    ORDER BY (SELECT count(*) FROM project_members_all pma WHERE pma.user_id = u.id) DESC" +
+            "    LIMIT 49000")
+    List<String> getAuthorNames();
 }

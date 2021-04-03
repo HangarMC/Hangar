@@ -10,7 +10,6 @@ import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
 import io.papermc.hangar.modelold.viewhelpers.ScopedOrganizationData;
-import io.papermc.hangar.modelold.viewhelpers.ScopedProjectData;
 import io.papermc.hangar.securityold.annotations.GlobalPermission;
 import io.papermc.hangar.securityold.annotations.ProjectPermission;
 import io.papermc.hangar.securityold.annotations.UserLock;
@@ -27,7 +26,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -107,23 +105,6 @@ public class ProjectsController extends HangarController {
             default:
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-    }
-
-    @GetMapping("/{author}/{slug}/discuss")
-    public ModelAndView showDiscussion(@PathVariable String author, @PathVariable String slug) {
-        ModelAndView mv = new ModelAndView("projects/discuss");
-        ProjectData projData = projectData.get();
-        ScopedProjectData scopedProjectData = projectService.getScopedProjectData(projData.getProject().getId());
-        mv.addObject("p", projData);
-        mv.addObject("sp", scopedProjectData);
-        statsService.addProjectView(projData.getProject()); // TODO this is in ore, but I'm not sure why
-        return fillModel(mv);
-    }
-
-    @Secured("ROLE_USER")
-    @PostMapping("/{author}/{slug}/discuss/reply")
-    public Object postDiscussionReply(@PathVariable String author, @PathVariable String slug) {
-        return null; // TODO implement postDiscussionReply request controller
     }
 
     @ProjectPermission(NamedPermission.DELETE_PROJECT)
