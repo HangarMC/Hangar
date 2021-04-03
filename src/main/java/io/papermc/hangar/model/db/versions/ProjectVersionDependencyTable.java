@@ -66,6 +66,10 @@ public class ProjectVersionDependencyTable extends VersionDependencyTable {
         this.externalUrl = externalUrl;
     }
 
+    public String toLogString() {
+        return "Name: " + name + (required ? " (required)" : "");
+    }
+
     @Override
     public String toString() {
         return "ProjectVersionDependencyTable{" +

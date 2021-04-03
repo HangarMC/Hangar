@@ -18,7 +18,6 @@ import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionDependencyTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionPlatformDependencyTable;
-import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTagTable;
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePlatformVersions;
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePluginDependencies;
@@ -28,12 +27,13 @@ import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.internal.projects.ChannelService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -81,26 +81,34 @@ public class VersionDependencyService extends HangarService {
         return version;
     }
 
-    public void updateVersionPlatformVersions(long versionId, UpdatePlatformVersions form) {
+    @Transactional
+    public void updateVersionPlatformVersions(long projectId, long versionId, UpdatePlatformVersions form) {
         Map<String, ProjectVersionPlatformDependencyTable> platformDependencyTables = projectVersionPlatformDependenciesDAO.getPlatformVersions(versionId, form.getPlatform());
-        Set<String> oldVersions = new HashSet<>(platformDependencyTables.keySet()); // copy set because we dont want changes to it to be reflected in the map
-        oldVersions.retainAll(form.getVersions());
-        Set<String> newVersions = new HashSet<>(oldVersions);
-        newVersions.addAll(form.getVersions());
-        Set<ProjectVersionPlatformDependencyTable> newVersionTables = new HashSet<>();
-        for (String newVersion : newVersions) {
-            ProjectVersionPlatformDependencyTable table = platformDependencyTables.remove(newVersion);
-            if (table == null) {
-                PlatformVersionTable platformVersionTable = platformVersionDAO.getByPlatformAndVersion(form.getPlatform(), newVersion);
-                if (platformVersionTable == null) {
-                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.edit.error.invalidVersionForPlatform", newVersion, form.getPlatform().getName());
-                }
-                newVersionTables.add(new ProjectVersionPlatformDependencyTable(versionId, platformVersionTable.getId()));
+        final Map<String, ProjectVersionPlatformDependencyTable> toBeRemoved = new HashMap<>();
+        final Map<String, ProjectVersionPlatformDependencyTable> toBeAdded = new HashMap<>();
+        platformDependencyTables.forEach((version, table) -> {
+            if (!form.getVersions().contains(version)) {
+                toBeRemoved.put(version, table);
             }
+        });
+        form.getVersions().forEach(version -> {
+            if (!platformDependencyTables.containsKey(version)) {
+                PlatformVersionTable platformVersionTable = platformVersionDAO.getByPlatformAndVersion(form.getPlatform(), version);
+                if (platformVersionTable == null) {
+                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.edit.error.invalidVersionForPlatform", version, form.getPlatform().getName());
+                }
+                toBeAdded.put(version, new ProjectVersionPlatformDependencyTable(versionId, platformVersionTable.getId()));
+            }
+        });
+
+        if (!toBeAdded.isEmpty()) {
+            projectVersionPlatformDependenciesDAO.insertAll(toBeAdded.values());
+            userActionLogService.version(LogAction.VERSION_PLATFORM_DEPENDENCY_ADDED.create(VersionContext.of(projectId, versionId), "Added: " + String.join(", ", toBeAdded.keySet()), String.join(", ", platformDependencyTables.keySet())));
         }
-        // At this point `platformDependencyTables` contains rows that should be removed
-        projectVersionPlatformDependenciesDAO.insertAll(newVersionTables);
-        projectVersionPlatformDependenciesDAO.deleteAll(platformDependencyTables.values());
+        if (!toBeRemoved.isEmpty()) {
+            projectVersionPlatformDependenciesDAO.deleteAll(toBeRemoved.values());
+            userActionLogService.version(LogAction.VERSION_PLATFORM_DEPENDENCY_REMOVED.create(VersionContext.of(projectId, versionId), "Removed: " + String.join(", ", toBeRemoved.keySet()), String.join(", ", platformDependencyTables.keySet())));
+        }
 
         ProjectVersionTagTable projectVersionTagTable = versionTagService.getTag(versionId, form.getPlatform().getName());
         if (projectVersionTagTable == null) {
@@ -108,14 +116,10 @@ public class VersionDependencyService extends HangarService {
         }
         projectVersionTagTable.setData(form.getVersions());
         versionTagService.updateTag(projectVersionTagTable);
-
-        // TODO comment back in when log action is created
-        ProjectVersionTable projectVersionTable = projectVersionsDAO.getProjectVersionTable(versionId);
-        // userActionLogService.version(LogAction.VERSION_PLATFORM_DEPENDENCY_CHANGED.create(VersionContext.of(projectVersionTable.getProjectId(), versionId), String.join(", " , newVersions), String.join(", ", oldVersions)));
     }
 
-    public void updateVersionPluginDependencies(long versionId, UpdatePluginDependencies form) {
-        Map<String, ProjectVersionDependencyTable> projectVersionDependencies = projectVersionDependenciesDAO.getForVersionAndPlatform(versionId, form.getPlatform()).stream().collect(Collectors.toMap(ProjectVersionDependencyTable::getName, Function.identity()));
+    public void updateVersionPluginDependencies(long projectId, long versionId, UpdatePluginDependencies form) {
+        Map<String, ProjectVersionDependencyTable> projectVersionDependencies = projectVersionDependenciesDAO.getForVersionAndPlatform(versionId, form.getPlatform());
         final Set<ProjectVersionDependencyTable> toBeRemoved = new HashSet<>();
         final Set<ProjectVersionDependencyTable> toBeUpdated = new HashSet<>();
         final Set<ProjectVersionDependencyTable> toBeAdded = new HashSet<>();
@@ -152,19 +156,27 @@ public class VersionDependencyService extends HangarService {
             }
         });
         form.getPluginDependencies().forEach((name, dependency) -> {
-            Long projectId = null;
+            Long pdProjectId = null;
             if (dependency.getNamespace() != null) {
                 ProjectTable projectTable = projectsDAO.getBySlug(dependency.getNamespace().getOwner(), dependency.getNamespace().getSlug());
                 if (projectTable == null) {
                     throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.edit.error.invalidProjectNamespace", dependency.getNamespace().getOwner() + "/" + dependency.getNamespace().getSlug());
                 }
-                projectId = projectTable.getId();
+                pdProjectId = projectTable.getId();
             }
-            toBeAdded.add(new ProjectVersionDependencyTable(versionId, form.getPlatform(), name, dependency.isRequired(), projectId, dependency.getExternalUrl()));
+            toBeAdded.add(new ProjectVersionDependencyTable(versionId, form.getPlatform(), name, dependency.isRequired(), pdProjectId, dependency.getExternalUrl()));
         });
-        projectVersionDependenciesDAO.deleteAll(toBeRemoved);
-        projectVersionDependenciesDAO.updateAll(toBeUpdated);
-        projectVersionDependenciesDAO.insertAll(toBeAdded);
-        // TODO action logging here
+        if (!toBeRemoved.isEmpty()) {
+            projectVersionDependenciesDAO.deleteAll(toBeRemoved);
+            userActionLogService.version(LogAction.VERSION_PLUGIN_DEPENDENCY_REMOVED.create(VersionContext.of(projectId, versionId), "Removed: " + String.join(", ", toBeRemoved.stream().map(ProjectVersionDependencyTable::toLogString).collect(Collectors.toSet())), ""));
+        }
+        if (!toBeUpdated.isEmpty()) {
+            projectVersionDependenciesDAO.updateAll(toBeUpdated);
+            userActionLogService.version(LogAction.VERSION_PLUGIN_DEPENDENCY_EDITED.create(VersionContext.of(projectId, versionId), String.join(", ", toBeUpdated.stream().map(ProjectVersionDependencyTable::toLogString).collect(Collectors.toSet())), String.join(", ", toBeUpdated.stream().map(ProjectVersionDependencyTable::getName).map(projectVersionDependencies::get).map(ProjectVersionDependencyTable::toLogString).collect(Collectors.toSet()))));
+        }
+        if (!toBeAdded.isEmpty()) {
+            projectVersionDependenciesDAO.insertAll(toBeAdded);
+            userActionLogService.version(LogAction.VERSION_PLUGIN_DEPENDENCY_ADDED.create(VersionContext.of(projectId, versionId), "Added: " + String.join(", ", toBeAdded.stream().map(ProjectVersionDependencyTable::toLogString).collect(Collectors.toSet())), ""));
+        }
     }
 }

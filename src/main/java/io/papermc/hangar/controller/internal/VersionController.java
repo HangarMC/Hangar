@@ -121,7 +121,7 @@ public class VersionController extends HangarController {
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{projectId}/{versionId}/savePlatformVersions", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void savePlatformVersions(@PathVariable long projectId, @PathVariable long versionId, @Valid @RequestBody UpdatePlatformVersions updatePlatformVersions) {
-        versionDependencyService.updateVersionPlatformVersions(versionId, updatePlatformVersions);
+        versionDependencyService.updateVersionPlatformVersions(projectId, versionId, updatePlatformVersions);
     }
 
     @Unlocked
@@ -129,7 +129,7 @@ public class VersionController extends HangarController {
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{projectId}/{versionId}/savePluginDependencies", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void savePluginDependencies(@PathVariable long projectId, @PathVariable long versionId, @Valid @RequestBody UpdatePluginDependencies updatePluginDependencies) {
-        versionDependencyService.updateVersionPluginDependencies(versionId, updatePluginDependencies);
+        versionDependencyService.updateVersionPluginDependencies(projectId, versionId, updatePluginDependencies);
     }
 
     @PermissionRequired(perms = NamedPermission.REVIEWER)

@@ -3,6 +3,7 @@ package io.papermc.hangar.db.dao.internal.table.versions;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.versions.ProjectVersionDependencyTable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
+import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @RegisterConstructorMapper(ProjectVersionDependencyTable.class)
@@ -32,6 +34,7 @@ public interface ProjectVersionDependenciesDAO {
     @SqlQuery("SELECT * FROM project_version_dependencies WHERE version_id = :versionId")
     List<ProjectVersionDependencyTable> getForVersion(long versionId);
 
+    @KeyColumn("name")
     @SqlQuery("SELECT * FROM project_version_dependencies WHERE version_id = :versionId AND platform = :platform")
-    List<ProjectVersionDependencyTable> getForVersionAndPlatform(long versionId, @EnumByOrdinal Platform platform);
+    Map<String, ProjectVersionDependencyTable> getForVersionAndPlatform(long versionId, @EnumByOrdinal Platform platform);
 }
