@@ -53,9 +53,8 @@
                                 <p>{{ $t('project.category.info', [$store.state.projectCategories.get(project.category).title]) }}</p>
                                 <p>{{ $t('project.info.publishDate', [$util.prettyDate(project.createdAt)]) }}</p>
                                 <p v-if="project">
-                                    <span id="view-count">{{ $tc('project.info.views', project.stats.views, [project.stats.views]) }}</span>
-                                    ,&nbsp;
-                                    <span id="download-count"
+                                    <span id="view-count">{{ $tc('project.info.views', project.stats.views, [project.stats.views]) }}</span
+                                    >,&nbsp;<span id="download-count"
                                         >{{ $tc('project.info.totalDownloads', project.stats.downloads, [project.stats.downloads]) }}
                                     </span>
                                 </p>

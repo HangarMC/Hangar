@@ -1,7 +1,6 @@
 <template>
     <div>
         <template v-if="!isPublic">
-            <!-- todo alert for visibility stuff -->
             <v-alert v-if="needsChanges" type="error" text>
                 <v-row>
                     <v-col class="grow">
@@ -198,11 +197,6 @@ export default class ProjectPage extends HangarComponent {
 
     get isSoftDeleted(): Boolean {
         return this.project.visibility === Visibility.SOFT_DELETE;
-    }
-
-    get visibilityComment() {
-        // todo get last visibility change comment
-        return null;
     }
 
     get slug(): string {

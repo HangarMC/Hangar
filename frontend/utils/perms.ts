@@ -18,7 +18,7 @@ export function LoggedIn(constructor: Function) {
 
 // TODO this maybe should use the global permissions store in the JWT to reduce db lookups?
 export function GlobalPermission(...permissions: NamedPermission[]) {
-    const middleware: Middleware = ({ error, $api }: Context) => {
+    const middleware: Middleware = ({ error, $api, $util }: Context) => {
         return $api
             .request<PermissionCheck>('permissions/hasAll', true, 'get', {
                 permissions,
@@ -31,14 +31,7 @@ export function GlobalPermission(...permissions: NamedPermission[]) {
                     });
                 }
             })
-            .catch((err) => {
-                // TODO error handling
-                console.log(err);
-                error({
-                    message: err.message,
-                    statusCode: 500,
-                });
-            });
+            .catch($util.handlePageRequestError);
     };
 
     return function (constructor: Function) {

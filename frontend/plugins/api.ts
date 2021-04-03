@@ -3,6 +3,7 @@ import { Inject } from '@nuxt/types/app';
 import { AxiosError, AxiosRequestConfig } from 'axios';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import qs from 'qs';
+import { HangarApiException } from 'hangar-api';
 
 const createApi = ({ $axios, store, app: { $cookies } }: Context) => {
     class API {
@@ -68,26 +69,22 @@ const createApi = ({ $axios, store, app: { $cookies } }: Context) => {
 
             return tokenPromise.then((token) => {
                 if (authed && !token) {
-                    // TODO figure out how to not have to make the request if you know its going to fail
+                    // eslint-disable-next-line prefer-promise-reject-errors
+                    return Promise.reject({
+                        isAxiosError: true,
+                        response: {
+                            data: {
+                                isHangarApiException: true,
+                                httpError: {
+                                    statusCode: 401,
+                                },
+                                message: 'You must be logged in',
+                            } as HangarApiException,
+                        },
+                    });
+                } else {
+                    return this._request(`internal/${url}`, token, method, data);
                 }
-                // if (authed && !token) {
-                //     // TODO this return doesn't match others
-                //     return Promise.reject({
-                //         isAxiosError: true,
-                //         respose: {
-                //             data: {
-                //                 isHangarApiException: true,
-                //                 httpError: {
-                //                     statusCode: 401,
-                //                 },
-                //                 message: 'You must be logged in',
-                //             },
-                //         },
-                //     });
-                // } else {
-                //     return this._request(`internal/${url}`, token, method, data);
-                // }
-                return this._request(`internal/${url}`, token, method, data);
             });
         }
 

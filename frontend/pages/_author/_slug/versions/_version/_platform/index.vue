@@ -12,7 +12,7 @@
                         $t('version.page.adminMsg', [projectVersion.approvedBy, $util.prettyDate(projectVersion.createdAt)])
                     }}</i>
                     <v-icon v-if="projectVersion.recommended" :title="$t('version.page.recommended')">mdi-diamond-stone</v-icon>
-                    <v-icon v-if="isReviewStateChecked" :title="approvalTooltip">mdi-check-circle-outline</v-icon>
+                    <v-icon v-if="isReviewStateChecked" :title="approvalTooltip" color="success">mdi-check-circle-outline</v-icon>
                 </v-subheader>
                 <!-- todo maybe move the review logs to the admin actions dropdown? -->
                 <template v-if="$perms.isReviewer">
