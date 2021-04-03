@@ -10,6 +10,7 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.user.notifications.HangarNotification;
+import io.papermc.hangar.model.internal.user.notifications.NotificationType;
 import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.PermissionService;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ public class NotificationService extends HangarService {
                     projectWatcher.getId(),
                     projectTable.getOwnerName() + "/" + projectTable.getSlug(),
                     projectTable.getId(),
-                    new String[]{"notifications.project.newVersion", projectTable.getName(), projectVersionTable.getVersionString()})
+                    new String[]{"notifications.project.newVersion", projectTable.getName(), projectVersionTable.getVersionString()}, NotificationType.NEUTRAL)
             );
         }
         notificationsDAO.insert(notificationTables);
@@ -60,10 +61,10 @@ public class NotificationService extends HangarService {
             if (perm.has(Permission.EditVersion)) {
                 if (partial) {
                     notificationTables.add(new NotificationTable(user.getId(), null, null,
-                            new String[]{"notifications.project.reviewedPartial", projectTable.getSlug(), projectVersionTable.getVersionString()}));
+                            new String[]{"notifications.project.reviewedPartial", projectTable.getSlug(), projectVersionTable.getVersionString()}, NotificationType.SUCCESS));
                 } else {
                     notificationTables.add(new NotificationTable(user.getId(), null, null,
-                            new String[]{"notifications.project.reviewed", projectTable.getSlug(), projectVersionTable.getVersionString()}));
+                            new String[]{"notifications.project.reviewed", projectTable.getSlug(), projectVersionTable.getVersionString()}, NotificationType.SUCCESS));
                 }
             }
         });

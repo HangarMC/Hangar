@@ -27,11 +27,11 @@ CREATE TYPE logged_action_type AS ENUM(
     'version_created',
     'version_description_changed',
     'version_review_state_changed',
-    'version_plugin_dependency_added',
-    'version_plugin_dependency_edited',
-    'version_plugin_dependency_removed',
-    'version_platform_dependency_added',
-    'version_platform_dependency_removed',
+    'version_plugin_dependencies_added',
+    'version_plugin_dependencies_edited',
+    'version_plugin_dependencies_removed',
+    'version_platform_dependencies_added',
+    'version_platform_dependencies_removed',
     'user_tagline_changed',
     'user_locked',
     'user_unlocked',
@@ -385,7 +385,7 @@ CREATE TABLE notifications
         CONSTRAINT notifications_user_id_fkey
             REFERENCES users
             ON DELETE CASCADE,
-    notification_type integer NOT NULL,
+    type integer NOT NULL,
     action varchar(255),
     read boolean DEFAULT FALSE NOT NULL,
     origin_id bigint

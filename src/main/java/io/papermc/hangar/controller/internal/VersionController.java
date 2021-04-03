@@ -87,7 +87,6 @@ public class VersionController extends HangarController {
     @PostMapping(path = "/version/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE, params = "url")
     public ResponseEntity<PendingVersion> createFromUrl(@PathVariable("id") long projectId, @RequestParam String url) {
         PendingVersion pendingVersion = versionFactory.createPendingVersion(projectId, url);
-        System.out.println(pendingVersion);
         return ResponseEntity.ok(pendingVersion);
     }
 
@@ -96,7 +95,6 @@ public class VersionController extends HangarController {
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.CREATE_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{id}/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void createVersion(@PathVariable("id") long projectId, @RequestBody @Valid PendingVersion pendingVersion) {
-        System.out.println(pendingVersion);
         versionFactory.publishPendingVersion(projectId, pendingVersion);
     }
 

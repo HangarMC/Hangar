@@ -18,11 +18,11 @@ public interface NotificationsDAO {
 
     @Timestamped
     @GetGeneratedKeys
-    @SqlUpdate("INSERT INTO notifications (created_at, user_id, action, origin_id, message_args) VALUES (:now, :userId, :action, :originId, :messageArgs)")
+    @SqlUpdate("INSERT INTO notifications (created_at, user_id, type, action, origin_id, message_args) VALUES (:now, :userId, :type, :action, :originId, :messageArgs)")
     NotificationTable insert(@BindBean NotificationTable notificationTable);
 
     @Timestamped
-    @SqlBatch("INSERT INTO notifications (created_at, user_id, action, origin_id, message_args) VALUES (:now, :userId, :action, :originId, :messageArgs)")
+    @SqlBatch("INSERT INTO notifications (created_at, user_id, type, action, origin_id, message_args) VALUES (:now, :userId, :type, :action, :originId, :messageArgs)")
     void insert(@BindBean Collection<NotificationTable> notificationTables);
 
     @SqlUpdate("UPDATE notifications SET read = TRUE WHERE id = :notificationId AND user_id = :userId")
@@ -48,7 +48,6 @@ public interface NotificationsDAO {
             "   WHERE p.visibility = 3")
     long getProjectApprovalsCount();
 
-    // TODO I think this should count both UNREVIEWED and UNDER_REVIEW states
     @SqlQuery("SELECT count(*)" +
             "   FROM project_versions pv" +
             "   WHERE pv.review_state = 0 OR pv.review_state = 2")

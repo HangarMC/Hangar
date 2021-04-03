@@ -217,7 +217,13 @@
                                 </v-btn>
                             </v-col>
                             <v-col>
-                                <img id="project-icon-preview" :src="project.iconUrl" alt="Project Icon" width="150" height="150" />
+                                <img
+                                    id="project-icon-preview"
+                                    :src="$util.projectUrl(project.namespace.owner, project.namespace.slug)"
+                                    alt="Project Icon"
+                                    width="150"
+                                    height="150"
+                                />
                             </v-col>
                         </v-row>
                     </div>
@@ -381,7 +387,9 @@ export default class ProjectManagePage extends HangarProjectMixin {
             };
             reader.readAsDataURL(this.projectIcon);
         } else {
-            document.getElementById('project-icon-preview')!.setAttribute('src', this.project.iconUrl);
+            document
+                .getElementById('project-icon-preview')!
+                .setAttribute('src', this.$util.projectUrl(this.project.namespace.owner, this.project.namespace.slug));
         }
     }
 
@@ -474,7 +482,9 @@ export default class ProjectManagePage extends HangarProjectMixin {
             .requestInternal(`projects/project/${this.$route.params.author}/${this.$route.params.slug}/resetIcon`, true, 'post')
             .then(() => {
                 this.$util.success(this.$t('project.settings.success.resetIcon'));
-                document.getElementById('project-icon-preview')!.setAttribute('src', `${this.project.iconUrl}?noCache=${Math.random()}`);
+                document
+                    .getElementById('project-icon-preview')!
+                    .setAttribute('src', `${this.$util.projectUrl(this.project.namespace.owner, this.project.namespace.slug)}?noCache=${Math.random()}`);
                 this.$nuxt.refresh();
             })
             .catch(this.$util.handleRequestError)

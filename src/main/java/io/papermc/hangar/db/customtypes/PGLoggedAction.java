@@ -38,11 +38,11 @@ public class PGLoggedAction extends PGobject {
     public static final PGLoggedAction VERSION_DESCRIPTION_EDITED = new PGLoggedAction("version_description_edited");
     public static final PGLoggedAction VERSION_REVIEW_STATE_CHANGED = new PGLoggedAction("version_review_state_changed");
 
-    public static final PGLoggedAction VERSION_PLUGIN_DEPENDENCY_ADDED = new PGLoggedAction("version_plugin_dependency_added");
-    public static final PGLoggedAction VERSION_PLUGIN_DEPENDENCY_EDITED = new PGLoggedAction("version_plugin_dependency_edited");
-    public static final PGLoggedAction VERSION_PLUGIN_DEPENDENCY_REMOVED = new PGLoggedAction("version_plugin_dependency_removed");
-    public static final PGLoggedAction VERSION_PLATFORM_DEPENDENCY_ADDED = new PGLoggedAction("version_platform_dependency_added");
-    public static final PGLoggedAction VERSION_PLATFORM_DEPENDENCY_REMOVED = new PGLoggedAction("version_platform_dependency_removed");
+    public static final PGLoggedAction VERSION_PLUGIN_DEPENDENCIES_ADDED = new PGLoggedAction("version_plugin_dependencies_added");
+    public static final PGLoggedAction VERSION_PLUGIN_DEPENDENCIES_EDITED = new PGLoggedAction("version_plugin_dependencies_edited");
+    public static final PGLoggedAction VERSION_PLUGIN_DEPENDENCIES_REMOVED = new PGLoggedAction("version_plugin_dependencies_removed");
+    public static final PGLoggedAction VERSION_PLATFORM_DEPENDENCIES_ADDED = new PGLoggedAction("version_platform_dependencies_added");
+    public static final PGLoggedAction VERSION_PLATFORM_DEPENDENCIES_REMOVED = new PGLoggedAction("version_platform_dependencies_removed");
 
     // Users
     public static final PGLoggedAction USER_TAGLINE_CHANGED = new PGLoggedAction("user_tagline_changed");

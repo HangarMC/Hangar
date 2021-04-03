@@ -11,6 +11,7 @@ import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
+import io.papermc.hangar.model.internal.user.notifications.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<?
     public void invited(Collection<RT> inviteeRoleTables, J joinable) {
         Collection<NotificationTable> notificationTables = new HashSet<>();
         for (RT rt : inviteeRoleTables) {
-            notificationTables.add(new NotificationTable(rt.getUserId(), null, joinable.getId(), new String[]{ this.msgPrefix + "invite", rt.getRole().getTitle(), joinable.getName()}));
+            notificationTables.add(new NotificationTable(rt.getUserId(), null, joinable.getId(), new String[]{ this.msgPrefix + "invite", rt.getRole().getTitle(), joinable.getName()}, NotificationType.SUCCESS));
         }
         notificationsDAO.get().insert(notificationTables);
     }
@@ -40,7 +41,7 @@ public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<?
         Collection<NotificationTable> notificationTables = new HashSet<>();
         for (RT rt : removedFromRoleTables) {
             String msgKey = this.msgPrefix + (rt.isAccepted() ? "removed" : "inviteRescinded");
-            notificationTables.add(new NotificationTable(rt.getUserId(), null, joinable.getId(), new String[] {msgKey, rt.getRole().getTitle(), joinable.getName()}));
+            notificationTables.add(new NotificationTable(rt.getUserId(), null, joinable.getId(), new String[] {msgKey, rt.getRole().getTitle(), joinable.getName()}, NotificationType.WARNING));
         }
         notificationsDAO.get().insert(notificationTables);
     }
@@ -48,7 +49,7 @@ public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<?
     public void roleChanged(Collection<RT> changedRoleTables, J joinable) {
         Collection<NotificationTable> notificationTables = new HashSet<>();
         for (RT rt : changedRoleTables) {
-            notificationTables.add(new NotificationTable(rt.getUserId(), null, joinable.getId(), new String[] {this.msgPrefix + "roleChanged", rt.getRole().getTitle(), joinable.getName()}));
+            notificationTables.add(new NotificationTable(rt.getUserId(), null, joinable.getId(), new String[] {this.msgPrefix + "roleChanged", rt.getRole().getTitle(), joinable.getName()}, NotificationType.INFO));
         }
         notificationsDAO.get().insert(notificationTables);
     }

@@ -71,7 +71,6 @@ public class OrganizationController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(path = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void create(@Valid @RequestBody CreateOrganizationForm createOrganizationForm) {
-        System.out.println(createOrganizationForm);
         organizationFactory.createOrganization(createOrganizationForm.getName(), createOrganizationForm.getNewInvitees());
     }
 

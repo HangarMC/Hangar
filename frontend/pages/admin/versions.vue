@@ -30,22 +30,25 @@
                 </template>
             </v-simple-table>
         </v-card-text>
-        <v-card-actions>
-            <v-btn type="success" @click="save">{{ $t('platformVersions.saveChanges') }}</v-btn>
+        <v-card-actions class="justify-end">
+            <v-btn color="success" :loading="loading" @click="save">{{ $t('platformVersions.saveChanges') }}</v-btn>
         </v-card-actions>
     </v-card>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
+import { Component } from 'nuxt-property-decorator';
 import { IPlatform } from 'hangar-internal';
 import { RootState } from '~/store';
 import { GlobalPermission } from '~/utils/perms';
 import { NamedPermission } from '~/types/enums';
+import { HangarComponent } from '~/components/mixins';
 
 @Component
 @GlobalPermission(NamedPermission.MANUAL_VALUE_CHANGES)
-export default class AdminVersionsPage extends Vue {
+export default class AdminVersionsPage extends HangarComponent {
+    loading = false;
+
     get platforms(): IPlatform[] {
         return Array.from((this.$store.state as RootState).platforms.values());
     }

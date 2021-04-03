@@ -59,7 +59,6 @@ declare module 'hangar-api' {
         lastUpdated: Date;
         userActions: UserActions;
         settings: ProjectSettings;
-        iconUrl: string;
         promotedVersions: PromotedVersion[];
     }
 

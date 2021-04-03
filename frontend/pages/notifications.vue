@@ -16,8 +16,8 @@
                 </template>
             </v-select>
             <v-list v-if="filteredNotifications.length">
-                <v-list-item v-for="notification in filteredNotifications" :key="notification.id">
-                    <v-list-item-title>
+                <v-list-item v-for="notification in filteredNotifications" :key="notification.id" class="notification">
+                    <v-list-item-title :class="`n-${notification.type}`">
                         {{ $t(notification.message[0], notification.message.slice(1)) }}
                     </v-list-item-title>
                     <v-list-item-action v-if="!notification.read">
@@ -188,4 +188,28 @@ export default class NotificationsPage extends HangarComponent {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@import '~vuetify/src/styles/styles';
+
+.notification {
+    .n-neutral {
+        color: map-deep-get($material-dark, 'text', 'secondary');
+    }
+
+    .n-success {
+        color: map-get($green, 'accent-3');
+    }
+
+    .n-info {
+        color: var(--v-info-lighten1);
+    }
+
+    .n-warning {
+        color: map-get($deep-orange, 'accent-3');
+    }
+
+    .n-error {
+        color: map-get($red, 'accent-4');
+    }
+}
+</style>

@@ -103,11 +103,11 @@ public class VersionDependencyService extends HangarService {
 
         if (!toBeAdded.isEmpty()) {
             projectVersionPlatformDependenciesDAO.insertAll(toBeAdded.values());
-            userActionLogService.version(LogAction.VERSION_PLATFORM_DEPENDENCY_ADDED.create(VersionContext.of(projectId, versionId), "Added: " + String.join(", ", toBeAdded.keySet()), String.join(", ", platformDependencyTables.keySet())));
+            userActionLogService.version(LogAction.VERSION_PLATFORM_DEPENDENCIES_ADDED.create(VersionContext.of(projectId, versionId), "Added: " + String.join(", ", toBeAdded.keySet()), String.join(", ", platformDependencyTables.keySet())));
         }
         if (!toBeRemoved.isEmpty()) {
             projectVersionPlatformDependenciesDAO.deleteAll(toBeRemoved.values());
-            userActionLogService.version(LogAction.VERSION_PLATFORM_DEPENDENCY_REMOVED.create(VersionContext.of(projectId, versionId), "Removed: " + String.join(", ", toBeRemoved.keySet()), String.join(", ", platformDependencyTables.keySet())));
+            userActionLogService.version(LogAction.VERSION_PLATFORM_DEPENDENCIES_REMOVED.create(VersionContext.of(projectId, versionId), "Removed: " + String.join(", ", toBeRemoved.keySet()), String.join(", ", platformDependencyTables.keySet())));
         }
 
         ProjectVersionTagTable projectVersionTagTable = versionTagService.getTag(versionId, form.getPlatform().getName());
@@ -168,15 +168,15 @@ public class VersionDependencyService extends HangarService {
         });
         if (!toBeRemoved.isEmpty()) {
             projectVersionDependenciesDAO.deleteAll(toBeRemoved);
-            userActionLogService.version(LogAction.VERSION_PLUGIN_DEPENDENCY_REMOVED.create(VersionContext.of(projectId, versionId), "Removed: " + String.join(", ", toBeRemoved.stream().map(ProjectVersionDependencyTable::toLogString).collect(Collectors.toSet())), ""));
+            userActionLogService.version(LogAction.VERSION_PLUGIN_DEPENDENCIES_REMOVED.create(VersionContext.of(projectId, versionId), "Removed: " + String.join(", ", toBeRemoved.stream().map(ProjectVersionDependencyTable::toLogString).collect(Collectors.toSet())), ""));
         }
         if (!toBeUpdated.isEmpty()) {
             projectVersionDependenciesDAO.updateAll(toBeUpdated);
-            userActionLogService.version(LogAction.VERSION_PLUGIN_DEPENDENCY_EDITED.create(VersionContext.of(projectId, versionId), String.join(", ", toBeUpdated.stream().map(ProjectVersionDependencyTable::toLogString).collect(Collectors.toSet())), String.join(", ", toBeUpdated.stream().map(ProjectVersionDependencyTable::getName).map(projectVersionDependencies::get).map(ProjectVersionDependencyTable::toLogString).collect(Collectors.toSet()))));
+            userActionLogService.version(LogAction.VERSION_PLUGIN_DEPENDENCIES_EDITED.create(VersionContext.of(projectId, versionId), String.join(", ", toBeUpdated.stream().map(ProjectVersionDependencyTable::toLogString).collect(Collectors.toSet())), String.join(", ", toBeUpdated.stream().map(ProjectVersionDependencyTable::getName).map(projectVersionDependencies::get).map(ProjectVersionDependencyTable::toLogString).collect(Collectors.toSet()))));
         }
         if (!toBeAdded.isEmpty()) {
             projectVersionDependenciesDAO.insertAll(toBeAdded);
-            userActionLogService.version(LogAction.VERSION_PLUGIN_DEPENDENCY_ADDED.create(VersionContext.of(projectId, versionId), "Added: " + String.join(", ", toBeAdded.stream().map(ProjectVersionDependencyTable::toLogString).collect(Collectors.toSet())), ""));
+            userActionLogService.version(LogAction.VERSION_PLUGIN_DEPENDENCIES_ADDED.create(VersionContext.of(projectId, versionId), "Added: " + String.join(", ", toBeAdded.stream().map(ProjectVersionDependencyTable::toLogString).collect(Collectors.toSet())), ""));
         }
     }
 }

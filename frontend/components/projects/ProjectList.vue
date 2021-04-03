@@ -11,7 +11,13 @@
                     <v-sheet :elevation="hover ? 24 : 0" height="100%" width="100%" tile color="accent" class="transition-swing grow-on-hover mb-3">
                         <v-row no-gutters>
                             <div class="flex-shrink-0">
-                                <v-img :src="project.iconUrl" :alt="project.name" width="60px" height="60px" class="my-2 ml-2"></v-img>
+                                <v-img
+                                    :src="$util.projectUrl(project.namespace.owner, project.namespace.slug)"
+                                    :alt="project.name"
+                                    width="60px"
+                                    height="60px"
+                                    class="my-2 ml-2"
+                                ></v-img>
                             </div>
                             <div class="ml-2">
                                 <span class="text-h6">{{ project.name }}</span>

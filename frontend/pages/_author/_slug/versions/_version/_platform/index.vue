@@ -30,6 +30,7 @@
                     </v-btn>
                 </template>
 
+                <!--TODO set recommended button -->
                 <v-btn v-if="$perms.canDeleteVersion" color="error" @click="deleteVersion">{{ $t('version.page.delete') }}</v-btn>
                 <v-btn v-if="!projectVersion.externalUrl" color="primary" :to="$route.path + '/download'">{{ $t('version.page.download') }}</v-btn>
                 <v-btn v-else color="primary" :to="$route.path + '/download'">{{ $t('version.page.downloadExternal') }}</v-btn>
