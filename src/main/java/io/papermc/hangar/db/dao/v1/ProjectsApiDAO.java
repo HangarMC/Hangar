@@ -43,13 +43,9 @@ public interface ProjectsApiDAO {
             "       hp.description," +
             "       COALESCE(hp.last_updated, hp.created_at) AS last_updated," +
             "       hp.visibility, " +
-            "       <if(requesterId)> " +
-            "         EXISTS(SELECT * FROM project_stars s WHERE s.project_id = hp.id AND s.user_id = :requesterId) AS starred, " +
-            "         EXISTS(SELECT * FROM project_watchers s WHERE s.project_id = hp.id AND s.user_id = :requesterId) AS watching, " +
-            "       <else>" +
-            "         null as starred," +
-            "         null as watching," +
-            "       <endif>" +
+            "       exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS starred, " +
+            "       exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS watching, " +
+            "       exists(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :requesterId AND pf.resolved IS FALSE) as flagged," +
             "       p.homepage," +
             "       p.issues," +
             "       p.source," +
@@ -82,13 +78,9 @@ public interface ProjectsApiDAO {
             "       hp.description," +
             "       COALESCE(hp.last_updated, hp.created_at) AS last_updated," +
             "       hp.visibility, " +
-            "       <if(requesterId)> " +
-            "         EXISTS(SELECT * FROM project_stars s WHERE s.project_id = hp.id AND s.user_id = :requesterId) AS starred, " +
-            "         EXISTS(SELECT * FROM project_watchers s WHERE s.project_id = hp.id AND s.user_id = :requesterId) AS watching, " +
-            "       <else>" +
-            "         null as starred," +
-            "         null as watching," +
-            "       <endif>" +
+            "       exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS starred, " +
+            "       exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS watching, " +
+            "       exists(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :requesterId AND pf.resolved IS FALSE) as flagged," +
             "       p.homepage," +
             "       p.issues," +
             "       p.source," +
@@ -144,7 +136,7 @@ public interface ProjectsApiDAO {
               "       u.tagline," +
               "       u.join_date," +
               "       array_agg(r.name) roles," +
-              "       -1 as projectCount" + // no need to query this
+              "       -1 as projectCount" + // TODO yes, I do think we need to query this. This is public API, and it'd be wrong to just not include it here.
               "   FROM projects p " +
               "       JOIN project_stars ps ON p.id = ps.project_id " +
               "       JOIN users u ON ps.user_id = u.id " +
@@ -169,7 +161,7 @@ public interface ProjectsApiDAO {
               "       u.tagline," +
               "       u.join_date," +
               "       array_agg(r.name) roles," +
-              "       -1 as projectCount" + // no need to query this
+              "       -1 as projectCount" + // TODO yes, I do think we need to query this. This is public API, and it'd be wrong to just not include it here.
               "   FROM projects p " +
               "       JOIN project_watchers pw ON p.id = pw.project_id " +
               "       JOIN users u ON pw.user_id = u.id " +

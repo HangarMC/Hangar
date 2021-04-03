@@ -28,6 +28,15 @@ public class Project extends ProjectCompact {
         this.promotedVersions = promotedVersions;
     }
 
+    public Project(Project other) {
+        super(other.createdAt, other.name, other.namespace, other.stats, other.category, other.visibility);
+        this.description = other.description;
+        this.lastUpdated = other.lastUpdated;
+        this.userActions = other.userActions;
+        this.settings = other.settings;
+        this.promotedVersions = other.promotedVersions;
+    }
+
     public String getDescription() {
         return description;
     }

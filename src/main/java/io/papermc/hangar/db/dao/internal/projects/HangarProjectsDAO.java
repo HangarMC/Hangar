@@ -41,8 +41,9 @@ public interface HangarProjectsDAO {
             "       p.description," +
             "       coalesce(p.last_updated, p.created_at) AS last_updated," +
             "       p.visibility, " +
-            "       exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS starred, " +
-            "       exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS watching, " +
+            "       exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS starred," +
+            "       exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :currentUserId) AS watching," +
+            "       exists(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :currentUserId AND pf.resolved IS FALSE) as flagged," +
             "       ps.homepage," +
             "       ps.issues," +
             "       ps.source," +

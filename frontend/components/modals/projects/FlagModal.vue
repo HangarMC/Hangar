@@ -1,35 +1,35 @@
 <template>
-    <v-dialog v-model="dialog" width="500" persistent>
-        <template #activator="{ on, attrs }">
-            <v-btn v-bind="attrs" :class="activatorClass" v-on="on">
-                <v-icon>mdi-flag</v-icon>
-                {{ $t('project.actions.flag') }}
-            </v-btn>
+    <HangarModal :title="$t('project.flag.flagProject', [project.name])" :submit="submitFlag">
+        <template #activator="{ on: dialogOn, attrs }">
+            <v-tooltip :disabled="!project.userActions.flagged" bottom>
+                <template #activator="{ on: tooltipOn }">
+                    <div v-on="tooltipOn">
+                        <!-- wrap in div so tooltip shows up when the button is disabled -->
+                        <v-btn v-bind="attrs" color="warning" :disabled="project.userActions.flagged" :class="activatorClass" v-on="{ dialogOn }">
+                            <v-icon>mdi-flag</v-icon>
+                            {{ $t('project.actions.flag') }}
+                        </v-btn>
+                    </div>
+                </template>
+                <span>{{ $t('project.flag.flagSent') }}</span>
+            </v-tooltip>
         </template>
-        <v-card>
-            <v-card-title> {{ $t('project.flag.flagProject', [project.name]) }} </v-card-title>
-            <v-card-text>
-                <v-form ref="modalForm" v-model="validForm">
-                    <v-radio-group v-model="form.selection" :rules="[$util.$vc.require('A reason')]">
-                        <v-radio v-for="(reason, index) in flagReasons" :key="index" :label="$t(reason.title)" :value="reason.type" />
-                    </v-radio-group>
-                    <v-textarea v-model.trim="form.comment" rows="3" filled :rules="[$util.$vc.require('A comment')]" :label="$t('general.comment')" />
-                </v-form>
-            </v-card-text>
-            <v-card-actions class="justify-end">
-                <v-btn text color="warning" @click.stop="dialog = false">{{ $t('general.close') }}</v-btn>
-                <v-btn color="error" :disabled="!validForm" :loading="loading" @click.stop="submitFlag">{{ $t('general.submit') }}</v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
+        <v-radio-group v-model="form.selection" :rules="[$util.$vc.require('A reason')]">
+            <v-radio v-for="(reason, index) in flagReasons" :key="index" :label="$t(reason.title)" :value="reason.type" />
+        </v-radio-group>
+        <v-textarea v-model.trim="form.comment" rows="3" filled :rules="[$util.$vc.require('A comment')]" :label="$t('general.comment')" />
+    </HangarModal>
 </template>
 
 <script lang="ts">
 import { Component, mixins } from 'nuxt-property-decorator';
 import { FlagReason } from 'hangar-internal';
 import { HangarFormModal, HangarProjectMixin } from '~/components/mixins';
+import HangarModal from '~/components/modals/HangarModal.vue';
 
-@Component
+@Component({
+    components: { HangarModal },
+})
 export default class FlagModal extends mixins(HangarFormModal, HangarProjectMixin) {
     flagReasons: FlagReason[] = [];
     form = {
@@ -38,22 +38,17 @@ export default class FlagModal extends mixins(HangarFormModal, HangarProjectMixi
     };
 
     submitFlag() {
-        this.loading = true;
-        this.$api
+        return this.$api
             .requestInternal('flags/', true, 'POST', {
                 projectId: this.project.id,
                 reason: this.form.selection,
                 comment: this.form.comment,
             })
             .then(() => {
-                this.loading = false;
-                this.dialog = false;
                 this.$util.success(this.$t('project.flag.flagSend'));
+                this.$nuxt.refresh();
             })
-            .catch((e) => {
-                this.$util.handleRequestError(e);
-                this.loading = false;
-            });
+            .catch(this.$util.handleRequestError);
     }
 
     async fetch() {

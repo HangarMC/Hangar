@@ -110,6 +110,7 @@ const msgs: LocaleMessageObject = {
         flag: {
             flagProject: 'Flag {0}?',
             flagSend: 'Successfully flagged, thanks for making this community a better place!',
+            flagSent: 'Flag submitted for review',
             flags: {
                 inappropriateContent: 'Inappropriate Content',
                 impersonation: 'Impersonation or Deception',

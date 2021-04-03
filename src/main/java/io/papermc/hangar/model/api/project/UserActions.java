@@ -1,15 +1,15 @@
 package io.papermc.hangar.model.api.project;
 
-import org.jdbi.v3.core.mapper.PropagateNull;
-
 public class UserActions {
 
     private final boolean starred;
     private final boolean watching;
+    private final boolean flagged;
 
-    public UserActions(@PropagateNull boolean starred, boolean watching) {
+    public UserActions(boolean starred, boolean watching, boolean flagged) {
         this.starred = starred;
         this.watching = watching;
+        this.flagged = flagged;
     }
 
     public boolean isStarred() {
@@ -20,11 +20,16 @@ public class UserActions {
         return watching;
     }
 
+    public boolean isFlagged() {
+        return flagged;
+    }
+
     @Override
     public String toString() {
         return "UserActions{" +
                 "starred=" + starred +
                 ", watching=" + watching +
+                ", flagged=" + flagged +
                 '}';
     }
 }

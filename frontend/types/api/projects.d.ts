@@ -19,6 +19,7 @@ declare module 'hangar-api' {
     interface UserActions {
         starred: boolean;
         watching: boolean;
+        flagged: boolean;
     }
 
     interface License {
