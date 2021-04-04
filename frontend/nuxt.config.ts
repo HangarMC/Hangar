@@ -111,6 +111,7 @@ export default {
         proxyHost + '/sitemap.xml',
         proxyHost + '/global-sitemap.xml',
         proxyHost + '/*/sitemap.xml',
+        proxyHost + '/statusz',
         // auth
         authHost + '/avatar',
     ],

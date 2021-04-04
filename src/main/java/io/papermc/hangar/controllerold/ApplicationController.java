@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vladsch.flexmark.ext.admonition.AdmonitionExtension;
 import io.papermc.hangar.controllerold.forms.UserAdminForm;
-import io.papermc.hangar.controllerold.util.StatusZ;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.daoold.PlatformVersionsDao;
@@ -33,18 +32,15 @@ import io.papermc.hangar.serviceold.UserActionLogService;
 import io.papermc.hangar.serviceold.UserService;
 import io.papermc.hangar.serviceold.project.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -59,7 +55,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-@Controller
+@Controller("oldApplicationController")
+@Deprecated(forRemoval = true)
 public class ApplicationController extends HangarController {
 
     private final HangarDao<PlatformVersionsDao> platformVersionsDao;
@@ -70,13 +67,12 @@ public class ApplicationController extends HangarController {
     private final JobService jobService;
     private final StatsService statsService;
     private final RoleService roleService;
-    private final StatusZ statusZ;
     private final ObjectMapper mapper;
 
     private final Supplier<UserData> userData;
 
     @Autowired
-    public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, UserActionLogService userActionLogService, JobService jobService, StatsService statsService, RoleService roleService, StatusZ statusZ, ObjectMapper mapper, Supplier<UserData> userData) {
+    public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, UserActionLogService userActionLogService, JobService jobService, StatsService statsService, RoleService roleService, ObjectMapper mapper, Supplier<UserData> userData) {
         this.platformVersionsDao = platformVersionsDao;
         this.userService = userService;
         this.projectService = projectService;
@@ -84,16 +80,12 @@ public class ApplicationController extends HangarController {
         this.userActionLogService = userActionLogService;
         this.jobService = jobService;
         this.roleService = roleService;
-        this.statusZ = statusZ;
         this.mapper = mapper;
         this.statsService = statsService;
         this.userData = userData;
     }
 
-    @RequestMapping("/statusz")
-    public ResponseEntity<ObjectNode> showStatusZ() {
-        return ResponseEntity.ok(statusZ.getStatus());
-    }
+
 
     @GlobalPermission(NamedPermission.REVIEWER)
     @Secured("ROLE_USER")
@@ -296,19 +288,6 @@ public class ApplicationController extends HangarController {
             default:
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-    }
-
-    @GetMapping("/linkout")
-    public ModelAndView linkOut(@RequestParam(defaultValue = "") String remoteUrl) {
-        ModelAndView view = new ModelAndView("linkout");
-        view.addObject("remoteUrl", remoteUrl);
-        return fillModel(view);
-    }
-
-    @GetMapping(value = "/robots.txt", produces = MediaType.TEXT_PLAIN_VALUE)
-    @ResponseBody
-    public ClassPathResource robots() {
-        return new ClassPathResource("WEB-INF/robots.txt");
     }
 
     @GetMapping(value = "/assets-ext/css/admonition.css", produces = "text/css")

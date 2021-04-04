@@ -1,6 +1,5 @@
-package io.papermc.hangar.controller.internal;
+package io.papermc.hangar.controller;
 
-import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.auth.RefreshResponse;
 import io.papermc.hangar.model.db.UserTable;

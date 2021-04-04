@@ -1,6 +1,5 @@
-package io.papermc.hangar.controller.internal;
+package io.papermc.hangar.controller;
 
-import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.service.internal.SitemapService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
