@@ -1,11 +1,9 @@
 package io.papermc.hangar.serviceold;
 
 import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.daoold.ProjectStatsDao;
 import io.papermc.hangar.db.daoold.ProjectStatsTrackerDao;
 import io.papermc.hangar.db.modelold.ProjectVersionsTable;
 import io.papermc.hangar.db.modelold.ProjectsTable;
-import io.papermc.hangar.db.modelold.Stats;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,68 +14,22 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.InetAddress;
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class StatsService extends HangarService {
 
-    private final HangarDao<ProjectStatsDao> projectStatsDao;
     private final HangarDao<ProjectStatsTrackerDao> projectStatsTrackerDao;
 
     private final HttpServletRequest request;
     private final HttpServletResponse response;
 
     @Autowired
-    public StatsService(HangarDao<ProjectStatsDao> projectStatsDao, HangarDao<ProjectStatsTrackerDao> projectStatsTrackerDao, HttpServletRequest request, HttpServletResponse response) {
-        this.projectStatsDao = projectStatsDao;
+    public StatsService(HangarDao<ProjectStatsTrackerDao> projectStatsTrackerDao, HttpServletRequest request, HttpServletResponse response) {
         this.projectStatsTrackerDao = projectStatsTrackerDao;
         this.request = request;
         this.response = response;
-    }
-
-    public Stream<LocalDate> getDaysBetween(LocalDate from, LocalDate to) {
-        return from.datesUntil(to.plusDays(1));
-    }
-
-    public List<Stats> getStats(LocalDate from, LocalDate to) {
-        return projectStatsDao.get().getStats(from, to);
-    }
-
-    public String getStatDays(List<Stats> stats) {
-        return getJsonListAsString(stats.stream().map(Stats::getDay));
-    }
-
-    public String getReviewStats(List<Stats> stats) {
-        return getJsonListAsString(stats.stream().map(Stats::getReviews));
-    }
-
-    public String getUploadStats(List<Stats> stats) {
-        return getJsonListAsString(stats.stream().map(Stats::getUploads));
-    }
-
-    public String getTotalDownloadStats(List<Stats> stats) {
-        return getJsonListAsString(stats.stream().map(Stats::getTotalDownloads));
-    }
-
-    public String getUnsafeDownloadsStats(List<Stats> stats) {
-        return getJsonListAsString(stats.stream().map(Stats::getUnsafeDownloads));
-    }
-
-    public String getFlagsOpenedStats(List<Stats> stats) {
-        return getJsonListAsString(stats.stream().map(Stats::getFlagsOpened));
-    }
-
-    public String getFlagsClosedStats(List<Stats> stats) {
-        return getJsonListAsString(stats.stream().map(Stats::getFlagsClosed));
-    }
-
-    public <T> String getJsonListAsString(Stream<T> stream) {
-        return stream.map(count -> "\"" + count + "\"").collect(Collectors.joining(", ", "[", "]"));
     }
 
     public static final String COOKIE_NAME = "_stat";

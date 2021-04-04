@@ -4,7 +4,6 @@ import com.vladsch.flexmark.ext.admonition.AdmonitionExtension;
 import io.papermc.hangar.controllerold.forms.UserAdminForm;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.db.modelold.RoleTable;
-import io.papermc.hangar.db.modelold.Stats;
 import io.papermc.hangar.db.modelold.UserOrganizationRolesTable;
 import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 import io.papermc.hangar.model.common.NamedPermission;
@@ -20,12 +19,10 @@ import io.papermc.hangar.securityold.annotations.GlobalPermission;
 import io.papermc.hangar.serviceold.JobService;
 import io.papermc.hangar.serviceold.OrgService;
 import io.papermc.hangar.serviceold.RoleService;
-import io.papermc.hangar.serviceold.StatsService;
 import io.papermc.hangar.serviceold.UserActionLogService;
 import io.papermc.hangar.serviceold.UserService;
 import io.papermc.hangar.serviceold.project.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
@@ -40,8 +37,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -56,20 +51,18 @@ public class ApplicationController extends HangarController {
     private final OrgService orgService;
     private final UserActionLogService userActionLogService;
     private final JobService jobService;
-    private final StatsService statsService;
     private final RoleService roleService;
 
     private final Supplier<UserData> userData;
 
     @Autowired
-    public ApplicationController(UserService userService, ProjectService projectService, OrgService orgService, UserActionLogService userActionLogService, JobService jobService, StatsService statsService, RoleService roleService, Supplier<UserData> userData) {
+    public ApplicationController(UserService userService, ProjectService projectService, OrgService orgService, UserActionLogService userActionLogService, JobService jobService, RoleService roleService, Supplier<UserData> userData) {
         this.userService = userService;
         this.projectService = projectService;
         this.orgService = orgService;
         this.userActionLogService = userActionLogService;
         this.jobService = jobService;
         this.roleService = roleService;
-        this.statsService = statsService;
         this.userData = userData;
     }
 
@@ -131,34 +124,6 @@ public class ApplicationController extends HangarController {
         mv.addObject("subjectFilter", subjectFilter);
         mv.addObject("canViewIP", userService.getHeaderData().getGlobalPermission().has(Permission.ViewIp));
         return fillModel(mv);
-    }
-
-    @GlobalPermission(NamedPermission.VIEW_STATS)
-    @Secured("ROLE_USER")
-    @GetMapping("/admin/stats")
-    public ModelAndView showStats(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
-        ModelAndView mav = new ModelAndView("users/admin/stats");
-        if (from == null) {
-            from = LocalDate.now().minus(30, ChronoUnit.DAYS);
-        }
-        if (to == null) {
-            to = LocalDate.now();
-        }
-        if (to.isBefore(from)) {
-            to = from;
-        }
-        List<Stats> stats = statsService.getStats(from, to);
-        mav.addObject("fromDate", from.toString());
-        mav.addObject("toDate", to.toString());
-        mav.addObject("days", statsService.getStatDays(stats));
-        mav.addObject("reviewData", statsService.getReviewStats(stats));
-        mav.addObject("uploadData", statsService.getUploadStats(stats));
-        mav.addObject("totalDownloadData", statsService.getTotalDownloadStats(stats));
-        mav.addObject("unsafeDownloadData", statsService.getUnsafeDownloadsStats(stats));
-        mav.addObject("openFlagsData", statsService.getFlagsOpenedStats(stats));
-        mav.addObject("closedFlagsData", statsService.getFlagsClosedStats(stats));
-
-        return fillModel(mav);
     }
 
     @GlobalPermission(NamedPermission.EDIT_ALL_USER_SETTINGS)

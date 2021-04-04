@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'nuxt-property-decorator';
+import { Component, Prop, Vue, Watch } from 'nuxt-property-decorator';
 import * as Chartist from 'chartist';
 import { IChartistBase, IChartistData, IChartOptions } from 'chartist';
 import { PropType } from 'vue';
@@ -15,8 +15,8 @@ export default class Chart extends Vue {
     @Prop({ required: true })
     id!: string;
 
-    @Prop({ required: true })
-    barType!: PropType<'pie' | 'bar' | 'line' | 'candle'>;
+    @Prop({ required: true, type: String as PropType<'Pie' | 'Bar' | 'Line' | 'Candle'> })
+    barType!: 'Pie' | 'Bar' | 'Line' | 'Candle';
 
     @Prop({ required: true })
     data!: IChartistData;
@@ -24,27 +24,29 @@ export default class Chart extends Vue {
     @Prop()
     options!: IChartOptions;
 
-    chart!: IChartistBase<IChartOptions>;
+    chart: IChartistBase<IChartOptions> | null = null;
 
     mounted() {
-        const type = (this.barType as unknown) as string;
-        if (type === 'pie') {
-            this.chart = new Chartist.Pie('#' + this.id, this.data, this.options);
-        } else if (type === 'bar') {
-            this.chart = new Chartist.Bar('#' + this.id, this.data, this.options);
-        } else if (type === 'line') {
-            this.chart = new Chartist.Line('#' + this.id, this.data, this.options);
-        } else if (type === 'candle') {
-            this.chart = new Chartist.Candle('#' + this.id, this.data, this.options);
+        this.draw();
+    }
+
+    draw() {
+        if (this.chart) {
+            this.chart.update(this.data, this.options);
         } else {
-            console.log('unknown bar type ', type);
+            this.chart = new Chartist[this.barType]('#' + this.id, this.data, this.options);
         }
+    }
+
+    @Watch('data', { deep: true })
+    onDataChange() {
+        this.draw();
     }
 }
 </script>
 
 <style lang="scss">
-@import 'node_modules/chartist/dist/scss/chartist.scss';
+@import '~chartist/dist/scss/chartist';
 
 .ct-label {
     color: rgba(255, 255, 255, 0.7);
