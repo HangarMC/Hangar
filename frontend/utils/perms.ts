@@ -12,6 +12,14 @@ const loggedInMiddleware = (code: number, msg?: string): Middleware => ({ store,
     }
 };
 
+export function NotLoggedIn(constructor: Function) {
+    addMiddleware(constructor, ({ store, redirect }) => {
+        if (store.state.auth.authenticated) {
+            redirect('/');
+        }
+    });
+}
+
 export function LoggedIn(constructor: Function) {
     addMiddleware(constructor, loggedInMiddleware(401, 'You must be logged in to perform this action'));
 }

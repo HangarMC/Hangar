@@ -65,9 +65,9 @@ public class PopulationService {
         Map<Platform, List<String>> platformVersions = platformVersionDAO.getVersions();
         if (platformVersions.isEmpty()) {
             log.info("Populating 'platform_versions' table with initial values");
-            platformVersionDAO.insert(paperVersions.stream().map(v -> new PlatformVersionTable(Platform.PAPER, v)).collect(Collectors.toList()));
-            platformVersionDAO.insert(velocityVersions.stream().map(v -> new PlatformVersionTable(Platform.VELOCITY, v)).collect(Collectors.toList()));
-            platformVersionDAO.insert(waterfallVersions.stream().map(v -> new PlatformVersionTable(Platform.WATERFALL, v)).collect(Collectors.toList()));
+            platformVersionDAO.insertAll(paperVersions.stream().map(v -> new PlatformVersionTable(Platform.PAPER, v)).collect(Collectors.toList()));
+            platformVersionDAO.insertAll(velocityVersions.stream().map(v -> new PlatformVersionTable(Platform.VELOCITY, v)).collect(Collectors.toList()));
+            platformVersionDAO.insertAll(waterfallVersions.stream().map(v -> new PlatformVersionTable(Platform.WATERFALL, v)).collect(Collectors.toList()));
         } else {
             log.info("The 'platform_versions' table is already populated");
         }

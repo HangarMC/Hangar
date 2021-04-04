@@ -1,0 +1,56 @@
+package io.papermc.hangar.service.internal;
+
+import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
+import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.db.PlatformVersionTable;
+import io.papermc.hangar.service.HangarService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class PlatformService extends HangarService {
+
+    private final PlatformVersionDAO platformVersionDAO;
+
+    @Autowired
+    public PlatformService(HangarDao<PlatformVersionDAO> platformVersionDAO) {
+        this.platformVersionDAO = platformVersionDAO.get();
+    }
+
+    public List<String> getVersionsForPlatform(Platform platform) {
+        return platformVersionDAO.getVersionsForPlatform(platform);
+    }
+
+    @Transactional
+    public void updatePlatformVersions(Map<Platform, List<String>> platformVersions) {
+        final Map<Platform, Map<String, PlatformVersionTable>> toBeRemovedMap = new EnumMap<>(Platform.class);
+        final Map<Platform, Map<String, PlatformVersionTable>> toBeAddedMap = new EnumMap<>(Platform.class);
+        platformVersions.forEach((platform, versions) -> {
+            Map<String, PlatformVersionTable> platformVersionTables = platformVersionDAO.getForPlatform(platform);
+            final Map<String, PlatformVersionTable> toBeRemoved = new HashMap<>();
+            final Map<String, PlatformVersionTable> toBeAdded = new HashMap<>();
+            platformVersionTables.forEach((version, pvt) -> {
+                if (!versions.contains(version)) {
+                    toBeRemoved.put(version, pvt);
+                }
+            });
+            versions.forEach(v -> {
+                if (!platformVersionTables.containsKey(v)) {
+                    toBeAdded.put(v, new PlatformVersionTable(platform, v));
+                }
+            });
+            platformVersionDAO.deleteAll(toBeRemoved.values());
+            platformVersionDAO.insertAll(toBeAdded.values());
+            toBeRemovedMap.put(platform, toBeRemoved);
+            toBeAddedMap.put(platform, toBeAdded);
+        });
+        // TODO logging
+    }
+}

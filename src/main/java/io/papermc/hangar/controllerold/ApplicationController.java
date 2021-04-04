@@ -1,21 +1,14 @@
 package io.papermc.hangar.controllerold;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vladsch.flexmark.ext.admonition.AdmonitionExtension;
 import io.papermc.hangar.controllerold.forms.UserAdminForm;
 import io.papermc.hangar.db.customtypes.RoleCategory;
-import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.daoold.PlatformVersionsDao;
-import io.papermc.hangar.db.modelold.PlatformVersionsTable;
 import io.papermc.hangar.db.modelold.RoleTable;
 import io.papermc.hangar.db.modelold.Stats;
 import io.papermc.hangar.db.modelold.UserOrganizationRolesTable;
 import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
-import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.internal.logs.HangarLoggedAction;
 import io.papermc.hangar.modelold.Role;
@@ -51,7 +44,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -59,7 +51,6 @@ import java.util.stream.Collectors;
 @Deprecated(forRemoval = true)
 public class ApplicationController extends HangarController {
 
-    private final HangarDao<PlatformVersionsDao> platformVersionsDao;
     private final UserService userService;
     private final ProjectService projectService;
     private final OrgService orgService;
@@ -67,20 +58,17 @@ public class ApplicationController extends HangarController {
     private final JobService jobService;
     private final StatsService statsService;
     private final RoleService roleService;
-    private final ObjectMapper mapper;
 
     private final Supplier<UserData> userData;
 
     @Autowired
-    public ApplicationController(HangarDao<PlatformVersionsDao> platformVersionsDao, UserService userService, ProjectService projectService, OrgService orgService, UserActionLogService userActionLogService, JobService jobService, StatsService statsService, RoleService roleService, ObjectMapper mapper, Supplier<UserData> userData) {
-        this.platformVersionsDao = platformVersionsDao;
+    public ApplicationController(UserService userService, ProjectService projectService, OrgService orgService, UserActionLogService userActionLogService, JobService jobService, StatsService statsService, RoleService roleService, Supplier<UserData> userData) {
         this.userService = userService;
         this.projectService = projectService;
         this.orgService = orgService;
         this.userActionLogService = userActionLogService;
         this.jobService = jobService;
         this.roleService = roleService;
-        this.mapper = mapper;
         this.statsService = statsService;
         this.userData = userData;
     }
@@ -171,40 +159,6 @@ public class ApplicationController extends HangarController {
         mav.addObject("closedFlagsData", statsService.getFlagsClosedStats(stats));
 
         return fillModel(mav);
-    }
-
-    @GlobalPermission(NamedPermission.MANUAL_VALUE_CHANGES)
-    @Secured("ROLE_USER")
-    @GetMapping("/admin/versions")
-    public ModelAndView showPlatformVersions() {
-        ModelAndView mav = new ModelAndView("users/admin/platformVersions");
-        Map<Platform, List<String>> versions = platformVersionsDao.get().getVersions();
-        for (Platform p : Platform.getValues()) {
-            versions.putIfAbsent(p, new ArrayList<>());
-        }
-        mav.addObject("platformVersions", mapper.valueToTree(versions));
-        return fillModel(mav);
-    }
-
-    @SuppressWarnings("unchecked")
-    @GlobalPermission(NamedPermission.MANUAL_VALUE_CHANGES)
-    @Secured("ROLE_USER")
-    @PostMapping("/admin/versions/")
-    @ResponseStatus(HttpStatus.OK)
-    public void updatePlatformVersions(@RequestBody ObjectNode object) {
-        Map<String, List<String>> additions;
-        Map<String, List<String>> removals;
-        try {
-            additions = mapper.treeToValue(object.get("additions"), (Class<Map<String, List<String>>>) (Class) Map.class);
-            removals = mapper.treeToValue(object.get("removals"), (Class<Map<String, List<String>>>) (Class) Map.class);
-        } catch (JsonProcessingException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad formatting", e);
-        }
-        if (additions == null || removals == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad formatting");
-        }
-        additions.forEach((platform, versions) -> platformVersionsDao.get().insert(versions.stream().map(v -> new PlatformVersionsTable(Platform.valueOf(platform), v)).collect(Collectors.toList())));
-        removals.forEach((platform, versions) -> platformVersionsDao.get().delete(versions, Platform.valueOf(platform).ordinal()));
     }
 
     @GlobalPermission(NamedPermission.EDIT_ALL_USER_SETTINGS)

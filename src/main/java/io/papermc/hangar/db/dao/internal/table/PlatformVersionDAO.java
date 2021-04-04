@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 @Repository
@@ -25,7 +26,10 @@ public interface PlatformVersionDAO {
 
     @Timestamped
     @SqlBatch("INSERT INTO platform_versions (created_at, platform, version) VALUES (:now, :platform, :version)")
-    void insert(@BindBean Collection<PlatformVersionTable> platformVersionTables);
+    void insertAll(@BindBean Collection<PlatformVersionTable> platformVersionTables);
+
+    @SqlBatch("DELETE FROM platform_versions WHERE id = :id")
+    void deleteAll(@BindBean Collection<PlatformVersionTable> platformVersionTables);
 
     @SqlQuery("SELECT * FROM platform_versions WHERE version = :version AND platform = :platform")
     PlatformVersionTable getByPlatformAndVersion(@EnumByOrdinal Platform platform, String version);
@@ -45,6 +49,7 @@ public interface PlatformVersionDAO {
             "   WHERE p.version_string = :versionString AND p.project_id = :projectId")
     List<PlatformVersionTable> getPlatformsForVersionString(long projectId, String versionString);
 
-    // TODO
-//    Map<Platform, List<PlatformVersionTable>> getPlatformVersionsForVersion(long versionId);
+    @KeyColumn("version")
+    @SqlQuery("SELECT * FROM platform_versions WHERE platform = :platform")
+    Map<String, PlatformVersionTable> getForPlatform(@EnumByOrdinal Platform platform);
 }

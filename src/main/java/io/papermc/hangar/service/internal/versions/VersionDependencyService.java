@@ -118,6 +118,7 @@ public class VersionDependencyService extends HangarService {
         versionTagService.updateTag(projectVersionTagTable);
     }
 
+    @Transactional
     public void updateVersionPluginDependencies(long projectId, long versionId, UpdatePluginDependencies form) {
         Map<String, ProjectVersionDependencyTable> projectVersionDependencies = projectVersionDependenciesDAO.getForVersionAndPlatform(versionId, form.getPlatform());
         final Set<ProjectVersionDependencyTable> toBeRemoved = new HashSet<>();

@@ -19,7 +19,7 @@ import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.security.annotations.Anyone;
-import io.papermc.hangar.service.internal.projects.PlatformService;
+import io.papermc.hangar.service.internal.PlatformService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

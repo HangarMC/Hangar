@@ -625,6 +625,7 @@ const msgs: LocaleMessageObject = {
         versions: 'Versions',
         addVersion: 'Add Version',
         saveChanges: 'Save Changes',
+        success: 'Updated platform versions',
     },
     flagReview: {
         title: 'Flags',
