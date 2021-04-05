@@ -82,6 +82,8 @@ services:
       - "traefik.http.routers.hangar-auth.tls.certresolver=default"
       - "traefik.http.routers.hangar-auth.tls.domains[0].main=minidigger.me"
       - "traefik.http.routers.hangar-auth.tls.domains[0].sans=*.minidigger.me"
+    volumes:
+      - public_html:/public_html
     environment:
       PYTHONUNBUFFERED: 1
       SECRET_KEY: "TzNc3RTpfVn1xxNV90PPGEfs7SZhy5"
@@ -115,3 +117,4 @@ networks:
 volumes:
   db_data:
   uploads:
+  public_html:

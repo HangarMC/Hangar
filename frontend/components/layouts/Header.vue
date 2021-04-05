@@ -43,7 +43,13 @@
                 <v-btn color="info" text class="px-3 text-transform-unset" x-large v-bind="attrs" v-on="on">
                     {{ currentUser.name }}
                     <v-badge overlap :content="totalNotificationCount" :value="totalNotificationCount">
-                        <UserAvatar :username="currentUser.name" clazz="user-avatar-sm" :avatar-url="$util.avatarUrl(currentUser.name)"> </UserAvatar>
+                        <v-avatar size="44" class="ml-2">
+                            <img
+                                :src="$util.avatarUrl(currentUser.name)"
+                                :alt="currentUser.name"
+                                @error="$event.target.src = 'https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png'"
+                            />
+                        </v-avatar>
                     </v-badge>
                 </v-btn>
             </template>
