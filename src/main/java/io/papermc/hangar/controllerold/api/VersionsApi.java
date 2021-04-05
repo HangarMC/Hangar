@@ -1,6 +1,5 @@
 package io.papermc.hangar.controllerold.api;
 
-import io.papermc.hangar.modelold.api.PlatformInfo;
 import io.papermc.hangar.modelold.generated.DeployVersionInfo;
 import io.papermc.hangar.modelold.generated.Version;
 import io.swagger.annotations.Api;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Api(value = "versions", tags = "Versions")
 @RequestMapping({"/api", "/api/v1"})
@@ -89,23 +87,4 @@ public interface VersionsApi {
                     @ApiParam(value = "The name of the version", required = true) @PathVariable("name") String name,
                     @ApiParam(value = "The download token")  @RequestParam(required = false) String token);
 
-    @ApiOperation(
-            value = "Returns a list of platforms and their information",
-            nickname = "showPlatforms",
-            notes = "Returns a list of platforms and their information. Used internally for dependency selection.",
-            response = PlatformInfo.class,
-            responseContainer = "List",
-            hidden = true,
-            authorizations = {
-                    @Authorization("Session")
-            },
-            tags = "Versions"
-    )
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Ok", response = PlatformInfo.class, responseContainer = "List"),
-            @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
-            @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
-    })
-    @GetMapping(value = "/platforms", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<List<PlatformInfo>> showPlatforms();
 }

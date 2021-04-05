@@ -7,8 +7,6 @@ import io.papermc.hangar.db.daoold.UserDao;
 import io.papermc.hangar.db.modelold.OrganizationsTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.modelold.viewhelpers.OrganizationData;
-import io.papermc.hangar.modelold.viewhelpers.ScopedOrganizationData;
-import io.papermc.hangar.service.PermissionService;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,28 +15,15 @@ import org.springframework.stereotype.Service;
 @Deprecated(forRemoval = true)
 public class OrgService extends HangarService {
 
-    private final PermissionService permissionService;
     private final HangarDao<OrganizationDao> organizationDao;
     private final HangarDao<UserDao> userDao;
     private final HangarDao<ProjectDao> projectDao;
 
     @Autowired
-    public OrgService(PermissionService permissionService, HangarDao<OrganizationDao> organizationDao, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao) {
-        this.permissionService = permissionService;
+    public OrgService(HangarDao<OrganizationDao> organizationDao, HangarDao<UserDao> userDao, HangarDao<ProjectDao> projectDao) {
         this.organizationDao = organizationDao;
         this.userDao = userDao;
         this.projectDao = projectDao;
-    }
-
-    public OrganizationsTable getOrganization(String name) {
-        return organizationDao.get().getByUserName(name);
-    }
-
-    public ScopedOrganizationData getScopedOrganizationData(OrganizationsTable org) {
-        if (currentUser.get().isPresent()) {
-            return new ScopedOrganizationData(permissionService.getOrganizationPermissions(currentUser.get().get().getId(), org.getName()));
-        }
-        return new ScopedOrganizationData();
     }
 
     public OrganizationData getOrganizationData(UsersTable potentialOrg) {

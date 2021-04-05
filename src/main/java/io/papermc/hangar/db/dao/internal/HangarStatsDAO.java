@@ -13,10 +13,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-@UseClasspathSqlLocator
 public interface HangarStatsDAO {
 
     @SqlQuery
+    @UseClasspathSqlLocator
     @RegisterConstructorMapper(DayStats.class)
     List<DayStats> getStats(LocalDate startDate, LocalDate endDate);
 

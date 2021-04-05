@@ -1,20 +1,13 @@
 package io.papermc.hangar.controllerold;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.internal.sso.AuthUser;
 import io.papermc.hangar.modelold.Prompt;
-import io.papermc.hangar.modelold.viewhelpers.OrganizationData;
-import io.papermc.hangar.modelold.viewhelpers.ScopedOrganizationData;
-import io.papermc.hangar.modelold.viewhelpers.UserData;
 import io.papermc.hangar.securityold.annotations.GlobalPermission;
-import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.auth.SSOService;
-import io.papermc.hangar.serviceold.ApiKeyService;
-import io.papermc.hangar.serviceold.OrgService;
-import io.papermc.hangar.serviceold.SsoService.SignatureException;
+import io.papermc.hangar.service.internal.auth.SSOService.SignatureException;
 import io.papermc.hangar.serviceold.UserService;
 import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,30 +22,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @Controller("oldUsersController")
 public class UsersController extends HangarController {
 
-    private final ObjectMapper mapper;
     private final HangarConfig hangarConfig;
     private final UserService userService;
-    private final OrgService orgService;
-    private final ApiKeyService apiKeyService;
-    private final PermissionService permissionService;
     private final SSOService ssoService;
 
 
     @Autowired
-    public UsersController(ObjectMapper mapper, HangarConfig hangarConfig, UserService userService, OrgService orgService, ApiKeyService apiKeyService, PermissionService permissionService, SSOService ssoService) {
-        this.mapper = mapper;
+    public UsersController(HangarConfig hangarConfig, UserService userService, SSOService ssoService) {
         this.hangarConfig = hangarConfig;
         this.userService = userService;
-        this.orgService = orgService;
-        this.apiKeyService = apiKeyService;
-        this.permissionService = permissionService;
         this.ssoService = ssoService;
     }
 
@@ -64,24 +45,6 @@ public class UsersController extends HangarController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid prompt id");
         }
         userService.markPromptAsRead(prompt);
-    }
-
-    @GlobalPermission(NamedPermission.EDIT_API_KEYS)
-    @Secured("ROLE_USER")
-    @GetMapping("/{user}/settings/apiKeys")
-    public ModelAndView editApiKeys(@PathVariable String user) {
-        ModelAndView mav = new ModelAndView("users/apiKeys");
-        UserData userData = userService.getUserData(user);
-        Optional<OrganizationData> orgData = Optional.ofNullable(orgService.getOrganizationData(userData.getUser()));
-        Optional<ScopedOrganizationData> scopedOrgData = orgData.map(organizationData -> orgService.getScopedOrganizationData(organizationData.getOrg()));
-        long userId = userData.getUser().getId();
-        mav.addObject("u", userData);
-        mav.addObject("o", orgData);
-        mav.addObject("so", scopedOrgData);
-        mav.addObject("keys", apiKeyService.getKeys(userId));
-        List<NamedPermission> perms = permissionService.getPossibleOrganizationPermissions(userId).add(permissionService.getPossibleProjectPermissions(userId)).add(userData.getUserPerm()).toNamed();
-        mav.addObject("perms", perms.stream().map(perm -> mapper.createObjectNode().put("value", perm.toString()).put("name", perm.getFrontendName())).collect(Collectors.toList()));
-        return fillModel(mav);
     }
 
     @GlobalPermission(NamedPermission.EDIT_OWN_USER_SETTINGS)

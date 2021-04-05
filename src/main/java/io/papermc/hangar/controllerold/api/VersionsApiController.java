@@ -1,10 +1,7 @@
 package io.papermc.hangar.controllerold.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.papermc.hangar.modelold.Platform;
-import io.papermc.hangar.modelold.api.PlatformInfo;
 import io.papermc.hangar.modelold.generated.DeployVersionInfo;
-import io.papermc.hangar.modelold.generated.TagColor;
 import io.papermc.hangar.modelold.generated.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 public class VersionsApiController implements VersionsApi {
@@ -42,22 +37,6 @@ public class VersionsApiController implements VersionsApi {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @Override
-    @PreAuthorize("@authenticationService.handleApiRequest(T(io.papermc.hangar.model.common.Permission).None, T(io.papermc.hangar.controller.extras.ApiScope).ofGlobal())")
-    public ResponseEntity<List<PlatformInfo>> showPlatforms() {
-        List<PlatformInfo> platformInfoList = new ArrayList<>();
-        for (Platform platform : Platform.getValues()) {
-            platformInfoList.add(new PlatformInfo(platform.getName(),
-                    platform.getUrl(),
-                    platform.getPlatformCategory(),
-                    platform.getPossibleVersions(),
-                    new TagColor().background(platform.getTagColor().getBackground()).foreground(platform.getTagColor().getForeground())));
-        }
-        return ResponseEntity.ok(platformInfoList);
-    }
-
-    // moved from versions controller
 
     @Override
     @PreAuthorize("@authenticationService.authApiRequest(T(io.papermc.hangar.model.common.Permission).ViewPublicInfo, T(io.papermc.hangar.controller.extras.ApiScope).ofProject(#author, #slug))")
