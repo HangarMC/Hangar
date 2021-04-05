@@ -67,6 +67,7 @@ export default {
         'cookie-universal-nuxt',
         '@nuxtjs/proxy',
         'nuxt-i18n',
+        '@dansmaculotte/nuxt-security',
     ],
 
     // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -134,16 +135,20 @@ export default {
         },
     },
 
-    render: {
+    security: {
+        dev: true,
+        hsts: {
+            maxAge: 15552000,
+            includeSubDomains: true,
+            preload: true,
+        },
         csp: {
-            // addMeta: true,
-            hashAlgorithm: 'sha256',
-            policies: {
-                'default-src': ["'self'", 'https://google-analytics.com', 'https://fonts.gstatic.com', 'https://fonts.googleapis.com'],
-                'style-src': ["'self'", 'https://fonts.googleapis.com', 'cdn.jsdelivr.net', "'unsafe-inline'"],
-                'font-src': ['fonts.gstatic.com', 'cdn.jsdelivr.net'],
-                'script-src': ["'self'" /* , "'nonce-{nonce}'" */],
-                'img-src': [
+            directives: {
+                defaultSrc: ["'self'", 'https://google-analytics.com', 'https://fonts.gstatic.com', 'https://fonts.googleapis.com'],
+                styleSrc: ["'self'", 'https://fonts.googleapis.com', 'cdn.jsdelivr.net', "'unsafe-inline'"],
+                fontSrc: ['fonts.gstatic.com', 'cdn.jsdelivr.net'],
+                scriptSrc: ["'self'" /* , "'nonce-{nonce}'" */, "'unsafe-inline'", "'unsafe-eval'"],
+                imgSrc: [
                     "'self'",
                     'https://www.google-analytics.com',
                     'https://www.gravatar.com',
@@ -151,13 +156,16 @@ export default {
                     'data: papermc.io paper.readthedocs.io',
                     'https:', // ppl can use images in descriptions, we would need an image proxy or smth
                 ],
-                'manifest-src': ["'self'"],
-                'connect-src': ["'self'", 'https://www.google-analytics.com', 'https://stats.g.doubleclick.net'],
-                'media-src': ["'self'"],
-                'object-src': ["'none'"],
-                'base-uri': ["'none'"],
+                manifestSrc: ["'self'"],
+                connectSrc: ["'self'", 'https://www.google-analytics.com', 'https://stats.g.doubleclick.net'],
+                mediaSrc: ["'self'"],
+                objectSrc: ["'none'"],
+                baseUri: ["'none'"],
             },
+            reportOnly: false,
         },
+        referrer: 'same-origin',
+        additionalHeaders: true,
     },
 
     server: {
