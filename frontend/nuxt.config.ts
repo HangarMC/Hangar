@@ -137,7 +137,6 @@ export default {
     render: {
         csp: {
             // addMeta: true,
-            reportOnly: true,
             hashAlgorithm: 'sha256',
             policies: {
                 'default-src': ["'self'", 'https://google-analytics.com', 'https://fonts.gstatic.com', 'https://fonts.googleapis.com'],
