@@ -15,9 +15,7 @@ import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
 import io.papermc.hangar.modelold.viewhelpers.ProjectFlag;
-import io.papermc.hangar.modelold.viewhelpers.ProjectMissingFile;
 import io.papermc.hangar.modelold.viewhelpers.ProjectViewSettings;
-import io.papermc.hangar.modelold.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.modelold.viewhelpers.UserRole;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
@@ -32,16 +30,15 @@ import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @Service("oldProjectService")
+@Deprecated(forRemoval = true)
 public class ProjectService extends HangarService {
 
     private final HangarConfig hangarConfig;
@@ -168,19 +165,6 @@ public class ProjectService extends HangarService {
         Map<ProjectData, UserRole<UserProjectRolesTable>> map = new HashMap<>();
         dbMap.forEach((projectsTable, role) -> map.put(getProjectData(projectsTable), new UserRole<>(role)));
         return map;
-    }
-
-    public List<UnhealthyProject> getUnhealthyProjects() {
-        return projectDao.get().getUnhealthyProjects(hangarConfig.projects.getStaleAge().toMillis());
-    }
-
-    public List<ProjectMissingFile> getPluginsWithMissingFiles() {
-        List<ProjectMissingFile> projectMissingFiles = projectDao.get().allProjectsForMissingFiles();
-        return projectMissingFiles.stream()
-                .filter(project -> {
-                    Path path = projectFiles.getVersionDir(project.getOwner(), project.getName(), project.getVersionString());
-                    return (project.getVersion().getFileName() != null && project.getVersion().getExternalUrl() != null) && !path.resolve(project.getFileName()).toFile().exists();
-                }).collect(Collectors.toList());
     }
 
 }

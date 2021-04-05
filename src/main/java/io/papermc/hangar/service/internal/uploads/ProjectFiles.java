@@ -1,6 +1,7 @@
 package io.papermc.hangar.service.internal.uploads;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.model.common.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,11 @@ public class ProjectFiles {
         return getUserDir(owner).resolve(name);
     }
 
+    public Path getVersionDir(String owner, String name, String version, Platform platform) {
+        return getProjectDir(owner, name).resolve("versions").resolve(version).resolve(platform.name());
+    }
+
+    @Deprecated(forRemoval = true)
     public Path getVersionDir(String owner, String name, String version) {
         return getProjectDir(owner, name).resolve("versions").resolve(version);
     }

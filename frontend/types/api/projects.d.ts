@@ -62,13 +62,4 @@ declare module 'hangar-api' {
         settings: ProjectSettings;
         promotedVersions: PromotedVersion[];
     }
-
-    interface Job extends Model {
-        jobType: string;
-        state: string;
-        lastError: string;
-        lastErrorDescriptor: string;
-        retryAt: Date;
-        lastUpdated: Date;
-    }
 }

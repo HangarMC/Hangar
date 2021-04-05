@@ -1,7 +1,7 @@
 package io.papermc.hangar.tasks;
 
+import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.serviceold.StatsService;
-import io.papermc.hangar.serviceold.project.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class DbUpdateTask {
 
     @Scheduled(fixedRateString = "#{@hangarConfig.homepage.updateInterval.toMillis()}")
     public void refreshHomePage() {
-        projectService.refreshHomePage();
+        projectService.refreshHomeProjects();
     }
 
     @Scheduled(fixedRateString = "#{@hangarConfig.homepage.updateInterval.toMillis()}")

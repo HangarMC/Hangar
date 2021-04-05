@@ -8,15 +8,12 @@ import io.papermc.hangar.db.modelold.UserOrganizationRolesTable;
 import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
-import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.internal.logs.HangarLoggedAction;
 import io.papermc.hangar.modelold.Role;
 import io.papermc.hangar.modelold.viewhelpers.Activity;
 import io.papermc.hangar.modelold.viewhelpers.OrganizationData;
-import io.papermc.hangar.modelold.viewhelpers.UnhealthyProject;
 import io.papermc.hangar.modelold.viewhelpers.UserData;
 import io.papermc.hangar.securityold.annotations.GlobalPermission;
-import io.papermc.hangar.serviceold.JobService;
 import io.papermc.hangar.serviceold.OrgService;
 import io.papermc.hangar.serviceold.RoleService;
 import io.papermc.hangar.serviceold.UserActionLogService;
@@ -40,7 +37,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @Controller("oldApplicationController")
 @Deprecated(forRemoval = true)
@@ -50,18 +46,16 @@ public class ApplicationController extends HangarController {
     private final ProjectService projectService;
     private final OrgService orgService;
     private final UserActionLogService userActionLogService;
-    private final JobService jobService;
     private final RoleService roleService;
 
     private final Supplier<UserData> userData;
 
     @Autowired
-    public ApplicationController(UserService userService, ProjectService projectService, OrgService orgService, UserActionLogService userActionLogService, JobService jobService, RoleService roleService, Supplier<UserData> userData) {
+    public ApplicationController(UserService userService, ProjectService projectService, OrgService orgService, UserActionLogService userActionLogService, RoleService roleService, Supplier<UserData> userData) {
         this.userService = userService;
         this.projectService = projectService;
         this.orgService = orgService;
         this.userActionLogService = userActionLogService;
-        this.jobService = jobService;
         this.roleService = roleService;
         this.userData = userData;
     }
@@ -79,20 +73,6 @@ public class ApplicationController extends HangarController {
         activities.addAll(userService.getReviewActivity(user));
         mv.addObject("activities", activities);
         return fillModel(mv);
-    }
-
-    @GlobalPermission(NamedPermission.VIEW_HEALTH)
-    @Secured("ROLE_USER")
-    @GetMapping("/admin/health")
-    public ModelAndView showHealth() {
-        ModelAndView mav = new ModelAndView("users/admin/health");
-        List<UnhealthyProject> unhealthyProjects = projectService.getUnhealthyProjects();
-        mav.addObject("noTopicProjects", unhealthyProjects.stream().filter(p -> p.getTopicId() == null || p.getPostId() == null).collect(Collectors.toList()));
-        mav.addObject("staleProjects", unhealthyProjects);
-        mav.addObject("notPublicProjects", unhealthyProjects.stream().filter(p -> p.getVisibility() != Visibility.PUBLIC).collect(Collectors.toList()));
-        mav.addObject("missingFileProjects", projectService.getPluginsWithMissingFiles());
-        mav.addObject("erroredJobs", jobService.getErroredJobs());
-        return fillModel(mav);
     }
 
     @GlobalPermission(NamedPermission.VIEW_LOGS)

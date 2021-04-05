@@ -6,6 +6,10 @@ import java.util.Objects;
 
 public class JobState extends PGobject {
 
+    public static final JobState NOT_STARTED = new JobState("not_started");
+    public static final JobState STARTED = new JobState("started");
+    public static final JobState DONE = new JobState("done");
+    public static final JobState FATAL_FAILURE = new JobState("fatal_failure");
 
     private String value;
 

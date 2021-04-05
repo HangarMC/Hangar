@@ -8,14 +8,12 @@ import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.projects.Visibility;
-import io.papermc.hangar.modelold.viewhelpers.ProjectData;
 import io.papermc.hangar.modelold.viewhelpers.ScopedOrganizationData;
 import io.papermc.hangar.securityold.annotations.GlobalPermission;
 import io.papermc.hangar.securityold.annotations.ProjectPermission;
 import io.papermc.hangar.securityold.annotations.UserLock;
 import io.papermc.hangar.serviceold.OrgService;
 import io.papermc.hangar.serviceold.RoleService;
-import io.papermc.hangar.serviceold.StatsService;
 import io.papermc.hangar.serviceold.UserActionLogService;
 import io.papermc.hangar.serviceold.project.ProjectFactory;
 import io.papermc.hangar.serviceold.project.ProjectService;
@@ -52,23 +50,19 @@ public class ProjectsController extends HangarController {
     private final ProjectFactory projectFactory;
     private final RoleService roleService;
     private final UserActionLogService userActionLogService;
-    private final StatsService statsService;
 
     private final HttpServletRequest request;
     private final Supplier<ProjectsTable> projectsTable;
-    private final Supplier<ProjectData> projectData;
 
     @Autowired
-    public ProjectsController(OrgService orgService, ProjectService projectService, ProjectFactory projectFactory, RoleService roleService, UserActionLogService userActionLogService, StatsService statsService, HttpServletRequest request, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
+    public ProjectsController(OrgService orgService, ProjectService projectService, ProjectFactory projectFactory, RoleService roleService, UserActionLogService userActionLogService, HttpServletRequest request, Supplier<ProjectsTable> projectsTable) {
         this.orgService = orgService;
         this.projectService = projectService;
         this.projectFactory = projectFactory;
         this.roleService = roleService;
         this.userActionLogService = userActionLogService;
-        this.statsService = statsService;
         this.request = request;
         this.projectsTable = projectsTable;
-        this.projectData = projectData;
     }
 
     @Secured("ROLE_USER")

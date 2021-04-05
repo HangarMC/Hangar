@@ -247,7 +247,7 @@ public class VersionFactory extends HangarService {
             if (tmpVersionJar != null) {
                 for (Platform platform : pendingVersion.getPlatformDependencies().keySet()) {
                     if (pendingVersion.getPlatformDependencies().get(platform).size() < 1) continue;
-                    Path newVersionJarPath = projectFiles.getVersionDir(projectTable.getOwnerName(), projectTable.getName(), pendingVersion.getVersionString()).resolve(platform.name()).resolve(tmpVersionJar.getFileName());
+                    Path newVersionJarPath = projectFiles.getVersionDir(projectTable.getOwnerName(), projectTable.getName(), pendingVersion.getVersionString(), platform).resolve(tmpVersionJar.getFileName());
                     if (Files.notExists(newVersionJarPath)) {
                         Files.createDirectories(newVersionJarPath.getParent());
                     }

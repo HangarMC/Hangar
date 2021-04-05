@@ -561,7 +561,7 @@ const msgs: LocaleMessageObject = {
         noTopicProject: 'Missing discussion topic',
         erroredJobs: 'Failed jobs',
         jobText: 'Job type: {0}, Error Type: {1}, Happened: {2}',
-        staleProject: 'Stale projects',
+        staleProjects: 'Stale projects',
         notPublicProjects: 'Hidden projects',
         noPlatform: 'No platform detected',
         missingFileProjects: 'Missing File',

@@ -20,8 +20,8 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
     private String slug;
     private String ownerName;
     private long ownerId;
-    private long topicId;
-    private long postId;
+    private final Long topicId;
+    private final Long postId;
     private Category category;
     private String description;
     private Visibility visibility;
@@ -39,6 +39,8 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.slug = StringUtils.slugify(this.name);
         this.ownerName = projectOwner.getName();
         this.ownerId = projectOwner.getUserId();
+        this.topicId = null; // TODO discourse
+        this.postId = null; // TODO discourse
         this.category = form.getCategory();
         this.description = form.getDescription();
         this.visibility = Visibility.NEW;
@@ -72,7 +74,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
     }
 
     @JdbiConstructor
-    public ProjectTable(OffsetDateTime createdAt, long id, String name, String slug, String ownerName, long ownerId, long topicId, long postId, @EnumByOrdinal Category category, String description, @EnumByOrdinal Visibility visibility, Collection<String> keywords, String homepage, String issues, String source, String support, String licenseName, String licenseUrl, boolean forumSync) {
+    public ProjectTable(OffsetDateTime createdAt, long id, String name, String slug, String ownerName, long ownerId, Long topicId, Long postId, @EnumByOrdinal Category category, String description, @EnumByOrdinal Visibility visibility, Collection<String> keywords, String homepage, String issues, String source, String support, String licenseName, String licenseUrl, boolean forumSync) {
         super(createdAt, id);
         this.name = name;
         this.slug = slug;
@@ -128,11 +130,11 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.ownerId = ownerId;
     }
 
-    public long getTopicId() {
+    public Long getTopicId() {
         return topicId;
     }
 
-    public long getPostId() {
+    public Long getPostId() {
         return postId;
     }
 

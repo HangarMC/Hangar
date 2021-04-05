@@ -1,6 +1,6 @@
 declare module 'hangar-internal' {
-    import { Model } from 'hangar-api';
-    import { LogContext } from '~/types/enums';
+    import { Model, ProjectNamespace } from 'hangar-api';
+    import { LogContext, Platform, Visibility } from '~/types/enums';
 
     interface LogProject {
         id: number;
@@ -42,5 +42,31 @@ declare module 'hangar-internal' {
         version: LogVersion | null;
         page: LogPage | null;
         subject: LogSubject | null;
+    }
+
+    interface Job extends Model {
+        jobType: string;
+        state: string;
+        lastError: string;
+        lastErrorDescriptor: string;
+        retryAt: string;
+        lastUpdated: string;
+        jobProperties: { [key: string]: string };
+    }
+
+    interface MissingFile {
+        platform: Platform;
+        versionString: string;
+        fileName: string;
+        namespace: ProjectNamespace;
+        name: string;
+    }
+
+    interface UnhealthyProject {
+        namespace: ProjectNamespace;
+        topicId: number | null;
+        postId: number | null;
+        lastUpdated: string;
+        visibility: Visibility;
     }
 }

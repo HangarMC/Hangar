@@ -4,18 +4,13 @@ import io.papermc.hangar.db.modelold.ProjectsTable;
 import io.papermc.hangar.db.modelold.UserProjectRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.model.common.Permission;
-import io.papermc.hangar.modelold.viewhelpers.ProjectMissingFile;
 import io.papermc.hangar.modelold.viewhelpers.ScopedProjectData;
-import io.papermc.hangar.modelold.viewhelpers.UnhealthyProject;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
-import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -78,16 +73,6 @@ public interface ProjectDao {
     Map<ProjectsTable, UserProjectRolesTable> getProjectsAndRoles(long userId);
 
 
-    @RegisterBeanMapper(UnhealthyProject.class)
-    @UseStringTemplateEngine
-    @SqlQuery("SELECT p.owner_name pn_owner, p.slug pn_slug, p.topic_id, p.post_id, coalesce(hp.last_updated, p.created_at), p.visibility" +
-            "  FROM projects p JOIN home_projects hp ON p.id = hp.id" +
-            "  WHERE p.topic_id IS NULL" +
-            "     OR p.post_id IS NULL" +
-            "     OR hp.last_updated > (now() - make_interval(secs := <age>))" +
-            "     OR p.visibility != 0")
-    List<UnhealthyProject> getUnhealthyProjects(@Define("age") long staleAgeSeconds);
-
     @RegisterBeanMapper(value = UserProjectRolesTable.class, prefix = "pr")
     @SqlQuery("SELECT " +
             "   upr.id pr_id," +
@@ -101,10 +86,5 @@ public interface ProjectDao {
             "   JOIN projects p ON p.id = upr.project_id " +
             "WHERE upr.user_id = :userId")
     Map<UserProjectRolesTable, ProjectsTable> getProjectRoles(long userId);
-
-    @SqlQuery("SELECT v.version_string version_versionString, v.file_name version_fileName, p.owner_name AS owner, p.name AS name " +
-            "FROM project_versions v JOIN projects p on v.project_id = p.id ")
-    @RegisterBeanMapper(value = ProjectMissingFile.class)
-    List<ProjectMissingFile> allProjectsForMissingFiles();
 
 }

@@ -111,11 +111,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'nuxt-property-decorator';
+import { Component, Prop, Watch } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
 import { JoinableMember } from 'hangar-internal';
 import { PaginatedResult, Role, User } from 'hangar-api';
 import { UserAvatar } from '~/components/users';
+import { HangarComponent } from '~/components/mixins';
 
 interface EditableMember {
     name: string;
@@ -131,7 +132,7 @@ interface EditableMember {
 @Component({
     components: { UserAvatar },
 })
-export default class MemberList extends Vue {
+export default class MemberList extends HangarComponent {
     @Prop({ type: Array as PropType<JoinableMember[]>, default: () => [] })
     members!: JoinableMember[];
 
