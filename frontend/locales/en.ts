@@ -521,6 +521,9 @@ const msgs: LocaleMessageObject = {
             activity: 'User Activity',
             admin: 'User Admin',
         },
+        org: {
+            editAvatar: 'Edit avatar',
+        },
         error: {
             invalidTagline: 'Invalid tagline',
         },

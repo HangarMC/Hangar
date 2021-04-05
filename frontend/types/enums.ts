@@ -102,3 +102,7 @@ export enum LogContext {
     USER = 'USER',
     ORGANIZATION = 'ORGANIZATION',
 }
+
+export enum Prompt {
+    CHANGE_AVATAR = 'CHANGE_AVATAR',
+}

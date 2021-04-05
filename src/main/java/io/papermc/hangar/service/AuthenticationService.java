@@ -1,11 +1,23 @@
 package io.papermc.hangar.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.internal.ChangeAvatarToken;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.users.UserService;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Locale;
 
@@ -14,10 +26,14 @@ public class AuthenticationService extends HangarService {
 
     private final UserService userService;
     private final GlobalRoleService globalRoleService;
+    private final RestTemplate restTemplate;
+    private final ObjectMapper mapper;
 
-    public AuthenticationService(UserService userService, GlobalRoleService globalRoleService) {
+    public AuthenticationService(UserService userService, GlobalRoleService globalRoleService, RestTemplate restTemplate, ObjectMapper mapper) {
         this.userService = userService;
         this.globalRoleService = globalRoleService;
+        this.restTemplate = restTemplate;
+        this.mapper = mapper;
     }
 
     public UserTable loginAsFakeUser() {
@@ -39,5 +55,23 @@ public class AuthenticationService extends HangarService {
             globalRoleService.addRole(GlobalRole.HANGAR_ADMIN.create(null, userTable.getId(), true));
         }
         return userTable;
+    }
+
+    public URI changeAvatarUri(String requester, String organization) throws JsonProcessingException {
+        ChangeAvatarToken token = getChangeAvatarToken(requester, organization);
+        UriComponentsBuilder uriComponents = UriComponentsBuilder.fromHttpUrl(config.getAuthUrl());
+        uriComponents.path("/accounts/user/{organization}/change-avatar/").queryParam("key", token.getSignedData());
+        return uriComponents.build(organization);
+    }
+
+    public ChangeAvatarToken getChangeAvatarToken(String requester, String organization) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        MultiValueMap<String, String> bodyMap = new LinkedMultiValueMap<>();
+        bodyMap.add("api-key", config.sso.getApiKey());
+        bodyMap.add("request_username", requester);
+        ChangeAvatarToken token;
+        token = mapper.treeToValue(restTemplate.postForObject(config.security.api.getUrl() + "/api/users/" + organization + "/change-avatar-token/", new HttpEntity<>(bodyMap, headers), ObjectNode.class), ChangeAvatarToken.class);
+        return token;
     }
 }

@@ -1,8 +1,8 @@
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
 import { Context } from '@nuxt/types';
-import { IPlatform, IProjectCategory } from 'hangar-internal';
+import { IPlatform, IProjectCategory, IPrompt } from 'hangar-internal';
 import { IPermission } from 'hangar-api';
-import { NamedPermission, Platform, ProjectCategory } from '~/types/enums';
+import { NamedPermission, Platform, ProjectCategory, Prompt } from '~/types/enums';
 
 interface Validation {
     regex?: string;
@@ -31,6 +31,7 @@ export interface RootState {
         maxOrgCount: number;
         urlRegex: string;
     };
+    prompts: Map<Prompt, IPrompt>;
 }
 
 export const state: () => RootState = () => ({
@@ -38,6 +39,7 @@ export const state: () => RootState = () => ({
     permissions: (null as unknown) as Map<NamedPermission, IPermission>,
     platforms: (null as unknown) as Map<Platform, IPlatform>,
     validations: (null as unknown) as RootState['validations'],
+    prompts: (null as unknown) as RootState['prompts'],
 });
 
 export const mutations: MutationTree<RootState> = {
@@ -52,6 +54,9 @@ export const mutations: MutationTree<RootState> = {
     },
     SET_VALIDATIONS: (state, payload: RootState['validations']) => {
         state.validations = payload;
+    },
+    SET_PROMPTS: (state, payload: RootState['prompts']) => {
+        state.prompts = payload;
     },
 };
 
@@ -82,6 +87,11 @@ export const actions: ActionTree<RootState, RootState> = {
                 convertToMap<Platform, IPlatform>(platformResult, (value) => value.name.toUpperCase())
             );
             commit('SET_VALIDATIONS', await $api.requestInternal('data/validations', false));
+            const promptsResult: IPrompt[] = await $api.requestInternal<IPrompt[]>('data/prompts', false);
+            commit(
+                'SET_PROMPTS',
+                convertToMap<Prompt, IPrompt>(promptsResult, (value) => value.name)
+            );
             // others
         } catch (e) {
             console.error('ERROR FETCHING BACKEND DATA');

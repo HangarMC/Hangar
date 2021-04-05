@@ -1,4 +1,4 @@
-package io.papermc.hangar.serviceold.sso;
+package io.papermc.hangar.model.internal;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.node.ObjectNode;

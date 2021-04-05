@@ -13,6 +13,7 @@ import io.papermc.hangar.model.Announcement;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.common.Prompt;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.model.common.projects.Visibility;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -150,6 +152,12 @@ public class BackendDataController {
             arrayNode.add(objectNode);
         }
         return ResponseEntity.ok(arrayNode);
+    }
+
+    @ResponseBody
+    @GetMapping("/prompts")
+    public Prompt[] getPrompts() {
+        return Prompt.getValues();
     }
 
     @GetMapping("/validations")

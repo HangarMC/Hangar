@@ -1,13 +1,16 @@
 <template>
-    <NuxtLink :to="url">
-        <img
-            :title="username"
-            :src="src"
-            :alt="username"
-            :class="'user-avatar ' + clazz"
-            @error="$event.target.src = 'https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png'"
-        />
-    </NuxtLink>
+    <div>
+        <NuxtLink :to="url">
+            <img
+                :title="username"
+                :src="src"
+                :alt="username"
+                :class="'user-avatar ' + clazz"
+                @error="$event.target.src = 'https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png'"
+            />
+        </NuxtLink>
+        <slot />
+    </div>
 </template>
 
 <script lang="ts">

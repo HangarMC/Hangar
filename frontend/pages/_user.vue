@@ -2,7 +2,18 @@
     <div>
         <v-row>
             <v-col class="flex-grow-0">
-                <UserAvatar :username="user.name" :avatar-url="$util.avatarUrl(user.name)" :clazz="avatarClazz"></UserAvatar>
+                <div style="position: relative" class="mt-2">
+                    <UserAvatar :username="user.name" :avatar-url="$util.avatarUrl(user.name)" :clazz="avatarClazz">
+                        <v-tooltip left>
+                            <template #activator="{ on }">
+                                <v-btn fab x-small color="warning" absolute style="right: -16px; top: -16px" v-on="on" @click.stop="changeAvatar">
+                                    <v-icon>mdi-pencil</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>{{ $t('author.org.editAvatar') }}</span>
+                        </v-tooltip>
+                    </UserAvatar>
+                </div>
             </v-col>
             <v-col>
                 <h1>
@@ -150,6 +161,19 @@ export default class UserParentPage extends UserPage {
             .finally(() => {
                 this.loading.resetTagline = false;
             });
+    }
+
+    changeAvatar() {
+        if (!this.user.isOrganization) {
+            return;
+        }
+
+        this.$api
+            .requestInternal<string>(`organizations/org/${this.user.name}/settings/avatar`)
+            .then((uri) => {
+                window.location.assign(uri);
+            })
+            .catch<any>(this.$util.handleRequestError);
     }
 
     async asyncData({ $api, $util, params }: Context) {

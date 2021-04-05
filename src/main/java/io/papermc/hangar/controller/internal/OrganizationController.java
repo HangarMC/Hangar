@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller.internal;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
@@ -17,6 +18,7 @@ import io.papermc.hangar.model.internal.logs.contexts.UserContext;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
+import io.papermc.hangar.service.AuthenticationService;
 import io.papermc.hangar.service.internal.organizations.OrganizationFactory;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.users.UserService;
@@ -31,9 +33,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.Map;
 
 @Controller
@@ -43,12 +47,14 @@ public class OrganizationController extends HangarController {
     private final UserService userService;
     private final OrganizationFactory organizationFactory;
     private final OrganizationService organizationService;
+    private final AuthenticationService authenticationService;
 
     @Autowired
-    public OrganizationController(UserService userService, OrganizationFactory organizationFactory, OrganizationService organizationService) {
+    public OrganizationController(UserService userService, OrganizationFactory organizationFactory, OrganizationService organizationService, AuthenticationService authenticationService) {
         this.userService = userService;
         this.organizationFactory = organizationFactory;
         this.organizationService = organizationService;
+        this.authenticationService = authenticationService;
     }
 
     @Anyone
@@ -97,6 +103,20 @@ public class OrganizationController extends HangarController {
         userTable.setTagline(content.getContent());
         userService.updateUser(userTable);
         userActionLogService.user(LogAction.USER_TAGLINE_CHANGED.create(UserContext.of(userTable.getId()), userTable.getTagline(), oldTagline));
+    }
+
+    @Unlocked
+    @ResponseBody
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
+    @GetMapping(value = "/org/{name}/settings/avatar", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String getUpdateAvatarUri(@PathVariable String name) {
+        try {
+            URI uri = authenticationService.changeAvatarUri(getHangarPrincipal().getName(), name);
+            return uri.toString();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Anyone

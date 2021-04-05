@@ -11,7 +11,7 @@ import io.papermc.hangar.db.modelold.OrganizationsTable;
 import io.papermc.hangar.db.modelold.UserOrganizationRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.model.common.Permission;
-import io.papermc.hangar.modelold.Prompt;
+import io.papermc.hangar.model.common.Prompt;
 import io.papermc.hangar.modelold.Role;
 import io.papermc.hangar.modelold.viewhelpers.FlagActivity;
 import io.papermc.hangar.modelold.viewhelpers.HeaderData;

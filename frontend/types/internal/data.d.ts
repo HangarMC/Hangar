@@ -1,6 +1,6 @@
 declare module 'hangar-internal' {
     import { Model, TagColor } from 'hangar-api';
-    import { Platform, ProjectCategory, Visibility } from '~/types/enums';
+    import { Platform, ProjectCategory, Prompt, Visibility } from '~/types/enums';
 
     interface Table extends Model {
         id: number;
@@ -37,5 +37,11 @@ declare module 'hangar-internal' {
         showModal: boolean;
         cssClass: string;
         title: string;
+    }
+
+    interface IPrompt {
+        name: Prompt;
+        titleKey: string;
+        messageKey: string;
     }
 }
