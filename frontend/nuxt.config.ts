@@ -134,6 +134,33 @@ export default {
         },
     },
 
+    render: {
+        csp: {
+            // addMeta: true,
+            reportOnly: true,
+            hashAlgorithm: 'sha256',
+            policies: {
+                'default-src': ["'self'", 'https://google-analytics.com', 'https://fonts.gstatic.com', 'https://fonts.googleapis.com'],
+                'style-src': ["'self'", 'https://fonts.googleapis.com', 'cdn.jsdelivr.net', "'unsafe-inline'"],
+                'font-src': ['fonts.gstatic.com', 'cdn.jsdelivr.net'],
+                'script-src': ["'self'" /* , "'nonce-{nonce}'" */],
+                'img-src': [
+                    "'self'",
+                    'https://www.google-analytics.com',
+                    'https://www.gravatar.com',
+                    authHost,
+                    'data: papermc.io paper.readthedocs.io',
+                    'https:', // ppl can use images in descriptions, we would need an image proxy or smth
+                ],
+                'manifest-src': ["'self'"],
+                'connect-src': ["'self'", 'https://www.google-analytics.com', 'https://stats.g.doubleclick.net'],
+                'media-src': ["'self'"],
+                'object-src': ["'none'"],
+                'base-uri': ["'none'"],
+            },
+        },
+    },
+
     server: {
         port: 3000,
         host,
