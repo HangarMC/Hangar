@@ -29,7 +29,7 @@ const msgs: LocaleMessageObject = {
     hangar: {
         projectSearch: {
             query: 'Search in {0} projects, proudly made by the community...',
-            relevanceSort: 'Sort with relevance',
+            relevanceSort: 'Sort by relevance',
             noProjects: 'There are no projects. 😢',
             noProjectsFound: 'Found 0 projects. 😢',
         },
