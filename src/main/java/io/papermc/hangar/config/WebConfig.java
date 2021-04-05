@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesAnnotationIntrospec
 import freemarker.core.HTMLOutputFormat;
 import freemarker.template.TemplateException;
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.config.hangar.HangarSecurityConfig;
 import io.papermc.hangar.config.jackson.HangarAnnotationIntrospector;
 import io.papermc.hangar.securityold.UserLockExceptionResolver;
 import no.api.freemarker.java8.Java8ObjectWrapper;
@@ -67,7 +68,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Override
     protected void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/internal/**").allowedOrigins(hangarConfig.isDev() ? "http://localhost:3000" : "https://hangar.minidigger.me");
+        registry.addMapping("/api/internal/**").allowedOrigins(hangarConfig.isDev() ? "http://localhost:3000" : hangarConfig.getBaseUrl());
     }
 
     // TODO remove after freemarker is gone
