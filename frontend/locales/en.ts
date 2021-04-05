@@ -264,6 +264,10 @@ const msgs: LocaleMessageObject = {
                 rename: 'Successfully renamed the project to {0}',
             },
         },
+        discuss: {
+            login: 'Log in',
+            toReply: 'to reply to this discussion',
+        },
     },
     page: {
         plural: 'Pages',

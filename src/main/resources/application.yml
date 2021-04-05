@@ -148,6 +148,9 @@ hangar:
     safe-download-hosts:
       - "github.com"
 
+  discourse:
+    enabled: true
+    url: "http://localhost:80"
 
 #################
 # Debug Logging #
