@@ -1,13 +1,7 @@
 <template>
     <div>
         <NuxtLink :to="url">
-            <img
-                :title="username"
-                :src="src"
-                :alt="username"
-                :class="'user-avatar ' + clazz"
-                @error="$event.target.src = 'https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png'"
-            />
+            <img :title="username" :src="src" :alt="username" :class="'user-avatar ' + clazz" @error="errored = true" />
         </NuxtLink>
         <slot />
     </div>
@@ -34,8 +28,12 @@ export default class UserAvatar extends Vue {
     @Prop()
     href!: String;
 
+    errored: boolean = false;
+
     get src(): String {
-        if (this.imgSrc) {
+        if (this.errored) {
+            return 'https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png';
+        } else if (this.imgSrc) {
             return this.imgSrc;
         } else if (this.avatarUrl) {
             return this.avatarUrl;
