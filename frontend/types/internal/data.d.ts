@@ -40,6 +40,7 @@ declare module 'hangar-internal' {
     }
 
     interface IPrompt {
+        ordinal: number;
         name: Prompt;
         titleKey: string;
         messageKey: string;

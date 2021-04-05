@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
 @JsonFormat(shape = Shape.OBJECT)
 public enum Prompt {
-    CHANGE_AVATAR("prompt.changeAvatar.title", "prompt.changeAvatar.message");
+    CHANGE_AVATAR("prompts.changeAvatar.title", "prompts.changeAvatar.message");
 
     final String titleKey;
     final String messageKey;
@@ -14,6 +14,8 @@ public enum Prompt {
         this.titleKey = titleKey;
         this.messageKey = messageKey;
     }
+
+    public int getOrdinal() { return ordinal(); }
 
     public String getName() { return name(); }
 

@@ -742,6 +742,13 @@ const msgs: LocaleMessageObject = {
         invalidFormat: '{0} is invalid',
         invalidUrl: 'Invalid URL format',
     },
+    prompts: {
+        confirm: 'Got it!',
+        changeAvatar: {
+            title: 'Change your avatar!',
+            message: "Welcome to your new organization! Start by changing it's avatar by clicking on it.",
+        },
+    },
     error: {
         userLocked: 'Your account is locked.',
         401: 'You must be logged in for this',

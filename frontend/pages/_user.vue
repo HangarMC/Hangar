@@ -4,14 +4,18 @@
             <v-col class="flex-grow-0">
                 <div style="position: relative" class="mt-2">
                     <UserAvatar :username="user.name" :avatar-url="$util.avatarUrl(user.name)" :clazz="avatarClazz">
-                        <v-tooltip left>
-                            <template #activator="{ on }">
-                                <v-btn fab x-small color="warning" absolute style="right: -16px; top: -16px" v-on="on" @click.stop="changeAvatar">
-                                    <v-icon>mdi-pencil</v-icon>
-                                </v-btn>
+                        <Prompt v-if="user.isOrganization" prompt="CHANGE_AVATAR">
+                            <template #activator>
+                                <v-tooltip left>
+                                    <template #activator="{ on }">
+                                        <v-btn fab x-small color="warning" absolute style="right: -16px; top: -16px" v-on="on" @click.stop="changeAvatar">
+                                            <v-icon>mdi-pencil</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ $t('author.org.editAvatar') }}</span>
+                                </v-tooltip>
                             </template>
-                            <span>{{ $t('author.org.editAvatar') }}</span>
-                        </v-tooltip>
+                        </Prompt>
                     </UserAvatar>
                 </div>
             </v-col>
@@ -90,6 +94,7 @@ import { Organization } from 'hangar-internal';
 import UserAvatar from '../components/users/UserAvatar.vue';
 import HangarModal from '~/components/modals/HangarModal.vue';
 import { UserPage } from '~/components/mixins';
+import Prompt from '~/components/users/Prompt.vue';
 
 interface Button {
     icon: string;
@@ -100,7 +105,7 @@ interface Button {
 }
 
 @Component({
-    components: { HangarModal, UserAvatar },
+    components: { Prompt, HangarModal, UserAvatar },
 })
 export default class UserParentPage extends UserPage {
     taglineForm: string | null = null;

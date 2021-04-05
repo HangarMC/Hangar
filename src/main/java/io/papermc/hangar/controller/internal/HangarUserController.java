@@ -6,6 +6,7 @@ import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.common.Prompt;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
@@ -15,6 +16,7 @@ import io.papermc.hangar.model.internal.logs.contexts.UserContext;
 import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.model.internal.user.notifications.HangarInvite.InviteType;
 import io.papermc.hangar.model.internal.user.notifications.HangarNotification;
+import io.papermc.hangar.security.annotations.LoggedIn;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
@@ -31,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,7 +46,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Controller
-@Secured("ROLE_USER")
+@LoggedIn
 @RequestMapping(path = "/api/internal", produces = MediaType.APPLICATION_JSON_VALUE, method = { RequestMethod.GET, RequestMethod.POST })
 public class HangarUserController extends HangarController {
 
@@ -134,6 +135,13 @@ public class HangarUserController extends HangarController {
         invites.set(InviteType.PROJECT.toString(), mapper.valueToTree(projectInviteService.getProjectInvites()));
         invites.set(InviteType.ORGANIZATION.toString(), mapper.valueToTree(organizationInviteService.getOrganizationInvites()));
         return ResponseEntity.ok(invites);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/read-prompt/{prompt}")
+    public void readPrompt(@PathVariable Prompt prompt) {
+        userService.markPromptRead(prompt);
     }
 
     @Unlocked

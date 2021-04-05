@@ -11,7 +11,6 @@ import io.papermc.hangar.db.modelold.OrganizationsTable;
 import io.papermc.hangar.db.modelold.UserOrganizationRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.model.common.Permission;
-import io.papermc.hangar.model.common.Prompt;
 import io.papermc.hangar.modelold.Role;
 import io.papermc.hangar.modelold.viewhelpers.FlagActivity;
 import io.papermc.hangar.modelold.viewhelpers.HeaderData;
@@ -170,13 +169,4 @@ public class UserService extends HangarService {
         return userDao.get().getFlagActivity(username);
     }
 
-    public void markPromptAsRead(Prompt prompt) {
-        Optional<UsersTable> currUser = currentUser.get();
-        if (currUser.isPresent()) {
-            if (!currUser.get().getReadPrompts().contains(prompt.ordinal())) {
-                currUser.get().getReadPrompts().add(prompt.ordinal());
-            }
-            userDao.get().update(currUser.get());
-        }
-    }
 }

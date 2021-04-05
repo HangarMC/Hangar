@@ -3,7 +3,6 @@ package io.papermc.hangar.controllerold;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.model.common.NamedPermission;
-import io.papermc.hangar.model.common.Prompt;
 import io.papermc.hangar.model.internal.sso.AuthUser;
 import io.papermc.hangar.securityold.annotations.GlobalPermission;
 import io.papermc.hangar.service.internal.auth.SSOService;
@@ -16,9 +15,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -35,16 +32,6 @@ public class UsersController extends HangarController {
         this.hangarConfig = hangarConfig;
         this.userService = userService;
         this.ssoService = ssoService;
-    }
-
-    @Secured("ROLE_USER")
-    @PostMapping("/prompts/read/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void markPromptRead(@PathVariable("id") Prompt prompt) {
-        if (prompt == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid prompt id");
-        }
-        userService.markPromptAsRead(prompt);
     }
 
     @GlobalPermission(NamedPermission.EDIT_OWN_USER_SETTINGS)

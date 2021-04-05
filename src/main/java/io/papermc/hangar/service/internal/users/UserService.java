@@ -3,6 +3,7 @@ package io.papermc.hangar.service.internal.users;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
+import io.papermc.hangar.model.common.Prompt;
 import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.sso.AuthUser;
@@ -58,6 +59,14 @@ public class UserService extends HangarService {
             hangarUsersDAO.setStarred(projectId, getHangarPrincipal().getUserId());
         } else {
             hangarUsersDAO.setNotStarred(projectId, getHangarPrincipal().getUserId());
+        }
+    }
+
+    public void markPromptRead(Prompt prompt) {
+        UserTable userTable = userDAO.getUserTable(getHangarPrincipal().getId());
+        if (!userTable.getReadPrompts().contains(prompt.ordinal())) {
+            userTable.getReadPrompts().add(prompt.ordinal());
+            userDAO.update(userTable);
         }
     }
 
