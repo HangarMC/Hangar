@@ -1,8 +1,8 @@
 package io.papermc.hangar.security.configs;
 
-import io.papermc.hangar.security.HangarAuthenticationEntryPoint;
-import io.papermc.hangar.security.HangarAuthenticationFilter;
-import io.papermc.hangar.security.HangarAuthenticationProvider;
+import io.papermc.hangar.security.authentication.HangarAuthenticationEntryPoint;
+import io.papermc.hangar.security.authentication.HangarAuthenticationFilter;
+import io.papermc.hangar.security.authentication.HangarAuthenticationProvider;
 import io.papermc.hangar.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

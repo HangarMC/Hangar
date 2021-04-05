@@ -1,6 +1,7 @@
 package io.papermc.hangar.security.configs;
 
-import io.papermc.hangar.securityold.metadatasources.HangarMetadataSources;
+import io.papermc.hangar.security.HangarMetadataSources;
+import io.papermc.hangar.security.HangarUnanimousBased;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -61,7 +62,7 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
         decisionVoters.add(roleVoter);
         decisionVoters.add(new AuthenticatedVoter());
         decisionVoters.addAll(accessDecisionVoters);
-        UnanimousBased accessDecisionManager = new UnanimousBased(decisionVoters);
+        UnanimousBased accessDecisionManager = new HangarUnanimousBased(decisionVoters);
         accessDecisionManager.setAllowIfAllAbstainDecisions(true);
         return accessDecisionManager;
     }

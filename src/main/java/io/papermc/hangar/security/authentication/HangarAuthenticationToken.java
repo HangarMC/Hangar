@@ -1,4 +1,4 @@
-package io.papermc.hangar.security;
+package io.papermc.hangar.security.authentication;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.jetbrains.annotations.NotNull;

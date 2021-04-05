@@ -1,4 +1,4 @@
-package io.papermc.hangar.security;
+package io.papermc.hangar.security.authentication;
 
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.projects.ProjectOwner;

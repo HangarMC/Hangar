@@ -1,13 +1,19 @@
 package io.papermc.hangar.controller.internal;
 
+import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.common.roles.OrganizationRole;
+import io.papermc.hangar.model.db.OrganizationTable;
+import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.internal.HangarOrganization;
 import io.papermc.hangar.model.internal.api.requests.CreateOrganizationForm;
 import io.papermc.hangar.model.internal.api.requests.EditMembersForm;
+import io.papermc.hangar.model.internal.api.requests.StringContent;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.UserContext;
 import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
@@ -32,7 +38,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/api/internal/organizations")
-public class OrganizationController {
+public class OrganizationController extends HangarController {
 
     private final UserService userService;
     private final OrganizationFactory organizationFactory;
@@ -72,6 +78,25 @@ public class OrganizationController {
     @PostMapping(path = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void create(@Valid @RequestBody CreateOrganizationForm createOrganizationForm) {
         organizationFactory.createOrganization(createOrganizationForm.getName(), createOrganizationForm.getNewInvitees());
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.ORGANIZATION, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#name}")
+    @PostMapping(path = "/org/{name}/settings/tagline", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void saveTagline(@PathVariable String name, @Valid @RequestBody StringContent content) {
+        UserTable userTable = userService.getUserTable(name);
+        OrganizationTable organizationTable = organizationService.getOrganizationTable(name);
+        if (userTable == null || organizationTable == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+        if (content.getContent().length() > config.user.getMaxTaglineLen()) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "author.error.invalidTagline");
+        }
+        String oldTagline = userTable.getTagline() == null ? "" : userTable.getTagline();
+        userTable.setTagline(content.getContent());
+        userService.updateUser(userTable);
+        userActionLogService.user(LogAction.USER_TAGLINE_CHANGED.create(UserContext.of(userTable.getId()), userTable.getTagline(), oldTagline));
     }
 
     @Anyone

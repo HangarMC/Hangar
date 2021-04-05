@@ -1,6 +1,6 @@
 package io.papermc.hangar.securityold.voters;
 
-import io.papermc.hangar.security.HangarAuthenticationToken;
+import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
 import io.papermc.hangar.securityold.UserLockException;
 import io.papermc.hangar.securityold.attributes.UserLockAttribute;
 import io.papermc.hangar.serviceold.UserService;

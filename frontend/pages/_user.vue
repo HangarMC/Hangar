@@ -116,7 +116,7 @@ export default class UserParentPage extends UserPage {
     }
 
     get canEditCurrentUser() {
-        return this.$perms.canEditAllUserSettings || this.isCurrentUser /* || org perms */;
+        return this.$perms.canEditAllUserSettings || this.isCurrentUser || this.$perms.canEditSubjectSettings;
     }
 
     get avatarClazz(): String {
@@ -125,7 +125,7 @@ export default class UserParentPage extends UserPage {
 
     changeTagline() {
         return this.$api
-            .requestInternal(`users/${this.user.name}/settings/tagline`, true, 'post', {
+            .requestInternal(`${this.user.isOrganization ? 'organizations/org' : 'users'}/${this.user.name}/settings/tagline`, true, 'post', {
                 content: this.taglineForm,
             })
             .then(() => {

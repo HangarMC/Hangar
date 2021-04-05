@@ -1,8 +1,8 @@
 package io.papermc.hangar.security.annotations.unlocked;
 
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.security.HangarAuthenticationToken;
 import io.papermc.hangar.security.annotations.unlocked.UnlockedMetadataExtractor.UnlockedAttribute;
+import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDecisionVoter;

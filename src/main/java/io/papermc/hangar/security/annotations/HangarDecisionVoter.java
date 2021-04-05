@@ -7,6 +7,7 @@ import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 public abstract class HangarDecisionVoter<A extends ConfigAttribute> implements AccessDecisionVoter<MethodInvocation> {
 
@@ -37,5 +38,9 @@ public abstract class HangarDecisionVoter<A extends ConfigAttribute> implements 
             }
         }
         return null;
+    }
+
+    protected final Collection<A> findAttributes(Collection<ConfigAttribute> attributes) {
+        return attributes.stream().filter(a -> attributeClass.isAssignableFrom(a.getClass())).map(attributeClass::cast).collect(Collectors.toSet());
     }
 }

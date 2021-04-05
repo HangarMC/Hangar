@@ -1,8 +1,8 @@
-package io.papermc.hangar.securityold.metadatasources;
+package io.papermc.hangar.security;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.GenericTypeResolver;
-import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.annotation.AnnotationMetadataExtractor;
 import org.springframework.security.access.method.AbstractFallbackMethodSecurityMetadataSource;
@@ -11,7 +11,6 @@ import org.springframework.util.Assert;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -57,12 +56,8 @@ public class HangarMetadataSources extends AbstractFallbackMethodSecurityMetadat
     @SuppressWarnings("unchecked")
     @NotNull
     private Collection<ConfigAttribute> processAnnotation(AnnotatedElement element, Map.Entry<Class<? extends Annotation>, AnnotationMetadataExtractor> entry) {
-        Annotation a = AnnotationUtils.findAnnotation(element, entry.getKey());
-        if (a == null) {
-            return new ArrayList<>();
-        }
-
-        return entry.getValue().extractAttributes(a);
+        MergedAnnotations annotations = MergedAnnotations.from(element);
+        return (Collection<ConfigAttribute>) annotations.stream(entry.getKey()).map(ma -> entry.getValue().extractAttributes(ma.synthesize())).flatMap(Collection::stream).collect(Collectors.toList());
     }
 }
 

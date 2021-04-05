@@ -11,7 +11,7 @@ import io.papermc.hangar.model.api.auth.RefreshResponse;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.auth.UserRefreshToken;
-import io.papermc.hangar.security.HangarPrincipal;
+import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.internal.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

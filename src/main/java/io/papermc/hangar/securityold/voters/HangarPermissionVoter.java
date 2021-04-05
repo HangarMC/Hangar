@@ -1,7 +1,7 @@
 package io.papermc.hangar.securityold.voters;
 
 import io.papermc.hangar.model.common.NamedPermission;
-import io.papermc.hangar.security.HangarAuthenticationToken;
+import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
 import io.papermc.hangar.securityold.attributes.PermissionAttribute;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;

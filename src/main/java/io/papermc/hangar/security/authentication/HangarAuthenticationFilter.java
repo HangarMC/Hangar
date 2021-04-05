@@ -1,4 +1,4 @@
-package io.papermc.hangar.security;
+package io.papermc.hangar.security.authentication;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;

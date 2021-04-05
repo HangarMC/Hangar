@@ -1,4 +1,4 @@
-package io.papermc.hangar.security;
+package io.papermc.hangar.security.authentication;
 
 import io.papermc.hangar.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;

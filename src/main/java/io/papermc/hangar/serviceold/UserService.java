@@ -19,7 +19,7 @@ import io.papermc.hangar.modelold.viewhelpers.OrganizationData;
 import io.papermc.hangar.modelold.viewhelpers.ReviewActivity;
 import io.papermc.hangar.modelold.viewhelpers.UserData;
 import io.papermc.hangar.modelold.viewhelpers.UserRole;
-import io.papermc.hangar.security.HangarAuthenticationToken;
+import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
