@@ -34,7 +34,7 @@ public class ContentSecurityPolicyFilter extends OncePerRequestFilter {
         this.hangarConfig = hangarConfig;
         PolicyBuilder builder = new PolicyBuilder();
 
-        builder.default_src(CSP.SELF, "https://google-analytics.com", "https://fonts.gstatic.com", "https://fonts.googleapis.com")
+        builder.default_src(CSP.SELF, "https://google-analytics.com", "https://fonts.gstatic.com", "https://fonts.googleapis.com", "data: papermc.io paper.readthedocs.io") // move the data one back to img
                 .style_src(CSP.SELF, "https://fonts.googleapis.com", "cdn.jsdelivr.net", CSP.UNSAFE_INLINE)
                 .font_src("fonts.gstatic.com", "cdn.jsdelivr.net")
                 .script_src(CSP.SELF, "'nonce-{nonce}'", CSP.UNSAFE_INLINE) // unsafe inline is ignored by browsers that support nonces, just added for backwards compat
