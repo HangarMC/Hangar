@@ -21,11 +21,9 @@ services:
       - "traefik.http.routers.hangar-new.rule=Host(`hangar-new.minidigger.me`) || Host(`hangar.benndorf.dev`)"
       - "traefik.http.routers.hangar-new.entrypoints=web-secure"
       - "traefik.http.routers.hangar-new.tls=true"
-      - "traefik.http.routers.hangar-new.tls.options=default"
       - "traefik.http.routers.hangar-new.tls.certresolver=default"
       - "traefik.http.routers.hangar-new.tls.domains[0].main=minidigger.me"
       - "traefik.http.routers.hangar-new.tls.domains[0].sans=*.minidigger.me"
-      - "traefik.http.routers.hangar-new.middlewares=https-redirect@file,security-headers@file"
     networks:
       - web
   backend:
@@ -65,11 +63,10 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.hangar-new-mail.loadbalancer.server.port=8025"
-      - "traefik.http.routers.hangar-new-mail.middlewares=basicauth@file,https-redirect@file,security-headers@file"
+      - "traefik.http.routers.hangar-new-mail.middlewares=basicauth@file"
       - "traefik.http.routers.hangar-new-mail.rule=Host(`hangar-new-mail.minidigger.me`) || Host(`hangar-mail.benndorf.dev`)"
       - "traefik.http.routers.hangar-new-mail.entrypoints=web-secure"
       - "traefik.http.routers.hangar-new-mail.tls=true"
-      - "traefik.http.routers.hangar-new-mail.tls.options=default"
       - "traefik.http.routers.hangar-new-mail.tls.certresolver=default"
       - "traefik.http.routers.hangar-new-mail.tls.domains[0].main=minidigger.me"
       - "traefik.http.routers.hangar-new-mail.tls.domains[0].sans=*.minidigger.me"
@@ -89,7 +86,6 @@ services:
       - "traefik.http.routers.hangar-new-auth.tls.certresolver=default"
       - "traefik.http.routers.hangar-new-auth.tls.domains[0].main=minidigger.me"
       - "traefik.http.routers.hangar-new-auth.tls.domains[0].sans=*.minidigger.me"
-      - "traefik.http.routers.hangar-new-auth.middlewares=https-redirect@file,security-headers@file"
     environment:
       SECRET_KEY: "TzNc3RTpfVn1xxNV90PPGEfs7SZhy5"
       EMAIL_HOST: "mail"
