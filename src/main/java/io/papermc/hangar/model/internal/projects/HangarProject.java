@@ -4,6 +4,7 @@ import io.papermc.hangar.config.jackson.RequiresPermission;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.common.NamedPermission;
+import io.papermc.hangar.model.db.ProjectIdentified;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.internal.Joinable;
@@ -12,7 +13,7 @@ import io.papermc.hangar.model.internal.user.JoinableMember;
 import java.util.Collection;
 import java.util.List;
 
-public class HangarProject extends Project implements Joinable<ProjectRoleTable> {
+public class HangarProject extends Project implements Joinable<ProjectRoleTable>, ProjectIdentified {
 
     private final long id;
     private final ProjectOwner owner;
@@ -34,6 +35,11 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     }
 
     public long getId() {
+        return id;
+    }
+
+    @Override
+    public long getProjectId() {
         return id;
     }
 

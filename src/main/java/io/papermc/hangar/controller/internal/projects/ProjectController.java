@@ -19,6 +19,7 @@ import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
+import io.papermc.hangar.service.internal.admin.StatService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.projects.ProjectNoteService;
@@ -54,14 +55,16 @@ public class ProjectController extends HangarController {
     private final UserService userService;
     private final OrganizationService organizationService;
     private final ImageService imageService;
+    private final StatService statService;
 
     @Autowired
-    public ProjectController(ProjectFactory projectFactory, ProjectService projectService, UserService userService, OrganizationService organizationService, ProjectNoteService projectNoteService, ProjectVisibilityService projectVisibilityService, ImageService imageService) {
+    public ProjectController(ProjectFactory projectFactory, ProjectService projectService, UserService userService, OrganizationService organizationService, ProjectNoteService projectNoteService, ProjectVisibilityService projectVisibilityService, ImageService imageService, StatService statService) {
         this.projectFactory = projectFactory;
         this.projectService = projectService;
         this.userService = userService;
         this.organizationService = organizationService;
         this.imageService = imageService;
+        this.statService = statService;
     }
 
     @GetMapping("/validateName")
@@ -89,7 +92,9 @@ public class ProjectController extends HangarController {
     @GetMapping("/project/{author}/{slug}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<HangarProject> getHangarProject(@PathVariable String author, @PathVariable String slug) {
-        return ResponseEntity.ok(projectService.getHangarProject(author, slug));
+        HangarProject hangarProject = projectService.getHangarProject(author, slug);
+        statService.addProjectView(hangarProject);
+        return ResponseEntity.ok(hangarProject);
     }
 
     @Unlocked

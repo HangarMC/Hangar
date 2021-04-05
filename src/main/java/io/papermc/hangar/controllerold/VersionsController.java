@@ -26,7 +26,6 @@ import io.papermc.hangar.securityold.annotations.ProjectPermission;
 import io.papermc.hangar.securityold.annotations.UserLock;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.serviceold.DownloadsService;
-import io.papermc.hangar.serviceold.StatsService;
 import io.papermc.hangar.serviceold.UserActionLogService;
 import io.papermc.hangar.serviceold.VersionService;
 import io.papermc.hangar.serviceold.VersionService.RecommendedVersionService;
@@ -75,7 +74,6 @@ public class VersionsController extends HangarController {
     private final VersionService versionService;
     private final RecommendedVersionService recommendedVersionService;
     private final ProjectFactory projectFactory;
-    private final StatsService statsService;
     private final ChannelService channelService;
     private final DownloadsService downloadsService;
     private final UserActionLogService userActionLogService;
@@ -95,11 +93,10 @@ public class VersionsController extends HangarController {
 
 
     @Autowired
-    public VersionsController(VersionService versionService, RecommendedVersionService recommendedVersionService, ProjectFactory projectFactory, StatsService statsService, ChannelService channelService, DownloadsService downloadsService, UserActionLogService userActionLogService, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, MessageSource messageSource, ObjectMapper mapper, HttpServletRequest request, HttpServletResponse response, Supplier<ProjectVersionsTable> projectVersionsTable, Supplier<VersionData> versionData, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
+    public VersionsController(VersionService versionService, RecommendedVersionService recommendedVersionService, ProjectFactory projectFactory, ChannelService channelService, DownloadsService downloadsService, UserActionLogService userActionLogService, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, MessageSource messageSource, ObjectMapper mapper, HttpServletRequest request, HttpServletResponse response, Supplier<ProjectVersionsTable> projectVersionsTable, Supplier<VersionData> versionData, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
         this.versionService = versionService;
         this.recommendedVersionService = recommendedVersionService;
         this.projectFactory = projectFactory;
-        this.statsService = statsService;
         this.channelService = channelService;
         this.downloadsService = downloadsService;
         this.userActionLogService = userActionLogService;
@@ -339,7 +336,7 @@ public class VersionsController extends HangarController {
     }
 
     private Object _sendVersion(ProjectsTable project, ProjectVersionsTable version) {
-        statsService.addVersionDownloaded(version);
+//        statsService.addVersionDownloaded(version);
         if (version.getExternalUrl() != null) {
             return new ModelAndView("redirect:" + version.getExternalUrl());
         }
@@ -393,7 +390,7 @@ public class VersionsController extends HangarController {
                 String fileName = version.getFileName();
                 Path path = projectFiles.getVersionDir(project.getOwnerName(), project.getName(), version.getVersionString()).resolve(fileName);
 
-                statsService.addVersionDownloaded(version);
+//                statsService.addVersionDownloaded(version);
                 if (fileName.endsWith(".jar")) {
                     response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + version.getFileName() + "\"");
 

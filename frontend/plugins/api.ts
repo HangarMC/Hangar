@@ -1,9 +1,20 @@
 import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
 import { AxiosError, AxiosRequestConfig } from 'axios';
+import Cookie from 'cookie';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import qs from 'qs';
 import { HangarApiException } from 'hangar-api';
+
+interface StatCookie {
+    // eslint-disable-next-line camelcase
+    hangar_stats: string;
+    Path: string;
+    'Max-Age': string;
+    Expires: string;
+    SameSite: Cookie.CookieSerializeOptions['sameSite'];
+    Secure?: boolean;
+}
 
 const createApi = ({ $axios, store, app: { $cookies } }: Context) => {
     class API {
@@ -112,7 +123,22 @@ const createApi = ({ $axios, store, app: { $cookies } }: Context) => {
                             });
                         },
                     })
-                    .then(({ data }) => resolve(data))
+                    .then(({ data, headers }) => {
+                        // check for stats cookie
+                        if (headers['set-cookie']) {
+                            const statString = headers['set-cookie'].find((c: string) => c.startsWith('hangar_stats'));
+                            if (statString) {
+                                const statCookie: StatCookie = (Cookie.parse(statString) as unknown) as StatCookie;
+                                $cookies.set('hangar_stats', statCookie.hangar_stats, {
+                                    path: statCookie.Path,
+                                    expires: new Date(statCookie.Expires),
+                                    sameSite: 'strict',
+                                    secure: statCookie.Secure,
+                                });
+                            }
+                        }
+                        resolve(data);
+                    })
                     .catch((error: AxiosError) => {
                         reject(error);
                     });
