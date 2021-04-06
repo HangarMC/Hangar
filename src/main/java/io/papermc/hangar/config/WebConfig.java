@@ -151,12 +151,6 @@ public class WebConfig extends WebMvcConfigurationSupport {
         super.addDefaultHttpMessageConverters(converters);
     }
 
-//    @Override
-//    protected void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-//        argumentResolvers.addAll(0, resolvers);
-//    }
-
-
     @NotNull
     @Override
     protected RequestMappingHandlerAdapter createRequestMappingHandlerAdapter() {
@@ -184,6 +178,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
         return restTemplate;
     }
 
+    // TODO remove
     @Bean
     public UserLockExceptionResolver userLockExceptionResolver() {
         return new UserLockExceptionResolver();
