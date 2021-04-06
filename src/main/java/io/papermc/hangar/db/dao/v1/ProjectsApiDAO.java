@@ -10,11 +10,11 @@ import io.papermc.hangar.model.api.requests.RequestPagination;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
+import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.customizer.DefineNamedBindings;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
-import org.jdbi.v3.stringtemplate4.UseStringTemplateSqlLocator;
 import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
@@ -25,7 +25,7 @@ import java.util.Map;
 @RegisterConstructorMapper(Project.class)
 public interface ProjectsApiDAO {
 
-    @UseStringTemplateSqlLocator
+    @UseStringTemplateEngine
     @RegisterColumnMapper(PromotedVersionMapper.class)
     @SqlQuery("SELECT hp.id," +
             "       hp.created_at," +
@@ -58,8 +58,8 @@ public interface ProjectsApiDAO {
             "         JOIN projects p ON hp.id = p.id" +
             "         WHERE lower(hp.slug) = lower(:slug) AND" +
             "           lower(hp.owner_name) = lower(:author)" +
-            "         <if(!seeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif>")
-    Project getProject(String author, String slug, @Define boolean canSeeHidden, @Define Long requesterId);
+            "         <if(!canSeeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif>")
+    Project getProject(String author, String slug, @Define boolean canSeeHidden, @Define @Bind Long requesterId);
 
     @UseStringTemplateEngine
     @SqlQuery("SELECT hp.id," +
