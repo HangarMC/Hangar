@@ -23,8 +23,8 @@ declare module 'hangar-api' {
     }
 
     interface ApiKey extends Model, Named {
-        key: string;
-        identifier: string;
+        token?: string;
+        tokenIdentifier?: string;
         permissions: NamedPermission[];
     }
 }

@@ -1,4 +1,4 @@
-package io.papermc.hangar.model.db;
+package io.papermc.hangar.model;
 
 public interface VersionIdentified {
 

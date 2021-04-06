@@ -18,6 +18,12 @@ declare global {
 
 @Component
 export default class ApiPage extends HangarComponent {
+    head() {
+        return {
+            title: this.$t('apiDocs.title'),
+        };
+    }
+
     mounted() {
         window.ui = SwaggerUIBundle({
             url: '/v2/api-docs/',

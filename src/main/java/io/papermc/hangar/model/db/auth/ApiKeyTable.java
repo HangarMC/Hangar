@@ -3,7 +3,6 @@ package io.papermc.hangar.model.db.auth;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.Table;
-import org.jdbi.v3.core.mapper.PropagateNull;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 import java.time.OffsetDateTime;
@@ -25,7 +24,7 @@ public class ApiKeyTable extends Table implements Named {
     }
 
     @JdbiConstructor
-    public ApiKeyTable(OffsetDateTime createdAt, @PropagateNull long id, String name, long ownerId, String tokenIdentifier, String token, Permission permissions) {
+    public ApiKeyTable(OffsetDateTime createdAt, long id, String name, long ownerId, String tokenIdentifier, String token, Permission permissions) {
         super(createdAt, id);
         this.name = name;
         this.ownerId = ownerId;

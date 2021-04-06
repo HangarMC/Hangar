@@ -1,20 +1,52 @@
 <template>
     <v-row>
-        <v-col cols="12" md="6">
-            <h2>{{ $t('apiKeys.createNew') }}</h2>
-            <v-text-field v-model="name" :label="$t('apiKeys.name')">
-                <template #append-outer>
-                    <v-btn @click="create">{{ $t('apiKeys.createKey') }}</v-btn>
-                </template>
-            </v-text-field>
-            <v-row>
-                <v-col v-for="perm in perms" :key="perm.frontendName" cols="6">
-                    <v-checkbox v-model="selectedPerms" :label="perm.frontendName" :value="perm.value" dense hide-details> </v-checkbox>
-                </v-col>
-            </v-row>
+        <v-col cols="12" md="5">
+            <div class="text-h4 mb-4">{{ $t('apiKeys.createNew') }}</div>
+            <v-form ref="modalForm" v-model="validForm">
+                <v-text-field
+                    v-model="name"
+                    :label="$t('apiKeys.name')"
+                    dense
+                    filled
+                    counter="255"
+                    :rules="[$util.$vc.require($t('apiKeys.name')), $util.$vc.maxLength(255), $util.$vc.minLength(5)]"
+                >
+                    <template #append-outer>
+                        <v-btn color="success" class="input-append-btn" :disabled="!validForm" :loading="loading" @click="create">{{
+                            $t('apiKeys.createKey')
+                        }}</v-btn>
+                    </template>
+                </v-text-field>
+                <v-row no-gutters>
+                    <v-col cols="6">
+                        <v-checkbox
+                            v-for="perm in chunkedPerms[0]"
+                            :key="perm.frontendName"
+                            v-model="selectedPerms"
+                            :label="perm.frontendName"
+                            :value="perm.value"
+                            :rules="[$util.$vc.requireNonEmptyArray()]"
+                            dense
+                            hide-details
+                        />
+                    </v-col>
+                    <v-col cols="6">
+                        <v-checkbox
+                            v-for="perm in chunkedPerms[1]"
+                            :key="perm.frontendName"
+                            v-model="selectedPerms"
+                            :label="perm.frontendName"
+                            :value="perm.value"
+                            :rules="[$util.$vc.requireNonEmptyArray()]"
+                            dense
+                            hide-details
+                        />
+                    </v-col>
+                </v-row>
+            </v-form>
         </v-col>
-        <v-col cols="12" md="6">
-            <h2>{{ $t('apiKeys.existing') }}</h2>
+        <v-col cols="12" md="7">
+            <div class="text-h4 mb-4">{{ $t('apiKeys.existing') }}</div>
             <v-simple-table>
                 <thead>
                     <tr>
@@ -28,50 +60,103 @@
                 <tbody>
                     <tr v-for="key in apiKeys" :key="key.name">
                         <td>{{ key.name }}</td>
-                        <td>{{ key.key }}</td>
-                        <td>{{ key.identifier }}</td>
-                        <td>{{ key.permissions }}</td>
+                        <td>{{ key.token }}</td>
+                        <td>{{ key.tokenIdentifier }}</td>
+                        <td>{{ key.permissions.join(', ') }}</td>
                         <td>
-                            <v-btn color="red" @click="deleteKey(key.key)">{{ $t('apiKeys.deleteKey') }}</v-btn>
+                            <v-tooltip bottom>
+                                <template #activator="{ on }">
+                                    <v-btn icon small color="red" @click="deleteKey(key)" v-on="on">
+                                        <v-icon>mdi-delete</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{ $t('apiKeys.deleteKey') }}</span>
+                            </v-tooltip>
+                        </td>
+                    </tr>
+                    <tr v-if="apiKeys.length === 0">
+                        <td colspan="5">
+                            <v-alert type="info" width="100%" class="mt-4">{{ $t('apiKeys.noKeys') }}</v-alert>
                         </td>
                     </tr>
                 </tbody>
             </v-simple-table>
-            <v-alert v-if="apiKeys.length === 0" type="info">{{ $t('apiKeys.noKeys') }}</v-alert>
         </v-col>
     </v-row>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
+import { Component } from 'nuxt-property-decorator';
 import { ApiKey, IPermission } from 'hangar-api';
+import { chunk } from 'lodash-es';
+import { Context } from '@nuxt/types';
 import { RootState } from '~/store';
 import { NamedPermission } from '~/types/enums';
-import { GlobalPermission } from '~/utils/perms';
+import { CurrentUser, GlobalPermission } from '~/utils/perms';
+import { HangarForm } from '~/components/mixins';
 
 @Component
 @GlobalPermission(NamedPermission.EDIT_API_KEYS)
-export default class AuthorSettingsApiKeysPage extends Vue {
+@CurrentUser
+export default class AuthorSettingsApiKeysPage extends HangarForm {
     selectedPerms: NamedPermission[] = [];
     name: string = '';
 
-    // TODO load from server
+    possiblePerms!: NamedPermission[];
     apiKeys: ApiKey[] = [];
 
-    get perms(): IPermission[] {
-        return Array.from((this.$store.state as RootState).permissions.values());
+    get chunkedPerms(): IPermission[][] {
+        const permArr = this.possiblePerms.map((perm) => (this.$store.state as RootState).permissions.get(perm)!);
+        return chunk(permArr, permArr.length / 2);
     }
+
+    $refs!: {
+        modalForm: any;
+    };
 
     create() {
-        // TODO send to server
-        this.apiKeys.push({ key: 'blah', identifier: 'blub', permissions: this.selectedPerms, name: this.name, createdAt: new Date().toString() });
-        this.name = '';
-        this.selectedPerms = [];
+        // TODO check that name isn't in current keys
+        this.loading = true;
+        this.$api
+            .requestInternal<string>(`api-keys/create-key/${this.$route.params.user}`, true, 'post', {
+                name: this.name,
+                permissions: this.selectedPerms,
+            })
+            .then((key) => {
+                this.apiKeys.unshift({ token: key, name: this.name, permissions: this.selectedPerms, createdAt: new Date().toISOString() });
+                this.$util.success(this.$t('apiKeys.success.create', [this.name]));
+                this.$refs.modalForm.reset();
+            })
+            .catch(this.$util.handleRequestError)
+            .finally(() => {
+                this.loading = false;
+            });
     }
 
-    deleteKey(key: string) {
-        // todo send to server
-        this.apiKeys = this.apiKeys.filter((e) => e.key !== key);
+    deleteKey(key: ApiKey) {
+        this.$api
+            .requestInternal(`api-keys/delete-key/${this.$route.params.user}`, true, 'post', {
+                content: key.name,
+            })
+            .then(() => {
+                this.$delete(this.apiKeys, this.apiKeys.indexOf(key));
+                this.$util.success(this.$t('apiKeys.success.delete', [key.name]));
+            })
+            .catch(this.$util.handleRequestError);
+    }
+
+    head() {
+        return {
+            title: this.$t('apiKeys.title'),
+        };
+    }
+
+    async asyncData({ $api, $util, params }: Context) {
+        const data = await Promise.all([
+            $api.requestInternal<IPermission[]>(`api-keys/possible-perms/${params.user}`),
+            $api.requestInternal<ApiKey[]>(`api-keys/existing-keys/${params.user}`),
+        ]).catch<any>($util.handlePageRequestError);
+        return { possiblePerms: data[0], apiKeys: data[1] };
     }
 }
 </script>

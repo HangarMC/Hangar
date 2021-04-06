@@ -65,6 +65,10 @@ public class PermissionService extends HangarService {
         return getPermissions(userId, permissionsDAO::getPossibleOrganizationPermissions);
     }
 
+    public Permission getAllPossiblePermissions(@Nullable Long userId) {
+        return getGlobalPermissions(userId).add(getPossibleProjectPermissions(userId)).add(getPossibleOrganizationPermissions(userId));
+    }
+
     @NotNull
     private <T> Permission getPermissions(@Nullable T identifier, @NotNull Function<T, Permission> permissionSupplier) {
         if (identifier == null) {

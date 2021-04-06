@@ -40,16 +40,16 @@ import java.util.concurrent.ThreadLocalRandom;
 @RequestMapping(path = "/api/internal/data", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
 public class BackendDataController {
 
-    private final ObjectMapper mapper;
+    private final ObjectMapper noJsonValueMapper;
     private final HangarConfig config;
     private final PlatformService platformService;
 
     @Autowired
     public BackendDataController(ObjectMapper mapper, HangarConfig config, PlatformService platformService) {
         this.config = config;
-        this.mapper = mapper.copy();
+        this.noJsonValueMapper = mapper.copy();
         this.platformService = platformService;
-        this.mapper.setAnnotationIntrospector(new JacksonAnnotationIntrospector() {
+        this.noJsonValueMapper.setAnnotationIntrospector(new JacksonAnnotationIntrospector() {
             @Override
             protected <A extends Annotation> A _findAnnotation(Annotated annotated, Class<A> annoClass) {
                 if (!annotated.hasAnnotation(JsonValue.class)) {
@@ -62,14 +62,14 @@ public class BackendDataController {
 
     @GetMapping("/categories")
     public ResponseEntity<ArrayNode> getCategories() {
-        return ResponseEntity.ok(mapper.valueToTree(Category.getValues()));
+        return ResponseEntity.ok(noJsonValueMapper.valueToTree(Category.getValues()));
     }
 
     @GetMapping("/permissions")
     public ResponseEntity<ArrayNode> getPermissions() {
-        ArrayNode arrayNode = mapper.createArrayNode();
+        ArrayNode arrayNode = noJsonValueMapper.createArrayNode();
         for (NamedPermission namedPermission : NamedPermission.getValues()) {
-            ObjectNode namedPermissionObject = mapper.createObjectNode();
+            ObjectNode namedPermissionObject = noJsonValueMapper.createObjectNode();
             namedPermissionObject.put("value", namedPermission.getValue());
             namedPermissionObject.put("frontendName", namedPermission.getFrontendName());
             namedPermissionObject.put("permission", namedPermission.getPermission().toBinString());
@@ -80,11 +80,11 @@ public class BackendDataController {
 
     @GetMapping("/platforms")
     public ResponseEntity<ArrayNode> getPlatforms() {
-        ArrayNode arrayNode = mapper.createArrayNode();
+        ArrayNode arrayNode = noJsonValueMapper.createArrayNode();
         for (Platform platform : Platform.getValues()) {
-            ObjectNode objectNode = mapper.valueToTree(platform);
-            objectNode.set("tagColor", mapper.valueToTree(platform.getTagColor()));
-            objectNode.set("possibleVersions", mapper.valueToTree(platformService.getVersionsForPlatform(platform)));
+            ObjectNode objectNode = noJsonValueMapper.valueToTree(platform);
+            objectNode.set("tagColor", noJsonValueMapper.valueToTree(platform.getTagColor()));
+            objectNode.set("possibleVersions", noJsonValueMapper.valueToTree(platformService.getVersionsForPlatform(platform)));
             arrayNode.add(objectNode);
         }
         return ResponseEntity.ok(arrayNode);
@@ -92,9 +92,9 @@ public class BackendDataController {
 
     @GetMapping("/channelColors")
     public ResponseEntity<ArrayNode> getColors() {
-        ArrayNode arrayNode = mapper.createArrayNode();
+        ArrayNode arrayNode = noJsonValueMapper.createArrayNode();
         for (Color color : Color.getNonTransparentValues()) {
-            ObjectNode objectNode = mapper.createObjectNode()
+            ObjectNode objectNode = noJsonValueMapper.createObjectNode()
                     .put("name", color.name())
                     .put("hex", color.getHex());
             arrayNode.add(objectNode);
@@ -105,9 +105,9 @@ public class BackendDataController {
     @Secured("ROLE_USER")
     @GetMapping("/flagReasons")
     public ResponseEntity<ArrayNode> getFlagReasons() {
-        ArrayNode arrayNode = mapper.createArrayNode();
+        ArrayNode arrayNode = noJsonValueMapper.createArrayNode();
         for (FlagReason flagReason : FlagReason.getValues()) {
-            ObjectNode objectNode = mapper.createObjectNode()
+            ObjectNode objectNode = noJsonValueMapper.createObjectNode()
                     .put("type", flagReason.name())
                     .put("title", flagReason.getTitle());
             arrayNode.add(objectNode);
@@ -142,9 +142,9 @@ public class BackendDataController {
 
     @GetMapping("/visibilities")
     public ResponseEntity<ArrayNode> getVisibilities() {
-        ArrayNode arrayNode = mapper.createArrayNode();
+        ArrayNode arrayNode = noJsonValueMapper.createArrayNode();
         for (Visibility value : Visibility.getValues()) {
-            ObjectNode objectNode = mapper.createObjectNode();
+            ObjectNode objectNode = noJsonValueMapper.createObjectNode();
             objectNode.put("name", value.getName())
                     .put("showModal", value.getShowModal())
                     .put("cssClass", value.getCssClass())
@@ -162,20 +162,20 @@ public class BackendDataController {
 
     @GetMapping("/validations")
     public ResponseEntity<ObjectNode> getValidations() {
-        ObjectNode validations = mapper.createObjectNode();
-        ObjectNode projectValidations = mapper.createObjectNode();
-        projectValidations.set("name", mapper.valueToTree(new Validation(config.projects.getNameRegex(), config.projects.getMaxNameLen(), null)));
-        projectValidations.set("desc", mapper.valueToTree(new Validation(null, config.projects.getMaxDescLen(), null)));
-        projectValidations.set("keywords", mapper.valueToTree(new Validation(null, config.projects.getMaxKeywords(), null)));
-        projectValidations.set("channels", mapper.valueToTree(new Validation(config.channels.getNameRegex(), config.channels.getMaxNameLen(), null)));
-        projectValidations.set("pageName", mapper.valueToTree(new Validation(config.pages.getNameRegex(), config.pages.getMaxNameLen(), config.pages.getMinNameLen())));
-        projectValidations.set("pageContent", mapper.valueToTree(new Validation(null, config.pages.getMaxLen(), config.pages.getMinLen())));
+        ObjectNode validations = noJsonValueMapper.createObjectNode();
+        ObjectNode projectValidations = noJsonValueMapper.createObjectNode();
+        projectValidations.set("name", noJsonValueMapper.valueToTree(new Validation(config.projects.getNameRegex(), config.projects.getMaxNameLen(), null)));
+        projectValidations.set("desc", noJsonValueMapper.valueToTree(new Validation(null, config.projects.getMaxDescLen(), null)));
+        projectValidations.set("keywords", noJsonValueMapper.valueToTree(new Validation(null, config.projects.getMaxKeywords(), null)));
+        projectValidations.set("channels", noJsonValueMapper.valueToTree(new Validation(config.channels.getNameRegex(), config.channels.getMaxNameLen(), null)));
+        projectValidations.set("pageName", noJsonValueMapper.valueToTree(new Validation(config.pages.getNameRegex(), config.pages.getMaxNameLen(), config.pages.getMinNameLen())));
+        projectValidations.set("pageContent", noJsonValueMapper.valueToTree(new Validation(null, config.pages.getMaxLen(), config.pages.getMinLen())));
         projectValidations.put("maxPageCount", config.projects.getMaxPages());
         projectValidations.put("maxChannelCount", config.projects.getMaxChannels());
         validations.set("project", projectValidations);
-        validations.set("userTagline", mapper.valueToTree(new Validation(null, config.user.getMaxTaglineLen(), null)));
-        validations.set("version", mapper.valueToTree(new Validation(config.projects.getVersionNameRegex(), null, null)));
-        validations.set("org", mapper.valueToTree(new Validation(config.org.getNameRegex(), config.org.getMaxNameLen(), config.org.getMinNameLen())));
+        validations.set("userTagline", noJsonValueMapper.valueToTree(new Validation(null, config.user.getMaxTaglineLen(), null)));
+        validations.set("version", noJsonValueMapper.valueToTree(new Validation(config.projects.getVersionNameRegex(), null, null)));
+        validations.set("org", noJsonValueMapper.valueToTree(new Validation(config.org.getNameRegex(), config.org.getMaxNameLen(), config.org.getMinNameLen())));
         validations.put("maxOrgCount", config.org.getCreateLimit());
         validations.put("urlRegex", config.getUrlRegex());
         return ResponseEntity.ok(validations);

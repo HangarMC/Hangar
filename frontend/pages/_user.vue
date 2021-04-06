@@ -135,9 +135,13 @@ export default class UserParentPage extends UserPage {
 
     get buttons(): Button[] {
         const buttons = [] as Button[];
-        if (this.isCurrentUser && !this.user.isOrganization) {
-            buttons.push({ icon: 'mdi-cog', url: `${process.env.authHost}/accounts/settings`, external: true, name: 'settings' });
-            buttons.push({ icon: 'mdi-key', url: '/' + this.user.name + '/settings/api-keys', name: 'apiKeys' });
+        if (!this.user.isOrganization) {
+            if (this.isCurrentUser) {
+                buttons.push({ icon: 'mdi-cog', url: `${process.env.authHost}/accounts/settings`, external: true, name: 'settings' });
+            }
+            if (this.isCurrentUser || this.$perms.canEditAllUserSettings) {
+                buttons.push({ icon: 'mdi-key', url: '/' + this.user.name + '/settings/api-keys', name: 'apiKeys' });
+            }
         }
         if (this.$perms.canAccessModNotesAndFlags || this.$perms.isReviewer) {
             buttons.push({ icon: 'mdi-calendar', url: '', name: 'activity' });

@@ -1,6 +1,6 @@
 package io.papermc.hangar.model.db.stats;
 
-import io.papermc.hangar.model.db.ProjectIdentified;
+import io.papermc.hangar.model.ProjectIdentified;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 import java.net.InetAddress;

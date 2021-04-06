@@ -2,9 +2,9 @@ package io.papermc.hangar.model.internal.projects;
 
 import io.papermc.hangar.config.jackson.RequiresPermission;
 import io.papermc.hangar.db.customtypes.RoleCategory;
+import io.papermc.hangar.model.ProjectIdentified;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.common.NamedPermission;
-import io.papermc.hangar.model.db.ProjectIdentified;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.internal.Joinable;

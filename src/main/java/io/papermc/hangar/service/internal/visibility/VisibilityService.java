@@ -2,9 +2,9 @@ package io.papermc.hangar.service.internal.visibility;
 
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.ModelVisible;
+import io.papermc.hangar.model.ProjectIdentified;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.projects.Visibility;
-import io.papermc.hangar.model.db.ProjectIdentified;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.db.visibility.VisibilityChangeTable;
 import io.papermc.hangar.service.HangarService;

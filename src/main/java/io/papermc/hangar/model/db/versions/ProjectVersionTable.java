@@ -2,11 +2,11 @@ package io.papermc.hangar.model.db.versions;
 
 import io.papermc.hangar.model.ModelVisible;
 import io.papermc.hangar.model.Named;
+import io.papermc.hangar.model.ProjectIdentified;
+import io.papermc.hangar.model.VersionIdentified;
 import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.common.projects.Visibility;
-import io.papermc.hangar.model.db.ProjectIdentified;
 import io.papermc.hangar.model.db.Table;
-import io.papermc.hangar.model.db.VersionIdentified;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 

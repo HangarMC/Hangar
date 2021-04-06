@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
-import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Prompt;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.UserTable;
@@ -17,6 +16,7 @@ import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.model.internal.user.notifications.HangarInvite.InviteType;
 import io.papermc.hangar.model.internal.user.notifications.HangarNotification;
 import io.papermc.hangar.security.annotations.LoggedIn;
+import io.papermc.hangar.security.annotations.currentuser.CurrentUser;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
@@ -77,6 +77,7 @@ public class HangarUserController extends HangarController {
     }
 
     @Unlocked
+    @CurrentUser("#userName")
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(perms = NamedPermission.EDIT_OWN_USER_SETTINGS)
     @PostMapping(path = "/users/{userName}/settings/tagline", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -84,9 +85,6 @@ public class HangarUserController extends HangarController {
         UserTable userTable = userService.getUserTable(userName);
         if (userTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
-        }
-        if (userTable.getId() != getHangarPrincipal().getId() && !getGlobalPermissions().has(Permission.EditAllUserSettings)) {
-            throw new HangarApiException(HttpStatus.FORBIDDEN);
         }
         if (content.getContent().length() > config.user.getMaxTaglineLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "author.error.invalidTagline");

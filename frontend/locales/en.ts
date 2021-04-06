@@ -622,6 +622,7 @@ const msgs: LocaleMessageObject = {
         },
     },
     apiKeys: {
+        title: 'API Keys',
         createNew: 'Create new key',
         existing: 'Existing keys',
         name: 'Name',
@@ -632,6 +633,17 @@ const msgs: LocaleMessageObject = {
         deleteKey: 'Delete Key',
         createKey: 'Create key',
         noKeys: 'There are no api keys yet. You can create one on the right side',
+        success: {
+            delete: 'You have deleted the key: {0}',
+            create: 'You have created the key: {0}',
+        },
+        error: {
+            notEnoughPerms: 'Not enough permissions to create that key',
+            duplicateName: 'Duplicate key name',
+        },
+    },
+    apiDocs: {
+        title: 'API Docs',
     },
     platformVersions: {
         title: 'Configure Platform Versions',

@@ -1,10 +1,10 @@
 package io.papermc.hangar.model.db.projects;
 
 import io.papermc.hangar.model.ModelVisible;
+import io.papermc.hangar.model.ProjectIdentified;
 import io.papermc.hangar.model.Visitable;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.Visibility;
-import io.papermc.hangar.model.db.ProjectIdentified;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
 import io.papermc.hangar.util.StringUtils;

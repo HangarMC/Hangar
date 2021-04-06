@@ -1,9 +1,7 @@
 package io.papermc.hangar.db.daoold;
 
-import io.papermc.hangar.db.modelold.ApiKeysTable;
 import io.papermc.hangar.db.modelold.ProjectApiKeysTable;
 import io.papermc.hangar.modelold.ApiAuthInfo;
-import io.papermc.hangar.modelold.viewhelpers.ApiKey;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
@@ -15,27 +13,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-@RegisterBeanMapper(ApiKeysTable.class)
 @RegisterBeanMapper(ProjectApiKeysTable.class)
 public interface ApiKeyDao {
-
-    @Timestamped
-    @SqlUpdate("INSERT INTO api_keys (created_at, name, owner_id, token_identifier, token, raw_key_permissions) VALUES (:now, :name, :ownerId, :tokenIdentifier, crypt(:token, gen_salt('bf')), :permValue::BIT(64))")
-    void insert(@BindBean ApiKeysTable apiKeysTable, long permValue);
-
-    @SqlUpdate("DELETE FROM api_keys k WHERE k.name = :keyName AND k.owner_id = :ownerId")
-    int delete(String keyName, long ownerId);
-
-    // Frontend key request, only show non-private info
-    @RegisterBeanMapper(ApiKey.class)
-    @SqlQuery("SELECT id, name, token_identifier, raw_key_permissions::BIGINT perm_value FROM api_keys WHERE owner_id = :ownerId")
-    List<ApiKey> getByOwner(long ownerId);
-
-    @SqlQuery("SELECT *, raw_key_permissions::BIGINT perm_value FROM api_keys WHERE name = :keyName AND owner_id = :ownerId")
-    ApiKeysTable getKey(String keyName, long ownerId);
-
-    @SqlQuery("SELECT *, raw_key_permissions::BIGINT perm_value FROM api_keys k WHERE k.token_identifier = :identifier AND k.token = crypt(:token, k.token)")
-    ApiKeysTable findApiKey(String identifier, String token);
 
     @Timestamped
     @GetGeneratedKeys

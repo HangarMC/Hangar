@@ -24,6 +24,21 @@ export function LoggedIn(constructor: Function) {
     addMiddleware(constructor, loggedInMiddleware(401, 'You must be logged in to perform this action'));
 }
 
+export function CurrentUser(constructor: Function) {
+    addMiddleware(constructor, loggedInMiddleware(403), ({ params, store, $perms, error }) => {
+        if (!$perms.canEditAllUserSettings) {
+            if (!params.user) {
+                throw new TypeError("Must have 'user' as a route param to use CurrentUser");
+            }
+            if (params.user !== (store.state.auth as AuthState).user!.name) {
+                error({
+                    statusCode: 403,
+                });
+            }
+        }
+    });
+}
+
 // TODO this maybe should use the global permissions store in the JWT to reduce db lookups?
 export function GlobalPermission(...permissions: NamedPermission[]) {
     const middleware: Middleware = ({ error, $api, $util }: Context) => {

@@ -2,7 +2,7 @@ package io.papermc.hangar.model.db.projects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.model.Named;
-import io.papermc.hangar.model.db.ProjectIdentified;
+import io.papermc.hangar.model.ProjectIdentified;
 import io.papermc.hangar.model.db.Table;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
