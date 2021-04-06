@@ -10,6 +10,7 @@
                     <v-text-field
                         v-model.trim="form.name"
                         :label="$t('channel.modal.name')"
+                        :autofocus="!form.name"
                         :rules="[
                             $util.$vc.require($t('channel.modal.name')),
                             $util.$vc.regex($t('channel.modal.name'), validations.project.channels.regex),

@@ -61,5 +61,12 @@ public class VersionTagFilter implements Filter<VersionTagFilterInstance> {
             });
             sb.append(")");
         }
+
+        @Override
+        public String toString() {
+            return "VersionTagFilterInstance{" +
+                    "versionTags=" + versionTags +
+                    '}';
+        }
     }
 }

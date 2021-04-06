@@ -22,6 +22,7 @@ const msgs: LocaleMessageObject = {
         home: 'Home',
         message: 'Message',
         refresh: 'Refresh',
+        confirm: 'Confirm',
         error: {
             invalidUrl: 'Invalid URL format',
         },
@@ -524,6 +525,12 @@ const msgs: LocaleMessageObject = {
             apiKeys: 'API Keys',
             activity: 'User Activity',
             admin: 'User Admin',
+        },
+        lock: {
+            confirmLock: "Lock {0}'s account?",
+            confirmUnlock: "Unlock {0}'s account?",
+            successLock: "Successfully locked {0}'s account",
+            successUnlock: "Successfully unlocked {0}'s account",
         },
         org: {
             editAvatar: 'Edit avatar',

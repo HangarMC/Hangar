@@ -48,9 +48,9 @@ public @interface BindPagination {
             if (!pagination.getSorters().isEmpty()) {
                 sb.append(" ORDER BY ");
             }
-            var iter = pagination.getSorters().iterator();
+            var iter = pagination.getSorters().entrySet().iterator();
             while (iter.hasNext()) {
-                iter.next().accept(sb);
+                iter.next().getValue().accept(sb);
                 if (iter.hasNext()) {
                     sb.append(", ");
                 }

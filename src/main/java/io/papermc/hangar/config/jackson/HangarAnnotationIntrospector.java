@@ -17,7 +17,7 @@ public class HangarAnnotationIntrospector extends JacksonAnnotationIntrospector 
     private static final Logger logger = LoggerFactory.getLogger(HangarAnnotationIntrospector.class);
 
     @Override
-    protected boolean _isIgnorable(Annotated a) {
+    public final boolean _isIgnorable(Annotated a) {
         if (a.hasAnnotation(RequiresPermission.class)) {
             logger.debug("Found " + RequiresPermission.class + " annotation on " + a.getName());
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -30,6 +30,7 @@ public class HangarAnnotationIntrospector extends JacksonAnnotationIntrospector 
                 return true;
             }
             logger.debug(authentication.getName() + " has required permissions: " + Arrays.toString(requiredPerms));
+            // TODO this doesn't seem to always work... Like it wasn't working (aka it wasn't filtering out fields that the user didn't have permission for) but all I did was add a new line here, and re-built, and it worked. So idk what's up with that.
         }
         return super._isIgnorable(a);
     }

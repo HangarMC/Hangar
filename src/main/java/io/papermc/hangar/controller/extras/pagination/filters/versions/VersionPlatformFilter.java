@@ -10,6 +10,8 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import java.util.Arrays;
+
 @Component
 public class VersionPlatformFilter implements Filter<VersionPlatformFilterInstance> {
 
@@ -55,6 +57,13 @@ public class VersionPlatformFilter implements Filter<VersionPlatformFilterInstan
                 }
             }
             sb.append(")");
+        }
+
+        @Override
+        public String toString() {
+            return "VersionPlatformFilterInstance{" +
+                    "platforms=" + Arrays.toString(platforms) +
+                    '}';
         }
     }
 }

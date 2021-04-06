@@ -38,7 +38,6 @@ declare module 'hangar-internal' {
     interface HangarUser extends User, Table {
         headerData: HeaderData;
         readPrompts: number[];
-        locked: boolean;
         language: string;
     }
 

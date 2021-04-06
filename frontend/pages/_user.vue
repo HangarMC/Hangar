@@ -69,6 +69,25 @@
                     </template>
                     <span>{{ $t(`author.tooltips.${btn.name}`) }}</span>
                 </v-tooltip>
+                <ConfirmModal
+                    v-if="!isCurrentUser && !user.isOrganization && $perms.isStaff"
+                    :title="$t(`author.lock.confirm${user.locked ? 'Unlock' : 'Lock'}`, [user.name])"
+                    :submit="toggleUserLock"
+                    comment
+                >
+                    <template #activator="{ on: onModal, attrs }">
+                        <v-tooltip bottom>
+                            <template #activator="{ on: onTooltip }">
+                                <v-btn icon small v-bind="attrs" v-on="{ ...onModal, ...onTooltip }">
+                                    <v-icon small :color="user.locked ? 'success' : 'error'">{{
+                                        user.locked ? 'mdi-lock-open-outline' : 'mdi-lock-outline'
+                                    }}</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>{{ $t(`author.tooltips.${user.locked ? 'unlock' : 'lock'}`) }}</span>
+                        </v-tooltip>
+                    </template>
+                </ConfirmModal>
             </v-col>
             <v-spacer />
             <v-col cols="auto">
@@ -95,17 +114,18 @@ import UserAvatar from '../components/users/UserAvatar.vue';
 import HangarModal from '~/components/modals/HangarModal.vue';
 import { UserPage } from '~/components/mixins';
 import Prompt from '~/components/users/Prompt.vue';
+import ConfirmModal from '~/components/modals/ConfirmModal.vue';
 
 interface Button {
     icon: string;
     action?: Function;
     external?: boolean;
-    url: string;
+    url?: string;
     name: string;
 }
 
 @Component({
-    components: { Prompt, HangarModal, UserAvatar },
+    components: { ConfirmModal, Prompt, HangarModal, UserAvatar },
 })
 export default class UserParentPage extends UserPage {
     taglineForm: string | null = null;
@@ -117,8 +137,6 @@ export default class UserParentPage extends UserPage {
         const buttons = [] as Button[];
         if (this.isCurrentUser && !this.user.isOrganization) {
             buttons.push({ icon: 'mdi-cog', url: `${process.env.authHost}/accounts/settings`, external: true, name: 'settings' });
-            buttons.push({ icon: 'mdi-lock-open-outline', url: '', name: 'lock' });
-            buttons.push({ icon: 'mdi-lock-outline', url: '', name: 'unlock' });
             buttons.push({ icon: 'mdi-key', url: '/' + this.user.name + '/settings/api-keys', name: 'apiKeys' });
         }
         if (this.$perms.canAccessModNotesAndFlags || this.$perms.isReviewer) {
@@ -179,6 +197,18 @@ export default class UserParentPage extends UserPage {
                 window.location.assign(uri);
             })
             .catch<any>(this.$util.handleRequestError);
+    }
+
+    toggleUserLock(comment: string) {
+        return this.$api
+            .requestInternal(`admin/lock-user/${this.user.name}/${!this.user.locked}`, true, 'post', {
+                content: comment,
+            })
+            .then(() => {
+                this.$nuxt.refresh();
+                this.$util.success(this.$t(`author.lock.success${this.user.locked ? 'Unlock' : 'Lock'}`, [this.user.name]));
+            })
+            .catch(this.$util.handleRequestError);
     }
 
     async asyncData({ $api, $util, params }: Context) {

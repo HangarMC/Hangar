@@ -20,8 +20,6 @@ public class StringContent {
 
     @Override
     public String toString() {
-        return "StringContent{" +
-                "content='" + content + '\'' +
-                '}';
+        return content;
     }
 }

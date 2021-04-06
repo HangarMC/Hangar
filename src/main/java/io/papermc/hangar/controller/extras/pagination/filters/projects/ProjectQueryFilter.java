@@ -43,5 +43,12 @@ public class ProjectQueryFilter implements Filter<ProjectQueryFilterInstance> {
             sb.append("('english', :query)").append(")");
             q.bind("query", query.trim());
         }
+
+        @Override
+        public String toString() {
+            return "ProjectQueryFilterInstance{" +
+                    "query='" + query + '\'' +
+                    '}';
+        }
     }
 }

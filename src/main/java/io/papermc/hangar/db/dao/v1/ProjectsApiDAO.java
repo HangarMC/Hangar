@@ -135,6 +135,7 @@ public interface ProjectsApiDAO {
               "       u.name," +
               "       u.tagline," +
               "       u.join_date," +
+              "       u.locked," +
               "       array_agg(r.name) roles," +
               "       -1 as projectCount" + // TODO yes, I do think we need to query this. This is public API, and it'd be wrong to just not include it here.
               "   FROM projects p " +
@@ -160,6 +161,7 @@ public interface ProjectsApiDAO {
               "       u.name," +
               "       u.tagline," +
               "       u.join_date," +
+              "       u.locked," +
               "       array_agg(r.name) roles," +
               "       -1 as projectCount" + // TODO yes, I do think we need to query this. This is public API, and it'd be wrong to just not include it here.
               "   FROM projects p " +

@@ -89,5 +89,13 @@ public class ProjectTagFilter implements Filter<ProjectTagFilterInstance> {
             }
             sb.append(")");
         }
+
+        @Override
+        public String toString() {
+            return "ProjectTagFilterInstance{" +
+                    "tagNames=" + tagNames +
+                    ", tagNamesAndData=" + tagNamesAndData +
+                    '}';
+        }
     }
 }

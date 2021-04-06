@@ -8,8 +8,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.Duration;
-import java.time.OffsetDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,32 +19,10 @@ public class AuthUtils {
 
     private AuthUtils() { }
 
-    public static RuntimeException unAuth() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.WWW_AUTHENTICATE, "HangarApi");
-        return new HangarApiException(HttpStatus.UNAUTHORIZED, headers);
-    }
-
     public static RuntimeException unAuth(String message) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.WWW_AUTHENTICATE, "HangarApi");
         return new HangarApiException(HttpStatus.UNAUTHORIZED, message, headers);
-    }
-
-    public static OffsetDateTime expiration(Duration expirationDuration, Long userChoice) {
-        long durationSeconds = expirationDuration.toSeconds();
-
-        if (userChoice == null) {
-            return OffsetDateTime.now().plusSeconds(durationSeconds);
-        } else if (userChoice <= durationSeconds) {
-            return OffsetDateTime.now().plusSeconds(userChoice);
-        } else {
-            return null;
-        }
-    }
-
-    public static AuthCredentials parseAuthHeader(boolean requireHeader) {
-        return parseAuthHeader(null, requireHeader);
     }
 
     public static AuthCredentials parseAuthHeader(@Nullable HttpServletRequest request, boolean requireHeader) {

@@ -1,7 +1,5 @@
 package io.papermc.hangar.serviceold;
 
-import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.customtypes.LoggedActionType.UserContext;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.daoold.NotificationsDao;
 import io.papermc.hangar.db.daoold.OrganizationDao;
@@ -119,16 +117,6 @@ public class UserService extends HangarService {
                 hasProjectApprovals,
                 hasReviewQueue
         );
-    }
-
-    public void setLocked(UsersTable user, boolean locked) {
-        user.setIsLocked(locked);
-        if (locked) {
-            userActionLogService.user(request, LoggedActionType.USER_LOCKED.with(UserContext.of(user.getId())), user.getName() + " is now locked", user.getName() + " was unlocked");
-        } else {
-            userActionLogService.user(request, LoggedActionType.USER_UNLOCKED.with(UserContext.of(user.getId())), user.getName() + " is now unlocked", user.getName() + " was locked");
-        }
-        userDao.get().update(user);
     }
 
     public UserData getUserData(long userId) {

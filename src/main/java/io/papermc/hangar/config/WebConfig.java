@@ -6,10 +6,10 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesAnnotationIntrospec
 import freemarker.core.HTMLOutputFormat;
 import freemarker.template.TemplateException;
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.config.hangar.HangarSecurityConfig;
 import io.papermc.hangar.config.jackson.HangarAnnotationIntrospector;
 import io.papermc.hangar.securityold.UserLockExceptionResolver;
 import no.api.freemarker.java8.Java8ObjectWrapper;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -24,9 +24,11 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.resource.CssLinkResourceTransformer;
 import org.springframework.web.servlet.resource.ResourceUrlEncodingFilter;
 import org.springframework.web.servlet.resource.VersionResourceResolver;
@@ -34,9 +36,10 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
 import javax.servlet.Filter;
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
@@ -47,13 +50,15 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     private final List<Converter<?,?>> converters;
     private final List<ConverterFactory<?,?>> converterFactories;
+    private final List<HandlerMethodArgumentResolver> resolvers;
 
     @Autowired
-    public WebConfig(HangarConfig hangarConfig, ObjectMapper mapper, List<Converter<?, ?>> converters, List<ConverterFactory<?, ?>> converterFactories) {
+    public WebConfig(HangarConfig hangarConfig, ObjectMapper mapper, List<Converter<?, ?>> converters, List<ConverterFactory<?, ?>> converterFactories, List<HandlerMethodArgumentResolver> resolvers) {
         this.hangarConfig = hangarConfig;
         this.mapper = mapper;
         this.converters = converters;
         this.converterFactories = converterFactories;
+        this.resolvers = resolvers;
     }
 
     // TODO remove after freemarker is gone
@@ -146,22 +151,25 @@ public class WebConfig extends WebMvcConfigurationSupport {
         super.addDefaultHttpMessageConverters(converters);
     }
 
-    // TODO maybe? remove after freemarker is gone
-//    @Bean
-//    public ErrorViewResolver errorViewResolver() {
-//        return (request, status, model) -> {
-//            if (status == HttpStatus.GATEWAY_TIMEOUT || status == HttpStatus.REQUEST_TIMEOUT) {
-//                return new ModelAndView("errors/timeout");
-//            } else if (status == HttpStatus.NOT_FOUND) {
-//                return new ModelAndView("errors/notFound");
-//            } else if (status == HttpStatus.FORBIDDEN) {
-//                return Routes.USERS_LOGIN.getRedirect("", "", request.getRequestURI());
-//            } else {
-//                return new ModelAndView("errors/error");
-//            }
-//        };
+//    @Override
+//    protected void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+//        argumentResolvers.addAll(0, resolvers);
 //    }
 
+
+    @NotNull
+    @Override
+    protected RequestMappingHandlerAdapter createRequestMappingHandlerAdapter() {
+        return new RequestMappingHandlerAdapter() {
+            @Override
+            public void afterPropertiesSet() {
+                super.afterPropertiesSet();
+                List<HandlerMethodArgumentResolver> existingResolvers = new ArrayList<>(Objects.requireNonNull(getArgumentResolvers()));
+                existingResolvers.addAll(0, resolvers);
+                this.setArgumentResolvers(existingResolvers);
+            }
+        };
+    }
 
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(ObjectMapper mapper) {

@@ -18,9 +18,10 @@ public class User extends Model implements Named {
     private final List<GlobalRole> roles;
     private final long projectCount;
     private final boolean isOrganization;
+    private final boolean locked;
 
     @JdbiConstructor
-    public User(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<GlobalRole> roles, long projectCount) {
+    public User(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<GlobalRole> roles, long projectCount, boolean locked) {
         super(createdAt);
         this.name = name;
         this.tagline = tagline;
@@ -28,6 +29,7 @@ public class User extends Model implements Named {
         this.roles = roles;
         this.projectCount = projectCount;
         this.isOrganization = roles.contains(GlobalRole.ORGANIZATION);
+        this.locked = locked;
     }
 
     @Override
@@ -56,18 +58,22 @@ public class User extends Model implements Named {
         return isOrganization;
     }
 
+    public boolean isLocked() {
+        return locked;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         User user = (User) o;
-        return projectCount == user.projectCount && isOrganization == user.isOrganization && name.equals(user.name) && Objects.equals(tagline, user.tagline) && joinDate.equals(user.joinDate) && roles.equals(user.roles);
+        return projectCount == user.projectCount && isOrganization == user.isOrganization && locked == user.locked && name.equals(user.name) && Objects.equals(tagline, user.tagline) && joinDate.equals(user.joinDate) && roles.equals(user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), name, tagline, joinDate, roles, projectCount, isOrganization);
+        return Objects.hash(super.hashCode(), name, tagline, joinDate, roles, projectCount, isOrganization, locked);
     }
 
     @Override
@@ -79,6 +85,7 @@ public class User extends Model implements Named {
                 ", roles=" + roles +
                 ", projectCount=" + projectCount +
                 ", isOrganization=" + isOrganization +
+                ", locked=" + locked +
                 "} " + super.toString();
     }
 }

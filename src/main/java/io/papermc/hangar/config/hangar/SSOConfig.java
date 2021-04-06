@@ -7,7 +7,7 @@ import java.time.Duration;
 
 @Component
 @ConfigurationProperties(prefix = "hangar.sso")
-public class SsoConfig {
+public class SSOConfig {
 
     // TODO weed out the useless settings
     private boolean enabled = true;

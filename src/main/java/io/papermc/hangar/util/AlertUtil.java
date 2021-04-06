@@ -1,6 +1,5 @@
 package io.papermc.hangar.util;
 
-import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -34,11 +33,6 @@ public class AlertUtil {
         return input;
     }
 
-    public static ModelAndView showAlert(ModelAndView mav, AlertType alertType, String alertMessage, Object...args) {
-        applyAlert(mav.getModelMap(), alertType, alertMessage, args);
-        return mav;
-    }
-
     public static ModelAndView showAlert(ModelAndView mav, AlertType alertType, String alertMessage, String... args) {
         applyAlert(mav.getModelMap(), alertType, alertMessage, (Object[]) args);
         return mav;
@@ -49,20 +43,5 @@ public class AlertUtil {
         attributes.addFlashAttribute(MSG, alertMsg);
         attributes.addFlashAttribute(ARGS, args);
         return attributes;
-    }
-    // TODO alert args in alert.ftlh
-    public static ModelAndView transferAlerts(ModelAndView mav, ModelMap modelMap) {
-        if (modelMap.containsAttribute(TYPE) && modelMap.containsAttribute(MSG)) {
-            AlertType type = (AlertType) modelMap.getAttribute(TYPE);
-            String msg = (String) modelMap.getAttribute(MSG);
-            String[] args = null;
-            if (modelMap.containsAttribute(ARGS)) {
-                args = (String[]) modelMap.getAttribute(ARGS);
-            }
-            return showAlert(mav, type, msg, args);
-        } else if (modelMap.containsAttribute("alerts")) {
-            mav.addObject("alerts", modelMap.getAttribute("alerts"));
-        }
-        return mav;
     }
 }

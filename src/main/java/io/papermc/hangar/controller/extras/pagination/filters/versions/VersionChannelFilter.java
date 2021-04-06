@@ -7,6 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import java.util.Arrays;
+
 @Component
 public class VersionChannelFilter implements Filter<VersionChannelFilterInstance> {
 
@@ -45,6 +47,13 @@ public class VersionChannelFilter implements Filter<VersionChannelFilterInstance
                 }
             }
             sb.append(")");
+        }
+
+        @Override
+        public String toString() {
+            return "VersionChannelFilterInstance{" +
+                    "channels=" + Arrays.toString(channels) +
+                    '}';
         }
     }
 }

@@ -111,15 +111,8 @@ showFooter: Boolean = true, noContainer: Boolean = false, additionalMeta: Html =
             <#nested>
         <#else>
             <div class="container<#if showHeader> site-header-margin</#if>">
-                <#import "../utils/announcement.ftlh" as announcement>
-                <@announcement.announcement />
                 <div class="row">
                     <div class="col-12">
-                        <#import "../utils/alert.ftlh" as alert>
-                        <@alert.alert "success" />
-                        <@alert.alert "error" />
-                        <@alert.alert "info" />
-                        <@alert.alert "warning" />
                     </div>
                 </div>
 

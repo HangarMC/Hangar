@@ -19,6 +19,7 @@ declare module 'hangar-api' {
         roles: Role[];
         projectCount: number;
         isOrganization: boolean;
+        locked: boolean;
     }
 
     interface ApiKey extends Model, Named {

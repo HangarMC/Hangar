@@ -6,6 +6,9 @@ import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.model.common.Prompt;
 import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.LoggedAction;
+import io.papermc.hangar.model.internal.logs.contexts.UserContext;
 import io.papermc.hangar.model.internal.sso.AuthUser;
 import io.papermc.hangar.model.internal.sso.SsoSyncData;
 import io.papermc.hangar.service.HangarService;
@@ -14,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.function.Function;
@@ -67,6 +71,22 @@ public class UserService extends HangarService {
         if (!userTable.getReadPrompts().contains(prompt.ordinal())) {
             userTable.getReadPrompts().add(prompt.ordinal());
             userDAO.update(userTable);
+        }
+    }
+
+    @Transactional
+    public void setLocked(UserTable user, boolean locked, String comment) {
+        if (user.isLocked() != locked) {
+            user.setLocked(locked);
+            userDAO.update(user);
+            UserContext userContext = UserContext.of(user.getUserId());
+            LoggedAction<UserContext> loggedAction;
+            if (locked) {
+                loggedAction = LogAction.USER_LOCKED.create(userContext, user.getName() + " is now locked: " + comment, user.getName() + " was unlocked");
+            } else {
+                loggedAction = LogAction.USER_UNLOCKED.create(userContext, user.getName() + " has been unlocked: " + comment, user.getName() + " was locked");
+            }
+            userActionLogService.user(loggedAction);
         }
     }
 

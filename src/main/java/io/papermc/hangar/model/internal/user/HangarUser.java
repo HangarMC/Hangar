@@ -13,14 +13,12 @@ public class HangarUser extends User implements Identified {
     private final long id;
     private HeaderData headerData;
     private final List<Integer> readPrompts;
-    private final boolean locked;
     private final String language;
 
-    public HangarUser(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<GlobalRole> roles, long projectCount, long id, List<Integer> readPrompts, boolean locked, String language) {
-        super(createdAt, name, tagline, joinDate, roles, projectCount);
+    public HangarUser(OffsetDateTime createdAt, String name, String tagline, OffsetDateTime joinDate, List<GlobalRole> roles, long projectCount, boolean locked, long id, List<Integer> readPrompts, String language) {
+        super(createdAt, name, tagline, joinDate, roles, projectCount, locked);
         this.id = id;
         this.readPrompts = readPrompts;
-        this.locked = locked;
         this.language = language;
     }
 
@@ -41,10 +39,6 @@ public class HangarUser extends User implements Identified {
         return readPrompts;
     }
 
-    public boolean isLocked() {
-        return locked;
-    }
-
     public String getLanguage() {
         return language;
     }
@@ -56,7 +50,8 @@ public class HangarUser extends User implements Identified {
                 this.getTagline(),
                 this.getJoinDate(),
                 this.getRoles(),
-                this.getProjectCount());
+                this.getProjectCount(),
+                this.isLocked());
     }
 
     public static class HeaderData {

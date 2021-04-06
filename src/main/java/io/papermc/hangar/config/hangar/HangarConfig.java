@@ -49,7 +49,7 @@ public class HangarConfig {
     @NestedConfigurationProperty
     public ApiConfig api;
     @NestedConfigurationProperty
-    public SsoConfig sso;
+    public SSOConfig sso;
     @NestedConfigurationProperty
     public HangarSecurityConfig security;
     @NestedConfigurationProperty
@@ -89,7 +89,7 @@ public class HangarConfig {
     }
 
     @Autowired
-    public HangarConfig(FakeUserConfig fakeUser, HomepageConfig homepage, ChannelsConfig channels, PagesConfig pages, ProjectsConfig projects, UserConfig user, OrganizationsConfig org, ApiConfig api, SsoConfig sso, HangarSecurityConfig security, QueueConfig queue, DiscourseConfig discourse) {
+    public HangarConfig(FakeUserConfig fakeUser, HomepageConfig homepage, ChannelsConfig channels, PagesConfig pages, ProjectsConfig projects, UserConfig user, OrganizationsConfig org, ApiConfig api, SSOConfig sso, HangarSecurityConfig security, QueueConfig queue, DiscourseConfig discourse) {
         this.fakeUser = fakeUser;
         this.homepage = homepage;
         this.channels = channels;
@@ -238,7 +238,7 @@ public class HangarConfig {
         return api;
     }
 
-    public SsoConfig getSso() {
+    public SSOConfig getSso() {
         return sso;
     }
 

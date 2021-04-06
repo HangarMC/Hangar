@@ -1,6 +1,6 @@
 package io.papermc.hangar.controller.api;
 
-import io.papermc.hangar.config.hangar.SsoConfig;
+import io.papermc.hangar.config.hangar.SSOConfig;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.internal.sso.SsoSyncData;
 import io.papermc.hangar.service.internal.auth.SSOService;
@@ -36,10 +36,10 @@ public class SSOSyncController {
 
     private final SSOService ssoService;
     private final UserService userService;
-    private final SsoConfig ssoConfig;
+    private final SSOConfig ssoConfig;
 
     @Autowired
-    public SSOSyncController(SSOService ssoService, UserService userService, SsoConfig ssoConfig) {
+    public SSOSyncController(SSOService ssoService, UserService userService, SSOConfig ssoConfig) {
         this.ssoService = ssoService;
         this.userService = userService;
         this.ssoConfig = ssoConfig;

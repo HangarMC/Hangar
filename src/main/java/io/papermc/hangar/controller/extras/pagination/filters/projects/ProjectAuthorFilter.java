@@ -39,5 +39,12 @@ public class ProjectAuthorFilter implements Filter<ProjectAuthorFilterInstance> 
             sb.append(" AND ").append("p.owner_name").append(" = ").append(":ownerName");
             q.bind("ownerName", ownerName);
         }
+
+        @Override
+        public String toString() {
+            return "ProjectAuthorFilterInstance{" +
+                    "ownerName='" + ownerName + '\'' +
+                    '}';
+        }
     }
 }

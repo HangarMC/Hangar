@@ -10,6 +10,8 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import java.util.Arrays;
+
 @Component
 public class ProjectCategoryFilter implements Filter<ProjectCategoryFilterInstance> {
 
@@ -55,6 +57,13 @@ public class ProjectCategoryFilter implements Filter<ProjectCategoryFilterInstan
                 q.bind("__category__" + i, categories[i]);
             }
             sb.append(")");
+        }
+
+        @Override
+        public String toString() {
+            return "ProjectCategoryFilterInstance{" +
+                    "categories=" + Arrays.toString(categories) +
+                    '}';
         }
     }
 }
