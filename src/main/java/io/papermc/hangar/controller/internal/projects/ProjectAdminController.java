@@ -1,7 +1,5 @@
 package io.papermc.hangar.controller.internal.projects;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
@@ -37,14 +35,12 @@ public class ProjectAdminController extends HangarController {
     private final ProjectAdminService projectAdminService;
     private final ProjectNoteService projectNoteService;
     private final ProjectVisibilityService projectVisibilityService;
-    private final ObjectMapper mapper;
 
     @Autowired
-    public ProjectAdminController(ProjectAdminService projectAdminService, ProjectNoteService projectNoteService, ProjectVisibilityService projectVisibilityService, ObjectMapper mapper) {
+    public ProjectAdminController(ProjectAdminService projectAdminService, ProjectNoteService projectNoteService, ProjectVisibilityService projectVisibilityService) {
         this.projectAdminService = projectAdminService;
         this.projectNoteService = projectNoteService;
         this.projectVisibilityService = projectVisibilityService;
-        this.mapper = mapper;
     }
 
     @PermissionRequired(perms = NamedPermission.MOD_NOTES_AND_FLAGS)
@@ -75,14 +71,5 @@ public class ProjectAdminController extends HangarController {
     @PostMapping("/visibility/{projectId}/sendforapproval")
     public void sendProjectForApproval(@PathVariable long projectId) {
         projectAdminService.sendProjectForApproval(projectId);
-    }
-
-    @PermissionRequired(perms = NamedPermission.REVIEWER)
-    @GetMapping(value = "/admin/approval", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ObjectNode> getProjectApprovals() {
-        ObjectNode objectNode = mapper.createObjectNode();
-        objectNode.set("needsApproval", mapper.valueToTree(projectAdminService.getProjectsNeedingApproval()));
-        objectNode.set("waitingProjects", mapper.valueToTree(projectAdminService.getProjectsWaitingForChanges()));
-        return ResponseEntity.ok(objectNode);
     }
 }

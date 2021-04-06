@@ -40,7 +40,7 @@ export default class AdminApprovalProjectsPage extends HangarComponent {
 
     async asyncData({ $api, $util }: Context) {
         const data = await $api
-            .requestInternal<{ needsApproval: ProjectApproval[]; waitingProjects: ProjectApproval[] }>('projects/admin/approval')
+            .requestInternal<{ needsApproval: ProjectApproval[]; waitingProjects: ProjectApproval[] }>('admin/approval/projects')
             .catch<any>($util.handlePageRequestError);
         return { needsApproval: data.needsApproval, waitingProjects: data.waitingProjects };
     }

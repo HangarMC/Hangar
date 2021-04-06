@@ -2,8 +2,8 @@
     <div>
         <v-list v-if="projects.length">
             <template v-for="project in projects">
-                <v-divider :key="project.projectId" class="mb-3" />
-                <v-list-item :key="project.projectId">
+                <v-divider :key="`${project.projectId}-divider`" class="mb-3" />
+                <v-list-item :key="`${project.projectId}-item`">
                     <v-row>
                         <v-col class="grow">
                             <v-list-item-subtitle>
@@ -28,7 +28,7 @@
                 </v-list-item>
             </template>
         </v-list>
-        <v-card-text>
+        <v-card-text v-else>
             <v-alert type="info" text>
                 {{ $t('projectApproval.noProjects') }}
             </v-alert>

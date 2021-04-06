@@ -89,6 +89,11 @@ public class Permission implements Comparable<Permission>, Argument {
         return new Permission(value ^ other.value);
     }
 
+    /**
+     * Check if permission has all of another permission
+     * @param other another permission
+     * @return true if permission has all of other permission <b>OR</b> other permission is {@link #None}
+     */
     public boolean has(Permission other) {
         return (value & other.value) == other.value;
     }

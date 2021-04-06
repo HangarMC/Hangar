@@ -202,8 +202,9 @@ export default class AdminApprovalVersionsPage extends HangarComponent {
 
     async asyncData({ $api, $util }: Context) {
         const data = await $api
-            .requestInternal<{ underReview: ReviewQueueEntry[]; notStarted: ReviewQueueEntry[] }>('versions/admin/approval')
+            .requestInternal<{ underReview: ReviewQueueEntry[]; notStarted: ReviewQueueEntry[] }>('admin/approval/versions')
             .catch<any>($util.handlePageRequestError);
+        if (!data) return;
         return { underReview: data.underReview, notStarted: data.notStarted };
     }
 

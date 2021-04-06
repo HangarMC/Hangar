@@ -1,27 +1,22 @@
 package io.papermc.hangar.controller.internal;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePlatformVersions;
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePluginDependencies;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
-import io.papermc.hangar.model.internal.versions.HangarReviewQueueEntry;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
-import io.papermc.hangar.service.internal.versions.ReviewService;
 import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.service.internal.versions.VersionFactory;
 import io.papermc.hangar.service.internal.versions.VersionService;
@@ -50,17 +45,13 @@ public class VersionController extends HangarController {
 
     private final VersionFactory versionFactory;
     private final VersionService versionService;
-    private final ReviewService reviewService;
     private final VersionDependencyService versionDependencyService;
-    private final ObjectMapper mapper;
 
     @Autowired
-    public VersionController(VersionFactory versionFactory, VersionService versionService, ReviewService reviewService, VersionDependencyService versionDependencyService, ObjectMapper mapper) {
+    public VersionController(VersionFactory versionFactory, VersionService versionService, VersionDependencyService versionDependencyService) {
         this.versionFactory = versionFactory;
         this.versionService = versionService;
-        this.reviewService = reviewService;
         this.versionDependencyService = versionDependencyService;
-        this.mapper = mapper;
     }
 
     @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
@@ -128,16 +119,5 @@ public class VersionController extends HangarController {
     @PostMapping(path = "/version/{projectId}/{versionId}/savePluginDependencies", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void savePluginDependencies(@PathVariable long projectId, @PathVariable long versionId, @Valid @RequestBody UpdatePluginDependencies updatePluginDependencies) {
         versionDependencyService.updateVersionPluginDependencies(projectId, versionId, updatePluginDependencies);
-    }
-
-    @PermissionRequired(perms = NamedPermission.REVIEWER)
-    @GetMapping(path = "/admin/approval", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ObjectNode> getReviewQueue() {
-        List<HangarReviewQueueEntry> underReviewEntries = reviewService.getReviewQueue(ReviewState.UNDER_REVIEW);
-        List<HangarReviewQueueEntry> notStartedEntries = reviewService.getReviewQueue(ReviewState.UNREVIEWED);
-        ObjectNode objectNode = mapper.createObjectNode();
-        objectNode.set("underReview", mapper.valueToTree(underReviewEntries));
-        objectNode.set("notStarted", mapper.valueToTree(notStartedEntries));
-        return ResponseEntity.ok(objectNode);
     }
 }

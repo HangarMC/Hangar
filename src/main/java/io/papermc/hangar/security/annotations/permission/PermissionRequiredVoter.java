@@ -28,6 +28,7 @@ public class PermissionRequiredVoter extends HangarDecisionVoter<PermissionRequi
         this.setAllowMultipleAttributes(true);
     }
 
+    // TODO debug logging
     @Override
     public int vote(Authentication authentication, MethodInvocation methodInvocation, Set<PermissionRequiredAttribute> attributes) {
         if (!(authentication instanceof HangarAuthenticationToken)) {

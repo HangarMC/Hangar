@@ -1,4 +1,4 @@
-package io.papermc.hangar.controller.internal;
+package io.papermc.hangar.controller.internal.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -63,13 +63,13 @@ public class AdminController extends HangarController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(path = "/platformVersions", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PermissionRequired(perms = NamedPermission.MANUAL_VALUE_CHANGES)
+    @PermissionRequired(NamedPermission.MANUAL_VALUE_CHANGES)
     public void changePlatformVersions(@RequestBody @Valid ChangePlatformVersionsForm form) {
         platformService.updatePlatformVersions(form);
     }
 
     @ResponseBody
-    @PermissionRequired(perms = NamedPermission.VIEW_STATS)
+    @PermissionRequired(NamedPermission.VIEW_STATS)
     @GetMapping(path = "/stats", produces = MediaType.APPLICATION_JSON_VALUE)
     public ArrayNode getStats(@RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate from, @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate to) {
         if (from == null) {
@@ -85,7 +85,7 @@ public class AdminController extends HangarController {
     }
 
     @ResponseBody
-    @PermissionRequired(perms = NamedPermission.VIEW_HEALTH)
+    @PermissionRequired(NamedPermission.VIEW_HEALTH)
     @GetMapping(path = "/health", produces = MediaType.APPLICATION_JSON_VALUE)
     public HealthReport getHealthReport() {
         List<UnhealthyProject> noTopicProjects = healthService.getProjectsWithoutTopic();
@@ -97,7 +97,7 @@ public class AdminController extends HangarController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(perms = NamedPermission.IS_STAFF)
+    @PermissionRequired(NamedPermission.IS_STAFF)
     @PostMapping(value = "/lock-user/{user}/{locked}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void toggleUserLock(@PathVariable @NoCache UserTable user, @PathVariable boolean locked, @RequestBody @Valid StringContent comment) {
         userService.setLocked(user, locked, comment.getContent());
@@ -105,7 +105,7 @@ public class AdminController extends HangarController {
 
     @ResponseBody
     @GetMapping(value = "/log", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PermissionRequired(perms = NamedPermission.REVIEWER)
+    @PermissionRequired(NamedPermission.REVIEWER)
     public PaginatedResult<HangarLoggedAction> getActionLog() {
         List<HangarLoggedAction> log = userActionLogService.getLog(0, null, null, null, null, null, null);
         return new PaginatedResult<>(new Pagination(25, 0, (long) log.size()), log);

@@ -45,7 +45,12 @@ public class HangarPrincipal implements ProjectOwner {
     public final boolean isAllowedGlobal(Permission requiredPermission) {
         return isAllowed(requiredPermission, globalPermissions);
     }
+
     public final boolean isAllowed(Permission requiredPermission, Permission currentPermission) {
+        Permission intersect = requiredPermission.intersect(currentPermission);
+        if (intersect.isNone()) {
+            return false;
+        }
         return getPossiblePermissions().has(requiredPermission.intersect(currentPermission));
     }
 
