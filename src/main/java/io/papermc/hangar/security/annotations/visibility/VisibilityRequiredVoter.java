@@ -7,14 +7,11 @@ import io.papermc.hangar.security.annotations.visibility.VisibilityRequiredMetad
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.versions.VersionService;
 import org.aopalliance.intercept.MethodInvocation;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-
-import java.util.Collection;
 
 @Component
 public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequiredAttribute> {
@@ -30,17 +27,8 @@ public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequi
     }
 
     @Override
-    public int vote(Authentication authentication, MethodInvocation method, Collection<ConfigAttribute> attributes) {
-        VisibilityRequiredAttribute attribute = findAttribute(attributes);
-        if (attribute == null) {
-            return ACCESS_ABSTAIN;
-        }
-        Object[] arguments = attribute.getExpression().getValue(new MethodBasedEvaluationContext(
-                method.getMethod().getDeclaringClass(),
-                method.getMethod(),
-                method.getArguments(),
-                parameterNameDiscoverer
-        ), Object[].class);
+    public int vote(Authentication authentication, MethodInvocation method, @NotNull VisibilityRequiredAttribute attribute) {
+        Object[] arguments = attribute.getExpression().getValue(getMethodEvaluationContext(method), Object[].class);
         if (arguments == null || !attribute.getType().getArgCount().contains(arguments.length)) {
             throw new IllegalStateException("Bad annotation configuration");
         }

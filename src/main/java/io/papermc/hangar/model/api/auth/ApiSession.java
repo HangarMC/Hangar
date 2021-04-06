@@ -1,62 +1,28 @@
 package io.papermc.hangar.model.api.auth;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-
-import java.time.OffsetDateTime;
-
 public class ApiSession {
 
-    private final String session;
-    private final OffsetDateTime expires;
-    private final SessionType type;
+    private final String token;
+    private final long expiresIn;
 
-    public ApiSession(String session, OffsetDateTime expires, SessionType type) {
-        this.session = session;
-        this.expires = expires;
-        this.type = type;
+    public ApiSession(String token, long expiresIn) {
+        this.token = token;
+        this.expiresIn = expiresIn;
     }
 
-    public String getSession() {
-        return session;
+    public String getToken() {
+        return token;
     }
 
-    public OffsetDateTime getExpires() {
-        return expires;
+    public long getExpiresIn() {
+        return expiresIn;
     }
 
-    public SessionType getType() {
-        return type;
-    }
-
-    public enum SessionType {
-        KEY("key"),
-        USER("user"),
-        PUBLIC("public"),
-        DEV("dev");
-
-        public static final SessionType[] VALUES = values();
-
-        private final String value;
-
-        SessionType(String value) {
-            this.value = value;
-        }
-
-        @JsonValue
-        @Override
-        public String toString() {
-            return value;
-        }
-
-        @JsonCreator
-        public static SessionType fromValue(String value) {
-            for (SessionType sessionType : SessionType.VALUES) {
-                if (sessionType.value.equals(value)) {
-                    return sessionType;
-                }
-            }
-            return null;
-        }
+    @Override
+    public String toString() {
+        return "ApiSession{" +
+                "token='" + token + '\'' +
+                ", expiresIn=" + expiresIn +
+                '}';
     }
 }

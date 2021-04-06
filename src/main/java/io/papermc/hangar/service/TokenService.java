@@ -5,15 +5,19 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.papermc.hangar.db.dao.HangarDao;
+import io.papermc.hangar.db.dao.internal.table.auth.ApiKeyDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.UserRefreshTokenDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.auth.RefreshResponse;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.db.auth.ApiKeyTable;
 import io.papermc.hangar.model.db.auth.UserRefreshToken;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
+import io.papermc.hangar.security.authentication.api.HangarApiPrincipal;
 import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.internal.users.UserService;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,6 +33,7 @@ import java.util.UUID;
 @Service
 public class TokenService extends HangarService {
 
+    private final ApiKeyDAO apiKeyDAO;
     private final UserRefreshTokenDAO userRefreshTokenDAO;
     private final UserService userService;
     private final PermissionService permissionService;
@@ -37,7 +42,8 @@ public class TokenService extends HangarService {
     private Algorithm algo;
 
     @Autowired
-    public TokenService(HangarDao<UserRefreshTokenDAO> userRefreshTokenDAO, UserService userService, PermissionService permissionService) {
+    public TokenService(HangarDao<ApiKeyDAO> apiKeyDAO, HangarDao<UserRefreshTokenDAO> userRefreshTokenDAO, UserService userService, PermissionService permissionService) {
+        this.apiKeyDAO = apiKeyDAO.get();
         this.userRefreshTokenDAO = userRefreshTokenDAO.get();
         this.userService = userService;
         this.permissionService = permissionService;
@@ -55,7 +61,7 @@ public class TokenService extends HangarService {
 
     private String _newToken(UserTable userTable, UserRefreshToken userRefreshToken) {
         Permission globalPermissions = permissionService.getGlobalPermissions(userTable.getId());
-        return expiring(userTable, globalPermissions);
+        return expiring(userTable, globalPermissions, null);
     }
 
     public RefreshResponse refreshToken(String refreshToken) {
@@ -81,7 +87,7 @@ public class TokenService extends HangarService {
         userRefreshTokenDAO.delete(UUID.fromString(refreshToken));
     }
 
-    public String expiring(UserTable userTable, Permission globalPermission) {
+    public String expiring(UserTable userTable, Permission globalPermission, @Nullable String apiKeyIdentifier) {
         return JWT.create()
                 .withIssuer(config.security.getTokenIssuer())
                 .withExpiresAt(new Date(Instant.now().plus(config.security.getTokenExpiry()).toEpochMilli()))
@@ -89,6 +95,7 @@ public class TokenService extends HangarService {
                 .withClaim("id", userTable.getId())
                 .withClaim("permissions", globalPermission.toBinString())
                 .withClaim("locked", userTable.isLocked())
+                .withClaim("apiKeyIdentifier", apiKeyIdentifier)
                 .sign(getAlgo());
     }
 
@@ -97,10 +104,19 @@ public class TokenService extends HangarService {
         Long userId = decodedJWT.getClaim("id").asLong();
         boolean locked = decodedJWT.getClaim("locked").asBoolean();
         Permission globalPermission = Permission.fromBinString(decodedJWT.getClaim("permissions").asString());
+        String apiKeyIdentifier = decodedJWT.getClaim("apiKeyIdentifier").asString();
         if (subject == null || userId == null || globalPermission == null) {
             throw new BadCredentialsException("Malformed jwt");
         }
-        return new HangarPrincipal(userId, subject, locked, globalPermission);
+        if (apiKeyIdentifier != null) {
+            ApiKeyTable apiKeyTable = apiKeyDAO.findApiKey(userId, apiKeyIdentifier);
+            if (apiKeyTable == null) {
+                throw new BadCredentialsException("Invalid api key identifier");
+            }
+            return new HangarApiPrincipal(userId, subject, locked, globalPermission, apiKeyTable);
+        } else {
+            return new HangarPrincipal(userId, subject, locked, globalPermission);
+        }
     }
 
     private JWTVerifier getVerifier() {

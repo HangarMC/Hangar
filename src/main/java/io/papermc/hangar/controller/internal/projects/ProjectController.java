@@ -153,11 +153,11 @@ public class ProjectController extends HangarController {
     }
 
     @Anyone
-    @VisibilityRequired(type = Type.PROJECT, args = "{#author, #name}")
-    @GetMapping(value = "/project/{author}/{name}/icon", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public Object getProjectIcon(@PathVariable String author, @PathVariable String name) {
+    @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
+    @GetMapping(value = "/project/{author}/{slug}/icon", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    public Object getProjectIcon(@PathVariable String author, @PathVariable String slug) {
         try {
-            return imageService.getProjectIcon(author, name);
+            return imageService.getProjectIcon(author, slug);
         } catch (InternalHangarException e) {
             return new RedirectView(imageService.getUserIcon(author));
         }

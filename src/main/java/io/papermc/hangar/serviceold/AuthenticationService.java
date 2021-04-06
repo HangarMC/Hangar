@@ -28,8 +28,6 @@ public class AuthenticationService extends HangarService {
     private final HttpServletRequest request;
 
     private static final Pattern API_ROUTE_PATTERN = Pattern.compile("^/api/(?!old).+");
-    private static final String UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
-    private static final Pattern API_KEY_PATTERN = Pattern.compile("(" + UUID_REGEX + ").(" + UUID_REGEX + ")");
 
     @Autowired
     public AuthenticationService(HangarDao<SessionsDao> sessionsDao, HangarDao<ApiKeyDao> apiKeyDao, HttpServletRequest request, Supplier<Optional<UsersTable>> currentUser) {

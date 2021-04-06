@@ -77,6 +77,10 @@ public class Permission implements Comparable<Permission>, Argument {
         return new Permission(value | other.value);
     }
 
+    public Permission intersect(Permission other) {
+        return new Permission(value & other.value);
+    }
+
     public Permission remove(Permission other) {
         return new Permission(value & ~other.value);
     }

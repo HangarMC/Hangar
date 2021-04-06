@@ -32,12 +32,21 @@ public class HangarPrincipal implements ProjectOwner {
         return id;
     }
 
-    public boolean isLocked() {
+    public final boolean isLocked() {
         return locked;
     }
 
-    public Permission getGlobalPermissions() {
-        return globalPermissions;
+    public Permission getPossiblePermissions(){ return Permission.All; }
+
+    public final Permission getGlobalPermissions() {
+        return globalPermissions.intersect(getPossiblePermissions());
+    }
+
+    public final boolean isAllowedGlobal(Permission requiredPermission) {
+        return isAllowed(requiredPermission, globalPermissions);
+    }
+    public final boolean isAllowed(Permission requiredPermission, Permission currentPermission) {
+        return getPossiblePermissions().has(requiredPermission.intersect(currentPermission));
     }
 
     @Override

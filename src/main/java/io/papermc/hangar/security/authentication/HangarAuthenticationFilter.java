@@ -2,12 +2,10 @@ package io.papermc.hangar.security.authentication;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.TokenService;
 import org.springframework.core.log.LogMessage;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
@@ -15,7 +13,9 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.servlet.FilterChain;
@@ -34,9 +34,10 @@ public class HangarAuthenticationFilter extends AbstractAuthenticationProcessing
 
     private final TokenService tokenService;
 
-    public HangarAuthenticationFilter(final RequestMatcher requiresAuth, final TokenService tokenService, final AuthenticationManager authenticationManager) {
+    public HangarAuthenticationFilter(final RequestMatcher requiresAuth, final TokenService tokenService, final AuthenticationManager authenticationManager, final AuthenticationEntryPoint authenticationEntryPoint) {
         super(requiresAuth);
         this.setAuthenticationManager(authenticationManager);
+        this.setAuthenticationFailureHandler(new AuthenticationEntryPointFailureHandler(authenticationEntryPoint));
         this.tokenService = tokenService;
     }
 
@@ -65,7 +66,7 @@ public class HangarAuthenticationFilter extends AbstractAuthenticationProcessing
         // request should ALWAYS have a `HangarAuthJWTToken` attribute here
         String jwt = (String) request.getAttribute(AUTH_TOKEN_ATTR);
         try {
-            HangarAuthenticationToken token = new HangarAuthenticationToken(tokenService.verify(jwt));
+            HangarAuthenticationToken token = HangarAuthenticationToken.createUnverifiedToken(tokenService.verify(jwt));
             return getAuthenticationManager().authenticate(token);
         } catch (TokenExpiredException tokenExpiredException) {
             throw new CredentialsExpiredException("JWT was expired", tokenExpiredException);
@@ -83,25 +84,5 @@ public class HangarAuthenticationFilter extends AbstractAuthenticationProcessing
             this.logger.debug(LogMessage.format("Set SecurityContextHolder to %s", authResult));
         }
         chain.doFilter(request, response);
-    }
-
-    @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        SecurityContextHolder.clearContext();
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace("Failed to process authentication request", failed);
-            this.logger.trace("Cleared SecurityContextHolder");
-            this.logger.trace("Handling authentication failure");
-        }
-
-        HttpStatus status;
-        if (failed instanceof CredentialsExpiredException) {
-            status = HttpStatus.FORBIDDEN;
-        } else if (failed instanceof BadCredentialsException) {
-            status = HttpStatus.UNAUTHORIZED;
-        } else {
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-        throw new HangarApiException(status, failed.getMessage());
     }
 }

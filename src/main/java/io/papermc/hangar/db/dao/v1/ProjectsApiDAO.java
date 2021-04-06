@@ -118,8 +118,8 @@ public interface ProjectsApiDAO {
             "       JOIN roles r ON upr.role_type = r.name " +
             "   WHERE p.slug = :slug AND p.owner_name = :author " +
             "   GROUP BY u.name ORDER BY max(r.permission::BIGINT) DESC " +
-            "   LIMIT :limit OFFSET :offset")
-    List<ProjectMember> getProjectMembers(String author, String slug, long limit, long offset);
+            "   <offsetLimit>")
+    List<ProjectMember> getProjectMembers(String author, String slug, @BindPagination RequestPagination pagination);
 
     @SqlQuery("SELECT count(*) " +
             "   FROM projects p " +

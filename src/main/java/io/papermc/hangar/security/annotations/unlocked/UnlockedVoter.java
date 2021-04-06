@@ -1,36 +1,24 @@
 package io.papermc.hangar.security.annotations.unlocked;
 
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.security.annotations.HangarDecisionVoter;
 import io.papermc.hangar.security.annotations.unlocked.UnlockedMetadataExtractor.UnlockedAttribute;
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
 import org.aopalliance.intercept.MethodInvocation;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDecisionVoter;
-import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-
 @Component
-public class UnlockedVoter implements AccessDecisionVoter<MethodInvocation> {
+public class UnlockedVoter extends HangarDecisionVoter<UnlockedAttribute> {
 
-    @Override
-    public boolean supports(ConfigAttribute attribute) {
-        return attribute instanceof UnlockedAttribute;
+    public UnlockedVoter() {
+        super(UnlockedAttribute.class);
     }
 
     @Override
-    public boolean supports(Class<?> clazz) {
-        return MethodInvocation.class.isAssignableFrom(clazz);
-    }
-
-    @Override
-    public int vote(Authentication authentication, MethodInvocation object, Collection<ConfigAttribute> attributes) {
-        UnlockedAttribute attribute = findUnlockedAttribute(attributes);
-        if (attribute == null) {
-            return ACCESS_ABSTAIN;
-        }
+    public int vote(Authentication authentication, MethodInvocation object, @NotNull UnlockedAttribute attribute) {
         if (!(authentication instanceof HangarAuthenticationToken)) {
             return ACCESS_DENIED;
         }
@@ -38,14 +26,5 @@ public class UnlockedVoter implements AccessDecisionVoter<MethodInvocation> {
             throw new HangarApiException(HttpStatus.UNAUTHORIZED, "error.userLocked");
         }
         return ACCESS_GRANTED;
-    }
-
-    private UnlockedAttribute findUnlockedAttribute(Collection<ConfigAttribute> attributes) {
-        for (ConfigAttribute attribute : attributes) {
-            if (attribute instanceof UnlockedAttribute) {
-                return (UnlockedAttribute) attribute;
-            }
-        }
-        return null;
     }
 }

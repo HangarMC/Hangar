@@ -1,13 +1,5 @@
 package io.papermc.hangar.controller.api.v1;
 
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-
-import java.time.OffsetDateTime;
-import java.util.Map;
-
 import io.papermc.hangar.controller.HangarController;
 import io.papermc.hangar.controller.api.v1.interfaces.IProjectsController;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
@@ -22,7 +14,16 @@ import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.ProjectMember;
 import io.papermc.hangar.model.api.project.ProjectSortingStrategy;
 import io.papermc.hangar.model.api.requests.RequestPagination;
+import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
+import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
 import io.papermc.hangar.service.api.ProjectsApiService;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+
+import java.time.OffsetDateTime;
+import java.util.Map;
 
 @Controller
 public class ProjectsController extends HangarController implements IProjectsController {
@@ -35,11 +36,13 @@ public class ProjectsController extends HangarController implements IProjectsCon
     }
 
     @Override
+    @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
     public ResponseEntity<Project> getProject(String author, String slug) {
         return ResponseEntity.ok(projectsApiService.getProject(author, slug));
     }
 
     @Override
+    @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
     public ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(String author, String slug, @NotNull RequestPagination pagination) {
         return ResponseEntity.ok(projectsApiService.getProjectMembers(author, slug, pagination));
     }

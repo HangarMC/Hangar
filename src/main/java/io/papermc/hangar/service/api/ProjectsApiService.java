@@ -35,7 +35,7 @@ public class ProjectsApiService extends HangarService {
     }
 
     public PaginatedResult<ProjectMember> getProjectMembers(String author, String slug, RequestPagination requestPagination) {
-        List<ProjectMember> projectMembers = projectsApiDAO.getProjectMembers(author, slug, requestPagination.getLimit(), requestPagination.getOffset());
+        List<ProjectMember> projectMembers = projectsApiDAO.getProjectMembers(author, slug, requestPagination);
         return new PaginatedResult<>(new Pagination(projectsApiDAO.getProjectMembersCount(author, slug), requestPagination), projectMembers);
     }
 

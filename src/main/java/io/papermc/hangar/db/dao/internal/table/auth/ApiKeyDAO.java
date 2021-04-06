@@ -11,6 +11,7 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@RegisterColumnMapper(PermissionMapper.class)
 @RegisterConstructorMapper(ApiKeyTable.class)
 public interface ApiKeyDAO {
 
@@ -21,11 +22,12 @@ public interface ApiKeyDAO {
     @SqlUpdate("DELETE FROM api_keys WHERE name = :keyName AND owner_id = :userId")
     int delete(String keyName, long userId);
 
-    @RegisterColumnMapper(PermissionMapper.class)
     @SqlQuery("SELECT *, raw_key_permissions::bigint permissions FROM api_keys WHERE owner_id = :userId AND lower(name) = lower(:name)")
     ApiKeyTable getByUserAndName(long userId, String name);
 
-//    @SqlQuery("SELECT *, raw_key_permissions::BIGINT permissions FROM api_keys k WHERE k.token_identifier = :identifier AND k.token = crypt(:token, k.token)")
-//    ApiKeyTable findApiKey(String identifier, String token);
-    // 1318e930-ef32-4034-88bd-967285a9d28b.f22f2f94-e3a5-496c-8ff7-5230ed16c8a6
+    @SqlQuery("SELECT *, raw_key_permissions::bigint permissions FROM api_keys WHERE token_identifier = :identifier AND token = crypt(:token, token)")
+    ApiKeyTable findApiKey(String identifier, String token);
+
+    @SqlQuery("SELECT *, raw_key_permissions::bigint permissions FROM api_keys WHERE owner_id = :userId AND token_identifier = :identifier")
+    ApiKeyTable findApiKey(long userId, String identifier);
 }

@@ -22,7 +22,7 @@ public class HangarAuthenticationProvider implements AuthenticationProvider {
         HangarAuthenticationToken token = (HangarAuthenticationToken) authentication;
 
         HangarPrincipal hangarPrincipal = tokenService.parseHangarPrincipal(token.getCredentials());
-        return new HangarAuthenticationToken(hangarPrincipal, token.getCredentials());
+        return HangarAuthenticationToken.createVerifiedToken(hangarPrincipal, token.getCredentials());
     }
 
     @Override

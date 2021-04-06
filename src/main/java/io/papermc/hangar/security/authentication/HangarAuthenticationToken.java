@@ -15,19 +15,27 @@ public class HangarAuthenticationToken extends AbstractAuthenticationToken {
     private final DecodedJWT token;
     private final HangarPrincipal user;
 
-    // Used by HangarAuthenticationProvider once user is verified
-    public HangarAuthenticationToken(HangarPrincipal user, DecodedJWT token) {
+    private HangarAuthenticationToken(HangarPrincipal user, DecodedJWT token) {
         super(AuthorityUtils.createAuthorityList("ROLE_USER"));
         this.token = token;
         this.user = user;
         super.setAuthenticated(true);
     }
 
-    // Initial token creation before verifying the user exists in the table
-    public HangarAuthenticationToken(DecodedJWT token) {
+    private HangarAuthenticationToken(DecodedJWT token) {
         super(null);
         this.token = token;
         this.user = null;
+    }
+
+    // Initial token creation before verifying the user exists in the table
+    public static HangarAuthenticationToken createUnverifiedToken(DecodedJWT token) {
+       return new HangarAuthenticationToken(token);
+    }
+
+    // Used by HangarAuthenticationProvider once user is verified
+    public static HangarAuthenticationToken createVerifiedToken(HangarPrincipal user, DecodedJWT token) {
+        return new HangarAuthenticationToken(user, token);
     }
 
     @Override
