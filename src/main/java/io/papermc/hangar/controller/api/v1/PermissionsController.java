@@ -8,6 +8,7 @@ import io.papermc.hangar.model.api.permissions.UserPermissions;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.PermissionType;
+import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.service.PermissionService;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import java.util.List;
 import java.util.function.BiPredicate;
 
+@Anyone
 @Controller
 public class PermissionsController extends HangarController implements IPermissionsController {
 

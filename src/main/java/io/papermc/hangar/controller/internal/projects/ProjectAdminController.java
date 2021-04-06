@@ -43,7 +43,7 @@ public class ProjectAdminController extends HangarController {
         this.projectVisibilityService = projectVisibilityService;
     }
 
-    @PermissionRequired(perms = NamedPermission.MOD_NOTES_AND_FLAGS)
+    @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
     @GetMapping(path = "/notes/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<HangarProjectNote>> getProjectNotes(@PathVariable long projectId) {
         return ResponseEntity.ok(projectNoteService.getNotes(projectId));
@@ -51,7 +51,7 @@ public class ProjectAdminController extends HangarController {
 
     @Unlocked
     @ResponseStatus(HttpStatus.CREATED)
-    @PermissionRequired(perms = NamedPermission.MOD_NOTES_AND_FLAGS)
+    @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
     @PostMapping(path = "/notes/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void addProjectNote(@PathVariable long projectId, @RequestBody @Valid StringContent content) {
         projectNoteService.addNote(projectId, content.getContent());
@@ -59,7 +59,7 @@ public class ProjectAdminController extends HangarController {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(perms = NamedPermission.REVIEWER)
+    @PermissionRequired(NamedPermission.REVIEWER)
     @PostMapping(path = "/visibility/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void changeProjectVisibility(@PathVariable long projectId, @Valid @RequestBody VisibilityChangeForm visibilityChangeForm) {
         projectVisibilityService.changeVisibility(projectId, visibilityChangeForm.getVisibility(), visibilityChangeForm.getComment());

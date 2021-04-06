@@ -40,21 +40,21 @@ public class FlagController extends HangarController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/{id}/resolve/{resolve}")
-    @PermissionRequired(perms = NamedPermission.MOD_NOTES_AND_FLAGS)
+    @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
     public void resolve(@PathVariable long id, @PathVariable boolean resolve) {
         flagService.markAsResolved(id, resolve);
     }
 
     @ResponseBody
     @GetMapping(path = "/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PermissionRequired(perms = NamedPermission.MOD_NOTES_AND_FLAGS)
+    @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
     public List<HangarProjectFlag> getFlags(@PathVariable long projectId) {
         return flagService.getFlags(projectId);
     }
 
     @ResponseBody
     @GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PermissionRequired(perms = NamedPermission.MOD_NOTES_AND_FLAGS)
+    @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
     public List<HangarProjectFlag> getFlags() {
         return flagService.getFlags();
     }

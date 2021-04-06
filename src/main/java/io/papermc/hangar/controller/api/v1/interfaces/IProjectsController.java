@@ -7,7 +7,6 @@ import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.api.project.ProjectMember;
 import io.papermc.hangar.model.api.project.ProjectSortingStrategy;
 import io.papermc.hangar.model.api.requests.RequestPagination;
-import io.papermc.hangar.security.annotations.Anyone;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.OffsetDateTime;
 import java.util.Map;
 
-@Anyone
 @Api(tags = "Projects", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequestMapping(path ="/api/v1", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
 public interface IProjectsController {

@@ -7,7 +7,6 @@ import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,7 +26,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 
-@Anyone
 @Api(tags = "Versions", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE)
 public interface IVersionsController {

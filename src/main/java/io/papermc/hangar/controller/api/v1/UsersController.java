@@ -9,12 +9,14 @@ import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.project.ProjectCompact;
 import io.papermc.hangar.model.api.project.ProjectSortingStrategy;
 import io.papermc.hangar.model.api.requests.RequestPagination;
+import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.service.api.UsersApiService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
+@Anyone
 @Controller
 public class UsersController extends HangarController implements IUsersController {
 

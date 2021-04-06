@@ -27,7 +27,7 @@ import java.util.List;
 @Controller
 @Secured("ROLE_USER")
 @RequestMapping(path = "/api/internal/reviews")
-@PermissionRequired(perms = NamedPermission.REVIEWER)
+@PermissionRequired(NamedPermission.REVIEWER)
 public class ReviewController {
 
     private final ReviewService reviewService;

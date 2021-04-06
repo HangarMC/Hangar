@@ -11,7 +11,6 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,7 +21,6 @@ import java.util.List;
 
 @Api(tags = "Permissions", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
-@Secured("ROLE_USER")
 public interface IPermissionsController {
 
     @ApiOperation(

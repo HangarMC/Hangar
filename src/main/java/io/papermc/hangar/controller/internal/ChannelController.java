@@ -68,7 +68,7 @@ public class ChannelController extends HangarController {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(type = PermissionType.PROJECT,perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
     @PostMapping("/{projectId}/delete/{channelId}")
     public void deleteChannel(@PathVariable long projectId, @PathVariable long channelId) {
         channelService.deleteProjectChannel(projectId, channelId);

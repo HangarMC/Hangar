@@ -79,7 +79,7 @@ public class HangarUserController extends HangarController {
     @Unlocked
     @CurrentUser("#userName")
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(perms = NamedPermission.EDIT_OWN_USER_SETTINGS)
+    @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
     @PostMapping(path = "/users/{userName}/settings/tagline", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void saveTagline(@PathVariable String userName, @Valid @RequestBody StringContent content) {
         UserTable userTable = userService.getUserTable(userName);
@@ -97,7 +97,7 @@ public class HangarUserController extends HangarController {
 
     @Unlocked
     @ResponseStatus(HttpStatus.OK)
-    @PermissionRequired(perms = NamedPermission.EDIT_OWN_USER_SETTINGS)
+    @PermissionRequired(NamedPermission.EDIT_OWN_USER_SETTINGS)
     @PostMapping("/users/{userName}/settings/resetTagline")
     public void resetTagline(@PathVariable String userName) {
         UserTable userTable = userService.getUserTable(userName);
