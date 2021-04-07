@@ -16,7 +16,7 @@
                         :class="{ 'ml-1': $perms.canSeeHidden }"
                         color="success"
                         :loading="loading.save"
-                        :disabled="!validForm.settings"
+                        :disabled="!validForm.settings || settingsEqual()"
                         @click="save"
                     >
                         <v-icon left>mdi-check</v-icon>
@@ -208,7 +208,6 @@
                                                 dense
                                                 hide-details
                                                 filled
-                                                clearable
                                                 :items="licences"
                                                 :label="$t('project.settings.licenceType')"
                                             />
@@ -375,6 +374,7 @@ import { TranslateResult } from 'vue-i18n';
 import { AxiosError } from 'axios';
 import { Context } from '@nuxt/types';
 import { Role } from 'hangar-api';
+import { isEqualWith } from 'lodash-es';
 import { ProjectPermission } from '~/utils/perms';
 import { NamedPermission, ProjectCategory } from '~/types/enums';
 import { RootState } from '~/store';
@@ -387,8 +387,8 @@ import VisibilityChangerModal from '~/components/modals/VisibilityChangerModal.v
 })
 @ProjectPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)
 export default class ProjectManagePage extends HangarProjectMixin {
-    roles!: Role[];
-    licences!: String[];
+    roles: Role[] = [];
+    licences: string[] = [];
     apiKey = '';
     newName = '';
     nameErrors: TranslateResult[] = [];
@@ -446,6 +446,19 @@ export default class ProjectManagePage extends HangarProjectMixin {
 
         this.form.description = this.project.description;
         this.form.category = this.project.category;
+    }
+
+    settingsEqual() {
+        return (
+            isEqualWith(this.form.settings, this.project.settings, (value, other, idx) => {
+                if (idx === 'license') {
+                    return value.url === other.url && value.name === other.type;
+                }
+                return undefined;
+            }) &&
+            this.form.category === this.project.category &&
+            this.form.description === this.project.description
+        );
     }
 
     get categoryIcon() {
@@ -570,6 +583,7 @@ export default class ProjectManagePage extends HangarProjectMixin {
             });
     }
 
+    // TODO implement
     generateApiKey() {}
 
     async asyncData({ $api, $util }: Context) {
