@@ -39,8 +39,8 @@
                                     :one-time-amounts="project.settings.donation.oneTimeAmounts"
                                     :monthly-amounts="project.settings.donation.monthlyAmounts"
                                     :donation-target="project.namespace.owner + '/' + project.name"
-                                    :return-url="publicHost + '/paper/Test?donation=success'"
-                                    :cancel-return-url="publicHost + '/paper/Test?donation=failure'"
+                                    :return-url="publicHost + '/' + project.namespace.owner + '/' + project.name + '?donation=success'"
+                                    :cancel-return-url="publicHost + '/' + project.namespace.owner + '/' + project.name + '?donation=failure'"
                                 >
                                     <template #activator="{ on, attrs }">
                                         <v-btn v-bind="attrs" v-on="on">
