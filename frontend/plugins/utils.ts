@@ -269,6 +269,14 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
             regex: (name: TranslateResult = 'Field', regexp: string) => (v: string) => {
                 return !v || new RegExp(regexp).test(v) || i18n.t('validation.invalidFormat', [name]);
             },
+            requireNumberArray: () => (v: string | any[]) => {
+                return (
+                    ((v === null || typeof v === 'undefined' || typeof v === 'string') && !v) ||
+                    (Array.isArray(v) && v.length === 0) ||
+                    (v as any[]).some((i) => !isNaN(i)) ||
+                    i18n.t('validation.numberArray')
+                );
+            },
         };
 
         error(err: TranslateResult | NotifPayload) {

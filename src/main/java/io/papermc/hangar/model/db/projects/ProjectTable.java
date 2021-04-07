@@ -33,6 +33,11 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
     private String licenseName;
     private String licenseUrl;
     private boolean forumSync;
+    private boolean donationEnabled;
+    private String donationEmail;
+    private int donationDefaultAmount;
+    private Collection<Integer> donationOnetimeAmounts;
+    private Collection<Integer> donationMonthlyAmounts;
 
     public ProjectTable(ProjectOwner projectOwner, NewProjectForm form) {
         this.name = form.getName();
@@ -51,6 +56,11 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.keywords = form.getSettings().getKeywords();
         this.licenseName = form.getSettings().getLicense().getName();
         this.licenseUrl = form.getSettings().getLicense().getUrl();
+        this.donationEnabled = form.getSettings().getDonation().isEnable();
+        this.donationEmail = form.getSettings().getDonation().getEmail();
+        this.donationDefaultAmount = form.getSettings().getDonation().getDefaultAmount();
+        this.donationOnetimeAmounts = form.getSettings().getDonation().getOneTimeAmounts();
+        this.donationMonthlyAmounts = form.getSettings().getDonation().getMonthlyAmounts();
     }
 
     protected ProjectTable(ProjectTable other) {
@@ -71,10 +81,18 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.licenseName = other.licenseName;
         this.licenseUrl = other.licenseUrl;
         this.forumSync = other.forumSync;
+        this.donationEnabled = other.donationEnabled;
+        this.donationEmail = other.donationEmail;
+        this.donationDefaultAmount = other.donationDefaultAmount;
+        this.donationOnetimeAmounts = other.donationOnetimeAmounts;
+        this.donationMonthlyAmounts = other.donationMonthlyAmounts;
     }
 
     @JdbiConstructor
-    public ProjectTable(OffsetDateTime createdAt, long id, String name, String slug, String ownerName, long ownerId, Long topicId, Long postId, @EnumByOrdinal Category category, String description, @EnumByOrdinal Visibility visibility, Collection<String> keywords, String homepage, String issues, String source, String support, String licenseName, String licenseUrl, boolean forumSync) {
+    public ProjectTable(OffsetDateTime createdAt, long id, String name, String slug, String ownerName, long ownerId, Long topicId,
+                        Long postId, @EnumByOrdinal Category category, String description, @EnumByOrdinal Visibility visibility, Collection<String> keywords,
+                        String homepage, String issues, String source, String support, String licenseName, String licenseUrl, boolean forumSync,
+                        boolean donationEnabled, String donationEmail, int donationDefaultAmount, Collection<Integer> donationOnetimeAmounts, Collection<Integer> donationMonthlyAmounts) {
         super(createdAt, id);
         this.name = name;
         this.slug = slug;
@@ -93,6 +111,11 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.licenseName = licenseName;
         this.licenseUrl = licenseUrl;
         this.forumSync = forumSync;
+        this.donationEnabled = donationEnabled;
+        this.donationEmail = donationEmail;
+        this.donationDefaultAmount = donationDefaultAmount;
+        this.donationOnetimeAmounts = donationOnetimeAmounts;
+        this.donationMonthlyAmounts = donationMonthlyAmounts;
     }
 
     // TODO remove a bunch of these setters and use a SettingsSave object or smth
@@ -230,6 +253,46 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.forumSync = forumSync;
     }
 
+    public boolean isDonationEnabled() {
+        return donationEnabled;
+    }
+
+    public void setDonationEnabled(boolean donationEnabled) {
+        this.donationEnabled = donationEnabled;
+    }
+
+    public String getDonationEmail() {
+        return donationEmail;
+    }
+
+    public void setDonationEmail(String donationEmail) {
+        this.donationEmail = donationEmail;
+    }
+
+    public int getDonationDefaultAmount() {
+        return donationDefaultAmount;
+    }
+
+    public void setDonationDefaultAmount(int donationDefaultAmount) {
+        this.donationDefaultAmount = donationDefaultAmount;
+    }
+
+    public Collection<Integer> getDonationOnetimeAmounts() {
+        return donationOnetimeAmounts;
+    }
+
+    public void setDonationOnetimeAmounts(Collection<Integer> donationOnetimeAmounts) {
+        this.donationOnetimeAmounts = donationOnetimeAmounts;
+    }
+
+    public Collection<Integer> getDonationMonthlyAmounts() {
+        return donationMonthlyAmounts;
+    }
+
+    public void setDonationMonthlyAmounts(Collection<Integer> donationMonthlyAmounts) {
+        this.donationMonthlyAmounts = donationMonthlyAmounts;
+    }
+
     @Override
     public long getProjectId() {
         return id;
@@ -243,23 +306,28 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
     @Override
     public String toString() {
         return "ProjectTable{" +
-                "name='" + name + '\'' +
-                ", slug='" + slug + '\'' +
-                ", ownerName='" + ownerName + '\'' +
-                ", ownerId=" + ownerId +
-                ", topicId=" + topicId +
-                ", postId=" + postId +
-                ", category=" + category +
-                ", description='" + description + '\'' +
-                ", visibility=" + visibility +
-                ", keywords=" + keywords +
-                ", homepage='" + homepage + '\'' +
-                ", issues='" + issues + '\'' +
-                ", source='" + source + '\'' +
-                ", support='" + support + '\'' +
-                ", licenseName='" + licenseName + '\'' +
-                ", licenseUrl='" + licenseUrl + '\'' +
-                ", forumSync=" + forumSync +
-                "} " + super.toString();
+               "name='" + name + '\'' +
+               ", slug='" + slug + '\'' +
+               ", ownerName='" + ownerName + '\'' +
+               ", ownerId=" + ownerId +
+               ", topicId=" + topicId +
+               ", postId=" + postId +
+               ", category=" + category +
+               ", description='" + description + '\'' +
+               ", visibility=" + visibility +
+               ", keywords=" + keywords +
+               ", homepage='" + homepage + '\'' +
+               ", issues='" + issues + '\'' +
+               ", source='" + source + '\'' +
+               ", support='" + support + '\'' +
+               ", licenseName='" + licenseName + '\'' +
+               ", licenseUrl='" + licenseUrl + '\'' +
+               ", forumSync=" + forumSync +
+               ", donationEnabled=" + donationEnabled +
+               ", donationEmail='" + donationEmail + '\'' +
+               ", donationDefaultAmount=" + donationDefaultAmount +
+               ", donationOnetimeAmounts=" + donationOnetimeAmounts +
+               ", donationMonthlyAmounts=" + donationMonthlyAmounts +
+               "} " + super.toString();
     }
 }

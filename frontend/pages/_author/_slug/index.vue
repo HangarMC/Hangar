@@ -32,13 +32,15 @@
                                 </v-btn>
                             </v-btn-toggle>
 
-                            <!-- todo: make donation button toggleable in settings, get email and stuff into modal, translate -->
-                            <div v-if="true">
+                            <div v-if="project.settings.donation.enable">
                                 <DonationModal
-                                    donation-email="minidigger-author@hangar.minidigger.me"
-                                    donation-target="paper/Test"
-                                    return-url="http://localhost:8080/paper/Test?donation=success"
-                                    cancel-return-url="http://localhost:8080/paper/Test?donation=failure"
+                                    :donation-email="project.settings.donation.email"
+                                    :default-amount="project.settings.donation.defaultAmount"
+                                    :one-time-amounts="project.settings.donation.oneTimeAmounts"
+                                    :monthly-amounts="project.settings.donation.monthlyAmounts"
+                                    :donation-target="project.namespace.owner + '/' + project.name"
+                                    :return-url="publicHost + '/paper/Test?donation=success'"
+                                    :cancel-return-url="publicHost + '/paper/Test?donation=failure'"
                                 >
                                     <template #activator="{ on, attrs }">
                                         <v-btn v-bind="attrs" v-on="on">
@@ -114,6 +116,10 @@ import { MemberList, ProjectPageList } from '~/components/projects';
 })
 export default class DocsPage extends DocPageMixin {
     roles!: Role[];
+
+    get publicHost() {
+        return process.env.publicHost;
+    }
 
     async asyncData({ $api, params, $util }: Context) {
         const page = await $api.requestInternal<ProjectPage>(`pages/page/${params.author}/${params.slug}`, false).catch<any>($util.handlePageRequestError);

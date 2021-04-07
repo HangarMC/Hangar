@@ -35,6 +35,13 @@ declare module 'hangar-api' {
         license: License;
         keywords: string[];
         forumSync: boolean;
+        donation: {
+            enable: false;
+            email: string | null;
+            defaultAmount: number;
+            oneTimeAmounts: Array<number>;
+            monthlyAmounts: Array<number>;
+        };
     }
 
     interface PromotedVersionTag extends Named {

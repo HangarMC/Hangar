@@ -21,18 +21,21 @@ public class ProjectSettings {
     private final String support;
     @Valid
     private final ProjectLicense license;
+    @Valid
+    private final ProjectDonationSettings donation;
     @NotNull
     @Validate(SpEL = "@validate.max(#root, @hangarConfig.projects.maxKeywords)", message = "project.new.error.tooManyKeywords")
     private final Collection<String> keywords;
     private final boolean forumSync;
 
     @JsonCreator
-    public ProjectSettings(@Nullable String homepage, @Nullable String issues, @Nullable String source, @Nullable String support, @Nullable @Nested("license") ProjectLicense license, Collection<String> keywords, boolean forumSync) {
+    public ProjectSettings(@Nullable String homepage, @Nullable String issues, @Nullable String source, @Nullable String support, @Nullable @Nested("license") ProjectLicense license, @Nested("donation") ProjectDonationSettings donation, Collection<String> keywords, boolean forumSync) {
         this.homepage = homepage;
         this.issues = issues;
         this.source = source;
         this.support = support;
         this.license = license;
+        this.donation = donation;
         this.keywords = keywords;
         this.forumSync = forumSync;
     }
@@ -57,6 +60,10 @@ public class ProjectSettings {
         return license;
     }
 
+    public ProjectDonationSettings getDonation() {
+        return donation;
+    }
+
     public Collection<String> getKeywords() {
         return keywords;
     }
@@ -73,6 +80,7 @@ public class ProjectSettings {
                 ", source='" + source + '\'' +
                 ", support='" + support + '\'' +
                 ", license=" + license +
+                ", donation=" + donation +
                 ", keywords=" + keywords +
                 ", forumSync=" + forumSync +
                 '}';

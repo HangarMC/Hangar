@@ -74,6 +74,13 @@ declare module 'hangar-internal' {
                 url: string | null;
                 name: string | null;
             };
+            donation: {
+                enable: false;
+                email: string | null;
+                defaultAmount: number;
+                oneTimeAmounts: Array<string>;
+                monthlyAmounts: Array<string>;
+            };
             forumSync: false;
         };
         category: ProjectCategory;

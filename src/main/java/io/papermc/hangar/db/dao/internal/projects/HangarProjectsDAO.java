@@ -51,7 +51,12 @@ public interface HangarProjectsDAO {
             "       ps.license_name," +
             "       ps.license_url," +
             "       ps.keywords," +
-            "       ps.forum_sync" +
+            "       ps.forum_sync," +
+            "       ps.donation_enabled," +
+            "       ps.donation_email," +
+            "       ps.donation_default_amount," +
+            "       ps.donation_onetime_amounts," +
+            "       ps.donation_monthly_amounts" +
             "  FROM home_projects p" +
             "         JOIN projects ps ON p.id = ps.id" +
             "         JOIN users u ON ps.owner_id = u.id" +

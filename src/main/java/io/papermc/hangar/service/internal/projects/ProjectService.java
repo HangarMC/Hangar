@@ -142,6 +142,11 @@ public class ProjectService extends HangarComponent {
         projectTable.setLicenseUrl(settingsForm.getSettings().getLicense().getUrl());
         projectTable.setForumSync(settingsForm.getSettings().isForumSync());
         projectTable.setDescription(settingsForm.getDescription());
+        projectTable.setDonationEnabled(settingsForm.getSettings().getDonation().isEnable());
+        projectTable.setDonationEmail(settingsForm.getSettings().getDonation().getEmail());
+        projectTable.setDonationDefaultAmount(settingsForm.getSettings().getDonation().getDefaultAmount());
+        projectTable.setDonationOnetimeAmounts(settingsForm.getSettings().getDonation().getOneTimeAmounts());
+        projectTable.setDonationMonthlyAmounts(settingsForm.getSettings().getDonation().getMonthlyAmounts());
         projectsDAO.update(projectTable);
         refreshHomeProjects();
         // TODO what settings changed

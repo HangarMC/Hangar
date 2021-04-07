@@ -19,14 +19,15 @@ public interface ProjectsDAO {
 
     @Timestamped
     @GetGeneratedKeys
-    @SqlUpdate("insert into projects (created_at, name, slug, owner_name, owner_id, category, description, visibility, homepage, issues, source, support, keywords, license_name, license_url) " +
-            "values (:now, :name, :slug, :ownerName,:ownerId, :category, :description, :visibility, :homepage, :issues, :source, :support, :keywords, :licenseName, :licenseUrl)")
+    @SqlUpdate("insert into projects (created_at, name, slug, owner_name, owner_id, category, description, visibility, homepage, issues, source, support, keywords, license_name, license_url, donation_enabled, donation_email, donation_default_amount, donation_monthly_amounts, donation_onetime_amounts) " +
+            "values (:now, :name, :slug, :ownerName,:ownerId, :category, :description, :visibility, :homepage, :issues, :source, :support, :keywords, :licenseName, :licenseUrl, :donationEnabled, :donationEmail, :donationDefaultAmount, :donationMonthlyAmounts, :donationOnetimeAmounts)")
     ProjectTable insert(@BindBean ProjectTable project);
 
     @GetGeneratedKeys
     @SqlUpdate("UPDATE projects SET name = :name, slug = :slug, category = :category, keywords = :keywords, issues = :issues, source = :source, " +
             "license_name = :licenseName, license_url = :licenseUrl, forum_sync = :forumSync, description = :description, visibility = :visibility, " +
-            "support = :support, homepage = :homepage WHERE id = :id")
+            "support = :support, homepage = :homepage, donation_enabled = :donationEnabled, donation_email = :donationEmail, " +
+            "donation_default_amount = :donationDefaultAmount, donation_onetime_amounts = :donationOnetimeAmounts, donation_monthly_amounts = :donationMonthlyAmounts WHERE id = :id")
     ProjectTable update(@BindBean ProjectTable project);
 
     @SqlUpdate("DELETE FROM projects WHERE id = :id")
