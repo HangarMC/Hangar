@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.projects;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsAdminDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
@@ -7,7 +8,6 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.projects.HangarProjectApproval;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ProjectAdminService extends HangarService {
+public class ProjectAdminService extends HangarComponent {
 
     private final ProjectsDAO projectsDAO;
     private final HangarProjectsAdminDAO hangarProjectsAdminDAO;

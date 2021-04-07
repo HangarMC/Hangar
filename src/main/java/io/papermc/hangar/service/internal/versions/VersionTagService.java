@@ -1,16 +1,16 @@
 package io.papermc.hangar.service.internal.versions;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionTagsDAO;
 import io.papermc.hangar.model.common.TagColor;
 import io.papermc.hangar.model.db.versions.ProjectVersionTagTable;
-import io.papermc.hangar.service.HangarService;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
 @Service
-public class VersionTagService extends HangarService {
+public class VersionTagService extends HangarComponent {
 
     private final ProjectVersionTagsDAO projectVersionTagsDAO;
 

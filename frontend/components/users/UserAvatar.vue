@@ -14,23 +14,23 @@ import { PropType } from 'vue';
 @Component
 export default class UserAvatar extends Vue {
     @Prop()
-    username!: String;
+    username!: string;
 
     @Prop()
-    avatarUrl!: String;
+    avatarUrl!: string;
 
     @Prop()
-    imgSrc!: String;
+    imgSrc!: string;
 
     @Prop()
     clazz!: PropType<'user-avatar-md' | 'user-avatar-sm' | 'user-avatar-xs'>;
 
     @Prop()
-    href!: String;
+    href!: string;
 
     errored: boolean = false;
 
-    get src(): String {
+    get src(): string {
         if (this.errored) {
             return 'https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png';
         } else if (this.imgSrc) {

@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.LoggedActionsDAO;
 import io.papermc.hangar.model.db.log.LoggedActionTable;
@@ -11,7 +12,6 @@ import io.papermc.hangar.model.internal.logs.contexts.PageContext;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @Service
-public class UserActionLogService extends HangarService {
+public class UserActionLogService extends HangarComponent {
 
     private final LoggedActionsDAO loggedActionsDAO;
 

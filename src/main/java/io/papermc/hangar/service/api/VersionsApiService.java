@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.api;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -11,7 +12,6 @@ import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.service.internal.versions.VersionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class VersionsApiService extends HangarService {
+public class VersionsApiService extends HangarComponent {
 
     private final VersionsApiDAO versionsApiDAO;
     private final VersionService versionService;

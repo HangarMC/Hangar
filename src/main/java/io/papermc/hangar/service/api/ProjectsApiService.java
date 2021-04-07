@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.api;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.v1.ProjectsApiDAO;
 import io.papermc.hangar.model.api.PaginatedResult;
@@ -11,7 +12,6 @@ import io.papermc.hangar.model.api.project.ProjectMember;
 import io.papermc.hangar.model.api.project.ProjectSortingStrategy;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
-import io.papermc.hangar.service.HangarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class ProjectsApiService extends HangarService {
+public class ProjectsApiService extends HangarComponent {
 
     private final ProjectsApiDAO projectsApiDAO;
 

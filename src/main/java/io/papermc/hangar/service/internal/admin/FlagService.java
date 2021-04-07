@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.admin;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectFlagsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectFlagsDAO;
@@ -9,7 +10,6 @@ import io.papermc.hangar.model.db.projects.ProjectFlagTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
-import io.papermc.hangar.service.HangarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
-public class FlagService extends HangarService {
+public class FlagService extends HangarComponent {
 
     private final ProjectFlagsDAO projectFlagsDAO;
     private final HangarProjectFlagsDAO hangarProjectFlagsDAO;

@@ -128,6 +128,12 @@ export default class AdminHealthPage extends Vue {
     erroredJobs!: Job[];
     // noPlatform: Array<Project> = [this.$util.dummyProject()];
 
+    head() {
+        return {
+            title: this.$t('health.title'),
+        };
+    }
+
     async asyncData({ $api, $util }: Context) {
         const data: HealthReport = await $api.requestInternal<HealthReport>('admin/health').catch<any>($util.handlePageRequestError);
         return { ...data };

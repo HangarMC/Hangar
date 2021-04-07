@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.perms.members;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.members.MembersDAO;
@@ -12,7 +13,6 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.members.MemberTable;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 import io.papermc.hangar.model.internal.api.requests.EditMembersForm.Member;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.internal.perms.roles.RoleService;
 import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService;
 import org.jetbrains.annotations.Nullable;
@@ -31,7 +31,7 @@ public abstract class MemberService<
         JNS extends JoinableNotificationService<RT, J>,
         MD extends MembersDAO<MT>,
         MT extends MemberTable
-        > extends HangarService {
+        > extends HangarComponent {
 
     @Autowired
     private HangarDao<UserDAO> userDAO;

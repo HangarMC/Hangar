@@ -2,7 +2,7 @@ package io.papermc.hangar.controller.internal.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.papermc.hangar.controller.HangarController;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.internal.versions.HangarReviewQueueEntry;
@@ -21,7 +21,7 @@ import java.util.List;
 @Controller
 @PermissionRequired(NamedPermission.REVIEWER)
 @RequestMapping(path = "/api/internal/admin/approval", produces = MediaType.APPLICATION_JSON_VALUE)
-public class AdminApprovalController extends HangarController {
+public class AdminApprovalController extends HangarComponent {
 
     private final ProjectAdminService projectAdminService;
     private final ReviewService reviewService;

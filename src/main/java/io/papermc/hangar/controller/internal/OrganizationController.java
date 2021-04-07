@@ -1,7 +1,7 @@
 package io.papermc.hangar.controller.internal;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.papermc.hangar.controller.HangarController;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
@@ -42,7 +42,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/api/internal/organizations")
-public class OrganizationController extends HangarController {
+public class OrganizationController extends HangarComponent {
 
     private final UserService userService;
     private final OrganizationFactory organizationFactory;

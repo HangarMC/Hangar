@@ -1,15 +1,15 @@
 package io.papermc.hangar.service.internal.versions;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.versions.RecommendedProjectVersionsDAO;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.versions.RecommendedProjectVersionTable;
-import io.papermc.hangar.service.HangarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RecommendedVersionService extends HangarService {
+public class RecommendedVersionService extends HangarComponent {
 
     private final RecommendedProjectVersionsDAO recommendedProjectVersionsDAO;
 

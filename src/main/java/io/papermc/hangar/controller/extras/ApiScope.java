@@ -50,20 +50,12 @@ public class ApiScope {
         return id;
     }
 
-    public static ApiScope ofGlobal() {
-        return new ApiScope(ApiScopeType.GLOBAL, null);
-    }
-
     public static ApiScope ofProject(String author, String slug) {
         return new ApiScope(ApiScopeType.PROJECT, author, slug);
     }
 
     public static ApiScope ofProject(long id) {
         return new ApiScope(ApiScopeType.PROJECT, id);
-    }
-
-    public static ApiScope ofOrg(String organizationName) {
-        return new ApiScope(ApiScopeType.ORGANIZATION, organizationName);
     }
 
     @Deprecated(forRemoval = true)

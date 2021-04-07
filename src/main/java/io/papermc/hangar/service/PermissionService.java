@@ -1,5 +1,6 @@
 package io.papermc.hangar.service;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.PermissionsDAO;
 import io.papermc.hangar.model.common.Permission;
@@ -12,7 +13,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class PermissionService extends HangarService {
+public class PermissionService extends HangarComponent {
 
     public static final Permission DEFAULT_SIGNED_OUT_PERMISSIONS = Permission.ViewPublicInfo;
     public static final Permission DEFAULT_SIGNED_IN_PERMISSIONS = Permission.ViewPublicInfo.add(Permission.EditOwnUserSettings).add(Permission.EditApiKeys);

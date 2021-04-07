@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.projects;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -9,7 +10,6 @@ import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
 import io.papermc.hangar.util.StringUtils;
@@ -19,7 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProjectFactory extends HangarService {
+public class ProjectFactory extends HangarComponent {
 
     private final ProjectsDAO projectsDAO;
     private final ProjectService projectService;

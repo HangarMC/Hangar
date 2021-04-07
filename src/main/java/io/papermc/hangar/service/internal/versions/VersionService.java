@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.versions;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
@@ -8,7 +9,6 @@ import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.internal.visibility.ProjectVersionVisibilityService;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class VersionService extends HangarService {
+public class VersionService extends HangarComponent {
 
     private final ProjectVersionsDAO projectVersionsDAO;
     private final HangarVersionsDAO hangarVersionsDAO;

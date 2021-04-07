@@ -1,7 +1,6 @@
 declare module 'hangar-internal' {
-    import { IPlatform } from 'hangar-internal';
     import { Model, ProjectNamespace } from 'hangar-api';
-    import { ReviewAction } from '~/types/enums';
+    import { Platform, ReviewAction } from '~/types/enums';
 
     interface HangarReviewMessage extends Model {
         message: string;
@@ -27,7 +26,7 @@ declare module 'hangar-internal' {
         namespace: ProjectNamespace;
         versionId: number;
         versionString: string;
-        platforms: IPlatform[];
+        platforms: Platform[];
         versionCreatedAt: string;
         versionAuthor: string;
         channelName: string;

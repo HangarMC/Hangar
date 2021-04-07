@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.service.internal.SitemapService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class SitemapController extends HangarController {
+public class SitemapController extends HangarComponent {
 
     private final SitemapService sitemapService;
 

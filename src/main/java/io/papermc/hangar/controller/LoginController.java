@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.auth.RefreshResponse;
 import io.papermc.hangar.model.db.UserTable;
@@ -29,7 +30,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 
 @Controller
-public class LoginController extends HangarController {
+public class LoginController extends HangarComponent {
 
     private final AuthenticationService authenticationService;
     private final SSOService ssoService;

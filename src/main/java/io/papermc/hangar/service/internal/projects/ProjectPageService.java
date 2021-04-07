@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.projects;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectPagesDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectPagesDAO;
@@ -11,7 +12,6 @@ import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.PageContext;
 import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.util.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class ProjectPageService extends HangarService {
+public class ProjectPageService extends HangarComponent {
 
     private final ProjectPagesDAO projectPagesDAO;
     private final HangarProjectPagesDAO hangarProjectPagesDAO;

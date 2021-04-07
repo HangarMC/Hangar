@@ -1,6 +1,5 @@
 package io.papermc.hangar.security;
 
-import io.papermc.hangar.controller.internal.ReviewController;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.annotation.MergedAnnotations;
@@ -42,9 +41,6 @@ public class HangarMetadataSources extends AbstractFallbackMethodSecurityMetadat
 
     @Override
     protected Collection<ConfigAttribute> findAttributes(Method method, Class<?> targetClass) {
-        if (targetClass.equals(ReviewController.class)) {
-            System.out.println(targetClass);
-        }
         return Stream.concat(
                 annotationExtractors.entrySet().stream()
                         .map(entry -> processAnnotation(method, entry))

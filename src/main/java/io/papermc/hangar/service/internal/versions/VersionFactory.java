@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.versions;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionDependenciesDAO;
@@ -21,7 +22,6 @@ import io.papermc.hangar.model.db.versions.ProjectVersionTagTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.PlatformService;
 import io.papermc.hangar.service.internal.projects.ChannelService;
@@ -52,7 +52,7 @@ import java.util.Set;
 import java.util.SortedSet;
 
 @Service
-public class VersionFactory extends HangarService {
+public class VersionFactory extends HangarComponent {
 
     private final ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependenciesDAO;
     private final ProjectVersionDependenciesDAO projectVersionDependenciesDAO;

@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.controller.extras.RobotsBuilder;
 import io.papermc.hangar.controller.extras.StatusZ;
 import io.papermc.hangar.security.annotations.Anyone;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Anyone
 @Controller
-public class ApplicationController extends HangarController {
+public class ApplicationController extends HangarComponent {
 
     private final StatusZ statusZ;
 

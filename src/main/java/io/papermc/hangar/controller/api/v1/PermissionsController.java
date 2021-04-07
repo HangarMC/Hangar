@@ -1,6 +1,6 @@
 package io.papermc.hangar.controller.api.v1;
 
-import io.papermc.hangar.controller.HangarController;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.controller.api.v1.interfaces.IPermissionsController;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.permissions.PermissionCheck;
@@ -22,7 +22,7 @@ import java.util.function.BiPredicate;
 
 @Anyone
 @Controller
-public class PermissionsController extends HangarController implements IPermissionsController {
+public class PermissionsController extends HangarComponent implements IPermissionsController {
 
     private final PermissionService permissionService;
 

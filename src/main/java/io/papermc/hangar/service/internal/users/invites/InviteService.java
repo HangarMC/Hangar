@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.users.invites;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarNotificationsDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
@@ -10,7 +11,6 @@ import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 import io.papermc.hangar.model.internal.api.requests.EditMembersForm.Member;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.internal.perms.members.MemberService;
 import io.papermc.hangar.service.internal.perms.roles.RoleService;
 import io.papermc.hangar.service.internal.users.NotificationService;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class InviteService<R extends Role<RT>, RT extends ExtendedRoleTable<R>, J extends Table & Named> extends HangarService {
+public abstract class InviteService<R extends Role<RT>, RT extends ExtendedRoleTable<R>, J extends Table & Named> extends HangarComponent {
 
     @Autowired
     protected HangarDao<HangarNotificationsDAO> hangarNotificationsDAO;

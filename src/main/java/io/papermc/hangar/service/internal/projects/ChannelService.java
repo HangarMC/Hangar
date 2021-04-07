@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.projects;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectChannelsDAO;
@@ -9,7 +10,6 @@ import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.projects.HangarChannel;
-import io.papermc.hangar.service.HangarService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ChannelService extends HangarService {
+public class ChannelService extends HangarComponent {
 
     private final ProjectChannelsDAO projectChannelsDAO;
     private final HangarProjectsDAO hangarProjectsDAO;

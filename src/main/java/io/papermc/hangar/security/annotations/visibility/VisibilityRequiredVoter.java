@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
 @Component
 public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequiredAttribute> {
 
@@ -32,6 +34,7 @@ public class VisibilityRequiredVoter extends HangarDecisionVoter<VisibilityRequi
         if (arguments == null || !attribute.getType().getArgCount().contains(arguments.length)) {
             throw new IllegalStateException("Bad annotation configuration");
         }
+        logger.debug("Resolved arguments: " + Arrays.toString(arguments));
         switch (attribute.getType()) {
             case PROJECT:
                 if (arguments.length == 1 && projectService.getProjectTable((long) arguments[0]) != null) {

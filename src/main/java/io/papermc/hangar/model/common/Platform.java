@@ -34,6 +34,7 @@ public enum Platform {
         return name;
     }
 
+    @JsonValue
     public String getEnumName() { return name(); }
 
     public Category getCategory() {

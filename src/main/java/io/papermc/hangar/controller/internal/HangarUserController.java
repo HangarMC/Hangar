@@ -2,7 +2,7 @@ package io.papermc.hangar.controller.internal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.papermc.hangar.controller.HangarController;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Prompt;
@@ -48,7 +48,7 @@ import java.util.List;
 @Controller
 @LoggedIn
 @RequestMapping(path = "/api/internal", produces = MediaType.APPLICATION_JSON_VALUE, method = { RequestMethod.GET, RequestMethod.POST })
-public class HangarUserController extends HangarController {
+public class HangarUserController extends HangarComponent {
 
     private final ObjectMapper mapper;
     private final UsersApiService usersApiService;

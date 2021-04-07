@@ -1,10 +1,10 @@
 package io.papermc.hangar.service.internal;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.PlatformVersionTable;
-import io.papermc.hangar.service.HangarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class PlatformService extends HangarService {
+public class PlatformService extends HangarComponent {
 
     private final PlatformVersionDAO platformVersionDAO;
 

@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.visibility;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.ModelVisible;
 import io.papermc.hangar.model.ProjectIdentified;
@@ -7,15 +8,15 @@ import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.db.visibility.VisibilityChangeTable;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.PermissionService;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Map.Entry;
 
-abstract class VisibilityService<M extends Table & ModelVisible & ProjectIdentified, VT extends VisibilityChangeTable> extends HangarService {
+abstract class VisibilityService<M extends Table & ModelVisible & ProjectIdentified, VT extends VisibilityChangeTable> extends HangarComponent {
 
     @Autowired
     private PermissionService permissionService;
@@ -54,8 +55,10 @@ abstract class VisibilityService<M extends Table & ModelVisible & ProjectIdentif
         if (model == null) {
             return null;
         }
+        logger.debug("Checking visibility of " + model + " User: " + SecurityContextHolder.getContext().getAuthentication());
         Permission perms = permissionService.getProjectPermissions(getHangarUserId(), model.getProjectId());
         if (!perms.has(Permission.SeeHidden) && !perms.has(Permission.IsProjectMember) && model.getVisibility() != Visibility.PUBLIC) {
+            logger.debug("Not visible. Perms: " + perms + " Visibility: " + model.getVisibility());
             return null;
         }
         return model;

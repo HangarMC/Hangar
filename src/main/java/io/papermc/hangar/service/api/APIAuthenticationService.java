@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.api;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.ApiKeyDAO;
@@ -7,7 +8,6 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.auth.ApiSession;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.auth.ApiKeyTable;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.regex.Pattern;
 
 @Service
-public class APIAuthenticationService extends HangarService {
+public class APIAuthenticationService extends HangarComponent {
 
     private static final String UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
     private static final Pattern API_KEY_PATTERN = Pattern.compile("(" + UUID_REGEX + ").(" + UUID_REGEX + ")");

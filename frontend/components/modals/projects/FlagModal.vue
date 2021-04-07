@@ -5,7 +5,7 @@
                 <template #activator="{ on: tooltipOn }">
                     <div v-on="tooltipOn">
                         <!-- wrap in div so tooltip shows up when the button is disabled -->
-                        <v-btn v-bind="attrs" color="warning" :disabled="project.userActions.flagged" :class="activatorClass" v-on="{ dialogOn }">
+                        <v-btn v-bind="attrs" color="warning" :disabled="project.userActions.flagged" :class="activatorClass" v-on="dialogOn">
                             <v-icon>mdi-flag</v-icon>
                             {{ $t('project.actions.flag') }}
                         </v-btn>

@@ -190,7 +190,7 @@ export default class AdminApprovalVersionsPage extends HangarComponent {
             author: entry.namespace.owner,
             slug: entry.namespace.slug,
             version: entry.versionString,
-            platform: entry.platforms[0].enumName.toLowerCase(),
+            platform: entry.platforms[0].toLowerCase(),
         };
     }
 

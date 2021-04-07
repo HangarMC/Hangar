@@ -1,6 +1,6 @@
 package io.papermc.hangar.controller.api.v1;
 
-import io.papermc.hangar.controller.HangarController;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.controller.api.v1.interfaces.IAuthenticationController;
 import io.papermc.hangar.model.api.auth.ApiSession;
 import io.papermc.hangar.security.annotations.Anyone;
@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class AuthenticationController extends HangarController implements IAuthenticationController {
+public class AuthenticationController extends HangarComponent implements IAuthenticationController {
 
     private final APIAuthenticationService apiAuthenticationService;
 

@@ -1,8 +1,8 @@
 package io.papermc.hangar.service.internal.uploads;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.exceptions.InternalHangarException;
-import io.papermc.hangar.service.HangarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +20,7 @@ import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class ImageService extends HangarService {
+public class ImageService extends HangarComponent {
 
     private final ProjectFiles projectFiles;
 

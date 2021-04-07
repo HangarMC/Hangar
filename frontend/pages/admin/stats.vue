@@ -118,6 +118,12 @@ export default class AdminStatsPage extends Vue {
         (this.flagData.series[1] as IChartistSeriesData).data = closedFlags;
     }
 
+    head() {
+        return {
+            title: this.$t('stats.title'),
+        };
+    }
+
     // TODO figure out a way of not having a ton of duplicate code here
     async asyncData({ $util, $api, app: { i18n } }: Context) {
         const now = new Date();

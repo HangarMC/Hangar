@@ -3,6 +3,7 @@ package io.papermc.hangar.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.ChangeAvatarToken;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Service
-public class AuthenticationService extends HangarService {
+public class AuthenticationService extends HangarComponent {
 
     private final UserService userService;
     private final GlobalRoleService globalRoleService;

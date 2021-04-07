@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.organizations;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarOrganizationsDAO;
 import io.papermc.hangar.db.dao.internal.table.OrganizationDAO;
@@ -14,7 +15,6 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.internal.HangarOrganization;
 import io.papermc.hangar.model.internal.api.requests.EditMembersForm;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
 import io.papermc.hangar.service.internal.users.invites.OrganizationInviteService;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class OrganizationService extends HangarService {
+public class OrganizationService extends HangarComponent {
 
     private final HangarOrganizationsDAO hangarOrganizationsDAO;
     private final OrganizationRolesDAO organizationRolesDAO;

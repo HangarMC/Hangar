@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.OrganizationDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
@@ -15,7 +16,6 @@ import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.api.requests.EditMembersForm.Member;
 import io.papermc.hangar.model.internal.sso.AuthUser;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.perms.roles.OrganizationRoleService;
@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class OrganizationFactory extends HangarService {
+public class OrganizationFactory extends HangarComponent {
 
     private final UserDAO userDAO;
     private final OrganizationDAO organizationDAO;

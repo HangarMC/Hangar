@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.auth.ApiKeyDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.UserRefreshTokenDAO;
@@ -31,7 +32,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Service
-public class TokenService extends HangarService {
+public class TokenService extends HangarComponent {
 
     private final ApiKeyDAO apiKeyDAO;
     private final UserRefreshTokenDAO userRefreshTokenDAO;

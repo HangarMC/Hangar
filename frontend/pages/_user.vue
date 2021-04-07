@@ -143,8 +143,8 @@ export default class UserParentPage extends UserPage {
                 buttons.push({ icon: 'mdi-key', url: '/' + this.user.name + '/settings/api-keys', name: 'apiKeys' });
             }
         }
-        if (this.$perms.canAccessModNotesAndFlags || this.$perms.isReviewer) {
-            buttons.push({ icon: 'mdi-calendar', url: '', name: 'activity' });
+        if ((this.$perms.canAccessModNotesAndFlags || this.$perms.isReviewer) && !this.user.isOrganization) {
+            buttons.push({ icon: 'mdi-calendar', url: `/admin/activities/${this.user.name}`, name: 'activity' });
         }
         if (this.$perms.canEditAllUserSettings) {
             buttons.push({ icon: 'mdi-wrench', url: '/admin/user/' + this.user.name, name: 'admin' });

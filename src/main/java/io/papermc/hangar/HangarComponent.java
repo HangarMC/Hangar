@@ -1,9 +1,10 @@
-package io.papermc.hangar.service;
+package io.papermc.hangar;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
+import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.UserActionLogService;
 import org.jdbi.v3.core.internal.MemoizingSupplier;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
-public abstract class HangarService {
+public abstract class HangarComponent {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 

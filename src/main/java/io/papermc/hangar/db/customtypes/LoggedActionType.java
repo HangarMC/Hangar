@@ -16,9 +16,6 @@ public class LoggedActionType<C extends AbstractContext> {
 
     public static final LoggedActionType<VersionContext> VERSION_DELETED = new LoggedActionType<>(PGLoggedAction.VERSION_DELETED, "VersionDeleted", "The version was deleted");
 
-    public static final LoggedActionType<UserContext> USER_APIKEY_CREATE = new LoggedActionType<>(PGLoggedAction.USER_APIKEY_CREATED, "UserApikeyCreated", "An apikey was created");
-    public static final LoggedActionType<UserContext> USER_APIKEY_DELETE = new LoggedActionType<>(PGLoggedAction.USER_APIKEY_DELETED, "UserApikeyDeleted", "An apikey was deleted");
-
     private final PGLoggedAction value;
     private final String name;
     private C actionContext;
@@ -97,24 +94,6 @@ public class LoggedActionType<C extends AbstractContext> {
 
         public static VersionContext of(long projectId, long versionId) {
             return new VersionContext(projectId, versionId);
-        }
-    }
-
-    public static class UserContext extends AbstractContext {
-
-        private final long userId;
-
-        private UserContext(long userId) {
-            super(3);
-            this.userId = userId;
-        }
-
-        public long getUserId() {
-            return userId;
-        }
-
-        public static UserContext of(long userId) {
-            return new UserContext(userId);
         }
     }
 

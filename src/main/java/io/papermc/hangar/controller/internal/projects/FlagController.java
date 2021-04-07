@@ -1,6 +1,6 @@
 package io.papermc.hangar.controller.internal.projects;
 
-import io.papermc.hangar.controller.HangarController;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.model.api.requests.FlagForm;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
@@ -24,7 +24,7 @@ import java.util.List;
 @LoggedIn
 @Controller
 @RequestMapping("/api/internal/flags")
-public class FlagController extends HangarController {
+public class FlagController extends HangarComponent {
 
     private final FlagService flagService;
 

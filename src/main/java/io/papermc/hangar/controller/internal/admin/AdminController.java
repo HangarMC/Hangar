@@ -2,7 +2,7 @@ package io.papermc.hangar.controller.internal.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import io.papermc.hangar.controller.HangarController;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.controller.extras.resolvers.NoCache;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
@@ -42,7 +42,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/api/internal/admin")
-public class AdminController extends HangarController {
+public class AdminController extends HangarComponent {
 
     private final PlatformService platformService;
     private final StatService statService;
@@ -99,10 +99,11 @@ public class AdminController extends HangarController {
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(NamedPermission.IS_STAFF)
     @PostMapping(value = "/lock-user/{user}/{locked}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void toggleUserLock(@PathVariable @NoCache UserTable user, @PathVariable boolean locked, @RequestBody @Valid StringContent comment) {
+    public void setUserLock(@PathVariable @NoCache UserTable user, @PathVariable boolean locked, @RequestBody @Valid StringContent comment) {
         userService.setLocked(user, locked, comment.getContent());
     }
 
+    // TODO filters/pagination
     @ResponseBody
     @GetMapping(value = "/log", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(NamedPermission.REVIEWER)

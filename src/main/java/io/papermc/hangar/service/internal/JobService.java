@@ -1,16 +1,16 @@
 package io.papermc.hangar.service.internal;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.JobsDAO;
 import io.papermc.hangar.model.db.JobTable;
-import io.papermc.hangar.service.HangarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class JobService extends HangarService {
+public class JobService extends HangarComponent {
 
     private final JobsDAO jobsDAO;
 

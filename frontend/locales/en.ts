@@ -215,7 +215,7 @@ const msgs: LocaleMessageObject = {
             category: 'Category',
             categorySub: 'Categorize your project into one of 10 categories. Appropriately categorizing your project makes it easier for people to find.',
             keywords: 'Keywords',
-            keywordsSub: 'These are special words that will return your project when people add them to their searches. Max 5.',
+            keywordsSub: 'These are special words that will return your project when people add them to their searches.',
             homepage: 'Homepage',
             homepageSub:
                 'Having a custom homepage for your project helps you look more proper, official, and gives you another place to gather information about your project.',
@@ -662,6 +662,16 @@ const msgs: LocaleMessageObject = {
         line1: '{0} reported {1} on {2}',
         line2: 'Reason: {0}',
         line3: 'Comment: {0}',
+    },
+    userActivity: {
+        title: "{0}'s Activity",
+        reviews: 'Reviews',
+        flags: 'Flags',
+        reviewApproved: 'Review Approved',
+        flagResolved: 'Flag Resolved',
+        error: {
+            isOrg: 'Cannot show activity for organization users',
+        },
     },
     userAdmin: {
         title: 'Edit User',

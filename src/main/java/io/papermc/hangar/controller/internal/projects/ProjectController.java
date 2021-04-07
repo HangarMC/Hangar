@@ -1,6 +1,6 @@
 package io.papermc.hangar.controller.internal.projects;
 
-import io.papermc.hangar.controller.HangarController;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.InternalHangarException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(path = "/api/internal/projects", produces = MediaType.APPLICATION_JSON_VALUE)
-public class ProjectController extends HangarController {
+public class ProjectController extends HangarComponent {
 
     private final ProjectFactory projectFactory;
     private final ProjectService projectService;
@@ -152,8 +152,8 @@ public class ProjectController extends HangarController {
         userService.toggleWatching(projectId, state);
     }
 
+    // Can't put visibility required because the browser image requests don't include the JWT needed for authorization
     @Anyone
-    @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
     @GetMapping(value = "/project/{author}/{slug}/icon", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     public Object getProjectIcon(@PathVariable String author, @PathVariable String slug) {
         try {

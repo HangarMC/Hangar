@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.versions;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionReviewsDAO;
@@ -17,7 +18,6 @@ import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.HangarReview;
 import io.papermc.hangar.model.internal.versions.HangarReviewQueueEntry;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.internal.users.NotificationService;
 import io.papermc.hangar.service.internal.visibility.ProjectVersionVisibilityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ import java.util.Objects;
 
 @Service
 @Transactional
-public class ReviewService extends HangarService {
+public class ReviewService extends HangarComponent {
 
     private final ProjectVersionReviewsDAO projectVersionReviewsDAO;
     private final HangarReviewsDAO hangarReviewsDAO;

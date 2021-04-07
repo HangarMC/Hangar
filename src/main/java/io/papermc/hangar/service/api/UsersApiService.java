@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.api;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.UsersDAO;
@@ -15,7 +16,6 @@ import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.model.internal.user.HangarUser.HeaderData;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.PermissionService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 @Service
-public class UsersApiService extends HangarService {
+public class UsersApiService extends HangarComponent {
 
     private final UsersDAO usersDAO;
     private final UsersApiDAO usersApiDAO;

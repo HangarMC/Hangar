@@ -42,7 +42,7 @@ public interface UserDao {
             "  WHERE u.name = :username" +
             "  LIMIT 20")
     @RegisterBeanMapper(ReviewActivity.class)
-    List<ReviewActivity> getReviewActivity(String username);
+    List<ReviewActivity> getReviewActivity(String usernafme);
 
     @SqlQuery("SELECT pf.resolved_at, p.owner_name, p.slug" +
             "  FROM users u" +

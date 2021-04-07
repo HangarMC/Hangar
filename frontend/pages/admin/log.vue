@@ -99,6 +99,12 @@ export default class AdminLogPage extends Vue {
         { text: this.$t('userActionLog.newState'), value: 'newState' },
     ];
 
+    head() {
+        return {
+            title: this.$t('userActionLog.title'),
+        };
+    }
+
     async asyncData({ $api, $util }: Context) {
         const loggedActions = await $api.requestInternal<PaginatedResult<LoggedAction>>(`admin/log/`, false).catch<any>($util.handlePageRequestError);
         return { loggedActions };

@@ -1,6 +1,6 @@
 package io.papermc.hangar.controller.internal.projects;
 
-import io.papermc.hangar.controller.HangarController;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
@@ -30,7 +30,7 @@ import java.util.List;
 @LoggedIn
 @Controller
 @RequestMapping("/api/internal/projects")
-public class ProjectAdminController extends HangarController {
+public class ProjectAdminController extends HangarComponent {
 
     private final ProjectAdminService projectAdminService;
     private final ProjectNoteService projectNoteService;

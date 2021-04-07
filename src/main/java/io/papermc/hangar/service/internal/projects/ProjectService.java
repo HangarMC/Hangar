@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.projects;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
@@ -24,7 +25,6 @@ import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.model.internal.projects.HangarProject.HangarProjectInfo;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
@@ -56,7 +56,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 @Service
-public class ProjectService extends HangarService {
+public class ProjectService extends HangarComponent {
 
     private final ProjectsDAO projectsDAO;
     private final UserDAO userDAO;

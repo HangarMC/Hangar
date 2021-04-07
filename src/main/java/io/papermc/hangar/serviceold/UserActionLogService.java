@@ -46,18 +46,6 @@ public class UserActionLogService extends HangarService {
 //        actionsDao.get().insertVersionLog(log);
     }
 
-    public void user(HttpServletRequest request, LoggedActionType<LoggedActionType.UserContext> loggedActionType, String newState, String oldState) {
-//        LoggedActionsUserTable log = new LoggedActionsUserTable(
-//                getCurrentUser().getId(),
-//                RequestUtil.getRemoteInetAddress(request),
-//                loggedActionType.getValue(),
-//                Objects.toString(newState, ""),
-//                Objects.toString(oldState, ""),
-//                loggedActionType.getActionContext().getUserId()
-//        );
-//        actionsDao.get().insertUserLog(log);
-    }
-
     public List<HangarLoggedAction> getLog(Integer oPage, String userFilter, String projectFilter, String versionFilter, String pageFilter, String actionFilter, String subjectFilter) {
         long pageSize = 50L;
         long offset;

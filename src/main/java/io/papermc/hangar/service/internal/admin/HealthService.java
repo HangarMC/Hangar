@@ -1,10 +1,10 @@
 package io.papermc.hangar.service.internal.admin;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HealthDAO;
 import io.papermc.hangar.model.internal.admin.health.MissingFileCheck;
 import io.papermc.hangar.model.internal.admin.health.UnhealthyProject;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class HealthService extends HangarService {
+public class HealthService extends HangarComponent {
 
     private final HealthDAO healthDAO;
     private final ProjectFiles projectFiles;

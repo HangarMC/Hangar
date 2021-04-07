@@ -1,6 +1,6 @@
 package io.papermc.hangar.controller.api.v1;
 
-import io.papermc.hangar.controller.HangarController;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.controller.api.v1.interfaces.IUsersController;
 import io.papermc.hangar.controller.extras.pagination.SorterRegistry;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSorters;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Controller;
 
 @Anyone
 @Controller
-public class UsersController extends HangarController implements IUsersController {
+public class UsersController extends HangarComponent implements IUsersController {
 
     private final UsersApiService usersApiService;
 

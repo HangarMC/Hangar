@@ -1,6 +1,6 @@
 package io.papermc.hangar.controller.api.v1;
 
-import io.papermc.hangar.controller.HangarController;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.controller.api.v1.interfaces.IProjectsController;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
 import io.papermc.hangar.controller.extras.pagination.filters.projects.ProjectAuthorFilter;
@@ -31,7 +31,7 @@ import java.util.Map;
 
 @Anyone
 @Controller
-public class ProjectsController extends HangarController implements IProjectsController {
+public class ProjectsController extends HangarComponent implements IProjectsController {
 
     private final ProjectsApiService projectsApiService;
 

@@ -1,5 +1,6 @@
 package io.papermc.hangar.service;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarApiKeysDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.ApiKeyDAO;
@@ -22,7 +23,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class APIKeyService extends HangarService {
+public class APIKeyService extends HangarComponent {
 
     private final ApiKeyDAO apiKeyDAO;
     private final HangarApiKeysDAO hangarApiKeysDAO;

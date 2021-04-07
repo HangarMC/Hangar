@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.admin;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarStatsDAO;
 import io.papermc.hangar.db.dao.internal.table.stats.ProjectVersionDownloadsDAO;
@@ -9,7 +10,6 @@ import io.papermc.hangar.model.VersionIdentified;
 import io.papermc.hangar.model.db.stats.ProjectVersionDownloadIndividualTable;
 import io.papermc.hangar.model.db.stats.ProjectViewIndividualTable;
 import io.papermc.hangar.model.internal.admin.DayStats;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class StatService extends HangarService {
+public class StatService extends HangarComponent {
 
     private static final String STAT_TRACKING_COOKIE = "hangar_stats";
 

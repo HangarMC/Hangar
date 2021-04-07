@@ -1,7 +1,5 @@
 package io.papermc.hangar.model.internal.admin.health;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.papermc.hangar.model.api.project.ProjectNamespace;
 import io.papermc.hangar.model.common.Platform;
 import org.jdbi.v3.core.mapper.Nested;
@@ -22,14 +20,8 @@ public class MissingFileCheck {
         this.name = name;
     }
 
-    @JsonIgnore
     public Platform getPlatform() {
         return platform;
-    }
-
-    @JsonProperty("platform")
-    public String _getPlatform() {
-        return platform.getEnumName();
     }
 
     public String getVersionString() {

@@ -87,6 +87,12 @@ export default class AdminFlagsPage extends Vue {
         }
     }
 
+    head() {
+        return {
+            title: this.$t('flagReview.title'),
+        };
+    }
+
     async asyncData({ $api, $util }: Context) {
         const flags = await $api.requestInternal<Flag[]>(`flags/`, false).catch<any>($util.handlePageRequestError);
         return { flags };

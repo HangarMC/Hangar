@@ -1,6 +1,6 @@
 package io.papermc.hangar.controller.internal;
 
-import io.papermc.hangar.controller.HangarController;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.db.projects.ProjectTable;
@@ -31,7 +31,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping(value = "/api/internal/channels", produces = MediaType.APPLICATION_JSON_VALUE)
-public class ChannelController extends HangarController {
+public class ChannelController extends HangarComponent {
 
     private final ChannelService channelService;
     private final ProjectService projectService;

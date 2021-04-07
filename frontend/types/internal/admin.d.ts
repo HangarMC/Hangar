@@ -69,4 +69,18 @@ declare module 'hangar-internal' {
         lastUpdated: string;
         visibility: Visibility;
     }
+
+    interface Activity {
+        namespace: ProjectNamespace;
+    }
+
+    interface FlagActivity extends Activity {
+        resolvedAt: string;
+    }
+
+    interface ReviewActivity extends Activity {
+        endedAt: string;
+        versionString: string;
+        platforms: Platform[];
+    }
 }

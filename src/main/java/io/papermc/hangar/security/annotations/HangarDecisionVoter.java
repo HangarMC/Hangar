@@ -2,6 +2,8 @@ package io.papermc.hangar.security.annotations;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
  * @param <A>
  */
 public abstract class HangarDecisionVoter<A extends ConfigAttribute> implements AccessDecisionVoter<MethodInvocation> {
+
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final Class<A> attributeClass;
     private final ParameterNameDiscoverer parameterNameDiscoverer;

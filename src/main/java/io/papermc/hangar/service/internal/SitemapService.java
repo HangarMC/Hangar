@@ -3,6 +3,7 @@ package io.papermc.hangar.service.internal;
 import cz.jiripinkas.jsitemapgenerator.ChangeFreq;
 import cz.jiripinkas.jsitemapgenerator.WebPage;
 import cz.jiripinkas.jsitemapgenerator.generator.SitemapGenerator;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectPagesDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
@@ -13,7 +14,6 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
-import io.papermc.hangar.service.HangarService;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Service
-public class SitemapService extends HangarService {
+public class SitemapService extends HangarComponent {
 
     private final UserDAO userDAO;
     private final ProjectsDAO projectsDAO;

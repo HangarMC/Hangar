@@ -1,6 +1,6 @@
 package io.papermc.hangar.controller.internal;
 
-import io.papermc.hangar.controller.HangarController;
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
@@ -41,7 +41,7 @@ import java.util.List;
 @Controller
 @Secured("ROLE_USER")
 @RequestMapping(path = "/api/internal/versions")
-public class VersionController extends HangarController {
+public class VersionController extends HangarComponent {
 
     private final VersionFactory versionFactory;
     private final VersionService versionService;

@@ -78,6 +78,12 @@ export default class AdminVersionsPage extends HangarComponent {
         return !isEqual(this.platforms, this.originalPlatforms);
     }
 
+    head() {
+        return {
+            title: this.$t('platformVersions.title'),
+        };
+    }
+
     async asyncData({ $api, $util }: Context) {
         const data = await $api.requestInternal<IPlatform[]>('data/platforms', false).catch<any>($util.handlePageRequestError);
         return { platforms: data, originalPlatforms: cloneDeep(data) };

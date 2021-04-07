@@ -1,15 +1,15 @@
 package io.papermc.hangar.service.internal.perms.roles;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.roles.IRolesDAO;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.roles.IRoleTable;
-import io.papermc.hangar.service.HangarService;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public abstract class RoleService<RT extends IRoleTable<R>, R extends Role<RT>, D extends IRolesDAO<RT>> extends HangarService {
+public abstract class RoleService<RT extends IRoleTable<R>, R extends Role<RT>, D extends IRolesDAO<RT>> extends HangarComponent {
 
     protected final D roleDao;
 

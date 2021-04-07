@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.users;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
@@ -11,7 +12,6 @@ import io.papermc.hangar.model.internal.logs.LoggedAction;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
 import io.papermc.hangar.model.internal.sso.AuthUser;
 import io.papermc.hangar.model.internal.sso.SsoSyncData;
-import io.papermc.hangar.service.HangarService;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.function.Function;
 
 @Service
-public class UserService extends HangarService {
+public class UserService extends HangarComponent {
 
     private final UserDAO userDAO;
     private final HangarUsersDAO hangarUsersDAO;

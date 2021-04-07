@@ -35,7 +35,7 @@
                     :key="member.name"
                     :class="{ 'to-delete': member.toDelete, editing: member.editing, new: member.new }"
                 >
-                    <UserAvatar :username="member.name" clazz="user-avatar-xs" />
+                    <UserAvatar :username="member.name" :avatar-url="$util.avatarUrl(member.name)" clazz="user-avatar-xs" />
                     <NuxtLink v-if="!isEditing" :to="'/' + member.name">{{ member.name }}</NuxtLink>
                     <span v-else>{{ member.name }}</span>
 
