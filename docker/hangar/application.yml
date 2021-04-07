@@ -42,6 +42,14 @@ hangar:
   auth-url: "http://localhost:8000"
   base-url: "http://localhost:3000"
   plugin-upload-dir: "/uploads"
+  ga-code: "UA-38006759-9"
+
+  licences:
+    - "MIT"
+    - "Apache 2.0"
+    - "GPL"
+    - "LPGL"
+    - "(custom)"
 
   sponsors:
     - name: Beer

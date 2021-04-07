@@ -53,7 +53,12 @@ public interface ProjectsApiDAO {
             "       p.license_name," +
             "       p.license_url," +
             "       p.keywords," +
-            "       p.forum_sync" +
+            "       p.forum_sync," +
+            "       p.donation_enabled," +
+            "       p.donation_email," +
+            "       p.donation_default_amount," +
+            "       p.donation_onetime_amounts," +
+            "       p.donation_monthly_amounts" +
             "  FROM home_projects hp" +
             "         JOIN projects p ON hp.id = p.id" +
             "         WHERE lower(hp.slug) = lower(:slug) AND" +
@@ -88,7 +93,12 @@ public interface ProjectsApiDAO {
             "       p.license_name," +
             "       p.license_url," +
             "       p.keywords," +
-            "       p.forum_sync" +
+            "       p.forum_sync," +
+            "       p.donation_enabled," +
+            "       p.donation_email," +
+            "       p.donation_default_amount," +
+            "       p.donation_onetime_amounts," +
+            "       p.donation_monthly_amounts" +
             "  FROM home_projects hp" +
             "         JOIN projects p ON hp.id = p.id" +
             "         WHERE true <filters>" + // Not sure how else to get here a single Where

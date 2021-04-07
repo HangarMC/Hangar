@@ -17,6 +17,13 @@ hangar:
   base-url: "https://hangar.benndorf.dev"
   plugin-upload-dir: "/hangar/uploads"
 
+  licences:
+    - "MIT"
+    - "Apache 2.0"
+    - "GPL"
+    - "LPGL"
+    - "(custom)"
+
   announcements:
     -
       text: "This is a staging server for testing purposes. Data could be deleted at any time. email confirmations are disabled. If you wanna help test, sneak into #hangar-dev"
