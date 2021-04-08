@@ -32,6 +32,7 @@
 
                 <!--TODO set recommended button -->
                 <v-btn v-if="$perms.canDeleteVersion" color="error" @click="deleteVersion">{{ $t('version.page.delete') }}</v-btn>
+                <!--TODO hard delete button if version is already soft-deleted-->
                 <v-btn v-if="!projectVersion.externalUrl" color="primary" :to="$route.path + '/download'">{{ $t('version.page.download') }}</v-btn>
                 <v-btn v-else color="primary" :to="$route.path + '/download'">{{ $t('version.page.downloadExternal') }}</v-btn>
                 <v-menu v-if="$perms.canViewLogs || $perms.isReviewer || $perms.canHardDeleteVersion" offset-y open-on-hover>

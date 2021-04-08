@@ -3,8 +3,6 @@ package io.papermc.hangar.controllerold;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.db.customtypes.LoggedActionType;
-import io.papermc.hangar.db.customtypes.LoggedActionType.VersionContext;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.daoold.ProjectDao;
 import io.papermc.hangar.db.daoold.ProjectVersionDownloadWarningDao;
@@ -20,7 +18,6 @@ import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.modelold.DownloadType;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
-import io.papermc.hangar.modelold.viewhelpers.VersionData;
 import io.papermc.hangar.securityold.annotations.GlobalPermission;
 import io.papermc.hangar.securityold.annotations.ProjectPermission;
 import io.papermc.hangar.securityold.annotations.UserLock;
@@ -33,7 +30,6 @@ import io.papermc.hangar.serviceold.project.ChannelService;
 import io.papermc.hangar.serviceold.project.ProjectFactory;
 import io.papermc.hangar.util.AlertUtil;
 import io.papermc.hangar.util.AlertUtil.AlertType;
-import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.RequestUtil;
 import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,12 +46,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
@@ -87,13 +81,12 @@ public class VersionsController extends HangarController {
     private final HttpServletRequest request;
     private final HttpServletResponse response;
     private final Supplier<ProjectVersionsTable> projectVersionsTable;
-    private final Supplier<VersionData> versionData;
     private final Supplier<ProjectsTable> projectsTable;
     private final Supplier<ProjectData> projectData;
 
 
     @Autowired
-    public VersionsController(VersionService versionService, RecommendedVersionService recommendedVersionService, ProjectFactory projectFactory, ChannelService channelService, DownloadsService downloadsService, UserActionLogService userActionLogService, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, MessageSource messageSource, ObjectMapper mapper, HttpServletRequest request, HttpServletResponse response, Supplier<ProjectVersionsTable> projectVersionsTable, Supplier<VersionData> versionData, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
+    public VersionsController(VersionService versionService, RecommendedVersionService recommendedVersionService, ProjectFactory projectFactory, ChannelService channelService, DownloadsService downloadsService, UserActionLogService userActionLogService, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, MessageSource messageSource, ObjectMapper mapper, HttpServletRequest request, HttpServletResponse response, Supplier<ProjectVersionsTable> projectVersionsTable, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
         this.versionService = versionService;
         this.recommendedVersionService = recommendedVersionService;
         this.projectFactory = projectFactory;
@@ -109,7 +102,6 @@ public class VersionsController extends HangarController {
         this.request = request;
         this.response = response;
         this.projectVersionsTable = projectVersionsTable;
-        this.versionData = versionData;
         this.projectsTable = projectsTable;
         this.projectData = projectData;
     }
@@ -267,25 +259,6 @@ public class VersionsController extends HangarController {
         }
     }
 
-    @ProjectPermission(NamedPermission.DELETE_VERSION)
-    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
-    @Secured("ROLE_USER")
-    @PostMapping(value = "/{author}/{slug}/versions/{version}/delete", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ModelAndView softDelete(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String comment, RedirectAttributes ra) {
-        VersionData vData = versionData.get();
-        try {
-            projectFactory.prepareDeleteVersion(vData);
-        } catch (HangarException e) {
-            AlertUtil.showAlert(ra, AlertUtil.AlertType.ERROR, e.getMessage());
-            return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
-        }
-
-        Visibility oldVisibility = vData.getV().getVisibility();
-        versionService.changeVisibility(vData, Visibility.SOFTDELETE, comment, getCurrentUser().getId());
-        userActionLogService.version(request, LoggedActionType.VERSION_DELETED.with(VersionContext.of(vData.getP().getProject().getId(), vData.getV().getId())), "SoftDelete: " + comment, oldVisibility.getName());
-        return Routes.VERSIONS_SHOW_LIST.getRedirect(author, slug);
-    }
-
     @GetMapping(value = "/{author}/{slug}/versions/{version}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object download(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(required = false) String token, @RequestParam(defaultValue = "false") boolean confirm) {
@@ -346,25 +319,6 @@ public class VersionsController extends HangarController {
         return new FileSystemResource(path);
     }
 
-    @GlobalPermission(NamedPermission.HARD_DELETE_PROJECT)
-    @Secured("ROLE_USER")
-    @PostMapping("/{author}/{slug}/versions/{version}/hardDelete")
-    public ModelAndView delete(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestBody String comment, RedirectAttributes ra) {
-        VersionData vData = versionData.get();
-        try {
-            projectFactory.prepareDeleteVersion(vData);
-        } catch (HangarException e) {
-            AlertUtil.showAlert(ra, AlertUtil.AlertType.ERROR, e.getMessage());
-            return Routes.VERSIONS_SHOW_LIST.getRedirect(author, slug);
-        }
-        Path versionDir = projectFiles.getVersionDir(vData.getP().getOwnerName(), vData.getP().getProject().getSlug(), vData.getV().getVersionString());
-        FileUtils.deleteDirectory(versionDir);
-        versionService.deleteVersion(vData.getV().getId());
-        userActionLogService.version(request, LoggedActionType.VERSION_DELETED.with(VersionContext.of(vData.getV().getProjectId(), vData.getV().getId())), "Deleted: " + comment, vData.getV().getVisibility().getName());
-        // Ore deletes the channel if no more versions are left, I don't think that is a good idea, easy enough to delete the channel manually.
-        return Routes.VERSIONS_SHOW_LIST.getRedirect(author, slug);
-    }
-
     @GetMapping(value = "/{author}/{slug}/versions/{version}/jar", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public Object downloadJar(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam(required = false) String token) {
@@ -416,14 +370,5 @@ public class VersionsController extends HangarController {
         return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
     }
 
-    @GlobalPermission(NamedPermission.REVIEWER)
-    @Secured("ROLE_USER")
-    @PostMapping(value = "/{author}/{slug}/versions/{version}/restore", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ModelAndView restore(@PathVariable String author, @PathVariable String slug, @PathVariable String version, @RequestParam String comment) {
-        VersionData vData = versionData.get();
-        versionService.changeVisibility(vData, Visibility.PUBLIC, comment, getCurrentUser().getId());
-        userActionLogService.version(request, LoggedActionType.VERSION_DELETED.with(VersionContext.of(vData.getP().getProject().getId(), vData.getV().getId())), "Restore: " + comment, "");
-        return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
-    }
 }
 

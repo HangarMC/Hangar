@@ -117,10 +117,6 @@ public class UserService extends HangarService {
         );
     }
 
-    public UserData getUserData(long userId) {
-        return getUserData(userDao.get().getById(userId));
-    }
-
     public UserData getUserData(String userName) {
         return getUserData(userDao.get().getByName(userName));
     }

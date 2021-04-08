@@ -7,13 +7,21 @@ import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.common.projects.Visibility;
+import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.HangarVersion;
+import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.visibility.ProjectVersionVisibilityService;
+import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
+import io.papermc.hangar.util.FileUtils;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,15 +31,19 @@ public class VersionService extends HangarComponent {
 
     private final ProjectVersionsDAO projectVersionsDAO;
     private final HangarVersionsDAO hangarVersionsDAO;
+    private final ProjectVisibilityService projectVisibilityService;
     private final ProjectVersionVisibilityService projectVersionVisibilityService;
     private final VersionDependencyService versionDependencyService;
+    private final ProjectFiles projectFiles;
 
     @Autowired
-    public VersionService(HangarDao<ProjectVersionsDAO> projectVersionDAO, HangarDao<HangarVersionsDAO> hangarProjectsDAO, ProjectVersionVisibilityService projectVersionVisibilityService, VersionDependencyService versionDependencyService) {
+    public VersionService(HangarDao<ProjectVersionsDAO> projectVersionDAO, HangarDao<HangarVersionsDAO> hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, ProjectVersionVisibilityService projectVersionVisibilityService, VersionDependencyService versionDependencyService, ProjectFiles projectFiles) {
         this.projectVersionsDAO = projectVersionDAO.get();
         this.hangarVersionsDAO = hangarProjectsDAO.get();
+        this.projectVisibilityService = projectVisibilityService;
         this.projectVersionVisibilityService = projectVersionVisibilityService;
         this.versionDependencyService = versionDependencyService;
+        this.projectFiles = projectFiles;
     }
 
     @Nullable
@@ -67,4 +79,45 @@ public class VersionService extends HangarComponent {
         }
         return versions.stream().map(v -> versionDependencyService.addDependenciesAndTags(v.getId(), v)).collect(Collectors.toList());
     }
+
+    @Transactional
+    public void softDeleteVersion(long projectId, ProjectVersionTable pvt, String comment) {
+        if (pvt.getVisibility() != Visibility.SOFTDELETE) {
+            List<ProjectVersionTable> projectVersionTables = projectVersionsDAO.getProjectVersions(projectId);
+            // TODO should this disallow? or just reset project visibility to NEW
+            if (projectVersionTables.stream().filter(pv -> pv.getVisibility() == Visibility.PUBLIC).count() <= 1 && pvt.getVisibility() == Visibility.PUBLIC) {
+                throw new HangarApiException("version.error.onlyOnePublic");
+            }
+            // TODO previously, if this was a recommended version, it would auto assign a new one, but I don't think that's a good idea. easy enough to just set another, no requirement saying there has to be a recommended version
+
+            Visibility oldVisibility = pvt.getVisibility();
+            projectVersionVisibilityService.changeVisibility(pvt, Visibility.SOFTDELETE, comment);
+            userActionLogService.version(LogAction.VERSION_DELETED.create(VersionContext.of(projectId, pvt.getId()), "Soft Delete: " + comment, oldVisibility.getTitle()));
+        }
+    }
+
+    @Transactional
+    public void hardDeleteVersion(ProjectTable pt, ProjectVersionTable pvt, String comment) {
+        List<ProjectVersionTable> projectVersionTables = projectVersionsDAO.getProjectVersions(pt.getId());
+        boolean hasOtherPublicVersion = projectVersionTables.stream().filter(pv -> pv.getId() != pvt.getId()).anyMatch(pv -> pv.getVisibility() == Visibility.PUBLIC);
+        if (!hasOtherPublicVersion && pt.getVisibility() == Visibility.PUBLIC) {
+            projectVisibilityService.changeVisibility(pt, Visibility.NEW, "Visibility reset to new because no public versions exist");
+        }
+
+        userActionLogService.version(LogAction.VERSION_DELETED.create(VersionContext.of(pt.getId(), pvt.getId()), "Deleted: " + comment, pvt.getVisibility().getTitle()));
+        List<Platform> versionPlatforms = projectVersionsDAO.getVersionPlatforms(pvt.getId());
+        for (Platform platform : versionPlatforms) {
+            FileUtils.deleteDirectory(projectFiles.getVersionDir(pt.getOwnerName(), pt.getName(), pvt.getVersionString(), platform));
+        }
+        projectVersionsDAO.delete(pvt);
+    }
+
+    @Transactional
+    public void restoreVersion(long projectId, ProjectVersionTable pvt) {
+        if (pvt.getVisibility() == Visibility.SOFTDELETE) {
+            projectVersionVisibilityService.changeVisibility(pvt, Visibility.PUBLIC, "Version Restored");
+            userActionLogService.version(LogAction.VERSION_DELETED.create(VersionContext.of(projectId, pvt.getId()), "Version Restored", Visibility.SOFTDELETE.getTitle()));
+        }
+    }
+
 }

@@ -382,6 +382,9 @@ const msgs: LocaleMessageObject = {
         channels: 'Channels',
         editChannels: 'Edit Channels',
         platforms: 'Platforms',
+        error: {
+            onlyOnePublic: 'You only have 1 public version left',
+        },
     },
     channel: {
         modal: {

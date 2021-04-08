@@ -17,10 +17,6 @@ public class ChannelService {
         this.channelDao = channelDao;
     }
 
-    public ProjectChannelsTable getProjectChannel(long projectId, long channelId) {
-        return channelDao.get().getProjectChannel(projectId, null, channelId);
-    }
-
     public ProjectChannelsTable getVersionsChannel(long projectId, long versionId) {
         return channelDao.get().getVersionsChannel(projectId, versionId);
     }

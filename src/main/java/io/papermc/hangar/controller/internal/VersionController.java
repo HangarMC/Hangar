@@ -5,6 +5,7 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.versions.UpdatePlatformVersions;
@@ -120,4 +121,29 @@ public class VersionController extends HangarComponent {
     public void savePluginDependencies(@PathVariable long projectId, @PathVariable long versionId, @Valid @RequestBody UpdatePluginDependencies updatePluginDependencies) {
         versionDependencyService.updateVersionPluginDependencies(projectId, versionId, updatePluginDependencies);
     }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.DELETE_VERSION, args = "{#projectId}")
+    @PostMapping(path = "/version/{projectId}/{versionId}/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void softDeleteVersion(@PathVariable long projectId, @PathVariable("versionId") ProjectVersionTable version, @RequestBody @Valid StringContent commentContent) {
+        versionService.softDeleteVersion(projectId, version, commentContent.getContent());
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PermissionRequired(NamedPermission.HARD_DELETE_VERSION)
+    @PostMapping(path = "/version/{projectId}/{versionId}/hardDelete", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void hardDeleteVersion(@PathVariable("projectId") ProjectTable projectTable, @PathVariable("versionId") ProjectVersionTable projectVersionTable, @RequestBody @Valid StringContent commentContent) {
+        versionService.hardDeleteVersion(projectTable, projectVersionTable, commentContent.getContent());
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.CREATED)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.DELETE_VERSION, args = "{#projectId}")
+    @PostMapping("/version/{projectId}/{versionId}/restore")
+    public void restoreVersion(@PathVariable long projectId, @PathVariable("versionId") ProjectVersionTable version) {
+        versionService.restoreVersion(projectId, version);
+    }
+
 }

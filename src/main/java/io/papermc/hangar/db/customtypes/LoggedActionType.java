@@ -14,8 +14,6 @@ public class LoggedActionType<C extends AbstractContext> {
     public static final LoggedActionType<ProjectContext> PROJECT_VISIBILITY_CHANGE = new LoggedActionType<>(PGLoggedAction.PROJECT_VISIBILITY_CHANGED, "ProjectVisibilityChange", "The project visibility state was changed");
     public static final LoggedActionType<ProjectContext> PROJECT_SETTINGS_CHANGED = new LoggedActionType<>(PGLoggedAction.PROJECT_SETTINGS_CHANGED, "ProjectSettingsChanged", "The project settings were changed");
 
-    public static final LoggedActionType<VersionContext> VERSION_DELETED = new LoggedActionType<>(PGLoggedAction.VERSION_DELETED, "VersionDeleted", "The version was deleted");
-
     private final PGLoggedAction value;
     private final String name;
     private C actionContext;
@@ -70,30 +68,6 @@ public class LoggedActionType<C extends AbstractContext> {
 
         public static ProjectContext of(long projectId) {
             return new ProjectContext(projectId);
-        }
-    }
-
-    public static class VersionContext extends AbstractContext {
-
-        private final long projectId;
-        private final long versionId;
-
-        private VersionContext(long projectId, long versionId) {
-            super(1);
-            this.projectId = projectId;
-            this.versionId = versionId;
-        }
-
-        public long getProjectId() {
-            return projectId;
-        }
-
-        public long getVersionId() {
-            return versionId;
-        }
-
-        public static VersionContext of(long projectId, long versionId) {
-            return new VersionContext(projectId, versionId);
         }
     }
 
