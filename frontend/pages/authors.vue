@@ -56,15 +56,9 @@ export default class AuthorsPage extends UserListPage {
         return 'authors';
     }
 
-    created() {
-        console.log('created');
-    }
-
     async asyncData({ $api, $util }: Context) {
-        console.log('async start');
         const users = await $api.request<PaginatedResult<User>>('authors', false).catch<any>($util.handlePageRequestError);
-        console.log('async end');
-        return { users, test: 'value' };
+        return { users };
     }
 }
 </script>

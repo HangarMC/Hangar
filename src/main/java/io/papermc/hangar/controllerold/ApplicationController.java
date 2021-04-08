@@ -10,7 +10,6 @@ import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.internal.logs.HangarLoggedAction;
 import io.papermc.hangar.modelold.Role;
-import io.papermc.hangar.modelold.viewhelpers.Activity;
 import io.papermc.hangar.modelold.viewhelpers.OrganizationData;
 import io.papermc.hangar.modelold.viewhelpers.UserData;
 import io.papermc.hangar.securityold.annotations.GlobalPermission;
@@ -34,7 +33,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -60,20 +58,6 @@ public class ApplicationController extends HangarController {
         this.userData = userData;
     }
 
-
-
-    @GlobalPermission(NamedPermission.REVIEWER)
-    @Secured("ROLE_USER")
-    @GetMapping("/admin/activities/{user}")
-    public ModelAndView showActivities(@PathVariable String user) {
-        ModelAndView mv = new ModelAndView("users/admin/activity");
-        mv.addObject("username", user);
-        List<Activity> activities = new ArrayList<>();
-        activities.addAll(userService.getFlagActivity(user));
-        activities.addAll(userService.getReviewActivity(user));
-        mv.addObject("activities", activities);
-        return fillModel(mv);
-    }
 
     @GlobalPermission(NamedPermission.VIEW_LOGS)
     @Secured("ROLE_USER")

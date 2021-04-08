@@ -151,18 +151,12 @@ export default class AuthorSettingsApiKeysPage extends HangarForm {
         };
     }
 
-    created() {
-        console.log('created ran');
-    }
-
     async asyncData({ $api, $util, params }: Context) {
-        console.log('async start');
         const data = await Promise.all([
             $api.requestInternal<IPermission[]>(`api-keys/possible-perms/${params.user}`),
             $api.requestInternal<ApiKey[]>(`api-keys/existing-keys/${params.user}`),
         ]).catch<any>($util.handlePageRequestError);
         if (typeof data === 'undefined') return;
-        console.log('async end');
         return { possiblePerms: data[0], apiKeys: data[1] };
     }
 }

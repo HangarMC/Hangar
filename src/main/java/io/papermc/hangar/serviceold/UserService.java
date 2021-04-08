@@ -10,10 +10,8 @@ import io.papermc.hangar.db.modelold.UserOrganizationRolesTable;
 import io.papermc.hangar.db.modelold.UsersTable;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.modelold.Role;
-import io.papermc.hangar.modelold.viewhelpers.FlagActivity;
 import io.papermc.hangar.modelold.viewhelpers.HeaderData;
 import io.papermc.hangar.modelold.viewhelpers.OrganizationData;
-import io.papermc.hangar.modelold.viewhelpers.ReviewActivity;
 import io.papermc.hangar.modelold.viewhelpers.UserData;
 import io.papermc.hangar.modelold.viewhelpers.UserRole;
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
@@ -147,14 +145,6 @@ public class UserService extends HangarService {
 
     public UsersTable getUsersTable(long userId) {
         return userDao.get().getById(userId);
-    }
-
-    public List<ReviewActivity> getReviewActivity(String username) {
-        return userDao.get().getReviewActivity(username);
-    }
-
-    public List<FlagActivity> getFlagActivity(String username) {
-        return userDao.get().getFlagActivity(username);
     }
 
 }
