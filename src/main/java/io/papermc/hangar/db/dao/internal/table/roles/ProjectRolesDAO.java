@@ -1,6 +1,6 @@
 package io.papermc.hangar.db.dao.internal.table.roles;
 
-import io.papermc.hangar.db.mappers.RoleMapperFactory;
+import io.papermc.hangar.db.mappers.factories.RoleMapperFactory;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapperFactory;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;

@@ -34,6 +34,7 @@ import io.papermc.hangar.service.internal.users.NotificationService;
 import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.FileUtils;
+import io.papermc.hangar.util.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -138,7 +139,11 @@ public class ProjectService extends HangarComponent {
         projectTable.setIssues(settingsForm.getSettings().getIssues());
         projectTable.setSource(settingsForm.getSettings().getSource());
         projectTable.setSupport(settingsForm.getSettings().getSupport());
-        projectTable.setLicenseName(settingsForm.getSettings().getLicense().getName());
+        String licenseName = StringUtils.stringOrNull(settingsForm.getSettings().getLicense().getName());
+        if (licenseName == null) {
+            licenseName = settingsForm.getSettings().getLicense().getType();
+        }
+        projectTable.setLicenseName(licenseName);
         projectTable.setLicenseUrl(settingsForm.getSettings().getLicense().getUrl());
         projectTable.setForumSync(settingsForm.getSettings().isForumSync());
         projectTable.setDescription(settingsForm.getDescription());

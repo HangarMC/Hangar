@@ -1,4 +1,4 @@
-package io.papermc.hangar.db.mappers;
+package io.papermc.hangar.db.mappers.factories;
 
 import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.common.roles.Role;

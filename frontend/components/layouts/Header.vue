@@ -15,7 +15,7 @@
 
         <v-spacer></v-spacer>
 
-        <v-menu v-if="$util.isLoggedIn()" bottom offset-y transition="slide-y-transition" open-on-hover>
+        <v-menu v-if="isLoggedIn" bottom offset-y transition="slide-y-transition" open-on-hover>
             <template #activator="{ on, attrs }">
                 <v-btn v-bind="attrs" color="primary" class="mr-1" v-on="on">
                     {{ $t('nav.createNew') }}
@@ -38,7 +38,7 @@
             <span>{{ $t('pages.staff') }}</span>
         </v-tooltip>
 
-        <v-menu v-if="$util.isLoggedIn()" bottom offset-y transition="slide-y-transition" close-delay="100">
+        <v-menu v-if="isLoggedIn" bottom offset-y transition="slide-y-transition" close-delay="100">
             <template #activator="{ on, attrs }">
                 <v-btn color="info" text class="px-3 text-transform-unset" x-large v-bind="attrs" v-on="on">
                     {{ currentUser.name }}

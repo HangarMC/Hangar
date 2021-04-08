@@ -29,7 +29,7 @@ public class ProjectSettings {
     private final boolean forumSync;
 
     @JsonCreator
-    public ProjectSettings(@Nullable String homepage, @Nullable String issues, @Nullable String source, @Nullable String support, @Nullable @Nested("license") ProjectLicense license, @Nested("donation") ProjectDonationSettings donation, Collection<String> keywords, boolean forumSync) {
+    public ProjectSettings(@Nullable String homepage, @Nullable String issues, @Nullable String source, @Nullable String support, @Nested("license") ProjectLicense license, @Nested("donation") ProjectDonationSettings donation, Collection<String> keywords, boolean forumSync) {
         this.homepage = homepage;
         this.issues = issues;
         this.source = source;

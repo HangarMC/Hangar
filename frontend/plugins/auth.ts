@@ -1,6 +1,7 @@
 import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
 import { User } from 'hangar-api';
+import { AuthState } from '~/store/auth';
 
 const createAuth = ({ app: { $cookies }, $axios, store, $api, redirect }: Context) => {
     class Auth {
@@ -35,7 +36,17 @@ const createAuth = ({ app: { $cookies }, $axios, store, $api, redirect }: Contex
             return $api
                 .requestInternalWithToken<User>('users/@me', token)
                 .then((user) => {
-                    store.commit('auth/SET_USER', user);
+                    if (process.server) {
+                        store.commit('auth/SET_USER', user);
+                    } else if (process.env.NODE_ENV === 'production') {
+                        store.commit('auth/SET_USER', user);
+                    } else {
+                        // TODO hella hacky fix but it fixes the issue reproducible here https://codesandbox.io/s/nuxt-dev-reload-issue-mk16j (also, this only plagues dev env so I guess it doesn't matter?)
+                        setTimeout(() => {
+                            store.commit('auth/SET_USER', user);
+                        }, 1000);
+                    }
+                    return Promise.resolve();
                 })
                 .catch((err) => {
                     console.log(err);
@@ -56,6 +67,10 @@ const createAuth = ({ app: { $cookies }, $axios, store, $api, redirect }: Contex
                     return this.logout(process.client);
                 }
             });
+        }
+
+        isLoggedIn(): boolean {
+            return (store.state.auth as AuthState).authenticated;
         }
     }
 

@@ -30,7 +30,6 @@ public abstract class HangarDecisionVoter<A extends ConfigAttribute> implements 
     private final Class<A> attributeClass;
     private final ParameterNameDiscoverer parameterNameDiscoverer;
     private boolean allowMultipleAttributes = false;
-    private MethodBasedEvaluationContext evaluationContext = null;
 
     protected HangarDecisionVoter(Class<A> attributeClass) {
         this.attributeClass = attributeClass;
@@ -84,14 +83,11 @@ public abstract class HangarDecisionVoter<A extends ConfigAttribute> implements 
 
     @NotNull
     protected final MethodBasedEvaluationContext getMethodEvaluationContext(MethodInvocation invocation) {
-        if (this.evaluationContext == null) {
-            this.evaluationContext = new MethodBasedEvaluationContext(
-                    invocation.getMethod().getDeclaringClass(),
-                    invocation.getMethod(),
-                    invocation.getArguments(),
-                    parameterNameDiscoverer
-            );
-        }
-        return this.evaluationContext;
+        return new MethodBasedEvaluationContext(
+                invocation.getMethod().getDeclaringClass(),
+                invocation.getMethod(),
+                invocation.getArguments(),
+                parameterNameDiscoverer
+        );
     }
 }

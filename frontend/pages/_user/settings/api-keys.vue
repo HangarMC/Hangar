@@ -46,7 +46,7 @@
             </v-form>
         </v-col>
         <v-col cols="12" md="7">
-            <div class="text-h4 mb-4">{{ $t('apiKeys.existing') }}</div>
+            <div class="text-h4 mb-4">{{ $t('apiKeys.existing') }}asdfasdfa</div>
             <v-simple-table>
                 <thead>
                     <tr>
@@ -103,7 +103,7 @@ export default class AuthorSettingsApiKeysPage extends HangarForm {
     name: string = '';
 
     possiblePerms!: NamedPermission[];
-    apiKeys: ApiKey[] = [];
+    apiKeys!: ApiKey[];
 
     get chunkedPerms(): IPermission[][] {
         const permArr = this.possiblePerms.map((perm) => (this.$store.state as RootState).permissions.get(perm)!);
@@ -151,11 +151,18 @@ export default class AuthorSettingsApiKeysPage extends HangarForm {
         };
     }
 
+    created() {
+        console.log('created ran');
+    }
+
     async asyncData({ $api, $util, params }: Context) {
+        console.log('async start');
         const data = await Promise.all([
             $api.requestInternal<IPermission[]>(`api-keys/possible-perms/${params.user}`),
             $api.requestInternal<ApiKey[]>(`api-keys/existing-keys/${params.user}`),
         ]).catch<any>($util.handlePageRequestError);
+        if (typeof data === 'undefined') return;
+        console.log('async end');
         return { possiblePerms: data[0], apiKeys: data[1] };
     }
 }

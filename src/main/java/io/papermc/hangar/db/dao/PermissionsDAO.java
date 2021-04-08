@@ -1,10 +1,8 @@
 package io.papermc.hangar.db.dao;
 
-import io.papermc.hangar.db.mappers.PermissionMapper;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
-import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.ValueColumn;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -46,7 +44,6 @@ public interface PermissionsDAO {
 
     @ValueColumn("permission")
     @RegisterConstructorMapper(UserTable.class)
-    @RegisterColumnMapper(PermissionMapper.class)
     @SqlQuery("SELECT u.*, (coalesce(gt.permission, B'0'::bit(64)) | coalesce(pt.permission, B'0'::bit(64)) | coalesce(ot.permission, B'0'::bit(64)))::bigint AS permission" +
             "   FROM users u" +
             "       JOIN project_trust pt ON u.id = pt.user_id" +

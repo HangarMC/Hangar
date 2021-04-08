@@ -9,7 +9,7 @@
                 sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
             ></iframe>
         </div>
-        <div v-if="$util.isLoggedIn()">
+        <div v-if="isLoggedIn">
             <MarkdownEditor saveable editing :cancellable="false" :deletable="false" @save="postReply"></MarkdownEditor>
         </div>
         <div v-else>

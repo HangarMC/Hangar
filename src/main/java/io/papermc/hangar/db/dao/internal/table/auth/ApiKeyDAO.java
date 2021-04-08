@@ -1,8 +1,6 @@
 package io.papermc.hangar.db.dao.internal.table.auth;
 
-import io.papermc.hangar.db.mappers.PermissionMapper;
 import io.papermc.hangar.model.db.auth.ApiKeyTable;
-import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
@@ -11,7 +9,6 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@RegisterColumnMapper(PermissionMapper.class)
 @RegisterConstructorMapper(ApiKeyTable.class)
 public interface ApiKeyDAO {
 

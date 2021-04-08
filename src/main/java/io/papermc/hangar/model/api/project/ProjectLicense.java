@@ -1,33 +1,39 @@
 package io.papermc.hangar.model.api.project;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
+import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.controller.validations.Validate;
-import io.papermc.hangar.util.StringUtils;
+import io.papermc.hangar.util.StaticContextAccessor;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
-import java.util.Map;
+import org.jetbrains.annotations.Nullable;
 
 public class ProjectLicense {
+
+    private static final HangarConfig config = StaticContextAccessor.getBean(HangarConfig.class);
 
     private final String name;
     @Validate(SpEL = "@validate.optionalRegex(#root, @hangarConfig.urlRegex)", message = "validation.invalidUrl")
     private final String url;
+    private final String type;
 
     @JdbiConstructor
-    public ProjectLicense(String name, String url) {
-        this.name = name;
+    public ProjectLicense(@Nullable String name, @Nullable String url) {
+        int index = config.getLicences().indexOf(name);
+        if (name != null && index > -1 && index < config.getLicences().size() - 1) {
+            this.name = null;
+            this.type = name;
+        } else {
+            this.name = name;
+            this.type = "(custom)";
+        }
         this.url = url;
     }
 
-    @JsonCreator(mode = Mode.DELEGATING)
-    public ProjectLicense(Map<String, String> map) {
-        String licenseName = StringUtils.stringOrNull(map.get("name"));
-        if (licenseName == null) {
-            licenseName = map.get("type");
-        }
-        this.name = licenseName;
-        this.url = map.get("url");
+    @JsonCreator
+    public ProjectLicense(@Nullable String name, @Nullable String url, @Nullable String type) {
+        this.name = name;
+        this.url = url;
+        this.type = type;
     }
 
     public String getName() {
@@ -38,11 +44,16 @@ public class ProjectLicense {
         return url;
     }
 
+    public String getType() {
+        return type;
+    }
+
     @Override
     public String toString() {
         return "ProjectLicense{" +
                 "name='" + name + '\'' +
                 ", url='" + url + '\'' +
+                ", type='" + type + '\'' +
                 '}';
     }
 }

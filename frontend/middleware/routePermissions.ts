@@ -2,9 +2,9 @@ import { Context } from '@nuxt/types';
 import { UserPermissions } from 'hangar-api';
 import { AuthState } from '~/store/auth';
 
-export default ({ store, params, $api, $util }: Context) => {
+export default ({ store, params, $api, $auth }: Context) => {
     if (params.author && params.slug) {
-        if ($util.isLoggedIn()) {
+        if ($auth.isLoggedIn()) {
             return $api
                 .request<UserPermissions>('permissions', true, 'get', {
                     author: params.author,
@@ -18,7 +18,7 @@ export default ({ store, params, $api, $util }: Context) => {
                 });
         }
     } else if (params.user) {
-        if ($util.isLoggedIn()) {
+        if ($auth.isLoggedIn()) {
             return $api
                 .request<UserPermissions>('permissions', true, 'get', {
                     organization: params.user,
@@ -30,7 +30,7 @@ export default ({ store, params, $api, $util }: Context) => {
                     store.commit('auth/SET_ROUTE_PERMISSIONS', null);
                 });
         }
-    } else if ($util.isLoggedIn()) {
+    } else if ($auth.isLoggedIn()) {
         // Catch-all (just use global permissions)
         store.commit('auth/SET_ROUTE_PERMISSIONS', (store.state.auth as AuthState).user!.headerData.globalPermission);
         return;

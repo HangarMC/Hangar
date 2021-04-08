@@ -16,7 +16,7 @@
                         :class="{ 'ml-1': $perms.canSeeHidden }"
                         color="success"
                         :loading="loading.save"
-                        :disabled="!validForm.settings || settingsEqual()"
+                        :disabled="!validForm.settings || settingsEqual"
                         @click="save"
                     >
                         <v-icon left>mdi-check</v-icon>
@@ -369,14 +369,13 @@
 
 <script lang="ts">
 import { Component, Watch } from 'nuxt-property-decorator';
-import { ProjectSettingsForm } from 'hangar-internal';
 import { TranslateResult } from 'vue-i18n';
 import { AxiosError } from 'axios';
 import { Context } from '@nuxt/types';
 import { Role } from 'hangar-api';
-import { isEqualWith } from 'lodash-es';
+import { cloneDeep, isEqual } from 'lodash-es';
 import { ProjectPermission } from '~/utils/perms';
-import { NamedPermission, ProjectCategory } from '~/types/enums';
+import { NamedPermission } from '~/types/enums';
 import { RootState } from '~/store';
 import { HangarProjectMixin } from '~/components/mixins';
 import { MemberList } from '~/components/projects';
@@ -387,36 +386,17 @@ import VisibilityChangerModal from '~/components/modals/VisibilityChangerModal.v
 })
 @ProjectPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)
 export default class ProjectManagePage extends HangarProjectMixin {
-    roles: Role[] = [];
-    licences: string[] = [];
+    roles!: Role[];
+    licences!: string[];
     apiKey = '';
     newName = '';
     nameErrors: TranslateResult[] = [];
     nameForm = false;
     projectIcon: File | null = null;
-    form: ProjectSettingsForm = {
-        settings: {
-            homepage: null,
-            issues: null,
-            source: null,
-            support: null,
-            keywords: [],
-            license: {
-                type: null,
-                url: null,
-                name: null,
-            },
-            forumSync: false,
-            donation: {
-                enable: false,
-                email: null,
-                defaultAmount: 20,
-                oneTimeAmounts: [],
-                monthlyAmounts: [],
-            },
-        },
-        description: '',
-        category: ProjectCategory.UNDEFINED,
+    form = {
+        settings: cloneDeep(this.project.settings),
+        description: this.project.description,
+        category: this.project.category,
     };
 
     validForm = {
@@ -430,32 +410,9 @@ export default class ProjectManagePage extends HangarProjectMixin {
         rename: false,
     };
 
-    created() {
-        Object.assign(this.form.settings, this.project.settings);
-
-        this.$set(this.form.settings, 'license', {});
-        const index = this.project.settings.license.name ? this.licences.indexOf(this.project.settings.license.name) : -2;
-        if (this.project.settings.license.name && index > -1 && index < this.licences.length - 1) {
-            // license is NOT custom
-            this.$set(this.form.settings.license, 'type', this.project.settings.license.name);
-        } else if (this.project.settings.license.name) {
-            this.$set(this.form.settings.license, 'type', '(custom)');
-            this.$set(this.form.settings.license, 'name', this.project.settings.license.name);
-        }
-        this.$set(this.form.settings.license, 'url', this.project.settings.license.url);
-
-        this.form.description = this.project.description;
-        this.form.category = this.project.category;
-    }
-
-    settingsEqual() {
+    get settingsEqual() {
         return (
-            isEqualWith(this.form.settings, this.project.settings, (value, other, idx) => {
-                if (idx === 'license') {
-                    return value.url === other.url && value.name === other.type;
-                }
-                return undefined;
-            }) &&
+            isEqual(this.form.settings, this.project.settings) &&
             this.form.category === this.project.category &&
             this.form.description === this.project.description
         );

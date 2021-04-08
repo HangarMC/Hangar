@@ -6,6 +6,7 @@ import io.papermc.hangar.db.customtypes.PGLoggedAction;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.db.dao.HangarDao;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.mapper.RowMapperFactory;
 import org.jdbi.v3.core.spi.JdbiPlugin;
@@ -40,7 +41,7 @@ public class JDBIConfig {
     }
 
     @Bean
-    public Jdbi jdbi(DataSource dataSource, List<JdbiPlugin> jdbiPlugins, List<RowMapper> rowMappers, List<RowMapperFactory> rowMapperFactories) {
+    public Jdbi jdbi(DataSource dataSource, List<JdbiPlugin> jdbiPlugins, List<RowMapper<?>> rowMappers, List<RowMapperFactory> rowMapperFactories, List<ColumnMapper<?>> columnMappers) {
         SqlLogger myLogger = new SqlLogger() {
             @Override
             public void logAfterExecution(StatementContext context) {
@@ -55,6 +56,7 @@ public class JDBIConfig {
         jdbiPlugins.forEach(jdbi::installPlugin);
         rowMappers.forEach(jdbi::registerRowMapper);
         rowMapperFactories.forEach(jdbi::registerRowMapper);
+        columnMappers.forEach(jdbi::registerColumnMapper);
 
         config.registerCustomType(PGLoggedAction.class, "logged_action_type");
         config.registerCustomType(RoleCategory.class, "role_category");

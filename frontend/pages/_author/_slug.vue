@@ -41,7 +41,7 @@
                 </div>
             </v-col>
             <v-spacer />
-            <v-col v-if="$util.isLoggedIn()" cols="3">
+            <v-col v-if="isLoggedIn" cols="3">
                 <v-row no-gutters justify="end">
                     <v-tooltip v-if="!$util.isCurrentUser(project.owner.id)" bottom>
                         <template #activator="{ on }">
@@ -64,7 +64,7 @@
                         <span v-if="project.userActions.watching">{{ $t('project.actions.unwatch') }}</span>
                         <span v-else>{{ $t('project.actions.watch') }}</span>
                     </v-tooltip>
-                    <FlagModal v-if="$util.isLoggedIn() && !$util.isCurrentUser(project.owner.id)" :project="project" activator-class="ml-1" />
+                    <FlagModal v-if="isLoggedIn && !$util.isCurrentUser(project.owner.id)" :project="project" activator-class="ml-1" />
                     <v-menu v-if="$perms.isStaff" bottom offset-y open-on-hover>
                         <template #activator="{ on, attrs }">
                             <v-btn v-bind="attrs" class="ml-1" color="info" v-on="on">

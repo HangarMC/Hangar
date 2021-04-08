@@ -10,6 +10,9 @@ export class HangarComponent extends Vue {
 
     @State((state: RootState) => state.validations)
     validations!: RootState['validations'];
+
+    @State((state: AuthState) => state.authenticated, { namespace: 'auth' })
+    isLoggedIn!: boolean;
 }
 
 export class Authed extends HangarComponent {

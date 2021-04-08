@@ -1,4 +1,4 @@
-package io.papermc.hangar.db.mappers;
+package io.papermc.hangar.db.mappers.factories;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
