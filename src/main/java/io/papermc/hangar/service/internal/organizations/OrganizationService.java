@@ -74,6 +74,10 @@ public class OrganizationService extends HangarComponent {
         return organizationRolesDAO.getUserOrganizationRoles(user, getHangarUserId());
     }
 
+    public long getUserOrganizationCount(long userId) {
+        return organizationDAO.getOrganizationCount(userId);
+    }
+
     public void editMembers(String name, EditMembersForm<OrganizationRole> editMembersForm) {
         OrganizationTable organizationTable = getOrganizationTable(name);
         List<HangarApiException> errors = new ArrayList<>();

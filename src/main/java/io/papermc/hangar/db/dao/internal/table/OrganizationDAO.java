@@ -39,4 +39,7 @@ public interface OrganizationDAO {
 
     @SqlQuery("SELECT * FROM organizations WHERE owner_id = :ownerId")
     List<OrganizationTable> getOrganizationsOwnedBy(long ownerId);
+
+    @SqlQuery("SELECT count(id) FROM organizations WHERE owner_id = :userId")
+    long getOrganizationCount(long userId);
 }

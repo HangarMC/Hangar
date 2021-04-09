@@ -61,14 +61,16 @@ public class HangarUser extends User implements Identified {
         private final long unresolvedFlags;
         private final long projectApprovals;
         private final long reviewQueueCount;
+        private final long organizationCount;
 
-        public HeaderData(Permission globalPermission, long unreadNotifications, long unansweredInvites, long unresolvedFlags, long projectApprovals, long reviewQueueCount) {
+        public HeaderData(Permission globalPermission, long unreadNotifications, long unansweredInvites, long unresolvedFlags, long projectApprovals, long reviewQueueCount, long organizationCount) {
             this.globalPermission = globalPermission;
             this.unreadNotifications = unreadNotifications;
             this.unansweredInvites = unansweredInvites;
             this.unresolvedFlags = unresolvedFlags;
             this.projectApprovals = projectApprovals;
             this.reviewQueueCount = reviewQueueCount;
+            this.organizationCount = organizationCount;
         }
 
         public Permission getGlobalPermission() {
@@ -95,6 +97,10 @@ public class HangarUser extends User implements Identified {
             return reviewQueueCount;
         }
 
+        public long getOrganizationCount() {
+            return organizationCount;
+        }
+
         @Override
         public String toString() {
             return "HeaderData{" +
@@ -104,6 +110,7 @@ public class HangarUser extends User implements Identified {
                     ", unresolvedFlags=" + unresolvedFlags +
                     ", projectApprovals=" + projectApprovals +
                     ", reviewQueueCount=" + reviewQueueCount +
+                    ", organizationCount=" + organizationCount +
                     '}';
         }
     }

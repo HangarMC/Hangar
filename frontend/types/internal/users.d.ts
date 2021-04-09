@@ -33,6 +33,7 @@ declare module 'hangar-internal' {
         unresolvedFlags: number;
         projectApprovals: number;
         reviewQueueCount: number;
+        organizationCount: number;
     }
 
     interface HangarUser extends User, Table {

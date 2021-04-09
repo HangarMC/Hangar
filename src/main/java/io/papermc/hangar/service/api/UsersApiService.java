@@ -17,6 +17,7 @@ import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.internal.user.HangarUser;
 import io.papermc.hangar.model.internal.user.HangarUser.HeaderData;
 import io.papermc.hangar.service.PermissionService;
+import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +36,15 @@ public class UsersApiService extends HangarComponent {
     private final UsersApiDAO usersApiDAO;
     private final NotificationsDAO notificationsDAO;
     private final PermissionService permissionService;
+    private final OrganizationService organizationService;
 
     @Autowired
-    public UsersApiService(HangarDao<UsersDAO> usersDAO, HangarDao<UsersApiDAO> usersApiDAO, HangarDao<NotificationsDAO> notificationsDAO, PermissionService permissionService) {
+    public UsersApiService(HangarDao<UsersDAO> usersDAO, HangarDao<UsersApiDAO> usersApiDAO, HangarDao<NotificationsDAO> notificationsDAO, PermissionService permissionService, OrganizationService organizationService) {
         this.usersDAO = usersDAO.get();
         this.usersApiDAO = usersApiDAO.get();
         this.notificationsDAO = notificationsDAO.get();
         this.permissionService = permissionService;
+        this.organizationService = organizationService;
     }
 
     public <T extends User> T getUser(String name, Class<T> type) {
@@ -109,14 +112,15 @@ public class UsersApiService extends HangarComponent {
         long unresolvedFlags = globalPermission.has(Permission.ModNotesAndFlags) ? notificationsDAO.getUnresolvedFlagsCount() : 0;
         long projectApprovals = globalPermission.has(Permission.ModNotesAndFlags.add(Permission.SeeHidden)) ? notificationsDAO.getProjectApprovalsCount() : 0;
         long reviewQueueCount = globalPermission.has(Permission.Reviewer) ? notificationsDAO.getReviewQueueCount() : 0;
+        long organizationCount = organizationService.getUserOrganizationCount(hangarUser.getId());
         hangarUser.setHeaderData(new HeaderData(
                 globalPermission,
                 unreadNotifs,
                 unansweredInvites,
                 unresolvedFlags,
                 projectApprovals,
-                reviewQueueCount
-        ));
+                reviewQueueCount,
+                organizationCount));
         return hangarUser;
     }
 }

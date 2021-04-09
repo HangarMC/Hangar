@@ -127,8 +127,7 @@ export default class Header extends HangarComponent {
             icon: 'mdi-book',
             title: this.$t('nav.new.project'),
         });
-        // TODO get user orgs count
-        if (0 - 1 < this.validations.maxOrgCount) {
+        if (this.currentUser!.headerData.organizationCount - 1 < this.validations.maxOrgCount) {
             controls.push({
                 link: '/organizations/new',
                 icon: 'mdi-account-group',
