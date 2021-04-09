@@ -278,6 +278,12 @@ const msgs: LocaleMessageObject = {
                 softDelete: 'You have deleted this project',
                 hardDelete: 'You have fully deleted this project',
             },
+            tabs: {
+                general: 'General',
+                optional: 'Optional',
+                management: 'Management',
+                donation: 'Donation',
+            },
         },
         discuss: {
             login: 'Log in',

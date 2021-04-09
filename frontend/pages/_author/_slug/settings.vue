@@ -24,14 +24,13 @@
                     </v-btn>
                 </v-card-title>
                 <v-card-text>
-                    <v-tabs vertical>
-                        <!-- TODO i18n & link tabs to a separate url #general, #optional, etc.-->
-                        <v-tab>General</v-tab>
-                        <v-tab>Optional</v-tab>
-                        <v-tab>Management</v-tab>
-                        <v-tab>Donation</v-tab>
+                    <v-tabs v-model="selectedTab" vertical>
+                        <v-tab href="#general">{{ $t('project.settings.tabs.general') }}</v-tab>
+                        <v-tab href="#optional">{{ $t('project.settings.tabs.optional') }}</v-tab>
+                        <v-tab href="#management">{{ $t('project.settings.tabs.management') }}</v-tab>
+                        <v-tab href="#donation">{{ $t('project.settings.tabs.donation') }}</v-tab>
 
-                        <v-tab-item>
+                        <v-tab-item id="general">
                             <v-form v-model="validForm.settings">
                                 <div>
                                     <h2>{{ $t('project.settings.category') }}</h2>
@@ -114,7 +113,7 @@
                             </div>
                         </v-tab-item>
 
-                        <v-tab-item>
+                        <v-tab-item id="optional">
                             <v-form v-model="validForm.settings">
                                 <div>
                                     <h2>
@@ -237,7 +236,7 @@
                             </v-form>
                         </v-tab-item>
 
-                        <v-tab-item>
+                        <v-tab-item id="management">
                             <div>
                                 <h2>{{ $t('project.settings.apiKey') }}</h2>
                                 <v-row>
@@ -311,7 +310,7 @@
                             </div>
                         </v-tab-item>
 
-                        <v-tab-item>
+                        <v-tab-item id="donation">
                             <v-form v-model="validForm.settings">
                                 <div>
                                     <h2>{{ $t('project.settings.donation.enable') }}</h2>
@@ -420,6 +419,22 @@ export default class ProjectManagePage extends HangarProjectMixin {
         resetIcon: false,
         rename: false,
     };
+
+    selectedTab: string = '';
+
+    @Watch('$route.hash')
+    onRouteTabChange(newVal: string) {
+        this.selectedTab = newVal;
+    }
+
+    @Watch('selectedTab')
+    onSelectedTabChange(newVal: string) {
+        history.pushState({}, '', this.$route.path + '#' + newVal);
+    }
+
+    mounted() {
+        this.selectedTab = this.$route.hash.substr(1) || 'general';
+    }
 
     get settingsEqual() {
         return (
