@@ -8,61 +8,65 @@
             </v-col>
             <v-col class="text-right">
                 <v-subheader style="justify-content: end">
-                    <i v-if="$perms.isReviewer && projectVersion.approvedBy">{{
+                    <i v-if="$perms.isReviewer && projectVersion.approvedBy" class="mr-1">{{
                         $t('version.page.adminMsg', [projectVersion.approvedBy, $util.prettyDate(projectVersion.createdAt)])
                     }}</i>
-                    <v-icon v-if="projectVersion.recommended" :title="$t('version.page.recommended')">mdi-diamond-stone</v-icon>
+                    <v-icon v-if="projectVersion.recommended.includes(platform.enumName)" :title="$t('version.page.recommended')">mdi-diamond-stone</v-icon>
                     <v-icon v-if="isReviewStateChecked" :title="approvalTooltip" color="success">mdi-check-circle-outline</v-icon>
                 </v-subheader>
                 <!-- todo maybe move the review logs to the admin actions dropdown? -->
                 <template v-if="$perms.isReviewer">
-                    <v-btn v-if="isReviewStateChecked" color="success" :to="$route.path + '/reviews'" nuxt>
+                    <v-btn v-if="isReviewStateChecked" small color="success" :to="$route.path + '/reviews'" nuxt>
                         <v-icon left>mdi-list-status</v-icon>
                         {{ $t('version.page.reviewLogs') }}
                     </v-btn>
-                    <v-btn v-else-if="isUnderReview" color="info" :to="$route.path + '/reviews'" nuxt>
+                    <v-btn v-else-if="isUnderReview" small color="info" :to="$route.path + '/reviews'" nuxt>
                         <v-icon left>mdi-list-status</v-icon>
                         {{ $t('version.page.reviewLogs') }}
                     </v-btn>
-                    <v-btn v-else color="success" :to="$route.path + '/reviews'" nuxt>
+                    <v-btn v-else color="success" small :to="$route.path + '/reviews'" nuxt>
                         <v-icon left>mdi-play</v-icon>
                         {{ $t('version.page.reviewStart') }}
                     </v-btn>
                 </template>
 
                 <!--TODO set recommended button -->
-                <v-btn v-if="$perms.canDeleteVersion" color="error" @click="deleteVersion">{{ $t('version.page.delete') }}</v-btn>
-                <!--TODO hard delete button if version is already soft-deleted-->
-                <v-btn v-if="!projectVersion.externalUrl" color="primary" :to="$route.path + '/download'">{{ $t('version.page.download') }}</v-btn>
-                <v-btn v-else color="primary" :to="$route.path + '/download'">{{ $t('version.page.downloadExternal') }}</v-btn>
-                <v-menu v-if="$perms.canViewLogs || $perms.isReviewer || $perms.canHardDeleteVersion" offset-y open-on-hover>
+
+                <TextareaModal :title="$t('version.page.delete')" :label="$t('general.comment')" :submit="deleteVersion">
                     <template #activator="{ on, attrs }">
-                        <v-btn v-ripple="false" plain v-bind="attrs" v-on="on">
+                        <!--TODO this button doesn't seem to show up when the version is restored, you have to reload the page. Unsure why-->
+                        <v-btn v-if="$perms.canDeleteVersion && projectVersion.visibility !== 'softDelete'" small color="error" v-bind="attrs" v-on="on">{{
+                            $t('version.page.delete')
+                        }}</v-btn>
+                    </template>
+                </TextareaModal>
+
+                <v-btn v-if="!projectVersion.externalUrl" small color="primary" :to="$route.path + '/download'">{{ $t('version.page.download') }}</v-btn>
+                <v-btn v-else color="primary" small :to="$route.path + '/download'">{{ $t('version.page.downloadExternal') }}</v-btn>
+                <v-menu v-if="$perms.canViewLogs || ($perms.isReviewer && projectVersion.visibility === 'softDelete') || $perms.canHardDeleteVersion" offset-y>
+                    <template #activator="{ on, attrs }">
+                        <v-btn v-ripple="false" small plain v-bind="attrs" v-on="on">
                             {{ $t('version.page.adminActions') }}
                             <v-icon right>mdi-chevron-down</v-icon>
                         </v-btn>
                     </template>
                     <v-list>
                         <!--todo route for user action log-->
-                        <v-list-item nuxt :to="`ddd`">
+                        <v-list-item v-if="$perms.canViewLogs" nuxt :to="`ddd`">
                             <v-list-item-title>
                                 {{ $t('version.page.userAdminLogs') }}
                             </v-list-item-title>
                         </v-list-item>
-                        <v-list-item v-if="$perms.isReviewer && projectVersion.visibility === 'softDelete'">
-                            <!--todo i18n & restore modal-->
-                            <v-list-item-title>Undo delete</v-list-item-title>
+                        <v-list-item v-if="$perms.isReviewer && projectVersion.visibility === 'softDelete'" @click.stop="restoreVersion">
+                            <v-list-item-title class="success--text">{{ $t('version.page.restore') }}</v-list-item-title>
                         </v-list-item>
-                        <v-list-item
-                            v-if="
-                                $perms.canHardDeleteVersion &&
-                                !projectVersion.recommended &&
-                                (project.info.publicVersions > 1 || projectVersion.visibility === 'softDelete')
-                            "
-                        >
-                            <!--todo i18n & hard delete modal-->
-                            <v-list-item-title>Hard delete</v-list-item-title>
-                        </v-list-item>
+                        <TextareaModal :title="$t('version.page.hardDelete')" :submit="hardDeleteVersion" :label="$t('general.comment')">
+                            <template #activator="{ on, attrs }">
+                                <v-list-item v-if="$perms.canHardDeleteVersion" v-bind="attrs" v-on="on">
+                                    <v-list-item-title class="error--text">{{ $t('version.page.hardDelete') }}</v-list-item-title>
+                                </v-list-item>
+                            </template>
+                        </TextareaModal>
                     </v-list>
                 </v-menu>
             </v-col>
@@ -123,9 +127,10 @@ import TagComponent from '~/components/Tag.vue';
 import { Markdown, MarkdownEditor } from '~/components/markdown';
 import PlatformVersionEditModal from '~/components/modals/versions/PlatformVersionEditModal.vue';
 import DependencyEditModal from '~/components/modals/versions/DependencyEditModal.vue';
+import TextareaModal from '~/components/modals/TextareaModal.vue';
 
 @Component({
-    components: { DependencyEditModal, PlatformVersionEditModal, TagComponent, Markdown, MarkdownEditor },
+    components: { TextareaModal, DependencyEditModal, PlatformVersionEditModal, TagComponent, Markdown, MarkdownEditor },
 })
 export default class ProjectVersionPage extends HangarProjectVersionMixin {
     editingPage: boolean = false;
@@ -164,8 +169,44 @@ export default class ProjectVersionPage extends HangarProjectVersionMixin {
             });
     }
 
-    // TODO implement all of the below
-    deleteVersion() {}
+    deleteVersion(comment: string) {
+        return this.$api
+            .requestInternal(`versions/version/${this.project.id}/${this.projectVersion.id}/delete`, true, 'post', {
+                content: comment,
+            })
+            .then(() => {
+                this.$util.success(this.$t('version.success.softDelete'));
+                this.$nuxt.refresh();
+            })
+            .catch(this.$util.handleRequestError);
+    }
+
+    hardDeleteVersion(comment: string) {
+        return this.$api
+            .requestInternal(`versions/version/${this.project.id}/${this.projectVersion.id}/hardDelete`, true, 'post', {
+                content: comment,
+            })
+            .then(() => {
+                this.$util.success(this.$t('version.success.hardDelete'));
+                this.$router.push({
+                    name: 'author-slug-versions',
+                    params: {
+                        ...this.$route.params,
+                    },
+                });
+            })
+            .catch(this.$util.handleRequestError);
+    }
+
+    restoreVersion() {
+        this.$api
+            .requestInternal(`versions/version/${this.project.id}/${this.projectVersion.id}/restore`, true, 'post')
+            .then(() => {
+                this.$util.success(this.$t('version.success.restore'));
+                this.$nuxt.refresh();
+            })
+            .catch(this.$util.handleRequestError);
+    }
 }
 </script>
 

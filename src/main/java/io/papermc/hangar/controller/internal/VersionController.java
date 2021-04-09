@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.controller.extras.resolvers.NoCache;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
@@ -126,7 +127,7 @@ public class VersionController extends HangarComponent {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.DELETE_VERSION, args = "{#projectId}")
     @PostMapping(path = "/version/{projectId}/{versionId}/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void softDeleteVersion(@PathVariable long projectId, @PathVariable("versionId") ProjectVersionTable version, @RequestBody @Valid StringContent commentContent) {
+    public void softDeleteVersion(@PathVariable long projectId, @PathVariable("versionId") @NoCache ProjectVersionTable version, @RequestBody @Valid StringContent commentContent) {
         versionService.softDeleteVersion(projectId, version, commentContent.getContent());
     }
 
@@ -134,7 +135,7 @@ public class VersionController extends HangarComponent {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PermissionRequired(NamedPermission.HARD_DELETE_VERSION)
     @PostMapping(path = "/version/{projectId}/{versionId}/hardDelete", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void hardDeleteVersion(@PathVariable("projectId") ProjectTable projectTable, @PathVariable("versionId") ProjectVersionTable projectVersionTable, @RequestBody @Valid StringContent commentContent) {
+    public void hardDeleteVersion(@PathVariable("projectId") @NoCache ProjectTable projectTable, @PathVariable("versionId") @NoCache ProjectVersionTable projectVersionTable, @RequestBody @Valid StringContent commentContent) {
         versionService.hardDeleteVersion(projectTable, projectVersionTable, commentContent.getContent());
     }
 
@@ -142,7 +143,7 @@ public class VersionController extends HangarComponent {
     @ResponseStatus(HttpStatus.CREATED)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.DELETE_VERSION, args = "{#projectId}")
     @PostMapping("/version/{projectId}/{versionId}/restore")
-    public void restoreVersion(@PathVariable long projectId, @PathVariable("versionId") ProjectVersionTable version) {
+    public void restoreVersion(@PathVariable long projectId, @PathVariable("versionId") @NoCache ProjectVersionTable version) {
         versionService.restoreVersion(projectId, version);
     }
 

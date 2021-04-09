@@ -3,7 +3,7 @@ package io.papermc.hangar.controller.extras.resolvers;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.service.internal.versions.VersionService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +28,7 @@ public class ProjectVersionTableResolver extends PathVariableMethodArgumentResol
 
     @Override
     public boolean supportsParameter(@NotNull MethodParameter parameter) {
-        return super.supportsParameter(parameter) && parameter.getParameterType().equals(UserTable.class);
+        return super.supportsParameter(parameter) && parameter.getParameterType().equals(ProjectVersionTable.class);
     }
 
     @Override

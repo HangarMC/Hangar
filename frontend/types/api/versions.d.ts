@@ -36,6 +36,6 @@ declare module 'hangar-api' {
         author: String;
         reviewState: ReviewState;
         tags: Tag[];
-        recommended: boolean;
+        recommended: Platform[];
     }
 }

@@ -371,6 +371,8 @@ const msgs: LocaleMessageObject = {
             reviewLogs: 'Review logs',
             reviewStart: 'Start review',
             delete: 'Delete',
+            hardDelete: 'Delete (forever)',
+            restore: 'Restore',
             download: 'Download',
             downloadExternal: 'Download External',
             adminActions: 'Admin actions',
@@ -384,6 +386,11 @@ const msgs: LocaleMessageObject = {
         platforms: 'Platforms',
         error: {
             onlyOnePublic: 'You only have 1 public version left',
+        },
+        success: {
+            softDelete: 'You have soft-deleted this version',
+            hardDelete: 'You have hard-deleted this version',
+            restore: 'You have restored this version',
         },
     },
     channel: {

@@ -13,6 +13,7 @@ import org.jdbi.v3.core.mapper.reflect.ColumnName;
 import java.time.OffsetDateTime;
 import java.util.EnumMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,9 +31,9 @@ public class Version extends Model implements Named, Visible {
     private final String author;
     private final ReviewState reviewState;
     private final Set<Tag> tags;
-    private final boolean recommended;
+    private final List<Platform> recommended;
 
-    public Version(OffsetDateTime createdAt, @ColumnName("version_string") String name, Visibility visibility, String description, @Nested("vs") VersionStats stats, @Nested("fi") FileInfo fileInfo, String externalUrl, String author, @EnumByOrdinal ReviewState reviewState, boolean recommended) {
+    public Version(OffsetDateTime createdAt, @ColumnName("version_string") String name, Visibility visibility, String description, @Nested("vs") VersionStats stats, @Nested("fi") FileInfo fileInfo, String externalUrl, String author, @EnumByOrdinal ReviewState reviewState, List<Platform> recommended) {
         super(createdAt);
         this.name = name;
         this.externalUrl = externalUrl;
@@ -94,7 +95,7 @@ public class Version extends Model implements Named, Visible {
         return tags;
     }
 
-    public boolean isRecommended() {
+    public List<Platform> getRecommended() {
         return recommended;
     }
 
