@@ -10,6 +10,7 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.exceptions.MultiHangarApiException;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.db.OrganizationTable;
@@ -32,6 +33,7 @@ import io.papermc.hangar.service.internal.perms.roles.ProjectRoleService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.users.NotificationService;
 import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
+import io.papermc.hangar.service.internal.versions.RecommendedVersionService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.StringUtils;
@@ -71,9 +73,10 @@ public class ProjectService extends HangarComponent {
     private final ProjectMemberService projectMemberService;
     private final ProjectRoleService projectRoleService;
     private final PermissionService permissionService;
+    private final RecommendedVersionService recommendedVersionService;
 
     @Autowired
-    public ProjectService(HangarDao<ProjectsDAO> projectDAO, HangarDao<UserDAO> userDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, NotificationService notificationService, ProjectInviteService projectInviteService, ProjectMemberService projectMemberService, ProjectRoleService projectRoleService, PermissionService permissionService) {
+    public ProjectService(HangarDao<ProjectsDAO> projectDAO, HangarDao<UserDAO> userDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, NotificationService notificationService, ProjectInviteService projectInviteService, ProjectMemberService projectMemberService, ProjectRoleService projectRoleService, PermissionService permissionService, RecommendedVersionService recommendedVersionService) {
         this.projectsDAO = projectDAO.get();
         this.userDAO = userDAO.get();
         this.hangarUsersDAO = hangarUsersDAO.get();
@@ -86,6 +89,7 @@ public class ProjectService extends HangarComponent {
         this.projectMemberService = projectMemberService;
         this.projectRoleService = projectRoleService;
         this.permissionService = permissionService;
+        this.recommendedVersionService = recommendedVersionService;
     }
 
     @Nullable
@@ -128,7 +132,8 @@ public class ProjectService extends HangarComponent {
         }
         HangarProjectInfo info = hangarProjectsDAO.getHangarProjectInfo(project.getLeft());
         Map<Long, HangarProjectPage> pages = projectPageService.getProjectPages(project.getLeft());
-        return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values());
+        Map<Platform, Long> recommendedVersions = recommendedVersionService.getRecommendedVersions(project.getLeft());
+        return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values(), recommendedVersions);
     }
 
     public void saveSettings(String author, String slug, ProjectSettingsForm settingsForm) {

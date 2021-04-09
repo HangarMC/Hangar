@@ -10,9 +10,12 @@ import org.jdbi.v3.core.mapper.NoSuchMapperException;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.mapper.RowMapperFactory;
 import org.jdbi.v3.core.mapper.RowMappers;
+import org.jdbi.v3.core.statement.StatementContext;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Optional;
 
 @Component
@@ -28,24 +31,23 @@ public class PairMapperFactory implements RowMapperFactory {
         Type rightType = GenericTypes.resolveType(Pair.class.getTypeParameters()[1], type);
 
         RowMappers rowMappers = config.get(RowMappers.class);
+        ColumnMappers columnMappers = config.get(ColumnMappers.class);
 
-        Optional<RowMapper<?>> leftMapper = rowMappers.findFor(leftType);
-        ColumnMapper<?> columnMapper = null;
-        if (leftMapper.isEmpty()) {
-            columnMapper = config.get(ColumnMappers.class).findFor(leftType).orElseThrow(() -> new NoSuchMapperException("No column mapper registered for Pair left parameter " + leftType));
-        }
-        RowMapper<?> rightMapper = rowMappers.findFor(rightType).orElseThrow(() -> new NoSuchMapperException("No row mapper registered for Pair right parameter " + rightType));
-
-        ColumnMapper<?> finalColumnMapper = columnMapper;
         RowMapper<?> pairMapper = (rs, ctx) -> {
-            Object left;
-            if (leftMapper.isPresent()) {
-                left = leftMapper.get().map(rs, ctx);
-            } else {
-                left = finalColumnMapper.map(rs, 1, ctx);
-            }
-            return new ImmutablePair(left, rightMapper.map(rs, ctx));
+            Object left = map(leftType, true, rowMappers, columnMappers, rs, ctx);
+            Object right = map(rightType, false, rowMappers, columnMappers, rs, ctx);
+            return new ImmutablePair<>(left, right);
         };
         return Optional.of(pairMapper);
+    }
+
+    private Object map(Type type, boolean left, RowMappers rowMappers, ColumnMappers columnMappers, ResultSet rs, StatementContext ctx) throws SQLException {
+        Optional<RowMapper<?>> rowMapper = rowMappers.findFor(type);
+        if (rowMapper.isPresent()) {
+            return rowMapper.get().map(rs, ctx);
+        } else {
+            ColumnMapper<?> columnMapper = columnMappers.findFor(type).orElseThrow(() -> new NoSuchMapperException("No column mapper registered for Pair " + (left ? "left" : "right") +  " parameter " + type));
+            return columnMapper.map(rs, 1, ctx);
+        }
     }
 }

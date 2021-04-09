@@ -20,19 +20,39 @@
                     <v-card>
                         <v-card-title v-text="$t('project.info.title')"></v-card-title>
                         <v-card-text>
-                            <!-- todo where do we get this from? -->
-                            <v-btn-toggle v-if="project.recommendedVersionId">
-                                <v-btn>
+                            <v-btn-toggle v-if="project.recommendedVersions && Object.keys(project.recommendedVersions).length > 0" borderless>
+                                <!-- todo download + copy download url -->
+                                <v-btn color="primary">
                                     <v-icon>mdi-download-outline</v-icon>
-                                    {{ $t('general.download') }}
+                                    {{ $t('version.page.download') }}
                                 </v-btn>
 
-                                <v-btn>
+                                <v-btn color="primary">
                                     <v-icon>mdi-content-copy</v-icon>
                                 </v-btn>
+
+                                <v-menu offset-y>
+                                    <template #activator="{ on, attrs }">
+                                        <v-btn color="primary" dark v-bind="attrs" v-on="on">
+                                            <v-icon v-text="`$vuetify.icons.${selectedPlatform.toLowerCase()}`" />
+                                        </v-btn>
+                                    </template>
+                                    <v-list>
+                                        <v-list-item-group v-model="selectedPlatform" color="primary" mandatory>
+                                            <v-list-item v-for="(platform, i) in Object.keys(project.recommendedVersions)" :key="i" :value="platform">
+                                                <v-list-item-icon>
+                                                    <v-icon v-text="`$vuetify.icons.${platform.toLowerCase()}`"></v-icon>
+                                                </v-list-item-icon>
+                                                <v-list-item-content>
+                                                    {{ platform.toLowerCase() }}
+                                                </v-list-item-content>
+                                            </v-list-item>
+                                        </v-list-item-group>
+                                    </v-list>
+                                </v-menu>
                             </v-btn-toggle>
 
-                            <div v-if="project.settings.donation.enable">
+                            <div v-if="project.settings.donation.enable" style="margin-top: 5px">
                                 <DonationModal
                                     :donation-email="project.settings.donation.email"
                                     :default-amount="project.settings.donation.defaultAmount"
@@ -81,7 +101,14 @@
                         <v-card-title v-text="$t('project.promotedVersions')"></v-card-title>
                         <v-card-text>
                             <v-list>
-                                <v-list-item v-for="(version, index) in project.promotedVersions" :key="`${index}-${version.version}`">
+                                <v-list-item
+                                    v-for="(version, index) in project.promotedVersions"
+                                    :key="`${index}-${version.version}`"
+                                    :to="{
+                                        name: 'author-slug-versions-version',
+                                        params: { author: project.namespace.owner, slug: project.namespace.slug, version: version.version },
+                                    }"
+                                >
                                     {{ version.version }}
                                     <Tag v-for="(tag, idx) in version.tags" :key="idx" :color="tag.color" :data="tag.displayData" :name="tag.name"></Tag>
                                 </v-list-item>
@@ -110,12 +137,20 @@ import DonationModal from '~/components/donation/DonationModal.vue';
 import { Markdown, MarkdownEditor } from '~/components/markdown';
 import { DocPageMixin } from '~/components/mixins';
 import { MemberList, ProjectPageList } from '~/components/projects';
+import { Platform } from '~/types/enums';
 
 @Component({
     components: { ProjectPageList, Markdown, MemberList, DonationModal, MarkdownEditor, Tag },
 })
 export default class DocsPage extends DocPageMixin {
     roles!: Role[];
+
+    selectedPlatform!: Platform;
+
+    created() {
+        const keys = this.project.recommendedVersions ? Object.keys(this.project.recommendedVersions) : [];
+        this.selectedPlatform = keys.length > 0 ? Platform[keys[0] as keyof typeof Platform] : Platform.PAPER;
+    }
 
     get publicHost() {
         return process.env.publicHost;

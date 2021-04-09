@@ -5,6 +5,7 @@ import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.ProjectIdentified;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.common.NamedPermission;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.internal.Joinable;
@@ -12,6 +13,7 @@ import io.papermc.hangar.model.internal.user.JoinableMember;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class HangarProject extends Project implements Joinable<ProjectRoleTable>, ProjectIdentified {
 
@@ -22,8 +24,9 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     private final String lastVisibilityChangeUserName;
     private final HangarProjectInfo info;
     private final Collection<HangarProjectPage> pages;
+    private final Map<Platform, Long> recommendedVersions;
 
-    public HangarProject(Project project, long id, ProjectOwner owner, List<JoinableMember<ProjectRoleTable>> members, String lastVisibilityChangeComment, String lastVisibilityChangeUserName, HangarProjectInfo info, Collection<HangarProjectPage> pages) {
+    public HangarProject(Project project, long id, ProjectOwner owner, List<JoinableMember<ProjectRoleTable>> members, String lastVisibilityChangeComment, String lastVisibilityChangeUserName, HangarProjectInfo info, Collection<HangarProjectPage> pages, Map<Platform, Long> recommendedVersions) {
         super(project);
         this.id = id;
         this.owner = owner;
@@ -32,6 +35,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         this.lastVisibilityChangeUserName = lastVisibilityChangeUserName;
         this.info = info;
         this.pages = pages;
+        this.recommendedVersions = recommendedVersions;
     }
 
     public long getId() {
@@ -72,6 +76,10 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
 
     public Collection<HangarProjectPage> getPages() {
         return pages;
+    }
+
+    public Map<Platform, Long> getRecommendedVersions() {
+        return recommendedVersions;
     }
 
     @Override

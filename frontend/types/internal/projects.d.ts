@@ -31,6 +31,9 @@ declare module 'hangar-internal' {
         lastVisibilityChangeUserName: string;
         info: HangarProjectInfo;
         pages: HangarProjectPage[];
+        recommendedVersions: {
+            [key: string]: number;
+        };
     }
 
     interface ProjectPage extends Table {
