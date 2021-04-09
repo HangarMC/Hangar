@@ -11,7 +11,6 @@ public class LoggedActionType<C extends AbstractContext> {
 
     public static final Map<String, LoggedActionType<? extends AbstractContext>> loggedActionTypes = new HashMap<>();
 
-    public static final LoggedActionType<ProjectContext> PROJECT_VISIBILITY_CHANGE = new LoggedActionType<>(PGLoggedAction.PROJECT_VISIBILITY_CHANGED, "ProjectVisibilityChange", "The project visibility state was changed");
     public static final LoggedActionType<ProjectContext> PROJECT_SETTINGS_CHANGED = new LoggedActionType<>(PGLoggedAction.PROJECT_SETTINGS_CHANGED, "ProjectSettingsChanged", "The project settings were changed");
 
     private final PGLoggedAction value;

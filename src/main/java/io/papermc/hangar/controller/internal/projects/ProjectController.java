@@ -152,6 +152,22 @@ public class ProjectController extends HangarComponent {
         userService.toggleWatching(projectId, state);
     }
 
+    @Unlocked
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.DELETE_PROJECT, args = "{#project}")
+    @PostMapping(path = "/project/{projectId}/manage/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void softDeleteProject(@PathVariable("projectId") ProjectTable project, @RequestBody @Valid StringContent commentContent) {
+        projectFactory.softDelete(project, commentContent.getContent());
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PermissionRequired(NamedPermission.HARD_DELETE_PROJECT)
+    @PostMapping(path = "/project/{projectId}/manage/hardDelete", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void hardDeleteProject(@PathVariable("projectId") ProjectTable project, @RequestBody @Valid StringContent commentContent) {
+        projectFactory.hardDelete(project, commentContent.getContent());
+    }
+
     // Can't put visibility required because the browser image requests don't include the JWT needed for authorization
     @Anyone
     @GetMapping(value = "/project/{author}/{slug}/icon", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})

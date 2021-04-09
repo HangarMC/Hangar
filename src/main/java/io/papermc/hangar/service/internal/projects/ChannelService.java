@@ -12,6 +12,7 @@ import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.projects.HangarChannel;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,6 +46,7 @@ public class ChannelService extends HangarComponent {
         }
     }
 
+    @Transactional
     public ProjectChannelTable createProjectChannel(String name, Color color, long projectId, boolean nonReviewed) {
         validateChannel(name, color, projectId, nonReviewed, projectChannelsDAO.getProjectChannels(projectId));
         ProjectChannelTable channelTable = projectChannelsDAO.insert(new ProjectChannelTable(name, color, projectId, nonReviewed));
@@ -52,6 +54,7 @@ public class ChannelService extends HangarComponent {
         return channelTable;
     }
 
+    @Transactional
     public void editProjectChannel(long channelId, String name, Color color, long projectId, boolean nonReviewed) {
         ProjectChannelTable projectChannelTable = getProjectChannel(channelId);
         if (projectChannelTable == null) {
@@ -66,6 +69,7 @@ public class ChannelService extends HangarComponent {
         userActionLogService.project(LogAction.PROJECT_CHANNEL_EDITED.create(ProjectContext.of(projectId), formatChannelChange(projectChannelTable), old));
     }
 
+    @Transactional
     public void deleteProjectChannel(long projectId, long channelId) {
         HangarChannel hangarChannel = hangarProjectsDAO.getHangarChannel(channelId);
         if (hangarChannel == null) {

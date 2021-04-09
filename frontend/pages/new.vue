@@ -203,6 +203,7 @@
                     </v-container>
                 </v-card>
             </StepperStepContent>
+            <!-- TODO donation settings as a step as well -->
             <StepperStepContent
                 :step="4"
                 @back="step = 3"
@@ -277,6 +278,7 @@ export default class NewProjectPage extends HangarComponent {
         category: ProjectCategory.ADMIN_TOOLS,
         settings: ({
             license: {} as ProjectSettingsForm['settings']['license'],
+            donation: {} as ProjectSettingsForm['settings']['donation'],
             keywords: [],
         } as unknown) as ProjectSettingsForm['settings'],
     } as NewProjectForm;

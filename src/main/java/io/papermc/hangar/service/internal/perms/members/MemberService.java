@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+@Transactional
 public abstract class MemberService<
         R extends Role<RT>,
         RT extends ExtendedRoleTable<R>,
@@ -82,7 +83,6 @@ public abstract class MemberService<
         logMemberRemoval(roleTable.getPrincipalId(), sb);
     }
 
-    @Transactional
     public void removeMembers(List<HangarApiException> errors, List<Member<R>> members, J joinable) {
         List<RT> toBeRemoved = new ArrayList<>();
         StringBuilder sb = new StringBuilder("Removed: ");
@@ -105,7 +105,6 @@ public abstract class MemberService<
 
     abstract void logMemberRemoval(long principalId, String logEntry);
 
-    @Transactional
     public void editMembers(List<HangarApiException> errors, List<Member<R>> members, J joinable) {
         List<RT> toBeUpdated = new ArrayList<>();
         StringBuilder oldState = new StringBuilder("Old Roles: ");

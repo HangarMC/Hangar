@@ -243,7 +243,7 @@ const msgs: LocaleMessageObject = {
             delete: 'Delete',
             deleteSub: 'Once you delete a project, it cannot be recovered.',
             hardDelete: 'Hard Delete',
-            hardDeleteSub: 'Once you delete a project, it cannot be recovered.',
+            hardDeleteSub: 'Once you delete a project, it cannot be recovered. For real this time...',
             save: 'Save changes',
             optional: '(optional)',
             licenceCustom: 'Custom Name',
@@ -275,6 +275,8 @@ const msgs: LocaleMessageObject = {
                 changedIcon: 'Successfully changed the project icon',
                 resetIcon: 'Successfully reset the project icon',
                 rename: 'Successfully renamed the project to {0}',
+                softDelete: 'You have deleted this project',
+                hardDelete: 'You have fully deleted this project',
             },
         },
         discuss: {
@@ -390,8 +392,8 @@ const msgs: LocaleMessageObject = {
             onlyOnePublic: 'You only have 1 public version left',
         },
         success: {
-            softDelete: 'You have soft-deleted this version',
-            hardDelete: 'You have hard-deleted this version',
+            softDelete: 'You have deleted this version',
+            hardDelete: 'You have fully deleted this version',
             restore: 'You have restored this version',
             recommended: 'You have marked this version as recommended for {0} platform',
         },

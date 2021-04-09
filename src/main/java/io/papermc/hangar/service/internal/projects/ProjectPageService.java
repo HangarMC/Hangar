@@ -16,6 +16,7 @@ import io.papermc.hangar.util.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -32,14 +33,12 @@ public class ProjectPageService extends HangarComponent {
         this.hangarProjectPagesDAO = hangarProjectPagesDAO.get();
     }
 
+    @Transactional
     public ProjectPageTable createPage(long projectId, String name, String slug, String contents, boolean deletable, @Nullable Long parentId, boolean isHome) {
         if (!isHome && contents.length() < config.pages.getMinLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.minLength");
         }
 
-//        if ((!isHome && name.equalsIgnoreCase(hangarConfig.pages.home.getName())) && contents.length() < hangarConfig.pages.getMinLen()) {
-//            throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.minLength");
-//        }
         if (contents.length() >  config.pages.getMaxLen()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.maxLength");
         }
@@ -120,6 +119,7 @@ public class ProjectPageService extends HangarComponent {
         return slug;
     }
 
+    @Transactional
     public void saveProjectPage(long projectId, long pageId, String newContents) {
         ProjectPageTable pageTable = projectPagesDAO.getProjectPage(projectId, pageId);
         if (pageTable == null) {
@@ -131,6 +131,7 @@ public class ProjectPageService extends HangarComponent {
         userActionLogService.projectPage(LogAction.PROJECT_PAGE_EDITED.create(PageContext.of(projectId, pageId), newContents, oldContent));
     }
 
+    @Transactional
     public void deleteProjectPage(long projectId, long pageId) {
         ProjectPageTable pageTable = projectPagesDAO.getProjectPage(projectId, pageId);
         if (pageTable == null) {

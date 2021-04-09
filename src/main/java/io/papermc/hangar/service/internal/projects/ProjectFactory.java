@@ -4,6 +4,7 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.projects.ProjectTable;
@@ -12,11 +13,13 @@ import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
+import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProjectFactory extends HangarComponent {
@@ -26,18 +29,21 @@ public class ProjectFactory extends HangarComponent {
     private final ChannelService channelService;
     private final ProjectPageService projectPageService;
     private final ProjectMemberService projectMemberService;
+    private final ProjectVisibilityService projectVisibilityService;
     private final UsersApiService usersApiService;
 
     @Autowired
-    public ProjectFactory(HangarDao<ProjectsDAO> projectDAO, ProjectService projectService, ChannelService channelService, ProjectPageService projectPageService, ProjectMemberService projectMemberService, UsersApiService usersApiService) {
+    public ProjectFactory(HangarDao<ProjectsDAO> projectDAO, ProjectService projectService, ChannelService channelService, ProjectPageService projectPageService, ProjectMemberService projectMemberService, ProjectVisibilityService projectVisibilityService, UsersApiService usersApiService) {
         this.projectsDAO = projectDAO.get();
         this.projectService = projectService;
         this.channelService = channelService;
         this.projectPageService = projectPageService;
         this.projectMemberService = projectMemberService;
+        this.projectVisibilityService = projectVisibilityService;
         this.usersApiService = usersApiService;
     }
 
+    @Transactional
     public ProjectTable createProject(NewProjectForm newProject) {
         ProjectOwner projectOwner = projectService.getProjectOwner(newProject.getOwnerId());
         if (projectOwner == null) {
@@ -104,5 +110,20 @@ public class ProjectFactory extends HangarComponent {
         InvalidProjectReason(String key) {
             this.key = key;
         }
+    }
+
+    public void softDelete(ProjectTable projectTable, String comment) {
+        if (projectTable.getVisibility() == Visibility.NEW) {
+            hardDelete(projectTable, comment);
+        } else {
+            projectVisibilityService.changeVisibility(projectTable, Visibility.SOFTDELETE, comment);
+            projectService.refreshHomeProjects();
+        }
+    }
+
+    public void hardDelete(ProjectTable projectTable, String comment) {
+        userActionLogService.project(LogAction.PROJECT_VISIBILITY_CHANGED.create(ProjectContext.of(projectTable.getId()), "<i>deleted</i>", projectTable.getVisibility().getTitle()));
+        projectsDAO.delete(projectTable);
+        projectService.refreshHomeProjects();
     }
 }

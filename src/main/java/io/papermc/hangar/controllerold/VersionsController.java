@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.daoold.ProjectDao;
 import io.papermc.hangar.db.daoold.ProjectVersionDownloadWarningDao;
 import io.papermc.hangar.db.modelold.ProjectChannelsTable;
 import io.papermc.hangar.db.modelold.ProjectVersionDownloadWarningsTable;
@@ -19,15 +18,11 @@ import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.modelold.DownloadType;
 import io.papermc.hangar.modelold.viewhelpers.ProjectData;
 import io.papermc.hangar.securityold.annotations.GlobalPermission;
-import io.papermc.hangar.securityold.annotations.ProjectPermission;
-import io.papermc.hangar.securityold.annotations.UserLock;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.serviceold.DownloadsService;
-import io.papermc.hangar.serviceold.UserActionLogService;
 import io.papermc.hangar.serviceold.VersionService;
 import io.papermc.hangar.serviceold.VersionService.RecommendedVersionService;
 import io.papermc.hangar.serviceold.project.ChannelService;
-import io.papermc.hangar.serviceold.project.ProjectFactory;
 import io.papermc.hangar.util.AlertUtil;
 import io.papermc.hangar.util.AlertUtil.AlertType;
 import io.papermc.hangar.util.RequestUtil;
@@ -67,12 +62,9 @@ public class VersionsController extends HangarController {
 
     private final VersionService versionService;
     private final RecommendedVersionService recommendedVersionService;
-    private final ProjectFactory projectFactory;
     private final ChannelService channelService;
     private final DownloadsService downloadsService;
-    private final UserActionLogService userActionLogService;
     private final HangarConfig hangarConfig;
-    private final HangarDao<ProjectDao> projectDao;
     private final ProjectFiles projectFiles;
     private final HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao;
     private final MessageSource messageSource;
@@ -86,15 +78,12 @@ public class VersionsController extends HangarController {
 
 
     @Autowired
-    public VersionsController(VersionService versionService, RecommendedVersionService recommendedVersionService, ProjectFactory projectFactory, ChannelService channelService, DownloadsService downloadsService, UserActionLogService userActionLogService, HangarConfig hangarConfig, HangarDao<ProjectDao> projectDao, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, MessageSource messageSource, ObjectMapper mapper, HttpServletRequest request, HttpServletResponse response, Supplier<ProjectVersionsTable> projectVersionsTable, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
+    public VersionsController(VersionService versionService, RecommendedVersionService recommendedVersionService, ChannelService channelService, DownloadsService downloadsService, HangarConfig hangarConfig, ProjectFiles projectFiles, HangarDao<ProjectVersionDownloadWarningDao> downloadWarningDao, MessageSource messageSource, ObjectMapper mapper, HttpServletRequest request, HttpServletResponse response, Supplier<ProjectVersionsTable> projectVersionsTable, Supplier<ProjectsTable> projectsTable, Supplier<ProjectData> projectData) {
         this.versionService = versionService;
         this.recommendedVersionService = recommendedVersionService;
-        this.projectFactory = projectFactory;
         this.channelService = channelService;
         this.downloadsService = downloadsService;
-        this.userActionLogService = userActionLogService;
         this.hangarConfig = hangarConfig;
-        this.projectDao = projectDao;
         this.projectFiles = projectFiles;
         this.downloadWarningDao = downloadWarningDao;
         this.messageSource = messageSource;
@@ -356,18 +345,6 @@ public class VersionsController extends HangarController {
                 }
             }
         }
-    }
-
-    @ProjectPermission(NamedPermission.EDIT_VERSION)
-    @UserLock(route = Routes.PROJECTS_SHOW, args = "{#author, #slug}")
-    @Secured("ROLE_USER")
-    @PostMapping("/{author}/{slug}/versions/{version}/recommended")
-    public ModelAndView setRecommended(@PathVariable String author, @PathVariable String slug, @PathVariable String version) {
-        ProjectsTable project = projectsTable.get();
-        ProjectVersionsTable versionsTable = projectVersionsTable.get();
-        project.setRecommendedVersionId(versionsTable.getId());
-        projectDao.get().update(project);
-        return Routes.VERSIONS_SHOW.getRedirect(author, slug, version);
     }
 
 }

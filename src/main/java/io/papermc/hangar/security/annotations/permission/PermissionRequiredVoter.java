@@ -3,6 +3,7 @@ package io.papermc.hangar.security.annotations.permission;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
+import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.security.annotations.HangarDecisionVoter;
 import io.papermc.hangar.security.annotations.permission.PermissionRequiredMetadataExtractor.PermissionRequiredAttribute;
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
@@ -45,7 +46,14 @@ public class PermissionRequiredVoter extends HangarDecisionVoter<PermissionRequi
             switch (attribute.getPermissionType()) {
                 case PROJECT:
                     if (arguments.length == 1) {
-                        currentPerm = permissionService.getProjectPermissions(hangarAuthenticationToken.getUserId(), (long) arguments[0]);
+                        long projectId;
+                        Object argument1 = arguments[0];
+                        if (argument1 instanceof ProjectTable) {
+                            projectId = ((ProjectTable) argument1).getId();
+                        } else {
+                            projectId = (long) argument1;
+                        }
+                        currentPerm = permissionService.getProjectPermissions(hangarAuthenticationToken.getUserId(), projectId);
                     } else if (arguments.length == 2) {
                         currentPerm = permissionService.getProjectPermissions(hangarAuthenticationToken.getUserId(), (String) arguments[0], (String) arguments[1]);
                     } else {

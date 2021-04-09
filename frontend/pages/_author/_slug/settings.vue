@@ -25,6 +25,7 @@
                 </v-card-title>
                 <v-card-text>
                     <v-tabs vertical>
+                        <!-- TODO i18n & link tabs to a separate url #general, #optional, etc.-->
                         <v-tab>General</v-tab>
                         <v-tab>Optional</v-tab>
                         <v-tab>Management</v-tab>
@@ -276,26 +277,35 @@
                                 </v-row>
                             </div>
                             <v-divider />
-                            <div>
+                            <div v-if="$perms.canDeleteProject">
                                 <h2>{{ $t('project.settings.delete') }}</h2>
                                 <v-row>
                                     <v-col cols="12" md="8">
                                         <p>{{ $t('project.settings.deleteSub') }}</p>
                                     </v-col>
                                     <v-col cols="12" md="4">
-                                        <v-btn color="error" @click="softDelete">{{ $t('project.settings.delete') }}</v-btn>
+                                        <TextareaModal :title="$t('project.settings.delete')" :label="$t('general.comment')" :submit="softDelete">
+                                            <template #activator="{ on, attrs }">
+                                                <v-btn color="error" v-bind="attrs" v-on="on">{{ $t('project.settings.delete') }}</v-btn>
+                                            </template>
+                                        </TextareaModal>
                                     </v-col>
                                 </v-row>
                             </div>
                             <v-divider />
-                            <div class="error darken-4">
+                            <div v-if="$perms.canHardDeleteProject" class="error darken-4">
+                                <!-- TODO striped background to separate from normal delete-->
                                 <h2>{{ $t('project.settings.hardDelete') }}</h2>
                                 <v-row>
                                     <v-col cols="12" md="8">
                                         <p>{{ $t('project.settings.hardDeleteSub') }}</p>
                                     </v-col>
                                     <v-col cols="12" md="4">
-                                        <v-btn color="error" @click="hardDelete">{{ $t('project.settings.hardDelete') }}</v-btn>
+                                        <TextareaModal :title="$t('project.settings.hardDelete')" :label="$t('general.comment')" :submit="hardDelete">
+                                            <template #activator="{ on, attrs }">
+                                                <v-btn color="error" v-bind="attrs" v-on="on">{{ $t('project.settings.hardDelete') }}</v-btn>
+                                            </template>
+                                        </TextareaModal>
                                     </v-col>
                                 </v-row>
                             </div>
@@ -380,9 +390,10 @@ import { RootState } from '~/store';
 import { HangarProjectMixin } from '~/components/mixins';
 import { MemberList } from '~/components/projects';
 import VisibilityChangerModal from '~/components/modals/VisibilityChangerModal.vue';
+import TextareaModal from '~/components/modals/TextareaModal.vue';
 
 @Component({
-    components: { VisibilityChangerModal, MemberList },
+    components: { TextareaModal, VisibilityChangerModal, MemberList },
 })
 @ProjectPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)
 export default class ProjectManagePage extends HangarProjectMixin {
@@ -500,10 +511,29 @@ export default class ProjectManagePage extends HangarProjectMixin {
             });
     }
 
-    // TODO implement
-    softDelete() {}
+    softDelete(comment: string) {
+        return this.$api
+            .requestInternal(`projects/project/${this.project.id}/manage/delete`, true, 'post', {
+                content: comment,
+            })
+            .then(() => {
+                this.$util.success(this.$t('project.settings.success.softDelete'));
+                this.$nuxt.refresh();
+            })
+            .catch(this.$util.handleRequestError);
+    }
 
-    hardDelete() {}
+    hardDelete(comment: string) {
+        return this.$api
+            .requestInternal(`projects/project/${this.project.id}/manage/hardDelete`, true, 'post', {
+                content: comment,
+            })
+            .then(() => {
+                this.$util.success(this.$t('project.settings.success.hardDelete'));
+                this.$router.push('/');
+            })
+            .catch(this.$util.handleRequestError);
+    }
 
     uploadIcon() {
         const data = new FormData();
