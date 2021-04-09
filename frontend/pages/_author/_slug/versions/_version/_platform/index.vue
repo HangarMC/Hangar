@@ -11,7 +11,9 @@
                     <i v-if="$perms.isReviewer && projectVersion.approvedBy" class="mr-1">{{
                         $t('version.page.adminMsg', [projectVersion.approvedBy, $util.prettyDate(projectVersion.createdAt)])
                     }}</i>
-                    <v-icon v-if="projectVersion.recommended.includes(platform.enumName)" :title="$t('version.page.recommended')">mdi-diamond-stone</v-icon>
+                    <v-icon v-if="projectVersion.recommended.includes(platform.enumName)" color="info" :title="$t('version.page.recommended')"
+                        >mdi-diamond-stone</v-icon
+                    >
                     <v-icon v-if="isReviewStateChecked" :title="approvalTooltip" color="success">mdi-check-circle-outline</v-icon>
                 </v-subheader>
                 <!-- todo maybe move the review logs to the admin actions dropdown? -->
@@ -31,6 +33,19 @@
                 </template>
 
                 <!--TODO set recommended button -->
+
+                <v-tooltip
+                    v-if="$perms.canEditVersion && projectVersion.visibility !== 'softDelete' && !projectVersion.recommended.includes(platform.enumName)"
+                    bottom
+                >
+                    <template #activator="{ on }">
+                        <v-btn color="info" small :loading="loading.recommend" @click.stop="setRecommended" v-on="on">
+                            <v-icon left>mdi-diamond</v-icon>
+                            {{ $t('version.page.setRecommended') }}
+                        </v-btn>
+                    </template>
+                    <span>{{ $t('version.page.setRecommendedTooltip', [platform.name]) }}</span>
+                </v-tooltip>
 
                 <TextareaModal :title="$t('version.page.delete')" :label="$t('general.comment')" :submit="deleteVersion">
                     <template #activator="{ on, attrs }">
@@ -134,6 +149,9 @@ import TextareaModal from '~/components/modals/TextareaModal.vue';
 })
 export default class ProjectVersionPage extends HangarProjectVersionMixin {
     editingPage: boolean = false;
+    loading = {
+        recommend: false,
+    };
 
     get channel(): Tag | null {
         return this.projectVersion.tags?.find((t) => t.name === 'Channel') || null;
@@ -166,6 +184,20 @@ export default class ProjectVersionPage extends HangarProjectVersionMixin {
                 this.$refs.editor.loading.save = false;
                 // TODO i18n for version desc save?
                 this.$util.handleRequestError(err, 'page.new.error.save');
+            });
+    }
+
+    setRecommended() {
+        this.loading.recommend = true;
+        this.$api
+            .requestInternal(`versions/version/${this.project.id}/${this.projectVersion.id}/${this.platform.enumName}/recommend`, true, 'post')
+            .then(() => {
+                this.$util.success(this.$t('version.success.recommended', [this.platform.name]));
+                this.$nuxt.refresh();
+            })
+            .catch(this.$util.handleRequestError)
+            .finally(() => {
+                this.loading.recommend = false;
             });
     }
 

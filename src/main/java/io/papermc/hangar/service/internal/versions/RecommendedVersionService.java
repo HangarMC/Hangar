@@ -22,6 +22,4 @@ public class RecommendedVersionService extends HangarComponent {
         recommendedProjectVersionsDAO.delete(projectId, platform);
         recommendedProjectVersionsDAO.insert(new RecommendedProjectVersionTable(versionId, projectId, platform));
     }
-
-//    public ProjectVersionTable getRecommendedVersion()
 }

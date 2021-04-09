@@ -19,6 +19,7 @@ import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
+import io.papermc.hangar.service.internal.versions.RecommendedVersionService;
 import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.service.internal.versions.VersionFactory;
 import io.papermc.hangar.service.internal.versions.VersionService;
@@ -48,12 +49,14 @@ public class VersionController extends HangarComponent {
     private final VersionFactory versionFactory;
     private final VersionService versionService;
     private final VersionDependencyService versionDependencyService;
+    private final RecommendedVersionService recommendedVersionService;
 
     @Autowired
-    public VersionController(VersionFactory versionFactory, VersionService versionService, VersionDependencyService versionDependencyService) {
+    public VersionController(VersionFactory versionFactory, VersionService versionService, VersionDependencyService versionDependencyService, RecommendedVersionService recommendedVersionService) {
         this.versionFactory = versionFactory;
         this.versionService = versionService;
         this.versionDependencyService = versionDependencyService;
+        this.recommendedVersionService = recommendedVersionService;
     }
 
     @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
@@ -121,6 +124,14 @@ public class VersionController extends HangarComponent {
     @PostMapping(path = "/version/{projectId}/{versionId}/savePluginDependencies", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void savePluginDependencies(@PathVariable long projectId, @PathVariable long versionId, @Valid @RequestBody UpdatePluginDependencies updatePluginDependencies) {
         versionDependencyService.updateVersionPluginDependencies(projectId, versionId, updatePluginDependencies);
+    }
+
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_VERSION, args = "{#projectId}")
+    @PostMapping("/version/{projectId}/{versionId}/{platform}/recommend")
+    public void setRecommended(@PathVariable long projectId, @PathVariable long versionId, @PathVariable Platform platform) {
+        recommendedVersionService.setRecommendedVersion(projectId, versionId, platform);
     }
 
     @Unlocked

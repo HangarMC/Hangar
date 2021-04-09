@@ -370,6 +370,8 @@ const msgs: LocaleMessageObject = {
             adminMsg: '{0} approved this version on {1}',
             reviewLogs: 'Review logs',
             reviewStart: 'Start review',
+            setRecommended: 'Set as Recommended',
+            setRecommendedTooltip: 'Set this version as recommended for {0} platform',
             delete: 'Delete',
             hardDelete: 'Delete (forever)',
             restore: 'Restore',
@@ -391,6 +393,7 @@ const msgs: LocaleMessageObject = {
             softDelete: 'You have soft-deleted this version',
             hardDelete: 'You have hard-deleted this version',
             restore: 'You have restored this version',
+            recommended: 'You have marked this version as recommended for {0} platform',
         },
     },
     channel: {
