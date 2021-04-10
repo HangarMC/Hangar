@@ -216,7 +216,6 @@
                     <v-tab v-text="$t('project.new.step4.tutorial')"></v-tab>
                 </v-tabs>
                 <v-tabs-items v-model="spigotConvertTab">
-                    <!-- todo spigot bbcode converter thingy -->
                     <v-tab-item>
                         <v-card-text>
                             <v-textarea v-model="converter.bbCode" hide-details dense :rows="6" filled :label="$t('project.new.step4.convertLabels.bbCode')" />
@@ -237,7 +236,9 @@
                             />
                         </v-card-text>
                     </v-tab-item>
-                    <v-tab-item>2 </v-tab-item>
+                    <v-tab-item>
+                        <Markdown :raw="converter.markdown"></Markdown>
+                    </v-tab-item>
                     <v-tab-item>
                         <v-card-text class="text-center">
                             {{ $t('project.new.step4.tutorialInstructions.line1') }}<br />
@@ -277,6 +278,7 @@ import { RootState } from '~/store';
 import { ProjectCategory } from '~/types/enums';
 import { HangarComponent } from '~/components/mixins';
 import { LoggedIn } from '~/utils/perms';
+import Markdown from '~/components/markdown/Markdown.vue';
 
 interface NewProjectForm extends ProjectSettingsForm {
     ownerId: ProjectOwner['userId'];
@@ -286,6 +288,7 @@ interface NewProjectForm extends ProjectSettingsForm {
 
 @Component({
     components: {
+        Markdown,
         StepperStepContent,
     },
     head: {

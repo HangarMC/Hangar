@@ -37,7 +37,7 @@ public class BBCodeConverter {
         REPLACERS.put("s", (tag, tagArg, content) -> "~~" + content + "~~");
         REPLACERS.put("img", (tag, tagArg, content) -> "![" + content + "](" + content + ")");
         REPLACERS.put("url", (tag, tagArg, content) -> {
-            String url = tagArg;
+            String url = tagArg == null ? content : tagArg;
             char firstCharacter = url.length() > 2 ? url.charAt(0) : '-';
             if ((firstCharacter == '\'' || firstCharacter == '\"') && url.charAt(url.length() - 1) == firstCharacter) {
                 url = url.substring(1, url.length() - 1);
