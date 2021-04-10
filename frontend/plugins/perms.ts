@@ -1,8 +1,10 @@
 import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
+import { IPermission } from 'hangar-api';
 import { NamedPermission } from '~/types/enums';
+import { RootState } from '~/store';
 
-const createUtil = ({ $util }: Context) => {
+const createUtil = ({ $util, store }: Context) => {
     class Perms {
         get canEditSubjectSettings() {
             return $util.hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS);
@@ -109,6 +111,10 @@ const createUtil = ({ $util }: Context) => {
 
         get canEditAllUserSettings() {
             return $util.hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS);
+        }
+
+        convert(value: NamedPermission): IPermission {
+            return (store.state as RootState).permissions.get(value)!;
         }
     }
 

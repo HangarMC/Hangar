@@ -32,8 +32,6 @@
                     </v-btn>
                 </template>
 
-                <!--TODO set recommended button -->
-
                 <v-tooltip
                     v-if="$perms.canEditVersion && projectVersion.visibility !== 'softDelete' && !projectVersion.recommended.includes(platform.enumName)"
                     bottom
@@ -182,7 +180,6 @@ export default class ProjectVersionPage extends HangarProjectVersionMixin {
             })
             .catch((err) => {
                 this.$refs.editor.loading.save = false;
-                // TODO i18n for version desc save?
                 this.$util.handleRequestError(err, 'page.new.error.save');
             });
     }

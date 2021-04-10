@@ -106,7 +106,7 @@ export default class OrganizationsNewPage extends mixins(Authed, HangarForm) {
 
     @Watch('form.name')
     checkName(val: string) {
-        if (!val) return true;
+        if (!val) return;
         this.validateLoading = true;
         this.nameErrorMessages = [];
         this.$api

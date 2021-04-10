@@ -38,6 +38,12 @@ public class APIKeyService extends HangarComponent {
         return hangarApiKeysDAO.getUserApiKeys(userId);
     }
 
+    public void checkName(UserIdentified userIdentified, String name) {
+        if (apiKeyDAO.getByUserAndName(userIdentified.getUserId(), name) != null) {
+            throw new HangarApiException("apiKeys.error.duplicateName");
+        }
+    }
+
     @Transactional
     public String createApiKey(UserIdentified userIdentified, CreateAPIKeyForm apiKeyForm, Permission possiblePermissions) {
         Permission keyPermission = apiKeyForm.getPermissions().stream().map(NamedPermission::getPermission).reduce(Permission::add).orElse(Permission.None);
@@ -45,9 +51,7 @@ public class APIKeyService extends HangarComponent {
             throw new HangarApiException("apiKeys.error.notEnoughPerms");
         }
 
-        if (apiKeyDAO.getByUserAndName(userIdentified.getUserId(), apiKeyForm.getName()) != null) {
-            throw new HangarApiException("apiKeys.error.duplicateName");
-        }
+        checkName(userIdentified, apiKeyForm.getName());
 
         String tokenIdentifier = UUID.randomUUID().toString();
         String token = UUID.randomUUID().toString();

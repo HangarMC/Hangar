@@ -6,19 +6,18 @@ import io.papermc.hangar.model.common.Permission;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ApiKey extends Model {
 
     private final String name;
     private final String tokenIdentifier;
-    private final List<String> permissions;
+    private final List<NamedPermission> permissions;
 
     public ApiKey(OffsetDateTime createdAt, String name, String tokenIdentifier, Permission permissions) {
         super(createdAt);
         this.name = name;
         this.tokenIdentifier = tokenIdentifier;
-        this.permissions = permissions.toNamed().stream().map(NamedPermission::getValue).collect(Collectors.toList());
+        this.permissions = permissions.toNamed();
     }
 
     public String getName() {
@@ -29,7 +28,7 @@ public class ApiKey extends Model {
         return tokenIdentifier;
     }
 
-    public List<String> getPermissions() {
+    public List<NamedPermission> getPermissions() {
         return permissions;
     }
 }

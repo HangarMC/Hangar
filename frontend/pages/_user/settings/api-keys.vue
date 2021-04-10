@@ -9,6 +9,8 @@
                     dense
                     filled
                     counter="255"
+                    :loading="validateLoading"
+                    :error-messages="nameErrorMessages"
                     :rules="[$util.$vc.require($t('apiKeys.name')), $util.$vc.maxLength(255), $util.$vc.minLength(5)]"
                 >
                     <template #append-outer>
@@ -62,7 +64,7 @@
                         <td>{{ key.name }}</td>
                         <td>{{ key.token }}</td>
                         <td>{{ key.tokenIdentifier }}</td>
-                        <td>{{ key.permissions.join(', ') }}</td>
+                        <td>{{ key.permissions.map((p) => $perms.convert(p).frontendName).join(', ') }}</td>
                         <td>
                             <v-tooltip bottom>
                                 <template #activator="{ on }">
@@ -86,10 +88,12 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'nuxt-property-decorator';
+import { Component, Watch } from 'nuxt-property-decorator';
 import { ApiKey, IPermission } from 'hangar-api';
 import { chunk } from 'lodash-es';
 import { Context } from '@nuxt/types';
+import { TranslateResult } from 'vue-i18n';
+import { AxiosError } from 'axios';
 import { RootState } from '~/store';
 import { NamedPermission } from '~/types/enums';
 import { CurrentUser, GlobalPermission } from '~/utils/perms';
@@ -101,7 +105,8 @@ import { HangarForm } from '~/components/mixins';
 export default class AuthorSettingsApiKeysPage extends HangarForm {
     selectedPerms: NamedPermission[] = [];
     name: string = '';
-
+    validateLoading = false;
+    nameErrorMessages: TranslateResult[] = [];
     possiblePerms!: NamedPermission[];
     apiKeys!: ApiKey[];
 
@@ -143,6 +148,26 @@ export default class AuthorSettingsApiKeysPage extends HangarForm {
                 this.$util.success(this.$t('apiKeys.success.delete', [key.name]));
             })
             .catch(this.$util.handleRequestError);
+    }
+
+    @Watch('name')
+    checkName(val: string) {
+        if (!val) return;
+        this.validateLoading = true;
+        this.nameErrorMessages = [];
+        this.$api
+            .requestInternal(`api-keys/check-key/${this.$route.params.user}`, true, 'get', {
+                name: this.name,
+            })
+            .catch((err: AxiosError) => {
+                if (!err.response?.data.isHangarApiException) {
+                    return this.$util.handleRequestError(err);
+                }
+                this.nameErrorMessages.push(this.$t(err.response.data.message));
+            })
+            .finally(() => {
+                this.validateLoading = false;
+            });
     }
 
     head() {

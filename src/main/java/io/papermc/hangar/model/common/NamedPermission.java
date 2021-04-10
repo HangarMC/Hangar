@@ -1,16 +1,11 @@
 package io.papermc.hangar.model.common;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Gets or Sets NamedPermission
- */
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum NamedPermission {
     VIEW_PUBLIC_INFO("view_public_info", Permission.ViewPublicInfo, "ViewPublicInfo"),
     EDIT_OWN_USER_SETTINGS("edit_own_user_settings", Permission.EditOwnUserSettings, "EditOwnUserSettings"),
@@ -80,15 +75,6 @@ public enum NamedPermission {
     public static NamedPermission fromValue(String text) {
         for (NamedPermission b : NamedPermission.values()) {
             if (b.value.equals(text)) {
-                return b;
-            }
-        }
-        return null;
-    }
-
-    public static NamedPermission fromFrontendName(String text) {
-        for (NamedPermission b : NamedPermission.values()) {
-            if (b.frontendName.equals(text)) {
                 return b;
             }
         }

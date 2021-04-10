@@ -7,9 +7,11 @@ import io.papermc.hangar.model.internal.api.requests.CreateAPIKeyForm;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.security.annotations.LoggedIn;
 import io.papermc.hangar.security.annotations.currentuser.CurrentUser;
+import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.service.APIKeyService;
 import io.papermc.hangar.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +19,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -25,6 +29,7 @@ import java.util.List;
 @LoggedIn
 @Controller
 @RequestMapping("/api/internal/api-keys")
+@PermissionRequired(NamedPermission.EDIT_API_KEYS)
 public class ApiKeyController {
 
     private final PermissionService permissionService;
@@ -34,6 +39,13 @@ public class ApiKeyController {
     public ApiKeyController(PermissionService permissionService, APIKeyService apiKeyService) {
         this.permissionService = permissionService;
         this.apiKeyService = apiKeyService;
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @CurrentUser("#user")
+    @GetMapping("/check-key/{user}")
+    public void checkKeyName(@PathVariable UserTable user, @RequestParam String name) {
+        apiKeyService.checkName(user, name);
     }
 
     @ResponseBody
