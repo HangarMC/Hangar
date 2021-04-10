@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
@@ -40,6 +41,13 @@ public class ChannelController extends HangarComponent {
     public ChannelController(ChannelService channelService, ProjectService projectService) {
         this.channelService = channelService;
         this.projectService = projectService;
+    }
+
+    @GetMapping("/checkName")
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
+    public void checkName(@RequestParam long projectId, @RequestParam String name, @RequestParam(required = false) String existingName) {
+        channelService.checkName(projectId, name, existingName);
     }
 
     @Anyone

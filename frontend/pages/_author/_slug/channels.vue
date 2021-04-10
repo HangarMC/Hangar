@@ -23,7 +23,7 @@
                                 <v-icon v-else>mdi-check-circle</v-icon>
                             </td>
                             <td>
-                                <ChannelModal :edit="true" :channel="channel" @create="editChannel">
+                                <ChannelModal :project-id="project.id" edit :channel="channel" @create="editChannel">
                                     <template #activator="{ on, attrs }">
                                         <v-btn small color="warning" v-bind="attrs" v-on="on">
                                             {{ $t('channel.manage.editButton') }}
@@ -41,7 +41,7 @@
                 </v-simple-table>
             </v-card-text>
             <v-card-actions>
-                <ChannelModal @create="addChannel">
+                <ChannelModal :project-id="project.id" @create="addChannel">
                     <template #activator="{ on, attrs }">
                         <v-btn
                             v-if="channels.length < validations.project.maxChannelCount"

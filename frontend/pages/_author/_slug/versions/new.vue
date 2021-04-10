@@ -74,7 +74,7 @@
                         </v-select>
                     </v-col>
                     <v-col class="flex-grow-0 pl-0 pr-4" align-self="center">
-                        <ChannelModal @create="addChannel">
+                        <ChannelModal :project-id="project.id" @create="addChannel">
                             <template #activator="{ on, attrs }">
                                 <v-btn v-if="channels.length < validations.project.maxChannelCount" color="info" v-bind="attrs" v-on="on">
                                     {{ $t('version.new.form.addChannel') }}
@@ -304,8 +304,6 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
         }
     }
 
-    // todo handle errors better, for example "version.new.error.duplicateNameAndPlatform"
-    // TODO should have a set of validate name endpoints to provide this check while the user is changing the name (Project name, Version name, page name, channel name, etc)
     async createPendingVersion() {
         this.loading.create = true;
         const data: FormData = new FormData();
@@ -314,7 +312,6 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
         } else if (this.file) {
             data.append('pluginFile', this.file);
         } else {
-            this.$util.error('Must specify a url or upload file');
             return;
         }
         this.channels = await this.$api

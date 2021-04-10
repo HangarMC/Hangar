@@ -11,6 +11,8 @@
                         v-model.trim="form.name"
                         :label="$t('channel.modal.name')"
                         :autofocus="!form.name"
+                        :loading="validateLoading"
+                        :error-messages="nameErrorMessages"
                         :rules="[
                             $util.$vc.require($t('channel.modal.name')),
                             $util.$vc.regex($t('channel.modal.name'), validations.project.channels.regex),
@@ -33,7 +35,7 @@
                                             @click="toggle"
                                         >
                                             <v-fade-transition>
-                                                <v-icon v-show="active" small class="ma-auto"> mdi-checkbox-marked-circle</v-icon>
+                                                <v-icon v-show="active" small class="ma-auto">mdi-checkbox-marked-circle</v-icon>
                                             </v-fade-transition>
                                         </v-card>
                                     </v-item>
@@ -53,18 +55,25 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop } from 'nuxt-property-decorator';
+import { Component, Emit, Prop, Watch } from 'nuxt-property-decorator';
 import { Color, ProjectChannel } from 'hangar-internal';
-import { HangarFormModal } from '../mixins';
+import { AxiosError } from 'axios';
+import { TranslateResult } from 'vue-i18n';
+import { HangarFormModal } from '~/components/mixins';
 
 @Component
 export default class ChannelModal extends HangarFormModal {
-    @Prop({ default: false })
-    edit!: Boolean;
+    @Prop({ type: Boolean, default: false })
+    edit!: boolean;
 
     @Prop()
     channel!: ProjectChannel | undefined;
 
+    @Prop({ type: Number, required: true })
+    projectId!: number;
+
+    validateLoading = false;
+    nameErrorMessages: TranslateResult[] = [];
     colors: Color[] = [];
     form: ProjectChannel = {
         name: '',
@@ -106,9 +115,30 @@ export default class ChannelModal extends HangarFormModal {
         return this.validForm && !!this.form.color;
     }
 
+    @Watch('form.name')
+    checkName(val: string) {
+        if (!val) return;
+        this.validateLoading = true;
+        this.nameErrorMessages = [];
+        this.$api
+            .requestInternal('channels/checkName', true, 'get', {
+                projectId: this.projectId,
+                name: val,
+                existingName: this.channel?.name,
+            })
+            .catch((err: AxiosError) => {
+                if (!err.response?.data.isHangarApiException) {
+                    return this.$util.handleRequestError(err);
+                }
+                this.nameErrorMessages.push(this.$t(err.response.data.message));
+            })
+            .finally(() => {
+                this.validateLoading = false;
+            });
+    }
+
     @Emit()
     create() {
-        // TODO check channel name against existing channels
         this.dialog = false;
         return this.form;
     }

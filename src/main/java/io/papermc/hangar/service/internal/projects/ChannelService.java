@@ -10,6 +10,7 @@ import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.projects.HangarChannel;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,17 @@ public class ChannelService extends HangarComponent {
         this.hangarProjectsDAO = hangarProjectsDAO.get();
     }
 
+    public void checkName(long projectId, String name, @Nullable String existingName) {
+        List<ProjectChannelTable> existingChannels = projectChannelsDAO.getProjectChannels(projectId);
+        if (existingChannels.stream().filter(ch -> !ch.getName().equals(existingName)).anyMatch(ch -> ch.getName().equalsIgnoreCase(name))) {
+            throw new HangarApiException(HttpStatus.CONFLICT, "channel.modal.error.duplicateName");
+        }
+    }
+
+    private void checkName(List<ProjectChannelTable> existingChannels, String name) {
+
+    }
+
     private void validateChannel(String name, Color color, long projectId, boolean nonReviewed, List<ProjectChannelTable> existingChannels) {
         if (!config.channels.isValidChannelName(name)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.invalidName");
@@ -37,6 +49,7 @@ public class ChannelService extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.maxChannels", config.projects.getMaxChannels());
         }
 
+        // TODO do we need to enforce unique colors?
         if (existingChannels.stream().anyMatch(ch -> ch.getColor() == color)) {
             throw new HangarApiException(HttpStatus.CONFLICT, "channel.modal.error.duplicateColor");
         }
