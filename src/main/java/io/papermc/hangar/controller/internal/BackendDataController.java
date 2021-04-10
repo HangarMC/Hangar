@@ -135,9 +135,9 @@ public class BackendDataController {
         return ResponseEntity.ok(OrganizationRole.getAssignableRoles());
     }
 
-    @GetMapping("/licences")
-    public ResponseEntity<List<String>> getLicences() {
-        return ResponseEntity.ok(config.getLicences());
+    @GetMapping("/licenses")
+    public ResponseEntity<List<String>> getLicenses() {
+        return ResponseEntity.ok(config.getLicenses());
     }
 
     @GetMapping("/visibilities")

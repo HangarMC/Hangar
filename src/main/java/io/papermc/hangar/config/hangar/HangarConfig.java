@@ -30,7 +30,7 @@ public class HangarConfig {
     private String gaCode = "";
     private List<Announcement> announcements = new ArrayList<>();
     private String urlRegex = "^(https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9]+\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]+\\.[^\\s]{2,})";
-    private List<String> licences = new ArrayList<>();
+    private List<String> licenses = new ArrayList<>();
 
     @NestedConfigurationProperty
     public final FakeUserConfig fakeUser;
@@ -190,12 +190,12 @@ public class HangarConfig {
         this.urlRegex = urlRegex;
     }
 
-    public List<String> getLicences() {
-        return licences;
+    public List<String> getLicenses() {
+        return licenses;
     }
 
-    public void setLicences(List<String> licences) {
-        this.licences = licences;
+    public void setLicenses(List<String> licenses) {
+        this.licenses = licenses;
     }
 
     @Deprecated(forRemoval = true)

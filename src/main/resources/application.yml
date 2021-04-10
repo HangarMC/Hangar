@@ -50,7 +50,7 @@ hangar:
   base-url: "http://localhost:3000"
   ga-code: "UA-38006759-9"
 
-  licences:
+  licenses:
     - "MIT"
     - "Apache 2.0"
     - "GPL"

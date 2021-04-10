@@ -44,7 +44,7 @@ hangar:
   plugin-upload-dir: "/uploads"
   ga-code: "UA-38006759-9"
 
-  licences:
+  licenses:
     - "MIT"
     - "Apache 2.0"
     - "GPL"

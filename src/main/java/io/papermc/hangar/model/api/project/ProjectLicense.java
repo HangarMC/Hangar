@@ -18,8 +18,8 @@ public class ProjectLicense {
 
     @JdbiConstructor
     public ProjectLicense(@Nullable String name, @Nullable String url) {
-        int index = config.getLicences().indexOf(name);
-        if (name != null && index > -1 && index < config.getLicences().size() - 1) {
+        int index = config.getLicenses().indexOf(name);
+        if (name != null && index > -1 && index < config.getLicenses().size() - 1) {
             this.name = null;
             this.type = name;
         } else {

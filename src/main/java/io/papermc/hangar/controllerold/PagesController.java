@@ -1,7 +1,7 @@
 package io.papermc.hangar.controllerold;
 
 import io.papermc.hangar.controllerold.forms.RawPage;
-import io.papermc.hangar.controllerold.util.BBCodeConverter;
+import io.papermc.hangar.utils.BBCodeConverter;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

@@ -1,35 +1,16 @@
 package io.papermc.hangar.config;
 
-import com.fasterxml.classmate.TypeResolver;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.controller.extras.pagination.FilterRegistry;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSorters;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.ExampleBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.RequestParameterBuilder;
-import springfox.documentation.schema.Example;
-import springfox.documentation.schema.ModelRef;
-import springfox.documentation.schema.ModelSpecification;
 import springfox.documentation.schema.ScalarType;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
-import springfox.documentation.service.ParameterSpecification;
 import springfox.documentation.service.ParameterStyle;
 import springfox.documentation.service.ParameterType;
 import springfox.documentation.service.RequestParameter;
@@ -38,6 +19,13 @@ import springfox.documentation.spi.service.OperationBuilderPlugin;
 import springfox.documentation.spi.service.contexts.OperationContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Optional;
+import java.util.Set;
 
 @Configuration
 @EnableSwagger2
@@ -61,7 +49,7 @@ public class SwaggerConfig {
                              "We're working on a session-less authentification for public endpoints. " +
                              "<h3>What format does dates have?</h3>" +
                              "Standard ISO types. Where possible we use the OpenAPI format modifier. You can view it's meanings [here](https://swagger.io/docs/specification/data-models/data-types/#format).")
-                .license("Unlicence")
+                .license("Unlicense")
                 .licenseUrl("http://unlicense.org")
                 .termsOfServiceUrl("")
                 .version("1.0")

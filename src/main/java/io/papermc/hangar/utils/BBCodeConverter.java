@@ -1,10 +1,12 @@
-package io.papermc.hangar.controllerold.util;
+package io.papermc.hangar.utils;
 
 import org.jetbrains.annotations.Nullable;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class BBCodeConverter {
 
     private static final Map<String, TagReplacer> REPLACERS = new HashMap<>();

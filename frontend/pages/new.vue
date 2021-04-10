@@ -43,8 +43,8 @@
                                         filled
                                         item-text="name"
                                         item-value="userId"
-                                        :label="$t('project.new.step2.userselect')"
-                                        :rules="[$util.$vc.require($t('project.new.step2.userselect'))]"
+                                        :label="$t('project.new.step2.userSelect')"
+                                        :rules="[$util.$vc.require($t('project.new.step2.userSelect'))]"
                                         :append-icon="createAsIcon"
                                     />
                                 </v-col>
@@ -55,8 +55,8 @@
                                         dense
                                         filled
                                         :error-messages="nameErrors"
-                                        :label="$t('project.new.step2.projectname')"
-                                        :rules="[$util.$vc.require($t('project.new.step2.projectname'))]"
+                                        :label="$t('project.new.step2.projectName')"
+                                        :rules="[$util.$vc.require($t('project.new.step2.projectName'))]"
                                         append-icon="mdi-form-textbox"
                                     />
                                 </v-col>
@@ -66,8 +66,8 @@
                                         dense
                                         filled
                                         clearable
-                                        :label="$t('project.new.step2.projectsummary')"
-                                        :rules="[$util.$vc.require($t('project.new.step2.projectsummary')), $util.$vc.maxLength(validations.project.desc.max)]"
+                                        :label="$t('project.new.step2.projectSummary')"
+                                        :rules="[$util.$vc.require($t('project.new.step2.projectSummary')), $util.$vc.maxLength(validations.project.desc.max)]"
                                         append-icon="mdi-card-text"
                                     />
                                 </v-col>
@@ -78,10 +78,10 @@
                                         :items="$store.getters.visibleCategories"
                                         dense
                                         filled
-                                        :label="$t('project.new.step2.projectcategory')"
+                                        :label="$t('project.new.step2.projectCategory')"
                                         item-text="title"
                                         item-value="apiName"
-                                        :rules="[$util.$vc.require($t('project.new.step2.projectcategory'))]"
+                                        :rules="[$util.$vc.require($t('project.new.step2.projectCategory'))]"
                                     />
                                 </v-col>
                             </v-row>
@@ -148,7 +148,7 @@
                         </v-row>
                         <div class="text-h6 pt-5">
                             <v-icon color="info" large class="mb-1">mdi-license</v-icon>
-                            {{ $t('project.new.step3.licence') }}
+                            {{ $t('project.new.step3.license') }}
                         </div>
                         <v-divider class="mb-2" />
                         <v-row>
@@ -159,7 +159,7 @@
                                     hide-details
                                     filled
                                     clearable
-                                    :items="licences"
+                                    :items="licenses"
                                     :label="$t('project.new.step3.type')"
                                 />
                             </v-col>
@@ -217,9 +217,37 @@
                 </v-tabs>
                 <v-tabs-items v-model="spigotConvertTab">
                     <!-- todo spigot bbcode converter thingy -->
-                    <v-tab-item>1 </v-tab-item>
+                    <v-tab-item>
+                        <v-card-text>
+                            <v-textarea v-model="converter.bbCode" hide-details dense :rows="6" filled :label="$t('project.new.step4.convertLabels.bbCode')" />
+                            <div>
+                                <v-btn block color="primary" class="my-3" :loading="converter.loading" @click="convertBBCode">
+                                    <v-icon left large>mdi-chevron-double-down</v-icon>
+                                    {{ $t('project.new.step4.convert') }}
+                                    <v-icon right large>mdi-chevron-double-down</v-icon>
+                                </v-btn>
+                            </div>
+                            <v-textarea
+                                v-model="converter.markdown"
+                                hide-details
+                                dense
+                                :rows="6"
+                                filled
+                                :label="$t('project.new.step4.convertLabels.output')"
+                            />
+                        </v-card-text>
+                    </v-tab-item>
                     <v-tab-item>2 </v-tab-item>
-                    <v-tab-item>3 </v-tab-item>
+                    <v-tab-item>
+                        <v-card-text class="text-center">
+                            {{ $t('project.new.step4.tutorialInstructions.line1') }}<br />
+                            {{ $t('project.new.step4.tutorialInstructions.line2') }}<br />
+                            <img src="https://i.imgur.com/8CyLMf3.png" alt="Edit Project" /><br />
+                            {{ $t('project.new.step4.tutorialInstructions.line3') }}<br />
+                            <img src="https://i.imgur.com/FLVIuQK.png" width="425" height="198" alt="Show BBCode" /><br />
+                            {{ $t('project.new.step4.tutorialInstructions.line4') }}<br />
+                        </v-card-text>
+                    </v-tab-item>
                 </v-tabs-items>
             </StepperStepContent>
             <StepperStepContent :step="5" hide-buttons>
@@ -271,7 +299,7 @@ export default class NewProjectPage extends HangarComponent {
     projectLoading = true;
     projectError = false;
     projectOwners!: ProjectOwner[];
-    licences!: string[];
+    licenses!: string[];
     error = null as string | null;
     form: NewProjectForm = {
         category: ProjectCategory.ADMIN_TOOLS,
@@ -283,6 +311,12 @@ export default class NewProjectPage extends HangarComponent {
     } as NewProjectForm;
 
     nameErrors: TranslateResult[] = [];
+
+    converter = {
+        bbCode: '',
+        markdown: '',
+        loading: false,
+    };
 
     forms = {
         step2: false,
@@ -305,13 +339,13 @@ export default class NewProjectPage extends HangarComponent {
     }
 
     async asyncData({ $api, $util }: Context) {
-        const data = await Promise.all([$api.requestInternal('data/possibleOwners'), $api.requestInternal('data/licenses', false)]).catch(
+        const data = await Promise.all([$api.requestInternal('projects/possibleOwners'), $api.requestInternal('data/licenses', false)]).catch(
             $util.handlePageRequestError
         );
         if (typeof data === 'undefined') return;
         return {
-            licenses: data[0],
-            projectOwners: data[1],
+            projectOwners: data[0],
+            licenses: data[1],
         };
     }
 
@@ -331,6 +365,21 @@ export default class NewProjectPage extends HangarComponent {
             })
             .finally(() => {
                 this.projectLoading = false;
+            });
+    }
+
+    convertBBCode() {
+        this.converter.loading = true;
+        this.$api
+            .requestInternal<string>('pages/convert-bbcode', false, 'post', {
+                content: this.converter.bbCode,
+            })
+            .then((markdown) => {
+                this.converter.markdown = markdown;
+            })
+            .catch(this.$util.handleRequestError)
+            .finally(() => {
+                this.converter.loading = false;
             });
     }
 

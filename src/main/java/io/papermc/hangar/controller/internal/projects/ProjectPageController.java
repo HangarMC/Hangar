@@ -14,6 +14,7 @@ import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type
 import io.papermc.hangar.service.internal.MarkdownService;
 import io.papermc.hangar.service.internal.projects.ProjectPageService;
 import io.papermc.hangar.util.StringUtils;
+import io.papermc.hangar.utils.BBCodeConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
@@ -36,16 +38,25 @@ public class ProjectPageController extends HangarComponent {
 
     private final ProjectPageService projectPageService;
     private final MarkdownService markdownService;
+    private final BBCodeConverter bbCodeConverter;
 
     @Autowired
-    public ProjectPageController(ProjectPageService projectPageService, MarkdownService markdownService) {
+    public ProjectPageController(ProjectPageService projectPageService, MarkdownService markdownService, BBCodeConverter bbCodeConverter) {
         this.projectPageService = projectPageService;
         this.markdownService = markdownService;
+        this.bbCodeConverter = bbCodeConverter;
     }
 
     @PostMapping(path = "/render", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> renderMarkdown(@RequestBody @Valid StringContent content) {
         return ResponseEntity.ok(markdownService.render(content.getContent()));
+    }
+
+    @Anyone
+    @ResponseBody
+    @PostMapping(path = "/convert-bbcode", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    public String convertBBCode(@RequestBody @Valid StringContent bbCodeContent) {
+        return bbCodeConverter.convertToMarkdown(bbCodeContent.getContent());
     }
 
     @ResponseStatus(HttpStatus.OK)

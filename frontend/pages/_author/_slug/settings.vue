@@ -201,7 +201,7 @@
                                     <h2>
                                         {{ $t('project.settings.license') }}&nbsp;<small>{{ $t('project.settings.optional') }}</small>
                                     </h2>
-                                    <p>{{ $t('project.settings.licenceSub') }}</p>
+                                    <p>{{ $t('project.settings.licenseSub') }}</p>
                                     <v-row>
                                         <v-col cols="12" :md="isCustomLicense ? 4 : 6">
                                             <v-select
@@ -209,8 +209,8 @@
                                                 dense
                                                 hide-details
                                                 filled
-                                                :items="licences"
-                                                :label="$t('project.settings.licenceType')"
+                                                :items="licenses"
+                                                :label="$t('project.settings.licenseType')"
                                             />
                                         </v-col>
                                         <v-col v-if="isCustomLicense" cols="12" md="8">
@@ -219,7 +219,7 @@
                                                 dense
                                                 hide-details
                                                 filled
-                                                :label="$t('project.settings.licenceCustom')"
+                                                :label="$t('project.settings.licenseCustom')"
                                             />
                                         </v-col>
                                         <v-col cols="12" :md="isCustomLicense ? 12 : 6">
@@ -229,7 +229,7 @@
                                                 clearable
                                                 filled
                                                 :rules="[$util.$vc.url]"
-                                                :label="$t('project.settings.licenceUrl')"
+                                                :label="$t('project.settings.licenseUrl')"
                                             />
                                         </v-col>
                                     </v-row>
@@ -398,7 +398,7 @@ import TextareaModal from '~/components/modals/TextareaModal.vue';
 @ProjectPermission(NamedPermission.EDIT_SUBJECT_SETTINGS)
 export default class ProjectManagePage extends HangarProjectMixin {
     roles!: Role[];
-    licences!: string[];
+    licenses!: string[];
     apiKey = '';
     newName = '';
     nameErrors: TranslateResult[] = [];
@@ -582,11 +582,11 @@ export default class ProjectManagePage extends HangarProjectMixin {
     generateApiKey() {}
 
     async asyncData({ $api, $util }: Context) {
-        const data = await Promise.all([$api.requestInternal('data/projectRoles', false), $api.requestInternal('data/licences', false)]).catch(
+        const data = await Promise.all([$api.requestInternal('data/projectRoles', false), $api.requestInternal('data/licenses', false)]).catch(
             $util.handlePageRequestError
         );
         if (typeof data === 'undefined') return;
-        return { roles: data[0], licences: data[1] };
+        return { roles: data[0], licenses: data[1] };
     }
 }
 </script>

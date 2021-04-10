@@ -17,7 +17,7 @@ hangar:
   base-url: "https://hangar.benndorf.dev"
   plugin-upload-dir: "/hangar/uploads"
 
-  licences:
+  licenses:
     - "MIT"
     - "Apache 2.0"
     - "GPL"

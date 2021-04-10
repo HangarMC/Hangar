@@ -86,10 +86,10 @@ There is a bunch of stuff to do, some of that is noted in the [**Roadmap Project
 Your best bet is joining #hangar-dev on the [Paper Discord](https://discord.gg/papermc) and just discussing with us.
 All contributions are very welcome, we will not be able to finish this alone!
 
-## Licence
+## License
 
 Most of the frontend is a fork of Ore, licensed under MIT [here](https://github.com/SpongePowered/Ore/blob/staging/LICENSE.txt). 
-The rest is new code (but created in reference of Ore) and is licenced under the MIT licence too.
+The rest is new code (but created in reference of Ore) and is licensed under the MIT license too.
 
 [Yarn]: https://yarnpkg.com/
 [HangarAuth]: https://github.com/PaperMC/HangarAuth

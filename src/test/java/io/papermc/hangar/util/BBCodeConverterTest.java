@@ -1,6 +1,6 @@
 package io.papermc.hangar.util;
 
-import io.papermc.hangar.controllerold.util.BBCodeConverter;
+import io.papermc.hangar.utils.BBCodeConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
