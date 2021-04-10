@@ -87,7 +87,7 @@ public class ApplicationController extends HangarController {
         mv.addObject("actionFilter", actionFilter);
         mv.addObject("subjectFilter", subjectFilter);
         mv.addObject("canViewIP", userService.getHeaderData().getGlobalPermission().has(Permission.ViewIp));
-        return fillModel(mv);
+        return mv;
     }
 
     @GlobalPermission(NamedPermission.EDIT_ALL_USER_SETTINGS)
@@ -100,7 +100,7 @@ public class ApplicationController extends HangarController {
         OrganizationData organizationData = orgService.getOrganizationData(userData.getUser());
         mav.addObject("orga", organizationData);
         mav.addObject("userProjectRoles", projectService.getProjectsAndRoles(userData.getUser().getId()));
-        return fillModel(mav);
+        return mav;
     }
 
 

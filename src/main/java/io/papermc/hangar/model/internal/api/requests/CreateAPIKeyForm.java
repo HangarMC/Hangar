@@ -15,8 +15,7 @@ public class CreateAPIKeyForm {
     private final String name;
 
     @Size(min = 1)
-    // TODO this shows up all wonky in the api docs...
-    @ApiModelProperty(dataType = "List", required = true)
+    @ApiModelProperty(required = true)
     private final List<NamedPermission> permissions;
 
     public CreateAPIKeyForm(String name, List<NamedPermission> permissions) {

@@ -17,7 +17,16 @@ public class StringUtils {
     private StringUtils() {
     }
 
-    private static final HangarConfig hangarConfig = StaticContextAccessor.getBean(HangarConfig.class);
+    private static HangarConfig hangarConfig;
+
+    static {
+        // doesn't work in unit test: but we can ignore that
+        try {
+            hangarConfig = StaticContextAccessor.getBean(HangarConfig.class);
+        } catch (IllegalStateException ex) {
+            hangarConfig = null;
+        }
+    }
 
     /**
      * Returns a URL readable string from the specified string.
@@ -148,7 +157,6 @@ public class StringUtils {
                         return verString + ", " + version;
                     }
                 } else {
-                    // TODO maybe not?
                     return verString + ", " + version;
                 }
             } else if (comma.find()) {
@@ -160,7 +168,6 @@ public class StringUtils {
                         return verString + ", " + version;
                     }
                 } else {
-                    // TODO maybe not?
                     return verString + ", " + version;
                 }
             } else {

@@ -6,6 +6,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Deprecated(forRemoval = true)
 @ExtendWith(SpringExtension.class)
 class RouteHelperTest {
 

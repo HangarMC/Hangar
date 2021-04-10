@@ -16,7 +16,7 @@
                     >
                     <v-icon v-if="isReviewStateChecked" :title="approvalTooltip" color="success">mdi-check-circle-outline</v-icon>
                 </v-subheader>
-                <!-- todo maybe move the review logs to the admin actions dropdown? -->
+
                 <template v-if="$perms.isReviewer">
                     <v-btn v-if="isReviewStateChecked" small color="success" :to="$route.path + '/reviews'" nuxt>
                         <v-icon left>mdi-list-status</v-icon>

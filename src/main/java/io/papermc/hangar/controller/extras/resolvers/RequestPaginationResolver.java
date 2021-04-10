@@ -32,8 +32,8 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
 
     private final FilterRegistry filterRegistry;
 
+    // need lazy here to avoid circular dep issue
     @Autowired
-    // TODO figure out why @Lazy is needed here... I couldn't track the circular dependency issue
     public RequestPaginationResolver(@Lazy FilterRegistry filterRegistry) {
         this.filterRegistry = filterRegistry;
     }

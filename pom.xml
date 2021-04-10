@@ -125,18 +125,6 @@
             <artifactId>snakeyaml</artifactId>
         </dependency>
 
-        <!-- template engine TODO remove once freemarker is gone -->
-        <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
-        </dependency>
-        <!-- java 8 objects in freemarker -->
-        <dependency>
-            <groupId>no.api.freemarker</groupId>
-            <artifactId>freemarker-java8</artifactId>
-            <version>${freemarker-java8.version}</version>
-        </dependency>
-
         <!-- jdbi -->
         <dependency>
             <groupId>org.jdbi</groupId>

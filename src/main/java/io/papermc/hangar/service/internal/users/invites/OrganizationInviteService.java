@@ -35,17 +35,17 @@ public class OrganizationInviteService extends InviteService<OrganizationRole, O
 
     @Override
     void logInviteAccepted(OrganizationRoleTable roleTable, UserTable userTable) {
-        userActionLogService.organization(LogAction.ORGANIZATION_MEMBER_ADDED.create(OrganizationContext.of(roleTable.getOrganizationId()), userTable.getName() + " accepted an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(/*TODO check this is right formatter*/DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
+        userActionLogService.organization(LogAction.ORGANIZATION_MEMBER_ADDED.create(OrganizationContext.of(roleTable.getOrganizationId()), userTable.getName() + " accepted an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME)));
     }
 
     @Override
     void logInviteUnaccepted(OrganizationRoleTable roleTable, UserTable userTable) {
-        userActionLogService.organization(LogAction.ORGANIZATION_INVITE_UNACCEPTED.create(OrganizationContext.of(roleTable.getOrganizationId()), userTable.getName() + " unaccepted an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(/*TODO check this is right formatter*/DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
+        userActionLogService.organization(LogAction.ORGANIZATION_INVITE_UNACCEPTED.create(OrganizationContext.of(roleTable.getOrganizationId()), userTable.getName() + " unaccepted an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME)));
     }
 
     @Override
     void logInviteDeclined(OrganizationRoleTable roleTable, UserTable userTable) {
-        userActionLogService.organization(LogAction.ORGANIZATION_INVITE_DECLINED.create(OrganizationContext.of(roleTable.getOrganizationId()), userTable.getName() + " declined an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(/*TODO check this is right formatter*/DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
+        userActionLogService.organization(LogAction.ORGANIZATION_INVITE_DECLINED.create(OrganizationContext.of(roleTable.getOrganizationId()), userTable.getName() + " declined an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME)));
     }
 
 }

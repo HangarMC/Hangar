@@ -5,7 +5,6 @@ import io.papermc.hangar.model.db.projects.ProjectPageTable;
 
 import java.time.OffsetDateTime;
 
-// TODO rename? Different from HangarProjectPage as it just represents one page but needs to include the isHome field
 public class ExtendedProjectPage extends ProjectPageTable {
 
     private final boolean home;

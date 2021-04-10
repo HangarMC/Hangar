@@ -103,7 +103,7 @@ public class VersionsController extends HangarController {
         mv.addObject("project", projectData.get());
         mv.addObject("version", projectVersionsTable.get());
         mv.addObject("visibilityChanges", versionService.getVersionVisibilityChanges(projectVersionsTable.get().getId()));
-        return fillModel(mv);
+        return mv;
     }
 
     @GetMapping(value = "/{author}/{slug}/versions/recommended/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -181,7 +181,7 @@ public class VersionsController extends HangarController {
                 mav.addObject("target", versionsTable);
                 mav.addObject("isTargetChannelNonReviewed", channelsTable.isNonReviewed());
                 mav.addObject("downloadType", downloadType);
-                return fillModel(mav);
+                return mav;
             }
         }
     }
