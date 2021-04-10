@@ -29,7 +29,7 @@ public interface HangarVersionsDAO {
             "       pv.external_url," +
             "       u.name author," +
             "       pv.review_state," +
-            "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id) as recommended," +
+            "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id ORDER BY rpv.platform) as recommended," +
             "       ru.name approved_by" +
             "   FROM project_versions pv" +
             "       JOIN projects p ON pv.project_id = p.id" +
@@ -60,7 +60,7 @@ public interface HangarVersionsDAO {
             "       pv.external_url," +
             "       u.name author," +
             "       pv.review_state," +
-            "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id) as recommended," +
+            "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id ORDER BY rpv.platform) as recommended," +
             "       ru.name approved_by" +
             "   FROM project_versions pv" +
             "       JOIN projects p ON pv.project_id = p.id" +

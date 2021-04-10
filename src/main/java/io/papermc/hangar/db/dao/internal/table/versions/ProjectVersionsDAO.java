@@ -66,7 +66,7 @@ public interface ProjectVersionsDAO {
 
     @SingleValue
     @UseEnumStrategy(EnumStrategy.BY_ORDINAL)
-    @SqlQuery("SELECT array_agg(DISTINCT plv.platform)" +
+    @SqlQuery("SELECT array_agg(DISTINCT plv.platform ORDER BY plv.platform)" +
             "   FROM project_versions pv" +
             "       JOIN project_version_platform_dependencies pvpd ON pv.id = pvpd.version_id" +
             "       JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +

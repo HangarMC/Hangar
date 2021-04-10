@@ -29,6 +29,7 @@ public interface ActivityDAO {
             "               FROM project_version_platform_dependencies pvpd " +
             "                   JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
             "               WHERE pv.id = pvpd.version_id" +
+            "               ORDER BY plv.platform" +
             "       ) platforms" +
             "   FROM project_version_reviews pvr" +
             "       JOIN project_versions pv ON pvr.version_id = pv.id" +

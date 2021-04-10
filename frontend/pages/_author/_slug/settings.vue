@@ -24,11 +24,11 @@
                     </v-btn>
                 </v-card-title>
                 <v-card-text>
-                    <v-tabs v-model="selectedTab" vertical>
-                        <v-tab href="#general">{{ $t('project.settings.tabs.general') }}</v-tab>
-                        <v-tab href="#optional">{{ $t('project.settings.tabs.optional') }}</v-tab>
-                        <v-tab href="#management">{{ $t('project.settings.tabs.management') }}</v-tab>
-                        <v-tab href="#donation">{{ $t('project.settings.tabs.donation') }}</v-tab>
+                    <v-tabs vertical>
+                        <v-tab to="#general" replace nuxt>{{ $t('project.settings.tabs.general') }}</v-tab>
+                        <v-tab to="#optional" replace nuxt>{{ $t('project.settings.tabs.optional') }}</v-tab>
+                        <v-tab to="#management" replace nuxt>{{ $t('project.settings.tabs.management') }}</v-tab>
+                        <v-tab to="#donation" replace nuxt>{{ $t('project.settings.tabs.donation') }}</v-tab>
 
                         <v-tab-item id="general">
                             <v-form v-model="validForm.settings">
@@ -132,6 +132,7 @@
                                         :rules="[$util.$vc.maxLength(validations.project.keywords.max)]"
                                         :delimiters="[' ', ',', '.']"
                                         :label="$t('project.new.step3.keywords')"
+                                        append-icon=""
                                         prepend-inner-icon="mdi-file-word-box"
                                     />
                                 </div>
@@ -420,20 +421,12 @@ export default class ProjectManagePage extends HangarProjectMixin {
         rename: false,
     };
 
-    selectedTab: string = '';
-
-    @Watch('$route.hash')
-    onRouteTabChange(newVal: string) {
-        this.selectedTab = newVal;
-    }
-
-    @Watch('selectedTab')
-    onSelectedTabChange(newVal: string) {
-        history.pushState({}, '', this.$route.path + '#' + newVal);
-    }
-
     mounted() {
-        this.selectedTab = this.$route.hash.substr(1) || 'general';
+        if (!this.$route.hash) {
+            this.$router.replace({
+                hash: '#general',
+            });
+        }
     }
 
     get settingsEqual() {
@@ -597,15 +590,12 @@ export default class ProjectManagePage extends HangarProjectMixin {
     }
 }
 </script>
-<style lang="scss">
-.settings-card {
-    .v-text-field .v-text-field__details {
-        margin-bottom: 0;
-    }
-}
-</style>
-
 <style lang="scss" scoped>
+@import '~vuetify/src/styles/styles';
+.settings-card .v-text-field::v-deep .v-text-field__details {
+    margin-bottom: 0;
+}
+
 hr {
     margin-top: 6px;
     margin-bottom: 5px;
@@ -629,7 +619,7 @@ h2 {
 
 .theme--dark {
     .sticky {
-        background-color: #1e1e1e;
+        background-color: map-get($material-dark, 'cards');
     }
 }
 

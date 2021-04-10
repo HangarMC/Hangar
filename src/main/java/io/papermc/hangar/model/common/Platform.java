@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 @EnumByOrdinal
 public enum Platform {
 
+    // NOTE: The order here should always be the order they are displayed whenever there is a list somewhere on the frontend
     PAPER("Paper", Category.SERVER, TagColor.PAPER, "https://papermc.io/downloads"),
     WATERFALL("Waterfall", Category.PROXY, TagColor.WATERFALL, "https://papermc.io/downloads#Waterfall"),
     VELOCITY("Velocity", Category.PROXY, TagColor.VELOCITY, "https://www.velocitypowered.com/downloads");

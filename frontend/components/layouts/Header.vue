@@ -29,13 +29,13 @@
             <template #activator="{ on }">
                 <v-btn icon to="/authors" nuxt class="mr-1" v-on="on"><v-icon>mdi-account-group</v-icon></v-btn>
             </template>
-            <span>{{ $t('pages.authors') }}</span>
+            <span>{{ $t('pages.authorsTitle') }}</span>
         </v-tooltip>
         <v-tooltip bottom>
             <template #activator="{ on }">
                 <v-btn icon to="/staff" nuxt class="mr-1" v-on="on"><v-icon>mdi-account-tie</v-icon></v-btn>
             </template>
-            <span>{{ $t('pages.staff') }}</span>
+            <span>{{ $t('pages.staffTitle') }}</span>
         </v-tooltip>
 
         <v-menu v-if="isLoggedIn" bottom offset-y transition="slide-y-transition" close-delay="100">

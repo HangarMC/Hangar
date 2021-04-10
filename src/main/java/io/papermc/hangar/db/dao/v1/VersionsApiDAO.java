@@ -46,7 +46,7 @@ public interface VersionsApiDAO {
             "       pv.external_url," +
             "       u.name author," +
             "       pv.review_state," +
-            "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id) as recommended" +
+            "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id ORDER BY rpv.platform) as recommended" +
             "   FROM project_versions pv" +
             "       JOIN projects p ON pv.project_id = p.id" +
             "       LEFT JOIN users u ON pv.author_id = u.id" +
@@ -76,7 +76,7 @@ public interface VersionsApiDAO {
             "       pv.external_url," +
             "       u.name author," +
             "       pv.review_state," +
-            "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id) as recommended" +
+            "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id ORDER BY rpv.platform) as recommended" +
             "   FROM project_versions pv" +
             "       JOIN projects p ON pv.project_id = p.id" +
             "       LEFT JOIN users u ON pv.author_id = u.id" +
@@ -108,7 +108,7 @@ public interface VersionsApiDAO {
             "       pv.external_url," +
             "       u.name author," +
             "       pv.review_state," +
-            "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id) as recommended" +
+            "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id ORDER BY rpv.platform) as recommended" +
             "   FROM project_versions pv" +
             "       JOIN projects p ON pv.project_id = p.id" +
             "       JOIN project_channels pc ON pv.channel_id = pc.id" +

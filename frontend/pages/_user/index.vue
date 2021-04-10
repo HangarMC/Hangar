@@ -4,10 +4,6 @@
             <ProjectList :projects="projects" />
         </v-col>
         <v-col cols="12" md="4">
-            <!-- TODO project manager (for organizations) (so what this is, is accepting invites to other projects AS the organization, I don't think we really need to have that. You couldn't be able to invite organizations to other projects/organizations) -->
-            <v-card v-if="user.isOrganization && $perms.canEditSubjectSettings">
-                <v-card-title>Project Manager</v-card-title>
-            </v-card>
             <template v-if="!user.isOrganization">
                 <v-card>
                     <v-card-title>{{ $t('author.orgs') }}</v-card-title>

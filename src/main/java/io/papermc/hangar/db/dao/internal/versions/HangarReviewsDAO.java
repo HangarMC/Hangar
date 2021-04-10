@@ -60,6 +60,7 @@ public interface HangarReviewsDAO {
             "               FROM project_version_platform_dependencies pvpd " +
             "                   JOIN platform_versions plv ON pvpd.platform_version_id = plv.id" +
             "               WHERE pv.id = pvpd.version_id" +
+            "               ORDER BY plv.platform" +
             "       ) platforms," +
             "       pv.created_at version_created_at," +
             "       coalesce(pvu.name, 'DELETED USER') version_author," +

@@ -49,7 +49,6 @@
                                     />
                                 </v-col>
                                 <v-col cols="12" md="6">
-                                    <!-- todo custom rule to check if a name exist already -->
                                     <v-text-field
                                         v-model.trim="form.name"
                                         autofocus
@@ -203,7 +202,6 @@
                     </v-container>
                 </v-card>
             </StepperStepContent>
-            <!-- TODO donation settings as a step as well -->
             <StepperStepContent
                 :step="4"
                 @back="step = 3"
@@ -273,6 +271,7 @@ export default class NewProjectPage extends HangarComponent {
     projectLoading = true;
     projectError = false;
     projectOwners!: ProjectOwner[];
+    licences!: string[];
     error = null as string | null;
     form: NewProjectForm = {
         category: ProjectCategory.ADMIN_TOOLS,
@@ -305,14 +304,14 @@ export default class NewProjectPage extends HangarComponent {
         return this.step !== 2 || this.forms.step2;
     }
 
-    // TODO do we want to get those from the server? Jake: I think so, it'd be nice to admins to be able to configure default licenses, but not needed for MVP
-    get licences() {
-        return ['MIT', 'Apache 2.0', 'GPL', 'LGPL', '(custom)'];
-    }
-
-    async asyncData({ $api }: Context) {
+    async asyncData({ $api, $util }: Context) {
+        const data = await Promise.all([$api.requestInternal('data/possibleOwners'), $api.requestInternal('data/licenses', false)]).catch(
+            $util.handlePageRequestError
+        );
+        if (typeof data === 'undefined') return;
         return {
-            projectOwners: await $api.requestInternal<ProjectOwner[]>('projects/possibleOwners'),
+            licenses: data[0],
+            projectOwners: data[1],
         };
     }
 
@@ -321,7 +320,6 @@ export default class NewProjectPage extends HangarComponent {
     }
 
     createProject() {
-        console.log(this.form);
         this.$api
             .requestInternal<string>('projects/create', true, 'post', this.form)
             .then((url) => {
@@ -342,7 +340,6 @@ export default class NewProjectPage extends HangarComponent {
         this.projectError = false;
     }
 
-    // This is very useful. Prob should have a generalization of this that works elsewhere. I didn't make it a rule because it relies on other input (the ownerId)
     @Watch('form.name')
     onProjectNameChange(val: string) {
         if (!val) {

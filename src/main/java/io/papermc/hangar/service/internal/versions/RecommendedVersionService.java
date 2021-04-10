@@ -5,11 +5,10 @@ import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.versions.RecommendedProjectVersionsDAO;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.versions.RecommendedProjectVersionTable;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class RecommendedVersionService extends HangarComponent {
@@ -27,6 +26,6 @@ public class RecommendedVersionService extends HangarComponent {
     }
 
     public Map<Platform, Long> getRecommendedVersions(long projectId) {
-        return recommendedProjectVersionsDAO.getRecommendedVersions(projectId).stream().collect(Collectors.toMap(pair -> Platform.values()[pair.getKey().intValue()], Pair::getValue));
+        return recommendedProjectVersionsDAO.getRecommendedVersions(projectId);
     }
 }

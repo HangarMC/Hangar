@@ -38,8 +38,14 @@ const msgs: LocaleMessageObject = {
         sponsoredBy: 'Sponsored by',
     },
     pages: {
-        authors: 'Authors',
-        staff: 'Staff',
+        staffTitle: 'Staff',
+        authorsTitle: 'Authors',
+        headers: {
+            username: 'Username',
+            roles: 'Roles',
+            joined: 'Joined',
+            projects: 'Projects',
+        },
     },
     nav: {
         login: 'Login',

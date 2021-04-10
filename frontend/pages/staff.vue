@@ -37,17 +37,16 @@ import { UserListPage } from '~/components/mixins';
     components: { UserAvatar },
 })
 export default class StaffPage extends UserListPage {
-    // TODO i18n for headers
     headers: DataTableHeader[] = [
         { text: '', value: 'pic', sortable: false },
-        { text: 'Username', value: 'username' },
-        { text: 'Roles', value: 'roles', sortable: false },
-        { text: 'Joined', value: 'joinDate' },
+        { text: this.$t('pages.headers.username') as string, value: 'username' },
+        { text: this.$t('pages.headers.roles') as string, value: 'roles', sortable: false },
+        { text: this.$t('pages.headers.joined') as string, value: 'joinDate' },
     ];
 
     head() {
         return {
-            title: this.$t('pages.staff'),
+            title: this.$t('pages.staffTitle'),
         };
     }
 

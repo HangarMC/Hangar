@@ -3,33 +3,39 @@
         <v-card>
             <v-card-title v-text="$t('organization.new.title')" />
             <v-card-subtitle>{{ $t('organization.new.text') }}</v-card-subtitle>
-            <!--TODO error message if already at max orgs-->
-            <v-card-text>
-                <v-form v-model="validForm">
-                    <v-text-field
-                        v-model="form.name"
-                        class="mt-2"
-                        filled
-                        :loading="validateLoading"
-                        :label="$t('organization.new.name')"
-                        :rules="[
-                            $util.$vc.require($t('organization.new.name')),
-                            $util.$vc.regex($t('organization.new.name'), validations.org.regex),
-                            $util.$vc.minLength(validations.org.min),
-                            $util.$vc.maxLength(validations.org.max),
-                        ]"
-                        :error-messages="nameErrorMessages"
-                    />
-                    <v-divider />
-                    <MemberList ref="memberList" class="mt-7 elevation-5" no-save-btn :roles="roles" always-editing :search-filter="searchFilter" />
-                </v-form>
+            <template v-if="currentUser.headerData.organizationCount < 1">
+                <v-card-text>
+                    <v-form v-model="validForm">
+                        <v-text-field
+                            v-model="form.name"
+                            class="mt-2"
+                            filled
+                            :loading="validateLoading"
+                            :label="$t('organization.new.name')"
+                            :rules="[
+                                $util.$vc.require($t('organization.new.name')),
+                                $util.$vc.regex($t('organization.new.name'), validations.org.regex),
+                                $util.$vc.minLength(validations.org.min),
+                                $util.$vc.maxLength(validations.org.max),
+                            ]"
+                            :error-messages="nameErrorMessages"
+                        />
+                        <v-divider />
+                        <MemberList ref="memberList" class="mt-7 elevation-5" no-save-btn :roles="roles" always-editing :search-filter="searchFilter" />
+                    </v-form>
+                </v-card-text>
+                <v-card-actions class="justify-end">
+                    <v-btn color="success" :disabled="!canCreate" :loading="loading" @click="create">
+                        <v-icon left>mdi-check</v-icon>
+                        {{ $t('form.memberList.create') }}
+                    </v-btn>
+                </v-card-actions>
+            </template>
+            <v-card-text v-else>
+                <v-alert type="warning">
+                    {{ $t('organization.new.error.tooManyOrgs', [validations.maxOrgCount]) }}
+                </v-alert>
             </v-card-text>
-            <v-card-actions class="justify-end">
-                <v-btn color="success" :disabled="!canCreate" :loading="loading" @click="create">
-                    <v-icon left>mdi-check</v-icon>
-                    {{ $t('form.memberList.create') }}
-                </v-btn>
-            </v-card-actions>
         </v-card>
     </v-col>
 </template>
