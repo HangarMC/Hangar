@@ -12,12 +12,14 @@
                     <v-text-field
                         v-model.trim="form.name"
                         filled
+                        :loading="validateLoading"
                         :rules="[
                             $util.$vc.require($t('page.new.name')),
                             $util.$vc.regex($t('page.new.name'), validations.project.pageName.regex),
                             $util.$vc.maxLength(validations.project.pageName.max),
                             $util.$vc.minLength(validations.project.pageName.min),
                         ]"
+                        :error-messages="nameErrorMessages"
                         :label="$t('page.new.name')"
                     />
                     <v-select
@@ -41,13 +43,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from 'nuxt-property-decorator';
+import { Component, Prop, Watch } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
 import { HangarProjectPage } from 'hangar-internal';
+import { TranslateResult } from 'vue-i18n';
+import { AxiosError } from 'axios';
 import { HangarFormModal } from '~/components/mixins';
 
 @Component
 export default class NewPageModal extends HangarFormModal {
+    validateLoading = false;
+    nameErrorMessages: TranslateResult[] = [];
     form = {
         name: '',
         parent: null as number | null,
@@ -90,6 +96,28 @@ export default class NewPageModal extends HangarFormModal {
             .catch(this.$util.handleRequestError)
             .finally(() => {
                 this.loading = false;
+            });
+    }
+
+    @Watch('form', { deep: true })
+    checkName(val: NewPageModal['form']) {
+        if (!val.name) return;
+        this.validateLoading = true;
+        this.nameErrorMessages = [];
+        this.$api
+            .requestInternal('pages/checkName', true, 'get', {
+                projectId: this.projectId,
+                name: val.name,
+                parentId: val.parent,
+            })
+            .catch((err: AxiosError) => {
+                if (!err.response?.data.isHangarApiException) {
+                    return this.$util.handleRequestError(err);
+                }
+                this.nameErrorMessages.push(this.$t(err.response.data.message));
+            })
+            .finally(() => {
+                this.validateLoading = false;
             });
     }
 }

@@ -33,6 +33,14 @@ public class ProjectPageService extends HangarComponent {
         this.hangarProjectPagesDAO = hangarProjectPagesDAO.get();
     }
 
+    public void checkDuplicateName(long projectId, String slug, @Nullable Long parentId) {
+        if (parentId != null && projectPagesDAO.getChildPage(projectId, parentId, slug) != null) {
+            throw new HangarApiException("page.new.error.duplicateName");
+        } else if (parentId == null && projectPagesDAO.getRootPage(projectId, slug) != null){
+            throw new HangarApiException("page.new.error.duplicateName");
+        }
+    }
+
     @Transactional
     public ProjectPageTable createPage(long projectId, String name, String slug, String contents, boolean deletable, @Nullable Long parentId, boolean isHome) {
         if (!isHome && contents.length() < config.pages.getMinLen()) {
@@ -45,9 +53,7 @@ public class ProjectPageService extends HangarComponent {
 
         config.pages.testPageName(name);
 
-        if (parentId != null && projectPagesDAO.getChildPage(projectId, parentId, slug) != null) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "page.new.error.duplicateName");
-        }
+        checkDuplicateName(projectId, slug, parentId);
 
         ProjectPageTable projectPageTable = new ProjectPageTable(
                 projectId,

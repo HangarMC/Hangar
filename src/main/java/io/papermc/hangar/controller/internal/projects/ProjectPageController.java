@@ -13,6 +13,7 @@ import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
 import io.papermc.hangar.service.internal.MarkdownService;
 import io.papermc.hangar.service.internal.projects.ProjectPageService;
+import io.papermc.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
@@ -44,6 +46,12 @@ public class ProjectPageController extends HangarComponent {
     @PostMapping(path = "/render", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> renderMarkdown(@RequestBody @Valid StringContent content) {
         return ResponseEntity.ok(markdownService.render(content.getContent()));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/checkName")
+    public void checkName(@RequestParam long projectId, @RequestParam String name, @RequestParam(required = false) Long parentId) {
+        projectPageService.checkDuplicateName(projectId, StringUtils.slugify(name), parentId);
     }
 
     @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")

@@ -120,7 +120,6 @@ export default class AuthorSettingsApiKeysPage extends HangarForm {
     };
 
     create() {
-        // TODO check that name isn't in current keys
         this.loading = true;
         this.$api
             .requestInternal<string>(`api-keys/create-key/${this.$route.params.user}`, true, 'post', {
