@@ -48,7 +48,7 @@ public class LoginController extends HangarComponent {
     }
 
     @GetMapping(path = "/login", params = "returnUrl")
-    public Object loginFromFrontend(@RequestParam(defaultValue = Routes.Paths.SHOW_HOME) String returnUrl) {
+    public RedirectView loginFromFrontend(@RequestParam(defaultValue = Routes.Paths.SHOW_HOME) String returnUrl) {
         if (config.fakeUser.isEnabled()) {
             config.checkDev();
 
@@ -62,7 +62,7 @@ public class LoginController extends HangarComponent {
     }
 
     @GetMapping(path = "/login", params = {"sso", "sig"})
-    public ModelAndView loginFromAuth(@RequestParam String sso, @RequestParam String sig, @CookieValue String url, RedirectAttributes attributes) {
+    public RedirectView loginFromAuth(@RequestParam String sso, @RequestParam String sig, @CookieValue String url, RedirectAttributes attributes) {
         AuthUser authUser = ssoService.authenticate(sso, sig);
         if (authUser == null) {
             throw new HangarApiException("nav.user.error.loginFailed");
@@ -88,7 +88,7 @@ public class LoginController extends HangarComponent {
 
     // TODO needed?
     @PostMapping("/verify")
-    public ModelAndView verify(@RequestParam String returnPath) {
+    public RedirectView verify(@RequestParam String returnPath) {
         if (config.fakeUser.isEnabled()) {
             throw new HangarApiException("nav.user.error.fakeUserEnabled", "Verififcation");
         }
@@ -103,14 +103,14 @@ public class LoginController extends HangarComponent {
     }
 
     @GetMapping("/signup")
-    public ModelAndView signUp(@RequestParam(defaultValue = "") String returnUrl) {
+    public RedirectView signUp(@RequestParam(defaultValue = "") String returnUrl) {
         if (config.fakeUser.isEnabled()) {
             throw new HangarApiException("nav.user.error.fakeUserEnabled", "Signup");
         }
         return redirectToSso(ssoService.getSignupUrl(returnUrl));
     }
 
-    private ModelAndView redirectBackOnSuccessfulLogin(String url, UserTable user) {
+    private RedirectView redirectBackOnSuccessfulLogin(String url, UserTable user) {
         if (!url.startsWith("http")) {
             if (url.startsWith("/")) {
                 url = config.getBaseUrl() + url;
@@ -118,14 +118,14 @@ public class LoginController extends HangarComponent {
                 url = config.getBaseUrl() + "/" + url;
             }
         }
-        return Routes.getRedirectToUrl(url);
+        return new RedirectView(url);
     }
 
-    private ModelAndView redirectToSso(URLWithNonce urlWithNonce) {
+    private RedirectView redirectToSso(URLWithNonce urlWithNonce) {
         if (!config.sso.isEnabled()) {
             throw new HangarApiException("nav.user.error.loginDisabled");
         }
         ssoService.insert(urlWithNonce.getNonce());
-        return Routes.getRedirectToUrl(urlWithNonce.getUrl());
+        return new RedirectView(urlWithNonce.getUrl());
     }
 }

@@ -1,6 +1,5 @@
 package io.papermc.hangar.controllerold;
 
-import com.vladsch.flexmark.ext.admonition.AdmonitionExtension;
 import io.papermc.hangar.controllerold.forms.UserAdminForm;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.db.modelold.RoleTable;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
@@ -173,15 +171,4 @@ public class ApplicationController extends HangarController {
         }
     }
 
-    @GetMapping(value = "/assets-ext/css/admonition.css", produces = "text/css")
-    @ResponseBody
-    public String admonitionCss() {
-        return AdmonitionExtension.getDefaultCSS();
-    }
-
-    @GetMapping(value = "/assets-ext/js/admonition.js", produces = "text/javascript")
-    @ResponseBody
-    public String admonitionJs() {
-        return AdmonitionExtension.getDefaultScript().replace("(() => {", "window.admonition = () => {").replace("})();", "};");
-    }
 }
