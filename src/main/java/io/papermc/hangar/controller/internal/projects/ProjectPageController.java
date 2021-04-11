@@ -38,13 +38,11 @@ public class ProjectPageController extends HangarComponent {
 
     private final ProjectPageService projectPageService;
     private final MarkdownService markdownService;
-    private final BBCodeConverter bbCodeConverter;
 
     @Autowired
-    public ProjectPageController(ProjectPageService projectPageService, MarkdownService markdownService, BBCodeConverter bbCodeConverter) {
+    public ProjectPageController(ProjectPageService projectPageService, MarkdownService markdownService) {
         this.projectPageService = projectPageService;
         this.markdownService = markdownService;
-        this.bbCodeConverter = bbCodeConverter;
     }
 
     @PostMapping(path = "/render", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -56,6 +54,7 @@ public class ProjectPageController extends HangarComponent {
     @ResponseBody
     @PostMapping(path = "/convert-bbcode", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     public String convertBBCode(@RequestBody @Valid StringContent bbCodeContent) {
+        BBCodeConverter bbCodeConverter = new BBCodeConverter();
         return bbCodeConverter.convertToMarkdown(bbCodeContent.getContent());
     }
 

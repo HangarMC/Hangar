@@ -211,9 +211,9 @@
                 "
             >
                 <v-tabs v-model="spigotConvertTab" fixed-tabs>
-                    <v-tab v-text="$t('project.new.step4.convert')"></v-tab>
-                    <v-tab v-text="$t('project.new.step4.preview')"></v-tab>
-                    <v-tab v-text="$t('project.new.step4.tutorial')"></v-tab>
+                    <v-tab v-text="$t('project.new.step4.convert')" />
+                    <v-tab :disabled="!converter.markdown" v-text="$t('project.new.step4.preview')" />
+                    <v-tab v-text="$t('project.new.step4.tutorial')" />
                 </v-tabs>
                 <v-tabs-items v-model="spigotConvertTab">
                     <v-tab-item>
@@ -237,7 +237,13 @@
                         </v-card-text>
                     </v-tab-item>
                     <v-tab-item>
-                        <Markdown :raw="converter.markdown"></Markdown>
+                        <v-card-text>
+                            <v-btn block color="primary" class="my-2" :disabled="form.pageContent === converter.markdown" @click="saveAsHomePage">
+                                <v-icon left>mdi-content-save</v-icon>
+                                {{ $t('project.new.step4.saveAsHomePage') }}
+                            </v-btn>
+                            <Markdown :raw="converter.markdown" />
+                        </v-card-text>
                     </v-tab-item>
                     <v-tab-item>
                         <v-card-text class="text-center">
@@ -384,6 +390,10 @@ export default class NewProjectPage extends HangarComponent {
             .finally(() => {
                 this.converter.loading = false;
             });
+    }
+
+    saveAsHomePage() {
+        this.$set(this.form, 'pageContent', this.converter.markdown);
     }
 
     retry() {

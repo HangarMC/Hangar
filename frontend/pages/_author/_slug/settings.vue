@@ -24,11 +24,11 @@
                     </v-btn>
                 </v-card-title>
                 <v-card-text>
-                    <v-tabs vertical>
-                        <v-tab to="#general" replace nuxt>{{ $t('project.settings.tabs.general') }}</v-tab>
-                        <v-tab to="#optional" replace nuxt>{{ $t('project.settings.tabs.optional') }}</v-tab>
-                        <v-tab to="#management" replace nuxt>{{ $t('project.settings.tabs.management') }}</v-tab>
-                        <v-tab to="#donation" replace nuxt>{{ $t('project.settings.tabs.donation') }}</v-tab>
+                    <v-tabs v-model="selectedTab" vertical>
+                        <v-tab href="#general">{{ $t('project.settings.tabs.general') }}</v-tab>
+                        <v-tab href="#optional">{{ $t('project.settings.tabs.optional') }}</v-tab>
+                        <v-tab href="#management">{{ $t('project.settings.tabs.management') }}</v-tab>
+                        <v-tab href="#donation">{{ $t('project.settings.tabs.donation') }}</v-tab>
 
                         <v-tab-item id="general">
                             <v-form v-model="validForm.settings">
@@ -421,12 +421,20 @@ export default class ProjectManagePage extends HangarProjectMixin {
         rename: false,
     };
 
+    selectedTab: string = '';
+
+    @Watch('$route.hash')
+    onRouteTabChange(val: string) {
+        this.selectedTab = val;
+    }
+
+    @Watch('selectedTab')
+    onSelectedTabChange(val: string) {
+        history.replaceState({}, '', this.$route.path + '#' + val);
+    }
+
     mounted() {
-        if (!this.$route.hash) {
-            this.$router.replace({
-                hash: '#general',
-            });
-        }
+        this.selectedTab = this.$route.hash.substr(1) || 'general';
     }
 
     get settingsEqual() {

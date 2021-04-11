@@ -180,6 +180,7 @@ const msgs: LocaleMessageObject = {
                 back: 'Back',
                 optional: 'Optional',
                 convert: 'Convert',
+                saveAsHomePage: 'Save as Home Page',
                 convertLabels: {
                     bbCode: 'Paste your BBCode here',
                     output: 'Markdown Output',
