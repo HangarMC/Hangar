@@ -150,7 +150,9 @@ hangar:
 
   discourse:
     enabled: true
-    url: "http://localhost:80"
+    url: "http://localhost:80/"
+    admin-user: "admin"
+    api-key: "4657cc5e3096e505903b59eb789005eb3f207d0c61f62212bf929268740c1585"
 
 #################
 # Debug Logging #
