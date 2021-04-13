@@ -29,7 +29,7 @@ export default class ProjectVersionPageParent extends HangarProjectMixin {
 
     async asyncData({ $api, $util, params, error, redirect, route }: Context) {
         const versions = await $api
-            .requestInternal<HangarVersion[]>(`versions/version/${params.author}/${params.slug}/versions/${params.version}`)
+            .requestInternal<HangarVersion[]>(`versions/version/${params.author}/${params.slug}/versions/${params.version}`, false)
             .catch<any>($util.handlePageRequestError);
         if (typeof versions === 'undefined' || versions.length < 1) {
             return error({

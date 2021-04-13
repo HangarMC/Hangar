@@ -1,5 +1,6 @@
 package io.papermc.hangar.modelold;
 
+@Deprecated(forRemoval = true)
 public enum DownloadType {
 
     /**

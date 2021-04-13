@@ -1,7 +1,7 @@
 package io.papermc.hangar.serviceold.plugindata;
 
 import io.papermc.hangar.exceptions.HangarException;
-import io.papermc.hangar.service.internal.versions.PluginDataService;
+import io.papermc.hangar.service.internal.versions.plugindata.PluginDataService;
 import io.papermc.hangar.service.internal.versions.plugindata.PluginFileData;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.PaperPluginFileHandler;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.VelocityFileHandler;

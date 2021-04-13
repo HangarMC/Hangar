@@ -4,10 +4,7 @@ import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
 import io.papermc.hangar.model.api.requests.RequestPagination;
-import io.papermc.hangar.model.common.NamedPermission;
-import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -16,7 +13,6 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +26,7 @@ import java.util.Map;
 @RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE)
 public interface IVersionsController {
 
+    // TODO implement version creation via API
 /*    @ApiOperation(
             value = "Creates a new version",
             nickname = "deployVersion",
@@ -42,7 +39,7 @@ public interface IVersionsController {
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
-    @PostMapping(value = "/projects/{author}/{slug}/versions", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(path = "/projects/{author}/{slug}/versions", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<Version> deployVersion()*/
 
     @ApiOperation(
@@ -57,12 +54,11 @@ public interface IVersionsController {
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
-    @GetMapping(value = "/projects/{author}/{slug}/versions/{name}/{platform}/")
-    ResponseEntity<Version> getVersion(@ApiParam("The author of the project to return the version for") @PathVariable String author,
-                                       @ApiParam("The slug of the project to return") @PathVariable String slug,
-                                       @ApiParam("The name of the version to return") @PathVariable("name") String versionString,
-                                       @ApiParam("The platform of the version to return") @PathVariable Platform platform
-    );
+    @GetMapping("/projects/{author}/{slug}/versions/{name}/{platform}/")
+    Version getVersion(@ApiParam("The author of the project to return the version for") @PathVariable String author,
+                       @ApiParam("The slug of the project to return") @PathVariable String slug,
+                       @ApiParam("The name of the version to return") @PathVariable("name") String versionString,
+                       @ApiParam("The platform of the version to return") @PathVariable Platform platform);
 
     @ApiOperation(
             value = "Returns versions of a project with the specified version string",
@@ -76,11 +72,10 @@ public interface IVersionsController {
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
-    @GetMapping(value = "/projects/{author}/{slug}/versions/{name}")
-    ResponseEntity<List<Version>> getVersions(@ApiParam("The author of the project to return the versions for") @PathVariable String author,
-                                              @ApiParam("The slug of the project to return") @PathVariable String slug,
-                                              @ApiParam("The name of the versions to return") @PathVariable("name") String versionString
-    );
+    @GetMapping("/projects/{author}/{slug}/versions/{name}")
+    List<Version> getVersions(@ApiParam("The author of the project to return the versions for") @PathVariable String author,
+                              @ApiParam("The slug of the project to return") @PathVariable String slug,
+                              @ApiParam("The name of the versions to return") @PathVariable("name") String versionString);
 
     @ApiOperation(
             value = "Returns the versions of a project",
@@ -95,10 +90,9 @@ public interface IVersionsController {
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/projects/{author}/{slug}/versions")
-    ResponseEntity<PaginatedResult<Version>> getVersions(@ApiParam("The author of the project to return versions for") @PathVariable String author,
-                                                         @ApiParam("The slug of the project to return versions for") @PathVariable String slug,
-                                                         @ApiParam("Pagination information") @NotNull RequestPagination pagination
-    );
+    PaginatedResult<Version> getVersions(@ApiParam("The author of the project to return versions for") @PathVariable String author,
+                                         @ApiParam("The slug of the project to return versions for") @PathVariable String slug,
+                                         @ApiParam("Pagination information") @NotNull RequestPagination pagination);
 
     @ApiOperation(
             value = "Returns the stats for a version",
@@ -113,13 +107,50 @@ public interface IVersionsController {
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
             @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
-    @GetMapping(value = "/projects/{author}/{slug}/versions/{name}/{platform}/stats", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#author, #slug}")
-    ResponseEntity<Map<String, VersionStats>> getVersionStats(@ApiParam("The author of the version to return the stats for") @PathVariable String author,
-                                                              @ApiParam("The slug of the project to return stats for") @PathVariable String slug,
-                                                              @ApiParam("The version to return the stats for") @PathVariable("name") String versionString,
-                                                              @ApiParam("The platform of the version to return") @PathVariable Platform platform,
-                                                              @ApiParam(value = "The first date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime fromDate,
-                                                              @ApiParam(value = "The last date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime toDate
-    );
+    @GetMapping("/projects/{author}/{slug}/versions/{name}/{platform}/stats")
+    Map<String, VersionStats> getVersionStats(@ApiParam("The author of the version to return the stats for") @PathVariable String author,
+                                              @ApiParam("The slug of the project to return stats for") @PathVariable String slug,
+                                              @ApiParam("The version to return the stats for") @PathVariable("name") String versionString,
+                                              @ApiParam("The platform of the version to return") @PathVariable Platform platform,
+                                              @ApiParam(value = "The first date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime fromDate,
+                                              @ApiParam(value = "The last date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime toDate);
+
+    @ApiOperation(
+            value = "Gets a confirmation token for downloading a version",
+            nickname = "confirmVersionDownload",
+            notes = "Retrieves a token to use for downloading a version which requires user confirmation",
+            authorizations = @Authorization("Session"),
+            tags = "Versions"
+    )
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Ok"),
+            @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
+            @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
+    })
+    @GetMapping("/projects/{author}/{slug}/versions/{name}/{platform}/download/confirm")
+    String confirmVersionDownload(@ApiParam("The author of the project to return the version for") @PathVariable String author,
+                                  @ApiParam("The slug of the project to return") @PathVariable String slug,
+                                  @ApiParam("The name of the version to return") @PathVariable("name") String versionString,
+                                  @ApiParam("The platform of the version to return") @PathVariable Platform platform);
+
+    @ApiOperation(
+            value = "Downloads a version",
+            nickname = "downloadVersion",
+            notes = "Downloads the file for a specific platform of a version. Requires visibility of the project and version.",
+            authorizations = @Authorization("Session"),
+            tags = "Versions"
+    )
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Ok"),
+            @ApiResponse(code = 303, message = "Version has an external download url"),
+            @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
+            @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint"),
+            @ApiResponse(code = 412, message = "Requires confirmation token, and none found on request")
+    })
+    @GetMapping("/projects/{author}/{slug}/versions/{name}/{platform}/download")
+    Object downloadVersion(@ApiParam("The author of the project to return the version for") @PathVariable String author,
+                                       @ApiParam("The slug of the project to return") @PathVariable String slug,
+                                       @ApiParam("The name of the version to return") @PathVariable("name") String versionString,
+                                       @ApiParam("The platform of the version to return") @PathVariable Platform platform,
+                                       @ApiParam(value = "The confirmation token") @RequestParam(required = false) String token);
 }

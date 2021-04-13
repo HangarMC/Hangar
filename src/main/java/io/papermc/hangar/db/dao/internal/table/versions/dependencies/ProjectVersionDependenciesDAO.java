@@ -1,7 +1,7 @@
-package io.papermc.hangar.db.dao.internal.table.versions;
+package io.papermc.hangar.db.dao.internal.table.versions.dependencies;
 
 import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.model.db.versions.ProjectVersionDependencyTable;
+import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionDependencyTable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;

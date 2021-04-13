@@ -1,4 +1,4 @@
-package io.papermc.hangar.model.db.versions;
+package io.papermc.hangar.model.db.versions.dependencies;
 
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 

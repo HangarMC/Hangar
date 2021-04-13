@@ -7,6 +7,7 @@ import org.jdbi.v3.core.enums.EnumByOrdinal;
 import java.net.InetAddress;
 import java.time.OffsetDateTime;
 
+@Deprecated(forRemoval = true)
 public class ProjectVersionUnsafeDownloadsTable {
 
     private long id;

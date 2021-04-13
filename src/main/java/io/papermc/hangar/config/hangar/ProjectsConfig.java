@@ -30,6 +30,7 @@ public class ProjectsConfig {
     private String checkInterval = "1h";
     private String draftExpire = "1d";
     private int userGridPageSize = 30;
+    @DurationUnit(ChronoUnit.MINUTES)
     private Duration unsafeDownloadMaxAge = Duration.ofMinutes(10);
 
     public String getNameRegex() {

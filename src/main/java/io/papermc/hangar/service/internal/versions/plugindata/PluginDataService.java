@@ -1,10 +1,7 @@
-package io.papermc.hangar.service.internal.versions;
+package io.papermc.hangar.service.internal.versions.plugindata;
 
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.service.internal.versions.plugindata.DataValue;
-import io.papermc.hangar.service.internal.versions.plugindata.PluginFileData;
-import io.papermc.hangar.service.internal.versions.plugindata.PluginFileWithData;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.FileTypeHandler;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;

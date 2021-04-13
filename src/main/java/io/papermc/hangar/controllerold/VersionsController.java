@@ -58,6 +58,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 @Controller("oldVersionsController")
+@Deprecated(forRemoval = true)
 public class VersionsController extends HangarController {
 
     private final VersionService versionService;

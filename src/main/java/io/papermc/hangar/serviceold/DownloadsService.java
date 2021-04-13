@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.net.InetAddress;
 
 @Service
+@Deprecated(forRemoval = true)
 public class DownloadsService {
 
     private final HangarDao<ProjectVersionUnsafeDownloadsDao> projectVersionUnsafeDownloadsDao;
