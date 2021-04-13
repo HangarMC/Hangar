@@ -156,6 +156,7 @@ export default {
                     'data: papermc.io paper.readthedocs.io',
                     'https:', // ppl can use images in descriptions, we would need an image proxy or smth
                 ],
+                frameSrc: ["'self'", 'http://localhost/', 'https://papermc.io/'],
                 manifestSrc: ["'self'"],
                 connectSrc: ["'self'", 'https://www.google-analytics.com', 'https://stats.g.doubleclick.net'],
                 mediaSrc: ["'self'"],
