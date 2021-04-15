@@ -22,8 +22,8 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.view.RedirectView;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
@@ -62,25 +62,32 @@ public class DownloadService extends HangarComponent {
         return token.toString();
     }
 
-    public Object getVersionFile(String author, String slug, String versionString, Platform platform, @Nullable String token) {
+    public FileSystemResource getVersionFile(String author, String slug, String versionString, Platform platform) {
         ProjectVersionTable pvt = projectVersionsDAO.getProjectVersionTable(author, slug, versionString, platform);
         if (pvt == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
+        if (pvt.getFileName() == null) {
+            throw new HangarApiException("Couldn't find a file for that version");
+        }
+
         ProjectTable project = projectsDAO.getById(pvt.getProjectId());
-        if (!isConfirmed(pvt, token)) {
-            throw new HangarApiException(HttpStatus.PRECONDITION_FAILED);
+        Path path = projectFiles.getVersionDir(project.getOwnerName(), project.getName(), versionString, platform);
+        if (Files.notExists(path)) {
+            throw new HangarApiException("Couldn't find a file for that version");
+        }
+
+        if (requiresConfirmation(pvt)) {
+            projectVersionUnsafeDownloadsDAO.insert(new ProjectVersionUnsafeDownloadTable(getHangarUserId(), RequestUtil.getRemoteInetAddress(request)));
         }
 
         statService.addVersionDownload(pvt);
-        if (pvt.getExternalUrl() != null) {
-            response.setStatus(HttpStatus.SEE_OTHER.value());
-            return new RedirectView(pvt.getExternalUrl());
-        }
-
-        Path path = projectFiles.getVersionDir(project.getOwnerName(), project.getName(), versionString, platform);
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + pvt.getFileName() + "\"");
         return new FileSystemResource(path);
+    }
+
+    private boolean requiresConfirmation(ProjectVersionTable pvt) {
+        return pvt.getReviewState() != ReviewState.REVIEWED && (pvt.getExternalUrl() == null || !config.security.checkSafe(pvt.getExternalUrl()));
     }
 
     private boolean isConfirmed(ProjectVersionTable pvt, @Nullable String token) {

@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -116,24 +117,6 @@ public interface IVersionsController {
                                               @ApiParam(value = "The last date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime toDate);
 
     @ApiOperation(
-            value = "Gets a confirmation token for downloading a version",
-            nickname = "confirmVersionDownload",
-            notes = "Retrieves a token to use for downloading a version which requires user confirmation",
-            authorizations = @Authorization("Session"),
-            tags = "Versions"
-    )
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Ok"),
-            @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
-            @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
-    })
-    @GetMapping("/projects/{author}/{slug}/versions/{name}/{platform}/download/confirm")
-    String confirmVersionDownload(@ApiParam("The author of the project to return the version for") @PathVariable String author,
-                                  @ApiParam("The slug of the project to return") @PathVariable String slug,
-                                  @ApiParam("The name of the version to return") @PathVariable("name") String versionString,
-                                  @ApiParam("The platform of the version to return") @PathVariable Platform platform);
-
-    @ApiOperation(
             value = "Downloads a version",
             nickname = "downloadVersion",
             notes = "Downloads the file for a specific platform of a version. Requires visibility of the project and version.",
@@ -143,14 +126,13 @@ public interface IVersionsController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Ok"),
             @ApiResponse(code = 303, message = "Version has an external download url"),
+            @ApiResponse(code = 400, message = "Version doesn't have a file attached to it"),
             @ApiResponse(code = 401, message = "Api session missing, invalid or expired"),
-            @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint"),
-            @ApiResponse(code = 412, message = "Requires confirmation token, and none found on request")
+            @ApiResponse(code = 403, message = "Not enough permissions to use this endpoint")
     })
     @GetMapping("/projects/{author}/{slug}/versions/{name}/{platform}/download")
-    Object downloadVersion(@ApiParam("The author of the project to return the version for") @PathVariable String author,
+    FileSystemResource downloadVersion(@ApiParam("The author of the project to return the version for") @PathVariable String author,
                                        @ApiParam("The slug of the project to return") @PathVariable String slug,
                                        @ApiParam("The name of the version to return") @PathVariable("name") String versionString,
-                                       @ApiParam("The platform of the version to return") @PathVariable Platform platform,
-                                       @ApiParam(value = "The confirmation token") @RequestParam(required = false) String token);
+                                       @ApiParam("The platform of the version to return") @PathVariable Platform platform);
 }

@@ -20,6 +20,7 @@ import io.papermc.hangar.service.api.VersionsApiService;
 import io.papermc.hangar.service.internal.versions.DownloadService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -68,13 +69,7 @@ public class VersionsController implements IVersionsController {
 
     @Override
     @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
-    public String confirmVersionDownload(String author, String slug, String versionString, Platform platform) {
-        return downloadService.createConfirmationToken(author, slug, versionString, platform);
-    }
-
-    @Override
-    @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
-    public Object downloadVersion(String author, String slug, String versionString, Platform platform, String token) {
-        return downloadService.getVersionFile(author, slug, versionString, platform, token);
+    public FileSystemResource downloadVersion(String author, String slug, String versionString, Platform platform) {
+        return downloadService.getVersionFile(author, slug, versionString, platform);
     }
 }
