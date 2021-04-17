@@ -53,7 +53,7 @@
     "stats-webpack-plugin": "0.7.0",
     "vue-cli-plugin-webpack-bundle-analyzer": "4.0.0",
     "vue-template-compiler": "2.6.12",
-    "webpack-cli": "3.3.12"
+    "webpack-cli": "4.6.0"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
