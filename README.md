@@ -1,5 +1,7 @@
 # Hangar - Papers upcoming Plugin Repository
 
+## THIS IS THE OLD CODE, PRE NUXT REWRITE
+
 This is the repository for Hangar, a plugin repository used for paper plugins and similar pieces of software.
 
 Hangar is a "fork" of [Ore](https://github.com/SpongePowered/Ore), created by the Sponge project, 
