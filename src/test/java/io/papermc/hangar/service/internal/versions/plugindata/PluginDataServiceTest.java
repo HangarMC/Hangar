@@ -1,8 +1,6 @@
-package io.papermc.hangar.serviceold.plugindata;
+package io.papermc.hangar.service.internal.versions.plugindata;
 
-import io.papermc.hangar.exceptions.HangarException;
-import io.papermc.hangar.service.internal.versions.plugindata.PluginDataService;
-import io.papermc.hangar.service.internal.versions.plugindata.PluginFileData;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.PaperPluginFileHandler;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.VelocityFileHandler;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.WaterfallPluginFileHandler;
@@ -22,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ContextConfiguration(classes = {PluginDataService.class, PaperPluginFileHandler.class, VelocityFileHandler.class, WaterfallPluginFileHandler.class})
 class PluginDataServiceTest {
 
-    private static final Path path = Path.of("src/test/resources/io/papermc/hangar/serviceold/plugindata");
+    private static final Path path = Path.of("src/test/resources/io/papermc/hangar/service/internal/versions/plugindata");
 
     @Autowired
     private PluginDataService classUnderTest;
@@ -76,28 +74,28 @@ class PluginDataServiceTest {
 
     @Test
     void test_emptyMeta_shouldFail() {
-        HangarException hangarException = assertThrows(HangarException.class, () -> {
+        HangarApiException hangarException = assertThrows(HangarApiException.class, () -> {
             classUnderTest.loadMeta(path.resolve("EmptyMeta.jar"), -1);
         });
-        assertEquals("error.plugin.metaNotFound", hangarException.getMessageKey());
+        assertEquals("400 BAD_REQUEST \"version.new.error.metaNotFound\"", hangarException.getMessage());
     }
 
     @Test
     void test_noMeta_shouldFail() {
-        HangarException hangarException = assertThrows(HangarException.class, () -> {
+        HangarApiException hangarException = assertThrows(HangarApiException.class, () -> {
             classUnderTest.loadMeta(path.resolve("Empty.jar"), -1);
         });
 
-        assertEquals("error.plugin.metaNotFound", hangarException.getMessageKey());
+        assertEquals("400 BAD_REQUEST \"version.new.error.metaNotFound\"", hangarException.getMessage());
     }
 
     @Test
     void test_incompleteMeta_shouldFail() {
-        HangarException hangarException = assertThrows(HangarException.class, () -> {
+        HangarApiException hangarException = assertThrows(HangarApiException.class, () -> {
             classUnderTest.loadMeta(path.resolve("IncompleteMeta.jar"), -1);
         });
 
-        assertEquals("error.plugin.incomplete", hangarException.getMessageKey());
+        assertEquals("400 BAD_REQUEST \"version.new.error.incomplete\"", hangarException.getMessage());
     }
 
     @Test
@@ -120,9 +118,9 @@ class PluginDataServiceTest {
 
     @Test
     void test_zipNoJar_shouldFail() {
-        HangarException hangarException = assertThrows(HangarException.class, () -> {
+        HangarApiException hangarException = assertThrows(HangarApiException.class, () -> {
             classUnderTest.loadMeta(path.resolve("Empty.zip"), -1);
         });
-        assertEquals("error.plugin.jarNotFound", hangarException.getMessageKey());
+        assertEquals("400 BAD_REQUEST \"version.new.error.jarNotFound\"", hangarException.getMessage());
     }
 }
