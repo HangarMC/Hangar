@@ -24,7 +24,7 @@
 
                 <v-col cols="12" sm="4" class="d-flex justify-center">
                     <a href="https://papermc.io">
-                        <img src="https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png" alt="Paper Logo" />
+                        <img src="/icon.png" alt="Paper Logo" />
                     </a>
                 </v-col>
 

@@ -64,10 +64,10 @@ hangar:
 
   sponsors:
     - name: Beer
-      image: images/sponsors/beer.jpg
+      image: /images/sponsors/beer.jpg
       link: https://minidigger.me
     - name: MiniDigger
-      image: images/sponsors/minidigger.png
+      image: /images/sponsors/minidigger.png
       link: https://minidigger.me
 
   homepage:
