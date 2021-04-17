@@ -21,7 +21,9 @@ public class BBCodeConverter {
     static {
         // Remove tags
         REPLACERS.put("color", (tag, tagArg, content) -> content);
+        REPLACERS.put("left", (tag, tagArg, content) -> content);
         REPLACERS.put("center", (tag, tagArg, content) -> content);
+        REPLACERS.put("right", (tag, tagArg, content) -> content);
         REPLACERS.put("u", (tag, tagArg, content) -> content);
         REPLACERS.put("quote", (tag, tagArg, content) -> content);
         REPLACERS.put("font", (tag, tagArg, content) -> content);
@@ -29,7 +31,8 @@ public class BBCodeConverter {
         REPLACERS.put("list", (tag, tagArg, content) -> content);
         REPLACERS.put("size", (tag, tagArg, content) -> content);
 
-        REPLACERS.put("spoiler", (tag, tagArg, content) -> content); //TODO?
+        REPLACERS.put("spoiler", (tag, tagArg, content) -> content); // disable till we figure out if we want to allow html, markdown doesnt support spoilers
+
         REPLACERS.put("b", (tag, tagArg, content) -> "**" + content + "**");
         REPLACERS.put("i", (tag, tagArg, content) -> "*" + content + "*");
         REPLACERS.put("s", (tag, tagArg, content) -> "~~" + content + "~~");
