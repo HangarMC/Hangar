@@ -6,11 +6,10 @@ on:
   # run on PRs
   push:
     branches:
-      - nuxt-frontend # todo test
+      - master
   pull_request:
     branches:
-      - nuxt-frontend
-    #- master TODO: once nuxt is merged, change this back
+      - master
 
 jobs:
   build:
