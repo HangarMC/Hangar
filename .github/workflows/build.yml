@@ -70,6 +70,7 @@ jobs:
 
       - name: SSH
         uses: webfactory/ssh-agent@v0.5.2
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         with:
           ssh-private-key: ${{ secrets.DOCKER_HOST_SSH_KEY }}
 
