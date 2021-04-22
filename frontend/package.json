@@ -23,7 +23,7 @@
     "cookie-universal-nuxt": "2.1.4",
     "core-js": "3.11.0",
     "diff-match-patch": "1.0.5",
-    "filesize": "6.2.5",
+    "filesize": "6.3.0",
     "jwt-decode": "3.1.2",
     "lodash-es": "4.17.21",
     "nuxt": "2.15.4",
