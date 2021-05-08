@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.papermc.hangar.config.hangar.DiscourseConfig;
+import io.papermc.hangar.model.internal.discourse.DiscoursePost;
 
 @Component
 public class DiscourseApi {
@@ -31,48 +32,55 @@ public class DiscourseApi {
         return headers;
     }
 
-    public void createPost(String poster, int topicId, String content) {
-        Map<String, String> args = new HashMap<>();
-        args.put("topic_id", "" + topicId);
+    public DiscoursePost createPost(String poster, long topicId, String content) {
+        Map<String, Object> args = new HashMap<>();
+        args.put("topic_id", topicId);
         args.put("raw", content);
-        execute(args, config.getUrl() + "/posts.json", header(poster), HttpMethod.POST);
+        return execute(args, config.getUrl() + "/posts.json", header(poster), HttpMethod.POST, DiscoursePost.class);
     }
 
-    public void createTopic(String poster, String title, String content, @Nullable Integer categoryId) {
-        Map<String, String> args = new HashMap<>();
+    public DiscoursePost createTopic(String poster, String title, String content, @Nullable Integer categoryId) {
+        Map<String, Object> args = new HashMap<>();
         args.put("title", title);
         args.put("raw", content);
-        args.put("category", categoryId == null ? null : categoryId.toString());
-        execute(args, config.getUrl() + "/posts.json", header(poster), HttpMethod.POST);
+        args.put("category", categoryId);
+        return execute(args, config.getUrl() + "/posts.json", header(poster), HttpMethod.POST, DiscoursePost.class);
     }
 
-    public void updateTopic(String poster, int topicId, @Nullable String title, @Nullable Integer categoryId) {
-        Map<String, String> args = new HashMap<>();
-        args.put("topic_id", topicId + "");
+    public void updateTopic(String poster, long topicId, @Nullable String title, @Nullable Integer categoryId) {
+        Map<String, Object> args = new HashMap<>();
+        args.put("topic_id", topicId);
         args.put("title", title);
-        args.put("category", categoryId == null ? null : categoryId.toString());
+        args.put("category", categoryId);
         execute(args, config.getUrl() + "/t/-/" + topicId + ".json", header(poster), HttpMethod.PUT);
     }
 
-    public void updatePost(String poster, int postId, String content) {
+    public void updatePost(String poster, long postId, String content) {
         Map<String, String> args = new HashMap<>();
         args.put("raw", content);
         execute(args, config.getUrl() + "/posts/" + postId + ".json", header(poster), HttpMethod.PUT);
     }
 
-    public void deleteTopic(String poster, int topicId) {
+    public void deleteTopic(String poster, long topicId) {
         execute(null, config.getUrl() + "/t/" + topicId + ".json", header(poster), HttpMethod.DELETE);
     }
 
     // TODO error handling, 429 handling
-
     private void execute(Object args, String url, HttpHeaders headers, HttpMethod method) {
+        Object object = execute(args, url, headers, method, Object.class);
+        if (object != null) {
+            System.out.println(object);
+        }
+    }
+
+    private <T> T execute(Object args, String url, HttpHeaders headers, HttpMethod method, Class<T> responseType) {
         HttpEntity<Object> entity = new HttpEntity<>(args, headers);
-        ResponseEntity<Object> response = restTemplate.exchange(url, method, entity, Object.class);
+        ResponseEntity<T> response = restTemplate.exchange(url, method, entity, responseType);
         if (response.getStatusCode().is2xxSuccessful()) {
-            System.out.println(response.getBody());
+            return response.getBody();
         } else {
             System.out.println("error! " + response.getStatusCode().name() + ": " + response.getBody());
+            return null;
         }
     }
 }

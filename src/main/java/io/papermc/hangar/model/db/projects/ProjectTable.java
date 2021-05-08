@@ -20,8 +20,8 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
     private String slug;
     private String ownerName;
     private long ownerId;
-    private final Long topicId;
-    private final Long postId;
+    private Long topicId;
+    private Long postId;
     private Category category;
     private String description;
     private Visibility visibility;
@@ -44,8 +44,8 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         this.slug = StringUtils.slugify(this.name);
         this.ownerName = projectOwner.getName();
         this.ownerId = projectOwner.getUserId();
-        this.topicId = null; // TODO discourse
-        this.postId = null; // TODO discourse
+        this.topicId = null;
+        this.postId = null;
         this.category = form.getCategory();
         this.description = form.getDescription();
         this.visibility = Visibility.NEW;
@@ -157,8 +157,16 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
         return topicId;
     }
 
+    public void setTopicId(Long topicId) {
+        this.topicId = topicId;
+    }
+
     public Long getPostId() {
         return postId;
+    }
+
+    public void setPostId(Long postId) {
+        this.postId = postId;
     }
 
     @EnumByOrdinal

@@ -11,6 +11,8 @@ public class DiscourseConfig {
     private String url = "https://papermc.io/forums/";
     private String adminUser;
     private String apiKey;
+    private int category;
+    private int categoryDeleted;
 
     public boolean isEnabled() {
         return enabled;
@@ -42,5 +44,21 @@ public class DiscourseConfig {
 
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
+    }
+
+    public int getCategory() {
+        return category;
+    }
+
+    public void setCategory(int category) {
+        this.category = category;
+    }
+
+    public int getCategoryDeleted() {
+        return categoryDeleted;
+    }
+
+    public void setCategoryDeleted(int categoryDeleted) {
+        this.categoryDeleted = categoryDeleted;
     }
 }

@@ -116,6 +116,10 @@ public class ProjectPageService extends HangarComponent {
         return pageTable;
     }
 
+    public ExtendedProjectPage getProjectPage(long id) {
+        return hangarProjectPagesDAO.getProjectPage(id);
+    }
+
     public String createProjectPage(long projectId, NewProjectPage newProjectPage) {
         String slug = StringUtils.slugify(newProjectPage.getName());
         if (newProjectPage.getParentId() != null) {

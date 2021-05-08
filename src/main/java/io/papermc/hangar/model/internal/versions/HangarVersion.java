@@ -21,8 +21,8 @@ public class HangarVersion extends Version implements Identified {
     private final long id;
     private final String approvedBy;
 
-    public HangarVersion(OffsetDateTime createdAt, @ColumnName("version_string") String name, Visibility visibility, String description, @Nested("vs") VersionStats stats, @Nested("fi") FileInfo fileInfo, String externalUrl, String author, @EnumByOrdinal ReviewState reviewState, List<Platform> recommended, long id, String approvedBy) {
-        super(createdAt, name, visibility, description, stats, fileInfo, externalUrl, author, reviewState, recommended);
+    public HangarVersion(OffsetDateTime createdAt, @ColumnName("version_string") String name, Visibility visibility, String description, @Nested("vs") VersionStats stats, @Nested("fi") FileInfo fileInfo, String externalUrl, String author, @EnumByOrdinal ReviewState reviewState, List<Platform> recommended, long id, String approvedBy, long postId) {
+        super(createdAt, name, visibility, description, stats, fileInfo, externalUrl, author, reviewState, recommended, postId);
         this.id = id;
         this.approvedBy = approvedBy;
     }

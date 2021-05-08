@@ -16,15 +16,19 @@ public class Project extends ProjectCompact {
     private final OffsetDateTime lastUpdated;
     private final UserActions userActions;
     private final ProjectSettings settings;
+    private final Long topicId;
+    private final Long postId;
     protected final List<PromotedVersion> promotedVersions;
 
     @JdbiConstructor
-    public Project(OffsetDateTime createdAt, String name, @Nested ProjectNamespace namespace, @Nested ProjectStats stats, @EnumByOrdinal Category category, String description, OffsetDateTime lastUpdated, @EnumByOrdinal Visibility visibility, @Nested UserActions userActions, @Nested ProjectSettings settings, List<PromotedVersion> promotedVersions) {
+    public Project(OffsetDateTime createdAt, String name, @Nested ProjectNamespace namespace, @Nested ProjectStats stats, @EnumByOrdinal Category category, String description, OffsetDateTime lastUpdated, @EnumByOrdinal Visibility visibility, @Nested UserActions userActions, @Nested ProjectSettings settings, Long topicId, Long postId, List<PromotedVersion> promotedVersions) {
         super(createdAt, name, namespace, stats, category, visibility);
         this.description = description;
         this.lastUpdated = lastUpdated;
         this.userActions = userActions;
         this.settings = settings;
+        this.topicId = topicId;
+        this.postId = postId;
         this.promotedVersions = promotedVersions;
     }
 
@@ -34,6 +38,8 @@ public class Project extends ProjectCompact {
         this.lastUpdated = other.lastUpdated;
         this.userActions = other.userActions;
         this.settings = other.settings;
+        this.topicId = other.topicId;
+        this.postId = other.postId;
         this.promotedVersions = other.promotedVersions;
     }
 
@@ -55,6 +61,14 @@ public class Project extends ProjectCompact {
 
     public List<PromotedVersion> getPromotedVersions() {
         return promotedVersions;
+    }
+
+    public Long getTopicId() {
+        return topicId;
+    }
+
+    public Long getPostId() {
+        return postId;
     }
 
     @Override

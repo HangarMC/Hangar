@@ -2,7 +2,9 @@ package io.papermc.hangar.controller.internal;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -19,40 +21,10 @@ public class DiscourseController extends HangarComponent {
         this.discourseService = discourseService;
     }
 
-    // TODO implement
-
-    @GetMapping("/createPost")
+    @PostMapping("/{projectId}/comment")
     @ResponseBody
-    public String createPost() {
-        discourseService.createPost("admin", 15, "This is a test. It needs to be 20 characters long, so I writing some bullshit here 2");
-        return "dum";
-    }
-
-    @GetMapping("/createTopic")
-    @ResponseBody
-    public String createTopic() {
-        discourseService.createTopic("admin", "This is a test title that might be ok?", "This is a test. It needs to be 20 characters long, so I writing some bullshit here 2", null);
-        return "dum";
-    }
-
-    @GetMapping("/updateTopic")
-    @ResponseBody
-    public String updateTopic() {
-        discourseService.updateTopic("admin", 15, "This is a test that might be ok? 2", null);
-        return "dum";
-    }
-
-    @GetMapping("/updatePost")
-    @ResponseBody
-    public String updatePost() {
-        discourseService.updatePost("admin", 28, "This is a test. It needs to be 20 characters long, so I writing some bullshit here 5");
-        return "dum";
-    }
-
-    @GetMapping("/deleteTopic")
-    @ResponseBody
-    public String deleteTopic() {
-        discourseService.deleteTopic("admin", 15);
+    public String createPost(@PathVariable("projectId") long projectId, @RequestBody String content) {
+        discourseService.createComment(projectId, getHangarPrincipal().getName(), content);
         return "dum";
     }
 }

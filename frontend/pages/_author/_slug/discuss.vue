@@ -10,7 +10,7 @@
             ></iframe>
         </div>
         <div v-if="isLoggedIn">
-            <MarkdownEditor saveable editing :cancellable="false" :deletable="false" @save="postReply"></MarkdownEditor>
+            <MarkdownEditor ref="editor" saveable editing :cancellable="false" :deletable="false" @save="postReply"></MarkdownEditor>
         </div>
         <div v-else>
             <a @click="$auth.login($route.fullPath)">{{ $t('project.discuss.login') }}</a>
@@ -41,6 +41,7 @@ export default class ProjectDiscussPage extends HangarProjectMixin {
 
     $refs!: {
         iframe: any;
+        editor: MarkdownEditor;
     };
 
     mounted() {
@@ -48,8 +49,11 @@ export default class ProjectDiscussPage extends HangarProjectMixin {
     }
 
     // TODO implement
-    postReply(message: string) {
-        console.log('reply ' + message);
+    async postReply(message: string) {
+        await this.$api.requestInternal('discourse/' + this.project.id + '/comment', true, 'POST', message);
+        this.$refs.editor.isEditing = true;
+        this.$refs.editor.loading.save = false;
+        this.$refs.editor.rawEdited = '';
     }
 
     get url() {

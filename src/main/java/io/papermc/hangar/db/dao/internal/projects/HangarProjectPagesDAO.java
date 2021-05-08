@@ -25,6 +25,13 @@ public interface HangarProjectPagesDAO {
             "   WHERE lower(p.owner_name) = lower(:author) AND lower(p.slug) = lower(:slug) AND pp.slug = :pageSlug")
     ExtendedProjectPage getProjectPage(String author, String slug, String pageSlug);
 
+    @SqlQuery("SELECT pp.*," +
+              "   exists(SELECT 1 FROM project_home_pages php WHERE php.page_id = pp.id AND php.project_id = p.id) AS home" +
+              "   FROM project_pages pp" +
+              "       JOIN projects p ON pp.project_id = p.id" +
+              "   WHERE pp.slug = :id")
+    ExtendedProjectPage getProjectPage(long id);
+
     @SqlQuery("SELECT pp.*, TRUE AS home " +
             "   FROM project_pages pp" +
             "       JOIN projects p ON pp.project_id = p.id" +

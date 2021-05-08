@@ -32,12 +32,14 @@ public class Version extends Model implements Named, Visible {
     private final ReviewState reviewState;
     private final Set<Tag> tags;
     private final List<Platform> recommended;
+    private final Long postId;
 
-    public Version(OffsetDateTime createdAt, @ColumnName("version_string") String name, Visibility visibility, String description, @Nested("vs") VersionStats stats, @Nested("fi") FileInfo fileInfo, String externalUrl, String author, @EnumByOrdinal ReviewState reviewState, List<Platform> recommended) {
+    public Version(OffsetDateTime createdAt, @ColumnName("version_string") String name, Visibility visibility, String description, @Nested("vs") VersionStats stats, @Nested("fi") FileInfo fileInfo, String externalUrl, String author, @EnumByOrdinal ReviewState reviewState, List<Platform> recommended, Long postId) {
         super(createdAt);
         this.name = name;
         this.externalUrl = externalUrl;
         this.recommended = recommended;
+        this.postId = postId;
         this.tags = new HashSet<>();
         this.pluginDependencies = new EnumMap<>(Platform.class);
         this.platformDependencies = new EnumMap<>(Platform.class);
@@ -97,6 +99,10 @@ public class Version extends Model implements Named, Visible {
 
     public List<Platform> getRecommended() {
         return recommended;
+    }
+
+    public Long getPostId() {
+        return postId;
     }
 
     @Override
