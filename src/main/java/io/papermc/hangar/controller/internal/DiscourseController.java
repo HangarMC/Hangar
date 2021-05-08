@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Map;
+
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.service.internal.discourse.DiscourseService;
 
@@ -23,8 +25,8 @@ public class DiscourseController extends HangarComponent {
 
     @PostMapping("/{projectId}/comment")
     @ResponseBody
-    public String createPost(@PathVariable("projectId") long projectId, @RequestBody String content) {
-        discourseService.createComment(projectId, getHangarPrincipal().getName(), content);
+    public String createPost(@PathVariable("projectId") long projectId, @RequestBody Map<String, String> content) {
+        discourseService.createComment(projectId, getHangarPrincipal().getName(), content.get("content"));
         return "dum";
     }
 }

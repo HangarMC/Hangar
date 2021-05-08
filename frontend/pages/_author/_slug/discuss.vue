@@ -50,7 +50,7 @@ export default class ProjectDiscussPage extends HangarProjectMixin {
 
     // TODO implement
     async postReply(message: string) {
-        await this.$api.requestInternal('discourse/' + this.project.id + '/comment', true, 'POST', message);
+        await this.$api.requestInternal('discourse/' + this.project.id + '/comment', true, 'POST', { content: message });
         this.$refs.editor.isEditing = true;
         this.$refs.editor.loading.save = false;
         this.$refs.editor.rawEdited = '';

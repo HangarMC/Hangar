@@ -85,6 +85,7 @@ public class DiscourseService {
     }
 
     public void createComment(long projectId, String poster, String content) {
+        Objects.requireNonNull(content, "No content");
         ProjectTable projectTable = projectService.getProjectTable(projectId);
         if (projectTable == null) {
             throw new DiscourseError("No project to post to");
