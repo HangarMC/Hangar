@@ -2,21 +2,24 @@ package io.papermc.hangar.service.internal.discourse;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Objects;
 
 import io.papermc.hangar.config.hangar.DiscourseConfig;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.projects.ProjectTable;
+import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.discourse.DiscourseError;
 import io.papermc.hangar.model.internal.discourse.DiscoursePost;
 import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
-import io.papermc.hangar.model.internal.projects.HangarProject;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
-import io.papermc.hangar.model.internal.versions.HangarVersion;
 import io.papermc.hangar.service.internal.projects.ProjectPageService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 
+/**
+ * Never call these methods in here directly, they need to be called as part of a job, with retry and shit
+ */
 @Service
 public class DiscourseService {
 
@@ -24,19 +27,20 @@ public class DiscourseService {
     private final DiscourseConfig config;
     private final ProjectPageService pageService;
     private final ProjectService projectService;
+    private final ProjectPageService projectPageService;
 
-    public DiscourseService(DiscourseApi api, DiscourseConfig config, ProjectPageService pageService, ProjectService projectService) {
+    public DiscourseService(DiscourseApi api, DiscourseConfig config, ProjectPageService pageService, ProjectService projectService, ProjectPageService projectPageService) {
         this.api = api;
         this.config = config;
         this.pageService = pageService;
         this.projectService = projectService;
+        this.projectPageService = projectPageService;
     }
 
-    // TODO instead of calling api directly, these need to be jobs
-
-    private String getHomepageContent(HangarProject project) {
+    private String getHomepageContent(ProjectTable project) {
         long id = -1;
-        for (HangarProjectPage page : project.getPages()) {
+        Map<Long, HangarProjectPage> projectPages = projectPageService.getProjectPages(project.getId());
+        for (HangarProjectPage page : projectPages.values()) {
             if (page.isHome()) {
                 id = page.getId();
                 break;
@@ -54,30 +58,30 @@ public class DiscourseService {
         return projectPage.getContents();
     }
 
-    public void createProjectTopic(HangarProject project) {
+    public void createProjectTopic(ProjectTable project) {
         String title = DiscourseFormatter.formatProjectTitle(project);
         String content = DiscourseFormatter.formatProjectTopic(project, getHomepageContent(project));
 
-        DiscoursePost post = api.createTopic(project.getOwner().getName(), title, content, config.getCategory());
+        DiscoursePost post = api.createTopic(project.getOwnerName(), title, content, config.getCategory());
         if (post == null) {
             throw new DiscourseError("project post wasn't created");
         }
         if (!post.isTopic()) {
             throw new DiscourseError("project post isn't a topic?!");
         }
-        if (!post.getUsername().equals(project.getOwner().getName())) {
+        if (!post.getUsername().equals(project.getOwnerName())) {
             throw new DiscourseError("project post user isn't owner?!");
         }
 
         projectService.saveDiscourseData(project.getProjectId(), post.getTopicId(), post.getId());
     }
 
-    public void updateProjectTopic(HangarProject project) {
+    public void updateProjectTopic(ProjectTable project) {
         String title = DiscourseFormatter.formatProjectTitle(project);
         String content = DiscourseFormatter.formatProjectTopic(project, getHomepageContent(project));
 
-        api.updateTopic(project.getOwner().getName(), project.getTopicId(), title, project.getVisibility() == Visibility.PUBLIC ? config.getCategory() : config.getCategoryDeleted());
-        api.updatePost(project.getOwner().getName(), project.getPostId(), content);
+        api.updateTopic(project.getOwnerName(), project.getTopicId(), title, project.getVisibility() == Visibility.PUBLIC ? config.getCategory() : config.getCategoryDeleted());
+        api.updatePost(project.getOwnerName(), project.getPostId(), content);
     }
 
     public DiscoursePost postDiscussionReply(long topicId, String poster, String content) {
@@ -96,23 +100,23 @@ public class DiscourseService {
         postDiscussionReply(projectTable.getTopicId(), poster, content);
     }
 
-    public void createVersionPost(HangarProject project, HangarVersion version) {
+    public void createVersionPost(ProjectTable project, ProjectVersionTable version) {
         String content = DiscourseFormatter.formatVersionRelease(project, version, version.getDescription());
 
-        DiscoursePost post = postDiscussionReply(project.getTopicId(), project.getOwner().getName(), content);
+        DiscoursePost post = postDiscussionReply(project.getTopicId(), project.getOwnerName(), content);
         projectService.saveDiscourseData(project.getProjectId(), project.getTopicId(), post.getId());
     }
 
-    public void updateVersionPost(HangarProject project, HangarVersion version) {
+    public void updateVersionPost(ProjectTable project, ProjectVersionTable version) {
         Objects.requireNonNull(project.getTopicId(), "No topic ID set");
         Objects.requireNonNull(version.getPostId(), "No post ID set");
 
         String content = DiscourseFormatter.formatVersionRelease(project, version, version.getDescription());
 
-        api.updatePost(project.getOwner().getName(), version.getPostId().intValue(), content);
+        api.updatePost(project.getOwnerName(), version.getPostId().intValue(), content);
     }
 
-    public void deleteTopic(int topicId) {
+    public void deleteTopic(long topicId) {
         api.deleteTopic(config.getAdminUser(), topicId);
     }
 }

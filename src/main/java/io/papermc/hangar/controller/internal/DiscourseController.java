@@ -11,22 +11,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Map;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.service.internal.discourse.DiscourseService;
+import io.papermc.hangar.model.internal.job.PostDiscourseReplyJob;
+import io.papermc.hangar.service.internal.JobService;
 
 @Controller
 @RequestMapping(value = "/api/internal/discourse", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DiscourseController extends HangarComponent {
 
-    private final DiscourseService discourseService;
+    private final JobService jobService;
 
-    public DiscourseController(DiscourseService discourseService) {
-        this.discourseService = discourseService;
+    public DiscourseController(JobService jobService) {
+        this.jobService = jobService;
     }
 
     @PostMapping("/{projectId}/comment")
     @ResponseBody
     public String createPost(@PathVariable("projectId") long projectId, @RequestBody Map<String, String> content) {
-        discourseService.createComment(projectId, getHangarPrincipal().getName(), content.get("content"));
+        jobService.save(new PostDiscourseReplyJob(projectId, getHangarPrincipal().getName(), content.get("content")));
         return "dum";
     }
 }

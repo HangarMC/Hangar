@@ -19,11 +19,15 @@ import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTagTable;
 import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionDependencyTable;
 import io.papermc.hangar.model.db.versions.dependencies.ProjectVersionPlatformDependencyTable;
+import io.papermc.hangar.model.internal.job.UpdateDiscourseProjectTopicJob;
+import io.papermc.hangar.model.internal.job.UpdateDiscourseVersionPostJob;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
 import io.papermc.hangar.service.api.UsersApiService;
+import io.papermc.hangar.service.internal.JobService;
 import io.papermc.hangar.service.internal.PlatformService;
+import io.papermc.hangar.service.internal.discourse.DiscourseService;
 import io.papermc.hangar.service.internal.projects.ChannelService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
@@ -70,9 +74,10 @@ public class VersionFactory extends HangarComponent {
     private final VersionTagService versionTagService;
     private final PlatformService platformService;
     private final UsersApiService usersApiService;
+    private final JobService jobService;
 
     @Autowired
-    public VersionFactory(HangarDao<ProjectVersionPlatformDependenciesDAO> projectVersionPlatformDependencyDAO, HangarDao<ProjectVersionDependenciesDAO> projectVersionDependencyDAO, HangarDao<PlatformVersionDAO> platformVersionDAO, HangarDao<ProjectVersionsDAO> projectVersionDAO, HangarDao<VersionsApiDAO> versionsApiDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, RecommendedVersionService recommendedVersionService, ProjectService projectService, NotificationService notificationService, VersionTagService versionTagService, PlatformService platformService, UsersApiService usersApiService) {
+    public VersionFactory(HangarDao<ProjectVersionPlatformDependenciesDAO> projectVersionPlatformDependencyDAO, HangarDao<ProjectVersionDependenciesDAO> projectVersionDependencyDAO, HangarDao<PlatformVersionDAO> platformVersionDAO, HangarDao<ProjectVersionsDAO> projectVersionDAO, HangarDao<VersionsApiDAO> versionsApiDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, RecommendedVersionService recommendedVersionService, ProjectService projectService, NotificationService notificationService, VersionTagService versionTagService, PlatformService platformService, UsersApiService usersApiService, JobService jobService) {
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO.get();
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO.get();
         this.platformVersionDAO = platformVersionDAO.get();
@@ -88,6 +93,7 @@ public class VersionFactory extends HangarComponent {
         this.versionTagService = versionTagService;
         this.platformService = platformService;
         this.usersApiService = usersApiService;
+        this.jobService = jobService;
     }
 
     public PendingVersion createPendingVersion(long projectId, MultipartFile file) {
@@ -247,7 +253,7 @@ public class VersionFactory extends HangarComponent {
 
             if (tmpVersionJar != null) {
                 for (Platform platform : pendingVersion.getPlatformDependencies().keySet()) {
-                    if (pendingVersion.getPlatformDependencies().get(platform).size() < 1) continue;
+                    if (pendingVersion.getPlatformDependencies().get(platform).isEmpty()) continue;
                     Path newVersionJarPath = projectFiles.getVersionDir(projectTable.getOwnerName(), projectTable.getName(), pendingVersion.getVersionString(), platform).resolve(tmpVersionJar.getFileName());
                     if (Files.notExists(newVersionJarPath)) {
                         Files.createDirectories(newVersionJarPath.getParent());
@@ -263,7 +269,7 @@ public class VersionFactory extends HangarComponent {
 
             if (projectTable.getVisibility() == Visibility.NEW) {
                 projectVisibilityService.changeVisibility(projectTable, Visibility.PUBLIC, "First version");
-                // TODO add forum job
+                jobService.save(new UpdateDiscourseProjectTopicJob(projectId));
             }
 
             if (pendingVersion.isRecommended()) {
@@ -273,6 +279,10 @@ public class VersionFactory extends HangarComponent {
             }
 
             userActionLogService.version(LogAction.VERSION_CREATED.create(VersionContext.of(projectId, projectVersionTable.getId()), "published", ""));
+
+            if (pendingVersion.isForumSync()) {
+                jobService.save(new UpdateDiscourseVersionPostJob(projectVersionTable.getId()));
+            }
 
             projectService.refreshHomeProjects();
             usersApiService.clearAuthorsCache();

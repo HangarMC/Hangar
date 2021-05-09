@@ -1,7 +1,7 @@
 package io.papermc.hangar.model.db;
 
 import io.papermc.hangar.db.customtypes.JobState;
-import io.papermc.hangar.model.internal.JobType;
+import io.papermc.hangar.model.internal.job.JobType;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import org.jdbi.v3.postgres.HStore;

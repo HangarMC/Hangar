@@ -45,7 +45,7 @@ abstract class VisibilityService<M extends Table & ModelVisible & ProjectIdentif
         model.setVisibility(newVisibility);
         model = updateModel(model);
         logVisibilityChange(model, oldVis);
-        postUpdate();
+        postUpdate(model);
         return model;
     }
 
@@ -72,7 +72,7 @@ abstract class VisibilityService<M extends Table & ModelVisible & ProjectIdentif
 
     abstract void insertNewVisibilityEntry(VT visibilityTable);
 
-    protected void postUpdate() { }
+    protected void postUpdate(@Nullable M model) { }
 
     abstract public Entry<String, VT> getLastVisibilityChange(long principalId);
 

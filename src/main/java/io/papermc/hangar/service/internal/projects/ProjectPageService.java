@@ -8,10 +8,12 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.projects.ProjectHomePageTable;
 import io.papermc.hangar.model.db.projects.ProjectPageTable;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectPage;
+import io.papermc.hangar.model.internal.job.UpdateDiscourseProjectTopicJob;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.PageContext;
 import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
+import io.papermc.hangar.service.internal.JobService;
 import io.papermc.hangar.util.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpStatus;
@@ -27,10 +29,12 @@ public class ProjectPageService extends HangarComponent {
 
     private final ProjectPagesDAO projectPagesDAO;
     private final HangarProjectPagesDAO hangarProjectPagesDAO;
+    private final JobService jobService;
 
-    public ProjectPageService(HangarDao<ProjectPagesDAO> projectPagesDAO, HangarDao<HangarProjectPagesDAO> hangarProjectPagesDAO) {
+    public ProjectPageService(HangarDao<ProjectPagesDAO> projectPagesDAO, HangarDao<HangarProjectPagesDAO> hangarProjectPagesDAO, JobService jobService) {
         this.projectPagesDAO = projectPagesDAO.get();
         this.hangarProjectPagesDAO = hangarProjectPagesDAO.get();
+        this.jobService = jobService;
     }
 
     public void checkDuplicateName(long projectId, String slug, @Nullable Long parentId) {
@@ -66,6 +70,7 @@ public class ProjectPageService extends HangarComponent {
         projectPageTable = projectPagesDAO.insert(projectPageTable);
         if (isHome) {
             projectPagesDAO.insertHomePage(new ProjectHomePageTable(projectPageTable.getProjectId(), projectPageTable.getId()));
+            jobService.save(new UpdateDiscourseProjectTopicJob(projectId));
         }
         userActionLogService.projectPage(LogAction.PROJECT_PAGE_CREATED.create(PageContext.of(projectPageTable.getProjectId(), projectPageTable.getId()), contents, ""));
         return projectPageTable;

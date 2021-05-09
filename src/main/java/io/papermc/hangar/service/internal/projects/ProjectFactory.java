@@ -9,11 +9,16 @@ import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
+import io.papermc.hangar.model.internal.job.DeleteDiscourseTopicJob;
+import io.papermc.hangar.model.internal.job.UpdateDiscourseProjectTopicJob;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.service.api.UsersApiService;
+import io.papermc.hangar.service.internal.JobService;
 import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
+import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
+import io.papermc.hangar.util.FileUtils;
 import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +36,11 @@ public class ProjectFactory extends HangarComponent {
     private final ProjectMemberService projectMemberService;
     private final ProjectVisibilityService projectVisibilityService;
     private final UsersApiService usersApiService;
+    private final JobService jobService;
+    private final ProjectFiles projectFiles;
 
     @Autowired
-    public ProjectFactory(HangarDao<ProjectsDAO> projectDAO, ProjectService projectService, ChannelService channelService, ProjectPageService projectPageService, ProjectMemberService projectMemberService, ProjectVisibilityService projectVisibilityService, UsersApiService usersApiService) {
+    public ProjectFactory(HangarDao<ProjectsDAO> projectDAO, ProjectService projectService, ChannelService channelService, ProjectPageService projectPageService, ProjectMemberService projectMemberService, ProjectVisibilityService projectVisibilityService, UsersApiService usersApiService, JobService jobService, ProjectFiles projectFiles) {
         this.projectsDAO = projectDAO.get();
         this.projectService = projectService;
         this.channelService = channelService;
@@ -41,6 +48,8 @@ public class ProjectFactory extends HangarComponent {
         this.projectMemberService = projectMemberService;
         this.projectVisibilityService = projectVisibilityService;
         this.usersApiService = usersApiService;
+        this.jobService = jobService;
+        this.projectFiles = projectFiles;
     }
 
     @Transactional
@@ -60,6 +69,7 @@ public class ProjectFactory extends HangarComponent {
                 newPageContent = "# " + projectTable.getName() + "\n\n" + config.pages.home.getMessage();
             }
             projectPageService.createPage(projectTable.getId(), config.pages.home.getName(), StringUtils.slugify(config.pages.home.getName()), newPageContent, false, null, true);
+            jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
         } catch (Throwable exception) {
             if (projectTable != null) {
                 projectsDAO.delete(projectTable);
@@ -82,6 +92,7 @@ public class ProjectFactory extends HangarComponent {
         projectTable.setSlug(StringUtils.slugify(compactNewName));
         projectsDAO.update(projectTable);
         userActionLogService.project(LogAction.PROJECT_RENAMED.create(ProjectContext.of(projectTable.getId()), author + "/" + compactNewName, author + "/" + oldName));
+        jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
         projectService.refreshHomeProjects();
         return StringUtils.slugify(compactNewName);
     }
@@ -116,6 +127,7 @@ public class ProjectFactory extends HangarComponent {
         if (projectTable.getVisibility() == Visibility.NEW) {
             hardDelete(projectTable, comment);
         } else {
+            jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
             projectVisibilityService.changeVisibility(projectTable, Visibility.SOFTDELETE, comment);
             projectService.refreshHomeProjects();
         }
@@ -123,6 +135,8 @@ public class ProjectFactory extends HangarComponent {
 
     public void hardDelete(ProjectTable projectTable, String comment) {
         userActionLogService.project(LogAction.PROJECT_VISIBILITY_CHANGED.create(ProjectContext.of(projectTable.getId()), "<i>deleted</i>", projectTable.getVisibility().getTitle()));
+        FileUtils.deleteDirectory(projectFiles.getProjectDir(projectTable.getOwnerName(), projectTable.getName()));
+        jobService.save(new DeleteDiscourseTopicJob(projectTable.getId()));
         projectsDAO.delete(projectTable);
         projectService.refreshHomeProjects();
     }

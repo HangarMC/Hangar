@@ -6,8 +6,12 @@ import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.visibility.ProjectVersionVisibilityChangeTable;
+import io.papermc.hangar.model.internal.job.UpdateDiscourseProjectTopicJob;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
+import io.papermc.hangar.service.internal.JobService;
+
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +22,14 @@ public class ProjectVersionVisibilityService extends VisibilityService<ProjectVe
 
     private final ProjectVersionsDAO projectVersionsDAO;
     private final VisibilityDAO visibilityDAO;
+    private final JobService jobService;
 
     @Autowired
-    public ProjectVersionVisibilityService(HangarDao<VisibilityDAO> visibilityDAO, HangarDao<ProjectVersionsDAO> projectVersionDAO) {
+    public ProjectVersionVisibilityService(HangarDao<VisibilityDAO> visibilityDAO, HangarDao<ProjectVersionsDAO> projectVersionDAO, JobService jobService) {
         super(ProjectVersionVisibilityChangeTable::new);
         this.visibilityDAO = visibilityDAO.get();
         this.projectVersionsDAO = projectVersionDAO.get();
+        this.jobService = jobService;
     }
 
     @Override
@@ -49,6 +55,13 @@ public class ProjectVersionVisibilityService extends VisibilityService<ProjectVe
     @Override
     void insertNewVisibilityEntry(ProjectVersionVisibilityChangeTable visibilityTable) {
         visibilityDAO.insert(visibilityTable);
+    }
+
+    @Override
+    protected void postUpdate(@Nullable ProjectVersionTable model) {
+        if (model != null) {
+            jobService.save(new UpdateDiscourseProjectTopicJob(model.getProjectId()));
+        }
     }
 
     @Override

@@ -4,9 +4,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import io.papermc.hangar.model.api.project.ProjectNamespace;
-import io.papermc.hangar.model.internal.projects.HangarProject;
-import io.papermc.hangar.model.internal.versions.HangarVersion;
+import io.papermc.hangar.model.db.projects.ProjectTable;
+import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 
 public class DiscourseFormatter {
 
@@ -29,24 +28,24 @@ public class DiscourseFormatter {
         }
     }
 
-    public static String formatProjectTitle(HangarProject project) {
+    public static String formatProjectTitle(ProjectTable project) {
         return project.getName() + (project.getDescription() != null && !project.getDescription().isBlank() ? " - " + project.getDescription() : "");
     }
 
-    public static String formatProjectTopic(HangarProject project, String content) {
-        return String.format(PROJECT_TOPIC, project.getName(), namespaceToUrl(project.getNamespace()), content);
+    public static String formatProjectTopic(ProjectTable project, String content) {
+        return String.format(PROJECT_TOPIC, project.getName(), namespaceToUrl(project), content);
     }
 
-    public static String formatVersionRelease(HangarProject project, HangarVersion version, String content) {
-        return String.format(VERSION_RELEASE, project.getName(), namespaceToUrl(project.getNamespace()), versionToUrl(project, version), content == null ? "*No description given*" : content);
+    public static String formatVersionRelease(ProjectTable project, ProjectVersionTable version, String content) {
+        return String.format(VERSION_RELEASE, project.getName(), namespaceToUrl(project), versionToUrl(project, version), content == null ? "*No description given*" : content);
     }
 
-    private static String namespaceToUrl(ProjectNamespace namespace) {
-        return base() + "/" + namespace.getOwner() + "/" + namespace.getSlug();
+    private static String namespaceToUrl(ProjectTable project) {
+        return base() + "/" + project.getOwnerName() + "/" + project.getSlug();
     }
 
-    private static String versionToUrl(HangarProject project, HangarVersion version) {
-        return namespaceToUrl(project.getNamespace()) + "/versions/" +  version.getName();
+    private static String versionToUrl(ProjectTable project, ProjectVersionTable version) {
+        return namespaceToUrl(project) + "/versions/" +  version.getName();
     }
 
     private static String base() {

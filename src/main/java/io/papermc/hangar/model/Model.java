@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public abstract class Model {
 
-    protected final OffsetDateTime createdAt;
+    protected OffsetDateTime createdAt;
 
     public Model(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
