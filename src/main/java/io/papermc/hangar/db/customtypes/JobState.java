@@ -13,6 +13,10 @@ public class JobState extends PGobject {
 
     private String value;
 
+    public JobState() {
+        //
+    }
+
     public JobState(String value) {
         setType("job_state");
         this.value = value;

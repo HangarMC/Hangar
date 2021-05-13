@@ -56,6 +56,8 @@ public class HangarConfig {
     public QueueConfig queue;
     @NestedConfigurationProperty
     public DiscourseConfig discourse;
+    @NestedConfigurationProperty
+    public JobsConfig jobs;
 
     @Component
     public static class Sponsor {
@@ -89,7 +91,7 @@ public class HangarConfig {
     }
 
     @Autowired
-    public HangarConfig(FakeUserConfig fakeUser, HomepageConfig homepage, ChannelsConfig channels, PagesConfig pages, ProjectsConfig projects, UserConfig user, OrganizationsConfig org, ApiConfig api, SSOConfig sso, HangarSecurityConfig security, QueueConfig queue, DiscourseConfig discourse) {
+    public HangarConfig(FakeUserConfig fakeUser, HomepageConfig homepage, ChannelsConfig channels, PagesConfig pages, ProjectsConfig projects, UserConfig user, OrganizationsConfig org, ApiConfig api, SSOConfig sso, HangarSecurityConfig security, QueueConfig queue, DiscourseConfig discourse, JobsConfig jobs) {
         this.fakeUser = fakeUser;
         this.homepage = homepage;
         this.channels = channels;
@@ -102,6 +104,7 @@ public class HangarConfig {
         this.security = security;
         this.queue = queue;
         this.discourse = discourse;
+        this.jobs = jobs;
     }
 
     public void checkDev() {

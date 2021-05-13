@@ -9,6 +9,8 @@ import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.db.visibility.VisibilityChangeTable;
 import io.papermc.hangar.service.PermissionService;
+import io.papermc.hangar.service.internal.JobService;
+
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,10 +57,15 @@ abstract class VisibilityService<M extends Table & ModelVisible & ProjectIdentif
         if (model == null) {
             return null;
         }
-        logger.debug("Checking visibility of " + model + " User: " + SecurityContextHolder.getContext().getAuthentication());
+        logger.debug("Checking visibility of {} User: {}", model, SecurityContextHolder.getContext().getAuthentication());
+
+        if (SecurityContextHolder.getContext().getAuthentication() instanceof JobService.JobAuthentication) {
+            return model;
+        }
+
         Permission perms = permissionService.getProjectPermissions(getHangarUserId(), model.getProjectId());
         if (!perms.has(Permission.SeeHidden) && !perms.has(Permission.IsProjectMember) && model.getVisibility() != Visibility.PUBLIC) {
-            logger.debug("Not visible. Perms: " + perms + " Visibility: " + model.getVisibility());
+            logger.debug("Not visible. Perms: {} Visibility: {}", perms, model.getVisibility());
             return null;
         }
         return model;

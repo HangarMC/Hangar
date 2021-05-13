@@ -12,6 +12,7 @@ import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.discourse.DiscourseError;
 import io.papermc.hangar.model.internal.discourse.DiscoursePost;
+import io.papermc.hangar.model.internal.job.JobException;
 import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.service.internal.projects.ProjectPageService;
@@ -64,13 +65,13 @@ public class DiscourseService {
 
         DiscoursePost post = api.createTopic(project.getOwnerName(), title, content, config.getCategory());
         if (post == null) {
-            throw new DiscourseError("project post wasn't created");
+            throw new JobException("project post wasn't created " + project.getProjectId(), "sanity_check");
         }
         if (!post.isTopic()) {
-            throw new DiscourseError("project post isn't a topic?!");
+            throw new JobException("project post isn't a topic?! " +  project.getProjectId(), "sanity_check");
         }
         if (!post.getUsername().equals(project.getOwnerName())) {
-            throw new DiscourseError("project post user isn't owner?!");
+            throw new JobException("project post user isn't owner?! " +  project.getProjectId(), "sanity_check");
         }
 
         projectService.saveDiscourseData(project.getProjectId(), post.getTopicId(), post.getId());
@@ -92,10 +93,10 @@ public class DiscourseService {
         Objects.requireNonNull(content, "No content");
         ProjectTable projectTable = projectService.getProjectTable(projectId);
         if (projectTable == null) {
-            throw new DiscourseError("No project to post to");
+            throw new JobException("No project to post to", "project_not_found");
         }
         if (projectTable.getTopicId() == null) {
-            throw new DiscourseError("No topic to post to");
+            throw new JobException("No topic to post to", "topic_not_found");
         }
         postDiscussionReply(projectTable.getTopicId(), poster, content);
     }
