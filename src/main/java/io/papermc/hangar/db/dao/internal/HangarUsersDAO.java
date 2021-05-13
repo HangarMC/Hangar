@@ -29,12 +29,10 @@ public interface HangarUsersDAO {
 
     @SqlUpdate("DELETE FROM project_stars WHERE user_id = :userId AND project_id = :projectId")
     void setNotStarred(long projectId, long userId);
-    // TODO useful to have a un-star all for users
 
     @SqlUpdate("INSERT INTO project_watchers VALUES (:projectId, :userId)")
     void setWatching(long projectId, long userId);
 
     @SqlUpdate("DELETE FROM project_watchers WHERE project_id = :projectId AND user_id = :userId")
     void setNotWatching(long projectId, long userId);
-    // TODO useful to have an un-watch all for users
 }

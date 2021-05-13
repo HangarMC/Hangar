@@ -62,15 +62,15 @@ public class ProjectsApiService extends HangarComponent {
                 relevance = "ts_rank(hp.search_words, websearch_to_tsquery('english', :query)) DESC";
             }
             String orderingFirstHalf;
-            // 1483056000 is the Ore epoch TODO change to hangar epoch
+            // 1609459200 is the hangar epoch
             // 86400 seconds to days
             // 604800‬ seconds to weeks
             switch(sort){
                 case STARS: orderingFirstHalf = "hp.stars * "; break;
                 case DOWNLOADS: orderingFirstHalf ="(hp.downloads / 100) * "; break;
                 case VIEWS: orderingFirstHalf ="(hp.views / 200) *"; break;
-                case NEWEST: orderingFirstHalf ="((EXTRACT(EPOCH FROM hp.created_at) - 1483056000) / 86400) *"; break;
-                case UPDATED: orderingFirstHalf ="((EXTRACT(EPOCH FROM hp.last_updated) - 1483056000) / 604800) *"; break;
+                case NEWEST: orderingFirstHalf ="((EXTRACT(EPOCH FROM hp.created_at) - 1609459200) / 86400) *"; break;
+                case UPDATED: orderingFirstHalf ="((EXTRACT(EPOCH FROM hp.last_updated) - 1609459200) / 604800) *"; break;
                 case ONLY_RELEVANCE: orderingFirstHalf = ""; break;
                 case RECENT_DOWNLOADS : orderingFirstHalf ="hp.recent_views *"; break;
                 case RECENT_VIEWS: orderingFirstHalf ="hp.recent_downloads *"; break;

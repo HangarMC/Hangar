@@ -45,7 +45,6 @@ public class MultiHangarApiException extends ResponseStatusException {
             gen.writeBooleanField("isHangarApiException", true);
             gen.writeArrayFieldStart("exceptions");
             for (HangarApiException exception : value.exceptions) {
-                // TODO for some reason, can't use serializers.defaultSerializeValue
                 String message = exception.getReason();
                 if (message == null || message.isBlank()) {
                     message = exception.getStatus().getReasonPhrase();

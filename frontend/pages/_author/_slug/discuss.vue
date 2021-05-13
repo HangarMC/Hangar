@@ -1,21 +1,28 @@
 <template>
     <div>
-        <div id="discourse-comments">
-            <iframe
-                id="discourse-embed-frame"
-                ref="iframe"
-                :src="url"
-                referrerpolicy="no-referrer-when-downgrade"
-                sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
-            ></iframe>
-        </div>
-        <div v-if="isLoggedIn">
-            <MarkdownEditor ref="editor" saveable editing :cancellable="false" :deletable="false" @save="postReply"></MarkdownEditor>
-        </div>
-        <div v-else>
-            <a @click="$auth.login($route.fullPath)">{{ $t('project.discuss.login') }}</a>
-            {{ $t('project.discuss.toReply') }}
-        </div>
+        <template v-if="project.topicId">
+            <div id="discourse-comments">
+                <iframe
+                    id="discourse-embed-frame"
+                    ref="iframe"
+                    :src="url"
+                    referrerpolicy="no-referrer-when-downgrade"
+                    sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
+                ></iframe>
+            </div>
+            <div v-if="isLoggedIn">
+                <MarkdownEditor ref="editor" saveable editing :cancellable="false" :deletable="false" @save="postReply"></MarkdownEditor>
+            </div>
+            <div v-else>
+                <a @click="$auth.login($route.fullPath)">{{ $t('project.discuss.login') }}</a>
+                {{ $t('project.discuss.toReply') }}
+            </div>
+        </template>
+        <template v-else>
+            <v-alert type="info">
+                {{ $t('project.discuss.noTopic') }}
+            </v-alert>
+        </template>
     </div>
 </template>
 
@@ -36,8 +43,13 @@ interface DiscourseEmbed {
     components: { MarkdownEditor },
 })
 export default class ProjectDiscussPage extends HangarProjectMixin {
-    // TODO get topic id from project, get discourse url from backend
-    DE: DiscourseEmbed = { discourseUrl: 'http://localhost/', topicId: 13, discourseUserName: null, discourseEmbedUrl: null };
+    // TODO get discourse url from backend
+    DE: DiscourseEmbed = {
+        discourseUrl: 'http://localhost/',
+        topicId: this.project.topicId,
+        discourseUserName: null,
+        discourseEmbedUrl: null,
+    };
 
     $refs!: {
         iframe: any;
@@ -48,12 +60,12 @@ export default class ProjectDiscussPage extends HangarProjectMixin {
         window.addEventListener('message', this.postMessageReceived, false);
     }
 
-    // TODO implement
     async postReply(message: string) {
         await this.$api.requestInternal('discourse/' + this.project.id + '/comment', true, 'POST', { content: message });
         this.$refs.editor.isEditing = true;
         this.$refs.editor.loading.save = false;
         this.$refs.editor.rawEdited = '';
+        this.$util.success(this.$t('project.discuss.send'));
     }
 
     get url() {

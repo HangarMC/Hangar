@@ -305,6 +305,8 @@ const msgs: LocaleMessageObject = {
         discuss: {
             login: 'Log in',
             toReply: 'to reply to this discussion',
+            noTopic: 'There is no discussion for this project',
+            send: 'Reply posted!',
         },
     },
     page: {

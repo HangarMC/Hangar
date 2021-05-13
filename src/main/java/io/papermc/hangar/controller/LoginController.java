@@ -84,6 +84,10 @@ public class LoginController extends HangarComponent {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void invalidateRefreshToken(@CookieValue(name = SecurityConfig.AUTH_NAME_REFRESH_COOKIE) String refreshToken) {
         tokenService.invalidateToken(refreshToken);
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
     }
 
     // TODO needed?
@@ -93,13 +97,6 @@ public class LoginController extends HangarComponent {
             throw new HangarApiException("nav.user.error.fakeUserEnabled", "Verififcation");
         }
         return redirectToSso(ssoService.getVerifyUrl(config.getBaseUrl() + returnPath));
-    }
-
-    // TODO needed?
-    @GetMapping("/logout")
-    public ModelAndView logout(HttpSession session) {
-        session.invalidate();
-        return Routes.getRedirectToUrl(config.getAuthUrl() + "/accounts/logout/");
     }
 
     @GetMapping("/signup")

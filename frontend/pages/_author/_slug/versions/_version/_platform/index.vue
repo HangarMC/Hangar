@@ -64,8 +64,8 @@
                         </v-btn>
                     </template>
                     <v-list>
-                        <!--todo route for user action log-->
-                        <v-list-item v-if="$perms.canViewLogs" nuxt :to="`ddd`">
+                        <!--todo route for user action log, with filtering-->
+                        <v-list-item v-if="$perms.canViewLogs" nuxt :to="`/admin/log`">
                             <v-list-item-title>
                                 {{ $t('version.page.userAdminLogs') }}
                             </v-list-item-title>

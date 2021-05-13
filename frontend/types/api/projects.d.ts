@@ -68,6 +68,8 @@ declare module 'hangar-api' {
         lastUpdated: Date;
         userActions: UserActions;
         settings: ProjectSettings;
+        postId: number;
+        topicId: number;
         promotedVersions: PromotedVersion[];
     }
 }
