@@ -40,7 +40,7 @@ public class DiscourseError extends RuntimeException {
     public static class NotAvailableError extends DiscourseError {
         @Override
         public String getMessage() {
-            return "Discourse ins't available";
+            return "Discourse isn't available";
         }
     }
 

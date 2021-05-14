@@ -60,6 +60,7 @@ public class JobService extends HangarComponent {
     }
 
     public void checkAndProcess() {
+        if (!config.discourse.isEnabled()) { return; }
         long awaitingJobs = jobsDAO.countAwaitingJobs();
         logger.debug("Found {} awaiting jobs", awaitingJobs);
         if (awaitingJobs > 0) {
@@ -75,6 +76,7 @@ public class JobService extends HangarComponent {
     }
 
     public void save(Job job) {
+        if (!config.discourse.isEnabled()) { return; }
         jobsDAO.save(job.toTable());
     }
 

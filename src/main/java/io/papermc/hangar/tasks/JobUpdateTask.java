@@ -17,7 +17,7 @@ public class JobUpdateTask {
         this.service = service;
     }
 
-    @Scheduled(fixedRateString = "${hangar.jobs.check-interval}", initialDelayString = "${hangar.jobs.check-interval}")
+    @Scheduled(fixedRateString = "#{@hangarConfig.jobs.checkInterval.toMillis()}", initialDelayString = "#{@hangarConfig.jobs.checkInterval.toMillis()}")
     public void checkAndProcess() {
         service.checkAndProcess();
     }

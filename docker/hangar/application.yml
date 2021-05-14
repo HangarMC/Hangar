@@ -137,7 +137,14 @@ hangar:
       - "github.com"
 
   discourse:
-    enabled: true
+    enabled: false
     url: "http://localhost:80/"
     admin-user: "admin"
     api-key: "4657cc5e3096e505903b59eb789005eb3f207d0c61f62212bf929268740c1585"
+
+  jobs:
+    check-interval: 30s
+    unknown-error-timeout: 15
+    status-error-timeout: 5
+    not-available-timeout: 2
+    max-concurrent-jobs: 32

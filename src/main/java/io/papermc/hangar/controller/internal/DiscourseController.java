@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller.internal;
 
+import io.papermc.hangar.exceptions.HangarApiException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,9 @@ public class DiscourseController extends HangarComponent {
     @PostMapping("/{projectId}/comment")
     @ResponseBody
     public String createPost(@PathVariable("projectId") long projectId, @RequestBody Map<String, String> content) {
+        if (!config.discourse.isEnabled()) {
+            throw new HangarApiException("Discourse is NOT enabled!");
+        }
         jobService.save(new PostDiscourseReplyJob(projectId, getHangarPrincipal().getName(), content.get("content")));
         return "dum";
     }
