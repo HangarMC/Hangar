@@ -1,5 +1,5 @@
-*A new version has been released for **[{0}]({1})**, it is available for download [here]({2}).*
+*A new version has been released for **[%s](%s)**, it is available for download [here](%s).*
 
 -----
 
-{3}
+%s

@@ -1,5 +1,6 @@
 package io.papermc.hangar.service.internal.discourse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -10,13 +11,13 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
-import io.papermc.hangar.model.internal.discourse.DiscourseError;
 import io.papermc.hangar.model.internal.discourse.DiscoursePost;
 import io.papermc.hangar.model.internal.job.JobException;
 import io.papermc.hangar.model.internal.projects.ExtendedProjectPage;
 import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.service.internal.projects.ProjectPageService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
+import io.papermc.hangar.service.internal.versions.VersionService;
 
 /**
  * Never call these methods in here directly, they need to be called as part of a job, with retry and shit
@@ -28,14 +29,19 @@ public class DiscourseService {
     private final DiscourseConfig config;
     private final ProjectPageService pageService;
     private final ProjectService projectService;
+    private final VersionService versionService;
     private final ProjectPageService projectPageService;
+    private final DiscourseFormatter discourseFormatter;
 
-    public DiscourseService(DiscourseApi api, DiscourseConfig config, ProjectPageService pageService, ProjectService projectService, ProjectPageService projectPageService) {
+    @Autowired
+    public DiscourseService(DiscourseApi api, DiscourseConfig config, ProjectPageService pageService, ProjectService projectService, VersionService versionService, ProjectPageService projectPageService, DiscourseFormatter discourseFormatter) {
         this.api = api;
         this.config = config;
         this.pageService = pageService;
         this.projectService = projectService;
+        this.versionService = versionService;
         this.projectPageService = projectPageService;
+        this.discourseFormatter = discourseFormatter;
     }
 
     private String getHomepageContent(ProjectTable project) {
@@ -60,8 +66,8 @@ public class DiscourseService {
     }
 
     public void createProjectTopic(ProjectTable project) {
-        String title = DiscourseFormatter.formatProjectTitle(project);
-        String content = DiscourseFormatter.formatProjectTopic(project, getHomepageContent(project));
+        String title = discourseFormatter.formatProjectTitle(project);
+        String content = discourseFormatter.formatProjectTopic(project, getHomepageContent(project));
 
         DiscoursePost post = api.createTopic(project.getOwnerName(), title, content, config.getCategory());
         if (post == null) {
@@ -74,12 +80,12 @@ public class DiscourseService {
             throw new JobException("project post user isn't owner?! " +  project.getProjectId(), "sanity_check");
         }
 
-        projectService.saveDiscourseData(project.getProjectId(), post.getTopicId(), post.getId());
+        projectService.saveDiscourseData(project, post.getTopicId(), post.getId());
     }
 
     public void updateProjectTopic(ProjectTable project) {
-        String title = DiscourseFormatter.formatProjectTitle(project);
-        String content = DiscourseFormatter.formatProjectTopic(project, getHomepageContent(project));
+        String title = discourseFormatter.formatProjectTitle(project);
+        String content = discourseFormatter.formatProjectTopic(project, getHomepageContent(project));
 
         api.updateTopic(project.getOwnerName(), project.getTopicId(), title, project.getVisibility() == Visibility.PUBLIC ? config.getCategory() : config.getCategoryDeleted());
         api.updatePost(project.getOwnerName(), project.getPostId(), content);
@@ -102,17 +108,17 @@ public class DiscourseService {
     }
 
     public void createVersionPost(ProjectTable project, ProjectVersionTable version) {
-        String content = DiscourseFormatter.formatVersionRelease(project, version, version.getDescription());
+        String content = discourseFormatter.formatVersionRelease(project, version, version.getDescription());
 
         DiscoursePost post = postDiscussionReply(project.getTopicId(), project.getOwnerName(), content);
-        projectService.saveDiscourseData(project.getProjectId(), project.getTopicId(), post.getId());
+        versionService.saveDiscourseData(version, post.getId());
     }
 
     public void updateVersionPost(ProjectTable project, ProjectVersionTable version) {
         Objects.requireNonNull(project.getTopicId(), "No topic ID set");
         Objects.requireNonNull(version.getPostId(), "No post ID set");
 
-        String content = DiscourseFormatter.formatVersionRelease(project, version, version.getDescription());
+        String content = discourseFormatter.formatVersionRelease(project, version, version.getDescription());
 
         api.updatePost(project.getOwnerName(), version.getPostId().intValue(), content);
     }

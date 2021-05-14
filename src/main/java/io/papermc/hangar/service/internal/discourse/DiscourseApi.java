@@ -5,13 +5,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
@@ -30,6 +31,7 @@ public class DiscourseApi {
     private final RestTemplate restTemplate;
     private final DiscourseConfig config;
 
+    @Autowired
     public DiscourseApi(RestTemplate restTemplate, DiscourseConfig config) {
         this.restTemplate = restTemplate;
         this.config = config;
@@ -89,7 +91,9 @@ public class DiscourseApi {
                 Object body = response.getBody();
                 throw createFromStatus(response.getStatusCode(), body != null ? body.toString() : null);
             }
-        } catch (RestClientException ex) {
+        } catch (HttpStatusCodeException ex) {
+            throw createFromStatus(ex.getStatusCode(), ex.getResponseBodyAsString());
+        } catch (Exception ex) {
             throw new DiscourseError.UnknownError("Unknown discourse error, " + ex.getMessage(), "unknown", Map.of());
         }
     }
@@ -109,6 +113,8 @@ public class DiscourseApi {
                 logger.warn("Received 429 from Discourse with no body. Assuming wait time of 12 hours");
                 return new DiscourseError.RateLimitError(Duration.ofHours(12));
             }
+        } else if (status.equals(HttpStatus.UNPROCESSABLE_ENTITY)) {
+            return new DiscourseError.NotProcessable(message);
         } else {
             return new DiscourseError.StatusError(status, message);
         }

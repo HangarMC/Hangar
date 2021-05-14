@@ -163,11 +163,7 @@ public class ProjectService extends HangarComponent {
         userActionLogService.project(LogAction.PROJECT_SETTINGS_CHANGED.create(ProjectContext.of(projectTable.getId()), "", ""));
     }
 
-    public void saveDiscourseData(long projectId, long topicId, long postId) {
-        ProjectTable projectTable = getProjectTable(projectId);
-        if (projectTable == null) {
-            return;
-        }
+    public void saveDiscourseData(ProjectTable projectTable, long topicId, long postId) {
         projectTable.setTopicId(topicId);
         projectTable.setPostId(postId);
         projectsDAO.update(projectTable);

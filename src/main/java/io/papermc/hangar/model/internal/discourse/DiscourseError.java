@@ -70,4 +70,19 @@ public class DiscourseError extends RuntimeException {
             return extras;
         }
     }
- }
+
+    public static class NotProcessable extends DiscourseError {
+
+        private final String message;
+
+        public NotProcessable(String message) {
+            super();
+            this.message = message;
+        }
+
+        @Override
+        public String getMessage() {
+            return message;
+        }
+    }
+}

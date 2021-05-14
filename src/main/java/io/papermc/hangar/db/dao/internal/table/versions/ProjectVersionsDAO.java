@@ -29,7 +29,7 @@ public interface ProjectVersionsDAO {
 
     @GetGeneratedKeys
     @SqlUpdate("UPDATE project_versions SET visibility = :visibility, reviewer_id = :reviewerId, approved_at = :approvedAt, description = :description, " +
-            "review_state = :reviewState, external_url = :externalUrl " +
+            "review_state = :reviewState, external_url = :externalUrl, post_id = :postId " +
             "WHERE id = :id")
     ProjectVersionTable update(@BindBean ProjectVersionTable projectVersionsTable);
 

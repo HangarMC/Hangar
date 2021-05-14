@@ -120,4 +120,8 @@ public class VersionService extends HangarComponent {
         }
     }
 
+    public void saveDiscourseData(ProjectVersionTable version, long postId) {
+        version.setPostId(postId);
+        projectVersionsDAO.update(version);
+    }
 }

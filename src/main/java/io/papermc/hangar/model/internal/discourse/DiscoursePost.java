@@ -10,17 +10,25 @@ import java.util.Objects;
 public class DiscoursePost {
 
     private long id;
+    @JsonProperty("topic_id")
     private long topicId;
+    @JsonProperty("user_id")
     private long userId;
     private String username;
+    @JsonProperty("topic_slug")
     private String topicSlug;
+    @JsonProperty("created_at")
     private OffsetDateTime createdAt;
+    @JsonProperty("updated_at")
     private OffsetDateTime updatedAt;
     @Nullable
+    @JsonProperty("deleted_at")
     private OffsetDateTime deletedAt;
     @JsonProperty("cooked")
     private String content;
+    @JsonProperty("reply_count")
     private long replyCount;
+    @JsonProperty("post_number")
     private long postNumber;
 
     public DiscoursePost() {

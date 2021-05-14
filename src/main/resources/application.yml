@@ -170,3 +170,4 @@ logging:
     root: INFO
 #    org.springframework: DEBUG
     io.papermc.hangar.service.internal.JobService: DEBUG
+    io.papermc.hangar.config.WebConfig.LoggingInterceptor: DEBUG

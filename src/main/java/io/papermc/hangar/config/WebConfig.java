@@ -3,9 +3,10 @@ package io.papermc.hangar.config;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesAnnotationIntrospector;
-import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.config.jackson.HangarAnnotationIntrospector;
+
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +16,14 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpRequestExecution;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -25,13 +34,23 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.resource.ResourceUrlEncodingFilter;
 
-import javax.servlet.Filter;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import javax.servlet.Filter;
+
+import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.config.jackson.HangarAnnotationIntrospector;
 
 @Configuration
 public class WebConfig extends WebMvcConfigurationSupport {
+
+    private static Logger interceptorLogger = LoggerFactory.getLogger(LoggingInterceptor.class); // NO-SONAR
 
     private final HangarConfig hangarConfig;
     private final ObjectMapper mapper;
@@ -103,10 +122,38 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Bean
     public RestTemplate restTemplate(List<HttpMessageConverter<?>> messageConverters) {
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate;
+        if (interceptorLogger.isDebugEnabled()) {
+            ClientHttpRequestFactory factory = new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory());
+            restTemplate = new RestTemplate(factory);
+            restTemplate.setInterceptors(List.of(new LoggingInterceptor()));
+        } else {
+            restTemplate = new RestTemplate();
+        }
         super.addDefaultHttpMessageConverters(messageConverters);
         restTemplate.setMessageConverters(messageConverters);
         return restTemplate;
+    }
+
+    static class LoggingInterceptor implements ClientHttpRequestInterceptor {
+
+        @Override
+        public ClientHttpResponse intercept(HttpRequest req, byte[] reqBody, ClientHttpRequestExecution ex) throws IOException {
+            if (interceptorLogger.isDebugEnabled()) {
+                interceptorLogger.debug("Request {}, body {}, headers {}", req.getMethod() + " " + req.getURI(), new String(reqBody, StandardCharsets.UTF_8), req.getHeaders());
+            }
+            ClientHttpResponse response = ex.execute(req, reqBody);
+            if (interceptorLogger.isDebugEnabled()) {
+                int code = response.getRawStatusCode();
+                HttpStatus status = HttpStatus.resolve(code);
+
+                InputStreamReader isr = new InputStreamReader(response.getBody(), StandardCharsets.UTF_8);
+                String body = new BufferedReader(isr).lines().collect(Collectors.joining("\n"));
+
+                interceptorLogger.debug("Response {}, body {}, headers {}", (status != null ? status : code), body, response.getHeaders());
+            }
+            return response;
+        }
     }
 
     @Bean

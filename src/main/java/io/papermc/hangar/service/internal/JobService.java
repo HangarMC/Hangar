@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -116,6 +117,13 @@ public class JobService extends HangarComponent {
             jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(config.jobs.getUnknownErrorTimeout()).plusSeconds(5), error, "unknown_error" + unknownError.getDescriptor());
         } catch (DiscourseError.NotAvailableError notAvailableError) {
             jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(config.jobs.getNotAvailableTimeout()).plusSeconds(5), "Not Available", "not_available");
+        } catch (DiscourseError.NotProcessable notProcessable) {
+            logger.debug("job failed to process discourse job: {} {}", notProcessable.getMessage(), jobTable);
+            String error = "Encountered error when processing discourse job\n" +
+                           "Job: " + jobTable.getId() + " " + jobTable.getJobType() + " " + jobTable.getJobProperties() + "\n" +
+                           "Type: not_processable\n" +
+                           "Message: " + notProcessable.getMessage();
+            jobsDAO.fail(jobTable.getId(), error, "not_processable");
         } catch (JobException jobException) {
             logger.debug("job failed to process: {} {}", jobException.getMessage(), jobTable);
             String error = "Encountered error when processing job\n" +
@@ -159,8 +167,8 @@ public class JobService extends HangarComponent {
                 }
                 if (project.getTopicId() == null) {
                     discourseService.createProjectTopic(project);
-                }
-                if (project.getPostId() == null) {
+                    throw new DiscourseError.RateLimitError(Duration.ofMinutes(2));
+                } else if (version.getPostId() == null) {
                     discourseService.createVersionPost(project, version);
                 } else {
                     discourseService.updateVersionPost(project, version);
@@ -172,7 +180,7 @@ public class JobService extends HangarComponent {
                 break;
             case POST_DISCOURSE_REPLY:
                 PostDiscourseReplyJob postDiscourseReplyJob = PostDiscourseReplyJob.loadFromTable(job);
-                discourseService.createComment(postDiscourseReplyJob.getProjectId(), postDiscourseReplyJob.getPoster(), postDiscourseReplyJob.getPoster());
+                discourseService.createComment(postDiscourseReplyJob.getProjectId(), postDiscourseReplyJob.getPoster(), postDiscourseReplyJob.getContent());
                 break;
             default:
                 throw new JobException("Unknown job type " + job, "unknown_job_type");

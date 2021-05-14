@@ -26,7 +26,7 @@ public interface ProjectsDAO {
     @GetGeneratedKeys
     @SqlUpdate("UPDATE projects SET name = :name, slug = :slug, category = :category, keywords = :keywords, issues = :issues, source = :source, " +
             "license_name = :licenseName, license_url = :licenseUrl, forum_sync = :forumSync, description = :description, visibility = :visibility, " +
-            "support = :support, homepage = :homepage, donation_enabled = :donationEnabled, donation_email = :donationEmail, " +
+            "support = :support, homepage = :homepage, post_id = :postId, topic_id = :topicId, donation_enabled = :donationEnabled, donation_email = :donationEmail, " +
             "donation_default_amount = :donationDefaultAmount, donation_onetime_amounts = :donationOnetimeAmounts, donation_monthly_amounts = :donationMonthlyAmounts WHERE id = :id")
     ProjectTable update(@BindBean ProjectTable project);
 
