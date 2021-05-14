@@ -108,6 +108,7 @@ public interface VersionsApiDAO {
             "       pv.external_url," +
             "       u.name author," +
             "       pv.review_state," +
+            "       pv.post_id," +
             "       array(SELECT DISTINCT rpv.platform FROM recommended_project_versions rpv WHERE rpv.version_id = pv.id ORDER BY rpv.platform) as recommended" +
             "   FROM project_versions pv" +
             "       JOIN projects p ON pv.project_id = p.id" +

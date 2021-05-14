@@ -33,6 +33,7 @@
         <freemarker-java8.version>2.0.0</freemarker-java8.version>
         <flexmark-all.version>0.62.2</flexmark-all.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
+        <org-json.version>20210307</org-json.version>
 
         <apache-commons-lang.version>3.12.0</apache-commons-lang.version>
         <jwt.version>3.15.0</jwt.version>
@@ -97,6 +98,12 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${apache-commons-lang.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>${org-json.version}</version>
         </dependency>
 
         <!--SpringFox dependencies -->
