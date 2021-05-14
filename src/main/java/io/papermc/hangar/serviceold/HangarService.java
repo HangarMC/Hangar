@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 public abstract class HangarService {
 
-    @Autowired
+//    @Autowired
     protected Supplier<Optional<UsersTable>> currentUser;
 
     /**

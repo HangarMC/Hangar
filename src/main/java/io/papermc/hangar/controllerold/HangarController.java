@@ -11,7 +11,7 @@ import io.papermc.hangar.db.modelold.UsersTable;
 
 public abstract class HangarController {
 
-    @Autowired
+
     protected Supplier<Optional<UsersTable>> currentUser;
 
     protected UsersTable getCurrentUser() {

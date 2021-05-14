@@ -1,14 +1,10 @@
 package io.papermc.hangar.modelold.viewhelpers;
 
-import io.papermc.hangar.db.modelold.ProjectFlagsTable;
 import io.papermc.hangar.model.common.projects.Visibility;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
-import org.jdbi.v3.core.mapper.Nested;
 
 public class ProjectFlag {
 
-    @Nested
-    private ProjectFlagsTable flag;
     private String reportedBy;
     private String resolvedBy;
     private String projectOwnerName;
@@ -16,19 +12,6 @@ public class ProjectFlag {
     private Visibility projectVisibility;
 
     public ProjectFlag() { }
-
-    public ProjectFlag with(ProjectFlagsTable flag) {
-        this.flag = flag;
-        return this;
-    }
-
-    public ProjectFlagsTable getFlag() {
-        return flag;
-    }
-
-    public void setFlag(ProjectFlagsTable flag) {
-        this.flag = flag;
-    }
 
     public String getReportedBy() {
         return reportedBy;

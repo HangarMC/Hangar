@@ -31,9 +31,4 @@ public class RequestUtil {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
-
-    @Deprecated
-    public static Map<String, String> getPathParams(HttpServletRequest request) {
-        return Optional.ofNullable((Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)).orElse(new HashMap<>());
-    }
 }

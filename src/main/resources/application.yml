@@ -71,7 +71,7 @@ hangar:
       link: https://minidigger.me
 
   homepage:
-    update-interval: 10m
+    update-interval: "PT10M"
 
   channels:
     max-name-len: 15
@@ -112,7 +112,6 @@ hangar:
 
   users:
     max-tagline-len: 100
-    author-page-size: 25
     staff-roles:
       - Hangar_Admin
       - Hangar_Mod

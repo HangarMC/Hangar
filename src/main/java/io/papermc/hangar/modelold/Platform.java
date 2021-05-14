@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.papermc.hangar.db.dao.HangarDao;
-import io.papermc.hangar.db.daoold.PlatformVersionsDao;
 import io.papermc.hangar.model.common.TagColor;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,6 @@ public enum Platform {
     private final int priority;
     private final TagColor tagColor;
     private final String url;
-    private HangarDao<PlatformVersionsDao> platformVersionsDao;
 
     Platform(String name, PlatformCategory platformCategory, int priority, TagColor tagColor, String url) {
         this.name = name;
@@ -57,14 +55,6 @@ public enum Platform {
 
     public String getUrl() {
         return url;
-    }
-
-    public List<String> getPossibleVersions() {
-        return platformVersionsDao.get().getVersionsForPlatform(this.ordinal());
-    }
-
-    private void setPlatformVersionsDao(HangarDao<PlatformVersionsDao> platformVersionsDao) {
-        this.platformVersionsDao = platformVersionsDao;
     }
 
     private static final Platform[] VALUES = Platform.values();
@@ -111,25 +101,5 @@ public enum Platform {
         public List<Platform> getPlatforms() {
             return Arrays.stream(Platform.getValues()).filter(p -> p.platformCategory == this).collect(Collectors.toList());
         }
-    }
-
-    @Component
-    @Deprecated(forRemoval = true)
-    public static class PlatformInjector {
-
-        private final HangarDao<PlatformVersionsDao> platformVersionsDao;
-
-        @Autowired
-        public PlatformInjector(HangarDao<PlatformVersionsDao> platformVersionsDao) {
-            this.platformVersionsDao = platformVersionsDao;
-        }
-
-        @PostConstruct
-        public void postConstruct() {
-            for (Platform platform : EnumSet.allOf(Platform.class)) {
-                platform.setPlatformVersionsDao(platformVersionsDao);
-            }
-        }
-
     }
 }

@@ -79,23 +79,6 @@ public class StringUtils {
         return String.format(hangarConfig.security.api.getAvatarUrl(), name);
     }
 
-    @NotNull
-    @Deprecated(forRemoval = true)
-    public static Collection<String> parseKeywords(@Nullable String input) {
-        return input == null ? Set.of() : Set.of(input.split("\\s+"));
-    }
-
-    @Deprecated(forRemoval = true)
-    public static <T extends Throwable> long getVersionId(@NotNull String versionString, T error) throws T {
-        int index = versionString.lastIndexOf('.');
-        try {
-            return Long.parseLong(versionString.substring(index + 1));
-        } catch (NumberFormatException ex) {
-            throw error;
-        }
-
-    }
-
     private static final Pattern LAST_WHOLE_VERSION = Pattern.compile("((?<=,\\s)|^)[0-9.]{2,}(?=-[0-9.]+$)");
     private static final Pattern PREV_HAS_HYPHEN = Pattern.compile("(?<=\\d-)[0-9.]+$");
     private static final Pattern PREV_HAS_COMMA_OR_FIRST = Pattern.compile("((?<=,\\s)|^)[0-9.]+$");

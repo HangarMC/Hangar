@@ -3,19 +3,13 @@ package io.papermc.hangar.service.internal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
@@ -41,8 +35,6 @@ import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.versions.VersionService;
 
 @Service
-@EnableScheduling
-@EnableAutoConfiguration
 public class JobService extends HangarComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(JobService.class);
@@ -67,15 +59,6 @@ public class JobService extends HangarComponent {
         this.executorService = new ThreadPoolExecutor(1, config.jobs.getMaxConcurrentJobs(), 60, TimeUnit.SECONDS, new SynchronousQueue<>());
     }
 
-    public List<JobTable> getErroredJobs() {
-        return jobsDAO.getErroredJobs();
-    }
-
-    public void save(Job job) {
-        jobsDAO.save(job.toTable());
-    }
-
-    @Scheduled(fixedRateString = "${hangar.jobs.check-interval}", initialDelayString = "${hangar.jobs.check-interval}")
     public void checkAndProcess() {
         long awaitingJobs = jobsDAO.countAwaitingJobs();
         logger.debug("Found {} awaiting jobs", awaitingJobs);
@@ -85,6 +68,14 @@ public class JobService extends HangarComponent {
                 executorService.submit(this::process);
             }
         }
+    }
+
+    public List<JobTable> getErroredJobs() {
+        return jobsDAO.getErroredJobs();
+    }
+
+    public void save(Job job) {
+        jobsDAO.save(job.toTable());
     }
 
     public void process() {

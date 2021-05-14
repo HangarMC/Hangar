@@ -9,8 +9,6 @@ import java.util.List;
 @ConfigurationProperties(prefix = "hangar.users")
 public class UserConfig {
     private int maxTaglineLen = 100;
-    @Deprecated(forRemoval = true)
-    private int authorPageSize = 25;
     private List<String> staffRoles = List.of("Hangar_Admin", "Hangar_Mod");
 
     public int getMaxTaglineLen() {
@@ -19,14 +17,6 @@ public class UserConfig {
 
     public void setMaxTaglineLen(int maxTaglineLen) {
         this.maxTaglineLen = maxTaglineLen;
-    }
-
-    public int getAuthorPageSize() {
-        return authorPageSize;
-    }
-
-    public void setAuthorPageSize(int authorPageSize) {
-        this.authorPageSize = authorPageSize;
     }
 
     public List<String> getStaffRoles() {

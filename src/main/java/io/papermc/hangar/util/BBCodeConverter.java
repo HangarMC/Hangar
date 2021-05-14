@@ -1,4 +1,4 @@
-package io.papermc.hangar.utils;
+package io.papermc.hangar.util;
 
 import org.jetbrains.annotations.Nullable;
 

@@ -14,7 +14,7 @@ import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type
 import io.papermc.hangar.service.internal.MarkdownService;
 import io.papermc.hangar.service.internal.projects.ProjectPageService;
 import io.papermc.hangar.util.StringUtils;
-import io.papermc.hangar.utils.BBCodeConverter;
+import io.papermc.hangar.util.BBCodeConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
