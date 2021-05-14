@@ -16,8 +16,8 @@ public class DiscourseFormatter {
 
     private final HangarConfig config;
 
-    private final String projectTopic;
-    private final String versionRelease;
+    private String projectTopic;
+    private String versionRelease;
 
     @Autowired
     public DiscourseFormatter(HangarConfig config) {
@@ -34,7 +34,10 @@ public class DiscourseFormatter {
             projectTopic = Files.readString(Paths.get(resource1.toURI()));
             versionRelease = Files.readString(Paths.get(resource2.toURI()));
         } catch (Exception e) {
-            throw new RuntimeException("Error initing discourse formatter");
+            // TODO better handle this, it seems like staging doesn't have the files or smth, idk
+            projectTopic = "ERROR";
+            versionRelease = "ERROR";
+            e.printStackTrace();
         }
     }
 
