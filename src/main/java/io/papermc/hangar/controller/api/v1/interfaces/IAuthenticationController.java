@@ -11,19 +11,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Api(tags = "Sessions (Authentication)", produces = MediaType.APPLICATION_JSON_VALUE)
-@RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
+@Api(tags = "Authentication", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE)
 public interface IAuthenticationController {
 
     @ApiOperation(
             value = "Creates an API JWT",
             nickname = "authenticate",
-            notes = "Creates a new API JWT. Pass an API key to create an authenticated session. When passing an API key, you should use the scheme `HangarAuth`, and parameter `apikey`. An example would be `Authorization: HangarAuth <apikey>`. The returned JWT should be specified in all following request as the parameter `token`.",
+            notes = "`Log-in` with your API key, in order to be able to call other endpoints authenticated. The returned JWT should be specified in all following request as a header like this `Authorization: HangarAuth your.jwt`.",
             authorizations = @Authorization(value = "Key"),
-            tags = "Sessions (Authentication)"
+            tags = "Authentication"
     )
     @ApiResponses({
             @ApiResponse(code = 200, message = "Ok"),

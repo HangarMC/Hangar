@@ -54,6 +54,8 @@ public interface ProjectsApiDAO {
             "       p.license_url," +
             "       p.keywords," +
             "       p.forum_sync," +
+            "       p.topic_id," +
+            "       p.post_id," +
             "       p.donation_enabled," +
             "       p.donation_email," +
             "       p.donation_default_amount," +

@@ -67,7 +67,7 @@ export default class ApiPage extends HangarComponent {
     .info hgroup.main a {
         display: none;
     }
-    .info {
+    .wrapper .info {
         background-color: unset !important;
         border-color: unset !important;
         margin: 2rem 0;
