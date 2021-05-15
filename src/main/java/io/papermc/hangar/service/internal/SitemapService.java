@@ -58,6 +58,7 @@ public class SitemapService extends HangarComponent {
     public String getUserSitemap(String username) {
         final UserTable userTable = userDAO.getUserTable(username);
         final SitemapGenerator generator = SitemapGenerator.of(config.getBaseUrl());
+        generator.defaultChangeFreqWeekly();
 
         // add all projects
         List<ProjectTable> projects = projectsDAO.getUserProjects(userTable.getId());
@@ -81,12 +82,12 @@ public class SitemapService extends HangarComponent {
                 if (pp.isHome()) {
                     continue;
                 }
-                generator.addPage(path(userTable.getName(), project.getSlug(), pp.getSlug()));
+                generator.addPage(path(userTable.getName(), project.getSlug(), "pages", pp.getSlug()));
             }
         });
 
         // lastly, add user page
-        generator.addPage(WebPage.builder().name(userTable.getName()).changeFreq(ChangeFreq.WEEKLY).build());
+        generator.addPage(WebPage.builder().name(userTable.getName()).build());
 
         return generator.toString();
     }
