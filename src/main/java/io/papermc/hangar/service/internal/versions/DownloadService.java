@@ -57,8 +57,11 @@ public class DownloadService extends HangarComponent {
         ProjectVersionTable pvt = projectVersionsDAO.getProjectVersionTable(author, slug, versionString, platform);
         InetAddress remoteInetAddress = RequestUtil.getRemoteInetAddress(request);
         // check for exisiting token
-        ProjectVersionDownloadWarningTable warning = projectVersionDownloadWarningsDAO.findWarning(remoteInetAddress, pvt.getProjectId());
+        ProjectVersionDownloadWarningTable warning = projectVersionDownloadWarningsDAO.findWarning(remoteInetAddress, pvt.getId());
         if (warning != null) {
+            if (warning.isConfirmed()) {
+                return null;
+            }
             return warning.getToken().toString();
         }
 
@@ -123,11 +126,17 @@ public class DownloadService extends HangarComponent {
         if (pvt.getReviewState() == ReviewState.REVIEWED || (pvt.getExternalUrl() != null && config.security.checkSafe(pvt.getExternalUrl()))) {
             return true;
         }
-        if (token == null) {
-            return false;
+        InetAddress remoteInetAddress = RequestUtil.getRemoteInetAddress(request);
+        if (token == null || token.equals("null")) {
+            ProjectVersionDownloadWarningTable warning = projectVersionDownloadWarningsDAO.findWarning(remoteInetAddress, pvt.getId());
+            if (warning != null && warning.isConfirmed()) {
+                projectVersionUnsafeDownloadsDAO.insert(new ProjectVersionUnsafeDownloadTable(getHangarUserId(), remoteInetAddress));
+                return true;
+            } else {
+                return false;
+            }
         }
 
-        InetAddress remoteInetAddress = RequestUtil.getRemoteInetAddress(request);
         var downloadWarning = projectVersionDownloadWarningsDAO.findWarning(token, remoteInetAddress, pvt.getId());
         if (downloadWarning == null) {
             return false;

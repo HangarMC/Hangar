@@ -179,6 +179,10 @@ public class VersionController extends HangarComponent {
         boolean requiresConfirmation = downloadService.requiresConfirmation(author, slug, versionString, platform);
         if (requiresConfirmation) {
             String token = downloadService.createConfirmationToken(author, slug, versionString, platform);
+            if (token == null) {
+                // null means we already had confirmed, no reason to confirm again
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            }
             return ResponseEntity.status(HttpStatus.PRECONDITION_REQUIRED).body(token);
         }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

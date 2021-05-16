@@ -106,7 +106,7 @@ export default class DownloadButton extends HangarComponent {
     }
 
     copyDownloadUrl() {
-        let url = '';
+        let url;
         if (this.external) {
             url = this.version.externalUrl;
         } else {
@@ -114,9 +114,11 @@ export default class DownloadButton extends HangarComponent {
             const platform = this.platformSelection ? this.selectedPlatform : this.platform.name;
             url = `${window.location.protocol}//${window.location.host}/api/v1/projects/${this.project.namespace.owner}/${this.project.namespace.slug}/versions/${versionString}/${platform}/download`;
         }
-        navigator.clipboard.writeText(url);
-        this.copySuccessful = true;
-        setTimeout(() => (this.copySuccessful = false), 1000);
+        if (url) {
+            navigator.clipboard.writeText(url);
+            this.copySuccessful = true;
+            setTimeout(() => (this.copySuccessful = false), 1000);
+        }
     }
 
     async checkAndDownload() {
@@ -129,7 +131,7 @@ export default class DownloadButton extends HangarComponent {
 
     download() {
         if (this.external) {
-            return window.open(this.version.externalUrl, '_blank');
+            return window.open(this.version.externalUrl || '', '_blank');
         }
         const versionString = this.platformSelection ? 'recommended' : this.version.name;
         const platform = this.platformSelection ? this.selectedPlatform : this.platform.name;
@@ -146,7 +148,7 @@ export default class DownloadButton extends HangarComponent {
             return true;
         }
         if (this.external) {
-            return window.open(this.version.externalUrl, '_blank');
+            return window.open(this.version.externalUrl || '', '_blank');
         }
         this.loading = true;
         const versionString = this.platformSelection ? 'recommended' : this.version.name;

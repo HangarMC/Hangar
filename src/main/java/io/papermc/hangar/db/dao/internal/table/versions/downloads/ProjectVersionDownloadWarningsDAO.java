@@ -28,8 +28,7 @@ public interface ProjectVersionDownloadWarningsDAO {
     @SqlQuery(" SELECT * " +
               "   FROM project_version_download_warnings " +
               "   WHERE address = :address AND" +
-              "         version_id = :versionId AND" +
-              "         confirmed = false")
+              "         version_id = :versionId")
     ProjectVersionDownloadWarningTable findWarning(InetAddress address, long versionId);
 
     @SqlUpdate("UPDATE project_version_download_warnings SET download_id = :downloadId, confirmed = :confirmed WHERE id = :id")
