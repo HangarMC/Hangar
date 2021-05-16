@@ -107,7 +107,7 @@ export default class DownloadButton extends HangarComponent {
 
     copyDownloadUrl() {
         let url = '';
-        if (this.version && this.version.externalUrl) {
+        if (this.external) {
             url = this.version.externalUrl;
         } else {
             const versionString = this.platformSelection ? 'recommended' : this.version.name;
@@ -128,7 +128,7 @@ export default class DownloadButton extends HangarComponent {
     }
 
     download() {
-        if (this.version && this.version.externalUrl) {
+        if (this.external) {
             return window.open(this.version.externalUrl, '_blank');
         }
         const versionString = this.platformSelection ? 'recommended' : this.version.name;
@@ -145,7 +145,7 @@ export default class DownloadButton extends HangarComponent {
         if (this.token != null) {
             return true;
         }
-        if (this.version && this.version.externalUrl) {
+        if (this.external) {
             return window.open(this.version.externalUrl, '_blank');
         }
         this.loading = true;
