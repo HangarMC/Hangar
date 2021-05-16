@@ -1,6 +1,8 @@
 package io.papermc.hangar.model.db.versions.downloads;
 
 import io.papermc.hangar.model.db.Table;
+
+import org.jdbi.v3.core.annotation.Unmappable;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 import java.net.InetAddress;
@@ -66,6 +68,16 @@ public class ProjectVersionDownloadWarningTable extends Table {
 
     public void setDownloadId(Long downloadId) {
         this.downloadId = downloadId;
+    }
+
+    @Unmappable
+    public static String cookieKey(long versionId) {
+        return "_warning_" + versionId;
+    }
+
+    @Unmappable
+    public boolean hasExpired() {
+        return expiresAt.isBefore(OffsetDateTime.now());
     }
 
     @Override

@@ -1,6 +1,5 @@
 package io.papermc.hangar.service.internal;
 
-import io.papermc.hangar.serviceold.HangarService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -16,8 +15,10 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.papermc.hangar.HangarComponent;
+
 @Service
-public class PaypalService extends HangarService {
+public class PaypalService extends HangarComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(PaypalService.class);
 

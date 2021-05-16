@@ -27,4 +27,14 @@ public interface RecommendedProjectVersionsDAO {
     @ValueColumn("version_id")
     @SqlQuery("SELECT platform, version_id FROM recommended_project_versions WHERE project_id = :projectId ORDER BY platform")
     Map<Platform, Long> getRecommendedVersions(long projectId);
+
+    @KeyColumn("platform")
+    @ValueColumn("version_string")
+    @SqlQuery("SELECT platform, version_string " +
+              "FROM recommended_project_versions rpv " +
+              "     JOIN projects p on p.id = rpv.project_id " +
+              "     JOIN project_versions pv on rpv.version_id = pv.id " +
+              "WHERE p.owner_name = :owner AND p.slug = :slug " +
+              "ORDER BY platform")
+    Map<Platform, String> getRecommendedVersions(String owner, String slug);
 }

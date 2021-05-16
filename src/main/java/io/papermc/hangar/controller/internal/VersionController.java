@@ -19,11 +19,13 @@ import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
+import io.papermc.hangar.service.internal.versions.DownloadService;
 import io.papermc.hangar.service.internal.versions.RecommendedVersionService;
 import io.papermc.hangar.service.internal.versions.VersionDependencyService;
 import io.papermc.hangar.service.internal.versions.VersionFactory;
 import io.papermc.hangar.service.internal.versions.VersionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,11 +37,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Secured("ROLE_USER")
@@ -50,13 +54,15 @@ public class VersionController extends HangarComponent {
     private final VersionService versionService;
     private final VersionDependencyService versionDependencyService;
     private final RecommendedVersionService recommendedVersionService;
+    private final DownloadService downloadService;
 
     @Autowired
-    public VersionController(VersionFactory versionFactory, VersionService versionService, VersionDependencyService versionDependencyService, RecommendedVersionService recommendedVersionService) {
+    public VersionController(VersionFactory versionFactory, VersionService versionService, VersionDependencyService versionDependencyService, RecommendedVersionService recommendedVersionService, DownloadService downloadService) {
         this.versionFactory = versionFactory;
         this.versionService = versionService;
         this.versionDependencyService = versionDependencyService;
         this.recommendedVersionService = recommendedVersionService;
+        this.downloadService = downloadService;
     }
 
     @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")
@@ -158,4 +164,23 @@ public class VersionController extends HangarComponent {
         versionService.restoreVersion(projectId, version);
     }
 
+    @ResponseBody
+    @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
+    @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public FileSystemResource download(@PathVariable String author, @PathVariable String slug, @PathVariable String versionString, @PathVariable Platform platform, @RequestParam(required = false) String token) {
+        versionString = recommendedVersionService.fixVersionString(author, slug, versionString, platform);
+        return downloadService.getVersionFile(author, slug, versionString, platform, true, token);
+    }
+
+    @VisibilityRequired(type = Type.VERSION, args = "{#author, #slug, #versionString, #platform}")
+    @GetMapping(path = "/version/{author}/{slug}/versions/{versionString}/{platform}/downloadCheck")
+    public ResponseEntity<String> downloadCheck(@PathVariable String author, @PathVariable String slug, @PathVariable String versionString, @PathVariable Platform platform) {
+        versionString = recommendedVersionService.fixVersionString(author, slug, versionString, platform);
+        boolean requiresConfirmation = downloadService.requiresConfirmation(author, slug, versionString, platform);
+        if (requiresConfirmation) {
+            String token = downloadService.createConfirmationToken(author, slug, versionString, platform);
+            return ResponseEntity.status(HttpStatus.PRECONDITION_REQUIRED).body(token);
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

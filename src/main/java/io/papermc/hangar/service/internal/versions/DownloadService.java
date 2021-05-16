@@ -22,12 +22,16 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.WebUtils;
 
+import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 import java.util.UUID;
+import javax.servlet.http.Cookie;
 
 @Service
 public class DownloadService extends HangarComponent {
@@ -51,18 +55,26 @@ public class DownloadService extends HangarComponent {
 
     public String createConfirmationToken(String author, String slug, String versionString, Platform platform) {
         ProjectVersionTable pvt = projectVersionsDAO.getProjectVersionTable(author, slug, versionString, platform);
+        InetAddress remoteInetAddress = RequestUtil.getRemoteInetAddress(request);
+        // check for exisiting token
+        ProjectVersionDownloadWarningTable warning = projectVersionDownloadWarningsDAO.findWarning(remoteInetAddress, pvt.getProjectId());
+        if (warning != null) {
+            return warning.getToken().toString();
+        }
+
+        // create new token
         UUID token = UUID.randomUUID();
         OffsetDateTime expiresAt = OffsetDateTime.now().plus(config.projects.getUnsafeDownloadMaxAge().toMillis(), ChronoUnit.MILLIS);
         projectVersionDownloadWarningsDAO.insert(new ProjectVersionDownloadWarningTable(
                 expiresAt,
                 token,
                 pvt.getId(),
-                RequestUtil.getRemoteInetAddress(request)
+                remoteInetAddress
         ));
         return token.toString();
     }
 
-    public FileSystemResource getVersionFile(String author, String slug, String versionString, Platform platform) {
+    public FileSystemResource getVersionFile(String author, String slug, String versionString, Platform platform, boolean checkConfirmation, @Nullable String token) {
         ProjectVersionTable pvt = projectVersionsDAO.getProjectVersionTable(author, slug, versionString, platform);
         if (pvt == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
@@ -72,18 +84,35 @@ public class DownloadService extends HangarComponent {
         }
 
         ProjectTable project = projectsDAO.getById(pvt.getProjectId());
-        Path path = projectFiles.getVersionDir(project.getOwnerName(), project.getName(), versionString, platform);
+        Path path = projectFiles.getVersionDir(project.getOwnerName(), project.getName(), versionString, platform).resolve(pvt.getFileName());
         if (Files.notExists(path)) {
             throw new HangarApiException("Couldn't find a file for that version");
         }
 
         if (requiresConfirmation(pvt)) {
-            projectVersionUnsafeDownloadsDAO.insert(new ProjectVersionUnsafeDownloadTable(getHangarUserId(), RequestUtil.getRemoteInetAddress(request)));
+            if (checkConfirmation) {
+                // find cookie
+                Optional<Cookie> cookie = Optional.ofNullable(WebUtils.getCookie(request, ProjectVersionDownloadWarningTable.cookieKey(pvt.getId())));
+                boolean hasSessionConfirm = "confirmed".equals(cookie.map(Cookie::getValue).orElse(""));
+                if (!hasSessionConfirm && !isConfirmed(pvt, token)) {
+                    throw new HangarApiException(HttpStatus.PRECONDITION_FAILED, "Needs confirmation. Please try again");
+                }
+            } else {
+                projectVersionUnsafeDownloadsDAO.insert(new ProjectVersionUnsafeDownloadTable(getHangarUserId(), RequestUtil.getRemoteInetAddress(request)));
+            }
         }
 
         statService.addVersionDownload(pvt);
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + pvt.getFileName() + "\"");
         return new FileSystemResource(path);
+    }
+
+    public boolean requiresConfirmation(String author, String slug, String versionString, Platform platform) {
+        ProjectVersionTable pvt = projectVersionsDAO.getProjectVersionTable(author, slug, versionString, platform);
+        if (pvt == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+        return requiresConfirmation(pvt);
     }
 
     private boolean requiresConfirmation(ProjectVersionTable pvt) {
@@ -98,13 +127,19 @@ public class DownloadService extends HangarComponent {
             return false;
         }
 
-        var downloadWarning = projectVersionDownloadWarningsDAO.findWarning(token, RequestUtil.getRemoteInetAddress(request), pvt.getId());
+        InetAddress remoteInetAddress = RequestUtil.getRemoteInetAddress(request);
+        var downloadWarning = projectVersionDownloadWarningsDAO.findWarning(token, remoteInetAddress, pvt.getId());
         if (downloadWarning == null) {
             return false;
         }
-        var unsafeDownload = projectVersionUnsafeDownloadsDAO.insert(new ProjectVersionUnsafeDownloadTable(getHangarUserId(), RequestUtil.getRemoteInetAddress(request)));
+        if (downloadWarning.hasExpired()) {
+            projectVersionDownloadWarningsDAO.delete(downloadWarning.getId());
+            return false;
+        }
+        var unsafeDownload = projectVersionUnsafeDownloadsDAO.insert(new ProjectVersionUnsafeDownloadTable(getHangarUserId(), remoteInetAddress));
         downloadWarning.setConfirmed(true);
         downloadWarning.setDownloadId(unsafeDownload.getId());
+        projectVersionDownloadWarningsDAO.update(downloadWarning);
         return true;
     }
 }

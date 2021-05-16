@@ -54,8 +54,8 @@
                     </template>
                 </TextareaModal>
 
-                <v-btn v-if="!projectVersion.externalUrl" small color="primary" :to="$route.path + '/download'">{{ $t('version.page.download') }}</v-btn>
-                <v-btn v-else color="primary" small :to="$route.path + '/download'">{{ $t('version.page.downloadExternal') }}</v-btn>
+                <DownloadButton :small="true" :version="projectVersion" :project="project" :platform="platform"></DownloadButton>
+
                 <v-menu v-if="$perms.canViewLogs || ($perms.isReviewer && projectVersion.visibility === 'softDelete') || $perms.canHardDeleteVersion" offset-y>
                     <template #activator="{ on, attrs }">
                         <v-btn v-ripple="false" small plain v-bind="attrs" v-on="on">
@@ -86,6 +86,7 @@
         </v-row>
         <v-row>
             <v-col cols="12" md="8">
+                <v-alert v-if="requiresConfirmation" type="info" class="mb-8">{{ $t('version.page.unsafeWarning') }}</v-alert>
                 <MarkdownEditor
                     v-if="$perms.canEditVersion"
                     ref="editor"
@@ -141,9 +142,10 @@ import { Markdown, MarkdownEditor } from '~/components/markdown';
 import PlatformVersionEditModal from '~/components/modals/versions/PlatformVersionEditModal.vue';
 import DependencyEditModal from '~/components/modals/versions/DependencyEditModal.vue';
 import TextareaModal from '~/components/modals/TextareaModal.vue';
+import DownloadButton from '~/components/projects/DownloadButton.vue';
 
 @Component({
-    components: { TextareaModal, DependencyEditModal, PlatformVersionEditModal, TagComponent, Markdown, MarkdownEditor },
+    components: { DownloadButton, TextareaModal, DependencyEditModal, PlatformVersionEditModal, TagComponent, Markdown, MarkdownEditor },
 })
 export default class ProjectVersionPage extends HangarProjectVersionMixin {
     editingPage: boolean = false;
@@ -163,6 +165,10 @@ export default class ProjectVersionPage extends HangarProjectVersionMixin {
 
     get platformTag(): Tag {
         return this.projectVersion.tags.find((t) => t.name === this.platform.name)!;
+    }
+
+    get requiresConfirmation(): boolean {
+        return this.projectVersion.externalUrl !== null || this.projectVersion.reviewState !== ReviewState.REVIEWED;
     }
 
     $refs!: {
