@@ -36,5 +36,4 @@ export default ({ store, params, $api, $auth }: Context) => {
         return;
     }
     store.commit('auth/SET_ROUTE_PERMISSIONS', null);
-    // TODO other route permissions
 };

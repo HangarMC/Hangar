@@ -9,7 +9,7 @@ declare module 'hangar-internal' {
         message: string[];
         read: boolean;
         originUserName: string | null;
-        type: string; // TODO enum really needed? its just for css styling (at least right now)
+        type: string;
     }
 
     interface Invite {
