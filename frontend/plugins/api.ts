@@ -128,7 +128,7 @@ const createApi = ({ $axios, store, app: { $cookies } }: Context) => {
                         if (headers['set-cookie']) {
                             const statString = headers['set-cookie'].find((c: string) => c.startsWith('hangar_stats'));
                             if (statString) {
-                                const statCookie: StatCookie = (Cookie.parse(statString) as unknown) as StatCookie;
+                                const statCookie: StatCookie = Cookie.parse(statString) as unknown as StatCookie;
                                 $cookies.set('hangar_stats', statCookie.hangar_stats, {
                                     path: statCookie.Path,
                                     expires: new Date(statCookie.Expires),

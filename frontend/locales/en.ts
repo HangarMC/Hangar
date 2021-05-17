@@ -143,8 +143,7 @@ const msgs: LocaleMessageObject = {
         new: {
             step1: {
                 title: 'User Agreement',
-                text:
-                    'A project contains your downloads and the documentation for your plugin.<br>Before continuing, please review the <a href="#">Hangar Submission Guidelines.</a>',
+                text: 'A project contains your downloads and the documentation for your plugin.<br>Before continuing, please review the <a href="#">Hangar Submission Guidelines.</a>',
                 continue: 'Agree',
                 back: 'Abort',
             },
@@ -541,8 +540,7 @@ const msgs: LocaleMessageObject = {
     },
     visibility: {
         notice: {
-            new:
-                'This project is new, and will not be shown to others until a version has been uploaded. If a version is not uploaded over a longer time the project will be deleted.',
+            new: 'This project is new, and will not be shown to others until a version has been uploaded. If a version is not uploaded over a longer time the project will be deleted.',
             needsChanges: 'This project requires changes',
             needsApproval: 'You have sent the project for review',
             softDelete: 'Project deleted by {0}',

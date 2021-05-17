@@ -63,7 +63,7 @@ function collectErrors(exception: HangarApiException | MultiHangarApiException, 
 const createUtil = ({ store, error, app: { i18n } }: Context) => {
     class Util {
         dummyUser(): HangarUser {
-            return ({
+            return {
                 name: 'Dummy',
                 id: 42,
                 tagline: null,
@@ -77,11 +77,11 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
                     unresolvedFlags: 2,
                 },
                 joinDate: this.prettyDate(new Date()),
-            } as unknown) as HangarUser;
+            } as unknown as HangarUser;
         }
 
         dummyProject(): HangarProject {
-            return ({ namespace: { owner: 'test', slug: 'test2' }, visibility: Visibility.NEW } as unknown) as HangarProject;
+            return { namespace: { owner: 'test', slug: 'test2' }, visibility: Visibility.NEW } as unknown as HangarProject;
         }
 
         avatarUrl(name: string): string {
@@ -239,7 +239,10 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
         }
 
         $vc = {
-            require: (name: TranslateResult = 'Field') => (v: string) => !!v || i18n.t('validation.required', [name]),
+            require:
+                (name: TranslateResult = 'Field') =>
+                (v: string) =>
+                    !!v || i18n.t('validation.required', [name]),
             maxLength: (maxLength: number) => (v: string | any[]) => {
                 return (
                     ((v === null || typeof v === 'undefined' || typeof v === 'string') && !v) ||
@@ -256,11 +259,16 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
                     i18n.t('validation.minLength', [minLength])
                 );
             },
-            requireNonEmptyArray: (name: TranslateResult = 'Field') => (v: any[]) => v.length > 0 || i18n.t('validation.required', [name]),
+            requireNonEmptyArray:
+                (name: TranslateResult = 'Field') =>
+                (v: any[]) =>
+                    v.length > 0 || i18n.t('validation.required', [name]),
             url: (v: string) => !v || new RegExp((store.state as RootState).validations.urlRegex).test(v) || i18n.t('validation.invalidUrl'),
-            regex: (name: TranslateResult = 'Field', regexp: string) => (v: string) => {
-                return !v || new RegExp(regexp).test(v) || i18n.t('validation.invalidFormat', [name]);
-            },
+            regex:
+                (name: TranslateResult = 'Field', regexp: string) =>
+                (v: string) => {
+                    return !v || new RegExp(regexp).test(v) || i18n.t('validation.invalidFormat', [name]);
+                },
             requireNumberArray: () => (v: string | any[]) => {
                 return (
                     ((v === null || typeof v === 'undefined' || typeof v === 'string') && !v) ||
