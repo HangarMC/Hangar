@@ -51,6 +51,6 @@ public class PlatformService extends HangarComponent {
             toBeRemovedMap.put(platform, toBeRemoved);
             toBeAddedMap.put(platform, toBeAdded);
         });
-        // TODO logging
+        // TODO user action logging
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,14 +31,23 @@ public class ChannelService extends HangarComponent {
     }
 
     public void checkName(long projectId, String name, @Nullable String existingName) {
-        List<ProjectChannelTable> existingChannels = projectChannelsDAO.getProjectChannels(projectId);
-        if (existingChannels.stream().filter(ch -> !ch.getName().equals(existingName)).anyMatch(ch -> ch.getName().equalsIgnoreCase(name))) {
+        checkName(projectId, name, existingName, projectChannelsDAO::getProjectChannels);
+    }
+
+    public void checkColor(long projectId, Color color, @Nullable Color existingColor) {
+        checkColor(projectId, color, existingColor, projectChannelsDAO::getProjectChannels);
+    }
+
+    private void checkName(long projectId, String name, @Nullable String existingName, Function<Long, List<ProjectChannelTable>> channelTableFunction) {
+        if (channelTableFunction.apply(projectId).stream().filter(ch -> !ch.getName().equals(existingName)).anyMatch(ch -> ch.getName().equalsIgnoreCase(name))) {
             throw new HangarApiException(HttpStatus.CONFLICT, "channel.modal.error.duplicateName");
         }
     }
 
-    private void checkName(List<ProjectChannelTable> existingChannels, String name) {
-
+    private void checkColor(long projectId, Color color, @Nullable Color existingColor, Function<Long, List<ProjectChannelTable>> channelTableFunction) {
+        if (channelTableFunction.apply(projectId).stream().filter(ch -> ch.getColor() != existingColor).anyMatch(ch -> ch.getColor() == color)) {
+            throw new HangarApiException(HttpStatus.CONFLICT, "channel.modal.error.duplicateColor");
+        }
     }
 
     private void validateChannel(String name, Color color, long projectId, boolean nonReviewed, List<ProjectChannelTable> existingChannels) {
@@ -49,14 +59,8 @@ public class ChannelService extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.maxChannels", config.projects.getMaxChannels());
         }
 
-        // TODO do we need to enforce unique colors?
-        if (existingChannels.stream().anyMatch(ch -> ch.getColor() == color)) {
-            throw new HangarApiException(HttpStatus.CONFLICT, "channel.modal.error.duplicateColor");
-        }
-
-        if (existingChannels.stream().anyMatch(ch -> ch.getName().equalsIgnoreCase(name))) {
-            throw new HangarApiException(HttpStatus.CONFLICT, "channel.modal.error.duplicateName");
-        }
+        checkName(projectId, name, null, (ignored) -> existingChannels);
+        checkColor(projectId, color, null, (ignored) -> existingChannels);
     }
 
     @Transactional

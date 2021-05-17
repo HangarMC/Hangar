@@ -88,7 +88,6 @@ public class VersionService extends HangarComponent {
             if (projectVersionTables.stream().filter(pv -> pv.getVisibility() == Visibility.PUBLIC).count() <= 1 && pvt.getVisibility() == Visibility.PUBLIC) {
                 throw new HangarApiException("version.error.onlyOnePublic");
             }
-            // TODO previously, if this was a recommended version, it would auto assign a new one, but I don't think that's a good idea. easy enough to just set another, no requirement saying there has to be a recommended version
 
             Visibility oldVisibility = pvt.getVisibility();
             projectVersionVisibilityService.changeVisibility(pvt, Visibility.SOFTDELETE, comment);

@@ -11,8 +11,8 @@
                         v-model.trim="form.name"
                         :label="$t('channel.modal.name')"
                         :autofocus="!form.name"
-                        :loading="validateLoading"
-                        :error-messages="nameErrorMessages"
+                        :loading="loadings.name"
+                        :error-messages="errorMsgs.name"
                         :rules="[
                             $util.$vc.require($t('channel.modal.name')),
                             $util.$vc.regex($t('channel.modal.name'), validations.project.channels.regex),
@@ -20,7 +20,7 @@
                         ]"
                     />
                     <v-card-subtitle class="pa-0 text-center">{{ $t('channel.modal.color') }}</v-card-subtitle>
-                    <v-item-group v-model="form.color" mandatory>
+                    <v-item-group v-model="form.color">
                         <v-container>
                             <v-row v-for="(arr, arrIndex) in swatches" :key="arrIndex" justify="center">
                                 <v-col v-for="(color, n) in arr" :key="n" class="flex-grow-0 flex-shrink-1 pa-2 px-1">
@@ -43,6 +43,14 @@
                             </v-row>
                         </v-container>
                     </v-item-group>
+                    <v-text-field
+                        v-model="form.color"
+                        :label="$t('channel.modal.color')"
+                        :error-messages="errorMsgs.color"
+                        :loading="loadings.color"
+                        :rules="[$util.$vc.require($t('channel.modal.color'))]"
+                        readonly
+                    />
                     <v-checkbox v-model="form.nonReviewed" :label="$t('channel.modal.reviewQueue')" />
                 </v-form>
             </v-card-text>
@@ -72,8 +80,16 @@ export default class ChannelModal extends HangarFormModal {
     @Prop({ type: Number, required: true })
     projectId!: number;
 
-    validateLoading = false;
-    nameErrorMessages: TranslateResult[] = [];
+    loadings = {
+        name: false,
+        color: false,
+    };
+
+    errorMsgs = {
+        name: [] as TranslateResult[],
+        color: [] as TranslateResult[],
+    };
+
     colors: Color[] = [];
     form: ProjectChannel = {
         name: '',
@@ -118,8 +134,8 @@ export default class ChannelModal extends HangarFormModal {
     @Watch('form.name')
     checkName(val: string) {
         if (!val) return;
-        this.validateLoading = true;
-        this.nameErrorMessages = [];
+        this.loadings.name = true;
+        this.errorMsgs.name = [];
         this.$api
             .requestInternal('channels/checkName', true, 'get', {
                 projectId: this.projectId,
@@ -130,10 +146,32 @@ export default class ChannelModal extends HangarFormModal {
                 if (!err.response?.data.isHangarApiException) {
                     return this.$util.handleRequestError(err);
                 }
-                this.nameErrorMessages.push(this.$t(err.response.data.message));
+                this.errorMsgs.name.push(this.$t(err.response.data.message));
             })
             .finally(() => {
-                this.validateLoading = false;
+                this.loadings.name = false;
+            });
+    }
+
+    @Watch('form.color')
+    checkColor(val: string) {
+        if (!val) return;
+        this.loadings.color = true;
+        this.errorMsgs.color = [];
+        this.$api
+            .requestInternal('channels/checkColor', true, 'get', {
+                projectId: this.projectId,
+                color: val,
+                existingColor: this.channel?.color,
+            })
+            .catch((err: AxiosError) => {
+                if (!err.response?.data.isHangarApiException) {
+                    return this.$util.handleRequestError(err);
+                }
+                this.errorMsgs.color.push(this.$t(err.response.data.message));
+            })
+            .finally(() => {
+                this.loadings.color = false;
             });
     }
 

@@ -151,7 +151,10 @@ public interface ProjectsApiDAO {
               "       u.join_date," +
               "       u.locked," +
               "       array_agg(r.name) roles," +
-              "       -1 as projectCount" + // TODO yes, I do think we need to query this. This is public API, and it'd be wrong to just not include it here.
+              "       (SELECT count(*)" +
+              "           FROM project_members_all pma" +
+              "           WHERE pma.user_id = u.id" +
+              "       ) AS project_count" +
               "   FROM projects p " +
               "       JOIN project_stars ps ON p.id = ps.project_id " +
               "       JOIN users u ON ps.user_id = u.id " +
@@ -177,7 +180,10 @@ public interface ProjectsApiDAO {
               "       u.join_date," +
               "       u.locked," +
               "       array_agg(r.name) roles," +
-              "       -1 as projectCount" + // TODO yes, I do think we need to query this. This is public API, and it'd be wrong to just not include it here.
+              "       (SELECT count(*)" +
+              "           FROM project_members_all pma" +
+              "           WHERE pma.user_id = u.id" +
+              "       ) AS project_count" +
               "   FROM projects p " +
               "       JOIN project_watchers pw ON p.id = pw.project_id " +
               "       JOIN users u ON pw.user_id = u.id " +

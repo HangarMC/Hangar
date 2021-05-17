@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller.internal;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.db.projects.ProjectTable;
@@ -48,6 +49,13 @@ public class ChannelController extends HangarComponent {
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
     public void checkName(@RequestParam long projectId, @RequestParam String name, @RequestParam(required = false) String existingName) {
         channelService.checkName(projectId, name, existingName);
+    }
+
+    @GetMapping("/checkColor")
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
+    public void checkColor(@RequestParam long projectId, @RequestParam Color color, @RequestParam(required = false) Color existingColor) {
+        channelService.checkColor(projectId, color, existingColor);
     }
 
     @Anyone

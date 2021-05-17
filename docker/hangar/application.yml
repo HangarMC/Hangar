@@ -24,11 +24,13 @@ spring:
 #logging:
 #  level:
 #    root: TRACE
-#logging:
-#  level:
-#    io:
-#      papermc:
-#        hangar: DEBUG
+logging:
+  level:
+    io:
+      papermc:
+        hangar:
+          config:
+            jackson: DEBUG
 
 fake-user:
   enabled: false

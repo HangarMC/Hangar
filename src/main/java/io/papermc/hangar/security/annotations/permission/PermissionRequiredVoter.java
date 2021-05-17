@@ -29,7 +29,6 @@ public class PermissionRequiredVoter extends HangarDecisionVoter<PermissionRequi
         this.setAllowMultipleAttributes(true);
     }
 
-    // TODO debug logging
     @Override
     public int vote(Authentication authentication, MethodInvocation methodInvocation, Set<PermissionRequiredAttribute> attributes) {
         if (!(authentication instanceof HangarAuthenticationToken)) {
@@ -42,6 +41,8 @@ public class PermissionRequiredVoter extends HangarDecisionVoter<PermissionRequi
                 throw new IllegalStateException("Bad annotation configuration");
             }
             Permission requiredPerm = Arrays.stream(attribute.getPermissions()).map(NamedPermission::getPermission).reduce(Permission::add).orElse(Permission.None);
+            logger.debug("Possible permissions: " + hangarAuthenticationToken.getPrincipal().getPossiblePermissions());
+            logger.debug("Required permissions: " + requiredPerm);
             Permission currentPerm;
             switch (attribute.getPermissionType()) {
                 case PROJECT:
@@ -73,6 +74,7 @@ public class PermissionRequiredVoter extends HangarDecisionVoter<PermissionRequi
                 default:
                     currentPerm = Permission.None;
             }
+            logger.debug("Current permissions: " + currentPerm);
             if (hangarAuthenticationToken.getPrincipal().isAllowed(requiredPerm, currentPerm)) {
                 return ACCESS_GRANTED;
             }

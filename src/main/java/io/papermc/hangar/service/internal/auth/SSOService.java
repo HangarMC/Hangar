@@ -84,7 +84,6 @@ public class SSOService {
         return new String(Base64.getEncoder().encode(payload.getBytes(StandardCharsets.UTF_8)));
     }
 
-    // TODO logging
     public AuthUser authenticate(String payload, String sig) {
         Map<String, String> decoded = decode(payload, sig);
         String nonce = decoded.get("nonce");
