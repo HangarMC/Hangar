@@ -51,7 +51,7 @@
     "eslint-plugin-vue": "7.9.0",
     "fibers": "5.0.0",
     "husky": "6.0.0",
-    "lint-staged": "10.5.4",
+    "lint-staged": "11.0.0",
     "prettier": "2.2.1",
     "sass": "1.32.13",
     "sass-loader": "10.1.1",
