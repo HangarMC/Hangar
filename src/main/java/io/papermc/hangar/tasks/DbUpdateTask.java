@@ -18,12 +18,12 @@ public class DbUpdateTask {
         this.statService = statService;
     }
 
-    @Scheduled(fixedRateString = "${hangar.homepage.update-interval}")
+    @Scheduled(fixedRateString = "#{@hangarConfig.homepage.updateInterval.toMillis()}")
     public void refreshHomePage() {
         projectService.refreshHomeProjects();
     }
 
-    @Scheduled(fixedRateString = "${hangar.homepage.update-interval}", initialDelay = 1000)
+    @Scheduled(fixedRateString = "#{@hangarConfig.homepage.updateInterval.toMillis()}", initialDelay = 1000)
     public void updateStats() {
         statService.processProjectViews();
         statService.processVersionDownloads();

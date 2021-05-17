@@ -165,7 +165,7 @@ export default class ProjectPage extends HangarComponent {
         const tabs = [] as Tab[];
         tabs.push({ title: this.$t('project.tabs.docs'), icon: 'mdi-book', link: this.slug, external: false, exact: true });
         tabs.push({ title: this.$t('project.tabs.versions'), icon: 'mdi-download', link: this.slug + '/versions', external: false });
-        if (this.project.settings.forumSync && this.project.postId) {
+        if ((this.project.settings.forumSync && this.project.postId) || this.$perms.canEditSubjectSettings) {
             tabs.push({ title: this.$t('project.tabs.discuss'), icon: 'mdi-account-group', link: this.slug + '/discuss', external: false });
         }
         if (this.$perms.canEditSubjectSettings) {

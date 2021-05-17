@@ -111,8 +111,7 @@ import Tag from '~/components/Tag.vue';
 import DonationModal from '~/components/donation/DonationModal.vue';
 import { Markdown, MarkdownEditor } from '~/components/markdown';
 import { DocPageMixin } from '~/components/mixins';
-import { MemberList, ProjectPageList } from '~/components/projects';
-import DownloadButton from '~/components/projects/DownloadButton.vue';
+import { DownloadButton, MemberList, ProjectPageList } from '~/components/projects';
 
 @Component({
     components: { DownloadButton, ProjectPageList, Markdown, MemberList, DonationModal, MarkdownEditor, Tag },

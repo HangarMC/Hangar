@@ -280,10 +280,10 @@
                             <div v-if="$perms.canDeleteProject">
                                 <h2>{{ $t('project.settings.delete') }}</h2>
                                 <v-row>
-                                    <v-col cols="12" md="8">
+                                    <v-col class="flex-shrink-0">
                                         <p>{{ $t('project.settings.deleteSub') }}</p>
                                     </v-col>
-                                    <v-col cols="12" md="4">
+                                    <v-col class="flex-grow-0">
                                         <TextareaModal :title="$t('project.settings.delete')" :label="$t('general.comment')" :submit="softDelete">
                                             <template #activator="{ on, attrs }">
                                                 <v-btn color="error" v-bind="attrs" v-on="on">{{ $t('project.settings.delete') }}</v-btn>

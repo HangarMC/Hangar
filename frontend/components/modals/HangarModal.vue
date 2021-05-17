@@ -12,9 +12,9 @@
                 <slot v-else />
             </v-card-text>
             <v-card-actions class="justify-end">
-                <v-btn text color="warning" @click.stop="close">{{ $t('general.close') }}</v-btn>
+                <v-btn text :color="closeColor" @click.stop="close">{{ closeLabel || $t('general.close') }}</v-btn>
                 <slot name="other-btns" />
-                <v-btn color="success" :disabled="(!noForm && !validForm) || submitDisabled" :loading="loading" @click.stop="submit0">
+                <v-btn :color="submitColor" :disabled="(!noForm && !validForm) || submitDisabled" :loading="loading" @click.stop="submit0">
                     {{ submitLabel || $t('general.submit') }}
                 </v-btn>
             </v-card-actions>
@@ -37,7 +37,16 @@ export default class HangarModal extends HangarFormModal {
     title!: TranslateResult;
 
     @Prop({ type: String as PropType<TranslateResult> })
+    closeLabel!: TranslateResult | null;
+
+    @Prop({ type: String, default: 'warning' })
+    closeColor!: string;
+
+    @Prop({ type: String as PropType<TranslateResult> })
     submitLabel!: TranslateResult | null;
+
+    @Prop({ type: String, default: 'success' })
+    submitColor!: string;
 
     @Prop({ type: Function as PropType<() => Promise<void>>, required: true })
     submit!: () => Promise<void>;
@@ -51,6 +60,10 @@ export default class HangarModal extends HangarFormModal {
     $refs!: {
         modalForm: any;
     };
+
+    open() {
+        this.dialog = true;
+    }
 
     close() {
         if (!this.noForm) {

@@ -24,9 +24,9 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     private final String lastVisibilityChangeUserName;
     private final HangarProjectInfo info;
     private final Collection<HangarProjectPage> pages;
-    private final Map<Platform, Long> recommendedVersions;
+    private final Map<Platform, String> recommendedVersions;
 
-    public HangarProject(Project project, long id, ProjectOwner owner, List<JoinableMember<ProjectRoleTable>> members, String lastVisibilityChangeComment, String lastVisibilityChangeUserName, HangarProjectInfo info, Collection<HangarProjectPage> pages, Map<Platform, Long> recommendedVersions) {
+    public HangarProject(Project project, long id, ProjectOwner owner, List<JoinableMember<ProjectRoleTable>> members, String lastVisibilityChangeComment, String lastVisibilityChangeUserName, HangarProjectInfo info, Collection<HangarProjectPage> pages, Map<Platform, String> recommendedVersions) {
         super(project);
         this.id = id;
         this.owner = owner;
@@ -78,7 +78,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         return pages;
     }
 
-    public Map<Platform, Long> getRecommendedVersions() {
+    public Map<Platform, String> getRecommendedVersions() {
         return recommendedVersions;
     }
 

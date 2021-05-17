@@ -32,7 +32,7 @@ declare module 'hangar-internal' {
         info: HangarProjectInfo;
         pages: HangarProjectPage[];
         recommendedVersions: {
-            [key: string]: number;
+            [key: string]: string | null; // Platform: externalUrl (if any)
         };
     }
 

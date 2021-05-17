@@ -62,6 +62,8 @@ services:
       - "traefik.http.routers.hangar-mail.tls.domains[0].sans=*.minidigger.me"
     networks:
       - web
+    ports:
+      - "8025:8025"
   auth:
     build:
       context: ../../HangarAuth

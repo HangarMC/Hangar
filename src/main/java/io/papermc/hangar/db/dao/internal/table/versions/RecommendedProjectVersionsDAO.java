@@ -24,9 +24,9 @@ public interface RecommendedProjectVersionsDAO {
     void delete(long projectId, @EnumByOrdinal Platform platform);
 
     @KeyColumn("platform")
-    @ValueColumn("version_id")
-    @SqlQuery("SELECT platform, version_id FROM recommended_project_versions WHERE project_id = :projectId ORDER BY platform")
-    Map<Platform, Long> getRecommendedVersions(long projectId);
+    @ValueColumn("external_url")
+    @SqlQuery("SELECT rpv.platform, pv.external_url FROM recommended_project_versions rpv JOIN project_versions pv ON rpv.version_id = pv.id WHERE rpv.project_id = :projectId ORDER BY platform")
+    Map<Platform, String> getRecommendedVersions(long projectId);
 
     @KeyColumn("platform")
     @ValueColumn("version_string")

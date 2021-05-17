@@ -142,7 +142,7 @@ import { Markdown, MarkdownEditor } from '~/components/markdown';
 import PlatformVersionEditModal from '~/components/modals/versions/PlatformVersionEditModal.vue';
 import DependencyEditModal from '~/components/modals/versions/DependencyEditModal.vue';
 import TextareaModal from '~/components/modals/TextareaModal.vue';
-import DownloadButton from '~/components/projects/DownloadButton.vue';
+import { DownloadButton } from '~/components/projects';
 
 @Component({
     components: { DownloadButton, TextareaModal, DependencyEditModal, PlatformVersionEditModal, TagComponent, Markdown, MarkdownEditor },

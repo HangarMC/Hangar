@@ -8,6 +8,9 @@ export class HangarComponent extends Vue {
     @State((state: AuthState) => state.user, { namespace: 'auth' })
     currentUser!: HangarUser | null;
 
+    @State((state: AuthState) => state.token || '', { namespace: 'auth' })
+    jwt!: string;
+
     @State((state: RootState) => state.validations)
     validations!: RootState['validations'];
 

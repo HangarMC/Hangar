@@ -27,7 +27,7 @@ public class RecommendedVersionService extends HangarComponent {
         recommendedProjectVersionsDAO.insert(new RecommendedProjectVersionTable(versionId, projectId, platform));
     }
 
-    public Map<Platform, Long> getRecommendedVersions(long projectId) {
+    public Map<Platform, String> getRecommendedVersions(long projectId) {
         return recommendedProjectVersionsDAO.getRecommendedVersions(projectId);
     }
 

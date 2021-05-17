@@ -132,7 +132,7 @@ public class ProjectService extends HangarComponent {
         }
         HangarProjectInfo info = hangarProjectsDAO.getHangarProjectInfo(project.getLeft());
         Map<Long, HangarProjectPage> pages = projectPageService.getProjectPages(project.getLeft());
-        Map<Platform, Long> recommendedVersions = recommendedVersionService.getRecommendedVersions(project.getLeft());
+        Map<Platform, String> recommendedVersions = recommendedVersionService.getRecommendedVersions(project.getLeft());
         return new HangarProject(project.getRight(), project.getLeft(), projectOwner, members, lastVisibilityChangeComment, lastVisibilityChangeUserName, info, pages.values(), recommendedVersions);
     }
 
