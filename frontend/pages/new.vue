@@ -312,11 +312,11 @@ export default class NewProjectPage extends HangarComponent {
     error = null as string | null;
     form: NewProjectForm = {
         category: ProjectCategory.ADMIN_TOOLS,
-        settings: ({
+        settings: {
             license: {} as ProjectSettingsForm['settings']['license'],
             donation: {} as ProjectSettingsForm['settings']['donation'],
             keywords: [],
-        } as unknown) as ProjectSettingsForm['settings'],
+        } as unknown as ProjectSettingsForm['settings'],
     } as NewProjectForm;
 
     nameErrors: TranslateResult[] = [];

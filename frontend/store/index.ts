@@ -35,11 +35,11 @@ export interface RootState {
 }
 
 export const state: () => RootState = () => ({
-    projectCategories: (null as unknown) as Map<ProjectCategory, IProjectCategory>,
-    permissions: (null as unknown) as Map<NamedPermission, IPermission>,
-    platforms: (null as unknown) as Map<Platform, IPlatform>,
-    validations: (null as unknown) as RootState['validations'],
-    prompts: (null as unknown) as RootState['prompts'],
+    projectCategories: null as unknown as Map<ProjectCategory, IProjectCategory>,
+    permissions: null as unknown as Map<NamedPermission, IPermission>,
+    platforms: null as unknown as Map<Platform, IPlatform>,
+    validations: null as unknown as RootState['validations'],
+    prompts: null as unknown as RootState['prompts'],
 });
 
 export const mutations: MutationTree<RootState> = {
@@ -107,7 +107,7 @@ export const getters: GetterTree<RootState, RootState> = {
 function convertToMap<E, T>(values: T[], toStringFunc: (value: T) => string): Map<E, T> {
     const map = new Map<E, T>();
     for (const value of values) {
-        const key: E = (toStringFunc(value) as unknown) as E;
+        const key: E = toStringFunc(value) as unknown as E;
         if (key == null) {
             throw new Error('Could not find an enum for ' + value);
         }

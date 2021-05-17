@@ -3,14 +3,16 @@ import { PermissionCheck } from 'hangar-api';
 import { NamedPermission, PermissionType } from '~/types/enums';
 import { AuthState } from '~/store/auth';
 
-const loggedInMiddleware = (code: number, msg?: string): Middleware => ({ store, error }: Context) => {
-    if (!store.state.auth.authenticated) {
-        error({
-            message: msg,
-            statusCode: code,
-        });
-    }
-};
+const loggedInMiddleware =
+    (code: number, msg?: string): Middleware =>
+    ({ store, error }: Context) => {
+        if (!store.state.auth.authenticated) {
+            error({
+                message: msg,
+                statusCode: code,
+            });
+        }
+    };
 
 export function NotLoggedIn(constructor: Function) {
     addMiddleware(constructor, ({ store, redirect }) => {
