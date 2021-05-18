@@ -108,7 +108,7 @@ public class AdminController extends HangarComponent {
     @GetMapping(value = "/log", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(NamedPermission.REVIEWER)
     public PaginatedResult<HangarLoggedAction> getActionLog() {
-        List<HangarLoggedAction> log = userActionLogService.getLog(0, null, null, null, null, null, null);
+        List<HangarLoggedAction> log = actionLogger.getLog(0, null, null, null, null, null, null);
         return new PaginatedResult<>(new Pagination(25, 0, (long) log.size()), log);
     }
 }

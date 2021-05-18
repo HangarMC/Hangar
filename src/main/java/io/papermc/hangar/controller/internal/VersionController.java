@@ -43,7 +43,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @Secured("ROLE_USER")
@@ -113,7 +112,7 @@ public class VersionController extends HangarComponent {
         String newDesc = stringContent.getContent().trim();
         projectVersionTable.setDescription(newDesc);
         versionService.updateProjectVersionTable(projectVersionTable);
-        userActionLogService.version(LogAction.VERSION_DESCRIPTION_EDITED.create(VersionContext.of(projectId, versionId), newDesc, oldDesc));
+        actionLogger.version(LogAction.VERSION_DESCRIPTION_EDITED.create(VersionContext.of(projectId, versionId), newDesc, oldDesc));
     }
 
     @Unlocked

@@ -13,6 +13,9 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.members.MemberTable;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 import io.papermc.hangar.model.internal.api.requests.EditMembersForm.Member;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.LogContext;
+import io.papermc.hangar.model.loggable.Loggable;
 import io.papermc.hangar.service.internal.perms.roles.RoleService;
 import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService;
 import org.jetbrains.annotations.Nullable;
@@ -24,11 +27,12 @@ import java.util.List;
 
 @Transactional
 public abstract class MemberService<
+        LC extends LogContext<?, LC>,
         R extends Role<RT>,
-        RT extends ExtendedRoleTable<R>,
+        RT extends ExtendedRoleTable<R, LC>,
         RD extends IRolesDAO<RT>,
         S extends RoleService<RT, R, RD>,
-        J extends Table & Named,
+        J extends Table & Named & Loggable<LC>,
         JNS extends JoinableNotificationService<RT, J>,
         MD extends MembersDAO<MT>,
         MT extends MemberTable
@@ -43,12 +47,19 @@ public abstract class MemberService<
     private final MemberTableConstructor<MT> constructor;
     private final String errorPrefix;
 
-    protected MemberService(S roleService, MD membersDao, JNS joinableNotificationService, MemberTableConstructor<MT> constructor, String errorPrefix) {
+    private final LogAction<LC> memberAddedAction;
+    private final LogAction<LC> membersRemovedAction;
+    private final LogAction<LC> memberRoleChangedAction;
+
+    protected MemberService(S roleService, MD membersDao, JNS joinableNotificationService, MemberTableConstructor<MT> constructor, String errorPrefix, LogAction<LC> memberAddedAction, LogAction<LC> membersRemovedAction, LogAction<LC> memberRoleChangedAction) {
         this.roleService = roleService;
         this.membersDao = membersDao;
         this.joinableNotificationService = joinableNotificationService;
         this.constructor = constructor;
         this.errorPrefix = errorPrefix;
+        this.memberAddedAction = memberAddedAction;
+        this.membersRemovedAction = membersRemovedAction;
+        this.memberRoleChangedAction = memberRoleChangedAction;
     }
 
     @Nullable
@@ -63,11 +74,9 @@ public abstract class MemberService<
         RT roleTable = roleService.addRole(newRoleTable);
         membersDao.insert(constructor.create(roleTable.getUserId(), roleTable.getPrincipalId()));
         UserTable userTable = userDAO.get().getUserTable(roleTable.getUserId());
-        logJoinedMemberByDefault(roleTable, userTable);
+        roleTable.logAction(actionLogger, memberAddedAction, userTable.getName() + " joined due to creation", "");
         return roleTable;
     }
-
-    abstract void logJoinedMemberByDefault(RT roleTable, UserTable userTable);
 
     public void addMember(RT roleTable) {
         membersDao.insert(constructor.create(roleTable.getUserId(), roleTable.getPrincipalId()));
@@ -80,7 +89,7 @@ public abstract class MemberService<
             roleService.deleteRole(roleTable);
         }
         String sb = "Removed:" + userName + " (" + roleTable.getRole().getTitle() + ")";
-        logMemberRemoval(roleTable.getPrincipalId(), sb);
+        logMemberRemoval(roleTable, sb);
     }
 
     public void removeMembers(List<HangarApiException> errors, List<Member<R>> members, J joinable) {
@@ -99,11 +108,13 @@ public abstract class MemberService<
         }
         if (!toBeRemoved.isEmpty()) {
             joinableNotificationService.removedFrom(toBeRemoved, joinable);
-            logMemberRemoval(joinable.getId(), sb.toString());
+            logMemberRemoval(joinable, sb.toString());
         }
     }
 
-    abstract void logMemberRemoval(long principalId, String logEntry);
+    private void logMemberRemoval(Loggable<LC> loggable, String logEntry) {
+        loggable.logAction(actionLogger, membersRemovedAction, logEntry, "");
+    }
 
     public void editMembers(List<HangarApiException> errors, List<Member<R>> members, J joinable) {
         List<RT> toBeUpdated = new ArrayList<>();
@@ -129,14 +140,16 @@ public abstract class MemberService<
         }
         if (!toBeUpdated.isEmpty()) {
             joinableNotificationService.roleChanged(toBeUpdated, joinable);
-            logMemberUpdate(joinable.getId(), oldState.toString(), newState.toString());
+            logMemberUpdate(joinable, oldState.toString(), newState.toString());
         }
     }
 
-    abstract void logMemberUpdate(long principalId, String oldState, String newState);
+    private void logMemberUpdate(Loggable<LC> loggable, String oldState, String newState) {
+        loggable.logAction(actionLogger, memberRoleChangedAction, newState, oldState);
+    }
 
     @FunctionalInterface
-    private interface AdditionalValidation<R extends Role<RT>, RT extends ExtendedRoleTable<R>> {
+    private interface AdditionalValidation<R extends Role<RT>, RT extends ExtendedRoleTable<R, ?>> {
 
         boolean check(Member<R> member, RT rt, boolean notLast);
     }

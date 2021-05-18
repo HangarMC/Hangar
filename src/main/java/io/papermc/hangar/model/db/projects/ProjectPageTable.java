@@ -2,8 +2,8 @@ package io.papermc.hangar.model.db.projects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.model.Named;
-import io.papermc.hangar.model.ProjectIdentified;
 import io.papermc.hangar.model.db.Table;
+import io.papermc.hangar.model.identified.ProjectIdentified;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 import java.time.OffsetDateTime;

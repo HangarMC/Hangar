@@ -86,7 +86,7 @@ public class UserService extends HangarComponent {
             } else {
                 loggedAction = LogAction.USER_UNLOCKED.create(userContext, user.getName() + " has been unlocked: " + comment, user.getName() + " was locked");
             }
-            userActionLogService.user(loggedAction);
+            actionLogger.user(loggedAction);
         }
     }
 

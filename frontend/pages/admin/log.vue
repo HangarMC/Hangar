@@ -20,7 +20,7 @@
                     </span>
                     <span v-else-if="item.version">
                         <NuxtLink :to="'/' + item.project.owner + '/' + item.project.slug + '/versions/' + item.version.versionString">
-                            {{ item.project.owner + '/' + item.project.slug + '/' + item.version.versionString }}
+                            {{ `${item.project.owner}/${item.project.slug}/${item.version.versionString}/${item.version.platforms[0].toLowerCase()}` }}
                         </NuxtLink>
                     </span>
                     <span v-else-if="item.project && item.project.owner">
@@ -31,7 +31,7 @@
                     </span>
                 </template>
                 <template #item.oldState="{ item }">
-                    <template v-if="item.page">
+                    <template v-if="item.contextType === 'PAGE' && item.oldState">
                         <MarkdownModal :markdown="item.oldState" :title="$t('userActionLog.markdownView')">
                             <template #activator="{ on, attrs }">
                                 <v-btn small color="primary" v-bind="attrs" v-on="on">{{ $t('userActionLog.markdownView') }}</v-btn>
@@ -43,11 +43,11 @@
                         <img v-else class="inline-img" :src="'data:image/png;base64,' + item.oldState" alt="" />
                     </template>
                     <template v-else>
-                        {{ item.oldState }}
+                        {{ $te(item.oldState) ? $t(item.oldState) : item.oldState }}
                     </template>
                 </template>
                 <template #item.newState="{ item }">
-                    <template v-if="item.page">
+                    <template v-if="item.contextType === 'PAGE'">
                         <MarkdownModal :markdown="item.newState" :title="$t('userActionLog.markdownView')">
                             <template #activator="{ on, attrs }">
                                 <v-btn small color="primary" v-bind="attrs" v-on="on">{{ $t('userActionLog.markdownView') }}</v-btn>
@@ -64,7 +64,7 @@
                         <img v-else class="inline-img" :src="'data:image/png;base64,' + item.newState" alt="" />
                     </template>
                     <template v-else>
-                        {{ item.newState }}
+                        {{ $te(item.newState) ? $t(item.newState) : item.newState }}
                     </template>
                 </template>
             </v-data-table>

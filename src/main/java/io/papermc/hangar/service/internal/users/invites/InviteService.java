@@ -11,6 +11,9 @@ import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 import io.papermc.hangar.model.internal.api.requests.EditMembersForm.Member;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.LogContext;
+import io.papermc.hangar.model.loggable.Loggable;
 import io.papermc.hangar.service.internal.perms.members.MemberService;
 import io.papermc.hangar.service.internal.perms.roles.RoleService;
 import io.papermc.hangar.service.internal.users.NotificationService;
@@ -18,10 +21,11 @@ import io.papermc.hangar.service.internal.users.notifications.JoinableNotificati
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class InviteService<R extends Role<RT>, RT extends ExtendedRoleTable<R>, J extends Table & Named> extends HangarComponent {
+public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role<RT>, RT extends ExtendedRoleTable<R, LC>, J extends Table & Named & Loggable<LC>> extends HangarComponent {
 
     @Autowired
     protected HangarDao<HangarNotificationsDAO> hangarNotificationsDAO;
@@ -33,11 +37,11 @@ public abstract class InviteService<R extends Role<RT>, RT extends ExtendedRoleT
     private HangarDao<UserDAO> userDAO;
 
     private final RoleService<RT, R, ?> roleService;
-    private final MemberService<R, RT, ?, ?, ?, ?, ?, ?> memberService;
+    private final MemberService<LC, R, RT, ?, ?, ?, ?, ?, ?> memberService;
     private final JoinableNotificationService<RT, J> joinableNotificationService;
     private final String errorPrefix;
 
-    protected InviteService(RoleService<RT, R, ?> roleService, MemberService<R, RT, ?, ?, ?, ?, ?, ?> memberService, JoinableNotificationService<RT, J> joinableNotificationService, String errorPrefix) {
+    protected InviteService(RoleService<RT, R, ?> roleService, MemberService<LC, R, RT, ?, ?, ?, ?, ?, ?> memberService, JoinableNotificationService<RT, J> joinableNotificationService, String errorPrefix) {
         this.roleService = roleService;
         this.memberService = memberService;
         this.joinableNotificationService = joinableNotificationService;
@@ -68,11 +72,15 @@ public abstract class InviteService<R extends Role<RT>, RT extends ExtendedRoleT
         }
         if (!invitees.isEmpty()) {
             joinableNotificationService.invited(toBeInvited, joinable);
-            logInvitesSent(joinable.getId(), sb.toString());
+            logInvitesSent(joinable, sb.toString());
         }
     }
 
-    abstract void logInvitesSent(long principalId, String log);
+    abstract LogAction<LC> getInviteSentAction();
+
+    protected void logInvitesSent(Loggable<LC> loggable, String log) {
+        loggable.logAction(actionLogger, getInviteSentAction(), log, "");
+    }
 
     public void acceptInvite(RT roleTable) {
         if (roleTable.isAccepted()) {
@@ -84,7 +92,11 @@ public abstract class InviteService<R extends Role<RT>, RT extends ExtendedRoleT
         logInviteAccepted(roleTable, userTable);
     }
 
-    abstract void logInviteAccepted(RT roleTable, UserTable userTable);
+    abstract LogAction<LC> getInviteAcceptAction();
+
+    protected void logInviteAccepted(RT roleTable, UserTable userTable) {
+        roleTable.logAction(actionLogger, getInviteAcceptAction(), userTable.getName() + " accepted an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME));
+    }
 
     public void unacceptInvite(RT roleTable) {
         if (!roleTable.isAccepted()) {
@@ -96,13 +108,21 @@ public abstract class InviteService<R extends Role<RT>, RT extends ExtendedRoleT
         logInviteUnaccepted(roleTable, userTable);
     }
 
-    abstract void logInviteUnaccepted(RT roleTable, UserTable userTable);
+    abstract LogAction<LC> getInviteUnacceptAction();
+
+    protected void logInviteUnaccepted(RT roleTable, UserTable userTable) {
+        roleTable.logAction(actionLogger, getInviteUnacceptAction(), userTable.getName() + " unaccepted an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME));
+    }
 
     public void declineInvite(RT roleTable) {
         roleService.deleteRole(roleTable);
         logInviteDeclined(roleTable, userDAO.get().getUserTable(roleTable.getUserId()));
     }
 
-    abstract void logInviteDeclined(RT roleTable, UserTable userTable);
+    abstract LogAction<LC> getInviteDeclineAction();
+
+    protected void logInviteDeclined(RT roleTable, UserTable userTable) {
+        roleTable.logAction(actionLogger, getInviteDeclineAction(), userTable.getName() + " declined an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME));
+    }
 
 }

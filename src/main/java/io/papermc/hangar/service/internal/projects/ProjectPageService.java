@@ -72,7 +72,7 @@ public class ProjectPageService extends HangarComponent {
             projectPagesDAO.insertHomePage(new ProjectHomePageTable(projectPageTable.getProjectId(), projectPageTable.getId()));
             jobService.save(new UpdateDiscourseProjectTopicJob(projectId));
         }
-        userActionLogService.projectPage(LogAction.PROJECT_PAGE_CREATED.create(PageContext.of(projectPageTable.getProjectId(), projectPageTable.getId()), contents, ""));
+        actionLogger.projectPage(LogAction.PROJECT_PAGE_CREATED.create(PageContext.of(projectPageTable.getProjectId(), projectPageTable.getId()), contents, ""));
         return projectPageTable;
     }
 
@@ -143,7 +143,7 @@ public class ProjectPageService extends HangarComponent {
         String oldContent = pageTable.getContents();
         pageTable.setContents(newContents);
         projectPagesDAO.update(pageTable);
-        userActionLogService.projectPage(LogAction.PROJECT_PAGE_EDITED.create(PageContext.of(projectId, pageId), newContents, oldContent));
+        actionLogger.projectPage(LogAction.PROJECT_PAGE_EDITED.create(PageContext.of(projectId, pageId), newContents, oldContent));
     }
 
     @Transactional
@@ -163,7 +163,7 @@ public class ProjectPageService extends HangarComponent {
             projectPagesDAO.updateParents(children);
         }
         // Log must come first otherwise db error
-        userActionLogService.projectPage(LogAction.PROJECT_PAGE_DELETED.create(PageContext.of(projectId, pageId), "", pageTable.getContents()));
+        actionLogger.projectPage(LogAction.PROJECT_PAGE_DELETED.create(PageContext.of(projectId, pageId), "", pageTable.getContents()));
         projectPagesDAO.delete(pageTable);
     }
 }

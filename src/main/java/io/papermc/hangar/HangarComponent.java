@@ -34,7 +34,7 @@ public abstract class HangarComponent {
     protected HangarConfig config;
 
     @Autowired
-    protected UserActionLogService userActionLogService;
+    protected UserActionLogService actionLogger;
 
     protected final Optional<HangarPrincipal> getOptionalHangarPrincipal() {
         return _getHangarPrincipal().get();

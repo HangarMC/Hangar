@@ -5,11 +5,11 @@ import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarApiKeysDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.ApiKeyDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.UserIdentified;
 import io.papermc.hangar.model.api.ApiKey;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.auth.ApiKeyTable;
+import io.papermc.hangar.model.identified.UserIdentified;
 import io.papermc.hangar.model.internal.api.requests.CreateAPIKeyForm;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
@@ -56,7 +56,7 @@ public class APIKeyService extends HangarComponent {
         String tokenIdentifier = UUID.randomUUID().toString();
         String token = UUID.randomUUID().toString();
         apiKeyDAO.insert(new ApiKeyTable(apiKeyForm.getName(), userIdentified.getUserId(), tokenIdentifier, token, keyPermission));
-        userActionLogService.user(LogAction.USER_APIKEY_CREATED.create(UserContext.of(userIdentified.getUserId()), "Key Name: " + apiKeyForm.getName() + "<br>" + apiKeyForm.getPermissions().stream().map(NamedPermission::getFrontendName).collect(Collectors.joining(",<br>")), ""));
+        actionLogger.user(LogAction.USER_APIKEY_CREATED.create(UserContext.of(userIdentified.getUserId()), "Key Name: " + apiKeyForm.getName() + "<br>" + apiKeyForm.getPermissions().stream().map(NamedPermission::getFrontendName).collect(Collectors.joining(",<br>")), ""));
         return tokenIdentifier + "." + token;
     }
 
@@ -65,7 +65,7 @@ public class APIKeyService extends HangarComponent {
         if (apiKeyDAO.delete(keyName, userIdentified.getUserId()) == 0) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
-        userActionLogService.user(LogAction.USER_APIKEY_DELETED.create(UserContext.of(userIdentified.getUserId()), "", "Key Name: " + keyName));
+        actionLogger.user(LogAction.USER_APIKEY_DELETED.create(UserContext.of(userIdentified.getUserId()), "", "Key Name: " + keyName));
     }
 
 }

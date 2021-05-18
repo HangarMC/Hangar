@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.Table;
+import io.papermc.hangar.model.internal.logs.contexts.LogContext;
+import io.papermc.hangar.model.loggable.Loggable;
 import org.jdbi.v3.core.annotation.Unmappable;
 
 import java.time.OffsetDateTime;
 
-public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>> extends Table implements IRoleTable<R> {
+public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>, LC extends LogContext<?, LC>> extends Table implements IRoleTable<R>, Loggable<LC> {
 
     protected final long userId;
     @JsonFormat(shape = JsonFormat.Shape.OBJECT)

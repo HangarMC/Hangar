@@ -120,7 +120,7 @@ public class ReviewService extends HangarComponent {
         if (projectVersionTable.getReviewState() != reviewState) {
             ReviewState oldState = projectVersionTable.getReviewState();
             projectVersionTable.setReviewState(reviewState);
-            userActionLogService.version(LogAction.VERSION_REVIEW_STATE_CHANGED.create(VersionContext.of(projectVersionTable.getProjectId(), versionId), reviewState.getFrontendName(), oldState.getFrontendName()));
+            actionLogger.version(LogAction.VERSION_REVIEW_STATE_CHANGED.create(VersionContext.of(projectVersionTable.getProjectId(), versionId), reviewState.getFrontendName(), oldState.getFrontendName()));
             if (approve) {
                 projectVersionTable.setReviewerId(getHangarPrincipal().getUserId());
                 projectVersionTable.setApprovedAt(OffsetDateTime.now());

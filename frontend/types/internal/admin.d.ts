@@ -11,6 +11,7 @@ declare module 'hangar-internal' {
     interface LogVersion {
         id: number;
         versionString: string;
+        platforms: Platform[];
     }
 
     interface LogPage {

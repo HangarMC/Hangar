@@ -12,7 +12,6 @@ import io.papermc.hangar.service.TokenService;
 import io.papermc.hangar.service.internal.auth.SSOService;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.users.UserService;
-import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -48,7 +46,7 @@ public class LoginController extends HangarComponent {
     }
 
     @GetMapping(path = "/login", params = "returnUrl")
-    public RedirectView loginFromFrontend(@RequestParam(defaultValue = Routes.Paths.SHOW_HOME) String returnUrl) {
+    public RedirectView loginFromFrontend(@RequestParam(defaultValue = "/") String returnUrl) {
         if (config.fakeUser.isEnabled()) {
             config.checkDev();
 

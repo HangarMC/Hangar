@@ -15,6 +15,7 @@ import java.util.Optional;
 
 public class JoinableMemberFactory implements RowMapperFactory {
 
+    @SuppressWarnings("unchecked")
     @Override
     public Optional<RowMapper<?>> build(Type type, ConfigRegistry config) {
         if (!JoinableMember.class.equals(GenericTypes.getErasedType(type))) {
@@ -25,10 +26,10 @@ public class JoinableMemberFactory implements RowMapperFactory {
         if (!ExtendedRoleTable.class.isAssignableFrom(GenericTypes.getErasedType(tableType))) {
             return Optional.empty();
         }
-        Class<? extends ExtendedRoleTable<?>> extendedRoleTableType = (Class<? extends ExtendedRoleTable<?>>) tableType;
+        Class<? extends ExtendedRoleTable<?, ?>> extendedRoleTableType = (Class<? extends ExtendedRoleTable<?, ?>>) tableType;
 
         RowMappers rowMappers = config.get(RowMappers.class);
-        RowMapper<? extends ExtendedRoleTable<?>> tableMapper = rowMappers.findFor(extendedRoleTableType).orElseThrow(() -> new NoSuchMapperException("Could not find mapper for " + tableType.getTypeName()));
+        RowMapper<? extends ExtendedRoleTable<?, ?>> tableMapper = rowMappers.findFor(extendedRoleTableType).orElseThrow(() -> new NoSuchMapperException("Could not find mapper for " + tableType.getTypeName()));
         RowMapper<UserTable> userTableMapper = rowMappers.findFor(UserTable.class).orElseThrow(() -> new NoSuchMapperException("Could not find mapper for " + UserTable.class.getTypeName()));
 
 

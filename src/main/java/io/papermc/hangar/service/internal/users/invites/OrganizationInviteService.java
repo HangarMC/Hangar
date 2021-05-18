@@ -2,7 +2,6 @@ package io.papermc.hangar.service.internal.users.invites;
 
 import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.db.OrganizationTable;
-import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.OrganizationContext;
@@ -13,11 +12,10 @@ import io.papermc.hangar.service.internal.users.notifications.JoinableNotificati
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
-public class OrganizationInviteService extends InviteService<OrganizationRole, OrganizationRoleTable, OrganizationTable> {
+public class OrganizationInviteService extends InviteService<OrganizationContext, OrganizationRole, OrganizationRoleTable, OrganizationTable> {
 
     @Autowired
     public OrganizationInviteService(OrganizationRoleService roleService, OrganizationMemberService memberService, OrganizationNotificationService organizationNotificationService) {
@@ -29,23 +27,23 @@ public class OrganizationInviteService extends InviteService<OrganizationRole, O
     }
 
     @Override
-    void logInvitesSent(long principalId, String log) {
-        userActionLogService.organization(LogAction.ORGANIZATION_INVITES_SENT.create(OrganizationContext.of(principalId), log, ""));
+    LogAction<OrganizationContext> getInviteSentAction() {
+        return LogAction.ORGANIZATION_INVITES_SENT;
     }
 
     @Override
-    void logInviteAccepted(OrganizationRoleTable roleTable, UserTable userTable) {
-        userActionLogService.organization(LogAction.ORGANIZATION_MEMBER_ADDED.create(OrganizationContext.of(roleTable.getOrganizationId()), userTable.getName() + " accepted an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME)));
+    LogAction<OrganizationContext> getInviteAcceptAction() {
+        return LogAction.ORGANIZATION_MEMBER_ADDED;
     }
 
     @Override
-    void logInviteUnaccepted(OrganizationRoleTable roleTable, UserTable userTable) {
-        userActionLogService.organization(LogAction.ORGANIZATION_INVITE_UNACCEPTED.create(OrganizationContext.of(roleTable.getOrganizationId()), userTable.getName() + " unaccepted an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME)));
+    LogAction<OrganizationContext> getInviteUnacceptAction() {
+        return LogAction.ORGANIZATION_INVITE_UNACCEPTED;
     }
 
     @Override
-    void logInviteDeclined(OrganizationRoleTable roleTable, UserTable userTable) {
-        userActionLogService.organization(LogAction.ORGANIZATION_INVITE_DECLINED.create(OrganizationContext.of(roleTable.getOrganizationId()), userTable.getName() + " declined an invite for " + roleTable.getRole().getTitle(), roleTable.getCreatedAt().format(DateTimeFormatter.RFC_1123_DATE_TIME)));
+    LogAction<OrganizationContext> getInviteDeclineAction() {
+        return LogAction.ORGANIZATION_INVITE_DECLINED;
     }
 
 }

@@ -160,7 +160,7 @@ public class ProjectService extends HangarComponent {
         projectsDAO.update(projectTable);
         refreshHomeProjects();
         // TODO what settings changed
-        userActionLogService.project(LogAction.PROJECT_SETTINGS_CHANGED.create(ProjectContext.of(projectTable.getId()), "", ""));
+        actionLogger.project(LogAction.PROJECT_SETTINGS_CHANGED.create(ProjectContext.of(projectTable.getId()), "", ""));
     }
 
     public void saveDiscourseData(ProjectTable projectTable, long topicId, long postId) {
@@ -186,7 +186,7 @@ public class ProjectService extends HangarComponent {
             FileUtils.deletedFiles(iconDir);
             Files.copy(icon.getInputStream(), iconDir.resolve(icon.getOriginalFilename()));
             String newBase64 = getBase64(author, slug, "new", iconDir.resolve(icon.getOriginalFilename()));
-            userActionLogService.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), newBase64, oldBase64));
+            actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), newBase64, oldBase64));
         } catch (IOException e) {
             e.printStackTrace();
             throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -197,7 +197,7 @@ public class ProjectService extends HangarComponent {
         ProjectTable projectTable = getProjectTable(author, slug);
         String base64 = getBase64(author, slug, "old", projectFiles.getIconPath(author, slug));
         if (FileUtils.delete(projectFiles.getIconPath(author, slug))) {
-            userActionLogService.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), "#empty", base64));
+            actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(projectTable.getId()), "#empty", base64));
         }
     }
 

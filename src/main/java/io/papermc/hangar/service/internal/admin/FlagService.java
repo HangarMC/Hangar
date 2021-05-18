@@ -34,7 +34,7 @@ public class FlagService extends HangarComponent {
             throw new HangarApiException("project.flag.error.alreadyOpen");
         }
         projectFlagsDAO.insert(new ProjectFlagTable( projectId, getHangarPrincipal().getId(), reason, comment));
-        userActionLogService.project(LogAction.PROJECT_FLAGGED.create(ProjectContext.of(projectId), "Flagged by " + getHangarPrincipal().getName(), ""));
+        actionLogger.project(LogAction.PROJECT_FLAGGED.create(ProjectContext.of(projectId), "Flagged by " + getHangarPrincipal().getName(), ""));
     }
 
     public boolean hasUnresolvedFlag(long projectId, long userId) {
@@ -52,7 +52,7 @@ public class FlagService extends HangarComponent {
         Long resolvedBy = resolved ? getHangarPrincipal().getId() : null;
         OffsetDateTime resolvedAt = resolved ? OffsetDateTime.now() : null;
         projectFlagsDAO.markAsResolved(flagId, resolved, resolvedBy, resolvedAt);
-        userActionLogService.project(LogAction.PROJECT_FLAG_RESOLVED.create(ProjectContext.of(hangarProjectFlag.getProjectId()),"Flag resolved by " + getHangarPrincipal().getName(), "Flag reported by " + hangarProjectFlag.getReportedByName()));
+        hangarProjectFlag.logAction(actionLogger, LogAction.PROJECT_FLAG_RESOLVED, "Flag resolved by " + getHangarPrincipal().getName(), "Flag reported by " + hangarProjectFlag.getReportedByName());
     }
 
     public List<HangarProjectFlag> getFlags(long projectId) {

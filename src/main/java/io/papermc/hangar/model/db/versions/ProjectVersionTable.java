@@ -2,17 +2,22 @@ package io.papermc.hangar.model.db.versions;
 
 import io.papermc.hangar.model.ModelVisible;
 import io.papermc.hangar.model.Named;
-import io.papermc.hangar.model.ProjectIdentified;
-import io.papermc.hangar.model.VersionIdentified;
 import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.Table;
+import io.papermc.hangar.model.identified.ProjectIdentified;
+import io.papermc.hangar.model.identified.VersionIdentified;
+import io.papermc.hangar.model.internal.logs.LoggedAction;
+import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
+import io.papermc.hangar.model.loggable.Loggable;
+import io.papermc.hangar.service.internal.UserActionLogService;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 import java.time.OffsetDateTime;
+import java.util.function.Consumer;
 
-public class ProjectVersionTable extends Table implements Named, ModelVisible, ProjectIdentified, VersionIdentified {
+public class ProjectVersionTable extends Table implements Named, ModelVisible, ProjectIdentified, VersionIdentified, Loggable<VersionContext> {
 
     private final String versionString;
     private String description;
@@ -172,5 +177,36 @@ public class ProjectVersionTable extends Table implements Named, ModelVisible, P
     @Override
     public long getVersionId() {
         return id;
+    }
+
+    @Override
+    public Consumer<LoggedAction<VersionContext>> getLogInserter(UserActionLogService actionLogger) {
+        return actionLogger::version;
+    }
+
+    @Override
+    public VersionContext createLogContext() {
+        return VersionContext.of(this.projectId, this.id);
+    }
+
+    @Override
+    public String toString() {
+        return "ProjectVersionTable{" +
+                "versionString='" + versionString + '\'' +
+                ", description='" + description + '\'' +
+                ", projectId=" + projectId +
+                ", channelId=" + channelId +
+                ", fileSize=" + fileSize +
+                ", hash='" + hash + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", reviewerId=" + reviewerId +
+                ", approvedAt=" + approvedAt +
+                ", authorId=" + authorId +
+                ", visibility=" + visibility +
+                ", reviewState=" + reviewState +
+                ", createForumPost=" + createForumPost +
+                ", postId=" + postId +
+                ", externalUrl='" + externalUrl + '\'' +
+                "} " + super.toString();
     }
 }

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.HashSet;
 
-public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<? extends Role<RT>>, J extends Table & Named> {
+public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<? extends Role<RT>, ?>, J extends Table & Named> {
 
     @Autowired
     private HangarDao<NotificationsDAO> notificationsDAO;

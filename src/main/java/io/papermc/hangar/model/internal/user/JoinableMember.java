@@ -4,7 +4,7 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 import org.jdbi.v3.core.mapper.Nested;
 
-public class JoinableMember<R extends ExtendedRoleTable<?>> {
+public class JoinableMember<R extends ExtendedRoleTable<?, ?>> {
 
     private final R role;
     private final UserTable user;

@@ -92,7 +92,7 @@ public class HangarUserController extends HangarComponent {
         String oldTagline = userTable.getTagline() == null ? "" : userTable.getTagline();
         userTable.setTagline(content.getContent());
         userService.updateUser(userTable);
-        userActionLogService.user(LogAction.USER_TAGLINE_CHANGED.create(UserContext.of(userTable.getId()), userTable.getTagline(), oldTagline));
+        actionLogger.user(LogAction.USER_TAGLINE_CHANGED.create(UserContext.of(userTable.getId()), userTable.getTagline(), oldTagline));
     }
 
     @Unlocked
@@ -110,7 +110,7 @@ public class HangarUserController extends HangarComponent {
         }
         userTable.setTagline(null);
         userService.updateUser(userTable);
-        userActionLogService.user(LogAction.USER_TAGLINE_CHANGED.create(UserContext.of(userTable.getId()), "", oldTagline));
+        actionLogger.user(LogAction.USER_TAGLINE_CHANGED.create(UserContext.of(userTable.getId()), "", oldTagline));
     }
 
     @GetMapping("/notifications")
@@ -156,7 +156,7 @@ public class HangarUserController extends HangarComponent {
         updateRole(organizationRoleService, organizationInviteService, id, status);
     }
 
-    private <RT extends ExtendedRoleTable<? extends Role<RT>>, RS extends RoleService<RT, ?, ?>, IS extends InviteService<?, RT, ?>> void updateRole(RS roleService, IS inviteService, long id, InviteStatus status) {
+    private <RT extends ExtendedRoleTable<? extends Role<RT>, ?>, RS extends RoleService<RT, ?, ?>, IS extends InviteService<?, ?, RT, ?>> void updateRole(RS roleService, IS inviteService, long id, InviteStatus status) {
         RT table = roleService.getRole(id);
         if (table == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);

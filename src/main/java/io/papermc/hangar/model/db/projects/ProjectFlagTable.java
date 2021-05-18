@@ -2,12 +2,13 @@ package io.papermc.hangar.model.db.projects;
 
 import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.model.db.Table;
+import io.papermc.hangar.model.loggable.ProjectLoggable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 import java.time.OffsetDateTime;
 
-public class ProjectFlagTable extends Table {
+public class ProjectFlagTable extends Table implements ProjectLoggable {
 
     private final long projectId;
     private final long userId;

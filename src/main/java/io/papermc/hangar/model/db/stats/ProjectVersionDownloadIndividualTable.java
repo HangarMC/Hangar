@@ -1,7 +1,7 @@
 package io.papermc.hangar.model.db.stats;
 
-import io.papermc.hangar.model.ProjectIdentified;
-import io.papermc.hangar.model.VersionIdentified;
+import io.papermc.hangar.model.identified.ProjectIdentified;
+import io.papermc.hangar.model.identified.VersionIdentified;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 import java.net.InetAddress;

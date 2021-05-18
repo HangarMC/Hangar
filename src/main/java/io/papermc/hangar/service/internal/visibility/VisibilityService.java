@@ -3,14 +3,16 @@ package io.papermc.hangar.service.internal.visibility;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.ModelVisible;
-import io.papermc.hangar.model.ProjectIdentified;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.db.visibility.VisibilityChangeTable;
+import io.papermc.hangar.model.identified.ProjectIdentified;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.LogContext;
+import io.papermc.hangar.model.loggable.Loggable;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.JobService;
-
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,15 +20,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Map.Entry;
 
-abstract class VisibilityService<M extends Table & ModelVisible & ProjectIdentified, VT extends VisibilityChangeTable> extends HangarComponent {
+abstract class VisibilityService<LC extends LogContext<?, LC>, M extends Table & ModelVisible & ProjectIdentified & Loggable<LC>, VT extends VisibilityChangeTable> extends HangarComponent {
 
     @Autowired
     private PermissionService permissionService;
 
     private final VisibilityChangeTableConstructor<VT> changeTableConstructor;
+    private final LogAction<LC> visibilityChangeLogAction;
 
-    protected VisibilityService(VisibilityChangeTableConstructor<VT> changeTableConstructor) {
+    protected VisibilityService(VisibilityChangeTableConstructor<VT> changeTableConstructor, LogAction<LC> visibilityChangeLogAction) {
         this.changeTableConstructor = changeTableConstructor;
+        this.visibilityChangeLogAction = visibilityChangeLogAction;
     }
 
     public M changeVisibility(long modelId, Visibility newVisibility, String comment) {
@@ -46,12 +50,10 @@ abstract class VisibilityService<M extends Table & ModelVisible & ProjectIdentif
         Visibility oldVis = model.getVisibility();
         model.setVisibility(newVisibility);
         model = updateModel(model);
-        logVisibilityChange(model, oldVis);
+        model.logAction(actionLogger, visibilityChangeLogAction, newVisibility.getTitle(), oldVis.getTitle());
         postUpdate(model);
         return model;
     }
-
-    abstract void logVisibilityChange(M model, Visibility oldVisibility);
 
     public final M checkVisibility(@Nullable M model) {
         if (model == null) {

@@ -67,7 +67,7 @@ public class ChannelService extends HangarComponent {
     public ProjectChannelTable createProjectChannel(String name, Color color, long projectId, boolean nonReviewed) {
         validateChannel(name, color, projectId, nonReviewed, projectChannelsDAO.getProjectChannels(projectId));
         ProjectChannelTable channelTable = projectChannelsDAO.insert(new ProjectChannelTable(name, color, projectId, nonReviewed));
-        userActionLogService.project(LogAction.PROJECT_CHANNEL_CREATED.create(ProjectContext.of(projectId), formatChannelChange(channelTable), ""));
+        actionLogger.project(LogAction.PROJECT_CHANNEL_CREATED.create(ProjectContext.of(projectId), formatChannelChange(channelTable), ""));
         return channelTable;
     }
 
@@ -83,7 +83,7 @@ public class ChannelService extends HangarComponent {
         projectChannelTable.setColor(color);
         projectChannelTable.setNonReviewed(nonReviewed);
         projectChannelsDAO.update(projectChannelTable);
-        userActionLogService.project(LogAction.PROJECT_CHANNEL_EDITED.create(ProjectContext.of(projectId), formatChannelChange(projectChannelTable), old));
+        actionLogger.project(LogAction.PROJECT_CHANNEL_EDITED.create(ProjectContext.of(projectId), formatChannelChange(projectChannelTable), old));
     }
 
     @Transactional
@@ -97,7 +97,7 @@ public class ChannelService extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.cannotDelete");
         }
         projectChannelsDAO.delete(hangarChannel);
-        userActionLogService.project(LogAction.PROJECT_CHANNEL_DELETED.create(ProjectContext.of(projectId), "<i>Deleted</i>", formatChannelChange(hangarChannel)));
+        actionLogger.project(LogAction.PROJECT_CHANNEL_DELETED.create(ProjectContext.of(projectId), "<i>Deleted</i>", formatChannelChange(hangarChannel)));
     }
 
     private String formatChannelChange(ProjectChannelTable channelTable) {

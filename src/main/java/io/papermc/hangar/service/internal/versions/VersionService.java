@@ -91,7 +91,7 @@ public class VersionService extends HangarComponent {
 
             Visibility oldVisibility = pvt.getVisibility();
             projectVersionVisibilityService.changeVisibility(pvt, Visibility.SOFTDELETE, comment);
-            userActionLogService.version(LogAction.VERSION_DELETED.create(VersionContext.of(projectId, pvt.getId()), "Soft Delete: " + comment, oldVisibility.getTitle()));
+            actionLogger.version(LogAction.VERSION_DELETED.create(VersionContext.of(projectId, pvt.getId()), "Soft Delete: " + comment, oldVisibility.getTitle()));
         }
     }
 
@@ -103,7 +103,7 @@ public class VersionService extends HangarComponent {
             projectVisibilityService.changeVisibility(pt, Visibility.NEW, "Visibility reset to new because no public versions exist");
         }
 
-        userActionLogService.version(LogAction.VERSION_DELETED.create(VersionContext.of(pt.getId(), pvt.getId()), "Deleted: " + comment, pvt.getVisibility().getTitle()));
+        actionLogger.version(LogAction.VERSION_DELETED.create(VersionContext.of(pt.getId(), pvt.getId()), "Deleted: " + comment, pvt.getVisibility().getTitle()));
         List<Platform> versionPlatforms = projectVersionsDAO.getVersionPlatforms(pvt.getId());
         for (Platform platform : versionPlatforms) {
             FileUtils.deleteDirectory(projectFiles.getVersionDir(pt.getOwnerName(), pt.getName(), pvt.getVersionString(), platform));
@@ -115,7 +115,7 @@ public class VersionService extends HangarComponent {
     public void restoreVersion(long projectId, ProjectVersionTable pvt) {
         if (pvt.getVisibility() == Visibility.SOFTDELETE) {
             projectVersionVisibilityService.changeVisibility(pvt, Visibility.PUBLIC, "Version Restored");
-            userActionLogService.version(LogAction.VERSION_DELETED.create(VersionContext.of(projectId, pvt.getId()), "Version Restored", Visibility.SOFTDELETE.getTitle()));
+            actionLogger.version(LogAction.VERSION_DELETED.create(VersionContext.of(projectId, pvt.getId()), "Version Restored", Visibility.SOFTDELETE.getTitle()));
         }
     }
 

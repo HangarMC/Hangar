@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class EditMembersForm<R extends Role<? extends ExtendedRoleTable<R>>> {
+public class EditMembersForm<R extends Role<? extends ExtendedRoleTable<R, ?>>> {
 
     private final List<@Valid Member<R>> newInvitees;
     private final List<@Valid Member<R>> editedMembers;
@@ -49,7 +49,7 @@ public class EditMembersForm<R extends Role<? extends ExtendedRoleTable<R>>> {
                 '}';
     }
 
-    public static class Member<R extends Role<? extends ExtendedRoleTable<R>>> {
+    public static class Member<R extends Role<? extends ExtendedRoleTable<R, ?>>> {
 
         private final boolean editing;
         private final boolean newMember;
@@ -59,6 +59,7 @@ public class EditMembersForm<R extends Role<? extends ExtendedRoleTable<R>>> {
         @Validate(SpEL = "#root.isAssignable")
         private final R role;
 
+        @SuppressWarnings("unchecked")
         @JsonCreator
         public Member(boolean editing, @JsonProperty("new") boolean newMember, boolean toDelete, String name, long roleId) {
             this.editing = editing;
