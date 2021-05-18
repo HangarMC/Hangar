@@ -103,7 +103,7 @@ public class SwaggerConfig {
                     var filter = filterRegistry.get(clazz);
 
                     requestParameters.add(new RequestParameterBuilder()
-                            .name(filter.getQueryParamName())
+                            .name(filter.getSingleQueryParam()) // TODO multi-param filters
                             .in(ParameterType.QUERY)
                             .description(filter.getDescription())
                             .query(q -> q.style(ParameterStyle.SIMPLE).model(m -> m.scalarModel(ScalarType.STRING))).build());

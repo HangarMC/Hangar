@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.Arrays;
+import java.util.Set;
 
 @Component
 public class VersionPlatformFilter implements Filter<VersionPlatformFilterInstance> {
@@ -23,8 +24,8 @@ public class VersionPlatformFilter implements Filter<VersionPlatformFilterInstan
     }
 
     @Override
-    public String getQueryParamName() {
-        return "platform";
+    public Set<String> getQueryParamNames() {
+        return Set.of("platform");
     }
 
     @Override
@@ -35,7 +36,7 @@ public class VersionPlatformFilter implements Filter<VersionPlatformFilterInstan
     @NotNull
     @Override
     public VersionPlatformFilterInstance create(NativeWebRequest webRequest) {
-        return new VersionPlatformFilterInstance(conversionService.convert(webRequest.getParameterValues(getQueryParamName()), Platform[].class));
+        return new VersionPlatformFilterInstance(conversionService.convert(webRequest.getParameterValues(getSingleQueryParam()), Platform[].class));
     }
 
     static class VersionPlatformFilterInstance implements FilterInstance {

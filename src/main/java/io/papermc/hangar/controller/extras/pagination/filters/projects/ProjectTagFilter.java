@@ -11,13 +11,14 @@ import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class ProjectTagFilter implements Filter<ProjectTagFilterInstance> {
 
     @Override
-    public String getQueryParamName() {
-        return "tag";
+    public Set<String> getQueryParamNames() {
+        return Set.of("tag");
     }
 
     @Override
@@ -30,7 +31,7 @@ public class ProjectTagFilter implements Filter<ProjectTagFilterInstance> {
     public ProjectTagFilterInstance create(NativeWebRequest webRequest) {
         List<String> tagNames = new ArrayList<>();
         MultiValueMap<String, String> tagNamesAndData = new LinkedMultiValueMap<>();
-        for (String tag : webRequest.getParameterValues(getQueryParamName())) {
+        for (String tag : webRequest.getParameterValues(getSingleQueryParam())) {
             String[] splitTag = tag.split(":", 2);
             if (splitTag.length == 1) {
                 tagNames.add(splitTag[0]);

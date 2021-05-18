@@ -7,12 +7,14 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import java.util.Set;
+
 @Component
 public class ProjectQueryFilter implements Filter<ProjectQueryFilterInstance> {
 
     @Override
-    public String getQueryParamName() {
-        return "q";
+    public Set<String> getQueryParamNames() {
+        return Set.of("q");
     }
 
     @Override
@@ -23,7 +25,7 @@ public class ProjectQueryFilter implements Filter<ProjectQueryFilterInstance> {
     @NotNull
     @Override
     public ProjectQueryFilterInstance create(NativeWebRequest webRequest) {
-        return new ProjectQueryFilterInstance(webRequest.getParameter(getQueryParamName()));
+        return new ProjectQueryFilterInstance(webRequest.getParameter(getSingleQueryParam()));
     }
 
     static class ProjectQueryFilterInstance implements FilterInstance {

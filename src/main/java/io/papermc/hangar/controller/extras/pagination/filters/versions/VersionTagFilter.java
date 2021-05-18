@@ -11,12 +11,14 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import java.util.Set;
+
 @Component
 public class VersionTagFilter implements Filter<VersionTagFilterInstance> {
 
     @Override
-    public String getQueryParamName() {
-        return "vTag";
+    public Set<String> getQueryParamNames() {
+        return Set.of("vTag");
     }
 
     @Override
@@ -28,7 +30,7 @@ public class VersionTagFilter implements Filter<VersionTagFilterInstance> {
     @Override
     public VersionTagFilterInstance create(NativeWebRequest webRequest) {
         MultiValueMap<String, String> versionTags = new LinkedMultiValueMap<>();
-        for (String tag : webRequest.getParameterValues(getQueryParamName())) {
+        for (String tag : webRequest.getParameterValues(getSingleQueryParam())) {
             if (!tag.contains(":")) {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "Must specify a version. e.g. Paper:1.14");
             }

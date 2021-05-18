@@ -7,12 +7,14 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import java.util.Set;
+
 @Component
 public class ProjectAuthorFilter implements Filter<ProjectAuthorFilterInstance> {
 
     @Override
-    public String getQueryParamName() {
-        return "owner";
+    public Set<String> getQueryParamNames() {
+        return Set.of("owner");
     }
 
     @Override
@@ -23,7 +25,7 @@ public class ProjectAuthorFilter implements Filter<ProjectAuthorFilterInstance> 
     @NotNull
     @Override
     public ProjectAuthorFilterInstance create(NativeWebRequest webRequest) {
-        return new ProjectAuthorFilterInstance(webRequest.getParameter(getQueryParamName()));
+        return new ProjectAuthorFilterInstance(webRequest.getParameter(getSingleQueryParam()));
     }
 
     static class ProjectAuthorFilterInstance implements FilterInstance {

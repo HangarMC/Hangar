@@ -11,31 +11,32 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.Arrays;
+import java.util.Set;
 
 @Component
 public class ProjectCategoryFilter implements Filter<ProjectCategoryFilterInstance> {
 
     private final ConversionService conversionService;
 
-    @Override
-    public String getDescription() {
-        return "A category to filter for";
-    }
-
     @Autowired
     public ProjectCategoryFilter(ConversionService conversionService) {
         this.conversionService = conversionService;
     }
 
-    @NotNull
     @Override
-    public ProjectCategoryFilterInstance create(NativeWebRequest webRequest) {
-        return new ProjectCategoryFilterInstance(conversionService.convert(webRequest.getParameterValues(getQueryParamName()), Category[].class));
+    public Set<String> getQueryParamNames() {
+        return Set.of("category");
     }
 
     @Override
-    public String getQueryParamName() {
-        return "category";
+    public String getDescription() {
+        return "A category to filter for";
+    }
+
+    @NotNull
+    @Override
+    public ProjectCategoryFilterInstance create(NativeWebRequest webRequest) {
+        return new ProjectCategoryFilterInstance(conversionService.convert(webRequest.getParameterValues(getSingleQueryParam()), Category[].class));
     }
 
     static class ProjectCategoryFilterInstance implements FilterInstance {
