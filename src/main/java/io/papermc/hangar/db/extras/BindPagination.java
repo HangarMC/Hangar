@@ -7,6 +7,7 @@ import org.jdbi.v3.sqlobject.customizer.SqlStatementCustomizingAnnotation;
 import org.jdbi.v3.sqlobject.customizer.SqlStatementParameterCustomizer;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -15,11 +16,20 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 
+/**
+ * Configure filters, sorters, offset, and limit from a web request
+ * into a db query
+ */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER})
 @SqlStatementCustomizingAnnotation(BindPagination.BindPaginationFactory.class)
 public @interface BindPagination {
 
+    /**
+     * set to true to disable the injection of sorters, offset, and limit.<br>
+     * used for getting the total count of all entries
+     */
     boolean isCount() default false;
 
     class BindPaginationFactory implements SqlStatementCustomizerFactory {

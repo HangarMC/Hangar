@@ -6,13 +6,9 @@ public class Pagination extends RequestPagination {
 
     private final long count;
 
-    public Pagination(long limit, long offset, Long count) {
-        super(limit, offset);
-        this.count = count != null ? count : 0;
-    }
-
     public Pagination(Long count, RequestPagination pagination) {
-        this(pagination.getLimit(), pagination.getOffset(), count);
+        super(pagination.getLimit(), pagination.getOffset());
+        this.count = count != null ? count : 0;
     }
 
     public long getCount() {

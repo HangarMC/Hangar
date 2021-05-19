@@ -7,6 +7,7 @@ import io.papermc.hangar.controller.extras.pagination.FilterRegistry;
 import io.papermc.hangar.controller.extras.pagination.SorterRegistry;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSorters;
+import io.papermc.hangar.controller.extras.pagination.annotations.ConfigurePagination;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import org.jetbrains.annotations.NotNull;
@@ -45,8 +46,15 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
 
     @Override
     public RequestPagination resolveArgument(@NotNull MethodParameter parameter, ModelAndViewContainer mavContainer, @NotNull NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        long limit = ApiUtils.limitOrDefault(Optional.ofNullable(webRequest.getParameter("limit")).map(Long::parseLong).orElse(null));
         long offset = ApiUtils.offsetOrZero(Optional.ofNullable(webRequest.getParameter("offset")).map(Long::parseLong).orElse(null));
+        long limit;
+        Optional<Long> limitParam = Optional.ofNullable(webRequest.getParameter("limit")).map(Long::parseLong);
+        ConfigurePagination settings = parameter.getParameterAnnotation(ConfigurePagination.class);
+        if (settings != null) {
+            limit = ApiUtils.limitOrDefault(limitParam.orElse(null), settings.maxLimit());
+        } else {
+            limit = ApiUtils.limitOrDefault(limitParam.orElse(null));
+        }
         RequestPagination pagination = new RequestPagination(limit, offset);
 
         // find filters

@@ -1,6 +1,8 @@
 package io.papermc.hangar.db.dao.internal;
 
+import io.papermc.hangar.db.extras.BindPagination;
 import io.papermc.hangar.db.mappers.LogActionColumnMapper;
+import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.db.log.LoggedActionsOrganizationTable;
 import io.papermc.hangar.model.db.log.LoggedActionsPageTable;
 import io.papermc.hangar.model.db.log.LoggedActionsProjectTable;
@@ -46,14 +48,14 @@ public interface LoggedActionsDAO {
     @RegisterColumnMapper(LogActionColumnMapper.class)
     @RegisterConstructorMapper(HangarLoggedAction.class)
     @SqlQuery("SELECT * FROM v_logged_actions la " +
-              " WHERE true " +
-              "<if(userFilter)>AND la.user_name = :userFilter<endif> " +
-              "<if(projectFilter)>AND (la.p_owner_name || '/' || la.p_slug) = :projectFilter<endif> " +
-              "<if(versionFilter)>AND la.pv_version_string = :versionFilter<endif> " +
-              "<if(pageFilter)>AND la.pp_id = :pageFilter<endif> " +
-              "<if(actionFilter)>AND la.action = :actionFilter::LOGGED_ACTION_TYPE<endif> " +
-              "<if(subjectFilter)>AND la.s_name = :subjectFilter<endif> " +
-              "ORDER BY la.created_at DESC OFFSET :offset LIMIT :pageSize")
+              " WHERE true <filters>" +
+              " ORDER BY la.created_at DESC <offsetLimit>")
+    // TODO add <sorters>
     @DefineNamedBindings
-    List<HangarLoggedAction> getLog(String userFilter, String projectFilter, String versionFilter, String pageFilter, String actionFilter, String subjectFilter, long offset, long pageSize);
+    List<HangarLoggedAction> getLog(@BindPagination RequestPagination pagination);
+
+    @UseStringTemplateEngine
+    @SqlQuery("SELECT count(*) FROM v_logged_actions la " +
+              " WHERE true <filters>")
+    long getLogCount(@BindPagination(isCount = true) RequestPagination pagination);
 }

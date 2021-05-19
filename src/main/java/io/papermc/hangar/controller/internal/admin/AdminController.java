@@ -3,9 +3,18 @@ package io.papermc.hangar.controller.internal.admin;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
+import io.papermc.hangar.controller.extras.pagination.annotations.ConfigurePagination;
+import io.papermc.hangar.controller.extras.pagination.filters.log.LogActionFilter;
+import io.papermc.hangar.controller.extras.pagination.filters.log.LogPageFilter;
+import io.papermc.hangar.controller.extras.pagination.filters.log.LogProjectFilter;
+import io.papermc.hangar.controller.extras.pagination.filters.log.LogSubjectFilter;
+import io.papermc.hangar.controller.extras.pagination.filters.log.LogUserFilter;
+import io.papermc.hangar.controller.extras.pagination.filters.log.LogVersionFilter;
 import io.papermc.hangar.controller.extras.resolvers.NoCache;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
+import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.db.JobTable;
 import io.papermc.hangar.model.db.UserTable;
@@ -21,6 +30,7 @@ import io.papermc.hangar.service.internal.PlatformService;
 import io.papermc.hangar.service.internal.admin.HealthService;
 import io.papermc.hangar.service.internal.admin.StatService;
 import io.papermc.hangar.service.internal.users.UserService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -103,12 +113,12 @@ public class AdminController extends HangarComponent {
         userService.setLocked(user, locked, comment.getContent());
     }
 
-    // TODO filters/pagination
     @ResponseBody
     @GetMapping(value = "/log", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(NamedPermission.REVIEWER)
-    public PaginatedResult<HangarLoggedAction> getActionLog() {
-        List<HangarLoggedAction> log = actionLogger.getLog(0, null, null, null, null, null, null);
-        return new PaginatedResult<>(new Pagination(25, 0, (long) log.size()), log);
+    @ApplicableFilters({LogActionFilter.class, LogPageFilter.class, LogProjectFilter.class, LogSubjectFilter.class, LogUserFilter.class, LogVersionFilter.class})
+    // TODO add sorters
+    public PaginatedResult<HangarLoggedAction> getActionLog(@NotNull @ConfigurePagination(maxLimit = 50) RequestPagination pagination) {
+        return actionLogger.getLogs(pagination);
     }
 }

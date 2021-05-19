@@ -3,6 +3,9 @@ package io.papermc.hangar.service.internal;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.LoggedActionsDAO;
+import io.papermc.hangar.model.api.PaginatedResult;
+import io.papermc.hangar.model.api.Pagination;
+import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.db.log.LoggedActionTable;
 import io.papermc.hangar.model.internal.logs.HangarLoggedAction;
 import io.papermc.hangar.model.internal.logs.LoggedAction;
@@ -55,14 +58,7 @@ public class UserActionLogService extends HangarComponent {
         inserter.accept(action.getContext().createTable(getHangarPrincipal().getUserId(), RequestUtil.getRemoteInetAddress(request), action));
     }
 
-    public List<HangarLoggedAction> getLog(Integer oPage, String userFilter, String projectFilter, String versionFilter, String pageFilter, String actionFilter, String subjectFilter) {
-        long pageSize = 50L;
-        long offset;
-        if (oPage == null) {
-            offset = 0;
-        } else {
-            offset = oPage * pageSize;
-        }
-        return loggedActionsDAO.getLog(userFilter, projectFilter, versionFilter, pageFilter, actionFilter, subjectFilter, offset, pageSize);
+    public PaginatedResult<HangarLoggedAction> getLogs(RequestPagination pagination) {
+        return new PaginatedResult<>(new Pagination(loggedActionsDAO.getLogCount(pagination), pagination), loggedActionsDAO.getLog(pagination));
     }
 }

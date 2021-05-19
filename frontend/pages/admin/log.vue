@@ -2,7 +2,16 @@
     <v-card>
         <v-card-title>{{ $t('userActionLog.title') }}</v-card-title>
         <v-card-text>
-            <v-data-table :items="loggedActions.result" :headers="headers">
+            <v-data-table
+                :items="loggedActions.result"
+                :headers="headers"
+                :server-items-length="loggedActions.pagination.count"
+                :items-per-page="50"
+                :options.sync="options"
+                :footer-props="{ itemsPerPageOptions: [10, 25, 50] }"
+                :loading="loading"
+                disable-sort
+            >
                 <template #item.user="{ item }">
                     <NuxtLink :to="'/' + item.userName">{{ item.userName }}</NuxtLink>
                 </template>
@@ -73,22 +82,26 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
+import { Component } from 'nuxt-property-decorator';
 import { LoggedAction } from 'hangar-internal';
 import { Context } from '@nuxt/types';
 import { PaginatedResult } from 'hangar-api';
+import { DataOptions } from 'vuetify';
 import { GlobalPermission } from '~/utils/perms';
 import { NamedPermission } from '~/types/enums';
 import MarkdownModal from '~/components/modals/MarkdownModal.vue';
 import DiffModal from '~/components/modals/DiffModal.vue';
+import { HangarComponent } from '~/components/mixins';
 
 // TODO figure out a nice way to do filters for AdminLogPage
 @Component({
     components: { DiffModal, MarkdownModal },
 })
 @GlobalPermission(NamedPermission.VIEW_LOGS)
-export default class AdminLogPage extends Vue {
+export default class AdminLogPage extends HangarComponent {
     loggedActions!: PaginatedResult<LoggedAction>;
+    loading = false;
+    options = { page: 1, itemsPerPage: 50 } as DataOptions;
     headers = [
         { text: this.$t('userActionLog.user'), value: 'user' },
         { text: this.$t('userActionLog.address'), value: 'address' },
@@ -102,6 +115,31 @@ export default class AdminLogPage extends Vue {
     head() {
         return {
             title: this.$t('userActionLog.title'),
+        };
+    }
+
+    // TODO I'd like to move these things to a mixin since they are common across multiple components (see authors.vue, staff.vue, etc.)
+    mounted() {
+        this.$watch('options', this.onOptionsChanged, { deep: true });
+    }
+
+    onOptionsChanged() {
+        this.loading = true;
+        this.$api
+            .requestInternal<PaginatedResult<LoggedAction>>('admin/log', true, 'get', this.requestOptions)
+            .then((log) => {
+                this.loggedActions = log;
+            })
+            .catch(this.$util.handleRequestError)
+            .finally(() => {
+                this.loading = false;
+            });
+    }
+
+    get requestOptions() {
+        return {
+            limit: this.options.itemsPerPage,
+            offset: (this.options.page - 1) * this.options.itemsPerPage,
         };
     }
 

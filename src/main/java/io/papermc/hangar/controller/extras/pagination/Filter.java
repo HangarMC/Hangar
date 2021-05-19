@@ -19,7 +19,7 @@ public interface Filter<F extends FilterInstance> {
     String getDescription();
 
     default boolean supports(NativeWebRequest webRequest) {
-        return webRequest.getParameterMap().containsKey(getQueryParamNames());
+        return webRequest.getParameterMap().containsKey(getSingleQueryParam());
     }
 
     @NotNull

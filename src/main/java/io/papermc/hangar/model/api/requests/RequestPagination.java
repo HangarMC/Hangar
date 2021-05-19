@@ -27,9 +27,12 @@ public class RequestPagination {
     @ApiModelProperty(hidden = true)
     private final Map<String, Consumer<StringBuilder>> sorters;
 
+    /**
+     * limit/offset params should be validated before construction
+     */
     public RequestPagination(Long limit, Long offset) {
-        this.limit = ApiUtils.limitOrDefault(limit);
-        this.offset = ApiUtils.offsetOrZero(offset);
+        this.limit = limit;
+        this.offset = offset;
         this.filters = new ArrayList<>();
         this.sorters = new LinkedHashMap<>();
     }
