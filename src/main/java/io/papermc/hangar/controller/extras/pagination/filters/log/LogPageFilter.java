@@ -2,6 +2,7 @@ package io.papermc.hangar.controller.extras.pagination.filters.log;
 
 import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogPageFilter.LogPageFilterInstance;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -24,8 +25,7 @@ public class LogPageFilter implements Filter<LogPageFilterInstance> {
 
     @Override
     public boolean supports(NativeWebRequest webRequest) {
-        Long.parseLong(webRequest.getParameter(getSingleQueryParam()));
-        return true;
+        return Filter.super.supports(webRequest) && NumberUtils.isDigits(webRequest.getParameter(getSingleQueryParam()));
     }
 
     @NotNull

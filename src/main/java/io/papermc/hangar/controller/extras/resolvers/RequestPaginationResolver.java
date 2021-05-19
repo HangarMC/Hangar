@@ -55,13 +55,10 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
         if (applicableFilters != null) {
             for (Class<? extends Filter<? extends FilterInstance>> filter : applicableFilters) {
                 Filter<? extends FilterInstance> f = filterRegistry.get(filter);
-                try {
-                    if (f.supports(webRequest)) {
-                        pagination.getFilters().add(f.create(webRequest));
-                        paramNames.removeAll(f.getQueryParamNames());
-                    }
-                } catch (Exception ignored) { }
-
+                if (f.supports(webRequest)) {
+                    pagination.getFilters().add(f.create(webRequest));
+                    paramNames.removeAll(f.getQueryParamNames());
+                }
             }
         }
 
