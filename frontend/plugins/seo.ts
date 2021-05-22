@@ -65,7 +65,7 @@ const createUtil = (_: Context) => {
                             itemListElement: this.generateBreadcrumbs(route),
                         },
                     },
-                ],
+                ] as any[],
             };
         }
 
