@@ -15,6 +15,7 @@ const nodeEnv = process.env.NODE_ENV;
 
 export default {
     telemetry: false,
+    modern: 'server',
 
     // PWA module configuration: https://go.nuxtjs.dev/pwa
     pwa: {
