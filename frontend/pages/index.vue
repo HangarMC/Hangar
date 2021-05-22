@@ -80,7 +80,21 @@ export default class Home extends HangarComponent {
     sponsor!: Sponsor;
 
     head() {
-        return this.$seo.head('Home', null, this.$route, null);
+        const meta = this.$seo.head('Home', null, this.$route, null);
+        meta.script.push({
+            type: 'application/ld+json',
+            json: {
+                '@context': 'https://schema.org',
+                '@type': 'WebSite',
+                url: this.$seo.baseUrl(),
+                potentialAction: {
+                    '@type': 'SearchAction',
+                    target: this.$seo.baseUrl() + '/?q={search_term_string}', // todo fix once search actually works
+                    'query-input': 'required name=search_term_string',
+                },
+            },
+        });
+        return meta;
     }
 
     get platforms(): IPlatform[] {
