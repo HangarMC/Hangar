@@ -153,6 +153,15 @@ export default class ProjectVersionPage extends HangarProjectVersionMixin {
         recommend: false,
     };
 
+    head() {
+        return this.$seo.head(
+            this.project.name + ' ' + this.projectVersion.name,
+            null,
+            this.$route,
+            this.$util.projectUrl(this.project.namespace.owner, this.project.namespace.slug)
+        );
+    }
+
     get channel(): Tag | null {
         return this.projectVersion.tags?.find((t) => t.name === 'Channel') || null;
     }

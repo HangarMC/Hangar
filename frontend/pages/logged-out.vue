@@ -7,9 +7,13 @@ import { Component } from 'nuxt-property-decorator';
 import { HangarComponent } from '~/components/mixins';
 import { NotLoggedIn } from '~/utils/perms';
 
-@Component
+@Component({})
 @NotLoggedIn
-export default class LoggedOutPage extends HangarComponent {}
+export default class LoggedOutPage extends HangarComponent {
+    head() {
+        return this.$seo.head('Logged out', null, this.$route, null);
+    }
+}
 </script>
 
 <style scoped></style>

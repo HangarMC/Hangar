@@ -15,8 +15,12 @@
 import { Component } from 'nuxt-property-decorator';
 import { HangarComponent } from '~/components/mixins';
 
-@Component
+@Component({})
 export default class LinkoutPage extends HangarComponent {
+    head() {
+        return this.$seo.head('Linkout', null, this.$route, null);
+    }
+
     get target() {
         return this.$route.query.remoteUrl;
     }

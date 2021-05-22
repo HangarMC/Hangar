@@ -60,6 +60,10 @@ export default class AdminStatsPage extends Vue {
     dates: string[] = [];
     dateMenu = false;
 
+    head() {
+        return this.$seo.head(this.$t('stats.title'), null, this.$route, null);
+    }
+
     get dateRangeText() {
         return this.dates && this.dates.length > 1
             ? this.$util.prettyDate(this.$util.fromISOString(this.dates[0])) + ' ~ ' + this.$util.prettyDate(this.$util.fromISOString(this.dates[1]))
@@ -116,12 +120,6 @@ export default class AdminStatsPage extends Vue {
         (this.downloadData.series[1] as IChartistSeriesData).data = unsafeDownloads;
         (this.flagData.series[0] as IChartistSeriesData).data = openedFlags;
         (this.flagData.series[1] as IChartistSeriesData).data = closedFlags;
-    }
-
-    head() {
-        return {
-            title: this.$t('stats.title'),
-        };
     }
 
     // TODO figure out a way of not having a ton of duplicate code here

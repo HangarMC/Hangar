@@ -113,9 +113,7 @@ export default class AdminLogPage extends HangarComponent {
     ];
 
     head() {
-        return {
-            title: this.$t('userActionLog.title'),
-        };
+        return this.$seo.head(this.$t('userActionLog.title'), null, this.$route, null);
     }
 
     // TODO I'd like to move these things to a mixin since they are common across multiple components (see authors.vue, staff.vue, etc.)

@@ -67,6 +67,10 @@ export default class AdminFlagsPage extends Vue {
     flags!: Flag[];
     loading: { [key: number]: boolean } = {};
 
+    head() {
+        return this.$seo.head(this.$t('flagReview.title'), null, this.$route, null);
+    }
+
     resolve(flag: Flag) {
         this.loading[flag.id] = true;
         this.$api
@@ -85,12 +89,6 @@ export default class AdminFlagsPage extends Vue {
         for (const flag of this.flags) {
             this.loading[flag.id] = false;
         }
-    }
-
-    head() {
-        return {
-            title: this.$t('flagReview.title'),
-        };
     }
 
     async asyncData({ $api, $util }: Context) {

@@ -36,6 +36,10 @@ export default class BBCodePage extends HangarComponent {
         loading: false,
     };
 
+    head() {
+        return this.$seo.head('BBCode Converter', null, this.$route, null);
+    }
+
     convertBBCode() {
         this.converter.loading = true;
         this.$api

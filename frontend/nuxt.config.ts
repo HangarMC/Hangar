@@ -15,19 +15,30 @@ const nodeEnv = process.env.NODE_ENV;
 
 export default {
     telemetry: false,
+
+    // PWA module configuration: https://go.nuxtjs.dev/pwa
+    pwa: {
+        manifest: {
+            name: 'Hangar | PaperMC',
+            short_name: 'Hangar',
+            description: 'Plugin repository for Paper plugins and more!',
+            lang: 'en',
+        },
+    },
+
     // Global page headers: https://go.nuxtjs.dev/config-head
     head: {
         htmlAttrs: {
             dir: 'ltr',
         },
-        titleTemplate: (titleChunk: string) => {
-            return titleChunk ? `${titleChunk} | Hangar` : 'Hangar';
-        },
+        titleTemplate: (titleChunk) => (titleChunk ? `${titleChunk} | Hangar` : 'Hangar'),
         meta: [
-            { charset: 'utf-8' },
+            { hid: 'charset', charset: 'utf-8' },
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-            { hid: 'description', name: 'description', content: '' },
+            { property: 'twitter:site', name: 'twitter:site', hid: 'twitter:site', content: 'hangar' },
+            { property: 'twitter:card', name: 'twitter:card', hid: 'twitter:card', content: 'summary' },
         ],
+        noscript: [{ innerHTML: 'We are sorry, but Hangar requires JavaScript to work properly.' }],
     },
 
     env: {
@@ -42,7 +53,7 @@ export default {
     css: ['~/assets/main.scss'],
 
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-    plugins: ['~/plugins/api.ts', '~/plugins/utils.ts', '~/plugins/auth.ts', '~/plugins/perms.ts'],
+    plugins: ['~/plugins/api.ts', '~/plugins/utils.ts', '~/plugins/auth.ts', '~/plugins/perms.ts', '~/plugins/seo.ts'],
 
     // Auto import components: https://go.nuxtjs.dev/config-components
     components: false,
@@ -72,16 +83,6 @@ export default {
 
     // Axios module configuration: https://go.nuxtjs.dev/config-axios
     axios: {},
-
-    // PWA module configuration: https://go.nuxtjs.dev/pwa
-    pwa: {
-        manifest: {
-            name: 'Hangar | PaperMC',
-            short_name: 'Hangar',
-            description: 'Plugin repository for Paper plugins and more!',
-            lang: 'en',
-        },
-    },
 
     // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
     vuetify: {

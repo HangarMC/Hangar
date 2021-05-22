@@ -46,9 +46,7 @@ export default class AuthorsPage extends UserListPage {
     ];
 
     head() {
-        return {
-            title: this.$t('pages.authorsTitle'),
-        };
+        return this.$seo.head(this.$t('pages.authorsTitle'), null, this.$route, null);
     }
 
     get url(): string {

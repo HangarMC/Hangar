@@ -52,6 +52,10 @@ export default class AdminVersionsPage extends HangarComponent {
     originalPlatforms!: IPlatform[];
     platforms!: IPlatform[];
 
+    head() {
+        return this.$seo.head(this.$t('platformVersions.title'), null, this.$route, null);
+    }
+
     save() {
         this.loading = true;
         const data: { [key: string]: string[] } = {};
@@ -76,12 +80,6 @@ export default class AdminVersionsPage extends HangarComponent {
 
     get hasChanged() {
         return !isEqual(this.platforms, this.originalPlatforms);
-    }
-
-    head() {
-        return {
-            title: this.$t('platformVersions.title'),
-        };
     }
 
     async asyncData({ $api, $util }: Context) {

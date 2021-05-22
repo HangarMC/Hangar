@@ -140,6 +140,15 @@ export default class ProjectVersionsPage extends HangarProjectMixin {
         },
     };
 
+    head() {
+        return this.$seo.head(
+            'Versions | ' + this.project.name,
+            null,
+            this.$route,
+            this.$util.projectUrl(this.project.namespace.owner, this.project.namespace.slug)
+        );
+    }
+
     @Watch('filter', { deep: true })
     onFilterChange() {
         if (process.server) return;

@@ -45,9 +45,7 @@ export default class StaffPage extends UserListPage {
     ];
 
     head() {
-        return {
-            title: this.$t('pages.staffTitle'),
-        };
+        return this.$seo.head(this.$t('pages.staffTitle'), null, this.$route, null);
     }
 
     get url(): string {

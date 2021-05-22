@@ -81,18 +81,16 @@ export default class AdminActivitiesUserPage extends HangarComponent {
     flagActivities!: FlagActivity[];
     reviewActivities!: ReviewActivity[];
 
+    head() {
+        return this.$seo.head(this.$t('userActivity.title', [this.$route.params.user]), null, this.$route, this.$util.avatarUrl(this.$route.params.user));
+    }
+
     getRouteParams(activity: ReviewActivity) {
         return {
             author: activity.namespace.owner,
             slug: activity.namespace.slug,
             version: activity.versionString,
             platform: activity.platforms[0].toLowerCase(),
-        };
-    }
-
-    head() {
-        return {
-            title: this.$t('userActivity.title', [this.$route.params.user]),
         };
     }
 

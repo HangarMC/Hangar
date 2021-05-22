@@ -88,11 +88,7 @@ import { HangarNotification, Invite, Invites } from 'hangar-internal';
 import { LoggedIn } from '~/utils/perms';
 import { HangarComponent } from '~/components/mixins';
 
-@Component({
-    head: {
-        title: 'Notifications',
-    },
-})
+@Component({})
 @LoggedIn
 export default class NotificationsPage extends HangarComponent {
     notifications: HangarNotification[] = [];
@@ -101,6 +97,10 @@ export default class NotificationsPage extends HangarComponent {
         notification: 'unread' as 'unread' | 'read' | 'all',
         invite: 'all' as 'organizations' | 'projects' | 'all',
     };
+
+    head() {
+        return this.$seo.head('Notifications', null, this.$route, null);
+    }
 
     get filteredNotifications(): HangarNotification[] {
         switch (this.filters.notification) {

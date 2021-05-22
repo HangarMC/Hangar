@@ -160,6 +160,15 @@ export default class ProjectVersionsVersionReviewPage extends mixins(Authed, Han
         undoApproval: false,
     };
 
+    head() {
+        return this.$seo.head(
+            'Reviews | ' + this.project.name,
+            null,
+            this.$route,
+            this.$util.projectUrl(this.project.namespace.owner, this.project.namespace.slug)
+        );
+    }
+
     async fetch() {
         this.reviews = await this.$api
             .requestInternal<HangarReview[]>(`reviews/${this.projectVersion.id}/reviews`)

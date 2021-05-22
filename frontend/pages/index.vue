@@ -76,17 +76,15 @@ import { HangarComponent } from '~/components/mixins';
 export default class Home extends HangarComponent {
     // TODO implement filtering
     projects!: PaginatedResult<Project>;
-    projectFilter: String | null = null;
+    projectFilter: string | null = null;
     sponsor!: Sponsor;
+
+    head() {
+        return this.$seo.head('Home', null, this.$route, null);
+    }
 
     get platforms(): IPlatform[] {
         return Array.from((this.$store.state as RootState).platforms.values());
-    }
-
-    head() {
-        return {
-            title: 'Home',
-        };
     }
 
     async asyncData({ $api, $util }: Context) {

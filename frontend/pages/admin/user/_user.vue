@@ -79,6 +79,10 @@ export default class AdminUserPage extends HangarComponent {
     projects!: PaginatedResult<Project>;
     organizations!: { [key: string]: RoleTable };
 
+    head() {
+        return this.$seo.head(this.$t('userAdmin.title') + ' ' + this.$route.params.user, null, this.$route, this.$util.avatarUrl(this.$route.params.user));
+    }
+
     get projectsConfig() {
         return [
             { text: this.$t('userAdmin.project'), value: 'name' },

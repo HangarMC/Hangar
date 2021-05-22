@@ -33,9 +33,7 @@ export default class AdminApprovalProjectsPage extends HangarComponent {
     waitingProjects!: ProjectApproval[];
 
     head() {
-        return {
-            title: this.$t('projectApproval.title'),
-        };
+        return this.$seo.head(this.$t('projectApproval.title'), null, this.$route, null);
     }
 
     async asyncData({ $api, $util }: Context) {

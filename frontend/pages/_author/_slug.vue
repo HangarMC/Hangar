@@ -149,9 +149,12 @@ export default class ProjectPage extends HangarComponent {
     };
 
     head() {
-        return {
-            title: this.project?.name,
-        };
+        return this.$seo.head(
+            this.project?.name,
+            this.project?.description,
+            this.$route,
+            this.$util.projectUrl(this.project?.namespace.owner, this.project?.namespace.slug)
+        );
     }
 
     async asyncData({ $api, params, $util }: Context) {

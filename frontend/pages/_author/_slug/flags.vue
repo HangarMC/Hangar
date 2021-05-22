@@ -33,6 +33,15 @@ import { HangarProjectMixin } from '~/components/mixins';
 export default class ProjectFlagsPage extends HangarProjectMixin {
     flags: Flag[] = [];
 
+    head() {
+        return this.$seo.head(
+            'Flags | ' + this.project.name,
+            this.project.description,
+            this.$route,
+            this.$util.projectUrl(this.project.namespace.owner, this.project.namespace.slug)
+        );
+    }
+
     get headers() {
         return [
             { text: 'Submitter', value: 'user' },

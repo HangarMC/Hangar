@@ -149,6 +149,10 @@ export default class AdminApprovalVersionsPage extends HangarComponent {
         { text: '', value: 'startBtn', sortable: false, align: 'end' },
     ];
 
+    head() {
+        return this.$seo.head(this.$t('versionApproval.title'), null, this.$route, null);
+    }
+
     sorter(entries: ReviewQueueEntry[], sortBy: string[], sortDesc: boolean[]) {
         if (sortBy[0] === 'queuedBy') {
             entries.sort((a, b) => {
@@ -191,12 +195,6 @@ export default class AdminApprovalVersionsPage extends HangarComponent {
             slug: entry.namespace.slug,
             version: entry.versionString,
             platform: entry.platforms[0].toLowerCase(),
-        };
-    }
-
-    head() {
-        return {
-            title: this.$t('versionApproval.title'),
         };
     }
 

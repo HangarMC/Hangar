@@ -87,9 +87,7 @@ export default class AuthorPage extends UserPropPage {
     orgRoles!: Role[];
 
     head() {
-        return {
-            title: this.user.name,
-        };
+        return this.$seo.head(this.user.name, this.user.tagline, this.$route, this.$util.avatarUrl(this.user.name));
     }
 
     async asyncData({ $api, params, $util }: Context) {

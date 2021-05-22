@@ -129,9 +129,7 @@ export default class AdminHealthPage extends Vue {
     // noPlatform: Array<Project> = [this.$util.dummyProject()];
 
     head() {
-        return {
-            title: this.$t('health.title'),
-        };
+        return this.$seo.head(this.$t('health.title'), null, this.$route, null);
     }
 
     async asyncData({ $api, $util }: Context) {

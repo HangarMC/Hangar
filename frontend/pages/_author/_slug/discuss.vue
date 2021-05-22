@@ -56,6 +56,15 @@ export default class ProjectDiscussPage extends HangarProjectMixin {
         editor: MarkdownEditor;
     };
 
+    head() {
+        return this.$seo.head(
+            'Discuss | ' + this.project.name,
+            this.project.description,
+            this.$route,
+            this.$util.projectUrl(this.project.namespace.owner, this.project.namespace.slug)
+        );
+    }
+
     mounted() {
         window.addEventListener('message', this.postMessageReceived, false);
     }

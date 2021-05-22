@@ -43,6 +43,15 @@ export default class ProjectNotesPage extends HangarProjectMixin {
     loading = false;
     text: string = '';
 
+    head() {
+        return this.$seo.head(
+            'Notes | ' + this.project.name,
+            this.project.description,
+            this.$route,
+            this.$util.projectUrl(this.project.namespace.owner, this.project.namespace.slug)
+        );
+    }
+
     addNote() {
         if (!this.text) {
             return;

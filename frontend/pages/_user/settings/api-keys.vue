@@ -110,6 +110,10 @@ export default class AuthorSettingsApiKeysPage extends HangarForm {
     possiblePerms!: NamedPermission[];
     apiKeys!: ApiKey[];
 
+    head() {
+        return this.$seo.head(this.$t('apiKeys.title'), null, this.$route, this.$util.avatarUrl(this.$route.params.user));
+    }
+
     get chunkedPerms(): IPermission[][] {
         const permArr = this.possiblePerms.map((perm) => (this.$store.state as RootState).permissions.get(perm)!);
         return chunk(permArr, permArr.length / 2);
@@ -167,12 +171,6 @@ export default class AuthorSettingsApiKeysPage extends HangarForm {
             .finally(() => {
                 this.validateLoading = false;
             });
-    }
-
-    head() {
-        return {
-            title: this.$t('apiKeys.title'),
-        };
     }
 
     async asyncData({ $api, $util, params }: Context) {

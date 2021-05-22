@@ -423,6 +423,15 @@ export default class ProjectManagePage extends HangarProjectMixin {
 
     selectedTab: string = '';
 
+    head() {
+        return this.$seo.head(
+            this.$t('project.settings.title') + ' | ' + this.project.name,
+            this.project.description,
+            this.$route,
+            this.$util.projectUrl(this.project.namespace.owner, this.project.namespace.slug)
+        );
+    }
+
     @Watch('$route.hash')
     onRouteTabChange(val: string) {
         this.selectedTab = val;

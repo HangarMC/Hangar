@@ -19,9 +19,7 @@ declare global {
 @Component
 export default class ApiPage extends HangarComponent {
     head() {
-        return {
-            title: this.$t('apiDocs.title'),
-        };
+        return this.$seo.head(this.$t('apiDocs.title'), null, this.$route, null);
     }
 
     mounted() {

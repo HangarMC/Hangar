@@ -297,9 +297,6 @@ interface NewProjectForm extends ProjectSettingsForm {
         Markdown,
         StepperStepContent,
     },
-    head: {
-        title: 'New Project',
-    },
 })
 @LoggedIn
 export default class NewProjectPage extends HangarComponent {
@@ -330,6 +327,10 @@ export default class NewProjectPage extends HangarComponent {
     forms = {
         step2: false,
     };
+
+    head() {
+        return this.$seo.head('New Project', null, this.$route, null);
+    }
 
     get categoryIcon() {
         return (this.$store.state as RootState).projectCategories.get(this.form.category)?.icon;

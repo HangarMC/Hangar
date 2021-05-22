@@ -55,9 +55,7 @@ import { LoggedIn } from '~/utils/perms';
 @LoggedIn
 export default class OrganizationsNewPage extends mixins(Authed, HangarForm) {
     head() {
-        return {
-            title: this.$t('organization.new.title'),
-        };
+        return this.$seo.head(this.$t('organization.new.title'), null, this.$route, null);
     }
 
     roles!: Role[];

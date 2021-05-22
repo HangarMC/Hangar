@@ -200,9 +200,12 @@ export default class ProjectVersionsNewPage extends HangarProjectMixin {
     };
 
     head() {
-        return {
-            title: this.$t('version.new.title'),
-        };
+        return this.$seo.head(
+            this.$t('version.new.title') + ' | ' + this.project.name,
+            null,
+            this.$route,
+            this.$util.projectUrl(this.project.namespace.owner, this.project.namespace.slug)
+        );
     }
 
     get canCreate(): boolean {

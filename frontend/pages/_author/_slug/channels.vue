@@ -81,6 +81,15 @@ export default class ProjectChannelsPage extends HangarProjectMixin {
         add: false,
     };
 
+    head() {
+        return this.$seo.head(
+            'Channels | ' + this.project.name,
+            this.project.description,
+            this.$route,
+            this.$util.projectUrl(this.project.namespace.owner, this.project.namespace.slug)
+        );
+    }
+
     editChannel(channel: ProjectChannel) {
         if (!channel.id) return;
         this.$api

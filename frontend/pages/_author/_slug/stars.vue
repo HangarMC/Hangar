@@ -18,16 +18,26 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
+import { Component } from 'nuxt-property-decorator';
 import { PaginatedResult, User } from 'hangar-api';
 import { Context } from '@nuxt/types';
 import { UserAvatar } from '~/components/users';
+import { HangarProjectMixin } from '~/components/mixins';
 
 @Component({
     components: { UserAvatar },
 })
-export default class ProjectStarsPage extends Vue {
+export default class ProjectStarsPage extends HangarProjectMixin {
     stargazers!: PaginatedResult<User>;
+
+    head() {
+        return this.$seo.head(
+            this.$t('project.stargazers') + ' | ' + this.project.name,
+            this.project.description,
+            this.$route,
+            this.$util.projectUrl(this.project.namespace.owner, this.project.namespace.slug)
+        );
+    }
 
     async asyncData({ $api, params, $util }: Context) {
         const stargazers = await $api
