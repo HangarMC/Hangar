@@ -1098,10 +1098,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
   integrity sha512-5a6wqoJV/xEdbRNKVo6I4hO3VjyDq//8q2f9I6PBAvMesJHFauXDorcNCsr9RzvsZnaWi5NYCcfyqP1QeFHFbw==
 
-"@dansmaculotte/nuxt-security@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@dansmaculotte/nuxt-security/-/nuxt-security-0.0.3.tgz#6d596dde0fc5b73e4e03b57f37f056650fdae19d"
-  integrity sha512-z+zY6NUH6Ul8AMCMpfTGgGkQY0IVyE7L8sicYaue5hGRMLYJI+qLpqgpvL7JygwLR5JFA7ziN7xzDXvqf0jGPg==
+"@dansmaculotte/nuxt-security@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@dansmaculotte/nuxt-security/-/nuxt-security-0.0.4.tgz#0b461b13329c7174395a97fdb0d54504b34e3b7d"
+  integrity sha512-Hvdpva2WpHfK6BQ28e2dyVHb9edPoJtYG+hfMILOrK+QkyBGZZgXKO13elI68gLVWFhY5eAtCDgug3Vq2HMieg==
   dependencies:
     consola "^2.15.0"
     feature-policy "^0.6.0"
