@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - master
-      - improve-actions
 
 concurrency:
   group: ${{ github.ref }}-deploy
