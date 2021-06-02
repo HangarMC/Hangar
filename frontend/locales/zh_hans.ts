@@ -56,7 +56,7 @@ const msgs: LocaleMessageObject = {
             projectApprovals: '通过项目审核',
             versionApprovals: '通过版本审核',
             stats: '统计',
-            health: 'Hangar 生命',
+            health: 'Hangar 健康',
             log: '用户行为日志',
             platformVersions: '平台版本',
             logout: '登出',
@@ -90,7 +90,7 @@ const msgs: LocaleMessageObject = {
         noWatchers: '目前还没有人时时关注这个项目的动态。??',
         members: '成员',
         category: {
-            info: '库类: {0}',
+            info: '类别: {0}',
             admin_tools: '管理员工具',
             chat: '聊天',
             dev_tools: '开发者工具',
@@ -145,7 +145,7 @@ const msgs: LocaleMessageObject = {
                 title: '用户协定',
                 text: '一个项目将包含您所上传插件的下载与文档<br>在开始前, 请阅读 <a href="#">Hangar 资源提交细则。</a>',
                 continue: '同意',
-                back: '拒绝',
+                back: '返回',
             },
             step2: {
                 title: '基础设置',
@@ -174,7 +174,7 @@ const msgs: LocaleMessageObject = {
                 keywords: '关键词',
             },
             step4: {
-                title: '导入自 Spigot',
+                title: '从 Spigot 导入',
                 continue: '继续',
                 back: '返回',
                 optional: '选填项',
@@ -236,7 +236,7 @@ const msgs: LocaleMessageObject = {
             homepageSub:
                 '为您的项目创建一个自定义主页有助于使您的项目看起来更养眼、更正式，同时也为您提供另一个收集项目信息的地方。',
             issues: '问题追踪器',
-            issuesSub: '提供问题跟踪器可以帮助您的用户更轻松地获得支持，并为您提供一种跟踪bug的简单方法。',
+            issuesSub: '提供问题跟踪器可以帮助您的用户更轻松地获得支持，并为您持续跟踪bug状态提供更便利的方式。',
             source: '源码',
             sourceSub: '通过项目开源来促进开发人员社区的长远发展!',
             support: '额外支持',
