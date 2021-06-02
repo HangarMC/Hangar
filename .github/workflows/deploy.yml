@@ -7,9 +7,10 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
+
+concurrency:
+  group: ${{ github.ref }}-deploy
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -75,7 +76,6 @@ jobs:
           ssh-private-key: ${{ secrets.DOCKER_HOST_SSH_KEY }}
 
       - name: Docker
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |
           echo ${{ secrets.DOCKER_HOST_SSH_SIG }} > ~/.ssh/known_hosts
           cd docker/deployment

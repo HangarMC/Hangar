@@ -14,14 +14,14 @@
     "*.{ts,js,vue}": "eslint"
   },
   "dependencies": {
-    "@dansmaculotte/nuxt-security": "0.0.3",
-    "@nuxtjs/axios": "5.13.4",
+    "@dansmaculotte/nuxt-security": "0.0.4",
+    "@nuxtjs/axios": "5.13.5",
     "@nuxtjs/proxy": "2.1.0",
     "@nuxtjs/pwa": "3.3.5",
     "chartist": "0.11.4",
     "chartist-plugin-legend": "0.6.2",
     "cookie-universal-nuxt": "2.1.4",
-    "core-js": "3.12.1",
+    "core-js": "3.13.1",
     "diff-match-patch": "1.0.5",
     "filesize": "6.3.0",
     "jwt-decode": "3.1.2",
@@ -29,7 +29,7 @@
     "nuxt": "2.15.6",
     "nuxt-i18n": "Machine-Maker/i18n-module#fix/mixing-mem-leak",
     "nuxt-property-decorator": "2.9.1",
-    "swagger-ui": "3.48.0",
+    "swagger-ui": "3.49.0",
     "vue": "2.6.12",
     "vuex": "3.6.2"
   },
@@ -37,7 +37,7 @@
     "@nuxt/types": "2.15.6",
     "@nuxt/typescript-build": "2.1.0",
     "@nuxtjs/dotenv": "1.4.1",
-    "@nuxtjs/eslint-config-typescript": "6.0.0",
+    "@nuxtjs/eslint-config-typescript": "6.0.1",
     "@nuxtjs/eslint-module": "3.0.2",
     "@nuxtjs/vuetify": "1.11.3",
     "@types/chartist": "0.11.0",
@@ -48,7 +48,7 @@
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-nuxt": "2.0.0",
     "eslint-plugin-prettier": "3.4.0",
-    "eslint-plugin-vue": "7.9.0",
+    "eslint-plugin-vue": "7.10.0",
     "fibers": "5.0.0",
     "husky": "6.0.0",
     "lint-staged": "11.0.0",
@@ -56,7 +56,7 @@
     "sass": "1.34.0",
     "sass-loader": "10.1.1",
     "typescript": "4.2.4",
-    "vuetify": "2.5.0",
+    "vuetify": "2.5.1",
     "webpack": "4.46.0"
   }
 }
