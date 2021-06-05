@@ -11,9 +11,7 @@ import io.papermc.hangar.controller.extras.pagination.filters.log.LogProjectFilt
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogSubjectFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogUserFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogVersionFilter;
-import io.papermc.hangar.controller.extras.resolvers.NoCache;
 import io.papermc.hangar.model.api.PaginatedResult;
-import io.papermc.hangar.model.api.Pagination;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.db.JobTable;
@@ -109,7 +107,7 @@ public class AdminController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(NamedPermission.IS_STAFF)
     @PostMapping(value = "/lock-user/{user}/{locked}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void setUserLock(@PathVariable @NoCache UserTable user, @PathVariable boolean locked, @RequestBody @Valid StringContent comment) {
+    public void setUserLock(@PathVariable UserTable user, @PathVariable boolean locked, @RequestBody @Valid StringContent comment) {
         userService.setLocked(user, locked, comment.getContent());
     }
 
