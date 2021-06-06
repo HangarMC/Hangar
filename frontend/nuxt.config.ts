@@ -10,10 +10,12 @@ require('dotenv').config();
 
 const proxyHost = process.env.proxyHost || 'http://localhost:8080';
 const authHost = process.env.authHost || 'http://localhost:8000';
+const lazyAuthHost = process.env.lazyAuthHost || 'http://localhost:8000';
 const publicHost = process.env.PUBLIC_HOST || 'http://localhost:3000';
 const host = process.env.host || 'localhost';
 const nodeEnv = process.env.NODE_ENV;
 
+// noinspection JSUnusedGlobalSymbols
 export default {
     telemetry: false,
     modern: 'server',
@@ -46,6 +48,7 @@ export default {
     env: {
         proxyHost,
         authHost,
+        lazyAuthHost,
         publicHost,
         host,
         nodeEnv,
@@ -117,7 +120,7 @@ export default {
         proxyHost + '/*/sitemap.xml',
         proxyHost + '/statusz',
         // auth
-        authHost + '/avatar',
+        lazyAuthHost + '/avatar',
     ],
 
     i18n: {
