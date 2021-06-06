@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialog" max-width="700">
+    <v-dialog v-if="$perms.canEditVersion" v-model="dialog" max-width="700">
         <template #activator="{ on: dialogOn, attrs }">
             <v-tooltip bottom>
                 <template #activator="{ on: tooltipOn }">

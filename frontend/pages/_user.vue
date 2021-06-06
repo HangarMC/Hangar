@@ -4,7 +4,7 @@
             <v-col class="flex-grow-0">
                 <div style="position: relative" class="mt-2">
                     <UserAvatar :username="user.name" :avatar-url="$util.avatarUrl(user.name)" :clazz="avatarClazz">
-                        <Prompt v-if="user.isOrganization" prompt="CHANGE_AVATAR">
+                        <Prompt v-if="user.isOrganization && $perms.canEditSubjectSettings" prompt="CHANGE_AVATAR">
                             <template #activator>
                                 <v-tooltip left>
                                     <template #activator="{ on }">
