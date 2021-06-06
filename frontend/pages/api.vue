@@ -1,6 +1,6 @@
 <template>
     <v-card color="grey lighten-2">
-        <div id="swagger-ui"></div>
+        <div id="swagger-ui" />
     </v-card>
 </template>
 

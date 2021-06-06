@@ -9,7 +9,7 @@
                             <v-list-item-subtitle>
                                 {{ $t('projectApproval.description', [project.changeRequester, `${project.namespace.owner}/${project.namespace.slug}`]) }}
                                 <v-btn small icon color="primary" :to="`/${project.namespace.owner}/${project.namespace.slug}`" nuxt target="_blank">
-                                    <v-icon small>mdi-open-in-new</v-icon>
+                                    <v-icon small> mdi-open-in-new </v-icon>
                                 </v-btn>
                             </v-list-item-subtitle>
                         </v-col>

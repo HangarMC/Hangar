@@ -1,7 +1,9 @@
 <template>
     <v-row>
         <v-col cols="12" md="5">
-            <div class="text-h4 mb-4">{{ $t('apiKeys.createNew') }}</div>
+            <div class="text-h4 mb-4">
+                {{ $t('apiKeys.createNew') }}
+            </div>
             <v-form ref="modalForm" v-model="validForm">
                 <v-text-field
                     v-model="name"
@@ -14,9 +16,9 @@
                     :rules="[$util.$vc.require($t('apiKeys.name')), $util.$vc.maxLength(255), $util.$vc.minLength(5)]"
                 >
                     <template #append-outer>
-                        <v-btn color="success" class="input-append-btn" :disabled="!validForm" :loading="loading" @click="create">{{
-                            $t('apiKeys.createKey')
-                        }}</v-btn>
+                        <v-btn color="success" class="input-append-btn" :disabled="!validForm" :loading="loading" @click="create">
+                            {{ $t('apiKeys.createKey') }}
+                        </v-btn>
                     </template>
                 </v-text-field>
                 <v-row no-gutters>
@@ -52,11 +54,21 @@
             <v-simple-table>
                 <thead>
                     <tr>
-                        <th class="text-left">{{ $t('apiKeys.name') }}</th>
-                        <th class="text-left">{{ $t('apiKeys.key') }}</th>
-                        <th class="text-left">{{ $t('apiKeys.keyIdentifier') }}</th>
-                        <th class="text-left">{{ $t('apiKeys.permissions') }}</th>
-                        <th class="text-left">{{ $t('apiKeys.delete') }}</th>
+                        <th class="text-left">
+                            {{ $t('apiKeys.name') }}
+                        </th>
+                        <th class="text-left">
+                            {{ $t('apiKeys.key') }}
+                        </th>
+                        <th class="text-left">
+                            {{ $t('apiKeys.keyIdentifier') }}
+                        </th>
+                        <th class="text-left">
+                            {{ $t('apiKeys.permissions') }}
+                        </th>
+                        <th class="text-left">
+                            {{ $t('apiKeys.delete') }}
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -78,7 +90,9 @@
                     </tr>
                     <tr v-if="apiKeys.length === 0">
                         <td colspan="5">
-                            <v-alert type="info" width="100%" class="mt-4">{{ $t('apiKeys.noKeys') }}</v-alert>
+                            <v-alert type="info" width="100%" class="mt-4">
+                                {{ $t('apiKeys.noKeys') }}
+                            </v-alert>
                         </td>
                     </tr>
                 </tbody>

@@ -33,8 +33,13 @@
             </v-col>
             <v-col cols="auto">
                 <h1 class="d-inline">
-                    <NuxtLink :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</NuxtLink> /
-                    <NuxtLink :to="slug">{{ project.name }}</NuxtLink>
+                    <NuxtLink :to="'/' + project.namespace.owner">
+                        {{ project.namespace.owner }}
+                    </NuxtLink>
+                    /
+                    <NuxtLink :to="slug">
+                        {{ project.name }}
+                    </NuxtLink>
                 </h1>
                 <div>
                     <v-subheader>{{ project.description }}</v-subheader>
@@ -46,8 +51,8 @@
                     <v-tooltip v-if="!$util.isCurrentUser(project.owner.id)" bottom>
                         <template #activator="{ on }">
                             <v-btn icon @click="toggleStar" v-on="on">
-                                <v-icon v-if="project.userActions.starred" color="amber">mdi-star</v-icon>
-                                <v-icon v-else color="amber">mdi-star-outline</v-icon>
+                                <v-icon v-if="project.userActions.starred" color="amber"> mdi-star </v-icon>
+                                <v-icon v-else color="amber"> mdi-star-outline </v-icon>
                             </v-btn>
                         </template>
                         <span v-if="project.userActions.starred">{{ $t('project.actions.unstar') }}</span>
@@ -57,8 +62,8 @@
                     <v-tooltip v-if="!$util.isCurrentUser(project.owner.id)" bottom>
                         <template #activator="{ on }">
                             <v-btn icon @click="toggleWatch" v-on="on">
-                                <v-icon v-if="project.userActions.watching">mdi-eye-off</v-icon>
-                                <v-icon v-else>mdi-eye</v-icon>
+                                <v-icon v-if="project.userActions.watching"> mdi-eye-off </v-icon>
+                                <v-icon v-else> mdi-eye </v-icon>
                             </v-btn>
                         </template>
                         <span v-if="project.userActions.watching">{{ $t('project.actions.unwatch') }}</span>
@@ -101,9 +106,11 @@
         <v-row>
             <v-tabs>
                 <v-tab v-for="tab in tabs" :key="tab.title" :exact="!!tab.exact" :to="tab.external ? '/linkout?remoteUrl=' + tab.link : tab.link" nuxt>
-                    <v-icon left>{{ tab.icon }}</v-icon>
+                    <v-icon left>
+                        {{ tab.icon }}
+                    </v-icon>
                     {{ tab.title }}
-                    <v-icon v-if="tab.external" small class="mb-1 ml-1" color="primary">mdi-open-in-new</v-icon>
+                    <v-icon v-if="tab.external" small class="mb-1 ml-1" color="primary"> mdi-open-in-new </v-icon>
                 </v-tab>
             </v-tabs>
         </v-row>

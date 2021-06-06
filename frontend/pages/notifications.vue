@@ -34,12 +34,14 @@
         <v-divider vertical class="mt-2" />
         <v-col v-if="!$fetchState.pending" cols="12" md="5">
             <h1>{{ $t('notifications.invites') }}</h1>
-            <v-select v-model="filters.invite" dense filled :items="inviteFilter"></v-select>
+            <v-select v-model="filters.invite" dense filled :items="inviteFilter" />
             <v-list v-if="filteredInvites.length">
                 <v-list-item v-for="(invite, index) in filteredInvites" :key="index">
                     <v-list-item-title>
                         {{ $t(!invite.accepted ? 'notifications.invited' : 'notifications.inviteAccepted', [invite.type]) }}:
-                        <NuxtLink :to="invite.url" exact>{{ invite.name }}</NuxtLink>
+                        <NuxtLink :to="invite.url" exact>
+                            {{ invite.name }}
+                        </NuxtLink>
                     </v-list-item-title>
                     <template v-if="!invite.accepted">
                         <v-list-item-action>

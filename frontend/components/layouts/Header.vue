@@ -13,13 +13,13 @@
             <Dropdown :controls="dropdown" />
         </v-menu>
 
-        <v-spacer></v-spacer>
+        <v-spacer />
 
         <v-menu v-if="isLoggedIn" bottom offset-y transition="slide-y-transition" open-on-hover>
             <template #activator="{ on, attrs }">
                 <v-btn v-bind="attrs" color="primary" class="mr-1" v-on="on">
                     {{ $t('nav.createNew') }}
-                    <v-icon right>mdi-chevron-down</v-icon>
+                    <v-icon right> mdi-chevron-down </v-icon>
                 </v-btn>
             </template>
             <Dropdown :controls="newControls" />
@@ -27,13 +27,17 @@
 
         <v-tooltip bottom>
             <template #activator="{ on }">
-                <v-btn icon to="/authors" nuxt class="mr-1" v-on="on"><v-icon>mdi-account-group</v-icon></v-btn>
+                <v-btn icon to="/authors" nuxt class="mr-1" v-on="on">
+                    <v-icon>mdi-account-group</v-icon>
+                </v-btn>
             </template>
             <span>{{ $t('pages.authorsTitle') }}</span>
         </v-tooltip>
         <v-tooltip bottom>
             <template #activator="{ on }">
-                <v-btn icon to="/staff" nuxt class="mr-1" v-on="on"><v-icon>mdi-account-tie</v-icon></v-btn>
+                <v-btn icon to="/staff" nuxt class="mr-1" v-on="on">
+                    <v-icon>mdi-account-tie</v-icon>
+                </v-btn>
             </template>
             <span>{{ $t('pages.staffTitle') }}</span>
         </v-tooltip>
@@ -56,8 +60,12 @@
             <Dropdown :controls="userControls" />
         </v-menu>
         <template v-else>
-            <v-btn href="/signup" class="mr-2" color="primary">{{ $t('nav.signup') }}</v-btn>
-            <v-btn color="secondary" @click="$auth.login($route.fullPath)">{{ $t('nav.login') }}</v-btn>
+            <v-btn href="/signup" class="mr-2" color="primary">
+                {{ $t('nav.signup') }}
+            </v-btn>
+            <v-btn color="secondary" @click="$auth.login($route.fullPath)">
+                {{ $t('nav.login') }}
+            </v-btn>
         </template>
     </v-app-bar>
 </template>

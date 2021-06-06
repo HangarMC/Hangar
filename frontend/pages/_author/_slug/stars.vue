@@ -6,7 +6,7 @@
         <v-card-text>
             <v-row v-if="stargazers.result && stargazers.result.length > 0">
                 <v-col v-for="stargazer in stargazers.result" :key="stargazer.name" md="4">
-                    <UserAvatar clazz="user-avatar-xs" :username="stargazer.name" :avatar-url="$util.avatarUrl(stargazer.name)"></UserAvatar>
+                    <UserAvatar clazz="user-avatar-xs" :username="stargazer.name" :avatar-url="$util.avatarUrl(stargazer.name)" />
                     {{ stargazer.name }}
                 </v-col>
             </v-row>

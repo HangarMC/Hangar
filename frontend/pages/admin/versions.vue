@@ -5,8 +5,12 @@
             <v-simple-table>
                 <thead>
                     <tr>
-                        <th class="text-left">{{ $t('platformVersions.platform') }}</th>
-                        <th class="text-left">{{ $t('platformVersions.versions') }}</th>
+                        <th class="text-left">
+                            {{ $t('platformVersions.platform') }}
+                        </th>
+                        <th class="text-left">
+                            {{ $t('platformVersions.versions') }}
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,8 +34,12 @@
             </v-simple-table>
         </v-card-text>
         <v-card-actions class="justify-end">
-            <v-btn text color="info" :disabled="!hasChanged" @click="reset">{{ $t('general.reset') }}</v-btn>
-            <v-btn color="success" :loading="loading" :disabled="!hasChanged" @click="save">{{ $t('platformVersions.saveChanges') }}</v-btn>
+            <v-btn text color="info" :disabled="!hasChanged" @click="reset">
+                {{ $t('general.reset') }}
+            </v-btn>
+            <v-btn color="success" :loading="loading" :disabled="!hasChanged" @click="save">
+                {{ $t('platformVersions.saveChanges') }}
+            </v-btn>
         </v-card-actions>
     </v-card>
 </template>

@@ -6,7 +6,7 @@
         <div class="float-right">
             <template v-if="!isReviewStateChecked">
                 <v-btn x-small color="info" :to="{ name: 'author-slug', params: $route.params }" nuxt exact>
-                    <v-icon left>mdi-home</v-icon>
+                    <v-icon left> mdi-home </v-icon>
                     {{ $t('reviews.projectPage') }}
                 </v-btn>
                 <v-btn
@@ -16,25 +16,27 @@
                     nuxt
                     class="mr-4"
                 >
-                    <v-icon left>mdi-download</v-icon>
+                    <v-icon left> mdi-download </v-icon>
                     {{ $t('reviews.downloadFile') }}
                 </v-btn>
             </template>
         </div>
-        <div style="clear: both" class="mb-4"></div>
+        <div style="clear: both" class="mb-4" />
         <v-divider />
 
-        <h2 class="mt-3">{{ $t('reviews.title') }}</h2>
+        <h2 class="mt-3">
+            {{ $t('reviews.title') }}
+        </h2>
         <v-row class="my-1" dense>
             <v-col class="flex-grow-0">
                 <v-btn class="primary" @click="$fetch">
-                    <v-icon left>mdi-refresh</v-icon>
+                    <v-icon left> mdi-refresh </v-icon>
                     {{ $t('general.refresh') }}
                 </v-btn>
             </v-col>
             <v-col v-if="!currentUserReview" class="flex-grow-0">
                 <v-btn color="success" :loading="loadingValues.start" @click="startReview">
-                    <v-icon left>mdi-play</v-icon>
+                    <v-icon left> mdi-play </v-icon>
                     {{ $t('reviews.startReview') }}
                 </v-btn>
             </v-col>
@@ -61,18 +63,18 @@
                                 <TextareaModal :title="$t('reviews.stopReview')" :label="$t('general.message')" :submit="stopReview">
                                     <template #activator="props">
                                         <v-btn x-small color="error" v-bind="props.attrs" v-on="props.on">
-                                            <v-icon left>mdi-stop</v-icon>
+                                            <v-icon left> mdi-stop </v-icon>
                                             {{ $t('reviews.stopReview') }}
                                         </v-btn>
                                     </template>
                                 </TextareaModal>
 
                                 <v-btn x-small color="success lighten-1" :loading="loadingValues.approvePartial" @click.stop="approvePartial">
-                                    <v-icon left>mdi-check-decagram-outline</v-icon>
+                                    <v-icon left> mdi-check-decagram-outline </v-icon>
                                     {{ $t('reviews.approvePartial') }}
                                 </v-btn>
                                 <v-btn x-small color="success" :loading="loadingValues.approve" @click.stop="approve">
-                                    <v-icon left>mdi-check-decagram</v-icon>
+                                    <v-icon left> mdi-check-decagram </v-icon>
                                     {{ $t('reviews.approve') }}
                                 </v-btn>
                             </v-col>
@@ -84,7 +86,7 @@
                                     x-small
                                     @click.stop="reopenReview"
                                 >
-                                    <v-icon left>mdi-refresh</v-icon>
+                                    <v-icon left> mdi-refresh </v-icon>
                                     {{ $t('reviews.reopenReview') }}
                                 </v-btn>
                                 <v-btn
@@ -94,7 +96,7 @@
                                     :loading="loadingValues.undoApproval"
                                     @click.stop="undoApproval"
                                 >
-                                    <v-icon left>mdi-undo</v-icon>
+                                    <v-icon left> mdi-undo </v-icon>
                                     {{ $t('reviews.undoApproval') }}
                                 </v-btn>
                             </v-col>
@@ -124,14 +126,16 @@
                             @keydown.enter.prevent=""
                         />
                         <v-btn block color="primary" :loading="loadingValues.send" class="mt-2" :disabled="!validForm" @click="sendMessage">
-                            <v-icon left>mdi-send</v-icon>
+                            <v-icon left> mdi-send </v-icon>
                             {{ $t('general.send') }}
                         </v-btn>
                     </v-form>
                 </v-list-item>
             </v-list-group>
         </v-list>
-        <v-alert v-if="!reviews.length" type="info" class="mt-2">{{ $t('reviews.notUnderReview') }}</v-alert>
+        <v-alert v-if="!reviews.length" type="info" class="mt-2">
+            {{ $t('reviews.notUnderReview') }}
+        </v-alert>
     </div>
 </template>
 

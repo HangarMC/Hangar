@@ -5,9 +5,9 @@
 
             <div>
                 <v-btn block color="primary" class="my-3" :loading="converter.loading" @click="convertBBCode">
-                    <v-icon left large>mdi-chevron-double-down</v-icon>
+                    <v-icon left large> mdi-chevron-double-down </v-icon>
                     {{ $t('project.new.step4.convert') }}
-                    <v-icon right large>mdi-chevron-double-down</v-icon>
+                    <v-icon right large> mdi-chevron-double-down </v-icon>
                 </v-btn>
             </div>
 

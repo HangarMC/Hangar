@@ -11,7 +11,9 @@
         class="elevation-1"
     >
         <template #item.username="{ item }">
-            <NuxtLink :to="'/' + item.name">{{ item.name }}</NuxtLink>
+            <NuxtLink :to="'/' + item.name">
+                {{ item.name }}
+            </NuxtLink>
         </template>
         <template #item.pic="{ item }">
             <UserAvatar :username="item.name" :avatar-url="$util.avatarUrl(item.name)" clazz="user-avatar-xs" />

@@ -1,7 +1,7 @@
 <template>
     <div v-if="qs['donation']" class="row">
         <div class="col-12">
-            <Announcement :announcement="announcement"></Announcement>
+            <Announcement :announcement="announcement" />
         </div>
     </div>
 </template>

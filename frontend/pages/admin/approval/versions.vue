@@ -5,7 +5,9 @@
             <v-card-text>
                 <v-data-table :headers="notStartedHeaders" :items="notStarted" :custom-sort="sorter" disable-pagination disable-filtering hide-default-footer>
                     <template #item.project="{ item }">
-                        <NuxtLink :to="`/${item.namespace.owner}/${item.namespace.slug}`">{{ `${item.namespace.owner}/${item.namespace.slug}` }}</NuxtLink>
+                        <NuxtLink :to="`/${item.namespace.owner}/${item.namespace.slug}`">
+                            {{ `${item.namespace.owner}/${item.namespace.slug}` }}
+                        </NuxtLink>
                     </template>
                     <template #item.date="{ item }">
                         <span class="start-date">{{ $util.prettyDateTime(item.versionCreatedAt) }}</span>
@@ -22,7 +24,7 @@
                     </template>
                     <template #item.startBtn="{ item }">
                         <v-btn color="primary" :to="{ name: 'author-slug-versions-version-platform-reviews', params: getRouteParams(item) }" nuxt>
-                            <v-icon left>mdi-play</v-icon>
+                            <v-icon left> mdi-play </v-icon>
                             {{ $t('version.page.reviewStart') }}
                         </v-btn>
                     </template>
@@ -78,7 +80,7 @@
                             nuxt
                             @click.stop=""
                         >
-                            <v-icon left>mdi-list-status</v-icon>
+                            <v-icon left> mdi-list-status </v-icon>
                             {{ $t('version.page.reviewLogs') }}
                         </v-btn>
                     </template>

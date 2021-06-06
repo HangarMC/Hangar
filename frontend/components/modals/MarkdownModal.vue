@@ -6,10 +6,12 @@
         <v-card>
             <v-card-title>{{ title }}</v-card-title>
             <v-card-text>
-                <Markdown :raw="markdown"></Markdown>
+                <Markdown :raw="markdown" />
             </v-card-text>
             <v-card-actions class="justify-end">
-                <v-btn text color="warning" @click="dialog = false">{{ $t('general.close') }}</v-btn>
+                <v-btn text color="warning" @click="dialog = false">
+                    {{ $t('general.close') }}
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

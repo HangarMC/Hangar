@@ -5,7 +5,7 @@
             <v-list v-if="flags.length > 0">
                 <v-list-item v-for="flag in flags" :key="flag.id">
                     <v-list-item-avatar>
-                        <UserAvatar :username="flag.reportedByName" clazz="user-avatar-xs"></UserAvatar>
+                        <UserAvatar :username="flag.reportedByName" clazz="user-avatar-xs" />
                     </v-list-item-avatar>
                     <v-list-item-content>
                         <v-list-item-title>
@@ -17,7 +17,7 @@
                                 ])
                             }}
                             <v-btn small icon color="primary" :to="`/${flag.projectNamespace.owner}/${flag.projectNamespace.slug}`" nuxt target="_blank">
-                                <v-icon small>mdi-open-in-new</v-icon>
+                                <v-icon small> mdi-open-in-new </v-icon>
                             </v-btn>
                         </v-list-item-title>
                         <v-list-item-subtitle>{{ $t('flagReview.line2', [$t(flag.reason)]) }}</v-list-item-subtitle>
@@ -25,11 +25,11 @@
                     </v-list-item-content>
                     <v-list-item-action>
                         <v-btn small :href="$util.forumUrl(flag.reportedByName)" class="mr-1">
-                            <v-icon small left>mdi-reply</v-icon>
+                            <v-icon small left> mdi-reply </v-icon>
                             {{ $t('flagReview.msgUser') }}
                         </v-btn>
                         <v-btn small :href="$util.forumUrl(flag.projectNamespace.owner)" class="mr-1">
-                            <v-icon small left>mdi-reply</v-icon>
+                            <v-icon small left> mdi-reply </v-icon>
                             {{ $t('flagReview.msgProjectOwner') }}
                         </v-btn>
                         <VisibilityChangerModal
@@ -39,13 +39,15 @@
                             small-btn
                         />
                         <v-btn small color="success" :loading="loading[flag.id]" @click="resolve(flag)">
-                            <v-icon small left>mdi-check</v-icon>
+                            <v-icon small left> mdi-check </v-icon>
                             {{ $t('flagReview.markResolved') }}
                         </v-btn>
                     </v-list-item-action>
                 </v-list-item>
             </v-list>
-            <v-alert v-else icon="mdi-thumb-up">{{ $t('flagReview.noFlags') }}</v-alert>
+            <v-alert v-else icon="mdi-thumb-up">
+                {{ $t('flagReview.noFlags') }}
+            </v-alert>
         </v-card-text>
     </v-card>
 </template>

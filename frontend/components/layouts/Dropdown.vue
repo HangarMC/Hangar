@@ -14,9 +14,13 @@
             >
                 <v-list-item-icon>
                     <v-badge v-if="control.badge" offset-y="7" offset-x="7" left :content="control.badgeContent" :value="control.badgeContent">
-                        <v-icon color="white">{{ control.icon }}</v-icon>
+                        <v-icon color="white">
+                            {{ control.icon }}
+                        </v-icon>
                     </v-badge>
-                    <v-icon v-else color="white">{{ control.icon }}</v-icon>
+                    <v-icon v-else color="white">
+                        {{ control.icon }}
+                    </v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
                     <v-list-item-title>{{ control.title }}</v-list-item-title>

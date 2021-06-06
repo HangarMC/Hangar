@@ -4,8 +4,12 @@
             <v-card-title>{{ $t('linkout.title') }}</v-card-title>
             <v-card-text v-text="$t('linkout.text', [target])" />
             <v-card-actions>
-                <v-btn @click="$router.back()">{{ $t('linkout.abort') }}</v-btn>
-                <v-btn :href="target">{{ $t('linkout.continue') }}</v-btn>
+                <v-btn @click="$router.back()">
+                    {{ $t('linkout.abort') }}
+                </v-btn>
+                <v-btn :href="target">
+                    {{ $t('linkout.continue') }}
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-col>

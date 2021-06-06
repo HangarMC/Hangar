@@ -6,7 +6,7 @@
         <v-card-text>
             <v-row v-if="watchers.result && watchers.result.length > 0">
                 <v-col v-for="watcher in watchers.result" :key="watcher.name" md="4">
-                    <UserAvatar clazz="user-avatar-xs" :username="watcher.name" :avatar-url="$util.avatarUrl(watcher.name)"></UserAvatar>
+                    <UserAvatar clazz="user-avatar-xs" :username="watcher.name" :avatar-url="$util.avatarUrl(watcher.name)" />
                     {{ watcher.name }}
                 </v-col>
             </v-row>

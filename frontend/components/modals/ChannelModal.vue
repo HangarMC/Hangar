@@ -19,7 +19,9 @@
                             $util.$vc.maxLength(validations.project.channels.max),
                         ]"
                     />
-                    <v-card-subtitle class="pa-0 text-center">{{ $t('channel.modal.color') }}</v-card-subtitle>
+                    <v-card-subtitle class="pa-0 text-center">
+                        {{ $t('channel.modal.color') }}
+                    </v-card-subtitle>
                     <v-item-group v-model="form.color">
                         <v-container>
                             <v-row v-for="(arr, arrIndex) in swatches" :key="arrIndex" justify="center">
@@ -35,7 +37,7 @@
                                             @click="toggle"
                                         >
                                             <v-fade-transition>
-                                                <v-icon v-show="active" small class="ma-auto">mdi-checkbox-marked-circle</v-icon>
+                                                <v-icon v-show="active" small class="ma-auto"> mdi-checkbox-marked-circle </v-icon>
                                             </v-fade-transition>
                                         </v-card>
                                     </v-item>
@@ -55,8 +57,12 @@
                 </v-form>
             </v-card-text>
             <v-card-actions class="justify-end">
-                <v-btn color="error" text @click="dialog = false">{{ $t('general.close') }}</v-btn>
-                <v-btn color="success" :disabled="!isValid" @click="create">{{ edit ? $t('general.save') : $t('general.create') }}</v-btn>
+                <v-btn color="error" text @click="dialog = false">
+                    {{ $t('general.close') }}
+                </v-btn>
+                <v-btn color="success" :disabled="!isValid" @click="create">
+                    {{ edit ? $t('general.save') : $t('general.create') }}
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

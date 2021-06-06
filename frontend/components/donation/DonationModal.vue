@@ -6,14 +6,20 @@
         <v-card>
             <v-card-title>
                 <h4>{{ $t('donate.title', [donationTarget]) }}</h4>
-                <v-btn icon @click="show = false"><v-icon>mdi-close</v-icon></v-btn>
+                <v-btn icon @click="show = false">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
             </v-card-title>
             <v-card-text>
                 <v-row>
                     <v-col cols="12">
                         <v-btn-toggle v-model="monthly" mandatory>
-                            <v-btn :value="true">{{ $t('donate.monthly') }}</v-btn>
-                            <v-btn :value="false">{{ $t('donate.oneTime') }}</v-btn>
+                            <v-btn :value="true">
+                                {{ $t('donate.monthly') }}
+                            </v-btn>
+                            <v-btn :value="false">
+                                {{ $t('donate.oneTime') }}
+                            </v-btn>
                         </v-btn-toggle>
                     </v-col>
                 </v-row>
@@ -74,12 +80,16 @@
                     <v-row>
                         <v-col cols="12">
                             <div class="input-group mb-3">
-                                <v-text-field v-model.number="amount" label="Amount" type="number" prefix="$"></v-text-field>
+                                <v-text-field v-model.number="amount" label="Amount" type="number" prefix="$" />
                             </div>
                             <small class="form-text">{{ $t('donate.legal', [donationTarget]) }}</small>
                             <div>
-                                <v-btn type="submit" color="primary">{{ $t('donate.submit', [monthly ? $t('donate.monthly') : $t('donate.oneTime')]) }}</v-btn>
-                                <v-btn @click="show = false">{{ $t('general.close') }}</v-btn>
+                                <v-btn type="submit" color="primary">
+                                    {{ $t('donate.submit', [monthly ? $t('donate.monthly') : $t('donate.oneTime')]) }}
+                                </v-btn>
+                                <v-btn @click="show = false">
+                                    {{ $t('general.close') }}
+                                </v-btn>
                                 <img alt="" width="1" height="1" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" />
                             </div>
                         </v-col>

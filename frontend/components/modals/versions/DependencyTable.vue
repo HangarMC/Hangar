@@ -6,7 +6,9 @@
                     <th>{{ $t('general.name') }}</th>
                     <th>{{ $t('general.required') }}</th>
                     <th>{{ $t('general.link') }}</th>
-                    <th v-if="!noEditing">{{ $t('general.delete') }}</th>
+                    <th v-if="!noEditing">
+                        {{ $t('general.delete') }}
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -109,7 +111,7 @@
         </v-simple-table>
         <div v-if="!noEditing" class="ma-2">
             <v-btn color="primary" block @click="addNewDep">
-                <v-icon left>mdi-plus</v-icon>
+                <v-icon left> mdi-plus </v-icon>
                 {{ $t('general.add') }}
             </v-btn>
         </div>

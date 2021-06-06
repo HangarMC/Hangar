@@ -2,7 +2,9 @@
     <div>
         <h1>
             {{ $t('userAdmin.title') }}
-            <NuxtLink :to="'/' + $route.params.user">{{ $route.params.user }}</NuxtLink>
+            <NuxtLink :to="'/' + $route.params.user">
+                {{ $route.params.user }}
+            </NuxtLink>
         </h1>
         <v-row>
             <v-col md="8" cols="12">
@@ -11,16 +13,22 @@
                     <v-card-text>
                         <v-data-table :items="orgList" :headers="orgConfig">
                             <template #item.name="{ item }">
-                                <NuxtLink :to="'/' + item.name">{{ item.name }}</NuxtLink>
+                                <NuxtLink :to="'/' + item.name">
+                                    {{ item.name }}
+                                </NuxtLink>
                             </template>
                             <template #item.owner="{ item }">
                                 <!-- todo owner -->
-                                <NuxtLink :to="'/' + item.name.owner">{{ item.name.owner }}</NuxtLink>
+                                <NuxtLink :to="'/' + item.name.owner">
+                                    {{ item.name.owner }}
+                                </NuxtLink>
                             </template>
-                            <template #item.role="{ item }"> {{ organizations[item.name].role.title }} </template>
+                            <template #item.role="{ item }">
+                                {{ organizations[item.name].role.title }}
+                            </template>
                             <template #item.accepted="{ item }">
                                 <!--suppress EqualityComparisonWithCoercionJS dont ask me why this doesnt work without this-->
-                                <v-checkbox :value="organizations[item.name].accepted == true" readonly></v-checkbox>
+                                <v-checkbox :value="organizations[item.name].accepted == true" readonly />
                             </template>
                         </v-data-table>
                     </v-card-text>
@@ -30,17 +38,21 @@
                     <v-card-text>
                         <v-data-table :items="projects.result" :headers="projectsConfig">
                             <template #item.name="{ item }">
-                                <NuxtLink :to="'/' + item.namespace.owner + '/' + item.name">{{ item.name }}</NuxtLink>
+                                <NuxtLink :to="'/' + item.namespace.owner + '/' + item.name">
+                                    {{ item.name }}
+                                </NuxtLink>
                             </template>
                             <template #item.owner="{ item }">
-                                <NuxtLink :to="'/' + item.namespace.owner">{{ item.namespace.owner }}</NuxtLink>
+                                <NuxtLink :to="'/' + item.namespace.owner">
+                                    {{ item.namespace.owner }}
+                                </NuxtLink>
                             </template>
                             <template #item.role="{ item }">
                                 <!-- todo role -->
                                 Role {{ item.name }}
                             </template>
                             <template #item.accepted="{ item }">
-                                <v-checkbox :value="item.visibility === 'public'" readonly></v-checkbox>
+                                <v-checkbox :value="item.visibility === 'public'" readonly />
                             </template>
                         </v-data-table>
                     </v-card-text>

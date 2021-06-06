@@ -4,7 +4,7 @@
             <v-tooltip bottom>
                 <template #activator="{ on: tooltipOn }">
                     <v-btn small icon color="warning" :class="activatorClass" v-bind="attrs" v-on="{ ...dialogOn, ...tooltipOn }">
-                        <v-icon small>mdi-pencil</v-icon>
+                        <v-icon small> mdi-pencil </v-icon>
                     </v-btn>
                 </template>
                 <span>{{ $t('general.edit') }}</span>
@@ -28,8 +28,12 @@
                 </v-form>
             </v-card-text>
             <v-card-actions class="justify-end">
-                <v-btn text color="warning" @click.stop="dialog = false">{{ $t('general.close') }}</v-btn>
-                <v-btn color="success" :disabled="!validForm || !edited" :loading="loading" @click.stop="submit">{{ $t('general.save') }}</v-btn>
+                <v-btn text color="warning" @click.stop="dialog = false">
+                    {{ $t('general.close') }}
+                </v-btn>
+                <v-btn color="success" :disabled="!validForm || !edited" :loading="loading" @click.stop="submit">
+                    {{ $t('general.save') }}
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

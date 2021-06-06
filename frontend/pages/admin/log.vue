@@ -13,7 +13,9 @@
                 disable-sort
             >
                 <template #item.user="{ item }">
-                    <NuxtLink :to="'/' + item.userName">{{ item.userName }}</NuxtLink>
+                    <NuxtLink :to="'/' + item.userName">
+                        {{ item.userName }}
+                    </NuxtLink>
                 </template>
                 <template #item.time="{ item }">
                     {{ $util.prettyDateTime(item.createdAt) }}
@@ -43,7 +45,9 @@
                     <template v-if="item.contextType === 'PAGE' && item.oldState">
                         <MarkdownModal :markdown="item.oldState" :title="$t('userActionLog.markdownView')">
                             <template #activator="{ on, attrs }">
-                                <v-btn small color="primary" v-bind="attrs" v-on="on">{{ $t('userActionLog.markdownView') }}</v-btn>
+                                <v-btn small color="primary" v-bind="attrs" v-on="on">
+                                    {{ $t('userActionLog.markdownView') }}
+                                </v-btn>
                             </template>
                         </MarkdownModal>
                     </template>
@@ -59,12 +63,16 @@
                     <template v-if="item.contextType === 'PAGE'">
                         <MarkdownModal :markdown="item.newState" :title="$t('userActionLog.markdownView')">
                             <template #activator="{ on, attrs }">
-                                <v-btn small color="primary" v-bind="attrs" v-on="on">{{ $t('userActionLog.markdownView') }}</v-btn>
+                                <v-btn small color="primary" v-bind="attrs" v-on="on">
+                                    {{ $t('userActionLog.markdownView') }}
+                                </v-btn>
                             </template>
                         </MarkdownModal>
                         <DiffModal :left="item.oldState" :right="item.newState" :title="$t('userActionLog.diffView')">
                             <template #activator="{ on, attrs }">
-                                <v-btn small color="primary" v-bind="attrs" v-on="on">{{ $t('userActionLog.diffView') }}</v-btn>
+                                <v-btn small color="primary" v-bind="attrs" v-on="on">
+                                    {{ $t('userActionLog.diffView') }}
+                                </v-btn>
                             </template>
                         </DiffModal>
                     </template>

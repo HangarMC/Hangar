@@ -24,7 +24,7 @@
                 :disabled="!isEdited"
                 @click="save"
             >
-                <v-icon left>mdi-check</v-icon>
+                <v-icon left> mdi-check </v-icon>
                 {{ $t('general.save') }}
             </v-btn>
         </v-card-title>
@@ -36,14 +36,18 @@
                     :class="{ 'to-delete': member.toDelete, editing: member.editing, new: member.new }"
                 >
                     <UserAvatar :username="member.name" :avatar-url="$util.avatarUrl(member.name)" clazz="user-avatar-xs" />
-                    <NuxtLink v-if="!isEditing" :to="'/' + member.name">{{ member.name }}</NuxtLink>
+                    <NuxtLink v-if="!isEditing" :to="'/' + member.name">
+                        {{ member.name }}
+                    </NuxtLink>
                     <span v-else>{{ member.name }}</span>
 
                     <template v-if="isEditing && (!member.editing || member.new) && member.roleAssignable">
                         <v-btn v-if="!member.toDelete" icon x-small color="error" class="ml-1" @click="removeMember(member)">
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
-                        <v-btn v-else icon x-small color="error" class="ml-1" @click="member.toDelete = false"><v-icon>mdi-undo</v-icon></v-btn>
+                        <v-btn v-else icon x-small color="error" class="ml-1" @click="member.toDelete = false">
+                            <v-icon>mdi-undo</v-icon>
+                        </v-btn>
                     </template>
 
                     <span v-if="!member.editing" class="flex-right">

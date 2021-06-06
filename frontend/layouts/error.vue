@@ -4,7 +4,7 @@
         <v-card-text v-text="text" />
         <v-card-actions class="text-center">
             <v-btn nuxt to="/" color="secondary">
-                <v-icon left>mdi-home</v-icon>
+                <v-icon left> mdi-home </v-icon>
                 {{ $t('general.home') }}
             </v-btn>
         </v-card-actions>

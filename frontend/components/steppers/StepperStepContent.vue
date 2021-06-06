@@ -1,10 +1,12 @@
 <template>
     <v-stepper-content :step="step">
         <slot />
-        <v-btn v-if="!hideButtons" :disabled="!allowContinue" color="primary" class="mt-3" @click="$emit('continue')">{{
-            $t('project.new.step' + step + '.continue')
-        }}</v-btn>
-        <v-btn v-if="!hideButtons" text color="warning" class="mt-3" @click="$emit('back')">{{ $t('project.new.step' + step + '.back') }}</v-btn>
+        <v-btn v-if="!hideButtons" :disabled="!allowContinue" color="primary" class="mt-3" @click="$emit('continue')">
+            {{ $t('project.new.step' + step + '.continue') }}
+        </v-btn>
+        <v-btn v-if="!hideButtons" text color="warning" class="mt-3" @click="$emit('back')">
+            {{ $t('project.new.step' + step + '.back') }}
+        </v-btn>
     </v-stepper-content>
 </template>
 

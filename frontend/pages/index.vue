@@ -4,16 +4,16 @@
             <v-col cols="12" sm="8" md="5" offset-md="3">
                 <v-row justify="center" align="center">
                     <h1>Hangar</h1>
-                    <v-subheader v-text="$t('hangar.subtitle')"></v-subheader>
+                    <v-subheader v-text="$t('hangar.subtitle')" />
                 </v-row>
                 <v-row justify="center" align="center">
                     <v-col cols="12">
-                        <v-text-field v-model="projectFilter" :label="$t('hangar.projectSearch.query', [projects.pagination.count])" clearable></v-text-field>
+                        <v-text-field v-model="projectFilter" :label="$t('hangar.projectSearch.query', [projects.pagination.count])" clearable />
                     </v-col>
                 </v-row>
                 <v-row justify="center" align="center">
                     <v-col cols="12">
-                        <ProjectList :projects="projects"></ProjectList>
+                        <ProjectList :projects="projects" />
                     </v-col>
                 </v-row>
             </v-col>
@@ -21,9 +21,9 @@
             <v-col cols="12" sm="2" md="2">
                 <HangarSponsor :sponsor="sponsor" />
 
-                <v-select></v-select>
+                <v-select />
 
-                <v-checkbox :label="$t('hangar.projectSearch.relevanceSort')"></v-checkbox>
+                <v-checkbox :label="$t('hangar.projectSearch.relevanceSort')" />
 
                 <v-list dense>
                     <v-subheader>Categories</v-subheader>
@@ -33,7 +33,7 @@
                                 <v-icon v-text="cat.icon" />
                             </v-list-item-icon>
                             <v-list-item-content>
-                                <v-list-item-title v-text="$t(`project.category.${cat.apiName}`)"></v-list-item-title>
+                                <v-list-item-title v-text="$t(`project.category.${cat.apiName}`)" />
                             </v-list-item-content>
                         </v-list-item>
                     </v-list-item-group>
@@ -47,7 +47,7 @@
                                 <v-icon v-text="`$vuetify.icons.${platform.name.toLowerCase()}`" />
                             </v-list-item-icon>
                             <v-list-item-content>
-                                <v-list-item-title v-text="platform.name"></v-list-item-title>
+                                <v-list-item-title v-text="platform.name" />
                             </v-list-item-content>
                         </v-list-item>
                     </v-list-item-group>

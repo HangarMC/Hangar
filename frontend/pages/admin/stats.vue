@@ -12,16 +12,16 @@
             </v-menu>
             <h2>{{ $t('stats.plugins') }}</h2>
             <client-only>
-                <Chart id="stats" :data="pluginData" :options="options" bar-type="Line"></Chart>
+                <Chart id="stats" :data="pluginData" :options="options" bar-type="Line" />
             </client-only>
             <h2>{{ $t('stats.downloads') }}</h2>
             <client-only>
-                <Chart id="downloads" :data="downloadData" :options="options" bar-type="Line"></Chart>
+                <Chart id="downloads" :data="downloadData" :options="options" bar-type="Line" />
             </client-only>
 
             <h2>{{ $t('stats.flags') }}</h2>
             <client-only>
-                <Chart id="flags" :data="flagData" :options="options" bar-type="Line"></Chart>
+                <Chart id="flags" :data="flagData" :options="options" bar-type="Line" />
             </client-only>
         </v-card-text>
     </v-card>

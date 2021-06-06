@@ -1,21 +1,25 @@
 <template>
     <v-stepper v-model="step">
         <v-stepper-header>
-            <v-stepper-step step="1" :complete="step > 1">{{ $t('project.new.step1.title') }}</v-stepper-step>
+            <v-stepper-step step="1" :complete="step > 1">
+                {{ $t('project.new.step1.title') }}
+            </v-stepper-step>
             <v-divider />
-            <v-stepper-step step="2" :complete="step > 2 && forms.step2" :rules="[() => noBasicSettingsError]"
-                >{{ $t('project.new.step2.title') }}<small v-show="!noBasicSettingsError">Missing Information</small></v-stepper-step
-            >
+            <v-stepper-step step="2" :complete="step > 2 && forms.step2" :rules="[() => noBasicSettingsError]">
+                {{ $t('project.new.step2.title') }}<small v-show="!noBasicSettingsError">Missing Information</small>
+            </v-stepper-step>
             <v-divider />
-            <v-stepper-step step="3" :complete="step > 3"
-                >{{ $t('project.new.step3.title') }}<small>{{ $t('project.new.step3.optional') }}</small></v-stepper-step
-            >
+            <v-stepper-step step="3" :complete="step > 3">
+                {{ $t('project.new.step3.title') }}<small>{{ $t('project.new.step3.optional') }}</small>
+            </v-stepper-step>
             <v-divider />
-            <v-stepper-step step="4" :complete="step > 4"
-                >{{ $t('project.new.step4.title') }}<small>{{ $t('project.new.step4.optional') }}</small></v-stepper-step
-            >
+            <v-stepper-step step="4" :complete="step > 4">
+                {{ $t('project.new.step4.title') }}<small>{{ $t('project.new.step4.optional') }}</small>
+            </v-stepper-step>
             <v-divider />
-            <v-stepper-step step="5" :complete="!projectLoading">{{ $t('project.new.step5.title') }}</v-stepper-step>
+            <v-stepper-step step="5" :complete="!projectLoading">
+                {{ $t('project.new.step5.title') }}
+            </v-stepper-step>
         </v-stepper-header>
         <v-stepper-items>
             <StepperStepContent :step="1" @back="$router.push('/')" @continue="step = 2">
@@ -24,7 +28,7 @@
                         {{ $t('project.new.step1.title') }}
                     </v-card-title>
                     <!-- eslint-disable-next-line vue/no-v-html -->
-                    <v-card-text v-html="$t('project.new.step1.text')"></v-card-text>
+                    <v-card-text v-html="$t('project.new.step1.text')" />
                 </v-card>
             </StepperStepContent>
             <StepperStepContent :step="2" :allow-continue="noBasicSettingsError" @back="step = 1" @continue="step = 3">
@@ -96,7 +100,7 @@
                     </v-card-title>
                     <v-container>
                         <div class="text-h6 pt-1">
-                            <v-icon color="info" large style="transform: rotate(-45deg)" class="mb-1">mdi-link</v-icon>
+                            <v-icon color="info" large style="transform: rotate(-45deg)" class="mb-1"> mdi-link </v-icon>
                             {{ $t('project.new.step3.links') }}
                         </div>
                         <v-divider class="mb-2" />
@@ -147,7 +151,7 @@
                             </v-col>
                         </v-row>
                         <div class="text-h6 pt-5">
-                            <v-icon color="info" large class="mb-1">mdi-license</v-icon>
+                            <v-icon color="info" large class="mb-1"> mdi-license </v-icon>
                             {{ $t('project.new.step3.license') }}
                         </div>
                         <v-divider class="mb-2" />
@@ -178,7 +182,7 @@
                             </v-col>
                         </v-row>
                         <div class="text-h6 pt-5">
-                            <v-icon color="info" large class="mb-1">mdi-cloud-search</v-icon>
+                            <v-icon color="info" large class="mb-1"> mdi-cloud-search </v-icon>
                             {{ $t('project.new.step3.seo') }}
                         </div>
                         <v-divider class="mb-2" />
@@ -221,9 +225,9 @@
                             <v-textarea v-model="converter.bbCode" hide-details dense :rows="6" filled :label="$t('project.new.step4.convertLabels.bbCode')" />
                             <div>
                                 <v-btn block color="primary" class="my-3" :loading="converter.loading" @click="convertBBCode">
-                                    <v-icon left large>mdi-chevron-double-down</v-icon>
+                                    <v-icon left large> mdi-chevron-double-down </v-icon>
                                     {{ $t('project.new.step4.convert') }}
-                                    <v-icon right large>mdi-chevron-double-down</v-icon>
+                                    <v-icon right large> mdi-chevron-double-down </v-icon>
                                 </v-btn>
                             </div>
                             <v-textarea
@@ -239,7 +243,7 @@
                     <v-tab-item>
                         <v-card-text>
                             <v-btn block color="primary" class="my-2" :disabled="form.pageContent === converter.markdown" @click="saveAsHomePage">
-                                <v-icon left>mdi-content-save</v-icon>
+                                <v-icon left> mdi-content-save </v-icon>
                                 {{ $t('project.new.step4.saveAsHomePage') }}
                             </v-btn>
                             <Markdown :raw="converter.markdown" />
@@ -260,11 +264,15 @@
             <StepperStepContent :step="5" hide-buttons>
                 <v-card>
                     <v-card-text class="text-center">
-                        <v-progress-circular v-if="projectLoading" indeterminate color="red" size="50"></v-progress-circular>
-                        <div v-if="!projectError" class="text-h5 mt-2">{{ $t('project.new.step5.text') }}</div>
+                        <v-progress-circular v-if="projectLoading" indeterminate color="red" size="50" />
+                        <div v-if="!projectError" class="text-h5 mt-2">
+                            {{ $t('project.new.step5.text') }}
+                        </div>
                         <template v-else>
-                            <div class="text-h5 mt-2">{{ $t('project.new.error.create') }}</div>
-                            <v-btn @click="retry">Retry</v-btn>
+                            <div class="text-h5 mt-2">
+                                {{ $t('project.new.error.create') }}
+                            </div>
+                            <v-btn @click="retry"> Retry </v-btn>
                         </template>
                     </v-card-text>
                 </v-card>

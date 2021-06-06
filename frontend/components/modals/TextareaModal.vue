@@ -20,8 +20,12 @@
                 </v-form>
             </v-card-text>
             <v-card-actions class="justify-end">
-                <v-btn text color="warning" @click="dialog = false">{{ $t('general.close') }}</v-btn>
-                <v-btn color="success" :disabled="!validForm" :loading="loading" @click="submit0">{{ $t('general.submit') }}</v-btn>
+                <v-btn text color="warning" @click="dialog = false">
+                    {{ $t('general.close') }}
+                </v-btn>
+                <v-btn color="success" :disabled="!validForm" :loading="loading" @click="submit0">
+                    {{ $t('general.submit') }}
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

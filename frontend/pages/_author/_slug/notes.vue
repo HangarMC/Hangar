@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <v-card-title>
-            <span v-text="$t('notes.header')"></span>&nbsp;
+            <span v-text="$t('notes.header')" />&nbsp;
             <NuxtLink :to="'/' + project.namespace.owner + '/' + project.namespace.slug">
                 {{ project.namespace.owner + '/' + project.namespace.slug }}
             </NuxtLink>
@@ -9,10 +9,14 @@
         <v-card-text>
             <v-text-field v-model.trim="text" filled :placeholder="$t('notes.placeholder')" dense hide-details @keyup.enter="addNote">
                 <template #append-outer>
-                    <v-btn class="input-append-btn" color="primary" :disabled="!text" :loading="loading" @click="addNote">{{ $t('notes.addNote') }}</v-btn>
+                    <v-btn class="input-append-btn" color="primary" :disabled="!text" :loading="loading" @click="addNote">
+                        {{ $t('notes.addNote') }}
+                    </v-btn>
                 </template>
             </v-text-field>
-            <h2 class="mt-2">{{ $t('notes.notes') }}</h2>
+            <h2 class="mt-2">
+                {{ $t('notes.notes') }}
+            </h2>
             <v-data-table
                 v-if="notes && notes.length > 0"
                 :headers="headers"
@@ -22,7 +26,9 @@
                 disable-sort
                 hide-default-footer
             >
-                <template #item.createdAt="{ item }">{{ $util.prettyDate(item.createdAt) }}</template>
+                <template #item.createdAt="{ item }">
+                    {{ $util.prettyDate(item.createdAt) }}
+                </template>
             </v-data-table>
             <v-alert v-else type="info" prominent v-text="$t('notes.noNotes')" />
         </v-card-text>

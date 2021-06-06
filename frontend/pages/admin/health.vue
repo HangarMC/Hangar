@@ -14,7 +14,9 @@
                             </NuxtLink>
                         </v-list-item>
                         <v-list-item v-if="!noTopicProjects || noTopicProjects.length === 0">
-                            <v-alert type="success" width="100%" dense>{{ $t('health.empty') }}</v-alert>
+                            <v-alert type="success" width="100%" dense>
+                                {{ $t('health.empty') }}
+                            </v-alert>
                         </v-list-item>
                     </v-list>
                 </v-card-text>
@@ -29,7 +31,9 @@
                             {{ $t('health.jobText', [job.jobType, job.lastErrorDescriptor, $util.prettyDateTime(job.lastUpdated)]) }}
                         </v-list-item>
                         <v-list-item v-if="!erroredJobs || erroredJobs.length === 0">
-                            <v-alert type="success" width="100%" dense>{{ $t('health.empty') }}</v-alert>
+                            <v-alert type="success" width="100%" dense>
+                                {{ $t('health.empty') }}
+                            </v-alert>
                         </v-list-item>
                     </v-list>
                 </v-card-text>
@@ -46,7 +50,9 @@
                             </NuxtLink>
                         </v-list-item>
                         <v-list-item v-if="!staleProjects || staleProjects.length === 0">
-                            <v-alert type="success" width="100%" dense>{{ $t('health.empty') }}</v-alert>
+                            <v-alert type="success" width="100%" dense>
+                                {{ $t('health.empty') }}
+                            </v-alert>
                         </v-list-item>
                     </v-list>
                 </v-card-text>
@@ -64,7 +70,9 @@
                             </NuxtLink>
                         </v-list-item>
                         <v-list-item v-if="!nonPublicProjects || nonPublicProjects.length === 0">
-                            <v-alert type="success" width="100%" dense>{{ $t('health.empty') }}</v-alert>
+                            <v-alert type="success" width="100%" dense>
+                                {{ $t('health.empty') }}
+                            </v-alert>
                         </v-list-item>
                     </v-list>
                 </v-card-text>
@@ -73,10 +81,10 @@
         <v-col cols="12" md="6">
             <v-card height="100%">
                 <v-card-title>{{ $t('health.noPlatform') }}</v-card-title>
-                <v-card-text></v-card-text>
+                <v-card-text />
                 <v-list dense>
                     <v-list-item>
-                        <v-alert type="warning" width="100%" dense>TODO: Implementation</v-alert>
+                        <v-alert type="warning" width="100%" dense> TODO: Implementation </v-alert>
                     </v-list-item>
                     <!--TODO idek what this is for?-->
                     <!--<v-list-item v-if="!noPlatform || noPlatform.length === 0">{{ $t('health.empty') }}</v-list-item>-->
@@ -94,7 +102,9 @@
                             </NuxtLink>
                         </v-list-item>
                         <v-list-item v-if="!missingFiles || missingFiles.length === 0">
-                            <v-alert type="success" width="100%" dense>{{ $t('health.empty') }}</v-alert>
+                            <v-alert type="success" width="100%" dense>
+                                {{ $t('health.empty') }}
+                            </v-alert>
                         </v-list-item>
                     </v-list>
                 </v-card-text>

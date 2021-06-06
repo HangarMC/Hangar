@@ -1,6 +1,6 @@
 <template>
     <v-card>
-        <v-card-subtitle v-text="$t('hangar.sponsoredBy')"></v-card-subtitle>
+        <v-card-subtitle v-text="$t('hangar.sponsoredBy')" />
         <v-card-text v-if="sponsor">
             <a :href="sponsor.link">
                 <v-img :src="sponsor.image" :alt="sponsor.name" :title="sponsor.name" :height="50" contain />

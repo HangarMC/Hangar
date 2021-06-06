@@ -25,7 +25,7 @@
                     <v-tooltip v-if="!user.isOrganization" bottom>
                         <template #activator="{ on }">
                             <v-btn icon small color="info" class="ml-n2" :href="$util.forumUrl(user.name)" v-on="on">
-                                <v-icon small>mdi-open-in-new</v-icon>
+                                <v-icon small> mdi-open-in-new </v-icon>
                             </v-btn>
                         </template>
                         <span>{{ $t('author.viewOnForums') }}</span>
@@ -45,7 +45,7 @@
                     >
                         <template #activator="{ on, attrs }">
                             <v-btn icon small color="warning" v-bind="attrs" v-on="on">
-                                <v-icon small>mdi-pencil</v-icon>
+                                <v-icon small> mdi-pencil </v-icon>
                             </v-btn>
                         </template>
                         <v-text-field
@@ -64,7 +64,9 @@
                 <v-tooltip v-for="btn in buttons" :key="btn.name" bottom>
                     <template #activator="{ on }">
                         <v-btn icon small :href="btn.external ? btn.url : undefined" :to="btn.external ? undefined : btn.url" :nuxt="!btn.external" v-on="on">
-                            <v-icon small>{{ btn.icon }}</v-icon>
+                            <v-icon small>
+                                {{ btn.icon }}
+                            </v-icon>
                         </v-btn>
                     </template>
                     <span>{{ $t(`author.tooltips.${btn.name}`) }}</span>
@@ -79,9 +81,9 @@
                         <v-tooltip bottom>
                             <template #activator="{ on: onTooltip }">
                                 <v-btn icon small v-bind="attrs" v-on="{ ...onModal, ...onTooltip }">
-                                    <v-icon small :color="user.locked ? 'success' : 'error'">{{
-                                        user.locked ? 'mdi-lock-open-outline' : 'mdi-lock-outline'
-                                    }}</v-icon>
+                                    <v-icon small :color="user.locked ? 'success' : 'error'">
+                                        {{ user.locked ? 'mdi-lock-open-outline' : 'mdi-lock-outline' }}
+                                    </v-icon>
                                 </v-btn>
                             </template>
                             <span>{{ $t(`author.tooltips.${user.locked ? 'unlock' : 'lock'}`) }}</span>

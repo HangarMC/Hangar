@@ -10,7 +10,7 @@
                 <v-list-item-group v-model="selectedPlatform" color="primary" mandatory>
                     <v-list-item v-for="(platform, i) in Object.keys(project.recommendedVersions)" :key="i" :value="platform">
                         <v-list-item-icon>
-                            <v-icon v-text="`$vuetify.icons.${platform.toLowerCase()}`"></v-icon>
+                            <v-icon v-text="`$vuetify.icons.${platform.toLowerCase()}`" />
                         </v-list-item-icon>
                         <v-list-item-content>
                             {{ $store.state.platforms.get(platform).name }}
@@ -32,7 +32,9 @@
             :title="$t('version.page.confirmation.title', [project.name, version ? version.name : '', project.owner.name])"
             :submit="download"
         >
-            <v-alert type="error">{{ $t('version.page.confirmation.alert') }}</v-alert>
+            <v-alert type="error">
+                {{ $t('version.page.confirmation.alert') }}
+            </v-alert>
             <em>{{ $t('version.page.confirmation.disclaimer') }}</em> </HangarModal
         ><v-tooltip v-if="copyButton" v-model="copySuccessful" bottom>
             <template #activator="{ attrs }">

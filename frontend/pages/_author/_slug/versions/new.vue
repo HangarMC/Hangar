@@ -18,7 +18,9 @@
             <v-form ref="newVersionForm" v-model="validForm">
                 <v-row justify="space-around">
                     <v-col cols="12">
-                        <v-btn color="warning" block @click="reset">{{ $t('general.reset') }}</v-btn>
+                        <v-btn color="warning" block @click="reset">
+                            {{ $t('general.reset') }}
+                        </v-btn>
                     </v-col>
                     <v-col :md="isFile ? 4 : 6" sm="6" cols="12">
                         <!-- TODO validate version string against existing versions. complex because they only have to be unique per-platform -->
@@ -69,7 +71,7 @@
                             class="channel-select"
                         >
                             <template #prepend-inner>
-                                <v-icon :color="currentChannel.color">mdi-square-rounded</v-icon>
+                                <v-icon :color="currentChannel.color"> mdi-square-rounded </v-icon>
                             </template>
                         </v-select>
                     </v-col>
@@ -78,7 +80,7 @@
                             <template #activator="{ on, attrs }">
                                 <v-btn v-if="channels.length < validations.project.maxChannelCount" color="info" v-bind="attrs" v-on="on">
                                     {{ $t('version.new.form.addChannel') }}
-                                    <v-icon right>mdi-plus</v-icon>
+                                    <v-icon right> mdi-plus </v-icon>
                                 </v-btn>
                             </template>
                         </ChannelModal>
@@ -98,7 +100,9 @@
                     </v-row>
                 </v-sheet>
                 <v-card color="accent darken-1" elevation="1" class="mt-6">
-                    <v-card-title class="pb-0">{{ $t('version.new.form.platforms') }}</v-card-title>
+                    <v-card-title class="pb-0">
+                        {{ $t('version.new.form.platforms') }}
+                    </v-card-title>
                     <v-card-text>
                         <v-row justify="space-around">
                             <v-select
@@ -129,9 +133,13 @@
                     </v-card-text>
                 </v-card>
                 <v-card v-if="platformsForPluginDeps.length" color="accent darken-1" elevation="1" class="mt-2 pb-1">
-                    <v-card-title class="pb-0">{{ $t('version.new.form.dependencies') }}</v-card-title>
+                    <v-card-title class="pb-0">
+                        {{ $t('version.new.form.dependencies') }}
+                    </v-card-title>
                     <template v-for="platform in platformsForPluginDeps">
-                        <v-card-subtitle :key="`${platform}-deps`" class="mt-3 pb-0">{{ $store.state.platforms.get(platform).name }}</v-card-subtitle>
+                        <v-card-subtitle :key="`${platform}-deps`" class="mt-3 pb-0">
+                            {{ $store.state.platforms.get(platform).name }}
+                        </v-card-subtitle>
                         <DependencyTable
                             :key="`${platform}-deps-table`"
                             :platform="platform"
@@ -165,7 +173,9 @@
             <v-btn v-if="!pendingVersion" color="primary" :disabled="!canCreate" :loading="loading.create" @click="createPendingVersion">
                 {{ $t('general.continue') }}
             </v-btn>
-            <v-btn v-else color="primary" :disabled="!validForm" :loading="loading.submit" @click="createVersion">{{ $t('general.create') }}</v-btn>
+            <v-btn v-else color="primary" :disabled="!validForm" :loading="loading.submit" @click="createVersion">
+                {{ $t('general.create') }}
+            </v-btn>
         </v-card-actions>
     </v-card>
 </template>

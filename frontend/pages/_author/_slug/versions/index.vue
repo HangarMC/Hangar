@@ -13,7 +13,9 @@
                             <v-row>
                                 <v-col cols="4" md="2" lg="2">
                                     <v-row>
-                                        <v-col cols="12">{{ version.name }}</v-col>
+                                        <v-col cols="12">
+                                            {{ version.name }}
+                                        </v-col>
                                         <Tag :tag="getChannelTag(version)" />
                                     </v-row>
                                 </v-col>
@@ -39,7 +41,9 @@
                                     <v-row>
                                         <v-col cols="12">
                                             <v-icon>mdi-account-arrow-right</v-icon>
-                                            <NuxtLink :to="'/' + version.author">{{ version.author }}</NuxtLink>
+                                            <NuxtLink :to="'/' + version.author">
+                                                {{ version.author }}
+                                            </NuxtLink>
                                         </v-col>
                                         <v-col cols="12">
                                             <v-icon>mdi-download</v-icon>
@@ -75,7 +79,7 @@
                                         nuxt
                                         v-on="on"
                                     >
-                                        <v-icon small>mdi-pencil</v-icon>
+                                        <v-icon small> mdi-pencil </v-icon>
                                     </v-btn>
                                 </template>
                                 {{ $t('version.editChannels') }}
@@ -102,7 +106,7 @@
                             <v-list dense>
                                 <v-list-item v-for="platform in platforms" :key="platform.name">
                                     <v-checkbox v-model="filter.platforms" dense hide-details :value="platform.enumName" @change="updatePlatformCheckAll" />
-                                    <Tag :name="platform.name" :color="platform.tagColor"></Tag>
+                                    <Tag :name="platform.name" :color="platform.tagColor" />
                                 </v-list-item>
                             </v-list>
                         </v-card-text>

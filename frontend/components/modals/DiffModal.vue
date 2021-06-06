@@ -6,9 +6,11 @@
         <v-card>
             <v-card-title>{{ title }}</v-card-title>
             <!-- eslint-disable-next-line vue/no-v-html -->
-            <v-card-text v-html="prettyDiff"> </v-card-text>
+            <v-card-text v-html="prettyDiff" />
             <v-card-actions class="justify-end">
-                <v-btn text color="warning" @click="dialog = false">{{ $t('general.close') }}</v-btn>
+                <v-btn text color="warning" @click="dialog = false">
+                    {{ $t('general.close') }}
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

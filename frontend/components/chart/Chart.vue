@@ -1,5 +1,5 @@
 <template>
-    <div :id="id" class="ct-chart"></div>
+    <div :id="id" class="ct-chart" />
 </template>
 
 <script lang="ts">

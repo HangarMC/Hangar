@@ -8,7 +8,7 @@
             <v-card-text>{{ $t(promptInfo.messageKey) }}</v-card-text>
             <v-card-actions>
                 <v-btn small :loading="loading" @click.stop="markAsRead">
-                    <v-icon color="success" left>mdi-check-circle</v-icon>
+                    <v-icon color="success" left> mdi-check-circle </v-icon>
                     {{ $t('prompts.confirm') }}
                 </v-btn>
             </v-card-actions>

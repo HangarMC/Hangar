@@ -2,7 +2,7 @@
     <HangarModal :title="$t('visibility.modal.title', [type])" :submit="submit" no-form :submit-disabled="disableSubmit">
         <template #activator="{ on, attrs }">
             <v-btn :small="smallBtn" v-bind="attrs" color="warning" class="mr-1" :class="activatorClass" v-on="on">
-                <v-icon :small="smallBtn" left>mdi-eye</v-icon>
+                <v-icon :small="smallBtn" left> mdi-eye </v-icon>
                 {{ $t('visibility.modal.activatorBtn') }}
             </v-btn>
         </template>

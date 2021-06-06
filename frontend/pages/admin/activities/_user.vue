@@ -1,6 +1,8 @@
 <template>
     <div>
-        <div class="text-h4 my-2">{{ $t('userActivity.title', [$route.params.user]) }}</div>
+        <div class="text-h4 my-2">
+            {{ $t('userActivity.title', [$route.params.user]) }}
+        </div>
         <v-row>
             <v-col>
                 <v-card>
@@ -27,7 +29,7 @@
                                             }"
                                             nuxt
                                         >
-                                            <v-icon left>mdi-list-status</v-icon>
+                                            <v-icon left> mdi-list-status </v-icon>
                                             {{ $t('version.page.reviewLogs') }}
                                         </v-btn>
                                     </td>

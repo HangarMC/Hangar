@@ -35,8 +35,12 @@
                 </v-form>
             </v-card-text>
             <v-card-actions class="justify-end">
-                <v-btn color="error" text @click="dialog = false">{{ $t('general.close') }}</v-btn>
-                <v-btn color="success" :disabled="!validForm" :loading="loading" @click="createPage">{{ $t('general.create') }}</v-btn>
+                <v-btn color="error" text @click="dialog = false">
+                    {{ $t('general.close') }}
+                </v-btn>
+                <v-btn color="success" :disabled="!validForm" :loading="loading" @click="createPage">
+                    {{ $t('general.create') }}
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

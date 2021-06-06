@@ -19,7 +19,7 @@
                         {{ props.item.name }}
                     </v-btn>
                     <v-btn v-else nuxt :to="`/${$route.params.author}/${$route.params.slug}`" color="info" text exact class="text-transform-unset">
-                        <v-icon left>mdi-home</v-icon>
+                        <v-icon left> mdi-home </v-icon>
                         {{ props.item.name }}
                     </v-btn>
                 </template>

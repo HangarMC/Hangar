@@ -19,16 +19,24 @@
                         :disabled="!validForm.settings || settingsEqual"
                         @click="save"
                     >
-                        <v-icon left>mdi-check</v-icon>
+                        <v-icon left> mdi-check </v-icon>
                         {{ $t('project.settings.save') }}
                     </v-btn>
                 </v-card-title>
                 <v-card-text>
                     <v-tabs v-model="selectedTab" vertical>
-                        <v-tab href="#general">{{ $t('project.settings.tabs.general') }}</v-tab>
-                        <v-tab href="#optional">{{ $t('project.settings.tabs.optional') }}</v-tab>
-                        <v-tab href="#management">{{ $t('project.settings.tabs.management') }}</v-tab>
-                        <v-tab href="#donation">{{ $t('project.settings.tabs.donation') }}</v-tab>
+                        <v-tab href="#general">
+                            {{ $t('project.settings.tabs.general') }}
+                        </v-tab>
+                        <v-tab href="#optional">
+                            {{ $t('project.settings.tabs.optional') }}
+                        </v-tab>
+                        <v-tab href="#management">
+                            {{ $t('project.settings.tabs.management') }}
+                        </v-tab>
+                        <v-tab href="#donation">
+                            {{ $t('project.settings.tabs.donation') }}
+                        </v-tab>
 
                         <v-tab-item id="general">
                             <v-form v-model="validForm.settings">
@@ -92,11 +100,11 @@
                                             @change="onFileChange"
                                         />
                                         <v-btn color="info" :disabled="!projectIcon" :loading="loading.uploadIcon" @click="uploadIcon">
-                                            <v-icon left>mdi-upload</v-icon>
+                                            <v-icon left> mdi-upload </v-icon>
                                             {{ $t('project.settings.iconUpload') }}
                                         </v-btn>
                                         <v-btn color="warning" :loading="loading.resetIcon" @click="resetIcon">
-                                            <v-icon left>mdi-upload</v-icon>
+                                            <v-icon left> mdi-upload </v-icon>
                                             {{ $t('project.settings.iconReset') }}
                                         </v-btn>
                                     </v-col>
@@ -245,7 +253,9 @@
                                         <p>{{ $t('project.settings.apiKeySub') }}</p>
                                         <v-text-field v-model.trim="apiKey" dense hide-details filled>
                                             <template #append-outer>
-                                                <v-btn class="input-append-btn" @click="generateApiKey">{{ $t('project.settings.apiKeyGenerate') }}</v-btn>
+                                                <v-btn class="input-append-btn" @click="generateApiKey">
+                                                    {{ $t('project.settings.apiKeyGenerate') }}
+                                                </v-btn>
                                             </template>
                                         </v-text-field>
                                     </v-col>
@@ -267,7 +277,7 @@
                                                         :loading="loading.rename"
                                                         @click="rename"
                                                     >
-                                                        <v-icon left>mdi-rename-box</v-icon>
+                                                        <v-icon left> mdi-rename-box </v-icon>
                                                         {{ $t('project.settings.rename') }}
                                                     </v-btn>
                                                 </template>
@@ -286,7 +296,9 @@
                                     <v-col class="flex-grow-0">
                                         <TextareaModal :title="$t('project.settings.delete')" :label="$t('general.comment')" :submit="softDelete">
                                             <template #activator="{ on, attrs }">
-                                                <v-btn color="error" v-bind="attrs" v-on="on">{{ $t('project.settings.delete') }}</v-btn>
+                                                <v-btn color="error" v-bind="attrs" v-on="on">
+                                                    {{ $t('project.settings.delete') }}
+                                                </v-btn>
                                             </template>
                                         </TextareaModal>
                                     </v-col>
@@ -303,7 +315,9 @@
                                     <v-col cols="12" md="4">
                                         <TextareaModal :title="$t('project.settings.hardDelete')" :label="$t('general.comment')" :submit="hardDelete">
                                             <template #activator="{ on, attrs }">
-                                                <v-btn color="error" v-bind="attrs" v-on="on">{{ $t('project.settings.hardDelete') }}</v-btn>
+                                                <v-btn color="error" v-bind="attrs" v-on="on">
+                                                    {{ $t('project.settings.hardDelete') }}
+                                                </v-btn>
                                             </template>
                                         </TextareaModal>
                                     </v-col>

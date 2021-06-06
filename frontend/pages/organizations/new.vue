@@ -26,7 +26,7 @@
                 </v-card-text>
                 <v-card-actions class="justify-end">
                     <v-btn color="success" :disabled="!canCreate" :loading="loading" @click="create">
-                        <v-icon left>mdi-check</v-icon>
+                        <v-icon left> mdi-check </v-icon>
                         {{ $t('form.memberList.create') }}
                     </v-btn>
                 </v-card-actions>

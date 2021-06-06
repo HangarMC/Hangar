@@ -12,7 +12,9 @@
                 <slot v-else />
             </v-card-text>
             <v-card-actions class="justify-end">
-                <v-btn text :color="closeColor" @click.stop="close">{{ closeLabel || $t('general.close') }}</v-btn>
+                <v-btn text :color="closeColor" @click.stop="close">
+                    {{ closeLabel || $t('general.close') }}
+                </v-btn>
                 <slot name="other-btns" />
                 <v-btn :color="submitColor" :disabled="(!noForm && !validForm) || submitDisabled" :loading="loading" @click.stop="submit0">
                     {{ submitLabel || $t('general.submit') }}

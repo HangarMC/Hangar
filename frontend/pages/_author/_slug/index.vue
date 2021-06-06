@@ -18,7 +18,7 @@
             <v-row>
                 <v-col cols="12">
                     <v-card>
-                        <v-card-title v-text="$t('project.info.title')"></v-card-title>
+                        <v-card-title v-text="$t('project.info.title')" />
                         <v-card-text>
                             <DownloadButton
                                 v-if="project.recommendedVersions && Object.keys(project.recommendedVersions).length > 0"
@@ -39,7 +39,7 @@
                                 >
                                     <template #activator="{ on, attrs }">
                                         <v-btn v-bind="attrs" v-on="on">
-                                            <v-icon left>mdi-currency-usd</v-icon>
+                                            <v-icon left> mdi-currency-usd </v-icon>
                                             {{ $t('general.donate') }}
                                         </v-btn>
                                     </template>
@@ -73,7 +73,7 @@
                 </v-col>
                 <v-col cols="12">
                     <v-card>
-                        <v-card-title v-text="$t('project.promotedVersions')"></v-card-title>
+                        <v-card-title v-text="$t('project.promotedVersions')" />
                         <v-card-text>
                             <v-list>
                                 <v-list-item
@@ -85,7 +85,7 @@
                                     }"
                                 >
                                     {{ version.version }}
-                                    <Tag v-for="(tag, idx) in version.tags" :key="idx" :color="tag.color" :data="tag.displayData" :name="tag.name"></Tag>
+                                    <Tag v-for="(tag, idx) in version.tags" :key="idx" :color="tag.color" :data="tag.displayData" :name="tag.name" />
                                 </v-list-item>
                             </v-list>
                         </v-card-text>
