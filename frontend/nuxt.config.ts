@@ -160,12 +160,12 @@ export default {
                 defaultSrc: ["'self'", 'https://google-analytics.com', 'https://fonts.gstatic.com', 'https://fonts.googleapis.com'],
                 styleSrc: ["'self'", 'https://fonts.googleapis.com', 'cdn.jsdelivr.net', "'unsafe-inline'"],
                 fontSrc: ['fonts.gstatic.com', 'cdn.jsdelivr.net'],
-                scriptSrc: ["'self'" /* , "'nonce-{nonce}'" */, "'unsafe-inline'", "'unsafe-eval'"],
+                scriptSrc: ["'self'" /* , "'nonce-{nonce}'" */, "'unsafe-inline'", "'unsafe-eval'", 'https://static.cloudflareinsights.com'],
                 imgSrc: [
                     "'self'",
                     'https://www.google-analytics.com',
                     'https://www.gravatar.com',
-                    authHost,
+                    lazyAuthHost,
                     'data: papermc.io paper.readthedocs.io',
                     'https:', // ppl can use images in descriptions, we would need an image proxy or smth
                 ],
