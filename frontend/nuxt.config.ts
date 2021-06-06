@@ -124,8 +124,8 @@ export default {
         strategy: 'no_prefix',
         defaultLocale: 'en',
         locales: [
-            { code: 'fr', iso: 'fr-FR', name: 'Français' },
-            { code: 'en', iso: 'en-US', name: 'English' },
+            { code: 'fr', iso: 'fr-FR', name: 'Français', icon: 'Test' },
+            { code: 'en', iso: 'en-US', name: 'English', icon: 'Test' },
         ],
         vueI18n: {
             locale: 'en',
@@ -134,6 +134,11 @@ export default {
                 en,
                 fr,
             },
+        },
+        detectBrowserLanguage: {
+            useCookie: true,
+            cookieKey: 'i18n_redirected',
+            onlyOnRoot: true,
         },
     },
 

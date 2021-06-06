@@ -832,6 +832,12 @@ const msgs: LocaleMessageObject = {
         cta: 'Donate',
         submit: 'Donate {0}',
     },
+    lang: {
+        button: 'Switch Language',
+        title: 'Switch Language',
+        available: 'Available Language',
+        hangarAuth: 'This only change the locale for your current browser (as a cookie). Click here to change your lang on paper auth for all paper services',
+    },
     validation: {
         required: '{0} is required',
         maxLength: 'Maximum length is {0}',
