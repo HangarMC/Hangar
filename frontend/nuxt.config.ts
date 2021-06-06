@@ -3,6 +3,7 @@ import colors from 'vuetify/lib/util/colors';
 
 import en from './locales/en';
 import fr from './locales/fr';
+import zh from './locales/zh_hans';
 
 require('events').EventEmitter.defaultMaxListeners = 20;
 require('dotenv').config();
@@ -126,6 +127,7 @@ export default {
         locales: [
             { code: 'fr', iso: 'fr-FR', name: 'Français', icon: 'Test' },
             { code: 'en', iso: 'en-US', name: 'English', icon: 'Test' },
+            { code: 'zh', iso: 'zh-HANS', name: 'Simplified Chinese', icon: 'Test' },
         ],
         vueI18n: {
             locale: 'en',
@@ -133,6 +135,7 @@ export default {
             messages: {
                 en,
                 fr,
+                zh,
             },
         },
         detectBrowserLanguage: {

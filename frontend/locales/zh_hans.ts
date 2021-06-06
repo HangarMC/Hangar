@@ -62,7 +62,7 @@ const msgs: LocaleMessageObject = {
             logout: '登出',
             error: {
                 loginFailed: '身份验证失败',
-                hangarAuth: "无法连接至 HangarAuth",
+                hangarAuth: '无法连接至 HangarAuth',
                 loginDisabled: '登录暂时无法使用，请稍后再作尝试',
                 fakeUserEnabled: '虚拟用户模式已启用。{0} 因此关闭',
             },
@@ -233,8 +233,7 @@ const msgs: LocaleMessageObject = {
             keywords: '关键词',
             keywordsSub: '当人们将它们添加到搜索中时，这些特殊的词将返回您的项目。',
             homepage: '主页',
-            homepageSub:
-                '为您的项目创建一个自定义主页有助于使您的项目看起来更养眼、更正式，同时也为您提供另一个收集项目信息的地方。',
+            homepageSub: '为您的项目创建一个自定义主页有助于使您的项目看起来更养眼、更正式，同时也为您提供另一个收集项目信息的地方。',
             issues: '问题追踪器',
             issuesSub: '提供问题跟踪器可以帮助您的用户更轻松地获得支持，并为您持续跟踪bug状态提供更便利的方式。',
             source: '源码',
@@ -350,7 +349,7 @@ const msgs: LocaleMessageObject = {
                 forumPost: '论坛发帖',
                 release: {
                     bulletin: '发布公告',
-                    desc: "在新版本中值得一提的内容?",
+                    desc: '在新版本中值得一提的内容?',
                 },
                 platforms: '平台',
                 dependencies: '插件依赖项',
@@ -559,9 +558,9 @@ const msgs: LocaleMessageObject = {
         },
         modal: {
             activatorBtn: '可见性操作',
-            title: "更改了 {0} 的可见性",
+            title: '更改了 {0} 的可见性',
             reason: '更改的原因',
-            success: "您更改了 {0} 的可见性为 {1}",
+            success: '您更改了 {0} 的可见性为 {1}',
         },
     },
     author: {
@@ -586,10 +585,10 @@ const msgs: LocaleMessageObject = {
             admin: '用户管理',
         },
         lock: {
-            confirmLock: "确定要锁定 {0} 的账户?",
-            confirmUnlock: "确定要解锁 {0} 的账户?",
-            successLock: "成功锁定 {0} 的账户",
-            successUnlock: "成功解锁 {0} 的账户",
+            confirmLock: '确定要锁定 {0} 的账户?',
+            confirmUnlock: '确定要解锁 {0} 的账户?',
+            successLock: '成功锁定 {0} 的账户',
+            successUnlock: '成功解锁 {0} 的账户',
         },
         org: {
             editAvatar: '编辑头像',
@@ -670,7 +669,7 @@ const msgs: LocaleMessageObject = {
             approve: '{name} 通过了此版本',
             approvePartial: '{name} 局部通过了此版本',
             undoApproval: '{name} 撤销了他们的批准',
-            reviewTitle: "{name} 的审核",
+            reviewTitle: '{name} 的审核',
         },
         state: {
             ongoing: '进行中',
@@ -723,7 +722,7 @@ const msgs: LocaleMessageObject = {
         line3: '评论: {0}',
     },
     userActivity: {
-        title: "{0} 的动态",
+        title: '{0} 的动态',
         reviews: '审阅数',
         flags: '举报数',
         reviewApproved: '已通过的审核',
@@ -775,11 +774,11 @@ const msgs: LocaleMessageObject = {
             ProjectPageCreated: '项目页面被创建',
             ProjectPageDeleted: '项目页面被删除',
             ProjectPageEdited: '项目页面被编辑',
-            VersionVisibilityChanged: "版本可见性状态被更改",
+            VersionVisibilityChanged: '版本可见性状态被更改',
             VersionDeleted: '版本被删除',
             VersionCreated: '一个新版本被上传',
             VersionDescriptionEdited: '版本描述被编辑',
-            VersionReviewStateChanged: "版本审核状态被更改",
+            VersionReviewStateChanged: '版本审核状态被更改',
             VersionPluginDependencyAdded: '插件依赖项被添加',
             VersionPluginDependencyEdited: '插件依赖项被编辑',
             VersionPluginDependencyRemoved: '插件依赖项被移除',
@@ -843,7 +842,7 @@ const msgs: LocaleMessageObject = {
         confirm: '了解了!',
         changeAvatar: {
             title: '更改您的头像!',
-            message: "欢迎来到您的新组织! 从点击头像进行更改开始迈出您组织发展的第一步吧。",
+            message: '欢迎来到您的新组织! 从点击头像进行更改开始迈出您组织发展的第一步吧。',
         },
     },
     error: {
