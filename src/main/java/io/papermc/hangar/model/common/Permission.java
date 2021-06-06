@@ -16,6 +16,7 @@ public class Permission implements Comparable<Permission>, Argument {
     public static final Permission None = new Permission(0);
     public static final Permission All = new Permission(0XFFFFFFFFFFFFFFFL);
 
+    @SuppressWarnings("PointlessBitwiseExpression")
     public static final Permission ViewPublicInfo = new Permission(1L << 0);
     public static final Permission EditOwnUserSettings = new Permission(1L << 1);
     public static final Permission EditApiKeys = new Permission(1L << 2);

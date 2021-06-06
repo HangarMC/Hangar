@@ -146,11 +146,12 @@ export default class AdminLogPage extends HangarComponent {
         return {
             limit: this.options.itemsPerPage,
             offset: (this.options.page - 1) * this.options.itemsPerPage,
+            ...this.$route.query,
         };
     }
 
-    async asyncData({ $api, $util }: Context) {
-        const loggedActions = await $api.requestInternal<PaginatedResult<LoggedAction>>(`admin/log/`, false).catch<any>($util.handlePageRequestError);
+    async asyncData({ $api, $util, query }: Context) {
+        const loggedActions = await $api.requestInternal<PaginatedResult<LoggedAction>>(`admin/log/`, false, 'get', query).catch<any>($util.handleRequestError);
         return { loggedActions };
     }
 }
