@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@dansmaculotte/nuxt-security": "0.0.4",
-    "@nuxtjs/axios": "5.13.5",
+    "@nuxtjs/axios": "5.13.6",
     "@nuxtjs/proxy": "2.1.0",
     "@nuxtjs/pwa": "3.3.5",
     "chartist": "0.11.4",
