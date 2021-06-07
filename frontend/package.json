@@ -20,6 +20,7 @@
     "@nuxtjs/pwa": "3.3.5",
     "chartist": "0.11.4",
     "chartist-plugin-legend": "0.6.2",
+    "consola": "2.15.3",
     "cookie-universal-nuxt": "2.1.4",
     "core-js": "3.14.0",
     "diff-match-patch": "1.0.5",
@@ -31,6 +32,7 @@
     "nuxt-property-decorator": "2.9.1",
     "swagger-ui": "3.50.0",
     "vue": "2.6.12",
+    "vue-template-compiler": "2.6.12",
     "vuex": "3.6.2"
   },
   "devDependencies": {
