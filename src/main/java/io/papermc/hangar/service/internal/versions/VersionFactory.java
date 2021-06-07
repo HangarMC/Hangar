@@ -218,7 +218,7 @@ public class VersionFactory extends HangarComponent {
             List<ProjectVersionTagTable> projectVersionTagTables = new ArrayList<>();
             List<ProjectVersionPlatformDependencyTable> platformDependencyTables = new ArrayList<>();
             for (var entry : pendingVersion.getPlatformDependencies().entrySet()) {
-                projectVersionTagTables.add(new ProjectVersionTagTable(projectVersionTable.getId(), entry.getKey().getName(), entry.getValue(), entry.getKey().getTagColor()));
+                projectVersionTagTables.add(new ProjectVersionTagTable(projectVersionTable.getId(), entry.getKey(), entry.getValue()));
                 for (String version : entry.getValue()) {
                     PlatformVersionTable platformVersionTable = platformVersionDAO.getByPlatformAndVersion(entry.getKey(), version);
                     platformDependencyTables.add(new ProjectVersionPlatformDependencyTable(projectVersionTable.getId(), platformVersionTable.getId()));

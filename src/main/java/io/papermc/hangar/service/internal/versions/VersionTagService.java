@@ -35,6 +35,6 @@ public class VersionTagService extends HangarComponent {
     }
 
     public void addUnstableTag(long versionId) {
-        addTags(new ProjectVersionTagTable(versionId, "Unstable", null, TagColor.UNSTABLE));
+        addTags(new ProjectVersionTagTable(versionId, "Unstable", TagColor.UNSTABLE));
     }
 }

@@ -1,6 +1,7 @@
 package io.papermc.hangar.model.db.versions;
 
 import io.papermc.hangar.model.Named;
+import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.TagColor;
 import io.papermc.hangar.model.db.Table;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
@@ -25,10 +26,17 @@ public class ProjectVersionTagTable extends Table implements Named {
         this.color = color;
     }
 
-    public ProjectVersionTagTable(long versionId, String name, Set<String> data, TagColor color) {
+    public ProjectVersionTagTable(long versionId, Platform platform, Set<String> data) {
+        this.versionId = versionId;
+        this.name = platform.getName();
+        this.data = data;
+        this.color = platform.getTagColor();
+    }
+
+    public ProjectVersionTagTable(long versionId, String name, TagColor color) {
         this.versionId = versionId;
         this.name = name;
-        this.data = data;
+        this.data = null;
         this.color = color;
     }
 

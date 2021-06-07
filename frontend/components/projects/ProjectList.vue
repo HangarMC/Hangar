@@ -24,6 +24,25 @@
                                 <br />
                                 <span class="text-subtitle-2">{{ project.description }}</span>
                             </div>
+                            <div class="flex-grow-1 mr-2 mt-1">
+                                <div class="text--secondary text-right body-1">
+                                    <span :title="$tc('project.info.views', project.stats.views, [project.stats.views])">
+                                        <v-icon small>mdi-eye</v-icon>
+                                        {{ project.stats.views }}
+                                    </span>
+                                    <span :title="$tc('project.info.totalDownloads', project.stats.downloads, [project.stats.downloads])">
+                                        <v-icon small class="ml-1">mdi-download</v-icon>
+                                        {{ project.stats.downloads }}
+                                    </span>
+                                    <span :title="$tc('project.info.stars', project.stats.stars, [project.stats.stars])">
+                                        <v-icon small class="ml-1">mdi-star</v-icon>
+                                        {{ project.stats.stars }}
+                                    </span>
+                                    <v-icon small class="ml-3" :title="$store.state.projectCategories.get(project.category).title">{{
+                                        $store.state.projectCategories.get(project.category).icon
+                                    }}</v-icon>
+                                </div>
+                            </div>
                         </v-row>
                     </v-sheet>
                 </NuxtLink>
