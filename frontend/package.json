@@ -30,7 +30,7 @@
     "nuxt-i18n": "Machine-Maker/i18n-module#fix/mixing-mem-leak",
     "nuxt-property-decorator": "2.9.1",
     "swagger-ui": "3.50.0",
-    "vue": "2.6.12",
+    "vue": "2.6.13",
     "vuex": "3.6.2"
   },
   "devDependencies": {
