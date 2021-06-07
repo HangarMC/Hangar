@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@dansmaculotte/nuxt-security": "0.0.4",
-    "@nuxtjs/axios": "5.13.5",
+    "@nuxtjs/axios": "5.13.6",
     "@nuxtjs/proxy": "2.1.0",
     "@nuxtjs/pwa": "3.3.5",
     "chartist": "0.11.4",
@@ -29,7 +29,7 @@
     "nuxt": "2.15.6",
     "nuxt-i18n": "Machine-Maker/i18n-module#fix/mixing-mem-leak",
     "nuxt-property-decorator": "2.9.1",
-    "swagger-ui": "3.49.0",
+    "swagger-ui": "3.50.0",
     "vue": "2.6.12",
     "vuex": "3.6.2"
   },
@@ -52,7 +52,7 @@
     "fibers": "5.0.0",
     "husky": "6.0.0",
     "lint-staged": "11.0.0",
-    "prettier": "2.3.0",
+    "prettier": "2.3.1",
     "sass": "1.32.13",
     "sass-loader": "10.1.1",
     "typescript": "4.2.4",
