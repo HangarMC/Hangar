@@ -10,8 +10,10 @@ spring:
   ############
   # DataBase #
   ############
+  sql:
+    init:
+      platform: postgres
   datasource:
-    platform: postgres
     url: jdbc:postgresql://localhost:5432/hangar
     username: hangar
     password: hangar

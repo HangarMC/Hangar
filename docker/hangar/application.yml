@@ -4,8 +4,10 @@ server:
 spring:
   freemarker:
     request-context-attribute: rc
+  sql:
+    init:
+      platform: postgres
   datasource:
-    platform: postgres
     url: jdbc:postgresql://db:5432/hangar
     username: hangar
     password: hangar
