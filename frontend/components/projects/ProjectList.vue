@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'nuxt-property-decorator';
+import { Component, Prop, PropSync, Vue } from 'nuxt-property-decorator';
 import { PaginatedResult, Project } from 'hangar-api';
 import { PropType } from 'vue';
 import { DataOptions } from 'vuetify';
@@ -68,10 +68,14 @@ export default class ProjectList extends Vue {
     @Prop({ type: Object as PropType<PaginatedResult<Project>>, required: true })
     projects!: PaginatedResult<Project>;
 
-    options = {
-        page: 1,
-        itemsPerPage: 25,
-    } as DataOptions;
+    @PropSync('listOptions', {
+        type: Object as PropType<DataOptions>,
+        default: () => ({
+            page: 1,
+            itemsPerPage: 25,
+        }),
+    })
+    options!: DataOptions;
 }
 </script>
 <style lang="scss" scoped>

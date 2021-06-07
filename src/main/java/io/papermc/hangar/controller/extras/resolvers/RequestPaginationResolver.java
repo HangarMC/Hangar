@@ -23,10 +23,13 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class RequestPaginationResolver implements HandlerMethodArgumentResolver {
@@ -88,7 +91,7 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
         }
 
         // find sorters
-        List<String> applicableSorters = Optional.ofNullable(parameter.getMethodAnnotation(ApplicableSorters.class)).map(ApplicableSorters::value).map(Arrays::asList).orElse(new ArrayList<>());
+        Set<String> applicableSorters = Optional.ofNullable(parameter.getMethodAnnotation(ApplicableSorters.class)).map(ApplicableSorters::value).map(sorters -> Stream.of(sorters).map(SorterRegistry::getName).collect(Collectors.toUnmodifiableSet())).orElse(Collections.emptySet());
         List<String> presentSorters = Optional.ofNullable(webRequest.getParameterValues("sort")).map(Arrays::asList).orElse(new ArrayList<>());
         for (String sorter : presentSorters) {
             String sortKey = sorter.startsWith("-") ? sorter.substring(1) : sorter;

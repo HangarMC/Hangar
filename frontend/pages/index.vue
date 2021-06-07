@@ -8,12 +8,12 @@
                 </v-row>
                 <v-row justify="center" align="center">
                     <v-col cols="12">
-                        <v-text-field v-model="projectFilter" :label="$t('hangar.projectSearch.query', [projects.pagination.count])" clearable />
+                        <v-text-field v-model="filters.search" :label="$t('hangar.projectSearch.query', [projects.pagination.count])" clearable />
                     </v-col>
                 </v-row>
                 <v-row justify="center" align="center">
                     <v-col cols="12">
-                        <ProjectList :projects="projects" />
+                        <ProjectList :projects="projects" :list-options.sync="options" />
                     </v-col>
                 </v-row>
             </v-col>
@@ -27,8 +27,8 @@
 
                 <v-list dense>
                     <v-subheader>Categories</v-subheader>
-                    <v-list-item-group>
-                        <v-list-item v-for="cat in $store.getters.visibleCategories" :key="cat.apiName">
+                    <v-list-item-group v-model="filters.categories" multiple>
+                        <v-list-item v-for="cat in $store.getters.visibleCategories" :key="cat.apiName" :value="cat.apiName">
                             <v-list-item-icon>
                                 <v-icon v-text="cat.icon" />
                             </v-list-item-icon>
@@ -42,7 +42,7 @@
                 <v-list dense>
                     <v-subheader>Platforms</v-subheader>
                     <v-list-item-group>
-                        <v-list-item v-for="(platform, i) in platforms" :key="i">
+                        <v-list-item v-for="(platform, i) in platforms" :key="i" active-class="">
                             <v-list-item-icon>
                                 <v-icon v-text="`$vuetify.icons.${platform.name.toLowerCase()}`" />
                             </v-list-item-icon>
@@ -62,10 +62,12 @@ import { Component } from 'nuxt-property-decorator';
 import { PaginatedResult, Project, Sponsor } from 'hangar-api';
 import { IPlatform } from 'hangar-internal';
 import { Context } from '@nuxt/types';
+import { DataOptions } from 'vuetify';
 import { ProjectList } from '~/components/projects';
 import HangarSponsor from '~/components/layouts/Sponsor.vue';
 import { RootState } from '~/store';
 import { HangarComponent } from '~/components/mixins';
+import { Platform, ProjectCategory } from '~/types/enums';
 
 @Component({
     components: {
@@ -76,8 +78,17 @@ import { HangarComponent } from '~/components/mixins';
 export default class Home extends HangarComponent {
     // TODO implement filtering
     projects!: PaginatedResult<Project>;
-    projectFilter: string | null = null;
     sponsor!: Sponsor;
+    filters = {
+        search: null as string | null,
+        platforms: [] as Platform[],
+        categories: [] as ProjectCategory[],
+    };
+
+    options = {
+        itemsPerPage: 25,
+        page: 1,
+    } as DataOptions;
 
     head() {
         const meta = this.$seo.head('Home', null, this.$route, null);
@@ -97,8 +108,34 @@ export default class Home extends HangarComponent {
         return meta;
     }
 
+    mounted() {
+        this.$watch('options', this.reloadProjectList, { deep: true });
+        this.$watch('filters', this.reloadProjectList, { deep: true });
+    }
+
     get platforms(): IPlatform[] {
         return Array.from((this.$store.state as RootState).platforms.values());
+    }
+
+    reloadProjectList() {
+        this.$api
+            .request<PaginatedResult<Project>>('projects', false, 'get', this.requestOptions)
+            .then((result) => {
+                this.projects = result;
+            })
+            .catch(this.$util.handleRequestError);
+    }
+
+    get requestOptions() {
+        const requestOptions: { [key: string]: any } = {
+            limit: this.options.itemsPerPage,
+            offset: (this.options.page - 1) * this.options.itemsPerPage,
+            category: this.filters.categories,
+        };
+        if (this.filters.search != null && this.filters.search.length > 0) {
+            requestOptions.q = this.filters.search;
+        }
+        return requestOptions;
     }
 
     async asyncData({ $api, $util }: Context) {

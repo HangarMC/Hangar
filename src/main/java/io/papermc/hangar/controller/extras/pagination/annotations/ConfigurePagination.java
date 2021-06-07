@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Configure default page length/number
+ * Configure default page length
  */
 @Documented
 @Target(ElementType.PARAMETER)

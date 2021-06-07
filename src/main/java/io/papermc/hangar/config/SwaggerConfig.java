@@ -1,6 +1,7 @@
 package io.papermc.hangar.config;
 
 import io.papermc.hangar.controller.extras.pagination.FilterRegistry;
+import io.papermc.hangar.controller.extras.pagination.SorterRegistry;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSorters;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableSwagger2
@@ -92,7 +94,7 @@ public class SwaggerConfig {
                         .name("sort")
                         .in(ParameterType.QUERY)
                         .description("Used to sort the result")
-                        .query(q -> q.style(ParameterStyle.SIMPLE).model(m -> m.scalarModel(ScalarType.STRING)).enumerationFacet(e -> e.allowedValues(Arrays.asList(sorters.get().value())))).build());
+                        .query(q -> q.style(ParameterStyle.SIMPLE).model(m -> m.scalarModel(ScalarType.STRING)).enumerationFacet(e -> e.allowedValues(Arrays.asList(sorters.get().value()).stream().map(SorterRegistry::getName).collect(Collectors.toSet())))).build());
                 context.operationBuilder().requestParameters(requestParameters);
             }
             Optional<ApplicableFilters> filters = context.findAnnotation(ApplicableFilters.class);
