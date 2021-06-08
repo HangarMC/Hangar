@@ -8,6 +8,8 @@ import io.papermc.hangar.service.internal.versions.plugindata.handler.VelocityFi
 import io.papermc.hangar.service.internal.versions.plugindata.handler.WaterfallFileTypeHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -58,9 +60,10 @@ class PluginDataServiceTest {
         assertIterableEquals(List.of("KennyTV"), data.getAuthors().get(Platform.WATERFALL));
 
         Set<PluginDependency> deps = data.getDependencies().get(Platform.WATERFALL);
-        assertThat(deps).hasSize(2);
-        assertThat(deps).anyMatch(pd -> pd.getName().equals("ServerListPlus") && !pd.isRequired());
-        assertThat(deps).anyMatch(pd -> pd.getName().equals("SomePlugin") && pd.isRequired());
+        assertThat(deps)
+                .hasSize(2)
+                .anyMatch(pd -> pd.getName().equals("ServerListPlus") && !pd.isRequired())
+                .anyMatch(pd -> pd.getName().equals("SomePlugin") && pd.isRequired());
     }
 
     @Test
@@ -74,34 +77,9 @@ class PluginDataServiceTest {
         assertIterableEquals(List.of("KennyTV"), data.getAuthors().get(Platform.VELOCITY));
 
         Set<PluginDependency> deps = data.getDependencies().get(Platform.VELOCITY);
-        assertThat(deps).hasSize(1);
-        assertThat(deps).anyMatch(pd -> pd.getName().equals("serverlistplus") && !pd.isRequired());
-    }
-
-    @Test
-    void test_emptyMeta_shouldFail() {
-        HangarApiException hangarException = assertThrows(HangarApiException.class, () -> {
-            classUnderTest.loadMeta(path.resolve("EmptyMeta.jar"), -1);
-        });
-        assertEquals("400 BAD_REQUEST \"version.new.error.metaNotFound\"", hangarException.getMessage());
-    }
-
-    @Test
-    void test_noMeta_shouldFail() {
-        HangarApiException hangarException = assertThrows(HangarApiException.class, () -> {
-            classUnderTest.loadMeta(path.resolve("Empty.jar"), -1);
-        });
-
-        assertEquals("400 BAD_REQUEST \"version.new.error.metaNotFound\"", hangarException.getMessage());
-    }
-
-    @Test
-    void test_incompleteMeta_shouldFail() {
-        HangarApiException hangarException = assertThrows(HangarApiException.class, () -> {
-            classUnderTest.loadMeta(path.resolve("IncompleteMeta.jar"), -1);
-        });
-
-        assertEquals("400 BAD_REQUEST \"version.new.error.incomplete\"", hangarException.getMessage());
+        assertThat(deps)
+                .hasSize(1)
+                .anyMatch(pd -> pd.getName().equals("serverlistplus") && !pd.isRequired());
     }
 
     @Test
@@ -122,11 +100,18 @@ class PluginDataServiceTest {
         assertIterableEquals(Set.of("1.13"), data.getPlatformDependencies().get(Platform.PAPER));
     }
 
-    @Test
-    void test_zipNoJar_shouldFail() {
-        HangarApiException hangarException = assertThrows(HangarApiException.class, () -> {
-            classUnderTest.loadMeta(path.resolve("Empty.zip"), -1);
+    @ParameterizedTest
+    @CsvSource({
+            "EmptyMeta.jar,version.new.error.metaNotFound",
+            "Empty.jar,version.new.error.metaNotFound",
+            "IncompleteMeta.jar,version.new.error.incomplete",
+            "Empty.zip,version.new.error.jarNotFound"
+    })
+    void testLoadMetaShouldFail(String jarName, String expectedMsg) {
+        Path jarPath = path.resolve(jarName);
+        HangarApiException exception = assertThrows(HangarApiException.class, () -> {
+            classUnderTest.loadMeta(jarPath, -1);
         });
-        assertEquals("400 BAD_REQUEST \"version.new.error.jarNotFound\"", hangarException.getMessage());
+        assertEquals("400 BAD_REQUEST \"" + expectedMsg + "\"", exception.getMessage());
     }
 }
