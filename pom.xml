@@ -51,6 +51,13 @@
                 <version>${jdbi3-bom.version}</version>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.spongepowered</groupId>
+                <artifactId>configurate-bom</artifactId>
+                <type>pom</type>
+                <version>4.1.1</version>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -104,6 +111,16 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>${org-json.version}</version>
+        </dependency>
+
+        <!-- configurate -->
+        <dependency>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>configurate-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>configurate-yaml</artifactId>
         </dependency>
 
         <!--SpringFox dependencies -->

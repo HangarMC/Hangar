@@ -36,6 +36,7 @@ import io.papermc.hangar.service.internal.versions.plugindata.PluginFileWithData
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.CryptoUtils;
 import io.papermc.hangar.util.StringUtils;
+import org.spongepowered.configurate.ConfigurateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -113,6 +114,9 @@ public class VersionFactory extends HangarComponent {
             Path tmpPluginFile = tmpDir.resolve(pluginFileName);
             file.transferTo(tmpPluginFile);
             pluginDataFile = pluginDataService.loadMeta(tmpPluginFile, getHangarPrincipal().getUserId());
+        } catch (ConfigurateException configurateException) {
+            logger.error("Error while reading file metadata while uploading {} for {}", pluginFileName, getHangarPrincipal().getName(), configurateException);
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.metaNotFound");
         } catch (IOException e) {
             logger.error("Error while uploading {} for {}", pluginFileName, getHangarPrincipal().getName(), e);
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.unexpected");
