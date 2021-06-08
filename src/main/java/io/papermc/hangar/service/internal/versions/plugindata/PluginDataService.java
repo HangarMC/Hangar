@@ -3,9 +3,9 @@ package io.papermc.hangar.service.internal.versions.plugindata;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.FileTypeHandler;
+import io.papermc.hangar.service.internal.versions.plugindata.handler.FileTypeHandler.FileData;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -26,12 +26,12 @@ import java.util.zip.ZipFile;
 @Service
 public class PluginDataService {
 
-    private final Map<String, FileTypeHandler> fileTypeHandlers = new HashMap<>();
+    private final Map<String, FileTypeHandler<? extends FileData>> pluginFileTypeHandlers = new HashMap<>();
 
     @Autowired
-    public PluginDataService(List<FileTypeHandler> fileTypeHandlers) {
-        for (FileTypeHandler fileTypeHandler : fileTypeHandlers) {
-            this.fileTypeHandlers.put(fileTypeHandler.getFileName(), fileTypeHandler);
+    public PluginDataService(List<FileTypeHandler<?>> fileTypeHandlers) {
+        for (FileTypeHandler<?> fileTypeHandler : fileTypeHandlers) {
+            this.pluginFileTypeHandlers.put(fileTypeHandler.getFileName(), fileTypeHandler);
         }
     }
 
@@ -39,27 +39,28 @@ public class PluginDataService {
     public PluginFileWithData loadMeta(Path file, long userId) throws IOException {
         try (JarInputStream jarInputStream = openJar(file)) {
 
-            Map<Platform, List<DataValue>> dataValueMap = new EnumMap<>(Platform.class);
+            Map<Platform, FileData> fileDataMap = new EnumMap<>(Platform.class);
 
             JarEntry jarEntry;
-            while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
-                FileTypeHandler fileTypeHandler = fileTypeHandlers.get(jarEntry.getName());
+            while ((jarEntry = jarInputStream.getNextJarEntry()) != null && fileDataMap.size() < Platform.getValues().length) {
+                FileTypeHandler<?> fileTypeHandler = pluginFileTypeHandlers.get(jarEntry.getName());
                 if (fileTypeHandler != null) {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(jarInputStream));
-                    dataValueMap.put(fileTypeHandler.getPlatform(), fileTypeHandler.getData(reader));
+                    FileData fileData = fileTypeHandler.getData(reader);
+                    fileDataMap.put(fileTypeHandler.getPlatform(), fileData);
                 }
             }
 
-            if (dataValueMap.isEmpty() ) {
-                throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.metaNotFound");
+            if (fileDataMap.isEmpty() ) {
+                throw new HangarApiException("version.new.error.metaNotFound");
             }
             else {
-                dataValueMap.forEach((platform, dataValues) -> {
-                    if (dataValues.size() == 1) { // 1 = only dep was found = useless
-                        throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.metaNotFound");
+                fileDataMap.forEach((platform, fileData) -> {
+                    if (fileData.getVersion() == null && fileData.getName() == null && fileData.getPluginDependencies().isEmpty()) {
+                        throw new HangarApiException("version.new.error.metaNotFound");
                     }
                 });
-                PluginFileWithData fileData = new PluginFileWithData(file, new PluginFileData(dataValueMap), userId);
+                PluginFileWithData fileData = new PluginFileWithData(file, new PluginFileData(fileDataMap), userId);
                 fileData.getData().validate();
                 return fileData;
             }
@@ -81,7 +82,7 @@ public class PluginDataService {
                 }
             }
 
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.jarNotFound");
+            throw new HangarApiException("version.new.error.jarNotFound");
         }
     }
 }

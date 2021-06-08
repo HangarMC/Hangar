@@ -1,9 +1,11 @@
 package io.papermc.hangar.service.internal.versions.plugindata;
 
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.service.internal.versions.plugindata.handler.PaperPluginFileHandler;
-import io.papermc.hangar.service.internal.versions.plugindata.handler.VelocityFileHandler;
-import io.papermc.hangar.service.internal.versions.plugindata.handler.WaterfallPluginFileHandler;
+import io.papermc.hangar.model.api.project.version.PluginDependency;
+import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.service.internal.versions.plugindata.handler.PaperFileTypeHandler;
+import io.papermc.hangar.service.internal.versions.plugindata.handler.VelocityFileTypeHandler;
+import io.papermc.hangar.service.internal.versions.plugindata.handler.WaterfallFileTypeHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +14,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {PluginDataService.class, PaperPluginFileHandler.class, VelocityFileHandler.class, WaterfallPluginFileHandler.class})
+@ContextConfiguration(classes = {PluginDataService.class, PaperFileTypeHandler.class, WaterfallFileTypeHandler.class, VelocityFileTypeHandler.class})
 class PluginDataServiceTest {
 
     private static final Path path = Path.of("src/test/resources/io/papermc/hangar/service/internal/versions/plugindata");
@@ -26,50 +31,51 @@ class PluginDataServiceTest {
     private PluginDataService classUnderTest;
 
     @Test
-    void test_paper_happyDay() throws Exception {
+    void testLoadPaperPluginMetadata() throws Exception {
         PluginFileData data = classUnderTest.loadMeta(path.resolve("Paper.jar"), -1).getData();
         data.validate();
         assertEquals("Maintenance", data.getName());
         assertEquals("Enable maintenance mode with a custom maintenance motd and icon.", data.getDescription());
         assertEquals("3.0.5", data.getVersion());
-        assertEquals("https://www.spigotmc.org/resources/maintenance.40699/", data.getWebsite());
-        assertEquals(List.of("KennyTV"), data.getAuthors());
-//        assertEquals(4, data.getDependencies().size());
-//        assertEquals("ProtocolLib", data.getDependencies().get(0).getPluginId());
-//        assertEquals("ServerListPlus", data.getDependencies().get(1).getPluginId());
-//        assertEquals("ProtocolSupport", data.getDependencies().get(2).getPluginId());
-//        assertEquals("paperapi", data.getDependencies().get(3).getPluginId());
-//        assertEquals("1.13", data.getDependencies().get(3).getVersion());
+        assertIterableEquals(List.of("KennyTV"), data.getAuthors().get(Platform.PAPER));
+
+        Set<PluginDependency> deps = data.getDependencies().get(Platform.PAPER);
+        assertThat(deps).hasSize(3);
+        assertThat(deps).extracting(PluginDependency::getName).containsExactlyInAnyOrder("ProtocolLib", "ServerListPlus", "ProtocolSupport");
+        assertThat(deps).extracting(PluginDependency::isRequired).containsOnly(false);
+
+        assertIterableEquals(Set.of("1.13"), data.getPlatformDependencies().get(Platform.PAPER));
     }
 
     @Test
-    void test_waterfall_happyDay() throws Exception {
+    void testLoadWaterfallPluginMetadata() throws Exception {
         PluginFileData data = classUnderTest.loadMeta(path.resolve("Waterfall.jar"), -1).getData();
 
         data.validate();
         assertEquals("Maintenance", data.getName());
         assertEquals("Enable maintenance mode with a custom maintenance motd and icon.", data.getDescription());
         assertEquals("3.0.5", data.getVersion());
-        assertEquals("https://www.spigotmc.org/resources/maintenance.40699/", data.getWebsite());
-        assertEquals(List.of("KennyTV"), data.getAuthors());
-//        assertEquals(1, data.getDependencies().size());
-//        assertEquals("waterfall", data.getDependencies().get(0).getPluginId());
+        assertIterableEquals(List.of("KennyTV"), data.getAuthors().get(Platform.WATERFALL));
+
+        Set<PluginDependency> deps = data.getDependencies().get(Platform.WATERFALL);
+        assertThat(deps).hasSize(2);
+        assertThat(deps).anyMatch(pd -> pd.getName().equals("ServerListPlus") && !pd.isRequired());
+        assertThat(deps).anyMatch(pd -> pd.getName().equals("SomePlugin") && pd.isRequired());
     }
 
     @Test
-    void test_velocity_happyDay() throws Exception {
+    void testLoadVelocityPluginMetadata() throws Exception {
         PluginFileData data = classUnderTest.loadMeta(path.resolve("Velocity.jar"), -1).getData();
 
         data.validate();
         assertEquals("Maintenance", data.getName());
         assertEquals("Enable maintenance mode with a custom maintenance motd and icon.", data.getDescription());
         assertEquals("3.0.5", data.getVersion());
-        assertEquals("https://forums.velocitypowered.com/t/maintenance/129", data.getWebsite());
-        assertEquals(List.of("KennyTV"), data.getAuthors());
-//        assertEquals(2, data.getDependencies().size());
-//        assertEquals("serverlistplus", data.getDependencies().get(0).getPluginId());
-//        assertEquals(false, data.getDependencies().get(0).isRequired());
-//        assertEquals("velocity", data.getDependencies().get(1).getPluginId());
+        assertIterableEquals(List.of("KennyTV"), data.getAuthors().get(Platform.VELOCITY));
+
+        Set<PluginDependency> deps = data.getDependencies().get(Platform.VELOCITY);
+        assertThat(deps).hasSize(1);
+        assertThat(deps).anyMatch(pd -> pd.getName().equals("serverlistplus") && !pd.isRequired());
     }
 
     @Test
@@ -99,21 +105,21 @@ class PluginDataServiceTest {
     }
 
     @Test
-    void test_zip_happyDay() throws Exception {
+    void testLoadPaperPluginZipMetadata() throws Exception {
         PluginFileData data = classUnderTest.loadMeta(path.resolve("TestZip.zip"), -1).getData();
 
         data.validate();
         assertEquals("Maintenance", data.getName());
         assertEquals("Enable maintenance mode with a custom maintenance motd and icon.", data.getDescription());
         assertEquals("3.0.5", data.getVersion());
-        assertEquals("https://www.spigotmc.org/resources/maintenance.40699/", data.getWebsite());
-        assertEquals(List.of("KennyTV"), data.getAuthors());
-//        assertEquals(4, data.getDependencies().size());
-//        assertEquals("ProtocolLib", data.getDependencies().get(0).getPluginId());
-//        assertEquals("ServerListPlus", data.getDependencies().get(1).getPluginId());
-//        assertEquals("ProtocolSupport", data.getDependencies().get(2).getPluginId());
-//        assertEquals("paperapi", data.getDependencies().get(3).getPluginId());
-//        assertEquals("1.13", data.getDependencies().get(3).getVersion());
+        assertIterableEquals(List.of("KennyTV"), data.getAuthors().get(Platform.PAPER));
+
+        Set<PluginDependency> deps = data.getDependencies().get(Platform.PAPER);
+        assertThat(deps).hasSize(3);
+        assertThat(deps).extracting(PluginDependency::getName).containsExactlyInAnyOrder("ProtocolLib", "ServerListPlus", "ProtocolSupport");
+        assertThat(deps).extracting(PluginDependency::isRequired).containsOnly(false);
+
+        assertIterableEquals(Set.of("1.13"), data.getPlatformDependencies().get(Platform.PAPER));
     }
 
     @Test

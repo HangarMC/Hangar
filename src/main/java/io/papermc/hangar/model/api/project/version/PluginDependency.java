@@ -4,6 +4,7 @@ import io.papermc.hangar.controller.validations.AtLeastOneNotNull;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.api.project.ProjectNamespace;
 import org.jdbi.v3.core.mapper.Nested;
+import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotBlank;
@@ -18,11 +19,19 @@ public class PluginDependency implements Named {
     private final ProjectNamespace namespace;
     private final String externalUrl;
 
+    @JdbiConstructor
     public PluginDependency(String name, boolean required, @Nested("pn") @Nullable ProjectNamespace namespace, String externalUrl) {
         this.name = name;
         this.required = required;
         this.namespace = namespace;
         this.externalUrl = externalUrl;
+    }
+
+    private PluginDependency(String name, boolean required) {
+        this.name = name;
+        this.required = required;
+        this.namespace = null;
+        this.externalUrl = null;
     }
 
     @Override
@@ -64,5 +73,9 @@ public class PluginDependency implements Named {
     @Override
     public int hashCode() {
         return Objects.hash(name, required, namespace, externalUrl);
+    }
+
+    public static PluginDependency of(String name, boolean required) {
+        return new PluginDependency(name, required);
     }
 }
