@@ -4,7 +4,6 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
-import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionDependenciesDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionPlatformDependenciesDAO;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
@@ -46,9 +45,8 @@ public class VersionDependencyService extends HangarComponent {
     private final PlatformVersionDAO platformVersionDAO;
     private final ChannelService channelService;
     private final VersionTagService versionTagService;
-    private final ProjectVersionsDAO projectVersionsDAO;
 
-    public VersionDependencyService(HangarDao<ProjectVersionDependenciesDAO> projectVersionDependencyDAO, HangarDao<VersionsApiDAO> versionsApiDAO, HangarDao<ProjectsDAO> projectsDAO, HangarDao<ProjectVersionPlatformDependenciesDAO> projectVersionPlatformDependencyDAO, HangarDao<PlatformVersionDAO> platformVersionDAO, ChannelService channelService, VersionTagService versionTagService, HangarDao<ProjectVersionsDAO> projectVersionsDAO) {
+    public VersionDependencyService(HangarDao<ProjectVersionDependenciesDAO> projectVersionDependencyDAO, HangarDao<VersionsApiDAO> versionsApiDAO, HangarDao<ProjectsDAO> projectsDAO, HangarDao<ProjectVersionPlatformDependenciesDAO> projectVersionPlatformDependencyDAO, HangarDao<PlatformVersionDAO> platformVersionDAO, ChannelService channelService, VersionTagService versionTagService) {
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO.get();
         this.versionsApiDAO = versionsApiDAO.get();
         this.projectsDAO = projectsDAO.get();
@@ -56,7 +54,6 @@ public class VersionDependencyService extends HangarComponent {
         this.platformVersionDAO = platformVersionDAO.get();
         this.channelService = channelService;
         this.versionTagService = versionTagService;
-        this.projectVersionsDAO = projectVersionsDAO.get();
     }
 
     public List<ProjectVersionDependencyTable> getProjectVersionDependencyTables(long versionId) {

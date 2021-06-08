@@ -42,7 +42,8 @@ public abstract class FileTypeHandler<D extends FileTypeHandler.FileData> {
         private String author;
         private Set<String> authors;
 
-        private transient final MemoizingSupplier<Set<PluginDependency>> pluginDependencies = MemoizingSupplier.of(this::createPluginDependencies);
+        @SuppressWarnings("java:S2065")
+        private final transient MemoizingSupplier<Set<PluginDependency>> pluginDependencies = MemoizingSupplier.of(this::createPluginDependencies);
 
         @Nullable
         public final String getVersion() {

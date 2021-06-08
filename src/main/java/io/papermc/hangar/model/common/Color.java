@@ -29,7 +29,7 @@ public enum Color {
     GRAY("#A9A9A9"),
     TRANSPARENT("transparent");
 
-    private static List<Color> CHANNEL_COLORS = null;
+    private static final List<Color> CHANNEL_COLORS = Arrays.stream(values()).filter(c -> c.ordinal() <= 15).collect(Collectors.toList());
 
     private final String hex;
 
@@ -53,9 +53,6 @@ public enum Color {
     }
 
     public static List<Color> getNonTransparentValues() {
-        if (CHANNEL_COLORS == null) {
-            CHANNEL_COLORS = Arrays.stream(VALUES).filter(c -> c.ordinal() <= 15).collect(Collectors.toList());
-        }
         return CHANNEL_COLORS;
     }
 

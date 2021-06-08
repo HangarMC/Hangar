@@ -74,7 +74,9 @@ public class UsersApiService extends HangarComponent {
     }
 
     @CacheEvict(value = CacheConfig.AUTHORS_CACHE,  allEntries = true)
-    public void clearAuthorsCache() {}
+    public void clearAuthorsCache() {
+        // Clears a cache
+    }
 
     @Cacheable(CacheConfig.AUTHORS_CACHE)
     public PaginatedResult<User> getAuthors(RequestPagination pagination) {
@@ -84,7 +86,9 @@ public class UsersApiService extends HangarComponent {
     }
 
     @CacheEvict(value = CacheConfig.STAFF_CACHE,  allEntries = true)
-    public void clearStaffCache() {}
+    public void clearStaffCache() {
+        // Clears a cache
+    }
 
     @Cacheable(CacheConfig.STAFF_CACHE)
     public PaginatedResult<User> getStaff(RequestPagination pagination) {

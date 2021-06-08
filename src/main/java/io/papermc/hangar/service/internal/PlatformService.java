@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +29,6 @@ public class PlatformService extends HangarComponent {
 
     @Transactional
     public void updatePlatformVersions(Map<Platform, List<String>> platformVersions) {
-        final Map<Platform, Map<String, PlatformVersionTable>> toBeRemovedMap = new EnumMap<>(Platform.class);
-        final Map<Platform, Map<String, PlatformVersionTable>> toBeAddedMap = new EnumMap<>(Platform.class);
         platformVersions.forEach((platform, versions) -> {
             Map<String, PlatformVersionTable> platformVersionTables = platformVersionDAO.getForPlatform(platform);
             final Map<String, PlatformVersionTable> toBeRemoved = new HashMap<>();
@@ -48,8 +45,6 @@ public class PlatformService extends HangarComponent {
             });
             platformVersionDAO.deleteAll(toBeRemoved.values());
             platformVersionDAO.insertAll(toBeAdded.values());
-            toBeRemovedMap.put(platform, toBeRemoved);
-            toBeAddedMap.put(platform, toBeAdded);
         });
         // TODO user action logging
     }

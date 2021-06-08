@@ -52,7 +52,7 @@ export default class Dropdown extends Vue {
     @Prop({ type: Array as PropType<Control[]>, required: true })
     controls!: Control[];
 
-    isRouterLink(control: Control): Boolean {
+    isRouterLink(control: Control): boolean {
         return !!control.link && control.link.startsWith('/');
     }
 }

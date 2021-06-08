@@ -293,7 +293,7 @@ public class VersionFactory extends HangarComponent {
             logger.error("Unable to create version {} for {}", pendingVersion.getVersionString(), getHangarPrincipal().getName(), e);
             projectVersionsDAO.delete(projectVersionTable);
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.fileIOError");
-        } catch (Throwable throwable) {
+        } catch (Exception throwable) {
             logger.error("Unable to create version {} for {}", pendingVersion.getVersionString(), getHangarPrincipal().getName(), throwable);
             if (projectVersionTable != null) {
                 projectVersionsDAO.delete(projectVersionTable);

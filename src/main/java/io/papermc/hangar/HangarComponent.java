@@ -37,24 +37,24 @@ public abstract class HangarComponent {
     protected UserActionLogService actionLogger;
 
     protected final Optional<HangarPrincipal> getOptionalHangarPrincipal() {
-        return _getHangarPrincipal().get();
+        return getHangarPrincipal0().get();
     }
 
     @NotNull
     protected final Permission getGlobalPermissions() {
-        return _getHangarPrincipal().get().map(HangarPrincipal::getGlobalPermissions).orElse(PermissionService.DEFAULT_SIGNED_OUT_PERMISSIONS);
+        return getHangarPrincipal0().get().map(HangarPrincipal::getGlobalPermissions).orElse(PermissionService.DEFAULT_SIGNED_OUT_PERMISSIONS);
     }
 
     protected final HangarPrincipal getHangarPrincipal() {
-        return _getHangarPrincipal().get().orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authentication principal found"));
+        return getHangarPrincipal0().get().orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authentication principal found"));
     }
 
     @Nullable
     protected final Long getHangarUserId() {
-        return _getHangarPrincipal().get().map(HangarPrincipal::getId).orElse(null);
+        return getHangarPrincipal0().get().map(HangarPrincipal::getId).orElse(null);
     }
 
-    private MemoizingSupplier<Optional<HangarPrincipal>> _getHangarPrincipal() {
+    private MemoizingSupplier<Optional<HangarPrincipal>> getHangarPrincipal0() {
         return MemoizingSupplier.of(() -> Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .filter(HangarAuthenticationToken.class::isInstance)
                 .map(HangarAuthenticationToken.class::cast)

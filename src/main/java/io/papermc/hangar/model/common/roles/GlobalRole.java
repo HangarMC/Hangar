@@ -105,7 +105,7 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
 
     @NotNull
     @Override
-    public GlobalRoleTable create(@Nullable Long __ignoreThis, long userId, boolean __ignoreThisToo) {
+    public GlobalRoleTable create(@Nullable Long ignored, long userId, boolean ignoredToo) {
         return new GlobalRoleTable(userId, this);
     }
 }

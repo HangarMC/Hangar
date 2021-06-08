@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.LongFunction;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,13 +38,13 @@ public class ChannelService extends HangarComponent {
         checkColor(projectId, color, existingColor, projectChannelsDAO::getProjectChannels);
     }
 
-    private void checkName(long projectId, String name, @Nullable String existingName, Function<Long, List<ProjectChannelTable>> channelTableFunction) {
+    private void checkName(long projectId, String name, @Nullable String existingName, LongFunction<List<ProjectChannelTable>> channelTableFunction) {
         if (channelTableFunction.apply(projectId).stream().filter(ch -> !ch.getName().equals(existingName)).anyMatch(ch -> ch.getName().equalsIgnoreCase(name))) {
             throw new HangarApiException(HttpStatus.CONFLICT, "channel.modal.error.duplicateName");
         }
     }
 
-    private void checkColor(long projectId, Color color, @Nullable Color existingColor, Function<Long, List<ProjectChannelTable>> channelTableFunction) {
+    private void checkColor(long projectId, Color color, @Nullable Color existingColor, LongFunction<List<ProjectChannelTable>> channelTableFunction) {
         if (channelTableFunction.apply(projectId).stream().filter(ch -> ch.getColor() != existingColor).anyMatch(ch -> ch.getColor() == color)) {
             throw new HangarApiException(HttpStatus.CONFLICT, "channel.modal.error.duplicateColor");
         }
@@ -59,8 +59,8 @@ public class ChannelService extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.maxChannels", config.projects.getMaxChannels());
         }
 
-        checkName(projectId, name, null, (ignored) -> existingChannels);
-        checkColor(projectId, color, null, (ignored) -> existingChannels);
+        checkName(projectId, name, null, ignored -> existingChannels);
+        checkColor(projectId, color, null, ignored -> existingChannels);
     }
 
     @Transactional

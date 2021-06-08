@@ -58,8 +58,6 @@ public enum Platform {
         SERVER("Server Plugins", "Server"),
         PROXY("Proxy Plugins", "Proxy");
 
-        public static Category[] VALUES = values();
-
         private final String name;
         private final String tagName;
         private Set<Platform> platforms;

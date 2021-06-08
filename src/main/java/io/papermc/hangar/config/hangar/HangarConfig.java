@@ -201,9 +201,4 @@ public class HangarConfig {
         this.licenses = licenses;
     }
 
-    @Deprecated(forRemoval = true)
-    public boolean isValidProjectName(String name) {
-        String sanitized = StringUtils.compact(name);
-        return sanitized.length() >= 1 && sanitized.length() <= projects.getMaxNameLen() && projects.getNameMatcher().test(name);
-    }
 }

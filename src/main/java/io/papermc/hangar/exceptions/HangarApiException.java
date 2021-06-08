@@ -91,4 +91,16 @@ public class HangarApiException extends ResponseStatusException {
             gen.writeEndObject();
         }
     }
+
+    public static HangarApiException notFound() {
+        return new HangarApiException(HttpStatus.NOT_FOUND);
+    }
+
+    public static HangarApiException forbidden() {
+        return new HangarApiException(HttpStatus.FORBIDDEN);
+    }
+
+    public static HangarApiException unauthorized(String msg) {
+        return new HangarApiException(HttpStatus.UNAUTHORIZED, msg);
+    }
 }

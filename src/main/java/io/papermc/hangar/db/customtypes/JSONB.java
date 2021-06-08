@@ -9,23 +9,25 @@ import org.postgresql.util.PGobject;
 
 public class JSONB extends PGobject {
 
+    private static final String TYPE_STRING = "jsonb";
+
     private transient JsonNode json;
 
     public JSONB(String value) {
-        setType("jsonb");
+        setType(TYPE_STRING);
         this.value = value;
         parseJson();
     }
 
     @JsonCreator
     public JSONB(JsonNode json) {
-        setType("jsonb");
+        setType(TYPE_STRING);
         this.value = json.toString();
         this.json = json;
     }
 
     public JSONB() {
-        setType("jsonb");
+        setType(TYPE_STRING);
     }
 
     @JsonValue

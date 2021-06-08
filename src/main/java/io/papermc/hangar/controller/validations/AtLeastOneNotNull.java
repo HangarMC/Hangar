@@ -7,6 +7,7 @@ import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.Payload;
+import java.beans.PropertyDescriptor;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -40,9 +41,12 @@ public @interface AtLeastOneNotNull {
 
             try {
                 for (String fieldName : fieldNames) {
-                    Object property = BeanUtils.getPropertyDescriptor(value.getClass(), fieldName).getReadMethod().invoke(value);
-                    if (property != null) {
-                        return true;
+                    PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(value.getClass(), fieldName);
+                    if (propertyDescriptor != null) {
+                        Object property = propertyDescriptor.getReadMethod().invoke(value);
+                        if (property != null) {
+                            return true;
+                        }
                     }
                 }
                 return false;

@@ -41,8 +41,8 @@ public class PermissionRequiredVoter extends HangarDecisionVoter<PermissionRequi
                 throw new IllegalStateException("Bad annotation configuration");
             }
             Permission requiredPerm = Arrays.stream(attribute.getPermissions()).map(NamedPermission::getPermission).reduce(Permission::add).orElse(Permission.None);
-            logger.debug("Possible permissions: " + hangarAuthenticationToken.getPrincipal().getPossiblePermissions());
-            logger.debug("Required permissions: " + requiredPerm);
+            logger.debug("Possible permissions: {}", hangarAuthenticationToken.getPrincipal().getPossiblePermissions());
+            logger.debug("Required permissions: {}", requiredPerm);
             Permission currentPerm;
             switch (attribute.getPermissionType()) {
                 case PROJECT:
@@ -74,11 +74,16 @@ public class PermissionRequiredVoter extends HangarDecisionVoter<PermissionRequi
                 default:
                     currentPerm = Permission.None;
             }
-            logger.debug("Current permissions: " + currentPerm);
+            logger.debug("Current permissions: {}", currentPerm);
             if (hangarAuthenticationToken.getPrincipal().isAllowed(requiredPerm, currentPerm)) {
                 return ACCESS_GRANTED;
             }
         }
         throw new HangarApiException(HttpStatus.NOT_FOUND);
+    }
+
+    @Override
+    public void onAccessDenied() {
+        throw HangarApiException.notFound();
     }
 }

@@ -56,7 +56,7 @@ public class DownloadService extends HangarComponent {
     public String createConfirmationToken(String author, String slug, String versionString, Platform platform) {
         ProjectVersionTable pvt = projectVersionsDAO.getProjectVersionTable(author, slug, versionString, platform);
         InetAddress remoteInetAddress = RequestUtil.getRemoteInetAddress(request);
-        // check for exisiting token
+        // check for existing token
         ProjectVersionDownloadWarningTable warning = projectVersionDownloadWarningsDAO.findWarning(remoteInetAddress, pvt.getId());
         if (warning != null) {
             if (warning.isConfirmed()) {

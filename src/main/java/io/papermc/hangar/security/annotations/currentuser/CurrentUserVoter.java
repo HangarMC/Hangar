@@ -8,7 +8,6 @@ import io.papermc.hangar.security.annotations.currentuser.CurrentUserMetadataExt
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
 import org.aopalliance.intercept.MethodInvocation;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +21,7 @@ public class CurrentUserVoter extends HangarDecisionVoter<CurrentUserAttribute> 
     @Override
     public int vote(Authentication authentication, MethodInvocation methodInvocation, @NotNull CurrentUserAttribute attribute) {
         if (!(authentication instanceof HangarAuthenticationToken)) {
-            throw new HangarApiException(HttpStatus.FORBIDDEN);
+            return ACCESS_DENIED;
         }
         HangarAuthenticationToken hangarAuthenticationToken = (HangarAuthenticationToken) authentication;
         if (hangarAuthenticationToken.getPrincipal().isAllowedGlobal(Permission.EditAllUserSettings)) {
@@ -38,8 +37,13 @@ public class CurrentUserVoter extends HangarDecisionVoter<CurrentUserAttribute> 
             throw new IllegalArgumentException(user + " is not supported for the CurrentUser check");
         }
         if (!hangarAuthenticationToken.getName().equals(userName)) {
-            throw new HangarApiException(HttpStatus.FORBIDDEN);
+            return ACCESS_DENIED;
         }
         return ACCESS_GRANTED;
+    }
+
+    @Override
+    public void onAccessDenied() {
+        throw HangarApiException.forbidden();
     }
 }

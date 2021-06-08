@@ -90,4 +90,6 @@ public abstract class HangarDecisionVoter<A extends ConfigAttribute> implements 
                 parameterNameDiscoverer
         );
     }
+
+    public void onAccessDenied() {}
 }

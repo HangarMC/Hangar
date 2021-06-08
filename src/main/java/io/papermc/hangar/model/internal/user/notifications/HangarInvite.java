@@ -15,7 +15,7 @@ public abstract class HangarInvite<R extends Role<? extends IRoleTable<R>>> {
     private final String name;
     private final String url;
 
-    public HangarInvite(long roleTableId, R role, String name, String url) {
+    protected HangarInvite(long roleTableId, R role, String name, String url) {
         this.role = role;
         this.roleTableId = roleTableId;
         this.name = name;

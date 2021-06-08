@@ -5,7 +5,6 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'nuxt-property-decorator';
 import * as Chartist from 'chartist';
-import { IChartistBase, IChartistData, IChartOptions } from 'chartist';
 import { PropType } from 'vue';
 
 require('chartist-plugin-legend');
@@ -19,12 +18,12 @@ export default class Chart extends Vue {
     barType!: 'Pie' | 'Bar' | 'Line' | 'Candle';
 
     @Prop({ required: true })
-    data!: IChartistData;
+    data!: Chartist.IChartistData;
 
     @Prop()
-    options!: IChartOptions;
+    options!: Chartist.IChartOptions;
 
-    chart: IChartistBase<IChartOptions> | null = null;
+    chart: Chartist.IChartistBase<Chartist.IChartOptions> | null = null;
 
     mounted() {
         this.draw();

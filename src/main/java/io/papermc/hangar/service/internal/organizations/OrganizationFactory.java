@@ -18,8 +18,6 @@ import io.papermc.hangar.model.internal.api.requests.EditMembersForm.Member;
 import io.papermc.hangar.model.internal.sso.AuthUser;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
-import io.papermc.hangar.service.internal.perms.roles.OrganizationRoleService;
-import io.papermc.hangar.service.internal.users.NotificationService;
 import io.papermc.hangar.service.internal.users.invites.OrganizationInviteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -44,22 +42,18 @@ public class OrganizationFactory extends HangarComponent {
     private final OrganizationService organizationService;
     private final OrganizationMemberService organizationMemberService;
     private final OrganizationInviteService organizationInviteService;
-    private final OrganizationRoleService organizationRoleService;
     private final GlobalRoleService globalRoleService;
-    private final NotificationService notificationService;
     private final ObjectMapper mapper;
     private final RestTemplate restTemplate;
 
     @Autowired
-    public OrganizationFactory(HangarDao<UserDAO> userDAO, HangarDao<OrganizationDAO> organizationDAO, OrganizationService organizationService, OrganizationMemberService organizationMemberService, OrganizationInviteService organizationInviteService, OrganizationRoleService organizationRoleService, GlobalRoleService globalRoleService, NotificationService notificationService, ObjectMapper mapper, RestTemplate restTemplate) {
+    public OrganizationFactory(HangarDao<UserDAO> userDAO, HangarDao<OrganizationDAO> organizationDAO, OrganizationService organizationService, OrganizationMemberService organizationMemberService, OrganizationInviteService organizationInviteService, GlobalRoleService globalRoleService, ObjectMapper mapper, RestTemplate restTemplate) {
         this.userDAO = userDAO.get();
         this.organizationDAO = organizationDAO.get();
         this.organizationService = organizationService;
         this.organizationMemberService = organizationMemberService;
         this.organizationInviteService = organizationInviteService;
-        this.organizationRoleService = organizationRoleService;
         this.globalRoleService = globalRoleService;
-        this.notificationService = notificationService;
         this.mapper = mapper;
         this.restTemplate = restTemplate;
     }
@@ -95,7 +89,7 @@ public class OrganizationFactory extends HangarComponent {
                     if (!errors.isEmpty()) {
                         throw new MultiHangarApiException(errors);
                     }
-                } catch (IOException __) {
+                } catch (IOException ignored) {
                     throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "organization.new.error.unknownError");
                 }
 

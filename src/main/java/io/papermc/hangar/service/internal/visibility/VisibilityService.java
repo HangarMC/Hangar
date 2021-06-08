@@ -83,7 +83,7 @@ abstract class VisibilityService<LC extends LogContext<?, LC>, M extends Table &
 
     protected void postUpdate(@Nullable M model) { }
 
-    abstract public Entry<String, VT> getLastVisibilityChange(long principalId);
+    public abstract Entry<String, VT> getLastVisibilityChange(long principalId);
 
     @FunctionalInterface
     interface VisibilityChangeTableConstructor<T extends VisibilityChangeTable> {

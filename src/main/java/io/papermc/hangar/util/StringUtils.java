@@ -1,13 +1,10 @@
 package io.papermc.hangar.util;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
-import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -56,17 +53,6 @@ public class StringUtils {
      */
     public static List<Integer> splitVersionNumber(String str) {
         return Arrays.stream(str.split("\\.")).map(Integer::parseInt).collect(Collectors.toList());
-    }
-
-    /**
-     * Takes a nullable input and returns itself or if blank, null
-     *
-     * @param input input string
-     * @return itself or null
-     */
-    public static String stringOrNull(@Nullable String input) {
-        if (input == null || input.isBlank()) return null;
-        return input;
     }
 
     /**

@@ -4,7 +4,6 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
-import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.exceptions.MultiHangarApiException;
@@ -17,9 +16,7 @@ import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.projects.ProjectTable;
-import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.internal.api.requests.EditMembersForm;
-import io.papermc.hangar.model.internal.api.requests.EditMembersForm.Member;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
@@ -29,14 +26,12 @@ import io.papermc.hangar.model.internal.projects.HangarProjectPage;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
-import io.papermc.hangar.service.internal.perms.roles.ProjectRoleService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
-import io.papermc.hangar.service.internal.users.NotificationService;
 import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
 import io.papermc.hangar.service.internal.versions.RecommendedVersionService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.FileUtils;
-import io.papermc.hangar.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,7 +49,6 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -62,7 +56,6 @@ import java.util.function.Function;
 public class ProjectService extends HangarComponent {
 
     private final ProjectsDAO projectsDAO;
-    private final UserDAO userDAO;
     private final HangarUsersDAO hangarUsersDAO;
     private final HangarProjectsDAO hangarProjectsDAO;
     private final ProjectVisibilityService projectVisibilityService;
@@ -71,14 +64,12 @@ public class ProjectService extends HangarComponent {
     private final ProjectFiles projectFiles;
     private final ProjectInviteService projectInviteService;
     private final ProjectMemberService projectMemberService;
-    private final ProjectRoleService projectRoleService;
     private final PermissionService permissionService;
     private final RecommendedVersionService recommendedVersionService;
 
     @Autowired
-    public ProjectService(HangarDao<ProjectsDAO> projectDAO, HangarDao<UserDAO> userDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, NotificationService notificationService, ProjectInviteService projectInviteService, ProjectMemberService projectMemberService, ProjectRoleService projectRoleService, PermissionService permissionService, RecommendedVersionService recommendedVersionService) {
+    public ProjectService(HangarDao<ProjectsDAO> projectDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, ProjectInviteService projectInviteService, ProjectMemberService projectMemberService, PermissionService permissionService, RecommendedVersionService recommendedVersionService) {
         this.projectsDAO = projectDAO.get();
-        this.userDAO = userDAO.get();
         this.hangarUsersDAO = hangarUsersDAO.get();
         this.hangarProjectsDAO = hangarProjectsDAO.get();
         this.projectVisibilityService = projectVisibilityService;
@@ -87,7 +78,6 @@ public class ProjectService extends HangarComponent {
         this.projectFiles = projectFiles;
         this.projectInviteService = projectInviteService;
         this.projectMemberService = projectMemberService;
-        this.projectRoleService = projectRoleService;
         this.permissionService = permissionService;
         this.recommendedVersionService = recommendedVersionService;
     }
@@ -144,7 +134,7 @@ public class ProjectService extends HangarComponent {
         projectTable.setIssues(settingsForm.getSettings().getIssues());
         projectTable.setSource(settingsForm.getSettings().getSource());
         projectTable.setSupport(settingsForm.getSettings().getSupport());
-        String licenseName = StringUtils.stringOrNull(settingsForm.getSettings().getLicense().getName());
+        String licenseName = org.apache.commons.lang3.StringUtils.stripToNull(settingsForm.getSettings().getLicense().getName());
         if (licenseName == null) {
             licenseName = settingsForm.getSettings().getLicense().getType();
         }
@@ -171,10 +161,10 @@ public class ProjectService extends HangarComponent {
 
     public void saveIcon(String author, String slug, MultipartFile icon) {
         ProjectTable projectTable = getProjectTable(author, slug);
-        if (icon.getContentType() == null || (!icon.getContentType().equals(MediaType.IMAGE_PNG_VALUE) && !icon.getContentType().equals(MediaType.IMAGE_JPEG_VALUE))) {
+        if (!StringUtils.equalsAny(icon.getContentType(), MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE)) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.error.invalidFile", icon.getContentType());
         }
-        if (icon.getOriginalFilename() == null || icon.getOriginalFilename().isBlank()) {
+        if (StringUtils.isBlank(icon.getOriginalFilename())) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.error.noFile");
         }
         try {
@@ -225,24 +215,6 @@ public class ProjectService extends HangarComponent {
         if (!errors.isEmpty()) {
             throw new MultiHangarApiException(errors);
         }
-    }
-
-    private void handleEditOrDelete(Member<ProjectRole> member, List<HangarApiException> errors, ProjectTable projectTable, BiConsumer<Member<ProjectRole>, ProjectRoleTable> consumer) {
-        UserTable userTable = userDAO.getUserTable(member.getName());
-        if (userTable == null) {
-            errors.add(new HangarApiException("project.settings.error.members.invalidUser", member.getName()));
-            return;
-        }
-        ProjectRoleTable projectRoleTable = projectRoleService.getRole(projectTable.getId(), userTable.getId());
-        if (projectRoleTable == null) {
-            errors.add(new HangarApiException("project.settings.error.members.notMember", member.getName()));
-            return;
-        }
-        if (projectRoleTable.getRole() == ProjectRole.PROJECT_OWNER) {
-            errors.add(new HangarApiException("project.settings.error.members.invalidRole", projectRoleTable.getRole().getTitle()));
-            return;
-        }
-        consumer.accept(member, projectRoleTable);
     }
 
     public void refreshHomeProjects() {

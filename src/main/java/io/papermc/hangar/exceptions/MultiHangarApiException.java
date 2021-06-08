@@ -13,8 +13,6 @@ import java.util.List;
 public class MultiHangarApiException extends ResponseStatusException {
 
     private final List<HangarApiException> exceptions;
-    private final boolean isMultiException = true;
-    private final boolean isHangarApiException = true;
 
     public MultiHangarApiException(List<HangarApiException> exceptions) {
         super(HttpStatus.BAD_REQUEST);
@@ -24,16 +22,6 @@ public class MultiHangarApiException extends ResponseStatusException {
     public List<HangarApiException> getExceptions() {
         return exceptions;
     }
-
-//    @JsonProperty("isMultiException")
-//    public boolean isMultiException() {
-//        return isMultiException;
-//    }
-//
-//    @JsonProperty("isHangarApiException")
-//    public boolean isHangarApiException() {
-//        return isHangarApiException;
-//    }
 
     @JsonComponent
     public static class MultiExceptionSerializer extends JsonSerializer<MultiHangarApiException> {

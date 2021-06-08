@@ -67,13 +67,14 @@ public class PluginFileData {
         return this.platformDependencies;
     }
 
+    private static final String INCOMPLETE_MSG = "version.new.error.incomplete";
     public void validate() {
         if (getName() == null) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.incomplete", "name");
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, INCOMPLETE_MSG, "name");
         } else if (getVersion() == null) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.incomplete", "version");
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, INCOMPLETE_MSG, "version");
         } else if (getPlatformDependencies().isEmpty()) {
-            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.incomplete", "platform");
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, INCOMPLETE_MSG, "platform");
         }
     }
 }

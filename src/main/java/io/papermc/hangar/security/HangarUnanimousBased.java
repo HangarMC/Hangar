@@ -1,5 +1,6 @@
 package io.papermc.hangar.security;
 
+import io.papermc.hangar.security.annotations.HangarDecisionVoter;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
@@ -31,6 +32,9 @@ public class HangarUnanimousBased extends UnanimousBased {
                     grant++;
                     break;
                 case AccessDecisionVoter.ACCESS_DENIED:
+                    if (voter instanceof HangarDecisionVoter) {
+                        ((HangarDecisionVoter) voter).onAccessDenied();
+                    }
                     throw new AccessDeniedException(this.messages.getMessage("AbstractAccessDecisionManager.accessDenied", "Access is denied"));
                 default:
                     break;

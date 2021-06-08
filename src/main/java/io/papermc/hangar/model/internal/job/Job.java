@@ -1,17 +1,14 @@
 package io.papermc.hangar.model.internal.job;
 
-import org.jdbi.v3.core.enums.EnumByName;
-import org.jdbi.v3.postgres.HStore;
+import io.papermc.hangar.db.customtypes.JobState;
+import io.papermc.hangar.model.Model;
+import io.papermc.hangar.model.db.JobTable;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import io.papermc.hangar.db.customtypes.JobState;
-import io.papermc.hangar.model.Model;
-import io.papermc.hangar.model.db.JobTable;
 
 public abstract class Job extends Model {
 
@@ -29,7 +26,7 @@ public abstract class Job extends Model {
         this(null, null, null, null, null, JobState.NOT_STARTED, type, new HashMap<>());
     }
 
-    public Job(OffsetDateTime createdAt, @Nullable OffsetDateTime lastUpdated, @Nullable OffsetDateTime retryAt, @Nullable String lastError, @Nullable String lastErrorDescriptor, JobState state, JobType jobType, Map<String, String> jobProperties) {
+    protected Job(OffsetDateTime createdAt, @Nullable OffsetDateTime lastUpdated, @Nullable OffsetDateTime retryAt, @Nullable String lastError, @Nullable String lastErrorDescriptor, JobState state, JobType jobType, Map<String, String> jobProperties) {
         super(createdAt);
         this.lastUpdated = lastUpdated;
         this.retryAt = retryAt;

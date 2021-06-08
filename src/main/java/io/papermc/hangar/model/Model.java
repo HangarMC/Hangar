@@ -7,7 +7,7 @@ public abstract class Model {
 
     protected OffsetDateTime createdAt;
 
-    public Model(OffsetDateTime createdAt) {
+    protected Model(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 

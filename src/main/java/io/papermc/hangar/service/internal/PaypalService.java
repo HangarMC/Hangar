@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.papermc.hangar.HangarComponent;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -15,15 +14,11 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.papermc.hangar.HangarComponent;
-
 @Service
 public class PaypalService extends HangarComponent {
 
-    private static final Logger logger = LoggerFactory.getLogger(PaypalService.class);
-
-    private static final String paypalCallback = "https://ipnpb.paypal.com/cgi-bin/webscr?cmd=_notify-validate&";
-    private static final String paypalSandboxCallback = "https://ipnpb.sandbox.paypal.com/cgi-bin/webscr?cmd=_notify-validate&";
+    private static final String PAYPAL_CALLBACK = "https://ipnpb.paypal.com/cgi-bin/webscr?cmd=_notify-validate&";
+    private static final String PAYPAL_SANDBOX_CALLBACK = "https://ipnpb.sandbox.paypal.com/cgi-bin/webscr?cmd=_notify-validate&";
 
     private HttpClient client;
     private boolean sandbox = true;
@@ -34,7 +29,7 @@ public class PaypalService extends HangarComponent {
 
     public void handle(String ipn) throws URISyntaxException {
         HttpRequest request = HttpRequest
-                .newBuilder(new URI((sandbox ? paypalSandboxCallback : paypalCallback) + ipn))
+                .newBuilder(new URI((sandbox ? PAYPAL_SANDBOX_CALLBACK : PAYPAL_CALLBACK) + ipn))
                 .header("User-Agent", "Hangar")
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .GET()

@@ -70,7 +70,7 @@ public class ProjectFactory extends HangarComponent {
             }
             projectPageService.createPage(projectTable.getId(), config.pages.home.getName(), StringUtils.slugify(config.pages.home.getName()), newPageContent, false, null, true);
             jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
-        } catch (Throwable exception) {
+        } catch (Exception exception) {
             if (projectTable != null) {
                 projectsDAO.delete(projectTable);
             }
@@ -134,7 +134,7 @@ public class ProjectFactory extends HangarComponent {
     }
 
     public void hardDelete(ProjectTable projectTable, String comment) {
-        actionLogger.project(LogAction.PROJECT_VISIBILITY_CHANGED.create(ProjectContext.of(projectTable.getId()), "<i>deleted</i>", projectTable.getVisibility().getTitle()));
+        actionLogger.project(LogAction.PROJECT_VISIBILITY_CHANGED.create(ProjectContext.of(projectTable.getId()), "Deleted: " + comment, projectTable.getVisibility().getTitle()));
         FileUtils.deleteDirectory(projectFiles.getProjectDir(projectTable.getOwnerName(), projectTable.getName()));
         jobService.save(new DeleteDiscourseTopicJob(projectTable.getId()));
         projectsDAO.delete(projectTable);

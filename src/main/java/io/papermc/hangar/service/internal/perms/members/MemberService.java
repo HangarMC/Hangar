@@ -135,9 +135,7 @@ public abstract class MemberService<
             }
             return true;
         });
-        for (RT rt : toBeUpdated) {
-            roleService.updateRoles(toBeUpdated);
-        }
+        roleService.updateRoles(toBeUpdated);
         if (!toBeUpdated.isEmpty()) {
             joinableNotificationService.roleChanged(toBeUpdated, joinable);
             logMemberUpdate(joinable, oldState.toString(), newState.toString());

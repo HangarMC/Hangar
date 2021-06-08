@@ -3,10 +3,8 @@ package io.papermc.hangar.controller.extras;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.util.StaticContextAccessor;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 public class ApiUtils {
 

@@ -81,17 +81,17 @@ public class MarkdownService {
     }
 
     public String render(String input, RenderSettings settings) {
-        MutableDataSet options = new MutableDataSet(this.options);
+        MutableDataSet localOptions = new MutableDataSet(this.options);
 
         if (settings.linkEscapeChars != null) {
-            options.set(WikiLinkExtension.LINK_ESCAPE_CHARS, settings.linkEscapeChars);
+            localOptions.set(WikiLinkExtension.LINK_ESCAPE_CHARS, settings.linkEscapeChars);
         }
         if (settings.linkPrefix != null) {
-            options.set(WikiLinkExtension.LINK_PREFIX, settings.linkPrefix);
+            localOptions.set(WikiLinkExtension.LINK_PREFIX, settings.linkPrefix);
         }
 
         HtmlRenderer htmlRenderer = HtmlRenderer
-                .builder(options)
+                .builder(localOptions)
                 .linkResolverFactory(new ExternalLinkResolverFactory(config))
                 .build();
 
@@ -99,8 +99,8 @@ public class MarkdownService {
     }
 
     static class RenderSettings {
-        private String linkEscapeChars;
-        private String linkPrefix;
+        private final String linkEscapeChars;
+        private final String linkPrefix;
 
         public static final RenderSettings defaultSettings = new RenderSettings(null, null);
 

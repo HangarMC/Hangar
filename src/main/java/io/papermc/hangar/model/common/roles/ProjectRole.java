@@ -29,8 +29,8 @@ public enum ProjectRole implements Role<ProjectRoleTable> {
     private final Color color;
     private final boolean isAssignable;
 
-    private final static ProjectRole[] VALUES = values();
-    private final static List<ProjectRole> ASSIGNABLE_ROLES = Arrays.stream(VALUES).filter(ProjectRole::isAssignable).collect(Collectors.toList());
+    private static final ProjectRole[] VALUES = values();
+    private static final List<ProjectRole> ASSIGNABLE_ROLES = Arrays.stream(VALUES).filter(ProjectRole::isAssignable).collect(Collectors.toList());
 
     public static ProjectRole[] getValues() {
         return VALUES;

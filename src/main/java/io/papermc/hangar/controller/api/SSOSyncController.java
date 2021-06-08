@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller.api;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.config.hangar.SSOConfig;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.internal.sso.SsoSyncData;
@@ -30,9 +31,7 @@ import java.util.Map;
 @Controller
 @Api(tags = "Sessions (Authentication)", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 @RequestMapping(path = "/api", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, method = RequestMethod.POST)
-public class SSOSyncController {
-
-    private static final Logger log = LoggerFactory.getLogger(SSOSyncController.class);
+public class SSOSyncController extends HangarComponent {
 
     private final SSOService ssoService;
     private final UserService userService;
@@ -59,7 +58,7 @@ public class SSOSyncController {
     @PostMapping(value = "/sync_sso", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<MultiValueMap<String, String>> syncSso(@RequestParam @NotEmpty String sso, @RequestParam @NotEmpty String sig, @RequestParam("api_key") @NotEmpty String apiKey) {
         if (!apiKey.equals(ssoConfig.getApiKey())) {
-            log.warn("SSO sync failed: bad API key (" + apiKey + " provided, " + ssoConfig.getApiKey() + " expected)");
+            logger.warn("SSO sync failed: bad API key ({} provided, {} expected)", apiKey, ssoConfig.getApiKey());
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "SSO sync failed: bad API key (" + apiKey + " provided, " + ssoConfig.getApiKey() + " expected)");
         }
 
@@ -67,12 +66,12 @@ public class SSOSyncController {
             Map<String, String> map = ssoService.decode(sso, sig);
             SsoSyncData data = SsoSyncData.fromSignedPayload(map);
             userService.ssoSyncUser(data);
-            log.debug("SSO sync successful: " + map.toString());
+            logger.debug("SSO sync successful: {}", map);
             MultiValueMap<String, String> ssoResponse = new LinkedMultiValueMap<>();
             ssoResponse.set("status", "success");
             return ResponseEntity.ok(ssoResponse);
         } catch (SSOService.SignatureException e) {
-            log.warn("SSO sync failed: invalid signature (" + sig + " for data " + sso + ")");
+            logger.warn("SSO sync failed: invalid signature ({} for data {})", sig, sso);
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "SSO sync failed: invalid signature (" + sig + " for data " + sso + ")");
         }
     }

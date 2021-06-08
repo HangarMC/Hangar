@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class BBCodeConverterTest {
+class BBCodeConverterTest {
 
     private static final Path PATH = Path.of("src/test/resources/io/papermc/hangar/utils");
     private final BBCodeConverter converter = new BBCodeConverter();

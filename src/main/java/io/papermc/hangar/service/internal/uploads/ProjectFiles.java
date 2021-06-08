@@ -37,11 +37,6 @@ public class ProjectFiles {
         return getProjectDir(owner, name).resolve("versions").resolve(version).resolve(platform.name());
     }
 
-    @Deprecated(forRemoval = true)
-    public Path getVersionDir(String owner, String name, String version) {
-        return getProjectDir(owner, name).resolve("versions").resolve(version);
-    }
-
     public Path getUserDir(String user) {
         return pluginsDir.resolve(user);
     }
@@ -67,16 +62,6 @@ public class ProjectFiles {
 
     public Path getIconPath(String owner, String name) {
         return findFirstFile(getIconDir(owner, name));
-    }
-
-    @Deprecated(forRemoval = true)
-    public Path getPendingIconDir(String owner, String name) {
-        return getIconDir(owner, name).resolve("pending");
-    }
-
-    @Deprecated(forRemoval = true)
-    public Path getPendingIconPath(String owner, String name) {
-        return findFirstFile(getPendingIconDir(owner, name));
     }
 
     public Path getTempDir(String owner) {

@@ -37,11 +37,11 @@ public class PermissionService extends HangarComponent {
 
     // Project permissions
     public Permission getProjectPermissions(@Nullable Long userId, long projectId) {
-        return getPermissions(userId, (id) -> permissionsDAO.getProjectPermission(id, projectId));
+        return getPermissions(userId, id -> permissionsDAO.getProjectPermission(id, projectId));
     }
 
     public Permission getProjectPermissions(@Nullable Long userId, @NotNull String author, @NotNull String slug) {
-        return getPermissions(userId, (id) -> permissionsDAO.getProjectPermission(id, author, slug));
+        return getPermissions(userId, id -> permissionsDAO.getProjectPermission(id, author, slug));
     }
 
     public Map<UserTable, Permission> getProjectMemberPermissions(long projectId) {
@@ -50,11 +50,11 @@ public class PermissionService extends HangarComponent {
 
     // Organization permissions
     public Permission getOrganizationPermissions(@Nullable Long userId, long orgId) {
-        return getPermissions(userId, (id) -> permissionsDAO.getOrganizationPermission(id, orgId));
+        return getPermissions(userId, id -> permissionsDAO.getOrganizationPermission(id, orgId));
     }
 
     public Permission getOrganizationPermissions(@Nullable Long userId, @NotNull String orgName) {
-        return getPermissions(userId, (id) -> permissionsDAO.getOrganizationPermission(id, orgName));
+        return getPermissions(userId, id -> permissionsDAO.getOrganizationPermission(id, orgName));
     }
 
     // Possible permissions for a user

@@ -14,7 +14,7 @@ public abstract class LoggedActionTable extends Table {
     private final String newState;
     private final String oldState;
 
-    public LoggedActionTable(long userId, InetAddress address, LoggedAction<?> action) {
+    protected LoggedActionTable(long userId, InetAddress address, LoggedAction<?> action) {
         this.userId = userId;
         this.address = address;
         this.action = action.getType().getPgLoggedAction();

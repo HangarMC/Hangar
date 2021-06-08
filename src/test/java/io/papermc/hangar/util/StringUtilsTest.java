@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class StringUtilsTest {
 
     @Test
-    public void testFormatVersionNumbers() {
+    void testFormatVersionNumbers() {
         testFormatVersionNumbers("1.15-1.17", "1.15", "1.17", "1.16");
         testFormatVersionNumbers("1.15-1.17", "1.15", "1.17", "1.16");
         testFormatVersionNumbers("1.13, 1.15-1.17", "1.15", "1.17", "1.16", "1.13");

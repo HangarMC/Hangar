@@ -30,8 +30,8 @@ public enum OrganizationRole implements Role<OrganizationRoleTable> {
     private final Color color;
     private final boolean isAssignable;
 
-    private final static OrganizationRole[] VALUES = values();
-    private final static List<OrganizationRole> ASSIGNABLE_ROLES = Arrays.stream(VALUES).filter(OrganizationRole::isAssignable).collect(Collectors.toList());
+    private static final OrganizationRole[] VALUES = values();
+    private static final List<OrganizationRole> ASSIGNABLE_ROLES = Arrays.stream(VALUES).filter(OrganizationRole::isAssignable).collect(Collectors.toList());
 
     public static OrganizationRole[] getValues() { return VALUES; }
     public static List<OrganizationRole> getAssignableRoles() { return ASSIGNABLE_ROLES; }

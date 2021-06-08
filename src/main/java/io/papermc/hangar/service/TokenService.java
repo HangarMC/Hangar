@@ -57,10 +57,10 @@ public class TokenService extends HangarComponent {
     public String createTokenForUser(UserTable userTable) {
         UserRefreshToken userRefreshToken = userRefreshTokenDAO.insert(new UserRefreshToken(userTable.getId(), UUID.randomUUID(), UUID.randomUUID()));
         response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(SecurityConfig.AUTH_NAME_REFRESH_COOKIE, userRefreshToken.getToken().toString()).path("/").secure(config.security.isSecure()).maxAge(config.security.getRefreshTokenExpiry().toSeconds()).sameSite("Strict").build().toString());
-        return _newToken(userTable, userRefreshToken);
+        return newToken0(userTable);
     }
 
-    private String _newToken(UserTable userTable, UserRefreshToken userRefreshToken) {
+    private String newToken0(UserTable userTable) {
         Permission globalPermissions = permissionService.getGlobalPermissions(userTable.getId());
         return expiring(userTable, globalPermissions, null);
     }
@@ -80,7 +80,7 @@ public class TokenService extends HangarComponent {
         userRefreshToken = userRefreshTokenDAO.update(userRefreshToken);
         UserTable userTable = userService.getUserTable(userRefreshToken.getUserId());
         assert userTable != null;
-        String token = _newToken(userTable, userRefreshToken);
+        String token = newToken0(userTable);
         return new RefreshResponse(token, userRefreshToken.getToken().toString(), config.security.getRefreshTokenExpiry().toSeconds(), SecurityConfig.AUTH_NAME_REFRESH_COOKIE);
     }
 

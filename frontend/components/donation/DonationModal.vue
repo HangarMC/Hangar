@@ -110,16 +110,16 @@ export default class DonationModal extends Vue {
     show: boolean = false;
 
     @Prop({ required: true })
-    donationTarget!: String;
+    donationTarget!: string;
 
     @Prop({ required: true })
-    donationEmail!: String;
+    donationEmail!: string;
 
     @Prop({ required: true })
-    returnUrl!: String;
+    returnUrl!: string;
 
     @Prop({ required: true })
-    cancelReturnUrl!: String;
+    cancelReturnUrl!: string;
 
     @Prop({ required: true })
     oneTimeAmounts!: Array<number>;

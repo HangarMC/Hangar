@@ -19,7 +19,7 @@ public class HangarAnnotationIntrospector extends JacksonAnnotationIntrospector 
     @Override
     public final boolean _isIgnorable(Annotated a) {
         if (a.hasAnnotation(RequiresPermission.class)) {
-            logger.debug("Found " + RequiresPermission.class + " annotation on " + a.getName());
+            logger.debug("Found {} annotation on {}", RequiresPermission.class, a.getName());
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (!authentication.isAuthenticated() || !(authentication instanceof HangarAuthenticationToken)) {
                 return true;
@@ -29,7 +29,7 @@ public class HangarAnnotationIntrospector extends JacksonAnnotationIntrospector 
             if (!perms.hasAll(requiredPerms)) {
                 return true;
             }
-            logger.debug(authentication.getName() + " has required permissions: " + Arrays.toString(requiredPerms));
+            logger.debug("{} has required permissions: {}", authentication.getName(), Arrays.toString(requiredPerms));
             // TODO this doesn't seem to always work... Like it wasn't working (aka it wasn't filtering out fields that the user didn't have permission for) but all I did was add a new line here, and re-built, and it worked. So idk what's up with that.
         }
         return super._isIgnorable(a);
