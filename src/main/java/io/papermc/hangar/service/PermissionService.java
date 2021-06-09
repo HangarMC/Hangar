@@ -20,8 +20,8 @@ public class PermissionService extends HangarComponent {
 
     private final PermissionsDAO permissionsDAO;
 
-    public PermissionService(HangarDao<PermissionsDAO> permissionsDAO) {
-        this.permissionsDAO = permissionsDAO.get();
+    public PermissionService(PermissionsDAO permissionsDAO) {
+        this.permissionsDAO = permissionsDAO;
     }
 
     @NotNull
