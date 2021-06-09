@@ -23,11 +23,9 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS: false
     date-format: com.fasterxml.jackson.databind.util.StdDateFormat
 
-#logging:
-#  level:
-#    root: TRACE
 logging:
   level:
+#    root: TRACE
     io:
       papermc:
         hangar:

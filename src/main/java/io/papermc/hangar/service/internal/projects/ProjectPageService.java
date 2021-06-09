@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.projects;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectPagesDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectPagesDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -31,9 +30,9 @@ public class ProjectPageService extends HangarComponent {
     private final HangarProjectPagesDAO hangarProjectPagesDAO;
     private final JobService jobService;
 
-    public ProjectPageService(HangarDao<ProjectPagesDAO> projectPagesDAO, HangarDao<HangarProjectPagesDAO> hangarProjectPagesDAO, JobService jobService) {
-        this.projectPagesDAO = projectPagesDAO.get();
-        this.hangarProjectPagesDAO = hangarProjectPagesDAO.get();
+    public ProjectPageService(ProjectPagesDAO projectPagesDAO, HangarProjectPagesDAO hangarProjectPagesDAO, JobService jobService) {
+        this.projectPagesDAO = projectPagesDAO;
+        this.hangarProjectPagesDAO = hangarProjectPagesDAO;
         this.jobService = jobService;
     }
 

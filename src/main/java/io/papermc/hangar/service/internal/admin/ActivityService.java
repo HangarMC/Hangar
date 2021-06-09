@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.admin;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.ActivityDAO;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.admin.activity.FlagActivity;
@@ -17,8 +16,8 @@ public class ActivityService extends HangarComponent {
     private final ActivityDAO activityDAO;
 
     @Autowired
-    public ActivityService(HangarDao<ActivityDAO> activityDAO) {
-        this.activityDAO = activityDAO.get();
+    public ActivityService(ActivityDAO activityDAO) {
+        this.activityDAO = activityDAO;
     }
 
     public List<FlagActivity> getFlagActivity(UserTable userTable) {

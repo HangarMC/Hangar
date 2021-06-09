@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.versions;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.downloads.ProjectVersionDownloadWarningsDAO;
@@ -24,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
 
+import javax.servlet.http.Cookie;
 import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,7 +31,6 @@ import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.UUID;
-import javax.servlet.http.Cookie;
 
 @Service
 public class DownloadService extends HangarComponent {
@@ -44,13 +43,13 @@ public class DownloadService extends HangarComponent {
     private final ProjectVersionDownloadWarningsDAO projectVersionDownloadWarningsDAO;
 
     @Autowired
-    public DownloadService(StatService statService, ProjectFiles projectFiles, HangarDao<ProjectsDAO> projectsDAO, HangarDao<ProjectVersionsDAO> projectVersionsDAO, HangarDao<ProjectVersionUnsafeDownloadsDAO> projectVersionUnsafeDownloadsDAO, HangarDao<ProjectVersionDownloadWarningsDAO> projectVersionDownloadWarningsDAO) {
+    public DownloadService(StatService statService, ProjectFiles projectFiles, ProjectsDAO projectsDAO, ProjectVersionsDAO projectVersionsDAO, ProjectVersionUnsafeDownloadsDAO projectVersionUnsafeDownloadsDAO, ProjectVersionDownloadWarningsDAO projectVersionDownloadWarningsDAO) {
         this.statService = statService;
         this.projectFiles = projectFiles;
-        this.projectsDAO = projectsDAO.get();
-        this.projectVersionsDAO = projectVersionsDAO.get();
-        this.projectVersionUnsafeDownloadsDAO = projectVersionUnsafeDownloadsDAO.get();
-        this.projectVersionDownloadWarningsDAO = projectVersionDownloadWarningsDAO.get();
+        this.projectsDAO = projectsDAO;
+        this.projectVersionsDAO = projectVersionsDAO;
+        this.projectVersionUnsafeDownloadsDAO = projectVersionUnsafeDownloadsDAO;
+        this.projectVersionDownloadWarningsDAO = projectVersionDownloadWarningsDAO;
     }
 
     public String createConfirmationToken(String author, String slug, String versionString, Platform platform) {

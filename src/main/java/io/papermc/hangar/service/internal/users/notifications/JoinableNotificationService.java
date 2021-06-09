@@ -1,6 +1,5 @@
 package io.papermc.hangar.service.internal.users.notifications;
 
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.NotificationsDAO;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.common.roles.Role;
@@ -21,7 +20,7 @@ import java.util.HashSet;
 public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<? extends Role<RT>, ?>, J extends Table & Named> {
 
     @Autowired
-    private HangarDao<NotificationsDAO> notificationsDAO;
+    private NotificationsDAO notificationsDAO;
 
     protected final String msgPrefix;
 
@@ -34,7 +33,7 @@ public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<?
         for (RT rt : inviteeRoleTables) {
             notificationTables.add(new NotificationTable(rt.getUserId(), null, joinable.getId(), new String[]{ this.msgPrefix + "invite", rt.getRole().getTitle(), joinable.getName()}, NotificationType.SUCCESS));
         }
-        notificationsDAO.get().insert(notificationTables);
+        notificationsDAO.insert(notificationTables);
     }
 
     public void removedFrom(Collection<RT> removedFromRoleTables, J joinable) {
@@ -43,7 +42,7 @@ public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<?
             String msgKey = this.msgPrefix + (rt.isAccepted() ? "removed" : "inviteRescinded");
             notificationTables.add(new NotificationTable(rt.getUserId(), null, joinable.getId(), new String[] {msgKey, rt.getRole().getTitle(), joinable.getName()}, NotificationType.WARNING));
         }
-        notificationsDAO.get().insert(notificationTables);
+        notificationsDAO.insert(notificationTables);
     }
 
     public void roleChanged(Collection<RT> changedRoleTables, J joinable) {
@@ -51,7 +50,7 @@ public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<?
         for (RT rt : changedRoleTables) {
             notificationTables.add(new NotificationTable(rt.getUserId(), null, joinable.getId(), new String[] {this.msgPrefix + "roleChanged", rt.getRole().getTitle(), joinable.getName()}, NotificationType.INFO));
         }
-        notificationsDAO.get().insert(notificationTables);
+        notificationsDAO.insert(notificationTables);
     }
 
 

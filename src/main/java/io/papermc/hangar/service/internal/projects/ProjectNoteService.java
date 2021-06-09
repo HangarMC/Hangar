@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.projects;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectNotesDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectNotesDAO;
 import io.papermc.hangar.model.db.projects.ProjectNoteTable;
@@ -18,9 +17,9 @@ public class ProjectNoteService extends HangarComponent {
     private final HangarProjectNotesDAO hangarProjectNotesDAO;
 
     @Autowired
-    public ProjectNoteService(HangarDao<ProjectNotesDAO> projectNotesDAO, HangarDao<HangarProjectNotesDAO> hangarProjectNotesDAO) {
-        this.projectNotesDAO = projectNotesDAO.get();
-        this.hangarProjectNotesDAO = hangarProjectNotesDAO.get();
+    public ProjectNoteService(ProjectNotesDAO projectNotesDAO, HangarProjectNotesDAO hangarProjectNotesDAO) {
+        this.projectNotesDAO = projectNotesDAO;
+        this.hangarProjectNotesDAO = hangarProjectNotesDAO;
     }
 
     public List<HangarProjectNote> getNotes(long projectId) {

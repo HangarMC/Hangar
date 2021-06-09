@@ -1,6 +1,5 @@
 package io.papermc.hangar.service.internal.perms.roles;
 
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.roles.GlobalRolesDAO;
 import io.papermc.hangar.model.common.roles.GlobalRole;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
@@ -12,8 +11,8 @@ import java.util.stream.Collectors;
 @Service
 public class GlobalRoleService extends RoleService<GlobalRoleTable, GlobalRole, GlobalRolesDAO> {
 
-    public GlobalRoleService(HangarDao<GlobalRolesDAO> roleDao) {
-        super(roleDao.get());
+    public GlobalRoleService(GlobalRolesDAO roleDao) {
+        super(roleDao);
     }
 
     public List<GlobalRole> getGlobalRoles(long userId) {

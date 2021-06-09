@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.admin;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectFlagsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectFlagsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -24,9 +23,9 @@ public class FlagService extends HangarComponent {
     private final HangarProjectFlagsDAO hangarProjectFlagsDAO;
 
     @Autowired
-    public FlagService(HangarDao<ProjectFlagsDAO> projectFlagsDAO, HangarDao<HangarProjectFlagsDAO> hangarProjectFlagsDAO) {
-        this.projectFlagsDAO = projectFlagsDAO.get();
-        this.hangarProjectFlagsDAO = hangarProjectFlagsDAO.get();
+    public FlagService(ProjectFlagsDAO projectFlagsDAO, HangarProjectFlagsDAO hangarProjectFlagsDAO) {
+        this.projectFlagsDAO = projectFlagsDAO;
+        this.hangarProjectFlagsDAO = hangarProjectFlagsDAO;
     }
 
     public void createFlag(long projectId, FlagReason reason, String comment) {

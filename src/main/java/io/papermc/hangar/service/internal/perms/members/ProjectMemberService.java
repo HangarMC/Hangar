@@ -1,6 +1,5 @@
 package io.papermc.hangar.service.internal.perms.members;
 
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.members.ProjectMembersDAO;
 import io.papermc.hangar.db.dao.internal.table.roles.ProjectRolesDAO;
 import io.papermc.hangar.model.common.roles.ProjectRole;
@@ -30,8 +29,8 @@ public class ProjectMemberService extends MemberService<
         > {
 
     @Autowired
-    public ProjectMemberService(ProjectRoleService projectRoleService, HangarDao<ProjectMembersDAO> projectMembersDAO, ProjectNotificationService projectNotificationService) {
-        super(projectRoleService, projectMembersDAO.get(), projectNotificationService, ProjectMemberTable::new, "project.settings.error.members.", LogAction.PROJECT_MEMBER_ADDED, LogAction.PROJECT_MEMBERS_REMOVED, LogAction.PROJECT_MEMBER_ROLES_CHANGED);
+    public ProjectMemberService(ProjectRoleService projectRoleService, ProjectMembersDAO projectMembersDAO, ProjectNotificationService projectNotificationService) {
+        super(projectRoleService, projectMembersDAO, projectNotificationService, ProjectMemberTable::new, "project.settings.error.members.", LogAction.PROJECT_MEMBER_ADDED, LogAction.PROJECT_MEMBERS_REMOVED, LogAction.PROJECT_MEMBER_ROLES_CHANGED);
     }
 
     @Override

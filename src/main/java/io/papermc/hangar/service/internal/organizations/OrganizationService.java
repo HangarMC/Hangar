@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.organizations;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarOrganizationsDAO;
 import io.papermc.hangar.db.dao.internal.table.OrganizationDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
@@ -38,11 +37,11 @@ public class OrganizationService extends HangarComponent {
     private final OrganizationInviteService organizationInviteService;
 
     @Autowired
-    public OrganizationService(HangarDao<HangarOrganizationsDAO> hangarOrganizationsDAO, HangarDao<OrganizationRolesDAO> organizationRolesDAO, HangarDao<OrganizationDAO> organizationDAO, HangarDao<UserDAO> userDAO, PermissionService permissionService, OrganizationMemberService organizationMemberService, OrganizationInviteService organizationInviteService) {
-        this.hangarOrganizationsDAO = hangarOrganizationsDAO.get();
-        this.organizationRolesDAO = organizationRolesDAO.get();
-        this.organizationDAO = organizationDAO.get();
-        this.userDAO = userDAO.get();
+    public OrganizationService(HangarOrganizationsDAO hangarOrganizationsDAO, OrganizationRolesDAO organizationRolesDAO, OrganizationDAO organizationDAO, UserDAO userDAO, PermissionService permissionService, OrganizationMemberService organizationMemberService, OrganizationInviteService organizationInviteService) {
+        this.hangarOrganizationsDAO = hangarOrganizationsDAO;
+        this.organizationRolesDAO = organizationRolesDAO;
+        this.organizationDAO = organizationDAO;
+        this.userDAO = userDAO;
         this.permissionService = permissionService;
         this.organizationMemberService = organizationMemberService;
         this.organizationInviteService = organizationInviteService;

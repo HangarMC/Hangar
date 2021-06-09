@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.v1.ProjectsApiDAO;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
@@ -25,8 +24,8 @@ public class ProjectsApiService extends HangarComponent {
     private final ProjectsApiDAO projectsApiDAO;
 
     @Autowired
-    public ProjectsApiService(HangarDao<ProjectsApiDAO> projectsApiDAO) {
-        this.projectsApiDAO = projectsApiDAO.get();
+    public ProjectsApiService(ProjectsApiDAO projectsApiDAO) {
+        this.projectsApiDAO = projectsApiDAO;
     }
 
     public Project getProject(String author, String slug) {

@@ -2,7 +2,6 @@ package io.papermc.hangar.service.internal.versions;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.customtypes.JSONB;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionReviewsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.versions.HangarReviewsDAO;
@@ -41,10 +40,10 @@ public class ReviewService extends HangarComponent {
     private final NotificationService notificationService;
 
     @Autowired
-    public ReviewService(HangarDao<ProjectVersionReviewsDAO> projectVersionReviewsDAO, HangarDao<HangarReviewsDAO> hangarReviewsDAO, HangarDao<ProjectVersionsDAO> projectVersionsDAO, ProjectVersionVisibilityService projectVersionVisibilityService, NotificationService notificationService) {
-        this.projectVersionReviewsDAO = projectVersionReviewsDAO.get();
-        this.hangarReviewsDAO = hangarReviewsDAO.get();
-        this.projectVersionsDAO = projectVersionsDAO.get();
+    public ReviewService(ProjectVersionReviewsDAO projectVersionReviewsDAO, HangarReviewsDAO hangarReviewsDAO, ProjectVersionsDAO projectVersionsDAO, ProjectVersionVisibilityService projectVersionVisibilityService, NotificationService notificationService) {
+        this.projectVersionReviewsDAO = projectVersionReviewsDAO;
+        this.hangarReviewsDAO = hangarReviewsDAO;
+        this.projectVersionsDAO = projectVersionsDAO;
         this.projectVersionVisibilityService = projectVersionVisibilityService;
         this.notificationService = notificationService;
     }

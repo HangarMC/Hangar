@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.admin;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarStatsDAO;
 import io.papermc.hangar.db.dao.internal.table.stats.ProjectVersionDownloadsDAO;
 import io.papermc.hangar.db.dao.internal.table.stats.ProjectViewsDAO;
@@ -34,10 +33,10 @@ public class StatService extends HangarComponent {
     private final ProjectVersionDownloadsDAO projectVersionDownloadsDAO;
 
     @Autowired
-    public StatService(HangarDao<HangarStatsDAO> hangarStatsDAO, HangarDao<ProjectViewsDAO> projectViewsDAO, HangarDao<ProjectVersionDownloadsDAO> projectVersionDownloadsDAO) {
-        this.hangarStatsDAO = hangarStatsDAO.get();
-        this.projectViewsDAO = projectViewsDAO.get();
-        this.projectVersionDownloadsDAO = projectVersionDownloadsDAO.get();
+    public StatService(HangarStatsDAO hangarStatsDAO, ProjectViewsDAO projectViewsDAO, ProjectVersionDownloadsDAO projectVersionDownloadsDAO) {
+        this.hangarStatsDAO = hangarStatsDAO;
+        this.projectViewsDAO = projectViewsDAO;
+        this.projectVersionDownloadsDAO = projectVersionDownloadsDAO;
     }
 
     public List<DayStats> getStats(LocalDate from, LocalDate to) {

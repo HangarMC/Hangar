@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.versions;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionDependenciesDAO;
@@ -24,6 +23,7 @@ import io.papermc.hangar.model.internal.api.requests.versions.UpdatePluginDepend
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.service.internal.projects.ChannelService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,12 +46,13 @@ public class VersionDependencyService extends HangarComponent {
     private final ChannelService channelService;
     private final VersionTagService versionTagService;
 
-    public VersionDependencyService(HangarDao<ProjectVersionDependenciesDAO> projectVersionDependencyDAO, HangarDao<VersionsApiDAO> versionsApiDAO, HangarDao<ProjectsDAO> projectsDAO, HangarDao<ProjectVersionPlatformDependenciesDAO> projectVersionPlatformDependencyDAO, HangarDao<PlatformVersionDAO> platformVersionDAO, ChannelService channelService, VersionTagService versionTagService) {
-        this.projectVersionDependenciesDAO = projectVersionDependencyDAO.get();
-        this.versionsApiDAO = versionsApiDAO.get();
-        this.projectsDAO = projectsDAO.get();
-        this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO.get();
-        this.platformVersionDAO = platformVersionDAO.get();
+    @Autowired
+    public VersionDependencyService(ProjectVersionDependenciesDAO projectVersionDependencyDAO, VersionsApiDAO versionsApiDAO, ProjectsDAO projectsDAO, ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, PlatformVersionDAO platformVersionDAO, ChannelService channelService, VersionTagService versionTagService) {
+        this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
+        this.versionsApiDAO = versionsApiDAO;
+        this.projectsDAO = projectsDAO;
+        this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
+        this.platformVersionDAO = platformVersionDAO;
         this.channelService = channelService;
         this.versionTagService = versionTagService;
     }

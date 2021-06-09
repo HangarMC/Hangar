@@ -3,7 +3,6 @@ package io.papermc.hangar.service.internal.auth;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.auth.UserSignOnDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.auth.UserSignOnTable;
@@ -40,10 +39,10 @@ public class SSOService {
     private final Cache<String, String> returnUrls;
 
     @Autowired
-    public SSOService(HangarConfig hangarConfig, HangarDao<UserSignOnDAO> userSignOnDAO) {
+    public SSOService(HangarConfig hangarConfig, UserSignOnDAO userSignOnDAO) {
         this.hangarConfig = hangarConfig;
         this.returnUrls = Caffeine.newBuilder().expireAfterWrite(hangarConfig.sso.getReset()).build();
-        this.userSignOnDAO = userSignOnDAO.get();
+        this.userSignOnDAO = userSignOnDAO;
     }
 
     private boolean isNonceValid(String nonce) {

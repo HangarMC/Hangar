@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.perms.members;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.members.MembersDAO;
 import io.papermc.hangar.db.dao.internal.table.roles.IRolesDAO;
@@ -39,7 +38,7 @@ public abstract class MemberService<
         > extends HangarComponent {
 
     @Autowired
-    private HangarDao<UserDAO> userDAO;
+    private UserDAO userDAO;
 
     private final S roleService;
     private final MD membersDao;
@@ -73,7 +72,7 @@ public abstract class MemberService<
         }
         RT roleTable = roleService.addRole(newRoleTable);
         membersDao.insert(constructor.create(roleTable.getUserId(), roleTable.getPrincipalId()));
-        UserTable userTable = userDAO.get().getUserTable(roleTable.getUserId());
+        UserTable userTable = userDAO.getUserTable(roleTable.getUserId());
         roleTable.logAction(actionLogger, memberAddedAction, userTable.getName() + " joined due to creation", "");
         return roleTable;
     }
@@ -155,7 +154,7 @@ public abstract class MemberService<
     private void handleEditOrRemoval(List<HangarApiException> errors, List<RT> toBeChanged, List<Member<R>> members, long principalId, AdditionalValidation<R, RT> consumer) {
         for (int i = 0; i < members.size(); i++) {
             Member<R> member = members.get(i);
-            UserTable userTable = userDAO.get().getUserTable(member.getName());
+            UserTable userTable = userDAO.getUserTable(member.getName());
             if (userTable == null) {
                 errors.add(new HangarApiException(this.errorPrefix + "invalidUser", member.getName()));
                 continue;

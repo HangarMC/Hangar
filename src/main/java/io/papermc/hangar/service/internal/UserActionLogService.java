@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.LoggedActionsDAO;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
@@ -28,8 +27,8 @@ public class UserActionLogService extends HangarComponent {
     private final LoggedActionsDAO loggedActionsDAO;
 
     @Autowired
-    public UserActionLogService(HangarDao<LoggedActionsDAO> loggedActionsDAO) {
-        this.loggedActionsDAO = loggedActionsDAO.get();
+    public UserActionLogService(LoggedActionsDAO loggedActionsDAO) {
+        this.loggedActionsDAO = loggedActionsDAO;
     }
 
     public void project(LoggedAction<ProjectContext> action) {

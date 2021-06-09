@@ -1,6 +1,5 @@
 package io.papermc.hangar.service.internal.visibility;
 
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.VisibilityDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
@@ -26,11 +25,11 @@ public class ProjectVisibilityService extends VisibilityService<ProjectContext, 
     private final JobService jobService;
 
     @Autowired
-    public ProjectVisibilityService(HangarDao<VisibilityDAO> visibilityDAO, HangarDao<ProjectsDAO> projectsDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, JobService jobService, UserActionLogService userActionLogService) {
+    public ProjectVisibilityService(VisibilityDAO visibilityDAO, ProjectsDAO projectsDAO, HangarProjectsDAO hangarProjectsDAO, JobService jobService, UserActionLogService userActionLogService) {
         super(ProjectVisibilityChangeTable::new, LogAction.PROJECT_VISIBILITY_CHANGED);
-        this.projectsDAO = projectsDAO.get();
-        this.visibilityDAO = visibilityDAO.get();
-        this.hangarProjectsDAO = hangarProjectsDAO.get();
+        this.projectsDAO = projectsDAO;
+        this.visibilityDAO = visibilityDAO;
+        this.hangarProjectsDAO = hangarProjectsDAO;
         this.jobService = jobService;
     }
 

@@ -1,7 +1,6 @@
 package io.papermc.hangar.service;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.PermissionsDAO;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
@@ -20,8 +19,8 @@ public class PermissionService extends HangarComponent {
 
     private final PermissionsDAO permissionsDAO;
 
-    public PermissionService(HangarDao<PermissionsDAO> permissionsDAO) {
-        this.permissionsDAO = permissionsDAO.get();
+    public PermissionService(PermissionsDAO permissionsDAO) {
+        this.permissionsDAO = permissionsDAO;
     }
 
     @NotNull

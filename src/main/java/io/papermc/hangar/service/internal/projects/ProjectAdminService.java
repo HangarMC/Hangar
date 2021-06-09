@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.projects;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsAdminDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -23,9 +22,9 @@ public class ProjectAdminService extends HangarComponent {
     private final ProjectVisibilityService projectVisibilityService;
 
     @Autowired
-    public ProjectAdminService(HangarDao<ProjectsDAO> projectsDAO, HangarDao<HangarProjectsAdminDAO> hangarProjectsAdminDAO, ProjectVisibilityService projectVisibilityService) {
-        this.projectsDAO = projectsDAO.get();
-        this.hangarProjectsAdminDAO = hangarProjectsAdminDAO.get();
+    public ProjectAdminService(ProjectsDAO projectsDAO, HangarProjectsAdminDAO hangarProjectsAdminDAO, ProjectVisibilityService projectVisibilityService) {
+        this.projectsDAO = projectsDAO;
+        this.hangarProjectsAdminDAO = hangarProjectsAdminDAO;
         this.projectVisibilityService = projectVisibilityService;
     }
 

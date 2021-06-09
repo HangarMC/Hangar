@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.v1.VersionsApiDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.PaginatedResult;
@@ -31,8 +30,8 @@ public class VersionsApiService extends HangarComponent {
     private final VersionDependencyService versionDependencyService;
 
     @Autowired
-    public VersionsApiService(HangarDao<VersionsApiDAO> versionsApiDAO, VersionService versionService, VersionDependencyService versionDependencyService) {
-        this.versionsApiDAO = versionsApiDAO.get();
+    public VersionsApiService(VersionsApiDAO versionsApiDAO, VersionService versionService, VersionDependencyService versionDependencyService) {
+        this.versionsApiDAO = versionsApiDAO;
         this.versionService = versionService;
         this.versionDependencyService = versionDependencyService;
     }

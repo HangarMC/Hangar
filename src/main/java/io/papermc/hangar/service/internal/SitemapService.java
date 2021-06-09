@@ -4,7 +4,6 @@ import cz.jiripinkas.jsitemapgenerator.ChangeFreq;
 import cz.jiripinkas.jsitemapgenerator.WebPage;
 import cz.jiripinkas.jsitemapgenerator.generator.SitemapGenerator;
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectPagesDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
@@ -28,11 +27,11 @@ public class SitemapService extends HangarComponent {
     private final ProjectVersionsDAO projectVersionsDAO;
     private final HangarProjectPagesDAO hangarProjectPagesDAO;
 
-    public SitemapService(HangarDao<UserDAO> userDAO, HangarDao<ProjectsDAO> projectsDAO, HangarDao<ProjectVersionsDAO> projectVersionsDAO, HangarDao<HangarProjectPagesDAO> hangarProjectPagesDAO) {
-        this.userDAO = userDAO.get();
-        this.projectsDAO = projectsDAO.get();
-        this.projectVersionsDAO = projectVersionsDAO.get();
-        this.hangarProjectPagesDAO = hangarProjectPagesDAO.get();
+    public SitemapService(UserDAO userDAO, ProjectsDAO projectsDAO, ProjectVersionsDAO projectVersionsDAO, HangarProjectPagesDAO hangarProjectPagesDAO) {
+        this.userDAO = userDAO;
+        this.projectsDAO = projectsDAO;
+        this.projectVersionsDAO = projectVersionsDAO;
+        this.hangarProjectPagesDAO = hangarProjectPagesDAO;
     }
 
     @Cacheable("indexSitemap")

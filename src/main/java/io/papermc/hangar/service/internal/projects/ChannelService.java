@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.projects;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectChannelsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -25,9 +24,9 @@ public class ChannelService extends HangarComponent {
     private final ProjectChannelsDAO projectChannelsDAO;
     private final HangarProjectsDAO hangarProjectsDAO;
 
-    public ChannelService(HangarDao<ProjectChannelsDAO> projectChannelsDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO) {
-        this.projectChannelsDAO = projectChannelsDAO.get();
-        this.hangarProjectsDAO = hangarProjectsDAO.get();
+    public ChannelService(ProjectChannelsDAO projectChannelsDAO, HangarProjectsDAO hangarProjectsDAO) {
+        this.projectChannelsDAO = projectChannelsDAO;
+        this.hangarProjectsDAO = hangarProjectsDAO;
     }
 
     public void checkName(long projectId, String name, @Nullable String existingName) {

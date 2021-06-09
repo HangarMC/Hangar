@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.JobsDAO;
 import io.papermc.hangar.model.db.JobTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
@@ -42,8 +41,8 @@ public class JobService extends HangarComponent {
     private ExecutorService executorService;
 
     @Autowired
-    public JobService(HangarDao<JobsDAO> jobsDAO, @Lazy DiscourseService discourseService, @Lazy ProjectService projectService, @Lazy VersionService versionService) {
-        this.jobsDAO = jobsDAO.get();
+    public JobService(JobsDAO jobsDAO, @Lazy DiscourseService discourseService, @Lazy ProjectService projectService, @Lazy VersionService versionService) {
+        this.jobsDAO = jobsDAO;
         this.discourseService = discourseService;
         this.projectService = projectService;
         this.versionService = versionService;
@@ -93,40 +92,48 @@ public class JobService extends HangarComponent {
             jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(rateLimitError.getDuration()).plusSeconds(5), "Rate limit hit", "rate_limit");
         } catch (DiscourseError.StatusError statusError) {
             String error = "Encountered status error when executing Discourse request\n" +
-                           "Job: " + jobTable.getId() + " " + jobTable.getJobType() + " " + jobTable.getJobProperties() + "\n" +
+                           toJobString(jobTable) +
                            "Status Code: " + statusError.getStatus() + "\n" +
-                           "Message: " + statusError.getMessage();
+                           toMessageString(statusError);
             jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(config.jobs.getStatusErrorTimeout()).plusSeconds(5), error, "status_error_" + statusError.getStatus().value());
         } catch (DiscourseError.UnknownError unknownError) {
             String error = "Encountered error when executing Discourse request\n" +
-                           "Job: " + jobTable.getId() + " " + jobTable.getJobType() + " " + jobTable.getJobProperties() + "\n" +
+                            toJobString(jobTable) +
                            "Type: " + unknownError.getDescriptor() + "\n" +
-                           "Message: " + unknownError.getMessage();
+                           toMessageString(unknownError);
             jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(config.jobs.getUnknownErrorTimeout()).plusSeconds(5), error, "unknown_error" + unknownError.getDescriptor());
         } catch (DiscourseError.NotAvailableError notAvailableError) {
             jobsDAO.retryIn(jobTable.getId(), OffsetDateTime.now().plus(config.jobs.getNotAvailableTimeout()).plusSeconds(5), "Not Available", "not_available");
         } catch (DiscourseError.NotProcessable notProcessable) {
             logger.debug("job failed to process discourse job: {} {}", notProcessable.getMessage(), jobTable);
             String error = "Encountered error when processing discourse job\n" +
-                           "Job: " + jobTable.getId() + " " + jobTable.getJobType() + " " + jobTable.getJobProperties() + "\n" +
+                            toJobString(jobTable) +
                            "Type: not_processable\n" +
-                           "Message: " + notProcessable.getMessage();
+                           toMessageString(notProcessable);
             jobsDAO.fail(jobTable.getId(), error, "not_processable");
         } catch (JobException jobException) {
             logger.debug("job failed to process: {} {}", jobException.getMessage(), jobTable);
             String error = "Encountered error when processing job\n" +
-                           "Job: " + jobTable.getId() + " " + jobTable.getJobType() + " " + jobTable.getJobProperties() + "\n" +
+                            toJobString(jobTable) +
                            "Type: " + jobException.getDescriptor() + "\n" +
-                           "Message: " + jobException.getMessage();
+                           toMessageString(jobException);
             jobsDAO.fail(jobTable.getId(), error, jobException.getDescriptor());
         } catch (Exception ex) {
             logger.debug("job failed to process: {} {}", ex.getMessage(), jobTable, ex);
             String error = "Encountered error when processing job\n" +
-                           "Job: " + jobTable.getId() + " " + jobTable.getJobType() + " " + jobTable.getJobProperties() + "\n" +
+                            toJobString(jobTable) +
                            "Exception: " + ex.getClass().getName() + "\n" +
-                           "Message: " + ex.getMessage();
+                           toMessageString(ex);
             jobsDAO.fail(jobTable.getId(), error, "exception");
         }
+    }
+
+    private String toJobString(JobTable jobTable) {
+        return "Job: " + jobTable.getId() + " " + jobTable.getJobType() + " " + jobTable.getJobProperties() + "\n";
+    }
+
+    private String toMessageString(Throwable error) {
+        return "Message: " + error.getMessage();
     }
 
     public void processJob(JobTable job) {

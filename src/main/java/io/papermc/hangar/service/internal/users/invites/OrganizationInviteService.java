@@ -23,7 +23,7 @@ public class OrganizationInviteService extends InviteService<OrganizationContext
     }
 
     public List<HangarOrganizationInvite> getOrganizationInvites() {
-        return hangarNotificationsDAO.get().getOrganizationInvites(getHangarPrincipal().getId());
+        return hangarNotificationsDAO.getOrganizationInvites(getHangarPrincipal().getId());
     }
 
     @Override

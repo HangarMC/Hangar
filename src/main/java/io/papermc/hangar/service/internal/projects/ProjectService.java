@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.projects;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
@@ -68,10 +67,10 @@ public class ProjectService extends HangarComponent {
     private final RecommendedVersionService recommendedVersionService;
 
     @Autowired
-    public ProjectService(HangarDao<ProjectsDAO> projectDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, HangarDao<HangarProjectsDAO> hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, ProjectInviteService projectInviteService, ProjectMemberService projectMemberService, PermissionService permissionService, RecommendedVersionService recommendedVersionService) {
-        this.projectsDAO = projectDAO.get();
-        this.hangarUsersDAO = hangarUsersDAO.get();
-        this.hangarProjectsDAO = hangarProjectsDAO.get();
+    public ProjectService(ProjectsDAO projectDAO, HangarUsersDAO hangarUsersDAO, HangarProjectsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, ProjectInviteService projectInviteService, ProjectMemberService projectMemberService, PermissionService permissionService, RecommendedVersionService recommendedVersionService) {
+        this.projectsDAO = projectDAO;
+        this.hangarUsersDAO = hangarUsersDAO;
+        this.hangarProjectsDAO = hangarProjectsDAO;
         this.projectVisibilityService = projectVisibilityService;
         this.organizationService = organizationService;
         this.projectPageService = projectPageService;
