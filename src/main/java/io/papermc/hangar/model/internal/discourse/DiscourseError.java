@@ -20,6 +20,7 @@ public class DiscourseError extends RuntimeException {
             return status;
         }
 
+        @Override
         public String getMessage() {
             return message;
         }

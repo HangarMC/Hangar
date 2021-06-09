@@ -1,9 +1,8 @@
 package io.papermc.hangar;
 
-import io.papermc.hangar.db.dao.PermissionsDAO;
-import org.jdbi.v3.core.Jdbi;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -57,7 +56,7 @@ public class JdbiBeanFactoryPostProcessor implements BeanDefinitionRegistryPostP
 
     @Override
     public void postProcessBeanFactory(@NotNull ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
-
+        // not needed
     }
 
     @Override
@@ -85,11 +84,11 @@ public class JdbiBeanFactoryPostProcessor implements BeanDefinitionRegistryPostP
         try {
             jdbiDaoClass = beanDefinition.resolveBeanClass(classLoader);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new FatalBeanException(beanDefinition.getBeanClassName() + " not found on classpath", e);
         }
         beanDefinition.setBeanClass(JdbiDaoBeanFactory.class);
         // Add dependency to your `Jdbi` bean by name
-        beanDefinition.getConstructorArgumentValues().addGenericArgumentValue(new RuntimeBeanReference(Jdbi.class));
+        beanDefinition.getConstructorArgumentValues().addGenericArgumentValue(new RuntimeBeanReference("jdbi"));
         beanDefinition.getConstructorArgumentValues().addGenericArgumentValue(Objects.requireNonNull(jdbiDaoClass));
 
         registry.registerBeanDefinition(jdbiDaoClass.getSimpleName(), beanDefinition);

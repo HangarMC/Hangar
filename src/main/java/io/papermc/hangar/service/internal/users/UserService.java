@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.users;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.model.common.Prompt;
@@ -30,9 +29,9 @@ public class UserService extends HangarComponent {
     private final GlobalRoleService globalRoleService;
 
     @Autowired
-    public UserService(HangarDao<UserDAO> userDAO, HangarDao<HangarUsersDAO> hangarUsersDAO, GlobalRoleService globalRoleService) {
-        this.userDAO = userDAO.get();
-        this.hangarUsersDAO = hangarUsersDAO.get();
+    public UserService(UserDAO userDAO, HangarUsersDAO hangarUsersDAO, GlobalRoleService globalRoleService) {
+        this.userDAO = userDAO;
+        this.hangarUsersDAO = hangarUsersDAO;
         this.globalRoleService = globalRoleService;
     }
 

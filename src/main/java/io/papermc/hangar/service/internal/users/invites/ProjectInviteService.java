@@ -23,7 +23,7 @@ public class ProjectInviteService extends InviteService<ProjectContext, ProjectR
     }
 
     public List<HangarProjectInvite> getProjectInvites() {
-        return hangarNotificationsDAO.get().getProjectInvites(getHangarPrincipal().getId());
+        return hangarNotificationsDAO.getProjectInvites(getHangarPrincipal().getId());
     }
 
     @Override

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.OrganizationDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -19,6 +18,7 @@ import io.papermc.hangar.model.internal.sso.AuthUser;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.users.invites.OrganizationInviteService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -47,9 +47,9 @@ public class OrganizationFactory extends HangarComponent {
     private final RestTemplate restTemplate;
 
     @Autowired
-    public OrganizationFactory(HangarDao<UserDAO> userDAO, HangarDao<OrganizationDAO> organizationDAO, OrganizationService organizationService, OrganizationMemberService organizationMemberService, OrganizationInviteService organizationInviteService, GlobalRoleService globalRoleService, ObjectMapper mapper, RestTemplate restTemplate) {
-        this.userDAO = userDAO.get();
-        this.organizationDAO = organizationDAO.get();
+    public OrganizationFactory(UserDAO userDAO, OrganizationDAO organizationDAO, OrganizationService organizationService, OrganizationMemberService organizationMemberService, OrganizationInviteService organizationInviteService, GlobalRoleService globalRoleService, ObjectMapper mapper, RestTemplate restTemplate) {
+        this.userDAO = userDAO;
+        this.organizationDAO = organizationDAO;
         this.organizationService = organizationService;
         this.organizationMemberService = organizationMemberService;
         this.organizationInviteService = organizationInviteService;
@@ -77,26 +77,7 @@ public class OrganizationFactory extends HangarComponent {
             map.add("email", dummyEmail);
             map.add("verified", Boolean.TRUE.toString());
             map.add("dummy", Boolean.TRUE.toString());
-            try {
-                authOrganizationUser = mapper.treeToValue(restTemplate.postForObject(config.security.api.getUrl() + "/api/users", new HttpEntity<>(map, headers), ObjectNode.class), AuthUser.class);
-            } catch (UnprocessableEntity e) {
-                try {
-                    ObjectNode objectNode = mapper.readValue(e.getResponseBodyAsByteArray(), ObjectNode.class);
-                    List<HangarApiException> errors = new ArrayList<>();
-                    for (JsonNode jsonNode : objectNode.get("error")) {
-                        errors.add(new HangarApiException("organization.new.error.hangarAuthValidationError", jsonNode.asText()));
-                    }
-                    if (!errors.isEmpty()) {
-                        throw new MultiHangarApiException(errors);
-                    }
-                } catch (IOException ignored) {
-                    throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "organization.new.error.unknownError");
-                }
-
-                throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "organization.new.error.unknownError");
-            } catch (JsonProcessingException e) {
-                throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "organization.new.error.jsonError");
-            }
+            authOrganizationUser = createAuthUser(map, headers);
         } else {
             authOrganizationUser = new AuthUser(name, dummyEmail);
             userDAO.insert(new UserTable(authOrganizationUser));
@@ -113,6 +94,30 @@ public class OrganizationFactory extends HangarComponent {
 
         if (!errors.isEmpty()) {
             throw new MultiHangarApiException(errors);
+        }
+    }
+
+    @NotNull
+    private AuthUser createAuthUser(MultiValueMap<String, String> body, HttpHeaders headers) {
+        try {
+            return mapper.treeToValue(restTemplate.postForObject(config.security.api.getUrl() + "/api/users", new HttpEntity<>(body, headers), ObjectNode.class), AuthUser.class);
+        } catch (UnprocessableEntity e) {
+            try {
+                ObjectNode objectNode = mapper.readValue(e.getResponseBodyAsByteArray(), ObjectNode.class);
+                List<HangarApiException> errors = new ArrayList<>();
+                for (JsonNode jsonNode : objectNode.get("error")) {
+                    errors.add(new HangarApiException("organization.new.error.hangarAuthValidationError", jsonNode.asText()));
+                }
+                if (!errors.isEmpty()) {
+                    throw new MultiHangarApiException(errors);
+                }
+            } catch (IOException ignored) {
+                throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "organization.new.error.unknownError");
+            }
+
+            throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "organization.new.error.unknownError");
+        } catch (JsonProcessingException e) {
+            throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "organization.new.error.jsonError");
         }
     }
 }

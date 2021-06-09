@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.admin;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HealthDAO;
 import io.papermc.hangar.model.internal.admin.health.MissingFileCheck;
 import io.papermc.hangar.model.internal.admin.health.UnhealthyProject;
@@ -21,8 +20,8 @@ public class HealthService extends HangarComponent {
     private final ProjectFiles projectFiles;
 
     @Autowired
-    public HealthService(HangarDao<HealthDAO> healthDAO, ProjectFiles projectFiles) {
-        this.healthDAO = healthDAO.get();
+    public HealthService(HealthDAO healthDAO, ProjectFiles projectFiles) {
+        this.healthDAO = healthDAO;
         this.projectFiles = projectFiles;
     }
 

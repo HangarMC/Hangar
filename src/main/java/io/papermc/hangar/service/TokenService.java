@@ -5,7 +5,6 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.auth.ApiKeyDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.UserRefreshTokenDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -43,9 +42,9 @@ public class TokenService extends HangarComponent {
     private Algorithm algo;
 
     @Autowired
-    public TokenService(HangarDao<ApiKeyDAO> apiKeyDAO, HangarDao<UserRefreshTokenDAO> userRefreshTokenDAO, UserService userService, PermissionService permissionService) {
-        this.apiKeyDAO = apiKeyDAO.get();
-        this.userRefreshTokenDAO = userRefreshTokenDAO.get();
+    public TokenService(ApiKeyDAO apiKeyDAO, UserRefreshTokenDAO userRefreshTokenDAO, UserService userService, PermissionService permissionService) {
+        this.apiKeyDAO = apiKeyDAO;
+        this.userRefreshTokenDAO = userRefreshTokenDAO;
         this.userService = userService;
         this.permissionService = permissionService;
     }

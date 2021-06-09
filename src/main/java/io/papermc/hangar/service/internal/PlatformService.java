@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.db.PlatformVersionTable;
@@ -19,8 +18,8 @@ public class PlatformService extends HangarComponent {
     private final PlatformVersionDAO platformVersionDAO;
 
     @Autowired
-    public PlatformService(HangarDao<PlatformVersionDAO> platformVersionDAO) {
-        this.platformVersionDAO = platformVersionDAO.get();
+    public PlatformService(PlatformVersionDAO platformVersionDAO) {
+        this.platformVersionDAO = platformVersionDAO;
     }
 
     public List<String> getVersionsForPlatform(Platform platform) {

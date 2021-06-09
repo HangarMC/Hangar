@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.projects;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.projects.Visibility;
@@ -40,8 +39,8 @@ public class ProjectFactory extends HangarComponent {
     private final ProjectFiles projectFiles;
 
     @Autowired
-    public ProjectFactory(HangarDao<ProjectsDAO> projectDAO, ProjectService projectService, ChannelService channelService, ProjectPageService projectPageService, ProjectMemberService projectMemberService, ProjectVisibilityService projectVisibilityService, UsersApiService usersApiService, JobService jobService, ProjectFiles projectFiles) {
-        this.projectsDAO = projectDAO.get();
+    public ProjectFactory(ProjectsDAO projectDAO, ProjectService projectService, ChannelService channelService, ProjectPageService projectPageService, ProjectMemberService projectMemberService, ProjectVisibilityService projectVisibilityService, UsersApiService usersApiService, JobService jobService, ProjectFiles projectFiles) {
+        this.projectsDAO = projectDAO;
         this.projectService = projectService;
         this.channelService = channelService;
         this.projectPageService = projectPageService;

@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.versions;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.versions.HangarVersionsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -37,9 +36,9 @@ public class VersionService extends HangarComponent {
     private final ProjectFiles projectFiles;
 
     @Autowired
-    public VersionService(HangarDao<ProjectVersionsDAO> projectVersionDAO, HangarDao<HangarVersionsDAO> hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, ProjectVersionVisibilityService projectVersionVisibilityService, VersionDependencyService versionDependencyService, ProjectFiles projectFiles) {
-        this.projectVersionsDAO = projectVersionDAO.get();
-        this.hangarVersionsDAO = hangarProjectsDAO.get();
+    public VersionService(ProjectVersionsDAO projectVersionDAO, HangarVersionsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, ProjectVersionVisibilityService projectVersionVisibilityService, VersionDependencyService versionDependencyService, ProjectFiles projectFiles) {
+        this.projectVersionsDAO = projectVersionDAO;
+        this.hangarVersionsDAO = hangarProjectsDAO;
         this.projectVisibilityService = projectVisibilityService;
         this.projectVersionVisibilityService = projectVersionVisibilityService;
         this.versionDependencyService = versionDependencyService;

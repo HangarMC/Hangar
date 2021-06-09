@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.ApiKeyDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -27,9 +26,9 @@ public class APIAuthenticationService extends HangarComponent {
     private final PermissionService permissionService;
 
     @Autowired
-    public APIAuthenticationService(HangarDao<UserDAO> userDAO, HangarDao<ApiKeyDAO> apiKeyDAO, TokenService tokenService, PermissionService permissionService) {
-        this.userDAO = userDAO.get();
-        this.apiKeyDAO = apiKeyDAO.get();
+    public APIAuthenticationService(UserDAO userDAO, ApiKeyDAO apiKeyDAO, TokenService tokenService, PermissionService permissionService) {
+        this.userDAO = userDAO;
+        this.apiKeyDAO = apiKeyDAO;
         this.tokenService = tokenService;
         this.permissionService = permissionService;
     }

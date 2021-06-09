@@ -2,7 +2,6 @@ package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.config.CacheConfig;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.UsersDAO;
 import io.papermc.hangar.db.dao.internal.table.NotificationsDAO;
 import io.papermc.hangar.db.dao.v1.UsersApiDAO;
@@ -39,10 +38,10 @@ public class UsersApiService extends HangarComponent {
     private final OrganizationService organizationService;
 
     @Autowired
-    public UsersApiService(HangarDao<UsersDAO> usersDAO, HangarDao<UsersApiDAO> usersApiDAO, HangarDao<NotificationsDAO> notificationsDAO, PermissionService permissionService, OrganizationService organizationService) {
-        this.usersDAO = usersDAO.get();
-        this.usersApiDAO = usersApiDAO.get();
-        this.notificationsDAO = notificationsDAO.get();
+    public UsersApiService(UsersDAO usersDAO, UsersApiDAO usersApiDAO, NotificationsDAO notificationsDAO, PermissionService permissionService, OrganizationService organizationService) {
+        this.usersDAO = usersDAO;
+        this.usersApiDAO = usersApiDAO;
+        this.notificationsDAO = notificationsDAO;
         this.permissionService = permissionService;
         this.organizationService = organizationService;
     }

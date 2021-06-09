@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.versions;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.versions.RecommendedProjectVersionsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Platform;
@@ -18,8 +17,8 @@ public class RecommendedVersionService extends HangarComponent {
     private final RecommendedProjectVersionsDAO recommendedProjectVersionsDAO;
 
     @Autowired
-    public RecommendedVersionService(HangarDao<RecommendedProjectVersionsDAO> recommendedProjectVersionsDAO) {
-        this.recommendedProjectVersionsDAO = recommendedProjectVersionsDAO.get();
+    public RecommendedVersionService(RecommendedProjectVersionsDAO recommendedProjectVersionsDAO) {
+        this.recommendedProjectVersionsDAO = recommendedProjectVersionsDAO;
     }
 
     public void setRecommendedVersion(long projectId, long versionId, Platform platform) {

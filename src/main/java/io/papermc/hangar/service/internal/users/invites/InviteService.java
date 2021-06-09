@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.users.invites;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarNotificationsDAO;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -28,13 +27,13 @@ import java.util.List;
 public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role<RT>, RT extends ExtendedRoleTable<R, LC>, J extends Table & Named & Loggable<LC>> extends HangarComponent {
 
     @Autowired
-    protected HangarDao<HangarNotificationsDAO> hangarNotificationsDAO;
+    protected HangarNotificationsDAO hangarNotificationsDAO;
 
     @Autowired
     protected NotificationService notificationService;
 
     @Autowired
-    private HangarDao<UserDAO> userDAO;
+    private UserDAO userDAO;
 
     private final RoleService<RT, R, ?> roleService;
     private final MemberService<LC, R, RT, ?, ?, ?, ?, ?, ?> memberService;
@@ -54,7 +53,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
         List<RT> toBeInvited = new ArrayList<>();
         for (int i = 0; i < invitees.size(); i++) {
             Member<R> invitee = invitees.get(i);
-            UserTable userTable = userDAO.get().getUserTable(invitee.getName());
+            UserTable userTable = userDAO.getUserTable(invitee.getName());
             if (userTable == null) {
                 errors.add(new HangarApiException(this.errorPrefix + "invalidUser", invitee.getName()));
                 continue;
@@ -88,7 +87,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
         }
         roleTable = roleService.changeAcceptance(roleTable, true);
         memberService.addMember(roleTable);
-        UserTable userTable = userDAO.get().getUserTable(roleTable.getUserId());
+        UserTable userTable = userDAO.getUserTable(roleTable.getUserId());
         logInviteAccepted(roleTable, userTable);
     }
 
@@ -103,7 +102,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
             throw new IllegalArgumentException("Cannot un-accept a non-accepted invite");
         }
         roleTable = roleService.changeAcceptance(roleTable, false);
-        UserTable userTable = userDAO.get().getUserTable(roleTable.getUserId());
+        UserTable userTable = userDAO.getUserTable(roleTable.getUserId());
         memberService.removeMember(roleTable, userTable.getName(), false);
         logInviteUnaccepted(roleTable, userTable);
     }
@@ -116,7 +115,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, R extends Role
 
     public void declineInvite(RT roleTable) {
         roleService.deleteRole(roleTable);
-        logInviteDeclined(roleTable, userDAO.get().getUserTable(roleTable.getUserId()));
+        logInviteDeclined(roleTable, userDAO.getUserTable(roleTable.getUserId()));
     }
 
     abstract LogAction<LC> getInviteDeclineAction();

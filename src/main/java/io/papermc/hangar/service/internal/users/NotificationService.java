@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.users;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.HangarNotificationsDAO;
 import io.papermc.hangar.db.dao.internal.table.NotificationsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
@@ -26,10 +25,10 @@ public class NotificationService extends HangarComponent {
     private final ProjectsDAO projectsDAO;
     private final PermissionService permissionService;
 
-    public NotificationService(HangarDao<NotificationsDAO> notificationsDAO, HangarDao<HangarNotificationsDAO> hangarNotificationsDAO, HangarDao<ProjectsDAO> projectsDAO, PermissionService permissionService) {
-        this.notificationsDAO = notificationsDAO.get();
-        this.hangarNotificationsDAO = hangarNotificationsDAO.get();
-        this.projectsDAO = projectsDAO.get();
+    public NotificationService(NotificationsDAO notificationsDAO, HangarNotificationsDAO hangarNotificationsDAO, ProjectsDAO projectsDAO, PermissionService permissionService) {
+        this.notificationsDAO = notificationsDAO;
+        this.hangarNotificationsDAO = hangarNotificationsDAO;
+        this.projectsDAO = projectsDAO;
         this.permissionService = permissionService;
     }
 

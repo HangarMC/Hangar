@@ -5,7 +5,6 @@ import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.customtypes.JobState;
 import io.papermc.hangar.db.customtypes.PGLoggedAction;
 import io.papermc.hangar.db.customtypes.RoleCategory;
-import io.papermc.hangar.db.dao.HangarDao;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.mapper.RowMapper;
@@ -16,13 +15,10 @@ import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.postgres.PostgresPlugin;
 import org.jdbi.v3.postgres.PostgresTypes;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
-import org.springframework.beans.factory.InjectionPoint;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.beans.factory.config.DependencyDescriptor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 
 import javax.sql.DataSource;
@@ -43,10 +39,9 @@ public class JDBIConfig {
         return new PostgresPlugin();
     }
 
-    // I do not know why it fails to create this datasource bean if I remove this... it should fall back on what is autoconfigured.
     @Bean
-    DataSource dataSource() {
-        HikariDataSource dataSource = DataSourceBuilder.create().type(HikariDataSource.class).url("jdbc:postgresql://db:5432/hangar").username("hangar").password("hangar").driverClassName("org.postgresql.Driver").build();
+    DataSource dataSource(@Value("${spring.datasource.url}") String url, @Value("${spring.datasource.username}") String username, @Value("${spring.datasource.password}") String password) {
+        HikariDataSource dataSource = DataSourceBuilder.create().type(HikariDataSource.class).url(url).username(username).password(password).driverClassName("org.postgresql.Driver").build();
         dataSource.setPoolName(UUID.randomUUID().toString());
         return dataSource;
     }
@@ -75,16 +70,5 @@ public class JDBIConfig {
         config.registerCustomType(JSONB.class, "jsonb");
 
         return jdbi;
-    }
-
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public <T> HangarDao<T> hangarDao(Jdbi jdbi, InjectionPoint injectionPoint) {
-        if (injectionPoint instanceof DependencyDescriptor) {
-            DependencyDescriptor descriptor = (DependencyDescriptor) injectionPoint;
-            //noinspection unchecked
-            return new HangarDao<>((T) jdbi.onDemand(descriptor.getResolvableType().getGeneric(0).getRawClass()));
-        }
-        return null;
     }
 }

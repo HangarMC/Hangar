@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.versions;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionTagsDAO;
 import io.papermc.hangar.model.common.TagColor;
 import io.papermc.hangar.model.db.versions.ProjectVersionTagTable;
@@ -14,8 +13,8 @@ public class VersionTagService extends HangarComponent {
 
     private final ProjectVersionTagsDAO projectVersionTagsDAO;
 
-    public VersionTagService(HangarDao<ProjectVersionTagsDAO> projectVersionTagsDAO) {
-        this.projectVersionTagsDAO = projectVersionTagsDAO.get();
+    public VersionTagService(ProjectVersionTagsDAO projectVersionTagsDAO) {
+        this.projectVersionTagsDAO = projectVersionTagsDAO;
     }
 
     public ProjectVersionTagTable getTag(long versionId, String name) {

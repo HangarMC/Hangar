@@ -1,6 +1,5 @@
 package io.papermc.hangar.service.internal.defaults;
 
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.db.dao.internal.table.roles.RolesDAO;
 import io.papermc.hangar.model.common.Permission;
@@ -29,9 +28,9 @@ public class PopulationService {
     private final RolesDAO rolesDAO;
     private final PlatformVersionDAO platformVersionDAO;
 
-    public PopulationService(HangarDao<RolesDAO> rolesDAO, HangarDao<PlatformVersionDAO> platformVersionsDao) {
-        this.rolesDAO = rolesDAO.get();
-        this.platformVersionDAO = platformVersionsDao.get();
+    public PopulationService(RolesDAO rolesDAO, PlatformVersionDAO platformVersionsDao) {
+        this.rolesDAO = rolesDAO;
+        this.platformVersionDAO = platformVersionsDao;
     }
 
     @EventListener

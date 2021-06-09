@@ -1,7 +1,6 @@
 package io.papermc.hangar.service.internal.versions;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.HangarDao;
 import io.papermc.hangar.db.dao.internal.table.PlatformVersionDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.ProjectVersionsDAO;
 import io.papermc.hangar.db.dao.internal.table.versions.dependencies.ProjectVersionDependenciesDAO;
@@ -77,12 +76,12 @@ public class VersionFactory extends HangarComponent {
     private final JobService jobService;
 
     @Autowired
-    public VersionFactory(HangarDao<ProjectVersionPlatformDependenciesDAO> projectVersionPlatformDependencyDAO, HangarDao<ProjectVersionDependenciesDAO> projectVersionDependencyDAO, HangarDao<PlatformVersionDAO> platformVersionDAO, HangarDao<ProjectVersionsDAO> projectVersionDAO, HangarDao<VersionsApiDAO> versionsApiDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, RecommendedVersionService recommendedVersionService, ProjectService projectService, NotificationService notificationService, VersionTagService versionTagService, PlatformService platformService, UsersApiService usersApiService, JobService jobService) {
-        this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO.get();
-        this.projectVersionDependenciesDAO = projectVersionDependencyDAO.get();
-        this.platformVersionDAO = platformVersionDAO.get();
-        this.projectVersionsDAO = projectVersionDAO.get();
-        this.versionsApiDAO = versionsApiDAO.get();
+    public VersionFactory(ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, ProjectVersionDependenciesDAO projectVersionDependencyDAO, PlatformVersionDAO platformVersionDAO, ProjectVersionsDAO projectVersionDAO, VersionsApiDAO versionsApiDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, RecommendedVersionService recommendedVersionService, ProjectService projectService, NotificationService notificationService, VersionTagService versionTagService, PlatformService platformService, UsersApiService usersApiService, JobService jobService) {
+        this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
+        this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
+        this.platformVersionDAO = platformVersionDAO;
+        this.projectVersionsDAO = projectVersionDAO;
+        this.versionsApiDAO = versionsApiDAO;
         this.projectFiles = projectFiles;
         this.pluginDataService = pluginDataService;
         this.channelService = channelService;
