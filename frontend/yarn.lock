@@ -3504,18 +3504,18 @@ convert-source-map@^1.7.0:
   dependencies:
     safe-buffer "~5.1.1"
 
-cookie-universal-nuxt@2.1.4:
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/cookie-universal-nuxt/-/cookie-universal-nuxt-2.1.4.tgz#323f8645501f88cb2422127ad8ba2ee40187b716"
-  integrity sha512-xbn4Ozs9S0u2+0mQTZRwGlBL9MGNq8N4H6iGfprR5ufZFCS2hGef++3DBHSmHXZi30Wu3Q7RI/GkNMhz3cecmg==
+cookie-universal-nuxt@2.1.5:
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/cookie-universal-nuxt/-/cookie-universal-nuxt-2.1.5.tgz#669f2ff95b1bc1962c86edd69c954f60729e71e5"
+  integrity sha512-P0WCTKIyemWNtHi9lxrS5cxZmieOIEjt28B7Alu6cdSB9RqtUtpkqYyV9PRK6oJrT5eIPDYjHsJQlh6SUrFJOg==
   dependencies:
     "@types/cookie" "^0.3.3"
-    cookie-universal "^2.1.4"
+    cookie-universal "^2.1.5"
 
-cookie-universal@^2.1.4:
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/cookie-universal/-/cookie-universal-2.1.4.tgz#826a273da7eb9b08bfb0139bae12ea70770d564b"
-  integrity sha512-dwWXs7NGBzaBYDypu3jWH5M3NJW+zu5QdyJkFMHJvhLuyL4/eXG4105fwtTDwfIqyTunwVvQX4PHdtfPDS7URQ==
+cookie-universal@^2.1.5:
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/cookie-universal/-/cookie-universal-2.1.5.tgz#9a6cefbfb61c750a1b8ee2610bf71566bd719544"
+  integrity sha512-nqOOmEkovCQxNYGIyzhcwsmh4c7xnxe7RWdiYFOoml9MP4L32IlU3LdPC7r7nQEnnM+9Uxlk/UhtvBl5is6M/w==
   dependencies:
     "@types/cookie" "^0.3.3"
     cookie "^0.4.0"
