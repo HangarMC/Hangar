@@ -575,8 +575,8 @@ const msgs: LocaleMessageObject = {
         numProjects: 'No projects | {0} project | {0} projects',
         addTagline: 'Add a tagline',
         noOrgs: '{0} is not part of any organizations. 😢',
-        noWatching: '{0} has not starred any projects. 😢',
-        noStarred: '{0} is not watching any projects. 😢',
+        noWatching: '{0} is not watching any projects. 😢',
+        noStarred: '{0}  has not starred any projects. 😢',
         tooltips: {
             settings: 'User Settings',
             lock: 'Lock Account',
