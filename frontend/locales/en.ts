@@ -787,7 +787,7 @@ const msgs: LocaleMessageObject = {
             VersionPlatformDependencyRemoved: 'A platform dependency was removed',
             UserTaglineChanged: 'The user tagline changed',
             UserLocked: 'This user is locked',
-            UserUnlocked: 'This use is unlocked',
+            UserUnlocked: 'This user is unlocked',
             UserApikeyCreated: 'An apikey was created',
             UserApikeyDeleted: 'An apikey was deleted',
             OrganizationInvitesSent: 'Organization invites were sent',
