@@ -62,7 +62,7 @@ const msgs: LocaleMessageObject = {
             logout: 'Log uit',
             error: {
                 loginFailed: 'Authenticatie Mislukt',
-                hangarAuth: "Kon niet verbinden met HangarAuth",
+                hangarAuth: 'Kon niet verbinden met HangarAuth',
                 loginDisabled: 'Login is tijdelijk niet beschikbaar, probeer het later opnieuw',
                 fakeUserEnabled: 'Nepgebruiker is aangezet. {0} is dus uit',
             },
@@ -229,14 +229,16 @@ const msgs: LocaleMessageObject = {
         settings: {
             title: 'Instellingen',
             category: 'Categorie',
-            categorySub: 'Categoriseer je project in 1 van 10 categories. Je project in de juiste categorie plaatsen maakt het makkelijker voor andere mensen het te vinden.',
+            categorySub:
+                'Categoriseer je project in 1 van 10 categories. Je project in de juiste categorie plaatsen maakt het makkelijker voor andere mensen het te vinden.',
             keywords: 'Keywords',
             keywordsSub: 'Dit zijn speciale woorden die jouw project moeten laten zien als mensen ernaar zoeken.',
             homepage: 'Homepagina',
             homepageSub:
                 'Een eigen homepagina voor je project laat het er professioneler, officiëler, een geeft je nog een plek om informatie over je project te krijgen.',
             issues: 'Probleemtracker',
-            issuesSub: 'Een probleemtracker toevoegen geeft je gebruikers een makkelijke manier om ondersteuning te krijgen en maakt het makkelijk om bugs bij te houden.',
+            issuesSub:
+                'Een probleemtracker toevoegen geeft je gebruikers een makkelijke manier om ondersteuning te krijgen en maakt het makkelijk om bugs bij te houden.',
             source: 'Broncode',
             sourceSub: 'Ondersteun de gemeenschap van ontwikkelaars door je project open source te maken!',
             support: 'Externe ondersteuning',
@@ -273,9 +275,11 @@ const msgs: LocaleMessageObject = {
                 defaultAmount: 'Standaardhoeveelheid',
                 defaultAmountSub: 'De vooringestelde standaardhoeveelheid',
                 oneTimeAmounts: 'Eenmaalhoeveelheden',
-                oneTimeAmountsSub: 'Lijst van de opties die je gebruikers wil geven voor eenmalige donaties. Gebruikers kunnen altijd zelf een hoeveelheid kiezen',
+                oneTimeAmountsSub:
+                    'Lijst van de opties die je gebruikers wil geven voor eenmalige donaties. Gebruikers kunnen altijd zelf een hoeveelheid kiezen',
                 monthlyAmounts: 'Maandelijkse hoeveelheden',
-                monthlyAmountsSub: 'Lijst van de opties die je gebruikers wil geven voor maandelijkse donaties. Gebruikers kunnen altijd zelf een hoeveelheid kiezen',
+                monthlyAmountsSub:
+                    'Lijst van de opties die je gebruikers wil geven voor maandelijkse donaties. Gebruikers kunnen altijd zelf een hoeveelheid kiezen',
             },
             error: {
                 invalidFile: '{0} is een ongeldig bestandstype',
@@ -350,7 +354,7 @@ const msgs: LocaleMessageObject = {
                 forumPost: 'Forumpost',
                 release: {
                     bulletin: 'Release Bulletin',
-                    desc: "Wat is er nieuw in deze release?",
+                    desc: 'Wat is er nieuw in deze release?',
                 },
                 platforms: 'Platforms',
                 dependencies: 'Plugin Benodigdheden',
@@ -559,7 +563,7 @@ const msgs: LocaleMessageObject = {
         },
         modal: {
             activatorBtn: 'Zichtbaarheidsacties',
-            title: "Verander {0}s zichtbaarheid",
+            title: 'Verander {0}s zichtbaarheid',
             reason: 'Reden voor verandering',
             success: "You changed the {0}'s visibility to {1}",
         },
@@ -586,10 +590,10 @@ const msgs: LocaleMessageObject = {
             admin: 'Gebruikersadministrator',
         },
         lock: {
-            confirmLock: "{0}s account vergrendelen?",
-            confirmUnlock: "{0}s account ontgrendelen??",
-            successLock: "Succesvol {0}s account vergrendeld",
-            successUnlock: "Succesvol {0}s account ontgrendeld",
+            confirmLock: '{0}s account vergrendelen?',
+            confirmUnlock: '{0}s account ontgrendelen??',
+            successLock: 'Succesvol {0}s account vergrendeld',
+            successUnlock: 'Succesvol {0}s account ontgrendeld',
         },
         org: {
             editAvatar: 'Bewerk avatar',
@@ -670,7 +674,7 @@ const msgs: LocaleMessageObject = {
             approve: '{name} keurde deze versie goed',
             approvePartial: '{name} keurde deze versie deels goed',
             undoApproval: '{name} heeft hun goedkeuring ongedaan gemaakt',
-            reviewTitle: "{name}s Review",
+            reviewTitle: '{name}s Review',
         },
         state: {
             ongoing: 'Bezig',
@@ -779,7 +783,7 @@ const msgs: LocaleMessageObject = {
             VersionDeleted: 'De versie was verwijderd',
             VersionCreated: 'Een nieuwe versie werd geüpload',
             VersionDescriptionEdited: 'De versiebeschrijving werd veranderd',
-            VersionReviewStateChanged: "De reviewstatus van de versie werd veranderd",
+            VersionReviewStateChanged: 'De reviewstatus van de versie werd veranderd',
             VersionPluginDependencyAdded: 'Er is een pluginbenodigdheid toegevoegd',
             VersionPluginDependencyEdited: 'Er is een pluginbenodigdheid bijgewerkt',
             VersionPluginDependencyRemoved: 'Er is een pluginbenodigdheid verwijderd',
@@ -849,7 +853,7 @@ const msgs: LocaleMessageObject = {
         confirm: 'Begrepen!',
         changeAvatar: {
             title: 'Verander je avatar!',
-            message: "Welkom bij je nieuwe organisatie! Begin met het veranderen van de avatar door er op te klikken.",
+            message: 'Welkom bij je nieuwe organisatie! Begin met het veranderen van de avatar door er op te klikken.',
         },
     },
     error: {
