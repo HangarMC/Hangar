@@ -143,7 +143,7 @@ const msgs: LocaleMessageObject = {
         new: {
             step1: {
                 title: "Accord de l'utilisateur",
-                text: 'Un projet contient vos téléchargements et la documentation pour votre plugin.<br>Avant de continuer; veuillez consulter les <a href="#">directives de soumission à Hangar.</a>',
+                text: 'Un projet contient vos téléchargements et la documentation pour votre plugin.<br>Avant de continuer ; veuillez consulter les <a href="#">directives de soumission à Hangar.</a>',
                 continue: 'Accepter',
                 back: 'Annuler',
             },
