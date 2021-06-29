@@ -836,7 +836,7 @@ const msgs: LocaleMessageObject = {
         button: 'Changer de langue',
         title: 'Changer de langue',
         available: 'Langues disponibles',
-        hangarAuth: 'Ceci ne change que la langue de votre navigateur actuel (comme un cookie). Cliquer ici pour changer votre langue sur paper authentification pour tous les services paper',
+        hangarAuth: 'Ceci ne change que la langue pour votre navigateur actuel (avec un cookie). Cliquer ici pour changer votre langue sur PaperAuth pour tous les services Paper',
     },
     validation: {
         required: '{0} est requise',
