@@ -840,8 +840,8 @@ const msgs: LocaleMessageObject = {
     },
     validation: {
         required: '{0} est requise',
-        maxLength: 'Maximum length is {0}',
-        minLength: 'Minimum length is {0}',
+        maxLength: 'La longueur maximale est de {0}',
+        minLength: 'La longueur minimale est de {0}',
         invalidFormat: '{0} est invalide',
         invalidUrl: "Format d'URL invalide",
     },
