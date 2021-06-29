@@ -670,7 +670,7 @@ const msgs: LocaleMessageObject = {
             approve: '{name} approuva cette version',
             approvePartial: '{name} approuva partiellement cette version',
             undoApproval: '{name} a annulé son approbation',
-            reviewTitle: "Examen de {name}",
+            reviewTitle: 'Examen de {name}',
         },
         state: {
             ongoing: 'En cours',
