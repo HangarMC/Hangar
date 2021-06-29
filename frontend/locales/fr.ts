@@ -29,12 +29,12 @@ const msgs: LocaleMessageObject = {
     },
     hangar: {
         projectSearch: {
-            query: 'Rechercher dans {0} projets, fièrement faits par la communauté...',
-            relevanceSort: 'Trier par Sort by relevance',
-            noProjects: "Il n'y a pas de projets. 😢",
-            noProjectsFound: '0 projets trouvés. 😢',
+            query: 'Rechercher parmi {0} projets, fièrement faits par la communauté...',
+            relevanceSort: 'Trier par pertinence',
+            noProjects: "Il n'y a pas de projet. 😢",
+            noProjectsFound: '0 projet trouvé. 😢',
         },
-        subtitle: 'Un référentiel de packages Minecraft',
+        subtitle: 'Un dépôt de paquets Minecraft',
         sponsoredBy: 'Sponsorisé par',
     },
     pages: {
