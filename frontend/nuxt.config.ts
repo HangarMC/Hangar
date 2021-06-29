@@ -4,6 +4,7 @@ import colors from 'vuetify/lib/util/colors';
 import en from './locales/en';
 import fr from './locales/fr';
 import zh from './locales/zh_hans';
+import nl from './locales/nl';
 
 require('events').EventEmitter.defaultMaxListeners = 20;
 require('dotenv').config();
@@ -140,6 +141,7 @@ export default {
                 en,
                 fr,
                 zh,
+                nl,
             },
         },
         detectBrowserLanguage: {
