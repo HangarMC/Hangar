@@ -171,7 +171,7 @@ const msgs: LocaleMessageObject = {
                 customName: 'Nom',
                 url: 'URL',
                 seo: 'SEO',
-                keywords: 'Mots clefs',
+                keywords: 'Mots-clefs',
             },
             step4: {
                 title: 'Importer depuis Spigot',
@@ -204,7 +204,7 @@ const msgs: LocaleMessageObject = {
                 invalidName: 'Ce nom contient des caractères invalides',
                 tooLongName: 'Le nom du projet est trop long',
                 tooLongDesc: 'La description du projet est trop longue',
-                tooManyKeywords: 'Le nom a trop de mots clefs',
+                tooManyKeywords: 'Le nom a trop de mots-clefs',
                 noCategory: 'Les projets doivent avoir une catégorie',
                 noDescription: 'Le project doit avoir une description',
             },
@@ -230,7 +230,7 @@ const msgs: LocaleMessageObject = {
             title: 'Paramètres',
             category: 'Catégorie',
             categorySub: "Catégorisez votre projet dans l'une des 10 catégories. Catégoriser votre projet de manière appropriée permet aux gens de le trouver plus facilement.",
-            keywords: 'Mots clefs',
+            keywords: 'Mots-clefs',
             keywordsSub: 'Ces mots spéciaux vont retourner votre projet quand les gens les ajouteront à leurs recherches.',
             homepage: "Page d'accueil",
             homepageSub:
