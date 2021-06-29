@@ -28,8 +28,7 @@ public class PaperFileTypeHandler extends FileTypeHandler<PaperFileData> {
 
     @Override
     public PaperFileData getData(BufferedReader reader) throws ConfigurateException {
-        ConfigurationNode node = YamlConfigurationLoader.builder().buildAndLoadString(reader.lines().collect(Collectors.joining("\n")));
-        return node.get(PaperFileData.class);
+        return YamlConfigurationLoader.builder().buildAndLoadString(reader.lines().collect(Collectors.joining("\n"))).get(PaperFileData.class);
     }
 
     @ConfigSerializable

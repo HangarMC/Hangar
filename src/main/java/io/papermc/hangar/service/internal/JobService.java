@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.time.Duration;
@@ -69,6 +70,7 @@ public class JobService extends HangarComponent {
         return jobsDAO.getErroredJobs();
     }
 
+    @Transactional
     public void save(Job job) {
         if (!config.discourse.isEnabled()) { return; }
         jobsDAO.save(job.toTable());
