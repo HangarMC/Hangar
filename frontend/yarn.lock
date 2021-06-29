@@ -4223,10 +4223,10 @@ domhandler@^4.0.0:
   dependencies:
     domelementtype "^2.1.0"
 
-dompurify@^2.2.8:
-  version "2.2.8"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.2.8.tgz#ce88e395f6d00b6dc53f80d6b2a6fdf5446873c6"
-  integrity sha512-9H0UL59EkDLgY3dUFjLV6IEUaHm5qp3mxSqWw7Yyx4Zhk2Jn2cmLe+CNPP3xy13zl8Bqg+0NehQzkdMoVhGRww==
+dompurify@^2.2.9:
+  version "2.2.9"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.2.9.tgz#4b42e244238032d9286a0d2c87b51313581d9624"
+  integrity sha512-+9MqacuigMIZ+1+EwoEltogyWGFTJZWU3258Rupxs+2CGs4H914G9er6pZbsme/bvb5L67o2rade9n21e4RW/w==
 
 domutils@^1.5.1, domutils@^1.7.0:
   version "1.7.0"
@@ -9905,10 +9905,10 @@ swagger-client@^3.13.5:
     traverse "~0.6.6"
     url "~0.11.0"
 
-swagger-ui@3.50.0:
-  version "3.50.0"
-  resolved "https://registry.yarnpkg.com/swagger-ui/-/swagger-ui-3.50.0.tgz#c809d7dc587136862faa73aa71714f6b8f033d87"
-  integrity sha512-4OOCjWKQdSH4rSA28vGIEdEp8yrhniuvJRFNBO1aLftqpeg85OKU5sOTnNh5xdFhCSJwzkWq8PTUVlcsQTM+EQ==
+swagger-ui@3.51.0:
+  version "3.51.0"
+  resolved "https://registry.yarnpkg.com/swagger-ui/-/swagger-ui-3.51.0.tgz#a299b82d0e1a8cb6d109d515b71666b486756c5c"
+  integrity sha512-hLoPdQqPLjCDUWlDOOQZJg7StX/tY8a6gFg6ifUWTiRqmTDtlKC5GhEohQv3aZRM1g7FcUVAOzfBL/G/EGA4/g==
   dependencies:
     "@babel/runtime-corejs3" "^7.14.0"
     "@braintree/sanitize-url" "^5.0.1"
@@ -9918,7 +9918,7 @@ swagger-ui@3.50.0:
     classnames "^2.3.1"
     css.escape "1.5.1"
     deep-extend "0.6.0"
-    dompurify "^2.2.8"
+    dompurify "^2.2.9"
     ieee754 "^1.2.1"
     immutable "^3.x.x"
     js-file-download "^0.4.12"
