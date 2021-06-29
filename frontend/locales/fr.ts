@@ -13,7 +13,7 @@ const msgs: LocaleMessageObject = {
         delete: 'Supprimer',
         or: 'Ou',
         reset: 'Réinitialiser',
-        edit: 'Editer',
+        edit: 'Éditer',
         required: 'Requis',
         add: 'Ajouter',
         name: 'Nom',
@@ -187,8 +187,8 @@ const msgs: LocaleMessageObject = {
                 preview: 'Aperçu',
                 tutorial: 'Comment obtenir le BBCode',
                 tutorialInstructions: {
-                    line1: 'Pour obtenir le BBCode de votre projet Spigot, suivez les instructions :',
-                    line2: '1. Allez sur votre projet et cliquez sur "Editer la ressource".',
+                    line1: 'Pour obtenir le BBCode de votre projet Spigot, suivez les instructions :',
+                    line2: '1. Allez sur votre projet et cliquez sur "Éditer la ressource".',
                     line3: "2. Cliquez sur le symbole de la clef dans l'éditeur de description.",
                     line4: '3. Copiez-collez le nouveau contenu dans la zone de texte supérieure du convertisseur, modifiez la sortie si vous le souhaitez et cliquez sur Enregistrer !',
 				},
@@ -328,7 +328,7 @@ const msgs: LocaleMessageObject = {
         },
         delete: {
             title: 'Supprimer la page ?',
-            text: 'Etes-vous bien sûr(e) de vouloir supprimer cette page ? Cela est irréversible.',
+            text: 'Êtes-vous bien sûr(e) de vouloir supprimer cette page ? Cela est irréversible.',
         },
     },
     version: {
@@ -380,8 +380,8 @@ const msgs: LocaleMessageObject = {
             },
         },
         edit: {
-            platformVersions: 'Editer les versions de la plateforme : {0}',
-            pluginDeps: 'Editer les dépendances du plugin : {0}',
+            platformVersions: 'Éditer les versions de la plateforme : {0}',
+            pluginDeps: 'Éditer les dépendances du plugin : {0}',
             error: {
                 noPlatformVersions: 'Doit fournir au moins une version de plateforme valide',
                 invalidVersionForPlatform: '{0} est une version invalide pour {1}',
@@ -419,7 +419,7 @@ const msgs: LocaleMessageObject = {
             },
         },
         channels: 'Canaux',
-        editChannels: 'Editer les canaux',
+        editChannels: 'Éditer les canaux',
         platforms: 'Plateformes',
         error: {
             onlyOnePublic: "Vous n'avez seulement plus qu'une version publique restante",
@@ -434,13 +434,13 @@ const msgs: LocaleMessageObject = {
     channel: {
         modal: {
             titleNew: 'Ajouter un nouveau canal',
-            titleEdit: 'Editer le canal',
+            titleEdit: 'Éditer le canal',
             name: 'Nom du canal',
             color: 'Couleur du canal',
             reviewQueue: "Exclure de la file d'attente d'examen de la modération ?",
             error: {
                 invalidName: 'Nom du canal invalide',
-                maxChannels: 'Ce projet a un nombre maximum de canaux : {0}',
+                maxChannels: 'Ce projet a un nombre maximum de canaux : {0}',
                 duplicateColor: 'Ce projet a déjà un canal avec cette couleur',
                 duplicateName: 'Ce projet a déjà un canal avec ce nom',
                 tooLongName: 'Le nom du canal est trop long',
@@ -453,9 +453,9 @@ const msgs: LocaleMessageObject = {
             channelName: 'Nom du canal',
             versionCount: 'Numéro de la version',
             reviewed: 'Examiné',
-            edit: 'Editer',
+            edit: 'Éditer',
             trash: 'Poubelle',
-            editButton: 'Editer',
+            editButton: 'Éditer',
             deleteButton: 'Supprimer',
             add: 'Ajouter un canal',
         },
@@ -471,7 +471,7 @@ const msgs: LocaleMessageObject = {
                 tooManyOrgs: 'Vous ne pouvez créer au maximum {0} organisations',
                 notEnabled: 'Les organisations ne sont pas activées !',
                 jsonError: "Erreur lors de l'analyse de la réponse JSON de HangarAuth",
-                hangarAuthValidationError: 'Erreur lors de la validation : {0}',
+                hangarAuthValidationError: 'Erreur lors de la validation : {0}',
                 unknownError: "Une erreur inconnue est survenue pendant la création de l'organisation",
             },
         },
@@ -488,7 +488,7 @@ const msgs: LocaleMessageObject = {
         memberList: {
             addUser: 'Ajouter un utilisateur...',
             create: 'Créer',
-            editUser: 'Editer un utilisateur',
+            editUser: 'Éditer un utilisateur',
             invitedAs: '(Invité en tant que {0})',
         },
     },
@@ -570,7 +570,7 @@ const msgs: LocaleMessageObject = {
         orgs: 'Organisations',
         viewOnForums: 'Voir sur les forums ',
         taglineLabel: 'Slogan utilisateur',
-        editTagline: 'Editer le slogan',
+        editTagline: 'Éditer le slogan',
         memberSince: 'Membre depuis {0}',
         numProjects: 'Aucun projet | {0} projet | {0} projets',
         addTagline: 'Ajouter un slogan',
@@ -592,7 +592,7 @@ const msgs: LocaleMessageObject = {
             successUnlock: "Successfully unlocked {0}'s account",
         },
         org: {
-            editAvatar: "Editer l'avatar",
+            editAvatar: "Éditer l'avatar",
         },
         error: {
             invalidTagline: 'Slogan invalide',
@@ -633,7 +633,7 @@ const msgs: LocaleMessageObject = {
         title: "Rapport de santé d'Hangar",
         noTopicProject: 'Sujet de discussion manquant',
         erroredJobs: 'Travaux échoués',
-        jobText: "Type de travail : {0}, Type d'erreur : {1}, Eu lieu : {2}",
+        jobText: "Type de travail : {0}, Type d'erreur : {1}, Eu lieu : {2}",
         staleProjects: 'Stale projects',
         notPublicProjects: 'Projets masqués',
         noPlatform: 'Aucune plateforme détectée',
@@ -665,7 +665,7 @@ const msgs: LocaleMessageObject = {
         presets: {
             message: '{msg}',
             start: '{name} commença un examen',
-            stop: '{name} stoppa un examen : {msg}',
+            stop: '{name} stoppa un examen : {msg}',
             reopen: '{name} rouvra un examen',
             approve: '{name} approuva cette version',
             approvePartial: '{name} approuva partiellement cette version',
@@ -677,7 +677,7 @@ const msgs: LocaleMessageObject = {
             stopped: 'Stoppé',
             approved: 'Approuvé',
             partiallyApproved: 'Partiellement approuvé',
-            lastUpdate: 'Mise à jour la dernière fois : {0}',
+            lastUpdate: 'Mise à jour la dernière fois : {0}',
         },
     },
     apiKeys: {
@@ -693,8 +693,8 @@ const msgs: LocaleMessageObject = {
         createKey: 'Créer une clef',
         noKeys: "Il n'y a pas de clefs d'api pour l'instant. Vous pouvez en créer une sur la partie droite",
         success: {
-            delete: 'Vous avez supprimé la clef : {0}',
-            create: 'Vous avez créé la clef : {0}',
+            delete: 'Vous avez supprimé la clef : {0}',
+            create: 'Vous avez créé la clef : {0}',
         },
         error: {
             notEnoughPerms: 'Pas assez de permissions pour créer cette clef',
@@ -719,8 +719,8 @@ const msgs: LocaleMessageObject = {
         msgProjectOwner: 'Propriétaire du message',
         markResolved: 'Marqué comme étant résolu',
         line1: '{0} signala {1} le {2}',
-        line2: 'Raison : {0}',
-        line3: 'Commentaire : {0}',
+        line2: 'Raison : {0}',
+        line3: 'Commentaire : {0}',
     },
     userActivity: {
         title: "Activité de {0}",
@@ -807,8 +807,8 @@ const msgs: LocaleMessageObject = {
         project: 'Projet',
         date: 'Date',
         version: 'Version',
-        started: 'Commencé : {0}',
-        ended: 'Terminé : {0}',
+        started: 'Commencé : {0}',
+        ended: 'Terminé : {0}',
         statuses: {
             ongoing: '{0} en cours',
             stopped: '{0} stoppé',
