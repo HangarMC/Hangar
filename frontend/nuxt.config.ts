@@ -131,6 +131,7 @@ export default {
             { code: 'fr', iso: 'fr-FR', name: 'Français', icon: 'Test' },
             { code: 'en', iso: 'en-US', name: 'English', icon: 'Test' },
             { code: 'zh', iso: 'zh-HANS', name: 'Simplified Chinese', icon: 'Test' },
+            { code: 'nl', iso: 'nl-NL', name: 'Nederlands', icon: 'Test' },
         ],
         vueI18n: {
             locale: 'en',
