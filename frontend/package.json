@@ -22,7 +22,7 @@
     "chartist-plugin-legend": "0.6.2",
     "consola": "2.15.3",
     "cookie-universal-nuxt": "2.1.5",
-    "core-js": "3.15.0",
+    "core-js": "3.15.1",
     "diff-match-patch": "1.0.5",
     "filesize": "6.3.0",
     "jwt-decode": "3.1.2",
