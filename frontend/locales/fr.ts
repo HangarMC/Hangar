@@ -148,7 +148,7 @@ const msgs: LocaleMessageObject = {
                 back: 'Annuler',
             },
             step2: {
-                title: 'Paramètres basics',
+                title: 'Paramètres généraux',
                 continue: 'Continuer',
                 back: 'Retour',
                 userSelect: 'Créer comme...',
