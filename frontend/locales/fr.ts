@@ -191,7 +191,7 @@ const msgs: LocaleMessageObject = {
                     line2: '1. Allez sur votre projet et cliquez sur "Éditer la ressource".',
                     line3: "2. Cliquez sur le symbole de la clef dans l'éditeur de description.",
                     line4: '3. Copiez-collez le nouveau contenu dans la zone de texte supérieure du convertisseur, modifiez la sortie si vous le souhaitez et cliquez sur Enregistrer !',
-				},
+		},
             },
             step5: {
                 title: 'Finition',
