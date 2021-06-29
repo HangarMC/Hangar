@@ -827,7 +827,7 @@ const msgs: LocaleMessageObject = {
         title: 'Donner à {}',
         monthly: 'Mensuellement',
         oneTime: 'Ponctuel',
-        selectAmount: 'Selectionner un montant au dessus ou entrer un montant en dessous',
+        selectAmount: 'Sélectionner un montant ci-dessus ou entrer un montant ci-dessous',
         legal: 'En donnant à {0} vous agréez à Y et que les saucissons sont délicieux',
         cta: 'Donner',
         submit: 'Donner {0}',
