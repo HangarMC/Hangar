@@ -94,7 +94,7 @@ const msgs: LocaleMessageObject = {
             admin_tools: "Outils d'administration",
             chat: 'Chat',
             dev_tools: 'Outils de développeur',
-            economy: 'Economie',
+            economy: 'Économie',
             gameplay: 'Jouabilité',
             games: 'Jeux',
             protection: 'Protection',
@@ -449,7 +449,7 @@ const msgs: LocaleMessageObject = {
         },
         manage: {
             title: 'Canaux de diffusion',
-            subtitle: "Les canaux de diffusion représentent les niveaux de stabilité des versions d'un plugin... Un projet pourrait avoir jusqu'à cinq canaux de diffusion.",
+            subtitle: "Les canaux de diffusion représentent les niveaux de stabilité des versions d'un plugin... Un projet peut avoir jusqu'à cinq canaux de diffusion.",
             channelName: 'Nom du canal',
             versionCount: 'Numéro de la version',
             reviewed: 'Examiné',
