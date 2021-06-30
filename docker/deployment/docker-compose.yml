@@ -35,6 +35,8 @@ services:
     environment:
       SSO_SECRET: "${SSO_SECRET}"
       API_KEY: "${API_KEY}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
     depends_on:
       - 'db'
       - 'auth'
