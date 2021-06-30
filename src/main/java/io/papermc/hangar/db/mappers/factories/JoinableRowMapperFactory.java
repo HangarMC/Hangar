@@ -13,7 +13,7 @@ import org.jdbi.v3.core.mapper.RowMappers;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
-public class JoinableMemberFactory implements RowMapperFactory {
+public class JoinableRowMapperFactory implements RowMapperFactory {
 
     @SuppressWarnings("unchecked")
     @Override

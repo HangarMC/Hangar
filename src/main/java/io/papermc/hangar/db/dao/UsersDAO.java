@@ -1,7 +1,9 @@
 package io.papermc.hangar.db.dao;
 
+import io.papermc.hangar.db.mappers.factories.RoleColumnMapperFactory;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.internal.user.HangarUser;
+import org.jdbi.v3.sqlobject.config.RegisterColumnMapperFactory;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.statement.MapTo;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -12,6 +14,7 @@ import java.util.List;
 @Repository
 @RegisterConstructorMapper(HangarUser.class)
 @RegisterConstructorMapper(User.class)
+@RegisterColumnMapperFactory(RoleColumnMapperFactory.class)
 public interface UsersDAO {
 
     @SqlQuery("SELECT u.id, " +
@@ -19,7 +22,7 @@ public interface UsersDAO {
             "       u.name," +
             "       u.tagline," +
             "       u.join_date, " +
-            "       array(SELECT r.name FROM roles r JOIN user_global_roles ugr ON r.id = ugr.role_id WHERE u.id = ugr.user_id) roles," +
+            "       array(SELECT role_id FROM user_global_roles WHERE u.id = user_id) roles," +
             "       (SELECT count(*)" +
             "           FROM project_members_all pma" +
             "           WHERE pma.user_id = u.id" +
@@ -47,7 +50,7 @@ public interface UsersDAO {
             "       u.name," +
             "       u.tagline," +
             "       u.join_date," +
-            "       array(SELECT r.name FROM roles r JOIN user_global_roles ugr ON r.id = ugr.role_id WHERE u.id = ugr.user_id) roles," +
+            "       array(SELECT role_id FROM user_global_roles WHERE u.id = user_id) roles," +
             "       (SELECT count(*) FROM project_members_all pma WHERE pma.user_id = u.id) AS project_count," +
             "       u.read_prompts," +
             "       u.locked," +

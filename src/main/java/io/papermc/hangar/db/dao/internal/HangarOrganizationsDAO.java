@@ -1,6 +1,6 @@
 package io.papermc.hangar.db.dao.internal;
 
-import io.papermc.hangar.db.mappers.factories.JoinableMemberFactory;
+import io.papermc.hangar.db.mappers.factories.JoinableRowMapperFactory;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.internal.user.JoinableMember;
@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 public interface HangarOrganizationsDAO {
 
-    @RegisterRowMapperFactory(JoinableMemberFactory.class)
+    @RegisterRowMapperFactory(JoinableRowMapperFactory.class)
     @RegisterConstructorMapper(UserTable.class)
     @RegisterConstructorMapper(value = OrganizationRoleTable.class, prefix = "uor_")
     @UseStringTemplateEngine

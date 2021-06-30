@@ -1,6 +1,6 @@
 package io.papermc.hangar.db.dao.internal.table.roles;
 
-import io.papermc.hangar.db.mappers.factories.RoleMapperFactory;
+import io.papermc.hangar.db.mappers.factories.RoleColumnMapperFactory;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapperFactory;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Repository
 @RegisterConstructorMapper(OrganizationRoleTable.class)
-@RegisterColumnMapperFactory(RoleMapperFactory.class)
+@RegisterColumnMapperFactory(RoleColumnMapperFactory.class)
 public interface OrganizationRolesDAO extends IRolesDAO<OrganizationRoleTable> {
 
     @Override

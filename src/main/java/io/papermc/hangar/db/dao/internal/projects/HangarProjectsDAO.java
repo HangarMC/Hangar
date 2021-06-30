@@ -1,7 +1,7 @@
 package io.papermc.hangar.db.dao.internal.projects;
 
 import io.papermc.hangar.db.mappers.PromotedVersionMapper;
-import io.papermc.hangar.db.mappers.factories.JoinableMemberFactory;
+import io.papermc.hangar.db.mappers.factories.JoinableRowMapperFactory;
 import io.papermc.hangar.model.api.project.Project;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
@@ -65,7 +65,7 @@ public interface HangarProjectsDAO {
             "         WHERE lower(p.slug) = lower(:slug) AND lower(p.owner_name) = lower(:author)")
     Pair<Long, Project> getProject(String author, String slug, Long currentUserId);
 
-    @RegisterRowMapperFactory(JoinableMemberFactory.class)
+    @RegisterRowMapperFactory(JoinableRowMapperFactory.class)
     @RegisterConstructorMapper(UserTable.class)
     @RegisterConstructorMapper(value = ProjectRoleTable.class, prefix = "upr_")
     @UseStringTemplateEngine

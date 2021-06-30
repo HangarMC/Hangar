@@ -9,7 +9,7 @@ import org.jdbi.v3.core.mapper.ColumnMapperFactory;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
-public class RoleMapperFactory implements ColumnMapperFactory {
+public class RoleColumnMapperFactory implements ColumnMapperFactory {
 
     @Override
     public Optional<ColumnMapper<?>> build(Type type, ConfigRegistry config) {

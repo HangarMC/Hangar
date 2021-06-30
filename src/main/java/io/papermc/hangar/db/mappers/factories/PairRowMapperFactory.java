@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 @Component
-public class PairMapperFactory implements RowMapperFactory {
+public class PairRowMapperFactory implements RowMapperFactory {
 
     @Override
     public Optional<RowMapper<?>> build(Type type, ConfigRegistry config) {
