@@ -35,7 +35,7 @@ hangar:
 
   security:
     api:
-      url: "${AUTH_API_HOST}"
+      url: "https://hangar-auth.benndorf.dev"
       avatar-url: "https://hangar-auth.benndorf.dev/avatar/%s?size=120x120"
 
   projects:
