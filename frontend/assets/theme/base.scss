@@ -1,0 +1,57 @@
+div.v-application {
+  .v-main {
+    background-color: var(--v-primary-base);
+  }
+
+  .v-sheet.v-app-bar.v-toolbar {
+    &:not(.v-app-bar--is-scrolled) {
+      box-shadow: none;
+    }
+    background: linear-gradient(90deg, var(--v-primary-darken2) 0%, var(--v-primary-base) 100%);
+  }
+
+  // wrapper
+  .header {
+    background: linear-gradient(90deg, var(--v-primary-darken2) 0%, var(--v-primary-base) 100%);
+  }
+
+  .main-content {
+    background-color: var(--v-background-base);
+  }
+
+  // tabs
+  .v-tabs > .v-tabs-bar {
+    background-color: unset;
+  }
+
+  .v-tab.v-tab--active {
+    color: white;
+  }
+
+  .v-tabs-slider-wrapper {
+    color: var(--v-primary-darken4);
+  }
+
+  // cards
+  .v-sheet.v-card {
+    box-shadow: none;
+    background-color: unset;
+
+    .v-card__text {
+      border-radius: inherit;
+      padding-top: 16px;
+      background-color: var(--v-box-base);
+    }
+
+    .v-card__title {
+      border-bottom: 2px solid var(--v-primary-base);
+      display: inline-block;
+      padding: 0;
+      margin-bottom: 16px;
+    }
+  }
+
+  .project-link a {
+    color: white;
+  }
+}

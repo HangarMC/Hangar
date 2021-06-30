@@ -4,3 +4,10 @@
 // $font-size-root: 20px;
 // !!!!---No imports in this file---!!!!
 //@import '~vue-cli-plugin-vuetify-preset-reply/preset/variables.scss';
+
+@import '~vuetify/src/styles/styles.sass';
+
+$container-max-widths: (
+        'lg': 1500px,
+        'xl': 1680px
+)

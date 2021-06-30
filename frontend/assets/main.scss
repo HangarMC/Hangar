@@ -1,6 +1,7 @@
 @import '~vuetify/src/styles/styles.sass';
 @import 'utils';
 @import "markdown";
+@import "theme/base";
 
 .text-transform-unset {
   text-transform: unset;
@@ -39,4 +40,8 @@
   &:not(:last-child) {
     margin-right: 5px;
   }
+}
+
+a {
+  text-decoration: none;
 }

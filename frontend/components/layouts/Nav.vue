@@ -1,5 +1,5 @@
 <template>
-    <v-app-bar fixed app>
+    <v-app-bar app>
         <v-menu bottom offset-y open-on-hover transition="slide-y-transition" close-delay="100">
             <template #activator="{ on, attrs }">
                 <v-btn text x-large class="align-self-center px-1" v-bind="attrs" :ripple="false" v-on="on">
@@ -82,7 +82,7 @@ import UserAvatar from '~/components/users/UserAvatar.vue';
         Dropdown,
     },
 })
-export default class Header extends HangarComponent {
+export default class Nav extends HangarComponent {
     get dropdown(): Control[] {
         const controls: Control[] = [];
         controls.push({

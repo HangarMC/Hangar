@@ -1,15 +1,16 @@
 <template>
     <v-app>
-        <Header />
+        <Nav />
         <v-main>
-            <v-container>
+            <Wrapper clazz="header">
                 <template v-if="announcements">
                     <Announcement v-for="(announcement, idx) in announcements" :key="idx" :announcement="announcement" />
                 </template>
 
                 <DonationResult />
-                <nuxt />
-            </v-container>
+            </Wrapper>
+
+            <nuxt />
         </v-main>
         <HangarSnackbar />
         <Footer />
@@ -18,8 +19,9 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
-import Header from '~/components/layouts/Header.vue';
+import Nav from '~/components/layouts/Nav.vue';
 import Footer from '~/components/layouts/Footer.vue';
+import Wrapper from '~/components/layouts/helpers/Wrapper.vue';
 import Announcement from '~/components/layouts/Announcement.vue';
 import HangarSnackbar from '~/components/layouts/HangarSnackbar.vue';
 import DonationResult from '~/components/donation/DonationResult.vue';
@@ -27,7 +29,8 @@ import DonationResult from '~/components/donation/DonationResult.vue';
 @Component({
     components: {
         DonationResult,
-        Header,
+        Nav,
+        Wrapper,
         Footer,
         Announcement,
         HangarSnackbar,

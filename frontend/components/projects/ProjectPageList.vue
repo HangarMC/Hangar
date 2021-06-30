@@ -1,8 +1,8 @@
 <template>
     <v-card>
         <v-card-title>
-            <NewPageModal v-if="$perms.canEditPage" :pages="project.pages" :project-id="project.id" activator-class="mr-2" />
             {{ $t('page.plural') }}
+            <NewPageModal v-if="$perms.canEditPage" :pages="project.pages" :project-id="project.id" activator-class="mr-2" />
         </v-card-title>
         <v-card-text>
             <v-treeview :items="project.pages" item-key="name" :open="initialPage">

@@ -47,6 +47,9 @@
                 <v-col cols="12">
                     <LanguageModal />
                 </v-col>
+                <v-col cols="12">
+                    <v-switch v-model="$vuetify.theme.dark">Theme</v-switch>
+                </v-col>
                 <v-col cols="12" class="d-flex justify-center">
                     Copyright © <a href="https://papermc.io">PaperMC</a> 2016 - {{ new Date().getFullYear() }}
                 </v-col>
