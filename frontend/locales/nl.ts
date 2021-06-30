@@ -727,7 +727,7 @@ const msgs: LocaleMessageObject = {
         line3: 'Opmerking: {0}',
     },
     userActivity: {
-        title: "Activiteit van {0}",
+        title: 'Activiteit van {0}',
         reviews: 'Reviews',
         flags: 'Vlaggen',
         reviewApproved: 'Review Goedgekeurd',
