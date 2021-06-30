@@ -3,9 +3,13 @@ package io.papermc.hangar.service.internal.discourse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.stream.Collectors;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.model.db.projects.ProjectTable;
@@ -23,18 +27,15 @@ public class DiscourseFormatter {
     public DiscourseFormatter(HangarConfig config) {
         this.config = config;
 
-        try {
-            URL resource1 = DiscourseFormatter.class.getResource("project_topic.md");
-            URL resource2 = DiscourseFormatter.class.getResource("version_post.md");
-
+        try(InputStream resource1 = DiscourseFormatter.class.getResourceAsStream("project_topic.md");
+            InputStream resource2 = DiscourseFormatter.class.getResourceAsStream("version_post.md")) {
             if (resource1 == null || resource2 == null) {
                 throw new RuntimeException("Error initing discourse formatter, files not found");
             }
 
-            projectTopic = Files.readString(Paths.get(resource1.toURI()));
-            versionRelease = Files.readString(Paths.get(resource2.toURI()));
+            projectTopic = new BufferedReader(new InputStreamReader(resource1)).lines().collect(Collectors.joining("\n"));
+            versionRelease = new BufferedReader(new InputStreamReader(resource2)).lines().collect(Collectors.joining("\n"));
         } catch (Exception e) {
-            // TODO better handle this, it seems like staging doesn't have the files or smth, idk
             projectTopic = "ERROR";
             versionRelease = "ERROR";
             e.printStackTrace();
