@@ -37,6 +37,7 @@ services:
       API_KEY: "${API_KEY}"
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      AUTH_API_HOST: "http://hangar_new_auth:8000"
     depends_on:
       - 'db'
       - 'auth'

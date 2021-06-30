@@ -55,16 +55,6 @@ public class StringUtils {
         return Arrays.stream(str.split("\\.")).map(Integer::parseInt).collect(Collectors.toList());
     }
 
-    /**
-     * Formats the avatar url for a name
-     *
-     * @param name name (user, project)
-     * @return the avatar url
-     */
-    public static String avatarUrl(String name) {
-        return String.format(hangarConfig.security.api.getAvatarUrl(), name);
-    }
-
     private static final Pattern LAST_WHOLE_VERSION = Pattern.compile("((?<=,\\s)|^)[0-9.]{2,}(?=-[0-9.]+$)");
     private static final Pattern PREV_HAS_HYPHEN = Pattern.compile("(?<=\\d-)[0-9.]+$");
     private static final Pattern PREV_HAS_COMMA_OR_FIRST = Pattern.compile("((?<=,\\s)|^)[0-9.]+$");

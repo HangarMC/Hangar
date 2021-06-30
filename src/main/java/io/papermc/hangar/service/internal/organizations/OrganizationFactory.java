@@ -25,9 +25,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException.UnprocessableEntity;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -35,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class OrganizationFactory extends HangarComponent {
 
     private final UserDAO userDAO;
@@ -118,6 +121,8 @@ public class OrganizationFactory extends HangarComponent {
             throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "organization.new.error.unknownError");
         } catch (JsonProcessingException e) {
             throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "organization.new.error.jsonError");
+        } catch (HttpStatusCodeException e) {
+            throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating accompanying user: " + e.getStatusCode() + " " + e.getStatusText());
         }
     }
 }
