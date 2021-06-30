@@ -133,7 +133,6 @@ hangar:
     api:
       url: "http://auth:8000"
       avatar-url: "http://localhost:8000/avatar/%s?size=120x120" # only comment in if you run auth locally
-      key: changeme
       timeout: 10000
     safe-download-hosts:
       - "github.com"

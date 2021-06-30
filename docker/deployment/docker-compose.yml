@@ -37,6 +37,7 @@ services:
       API_KEY: "${API_KEY}"
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      TOKEN_SECRET: "${TOKEN_SECRET}"
     depends_on:
       - 'db'
       - 'auth'
@@ -106,7 +107,7 @@ services:
       DB_PASSWORD: "${POSTGRES_PASSWORD}"
       DB_HOST: "hangar_new_db"
       REDIS_HOST: "hangar_new_redis"
-      SSO_ENDPOINT_ore: "{ 'sync_sso_endpoint': ('http://hangar_new_backend:9000/api/sync_sso'), 'sso_secret': '${SSO_SECRET}', 'api_key': '${API_KEY}' }"
+      SSO_ENDPOINT_hangar: "{ 'sync_sso_endpoint': ('http://hangar_new_backend:8080/api/sync_sso'), 'sso_secret': '${SSO_SECRET}', 'api_key': '${API_KEY}' }"
       DEBUG: "true" # for reasons I don't understand, auth only runs with debug right now. don't question it, unless you want to fix it
       DJANGO_SETTINGS_MODULE: "spongeauth.settings.prod"
     networks:

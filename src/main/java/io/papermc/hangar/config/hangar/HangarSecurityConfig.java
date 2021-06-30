@@ -40,7 +40,6 @@ public class HangarSecurityConfig {
 
         private String url = "http://localhost:8000";
         private String avatarUrl = "http://localhost:8000/avatar/%s?size=120x120";
-        private String key = "changeme";
         private long timeout = 10000;
 
         public String getUrl() {
@@ -57,14 +56,6 @@ public class HangarSecurityConfig {
 
         public void setAvatarUrl(String avatarUrl) {
             this.avatarUrl = avatarUrl;
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public void setKey(String key) {
-            this.key = key;
         }
 
         public long getTimeout() {

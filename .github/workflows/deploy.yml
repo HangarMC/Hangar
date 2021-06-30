@@ -84,6 +84,7 @@ jobs:
           EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
           SSO_SECRET: ${{ secrets.SSO_SECRET }}
           API_KEY: ${{ secrets.API_KEY }}
+          TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
         run: |
           echo ${{ secrets.DOCKER_HOST_SSH_SIG }} > ~/.ssh/known_hosts
           cd docker/deployment

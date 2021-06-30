@@ -37,6 +37,7 @@ hangar:
     api:
       url: "https://hangar-auth.benndorf.dev"
       avatar-url: "https://hangar-auth.benndorf.dev/avatar/%s?size=120x120"
+    token-secret: "${TOKEN_SECRET}"
 
   projects:
     name-regex: "^[a-zA-Z0-9-_]{3,}$"

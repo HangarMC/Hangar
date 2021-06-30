@@ -73,7 +73,7 @@ hangar:
       link: https://minidigger.me
 
   homepage:
-    update-interval: "PT10M"
+    update-interval: 10m
 
   channels:
     max-name-len: 15
@@ -144,7 +144,6 @@ hangar:
       url: "http://localhost:8000"
       # avatar-url: "http://localhost:8000/avatar/%s?size=120x120" # only comment in if you run auth locally
       avatar-url: "https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png"
-      key: changeme
       timeout: 10000
     safe-download-hosts:
       - "github.com"
@@ -157,10 +156,10 @@ hangar:
     category: 5 # hangar category
 
   jobs:
-    check-interval: "PT30S"
-    unknown-error-timeout: "PT15M"
-    status-error-timeout: "PT5M"
-    not-available-timeout: "PT2M"
+    check-interval: 30s
+    unknown-error-timeout: 15m
+    status-error-timeout: 5m
+    not-available-timeout: 2m
     max-concurrent-jobs: 32
 
 #################
