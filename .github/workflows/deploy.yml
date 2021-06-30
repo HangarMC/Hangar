@@ -78,10 +78,10 @@ jobs:
       - name: Docker
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          POSTGRES_USER: ${{ secrets.DATABASE_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-          EMAIL_HOST_USER: ${{ secrets.EMAIL_USER }}
-          EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+          EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
           SSO_SECRET: ${{ secrets.SSO_SECRET }}
           API_KEY: ${{ secrets.API_KEY }}
         run: |

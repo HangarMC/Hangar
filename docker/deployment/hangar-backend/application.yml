@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://hangar_new_db:5432/hangar
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    username: "${POSTGRES_USER}"
+    password: "${POSTGRES_PASSWORD}"
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
@@ -30,8 +30,8 @@ hangar:
       color: "#ff544b"
 
   sso:
-    secret: ${SSO_SECRET}
-    api-key: ${API_KEY}
+    secret: "${SSO_SECRET}"
+    api-key: "${API_KEY}"
 
   security:
     api:
