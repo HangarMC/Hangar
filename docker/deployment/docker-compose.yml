@@ -32,6 +32,9 @@ services:
     build:
       context: ../..
       dockerfile: docker/deployment/hangar-backend/Dockerfile
+    environment:
+      SSO_SECRET: "${SSO_SECRET}"
+      API_KEY: "${API_KEY}"
     depends_on:
       - 'db'
       - 'auth'
@@ -49,8 +52,8 @@ services:
     environment:
       POSTGRES_MULTIPLE_DATABASES: hangarauth
       POSTGRES_DB: hangar
-      POSTGRES_USER: hangar
-      POSTGRES_PASSWORD: 'hangar'
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
     ports:
       - "3456:5432" # pls dont abuse open port :/
     volumes:
@@ -88,20 +91,20 @@ services:
       - "traefik.http.routers.hangar-new-auth.tls.domains[0].main=minidigger.me"
       - "traefik.http.routers.hangar-new-auth.tls.domains[0].sans=*.minidigger.me"
     environment:
-      SECRET_KEY: "TzNc3RTpfVn1xxNV90PPGEfs7SZhy5"
+      SECRET_KEY: "${SECRET_KEY}"
       EMAIL_HOST: "mail"
       EMAIL_PORT: "1025"
       EMAIL_SSL: "false"
       EMAIL_TLS: "false"
-      EMAIL_HOST_USER: "dum"
-      EMAIL_HOST_PASSWORD: "dum"
+      EMAIL_HOST_USER: "${EMAIL_HOST_USER}"
+      EMAIL_HOST_PASSWORD: "${EMAIL_HOST_PASSWORD}"
       HANGAR_HOST: "https://hangar.benndorf.dev"
       DB_NAME: "hangarauth"
-      DB_USER: "hangar"
-      DB_PASSWORD: "hangar"
+      DB_USER: "${POSTGRES_USER}"
+      DB_PASSWORD: "${POSTGRES_PASSWORD}"
       DB_HOST: "hangar_new_db"
       REDIS_HOST: "hangar_new_redis"
-      SSO_ENDPOINT_ore: "{ 'sync_sso_endpoint': ('http://hangar_new_backend:9000/api/sync_sso'), 'sso_secret': 'changeme', 'api_key': 'changeme' }"
+      SSO_ENDPOINT_ore: "{ 'sync_sso_endpoint': ('http://hangar_new_backend:9000/api/sync_sso'), 'sso_secret': '${SSO_SECRET}', 'api_key': '${API_KEY}' }"
       DEBUG: "true" # for reasons I don't understand, auth only runs with debug right now. don't question it, unless you want to fix it
       DJANGO_SETTINGS_MODULE: "spongeauth.settings.prod"
     networks:
