@@ -23,6 +23,7 @@ import io.papermc.hangar.model.internal.job.UpdateDiscourseVersionPostJob;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import io.papermc.hangar.model.internal.versions.PendingVersion;
+import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.JobService;
 import io.papermc.hangar.service.internal.PlatformService;
@@ -74,9 +75,10 @@ public class VersionFactory extends HangarComponent {
     private final PlatformService platformService;
     private final UsersApiService usersApiService;
     private final JobService jobService;
+    private final ValidationService validationService;
 
     @Autowired
-    public VersionFactory(ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, ProjectVersionDependenciesDAO projectVersionDependencyDAO, PlatformVersionDAO platformVersionDAO, ProjectVersionsDAO projectVersionDAO, VersionsApiDAO versionsApiDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, RecommendedVersionService recommendedVersionService, ProjectService projectService, NotificationService notificationService, VersionTagService versionTagService, PlatformService platformService, UsersApiService usersApiService, JobService jobService) {
+    public VersionFactory(ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, ProjectVersionDependenciesDAO projectVersionDependencyDAO, PlatformVersionDAO platformVersionDAO, ProjectVersionsDAO projectVersionDAO, VersionsApiDAO versionsApiDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, RecommendedVersionService recommendedVersionService, ProjectService projectService, NotificationService notificationService, VersionTagService versionTagService, PlatformService platformService, UsersApiService usersApiService, JobService jobService, ValidationService validationService) {
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.platformVersionDAO = platformVersionDAO;
@@ -93,6 +95,7 @@ public class VersionFactory extends HangarComponent {
         this.platformService = platformService;
         this.usersApiService = usersApiService;
         this.jobService = jobService;
+        this.validationService = validationService;
     }
 
     public PendingVersion createPendingVersion(long projectId, MultipartFile file) {
@@ -141,6 +144,10 @@ public class VersionFactory extends HangarComponent {
                 projectTable.isForumSync()
         );
 
+        if (!validationService.isValidVersionName(pendingVersion.getVersionString())) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidName");
+        }
+
         if (projectVersionsDAO.getProjectVersionTableFromHashAndName(projectId, pluginDataFile.getMd5(), pendingVersion.getVersionString()) != null && config.projects.isFileValidate()) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.duplicate");
         }
@@ -166,6 +173,10 @@ public class VersionFactory extends HangarComponent {
     }
 
     public void publishPendingVersion(long projectId, final PendingVersion pendingVersion) {
+        if (!validationService.isValidVersionName(pendingVersion.getVersionString())) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidName");
+        }
+
         final ProjectTable projectTable = projectService.getProjectTable(projectId);
         assert projectTable != null;
         Path tmpVersionJar = null;

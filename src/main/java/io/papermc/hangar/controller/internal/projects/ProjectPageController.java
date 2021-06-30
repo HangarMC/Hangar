@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller.internal.projects;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.PermissionType;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
@@ -11,6 +12,7 @@ import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
+import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.internal.MarkdownService;
 import io.papermc.hangar.service.internal.projects.ProjectPageService;
 import io.papermc.hangar.util.StringUtils;
@@ -38,11 +40,13 @@ public class ProjectPageController extends HangarComponent {
 
     private final ProjectPageService projectPageService;
     private final MarkdownService markdownService;
+    private final ValidationService validationService;
 
     @Autowired
-    public ProjectPageController(ProjectPageService projectPageService, MarkdownService markdownService) {
+    public ProjectPageController(ProjectPageService projectPageService, MarkdownService markdownService, ValidationService validationService) {
         this.projectPageService = projectPageService;
         this.markdownService = markdownService;
+        this.validationService = validationService;
     }
 
     @PostMapping(path = "/render", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -61,6 +65,9 @@ public class ProjectPageController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/checkName")
     public void checkName(@RequestParam long projectId, @RequestParam String name, @RequestParam(required = false) Long parentId) {
+        if (!validationService.isValidPageName(name)) {
+            throw new HangarApiException("page.new.error.invalidName");
+        }
         projectPageService.checkDuplicateName(projectId, StringUtils.slugify(name), parentId);
     }
 

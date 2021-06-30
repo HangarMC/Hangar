@@ -9,6 +9,7 @@ import io.papermc.hangar.model.internal.sso.URLWithNonce;
 import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.AuthenticationService;
 import io.papermc.hangar.service.TokenService;
+import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.internal.auth.SSOService;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.users.UserService;
@@ -35,14 +36,16 @@ public class LoginController extends HangarComponent {
     private final UserService userService;
     private final GlobalRoleService globalRoleService;
     private final TokenService tokenService;
+    private final ValidationService validationService;
 
     @Autowired
-    public LoginController(AuthenticationService authenticationService, SSOService ssoService, UserService userService, GlobalRoleService globalRoleService, TokenService tokenService) {
+    public LoginController(AuthenticationService authenticationService, SSOService ssoService, UserService userService, GlobalRoleService globalRoleService, TokenService tokenService, ValidationService validationService) {
         this.authenticationService = authenticationService;
         this.ssoService = ssoService;
         this.userService = userService;
         this.globalRoleService = globalRoleService;
         this.tokenService = tokenService;
+        this.validationService = validationService;
     }
 
     @GetMapping(path = "/login", params = "returnUrl")
@@ -64,6 +67,10 @@ public class LoginController extends HangarComponent {
         AuthUser authUser = ssoService.authenticate(sso, sig);
         if (authUser == null) {
             throw new HangarApiException("nav.user.error.loginFailed");
+        }
+
+        if (!validationService.isValidUsername(authUser.getUserName())) {
+            throw new HangarApiException("nav.user.error.invalidUsername");
         }
 
         UserTable user = userService.getOrCreate(authUser.getUserName(), authUser);

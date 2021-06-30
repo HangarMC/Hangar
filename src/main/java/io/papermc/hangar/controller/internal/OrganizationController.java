@@ -19,6 +19,7 @@ import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.AuthenticationService;
+import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.internal.organizations.OrganizationFactory;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.users.UserService;
@@ -48,19 +49,24 @@ public class OrganizationController extends HangarComponent {
     private final OrganizationFactory organizationFactory;
     private final OrganizationService organizationService;
     private final AuthenticationService authenticationService;
+    private final ValidationService validationService;
 
     @Autowired
-    public OrganizationController(UserService userService, OrganizationFactory organizationFactory, OrganizationService organizationService, AuthenticationService authenticationService) {
+    public OrganizationController(UserService userService, OrganizationFactory organizationFactory, OrganizationService organizationService, AuthenticationService authenticationService, ValidationService validationService) {
         this.userService = userService;
         this.organizationFactory = organizationFactory;
         this.organizationService = organizationService;
         this.authenticationService = authenticationService;
+        this.validationService = validationService;
     }
 
     @Anyone
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/validate")
     public void validateName(@RequestParam String name) {
+        if (!validationService.isValidUsername(name)) {
+            throw new HangarApiException("author.error.invalidUsername");
+        }
         if (userService.getUserTable(name) != null) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST);
         }

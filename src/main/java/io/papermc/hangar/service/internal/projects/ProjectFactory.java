@@ -12,6 +12,7 @@ import io.papermc.hangar.model.internal.job.DeleteDiscourseTopicJob;
 import io.papermc.hangar.model.internal.job.UpdateDiscourseProjectTopicJob;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
+import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.JobService;
 import io.papermc.hangar.service.internal.perms.members.ProjectMemberService;
@@ -37,9 +38,10 @@ public class ProjectFactory extends HangarComponent {
     private final UsersApiService usersApiService;
     private final JobService jobService;
     private final ProjectFiles projectFiles;
+    private final ValidationService validationService;
 
     @Autowired
-    public ProjectFactory(ProjectsDAO projectDAO, ProjectService projectService, ChannelService channelService, ProjectPageService projectPageService, ProjectMemberService projectMemberService, ProjectVisibilityService projectVisibilityService, UsersApiService usersApiService, JobService jobService, ProjectFiles projectFiles) {
+    public ProjectFactory(ProjectsDAO projectDAO, ProjectService projectService, ChannelService channelService, ProjectPageService projectPageService, ProjectMemberService projectMemberService, ProjectVisibilityService projectVisibilityService, UsersApiService usersApiService, JobService jobService, ProjectFiles projectFiles, ValidationService validationService) {
         this.projectsDAO = projectDAO;
         this.projectService = projectService;
         this.channelService = channelService;
@@ -49,6 +51,7 @@ public class ProjectFactory extends HangarComponent {
         this.usersApiService = usersApiService;
         this.jobService = jobService;
         this.projectFiles = projectFiles;
+        this.validationService = validationService;
     }
 
     @Transactional
@@ -98,7 +101,7 @@ public class ProjectFactory extends HangarComponent {
 
     public void checkProjectAvailability(long userId, String name) {
         InvalidProjectReason invalidProjectReason;
-        if (StringUtils.compact(name).length() < 1 || StringUtils.compact(name).length() > config.projects.getMaxNameLen() || !config.projects.getNameMatcher().test(name)) {
+        if (!validationService.isValidProjectName(name)) {
             invalidProjectReason = InvalidProjectReason.INVALID_NAME;
         } else {
             invalidProjectReason = projectsDAO.checkProjectValidity(userId, name, StringUtils.slugify(name));

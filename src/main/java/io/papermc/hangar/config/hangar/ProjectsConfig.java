@@ -15,9 +15,13 @@ public class ProjectsConfig {
 
     private String nameRegex = "^[a-zA-Z0-9-_]{3,}$";
     private String versionNameRegex = "^[a-zA-Z0-9-_.]+$";
+    private String pageNameRegex = "^[a-zA-Z0-9-_.]+$";
     private Pattern namePattern = Pattern.compile(this.nameRegex);
     private Pattern versionNamePattern = Pattern.compile(this.versionNameRegex);
+    private Pattern pageNamePattern = Pattern.compile(this.versionNameRegex);
     private int maxNameLen = 25;
+    private int maxVersionNameLen = 25;
+    private int maxPageNameLen = 25;
     private int maxPages = 50;
     private int maxChannels = 5;
     private int initLoad = 25;
@@ -45,6 +49,10 @@ public class ProjectsConfig {
         return versionNamePattern.asMatchPredicate();
     }
 
+    public Predicate<String> getPageNameMatcher() {
+        return pageNamePattern.asMatchPredicate();
+    }
+
     public void setNameRegex(String nameRegex) {
         this.nameRegex = nameRegex;
         this.namePattern = Pattern.compile(nameRegex);
@@ -59,12 +67,36 @@ public class ProjectsConfig {
         this.versionNamePattern = Pattern.compile(versionNameRegex);
     }
 
+    public String getPageNameRegex() {
+        return pageNameRegex;
+    }
+
+    public void setPageNameRegex(String pageNameRegex) {
+        this.pageNameRegex = pageNameRegex;
+    }
+
     public int getMaxNameLen() {
         return maxNameLen;
     }
 
     public void setMaxNameLen(int maxNameLen) {
         this.maxNameLen = maxNameLen;
+    }
+
+    public int getMaxVersionNameLen() {
+        return maxVersionNameLen;
+    }
+
+    public void setMaxVersionNameLen(int maxVersionNameLen) {
+        this.maxVersionNameLen = maxVersionNameLen;
+    }
+
+    public int getMaxPageNameLen() {
+        return maxPageNameLen;
+    }
+
+    public void setMaxPageNameLen(int maxPageNameLen) {
+        this.maxPageNameLen = maxPageNameLen;
     }
 
     public int getMaxPages() {

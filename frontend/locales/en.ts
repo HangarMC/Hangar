@@ -62,6 +62,7 @@ const msgs: LocaleMessageObject = {
             logout: 'Sign out',
             error: {
                 loginFailed: 'Authentication Failed',
+                invalidUsername: 'Invalid Username',
                 hangarAuth: "Couldn't connect to HangarAuth",
                 loginDisabled: 'Login is temporarily unavailable, please try again later',
                 fakeUserEnabled: 'Fake user is enabled. {0} is therefore disabled',
@@ -316,6 +317,7 @@ const msgs: LocaleMessageObject = {
                 minLength: 'Page contents are too short',
                 maxLength: 'Page contents are too long',
                 duplicateName: 'A page with that name already exists',
+                invalidName: 'Invalid name',
                 name: {
                     maxLength: 'Page name too long',
                     minLength: 'Page name too short',
@@ -373,6 +375,7 @@ const msgs: LocaleMessageObject = {
                 incomplete: 'Plugin file missing {0}',
                 noDescription: 'Must have a description',
                 invalidPluginDependencyNamespace: 'Declared plugin dependency has an invalid project namespace',
+                invalidName: 'Invalid version name',
                 channel: {
                     noName: 'Must have a channel name specified',
                     noColor: 'Must have a channel color specified',
@@ -596,6 +599,7 @@ const msgs: LocaleMessageObject = {
         },
         error: {
             invalidTagline: 'Invalid tagline',
+            invalidUsername: 'Invalid username',
         },
     },
     linkout: {
