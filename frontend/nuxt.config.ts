@@ -3,7 +3,8 @@ import colors from 'vuetify/lib/util/colors';
 
 import en from './locales/en';
 import fr from './locales/fr';
-import zh from './locales/zh_hans';
+import zh_hans from './locales/zh_hans';
+import zh_hant from './locales/zh_hant';
 import nl from './locales/nl';
 
 require('events').EventEmitter.defaultMaxListeners = 20;
@@ -132,6 +133,7 @@ export default {
             { code: 'fr', iso: 'fr-FR', name: 'Français', icon: 'Test' },
             { code: 'en', iso: 'en-US', name: 'English', icon: 'Test' },
             { code: 'zh', iso: 'zh-HANS', name: 'Simplified Chinese', icon: 'Test' },
+            { code: 'zh', iso: 'zh-HANT', name: 'Traditional Chinese', icon: 'Test' },
             { code: 'nl', iso: 'nl-NL', name: 'Nederlands', icon: 'Test' },
         ],
         vueI18n: {
@@ -140,7 +142,8 @@ export default {
             messages: {
                 en,
                 fr,
-                zh,
+                zh_hans,
+                zh_hant,
                 nl,
             },
         },
