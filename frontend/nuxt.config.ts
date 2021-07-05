@@ -5,6 +5,7 @@ import en from './locales/en';
 import fr from './locales/fr';
 import zh from './locales/zh_hans';
 import nl from './locales/nl';
+import it from './locales/it';
 
 require('events').EventEmitter.defaultMaxListeners = 20;
 require('dotenv').config();
@@ -133,6 +134,7 @@ export default {
             { code: 'en', iso: 'en-US', name: 'English', icon: 'Test' },
             { code: 'zh', iso: 'zh-HANS', name: 'Simplified Chinese', icon: 'Test' },
             { code: 'nl', iso: 'nl-NL', name: 'Nederlands', icon: 'Test' },
+            { code: 'it', iso: 'it-IT', name: 'Italiano', icon: 'Test' },
         ],
         vueI18n: {
             locale: 'en',
@@ -142,6 +144,7 @@ export default {
                 fr,
                 zh,
                 nl,
+                it,
             },
         },
         detectBrowserLanguage: {
