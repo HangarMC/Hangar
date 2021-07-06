@@ -19,7 +19,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.hangar-new.loadbalancer.server.port=3000"
-      - "traefik.http.routers.hangar-new.rule=Host(`hangar-new.minidigger.me`) || Host(`hangar.benndorf.dev`)"
+      - "traefik.http.routers.hangar-new.rule=Host(`hangar-new.minidigger.me`) || Host(`hangar.benndorf.dev`) || Host(`staging.hangarmc.dev`)"
       - "traefik.http.routers.hangar-new.entrypoints=web-secure"
       - "traefik.http.routers.hangar-new.tls=true"
       - "traefik.http.routers.hangar-new.tls.certresolver=default"
