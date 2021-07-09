@@ -706,10 +706,10 @@ const msgs: LocaleMessageObject = {
         },
     },
     apiDocs: {
-        title: 'API Docs',
+        title: 'API Dokümentasyonu', 
     },
     platformVersions: {
-        title: 'Configure Platform Versions',
+        title: 'Platform Sürümlerini Yapılandırın', 
         platform: 'Platform',
         versions: 'Versions',
         addVersion: 'Versiyon ekle',
