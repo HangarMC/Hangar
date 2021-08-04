@@ -61,7 +61,7 @@ const msgs: LocaleMessageObject = {
       logout: "Se déconnecter",
       error: {
         loginFailed: "L'authentication a échoué",
-        invalidUsername: 'Invalid Username',
+        invalidUsername: "Nom d'utilisateur invalide",
         hangarAuth: "Impossible de se connecter à HangarAuth",
         loginDisabled: "La connexion est temporairement indisponible, veuillez réessayer plus tard",
         fakeUserEnabled: "Le faux utilisateur est activé. {0} est donc désactivé"
@@ -92,12 +92,12 @@ const msgs: LocaleMessageObject = {
     category: {
       info: "Catégorie: {0}",
       admin_tools: "Outils d'administration",
-      chat: 'Chat',
+      chat: "Discuter",
       dev_tools: "Outils de développeur",
       economy: "Économie",
       gameplay: "Jouabilité",
       games: "Jeux",
-      protection: 'Protection',
+      protection: "Protéger",
       role_playing: "Jeux de rôles",
       world_management: "Gestion du monde",
       misc: "Divers"
@@ -112,7 +112,7 @@ const msgs: LocaleMessageObject = {
       flagHistory: "Historique des alertes ({0})",
       staffNotes: "Notes du personnel ({0})",
       userActionLogs: "Journaux d'actions utilisateur",
-      forum: 'Forum'
+      forum: "Forums"
     },
     flag: {
       flagProject: "Alerte {0} ?",
@@ -138,7 +138,7 @@ const msgs: LocaleMessageObject = {
       homepage: "Accueil",
       issues: "Problèmes",
       source: 'Source',
-      support: 'Support'
+      support: "Soutien"
     },
     new: {
       step1: {
@@ -167,7 +167,7 @@ const msgs: LocaleMessageObject = {
         source: "Code source",
         support: "Support externe",
         license: "Licence",
-        type: 'Type',
+        type: "Type de texte",
         customName: "Nom",
         url: 'URL',
         seo: 'SEO',
@@ -244,7 +244,7 @@ const msgs: LocaleMessageObject = {
       licenseSub: "Qu'est-ce que les gens peuvent (et ne peuvent pas) faire avec votre projet ?",
       forum: "Publier des messages sur les forums",
       forumSub: "Définir si des événements comme une nouvelle sortie devrait automatiquement créer un poste sur les forums",
-      description: 'Description',
+      description: "Libellé",
       descriptionSub: "Une petite description de votre projet",
       icon: "Icône",
       iconSub: "Téléverser une image représentative de votre projet.",
@@ -262,7 +262,7 @@ const msgs: LocaleMessageObject = {
       save: "Sauvegarder les changements",
       optional: "(optionnel)",
       licenseCustom: "Nom personnalisé",
-      licenseType: 'Type',
+      licenseType: "Type de texte",
       licenseUrl: 'URL',
       donation: {
         enable: "Activer",
@@ -297,7 +297,7 @@ const msgs: LocaleMessageObject = {
         general: "Général",
         optional: "Optionnel",
         management: "Gestion",
-        donation: 'Donation'
+        donation: "Faire un don"
       }
     },
     discuss: {
@@ -315,7 +315,7 @@ const msgs: LocaleMessageObject = {
         minLength: "Le contenu de la page est trop court",
         maxLength: "Le contenu de la page est trop long",
         duplicateName: "Une page avec ce nom existe déjà",
-        invalidName: 'Invalid name',
+        invalidName: "Nom invalide",
         name: {
           maxLength: "Le nom de la page est trop long",
           minLength: "Nom de page trop court",
@@ -373,7 +373,7 @@ const msgs: LocaleMessageObject = {
         incomplete: "Fichier {0} du plugin manquant",
         noDescription: "Doit contenir une description",
         invalidPluginDependencyNamespace: "La dépendance du plugin déclarée a un espace de nom invalide",
-        invalidName: 'Invalid version name',
+        invalidName: "Nom de version invalide",
         channel: {
           noName: "Doit contenir un nom de canal spécifié",
           noColor: "Doit contenir une couleur spécifiée pour le canal"
@@ -548,7 +548,7 @@ const msgs: LocaleMessageObject = {
     },
     name: {
       new: "Nouveau",
-      public: 'Public',
+      public: "Publique",
       needsChanges: "Changements requis",
       needsApproval: "Approbation requise",
       softDelete: "Suppression douce"
@@ -589,15 +589,15 @@ const msgs: LocaleMessageObject = {
     lock: {
       confirmLock: "Verrouiller le compte de {0} ?",
       confirmUnlock: "Déverrouiller le compte de {0} ?",
-      successLock: "Successfully locked {0}'s account",
-      successUnlock: "Successfully unlocked {0}'s account"
+      successLock: "Le compte {0}a été verrouillé avec succès",
+      successUnlock: "Le compte de {0}a bien été déverrouillé"
     },
     org: {
       editAvatar: "Éditer l'avatar"
     },
     error: {
       invalidTagline: "Slogan invalide",
-      invalidUsername: 'Invalid username'
+      invalidUsername: "Nom d'utilisateur non valide"
     }
   },
   linkout: {
@@ -636,7 +636,7 @@ const msgs: LocaleMessageObject = {
     noTopicProject: "Sujet de discussion manquant",
     erroredJobs: "Travaux échoués",
     jobText: "Type de travail : {0}, Type d'erreur : {1}, Eu lieu : {2}",
-    staleProjects: 'Stale projects',
+    staleProjects: "Projets sensationnels",
     notPublicProjects: "Projets masqués",
     noPlatform: "Aucune plateforme détectée",
     missingFileProjects: "Fichier manquant",
@@ -805,7 +805,7 @@ const msgs: LocaleMessageObject = {
     inReview: "En cours d'examen",
     approvalQueue: "File d'attente d'approbation",
     queuedBy: "Mise en file d'attente par",
-    status: 'Status',
+    status: "Statut",
     project: "Projet",
     date: 'Date',
     version: 'Version',
