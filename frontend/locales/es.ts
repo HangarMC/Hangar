@@ -421,7 +421,7 @@ const msgs: LocaleMessageObject = {
     },
     channels: 'Channels',
     editChannels: 'Edit Channels',
-    platforms: 'Platforms',
+    platforms: "Platformas",
     error: {
       onlyOnePublic: 'You only have 1 public version left'
     },
@@ -454,11 +454,11 @@ const msgs: LocaleMessageObject = {
       channelName: 'Channel Name',
       versionCount: 'Version Count',
       reviewed: 'Reviewed',
-      edit: 'Edit',
+      edit: "Editar",
       trash: 'Trash',
-      editButton: 'Edit',
-      deleteButton: 'Delete',
-      add: 'Add Channel'
+      editButton: "Editar",
+      deleteButton: "Eliminar",
+      add: "Añadir canal"
     }
   },
   organization: {
@@ -478,7 +478,7 @@ const msgs: LocaleMessageObject = {
     },
     settings: {
       members: {
-        invalidUser: '{0} is not a valid user',
+        invalidUser: "{0} no es un usuario válido",
         alreadyInvited: '{0} is already invited to the organization',
         notMember: '{0} is not a member of the organization, therefore you cannot edit their role',
         invalidRole: '{0} cannot be added/removed from the organization'
@@ -488,13 +488,13 @@ const msgs: LocaleMessageObject = {
   form: {
     memberList: {
       addUser: 'Add User...',
-      create: 'Create',
+      create: "Crear",
       editUser: 'Edit User',
       invitedAs: '(Invited as {0})'
     }
   },
   notifications: {
-    title: 'Notifications',
+    title: "Notificaciones",
     invites: 'Invites',
     invited: 'You have been invited to join the {0}',
     inviteAccepted: 'You have accepted an invitation to the {0}',
@@ -504,7 +504,7 @@ const msgs: LocaleMessageObject = {
     all: 'All',
     invite: {
       all: 'All',
-      projects: 'Projects',
+      projects: "Proyectos",
       organizations: 'Organizations',
       btns: {
         accept: 'Accept',
@@ -582,7 +582,7 @@ const msgs: LocaleMessageObject = {
       settings: 'User Settings',
       lock: 'Lock Account',
       unlock: 'Unlock Account',
-      apiKeys: 'API Keys',
+      apiKeys: "Claves del API",
       activity: 'User Activity',
       admin: 'User Admin'
     },
@@ -604,7 +604,7 @@ const msgs: LocaleMessageObject = {
     title: 'External Link Warning',
     text: 'You have clicked on an external link to "{0}". If you did not intend to visit this link, please go back. Otherwise, click continue.',
     abort: 'Go Back',
-    continue: 'Continue'
+    continue: "Continuar"
   },
   flags: {
     header: 'Flags for',
@@ -620,14 +620,14 @@ const msgs: LocaleMessageObject = {
     placeholder: 'Add a note...'
   },
   stats: {
-    title: 'Stats',
+    title: "Estadísticas",
     plugins: 'Plugins',
     reviews: 'Reviews',
     uploads: 'Uploads',
-    downloads: 'Downloads',
+    downloads: "Descargas",
     totalDownloads: 'Total Downloads',
     unsafeDownloads: 'Unsafe Downloads',
-    flags: 'Flags',
+    flags: "Marcas",
     openedFlags: 'Opened Flags',
     closedFlags: 'Closed Flags'
   },
@@ -643,8 +643,8 @@ const msgs: LocaleMessageObject = {
     empty: 'Empty! All good!'
   },
   reviews: {
-    headline: '{0} released this version on {1}',
-    title: 'Review logs',
+    headline: "{0} publicó esta version el {1}",
+    title: "Ver registros",
     projectPage: 'Project Page',
     downloadFile: 'Download File',
     startReview: 'Start Review',
@@ -677,20 +677,20 @@ const msgs: LocaleMessageObject = {
     state: {
       ongoing: 'Ongoing',
       stopped: 'Stopped',
-      approved: 'Approved',
+      approved: "Aprobado",
       partiallyApproved: 'Partially Approved',
       lastUpdate: 'Last Update: {0}'
     }
   },
   apiKeys: {
-    title: 'API Keys',
+    title: "Claves del API",
     createNew: 'Create new key',
     existing: 'Existing keys',
-    name: 'Name',
+    name: "Nombre",
     key: 'Key',
     keyIdentifier: 'Key Identifier',
     permissions: 'Permissions',
-    delete: 'Delete',
+    delete: "Eliminar",
     deleteKey: 'Delete Key',
     createKey: 'Create key',
     noKeys: 'There are no api keys yet. You can create one on the right side',
@@ -708,14 +708,14 @@ const msgs: LocaleMessageObject = {
   },
   platformVersions: {
     title: 'Configure Platform Versions',
-    platform: 'Platform',
+    platform: "Platforma",
     versions: 'Versions',
     addVersion: 'Add Version',
     saveChanges: 'Save Changes',
     success: 'Updated platform versions'
   },
   flagReview: {
-    title: 'Flags',
+    title: "Marcas",
     noFlags: 'There are no flags to review.',
     msgUser: 'Message user',
     msgProjectOwner: 'Message owner',
@@ -727,7 +727,7 @@ const msgs: LocaleMessageObject = {
   userActivity: {
     title: "{0}'s Activity",
     reviews: 'Reviews',
-    flags: 'Flags',
+    flags: "Marcas",
     reviewApproved: 'Review Approved',
     flagResolved: 'Flag Resolved',
     error: {
@@ -738,7 +738,7 @@ const msgs: LocaleMessageObject = {
     title: 'Edit User',
     organizations: 'Organizations',
     organization: 'Organization',
-    projects: 'Projects',
+    projects: "Proyectos",
     project: 'Project',
     owner: 'Owner',
     role: 'Role',
@@ -748,7 +748,7 @@ const msgs: LocaleMessageObject = {
     forum: 'Forum Profile'
   },
   userActionLog: {
-    title: 'User Action Log',
+    title: "Registro de las acciones del usuario",
     user: 'User',
     address: 'IP Address',
     time: 'Time',
@@ -808,7 +808,7 @@ const msgs: LocaleMessageObject = {
     status: 'Status',
     project: 'Project',
     date: 'Date',
-    version: 'Version',
+    version: "Versión",
     started: 'Started: {0}',
     ended: 'Ended: {0}',
     statuses: {
@@ -831,7 +831,7 @@ const msgs: LocaleMessageObject = {
     oneTime: 'One-Time',
     selectAmount: 'Select an amount above or enter an amount below',
     legal: 'By donating to {0} you agree to Y and that tacos are delicious',
-    cta: 'Donate',
+    cta: "Donar",
     submit: 'Donate {0}'
   },
   lang: {
@@ -845,7 +845,7 @@ const msgs: LocaleMessageObject = {
     maxLength: 'Maximum length is {0}',
     minLength: 'Minimum length is {0}',
     invalidFormat: '{0} is invalid',
-    invalidUrl: 'Invalid URL format'
+    invalidUrl: "Formato de URL inválido"
   },
   prompts: {
     confirm: 'Got it!',
