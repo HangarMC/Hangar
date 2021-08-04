@@ -2,15 +2,16 @@ import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
 import { TranslateResult } from 'vue-i18n';
 import { Route } from 'vue-router';
+import { MetaInfo } from 'vue-meta/types/vue-meta';
 
-const createUtil = (_: Context) => {
+const createUtil = (context: Context) => {
     class Seo {
-        head(title: string | TranslateResult, description: string | TranslateResult | null, route: Route, image: string | null) {
+        head(title: string | TranslateResult, description: string | TranslateResult | null, route: Route, image: string | null): MetaInfo {
             description = description || 'Plugin repository for Paper plugins and more!';
             const canonical = this.baseUrl() + (route.fullPath.endsWith('/') ? route.fullPath : route.fullPath + '/');
             image = image || 'https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png';
             image = image.startsWith('http') ? image : this.baseUrl() + image;
-            return {
+            const seo = {
                 title,
                 link: [{ rel: 'canonical', href: canonical }],
                 meta: [
@@ -66,7 +67,23 @@ const createUtil = (_: Context) => {
                         },
                     },
                 ] as any[],
-            };
+            } as MetaInfo;
+
+            if (context.app.i18n.locale === 'dum') {
+                console.log('found crowdin language activated, lets inject the script');
+                seo.script = seo.script ? seo.script : [];
+                seo.script.push({
+                    type: 'text/javascript',
+                    innerHTML: "var _jipt = []; _jipt.push(['project', '0cbf58a3d76226e92659632533015495']); _jipt.push(['domain', 'hangar']);",
+                });
+                seo.script.push({
+                    type: 'text/javascript',
+                    src: 'https://cdn.crowdin.com/jipt/jipt.js',
+                });
+                seo.__dangerouslyDisableSanitizers = ['script'];
+            }
+
+            return seo;
         }
 
         generateBreadcrumbs(route: Route) {

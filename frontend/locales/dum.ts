@@ -1,4 +1,4 @@
-import { LocaleMessageObject } from "crwdns1:0crwdne1:0";
+import { LocaleMessageObject } from "vue-i18n";
 const msgs: LocaleMessageObject = {
   general: {
     close: "crwdns3:0crwdne3:0",

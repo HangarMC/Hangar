@@ -92,6 +92,7 @@ export default class Home extends HangarComponent {
 
     head() {
         const meta = this.$seo.head('Home', null, this.$route, null);
+        meta.script = meta.script ? meta.script : [];
         meta.script.push({
             type: 'application/ld+json',
             json: {

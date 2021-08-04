@@ -47,8 +47,12 @@ export default class LanguageModal extends HangarFormModal {
     }
 
     changeLang() {
+        const shouldReload = this.$i18n.locale === 'dum' || this.lang === 'dum';
         console.log('setLocale ' + this.lang);
         this.$i18n.setLocale(this.lang);
+        if (shouldReload) {
+            location.reload();
+        }
     }
 }
 </script>

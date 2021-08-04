@@ -1,13 +1,16 @@
 import { NuxtConfig } from '@nuxt/types';
 import colors from 'vuetify/lib/util/colors';
 
+import de from './locales/de';
 import en from './locales/en';
-import fr from './locales/fr';
-import zh_hans from './locales/zh_hans';
-import zh_hant from './locales/zh_hant';
-import nl from './locales/nl';
-import it from './locales/it';
 import es from './locales/es';
+import fr from './locales/fr';
+import it from './locales/it';
+import nl from './locales/nl';
+import tr from './locales/tr';
+import zhHans from './locales/zh_hans';
+import zhHant from './locales/zh_hant';
+import dum from './locales/dum';
 
 require('events').EventEmitter.defaultMaxListeners = 20;
 require('dotenv').config();
@@ -18,6 +21,7 @@ const lazyAuthHost = process.env.lazyAuthHost || 'http://localhost:8000';
 const publicHost = process.env.PUBLIC_HOST || 'http://localhost:3000';
 const host = process.env.host || 'localhost';
 const nodeEnv = process.env.NODE_ENV;
+const publicPath = process.env.PUBLIC_PATH || '/_nuxt/';
 
 // noinspection JSUnusedGlobalSymbols
 export default {
@@ -103,6 +107,7 @@ export default {
     // Build Configuration: https://go.nuxtjs.dev/config-build
     build: {
         transpile: ['lodash-es'],
+        publicPath,
     },
 
     router: {
@@ -132,25 +137,31 @@ export default {
         strategy: 'no_prefix',
         defaultLocale: 'en',
         locales: [
+            { code: 'de', iso: 'de-DE', name: 'Deutsch', icon: 'Test' },
             { code: 'fr', iso: 'fr-FR', name: 'Français', icon: 'Test' },
             { code: 'en', iso: 'en-US', name: 'English', icon: 'Test' },
-            { code: 'zh', iso: 'zh-HANS', name: 'Simplified Chinese', icon: 'Test' },
-            { code: 'zh', iso: 'zh-HANT', name: 'Traditional Chinese', icon: 'Test' },
-            { code: 'nl', iso: 'nl-NL', name: 'Nederlands', icon: 'Test' },
+            { code: 'es', iso: 'es-ES', name: 'Español', icon: 'Test' },
             { code: 'it', iso: 'it-IT', name: 'Italiano', icon: 'Test' },
-            { code: 'es', iso: 'es-ES', name: "Español", icon: 'Test'}
+            { code: 'nl', iso: 'nl-NL', name: 'Nederlands', icon: 'Test' },
+            { code: 'tr', iso: 'tr-TR', name: 'Türkçe', icon: 'Test' },
+            { code: 'zhS', iso: 'zh-HANS', name: 'Simplified Chinese', icon: 'Test' },
+            { code: 'zhT', iso: 'zh-HANT', name: 'Traditional Chinese', icon: 'Test' },
+            { code: 'dum', iso: 'dum', name: 'Crowdin Dummy', icon: 'Test' },
         ],
         vueI18n: {
             locale: 'en',
             fallbackLocale: 'en',
             messages: {
+                de,
                 en,
                 fr,
-                zh_hans,
-                zh_hant,
-                nl,
-                it,
                 es,
+                it,
+                nl,
+                tr,
+                zh_hans: zhHans,
+                zh_hant: zhHant,
+                dum,
             },
         },
         detectBrowserLanguage: {
@@ -170,9 +181,15 @@ export default {
         csp: {
             directives: {
                 defaultSrc: ["'self'", 'https://google-analytics.com', 'https://fonts.gstatic.com', 'https://fonts.googleapis.com'],
-                styleSrc: ["'self'", 'https://fonts.googleapis.com', 'cdn.jsdelivr.net', "'unsafe-inline'"],
+                styleSrc: ["'self'", 'https://fonts.googleapis.com', 'cdn.jsdelivr.net', "'unsafe-inline'", 'https://cdn.crowdin.com'],
                 fontSrc: ['fonts.gstatic.com', 'cdn.jsdelivr.net'],
-                scriptSrc: ["'self'" /* , "'nonce-{nonce}'" */, "'unsafe-inline'", "'unsafe-eval'", 'https://static.cloudflareinsights.com'],
+                scriptSrc: [
+                    "'self'" /* , "'nonce-{nonce}'" */,
+                    "'unsafe-inline'",
+                    "'unsafe-eval'",
+                    'https://static.cloudflareinsights.com',
+                    'https://cdn.crowdin.com',
+                ],
                 imgSrc: [
                     "'self'",
                     'https://www.google-analytics.com',
@@ -181,9 +198,9 @@ export default {
                     'data: papermc.io paper.readthedocs.io',
                     'https:', // ppl can use images in descriptions, we would need an image proxy or smth
                 ],
-                frameSrc: ["'self'", 'http://localhost/', 'https://papermc.io/'],
+                frameSrc: ["'self'", 'http://localhost/', 'https://papermc.io/', 'https://hangar.crowdin.com'],
                 manifestSrc: ["'self'"],
-                connectSrc: ["'self'", 'https://www.google-analytics.com', 'https://stats.g.doubleclick.net'],
+                connectSrc: ["'self'", 'https://www.google-analytics.com', 'https://stats.g.doubleclick.net', 'https://hangar.crowdin.com'],
                 mediaSrc: ["'self'"],
                 objectSrc: ["'none'"],
                 baseUri: ["'none'"],

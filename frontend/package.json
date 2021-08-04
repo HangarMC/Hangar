@@ -7,9 +7,10 @@
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
-    "lint": "eslint --ext \".js,.vue,.ts\" --ignore-path .gitignore .",
+    "lint": "eslint --ext \".js,.vue,.ts\" .",
     "prepare": "cd .. && husky install frontend/.husky"
   },
+  "eslintIgnore": [".gitignore", "locales/*", "sw.js"],
   "lint-staged": {
     "*.{ts,js,vue}": "eslint"
   },
