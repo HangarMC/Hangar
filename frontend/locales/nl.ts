@@ -16,12 +16,12 @@ const msgs: LocaleMessageObject = {
     required: "Vereist",
     add: "Voeg toe",
     name: "Naam",
-    link: 'Link',
+    link: "Koppeling",
     send: "Stuur",
-    home: 'Home',
+    home: "Startpagina",
     message: "Bericht",
     refresh: "Ververs",
-    confirm: 'Confirm',
+    confirm: "Bevestigen",
     error: {
       invalidUrl: "Ongeldig URL-formaat"
     }
@@ -41,8 +41,8 @@ const msgs: LocaleMessageObject = {
     authorsTitle: "Auteurs",
     headers: {
       username: "Gebruikersnaam",
-      roles: 'Roles',
-      joined: 'Joined',
+      roles: "Rollen",
+      joined: "Aangesloten",
       projects: "Projecten"
     }
   },
@@ -55,13 +55,13 @@ const msgs: LocaleMessageObject = {
       projectApprovals: "Projectgoedkeuringen",
       versionApprovals: "Versiegoedkeuringen",
       stats: "Statistieken",
-      health: 'Hangar Health',
+      health: "Hangar Gezondheid",
       log: "Gebruikersactie Log",
       platformVersions: "Platformversies",
       logout: "Log uit",
       error: {
         loginFailed: "Authenticatie Mislukt",
-        invalidUsername: 'Invalid Username',
+        invalidUsername: "Ongeldige gebruikersnaam",
         hangarAuth: "Kon niet verbinden met HangarAuth",
         loginDisabled: "Login is tijdelijk niet beschikbaar, probeer het later opnieuw",
         fakeUserEnabled: "Nepgebruiker is aangezet. {0} is dus uit"
@@ -76,11 +76,11 @@ const msgs: LocaleMessageObject = {
       home: "Homepagina",
       forums: 'Forums',
       code: 'Code',
-      docs: 'Docs',
+      docs: "Documentatie",
       javadocs: 'JavaDocs',
       hangar: 'Hangar (Plugins)',
-      downloads: 'Downloads',
-      community: 'Community'
+      downloads: "downloads",
+      community: "Gemeenschap"
     }
   },
   project: {
@@ -92,11 +92,11 @@ const msgs: LocaleMessageObject = {
     category: {
       info: "Categorie: {0}",
       admin_tools: "Administratortools",
-      chat: 'Chat',
+      chat: "Chatten",
       dev_tools: "Onwikkelaarstools",
       economy: "Economie",
-      gameplay: 'Gameplay',
-      games: 'Games',
+      gameplay: "Spel",
+      games: "Spellen",
       protection: "Bescherming",
       role_playing: "Rolspelen",
       world_management: "Wereldbeheer",
@@ -117,7 +117,7 @@ const msgs: LocaleMessageObject = {
     flag: {
       flagProject: "Vlag {0}?",
       flagSend: "Succesvol gevlagd, dank je dat je de community een betere plek maakt!",
-      flagSent: 'Flag submitted for review',
+      flagSent: "Melding ingediend voor beoordeling",
       flags: {
         inappropriateContent: "Ongepaste Content",
         impersonation: "Impersonatie of Bedrog",
@@ -131,7 +131,7 @@ const msgs: LocaleMessageObject = {
       }
     },
     tabs: {
-      docs: 'Docs',
+      docs: "Documentatie",
       versions: "Versies",
       discuss: "Discussieer",
       settings: "Instelling",
@@ -157,11 +157,11 @@ const msgs: LocaleMessageObject = {
         projectCategory: "Projectcategorie"
       },
       step3: {
-        title: 'Additional Settings',
+        title: "Extra instellingen",
         continue: "Verdergaan",
         back: "Terug",
         optional: "Optioneel",
-        links: 'Links',
+        links: "Koppelingen",
         homepage: "Homepagina",
         issues: "Probleemtracker",
         source: "Broncode",
@@ -171,7 +171,7 @@ const msgs: LocaleMessageObject = {
         customName: "Naam",
         url: 'URL',
         seo: 'SEO',
-        keywords: 'Keywords'
+        keywords: "Sleutelwoorden"
       },
       step4: {
         title: "Importeer van Spigot",
@@ -184,7 +184,7 @@ const msgs: LocaleMessageObject = {
           bbCode: "Plak je BBCode hier",
           output: "Markdown Uitvoer"
         },
-        preview: 'Preview',
+        preview: "Voorvertoning",
         tutorial: "Hoe je de BBCode krijgt",
         tutorialInstructions: {
           line1: "Om de BBCode van je Spigot resource te halen, doe je het volgende:",
@@ -230,7 +230,7 @@ const msgs: LocaleMessageObject = {
       title: "Instellingen",
       category: "Categorie",
       categorySub: "Categoriseer je project in 1 van 10 categories. Je project in de juiste categorie plaatsen maakt het makkelijker voor andere mensen het te vinden.",
-      keywords: 'Keywords',
+      keywords: "Sleutelwoorden",
       keywordsSub: "Dit zijn speciale woorden die jouw project moeten laten zien als mensen ernaar zoeken.",
       homepage: "Homepagina",
       homepageSub: "Een eigen homepagina voor je project laat het er professioneler, officiëler, een geeft je nog een plek om informatie over je project te krijgen.",
@@ -248,16 +248,16 @@ const msgs: LocaleMessageObject = {
       descriptionSub: "Een korte beschrijving van je project",
       icon: "Icoon",
       iconSub: "Upload het icoon van je project.",
-      iconUpload: 'Upload',
+      iconUpload: "Uploaden",
       iconReset: "Reset Icoon",
-      apiKey: 'API Keys',
+      apiKey: "API sleutels",
       apiKeySub: "Genereer een unieke deployment key om build deployment van Gradle aan te zetten",
       apiKeyGenerate: "Genereer",
       rename: "Hernoem",
       renameSub: "Het veranderen van de naam van je project kan ongewenste gevolgen met zich meebrengen. We zetten geen herdirecties op.",
       delete: "Verwijderen",
       deleteSub: "Als je je project verwijdert, kan het niet meer hersteld worden.",
-      hardDelete: 'Hard Delete',
+      hardDelete: "Hard verwijderen",
       hardDeleteSub: "Als je je project verwijdert, kan het niet meer hersteld worden. Dit keer voor het echie...",
       save: "Wijzigingen opslaan",
       optional: "(optioneel)",
@@ -296,7 +296,7 @@ const msgs: LocaleMessageObject = {
       tabs: {
         general: "Algemeen",
         optional: "Optioneel",
-        management: 'Management',
+        management: "Beheer",
         donation: "Donatie"
       }
     },
@@ -315,7 +315,7 @@ const msgs: LocaleMessageObject = {
         minLength: "Paginainhoud is te kort",
         maxLength: "Paginainhoud is te lang",
         duplicateName: "Er bestaat al een pagina met die naam",
-        invalidName: 'Invalid name',
+        invalidName: "Ongeldige naam",
         name: {
           maxLength: "Paginatitel te lang",
           minLength: "Paginatitel te kort",
@@ -349,10 +349,10 @@ const msgs: LocaleMessageObject = {
         recommended: "Aanbevolen",
         forumPost: "Forumpost",
         release: {
-          bulletin: 'Release Bulletin',
+          bulletin: "Bulletin vrijgeven",
           desc: "Wat is er nieuw in deze release?"
         },
-        platforms: 'Platforms',
+        platforms: "Platformen",
         dependencies: "Pluginbenodigdheden"
       },
       error: {
@@ -373,7 +373,7 @@ const msgs: LocaleMessageObject = {
         incomplete: "Pluginbestand ontbreekt {0}",
         noDescription: "Moet een beschrijving hebben",
         invalidPluginDependencyNamespace: "Benoemde pluginbenodigdheid heeft een ongeldige projectnamespace",
-        invalidName: 'Invalid version name',
+        invalidName: "Ongeldige versie naam",
         channel: {
           noName: "Moet een kanaalnaam hebben",
           noColor: "Moet een kanaalkleur hebben"
@@ -395,14 +395,14 @@ const msgs: LocaleMessageObject = {
       platform: 'Platform',
       required: "(vereist)",
       adminMsg: "{0} keurde deze versie goed op {1}",
-      reviewLogs: 'Review logs',
-      reviewStart: 'Start review',
+      reviewLogs: "Logboeken bekijken",
+      reviewStart: "Review starten",
       setRecommended: "Zet als Aanbevolen",
       setRecommendedTooltip: "Zet deze versie als aanbevolen voor {0} platform",
       delete: "Verwijder",
       hardDelete: "Verwijder (voor altijd)",
       restore: "Herstel",
-      download: 'Download',
+      download: "downloaden",
       downloadExternal: "Download Extern",
       adminActions: "Administratoracties",
       recommended: "Aanbevolen versie",
@@ -421,7 +421,7 @@ const msgs: LocaleMessageObject = {
     },
     channels: "Kanalen",
     editChannels: "Bewerk Kanalen",
-    platforms: 'Platforms',
+    platforms: "Platformen",
     error: {
       onlyOnePublic: "Je hebt maar 1 publieke versie over"
     },
@@ -551,18 +551,18 @@ const msgs: LocaleMessageObject = {
       public: "Publiek",
       needsChanges: "Veranderingen nodig",
       needsApproval: "Goedkeuring nodig",
-      softDelete: 'Soft Delete'
+      softDelete: "Zacht verwijderen"
     },
     changes: {
       version: {
-        reviewed: 'due to approved reviews'
+        reviewed: "als gevolg van goedgekeurde beoordelingen"
       }
     },
     modal: {
       activatorBtn: "Zichtbaarheidsacties",
       title: "Verander {0}s zichtbaarheid",
       reason: "Reden voor verandering",
-      success: "You changed the {0}'s visibility to {1}"
+      success: "Je hebt de zichtbaarheid van {0}gewijzigd naar {1}"
     }
   },
   author: {
@@ -582,7 +582,7 @@ const msgs: LocaleMessageObject = {
       settings: "Gebruikersinstellingen",
       lock: "Account Vergrendelen",
       unlock: "Account Ontgrendelen",
-      apiKeys: 'API Keys',
+      apiKeys: "API sleutels",
       activity: "Gebruikersactiviteit",
       admin: "Gebruikersadministrator"
     },
@@ -597,7 +597,7 @@ const msgs: LocaleMessageObject = {
     },
     error: {
       invalidTagline: "Ongeldige tagline",
-      invalidUsername: 'Invalid username'
+      invalidUsername: "Ongeldige gebruikersnaam"
     }
   },
   linkout: {
@@ -621,10 +621,10 @@ const msgs: LocaleMessageObject = {
   },
   stats: {
     title: "Statistieken",
-    plugins: 'Plugins',
-    reviews: 'Reviews',
+    plugins: "Plug-ins",
+    reviews: "Beoordelingen",
     uploads: 'Uploads',
-    downloads: 'Downloads',
+    downloads: "downloads",
     totalDownloads: "Totale Downloads",
     unsafeDownloads: "Onveilige Downloads",
     flags: "Vlaggen",
@@ -644,11 +644,11 @@ const msgs: LocaleMessageObject = {
   },
   reviews: {
     headline: "{0} bracht deze versie uit op {1}",
-    title: 'Review logs',
+    title: "Logboeken bekijken",
     projectPage: "Projectpagina",
     downloadFile: "Download Bestand",
-    startReview: 'Start Review',
-    stopReview: 'Stop Review',
+    startReview: "Review starten",
+    stopReview: "Stop de beoordeling",
     approve: "Keur goed",
     approvePartial: "Keur deels goed",
     notUnderReview: "Deze versie is niet onder review",
@@ -683,11 +683,11 @@ const msgs: LocaleMessageObject = {
     }
   },
   apiKeys: {
-    title: 'API Keys',
+    title: "API sleutels",
     createNew: "Creëer nieuwe key",
     existing: "Bestaande keys",
     name: "Naam",
-    key: 'Key',
+    key: "Sleutel",
     keyIdentifier: "Key Identificatie",
     permissions: "Toestemmingen",
     delete: "Verwijder",
@@ -726,7 +726,7 @@ const msgs: LocaleMessageObject = {
   },
   userActivity: {
     title: "Activiteit van {0}",
-    reviews: 'Reviews',
+    reviews: "Beoordelingen",
     flags: "Vlaggen",
     reviewApproved: "Review Goedgekeurd",
     flagResolved: "Vlag Opgelost",
@@ -777,7 +777,7 @@ const msgs: LocaleMessageObject = {
       ProjectPageCreated: "Een projectpagina was aangemaakt",
       ProjectPageDeleted: "Een projectpagina was verwijderd",
       ProjectPageEdited: "Een projectpagina was bewerkt",
-      VersionVisibilityChanged: "The version's visibility state was changed",
+      VersionVisibilityChanged: "De zichtbaarheidsstatus van de versie is gewijzigd",
       VersionDeleted: "De versie was verwijderd",
       VersionCreated: "Een nieuwe versie werd geüpload",
       VersionDescriptionEdited: "De versiebeschrijving werd veranderd",
@@ -802,10 +802,10 @@ const msgs: LocaleMessageObject = {
   },
   versionApproval: {
     title: "Versiegoedkeuringen",
-    inReview: 'In Review',
+    inReview: "Wordt beoordeeld",
     approvalQueue: "Goedkeuringswatchtrij",
     queuedBy: "In de rij gezet door",
-    status: 'Status',
+    status: "status",
     project: 'Project',
     date: "Datum",
     version: "Versie",
