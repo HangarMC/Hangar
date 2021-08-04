@@ -47,7 +47,7 @@ const msgs: LocaleMessageObject = {
     }
   },
   nav: {
-    login: "Log in",
+    login: "Inloggen",
     signup: "Inschrijven",
     user: {
       notifications: "Berichten",
