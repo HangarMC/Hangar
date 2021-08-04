@@ -1,838 +1,838 @@
 import { LocaleMessageObject } from 'vue-i18n';
 const msgs: LocaleMessageObject = {
   general: {
-    close: 'Close',
-    submit: 'Submit',
-    save: 'Save',
-    comment: 'Comment',
-    change: 'Change',
-    donate: 'Donate',
-    continue: 'Continue',
-    create: 'Create',
-    delete: 'Delete',
-    or: 'Or',
-    reset: 'Reset',
-    edit: 'Edit',
-    required: 'Required',
-    add: 'Add',
-    name: 'Name',
-    link: 'Link',
-    send: 'Send',
-    home: 'Home',
-    message: 'Message',
-    refresh: 'Refresh',
-    confirm: 'Confirm',
+    close: "关闭",
+    submit: "提交",
+    save: "保存",
+    comment: "评论",
+    change: "更改",
+    donate: "赞助",
+    continue: "继续",
+    create: "创建",
+    delete: "删除",
+    or: "或",
+    reset: "重置",
+    edit: "编辑",
+    required: "必填项",
+    add: "添加",
+    name: "名称",
+    link: "链接",
+    send: "发送",
+    home: "主页",
+    message: "讯息",
+    refresh: "刷新",
+    confirm: "确认",
     error: {
-      invalidUrl: 'Invalid URL format'
+      invalidUrl: "无效 URL 格式"
     }
   },
   hangar: {
     projectSearch: {
-      query: 'Search in {0} projects, proudly made by the community...',
-      relevanceSort: 'Sort by relevance',
-      noProjects: 'There are no projects. 😢',
-      noProjectsFound: 'Found 0 projects. 😢'
+      query: "搜索到 {0} 个项目, 自豪地由社区提供...",
+      relevanceSort: "根据关联性排序",
+      noProjects: "这里没有任何项目。 ??",
+      noProjectsFound: "已找到 0 个项目。 ??"
     },
-    subtitle: 'A Minecraft package repository',
-    sponsoredBy: 'Sponsored by'
+    subtitle: "一个 Minecraft 魔改包仓库",
+    sponsoredBy: "由以下组织提供支持"
   },
   pages: {
-    staffTitle: 'Staff',
-    authorsTitle: 'Authors',
+    staffTitle: "工作人员",
+    authorsTitle: "作者",
     headers: {
-      username: 'Username',
-      roles: 'Roles',
-      joined: 'Joined',
-      projects: 'Projects'
+      username: "用户名",
+      roles: "角色",
+      joined: "已参与",
+      projects: "项目"
     }
   },
   nav: {
-    login: 'Login',
-    signup: 'Signup',
+    login: "登录",
+    signup: "注册",
     user: {
-      notifications: 'Notifications',
-      flags: 'Flags',
-      projectApprovals: 'Project approvals',
-      versionApprovals: 'Version approvals',
-      stats: 'Stats',
-      health: 'Hangar Health',
-      log: 'User Action Log',
-      platformVersions: 'Platform Versions',
-      logout: 'Sign out',
+      notifications: "通知",
+      flags: "举报",
+      projectApprovals: "通过项目审核",
+      versionApprovals: "通过版本审核",
+      stats: "统计",
+      health: "Hangar 健康",
+      log: "用户行为日志",
+      platformVersions: "平台版本",
+      logout: "登出",
       error: {
-        loginFailed: 'Authentication Failed',
+        loginFailed: "身份验证失败",
         invalidUsername: 'Invalid Username',
-        hangarAuth: "Couldn't connect to HangarAuth",
-        loginDisabled: 'Login is temporarily unavailable, please try again later',
-        fakeUserEnabled: 'Fake user is enabled. {0} is therefore disabled'
+        hangarAuth: "无法连接至 HangarAuth",
+        loginDisabled: "登录暂时无法使用，请稍后再作尝试",
+        fakeUserEnabled: "虚拟用户模式已启用。{0} 因此关闭"
       }
     },
-    createNew: 'Create new...',
+    createNew: "创建新的...",
     new: {
-      project: 'New Project',
-      organization: 'New Organization'
+      project: "新的项目",
+      organization: "新的组织"
     },
     hangar: {
-      home: 'Homepage',
-      forums: 'Forums',
-      code: 'Code',
-      docs: 'Docs',
+      home: "主页",
+      forums: "论坛",
+      code: "源码",
+      docs: "文档",
       javadocs: 'JavaDocs',
-      hangar: 'Hangar (Plugins)',
-      downloads: 'Downloads',
-      community: 'Community'
+      hangar: "Hangar (插件)",
+      downloads: "下载",
+      community: "社区"
     }
   },
   project: {
-    stargazers: 'Stargazers',
-    noStargazers: 'There are no stargazers on this project yet 😢',
-    watchers: 'Watchers',
-    noWatchers: 'There are no watchers on this project yet 😢',
-    members: 'Members',
+    stargazers: "收藏者",
+    noStargazers: "目前还没有人收藏这个项目。??",
+    watchers: "订阅者",
+    noWatchers: "目前还没有人时时关注这个项目的动态。??",
+    members: "成员",
     category: {
-      info: 'Category: {0}',
-      admin_tools: 'Admin Tools',
-      chat: 'Chat',
-      dev_tools: 'Developer Tools',
-      economy: 'Economy',
-      gameplay: 'Gameplay',
-      games: 'Games',
-      protection: 'Protection',
-      role_playing: 'Role Playing',
-      world_management: 'World Management',
-      misc: 'Miscellaneous'
+      info: "类别: {0}",
+      admin_tools: "管理员工具",
+      chat: "聊天",
+      dev_tools: "开发者工具",
+      economy: "经济",
+      gameplay: "游戏玩法",
+      games: "小游戏",
+      protection: "保护",
+      role_playing: "角色扮演",
+      world_management: "世界管理",
+      misc: "杂项"
     },
     actions: {
-      unwatch: 'Unwatch',
-      watch: 'Watch',
-      flag: 'Flag',
-      star: 'Star',
-      unstar: 'Unstar',
-      adminActions: 'Admin Actions',
-      flagHistory: 'Flag history ({0})',
-      staffNotes: 'Staff notes ({0})',
-      userActionLogs: 'User Action Logs',
-      forum: 'Forum'
+      unwatch: "取消关注",
+      watch: "关注",
+      flag: "举报",
+      star: "收藏",
+      unstar: "取消收藏",
+      adminActions: "管理员操作",
+      flagHistory: "举报历史 ({0})",
+      staffNotes: "工作人员笔记 ({0})",
+      userActionLogs: "用户操作日志",
+      forum: "论坛"
     },
     flag: {
-      flagProject: 'Flag {0}?',
-      flagSend: 'Successfully flagged, thanks for making this community a better place!',
-      flagSent: 'Flag submitted for review',
+      flagProject: "确定要举报 {0}?",
+      flagSend: "举报成功，感谢您让社区变得更好!",
+      flagSent: "举报评论",
       flags: {
-        inappropriateContent: 'Inappropriate Content',
-        impersonation: 'Impersonation or Deception',
-        spam: 'Spam',
-        malIntent: 'Malicious Intent',
-        other: 'Other'
+        inappropriateContent: "不相关内容",
+        impersonation: "冒充与欺骗",
+        spam: "恶意刷屏",
+        malIntent: "病毒内容",
+        other: "其他"
       },
       error: {
-        alreadyOpen: 'You can only have 1 unresolved flag on a project',
-        alreadyResolved: 'This flag is already resolved'
+        alreadyOpen: "您已经在该项目拥有 1 条未被处理的举报",
+        alreadyResolved: "这个举报已被处理"
       }
     },
     tabs: {
-      docs: 'Docs',
-      versions: 'Versions',
-      discuss: 'Discuss',
-      settings: 'Settings',
-      homepage: 'Homepage',
-      issues: 'Issues',
-      source: 'Source',
-      support: 'Support'
+      docs: "文档",
+      versions: "历史版本",
+      discuss: "讨论",
+      settings: "设置",
+      homepage: "主页",
+      issues: "问题反馈",
+      source: "源码",
+      support: "寻求帮助"
     },
     new: {
       step1: {
-        title: 'User Agreement',
-        text: 'A project contains your downloads and the documentation for your plugin.<br>Before continuing, please review the <a href="#">Hangar Submission Guidelines.</a>',
-        continue: 'Agree',
-        back: 'Abort'
+        title: "用户协定",
+        text: "一个项目将包含您所上传插件的下载与文档<br>在开始前, 请阅读 <a href=\"#\">Hangar 资源提交细则。</a>",
+        continue: "同意",
+        back: "返回"
       },
       step2: {
-        title: 'Basic Settings',
-        continue: 'Continue',
-        back: 'Back',
-        userSelect: 'Create as...',
-        projectName: 'Project name',
-        projectSummary: 'Project Summary',
-        projectCategory: 'Project Category'
+        title: "基础设置",
+        continue: "继续",
+        back: "返回",
+        userSelect: "创建为...",
+        projectName: "项目名称",
+        projectSummary: "项目概要",
+        projectCategory: "项目类别"
       },
       step3: {
-        title: 'Additional Settings',
-        continue: 'Continue',
-        back: 'Back',
-        optional: 'Optional',
-        links: 'Links',
-        homepage: 'Homepage',
-        issues: 'Issue Tracker',
-        source: 'Source Code',
-        support: 'External Support',
-        license: 'License',
-        type: 'Type',
-        customName: 'Name',
+        title: "附加设置",
+        continue: "继续",
+        back: "返回",
+        optional: "选填项",
+        links: "链接",
+        homepage: "主页",
+        issues: "问题追踪器",
+        source: "源码",
+        support: "额外支持",
+        license: "许可证",
+        type: "类别",
+        customName: "名称",
         url: 'URL',
         seo: 'SEO',
-        keywords: 'Keywords'
+        keywords: "关键词"
       },
       step4: {
-        title: 'Import from Spigot',
-        continue: 'Continue',
-        back: 'Back',
-        optional: 'Optional',
-        convert: 'Convert',
-        saveAsHomePage: 'Save as Home Page',
+        title: "从 Spigot 导入",
+        continue: "继续",
+        back: "返回",
+        optional: "选填项",
+        convert: "转换",
+        saveAsHomePage: "保存为主页",
         convertLabels: {
-          bbCode: 'Paste your BBCode here',
-          output: 'Markdown Output'
+          bbCode: "粘贴您的 BBCode 到这里",
+          output: "Markdown 输出"
         },
-        preview: 'Preview',
-        tutorial: 'How to get the BBCode',
+        preview: "预览",
+        tutorial: "如何获得 BBCode",
         tutorialInstructions: {
-          line1: 'To get the BBCode of your Spigot project, do the following:',
-          line2: '1. Go to your project and click on "Edit Resource".',
-          line3: '2. Click on the wrench symbol in the description editor.',
-          line4: '3. Copy paste the new contents into the upper converter textbox, do changes to the output if you like, and hit save!'
+          line1: "要获得您在Spigot上项目的 BBCode，您需要做如下几步:",
+          line2: "1. 到您项目主页并点击 \"Edit Resource\"。",
+          line3: "2. 点击于 description editor 中的扳手图标。",
+          line4: "3. 复制粘贴新内容到上面的转换器文本框中，对输出进行更改（如果您确实打算那么做的话），然后点击保存！"
         }
       },
       step5: {
-        title: 'Finishing',
-        text: 'Creating...'
+        title: "正在帮您处理最后的工作",
+        text: "创建中..."
       },
       error: {
-        create: 'There was an error creating the project',
-        nameExists: 'A project with this name already exists',
-        slugExists: 'A project with this slug already exists',
-        invalidName: 'This name contains invalid characters',
-        tooLongName: 'Project name is too long',
-        tooLongDesc: 'Project description is too long',
-        tooManyKeywords: 'Project has too many keywords',
-        noCategory: 'Project must have a category',
-        noDescription: 'Project must have a description'
+        create: "创建项目时遇到错误",
+        nameExists: "相同的项目名称已然存在",
+        slugExists: "相同的项目短链已然存在",
+        invalidName: "这个名称包含非法字符",
+        tooLongName: "项目名称太长啦",
+        tooLongDesc: "项目介绍太长啦",
+        tooManyKeywords: "项目添加了过多的关键词",
+        noCategory: "项目必须有一个类别",
+        noDescription: "项目必须有一段介绍"
       }
     },
-    sendForApproval: 'Send for approval',
+    sendForApproval: "发送并等待审核",
     info: {
-      title: 'Information',
-      publishDate: 'Published on {0}',
-      views: '0 views | {0} view | {0} views',
-      totalDownloads: '0 total downloads | {0} total download | {0} total downloads',
-      stars: '0 stars | {0} star | {0} stars',
-      watchers: '0 watchers | {0} watcher | {0} watchers'
+      title: "信息",
+      publishDate: "发布于 {0}",
+      views: "0 浏览量 | {0} 浏览量 | {0} 浏览量",
+      totalDownloads: "0 总下载数 | {0} 总下载数 | {0} 总下载数",
+      stars: "0 收藏 | {0} 收藏 | {0} 收藏",
+      watchers: "0 关注 | {0} 关注 | {0} 关注"
     },
-    promotedVersions: 'Promoted Versions',
+    promotedVersions: "最新版本",
     license: {
-      link: 'Licensed under '
+      link: "受制于许可证 "
     },
     error: {
-      star: 'Could not toggle starred',
-      watch: 'Could not toggle watched'
+      star: "无法切换收藏状态",
+      watch: "无法切换关注状态"
     },
     settings: {
-      title: 'Settings',
-      category: 'Category',
-      categorySub: 'Categorize your project into one of 10 categories. Appropriately categorizing your project makes it easier for people to find.',
-      keywords: 'Keywords',
-      keywordsSub: 'These are special words that will return your project when people add them to their searches.',
-      homepage: 'Homepage',
-      homepageSub: 'Having a custom homepage for your project helps you look more proper, official, and gives you another place to gather information about your project.',
-      issues: 'Issue tracker',
-      issuesSub: 'Providing an issue tracker helps your users get support more easily and provides you with an easy way to track bugs.',
-      source: 'Source code',
-      sourceSub: 'Support the community of developers by making your project open source!',
-      support: 'External support',
-      supportSub: 'An external place where you can offer support to your users. Could be a forum, a Discord server, or somewhere else.',
-      license: 'License',
-      licenseSub: 'What can people do (and not do) with your project?',
-      forum: 'Create posts on the forums',
-      forumSub: 'Sets if events like a new release should automatically create a post on the forums',
-      description: 'Description',
-      descriptionSub: 'A short description of your project',
-      icon: 'Icon',
-      iconSub: 'Upload an image representative of your project.',
-      iconUpload: 'Upload',
-      iconReset: 'Reset Icon',
-      apiKey: 'API Keys',
-      apiKeySub: 'Generate a unique deployment key to enable build deployment from Gradle',
-      apiKeyGenerate: 'Generate',
-      rename: 'Rename',
-      renameSub: 'Changing your projects name can have undesired consequences. We will not setup any redirects.',
-      delete: 'Delete',
-      deleteSub: 'Once you delete a project, it cannot be recovered.',
-      hardDelete: 'Hard Delete',
-      hardDeleteSub: 'Once you delete a project, it cannot be recovered. For real this time...',
-      save: 'Save changes',
-      optional: '(optional)',
-      licenseCustom: 'Custom Name',
-      licenseType: 'Type',
+      title: "设置",
+      category: "类别",
+      categorySub: "将项目分到10个现存类别中的一个。对项目进行适当的分类可以让人们更容易找到。",
+      keywords: "关键词",
+      keywordsSub: "当人们将它们添加到搜索中时，这些特殊的词将返回您的项目。",
+      homepage: "主页",
+      homepageSub: "为您的项目创建一个自定义主页有助于使您的项目看起来更养眼、更正式，同时也为您提供另一个收集项目信息的地方。",
+      issues: "问题追踪器",
+      issuesSub: "提供问题跟踪器可以帮助您的用户更轻松地获得支持，并为您持续跟踪bug状态提供更便利的方式。",
+      source: "源码",
+      sourceSub: "通过项目开源来促进开发人员社区的长远发展!",
+      support: "额外支持",
+      supportSub: "您可以为用户提供支持的外部场所。这个场所可能是一个论坛，一个Discord的服务器，或者其他地方。",
+      license: "许可证",
+      licenseSub: "规定人们能对您的项目做什么 (或不做什么) ?",
+      forum: "在论坛开新帖",
+      forumSub: "设置当事件发送时（如新版本发布）是否应自动在论坛上创建帖子",
+      description: "介绍",
+      descriptionSub: "对您的项目作出简明的介绍",
+      icon: "图标",
+      iconSub: "上传一个能代表您的项目的图片。",
+      iconUpload: "上传",
+      iconReset: "重置图标",
+      apiKey: "API 密钥",
+      apiKeySub: "生成唯一的部署密钥以从Gradle启用生成部署",
+      apiKeyGenerate: "生成",
+      rename: "重命名",
+      renameSub: "更改项目名称可能会产生不在预期之内的后果。我们不会为您原来的链接设置任何重定向。",
+      delete: "删除",
+      deleteSub: "删除项目后，将无法恢复。",
+      hardDelete: "彻底删除",
+      hardDeleteSub: "删除项目后，将无法恢复该项目。这次是真的...",
+      save: "保存更改",
+      optional: "(选填项)",
+      licenseCustom: "自定义名称",
+      licenseType: "类别",
       licenseUrl: 'URL',
       donation: {
-        enable: 'Enable',
-        enableSub: 'Enable the donation form for this project',
-        email: 'Email',
-        emailSub: 'The email address of the paypal account, that should receive the donations',
-        defaultAmount: 'Default Amount',
-        defaultAmountSub: 'The preselected default amount',
-        oneTimeAmounts: 'One-Time Amounts',
-        oneTimeAmountsSub: 'List of the options you want to give users for one time donations. Users can always enter custom amounts',
-        monthlyAmounts: 'Monthly Amounts',
-        monthlyAmountsSub: 'List of the options you want to give users for monthly donations. Users can always enter custom amounts'
+        enable: "启用",
+        enableSub: "启用此项目的捐赠表单",
+        email: "邮件",
+        emailSub: "贝宝帐户的电子邮件地址，该帐户将接收来自项目捐助的款项",
+        defaultAmount: "默认金额",
+        defaultAmountSub: "预选的默认捐助金额",
+        oneTimeAmounts: "单次金额",
+        oneTimeAmountsSub: "您希望为用户提供一次性捐赠的选项列表。用户始终可以输入自定义金额",
+        monthlyAmounts: "月度订阅",
+        monthlyAmountsSub: "您希望为用户提供的每月捐款选项列表。用户始终可以输入自定义金额"
       },
       error: {
-        invalidFile: '{0} is an invalid file type',
-        noFile: 'No file submitted',
+        invalidFile: "{0} 不是一个有效的文件类型",
+        noFile: "尚未提交文件",
         members: {
-          invalidUser: '{0} is not a valid user',
-          alreadyInvited: '{0} is already invited to the project',
-          notMember: '{0} is not a member of the project, therefore you cannot edit their role',
-          invalidRole: '{0} cannot be added/removed from the project'
+          invalidUser: "{0} 不是一个有效的用户",
+          alreadyInvited: "{0} 已经被邀请到项目中了",
+          notMember: "{0} 不是该项目成员，因此无法编辑他们在项目中所扮演的角色",
+          invalidRole: "{0} 无法从项目中被 添加/移除"
         }
       },
       success: {
-        changedIcon: 'Successfully changed the project icon',
-        resetIcon: 'Successfully reset the project icon',
-        rename: 'Successfully renamed the project to {0}',
-        softDelete: 'You have deleted this project',
-        hardDelete: 'You have fully deleted this project'
+        changedIcon: "成功更改项目的图标",
+        resetIcon: "成功重置项目的图标",
+        rename: "成功将项目重命名为 {0}",
+        softDelete: "您已经删除了这个项目",
+        hardDelete: "您已经彻底删除这个项目"
       },
       tabs: {
-        general: 'General',
-        optional: 'Optional',
-        management: 'Management',
-        donation: 'Donation'
+        general: "概览",
+        optional: "可选项",
+        management: "管理",
+        donation: "捐助"
       }
     },
     discuss: {
-      login: 'Log in',
-      toReply: 'to reply to this discussion',
-      noTopic: 'There is no discussion for this project',
-      send: 'Reply posted!'
+      login: "登录",
+      toReply: "以参加这个讨论",
+      noTopic: "目前还没有针对该项目的讨论",
+      send: "已发表回复!"
     }
   },
   page: {
-    plural: 'Pages',
+    plural: "页面",
     new: {
-      title: 'Create a new page',
+      title: "创建一个新页面",
       error: {
-        minLength: 'Page contents are too short',
-        maxLength: 'Page contents are too long',
-        duplicateName: 'A page with that name already exists',
+        minLength: "页面内容太少了",
+        maxLength: "页面内容太多了",
+        duplicateName: "相同名称的页面已然存在",
         invalidName: 'Invalid name',
         name: {
-          maxLength: 'Page name too long',
-          minLength: 'Page name too short',
-          invalidChars: 'Page name contained invalid characters'
+          maxLength: "页面名称太长啦",
+          minLength: "页面名称太短啦",
+          invalidChars: "页面名称包含非法字符"
         },
-        save: 'Unable to save page'
+        save: "无法保存页面"
       },
-      name: 'Page Name',
-      parent: 'Parent Page (optional)'
+      name: "页面名称",
+      parent: "上级页面 (选填)"
     },
     delete: {
-      title: 'Delete page?',
-      text: 'Are you sure you want to delete this page? This cannot be undone.'
+      title: "确定删除页面?",
+      text: "您确定您想要删除这个页面? 这个行为将不能被撤销。"
     }
   },
   version: {
     new: {
-      title: 'Create version...',
-      upload: 'Upload File',
-      uploadNew: 'Upload a new Version',
-      url: 'Enter a URL',
+      title: "发布版本...",
+      upload: "上传文件",
+      uploadNew: "上传一个新的版本",
+      url: "输入一个 URL",
       form: {
-        versionString: 'Version',
-        fileName: 'File name',
-        fileSize: 'File size',
-        externalUrl: 'External URL',
-        hangarProject: 'Hangar Project',
-        channel: 'Channel',
-        addChannel: 'Add Channel',
-        unstable: 'Unstable',
-        recommended: 'Recommended',
-        forumPost: 'Forum Post',
+        versionString: "版本",
+        fileName: "文件名称",
+        fileSize: "文件大小",
+        externalUrl: "外链 URL",
+        hangarProject: "Hangar 项目",
+        channel: "通道",
+        addChannel: "添加通道",
+        unstable: "不稳定",
+        recommended: "推荐",
+        forumPost: "论坛发帖",
         release: {
-          bulletin: 'Release Bulletin',
-          desc: "What's new in this release?"
+          bulletin: "发布公告",
+          desc: "在新版本中值得一提的内容?"
         },
-        platforms: 'Platforms',
-        dependencies: 'Plugin Dependencies'
+        platforms: "平台",
+        dependencies: "插件依赖项"
       },
       error: {
-        metaNotFound: 'Could not load metadata from uploaded file',
-        jarNotFound: 'Could not open jar file',
-        fileExtension: 'Incorrect file extension',
-        unexpected: 'An unexpected error occurred',
-        invalidVersionString: 'Invalid version string found',
-        duplicateNameAndPlatform: 'A version with this name and compatible platform already exists',
-        invalidNumOfPlatforms: 'Invalid number of platforms',
-        duplicate: 'A version with this file already exists',
-        noFile: 'Could not find uploaded file',
-        mismatchedFileSize: 'File sizes do not match',
-        hashMismatch: 'File hashes do not match',
-        invalidPlatformVersion: 'Invalid MC version for a platform specified',
-        fileIOError: 'File IO Error',
-        unknown: 'An unknown error has occurred',
-        incomplete: 'Plugin file missing {0}',
-        noDescription: 'Must have a description',
-        invalidPluginDependencyNamespace: 'Declared plugin dependency has an invalid project namespace',
+        metaNotFound: "无法从上传的文件中加载 metadata",
+        jarNotFound: "无法打开 jar 文件",
+        fileExtension: "不正确的文件后缀",
+        unexpected: "一个意料之外的错误发生了",
+        invalidVersionString: "无效的版本字符串",
+        duplicateNameAndPlatform: "一个相同名称的版本和兼容的平台已然存在",
+        invalidNumOfPlatforms: "无效的平台序号",
+        duplicate: "一个拥有相同文件的版本已然存在",
+        noFile: "无法找到上传的文件",
+        mismatchedFileSize: "文件大小不匹配",
+        hashMismatch: "文件哈希值不匹配",
+        invalidPlatformVersion: "指定的平台并不支持该 MC 版本",
+        fileIOError: "文件 IO 出错",
+        unknown: "一个未知错误已然发生",
+        incomplete: "插件文件缺少 {0}",
+        noDescription: "必须提供描述",
+        invalidPluginDependencyNamespace: "声明的插件依赖项具有无效的项目命名空间",
         invalidName: 'Invalid version name',
         channel: {
-          noName: 'Must have a channel name specified',
-          noColor: 'Must have a channel color specified'
+          noName: "必须指定一个通道名称",
+          noColor: "必须指定一个通道颜色"
         }
       }
     },
     edit: {
-      platformVersions: 'Edit Platform Versions: {0}',
-      pluginDeps: 'Edit Plugin Dependencies: {0}',
+      platformVersions: "编辑平台版本: {0}",
+      pluginDeps: "编辑插件依赖项: {0}",
       error: {
-        noPlatformVersions: 'Must supply at least one valid platform version',
-        invalidVersionForPlatform: '{0} is an invalid version for {1}',
-        invalidProjectNamespace: '{0} is not a valid project namespace'
+        noPlatformVersions: "必须至少提供一个有效的平台版本",
+        invalidVersionForPlatform: "{0} 于 {1} 是一个无效的版本",
+        invalidProjectNamespace: "{0} 不是一个有效的项目命名空间"
       }
     },
     page: {
-      subheader: '{0} released this version on {1}',
-      dependencies: 'Dependencies',
-      platform: 'Platform',
-      required: '(required)',
-      adminMsg: '{0} approved this version on {1}',
-      reviewLogs: 'Review logs',
-      reviewStart: 'Start review',
-      setRecommended: 'Set as Recommended',
-      setRecommendedTooltip: 'Set this version as recommended for {0} platform',
-      delete: 'Delete',
-      hardDelete: 'Delete (forever)',
-      restore: 'Restore',
-      download: 'Download',
-      downloadExternal: 'Download External',
-      adminActions: 'Admin actions',
-      recommended: 'Recommended version',
-      partiallyApproved: 'Partially approved',
-      approved: 'Approved',
-      userAdminLogs: 'User Admin Logs',
-      unsafeWarning: 'This version has not been reviewed by our moderation staff and may not be safe for download.',
-      downloadUrlCopied: 'Copied!',
+      subheader: "{0} 发布此版本于 {1}",
+      dependencies: "依赖项",
+      platform: "平台",
+      required: "(必填项)",
+      adminMsg: "{0} 通过了于 {1} 的审核",
+      reviewLogs: "审核日志",
+      reviewStart: "开始审核",
+      setRecommended: "设置为推荐",
+      setRecommendedTooltip: "在平台 {0} 上设为推荐项目",
+      delete: "删除",
+      hardDelete: "删除 (永久)",
+      restore: "恢复",
+      download: "下载",
+      downloadExternal: "下载外链",
+      adminActions: "管理员操作",
+      recommended: "推荐的版本",
+      partiallyApproved: "局部批准",
+      approved: "批准",
+      userAdminLogs: "用户管理日志",
+      unsafeWarning: "此版本尚未由我们的审核人员审核，可能无法被安全地下载。",
+      downloadUrlCopied: "已复制!",
       confirmation: {
-        title: 'Warning - {0} {1} by {2}',
-        alert: 'This version has not been reviewed by our moderation staff yet and may not be safe to use.',
-        disclaimer: 'Disclaimer: We disclaim all responsibility for any harm to your server or system should you choose not to heed this warning.',
-        agree: 'Download it at my own risk',
-        deny: 'Go back'
+        title: "警告 - {0} {1} 由 {2}",
+        alert: "此版本尚未由我们的审核人员审核，可能无法被安全地使用。",
+        disclaimer: "免责声明：如果您选择忽视此警告，我们对您的服务器或系统的任何损害概不负责。",
+        agree: "下载并自担风险",
+        deny: "返回"
       }
     },
-    channels: 'Channels',
-    editChannels: 'Edit Channels',
-    platforms: 'Platforms',
+    channels: "通道",
+    editChannels: "编辑通道",
+    platforms: "平台",
     error: {
-      onlyOnePublic: 'You only have 1 public version left'
+      onlyOnePublic: "您目前只存在有 1 个公开版本"
     },
     success: {
-      softDelete: 'You have deleted this version',
-      hardDelete: 'You have fully deleted this version',
-      restore: 'You have restored this version',
-      recommended: 'You have marked this version as recommended for {0} platform'
+      softDelete: "您已经删除了这个版本",
+      hardDelete: "您已经彻底删除这个版本",
+      restore: "您恢复了这个版本",
+      recommended: "您将该版本标记为在平台 {0} 上的推荐版本"
     }
   },
   channel: {
     modal: {
-      titleNew: 'Add a new channel',
-      titleEdit: 'Edit channel',
-      name: 'Channel Name',
-      color: 'Channel Color',
-      reviewQueue: 'Exclude from moderation review queue?',
+      titleNew: "添加一个新的通道",
+      titleEdit: "编辑通道",
+      name: "通道名称",
+      color: "通道颜色",
+      reviewQueue: "从审核队列中排除通道?",
       error: {
-        invalidName: 'Invalid channel name',
-        maxChannels: 'This project already has the maximum number of channels: {0}',
-        duplicateColor: 'This project already has a channel with this color',
-        duplicateName: 'This project already has a channel with this name',
-        tooLongName: 'Channel name is too long',
-        cannotDelete: 'You cannot delete this channel'
+        invalidName: "无效通道名称",
+        maxChannels: "这个项目已经达到了通道持有数上限: {0}",
+        duplicateColor: "这个项目已然存在一个相同通道颜色的通道",
+        duplicateName: "这个项目已然存在一个相同通道名称的通道",
+        tooLongName: "通道名称太长啦",
+        cannotDelete: "您无法删除这个通道"
       }
     },
     manage: {
-      title: 'Release channels',
-      subtitle: 'Release channels represent the state of a plugin release. A project may have up to five release channels.',
-      channelName: 'Channel Name',
-      versionCount: 'Version Count',
-      reviewed: 'Reviewed',
-      edit: 'Edit',
-      trash: 'Trash',
-      editButton: 'Edit',
-      deleteButton: 'Delete',
-      add: 'Add Channel'
+      title: "发行通道",
+      subtitle: "发布通道表示插件发布的状态。一个项目最多可以有五个发布通道。",
+      channelName: "通道名称",
+      versionCount: "版本数",
+      reviewed: "审核通过的",
+      edit: "编辑",
+      trash: "垃圾箱",
+      editButton: "编辑",
+      deleteButton: "删除",
+      add: "添加通道"
     }
   },
   organization: {
     new: {
-      title: 'Create a new Organization',
-      text: 'Organizations allow you to group users and provide closer collaboration between them within your projects on Hangar.',
-      name: 'Organization Name',
+      title: "创建一个新的组织",
+      text: "组织允许您将用户分组，以便在 Hangar 上的项目中为他们提供更紧密的协作关系。",
+      name: "组织名称",
       error: {
-        duplicateName: 'An organization/user with that name already exists',
-        invalidName: 'Invalid organization name',
-        tooManyOrgs: 'You can only create a maximum of {0} organizations',
-        notEnabled: 'Organizations are not enabled!',
-        jsonError: 'Error parsing the JSON response from HangarAuth',
-        hangarAuthValidationError: 'Validation Error: {0}',
-        unknownError: 'Unknown error while creating organization'
+        duplicateName: "具有相同名称的 组织/用户 已然存在",
+        invalidName: "无效的组织名称",
+        tooManyOrgs: "您至多只能创建 {0} 个组织",
+        notEnabled: "组织功能尚未启用!",
+        jsonError: "解析从 HangarAuth 获取的 JSON 出错",
+        hangarAuthValidationError: "身份验证出错: {0}",
+        unknownError: "在创建组织时遇到了未知错误"
       }
     },
     settings: {
       members: {
-        invalidUser: '{0} is not a valid user',
-        alreadyInvited: '{0} is already invited to the organization',
-        notMember: '{0} is not a member of the organization, therefore you cannot edit their role',
-        invalidRole: '{0} cannot be added/removed from the organization'
+        invalidUser: "{0} 不是一个有效的用户",
+        alreadyInvited: "{0} 已经被邀请到组织当中了",
+        notMember: "{0} 并不是该组织中的成员，因此您不能编辑他们在组织中所扮演的角色。",
+        invalidRole: "无法从组织中 添加/移除 {0}"
       }
     }
   },
   form: {
     memberList: {
-      addUser: 'Add User...',
-      create: 'Create',
-      editUser: 'Edit User',
-      invitedAs: '(Invited as {0})'
+      addUser: "添加用户...",
+      create: "创建",
+      editUser: "编辑用户",
+      invitedAs: "(邀请并担任 {0})"
     }
   },
   notifications: {
-    title: 'Notifications',
-    invites: 'Invites',
-    invited: 'You have been invited to join the {0}',
-    inviteAccepted: 'You have accepted an invitation to the {0}',
-    readAll: 'Mark all as read',
-    unread: 'Unread',
-    read: 'Read',
-    all: 'All',
+    title: "通知",
+    invites: "邀请",
+    invited: "您已被邀请至 {0}",
+    inviteAccepted: "您接受了来自 {0} 的邀请",
+    readAll: "标记所有信息为已读",
+    unread: "未读",
+    read: "已读",
+    all: "全部",
     invite: {
-      all: 'All',
-      projects: 'Projects',
-      organizations: 'Organizations',
+      all: "全部",
+      projects: "项目",
+      organizations: "组织",
       btns: {
-        accept: 'Accept',
-        decline: 'Decline',
-        unaccept: 'Unaccept'
+        accept: "接受",
+        decline: "谢绝",
+        unaccept: "不接受"
       },
       msgs: {
-        accept: 'You have joined {0}',
-        decline: 'You have declined to join {0}',
-        unaccept: 'You have left {0}'
+        accept: "您已加入到 {0}",
+        decline: "您谢绝加入 {0}",
+        unaccept: "您离开了 {0}"
       }
     },
     empty: {
-      unread: 'You have no unread notifications.',
-      read: 'You have no read notifications.',
-      all: 'You have no notifications.',
-      invites: 'You have no invites'
+      unread: "您还没有未读通知哦。",
+      read: "您有未读通知。",
+      all: "您还没有收到过通知。",
+      invites: "您还没有收到过邀请"
     },
     project: {
-      reviewed: '{0} {1} has been reviewed and is approved',
-      reviewedPartial: '{0} {1} has been reviewed and is partially approved',
-      newVersion: 'A new version has been released for {0}: {1}',
-      invite: 'You have been invited to join the group {0} on the project {1}',
-      inviteRescinded: 'Your invite to you the group {0} in the project {1} has been rescinded',
-      removed: 'You have been removed from the group {0} in the project {1}',
-      roleChanged: 'You have been added to the {0} group in the project {1}'
+      reviewed: "{0} {1} 已被审核并批准通过",
+      reviewedPartial: "{0} {1} 已被审核并局部通过",
+      newVersion: "项目 {0} 有新的发行版: {1}",
+      invite: "您被邀请至于项目 {1} 的小组 {0}",
+      inviteRescinded: "邀请您至项目 {1} 的小组 {0} 的请求已撤销",
+      removed: "您已被移出项目 {1} 的小组 {0}",
+      roleChanged: "您于项目 {1} 中被添加到 {0} 小组"
     },
     organization: {
-      invite: 'You have been invited to join the group {0} in the organization {1}',
-      inviteRescinded: 'Your invite to you the group {0} in the organization {1} has been rescinded',
-      removed: 'You have been removed from the group {0} in the organization {1}',
-      roleChanged: 'You have been added to the {0} group in the organization {1}'
+      invite: "您被邀请至于组织 {1} 的小组 {0}",
+      inviteRescinded: "邀请您至组织 {1} 的小组 {0} 的请求已撤销",
+      removed: "您已被移出组织 {1} 的小组 {0}",
+      roleChanged: "您于组织 {1} 中被添加到 {0} 小组"
     }
   },
   visibility: {
     notice: {
-      new: 'This project is new, and will not be shown to others until a version has been uploaded. If a version is not uploaded over a longer time the project will be deleted.',
-      needsChanges: 'This project requires changes',
-      needsApproval: 'You have sent the project for review',
-      softDelete: 'Project deleted by {0}'
+      new: "此项目是全新的，因此在上传版本之前不会显示给其他人。如果在较长时间内未有版本被发行，则项目将被删除。",
+      needsChanges: "此项目需要进行更改",
+      needsApproval: "您已将项目送审，静候佳音吧",
+      softDelete: "项目被 {0} 删除"
     },
     name: {
-      new: 'New',
-      public: 'Public',
-      needsChanges: 'Needs Changes',
-      needsApproval: 'Needs Approval',
-      softDelete: 'Soft Delete'
+      new: "新建",
+      public: "公共",
+      needsChanges: "需要更改",
+      needsApproval: "需要审核",
+      softDelete: "删除"
     },
     changes: {
       version: {
-        reviewed: 'due to approved reviews'
+        reviewed: "由于审核通过"
       }
     },
     modal: {
-      activatorBtn: 'Visibility Actions',
-      title: "Change {0}'s visibility",
-      reason: 'Reason for change',
-      success: "You changed the {0}'s visibility to {1}"
+      activatorBtn: "可见性操作",
+      title: "更改了 {0} 的可见性",
+      reason: "更改的原因",
+      success: "您更改了 {0} 的可见性为 {1}"
     }
   },
   author: {
-    watching: 'Watching',
-    stars: 'Stars',
-    orgs: 'Organizations',
-    viewOnForums: 'View on forums ',
-    taglineLabel: 'User Tagline',
-    editTagline: 'Edit Tagline',
-    memberSince: 'A member since {0}',
-    numProjects: 'No projects | {0} project | {0} projects',
-    addTagline: 'Add a tagline',
-    noOrgs: '{0} is not part of any organizations. 😢',
-    noWatching: '{0} is not watching any projects. 😢',
-    noStarred: '{0}  has not starred any projects. 😢',
+    watching: "关注的内容",
+    stars: "收藏夹",
+    orgs: "组织",
+    viewOnForums: "在论坛上查看 ",
+    taglineLabel: "用户标语",
+    editTagline: "编辑标语",
+    memberSince: "注册于 {0}",
+    numProjects: "无项目 | {0} 个项目 | {0} 个项目",
+    addTagline: "添加一个标语",
+    noOrgs: "{0} 不属于任何一个组织。 ??",
+    noWatching: "{0} 还没有收藏过任何项目。 ??",
+    noStarred: "{0} 还没关注任何项目。 ??",
     tooltips: {
-      settings: 'User Settings',
-      lock: 'Lock Account',
-      unlock: 'Unlock Account',
-      apiKeys: 'API Keys',
-      activity: 'User Activity',
-      admin: 'User Admin'
+      settings: "用户设置",
+      lock: "锁定账户",
+      unlock: "解锁账户",
+      apiKeys: "API 密钥",
+      activity: "用户活动",
+      admin: "用户管理"
     },
     lock: {
-      confirmLock: "Lock {0}'s account?",
-      confirmUnlock: "Unlock {0}'s account?",
-      successLock: "Successfully locked {0}'s account",
-      successUnlock: "Successfully unlocked {0}'s account"
+      confirmLock: "确定要锁定 {0} 的账户?",
+      confirmUnlock: "确定要解锁 {0} 的账户?",
+      successLock: "成功锁定 {0} 的账户",
+      successUnlock: "成功解锁 {0} 的账户"
     },
     org: {
-      editAvatar: 'Edit avatar'
+      editAvatar: "编辑头像"
     },
     error: {
-      invalidTagline: 'Invalid tagline',
+      invalidTagline: "无效的标语",
       invalidUsername: 'Invalid username'
     }
   },
   linkout: {
-    title: 'External Link Warning',
-    text: 'You have clicked on an external link to "{0}". If you did not intend to visit this link, please go back. Otherwise, click continue.',
-    abort: 'Go Back',
-    continue: 'Continue'
+    title: "外链警告",
+    text: "您刚才点击了前往 \"{0}\" 的链接。如果您不打算访问，请返回，否则，请继续",
+    abort: "返回",
+    continue: "继续"
   },
   flags: {
-    header: 'Flags for',
-    noFlags: 'No flags found',
-    resolved: 'Yes, by {0} on {1}',
-    notResolved: 'No'
+    header: "举报至",
+    noFlags: "没有举报被找到",
+    resolved: "是，由 {0} 于 {1}",
+    notResolved: "否"
   },
   notes: {
-    header: 'Notes for',
-    noNotes: 'No notes found',
-    addNote: 'Add note',
-    notes: 'Notes',
-    placeholder: 'Add a note...'
+    header: "笔记至",
+    noNotes: "没有笔记被找到",
+    addNote: "添加笔记",
+    notes: "笔记",
+    placeholder: "添加一个笔记..."
   },
   stats: {
-    title: 'Stats',
-    plugins: 'Plugins',
-    reviews: 'Reviews',
-    uploads: 'Uploads',
-    downloads: 'Downloads',
-    totalDownloads: 'Total Downloads',
-    unsafeDownloads: 'Unsafe Downloads',
-    flags: 'Flags',
-    openedFlags: 'Opened Flags',
-    closedFlags: 'Closed Flags'
+    title: "统计",
+    plugins: "插件数",
+    reviews: "审核数",
+    uploads: "上传数",
+    downloads: "下载数",
+    totalDownloads: "统共下载次数",
+    unsafeDownloads: "不安全的下载数",
+    flags: "举报数",
+    openedFlags: "待处理的举报",
+    closedFlags: "已处理的举报"
   },
   health: {
-    title: 'Hangar Health Report',
-    noTopicProject: 'Missing discussion topic',
-    erroredJobs: 'Failed jobs',
-    jobText: 'Job type: {0}, Error Type: {1}, Happened: {2}',
-    staleProjects: 'Stale projects',
-    notPublicProjects: 'Hidden projects',
-    noPlatform: 'No platform detected',
-    missingFileProjects: 'Missing File',
-    empty: 'Empty! All good!'
+    title: "Hangar 健康报告",
+    noTopicProject: "丢失讨论主题",
+    erroredJobs: "失败的任务",
+    jobText: "任务种类: {0}, 出错种类: {1}, 发生于: {2}",
+    staleProjects: "过时的项目",
+    notPublicProjects: "隐藏的项目",
+    noPlatform: "未检测到平台",
+    missingFileProjects: "丢失的文件",
+    empty: "空的! 一切运行良好!"
   },
   reviews: {
-    headline: '{0} released this version on {1}',
-    title: 'Review logs',
-    projectPage: 'Project Page',
-    downloadFile: 'Download File',
-    startReview: 'Start Review',
-    stopReview: 'Stop Review',
-    approve: 'Approve',
-    approvePartial: 'Approve Partial',
-    notUnderReview: 'This version is not under review',
-    reviewMessage: 'Review Message',
-    addMessage: 'Add Message',
-    reopenReview: 'Reopen Review',
-    undoApproval: 'Undo Approval',
-    hideClosed: 'Hide all finished reviews',
+    headline: "{0} 于 {1} 发行这个版本",
+    title: "审核日志",
+    projectPage: "项目页面",
+    downloadFile: "下载文件",
+    startReview: "开始审核",
+    stopReview: "停止审核",
+    approve: "通过",
+    approvePartial: "局部通过",
+    notUnderReview: "这个版本尚未处于审核之下",
+    reviewMessage: "审核信息",
+    addMessage: "添加信息",
+    reopenReview: "重新开始审核",
+    undoApproval: "撤销通过决议",
+    hideClosed: "隐藏所有已完成的审核",
     error: {
-      noReviewStarted: 'There is no unfinished review to add a message to',
-      notCorrectUser: 'You are not the user that started this review',
-      cannotReopen: 'Unable to reopen this review',
-      onlyOneReview: 'Cannot have more than 1 review for a version',
-      badUndo: 'Can only undo approval after an approval'
+      noReviewStarted: "没有要添加消息的未完成审核",
+      notCorrectUser: "您不是开启审核这个项目的用户",
+      cannotReopen: "无法重新开始这个审核",
+      onlyOneReview: "对于一个版本不能有超过 1 次的审核",
+      badUndo: "只有在审核通过后才能撤销通过决议"
     },
     presets: {
       message: '{msg}',
-      start: '{name} started a review',
-      stop: '{name} stopped a review: {msg}',
-      reopen: '{name} reopened a review',
-      approve: '{name} approved this version',
-      approvePartial: '{name} partially approved this version',
-      undoApproval: '{name} has undone their approval',
-      reviewTitle: "{name}'s Review"
+      start: "{name} 开启了一个审核",
+      stop: "{name} 停止了这次审核: {msg}",
+      reopen: "{name} 重开了审核",
+      approve: "{name} 通过了此版本",
+      approvePartial: "{name} 局部通过了此版本",
+      undoApproval: "{name} 撤销了他们的批准",
+      reviewTitle: "{name} 的审核"
     },
     state: {
-      ongoing: 'Ongoing',
-      stopped: 'Stopped',
-      approved: 'Approved',
-      partiallyApproved: 'Partially Approved',
-      lastUpdate: 'Last Update: {0}'
+      ongoing: "进行中",
+      stopped: "已停止",
+      approved: "已通过",
+      partiallyApproved: "已局部通过",
+      lastUpdate: "最后更新于: {0}"
     }
   },
   apiKeys: {
-    title: 'API Keys',
-    createNew: 'Create new key',
-    existing: 'Existing keys',
-    name: 'Name',
-    key: 'Key',
-    keyIdentifier: 'Key Identifier',
-    permissions: 'Permissions',
-    delete: 'Delete',
-    deleteKey: 'Delete Key',
-    createKey: 'Create key',
-    noKeys: 'There are no api keys yet. You can create one on the right side',
+    title: "API 密钥",
+    createNew: "创建新的密钥",
+    existing: "现存密钥",
+    name: "名称",
+    key: "密钥",
+    keyIdentifier: "秘钥标识",
+    permissions: "权限",
+    delete: "删除",
+    deleteKey: "删除密钥",
+    createKey: "创建密钥",
+    noKeys: "这里还没有 api 密钥哦，您可以在右边的按钮那创建一个",
     success: {
-      delete: 'You have deleted the key: {0}',
-      create: 'You have created the key: {0}'
+      delete: "您删除了密钥: {0}",
+      create: "您创建了密钥: {0}"
     },
     error: {
-      notEnoughPerms: 'Not enough permissions to create that key',
-      duplicateName: 'Duplicate key name'
+      notEnoughPerms: "没有足够的权限来创建那份密钥",
+      duplicateName: "密钥名称已存在"
     }
   },
   apiDocs: {
-    title: 'API Docs'
+    title: "API 使用文档"
   },
   platformVersions: {
-    title: 'Configure Platform Versions',
-    platform: 'Platform',
-    versions: 'Versions',
-    addVersion: 'Add Version',
-    saveChanges: 'Save Changes',
-    success: 'Updated platform versions'
+    title: "配置平台版本",
+    platform: "平台",
+    versions: "版本",
+    addVersion: "添加版本",
+    saveChanges: "保存更改",
+    success: "更新平台版本"
   },
   flagReview: {
-    title: 'Flags',
-    noFlags: 'There are no flags to review.',
-    msgUser: 'Message user',
-    msgProjectOwner: 'Message owner',
-    markResolved: 'Mark resolved',
-    line1: '{0} reported {1} on {2}',
-    line2: 'Reason: {0}',
-    line3: 'Comment: {0}'
+    title: "举报审阅",
+    noFlags: "这里还没有举报需要被您审阅。",
+    msgUser: "给用户发讯息",
+    msgProjectOwner: "给项目所有者发讯息",
+    markResolved: "标记为已解决",
+    line1: "{0} 于 {2} 举报 {1}",
+    line2: "理由: {0}",
+    line3: "评论: {0}"
   },
   userActivity: {
-    title: "{0}'s Activity",
-    reviews: 'Reviews',
-    flags: 'Flags',
-    reviewApproved: 'Review Approved',
-    flagResolved: 'Flag Resolved',
+    title: "{0} 的动态",
+    reviews: "审阅数",
+    flags: "举报数",
+    reviewApproved: "已通过的审核",
+    flagResolved: "已解决的举报",
     error: {
-      isOrg: 'Cannot show activity for organization users'
+      isOrg: "无法显示组织用户的动态"
     }
   },
   userAdmin: {
-    title: 'Edit User',
-    organizations: 'Organizations',
-    organization: 'Organization',
-    projects: 'Projects',
-    project: 'Project',
-    owner: 'Owner',
-    role: 'Role',
-    accepted: 'Accepted',
-    sidebar: 'Other Administration',
-    hangarAuth: 'HangarAuth Profile',
-    forum: 'Forum Profile'
+    title: "编辑用户",
+    organizations: "组织",
+    organization: "组织",
+    projects: "项目",
+    project: "项目",
+    owner: "所有者",
+    role: "角色",
+    accepted: "接受",
+    sidebar: "别的管理",
+    hangarAuth: "HangarAuth 档案",
+    forum: "论坛档案"
   },
   userActionLog: {
-    title: 'User Action Log',
-    user: 'User',
-    address: 'IP Address',
-    time: 'Time',
-    action: 'Action',
-    context: 'Context',
-    oldState: 'Old State',
-    newState: 'New State',
-    markdownView: 'Markdown View',
-    diffView: 'Diff View',
+    title: "用户行为日志",
+    user: "用户",
+    address: "IP 地址",
+    time: "时间",
+    action: "行为",
+    context: "内容",
+    oldState: "旧状态",
+    newState: "新状态",
+    markdownView: "Markdown 预览",
+    diffView: "Diff 预览",
     types: {
-      ProjectVisibilityChanged: 'The project visibility state was changed',
-      ProjectRename: 'The project was renamed',
-      ProjectFlagged: 'The project got flagged',
-      ProjectSettingsChanged: 'The project settings were changed',
-      ProjectIconChanged: 'The project icon was changed',
-      ProjectFlagResolved: 'The flag was resolved',
-      ProjectChannelCreated: 'A project channel was created',
-      ProjectChannelEdited: 'A project channel was edited',
-      ProjectChannelDeleted: 'A project channel was deleted',
-      ProjectInvitesSent: 'Project invites were sent',
-      ProjectInviteDeclined: 'A project invite was declined',
-      ProjectInviteUnaccepted: 'A project invite was unaccepted',
-      ProjectMemberAdded: 'A project member was added',
-      ProjectMembersRemoved: 'Project members were removed',
-      ProjectMemberRolesChanged: 'Project members had their roles updated',
-      ProjectPageCreated: 'A project page was created',
-      ProjectPageDeleted: 'A project page was deleted',
-      ProjectPageEdited: 'A project page was edited',
-      VersionVisibilityChanged: "The version's visibility state was changed",
-      VersionDeleted: 'The version was deleted',
-      VersionCreated: 'A new version was uploaded',
-      VersionDescriptionEdited: 'The version description was edited',
-      VersionReviewStateChanged: "The version's review state was changed",
-      VersionPluginDependencyAdded: 'A plugin dependency was added',
-      VersionPluginDependencyEdited: 'A plugin dependency was edited',
-      VersionPluginDependencyRemoved: 'A plugin dependency was removed',
-      VersionPlatformDependencyAdded: 'A platform dependency was added',
-      VersionPlatformDependencyRemoved: 'A platform dependency was removed',
-      UserTaglineChanged: 'The user tagline changed',
-      UserLocked: 'This user is locked',
-      UserUnlocked: 'This user is unlocked',
-      UserApikeyCreated: 'An apikey was created',
-      UserApikeyDeleted: 'An apikey was deleted',
-      OrganizationInvitesSent: 'Organization invites were sent',
-      OrganizationInviteDeclined: 'An organization invite was declined',
-      OrganizationInviteUnaccepted: 'An organization invite was unaccepted',
-      OrganizationMemberAdded: 'An organization member was added',
-      OrganizationMembersRemoved: 'Organization members were removed',
-      OrganizationMemberRolesChanged: 'Organization members had their roles updated'
+      ProjectVisibilityChanged: "项目可见性状态被更改",
+      ProjectRename: "项目被重命名",
+      ProjectFlagged: "项目被举报",
+      ProjectSettingsChanged: "项目设置被更改",
+      ProjectIconChanged: "项目图标被更改",
+      ProjectFlagResolved: "举报被解决",
+      ProjectChannelCreated: "项目通道被创建",
+      ProjectChannelEdited: "项目通道被编辑",
+      ProjectChannelDeleted: "项目通道被删除",
+      ProjectInvitesSent: "项目协助邀请函被发送",
+      ProjectInviteDeclined: "项目协助邀请函被谢绝",
+      ProjectInviteUnaccepted: "项目协助邀请函未被接受",
+      ProjectMemberAdded: "项目成员被添加",
+      ProjectMembersRemoved: "项目成员被移除",
+      ProjectMemberRolesChanged: "项目成员角色更新",
+      ProjectPageCreated: "项目页面被创建",
+      ProjectPageDeleted: "项目页面被删除",
+      ProjectPageEdited: "项目页面被编辑",
+      VersionVisibilityChanged: "版本可见性状态被更改",
+      VersionDeleted: "版本被删除",
+      VersionCreated: "一个新版本被上传",
+      VersionDescriptionEdited: "版本描述被编辑",
+      VersionReviewStateChanged: "版本审核状态被更改",
+      VersionPluginDependencyAdded: "插件依赖项被添加",
+      VersionPluginDependencyEdited: "插件依赖项被编辑",
+      VersionPluginDependencyRemoved: "插件依赖项被移除",
+      VersionPlatformDependencyAdded: "平台依赖项被添加",
+      VersionPlatformDependencyRemoved: "平台依赖项被移除",
+      UserTaglineChanged: "用户标语被更新",
+      UserLocked: "这个用户已被锁定",
+      UserUnlocked: "这个用户未被锁定",
+      UserApikeyCreated: "一个 api 密钥被创建",
+      UserApikeyDeleted: "一个 apikey 被删除",
+      OrganizationInvitesSent: "组织邀请函被发送",
+      OrganizationInviteDeclined: "组织邀请函被谢绝",
+      OrganizationInviteUnaccepted: "组织邀请函未被接受",
+      OrganizationMemberAdded: "组织成员被添加",
+      OrganizationMembersRemoved: "组织成员被移除",
+      OrganizationMemberRolesChanged: "组织成员的角色被更改"
     }
   },
   versionApproval: {
-    title: 'Version Approvals',
-    inReview: 'In Review',
-    approvalQueue: 'Approval queue',
-    queuedBy: 'Queued by',
-    status: 'Status',
-    project: 'Project',
-    date: 'Date',
-    version: 'Version',
-    started: 'Started: {0}',
-    ended: 'Ended: {0}',
+    title: "版本审核",
+    inReview: "审核中",
+    approvalQueue: "通过队列",
+    queuedBy: "按以下方式匹配",
+    status: "状态",
+    project: "项目",
+    date: "日期",
+    version: "版本",
+    started: "开始于: {0}",
+    ended: "结束于: {0}",
     statuses: {
-      ongoing: '{0} ongoing',
-      stopped: '{0} stopped',
-      approved: '{0} approved'
+      ongoing: "{0} 处于审核中",
+      stopped: "{0} 个审核被停止",
+      approved: "{0} 个审核被通过"
     }
   },
   projectApproval: {
-    title: 'Project Approvals',
-    sendForApproval: 'You have sent the project for approval',
-    noProjects: 'No projects',
-    needsApproval: 'Needs Approval',
-    awaitingChanges: 'Awaiting Changes',
-    description: '{0} requested changes on {1}'
+    title: "项目审核",
+    sendForApproval: "您已将项目送审，静候佳音吧",
+    noProjects: "无项目",
+    needsApproval: "待通过",
+    awaitingChanges: "等待更改",
+    description: "{0} 要求更改 {1}"
   },
   donate: {
-    title: 'Donate to {}',
-    monthly: 'Monthly',
-    oneTime: 'One-Time',
-    selectAmount: 'Select an amount above or enter an amount below',
-    legal: 'By donating to {0} you agree to Y and that tacos are delicious',
-    cta: 'Donate',
-    submit: 'Donate {0}'
+    title: "捐助给 {}",
+    monthly: "月度订阅",
+    oneTime: "一次性",
+    selectAmount: "在上面选择金额或在下面自己输入数字",
+    legal: "通过向 {0} 捐款您同意玉米饼很好吃",
+    cta: "捐款",
+    submit: "按 {0} 捐助"
   },
   lang: {
     button: 'Switch Language',
@@ -841,25 +841,25 @@ const msgs: LocaleMessageObject = {
     hangarAuth: 'This only change the locale for your current browser (as a cookie). Click here to change your lang on paper auth for all paper services'
   },
   validation: {
-    required: '{0} is required',
-    maxLength: 'Maximum length is {0}',
-    minLength: 'Minimum length is {0}',
-    invalidFormat: '{0} is invalid',
-    invalidUrl: 'Invalid URL format'
+    required: "{0} 是必填的",
+    maxLength: "最长不能超过 {0}",
+    minLength: "最短不能少于 {0}",
+    invalidFormat: "{0} 无效",
+    invalidUrl: "无效的 URL 格式"
   },
   prompts: {
-    confirm: 'Got it!',
+    confirm: "了解了!",
     changeAvatar: {
-      title: 'Change your avatar!',
-      message: "Welcome to your new organization! Start by changing it's avatar by clicking on it."
+      title: "更改您的头像!",
+      message: "欢迎来到您的新组织! 从点击头像进行更改开始迈出您组织发展的第一步吧。"
     }
   },
   error: {
-    userLocked: 'Your account is locked.',
-    401: 'You must be logged in for this',
-    403: 'You do not have permission to do that',
-    404: '404 Not found',
-    unknown: 'An error occurred'
+    userLocked: "您的账户被锁定。",
+    401: "您必须登录了才可那么做",
+    403: "您没有权限来那么做",
+    404: "404 未找到",
+    unknown: "未知错误发生啦"
   }
 };
 export default msgs;
