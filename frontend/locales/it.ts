@@ -1,872 +1,865 @@
 import { LocaleMessageObject } from 'vue-i18n';
-
 const msgs: LocaleMessageObject = {
-    general: {
-        close: 'Chiudi',
-        submit: 'Invia',
-        save: 'Salva',
-        comment: 'Commenta',
-        change: 'Cambia',
-        donate: 'Dona',
-        continue: 'Continua',
-        create: 'Crea',
-        delete: 'Elimina',
-        or: 'Oppure',
-        reset: 'Reset',
-        edit: 'Modifica',
-        required: 'Richiesto',
-        add: 'Aggiungi',
-        name: 'Nome',
-        link: 'Link',
-        send: 'Invia',
-        home: 'Home',
-        message: 'Messaggio',
-        refresh: 'Ricarica',
-        confirm: 'Conferma',
-        error: {
-            invalidUrl: 'Formato URL invalido',
-        },
+  general: {
+    close: 'Close',
+    submit: 'Submit',
+    save: 'Save',
+    comment: 'Comment',
+    change: 'Change',
+    donate: 'Donate',
+    continue: 'Continue',
+    create: 'Create',
+    delete: 'Delete',
+    or: 'Or',
+    reset: 'Reset',
+    edit: 'Edit',
+    required: 'Required',
+    add: 'Add',
+    name: 'Name',
+    link: 'Link',
+    send: 'Send',
+    home: 'Home',
+    message: 'Message',
+    refresh: 'Refresh',
+    confirm: 'Confirm',
+    error: {
+      invalidUrl: 'Invalid URL format'
+    }
+  },
+  hangar: {
+    projectSearch: {
+      query: 'Search in {0} projects, proudly made by the community...',
+      relevanceSort: 'Sort by relevance',
+      noProjects: 'There are no projects. 😢',
+      noProjectsFound: 'Found 0 projects. 😢'
+    },
+    subtitle: 'A Minecraft package repository',
+    sponsoredBy: 'Sponsored by'
+  },
+  pages: {
+    staffTitle: 'Staff',
+    authorsTitle: 'Authors',
+    headers: {
+      username: 'Username',
+      roles: 'Roles',
+      joined: 'Joined',
+      projects: 'Projects'
+    }
+  },
+  nav: {
+    login: 'Login',
+    signup: 'Signup',
+    user: {
+      notifications: 'Notifications',
+      flags: 'Flags',
+      projectApprovals: 'Project approvals',
+      versionApprovals: 'Version approvals',
+      stats: 'Stats',
+      health: 'Hangar Health',
+      log: 'User Action Log',
+      platformVersions: 'Platform Versions',
+      logout: 'Sign out',
+      error: {
+        loginFailed: 'Authentication Failed',
+        invalidUsername: 'Invalid Username',
+        hangarAuth: "Couldn't connect to HangarAuth",
+        loginDisabled: 'Login is temporarily unavailable, please try again later',
+        fakeUserEnabled: 'Fake user is enabled. {0} is therefore disabled'
+      }
+    },
+    createNew: 'Create new...',
+    new: {
+      project: 'New Project',
+      organization: 'New Organization'
     },
     hangar: {
-        projectSearch: {
-            query: 'Cercando in {0} progetti, fatti con orgoglio dalla community...',
-            relevanceSort: 'Ordina per importanza',
-            noProjects: 'Non ci sono progetti. 😢',
-            noProjectsFound: 'Trovati 0 progetti. 😢',
-        },
-        subtitle: 'Una repository di pacchetti di minecraft',
-        sponsoredBy: 'Sponsored by',
+      home: 'Homepage',
+      forums: 'Forums',
+      code: 'Code',
+      docs: 'Docs',
+      javadocs: 'JavaDocs',
+      hangar: 'Hangar (Plugins)',
+      downloads: 'Downloads',
+      community: 'Community'
+    }
+  },
+  project: {
+    stargazers: 'Stargazers',
+    noStargazers: 'There are no stargazers on this project yet 😢',
+    watchers: 'Watchers',
+    noWatchers: 'There are no watchers on this project yet 😢',
+    members: 'Members',
+    category: {
+      info: 'Category: {0}',
+      admin_tools: 'Admin Tools',
+      chat: 'Chat',
+      dev_tools: 'Developer Tools',
+      economy: 'Economy',
+      gameplay: 'Gameplay',
+      games: 'Games',
+      protection: 'Protection',
+      role_playing: 'Role Playing',
+      world_management: 'World Management',
+      misc: 'Miscellaneous'
     },
-    pages: {
-        staffTitle: 'Staff',
-        authorsTitle: 'Autori',
-        headers: {
-            username: 'Username',
-            roles: 'Ruoli',
-            joined: 'Entrato',
-            projects: 'Progetti',
-        },
+    actions: {
+      unwatch: 'Unwatch',
+      watch: 'Watch',
+      flag: 'Flag',
+      star: 'Star',
+      unstar: 'Unstar',
+      adminActions: 'Admin Actions',
+      flagHistory: 'Flag history ({0})',
+      staffNotes: 'Staff notes ({0})',
+      userActionLogs: 'User Action Logs',
+      forum: 'Forum'
     },
-    nav: {
-        login: 'Entra',
-        signup: 'Registrati',
-        user: {
-            notifications: 'Notifiche',
-            flags: 'Segnalazioni',
-            projectApprovals: 'Approvazioni progetti',
-            versionApprovals: 'Approvazioni versioni',
-            stats: 'Statistiche',
-            health: 'Vita di Hangar',
-            log: 'Log Azioni Utente',
-            platformVersions: 'Versions Piattaforme',
-            logout: 'Esci',
-            error: {
-                loginFailed: 'Autenticazione Fallita',
-                invalidUsername: 'Username Invalido',
-                hangarAuth: 'Non riesco a connettermi ad HangarAuth',
-                loginDisabled: 'Il login non è attualmente disponibile, prova più tardi',
-                fakeUserEnabled: 'Gli utenti falsi sono abilitati. {0} è quindi disabilitato',
-            },
-        },
-        createNew: 'Crea nuovo...',
-        new: {
-            project: 'Nuovo Progetto',
-            organization: 'Nuova Organizzazione',
-        },
-        hangar: {
-            home: 'Home',
-            forums: 'Forums',
-            code: 'Codice',
-            docs: 'Docs',
-            javadocs: 'JavaDocs',
-            hangar: 'Hangar (Plugins)',
-            downloads: 'Downloads',
-            community: 'Community',
-        },
+    flag: {
+      flagProject: 'Flag {0}?',
+      flagSend: 'Successfully flagged, thanks for making this community a better place!',
+      flagSent: 'Flag submitted for review',
+      flags: {
+        inappropriateContent: 'Inappropriate Content',
+        impersonation: 'Impersonation or Deception',
+        spam: 'Spam',
+        malIntent: 'Malicious Intent',
+        other: 'Other'
+      },
+      error: {
+        alreadyOpen: 'You can only have 1 unresolved flag on a project',
+        alreadyResolved: 'This flag is already resolved'
+      }
     },
-    project: {
-        stargazers: 'Stargazers',
-        noStargazers: 'Non ci sono stargazers in questo progetto 😢',
-        watchers: 'Watchers',
-        noWatchers: 'Non ci sono watchers in questo progetto 😢',
-        members: 'Membri',
-        category: {
-            info: 'Categoria: {0}',
-            admin_tools: 'Strumenti Amministrazione',
-            chat: 'Chat',
-            dev_tools: 'Strumenti Sviluppo',
-            economy: 'Economia',
-            gameplay: 'Gameplay',
-            games: 'Giochi',
-            protection: 'Protezione',
-            role_playing: 'Gioco di Ruolo',
-            world_management: 'Gestione Mondo',
-            misc: 'Altro',
-        },
-        actions: {
-            unwatch: 'Non seguire',
-            watch: 'Segui',
-            flag: 'Segnala',
-            star: 'Star',
-            unstar: 'Unstar',
-            adminActions: 'Azioni Admin',
-            flagHistory: 'Segnalazioni ({0})',
-            staffNotes: 'Note dello staff ({0})',
-            userActionLogs: 'Log Azioni Utente',
-            forum: 'Forum',
-        },
-        flag: {
-            flagProject: 'Segnalare {0}?',
-            flagSend: 'Segnalato con successp, grazie dell aiuto per rendere la community un posto migliore!',
-            flagSent: 'Segnalazione inviata',
-            flags: {
-                inappropriateContent: 'Contenuto inappropriato',
-                impersonation: 'Impersonificazione o Inganno',
-                spam: 'Spam',
-                malIntent: 'Intenti Pericolosi',
-                other: 'Altro',
-            },
-            error: {
-                alreadyOpen: 'Puoi avere solamente 1 segnalazione aperta su un progetto',
-                alreadyResolved: 'Questa segnalazione è già risolta',
-            },
-        },
-        tabs: {
-            docs: 'Documentazione',
-            versions: 'Versioni',
-            discuss: 'Discuti',
-            settings: 'Impostazioni',
-            homepage: 'Homepage',
-            issues: 'Problemi',
-            source: 'Fonte',
-            support: 'Supporto',
-        },
-        new: {
-            step1: {
-                title: 'Accordo per gli utenti',
-                text: 'Un progetto contiene i tuoi downloads e la documentazione per il tuo plugin.<br>Prima di continuare, perfavore guarda le <a href="#">Linee Guida di Hangar.</a>',
-                continue: 'Accetta',
-                back: 'Annulla',
-            },
-            step2: {
-                title: 'Impostazioni Base',
-                continue: 'Continua',
-                back: 'Torna Indietro',
-                userSelect: 'Crea come...',
-                projectName: 'Nome progetto',
-                projectSummary: 'Riassunto progetto',
-                projectCategory: 'Categoria progetto',
-            },
-            step3: {
-                title: 'Impostazioni Aggiuntive',
-                continue: 'Continua',
-                back: 'Torna Indietro',
-                optional: 'Opzionale',
-                links: 'Links',
-                homepage: 'Homepage',
-                issues: 'Tracker Problemi',
-                source: 'Codice Sorgente',
-                support: 'Supporto Esterno',
-                license: 'Licenza',
-                type: 'Tipo',
-                customName: 'Nome',
-                url: 'URL',
-                seo: 'SEO',
-                keywords: 'Parole chiave',
-            },
-            step4: {
-                title: 'Importa da Spigot',
-                continue: 'Continua',
-                back: 'Indietro',
-                optional: 'Opzionale',
-                convert: 'Converti',
-                saveAsHomePage: 'Salva come pagina home',
-                convertLabels: {
-                    bbCode: 'Incolla il tuo BBCode qui',
-                    output: 'Output Markdown',
-                },
-                preview: 'Anteprima',
-                tutorial: 'Come prendere il BBCode',
-                tutorialInstructions: {
-                    line1: 'Per prendere il BBCode dal tuo progetto Spigot, esegui le seguenti azioni:',
-                    line2: '1. Vai nel tuo progetto e clicca su "Edit Resource".',
-                    line3: "2. Clicca nel simbolo della chiave inglese nell'editor della descrizione.",
-                    line4: '3. Copia e incolla il nuovo contenuto nella textbox qui sopra, fai le modifiche che vuoi e premi salva!',
-                },
-            },
-            step5: {
-                title: 'Terminando',
-                text: 'Creando...',
-            },
-            error: {
-                create: "C'è stato un errore nella creazione del progetto",
-                nameExists: 'Un progetto con questo nome esiste già',
-                slugExists: 'Un progetto con questa slug esiste già',
-                invalidName: 'Questo nome contiene un carattere invalido',
-                tooLongName: 'Il nome del progetto è troppo lungo',
-                tooLongDesc: 'La descrizione del progetto è troppo lunga',
-                tooManyKeywords: 'Il progetto contiene troppe parole chiave',
-                noCategory: 'Il progetto deve avere una categoria',
-                noDescription: 'Il progetto deve avere una descrizione',
-            },
-        },
-        sendForApproval: "Invia per l'approvazione",
-        info: {
-            title: 'Informazioni',
-            publishDate: 'Pubblicato il {0}',
-            views: '0 visualizzazioni | {0} visualizzazione | {0} visualizzazioni',
-            totalDownloads: '0 downloads totali | {0} download totale | {0} downloads totali',
-            stars: '0 stelle | {0} stella | {0} stelle',
-            watchers: '0 watchers | {0} watcher | {0} watchers',
-        },
-        promotedVersions: 'Promoted Versions',
-        license: {
-            link: 'Concesso in licenza ',
-        },
-        error: {
-            star: 'Impossibile cambiare la stella',
-            watch: 'Impossibile cambiare la visualizzazione',
-        },
-        settings: {
-            title: 'Impostazioni',
-            category: 'Categoria',
-            categorySub: 'Dai una delle 10 categorie al tuo progetto. Mettendo una categoria appropriata faciliti il tuo progetto ad essere trovato.',
-            keywords: 'Keywords',
-            keywordsSub: 'Queste sono parole speciali che faranno trovare il tuo progetto quando qualcuno le cercherà.',
-            homepage: 'Homepage',
-            homepageSub:
-                'Una homepage personalizzata aiuta il tuo progetto a sembrare più ufficiale e ti fornisce un luogo per dare più informazioni sul tuo progetto.',
-            issues: 'Tracker Problemi',
-            issuesSub: 'Con un tracker problemi aiuti gli utenti ad avere supporto più facilmente e ti fornisce un modo più semplice per tracciare i bug.',
-            source: 'Codice Sorgente',
-            sourceSub: 'Supporta la comunità di developers rendendo il tuo progetto open source!',
-            support: 'Support esterno',
-            supportSub: 'Un luogo esterno dove puoi offrire supporto ai tuoi utenti. Può essere un forum, un server Discord o qualcos altro.',
-            license: 'Licenza',
-            licenseSub: 'Cosa possono fare(e non fare) le persone con il tuo progetto?',
-            forum: 'Crea un post nel forum',
-            forumSub: 'Imposta se un evento come un nuovo rilascio deve creare automaticamente un post nel forum',
-            description: 'Descrizione',
-            descriptionSub: 'Una piccola descrizione del tuo progetto',
-            icon: 'Icona',
-            iconSub: 'Carica una immagine che rappresenti il tuo progetto.',
-            iconUpload: 'Carica',
-            iconReset: 'Reimposta Icona',
-            apiKey: 'API Keys',
-            apiKeySub: "Genera un'unica deployment key per abilitare il build deployment da Gradle",
-            apiKeyGenerate: 'Genera',
-            rename: 'Rinomina',
-            renameSub: 'Cambiando il nome dedl tuo progetto potresti avere conseguenze non desiderate. Noi non creeremo nessun reindirizzamento.',
-            delete: 'Elimina',
-            deleteSub: 'Una volta eliminato un progetto, esso non potrà essere recuperato.',
-            hardDelete: 'Hard Delete',
-            hardDeleteSub: 'Una volta eliminato un progetto, non potrà essere recuperato. Questa volta seriamente...',
-            save: 'Salva cambiamenti',
-            optional: '(opzionale)',
-            licenseCustom: 'Nome Personalizzato',
-            licenseType: 'Tipo',
-            licenseUrl: 'URL',
-            donation: {
-                enable: 'Abilita',
-                enableSub: 'Abilita le donazioni per il tuo progetto',
-                email: 'Email',
-                emailSub: "L' email dell'account paypal, essa riceverà le donazioni",
-                defaultAmount: 'Importo Predefinito',
-                defaultAmountSub: "L' importo pre-selezionato",
-                oneTimeAmounts: 'Importo Singolo',
-                oneTimeAmountsSub:
-                    'Lista delle opzioni che vuoi dare agli utenti per una donazione singola. Gli utenti possono comunque utilizzare un importo personalizzato',
-                monthlyAmounts: 'Importo Mensile',
-                monthlyAmountsSub:
-                    'Lista delle opzioni che vuoi dare agli utenti per una donazione mensile. Gli utenti possono comunque utilizzare un importo personalizzato',
-            },
-            error: {
-                invalidFile: '{0} non è un tipo di file valido',
-                noFile: 'Nessun file è stato inviato',
-                members: {
-                    invalidUser: '{0} non è un utente valido',
-                    alreadyInvited: '{0} è già stato invitato nel progetto',
-                    notMember: '{0} non è un membro del progetto, non puoi modificare il suo ruolo',
-                    invalidRole: '{0} non può essere aggiunto/rimosso dal progetto',
-                },
-            },
-            success: {
-                changedIcon: 'Icona progetto cambiata con successo',
-                resetIcon: 'Icona progetto reimpostata con successo',
-                rename: 'Progetto rinominato a {0}',
-                softDelete: 'Progetto eliminato',
-                hardDelete: 'Progetto completamente eliminato',
-            },
-            tabs: {
-                general: 'Generale',
-                optional: 'Opzioni',
-                management: 'Gestione',
-                donation: 'Donazioni',
-            },
-        },
-        discuss: {
-            login: 'Log in',
-            toReply: 'per rispondere alla discussione',
-            noTopic: 'Non ci sono discussioni per questo progetto',
-            send: 'Risposta inviata!',
-        },
+    tabs: {
+      docs: 'Docs',
+      versions: 'Versions',
+      discuss: 'Discuss',
+      settings: 'Settings',
+      homepage: 'Homepage',
+      issues: 'Issues',
+      source: 'Source',
+      support: 'Support'
     },
-    page: {
-        plural: 'Pagine',
-        new: {
-            title: 'Crea una nuova pagina',
-            error: {
-                minLength: 'Il contenuto della pagina è troppo corto',
-                maxLength: 'Il contenuto della pagina è troppo lungo',
-                duplicateName: 'Una pagina con quel nome esiste già',
-                invalidName: 'Nome invalido',
-                name: {
-                    maxLength: 'Il nome della pagina è troppo lungo',
-                    minLength: 'Il nome della pagina è troppo corto',
-                    invalidChars: 'Nome invalido',
-                },
-                save: 'Impossibile salvare la pagina',
-            },
-            name: 'Nome Pagina',
-            parent: 'Pagina Genitore (opzionale)',
+    new: {
+      step1: {
+        title: 'User Agreement',
+        text: 'A project contains your downloads and the documentation for your plugin.<br>Before continuing, please review the <a href="#">Hangar Submission Guidelines.</a>',
+        continue: 'Agree',
+        back: 'Abort'
+      },
+      step2: {
+        title: 'Basic Settings',
+        continue: 'Continue',
+        back: 'Back',
+        userSelect: 'Create as...',
+        projectName: 'Project name',
+        projectSummary: 'Project Summary',
+        projectCategory: 'Project Category'
+      },
+      step3: {
+        title: 'Additional Settings',
+        continue: 'Continue',
+        back: 'Back',
+        optional: 'Optional',
+        links: 'Links',
+        homepage: 'Homepage',
+        issues: 'Issue Tracker',
+        source: 'Source Code',
+        support: 'External Support',
+        license: 'License',
+        type: 'Type',
+        customName: 'Name',
+        url: 'URL',
+        seo: 'SEO',
+        keywords: 'Keywords'
+      },
+      step4: {
+        title: 'Import from Spigot',
+        continue: 'Continue',
+        back: 'Back',
+        optional: 'Optional',
+        convert: 'Convert',
+        saveAsHomePage: 'Save as Home Page',
+        convertLabels: {
+          bbCode: 'Paste your BBCode here',
+          output: 'Markdown Output'
         },
-        delete: {
-            title: 'Eliminare la pagina?',
-            text: "Sei sicuro di voler eliminare questa pagina? L'azione non può essere annullata.",
-        },
+        preview: 'Preview',
+        tutorial: 'How to get the BBCode',
+        tutorialInstructions: {
+          line1: 'To get the BBCode of your Spigot project, do the following:',
+          line2: '1. Go to your project and click on "Edit Resource".',
+          line3: '2. Click on the wrench symbol in the description editor.',
+          line4: '3. Copy paste the new contents into the upper converter textbox, do changes to the output if you like, and hit save!'
+        }
+      },
+      step5: {
+        title: 'Finishing',
+        text: 'Creating...'
+      },
+      error: {
+        create: 'There was an error creating the project',
+        nameExists: 'A project with this name already exists',
+        slugExists: 'A project with this slug already exists',
+        invalidName: 'This name contains invalid characters',
+        tooLongName: 'Project name is too long',
+        tooLongDesc: 'Project description is too long',
+        tooManyKeywords: 'Project has too many keywords',
+        noCategory: 'Project must have a category',
+        noDescription: 'Project must have a description'
+      }
     },
-    version: {
-        new: {
-            title: 'Crea versione...',
-            upload: 'Carica File',
-            uploadNew: 'Carica una nuova Versione',
-            url: 'Inserisci URL',
-            form: {
-                versionString: 'Versione',
-                fileName: 'Nome file',
-                fileSize: 'Dimensione file',
-                externalUrl: 'URL esterno',
-                hangarProject: 'Progetto Hangar',
-                channel: 'Canale',
-                addChannel: 'Aggiungi Canale',
-                unstable: 'Non stabile',
-                recommended: 'Consigliato',
-                forumPost: 'Post Forum',
-                release: {
-                    bulletin: 'Bollettino Rilascio',
-                    desc: "Cosa c'è di nuovo in questo rilascio?",
-                },
-                platforms: 'Piattaforme',
-                dependencies: 'Dipendenze',
-            },
-            error: {
-                metaNotFound: 'Impossibile caricare i metadati dal file caricato',
-                jarNotFound: 'Impossibile aprire il jar',
-                fileExtension: 'Estensione file non corretta',
-                unexpected: 'Errore inaspettato',
-                invalidVersionString: 'Versione invalida',
-                duplicateNameAndPlatform: 'Una versione con questo nome e versioni compatibili esiste già',
-                invalidNumOfPlatforms: 'Numero delle piattaforme errato',
-                duplicate: 'Una versione con questo file esiste già',
-                noFile: 'Impossibile trovare il file caricato',
-                mismatchedFileSize: 'Il peso dei file non corrisponde',
-                hashMismatch: 'Gli hash dei file non corrispondono',
-                invalidPlatformVersion: 'Versione MC invalida per la piattaforma specificata',
-                fileIOError: 'File IO Error',
-                unknown: 'Errore sconosciuto',
-                incomplete: 'File del plugin mancante {0}',
-                noDescription: 'Deve avere una descrizione',
-                invalidPluginDependencyNamespace: 'Una dipendenza dichiarata ha un nome invalido',
-                invalidName: 'Nome versione invalido',
-                channel: {
-                    noName: 'Un nome del canale deve essere specificato',
-                    noColor: 'Un colore del canale deve essere specificato',
-                },
-            },
-        },
-        edit: {
-            platformVersions: 'Modifica Versioni Piattaforme: {0}',
-            pluginDeps: 'Modifica Dipendenze: {0}',
-            error: {
-                noPlatformVersions: 'Devi fornire almeno una valida versione di piattaforma',
-                invalidVersionForPlatform: '{0} non è una versione valida per {1}',
-                invalidProjectNamespace: '{0} non è un nome di versione valido',
-            },
-        },
-        page: {
-            subheader: '{0} ha rilasciato questa versione il {1}',
-            dependencies: 'Dipendenze',
-            platform: 'Piattaforma',
-            required: '(richiesto)',
-            adminMsg: '{0} ha approvato questa versione il {1}',
-            reviewLogs: 'Logs review',
-            reviewStart: 'Inizia review',
-            setRecommended: 'Imposta come Consigliato',
-            setRecommendedTooltip: 'Imposta questa versione come consigliata per la piattaforma {0} ',
-            delete: 'Elimina',
-            hardDelete: 'Elimina (permanentemente)',
-            restore: 'Recupera',
-            download: 'Download',
-            downloadExternal: 'Download Esternamente',
-            adminActions: 'Azioni admin',
-            recommended: 'Versione consigliata',
-            partiallyApproved: 'Approvato parzialmente',
-            approved: 'Approvato',
-            userAdminLogs: 'Logs Utenti',
-            unsafeWarning: 'Questa versione non è stata controllata da un moderatore e potrebbe essere pericolosa',
-            downloadUrlCopied: 'Copiato!',
-            confirmation: {
-                title: 'Attenzione - {0} {1} da {2}',
-                alert: 'Questa versione non è stata controllata da un moderatore e potrebbe essere pericolosa.',
-                disclaimer:
-                    'Disclaimer: Noi non ci assumiamo nessuna responsabilità per alcun danno per il tuo server o sistema che potrebbero essere causati ignorando questo avvertimento.',
-                agree: 'Scarica a mio rischio',
-                deny: 'Vai indietro',
-            },
-        },
-        channels: 'Canali',
-        editChannels: 'Modifica Canali',
-        platforms: 'Piattaforme',
-        error: {
-            onlyOnePublic: 'Hai solo una versione pubblica rimasta',
-        },
-        success: {
-            softDelete: 'Hai eliminato questa versione',
-            hardDelete: 'Hai eliminato completamente questa versione',
-            restore: 'Hai recuperato questa versione',
-            recommended: 'Hai impostato questa versione come consigliata per la piattaforma {0}',
-        },
+    sendForApproval: 'Send for approval',
+    info: {
+      title: 'Information',
+      publishDate: 'Published on {0}',
+      views: '0 views | {0} view | {0} views',
+      totalDownloads: '0 total downloads | {0} total download | {0} total downloads',
+      stars: '0 stars | {0} star | {0} stars',
+      watchers: '0 watchers | {0} watcher | {0} watchers'
     },
-    channel: {
-        modal: {
-            titleNew: 'Aggiungi un nuovo canale',
-            titleEdit: 'Modifica canale',
-            name: 'Nome Canale',
-            color: 'Colore Canale',
-            reviewQueue: 'Escludi dalla lista di controllo per la moderazione?',
-            error: {
-                invalidName: 'Nome canale invalido',
-                maxChannels: 'Questo progetto ha superato il massimo di canali: {0}',
-                duplicateColor: 'Esiste già un progetto con questo colore',
-                duplicateName: 'Esiste già un progetto con questo nome',
-                tooLongName: 'Il nome del canale è troppo lungo',
-                cannotDelete: 'Non puoi eliminare questo canale',
-            },
-        },
-        manage: {
-            title: 'Canali Rilascio',
-            subtitle: 'I canali di rilascio rappresentano lo stato di rilascio di un plugin. Un progetto può avere fino a cinque canali di rilascio.',
-            channelName: 'Nome Canale',
-            versionCount: 'Versioni',
-            reviewed: 'Controllato',
-            edit: 'Modifica',
-            trash: 'Cestina',
-            editButton: 'Modifica',
-            deleteButton: 'Elimina',
-            add: 'Aggiungi Canale',
-        },
-    },
-    organization: {
-        new: {
-            title: 'Crea una nuova Organizzazione',
-            text: "Le organizzazioni consentono agli utenti di un gruppo di fornire una collaborazione più stretta tra loro all'interno dei tuoi progetti su Hangar.",
-            name: 'Nome Organizzazione',
-            error: {
-                duplicateName: "Un' organizzazione o un utente con questo nome esiste già",
-                invalidName: 'Nome organizzazione invalido',
-                tooManyOrgs: 'Puoi creare un massimo di {0} organizzazioni',
-                notEnabled: 'Le organizzazioni non sono abilitate!',
-                jsonError: 'Errore nel caricamento della risposta JSON dal server di autenticazione',
-                hangarAuthValidationError: 'Errore: {0}',
-                unknownError: 'Errore sconosciuto',
-            },
-        },
-        settings: {
-            members: {
-                invalidUser: '{0} non è un utente valido',
-                alreadyInvited: "{0} è già stato invitato all'organizzazione",
-                notMember: "{0} non è un membro dell'organizzazione, non puoi modificare il suo ruolo",
-                invalidRole: "{0} non può essere aggiunto/rimosso dall'organizzazione",
-            },
-        },
-    },
-    form: {
-        memberList: {
-            addUser: 'Aggiungi Utente...',
-            create: 'Crea',
-            editUser: 'Modifica Utente',
-            invitedAs: '(Invitato da {0})',
-        },
-    },
-    notifications: {
-        title: 'Notifiche',
-        invites: 'Inviti',
-        invited: 'Sei stato invitato ad entrare in {0}',
-        inviteAccepted: "Hai accettato l'invito ad {0}",
-        readAll: 'Segna tutto come letto',
-        unread: 'Segna come non letto',
-        read: 'Leggi',
-        all: 'Tutto',
-        invite: {
-            all: 'Tutto',
-            projects: 'Progetti',
-            organizations: 'Organizzazioni',
-            btns: {
-                accept: 'Accetta',
-                decline: 'Rifiuta',
-                unaccept: 'Annulla',
-            },
-            msgs: {
-                accept: 'Sei entrato in {0}',
-                decline: "Hai rifiutato l'invito a {0}",
-                unaccept: 'Sei uscito da {0}',
-            },
-        },
-        empty: {
-            unread: 'Non hai nuove notifiche.',
-            read: 'Non hai notifiche lette.',
-            all: 'Non hai notifiche.',
-            invites: 'Non hai inviti',
-        },
-        project: {
-            reviewed: '{0} {1} è stato controllato e approvato',
-            reviewedPartial: '{0} {1} è stato controllato e approvato parzialmente',
-            newVersion: 'Una nuova versione è stata rilasciata per {0}: {1}',
-            invite: 'Sei stato invitato ad entrare nel gruppo {0} per il progetto {1}',
-            inviteRescinded: 'Il tuo invito per il gruppo {0} nel progetto {1} è stato annullato',
-            removed: 'Sei stato rimosso dal gruppo {0} nel progetto {1}',
-            roleChanged: 'Sei stato aggiunto al gruppo {0} nel progetto {1}',
-        },
-        organization: {
-            invite: "Sei stato invitato ad entrare nel gruppo {0} nell'organizzazione {1}",
-            inviteRescinded: "Il tuo invito per entrare nel gruppo {0} nell'organizzazione {1} è stato annullato",
-            removed: "Sei stato rimosso dal gruppo {0} nell'organizzazione {1}",
-            roleChanged: "Sei stato aggiunto nel gruppo {0} nell'organizzazione {1}",
-        },
-    },
-    visibility: {
-        notice: {
-            new: 'Questo progetto è nuovo, e non potrà essere visualizzato agli altri finché non verrà caricata una versione. Se non verrà caricata nessuna versione il progetto verrà eliminato',
-            needsChanges: 'Questo progetto richiede modifiche',
-            needsApproval: 'Hai inviato il progetto per la revisione',
-            softDelete: 'Progetto eliminato da {0}',
-        },
-        name: {
-            new: 'Nuovo',
-            public: 'Publico',
-            needsChanges: 'Richiede Modifiche',
-            needsApproval: 'Richiede Approvazione',
-            softDelete: 'Elimina (Soft)',
-        },
-        changes: {
-            version: {
-                reviewed: 'per le modifiche richieste',
-            },
-        },
-        modal: {
-            activatorBtn: 'Azioni Visibilità',
-            title: 'Modifica visibilità di {0}',
-            reason: 'Motivo delle modifiche',
-            success: 'Hai impostato la visibilità di {0} a {1}',
-        },
-    },
-    author: {
-        watching: 'Visualizzando',
-        stars: 'Stelle',
-        orgs: 'Organizzazioni',
-        viewOnForums: 'Visualizza sul forum ',
-        taglineLabel: 'Tagline Utente',
-        editTagline: 'Modifica Tagline',
-        memberSince: 'Membro da {0}',
-        numProjects: 'Nessun progetto | {0} progetto | {0} progetti',
-        addTagline: 'Aggiungi una tagline',
-        noOrgs: '{0} non fa parte di nessuna organizzazione. 😢',
-        noWatching: '{0} non sta guardando nessun progetto. 😢',
-        noStarred: '{0} non ha stellato nessun progetto. 😢',
-        tooltips: {
-            settings: 'Impostazioni Utente',
-            lock: 'Blocca Account',
-            unlock: 'Sblocca Account',
-            apiKeys: 'API Keys',
-            activity: 'Attività Utente',
-            admin: 'Modifica Utente',
-        },
-        lock: {
-            confirmLock: "Bloccare l'account di {0}?",
-            confirmUnlock: "Sbloccare l'account di {0}?",
-            successLock: 'Account di {0} bloccato con successo',
-            successUnlock: 'Account di {0} sbloccato con successo',
-        },
-        org: {
-            editAvatar: 'Modifica avatar',
-        },
-        error: {
-            invalidTagline: 'Tagline invalida',
-            invalidUsername: 'Username invalido',
-        },
-    },
-    linkout: {
-        title: 'Avvertenza Link Esterno',
-        text: 'Hai cliccato per un link esterno a "{0}". Se non vuoi visualizzare quella pagina, vai indietro. Altrimenti continua.',
-        abort: 'Torna indietro',
-        continue: 'Continua',
-    },
-    flags: {
-        header: 'Segnalazioni per',
-        noFlags: 'Nessuna segnalazione trovata',
-        resolved: 'Sì, da {0} il {1}',
-        notResolved: 'No',
-    },
-    notes: {
-        header: 'Note per',
-        noNotes: 'Nessuna nota trovata',
-        addNote: 'Aggiungi nota',
-        notes: 'Note',
-        placeholder: 'Aggiungi una nota...',
-    },
-    stats: {
-        title: 'Statistiche',
-        plugins: 'Plugins',
-        reviews: 'Reviews',
-        uploads: 'Uploads',
-        downloads: 'Downloads',
-        totalDownloads: 'Downloads Totali',
-        unsafeDownloads: 'Downloads Non Sicuri',
-        flags: 'Segnalazioni',
-        openedFlags: 'Segnalazioni Aperte',
-        closedFlags: 'Segnalazioni Chiuse',
-    },
-    health: {
-        title: 'Report Vitale Hangar',
-        noTopicProject: 'Nessuna discussion trovata',
-        erroredJobs: 'Failed jobs',
-        jobText: 'Tipo job: {0}, Tipo Errore: {1}, Accaduto: {2}',
-        staleProjects: 'Progetti in stallo',
-        notPublicProjects: 'Projects nascosti',
-        noPlatform: 'Nessuna piattaforma trovata',
-        missingFileProjects: 'File non trovato',
-        empty: 'Vuoto! Tutto perfetto!',
-    },
-    reviews: {
-        headline: '{0} ha rilasciato questa versione il {1}',
-        title: 'Logs revisioni',
-        projectPage: 'Pagina Progetto',
-        downloadFile: 'Scarica File',
-        startReview: 'Inizia Revisione',
-        stopReview: 'Termina Revisione',
-        approve: 'Approva',
-        approvePartial: 'Approva Parzialmente',
-        notUnderReview: 'Questa versione non è sotto revisione',
-        reviewMessage: 'Messaggio Revisione',
-        addMessage: 'Aggiungi Messaggio',
-        reopenReview: 'Apri Revisione',
-        undoApproval: 'Cancella Approvazione',
-        hideClosed: 'Nascondi tutte le revisioni terminate',
-        error: {
-            noReviewStarted: 'Non ci sono revisioni non finite per aggiungere un messaggio',
-            notCorrectUser: "Non sei l'utente che ha iniziato la revisione.",
-            cannotReopen: 'Impossibile aprire questa revisione',
-            onlyOneReview: 'Non puoi avere più di una revisione',
-            badUndo: "Puoi cancellare l'approvazione solo dopo averla approvata",
-        },
-        presets: {
-            message: '{msg}',
-            start: '{name} ha iniziato una revisione',
-            stop: '{name} ha terminato la revisione: {msg}',
-            reopen: '{name} ha riaperto una revisione',
-            approve: '{name} ha approvato questa versione',
-            approvePartial: '{name} ha approvato questa versione parzialmente',
-            undoApproval: '{name} ha cancellato la sua approvazione',
-            reviewTitle: 'Revisione di {name}',
-        },
-        state: {
-            ongoing: 'In corso',
-            stopped: 'Fermata',
-            approved: 'Approvata',
-            partiallyApproved: 'Approvata Parzialmente',
-            lastUpdate: 'Ultimo Aggiornamento: {0}',
-        },
-    },
-    apiKeys: {
-        title: 'API Keys',
-        createNew: 'Crea nuova chiave',
-        existing: 'Chiavi esistenti',
-        name: 'Nome',
-        key: 'Chiave',
-        keyIdentifier: 'Identificatore Chiave',
-        permissions: 'Permessi',
-        delete: 'Elimina',
-        deleteKey: 'Elimina Chiave',
-        createKey: 'Crea Chiave',
-        noKeys: 'Non ci sono chiavi. Creane una cliccando in alto a destra',
-        success: {
-            delete: 'Hai eliminato la chiave {0}',
-            create: 'Hai creato la chiave {0}',
-        },
-        error: {
-            notEnoughPerms: 'Non ci sono abbastanza permessi per crearla',
-            duplicateName: 'Nome chiave duplicato',
-        },
-    },
-    apiDocs: {
-        title: 'Documentazione API',
-    },
-    platformVersions: {
-        title: 'Configura Versioni Piattaforme',
-        platform: 'Piattaforma',
-        versions: 'Versioni',
-        addVersion: 'Aggiungi Versione',
-        saveChanges: 'Salva Modifiche',
-        success: 'Versioni piattaforme aggiornate',
-    },
-    flagReview: {
-        title: 'Segnalazioni',
-        noFlags: 'Non ci sono segnalazioni.',
-        msgUser: 'Messaggia utente',
-        msgProjectOwner: 'Messaggia proprietario',
-        markResolved: 'Imposta come risolto',
-        line1: '{0} ha segnalato {1} su {2}',
-        line2: 'Motivo: {0}',
-        line3: 'Commento: {0}',
-    },
-    userActivity: {
-        title: 'Attività di {0}',
-        reviews: 'Revisioni',
-        flags: 'Segnalazioni',
-        reviewApproved: 'Revisione Approvata',
-        flagResolved: 'Segnalazione Risolta',
-        error: {
-            isOrg: "Impossibile mostrare l'attività di un'organizzazione",
-        },
-    },
-    userAdmin: {
-        title: 'Modifica Utente',
-        organizations: 'Organizzazioni',
-        organization: 'Organizzazione',
-        projects: 'Progetti',
-        project: 'Progetto',
-        owner: 'Proprietario',
-        role: 'Ruolo',
-        accepted: 'Accettato',
-        sidebar: 'Altra Amministrazione',
-        hangarAuth: 'Profilo HangarAuth',
-        forum: 'Profilo Forum',
-    },
-    userActionLog: {
-        title: 'Log Azioni Utente',
-        user: 'User',
-        address: 'Indirizzo IP',
-        time: 'Tempo',
-        action: 'Azione',
-        context: 'Contesto',
-        oldState: 'Vecchio Stato',
-        newState: 'Nuovo Stato',
-        markdownView: 'Visualizza in Markdown',
-        diffView: 'Visualizza Differenze',
-        types: {
-            ProjectVisibilityChanged: 'La visibilità del progetto è stata modificata',
-            ProjectRename: 'Il progetto è stato rinominato',
-            ProjectFlagged: 'Il progetto è stato segnalato',
-            ProjectSettingsChanged: 'Le impostazioni del progetto sono state modificate',
-            ProjectIconChanged: "L'icona del progetto è stata modificata",
-            ProjectFlagResolved: 'La segnalazione è stata risolta',
-            ProjectChannelCreated: 'Un canale del progetto è stato creato',
-            ProjectChannelEdited: 'Un canale del progetto è stato modificato',
-            ProjectChannelDeleted: 'Un canale del progetto è stato eliminato',
-            ProjectInvitesSent: 'Gli inviti del progetto sono stati inviati',
-            ProjectInviteDeclined: 'Un invito al progetto è stato rifiutato',
-            ProjectInviteUnaccepted: 'Un invito al progetto non è stato accettato',
-            ProjectMemberAdded: 'Un membro del progetto è stato aggiunto',
-            ProjectMembersRemoved: 'I membri del progetto sono stati rimossi',
-            ProjectMemberRolesChanged: 'I ruoli dei membri del progetto sono stati modificati',
-            ProjectPageCreated: 'Una pagina del progetto è stata creata',
-            ProjectPageDeleted: 'Una pagina del progetto è stata eliminata',
-            ProjectPageEdited: 'Una pagina del progetto è stata modificata',
-            VersionVisibilityChanged: 'La visibilità della versione è stata modificata',
-            VersionDeleted: 'La versione è stata eliminata',
-            VersionCreated: 'Una nuova versione è stata creata',
-            VersionDescriptionEdited: 'La descrizione della versione è stata modificata',
-            VersionReviewStateChanged: 'Lo stato della revisione della versione è stata modificata',
-            VersionPluginDependencyAdded: 'Una dipendenza è stata aggiunta',
-            VersionPluginDependencyEdited: 'Una dipendenza è stata modificata',
-            VersionPluginDependencyRemoved: 'Una dipendenza è stata rimossa',
-            VersionPlatformDependencyAdded: 'Una dipendenza alla piattaforma è stata aggiunta',
-            VersionPlatformDependencyRemoved: 'Una dipendenza alla piattaforma è stata rimossa',
-            UserTaglineChanged: "La tagline dell'utente è stata modificata",
-            UserLocked: 'Questo utente è bloccato',
-            UserUnlocked: 'Questo utente è sbloccato',
-            UserApikeyCreated: 'Una apikey è stata creata',
-            UserApikeyDeleted: 'Una apikey è stata eliminata',
-            OrganizationInvitesSent: "Gli inviti all'organizzazione sono stati inviati",
-            OrganizationInviteDeclined: "Un invito all'organizzazione è stato rifiutato",
-            OrganizationInviteUnaccepted: "Un invito all'organizzazione non è stato accettato",
-            OrganizationMemberAdded: "Un membro è stato aggiunto all'organizzazione",
-            OrganizationMembersRemoved: "Un membro è stato rimosso dall'organizzazione",
-            OrganizationMemberRolesChanged: "I ruoli dei membri dell'organizzazione sono stati aggiornati",
-        },
-    },
-    versionApproval: {
-        title: 'Approvazione Versioni',
-        inReview: 'In revisione',
-        approvalQueue: 'Attesa Approvazione',
-        queuedBy: 'In fila da',
-        status: 'Stato',
-        project: 'Progetto',
-        date: 'Data',
-        version: 'Versione',
-        started: 'Iniziato: {0}',
-        ended: 'Terminato: {0}',
-        statuses: {
-            ongoing: '{0} in corso',
-            stopped: '{0} terminati',
-            approved: '{0} approvati',
-        },
-    },
-    projectApproval: {
-        title: 'Approvazioni Progetti',
-        sendForApproval: 'Hai inviato il tuo progetto in approvazione',
-        noProjects: 'Nessun progetto',
-        needsApproval: 'Richiede Approvazione',
-        awaitingChanges: 'Attende Modifiche',
-        description: '{0} ha richiesto modifiche ad {1}',
-    },
-    donate: {
-        title: 'Dona a {}',
-        monthly: 'Mensilmente',
-        oneTime: 'Una volta',
-        selectAmount: 'Seleziona un importo o inseriscine uno',
-        legal: 'Donando a {0} acconsenti a Y e che i tacos sono deliziosi',
-        cta: 'Donate',
-        submit: 'Donate {0}',
-    },
-    lang: {
-        button: 'Cambia Lingua',
-        title: 'Cambia Lingua',
-        available: 'Lingue Disponibili',
-        hangarAuth:
-            'Questa opzione cambia solamente la lingua del tuo browser corrente ( con un cookie ). Clicca qui per cambiare la tua lingua su paper auth per tutti i servizi di paper',
-    },
-    validation: {
-        required: '{0} è richiesto',
-        maxLength: 'La lunghezza massima è di {0}',
-        minLength: 'La lunghezza minima è di {0}',
-        invalidFormat: '{0} è invalido',
-        invalidUrl: 'Formato URL invalido',
-    },
-    prompts: {
-        confirm: 'Fallo!',
-        changeAvatar: {
-            title: 'Cambia il tuo avatar!',
-            message: 'Benvenuto nella tua nuova organizzazione! Inizia cambiando il suo avatar cliccando su di esso.',
-        },
+    promotedVersions: 'Promoted Versions',
+    license: {
+      link: 'Licensed under '
     },
     error: {
-        userLocked: 'Il tuo account è bloccato.',
-        401: 'Devi essere loggato per poter effettuare questa azione',
-        403: 'Non hai il permesso',
-        404: '404 Non trovato',
-        unknown: 'Erorre sconosciuto',
+      star: 'Could not toggle starred',
+      watch: 'Could not toggle watched'
     },
+    settings: {
+      title: 'Settings',
+      category: 'Category',
+      categorySub: 'Categorize your project into one of 10 categories. Appropriately categorizing your project makes it easier for people to find.',
+      keywords: 'Keywords',
+      keywordsSub: 'These are special words that will return your project when people add them to their searches.',
+      homepage: 'Homepage',
+      homepageSub: 'Having a custom homepage for your project helps you look more proper, official, and gives you another place to gather information about your project.',
+      issues: 'Issue tracker',
+      issuesSub: 'Providing an issue tracker helps your users get support more easily and provides you with an easy way to track bugs.',
+      source: 'Source code',
+      sourceSub: 'Support the community of developers by making your project open source!',
+      support: 'External support',
+      supportSub: 'An external place where you can offer support to your users. Could be a forum, a Discord server, or somewhere else.',
+      license: 'License',
+      licenseSub: 'What can people do (and not do) with your project?',
+      forum: 'Create posts on the forums',
+      forumSub: 'Sets if events like a new release should automatically create a post on the forums',
+      description: 'Description',
+      descriptionSub: 'A short description of your project',
+      icon: 'Icon',
+      iconSub: 'Upload an image representative of your project.',
+      iconUpload: 'Upload',
+      iconReset: 'Reset Icon',
+      apiKey: 'API Keys',
+      apiKeySub: 'Generate a unique deployment key to enable build deployment from Gradle',
+      apiKeyGenerate: 'Generate',
+      rename: 'Rename',
+      renameSub: 'Changing your projects name can have undesired consequences. We will not setup any redirects.',
+      delete: 'Delete',
+      deleteSub: 'Once you delete a project, it cannot be recovered.',
+      hardDelete: 'Hard Delete',
+      hardDeleteSub: 'Once you delete a project, it cannot be recovered. For real this time...',
+      save: 'Save changes',
+      optional: '(optional)',
+      licenseCustom: 'Custom Name',
+      licenseType: 'Type',
+      licenseUrl: 'URL',
+      donation: {
+        enable: 'Enable',
+        enableSub: 'Enable the donation form for this project',
+        email: 'Email',
+        emailSub: 'The email address of the paypal account, that should receive the donations',
+        defaultAmount: 'Default Amount',
+        defaultAmountSub: 'The preselected default amount',
+        oneTimeAmounts: 'One-Time Amounts',
+        oneTimeAmountsSub: 'List of the options you want to give users for one time donations. Users can always enter custom amounts',
+        monthlyAmounts: 'Monthly Amounts',
+        monthlyAmountsSub: 'List of the options you want to give users for monthly donations. Users can always enter custom amounts'
+      },
+      error: {
+        invalidFile: '{0} is an invalid file type',
+        noFile: 'No file submitted',
+        members: {
+          invalidUser: '{0} is not a valid user',
+          alreadyInvited: '{0} is already invited to the project',
+          notMember: '{0} is not a member of the project, therefore you cannot edit their role',
+          invalidRole: '{0} cannot be added/removed from the project'
+        }
+      },
+      success: {
+        changedIcon: 'Successfully changed the project icon',
+        resetIcon: 'Successfully reset the project icon',
+        rename: 'Successfully renamed the project to {0}',
+        softDelete: 'You have deleted this project',
+        hardDelete: 'You have fully deleted this project'
+      },
+      tabs: {
+        general: 'General',
+        optional: 'Optional',
+        management: 'Management',
+        donation: 'Donation'
+      }
+    },
+    discuss: {
+      login: 'Log in',
+      toReply: 'to reply to this discussion',
+      noTopic: 'There is no discussion for this project',
+      send: 'Reply posted!'
+    }
+  },
+  page: {
+    plural: 'Pages',
+    new: {
+      title: 'Create a new page',
+      error: {
+        minLength: 'Page contents are too short',
+        maxLength: 'Page contents are too long',
+        duplicateName: 'A page with that name already exists',
+        invalidName: 'Invalid name',
+        name: {
+          maxLength: 'Page name too long',
+          minLength: 'Page name too short',
+          invalidChars: 'Page name contained invalid characters'
+        },
+        save: 'Unable to save page'
+      },
+      name: 'Page Name',
+      parent: 'Parent Page (optional)'
+    },
+    delete: {
+      title: 'Delete page?',
+      text: 'Are you sure you want to delete this page? This cannot be undone.'
+    }
+  },
+  version: {
+    new: {
+      title: 'Create version...',
+      upload: 'Upload File',
+      uploadNew: 'Upload a new Version',
+      url: 'Enter a URL',
+      form: {
+        versionString: 'Version',
+        fileName: 'File name',
+        fileSize: 'File size',
+        externalUrl: 'External URL',
+        hangarProject: 'Hangar Project',
+        channel: 'Channel',
+        addChannel: 'Add Channel',
+        unstable: 'Unstable',
+        recommended: 'Recommended',
+        forumPost: 'Forum Post',
+        release: {
+          bulletin: 'Release Bulletin',
+          desc: "What's new in this release?"
+        },
+        platforms: 'Platforms',
+        dependencies: 'Plugin Dependencies'
+      },
+      error: {
+        metaNotFound: 'Could not load metadata from uploaded file',
+        jarNotFound: 'Could not open jar file',
+        fileExtension: 'Incorrect file extension',
+        unexpected: 'An unexpected error occurred',
+        invalidVersionString: 'Invalid version string found',
+        duplicateNameAndPlatform: 'A version with this name and compatible platform already exists',
+        invalidNumOfPlatforms: 'Invalid number of platforms',
+        duplicate: 'A version with this file already exists',
+        noFile: 'Could not find uploaded file',
+        mismatchedFileSize: 'File sizes do not match',
+        hashMismatch: 'File hashes do not match',
+        invalidPlatformVersion: 'Invalid MC version for a platform specified',
+        fileIOError: 'File IO Error',
+        unknown: 'An unknown error has occurred',
+        incomplete: 'Plugin file missing {0}',
+        noDescription: 'Must have a description',
+        invalidPluginDependencyNamespace: 'Declared plugin dependency has an invalid project namespace',
+        invalidName: 'Invalid version name',
+        channel: {
+          noName: 'Must have a channel name specified',
+          noColor: 'Must have a channel color specified'
+        }
+      }
+    },
+    edit: {
+      platformVersions: 'Edit Platform Versions: {0}',
+      pluginDeps: 'Edit Plugin Dependencies: {0}',
+      error: {
+        noPlatformVersions: 'Must supply at least one valid platform version',
+        invalidVersionForPlatform: '{0} is an invalid version for {1}',
+        invalidProjectNamespace: '{0} is not a valid project namespace'
+      }
+    },
+    page: {
+      subheader: '{0} released this version on {1}',
+      dependencies: 'Dependencies',
+      platform: 'Platform',
+      required: '(required)',
+      adminMsg: '{0} approved this version on {1}',
+      reviewLogs: 'Review logs',
+      reviewStart: 'Start review',
+      setRecommended: 'Set as Recommended',
+      setRecommendedTooltip: 'Set this version as recommended for {0} platform',
+      delete: 'Delete',
+      hardDelete: 'Delete (forever)',
+      restore: 'Restore',
+      download: 'Download',
+      downloadExternal: 'Download External',
+      adminActions: 'Admin actions',
+      recommended: 'Recommended version',
+      partiallyApproved: 'Partially approved',
+      approved: 'Approved',
+      userAdminLogs: 'User Admin Logs',
+      unsafeWarning: 'This version has not been reviewed by our moderation staff and may not be safe for download.',
+      downloadUrlCopied: 'Copied!',
+      confirmation: {
+        title: 'Warning - {0} {1} by {2}',
+        alert: 'This version has not been reviewed by our moderation staff yet and may not be safe to use.',
+        disclaimer: 'Disclaimer: We disclaim all responsibility for any harm to your server or system should you choose not to heed this warning.',
+        agree: 'Download it at my own risk',
+        deny: 'Go back'
+      }
+    },
+    channels: 'Channels',
+    editChannels: 'Edit Channels',
+    platforms: 'Platforms',
+    error: {
+      onlyOnePublic: 'You only have 1 public version left'
+    },
+    success: {
+      softDelete: 'You have deleted this version',
+      hardDelete: 'You have fully deleted this version',
+      restore: 'You have restored this version',
+      recommended: 'You have marked this version as recommended for {0} platform'
+    }
+  },
+  channel: {
+    modal: {
+      titleNew: 'Add a new channel',
+      titleEdit: 'Edit channel',
+      name: 'Channel Name',
+      color: 'Channel Color',
+      reviewQueue: 'Exclude from moderation review queue?',
+      error: {
+        invalidName: 'Invalid channel name',
+        maxChannels: 'This project already has the maximum number of channels: {0}',
+        duplicateColor: 'This project already has a channel with this color',
+        duplicateName: 'This project already has a channel with this name',
+        tooLongName: 'Channel name is too long',
+        cannotDelete: 'You cannot delete this channel'
+      }
+    },
+    manage: {
+      title: 'Release channels',
+      subtitle: 'Release channels represent the state of a plugin release. A project may have up to five release channels.',
+      channelName: 'Channel Name',
+      versionCount: 'Version Count',
+      reviewed: 'Reviewed',
+      edit: 'Edit',
+      trash: 'Trash',
+      editButton: 'Edit',
+      deleteButton: 'Delete',
+      add: 'Add Channel'
+    }
+  },
+  organization: {
+    new: {
+      title: 'Create a new Organization',
+      text: 'Organizations allow you to group users and provide closer collaboration between them within your projects on Hangar.',
+      name: 'Organization Name',
+      error: {
+        duplicateName: 'An organization/user with that name already exists',
+        invalidName: 'Invalid organization name',
+        tooManyOrgs: 'You can only create a maximum of {0} organizations',
+        notEnabled: 'Organizations are not enabled!',
+        jsonError: 'Error parsing the JSON response from HangarAuth',
+        hangarAuthValidationError: 'Validation Error: {0}',
+        unknownError: 'Unknown error while creating organization'
+      }
+    },
+    settings: {
+      members: {
+        invalidUser: '{0} is not a valid user',
+        alreadyInvited: '{0} is already invited to the organization',
+        notMember: '{0} is not a member of the organization, therefore you cannot edit their role',
+        invalidRole: '{0} cannot be added/removed from the organization'
+      }
+    }
+  },
+  form: {
+    memberList: {
+      addUser: 'Add User...',
+      create: 'Create',
+      editUser: 'Edit User',
+      invitedAs: '(Invited as {0})'
+    }
+  },
+  notifications: {
+    title: 'Notifications',
+    invites: 'Invites',
+    invited: 'You have been invited to join the {0}',
+    inviteAccepted: 'You have accepted an invitation to the {0}',
+    readAll: 'Mark all as read',
+    unread: 'Unread',
+    read: 'Read',
+    all: 'All',
+    invite: {
+      all: 'All',
+      projects: 'Projects',
+      organizations: 'Organizations',
+      btns: {
+        accept: 'Accept',
+        decline: 'Decline',
+        unaccept: 'Unaccept'
+      },
+      msgs: {
+        accept: 'You have joined {0}',
+        decline: 'You have declined to join {0}',
+        unaccept: 'You have left {0}'
+      }
+    },
+    empty: {
+      unread: 'You have no unread notifications.',
+      read: 'You have no read notifications.',
+      all: 'You have no notifications.',
+      invites: 'You have no invites'
+    },
+    project: {
+      reviewed: '{0} {1} has been reviewed and is approved',
+      reviewedPartial: '{0} {1} has been reviewed and is partially approved',
+      newVersion: 'A new version has been released for {0}: {1}',
+      invite: 'You have been invited to join the group {0} on the project {1}',
+      inviteRescinded: 'Your invite to you the group {0} in the project {1} has been rescinded',
+      removed: 'You have been removed from the group {0} in the project {1}',
+      roleChanged: 'You have been added to the {0} group in the project {1}'
+    },
+    organization: {
+      invite: 'You have been invited to join the group {0} in the organization {1}',
+      inviteRescinded: 'Your invite to you the group {0} in the organization {1} has been rescinded',
+      removed: 'You have been removed from the group {0} in the organization {1}',
+      roleChanged: 'You have been added to the {0} group in the organization {1}'
+    }
+  },
+  visibility: {
+    notice: {
+      new: 'This project is new, and will not be shown to others until a version has been uploaded. If a version is not uploaded over a longer time the project will be deleted.',
+      needsChanges: 'This project requires changes',
+      needsApproval: 'You have sent the project for review',
+      softDelete: 'Project deleted by {0}'
+    },
+    name: {
+      new: 'New',
+      public: 'Public',
+      needsChanges: 'Needs Changes',
+      needsApproval: 'Needs Approval',
+      softDelete: 'Soft Delete'
+    },
+    changes: {
+      version: {
+        reviewed: 'due to approved reviews'
+      }
+    },
+    modal: {
+      activatorBtn: 'Visibility Actions',
+      title: "Change {0}'s visibility",
+      reason: 'Reason for change',
+      success: "You changed the {0}'s visibility to {1}"
+    }
+  },
+  author: {
+    watching: 'Watching',
+    stars: 'Stars',
+    orgs: 'Organizations',
+    viewOnForums: 'View on forums ',
+    taglineLabel: 'User Tagline',
+    editTagline: 'Edit Tagline',
+    memberSince: 'A member since {0}',
+    numProjects: 'No projects | {0} project | {0} projects',
+    addTagline: 'Add a tagline',
+    noOrgs: '{0} is not part of any organizations. 😢',
+    noWatching: '{0} is not watching any projects. 😢',
+    noStarred: '{0}  has not starred any projects. 😢',
+    tooltips: {
+      settings: 'User Settings',
+      lock: 'Lock Account',
+      unlock: 'Unlock Account',
+      apiKeys: 'API Keys',
+      activity: 'User Activity',
+      admin: 'User Admin'
+    },
+    lock: {
+      confirmLock: "Lock {0}'s account?",
+      confirmUnlock: "Unlock {0}'s account?",
+      successLock: "Successfully locked {0}'s account",
+      successUnlock: "Successfully unlocked {0}'s account"
+    },
+    org: {
+      editAvatar: 'Edit avatar'
+    },
+    error: {
+      invalidTagline: 'Invalid tagline',
+      invalidUsername: 'Invalid username'
+    }
+  },
+  linkout: {
+    title: 'External Link Warning',
+    text: 'You have clicked on an external link to "{0}". If you did not intend to visit this link, please go back. Otherwise, click continue.',
+    abort: 'Go Back',
+    continue: 'Continue'
+  },
+  flags: {
+    header: 'Flags for',
+    noFlags: 'No flags found',
+    resolved: 'Yes, by {0} on {1}',
+    notResolved: 'No'
+  },
+  notes: {
+    header: 'Notes for',
+    noNotes: 'No notes found',
+    addNote: 'Add note',
+    notes: 'Notes',
+    placeholder: 'Add a note...'
+  },
+  stats: {
+    title: 'Stats',
+    plugins: 'Plugins',
+    reviews: 'Reviews',
+    uploads: 'Uploads',
+    downloads: 'Downloads',
+    totalDownloads: 'Total Downloads',
+    unsafeDownloads: 'Unsafe Downloads',
+    flags: 'Flags',
+    openedFlags: 'Opened Flags',
+    closedFlags: 'Closed Flags'
+  },
+  health: {
+    title: 'Hangar Health Report',
+    noTopicProject: 'Missing discussion topic',
+    erroredJobs: 'Failed jobs',
+    jobText: 'Job type: {0}, Error Type: {1}, Happened: {2}',
+    staleProjects: 'Stale projects',
+    notPublicProjects: 'Hidden projects',
+    noPlatform: 'No platform detected',
+    missingFileProjects: 'Missing File',
+    empty: 'Empty! All good!'
+  },
+  reviews: {
+    headline: '{0} released this version on {1}',
+    title: 'Review logs',
+    projectPage: 'Project Page',
+    downloadFile: 'Download File',
+    startReview: 'Start Review',
+    stopReview: 'Stop Review',
+    approve: 'Approve',
+    approvePartial: 'Approve Partial',
+    notUnderReview: 'This version is not under review',
+    reviewMessage: 'Review Message',
+    addMessage: 'Add Message',
+    reopenReview: 'Reopen Review',
+    undoApproval: 'Undo Approval',
+    hideClosed: 'Hide all finished reviews',
+    error: {
+      noReviewStarted: 'There is no unfinished review to add a message to',
+      notCorrectUser: 'You are not the user that started this review',
+      cannotReopen: 'Unable to reopen this review',
+      onlyOneReview: 'Cannot have more than 1 review for a version',
+      badUndo: 'Can only undo approval after an approval'
+    },
+    presets: {
+      message: '{msg}',
+      start: '{name} started a review',
+      stop: '{name} stopped a review: {msg}',
+      reopen: '{name} reopened a review',
+      approve: '{name} approved this version',
+      approvePartial: '{name} partially approved this version',
+      undoApproval: '{name} has undone their approval',
+      reviewTitle: "{name}'s Review"
+    },
+    state: {
+      ongoing: 'Ongoing',
+      stopped: 'Stopped',
+      approved: 'Approved',
+      partiallyApproved: 'Partially Approved',
+      lastUpdate: 'Last Update: {0}'
+    }
+  },
+  apiKeys: {
+    title: 'API Keys',
+    createNew: 'Create new key',
+    existing: 'Existing keys',
+    name: 'Name',
+    key: 'Key',
+    keyIdentifier: 'Key Identifier',
+    permissions: 'Permissions',
+    delete: 'Delete',
+    deleteKey: 'Delete Key',
+    createKey: 'Create key',
+    noKeys: 'There are no api keys yet. You can create one on the right side',
+    success: {
+      delete: 'You have deleted the key: {0}',
+      create: 'You have created the key: {0}'
+    },
+    error: {
+      notEnoughPerms: 'Not enough permissions to create that key',
+      duplicateName: 'Duplicate key name'
+    }
+  },
+  apiDocs: {
+    title: 'API Docs'
+  },
+  platformVersions: {
+    title: 'Configure Platform Versions',
+    platform: 'Platform',
+    versions: 'Versions',
+    addVersion: 'Add Version',
+    saveChanges: 'Save Changes',
+    success: 'Updated platform versions'
+  },
+  flagReview: {
+    title: 'Flags',
+    noFlags: 'There are no flags to review.',
+    msgUser: 'Message user',
+    msgProjectOwner: 'Message owner',
+    markResolved: 'Mark resolved',
+    line1: '{0} reported {1} on {2}',
+    line2: 'Reason: {0}',
+    line3: 'Comment: {0}'
+  },
+  userActivity: {
+    title: "{0}'s Activity",
+    reviews: 'Reviews',
+    flags: 'Flags',
+    reviewApproved: 'Review Approved',
+    flagResolved: 'Flag Resolved',
+    error: {
+      isOrg: 'Cannot show activity for organization users'
+    }
+  },
+  userAdmin: {
+    title: 'Edit User',
+    organizations: 'Organizations',
+    organization: 'Organization',
+    projects: 'Projects',
+    project: 'Project',
+    owner: 'Owner',
+    role: 'Role',
+    accepted: 'Accepted',
+    sidebar: 'Other Administration',
+    hangarAuth: 'HangarAuth Profile',
+    forum: 'Forum Profile'
+  },
+  userActionLog: {
+    title: 'User Action Log',
+    user: 'User',
+    address: 'IP Address',
+    time: 'Time',
+    action: 'Action',
+    context: 'Context',
+    oldState: 'Old State',
+    newState: 'New State',
+    markdownView: 'Markdown View',
+    diffView: 'Diff View',
+    types: {
+      ProjectVisibilityChanged: 'The project visibility state was changed',
+      ProjectRename: 'The project was renamed',
+      ProjectFlagged: 'The project got flagged',
+      ProjectSettingsChanged: 'The project settings were changed',
+      ProjectIconChanged: 'The project icon was changed',
+      ProjectFlagResolved: 'The flag was resolved',
+      ProjectChannelCreated: 'A project channel was created',
+      ProjectChannelEdited: 'A project channel was edited',
+      ProjectChannelDeleted: 'A project channel was deleted',
+      ProjectInvitesSent: 'Project invites were sent',
+      ProjectInviteDeclined: 'A project invite was declined',
+      ProjectInviteUnaccepted: 'A project invite was unaccepted',
+      ProjectMemberAdded: 'A project member was added',
+      ProjectMembersRemoved: 'Project members were removed',
+      ProjectMemberRolesChanged: 'Project members had their roles updated',
+      ProjectPageCreated: 'A project page was created',
+      ProjectPageDeleted: 'A project page was deleted',
+      ProjectPageEdited: 'A project page was edited',
+      VersionVisibilityChanged: "The version's visibility state was changed",
+      VersionDeleted: 'The version was deleted',
+      VersionCreated: 'A new version was uploaded',
+      VersionDescriptionEdited: 'The version description was edited',
+      VersionReviewStateChanged: "The version's review state was changed",
+      VersionPluginDependencyAdded: 'A plugin dependency was added',
+      VersionPluginDependencyEdited: 'A plugin dependency was edited',
+      VersionPluginDependencyRemoved: 'A plugin dependency was removed',
+      VersionPlatformDependencyAdded: 'A platform dependency was added',
+      VersionPlatformDependencyRemoved: 'A platform dependency was removed',
+      UserTaglineChanged: 'The user tagline changed',
+      UserLocked: 'This user is locked',
+      UserUnlocked: 'This user is unlocked',
+      UserApikeyCreated: 'An apikey was created',
+      UserApikeyDeleted: 'An apikey was deleted',
+      OrganizationInvitesSent: 'Organization invites were sent',
+      OrganizationInviteDeclined: 'An organization invite was declined',
+      OrganizationInviteUnaccepted: 'An organization invite was unaccepted',
+      OrganizationMemberAdded: 'An organization member was added',
+      OrganizationMembersRemoved: 'Organization members were removed',
+      OrganizationMemberRolesChanged: 'Organization members had their roles updated'
+    }
+  },
+  versionApproval: {
+    title: 'Version Approvals',
+    inReview: 'In Review',
+    approvalQueue: 'Approval queue',
+    queuedBy: 'Queued by',
+    status: 'Status',
+    project: 'Project',
+    date: 'Date',
+    version: 'Version',
+    started: 'Started: {0}',
+    ended: 'Ended: {0}',
+    statuses: {
+      ongoing: '{0} ongoing',
+      stopped: '{0} stopped',
+      approved: '{0} approved'
+    }
+  },
+  projectApproval: {
+    title: 'Project Approvals',
+    sendForApproval: 'You have sent the project for approval',
+    noProjects: 'No projects',
+    needsApproval: 'Needs Approval',
+    awaitingChanges: 'Awaiting Changes',
+    description: '{0} requested changes on {1}'
+  },
+  donate: {
+    title: 'Donate to {}',
+    monthly: 'Monthly',
+    oneTime: 'One-Time',
+    selectAmount: 'Select an amount above or enter an amount below',
+    legal: 'By donating to {0} you agree to Y and that tacos are delicious',
+    cta: 'Donate',
+    submit: 'Donate {0}'
+  },
+  lang: {
+    button: 'Switch Language',
+    title: 'Switch Language',
+    available: 'Available Language',
+    hangarAuth: 'This only change the locale for your current browser (as a cookie). Click here to change your lang on paper auth for all paper services'
+  },
+  validation: {
+    required: '{0} is required',
+    maxLength: 'Maximum length is {0}',
+    minLength: 'Minimum length is {0}',
+    invalidFormat: '{0} is invalid',
+    invalidUrl: 'Invalid URL format'
+  },
+  prompts: {
+    confirm: 'Got it!',
+    changeAvatar: {
+      title: 'Change your avatar!',
+      message: "Welcome to your new organization! Start by changing it's avatar by clicking on it."
+    }
+  },
+  error: {
+    userLocked: 'Your account is locked.',
+    401: 'You must be logged in for this',
+    403: 'You do not have permission to do that',
+    404: '404 Not found',
+    unknown: 'An error occurred'
+  }
 };
-
 export default msgs;
