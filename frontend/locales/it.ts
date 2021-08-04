@@ -34,10 +34,10 @@ const msgs: LocaleMessageObject = {
       noProjectsFound: "Trovati 0 progetti. 😢"
     },
     subtitle: "Una repository di pacchetti di minecraft",
-    sponsoredBy: 'Sponsored by'
+    sponsoredBy: "Sponsorizzato da"
   },
   pages: {
-    staffTitle: 'Staff',
+    staffTitle: "Personale",
     authorsTitle: "Autori",
     headers: {
       username: 'Username',
@@ -74,19 +74,19 @@ const msgs: LocaleMessageObject = {
     },
     hangar: {
       home: "Home",
-      forums: 'Forums',
+      forums: "Forum",
       code: "Codice",
       docs: "Documentazione",
       javadocs: 'JavaDocs',
       hangar: 'Hangar (Plugins)',
-      downloads: 'Downloads',
+      downloads: "Download",
       community: 'Community'
     }
   },
   project: {
     stargazers: 'Stargazers',
     noStargazers: "Non ci sono stargazers in questo progetto 😢",
-    watchers: 'Watchers',
+    watchers: "Osservatori",
     noWatchers: "Non ci sono watchers in questo progetto 😢",
     members: "Membri",
     category: {
@@ -95,7 +95,7 @@ const msgs: LocaleMessageObject = {
       chat: 'Chat',
       dev_tools: "Strumenti Sviluppo",
       economy: "Economia",
-      gameplay: 'Gameplay',
+      gameplay: "Gioco",
       games: "Giochi",
       protection: "Protezione",
       role_playing: "Gioco di Ruolo",
@@ -106,7 +106,7 @@ const msgs: LocaleMessageObject = {
       unwatch: "Non seguire",
       watch: "Segui",
       flag: "Segnala",
-      star: 'Star',
+      star: "Stella",
       unstar: 'Unstar',
       adminActions: "Azioni Admin",
       flagHistory: "Segnalazioni ({0})",
@@ -161,7 +161,7 @@ const msgs: LocaleMessageObject = {
         continue: "Continua",
         back: "Torna Indietro",
         optional: "Opzionale",
-        links: 'Links',
+        links: "Collegamenti",
         homepage: "Home",
         issues: "Tracker Problemi",
         source: "Codice Sorgente",
@@ -216,9 +216,9 @@ const msgs: LocaleMessageObject = {
       views: "0 visualizzazioni | {0} visualizzazione | {0} visualizzazioni",
       totalDownloads: "0 downloads totali | {0} download totale | {0} downloads totali",
       stars: "0 stelle | {0} stella | {0} stelle",
-      watchers: '0 watchers | {0} watcher | {0} watchers'
+      watchers: "0 osservatori <unk> {0} osservatori <unk> {0}"
     },
-    promotedVersions: 'Promoted Versions',
+    promotedVersions: "Versioni Promosse",
     license: {
       link: "Concesso in licenza "
     },
@@ -250,14 +250,14 @@ const msgs: LocaleMessageObject = {
       iconSub: "Carica una immagine che rappresenti il tuo progetto.",
       iconUpload: "Carica",
       iconReset: "Reimposta Icona",
-      apiKey: 'API Keys',
+      apiKey: "Chiavi API",
       apiKeySub: "Genera un'unica deployment key per abilitare il build deployment da Gradle",
       apiKeyGenerate: "Genera",
       rename: "Rinomina",
       renameSub: "Cambiando il nome dedl tuo progetto potresti avere conseguenze non desiderate. Noi non creeremo nessun reindirizzamento.",
       delete: "Elimina",
       deleteSub: "Una volta eliminato un progetto, esso non potrà essere recuperato.",
-      hardDelete: 'Hard Delete',
+      hardDelete: "Eliminazione Rigida",
       hardDeleteSub: "Una volta eliminato un progetto, non potrà essere recuperato. Questa volta seriamente...",
       save: "Salva cambiamenti",
       optional: "(opzionale)",
@@ -368,7 +368,7 @@ const msgs: LocaleMessageObject = {
         mismatchedFileSize: "Il peso dei file non corrisponde",
         hashMismatch: "Gli hash dei file non corrispondono",
         invalidPlatformVersion: "Versione MC invalida per la piattaforma specificata",
-        fileIOError: 'File IO Error',
+        fileIOError: "Errore File IO",
         unknown: "Errore sconosciuto",
         incomplete: "File del plugin mancante {0}",
         noDescription: "Deve avere una descrizione",
@@ -402,7 +402,7 @@ const msgs: LocaleMessageObject = {
       delete: "Elimina",
       hardDelete: "Elimina (permanentemente)",
       restore: "Recupera",
-      download: 'Download',
+      download: "Scarica",
       downloadExternal: "Download Esternamente",
       adminActions: "Azioni admin",
       recommended: "Versione consigliata",
@@ -582,7 +582,7 @@ const msgs: LocaleMessageObject = {
       settings: "Impostazioni Utente",
       lock: "Blocca Account",
       unlock: "Sblocca Account",
-      apiKeys: 'API Keys',
+      apiKeys: "Chiavi API",
       activity: "Attività Utente",
       admin: "Modifica Utente"
     },
@@ -621,10 +621,10 @@ const msgs: LocaleMessageObject = {
   },
   stats: {
     title: "Statistiche",
-    plugins: 'Plugins',
+    plugins: "Plugin",
     reviews: "Revisioni",
-    uploads: 'Uploads',
-    downloads: 'Downloads',
+    uploads: "Caricamenti",
+    downloads: "Download",
     totalDownloads: "Downloads Totali",
     unsafeDownloads: "Downloads Non Sicuri",
     flags: "Segnalazioni",
@@ -634,7 +634,7 @@ const msgs: LocaleMessageObject = {
   health: {
     title: "Report Vitale Hangar",
     noTopicProject: "Nessuna discussion trovata",
-    erroredJobs: 'Failed jobs',
+    erroredJobs: "Processi falliti",
     jobText: "Tipo job: {0}, Tipo Errore: {1}, Accaduto: {2}",
     staleProjects: "Progetti in stallo",
     notPublicProjects: "Projects nascosti",
@@ -683,7 +683,7 @@ const msgs: LocaleMessageObject = {
     }
   },
   apiKeys: {
-    title: 'API Keys',
+    title: "Chiavi API",
     createNew: "Crea nuova chiave",
     existing: "Chiavi esistenti",
     name: "Nome",
@@ -749,7 +749,7 @@ const msgs: LocaleMessageObject = {
   },
   userActionLog: {
     title: "Log Azioni Utente",
-    user: 'User',
+    user: "Utente",
     address: "Indirizzo IP",
     time: "Tempo",
     action: "Azione",
@@ -832,7 +832,7 @@ const msgs: LocaleMessageObject = {
     selectAmount: "Seleziona un importo o inseriscine uno",
     legal: "Donando a {0} acconsenti a Y e che i tacos sono deliziosi",
     cta: "Dona",
-    submit: 'Donate {0}'
+    submit: "Dona {0}"
   },
   lang: {
     button: "Cambia Lingua",

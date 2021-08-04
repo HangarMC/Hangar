@@ -61,7 +61,7 @@ const msgs: LocaleMessageObject = {
       logout: "登出",
       error: {
         loginFailed: "身份验证失败",
-        invalidUsername: 'Invalid Username',
+        invalidUsername: "用户名无效",
         hangarAuth: "无法连接至 HangarAuth",
         loginDisabled: "登录暂时无法使用，请稍后再作尝试",
         fakeUserEnabled: "虚拟用户模式已启用。{0} 因此关闭"
@@ -169,7 +169,7 @@ const msgs: LocaleMessageObject = {
         license: "许可证",
         type: "类别",
         customName: "名称",
-        url: 'URL',
+        url: "网址",
         seo: 'SEO',
         keywords: "关键词"
       },
@@ -263,7 +263,7 @@ const msgs: LocaleMessageObject = {
       optional: "(选填项)",
       licenseCustom: "自定义名称",
       licenseType: "类别",
-      licenseUrl: 'URL',
+      licenseUrl: "网址",
       donation: {
         enable: "启用",
         enableSub: "启用此项目的捐赠表单",
@@ -315,7 +315,7 @@ const msgs: LocaleMessageObject = {
         minLength: "页面内容太少了",
         maxLength: "页面内容太多了",
         duplicateName: "相同名称的页面已然存在",
-        invalidName: 'Invalid name',
+        invalidName: "无效的名称",
         name: {
           maxLength: "页面名称太长啦",
           minLength: "页面名称太短啦",
@@ -373,7 +373,7 @@ const msgs: LocaleMessageObject = {
         incomplete: "插件文件缺少 {0}",
         noDescription: "必须提供描述",
         invalidPluginDependencyNamespace: "声明的插件依赖项具有无效的项目命名空间",
-        invalidName: 'Invalid version name',
+        invalidName: "无效的版本名称",
         channel: {
           noName: "必须指定一个通道名称",
           noColor: "必须指定一个通道颜色"
@@ -597,7 +597,7 @@ const msgs: LocaleMessageObject = {
     },
     error: {
       invalidTagline: "无效的标语",
-      invalidUsername: 'Invalid username'
+      invalidUsername: "用户名无效"
     }
   },
   linkout: {
@@ -835,10 +835,10 @@ const msgs: LocaleMessageObject = {
     submit: "按 {0} 捐助"
   },
   lang: {
-    button: 'Switch Language',
-    title: 'Switch Language',
-    available: 'Available Language',
-    hangarAuth: 'This only change the locale for your current browser (as a cookie). Click here to change your lang on paper auth for all paper services'
+    button: "切换语言",
+    title: "切换语言",
+    available: "可用语言",
+    hangarAuth: "这只会改变您当前浏览器的区域设置(作为一个 cookie)。点击此处更改您所有的纸质认证上的lang。"
   },
   validation: {
     required: "{0} 是必填的",
