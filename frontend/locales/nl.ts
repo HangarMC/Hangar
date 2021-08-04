@@ -464,7 +464,7 @@ const msgs: LocaleMessageObject = {
   organization: {
     new: {
       title: "Creëer een nieuwe Organisatie",
-      text: "Organisaties zorgen ervoor dat je groep beter kan samenwerken aan je projecten op Hangar.",
+      text: 'Organizations allow you to group users and provide closer collaboration between them within your projects on Hangar.',
       name: "Naam Organisatie",
       error: {
         duplicateName: "Er bestaat al een organisatie/gebruiker met die naam",
