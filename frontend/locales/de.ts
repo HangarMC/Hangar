@@ -85,7 +85,7 @@ const msgs: LocaleMessageObject = {
   },
   project: {
     stargazers: 'Stargazers',
-    noStargazers: "Es gibt noch keine Sterngazer in diesem Projekt: 😢",
+    noStargazers: "Es gibt noch keine Sterngazer in diesem Projekt 😢",
     watchers: "Beobachter",
     noWatchers: "Es gibt noch keine Beobachter in diesem Projekt 😢",
     members: "Mitglieder",
