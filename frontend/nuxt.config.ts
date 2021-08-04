@@ -3,7 +3,8 @@ import colors from 'vuetify/lib/util/colors';
 
 import en from './locales/en';
 import fr from './locales/fr';
-import zh from './locales/zh_hans';
+import zh_hans from './locales/zh_hans';
+import zh_hant from './locales/zh_hant';
 import nl from './locales/nl';
 import it from './locales/it';
 import es from './locales/es';
@@ -134,6 +135,7 @@ export default {
             { code: 'fr', iso: 'fr-FR', name: 'Français', icon: 'Test' },
             { code: 'en', iso: 'en-US', name: 'English', icon: 'Test' },
             { code: 'zh', iso: 'zh-HANS', name: 'Simplified Chinese', icon: 'Test' },
+            { code: 'zh', iso: 'zh-HANT', name: 'Traditional Chinese', icon: 'Test' },
             { code: 'nl', iso: 'nl-NL', name: 'Nederlands', icon: 'Test' },
             { code: 'it', iso: 'it-IT', name: 'Italiano', icon: 'Test' },
             { code: 'es', iso: 'es-ES', name: "Español", icon: 'Test'}
@@ -144,7 +146,8 @@ export default {
             messages: {
                 en,
                 fr,
-                zh,
+                zh_hans,
+                zh_hant,
                 nl,
                 it,
                 es,
