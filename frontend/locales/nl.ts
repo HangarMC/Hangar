@@ -43,7 +43,7 @@ const msgs: LocaleMessageObject = {
       username: "Gebruikersnaam",
       roles: 'Roles',
       joined: 'Joined',
-      projects: 'Projects'
+      projects: "Projecten"
     }
   },
   nav: {

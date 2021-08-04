@@ -395,7 +395,7 @@ const msgs: LocaleMessageObject = {
       platform: 'Platform',
       required: "(zorunlu)",
       adminMsg: "{0}, bu sürümü {1} tarihinde onayladı",
-      reviewLogs: 'Review logs',
+      reviewLogs: "Günlükleri inceleyin",
       reviewStart: "İnceleme Başlat",
       setRecommended: "Önerilen olarak ayarla",
       setRecommendedTooltip: "Bu sürümü {0} platformu için önerilen şekilde ayarlayın",
@@ -709,13 +709,13 @@ const msgs: LocaleMessageObject = {
   platformVersions: {
     title: "Platform Sürümlerini Yapılandırın",
     platform: 'Platform',
-    versions: 'Versions',
+    versions: "Versiyonlar",
     addVersion: "Versiyon ekle",
     saveChanges: "Değişiklikleri kaydet",
     success: "Güncellenmiş platform sürümleri"
   },
   flagReview: {
-    title: 'Flags',
+    title: "Etiketler",
     noFlags: "İncelenecek bayrak yok.",
     msgUser: "Kullanıcıya mesaj yaz",
     msgProjectOwner: "Proje sahibine mesaj yaz",

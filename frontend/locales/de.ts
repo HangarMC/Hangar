@@ -1,13 +1,13 @@
 import { LocaleMessageObject } from 'vue-i18n';
 const msgs: LocaleMessageObject = {
   general: {
-    close: 'Close',
-    submit: 'Submit',
-    save: 'Save',
-    comment: 'Comment',
-    change: 'Change',
-    donate: 'Donate',
-    continue: 'Continue',
+    close: "Schließen",
+    submit: "Absenden",
+    save: "Speichern",
+    comment: "Kommentieren",
+    change: "Ändern",
+    donate: "Spenden",
+    continue: "Weiter",
     create: 'Create',
     delete: 'Delete',
     or: 'Or',
@@ -30,8 +30,8 @@ const msgs: LocaleMessageObject = {
     projectSearch: {
       query: 'Search in {0} projects, proudly made by the community...',
       relevanceSort: 'Sort by relevance',
-      noProjects: 'There are no projects. 😢',
-      noProjectsFound: 'Found 0 projects. 😢'
+      noProjects: "Keine Projekte vorhanden. 😢",
+      noProjectsFound: "0 Projekte gefunden. 😢"
     },
     subtitle: 'A Minecraft package repository',
     sponsoredBy: 'Sponsored by'
