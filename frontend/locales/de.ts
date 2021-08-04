@@ -829,7 +829,7 @@ const msgs: LocaleMessageObject = {
     title: "Spende an {}",
     monthly: "Monatlich",
     oneTime: "Einmal",
-    selectAmount: "Wählen Sie einen Betrag oben oder geben Sie einen Betrag unten ein",
+    selectAmount: "Wähle einen Betrag oben oder gebe einen Betrag unten ein",
     legal: "Durch die Spende an {0} stimmst du Y zu und diese Tacos sind lecker",
     cta: "Spenden",
     submit: "Spende {0}"
