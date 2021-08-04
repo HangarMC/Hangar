@@ -1,0 +1,3 @@
+files:
+  - source: /frontend/locales/en.ts
+    translation: /frontend/locales/%two_letters_code%.ts
