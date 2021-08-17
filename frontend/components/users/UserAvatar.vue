@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="user-avatar-wrap">
         <NuxtLink :to="url">
             <img :title="username" :src="src" :alt="username" :class="'user-avatar ' + clazz" @error="errored = true" />
         </NuxtLink>

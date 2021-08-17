@@ -1,11 +1,11 @@
 <template>
     <div class="markdown-editor">
-        <div v-show="isEditing && !preview" class="ml-4">
+        <div v-show="isEditing && !preview">
             <!-- TODO validations for pageContent min/max length from validations state -->
             <v-textarea v-model="rawEdited" outlined :rows="rawEdited.split(/\r\n|\r|\n/g).length + 3" :rules="rules" />
         </div>
-        <Markdown v-show="!isEditing" :raw="raw" class="ml-4" />
-        <Markdown v-if="preview" :raw="rawEdited" class="ml-4" inner-class="pl-5" />
+        <Markdown v-show="!isEditing" :raw="raw" />
+        <Markdown v-if="preview" :raw="rawEdited" inner-class="pl-5" />
         <v-btn v-show="!isEditing" class="page-btn edit-btn info" fab absolute icon x-small @click="isEditing = true">
             <v-icon>mdi-pencil</v-icon>
         </v-btn>
@@ -38,7 +38,7 @@
 
         <v-btn
             v-show="isEditing && cancellable"
-            class="page-btn cancel-btn warning red darken-2"
+            class="page-btn cancel-btn warning red darken-1"
             fab
             absolute
             icon
@@ -118,23 +118,23 @@ export default class MarkdownEditor extends Vue {
 
 <style lang="scss" scoped>
 .page-btn {
-    left: 0;
+    left: -20px;
 
     &.edit-btn,
     &.save-btn {
-        top: -16px;
+        top: 5px;
     }
 
     &.preview-btn {
-        top: 22px;
+        top: 45px;
     }
 
     &.delete-btn {
-        top: 62px;
+        top: 78px;
     }
 
     &.cancel-btn {
-        top: 102px;
+        top: 118px;
     }
 }
 

@@ -1,12 +1,13 @@
 <template>
     <v-app>
+        <div class="announcements">
+            <template v-if="announcements">
+                <Announcement v-for="(announcement, idx) in announcements" :key="idx" :announcement="announcement" />
+            </template>
+        </div>
         <Header />
         <v-main>
-            <v-container>
-                <template v-if="announcements">
-                    <Announcement v-for="(announcement, idx) in announcements" :key="idx" :announcement="announcement" />
-                </template>
-
+            <v-container id="main" fluid>
                 <DonationResult />
                 <nuxt />
             </v-container>
@@ -42,3 +43,12 @@ export default class DefaultLayout extends Vue {
     }
 }
 </script>
+
+<style lang="scss">
+#main {
+    padding: 0;
+}
+.v-main {
+    padding-bottom: 12px;
+}
+</style>

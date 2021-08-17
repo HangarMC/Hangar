@@ -10,7 +10,11 @@
     "lint": "eslint --ext \".js,.vue,.ts\" .",
     "prepare": "cd .. && husky install frontend/.husky"
   },
-  "eslintIgnore": [".gitignore", "locales/*", "sw.js"],
+  "eslintIgnore": [
+    ".gitignore",
+    "locales/*",
+    "sw.js"
+  ],
   "lint-staged": {
     "*.{ts,js,vue}": "eslint"
   },
@@ -28,6 +32,8 @@
     "filesize": "6.3.0",
     "jwt-decode": "3.1.2",
     "lodash-es": "4.17.21",
+    "lru-cache": "6.0.0",
+    "minify-css-string": "1.0.0",
     "nuxt": "2.15.7",
     "nuxt-i18n": "Machine-Maker/i18n-module#fix/mixing-mem-leak",
     "nuxt-property-decorator": "2.9.1",
@@ -47,6 +53,7 @@
     "@types/chartist": "0.11.0",
     "@types/diff-match-patch": "1.0.32",
     "@types/lodash-es": "4.17.4",
+    "@types/lru-cache": "5.1.1",
     "@types/swagger-ui-dist": "3.30.0",
     "eslint": "7.29.0",
     "eslint-config-prettier": "8.3.0",

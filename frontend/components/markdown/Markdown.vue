@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-sheet :color="color" class="darken-1" rounded elevation="2">
+        <v-sheet :color="color" rounded elevation="2">
             <!-- eslint-disable-next-line vue/no-v-html -->
             <div v-if="!$fetchState.pending" class="page-rendered" :class="innerClass" v-html="renderedMarkdown" />
             <v-row v-else no-gutters justify="center">

@@ -1,0 +1,16 @@
+@import '~vuetify/src/styles/styles.sass';
+
+.v-divider {
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.v-card,
+.v-sheet.v-list {
+  background-color: #272727 !important;
+}
+.v-btn.v-btn--has-bg {
+  background-color: #1E1E1E !important;
+}
+a {
+  text-decoration: none;
+}

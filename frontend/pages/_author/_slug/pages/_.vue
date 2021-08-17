@@ -1,23 +1,21 @@
 <template>
-    <div>
-        <v-row>
-            <v-col v-if="page.contents" cols="12" md="9">
-                <MarkdownEditor
-                    v-if="$perms.canEditPage"
-                    ref="editor"
-                    :raw="page.contents"
-                    :editing.sync="editingPage"
-                    :deletable="page.deletable"
-                    @save="savePage"
-                    @delete="deletePage"
-                />
-                <Markdown v-else :raw="page.contents" />
-            </v-col>
-            <v-col cols="12" md="3">
-                <ProjectPageList :project="project" />
-            </v-col>
-        </v-row>
-    </div>
+    <v-row>
+        <v-col v-if="page.contents" cols="12" md="9" class="main-page-content">
+            <MarkdownEditor
+                v-if="$perms.canEditPage"
+                ref="editor"
+                :raw="page.contents"
+                :editing.sync="editingPage"
+                :deletable="page.deletable"
+                @save="savePage"
+                @delete="deletePage"
+            />
+            <Markdown v-else :raw="page.contents" />
+        </v-col>
+        <v-col cols="12" md="3">
+            <ProjectPageList :project="project" />
+        </v-col>
+    </v-row>
 </template>
 
 <script lang="ts">

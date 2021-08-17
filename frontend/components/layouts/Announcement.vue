@@ -19,8 +19,10 @@ export default class Announcement extends Vue {
 <style lang="scss" scoped>
 .v-alert {
     text-align: center;
-    margin-bottom: 1rem;
     flex: 0 0 100%;
     max-width: 100%;
+    min-height: 43px;
+    margin: 0;
+    border-radius: 0;
 }
 </style>

@@ -1,10 +1,10 @@
 <template>
-    <v-app-bar fixed app>
+    <v-app-bar height="100px">
         <v-menu bottom offset-y open-on-hover transition="slide-y-transition" close-delay="100">
             <template #activator="{ on, attrs }">
                 <v-btn text x-large class="align-self-center px-1" v-bind="attrs" :ripple="false" v-on="on">
                     <NuxtLink class="float-left" to="/" exact>
-                        <v-img height="55" width="220" src="https://papermc.io/images/logo-marker.svg" alt="Paper logo" />
+                        <v-img height="60" width="220" src="https://papermc.io/images/logo-marker.svg" alt="Paper logo" />
                     </NuxtLink>
 
                     <v-icon>mdi-chevron-down</v-icon>
@@ -244,9 +244,7 @@ export default class Header extends HangarComponent {
 .v-badge--bordered.header-badge .v-badge__badge::after {
     border-color: #272727 !important;
 }
-</style>
-<style lang="scss">
-.avatar-button {
-    //border: 2px white solid;
+.v-image {
+    margin: 20px;
 }
 </style>

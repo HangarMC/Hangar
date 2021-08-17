@@ -101,4 +101,8 @@ img {
 a {
     margin: 0 3px;
 }
+
+footer {
+    margin-top: 12px;
+}
 </style>

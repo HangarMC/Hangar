@@ -1,8 +1,8 @@
 <template>
-    <div class="button-group d-inline-block">
+    <div class="button-group">
         <v-menu v-if="platformSelection" offset-y>
             <template #activator="{ on, attrs }">
-                <v-btn style="min-width: 32px" class="px-2" color="primary darken-1" dark v-bind="attrs" elevation="0" v-on="on">
+                <v-btn style="min-width: 32px" class="px-2" color="primary darken-1" height="52px" dark v-bind="attrs" elevation="0" v-on="on">
                     <v-icon v-text="`$vuetify.icons.${selectedPlatform.toLowerCase()}`" />
                 </v-btn>
             </template>
@@ -18,7 +18,7 @@
                     </v-list-item>
                 </v-list-item-group>
             </v-list> </v-menu
-        ><v-btn color="primary" :small="small" :loading="loading" elevation="0" @click="checkAndDownload">
+        ><v-btn color="primary" :small="small" :loading="loading" elevation="0" height="52px" @click="checkAndDownload">
             <v-icon>mdi-download-outline</v-icon>
             {{ external ? $t('version.page.downloadExternal') : $t('version.page.download') }} </v-btn
         ><HangarModal
@@ -38,7 +38,16 @@
             <em>{{ $t('version.page.confirmation.disclaimer') }}</em> </HangarModal
         ><v-tooltip v-if="copyButton" v-model="copySuccessful" bottom>
             <template #activator="{ attrs }">
-                <v-btn style="min-width: 32px" class="px-2" color="primary lighten-1" :small="small" v-bind="attrs" elevation="0" @click="copyDownloadUrl">
+                <v-btn
+                    style="min-width: 32px"
+                    class="px-2"
+                    color="primary lighten-1"
+                    height="52px"
+                    :small="small"
+                    v-bind="attrs"
+                    elevation="0"
+                    @click="copyDownloadUrl"
+                >
                     <v-icon>mdi-content-copy</v-icon>
                 </v-btn>
             </template>
