@@ -1,7 +1,6 @@
 <template>
     <v-row>
         <v-col v-if="page.contents" cols="12" md="8" class="main-page-content">
-            <v-divider />
             <MarkdownEditor
                 v-if="$perms.canEditPage"
                 ref="editor"
