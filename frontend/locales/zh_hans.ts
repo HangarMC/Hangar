@@ -90,7 +90,7 @@ const msgs: LocaleMessageObject = {
     noWatchers: "目前还没有人时时关注这个项目的动态。??",
     members: "成员",
     category: {
-      info: "类别: {0}",
+      info: "类别",
       admin_tools: "管理员工具",
       chat: "聊天",
       dev_tools: "开发者工具",
@@ -212,11 +212,11 @@ const msgs: LocaleMessageObject = {
     sendForApproval: "发送并等待审核",
     info: {
       title: "信息",
-      publishDate: "发布于 {0}",
-      views: "0 浏览量 | {0} 浏览量 | {0} 浏览量",
-      totalDownloads: "0 总下载数 | {0} 总下载数 | {0} 总下载数",
-      stars: "0 收藏 | {0} 收藏 | {0} 收藏",
-      watchers: "0 关注 | {0} 关注 | {0} 关注"
+      publishDate: 'Published on',
+      views: 'Views | View | Views',
+      totalDownloads: 'Total downloads | Total download | Total downloads',
+      stars: 'Stars | Star | Stars',
+      watchers: 'Watchers | Watcher | Watchers'
     },
     promotedVersions: "最新版本",
     license: {
