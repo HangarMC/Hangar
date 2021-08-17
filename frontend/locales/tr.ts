@@ -90,7 +90,7 @@ const msgs: LocaleMessageObject = {
     noWatchers: "Bu projeyi izleyen yok 😢",
     members: "Üyeler",
     category: {
-      info: "Kategori: {0}",
+      info: "Kategori",
       admin_tools: "Yönetici Araçları",
       chat: "Sohbet",
       dev_tools: "Geliştirici Araçları",
@@ -212,11 +212,11 @@ const msgs: LocaleMessageObject = {
     sendForApproval: "Onay için gönder",
     info: {
       title: "Detaylar",
-      publishDate: "{0} tarihinde paylaşıldı",
-      views: "0 görüntüleme | {0} görüntüleme | {0} görüntüleme",
-      totalDownloads: "0 toplam indirme | {0} toplam indirme | {0} toplam indirme",
-      stars: "0 yıldız | {0} yıldız | {0} yıldız",
-      watchers: "0 izleyici | {0} izleyici | {0} izleyici"
+      publishDate: 'Published on',
+      views: 'Views | View | Views',
+      totalDownloads: 'Total downloads | Total download | Total downloads',
+      stars: 'Stars | Star | Stars',
+      watchers: 'Watchers | Watcher | Watchers'
     },
     promotedVersions: "Tanıtılan Sürümler",
     license: {
