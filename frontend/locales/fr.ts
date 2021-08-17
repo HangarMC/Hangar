@@ -90,7 +90,7 @@ const msgs: LocaleMessageObject = {
     noWatchers: "Il n'y a pas encore d'observateur sur projet 😢",
     members: "Membres",
     category: {
-      info: "Catégorie: {0}",
+      info: "Catégorie",
       admin_tools: "Outils d'administration",
       chat: "Discuter",
       dev_tools: "Outils de développeur",
@@ -212,11 +212,11 @@ const msgs: LocaleMessageObject = {
     sendForApproval: "Envoyer pour approbation",
     info: {
       title: 'Information',
-      publishDate: "Publier sur {0}",
-      views: "0 vue | {0} vue | {0} vues",
-      totalDownloads: "0 téléchargement au total | {0} téléchargement au total | {0} téléchargements au total",
-      stars: "0 étoile | {0} étoile | {0} étoiles",
-      watchers: "0 observateur | {0} observateur | {0} observateurs"
+      publishDate: 'Published on',
+      views: 'Views | View | Views',
+      totalDownloads: 'Total downloads | Total download | Total downloads',
+      stars: 'Stars | Star | Stars',
+      watchers: 'Watchers | Watcher | Watchers'
     },
     promotedVersions: "Versions promues",
     license: {
