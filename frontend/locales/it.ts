@@ -90,7 +90,7 @@ const msgs: LocaleMessageObject = {
     noWatchers: "Non ci sono watchers in questo progetto 😢",
     members: "Membri",
     category: {
-      info: "Categoria: {0}",
+      info: "Categoria",
       admin_tools: "Strumenti Amministrazione",
       chat: 'Chat',
       dev_tools: "Strumenti Sviluppo",
@@ -212,11 +212,11 @@ const msgs: LocaleMessageObject = {
     sendForApproval: "Invia per l'approvazione",
     info: {
       title: "Informazioni",
-      publishDate: "Pubblicato il {0}",
-      views: "0 visualizzazioni | {0} visualizzazione | {0} visualizzazioni",
-      totalDownloads: "0 downloads totali | {0} download totale | {0} downloads totali",
-      stars: "0 stelle | {0} stella | {0} stelle",
-      watchers: "0 osservatori <unk> {0} osservatori <unk> {0}"
+      publishDate: 'Published on',
+      views: 'Views | View | Views',
+      totalDownloads: 'Total downloads | Total download | Total downloads',
+      stars: 'Stars | Star | Stars',
+      watchers: 'Watchers | Watcher | Watchers'
     },
     promotedVersions: "Versioni Promosse",
     license: {
