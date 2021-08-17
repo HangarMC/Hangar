@@ -1,4 +1,4 @@
-import { LocaleMessageObject } from "vue-i18n";
+import { LocaleMessageObject } from "crwdns1:0crwdne1:0";
 const msgs: LocaleMessageObject = {
   general: {
     close: "crwdns3:0crwdne3:0",
@@ -90,7 +90,7 @@ const msgs: LocaleMessageObject = {
     noWatchers: "crwdns131:0crwdne131:0",
     members: "crwdns133:0crwdne133:0",
     category: {
-      info: "crwdns135:0{0}crwdne135:0",
+      info: "crwdns1279:0crwdne1279:0",
       admin_tools: "crwdns137:0crwdne137:0",
       chat: "crwdns139:0crwdne139:0",
       dev_tools: "crwdns141:0crwdne141:0",
@@ -212,11 +212,11 @@ const msgs: LocaleMessageObject = {
     sendForApproval: "crwdns315:0crwdne315:0",
     info: {
       title: "crwdns317:0crwdne317:0",
-      publishDate: "crwdns319:0{0}crwdne319:0",
-      views: "crwdns321:0{0}crwdnd321:0{0}crwdne321:0",
-      totalDownloads: "crwdns323:0{0}crwdnd323:0{0}crwdne323:0",
-      stars: "crwdns325:0{0}crwdnd325:0{0}crwdne325:0",
-      watchers: "crwdns327:0{0}crwdnd327:0{0}crwdne327:0"
+      publishDate: "crwdns1281:0crwdne1281:0",
+      views: "crwdns1283:0crwdne1283:0",
+      totalDownloads: "crwdns1285:0crwdne1285:0",
+      stars: "crwdns1287:0crwdne1287:0",
+      watchers: "crwdns1289:0crwdne1289:0"
     },
     promotedVersions: "crwdns329:0crwdne329:0",
     license: {
