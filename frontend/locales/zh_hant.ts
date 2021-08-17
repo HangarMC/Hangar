@@ -90,7 +90,7 @@ const msgs: LocaleMessageObject = {
     noWatchers: "目前還沒有人訂閲這個專案。😢",
     members: "成員",
     category: {
-      info: "類別：{0}",
+      info: "類別",
       admin_tools: "管理員工具",
       chat: "聊天",
       dev_tools: "開發者工具",
@@ -212,11 +212,11 @@ const msgs: LocaleMessageObject = {
     sendForApproval: "發送並等待審核",
     info: {
       title: "資訊",
-      publishDate: "發布於 {0}",
-      views: "0 瀏覽量 | {0} 瀏覽量 | {0} 瀏覽量",
-      totalDownloads: "0 總下載數 | {0} 總下載數 | {0} 總下載數",
-      stars: "0 收藏 | {0} 收藏 | {0} 收藏",
-      watchers: "0 訂閱 | {0} 訂閱 | {0} 訂閱"
+      publishDate: 'Published on',
+      views: 'Views | View | Views',
+      totalDownloads: 'Total downloads | Total download | Total downloads',
+      stars: 'Stars | Star | Stars',
+      watchers: 'Watchers | Watcher | Watchers'
     },
     promotedVersions: "最新版本",
     license: {
