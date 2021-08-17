@@ -90,7 +90,7 @@ const msgs: LocaleMessageObject = {
     noWatchers: "Er zijn nog geen volgers van dit project 😢",
     members: "Leden",
     category: {
-      info: "Categorie: {0}",
+      info: "Categorie",
       admin_tools: "Administratortools",
       chat: "Chatten",
       dev_tools: "Onwikkelaarstools",
@@ -212,11 +212,11 @@ const msgs: LocaleMessageObject = {
     sendForApproval: "Sturen voor goedkeuring",
     info: {
       title: "Informatie",
-      publishDate: "Gepubliceerd op {0}",
-      views: "0 weergaven | {0} weergave | {0} weergaven",
-      totalDownloads: "0 totale downloads | {0} totale download | {0} totale downloads",
-      stars: "0 sterren | {0} ster | {0} sterren",
-      watchers: "0 volgers | {0} volger | {0} volgers"
+      publishDate: 'Published on',
+      views: 'Views | View | Views',
+      totalDownloads: 'Total downloads | Total download | Total downloads',
+      stars: 'Stars | Star | Stars',
+      watchers: 'Watchers | Watcher | Watchers'
     },
     promotedVersions: "Gepromote versies",
     license: {
