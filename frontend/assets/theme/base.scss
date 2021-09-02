@@ -4,6 +4,7 @@
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
+body,
 .v-card,
 .v-sheet.v-list {
   background-color: #272727 !important;
@@ -13,7 +14,4 @@
 }
 a {
   text-decoration: none;
-}
-body {
-  background-color: #272727 !important;
 }
