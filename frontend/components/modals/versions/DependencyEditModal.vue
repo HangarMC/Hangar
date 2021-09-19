@@ -48,10 +48,15 @@ export default class DependencyEditModal extends mixins(HangarFormModal, HangarP
 
     submit() {
         this.loading = true;
+        const deps: PluginDependency[] = [];
+        if (this.formVersion.pluginDependencies[this.platform.name.toUpperCase() as Platform]) {
+            deps.push(...this.formVersion.pluginDependencies[this.platform.name.toUpperCase() as Platform]);
+        }
+        deps.push(...this.$refs.depTable.newDeps);
         this.$api
             .requestInternal(`versions/version/${this.project.id}/${this.projectVersion.id}/savePluginDependencies`, true, 'post', {
                 platform: this.platform.name.toUpperCase(),
-                pluginDependencies: [...this.formVersion.pluginDependencies[this.platform.name.toUpperCase() as Platform], ...this.$refs.depTable.newDeps],
+                pluginDependencies: deps,
             })
             .then(() => {
                 this.dialog = false;

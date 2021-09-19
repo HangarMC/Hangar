@@ -1,6 +1,5 @@
 package io.papermc.hangar.controller.validations;
 
-import io.papermc.hangar.controller.validations.AtLeastOneNotNull.AtLeastOneNotNullValidator;
 import org.springframework.beans.BeanUtils;
 
 import javax.validation.Constraint;
@@ -16,15 +15,16 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = AtLeastOneNotNullValidator.class)
+@Constraint(validatedBy = AtLeastOneNotNull.Validator.class)
 @Documented
 public @interface AtLeastOneNotNull {
     String[] fieldNames();
     String message() default "Must have one non null field";
+    boolean includeBlankStrings() default false;
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
-    class AtLeastOneNotNullValidator implements ConstraintValidator<AtLeastOneNotNull, Object> {
+    class Validator implements ConstraintValidator<AtLeastOneNotNull, Object> {
 
         private String[] fieldNames;
 
@@ -45,7 +45,11 @@ public @interface AtLeastOneNotNull {
                     if (propertyDescriptor != null) {
                         Object property = propertyDescriptor.getReadMethod().invoke(value);
                         if (property != null) {
-                            return true;
+                            if (property instanceof String) {
+                                return !((String) property).isBlank();
+                            } else {
+                                return true;
+                            }
                         }
                     }
                 }

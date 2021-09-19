@@ -153,7 +153,6 @@ public interface VersionsApiDAO {
             "   lower(p.owner_name) = lower(:author)")
     Long getVersionCount(String author, String slug, @Define boolean canSeeHidden, @Define Long userId, @BindPagination(isCount = true) RequestPagination pagination);
 
-    @KeyColumn("platform")
     @SqlQuery("SELECT " +
             "       pvd.name," +
             "       pvd.required," +

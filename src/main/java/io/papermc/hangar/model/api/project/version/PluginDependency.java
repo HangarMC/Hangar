@@ -1,5 +1,6 @@
 package io.papermc.hangar.model.api.project.version;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.controller.validations.AtLeastOneNotNull;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.api.project.ProjectNamespace;
@@ -10,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
-@AtLeastOneNotNull(fieldNames = {"namespace", "externalUrl"}, message = "Must specify a projectId or external URL for a dependency")
+@AtLeastOneNotNull(fieldNames = {"namespace", "externalUrl"}, includeBlankStrings = true, message = "Must specify a projectId or external URL for a dependency")
 public class PluginDependency implements Named {
 
     @NotBlank(message = "Must have a dependency name")
@@ -20,6 +21,7 @@ public class PluginDependency implements Named {
     private final String externalUrl;
 
     @JdbiConstructor
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PluginDependency(String name, boolean required, @Nested("pn") @Nullable ProjectNamespace namespace, String externalUrl) {
         this.name = name;
         this.required = required;

@@ -13,7 +13,7 @@
             </thead>
             <tbody>
                 <template v-if="!isNew">
-                    <tr v-for="dep in version.pluginDependencies[platform]" :key="`${platform}-${dep.name}`">
+                    <tr v-for="(dep, index) in version.pluginDependencies[platform]" :key="`${platform}-${dep.name}`">
                         <td>{{ dep.name }}</td>
                         <td><v-simple-checkbox v-model="dep.required" :ripple="false" /></td>
                         <td>
@@ -47,7 +47,7 @@
                             />
                         </td>
                         <td v-if="!noEditing">
-                            <v-btn icon color="error" @click="deleteDep(dep.name)">
+                            <v-btn icon color="error" @click="deleteDep(index)">
                                 <v-icon>mdi-delete</v-icon>
                             </v-btn>
                         </td>
@@ -119,13 +119,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, PropSync, Vue, Watch } from 'nuxt-property-decorator';
+import { Component, Prop, PropSync, Watch } from 'nuxt-property-decorator';
 import { PropType } from 'vue';
 import { DependencyVersion, PaginatedResult, PluginDependency, Project, ProjectNamespace } from 'hangar-api';
 import { Platform } from '~/types/enums';
+import { HangarComponent } from '~/components/mixins';
 
 @Component
-export default class DependencyTable extends Vue {
+export default class DependencyTable extends HangarComponent {
     results: Record<string, ProjectNamespace[]> = {};
     newDepResults: ProjectNamespace[][] = [];
 
@@ -141,12 +142,12 @@ export default class DependencyTable extends Vue {
     @Prop({ type: Boolean, default: false })
     isNew!: boolean;
 
-    @PropSync('newDepsProp', { type: Array as PropType<Partial<PluginDependency>[]>, default: () => [] })
-    newDeps!: Partial<PluginDependency>[];
+    @PropSync('newDepsProp', { type: Array as PropType<PluginDependency[]>, default: () => [] })
+    newDeps!: PluginDependency[];
 
     addNewDep() {
         this.newDeps.push({
-            name: undefined,
+            name: '',
             required: false,
             namespace: null,
             externalUrl: null,
@@ -176,15 +177,14 @@ export default class DependencyTable extends Vue {
         }
     }
 
-    deleteDep(name: string) {
-        this.$delete(
-            this.version.pluginDependencies[this.platform],
-            this.version.pluginDependencies[this.platform].findIndex((pd) => pd.name === name)
-        );
+    deleteDep(index: number) {
+        this.$delete(this.version.pluginDependencies[this.platform], index);
+        this.$delete(this.newDepResults, index);
     }
 
     deleteNewDep(index: number) {
         this.$delete(this.newDeps, index);
+        this.$delete(this.newDepResults, index);
     }
 
     onNewDepSearch(val: string, index: number) {
@@ -198,7 +198,7 @@ export default class DependencyTable extends Vue {
         }
     }
 
-    @Watch('newDepResults', { deep: true })
+    @Watch('newDeps', { deep: true })
     onFormChange() {
         this.$emit('change');
     }
@@ -209,8 +209,8 @@ export default class DependencyTable extends Vue {
     }
 
     reset() {
-        this.newDeps = [];
-        this.newDepResults = [];
+        this.newDeps.splice(0);
+        this.newDepResults.splice(0);
         this.results = {};
         if (this.version.pluginDependencies[this.platform]) {
             for (const dep of this.version.pluginDependencies[this.platform]) {
