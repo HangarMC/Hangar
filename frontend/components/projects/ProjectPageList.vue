@@ -5,7 +5,7 @@
             {{ $t('page.plural') }}
         </v-card-title>
         <v-card-text>
-            <v-treeview :items="project.pages" item-key="name" :open="initialPage">
+            <v-treeview :items="project.pages" item-key="slug" :open.sync="open" transition>
                 <template #label="props">
                     <v-btn
                         v-if="!props.item.home"
@@ -16,6 +16,7 @@
                         exact
                         class="text-transform-unset"
                     >
+                        <!--TODO custom icons-->
                         {{ props.item.name }}
                     </v-btn>
                     <v-btn v-else nuxt :to="`/${$route.params.author}/${$route.params.slug}`" color="info" text exact class="text-transform-unset">
@@ -29,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'nuxt-property-decorator';
+import { Component, Watch } from 'nuxt-property-decorator';
 import { HangarProjectMixin } from '../mixins';
 import NewPageModal from '~/components/modals/pages/NewPageModal.vue';
 
@@ -39,10 +40,39 @@ import NewPageModal from '~/components/modals/pages/NewPageModal.vue';
     },
 })
 export default class ProjectPageList extends HangarProjectMixin {
-    initialPage!: string[];
+    open: string[] = [];
 
     created() {
-        this.initialPage = this.$route.fullPath.split('/').slice(4);
+        this.updateTreeview();
+    }
+
+    @Watch('$route')
+    routeChanged() {
+        this.updateTreeview();
+    }
+
+    updateTreeview() {
+        const slugs = this.$route.fullPath.split('/').slice(4);
+        if (slugs.length) {
+            for (let i = 0; i < slugs.length; i++) {
+                const slug = slugs.slice(0, i + 1).join('/');
+                if (!this.open.includes(slug)) {
+                    this.open.push(slug);
+                }
+            }
+        } else if (this.project.pages.length === 1) {
+            this.open.push(this.project.pages[0].slug);
+        }
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.v-treeview {
+    overflow-x: scroll;
+
+    &::v-deep .v-treeview-node__label {
+        overflow: visible;
+    }
+}
+</style>
