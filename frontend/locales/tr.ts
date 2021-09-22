@@ -203,6 +203,7 @@ const msgs: LocaleMessageObject = {
         slugExists: "Bu harf dizisi ile bir proje zaten var",
         invalidName: "Bu isim geçersiz karakterler içeriyor",
         tooLongName: "Proje adı çok uzun",
+        tooShortName: 'This name is too short',
         tooLongDesc: "Proje açıklaması çok uzun",
         tooManyKeywords: "Proje çok fazla anahtar kelime içeriyor",
         noCategory: "Proje bir kategoriye dahil olmalıdır",
