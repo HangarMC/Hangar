@@ -203,6 +203,7 @@ const msgs: LocaleMessageObject = {
         slugExists: "相同的项目短链已然存在",
         invalidName: "这个名称包含非法字符",
         tooLongName: "项目名称太长啦",
+        tooShortName: 'This name is too short',
         tooLongDesc: "项目介绍太长啦",
         tooManyKeywords: "项目添加了过多的关键词",
         noCategory: "项目必须有一个类别",
