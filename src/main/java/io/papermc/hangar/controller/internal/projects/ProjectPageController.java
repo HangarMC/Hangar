@@ -15,7 +15,6 @@ import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type
 import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.internal.MarkdownService;
 import io.papermc.hangar.service.internal.projects.ProjectPageService;
-import io.papermc.hangar.util.StringUtils;
 import io.papermc.hangar.util.BBCodeConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -68,7 +67,7 @@ public class ProjectPageController extends HangarComponent {
         if (!validationService.isValidPageName(name)) {
             throw new HangarApiException("page.new.error.invalidName");
         }
-        projectPageService.checkDuplicateName(projectId, StringUtils.slugify(name), parentId);
+        projectPageService.checkDuplicateName(projectId, name, parentId);
     }
 
     @VisibilityRequired(type = Type.PROJECT, args = "{#author, #slug}")

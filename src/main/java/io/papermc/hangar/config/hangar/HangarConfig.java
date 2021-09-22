@@ -2,7 +2,6 @@ package io.papermc.hangar.config.hangar;
 
 import io.papermc.hangar.HangarApplication;
 import io.papermc.hangar.model.Announcement;
-import io.papermc.hangar.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;

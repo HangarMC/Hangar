@@ -8,6 +8,7 @@ services:
       dockerfile: docker/hangar/Dockerfile
     ports:
     - "8080:8080"
+    - "5005:5005"
     volumes:
     - ../:/app
     - uploads:/uploads
@@ -30,7 +31,7 @@ services:
     networks:
       - web
     user: appuser
-    command: './mvnw spring-boot:run -Dspring-boot.run.arguments=--spring.config.location="./docker/hangar/application.yml"'
+    command: './mvnw spring-boot:run -Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Dspring-boot.run.arguments=--spring.config.location="./docker/hangar/application.yml"'
   db:
     image: registry.gitlab.com/minidigger/hangar2/db:latest
     build: ./db
