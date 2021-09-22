@@ -100,14 +100,15 @@ public class ProjectFactory extends HangarComponent {
     }
 
     public void checkProjectAvailability(long userId, String name) {
-        InvalidProjectReason invalidProjectReason;
-        if (!validationService.isValidProjectName(name)) {
-            invalidProjectReason = InvalidProjectReason.INVALID_NAME;
-        } else {
-            invalidProjectReason = projectsDAO.checkProjectValidity(userId, name, StringUtils.slugify(name));
+        String errorKey = validationService.isValidProjectName(name);
+        if (errorKey == null) {
+            var reason = projectsDAO.checkProjectValidity(userId, name, StringUtils.slugify(name));
+            if (reason != null) {
+                errorKey = reason.key;
+            }
         }
-        if (invalidProjectReason != null) {
-            throw new HangarApiException(HttpStatus.CONFLICT, invalidProjectReason.key);
+        if (errorKey != null) {
+            throw new HangarApiException(HttpStatus.CONFLICT, errorKey);
         }
     }
 

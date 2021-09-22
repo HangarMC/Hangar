@@ -644,7 +644,7 @@ h2 {
 
 .sticky {
     position: sticky;
-    top: 63px;
+    top: 0;
     z-index: 1;
 }
 

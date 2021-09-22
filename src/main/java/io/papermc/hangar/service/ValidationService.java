@@ -1,5 +1,6 @@
 package io.papermc.hangar.service;
 
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -29,15 +30,22 @@ public class ValidationService {
         return true;
     }
 
-    public boolean isValidProjectName(String name) {
+    public @Nullable String isValidProjectName(String name) {
         name = StringUtils.compact(name);
+        String error = null;
         if (bannedRoutes.contains(name)) {
-            return false;
+            error = "invalidName";
         }
-        if (name.length() < 1 || name.length() > config.projects.getMaxNameLen() || !config.projects.getNameMatcher().test(name)) {
-            return false;
+        else if (name.length() < 3) {
+            error = "tooShortName";
         }
-        return true;
+        else if (name.length() > config.projects.getMaxNameLen()) {
+            error = "tooLongName";
+        }
+        else if (!config.projects.getNameMatcher().test(name)) {
+            error = "invalidName";
+        }
+        return error != null ? "project.new.error." + error : null;
     }
 
     public boolean isValidVersionName(String name) {
