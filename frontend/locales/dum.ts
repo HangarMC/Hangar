@@ -203,6 +203,7 @@ const msgs: LocaleMessageObject = {
         slugExists: "crwdns301:0crwdne301:0",
         invalidName: "crwdns303:0crwdne303:0",
         tooLongName: "crwdns305:0crwdne305:0",
+        tooShortName: "crwdns1291:0crwdne1291:0",
         tooLongDesc: "crwdns307:0crwdne307:0",
         tooManyKeywords: "crwdns309:0crwdne309:0",
         noCategory: "crwdns311:0crwdne311:0",
