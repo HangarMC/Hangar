@@ -203,6 +203,7 @@ const msgs: LocaleMessageObject = {
         slugExists: "Ya existe un proyecto con este enlace",
         invalidName: "El nombre contiene caracteres inválidos",
         tooLongName: "El nombre del proyecto es demasiado largo",
+        tooShortName: 'This name is too short',
         tooLongDesc: "La descripción del proyecto es demasiado larga",
         tooManyKeywords: "El proyecto tiene demasiadas palabras clave",
         noCategory: "El proyecto debe tener una categoría",
