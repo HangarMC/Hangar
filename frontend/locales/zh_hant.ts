@@ -203,6 +203,7 @@ const msgs: LocaleMessageObject = {
         slugExists: "相同的專案簡稱已然存在",
         invalidName: "這個名稱包含無效字元",
         tooLongName: "專案名稱過長",
+        tooShortName: 'This name is too short',
         tooLongDesc: "專案介紹過長",
         tooManyKeywords: "專案的關鍵字過多",
         noCategory: "專案必須屬於一個類別",
