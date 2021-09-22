@@ -203,6 +203,7 @@ const msgs: LocaleMessageObject = {
         slugExists: "Er bestaat al een project met deze slug",
         invalidName: "De naam bevat ongeldige tekens",
         tooLongName: "Projectnaam is te lang",
+        tooShortName: 'This name is too short',
         tooLongDesc: "Projectbeschrijving is te lang",
         tooManyKeywords: "Project heeft teveel keywords",
         noCategory: "Project moet een categorie hebben",
