@@ -13,6 +13,7 @@ import com.vladsch.flexmark.ext.gitlab.GitLabExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.typographic.TypographicExtension;
 import com.vladsch.flexmark.ext.wikilink.WikiLinkExtension;
+import com.vladsch.flexmark.ext.youtube.embedded.YouTubeLinkExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.html.LinkResolver;
 import com.vladsch.flexmark.html.LinkResolverFactory;
@@ -68,7 +69,8 @@ public class MarkdownService {
                                 EmojiExtension.create(),
                                 FootnoteExtension.create(),
                                 AdmonitionExtension.create(),
-                                GitLabExtension.create()
+                                GitLabExtension.create(),
+                                YouTubeLinkExtension.create()
                         )
                 );
 
