@@ -143,6 +143,7 @@ hangar:
       timeout: 10000
     safe-download-hosts:
       - "github.com"
+      - "youtu.be"
 
   discourse:
     enabled: true

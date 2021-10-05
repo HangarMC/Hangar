@@ -200,7 +200,7 @@ export default {
                     'data: papermc.io paper.readthedocs.io',
                     'https:', // ppl can use images in descriptions, we would need an image proxy or smth
                 ],
-                frameSrc: ["'self'", 'http://localhost/', 'https://papermc.io/', 'https://hangar.crowdin.com'],
+                frameSrc: ["'self'", 'http://localhost/', 'https://papermc.io/', 'https://hangar.crowdin.com', 'https://www.youtube-nocookie.com'],
                 manifestSrc: ["'self'"],
                 connectSrc: ["'self'", 'https://www.google-analytics.com', 'https://stats.g.doubleclick.net', 'https://hangar.crowdin.com'],
                 mediaSrc: ["'self'"],

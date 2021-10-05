@@ -61,6 +61,18 @@ class BBCodeConverterTest {
     }
 
     @Test
+    void testMedia() {
+        String result = converter.convertToMarkdown("[MEDIA=youtube]dQw4w9WgXcQ[/MEDIA]");
+        Assertions.assertEquals("@[YouTube](https://youtu.be/dQw4w9WgXcQ)", result);
+    }
+
+    @Test
+    void testMediaUnsupportedPlatform() {
+        String result = converter.convertToMarkdown("[MEDIA=vimeo]163721649[/MEDIA]");
+        Assertions.assertEquals("[MEDIA=vimeo]163721649[/MEDIA]", result);
+    }
+
+    @Test
     void testComplexExample() throws IOException {
         // Be sure to retest/-generate this output if "breaking" changes are made, for example to spacing
         String input = Files.readString(PATH.resolve("BBCodeExample.txt"));

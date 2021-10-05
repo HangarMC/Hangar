@@ -37,6 +37,7 @@ public class BBCodeConverter {
         REPLACERS.put("i", (tag, tagArg, content) -> "*" + content + "*");
         REPLACERS.put("s", (tag, tagArg, content) -> "~~" + content + "~~");
         REPLACERS.put("img", (tag, tagArg, content) -> "![" + content + "](" + content + ")");
+        REPLACERS.put("media", (tag, tagArg, content) -> "youtube".equals(tagArg) ? "@[YouTube](https://youtu.be/" + content + ")" : null);
         REPLACERS.put("url", (tag, tagArg, content) -> {
             String url = tagArg == null ? content : tagArg;
             char firstCharacter = url.length() > 2 ? url.charAt(0) : '-';
@@ -106,7 +107,11 @@ public class BBCodeConverter {
             }
 
             String processed = replacer.process(currentTag, currentArg, currentContent);
-            s = s.substring(0, index) + processed + s.substring(closingIndex);
+            if (processed == null) {
+                index++;
+            } else {
+                s = s.substring(0, index) + processed + s.substring(closingIndex);
+            }
         }
         return s;
     }
