@@ -82,6 +82,7 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
           EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+          SSO_CLIENT_ID: ${{ secrets.SSO_CLIENT_ID }}
           SSO_SECRET: ${{ secrets.SSO_SECRET }}
           API_KEY: ${{ secrets.API_KEY }}
           TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
