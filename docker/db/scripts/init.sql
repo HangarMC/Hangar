@@ -1,4 +1,4 @@
 \c hangar;
 
-create extension hstore;
-create extension pgcrypto;
+CREATE EXTENSION hstore;
+CREATE EXTENSION pgcrypto;

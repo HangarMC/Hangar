@@ -4,19 +4,13 @@ services:
   db:
     build: ./db
     environment:
-      POSTGRES_MULTIPLE_DATABASES: hangarauth
+      POSTGRES_MULTIPLE_DATABASES: hydra,kratos
       POSTGRES_DB: hangar
       POSTGRES_USER: hangar
       POSTGRES_PASSWORD: 'hangar'
     ports:
       - "5432:5432"
-    networks:
-      - web
     volumes:
       - db_data:/var/lib/postgresql/data
 volumes:
   db_data:
-networks:
-  web:
-    name: traefik-overlay
-    external: true
