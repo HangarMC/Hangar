@@ -60,7 +60,7 @@ public class AuthenticationService extends HangarComponent {
 
     public URI changeAvatarUri(String requester, String organization) throws JsonProcessingException {
         ChangeAvatarToken token = getChangeAvatarToken(requester, organization);
-        UriComponentsBuilder uriComponents = UriComponentsBuilder.fromHttpUrl(config.getAuthUrl());
+        UriComponentsBuilder uriComponents = UriComponentsBuilder.fromHttpUrl(config.sso.getAuthUrl());
         uriComponents.path("/accounts/user/{organization}/change-avatar/").queryParam("key", token.getSignedData());
         return uriComponents.build(organization);
     }
@@ -69,7 +69,9 @@ public class AuthenticationService extends HangarComponent {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> bodyMap = new LinkedMultiValueMap<>();
-        bodyMap.add("api-key", config.sso.getApiKey());
+        // TODO allow changing org avatars in SSO
+        if (true) throw new RuntimeException("disabled");
+//        bodyMap.add("api-key", config.sso.getApiKey());
         bodyMap.add("request_username", requester);
         ChangeAvatarToken token;
         token = mapper.treeToValue(restTemplate.postForObject(config.security.api.getUrl() + "/api/users/" + organization + "/change-avatar-token/", new HttpEntity<>(bodyMap, headers), ObjectNode.class), ChangeAvatarToken.class);

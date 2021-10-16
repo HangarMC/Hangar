@@ -106,7 +106,7 @@ public class UserService extends HangarComponent {
         if (user == null) {
             user = new UserTable(
                     authUser.getId(),
-                    null,
+                    authUser.getFullName(),
                     authUser.getUserName(),
                     authUser.getEmail(),
                     List.of(),

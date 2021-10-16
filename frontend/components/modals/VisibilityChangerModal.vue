@@ -18,7 +18,7 @@
                 hide-details
                 auto-grow
                 rows="2"
-                :rules="[$util.$vc.require()]"
+                :rules="[$util.$vc.required()]"
                 :label="$t('visibility.modal.reason')"
             />
         </v-form>

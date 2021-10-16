@@ -1,48 +1,48 @@
 package io.papermc.hangar.service.internal.auth;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import io.papermc.hangar.config.hangar.HangarConfig;
-import io.papermc.hangar.db.dao.internal.table.auth.UserSignOnDAO;
-import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.db.auth.UserSignOnTable;
-import io.papermc.hangar.model.internal.sso.AuthUser;
-import io.papermc.hangar.model.internal.sso.URLWithNonce;
-import io.papermc.hangar.util.CryptoUtils;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.math.BigInteger;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Base64;
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
-// reference: https://github.com/MiniDigger/HangarAuth/blob/master/spongeauth/sso/discourse_sso.py
+import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.db.dao.internal.table.auth.UserSignOnDAO;
+import io.papermc.hangar.model.db.auth.UserSignOnTable;
+import io.papermc.hangar.model.internal.sso.AuthUser;
+import io.papermc.hangar.model.internal.sso.TokenResponce;
+import io.papermc.hangar.model.internal.sso.Traits;
+import io.papermc.hangar.model.internal.sso.URLWithNonce;
+
 @Service
 public class SSOService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SSOService.class);
-
     private final HangarConfig hangarConfig;
     private final UserSignOnDAO userSignOnDAO;
-    private final Cache<String, String> returnUrls;
+    private final RestTemplate restTemplate;
 
     @Autowired
-    public SSOService(HangarConfig hangarConfig, UserSignOnDAO userSignOnDAO) {
+    public SSOService(HangarConfig hangarConfig, UserSignOnDAO userSignOnDAO, RestTemplate restTemplate) {
         this.hangarConfig = hangarConfig;
-        this.returnUrls = Caffeine.newBuilder().expireAfterWrite(hangarConfig.sso.getReset()).build();
         this.userSignOnDAO = userSignOnDAO;
+        this.restTemplate = restTemplate;
     }
 
     private boolean isNonceValid(String nonce) {
@@ -55,47 +55,44 @@ public class SSOService {
     }
 
     public URLWithNonce getLoginUrl(String returnUrl) {
-        return getUrl(returnUrl, hangarConfig.sso.getLoginUrl());
-    }
-
-    public URLWithNonce getSignupUrl(String returnUrl) {
-        return getUrl(returnUrl, hangarConfig.sso.getSignupUrl());
-    }
-
-    public URLWithNonce getVerifyUrl(String returnUrl) {
-        return getUrl(returnUrl, hangarConfig.sso.getVerifyUrl());
-    }
-
-    private URLWithNonce getUrl(String returnUrl, String baseUrl) {
         String generatedNonce = nonce();
-        String payload = generatePayload( returnUrl, generatedNonce);
-        String sig = sign(payload);
-        String urlEncoded = URLEncoder.encode(payload, StandardCharsets.UTF_8);
-        return new URLWithNonce(String.format("%s?sso=%s&sig=%s", hangarConfig.getAuthUrl() + baseUrl, urlEncoded, sig), generatedNonce);
+        String url = UriComponentsBuilder.fromUriString(hangarConfig.sso.getOauthUrl() + hangarConfig.sso.getLoginUrl())
+                .queryParam("client_id", hangarConfig.sso.getClientId())
+                .queryParam("scope", "openid email profile")
+                .queryParam("response_type", "code")
+                .queryParam("redirect_uri", returnUrl)
+                .queryParam("state", generatedNonce)
+                .build().toUriString();
+
+        return new URLWithNonce(url, generatedNonce);
+    }
+
+    public String getSignupUrl(String returnUrl) {
+        // TODO figure out what we wanna do here
+        return hangarConfig.sso.getAuthUrl() + hangarConfig.sso.getSignupUrl();
     }
 
     private String nonce() {
         return new BigInteger(130, ThreadLocalRandom.current()).toString(32);
     }
 
-    private String generatePayload(String returnUrl, String nonce) {
-        String payload = String.format("return_sso_url=%s&nonce=%s", returnUrl, nonce);
-        return new String(Base64.getEncoder().encode(payload.getBytes(StandardCharsets.UTF_8)));
-    }
+    public AuthUser authenticate(String code, String nonce, String returnUrl) {
+        String token = redeemCode(code, returnUrl);
+        DecodedJWT decoded = JWT.decode(token);
 
-    public AuthUser authenticate(String payload, String sig) {
-        Map<String, String> decoded = decode(payload, sig);
-        String nonce = decoded.get("nonce");
-        long externalId = Long.parseLong(decoded.get("external_id"));
-        String username = decoded.get("username");
-        String email = decoded.get("email");
+        Traits traits = decoded.getClaim("traits").as(Traits.class);
+//        long externalId = Long.parseLong(decoded.get("external_id"));
+//        String avatarUrl = decoded.get("avatar_url");
+        Locale language =  (traits.getLanguage() == null || traits.getLanguage().isBlank()) ? Locale.ENGLISH : Locale.forLanguageTag(traits.getLanguage());
+//        String addGroups = decoded.get("add_groups");
         AuthUser authUser = new AuthUser(
-                externalId,
-                username,
-                email,
-                decoded.get("avatar_url"),
-                decoded.get("language") == null ? Locale.ENGLISH : Locale.forLanguageTag(decoded.get("language")),
-                decoded.get("add_groups")
+                -5,
+                traits.getUsername(),
+                traits.getEmail(),
+                "avatarUrl",
+                language,
+                traits.getName().getFirst() + traits.getName().getLast(),
+                "addGroups"
         );
         if (!isNonceValid(nonce)) {
             return null;
@@ -103,41 +100,24 @@ public class SSOService {
         return authUser;
     }
 
+    public String redeemCode(String code, String redirect) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("code", code);
+        map.add("grant_type", "authorization_code");
+        map.add("client_id", hangarConfig.sso.getClientId());
+        map.add("redirect_uri", redirect);
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+        ResponseEntity<TokenResponce> tokenResponse = restTemplate.exchange(hangarConfig.sso.getOauthUrl() + hangarConfig.sso.getTokenUrl(), HttpMethod.POST, entity, TokenResponce.class);
+
+        return tokenResponse.getBody().getIdToken();
+    }
+
     public UserSignOnTable insert(String nonce) {
         return userSignOnDAO.insert(new UserSignOnTable(nonce));
-    }
-
-    private String sign(String payload) {
-        try {
-            return CryptoUtils.hmacSha256(hangarConfig.sso.getSecret(), payload.getBytes(StandardCharsets.UTF_8));
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            LOGGER.warn("Error while singing sso key", e);
-            throw new HangarApiException("nav.user.error.loginFailed");
-        }
-    }
-
-    private boolean verify(String payload, String signature) {
-        return sign(payload).equalsIgnoreCase(signature);
-    }
-
-    // reference: unsign
-    public Map<String, String> decode(String payload, String signature) {
-        if (!verify(payload, signature)) {
-            throw new SignatureException(payload, signature);
-        }
-
-        String decoded = new String(Base64.getDecoder().decode(payload));
-        String querystring = URLDecoder.decode(decoded, StandardCharsets.UTF_8);
-        return UriComponentsBuilder.fromUriString("/?" + querystring).build().getQueryParams().toSingleValueMap();
-    }
-
-    public String getReturnUrl(String nonce) {
-        return returnUrls.getIfPresent(nonce);
-    }
-
-    public static class SignatureException extends HangarApiException {
-        SignatureException(String payload, String signature) {
-            super("nav.user.error.hangarAuth", payload, signature);
-        }
     }
 }

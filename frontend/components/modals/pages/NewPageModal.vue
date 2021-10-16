@@ -14,7 +14,7 @@
                         filled
                         :loading="validateLoading"
                         :rules="[
-                            $util.$vc.require($t('page.new.name')),
+                            $util.$vc.required($t('page.new.name')),
                             $util.$vc.regex($t('page.new.name'), validations.project.pageName.regex),
                             $util.$vc.maxLength(validations.project.pageName.max),
                             $util.$vc.minLength(validations.project.pageName.min),

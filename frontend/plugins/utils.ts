@@ -159,7 +159,7 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
          */
         hasPerms(...namedPermission: NamedPermission[]): boolean {
             const perms = (store.state.auth as AuthState).routePermissions;
-            if (perms === null) return false;
+            if (!perms) return false;
             const _perms: bigint = BigInt('0b' + perms);
             let result = true;
             for (const np of namedPermission) {
@@ -239,7 +239,7 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
         }
 
         $vc = {
-            require:
+            required:
                 (name: TranslateResult = 'Field') =>
                 (v: string) =>
                     !!v || i18n.t('validation.required', [name]),

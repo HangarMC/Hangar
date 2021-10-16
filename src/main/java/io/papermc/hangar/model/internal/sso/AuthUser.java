@@ -17,15 +17,17 @@ public class AuthUser {
     private final String email;
     private final String avatarUrl;
     private final Locale lang;
+    private final String fullName;
     private final List<GlobalRole> globalRoles;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public AuthUser(long id, String userName, String email, String avatarUrl, Locale lang, String addGroups) {
+    public AuthUser(long id, String userName, String email, String avatarUrl, Locale lang, String fullName, String addGroups) {
         this.id = id;
         this.userName = userName;
         this.email = email;
         this.avatarUrl = avatarUrl;
         this.lang = lang;
+        this.fullName = fullName;
         if (addGroups == null || addGroups.isBlank()) {
             this.globalRoles = new ArrayList<>();
         } else {
@@ -39,6 +41,7 @@ public class AuthUser {
         this.email = email;
         this.avatarUrl = "";
         this.lang = Locale.ENGLISH;
+        this.fullName = null;
         this.globalRoles = new ArrayList<>();
     }
 
@@ -64,6 +67,10 @@ public class AuthUser {
 
     public List<GlobalRole> getGlobalRoles() {
         return globalRoles;
+    }
+
+    public String getFullName() {
+        return fullName;
     }
 
     @Override

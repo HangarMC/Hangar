@@ -1,5 +1,18 @@
 package io.papermc.hangar.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.view.RedirectView;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpSession;
+
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.auth.RefreshResponse;
@@ -13,20 +26,6 @@ import io.papermc.hangar.service.ValidationService;
 import io.papermc.hangar.service.internal.auth.SSOService;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.users.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpSession;
 
 @Controller
 public class LoginController extends HangarComponent {
@@ -62,9 +61,9 @@ public class LoginController extends HangarComponent {
         }
     }
 
-    @GetMapping(path = "/login", params = {"sso", "sig"})
-    public RedirectView loginFromAuth(@RequestParam String sso, @RequestParam String sig, @CookieValue String url, RedirectAttributes attributes) {
-        AuthUser authUser = ssoService.authenticate(sso, sig);
+    @GetMapping(path = "/login", params = {"code", "state"})
+    public RedirectView loginFromAuth(@RequestParam String code, @RequestParam String state, @CookieValue String url) {
+        AuthUser authUser = ssoService.authenticate(code, state, config.getBaseUrl() + "/login");
         if (authUser == null) {
             throw new HangarApiException("nav.user.error.loginFailed");
         }
@@ -76,8 +75,8 @@ public class LoginController extends HangarComponent {
         UserTable user = userService.getOrCreate(authUser.getUserName(), authUser);
         globalRoleService.removeAllGlobalRoles(user.getId());
         authUser.getGlobalRoles().forEach(globalRole -> globalRoleService.addRole(globalRole.create(null, user.getId(), true)));
-        String token = tokenService.createTokenForUser(user);
-        return redirectBackOnSuccessfulLogin(url + "?token=" + token, user);
+        tokenService.createTokenForUser(user);
+        return redirectBackOnSuccessfulLogin(url);
     }
 
     @GetMapping("/refresh")
@@ -95,24 +94,15 @@ public class LoginController extends HangarComponent {
         }
     }
 
-    // TODO needed?
-    @PostMapping("/verify")
-    public RedirectView verify(@RequestParam String returnPath) {
-        if (config.fakeUser.isEnabled()) {
-            throw new HangarApiException("nav.user.error.fakeUserEnabled", "Verififcation");
-        }
-        return redirectToSso(ssoService.getVerifyUrl(config.getBaseUrl() + returnPath));
-    }
-
     @GetMapping("/signup")
     public RedirectView signUp(@RequestParam(defaultValue = "") String returnUrl) {
         if (config.fakeUser.isEnabled()) {
             throw new HangarApiException("nav.user.error.fakeUserEnabled", "Signup");
         }
-        return redirectToSso(ssoService.getSignupUrl(returnUrl));
+        return new RedirectView(ssoService.getSignupUrl(returnUrl));
     }
 
-    private RedirectView redirectBackOnSuccessfulLogin(String url, UserTable user) {
+    private RedirectView redirectBackOnSuccessfulLogin(String url) {
         if (!url.startsWith("http")) {
             if (url.startsWith("/")) {
                 url = config.getBaseUrl() + url;

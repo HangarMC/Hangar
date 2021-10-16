@@ -13,7 +13,7 @@
                     counter="255"
                     :loading="validateLoading"
                     :error-messages="nameErrorMessages"
-                    :rules="[$util.$vc.require($t('apiKeys.name')), $util.$vc.maxLength(255), $util.$vc.minLength(5)]"
+                    :rules="[$util.$vc.required($t('apiKeys.name')), $util.$vc.maxLength(255), $util.$vc.minLength(5)]"
                 >
                     <template #append-outer>
                         <v-btn color="success" class="input-append-btn" :disabled="!validForm" :loading="loading" @click="create">

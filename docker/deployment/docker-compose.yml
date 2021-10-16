@@ -33,8 +33,7 @@ services:
       context: ../..
       dockerfile: docker/deployment/hangar-backend/Dockerfile
     environment:
-      SSO_SECRET: "${SSO_SECRET}"
-      API_KEY: "${API_KEY}"
+      SSO_CLIENT_ID: "${SSO_CLIENT_ID}"
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
       TOKEN_SECRET: "${TOKEN_SECRET}"

@@ -12,7 +12,7 @@
                         autofocus
                         filled
                         :label="label"
-                        :rules="[$util.$vc.require(label)]"
+                        :rules="[$util.$vc.required(label)]"
                         :rows="2"
                         auto-grow
                         @keydown.enter.prevent=""

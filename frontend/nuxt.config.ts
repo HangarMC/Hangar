@@ -16,6 +16,7 @@ require('events').EventEmitter.defaultMaxListeners = 20;
 require('dotenv').config();
 
 const proxyHost = process.env.proxyHost || 'http://localhost:8080';
+const oauthHost = process.env.oauthHost || 'http://localhost:4444';
 const authHost = process.env.authHost || 'http://localhost:8000';
 const lazyAuthHost = process.env.lazyAuthHost || 'http://localhost:8000';
 const publicHost = process.env.PUBLIC_HOST || 'http://localhost:3000';
@@ -55,6 +56,7 @@ export default {
 
     env: {
         proxyHost,
+        oauthHost,
         authHost,
         lazyAuthHost,
         publicHost,
@@ -111,7 +113,7 @@ export default {
     },
 
     router: {
-        middleware: ['auth', 'routePermissions'],
+        middleware: ['routePermissions'],
     },
 
     proxy: [

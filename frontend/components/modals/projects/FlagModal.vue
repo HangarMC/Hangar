@@ -14,10 +14,10 @@
                 <span>{{ $t('project.flag.flagSent') }}</span>
             </v-tooltip>
         </template>
-        <v-radio-group v-model="form.selection" :rules="[$util.$vc.require('A reason')]">
+        <v-radio-group v-model="form.selection" :rules="[$util.$vc.required('A reason')]">
             <v-radio v-for="(reason, index) in flagReasons" :key="index" :label="$t(reason.title)" :value="reason.type" />
         </v-radio-group>
-        <v-textarea v-model.trim="form.comment" rows="3" filled :rules="[$util.$vc.require('A comment')]" :label="$t('general.comment')" />
+        <v-textarea v-model.trim="form.comment" rows="3" filled :rules="[$util.$vc.required('A comment')]" :label="$t('general.comment')" />
     </HangarModal>
 </template>
 

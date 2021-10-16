@@ -23,7 +23,6 @@ public class HangarConfig {
     private List<Sponsor> sponsors;
 
     private boolean dev = true;
-    private String authUrl;
     private String pluginUploadDir = new ApplicationHome(HangarApplication.class).getDir().toPath().resolve("work").toString();
     private String baseUrl;
     private String gaCode = "";
@@ -150,14 +149,6 @@ public class HangarConfig {
 
     public void setDev(boolean dev) {
         this.dev = dev;
-    }
-
-    public String getAuthUrl() {
-        return authUrl;
-    }
-
-    public void setAuthUrl(String authUrl) {
-        this.authUrl = authUrl;
     }
 
     public String getPluginUploadDir() {

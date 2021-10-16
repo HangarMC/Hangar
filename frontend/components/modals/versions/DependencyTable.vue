@@ -24,7 +24,9 @@
                                 :placeholder="$t('version.new.form.externalUrl')"
                                 :disabled="dep.namespace !== null && Object.keys(dep.namespace).length !== 0"
                                 :rules="
-                                    dep.namespace !== null && Object.keys(dep.namespace).length !== 0 ? [] : [$util.$vc.require('version.new.form.externalUrl')]
+                                    dep.namespace !== null && Object.keys(dep.namespace).length !== 0
+                                        ? []
+                                        : [$util.$vc.required('version.new.form.externalUrl')]
                                 "
                                 clearable
                             />
@@ -42,7 +44,7 @@
                                 clearable
                                 auto-select-first
                                 :disabled="!!dep.externalUrl"
-                                :rules="!!dep.externalUrl ? [] : [$util.$vc.require('version.new.form.hangarProject')]"
+                                :rules="!!dep.externalUrl ? [] : [$util.$vc.required('version.new.form.hangarProject')]"
                                 @update:search-input="onSearch($event, dep.name)"
                             />
                         </td>
@@ -63,7 +65,7 @@
                                 hide-details
                                 flat
                                 :label="$t('general.name')"
-                                :rules="[$util.$vc.require($t('general.name'))]"
+                                :rules="[$util.$vc.required($t('general.name'))]"
                                 :disabled="noEditing"
                             />
                         </td>
@@ -78,7 +80,7 @@
                                 :rules="
                                     newDep.namespace !== null && Object.keys(newDep.namespace).length !== 0
                                         ? []
-                                        : [$util.$vc.require('version.new.form.externalUrl')]
+                                        : [$util.$vc.required('version.new.form.externalUrl')]
                                 "
                                 clearable
                             />
@@ -96,7 +98,7 @@
                                 clearable
                                 auto-select-first
                                 :disabled="!!newDep.externalUrl"
-                                :rules="!!newDep.externalUrl ? [] : [$util.$vc.require('version.new.form.hangarProject')]"
+                                :rules="!!newDep.externalUrl ? [] : [$util.$vc.required('version.new.form.hangarProject')]"
                                 @update:search-input="onNewDepSearch($event, index)"
                             />
                         </td>

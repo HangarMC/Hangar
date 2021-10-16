@@ -122,7 +122,7 @@
                             filled
                             :label="$t('reviews.reviewMessage')"
                             :rows="3"
-                            :rules="[$util.$vc.require($t('general.message'))]"
+                            :rules="[$util.$vc.required($t('general.message'))]"
                             @keydown.enter.prevent=""
                         />
                         <v-btn block color="primary" :loading="loadingValues.send" class="mt-2" :disabled="!validForm" @click="sendMessage">

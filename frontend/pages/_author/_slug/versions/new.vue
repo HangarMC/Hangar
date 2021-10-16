@@ -32,7 +32,7 @@
                             :autofocus="!isFile"
                             filled
                             :rules="[
-                                $util.$vc.require($t('version.new.form.versionString')),
+                                $util.$vc.required($t('version.new.form.versionString')),
                                 $util.$vc.regex($t('version.new.form.versionString'), validations.version.regex),
                             ]"
                         />
@@ -54,7 +54,7 @@
                             v-model="pendingVersion.externalUrl"
                             :label="$t('version.new.form.externalUrl')"
                             filled
-                            :rules="[$util.$vc.require($t('version.new.form.externalUrl')), $util.$vc.url]"
+                            :rules="[$util.$vc.required($t('version.new.form.externalUrl')), $util.$vc.url]"
                         />
                     </v-col>
                 </v-row>
@@ -163,7 +163,7 @@
                             :saveable="false"
                             editing
                             :raw="pendingVersion.description"
-                            :rules="[$util.$vc.require($t('version.new.form.release.bulletin'))]"
+                            :rules="[$util.$vc.required($t('version.new.form.release.bulletin'))]"
                         />
                     </v-col>
                 </v-row>

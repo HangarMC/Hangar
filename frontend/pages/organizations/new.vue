@@ -13,7 +13,7 @@
                             :loading="validateLoading"
                             :label="$t('organization.new.name')"
                             :rules="[
-                                $util.$vc.require($t('organization.new.name')),
+                                $util.$vc.required($t('organization.new.name')),
                                 $util.$vc.regex($t('organization.new.name'), validations.org.regex),
                                 $util.$vc.minLength(validations.org.min),
                                 $util.$vc.maxLength(validations.org.max),

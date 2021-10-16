@@ -3,26 +3,14 @@ spring:
     url: jdbc:postgresql://hangar_new_db:5432/hangar
     username: "${POSTGRES_USER}"
     password: "${POSTGRES_PASSWORD}"
-  jackson:
-    serialization:
-      WRITE_DATES_AS_TIMESTAMPS: false
-    date-format: com.fasterxml.jackson.databind.util.StdDateFormat
 
 fake-user:
   enabled: false
 
 hangar:
   dev: false
-  auth-url: "https://hangar-auth.benndorf.dev"
   base-url: "https://hangar.benndorf.dev"
   plugin-upload-dir: "/hangar/uploads"
-
-  licenses:
-    - "MIT"
-    - "Apache 2.0"
-    - "GPL"
-    - "LPGL"
-    - "(custom)"
 
   announcements:
     -
@@ -30,8 +18,9 @@ hangar:
       color: "#ff544b"
 
   sso:
-    secret: "${SSO_SECRET}"
-    api-key: "${API_KEY}"
+    auth-url: "https://hangar-auth.benndorf.dev"
+    oauth-url: "https://hangar-oauth.benndorf.dev"
+    client-id: "${SSO_CLIENT_ID}"
 
   security:
     api:
@@ -39,5 +28,7 @@ hangar:
       avatar-url: "https://hangar-auth.benndorf.dev/avatar/%s?size=120x120"
     token-secret: "${TOKEN_SECRET}"
 
-  projects:
-    name-regex: "^[a-zA-Z0-9-_]{3,}$"
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO

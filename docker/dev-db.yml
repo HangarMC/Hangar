@@ -10,7 +10,13 @@ services:
       POSTGRES_PASSWORD: 'hangar'
     ports:
       - "5432:5432"
+    networks:
+      - web
     volumes:
       - db_data:/var/lib/postgresql/data
 volumes:
   db_data:
+networks:
+  web:
+    name: traefik-overlay
+    external: true

@@ -75,7 +75,9 @@ public class OrganizationFactory extends HangarComponent {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-            map.add("api-key", config.sso.getApiKey());
+            // TODO allow creating org users in SSO
+            if (true) throw new RuntimeException("disabled");
+//            map.add("api-key", config.sso.getApiKey());
             map.add("username", name);
             map.add("email", dummyEmail);
             map.add("verified", Boolean.TRUE.toString());

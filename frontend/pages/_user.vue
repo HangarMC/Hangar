@@ -52,7 +52,7 @@
                             v-model.trim="taglineForm"
                             :counter="validations.userTagline.max"
                             :label="$t('author.taglineLabel')"
-                            :rules="[$util.$vc.require($t('author.taglineLabel')), $util.$vc.maxLength(validations.userTagline.max)]"
+                            :rules="[$util.$vc.required($t('author.taglineLabel')), $util.$vc.maxLength(validations.userTagline.max)]"
                         />
                         <template #other-btns>
                             <v-btn color="info" text :loading="loading.resetTagline" :disabled="!user.tagline" @click.stop="resetTagline">

@@ -14,7 +14,7 @@
                         :loading="loadings.name"
                         :error-messages="errorMsgs.name"
                         :rules="[
-                            $util.$vc.require($t('channel.modal.name')),
+                            $util.$vc.required($t('channel.modal.name')),
                             $util.$vc.regex($t('channel.modal.name'), validations.project.channels.regex),
                             $util.$vc.maxLength(validations.project.channels.max),
                         ]"
@@ -50,7 +50,7 @@
                         :label="$t('channel.modal.color')"
                         :error-messages="errorMsgs.color"
                         :loading="loadings.color"
-                        :rules="[$util.$vc.require($t('channel.modal.color'))]"
+                        :rules="[$util.$vc.required($t('channel.modal.color'))]"
                         readonly
                     />
                     <v-checkbox v-model="form.nonReviewed" :label="$t('channel.modal.reviewQueue')" />

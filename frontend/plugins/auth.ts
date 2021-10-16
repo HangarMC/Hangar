@@ -6,11 +6,6 @@ import { AuthState } from '~/store/auth';
 const createAuth = ({ app: { $cookies }, $axios, store, $api, redirect }: Context) => {
     class Auth {
         login(redirect: string): void {
-            $cookies.set('returnRoute', redirect, {
-                path: '/',
-                maxAge: 120,
-                secure: process.env.nodeEnv === 'production',
-            });
             location.replace(`/login?returnUrl=${process.env.publicHost}${redirect}`);
         }
 
@@ -23,7 +18,7 @@ const createAuth = ({ app: { $cookies }, $axios, store, $api, redirect }: Contex
             store.commit('auth/SET_USER', null);
             store.commit('auth/SET_TOKEN', null);
             store.commit('auth/SET_AUTHED', false);
-            await $axios.get('/invalidate');
+            await $axios.get('/invalidate').catch(() => console.log('invalidate failed'));
             $cookies.remove('HangarAuth_REFRESH', {
                 path: '/',
             });
@@ -57,7 +52,7 @@ const createAuth = ({ app: { $cookies }, $axios, store, $api, redirect }: Contex
 
         refreshUser(): Promise<void> {
             return $api.getToken(true).then((token) => {
-                if (token != null) {
+                if (token) {
                     if (store.state.auth.authenticated) {
                         return this.updateUser(token);
                     } else {

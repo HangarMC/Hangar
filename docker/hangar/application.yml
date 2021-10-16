@@ -1,151 +1,27 @@
-server:
-  port: 8080
-
 spring:
-  freemarker:
-    request-context-attribute: rc
-  sql:
-    init:
-      platform: postgres
   datasource:
     url: jdbc:postgresql://db:5432/hangar
     username: hangar
     password: hangar
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 11MB
-  devtools:
-    restart:
-      additional-exclude: work/**
-  jackson:
-    serialization:
-      WRITE_DATES_AS_TIMESTAMPS: false
-    date-format: com.fasterxml.jackson.databind.util.StdDateFormat
-
-logging:
-  level:
-#    root: TRACE
-    io:
-      papermc:
-        hangar:
-          config:
-            jackson: DEBUG
 
 fake-user:
   enabled: false
-  id: -2
-  name: paper
-  username: paper
-  email: paper@papermc.io
 
 hangar:
   dev: true
-  auth-url: "http://localhost:8000"
   base-url: "http://localhost:3000"
-  plugin-upload-dir: "/uploads"
-  ga-code: "UA-38006759-9"
-
-  licenses:
-    - "MIT"
-    - "Apache 2.0"
-    - "GPL"
-    - "LPGL"
-    - "(custom)"
-
-  sponsors:
-    - name: Beer
-      image: /images/sponsors/beer.jpg
-      link: https://minidigger.me
-    - name: MiniDigger
-      image: /images/sponsors/minidigger.png
-      link: https://minidigger.me
-
-  homepage:
-    update-interval: 10m
-
-  channels:
-    max-name-len: 15
-    name-regex: "^[a-zA-Z0-9]+$"
-    color-default: cyan
-    name-default: "Release"
-
-  pages:
-    home:
-      name: "Home"
-      message: "Welcome to your new project!"
-    min-len: 15
-    max-len: 75000
-    name-regex: "^[a-zA-Z0-9-_ ]+$"
-    max-name-len: 25
-    min-name-len: 3
-
-  projects:
-    max-name-len: 25
-    max-pages: 50
-    max-channels: 5
-    init-load: 25
-    init-version-load: 10
-    max-desc-len: 120
-    file-validate: true
-    stale-age: 28d
-    check-interval: 1h
-    draft-expire: 1d
-    user-grid-page-size: 30
-    max-keywords: 5
-    unsafe-download-max-age: 10
-    name-regex: "^[a-zA-Z0-9-_]{3,}$"
-
-  orgs:
-    create-limit: 5
-    dummy-email-domain: "org.papermc.io"
-    enabled: true
-
-  users:
-    max-tagline-len: 100
-    author-page-size: 25
-    staff-roles:
-      - Hangar_Admin
-      - Hangar_Mod
-      - Hangar_Dev
-
-
-  sso:
-    enabled: true
-    # relative to auth-url
-    login-url: "/sso/"
-    signup-url: "/sso/signup/"
-    verify-url: "/sso/sudo/"
-    logout-url: "/accounts/logout/"
-    avatar-url: "/avatar/%s?size=120x120"
-    secret: "changeme"
-    api-key: "changeme"
-    timeout: "2s"
-    reset: "10m"
-
-  security:
-    secure: false
-    unsafe-download-max-age: 600000
-    token-issuer: "Hangar"
-    token-secret: "secret!"
-    token-expiry: 300 # seconds
-    refresh-token-expiry: 30 # days
-    api:
-      url: "http://auth:8000"
-      avatar-url: "http://localhost:8000/avatar/%s?size=120x120" # only comment in if you run auth locally
-      timeout: 10000
-    safe-download-hosts:
-      - "github.com"
 
   discourse:
     enabled: false
     url: "http://localhost:80/"
     admin-user: "admin"
-    api-key: "4657cc5e3096e505903b59eb789005eb3f207d0c61f62212bf929268740c1585"
 
-  jobs:
-    check-interval: 30s
-    unknown-error-timeout: 15
-    status-error-timeout: 5
-    not-available-timeout: 2
-    max-concurrent-jobs: 32
+
+logging:
+  level:
+    #    root: TRACE
+    io:
+      papermc:
+        hangar:
+          config:
+            jackson: DEBUG

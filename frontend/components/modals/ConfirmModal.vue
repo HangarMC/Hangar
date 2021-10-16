@@ -7,7 +7,7 @@
             v-if="comment"
             v-model.trim="commentText"
             :label="$t('general.comment')"
-            :rules="[$util.$vc.require()]"
+            :rules="[$util.$vc.required()]"
             hide-details
             dense
             :rows="2"

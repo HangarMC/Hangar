@@ -48,7 +48,7 @@
                                         item-text="name"
                                         item-value="userId"
                                         :label="$t('project.new.step2.userSelect')"
-                                        :rules="[$util.$vc.require($t('project.new.step2.userSelect'))]"
+                                        :rules="[$util.$vc.required($t('project.new.step2.userSelect'))]"
                                         :append-icon="createAsIcon"
                                     />
                                 </v-col>
@@ -60,7 +60,7 @@
                                         filled
                                         :error-messages="nameErrors"
                                         :label="$t('project.new.step2.projectName')"
-                                        :rules="[$util.$vc.require($t('project.new.step2.projectName'))]"
+                                        :rules="[$util.$vc.required($t('project.new.step2.projectName'))]"
                                         append-icon="mdi-form-textbox"
                                     />
                                 </v-col>
@@ -71,7 +71,7 @@
                                         filled
                                         clearable
                                         :label="$t('project.new.step2.projectSummary')"
-                                        :rules="[$util.$vc.require($t('project.new.step2.projectSummary')), $util.$vc.maxLength(validations.project.desc.max)]"
+                                        :rules="[$util.$vc.required($t('project.new.step2.projectSummary')), $util.$vc.maxLength(validations.project.desc.max)]"
                                         append-icon="mdi-card-text"
                                     />
                                 </v-col>
@@ -85,7 +85,7 @@
                                         :label="$t('project.new.step2.projectCategory')"
                                         item-text="title"
                                         item-value="apiName"
-                                        :rules="[$util.$vc.require($t('project.new.step2.projectCategory'))]"
+                                        :rules="[$util.$vc.required($t('project.new.step2.projectCategory'))]"
                                     />
                                 </v-col>
                             </v-row>

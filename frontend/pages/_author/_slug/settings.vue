@@ -52,7 +52,7 @@
                                         filled
                                         item-text="title"
                                         item-value="apiName"
-                                        :rules="[$util.$vc.require()]"
+                                        :rules="[$util.$vc.required()]"
                                     />
                                 </div>
                                 <v-divider />

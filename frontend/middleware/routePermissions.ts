@@ -2,7 +2,10 @@ import { Context } from '@nuxt/types';
 import { UserPermissions } from 'hangar-api';
 import { AuthState } from '~/store/auth';
 
-export default ({ store, params, $api, $auth }: Context) => {
+export default async ({ store, params, $api, $auth, $cookies }: Context) => {
+    if ($cookies.get('HangarAuth_REFRESH', { parseJSON: false })) {
+        await $auth.refreshUser();
+    }
     if (params.author && params.slug) {
         if ($auth.isLoggedIn()) {
             return $api

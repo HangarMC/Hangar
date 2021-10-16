@@ -3,23 +3,18 @@ package io.papermc.hangar.config.hangar;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
-
 @Component
 @ConfigurationProperties(prefix = "hangar.sso")
 public class SSOConfig {
 
-    // TODO weed out the useless settings
     private boolean enabled = true;
-    private String loginUrl = "/sso/";
-    private String signupUrl = "/sso/signup/";
-    private String verifyUrl = "/sso/sudo/";
-    private String logoutUrl = "/accounts/logout/";
-    private String avatarUrl = "/avatar/%s?size=120x120";
-    private String secret = "changeme";
-    private String apiKey = "changeme";
-    private Duration timeout = Duration.ofSeconds(2);
-    private Duration reset = Duration.ofMinutes(10);
+    private String oauthUrl = "http://localhost:4444";
+    private String loginUrl = "/oauth2/auth/";
+    private String tokenUrl = "/oauth2/token";
+    private String clientId = "my-client";
+
+    private String authUrl = "http://localhost:3001";
+    private String signupUrl = "/account/signup";
 
     public boolean isEnabled() {
         return enabled;
@@ -45,59 +40,35 @@ public class SSOConfig {
         this.signupUrl = signupUrl;
     }
 
-    public String getVerifyUrl() {
-        return verifyUrl;
+    public String getTokenUrl() {
+        return tokenUrl;
     }
 
-    public void setVerifyUrl(String verifyUrl) {
-        this.verifyUrl = verifyUrl;
+    public void setTokenUrl(String tokenUrl) {
+        this.tokenUrl = tokenUrl;
     }
 
-    public String getLogoutUrl() {
-        return logoutUrl;
+    public String getClientId() {
+        return clientId;
     }
 
-    public void setLogoutUrl(String logoutUrl) {
-        this.logoutUrl = logoutUrl;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
+    public String getAuthUrl() {
+        return authUrl;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
+    public void setAuthUrl(String authUrl) {
+        this.authUrl = authUrl;
     }
 
-    public String getSecret() {
-        return secret;
+    public String getOauthUrl() {
+        return oauthUrl;
     }
 
-    public void setSecret(String secret) {
-        this.secret = secret;
-    }
-
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-    }
-
-    public Duration getTimeout() {
-        return timeout;
-    }
-
-    public void setTimeout(Duration timeout) {
-        this.timeout = timeout;
-    }
-
-    public Duration getReset() {
-        return reset;
-    }
-
-    public void setReset(Duration reset) {
-        this.reset = reset;
+    public void setOauthUrl(String oauthUrl) {
+        this.oauthUrl = oauthUrl;
     }
 }
