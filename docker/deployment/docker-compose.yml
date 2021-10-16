@@ -33,9 +33,9 @@ services:
       context: ../..
       dockerfile: docker/deployment/hangar-backend/Dockerfile
     environment:
-      SSO_CLIENT_ID: "${SSO_CLIENT_ID}"
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      SSO_CLIENT_ID: "${SSO_CLIENT_ID}"
       TOKEN_SECRET: "${TOKEN_SECRET}"
     depends_on:
       - 'db'
