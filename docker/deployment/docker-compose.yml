@@ -52,7 +52,7 @@ services:
     image: "ghcr.io/papermc/hangar_db"
     build: ./db
     environment:
-      POSTGRES_MULTIPLE_DATABASES: hangarauth
+      POSTGRES_MULTIPLE_DATABASES: "hangarauth,kratos,hydra"
       POSTGRES_DB: hangar
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
