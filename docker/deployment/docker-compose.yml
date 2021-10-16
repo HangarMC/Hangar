@@ -39,7 +39,6 @@ services:
       TOKEN_SECRET: "${TOKEN_SECRET}"
     depends_on:
       - 'db'
-      - 'auth'
       - 'mail'
     stdin_open: true
     labels:
