@@ -83,7 +83,7 @@ Deployment happens via Docker, checkout the stack in the docker folder. The Spri
 ## Contributing
 
 There is a bunch of stuff to do, some of that is noted in the [**Roadmap Project**](https://github.com/PaperMC/Hangar/projects/1). 
-Your best bet is joining #hangar-dev on the [Paper Discord](https://discord.gg/papermc) and just discussing with us.
+Your best bet is joining #development on the [Hangar Discord](https://discord.gg/zvrAEbvJ4a) and just discussing with us.
 All contributions are very welcome, we will not be able to finish this alone!
 
 ## License
