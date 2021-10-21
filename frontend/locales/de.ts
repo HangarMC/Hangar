@@ -48,7 +48,7 @@ const msgs: LocaleMessageObject = {
   },
   nav: {
     login: "Anmelden",
-    signup: "Anmelden",
+    signup: "Registrieren",
     user: {
       notifications: "Benachrichtigungen",
       flags: "Flaggen",
