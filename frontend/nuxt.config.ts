@@ -37,6 +37,9 @@ export default {
             description: 'Plugin repository for Paper plugins and more!',
             lang: 'en',
         },
+        workbox: {
+            enabled: false,
+        },
     },
 
     // Global page headers: https://go.nuxtjs.dev/config-head
