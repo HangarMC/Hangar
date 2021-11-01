@@ -122,7 +122,7 @@ hangar:
   sso:
     enabled: true
     oauth-url: "http://localhost:3000" # proxied to 4444
-    login-url: "/oauth2/auth/"
+    login-url: "/oauth2/auth"
     token-url: "/oauth2/token"
     logout-url: "/oauth2/sessions/logout"
     client-id: "my-client"
