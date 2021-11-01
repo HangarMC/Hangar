@@ -122,6 +122,7 @@ export default {
         proxyHost + '/signup',
         proxyHost + '/login',
         proxyHost + '/logout',
+        proxyHost + '/handle-logout',
         proxyHost + '/refresh',
         proxyHost + '/invalidate',
         proxyHost + '/v2/api-docs/',
@@ -132,6 +133,8 @@ export default {
         proxyHost + '/statusz',
         // auth
         lazyAuthHost + '/avatar',
+        lazyAuthHost + '/oauth/logout',
+        oauthHost + '/oauth2',
     ],
 
     i18n: {
@@ -202,7 +205,14 @@ export default {
                 ],
                 frameSrc: ["'self'", 'http://localhost/', 'https://papermc.io/', 'https://hangar.crowdin.com', 'https://www.youtube-nocookie.com'],
                 manifestSrc: ["'self'"],
-                connectSrc: ["'self'", 'https://www.google-analytics.com', 'https://stats.g.doubleclick.net', 'https://hangar.crowdin.com'],
+                connectSrc: [
+                    "'self'",
+                    'https://www.google-analytics.com',
+                    'https://stats.g.doubleclick.net',
+                    'https://hangar.crowdin.com',
+                    'http://localhost:3001',
+                    'https://hangar-auth.benndorf.dev',
+                ],
                 mediaSrc: ["'self'"],
                 objectSrc: ["'none'"],
                 baseUri: ["'none'"],

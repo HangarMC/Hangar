@@ -3,8 +3,6 @@ package io.papermc.hangar.service.internal.auth;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,12 +22,16 @@ import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.db.dao.internal.table.auth.UserOauthTokenDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.UserSignOnDAO;
+import io.papermc.hangar.model.db.auth.UserOauthTokenTable;
 import io.papermc.hangar.model.db.auth.UserSignOnTable;
 import io.papermc.hangar.model.internal.sso.AuthUser;
 import io.papermc.hangar.model.internal.sso.TokenResponce;
 import io.papermc.hangar.model.internal.sso.Traits;
 import io.papermc.hangar.model.internal.sso.URLWithNonce;
+import io.papermc.hangar.security.authentication.HangarPrincipal;
+import io.papermc.hangar.service.TokenService;
 
 @Service
 public class SSOService {
@@ -37,12 +39,16 @@ public class SSOService {
     private final HangarConfig hangarConfig;
     private final UserSignOnDAO userSignOnDAO;
     private final RestTemplate restTemplate;
+    private final UserOauthTokenDAO userOauthTokenDAO;
+    private final TokenService tokenService;
 
     @Autowired
-    public SSOService(HangarConfig hangarConfig, UserSignOnDAO userSignOnDAO, RestTemplate restTemplate) {
+    public SSOService(HangarConfig hangarConfig, UserSignOnDAO userSignOnDAO, RestTemplate restTemplate, UserOauthTokenDAO userOauthTokenDAO, TokenService tokenService) {
         this.hangarConfig = hangarConfig;
         this.userSignOnDAO = userSignOnDAO;
         this.restTemplate = restTemplate;
+        this.userOauthTokenDAO = userOauthTokenDAO;
+        this.tokenService = tokenService;
     }
 
     private boolean isNonceValid(String nonce) {
@@ -64,6 +70,22 @@ public class SSOService {
                 .queryParam("state", generatedNonce)
                 .build().toUriString();
 
+        return new URLWithNonce(url, generatedNonce);
+    }
+
+    private String idToken(String username) {
+        UserOauthTokenTable token = userOauthTokenDAO.getByUsername(username);
+        return token.getIdToken();
+    }
+
+    public URLWithNonce getLogoutUrl(String returnUrl, HangarPrincipal user) {
+        String idToken = idToken(user.getName());
+        String generatedNonce = nonce();
+        String url = UriComponentsBuilder.fromUriString(hangarConfig.sso.getOauthUrl() + hangarConfig.sso.getLogoutUrl())
+                .queryParam("post_logout_redirect_uri", returnUrl)
+                .queryParam("id_token_hint", idToken)
+                .queryParam("state", tokenService.simple(user.getName()))
+                .build().toUriString();
         return new URLWithNonce(url, generatedNonce);
     }
 
@@ -97,6 +119,7 @@ public class SSOService {
         if (!isNonceValid(nonce)) {
             return null;
         }
+        saveIdToken(token, traits.getUsername());
         return authUser;
     }
 
@@ -119,5 +142,13 @@ public class SSOService {
 
     public UserSignOnTable insert(String nonce) {
         return userSignOnDAO.insert(new UserSignOnTable(nonce));
+    }
+
+    public void saveIdToken(String idToken, String username) {
+        userOauthTokenDAO.insert(new UserOauthTokenTable(username, idToken));
+    }
+
+    public void logout(String username) {
+        userOauthTokenDAO.remove(username);
     }
 }

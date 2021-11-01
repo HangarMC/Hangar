@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.AnonymousAuthenticationFi
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
@@ -28,6 +29,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final RequestMatcher API_MATCHER = new AndRequestMatcher(new AntPathRequestMatcher("/api/**"), new NegatedRequestMatcher(new AntPathRequestMatcher("/api/v1/authenticate/**")));
     private static final RequestMatcher PUBLIC_API_MATCHER = new AndRequestMatcher(new AntPathRequestMatcher("/api/v1/**"), new NegatedRequestMatcher(new AntPathRequestMatcher("/api/v1/authenticate/**")));
     private static final RequestMatcher INTERNAL_API_MATCHER = new AntPathRequestMatcher("/api/internal/**");
+    private static final RequestMatcher LOGOUT_MATCHER = new AntPathRequestMatcher("/logout");
+    private static final RequestMatcher INVALIDATE_MATCHER = new AntPathRequestMatcher("/invalidate");
 
     private final TokenService tokenService;
     private final AuthenticationEntryPoint authenticationEntryPoint;
@@ -53,7 +56,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
 
                 // Custom auth filters
-                .addFilterBefore(new HangarAuthenticationFilter(API_MATCHER, tokenService, authenticationManager(), authenticationEntryPoint), AnonymousAuthenticationFilter.class)
+                .addFilterBefore(new HangarAuthenticationFilter(
+                        new OrRequestMatcher(API_MATCHER, LOGOUT_MATCHER, INVALIDATE_MATCHER),
+                        tokenService,
+                        authenticationManager(),
+                        authenticationEntryPoint),
+                        AnonymousAuthenticationFilter.class
+                )
 
 //                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
 

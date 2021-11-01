@@ -99,6 +99,14 @@ public class TokenService extends HangarComponent {
                 .sign(getAlgo());
     }
 
+    public String simple(String username) {
+        return JWT.create()
+                .withIssuer(config.security.getTokenIssuer())
+                .withExpiresAt(new Date(Instant.now().plus(config.security.getTokenExpiry()).toEpochMilli()))
+                .withSubject(username)
+                .sign(getAlgo());
+    }
+
     public HangarPrincipal parseHangarPrincipal(DecodedJWT decodedJWT) {
         String subject = decodedJWT.getSubject();
         Long userId = decodedJWT.getClaim("id").asLong();

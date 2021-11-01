@@ -11,6 +11,7 @@ public class SSOConfig {
     private String oauthUrl = "http://localhost:4444";
     private String loginUrl = "/oauth2/auth/";
     private String tokenUrl = "/oauth2/token";
+    private String logoutUrl = "/oauth2/sessions/logout";
     private String clientId = "my-client";
 
     private String authUrl = "http://localhost:3001";
@@ -38,6 +39,14 @@ public class SSOConfig {
 
     public void setSignupUrl(String signupUrl) {
         this.signupUrl = signupUrl;
+    }
+
+    public String getLogoutUrl() {
+        return logoutUrl;
+    }
+
+    public void setLogoutUrl(String logoutUrl) {
+        this.logoutUrl = logoutUrl;
     }
 
     public String getTokenUrl() {

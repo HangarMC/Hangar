@@ -14,7 +14,12 @@ const createAuth = ({ app: { $cookies }, $axios, store, $api, redirect }: Contex
             return this.updateUser(token);
         }
 
-        async logout(shouldRedirect = true): Promise<void> {
+        async logout() {
+            const token = await $api.getToken(true);
+            location.replace(`/logout?returnUrl=${process.env.publicHost}/logged-out&t=${token}`);
+        }
+
+        async invalidate(shouldRedirect = true) {
             store.commit('auth/SET_USER', null);
             store.commit('auth/SET_TOKEN', null);
             store.commit('auth/SET_AUTHED', false);
@@ -46,7 +51,7 @@ const createAuth = ({ app: { $cookies }, $axios, store, $api, redirect }: Contex
                 .catch((err) => {
                     console.log(err);
                     console.log('LOGGING OUT ON updateUser');
-                    return this.logout(process.client);
+                    return this.invalidate(process.client);
                 });
         }
 
@@ -59,7 +64,7 @@ const createAuth = ({ app: { $cookies }, $axios, store, $api, redirect }: Contex
                         return this.processLogin(token);
                     }
                 } else {
-                    return this.logout(process.client);
+                    return this.invalidate(process.client);
                 }
             });
         }

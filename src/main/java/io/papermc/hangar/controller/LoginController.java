@@ -1,5 +1,7 @@
 package io.papermc.hangar.controller;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +16,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.db.dao.internal.table.auth.UserOauthTokenDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.auth.RefreshResponse;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.sso.AuthUser;
 import io.papermc.hangar.model.internal.sso.URLWithNonce;
+import io.papermc.hangar.security.annotations.LoggedIn;
 import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.AuthenticationService;
 import io.papermc.hangar.service.TokenService;
@@ -76,7 +80,7 @@ public class LoginController extends HangarComponent {
         globalRoleService.removeAllGlobalRoles(user.getId());
         authUser.getGlobalRoles().forEach(globalRole -> globalRoleService.addRole(globalRole.create(null, user.getId(), true)));
         tokenService.createTokenForUser(user);
-        return redirectBackOnSuccessfulLogin(url);
+        return addBaseAndRedirect(url);
     }
 
     @GetMapping("/refresh")
@@ -94,6 +98,37 @@ public class LoginController extends HangarComponent {
         }
     }
 
+    @LoggedIn
+    @GetMapping(path = "/logout", params = "returnUrl")
+    public RedirectView logout(@RequestParam(defaultValue = "/logged-out") String returnUrl) {
+        if (config.fakeUser.isEnabled()) {
+            response.addCookie(new Cookie("url", returnUrl));
+            return new RedirectView("/handle-logout");
+        } else {
+            response.addCookie(new Cookie("url", returnUrl));
+            return redirectToSso(ssoService.getLogoutUrl(config.getBaseUrl() + "/handle-logout", getHangarPrincipal()));
+        }
+    }
+
+    @GetMapping(path = "/handle-logout", params = "state")
+    public RedirectView loggedOut(@RequestParam String state, @CookieValue(value = "url", defaultValue = "/logged-out") String returnUrl, @CookieValue(name = SecurityConfig.AUTH_NAME_REFRESH_COOKIE, required = false) String refreshToken) {
+        // get username
+        DecodedJWT decodedJWT = tokenService.verify(state);
+        String username = decodedJWT.getSubject();
+        // invalidate id token
+        ssoService.logout(username);
+        // invalidate refresh token
+        if (refreshToken != null) {
+            tokenService.invalidateToken(refreshToken);
+        }
+        // invalidate session
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return addBaseAndRedirect(returnUrl);
+    }
+
     @GetMapping("/signup")
     public RedirectView signUp(@RequestParam(defaultValue = "") String returnUrl) {
         if (config.fakeUser.isEnabled()) {
@@ -102,7 +137,7 @@ public class LoginController extends HangarComponent {
         return new RedirectView(ssoService.getSignupUrl(returnUrl));
     }
 
-    private RedirectView redirectBackOnSuccessfulLogin(String url) {
+    private RedirectView addBaseAndRedirect(String url) {
         if (!url.startsWith("http")) {
             if (url.startsWith("/")) {
                 url = config.getBaseUrl() + url;
