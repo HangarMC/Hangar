@@ -19,7 +19,7 @@ hangar:
 
   sso:
     auth-url: "https://hangar-auth.benndorf.dev"
-    oauth-url: "https://hangar-oauth.benndorf.dev"
+    oauth-url: "https://hangar-auth.benndorf.dev/hydra"
     client-id: "${SSO_CLIENT_ID}"
 
   security:
