@@ -22,7 +22,7 @@ public interface UsersDAO {
             "       u.name," +
             "       u.tagline," +
             "       u.join_date, " +
-            "       array(SELECT role_id FROM user_global_roles WHERE u.id = user_id) roles," +
+            "       array(SELECT role_id FROM user_global_roles WHERE u.id = user_id) AS roles," +
             "       (SELECT count(*)" +
             "           FROM project_members_all pma" +
             "           WHERE pma.user_id = u.id" +

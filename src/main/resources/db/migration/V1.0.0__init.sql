@@ -1,6 +1,3 @@
-CREATE EXTENSION IF NOT EXISTS hstore;
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
 CREATE TYPE role_category AS ENUM ('global', 'project', 'organization');
 
 CREATE TYPE logged_action_type AS ENUM(
@@ -155,7 +152,7 @@ CREATE TABLE project_pages
 );
 
 CREATE INDEX page_slug_idx
-    ON project_pages (lower(slug::text));
+    ON project_pages (slug);
 
 CREATE INDEX page_parent_id_idx
     ON project_pages (parent_id);
@@ -588,7 +585,7 @@ CREATE TABLE project_visibility_changes
     created_by bigint NOT NULL
         CONSTRAINT project_visibility_changes_created_by_fkey
             REFERENCES users
-            ON DELETE SET NULL,
+            ON DELETE NO ACTION,
     project_id bigint NOT NULL
         CONSTRAINT project_visibility_changes_project_id_fkey
             REFERENCES projects
@@ -611,7 +608,7 @@ CREATE TABLE project_version_visibility_changes
     created_by bigint NOT NULL
         CONSTRAINT project_version_visibility_changes_created_by_fkey
             REFERENCES users
-            ON DELETE SET NULL,
+            ON DELETE NO ACTION,
     version_id bigint NOT NULL
         CONSTRAINT project_version_visibility_changes_version_id_fkey
             REFERENCES project_versions
@@ -644,8 +641,8 @@ CREATE TABLE project_version_tags
 CREATE INDEX projects_versions_tags_version_id
     ON project_version_tags (version_id);
 
-CREATE INDEX project_version_tags_name_data_idx
-    ON project_version_tags (name, data);
+-- CREATE INDEX project_version_tags_name_data_idx
+--     ON project_version_tags (name, data);
 
 CREATE TABLE user_global_roles
 (
@@ -893,7 +890,7 @@ CREATE TABLE jobs
     last_error_descriptor text,
     state job_state NOT NULL,
     job_type text NOT NULL,
-    job_properties hstore NOT NULL
+    job_properties jsonb NOT NULL
 );
 
 CREATE TABLE user_refresh_tokens
@@ -967,35 +964,35 @@ SELECT p.id,
        array_agg(DISTINCT pm.user_id)            AS project_members,
        p.slug,
        p.visibility,
-       COALESCE(pva.views, 0::bigint)            AS views,
-       COALESCE(pda.downloads, 0::bigint)        AS downloads,
-       COALESCE(pvr.recent_views, 0::bigint)     AS recent_views,
-       COALESCE(pdr.recent_downloads, 0::bigint) AS recent_downloads,
-       COALESCE(ps.stars, 0::bigint)             AS stars,
-       COALESCE(pw.watchers, 0::bigint)          AS watchers,
+       COALESCE(pva.views::bigint, 0::bigint)            AS views,
+       COALESCE(pda.downloads::bigint, 0::bigint)        AS downloads,
+       COALESCE(pvr.recent_views::bigint, 0::bigint)     AS recent_views,
+       COALESCE(pdr.recent_downloads::bigint, 0::bigint) AS recent_downloads,
+       COALESCE(ps.stars::bigint, 0::bigint)             AS stars,
+       COALESCE(pw.watchers::bigint, 0::bigint)          AS watchers,
        p.category,
        p.description,
        p.name,
        p.created_at,
-       max(lv.created_at)                        AS last_updated,
-       to_jsonb(ARRAY(SELECT jsonb_build_object('version_string', tags.version_string, 'tag_name', tags.tag_name,
-                                                'tag_version', tags.tag_version, 'tag_color',
-                                                tags.tag_color) AS jsonb_build_object
-                      FROM tags
-                      WHERE tags.project_id = p.id
-                      LIMIT 5))                  AS promoted_versions,
-       ((setweight((to_tsvector('english'::regconfig, p.name::text) ||
-                    to_tsvector('english'::regconfig, regexp_replace(p.name::text, '([a-z])([A-Z]+)'::text,
-                                                                     '\1_\2'::text, 'g'::text))), 'A'::"char") ||
-         setweight(to_tsvector('english'::regconfig, p.description::text), 'B'::"char")) ||
-        setweight(to_tsvector('english'::regconfig, array_to_string(p.keywords, ' '::text)), 'C'::"char")) || setweight(
-                   to_tsvector('english'::regconfig, p.owner_name::text) || to_tsvector('english'::regconfig,
-                                                                                        regexp_replace(
-                                                                                                p.owner_name::text,
-                                                                                                '([a-z])([A-Z]+)'::text,
-                                                                                                '\1_\2'::text,
-                                                                                                'g'::text)),
-                   'D'::"char")                  AS search_words
+       max(lv.created_at)                        AS last_updated--,--
+--        to_jsonb(ARRAY(SELECT jsonb_build_object('version_string', tags.version_string, 'tag_name', tags.tag_name,
+--                                                 'tag_version', tags.tag_version, 'tag_color',
+--                                                 tags.tag_color) AS jsonb_build_object
+--                       FROM tags
+--                       WHERE tags.project_id = p.id
+--                       LIMIT 5))                  AS promoted_versions,
+--        ((setweight((to_tsvector('english'::regconfig, p.name::text) ||
+--                     to_tsvector('english'::regconfig, regexp_replace(p.name::text, '([a-z])([A-Z]+)'::text,
+--                                                                      '\1_\2'::text, 'g'::text))), 'A'::"char") ||
+--          setweight(to_tsvector('english'::regconfig, p.description::text), 'B'::"char")) ||
+--         setweight(to_tsvector('english'::regconfig, array_to_string(p.keywords, ' '::text)), 'C'::"char")) || setweight(
+--                    to_tsvector('english'::regconfig, p.owner_name::text) || to_tsvector('english'::regconfig,
+--                                                                                         regexp_replace(
+--                                                                                                 p.owner_name::text,
+--                                                                                                 '([a-z])([A-Z]+)'::text,
+--                                                                                                 '\1_\2'::text,
+--                                                                                                 'g'::text)),
+--                    'D'::"char")                  AS search_words
 FROM projects p
          LEFT JOIN project_versions lv ON p.id = lv.project_id
          JOIN project_members_all pm ON p.id = pm.id
@@ -1179,69 +1176,69 @@ FROM logged_actions_organization a
          LEFT JOIN users u ON a.user_id = u.id
          LEFT JOIN users s ON o.user_id = s.id;
 
-CREATE FUNCTION delete_old_project_version_download_warnings() RETURNS TRIGGER
-    LANGUAGE plpgsql
-AS $$
-BEGIN
-    DELETE FROM project_version_download_warnings WHERE created_at < current_date - interval '30' day;
-    RETURN NEW;
-END
-$$;
-
-CREATE TRIGGER clean_old_project_version_download_warnings
-    AFTER INSERT
-    ON project_version_download_warnings
-EXECUTE PROCEDURE delete_old_project_version_download_warnings();
-
-CREATE FUNCTION delete_old_project_version_unsafe_downloads() RETURNS TRIGGER
-    LANGUAGE plpgsql
-AS $$
-BEGIN
-    DELETE FROM project_version_unsafe_downloads WHERE created_at < current_date - interval '30' day;
-    RETURN NEW;
-END
-$$;
-
-CREATE TRIGGER clean_old_project_version_unsafe_downloads
-    AFTER INSERT
-    ON project_version_unsafe_downloads
-EXECUTE PROCEDURE delete_old_project_version_unsafe_downloads();
-
-CREATE FUNCTION update_project_name_trigger() RETURNS TRIGGER
-    LANGUAGE plpgsql
-AS $$
-BEGIN
-    UPDATE projects p SET name = u.name FROM users u WHERE p.id = new.id AND u.id = new.owner_id;
-END;
-$$;
-
-CREATE TRIGGER project_owner_name_updater
-    AFTER UPDATE
-        OF owner_id
-    ON projects
-    FOR EACH ROW
-    WHEN  (old.owner_id <> new.owner_id)
-EXECUTE PROCEDURE update_project_name_trigger();
-
-CREATE FUNCTION websearch_to_tsquery_postfix(dictionary regconfig, query text) RETURNS tsquery
-    IMMUTABLE
-    STRICT
-    LANGUAGE plpgsql
-AS $$
-DECLARE
-    arr  TEXT[]  := regexp_split_to_array(query, '\s+');
-    last TEXT    := websearch_to_tsquery('simple', arr[array_length(arr, 1)])::TEXT;
-    init TSQUERY := websearch_to_tsquery(dictionary, regexp_replace(query, '\S+$', ''));
-BEGIN
-    IF last = '' THEN
-        BEGIN
-            RETURN init && $2::TSQUERY;
-        EXCEPTION
-            WHEN SYNTAX_ERROR THEN
-                RETURN init && websearch_to_tsquery('');
-        END;
-    END IF;
-
-    RETURN init && (websearch_to_tsquery(dictionary, last) || to_tsquery('simple', last || ':*'));
-END;
-$$;
+-- CREATE FUNCTION delete_old_project_version_download_warnings() RETURNS TRIGGER
+--     LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     DELETE FROM project_version_download_warnings WHERE created_at < current_date - interval '30' day;
+--     RETURN NEW;
+-- END
+-- $$;
+--
+-- CREATE TRIGGER clean_old_project_version_download_warnings
+--     AFTER INSERT
+--     ON project_version_download_warnings
+-- EXECUTE PROCEDURE delete_old_project_version_download_warnings();
+--
+-- CREATE FUNCTION delete_old_project_version_unsafe_downloads() RETURNS TRIGGER
+--     LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     DELETE FROM project_version_unsafe_downloads WHERE created_at < current_date - interval '30' day;
+--     RETURN NEW;
+-- END
+-- $$;
+--
+-- CREATE TRIGGER clean_old_project_version_unsafe_downloads
+--     AFTER INSERT
+--     ON project_version_unsafe_downloads
+-- EXECUTE PROCEDURE delete_old_project_version_unsafe_downloads();
+--
+-- CREATE FUNCTION update_project_name_trigger() RETURNS TRIGGER
+--     LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     UPDATE projects p SET name = u.name FROM users u WHERE p.id = new.id AND u.id = new.owner_id;
+-- END;
+-- $$;
+--
+-- CREATE TRIGGER project_owner_name_updater
+--     AFTER UPDATE
+--         OF owner_id
+--     ON projects
+--     FOR EACH ROW
+--     WHEN  (old.owner_id <> new.owner_id)
+-- EXECUTE PROCEDURE update_project_name_trigger();
+--
+-- CREATE FUNCTION websearch_to_tsquery_postfix(dictionary regconfig, query text) RETURNS tsquery
+--     IMMUTABLE
+--     STRICT
+--     LANGUAGE plpgsql
+-- AS $$
+-- DECLARE
+--     arr  TEXT[]  := regexp_split_to_array(query, '\s+');
+--     last TEXT    := websearch_to_tsquery('simple', arr[array_length(arr, 1)])::TEXT;
+--     init TSQUERY := websearch_to_tsquery(dictionary, regexp_replace(query, '\S+$', ''));
+-- BEGIN
+--     IF last = '' THEN
+--         BEGIN
+--             RETURN init && $2::TSQUERY;
+--         EXCEPTION
+--             WHEN SYNTAX_ERROR THEN
+--                 RETURN init && websearch_to_tsquery('');
+--         END;
+--     END IF;
+--
+--     RETURN init && (websearch_to_tsquery(dictionary, last) || to_tsquery('simple', last || ':*'));
+-- END;
+-- $$;

@@ -12,8 +12,19 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+  cockroach:
+    image: cockroachdb/cockroach
+    ports:
+      - "26257:26257"
+      - "26000:8080"
+    volumes:
+      - cockroach_data:/cockroach/cockroach-data
+    command:
+      - "start-single-node"
+      - "--insecure"
 volumes:
   db_data:
+  cockroach_data:
 
 networks:
   default:
