@@ -5,8 +5,12 @@ import { AuthState } from '~/store/auth';
 
 const createAuth = ({ app: { $cookies }, $axios, store, $api, redirect }: Context) => {
     class Auth {
-        login(redirect: string): void {
-            location.replace(`/login?returnUrl=${process.env.publicHost}${redirect}`);
+        login(redirectUrl: string): void {
+            location.replace(this.loginUrl(redirectUrl));
+        }
+
+        loginUrl(redirectUrl: string): string {
+            return `/login?returnUrl=${process.env.publicHost}${redirectUrl}`;
         }
 
         processLogin(token: string): Promise<void> {

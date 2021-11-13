@@ -27,7 +27,7 @@ import io.papermc.hangar.db.dao.internal.table.auth.UserSignOnDAO;
 import io.papermc.hangar.model.db.auth.UserOauthTokenTable;
 import io.papermc.hangar.model.db.auth.UserSignOnTable;
 import io.papermc.hangar.model.internal.sso.AuthUser;
-import io.papermc.hangar.model.internal.sso.TokenResponce;
+import io.papermc.hangar.model.internal.sso.TokenResponse;
 import io.papermc.hangar.model.internal.sso.Traits;
 import io.papermc.hangar.model.internal.sso.URLWithNonce;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
@@ -135,7 +135,7 @@ public class SSOService {
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
-        ResponseEntity<TokenResponce> tokenResponse = restTemplate.exchange(hangarConfig.sso.getOauthUrl() + hangarConfig.sso.getTokenUrl(), HttpMethod.POST, entity, TokenResponce.class);
+        ResponseEntity<TokenResponse> tokenResponse = restTemplate.exchange(hangarConfig.sso.getOauthUrl() + hangarConfig.sso.getTokenUrl(), HttpMethod.POST, entity, TokenResponse.class);
 
         return tokenResponse.getBody().getIdToken();
     }

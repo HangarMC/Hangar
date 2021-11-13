@@ -63,7 +63,7 @@
             <v-btn href="/signup" class="mr-2" color="primary">
                 {{ $t('nav.signup') }}
             </v-btn>
-            <v-btn color="secondary" @click="$auth.login($route.fullPath)">
+            <v-btn color="secondary" :href="$auth.loginUrl($route.fullPath)">
                 {{ $t('nav.login') }}
             </v-btn>
         </template>

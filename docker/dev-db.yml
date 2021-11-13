@@ -14,3 +14,7 @@ services:
       - db_data:/var/lib/postgresql/data
 volumes:
   db_data:
+
+networks:
+  default:
+    name: hangar-network

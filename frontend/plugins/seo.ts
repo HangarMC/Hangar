@@ -2,7 +2,7 @@ import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
 import { TranslateResult } from 'vue-i18n';
 import { Route } from 'vue-router';
-import { MetaInfo } from 'vue-meta/types/vue-meta';
+import { MetaInfo } from 'vue-meta';
 
 const createUtil = (context: Context) => {
     class Seo {

@@ -5,8 +5,6 @@ server:
   port: 8080
 
 spring:
-  freemarker:
-    request-context-attribute: rc
   ############
   # DataBase #
   ############

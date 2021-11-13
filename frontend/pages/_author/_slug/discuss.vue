@@ -14,7 +14,7 @@
                 <MarkdownEditor ref="editor" saveable editing :cancellable="false" :deletable="false" @save="postReply" />
             </div>
             <div v-else>
-                <a @click="$auth.login($route.fullPath)">{{ $t('project.discuss.login') }}</a>
+                <a :href="$auth.loginUrl($route.fullPath)">{{ $t('project.discuss.login') }}</a>
                 {{ $t('project.discuss.toReply') }}
             </div>
         </template>
