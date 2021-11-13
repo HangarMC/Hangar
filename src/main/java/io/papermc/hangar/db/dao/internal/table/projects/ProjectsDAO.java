@@ -46,7 +46,7 @@ public interface ProjectsDAO {
             "     (SELECT CASE " +
             "         WHEN \"name\" = :name THEN 'OWNER_NAME'" +
             "         WHEN slug = :slug THEN 'OWNER_SLUG'" +
-            "     END" +
+            "     END AS sq" +
             "     FROM projects WHERE owner_id = :ownerId) sq" +
             " WHERE sq IS NOT NULL ")
     ProjectFactory.InvalidProjectReason checkProjectValidity(long ownerId, String name, String slug);

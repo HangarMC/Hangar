@@ -1,13 +1,13 @@
 package io.papermc.hangar.model.db;
 
-import io.papermc.hangar.db.customtypes.JobState;
-import io.papermc.hangar.model.internal.job.JobType;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-import org.jdbi.v3.postgres.HStore;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
+
+import io.papermc.hangar.db.customtypes.JobState;
+import io.papermc.hangar.model.internal.job.JobType;
 
 public class JobTable extends Table {
 
@@ -30,7 +30,7 @@ public class JobTable extends Table {
     }
 
     @JdbiConstructor
-    public JobTable(OffsetDateTime createdAt, long id, OffsetDateTime lastUpdated, OffsetDateTime retryAt, String lastError, String lastErrorDescriptor, JobState state, @EnumByName JobType jobType, @HStore Map<String, String> jobProperties) {
+    public JobTable(OffsetDateTime createdAt, long id, OffsetDateTime lastUpdated, OffsetDateTime retryAt, String lastError, String lastErrorDescriptor, JobState state, @EnumByName JobType jobType, Map<String, String> jobProperties) {
         super(createdAt, id);
         this.lastUpdated = lastUpdated;
         this.retryAt = retryAt;
