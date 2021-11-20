@@ -1,5 +1,6 @@
 package io.papermc.hangar.model.internal.job;
 
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.customtypes.JobState;
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.db.JobTable;
@@ -104,12 +105,12 @@ public abstract class Job extends Model {
         this.lastErrorDescriptor = table.getLastErrorDescriptor();
         this.state = table.getState();
         this.jobType = table.getJobType();
-        this.jobProperties = table.getJobProperties();
+        this.jobProperties = table.getJobProperties().getMap();
     }
 
     public JobTable toTable() {
         saveIntoProperties();
-        return new JobTable(createdAt, -1, lastUpdated, retryAt, lastError, lastErrorDescriptor, state, jobType, jobProperties);
+        return new JobTable(createdAt, -1, lastUpdated, retryAt, lastError, lastErrorDescriptor, state, jobType, new JSONB(jobProperties));
     }
 
     @Override

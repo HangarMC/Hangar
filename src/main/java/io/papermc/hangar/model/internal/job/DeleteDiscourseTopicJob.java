@@ -44,7 +44,7 @@ public class DeleteDiscourseTopicJob extends Job {
     public static DeleteDiscourseTopicJob loadFromTable(JobTable table) {
         DeleteDiscourseTopicJob job  = new DeleteDiscourseTopicJob();
         job.fromTable(table);
-        job.setJobProperties(table.getJobProperties());
+        job.setJobProperties(table.getJobProperties().getMap());
         job.loadFromProperties();
         return job;
     }

@@ -3,7 +3,7 @@
         <v-card>
             <v-card-title v-text="$t('organization.new.title')" />
             <v-card-subtitle>{{ $t('organization.new.text') }}</v-card-subtitle>
-            <template v-if="currentUser.headerData.organizationCount < 1">
+            <template v-if="currentUser.headerData.organizationCount < validations.maxOrgCount">
                 <v-card-text>
                     <v-form v-model="validForm">
                         <v-text-field

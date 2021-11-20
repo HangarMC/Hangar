@@ -6,6 +6,7 @@ import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import java.time.OffsetDateTime;
 import java.util.Map;
 
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.customtypes.JobState;
 import io.papermc.hangar.model.internal.job.JobType;
 
@@ -17,9 +18,9 @@ public class JobTable extends Table {
     private final String lastErrorDescriptor;
     private final JobState state;
     private final JobType jobType;
-    private final Map<String, String> jobProperties;
+    private final JSONB jobProperties;
 
-    public JobTable(OffsetDateTime lastUpdated, OffsetDateTime retryAt, String lastError, String lastErrorDescriptor, JobState state, @EnumByName JobType jobType, Map<String, String> jobProperties) {
+    public JobTable(OffsetDateTime lastUpdated, OffsetDateTime retryAt, String lastError, String lastErrorDescriptor, JobState state, @EnumByName JobType jobType, JSONB jobProperties) {
         this.lastUpdated = lastUpdated;
         this.retryAt = retryAt;
         this.lastError = lastError;
@@ -30,7 +31,7 @@ public class JobTable extends Table {
     }
 
     @JdbiConstructor
-    public JobTable(OffsetDateTime createdAt, long id, OffsetDateTime lastUpdated, OffsetDateTime retryAt, String lastError, String lastErrorDescriptor, JobState state, @EnumByName JobType jobType, Map<String, String> jobProperties) {
+    public JobTable(OffsetDateTime createdAt, long id, OffsetDateTime lastUpdated, OffsetDateTime retryAt, String lastError, String lastErrorDescriptor, JobState state, @EnumByName JobType jobType, JSONB jobProperties) {
         super(createdAt, id);
         this.lastUpdated = lastUpdated;
         this.retryAt = retryAt;
@@ -65,7 +66,7 @@ public class JobTable extends Table {
         return jobType;
     }
 
-    public Map<String, String> getJobProperties() {
+    public JSONB getJobProperties() {
         return jobProperties;
     }
 

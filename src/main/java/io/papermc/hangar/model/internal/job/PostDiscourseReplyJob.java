@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.db.JobTable;
 
 public class PostDiscourseReplyJob extends Job {
@@ -75,7 +76,7 @@ public class PostDiscourseReplyJob extends Job {
     public static PostDiscourseReplyJob loadFromTable(JobTable table) {
         PostDiscourseReplyJob job  = new PostDiscourseReplyJob();
         job.fromTable(table);
-        job.setJobProperties(table.getJobProperties());
+        job.setJobProperties(table.getJobProperties().getMap());
         job.loadFromProperties();
         return job;
     }

@@ -107,11 +107,11 @@ public interface ProjectsApiDAO {
             "         JOIN projects p ON hp.id = p.id" +
             "         WHERE true <filters>" + // Not sure how else to get here a single Where
             "         <if(!seeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif> " +
-            "         <if(orderBy)>ORDER BY :orderBy<endif> " +
+            "         ORDER BY <orderBy> " +
             "         <offsetLimit>")
     @RegisterColumnMapper(PromotedVersionMapper.class)
     @DefineNamedBindings
-    List<Project> getProjects(@Define boolean seeHidden, Long requesterId, String orderBy,
+    List<Project> getProjects(@Define boolean seeHidden, Long requesterId, @Define String orderBy,
                               @BindPagination RequestPagination pagination);
 
     // This query can be shorter because it doesnt need all those column values as above does, just a single column for the amount of rows to be counted

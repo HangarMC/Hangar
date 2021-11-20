@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 public interface ApiKeyDAO {
 
     @Timestamped
-    @SqlUpdate("INSERT INTO api_keys (created_at, name, owner_id, token_identifier, token, raw_key_permissions) VALUES (:now, :name, :ownerId, :tokenIdentifier, crypt(:token, gen_salt('bf')), :permissions::bit(64))")
+    @SqlUpdate("INSERT INTO api_keys (created_at, name, owner_id, token_identifier, token, raw_key_permissions) VALUES (:now, :name, :ownerId, :tokenIdentifier, :token, :permissions::bit(64))")
     void insert(@BindBean ApiKeyTable apiKeyTable);
 
     @SqlUpdate("DELETE FROM api_keys WHERE name = :keyName AND owner_id = :userId")
@@ -22,8 +22,8 @@ public interface ApiKeyDAO {
     @SqlQuery("SELECT *, raw_key_permissions::bigint permissions FROM api_keys WHERE owner_id = :userId AND lower(name) = lower(:name)")
     ApiKeyTable getByUserAndName(long userId, String name);
 
-    @SqlQuery("SELECT *, raw_key_permissions::bigint permissions FROM api_keys WHERE token_identifier = :identifier AND token = crypt(:token, token)")
-    ApiKeyTable findApiKey(String identifier, String token);
+    @SqlQuery("SELECT *, raw_key_permissions::bigint permissions FROM api_keys WHERE token_identifier = :identifier AND token = :hashedToken")
+    ApiKeyTable findApiKey(String identifier, String hashedToken);
 
     @SqlQuery("SELECT *, raw_key_permissions::bigint permissions FROM api_keys WHERE owner_id = :userId AND token_identifier = :identifier")
     ApiKeyTable findApiKey(long userId, String identifier);

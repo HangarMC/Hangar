@@ -26,7 +26,7 @@ public interface JobsDAO {
     long countAwaitingJobs();
 
     @SqlQuery("UPDATE jobs SET state = 'started', last_updated = now() WHERE id = (" +
-               "    SELECT id FROM jobs WHERE state = 'not_started' AND (retry_at IS NULL OR retry_at < now()) ORDER BY id FOR UPDATE SKIP LOCKED LIMIT 1" +
+               "    SELECT id FROM jobs WHERE state = 'not_started' AND (retry_at IS NULL OR retry_at < now()) ORDER BY id /*FOR UPDATE SKIP LOCKED*/ LIMIT 1" +
                ") RETURNING *")
     JobTable fetchJob();
 

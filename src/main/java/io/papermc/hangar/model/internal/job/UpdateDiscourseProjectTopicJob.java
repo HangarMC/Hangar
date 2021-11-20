@@ -44,7 +44,7 @@ public class UpdateDiscourseProjectTopicJob extends Job {
     public static UpdateDiscourseProjectTopicJob loadFromTable(JobTable table) {
         UpdateDiscourseProjectTopicJob job  = new UpdateDiscourseProjectTopicJob();
         job.fromTable(table);
-        job.setJobProperties(table.getJobProperties());
+        job.setJobProperties(table.getJobProperties().getMap());
         job.loadFromProperties();
         return job;
     }

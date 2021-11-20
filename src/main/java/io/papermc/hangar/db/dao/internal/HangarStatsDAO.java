@@ -35,7 +35,7 @@ public interface HangarStatsDAO {
             "     sq.project_id," +
             "     <if(includeVersionId)>sq.version_id,<endif>" +
             "     count(DISTINCT sq.<if(withUserId)>user_id<else>address<endif>) FILTER (WHERE sq.processed \\<@ ARRAY[1])" +
-            " FROM (SELECT date_trunc('DAY', d.created_at) AS day," +
+            " FROM (SELECT date_trunc('DAY', d.created_at)::date AS day," +
             "             d.project_id," +
             "             <if(includeVersionId)>d.version_id,<endif>" +
             "             <if(withUserId)>user_id<else>address<endif>," +

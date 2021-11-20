@@ -15,16 +15,21 @@ public class CryptoUtils {
 
     private static final char[] hexArray = "0123456789abcdef".toCharArray();
 
-    public static byte[] hmac(String algo, byte[] secret, byte[] data) throws NoSuchAlgorithmException, InvalidKeyException {
+    public static byte[] hmac(String algo, byte[] secret, byte[] data) {
         Preconditions.checkArgument(secret.length != 0, "empty secret");
         Preconditions.checkArgument(data.length != 0, "nothing to hash!");
-        Mac hmac = Mac.getInstance(algo);
-        SecretKeySpec keySpec = new SecretKeySpec(secret, algo);
-        hmac.init(keySpec);
-        return hmac.doFinal(data);
+        try {
+            Mac hmac = Mac.getInstance(algo);
+            SecretKeySpec keySpec = new SecretKeySpec(secret, algo);
+            hmac.init(keySpec);
+            return hmac.doFinal(data);
+        } catch (InvalidKeyException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
-    public static String hmacSha256(String secret, byte[] data) throws InvalidKeyException, NoSuchAlgorithmException {
+    public static String hmacSha256(String secret, byte[] data) {
         return bytesToHex(hmac("HmacSHA256", secret.getBytes(StandardCharsets.UTF_8), data));
     }
 

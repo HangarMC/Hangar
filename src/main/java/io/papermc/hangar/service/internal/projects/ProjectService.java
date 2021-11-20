@@ -39,6 +39,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -108,6 +109,9 @@ public class ProjectService extends HangarComponent {
 
     public HangarProject getHangarProject(String author, String slug) {
         Pair<Long, Project> project = hangarProjectsDAO.getProject(author, slug, getHangarUserId());
+        if (project == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         ProjectOwner projectOwner = getProjectOwner(author);
         var members = hangarProjectsDAO.getProjectMembers(project.getLeft(), getHangarUserId(), permissionService.getProjectPermissions(getHangarUserId(), project.getLeft()).has(Permission.EditProjectSettings));
         String lastVisibilityChangeComment = "";
@@ -217,7 +221,8 @@ public class ProjectService extends HangarComponent {
     }
 
     public void refreshHomeProjects() {
-        hangarProjectsDAO.refreshHomeProjects();
+//        hangarProjectsDAO.refreshHomeProjects();
+        // TODO fix refreshHomeProjects:  ERROR: cannot refresh view in an explicit transaction
     }
 
     public List<UserTable> getProjectWatchers(long projectId) {

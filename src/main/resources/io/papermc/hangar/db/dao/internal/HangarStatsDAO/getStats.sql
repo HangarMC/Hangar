@@ -6,5 +6,5 @@ SELECT
        (SELECT count(*) FROM project_flags WHERE created_at::date <= day AND (created_at::date >= day OR resolved_at IS NULL)) flagsOpened,
        (SELECT count(*) FROM project_flags WHERE resolved_at::date = day) flagsClosed,
        day::date
-FROM (SELECT generate_series(:startDate, :endDate, INTERVAL '1 DAY') AS day) dates
+FROM (SELECT generate_series(:startDate::timestamp, :endDate::timestamp, INTERVAL '1 DAY') AS day) dates
 ORDER BY day
