@@ -36,9 +36,9 @@ public interface HealthDAO {
             "          p.visibility" +
             "   FROM projects p " +
             "       JOIN home_projects hp ON p.id = hp.id" +
-            "   WHERE hp.last_updated < (now() - make_interval(secs := <age>))" +
+            "   WHERE hp.last_updated < (now() - INTERVAL <age>)" +
             "   ORDER BY p.created_at DESC")
-    List<UnhealthyProject> getStaleProjects(@Define("age") long staleAgeSeconds);
+    List<UnhealthyProject> getStaleProjects(@Define("age") String staleAgeSeconds);
 
     @SqlQuery(" SELECT p.owner_name \"owner\"," +
             "          p.slug," +

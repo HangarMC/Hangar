@@ -12,11 +12,14 @@ import io.papermc.hangar.model.identified.UserIdentified;
 import io.papermc.hangar.model.internal.api.requests.CreateAPIKeyForm;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
+import io.papermc.hangar.util.CryptoUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -54,7 +57,8 @@ public class APIKeyService extends HangarComponent {
 
         String tokenIdentifier = UUID.randomUUID().toString();
         String token = UUID.randomUUID().toString();
-        apiKeyDAO.insert(new ApiKeyTable(apiKeyForm.getName(), userIdentified.getUserId(), tokenIdentifier, token, keyPermission));
+        String hashedToken = CryptoUtils.hmacSha256(config.security.getTokenSecret(), token.getBytes(StandardCharsets.UTF_8));
+        apiKeyDAO.insert(new ApiKeyTable(apiKeyForm.getName(), userIdentified.getUserId(), tokenIdentifier, hashedToken, keyPermission));
         actionLogger.user(LogAction.USER_APIKEY_CREATED.create(UserContext.of(userIdentified.getUserId()), "Key Name: " + apiKeyForm.getName() + "<br>" + apiKeyForm.getPermissions().stream().map(NamedPermission::getFrontendName).collect(Collectors.joining(",<br>")), ""));
         return tokenIdentifier + "." + token;
     }

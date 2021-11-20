@@ -1,6 +1,7 @@
 package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.config.hangar.HangarSecurityConfig;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.ApiKeyDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -9,9 +10,12 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.auth.ApiKeyTable;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.TokenService;
+import io.papermc.hangar.util.CryptoUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
 @Service
@@ -39,7 +43,8 @@ public class APIAuthenticationService extends HangarComponent {
         }
         String identifier = apiKey.split("\\.")[0];
         String token = apiKey.split("\\.")[1];
-        ApiKeyTable apiKeyTable = apiKeyDAO.findApiKey(identifier, token);
+        String hashedToken = CryptoUtils.hmacSha256(config.security.getTokenSecret(), token.getBytes(StandardCharsets.UTF_8));
+        ApiKeyTable apiKeyTable = apiKeyDAO.findApiKey(identifier, hashedToken);
         if (apiKeyTable == null) {
             throw new HangarApiException("No valid API Key found");
         }

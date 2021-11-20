@@ -152,7 +152,7 @@ CREATE TABLE project_pages
 );
 
 CREATE INDEX page_slug_idx
-    ON project_pages (slug);
+    ON project_pages (lower(slug));
 
 CREATE INDEX page_parent_id_idx
     ON project_pages (parent_id);
@@ -974,13 +974,15 @@ SELECT p.id,
        p.description,
        p.name,
        p.created_at,
-       max(lv.created_at)                        AS last_updated--,--
+       max(lv.created_at)                        AS last_updated,
 --        to_jsonb(ARRAY(SELECT jsonb_build_object('version_string', tags.version_string, 'tag_name', tags.tag_name,
 --                                                 'tag_version', tags.tag_version, 'tag_color',
 --                                                 tags.tag_color) AS jsonb_build_object
 --                       FROM tags
 --                       WHERE tags.project_id = p.id
 --                       LIMIT 5))                  AS promoted_versions,
+       --TODO fix homepage view
+       ARRAY(SELECT 1 WHERE FALSE) AS promoted_versions,
 --        ((setweight((to_tsvector('english'::regconfig, p.name::text) ||
 --                     to_tsvector('english'::regconfig, regexp_replace(p.name::text, '([a-z])([A-Z]+)'::text,
 --                                                                      '\1_\2'::text, 'g'::text))), 'A'::"char") ||
@@ -993,6 +995,8 @@ SELECT p.id,
 --                                                                                                 '\1_\2'::text,
 --                                                                                                 'g'::text)),
 --                    'D'::"char")                  AS search_words
+       -- TODO fix homepage view
+       'DUM' AS search_words
 FROM projects p
          LEFT JOIN project_versions lv ON p.id = lv.project_id
          JOIN project_members_all pm ON p.id = pm.id

@@ -30,6 +30,19 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS: false
     date-format: com.fasterxml.jackson.databind.util.StdDateFormat
 
+  ###############
+  # Email Stuff #
+  ###############
+#  mail:
+#    host: smtp.gmail.com
+#    username: username
+#    password: password
+#    properties:
+#      mail.transport.protocol: smtp
+#      mail.smtp.port: 587
+#      mail.smtp.auth: true
+#      mail.smtp.starttls.enable: true
+
 #############
 # Fake User #
 #############
@@ -164,6 +177,7 @@ hangar:
 logging:
   level:
     root: INFO
-    org.springframework: DEBUG
+    org.springframework: INFO
+    org.springframework.context.support.PostProcessorRegistrationDelegate: WARN
     io.papermc.hangar.service.internal.JobService: DEBUG
     io.papermc.hangar.config.WebConfig.LoggingInterceptor: DEBUG

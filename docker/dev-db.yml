@@ -13,7 +13,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
   cockroach:
-    image: cockroachdb/cockroach
+    image: cockroachdb/cockroach:latest-v21.2
     ports:
       - "26257:26257"
       - "26000:8080"

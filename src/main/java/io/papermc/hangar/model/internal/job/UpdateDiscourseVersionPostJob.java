@@ -44,7 +44,7 @@ public class UpdateDiscourseVersionPostJob extends Job {
     public static UpdateDiscourseVersionPostJob loadFromTable(JobTable table) {
         UpdateDiscourseVersionPostJob job  = new UpdateDiscourseVersionPostJob();
         job.fromTable(table);
-        job.setJobProperties(table.getJobProperties());
+        job.setJobProperties(table.getJobProperties().getMap());
         job.loadFromProperties();
         return job;
     }
