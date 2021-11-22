@@ -1,6 +1,11 @@
 package io.papermc.hangar.service.internal.visibility;
 
-import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Map.Entry;
+
 import io.papermc.hangar.db.dao.internal.table.VisibilityDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.model.db.projects.ProjectTable;
@@ -9,28 +14,23 @@ import io.papermc.hangar.model.internal.job.UpdateDiscourseProjectTopicJob;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.service.internal.JobService;
-import io.papermc.hangar.service.internal.UserActionLogService;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.Map.Entry;
+import io.papermc.hangar.service.internal.projects.HomeProjectService;
 
 @Service
 public class ProjectVisibilityService extends VisibilityService<ProjectContext, ProjectTable, ProjectVisibilityChangeTable> {
 
     private final ProjectsDAO projectsDAO;
     private final VisibilityDAO visibilityDAO;
-    private final HangarProjectsDAO hangarProjectsDAO;
     private final JobService jobService;
+    private final HomeProjectService homeProjectService;
 
     @Autowired
-    public ProjectVisibilityService(VisibilityDAO visibilityDAO, ProjectsDAO projectsDAO, HangarProjectsDAO hangarProjectsDAO, JobService jobService, UserActionLogService userActionLogService) {
+    public ProjectVisibilityService(VisibilityDAO visibilityDAO, ProjectsDAO projectsDAO, JobService jobService, HomeProjectService homeProjectService) {
         super(ProjectVisibilityChangeTable::new, LogAction.PROJECT_VISIBILITY_CHANGED);
         this.projectsDAO = projectsDAO;
         this.visibilityDAO = visibilityDAO;
-        this.hangarProjectsDAO = hangarProjectsDAO;
         this.jobService = jobService;
+        this.homeProjectService = homeProjectService;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ProjectVisibilityService extends VisibilityService<ProjectContext, 
         if (model != null) {
             jobService.save(new UpdateDiscourseProjectTopicJob(model.getId()));
         }
-        hangarProjectsDAO.refreshHomeProjects();
+        homeProjectService.refreshHomeProjects();
     }
 
     @Override

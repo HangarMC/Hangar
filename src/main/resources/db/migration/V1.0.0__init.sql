@@ -982,7 +982,7 @@ SELECT p.id,
 --                       WHERE tags.project_id = p.id
 --                       LIMIT 5))                  AS promoted_versions,
        --TODO fix homepage view
-       ARRAY(SELECT 1 WHERE FALSE) AS promoted_versions,
+       to_jsonb(ARRAY(SELECT 1 WHERE FALSE)) AS promoted_versions,
 --        ((setweight((to_tsvector('english'::regconfig, p.name::text) ||
 --                     to_tsvector('english'::regconfig, regexp_replace(p.name::text, '([a-z])([A-Z]+)'::text,
 --                                                                      '\1_\2'::text, 'g'::text))), 'A'::"char") ||

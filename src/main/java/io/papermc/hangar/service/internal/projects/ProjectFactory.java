@@ -39,9 +39,10 @@ public class ProjectFactory extends HangarComponent {
     private final JobService jobService;
     private final ProjectFiles projectFiles;
     private final ValidationService validationService;
+    private final HomeProjectService homeProjectService;
 
     @Autowired
-    public ProjectFactory(ProjectsDAO projectDAO, ProjectService projectService, ChannelService channelService, ProjectPageService projectPageService, ProjectMemberService projectMemberService, ProjectVisibilityService projectVisibilityService, UsersApiService usersApiService, JobService jobService, ProjectFiles projectFiles, ValidationService validationService) {
+    public ProjectFactory(ProjectsDAO projectDAO, ProjectService projectService, ChannelService channelService, ProjectPageService projectPageService, ProjectMemberService projectMemberService, ProjectVisibilityService projectVisibilityService, UsersApiService usersApiService, JobService jobService, ProjectFiles projectFiles, ValidationService validationService, HomeProjectService homeProjectService) {
         this.projectsDAO = projectDAO;
         this.projectService = projectService;
         this.channelService = channelService;
@@ -52,6 +53,7 @@ public class ProjectFactory extends HangarComponent {
         this.jobService = jobService;
         this.projectFiles = projectFiles;
         this.validationService = validationService;
+        this.homeProjectService = homeProjectService;
     }
 
     @Transactional
@@ -80,7 +82,6 @@ public class ProjectFactory extends HangarComponent {
         }
 
         usersApiService.clearAuthorsCache();
-        projectService.refreshHomeProjects();
         return projectTable;
     }
 
@@ -95,7 +96,7 @@ public class ProjectFactory extends HangarComponent {
         projectsDAO.update(projectTable);
         actionLogger.project(LogAction.PROJECT_RENAMED.create(ProjectContext.of(projectTable.getId()), author + "/" + compactNewName, author + "/" + oldName));
         jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
-        projectService.refreshHomeProjects();
+        homeProjectService.refreshHomeProjects();
         return StringUtils.slugify(compactNewName);
     }
 
@@ -132,7 +133,7 @@ public class ProjectFactory extends HangarComponent {
         } else {
             jobService.save(new UpdateDiscourseProjectTopicJob(projectTable.getId()));
             projectVisibilityService.changeVisibility(projectTable, Visibility.SOFTDELETE, comment);
-            projectService.refreshHomeProjects();
+            homeProjectService.refreshHomeProjects();
         }
     }
 
@@ -141,6 +142,6 @@ public class ProjectFactory extends HangarComponent {
         FileUtils.deleteDirectory(projectFiles.getProjectDir(projectTable.getOwnerName(), projectTable.getName()));
         jobService.save(new DeleteDiscourseTopicJob(projectTable.getId()));
         projectsDAO.delete(projectTable);
-        projectService.refreshHomeProjects();
+        homeProjectService.refreshHomeProjects();
     }
 }

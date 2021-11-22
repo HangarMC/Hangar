@@ -21,6 +21,7 @@ import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
 import io.papermc.hangar.service.internal.admin.StatService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
+import io.papermc.hangar.service.internal.projects.HomeProjectService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.projects.ProjectNoteService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
@@ -56,15 +57,17 @@ public class ProjectController extends HangarComponent {
     private final OrganizationService organizationService;
     private final ImageService imageService;
     private final StatService statService;
+    private final HomeProjectService homeProjectService;
 
     @Autowired
-    public ProjectController(ProjectFactory projectFactory, ProjectService projectService, UserService userService, OrganizationService organizationService, ProjectNoteService projectNoteService, ProjectVisibilityService projectVisibilityService, ImageService imageService, StatService statService) {
+    public ProjectController(ProjectFactory projectFactory, ProjectService projectService, UserService userService, OrganizationService organizationService, ProjectNoteService projectNoteService, ProjectVisibilityService projectVisibilityService, ImageService imageService, StatService statService, HomeProjectService homeProjectService) {
         this.projectFactory = projectFactory;
         this.projectService = projectService;
         this.userService = userService;
         this.organizationService = organizationService;
         this.imageService = imageService;
         this.statService = statService;
+        this.homeProjectService = homeProjectService;
     }
 
     @GetMapping("/validateName")
@@ -85,6 +88,8 @@ public class ProjectController extends HangarComponent {
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createProject(@RequestBody @Valid NewProjectForm newProject) {
         ProjectTable projectTable = projectFactory.createProject(newProject);
+        // need to do this here, outside of the transactional
+        homeProjectService.refreshHomeProjects();
         return ResponseEntity.ok(projectTable.getUrl());
     }
 
