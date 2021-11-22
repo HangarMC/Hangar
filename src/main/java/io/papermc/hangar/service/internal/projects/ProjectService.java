@@ -1,5 +1,27 @@
 package io.papermc.hangar.service.internal.projects;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.HangarUsersDAO;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
@@ -30,27 +52,6 @@ import io.papermc.hangar.service.internal.users.invites.ProjectInviteService;
 import io.papermc.hangar.service.internal.versions.RecommendedVersionService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import io.papermc.hangar.util.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 @Service
 public class ProjectService extends HangarComponent {
@@ -66,9 +67,10 @@ public class ProjectService extends HangarComponent {
     private final ProjectMemberService projectMemberService;
     private final PermissionService permissionService;
     private final RecommendedVersionService recommendedVersionService;
+    private final HomeProjectService homeProjectService;
 
     @Autowired
-    public ProjectService(ProjectsDAO projectDAO, HangarUsersDAO hangarUsersDAO, HangarProjectsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, ProjectInviteService projectInviteService, ProjectMemberService projectMemberService, PermissionService permissionService, RecommendedVersionService recommendedVersionService) {
+    public ProjectService(ProjectsDAO projectDAO, HangarUsersDAO hangarUsersDAO, HangarProjectsDAO hangarProjectsDAO, ProjectVisibilityService projectVisibilityService, OrganizationService organizationService, ProjectPageService projectPageService, ProjectFiles projectFiles, ProjectInviteService projectInviteService, ProjectMemberService projectMemberService, PermissionService permissionService, RecommendedVersionService recommendedVersionService, HomeProjectService homeProjectService) {
         this.projectsDAO = projectDAO;
         this.hangarUsersDAO = hangarUsersDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
@@ -80,6 +82,7 @@ public class ProjectService extends HangarComponent {
         this.projectMemberService = projectMemberService;
         this.permissionService = permissionService;
         this.recommendedVersionService = recommendedVersionService;
+        this.homeProjectService = homeProjectService;
     }
 
     @Nullable
@@ -151,7 +154,7 @@ public class ProjectService extends HangarComponent {
         projectTable.setDonationOnetimeAmounts(settingsForm.getSettings().getDonation().getOneTimeAmounts());
         projectTable.setDonationMonthlyAmounts(settingsForm.getSettings().getDonation().getMonthlyAmounts());
         projectsDAO.update(projectTable);
-        refreshHomeProjects();
+        homeProjectService.refreshHomeProjects();
         // TODO what settings changed
         actionLogger.project(LogAction.PROJECT_SETTINGS_CHANGED.create(ProjectContext.of(projectTable.getId()), "", ""));
     }
@@ -218,11 +221,6 @@ public class ProjectService extends HangarComponent {
         if (!errors.isEmpty()) {
             throw new MultiHangarApiException(errors);
         }
-    }
-
-    public void refreshHomeProjects() {
-//        hangarProjectsDAO.refreshHomeProjects();
-        // TODO fix refreshHomeProjects:  ERROR: cannot refresh view in an explicit transaction
     }
 
     public List<UserTable> getProjectWatchers(long projectId) {

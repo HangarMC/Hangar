@@ -34,8 +34,8 @@ public interface UsersApiDAO {
             "     JOIN project_stars ps ON u.id = ps.user_id" +
             "     JOIN home_projects hp ON ps.project_id = hp.id" +
             " WHERE " +
-            "     <if(!canSeeHidden)> (p.visibility = 0 OR p.visibility = 1" +
-            "     <if(userId)>OR (<userId> = ANY(p.project_members) AND p.visibility != 4)<endif>) AND<endif>" +
+            "     <if(!canSeeHidden)> (hp.visibility = 0 OR hp.visibility = 1" +
+            "     <if(userId)>OR (<userId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND<endif>" +
             "     u.name = :user" +
             " ORDER BY <sortOrder> LIMIT :limit OFFSET :offset")
     List<ProjectCompact> getUserStarred(String user, @Define boolean canSeeHidden, @Define Long userId, @Define String sortOrder, long limit, long offset);
@@ -44,10 +44,10 @@ public interface UsersApiDAO {
     @SqlQuery("SELECT count(*)" +
             " FROM users u " +
             "     JOIN project_stars ps ON u.id = ps.user_id" +
-            "     JOIN home_projects p ON ps.project_id = p.id" +
+            "     JOIN home_projects hp ON ps.project_id = hp.id" +
             " WHERE " +
-            "     <if(!canSeeHidden)> (p.visibility = 0 OR p.visibility = 1" +
-            "     <if(userId)>OR (<userId> = ANY(p.project_members) AND p.visibility != 4)<endif>) AND<endif>" +
+            "     <if(!canSeeHidden)> (hp.visibility = 0 OR hp.visibility = 1" +
+            "     <if(userId)>OR (<userId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND<endif>" +
             "     u.name = :user")
     long getUserStarredCount(String user, @Define boolean canSeeHidden, @Define Long userId);
 
@@ -69,8 +69,8 @@ public interface UsersApiDAO {
             "     JOIN project_watchers pw ON u.id = pw.user_id" +
             "     JOIN home_projects hp ON pw.project_id = hp.id" +
             " WHERE " +
-            "     <if(!canSeeHidden)> (p.visibility = 0 OR p.visibility = 1" +
-            "     <if(userId)>OR (<userId> = ANY(p.project_members) AND p.visibility != 4)<endif>) AND<endif>" +
+            "     <if(!canSeeHidden)> (hp.visibility = 0 OR hp.visibility = 1" +
+            "     <if(userId)>OR (<userId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND<endif>" +
             "     u.name = :user" +
             " ORDER BY <sortOrder> LIMIT :limit OFFSET :offset")
     List<ProjectCompact> getUserWatching(String user, @Define boolean canSeeHidden, @Define Long userId, @Define String sortOrder, long limit, long offset);
@@ -79,10 +79,10 @@ public interface UsersApiDAO {
     @SqlQuery("SELECT count(*)" +
             " FROM users u " +
             "     JOIN project_watchers pw ON u.id = pw.user_id" +
-            "     JOIN home_projects p ON pw.project_id = p.id" +
+            "     JOIN home_projects hp ON pw.project_id = hp.id" +
             " WHERE " +
-            "     <if(!canSeeHidden)> (p.visibility = 0 OR p.visibility = 1" +
-            "     <if(userId)>OR (<userId> = ANY(p.project_members) AND p.visibility != 4)<endif>) AND<endif>" +
+            "     <if(!canSeeHidden)> (hp.visibility = 0 OR hp.visibility = 1" +
+            "     <if(userId)>OR (<userId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND<endif>" +
             "     u.name = :user")
     long getUserWatchingCount(String user, @Define boolean canSeeHidden, @Define Long userId);
 

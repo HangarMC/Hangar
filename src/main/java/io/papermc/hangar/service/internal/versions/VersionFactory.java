@@ -28,6 +28,7 @@ import io.papermc.hangar.service.api.UsersApiService;
 import io.papermc.hangar.service.internal.JobService;
 import io.papermc.hangar.service.internal.PlatformService;
 import io.papermc.hangar.service.internal.projects.ChannelService;
+import io.papermc.hangar.service.internal.projects.HomeProjectService;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.users.NotificationService;
@@ -76,9 +77,10 @@ public class VersionFactory extends HangarComponent {
     private final UsersApiService usersApiService;
     private final JobService jobService;
     private final ValidationService validationService;
+    private final HomeProjectService homeProjectService;
 
     @Autowired
-    public VersionFactory(ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, ProjectVersionDependenciesDAO projectVersionDependencyDAO, PlatformVersionDAO platformVersionDAO, ProjectVersionsDAO projectVersionDAO, VersionsApiDAO versionsApiDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, RecommendedVersionService recommendedVersionService, ProjectService projectService, NotificationService notificationService, VersionTagService versionTagService, PlatformService platformService, UsersApiService usersApiService, JobService jobService, ValidationService validationService) {
+    public VersionFactory(ProjectVersionPlatformDependenciesDAO projectVersionPlatformDependencyDAO, ProjectVersionDependenciesDAO projectVersionDependencyDAO, PlatformVersionDAO platformVersionDAO, ProjectVersionsDAO projectVersionDAO, VersionsApiDAO versionsApiDAO, ProjectFiles projectFiles, PluginDataService pluginDataService, ChannelService channelService, ProjectVisibilityService projectVisibilityService, RecommendedVersionService recommendedVersionService, ProjectService projectService, NotificationService notificationService, VersionTagService versionTagService, PlatformService platformService, UsersApiService usersApiService, JobService jobService, ValidationService validationService, HomeProjectService homeProjectService) {
         this.projectVersionPlatformDependenciesDAO = projectVersionPlatformDependencyDAO;
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.platformVersionDAO = platformVersionDAO;
@@ -96,6 +98,7 @@ public class VersionFactory extends HangarComponent {
         this.usersApiService = usersApiService;
         this.jobService = jobService;
         this.validationService = validationService;
+        this.homeProjectService = homeProjectService;
     }
 
     public PendingVersion createPendingVersion(long projectId, MultipartFile file) {
@@ -297,7 +300,7 @@ public class VersionFactory extends HangarComponent {
                 jobService.save(new UpdateDiscourseVersionPostJob(projectVersionTable.getId()));
             }
 
-            projectService.refreshHomeProjects();
+            homeProjectService.refreshHomeProjects();
             usersApiService.clearAuthorsCache();
         } catch (IOException e) {
             logger.error("Unable to create version {} for {}", pendingVersion.getVersionString(), getHangarPrincipal().getName(), e);
