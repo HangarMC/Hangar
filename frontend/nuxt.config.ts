@@ -18,7 +18,6 @@ require('dotenv').config();
 const proxyHost = process.env.proxyHost || 'http://localhost:8080';
 const oauthHost = process.env.oauthHost || 'http://localhost:4444';
 const authHost = process.env.authHost || 'http://localhost:8000';
-const lazyAuthHost = process.env.lazyAuthHost || 'http://localhost:8000';
 const publicHost = process.env.PUBLIC_HOST || 'http://localhost:3000';
 const host = process.env.host || 'localhost';
 const nodeEnv = process.env.NODE_ENV;
@@ -61,7 +60,6 @@ export default {
         proxyHost,
         oauthHost,
         authHost,
-        lazyAuthHost,
         publicHost,
         host,
         nodeEnv,
@@ -135,8 +133,8 @@ export default {
         proxyHost + '/*/sitemap.xml',
         proxyHost + '/statusz',
         // auth
-        lazyAuthHost + '/avatar',
-        lazyAuthHost + '/oauth/logout',
+        authHost + '/avatar',
+        authHost + '/oauth/logout',
         oauthHost + '/oauth2',
     ],
 
@@ -202,7 +200,7 @@ export default {
                     "'self'",
                     'https://www.google-analytics.com',
                     'https://www.gravatar.com',
-                    lazyAuthHost,
+                    authHost,
                     'data: papermc.io paper.readthedocs.io',
                     'https:', // ppl can use images in descriptions, we would need an image proxy or smth
                 ],
