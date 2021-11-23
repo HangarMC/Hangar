@@ -48,8 +48,7 @@ jobs:
           CI: true
           # keep these in sync with compose!
           proxyHost: "http://hangar_new_backend:8080"
-          authHost: "http://hangar_new_auth:8000"
-          lazyAuthHost: "https://hangar-auth.benndorf.dev"
+          authHost: "https://hangar-auth.benndorf.dev"
           host: "0.0.0.0"
           PUBLIC_HOST: "https://hangar.benndorf.dev"
         run: (cd frontend && yarn build)
