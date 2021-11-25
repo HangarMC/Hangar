@@ -1,3 +1,5 @@
+SET serial_normalization=sql_sequence;
+
 CREATE TYPE role_category AS ENUM ('global', 'project', 'organization');
 
 CREATE TYPE logged_action_type AS ENUM(
@@ -72,7 +74,7 @@ CREATE TABLE projects
     created_at timestamp with time zone NOT NULL,
     name varchar(255) NOT NULL,
     slug varchar(255) NOT NULL,
-        CONSTRAINT projects_namespace_unique UNIQUE (name, slug),
+        CONSTRAINT projects_namespace_unique UNIQUE (owner_name, slug),
     owner_name varchar(255) NOT NULL
         CONSTRAINT projects_owner_name_fkey
             REFERENCES users (name)
@@ -975,14 +977,14 @@ SELECT p.id,
        p.name,
        p.created_at,
        max(lv.created_at)                        AS last_updated,
---        to_jsonb(ARRAY(SELECT jsonb_build_object('version_string', tags.version_string, 'tag_name', tags.tag_name,
---                                                 'tag_version', tags.tag_version, 'tag_color',
---                                                 tags.tag_color) AS jsonb_build_object
---                       FROM tags
---                       WHERE tags.project_id = p.id
---                       LIMIT 5))                  AS promoted_versions,
-       --TODO fix homepage view
-       to_jsonb(ARRAY(SELECT 1 WHERE FALSE)) AS promoted_versions,
+       -- no clue if the cast to text works here -->
+       to_jsonb(ARRAY(SELECT jsonb_build_object('version_string', tags.version_string, 'tag_name', tags.tag_name,
+                                                'tag_version', tags.tag_version, 'tag_color',
+                                                tags.tag_color)::text AS jsonb_build_object
+                      FROM tags
+                      WHERE tags.project_id = p.id
+                      LIMIT 5))                  AS promoted_versions,
+       --TODO fix homepage view--
 --        ((setweight((to_tsvector('english'::regconfig, p.name::text) ||
 --                     to_tsvector('english'::regconfig, regexp_replace(p.name::text, '([a-z])([A-Z]+)'::text,
 --                                                                      '\1_\2'::text, 'g'::text))), 'A'::"char") ||
