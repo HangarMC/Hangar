@@ -31,15 +31,11 @@ public class HomeProjectService {
 
     // if it works, it's not wrong, right?
     public void refreshHomeProjects() {
-        System.out.println("start refresh");
         try (var con = getConnection();
              var stmt =  con.createStatement()) {
-            System.out.println("start?");
             stmt.execute("REFRESH MATERIALIZED VIEW home_projects");
-            System.out.println("done?");
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("refreshed");
     }
 }
