@@ -6,9 +6,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.postgresql.util.PGobject;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 
 public class JSONB extends PGobject {
@@ -51,6 +51,14 @@ public class JSONB extends PGobject {
     }
 
     public Map<String, String> getMap() {
+        if (this.map == null) {
+            try {
+                this.map = new ObjectMapper().readValue(value, new TypeReference<>() {
+                });
+            } catch (JsonProcessingException | ClassCastException e) {
+                e.printStackTrace();
+            }
+        }
         return map;
     }
 
@@ -63,8 +71,6 @@ public class JSONB extends PGobject {
     private void parseJson() {
         try {
             this.json = new ObjectMapper().readTree(value);
-            this.map = new ObjectMapper().readValue(value, new TypeReference<Map<String, String>>() {
-            });
         } catch (JsonProcessingException | ClassCastException e) {
             e.printStackTrace();
         }
