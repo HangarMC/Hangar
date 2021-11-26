@@ -1,17 +1,6 @@
 version: '3.7'
 
 services:
-  db:
-    build: ./db
-    environment:
-      POSTGRES_MULTIPLE_DATABASES: hydra,kratos
-      POSTGRES_DB: hangar
-      POSTGRES_USER: hangar
-      POSTGRES_PASSWORD: 'hangar'
-    ports:
-      - "5432:5432"
-    volumes:
-      - db_data:/var/lib/postgresql/data
   cockroach:
     image: cockroachdb/cockroach:latest-v21.2
     ports:
@@ -23,7 +12,6 @@ services:
       - "start-single-node"
       - "--insecure"
 volumes:
-  db_data:
   cockroach_data:
 
 networks:
