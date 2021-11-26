@@ -60,6 +60,7 @@ public class ProjectsApiService extends HangarComponent {
             if(query.endsWith(" ")) {
                 relevance = "ts_rank(hp.search_words, websearch_to_tsquery('english', :query)) DESC";
             }
+            relevance = "1"; // TODO broken on cockroach
             String orderingFirstHalf;
             // 1609459200 is the hangar epoch
             // 86400 seconds to days

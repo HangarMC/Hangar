@@ -61,7 +61,6 @@ public class ApiKeyTable extends Table implements Named {
                 ", ownerId=" + ownerId +
                 ", tokenIdentifier='" + tokenIdentifier + '\'' +
                 ", token='" + token + '\'' +
-                ", token='" + token + '\'' +
                 ", permissions=" + permissions +
                 "} " + super.toString();
     }

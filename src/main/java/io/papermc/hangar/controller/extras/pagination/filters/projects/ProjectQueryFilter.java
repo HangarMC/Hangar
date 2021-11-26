@@ -38,12 +38,13 @@ public class ProjectQueryFilter implements Filter<ProjectQueryFilterInstance> {
 
         @Override
         public void createSql(StringBuilder sb, SqlStatement<?> q) {
-            sb.append(" AND (hp.search_words @@ websearch_to_tsquery");
-            if (!query.endsWith(" ")) {
-                 sb.append("_postfix");
-            }
-            sb.append("('english', :query)").append(")");
-            q.bind("query", query.trim());
+//            sb.append(" AND (hp.search_words @@ websearch_to_tsquery");
+//            if (!query.endsWith(" ")) {
+//                 sb.append("_postfix");
+//            }
+//            sb.append("('english', :query)").append(")");
+//            q.bind("query", query.trim());
+            // TODO broken
         }
 
         @Override
