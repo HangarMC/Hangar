@@ -31,8 +31,18 @@ public class PromotedVersionMapper implements ColumnMapper<List<PromotedVersion>
         }
         ArrayNode jsons = (ArrayNode) jsonNode;
         jsons.forEach(json -> {
-            String version = json.get("version_string").asText();
-            String tagName = json.get("tag_name").asText();
+            String version;
+            String tagName;
+            if(json.get("version_string") == null){
+                version = "1.0.0";
+            } else {
+                version = json.get("version_string").asText();
+            }
+            if(json.get("tag_name") == null){
+                tagName = "tag_name";
+            } else {
+                tagName = json.get("tag_name").asText();
+            }
             List<String> minecraftVersions = null;
             String data = null;
             if (json.has("tag_version") && json.get("tag_version").isArray()) {
@@ -44,7 +54,13 @@ public class PromotedVersionMapper implements ColumnMapper<List<PromotedVersion>
                     throw new HangarApiException(HttpStatus.BAD_REQUEST, "Error mapping promoted versions");
                 }
             }
-            TagColor color = TagColor.getValues()[json.get("tag_color").asInt()];
+            TagColor color;
+            if(json.get("tag_color") == null){
+                color = TagColor.UNSTABLE;
+            } else {
+                color = TagColor.getValues()[json.get("tag_color").asInt()];
+            }
+
             promotedVersions.add(
                     new PromotedVersion(
                             version,
