@@ -2,9 +2,11 @@
     <div>
         <v-row>
             <v-col cols="12" sm="8" md="5" offset-md="3">
+                <br />
+                <br />
                 <v-row justify="center" align="center">
                     <h1>Hangar</h1>
-                    <v-subheader v-text="$t('hangar.subtitle')" />
+                    <v-subheader v-text="$t('hangar.subtitle')" style="position: relative; top: 3px" />
                 </v-row>
                 <v-row justify="center" align="center">
                     <v-col cols="12">
@@ -19,14 +21,17 @@
             </v-col>
 
             <v-col cols="12" sm="2" md="2">
+                <br />
                 <HangarSponsor :sponsor="sponsor" />
 
                 <v-select />
 
                 <v-checkbox :label="$t('hangar.projectSearch.relevanceSort')" />
 
-                <v-list dense>
-                    <v-subheader>Categories</v-subheader>
+                <v-list dense style="border-radius: 5px">
+                    <v-row justify="center" align="center" style="position: relative; top: 5px; padding-bottom: 10px">
+                        <v-subheader>Categories</v-subheader>
+                    </v-row>
                     <v-list-item-group v-model="filters.categories" multiple>
                         <v-list-item v-for="cat in $store.getters.visibleCategories" :key="cat.apiName" :value="cat.apiName">
                             <v-list-item-icon>
@@ -38,9 +43,11 @@
                         </v-list-item>
                     </v-list-item-group>
                 </v-list>
-
-                <v-list dense>
-                    <v-subheader>Platforms</v-subheader>
+                <br />
+                <v-list dense style="border-radius: 5px">
+                    <v-row justify="center" align="center" style="position: relative; top: 5px; padding-bottom: 10px">
+                        <v-subheader>Platforms</v-subheader>
+                    </v-row>
                     <v-list-item-group>
                         <v-list-item v-for="(platform, i) in platforms" :key="i" active-class="">
                             <v-list-item-icon>
@@ -54,6 +61,7 @@
                 </v-list>
             </v-col>
         </v-row>
+        <br />
     </div>
 </template>
 
