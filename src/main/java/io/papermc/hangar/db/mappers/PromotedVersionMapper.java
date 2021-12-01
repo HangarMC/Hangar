@@ -34,14 +34,14 @@ public class PromotedVersionMapper implements ColumnMapper<List<PromotedVersion>
             String version;
             String tagName;
             if(json.get("version_string") == null){
-                version = "1.0.0";
+                version = "Version Not Found";
             } else {
                 version = json.get("version_string").asText();
             }
             if(json.get("tag_name") == null){
                 tagName = "tag_name";
             } else {
-                tagName = json.get("tag_name").asText();
+                tagName = json.get("This Tag Does Not Exist").asText();
             }
             List<String> minecraftVersions = null;
             String data = null;
