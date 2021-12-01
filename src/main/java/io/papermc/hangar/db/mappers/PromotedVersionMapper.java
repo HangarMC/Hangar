@@ -39,9 +39,9 @@ public class PromotedVersionMapper implements ColumnMapper<List<PromotedVersion>
                 version = json.get("version_string").asText();
             }
             if(json.get("tag_name") == null){
-                tagName = "tag_name";
+                tagName = "This Tag Does Not Exist";
             } else {
-                tagName = json.get("This Tag Does Not Exist").asText();
+                tagName = json.get("tag_name").asText();
             }
             List<String> minecraftVersions = null;
             String data = null;
