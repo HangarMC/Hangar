@@ -30,6 +30,7 @@ declare module 'hangar-internal' {
         url: string;
         tagColor: TagColor;
         possibleVersions: string[];
+        visible: boolean;
     }
 
     interface IVisibility {

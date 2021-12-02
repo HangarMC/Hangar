@@ -102,6 +102,7 @@ export const actions: ActionTree<RootState, RootState> = {
 
 export const getters: GetterTree<RootState, RootState> = {
     visibleCategories: (state: RootState) => Array.from(state.projectCategories.values()).filter((value) => value.visible),
+    visiblePlatforms: (state: RootState) => Array.from(state.platforms.values()).filter((value) => value.visible),
 };
 
 function convertToMap<E, T>(values: T[], toStringFunc: (value: T) => string): Map<E, T> {

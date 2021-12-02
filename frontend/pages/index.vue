@@ -48,8 +48,8 @@
                     <v-row justify="center" align="center" style="position: relative; top: 5px; padding-bottom: 10px">
                         <v-subheader>Platforms</v-subheader>
                     </v-row>
-                    <v-list-item-group>
-                        <v-list-item v-for="(platform, i) in platforms" :key="i" active-class="">
+                    <v-list-item-group v-model="filters.platforms" multiple>
+                        <v-list-item v-for="platform in $store.getters.visiblePlatforms" :key="platform.enumName" :value="platform.name">
                             <v-list-item-icon>
                                 <v-icon v-text="`$vuetify.icons.${platform.name.toLowerCase()}`" />
                             </v-list-item-icon>
@@ -140,6 +140,7 @@ export default class Home extends HangarComponent {
             limit: this.options.itemsPerPage,
             offset: (this.options.page - 1) * this.options.itemsPerPage,
             category: this.filters.categories,
+            platform: this.filters.platforms,
         };
         if (this.filters.search != null && this.filters.search.length > 0) {
             requestOptions.q = this.filters.search;
