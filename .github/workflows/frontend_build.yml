@@ -9,7 +9,7 @@ on:
       - 'frontend/**'
 
 concurrency:
-  group: '${{ github.ref }}-frontend-build'
+  group: ${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
