@@ -1,13 +1,14 @@
 <template>
     <v-footer dark padless>
         <v-container>
+            <br />
             <v-row align="center" justify="center">
                 <v-col cols="12" class="d-flex justify-center">
                     By using this site you're accepting our <a href="https://papermc.io/community-guidelines"> Terms of Service</a>
                 </v-col>
             </v-row>
 
-            <v-row align="center" justify="center">
+            <v-row align="center" justify="center" style="padding-top: 5px">
                 <v-col cols="12" sm="2" class="d-flex justify-center">
                     <div>
                         <h5 class="d-flex justify-center pb-2">Hangar API</h5>
@@ -44,13 +45,14 @@
             </v-row>
 
             <v-row align="center" justify="center">
-                <v-col cols="12">
+                <v-col cols="12" class="d-flex justify-center">
                     <LanguageModal />
                 </v-col>
                 <v-col cols="12" class="d-flex justify-center">
                     Copyright © <a href="https://papermc.io">PaperMC</a> 2016 - {{ new Date().getFullYear() }}
                 </v-col>
             </v-row>
+            <br />
         </v-container>
     </v-footer>
 </template>
