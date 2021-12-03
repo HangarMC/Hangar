@@ -77,10 +77,10 @@ hangar:
   sponsors:
     - name: Beer
       image: /images/sponsors/beer.jpg
-      link: https://minidigger.me
+      link: https://benndorf.dev
     - name: MiniDigger
       image: /images/sponsors/minidigger.png
-      link: https://minidigger.me
+      link: https://benndorf.dev
 
   homepage:
     update-interval: 10m
