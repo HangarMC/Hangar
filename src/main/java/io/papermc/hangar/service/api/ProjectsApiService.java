@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -75,13 +76,29 @@ public class ProjectsApiService extends HangarComponent {
                 case RECENT_DOWNLOADS : orderingFirstHalf ="hp.recent_views *"; break;
                 case RECENT_VIEWS: orderingFirstHalf ="hp.recent_downloads *"; break;
                 default:
-                    orderingFirstHalf = " "; // Just in case and so that the ide doesnt complain
+                    orderingFirstHalf = " "; // Just in case and so that the ide doesn't complain
             }
             ordering = orderingFirstHalf + relevance;
         }
 
         boolean seeHidden = getGlobalPermissions().has(Permission.SeeHidden);
         List<Project> projects = projectsApiDAO.getProjects(seeHidden, getHangarUserId(), ordering, pagination);
+        ArrayList<Project> toBeRemoved = new ArrayList<>();
+        if(projects.stream().map(Project::getName).distinct().limit(2).count() != projects.size()) {
+            for(Project project: projects){
+                List<Project> otherProjects = new ArrayList<>(projects);
+                otherProjects.remove(project);
+                otherProjects.removeAll(toBeRemoved);
+                for(Project other: otherProjects) {
+                    if(project.getName().equals(other.getName())){
+                        toBeRemoved.add(project);
+                    }
+                }
+            }
+            for(Project remove: toBeRemoved) {
+                projects.remove(remove);
+            }
+        }
         return new PaginatedResult<>(new Pagination(projectsApiDAO.countProjects(seeHidden, getHangarUserId(), pagination), pagination), projects);
     }
 }
