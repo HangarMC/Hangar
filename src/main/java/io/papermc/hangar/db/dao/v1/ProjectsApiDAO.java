@@ -104,7 +104,10 @@ public interface ProjectsApiDAO {
             "       p.donation_onetime_amounts," +
             "       p.donation_monthly_amounts" +
             "  FROM home_projects hp" +
-            "         JOIN projects p ON hp.id = p.id" +
+            "         JOIN projects p on hp.id = p.id" +
+            "         JOIN project_versions pv on p.id = pv.project_id " +
+            "         JOIN project_version_platform_dependencies pvpd on pv.id = pvpd.version_id " +
+            "         JOIN platform_versions v on pvpd.platform_version_id = v.id " +
             "         WHERE true <filters>" + // Not sure how else to get here a single Where
             "         <if(!seeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif> " +
             "         ORDER BY <orderBy> " +
@@ -119,6 +122,9 @@ public interface ProjectsApiDAO {
     @SqlQuery("SELECT count(DISTINCT hp.id) " +
             "  FROM home_projects hp" +
             "         JOIN projects p ON hp.id = p.id" +
+            "         JOIN project_versions pv on p.id = pv.project_id " +
+            "         JOIN project_version_platform_dependencies pvpd on pv.id = pvpd.version_id " +
+            "         JOIN platform_versions v on pvpd.platform_version_id = v.id " +
             "         WHERE true <filters>" + // Not sure how else to get here a single Where
             "         <if(!seeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif> ")
     long countProjects(@Define boolean seeHidden, @Define Long requesterId,
