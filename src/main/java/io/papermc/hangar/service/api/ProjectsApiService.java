@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -75,7 +76,7 @@ public class ProjectsApiService extends HangarComponent {
                 case RECENT_DOWNLOADS : orderingFirstHalf ="hp.recent_views *"; break;
                 case RECENT_VIEWS: orderingFirstHalf ="hp.recent_downloads *"; break;
                 default:
-                    orderingFirstHalf = " "; // Just in case and so that the ide doesnt complain
+                    orderingFirstHalf = " "; // Just in case and so that the ide doesn't complain
             }
             ordering = orderingFirstHalf + relevance;
         }
