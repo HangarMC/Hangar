@@ -6,7 +6,7 @@
                 <br />
                 <v-row justify="center" align="center">
                     <h1>Hangar</h1>
-                    <v-subheader v-text="$t('hangar.subtitle')" style="position: relative; top: 3px" />
+                    <v-subheader style="position: relative; top: 3px" v-text="$t('hangar.subtitle')" />
                 </v-row>
                 <v-row justify="center" align="center">
                     <v-col cols="12">
