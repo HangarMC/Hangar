@@ -15,7 +15,7 @@
                 </v-row>
                 <v-row justify="center" align="center">
                     <v-col cols="12">
-                        <ProjectList :projects="projects" :list-options.sync="options" />
+                        <ProjectList :projects="projects" :list-options.sync="options" :display-author="true" />
                     </v-col>
                 </v-row>
             </v-col>

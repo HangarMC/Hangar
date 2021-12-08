@@ -21,6 +21,7 @@
                             </div>
                             <div class="ml-2">
                                 <span class="text-h6">{{ project.name }}</span>
+                                <span v-if="displayAuthor" class="text-h7">by {{ project.namespace.owner }}</span>
                                 <br />
                                 <span class="text-subtitle-2">{{ project.description }}</span>
                             </div>
@@ -67,6 +68,9 @@ import { DataOptions } from 'vuetify';
 export default class ProjectList extends Vue {
     @Prop({ type: Object as PropType<PaginatedResult<Project>>, required: true })
     projects!: PaginatedResult<Project>;
+
+    @Prop({ type: Boolean, default: () => false })
+    displayAuthor!: boolean;
 
     @PropSync('listOptions', {
         type: Object as PropType<DataOptions>,
