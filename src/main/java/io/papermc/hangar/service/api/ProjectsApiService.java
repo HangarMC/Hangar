@@ -83,22 +83,6 @@ public class ProjectsApiService extends HangarComponent {
 
         boolean seeHidden = getGlobalPermissions().has(Permission.SeeHidden);
         List<Project> projects = projectsApiDAO.getProjects(seeHidden, getHangarUserId(), ordering, pagination);
-        ArrayList<Project> toBeRemoved = new ArrayList<>();
-        if(projects.stream().map(Project::getName).distinct().limit(2).count() != projects.size()) {
-            for(Project project: projects){
-                List<Project> otherProjects = new ArrayList<>(projects);
-                otherProjects.remove(project);
-                otherProjects.removeAll(toBeRemoved);
-                for(Project other: otherProjects) {
-                    if(project.getName().equals(other.getName())){
-                        toBeRemoved.add(project);
-                    }
-                }
-            }
-            for(Project remove: toBeRemoved) {
-                projects.remove(remove);
-            }
-        }
         return new PaginatedResult<>(new Pagination(projectsApiDAO.countProjects(seeHidden, getHangarUserId(), pagination), pagination), projects);
     }
 }
