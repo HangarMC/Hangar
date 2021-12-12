@@ -15,31 +15,29 @@ import java.util.stream.Collectors;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @EnumByOrdinal
 public enum Category {
-    ADMIN_TOOLS(0, "Admin Tools", "mdi-server", "admin_tools"),
-    CHAT(1, "Chat", "mdi-chat", "chat"),
-    DEV_TOOLS(2, "Developer Tools", "mdi-wrench", "dev_tools"),
-    ECONOMY(3, "Economy", "mdi-cash-multiple", "economy"),
-    GAMEPLAY(4, "Gameplay", "mdi-puzzle", "gameplay"),
-    GAMES(5, "Games", "mdi-controller-classic", "games"),
-    PROTECTION(6, "Protection", "mdi-lock", "protection"),
-    ROLE_PLAYING(7, "Role Playing", "mdi-auto-fix", "role_playing"),
-    WORLD_MANAGEMENT(8, "World Management", "mdi-earth", "world_management"),
-    MISC(9, "Miscellaneous", "mdi-asterisk", "misc"),
-    UNDEFINED(10, "Undefined", "", "undefined", false);
+    ADMIN_TOOLS(0, "mdi-server", "admin_tools"),
+    CHAT(1, "mdi-chat", "chat"),
+    DEV_TOOLS(2, "mdi-wrench", "dev_tools"),
+    ECONOMY(3, "mdi-cash-multiple", "economy"),
+    GAMEPLAY(4, "mdi-puzzle", "gameplay"),
+    GAMES(5, "mdi-controller-classic", "games"),
+    PROTECTION(6, "mdi-lock", "protection"),
+    ROLE_PLAYING(7, "mdi-auto-fix", "role_playing"),
+    WORLD_MANAGEMENT(8, "mdi-earth", "world_management"),
+    MISC(9, "mdi-asterisk", "misc"),
+    UNDEFINED(10, "", "undefined", false);
 
     private final int value;
-    private final String title;
     private final String icon;
     private final boolean isVisible;
     private final String apiName;
 
-    Category(int value, String title, String icon, String apiName) {
-        this(value, title, icon, apiName, true);
+    Category(int value, String icon, String apiName) {
+        this(value, icon, apiName, true);
     }
 
-    Category(int value, String title, String icon, String apiName, boolean isVisible) {
+    Category(int value, String icon, String apiName, boolean isVisible) {
         this.value = value;
-        this.title = title;
         this.icon = icon;
         this.apiName = apiName;
         this.isVisible = isVisible;
@@ -48,10 +46,6 @@ public enum Category {
     @JsonIgnore
     public int getValue() {
         return value;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public String getIcon() {
@@ -76,15 +70,6 @@ public enum Category {
     public static Category fromValue(String text) {
         for (Category b : Category.values()) {
             if (b.apiName.equalsIgnoreCase(text)) {
-                return b;
-            }
-        }
-        return fromTitle(text);
-    }
-
-    public static Category fromTitle(String text) {
-        for (Category b : Category.values()) {
-            if (b.title.equalsIgnoreCase(text)) {
                 return b;
             }
         }
