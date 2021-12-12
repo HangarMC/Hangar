@@ -186,7 +186,13 @@ export default {
         },
         csp: {
             directives: {
-                defaultSrc: ["'self'", 'https://google-analytics.com', 'https://fonts.gstatic.com', 'https://fonts.googleapis.com'],
+                defaultSrc: [
+                    "'self'",
+                    'https://google-analytics.com',
+                    'https://fonts.gstatic.com',
+                    'https://fonts.googleapis.com',
+                    'https://static.cloudflareinsights.com',
+                ],
                 styleSrc: ["'self'", 'https://fonts.googleapis.com', 'cdn.jsdelivr.net', "'unsafe-inline'", 'https://cdn.crowdin.com'],
                 fontSrc: ['fonts.gstatic.com', 'cdn.jsdelivr.net'],
                 scriptSrc: [
