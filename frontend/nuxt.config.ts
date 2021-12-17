@@ -17,7 +17,7 @@ require('dotenv').config();
 
 const proxyHost = process.env.proxyHost || 'http://localhost:8080';
 const oauthHost = process.env.oauthHost || 'http://localhost:4444';
-const authHost = process.env.authHost || 'http://localhost:8000';
+const authHost = process.env.authHost || 'http://localhost:3001';
 const publicHost = process.env.PUBLIC_HOST || 'http://localhost:3000';
 const host = process.env.host || 'localhost';
 const nodeEnv = process.env.NODE_ENV;

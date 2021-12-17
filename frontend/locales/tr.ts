@@ -80,7 +80,8 @@ const msgs: LocaleMessageObject = {
       javadocs: "JavaDocları",
       hangar: "Hangar (Pluginler)",
       downloads: "İndirmeler",
-      community: "Topluluk"
+      community: "Topluluk",
+      paper: 'PaperMC'
     }
   },
   project: {
