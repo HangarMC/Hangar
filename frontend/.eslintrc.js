@@ -14,5 +14,6 @@ module.exports = {
                 allowModifiers: true,
             },
         ],
+        'import/named': 'off', // broken as fuck
     },
 };
