@@ -101,7 +101,8 @@ const msgs: LocaleMessageObject = {
       protection: "Protección",
       role_playing: "Roleplay",
       world_management: "Administración de mundos",
-      misc: "Miscelánea"
+      misc: "Miscelánea",
+      undefined: 'ERROR'
     },
     actions: {
       unwatch: "Dejar de seguir",
