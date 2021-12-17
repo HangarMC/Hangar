@@ -86,7 +86,7 @@ export default class Header extends HangarComponent {
     get dropdown(): Control[] {
         const controls: Control[] = [];
         controls.push({
-            link: '/',
+            link: 'https://papermc.io/',
             icon: 'mdi-home',
             title: this.$t('nav.hangar.home'),
         });
@@ -111,9 +111,9 @@ export default class Header extends HangarComponent {
             title: this.$t('nav.hangar.javadocs'),
         });
         controls.push({
-            link: 'https://www.papermc.io',
-            icon: 'mdi-home',
-            title: this.$t('nav.hangar.paper'), // Somebody should still add the translation here
+            link: '/',
+            icon: 'mdi-puzzle',
+            title: this.$t('nav.hangar.hangar'),
         });
         controls.push({
             link: 'https://papermc.io/downloads',
@@ -124,6 +124,11 @@ export default class Header extends HangarComponent {
             link: 'https://papermc.io/community',
             icon: 'mdi-comment',
             title: this.$t('nav.hangar.community'),
+        });
+        controls.push({
+            link: process.env.authHost,
+            icon: 'mdi-key',
+            title: this.$t('nav.hangar.auth'),
         });
         return controls;
     }

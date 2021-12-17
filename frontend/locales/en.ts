@@ -81,7 +81,7 @@ const msgs: LocaleMessageObject = {
       hangar: 'Hangar (Plugins)',
       downloads: 'Downloads',
       community: 'Community',
-      paper: 'PaperMC'
+      auth: 'Authentication Portal'
     }
   },
   project: {
