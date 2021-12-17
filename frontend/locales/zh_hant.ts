@@ -101,7 +101,8 @@ const msgs: LocaleMessageObject = {
       protection: "保護",
       role_playing: "角色扮演",
       world_management: "世界管理",
-      misc: "雜項"
+      misc: "雜項",
+      undefined: 'ERROR'
     },
     actions: {
       unwatch: "取消訂閱",
