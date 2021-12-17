@@ -61,9 +61,10 @@ export const mutations: MutationTree<RootState> = {
 };
 
 export const actions: ActionTree<RootState, RootState> = {
-    async nuxtServerInit({ commit }, { $api }: Context) {
+    async nuxtServerInit({ commit }, { $api, app }: Context) {
         try {
             const categoryResult = await $api.requestInternal<IProjectCategory[]>('data/categories', false);
+            categoryResult.forEach((c) => (c.title = app.i18n.t('project.category.' + c.apiName) as string));
             commit(
                 'SET_PROJECT_CATEGORIES',
                 convertToMap<ProjectCategory, IProjectCategory>(categoryResult, (value) => value.apiName)
