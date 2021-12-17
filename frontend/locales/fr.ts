@@ -101,7 +101,8 @@ const msgs: LocaleMessageObject = {
       protection: "Protéger",
       role_playing: "Jeux de rôles",
       world_management: "Gestion du monde",
-      misc: "Divers"
+      misc: "Divers",
+      undefined: 'ERROR'
     },
     actions: {
       unwatch: "Ne plus suivre",
