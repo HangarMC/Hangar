@@ -101,7 +101,8 @@ const msgs: LocaleMessageObject = {
       protection: "Koruma",
       role_playing: "Rol Yapma",
       world_management: "Dünya Yönetimi",
-      misc: "Çeşitli"
+      misc: "Çeşitli",
+      undefined: 'ERROR'
     },
     actions: {
       unwatch: "İzlemeyi bırak",
