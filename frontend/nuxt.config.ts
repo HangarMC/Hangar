@@ -93,7 +93,7 @@ export default {
         '@nuxtjs/axios',
         'cookie-universal-nuxt',
         '@nuxtjs/proxy',
-        'nuxt-i18n',
+        '@nuxtjs/i18n',
         '@dansmaculotte/nuxt-security',
     ],
 
@@ -193,7 +193,7 @@ export default {
         detectBrowserLanguage: {
             useCookie: true,
             cookieKey: 'i18n_redirected',
-            onlyOnRoot: true,
+            redirectOn: 'root',
         },
     },
 

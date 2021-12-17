@@ -8,6 +8,7 @@ import filesize from 'filesize';
 import { HangarApiException, HangarValidationException, MultiHangarApiException } from 'hangar-api';
 import { HangarProject, HangarUser } from 'hangar-internal';
 import { TranslateResult } from 'vue-i18n';
+import { NuxtI18nInstance } from '@nuxtjs/i18n';
 import { NamedPermission, Visibility } from '~/types/enums';
 import { RootState } from '~/store';
 import { NotifPayload } from '~/store/snackbar';
@@ -289,6 +290,10 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
 
         success(msg: TranslateResult) {
             store.dispatch('snackbar/SHOW_NOTIF', { message: msg, color: 'success' } as NotifPayload);
+        }
+
+        i18n(): NuxtI18nInstance {
+            return i18n;
         }
     }
 
