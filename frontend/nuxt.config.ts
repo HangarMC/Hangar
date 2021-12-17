@@ -212,6 +212,7 @@ export default {
                     'https://fonts.gstatic.com',
                     'https://fonts.googleapis.com',
                     'https://static.cloudflareinsights.com',
+                    'https://cdnjs.cloudflare.com',
                 ],
                 styleSrc: ["'self'", 'https://fonts.googleapis.com', 'cdn.jsdelivr.net', "'unsafe-inline'", 'https://cdn.crowdin.com'],
                 fontSrc: ['fonts.gstatic.com', 'cdn.jsdelivr.net'],
