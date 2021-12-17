@@ -109,8 +109,27 @@ export default {
 
     // Build Configuration: https://go.nuxtjs.dev/config-build
     build: {
-        transpile: ['lodash-es'],
         publicPath,
+        parallel: true,
+        cache: true,
+        babel: {
+            presets({ envName }) {
+                const envTargets = {
+                    client: { browsers: ['last 2 versions'], ie: 11 },
+                    server: { node: 'current' },
+                    modern: { esmodules: true },
+                };
+                return [
+                    [
+                        '@nuxt/babel-preset-app',
+                        {
+                            targets: envTargets[envName],
+                            corejs: 3,
+                        },
+                    ],
+                ];
+            },
+        },
     },
 
     router: {
