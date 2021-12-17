@@ -80,7 +80,8 @@ const msgs: LocaleMessageObject = {
       javadocs: "crwdns117:0crwdne117:0",
       hangar: "crwdns119:0crwdne119:0",
       downloads: "crwdns121:0crwdne121:0",
-      community: "crwdns123:0crwdne123:0"
+      community: "crwdns123:0crwdne123:0",
+      auth: "crwdns1293:0crwdne1293:0"
     }
   },
   project: {
