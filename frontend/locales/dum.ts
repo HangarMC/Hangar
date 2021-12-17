@@ -101,7 +101,8 @@ const msgs: LocaleMessageObject = {
       protection: "crwdns149:0crwdne149:0",
       role_playing: "crwdns151:0crwdne151:0",
       world_management: "crwdns153:0crwdne153:0",
-      misc: "crwdns155:0crwdne155:0"
+      misc: "crwdns155:0crwdne155:0",
+      undefined: "crwdns1295:0crwdne1295:0"
     },
     actions: {
       unwatch: "crwdns157:0crwdne157:0",
