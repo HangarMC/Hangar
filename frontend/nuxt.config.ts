@@ -110,6 +110,7 @@ export default {
     // Build Configuration: https://go.nuxtjs.dev/config-build
     build: {
         publicPath,
+        transpile: ['lodash-es'],
         parallel: true,
         cache: true,
         babel: {
