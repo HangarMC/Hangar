@@ -80,7 +80,8 @@ const msgs: LocaleMessageObject = {
       javadocs: 'JavaDocs',
       hangar: 'Hangar (Plugins)',
       downloads: "Descargas",
-      community: "Comunidad"
+      community: "Comunidad",
+      auth: 'Authentication Portal'
     }
   },
   project: {
