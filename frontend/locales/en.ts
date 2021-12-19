@@ -1,5 +1,10 @@
-import { LocaleMessageObject } from 'vue-i18n';
-const msgs: LocaleMessageObject = {
+export default {
+  meta: {
+    code: 'en',
+    iso: 'en-US',
+    name: 'English',
+    icon: 'Test'
+  },
   general: {
     close: 'Close',
     submit: 'Submit',
@@ -865,4 +870,3 @@ const msgs: LocaleMessageObject = {
     unknown: 'An error occurred'
   }
 };
-export default msgs;

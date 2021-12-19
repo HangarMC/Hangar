@@ -59,6 +59,19 @@ jobs:
           CI: true
         run: (cd frontend && yarn lint)
 
+      - name: Sync forth and back with crowdin
+        uses: crowdin/github-action@1.4.0
+        with:
+          upload_sources: true
+          download_translations: true
+          push_translations: false
+          create_pull_request: false
+          config: 'crowdin.yml'
+          crowdin_branch_name: master
+        env:
+          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
       - name: Build frontend
         env:
           CI: true

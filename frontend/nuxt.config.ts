@@ -1,16 +1,8 @@
+import * as fs from 'fs';
 import { NuxtConfig } from '@nuxt/types';
 import colors from 'vuetify/lib/util/colors';
-
-import de from './locales/de';
-import en from './locales/en';
-import es from './locales/es';
-import fr from './locales/fr';
-import it from './locales/it';
-import nl from './locales/nl';
-import tr from './locales/tr';
-import zhHans from './locales/zh_hans';
-import zhHant from './locales/zh_hant';
-import dum from './locales/dum';
+import { LocaleMessages } from 'vue-i18n';
+import en from '~/locales/en';
 
 require('events').EventEmitter.defaultMaxListeners = 20;
 require('dotenv').config();
@@ -22,6 +14,8 @@ const publicHost = process.env.PUBLIC_HOST || 'http://localhost:3000';
 const host = process.env.host || 'localhost';
 const nodeEnv = process.env.NODE_ENV;
 const publicPath = process.env.PUBLIC_PATH || '/_nuxt/';
+
+const locales = fs.readdirSync('locales').map((f) => require('./locales/' + f).default as typeof en);
 
 // noinspection JSUnusedGlobalSymbols
 export default {
@@ -162,33 +156,23 @@ export default {
         vueI18nLoader: true,
         strategy: 'no_prefix',
         defaultLocale: 'en',
-        locales: [
-            { code: 'de', iso: 'de-DE', name: 'Deutsch', icon: 'Test' },
-            { code: 'fr', iso: 'fr-FR', name: 'Français', icon: 'Test' },
-            { code: 'en', iso: 'en-US', name: 'English', icon: 'Test' },
-            { code: 'es', iso: 'es-ES', name: 'Español', icon: 'Test' },
-            { code: 'it', iso: 'it-IT', name: 'Italiano', icon: 'Test' },
-            { code: 'nl', iso: 'nl-NL', name: 'Nederlands', icon: 'Test' },
-            { code: 'tr', iso: 'tr-TR', name: 'Türkçe', icon: 'Test' },
-            { code: 'zhS', iso: 'zh-HANS', name: 'Simplified Chinese', icon: 'Test' },
-            { code: 'zhT', iso: 'zh-HANT', name: 'Traditional Chinese', icon: 'Test' },
-            { code: 'dum', iso: 'dum', name: 'Crowdin Dummy', icon: 'Test' },
-        ],
+        locales: locales.map((msgs) => {
+            return {
+                code: msgs.meta.code,
+                iso: msgs.meta.iso,
+                name: msgs.meta.name,
+                icon: msgs.meta.icon,
+            };
+        }),
         vueI18n: {
             locale: 'en',
             fallbackLocale: 'en',
-            messages: {
-                de,
-                en,
-                fr,
-                es,
-                it,
-                nl,
-                tr,
-                zh_hans: zhHans,
-                zh_hant: zhHant,
-                dum,
-            },
+            messages: locales.reduce((obj, item) => {
+                return {
+                    ...obj,
+                    [item.meta.code]: item,
+                };
+            }, {}) as LocaleMessages,
         },
         detectBrowserLanguage: {
             useCookie: true,
