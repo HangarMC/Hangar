@@ -1,5 +1,10 @@
-import { LocaleMessageObject } from 'vue-i18n';
-const msgs: LocaleMessageObject = {
+export default {
+  meta: {
+    code: 'en',
+    iso: 'en-US',
+    name: 'English',
+    icon: 'Test'
+  },
   general: {
     close: "Sluiten",
     submit: "Indienen",
@@ -16,853 +21,852 @@ const msgs: LocaleMessageObject = {
     required: "Vereist",
     add: "Voeg toe",
     name: "Naam",
-    link: "Koppeling",
-    send: "Stuur",
-    home: "Startpagina",
+    link: 'Link',
+    send: 'Send',
+    home: 'Home',
     message: "Bericht",
     refresh: "Ververs",
-    confirm: "Bevestigen",
+    confirm: 'Confirm',
     error: {
-      invalidUrl: "Ongeldig URL-formaat"
+      invalidUrl: 'Invalid URL format'
     }
   },
   hangar: {
     projectSearch: {
-      query: "Zoek tussen {0} projects, trots gemaakt door de community...",
-      relevanceSort: "Sorteer op relevantie",
-      noProjects: "Er zijn geen projecten. 😢",
-      noProjectsFound: "0 projecten gevonden. 😢"
+      query: 'Search in {0} projects, proudly made by the community...',
+      relevanceSort: 'Sort by relevance',
+      noProjects: 'There are no projects. 😢',
+      noProjectsFound: 'Found 0 projects. 😢'
     },
-    subtitle: "Een Minecraft package repository",
-    sponsoredBy: "Gesponsord door"
+    subtitle: 'A Minecraft package repository',
+    sponsoredBy: 'Sponsored by'
   },
   pages: {
-    staffTitle: "Personeel",
-    authorsTitle: "Auteurs",
+    staffTitle: 'Staff',
+    authorsTitle: 'Authors',
     headers: {
-      username: "Gebruikersnaam",
-      roles: "Rollen",
-      joined: "Aangesloten",
-      projects: "Projecten"
+      username: 'Username',
+      roles: 'Roles',
+      joined: 'Joined',
+      projects: 'Projects'
     }
   },
   nav: {
-    login: "Inloggen",
-    signup: "Inschrijven",
+    login: 'Login',
+    signup: 'Signup',
     user: {
-      notifications: "Berichten",
-      flags: "Vlaggen",
-      projectApprovals: "Projectgoedkeuringen",
-      versionApprovals: "Versiegoedkeuringen",
-      stats: "Statistieken",
-      health: "Hangar Gezondheid",
-      log: "Gebruikersactie Log",
-      platformVersions: "Platformversies",
-      logout: "Log uit",
+      notifications: 'Notifications',
+      flags: 'Flags',
+      projectApprovals: 'Project approvals',
+      versionApprovals: 'Version approvals',
+      stats: 'Stats',
+      health: 'Hangar Health',
+      log: 'User Action Log',
+      platformVersions: 'Platform Versions',
+      logout: 'Sign out',
       error: {
-        loginFailed: "Authenticatie Mislukt",
-        invalidUsername: "Ongeldige gebruikersnaam",
-        hangarAuth: "Kon niet verbinden met HangarAuth",
-        loginDisabled: "Login is tijdelijk niet beschikbaar, probeer het later opnieuw",
-        fakeUserEnabled: "Nepgebruiker is aangezet. {0} is dus uit"
+        loginFailed: 'Authentication Failed',
+        invalidUsername: 'Invalid Username',
+        hangarAuth: "Couldn't connect to HangarAuth",
+        loginDisabled: 'Login is temporarily unavailable, please try again later',
+        fakeUserEnabled: 'Fake user is enabled. {0} is therefore disabled'
       }
     },
-    createNew: "Maak nieuw...",
+    createNew: 'Create new...',
     new: {
-      project: "Nieuw Project",
-      organization: "Nieuwe Organisatie"
+      project: 'New Project',
+      organization: 'New Organization'
     },
     hangar: {
-      home: "Homepagina",
+      home: 'Homepage',
       forums: 'Forums',
       code: 'Code',
-      docs: "Documentatie",
+      docs: 'Docs',
       javadocs: 'JavaDocs',
       hangar: 'Hangar (Plugins)',
-      downloads: "downloads",
-      community: "Gemeenschap",
+      downloads: 'Downloads',
+      community: 'Community',
       auth: 'Authentication Portal'
     }
   },
   project: {
-    stargazers: "Sterrenkijkers",
-    noStargazers: "Er zijn nog geen sterrenkijkers voor dit project 😢",
-    watchers: "Volgers",
-    noWatchers: "Er zijn nog geen volgers van dit project 😢",
-    members: "Leden",
+    stargazers: 'Stargazers',
+    noStargazers: 'There are no stargazers on this project yet 😢',
+    watchers: 'Watchers',
+    noWatchers: 'There are no watchers on this project yet 😢',
+    members: 'Members',
     category: {
-      info: "Categorie",
-      admin_tools: "Administratortools",
-      chat: "Chatten",
-      dev_tools: "Onwikkelaarstools",
-      economy: "Economie",
-      gameplay: "Spel",
-      games: "Spellen",
-      protection: "Bescherming",
-      role_playing: "Rolspelen",
-      world_management: "Wereldbeheer",
-      misc: "Verschillende",
+      info: 'Category',
+      admin_tools: 'Admin Tools',
+      chat: 'Chat',
+      dev_tools: 'Developer Tools',
+      economy: 'Economy',
+      gameplay: 'Gameplay',
+      games: 'Games',
+      protection: 'Protection',
+      role_playing: 'Role Playing',
+      world_management: 'World Management',
+      misc: 'Miscellaneous',
       undefined: 'ERROR'
     },
     actions: {
-      unwatch: "Ontvolg",
-      watch: "Volg",
-      flag: "Vlag",
-      star: "Ster",
-      unstar: "Ontster",
-      adminActions: "Administratoracties",
-      flagHistory: "Vlaggeschiedenis ({0})",
-      staffNotes: "Personeelsnotities ({0})",
-      userActionLogs: "Gebruikersctielogs",
+      unwatch: 'Unwatch',
+      watch: 'Watch',
+      flag: 'Flag',
+      star: 'Star',
+      unstar: 'Unstar',
+      adminActions: 'Admin Actions',
+      flagHistory: 'Flag history ({0})',
+      staffNotes: 'Staff notes ({0})',
+      userActionLogs: 'User Action Logs',
       forum: 'Forum'
     },
     flag: {
-      flagProject: "Vlag {0}?",
-      flagSend: "Succesvol gevlagd, dank je dat je de community een betere plek maakt!",
-      flagSent: "Melding ingediend voor beoordeling",
+      flagProject: 'Flag {0}?',
+      flagSend: 'Successfully flagged, thanks for making this community a better place!',
+      flagSent: 'Flag submitted for review',
       flags: {
-        inappropriateContent: "Ongepaste Content",
-        impersonation: "Impersonatie of Bedrog",
+        inappropriateContent: 'Inappropriate Content',
+        impersonation: 'Impersonation or Deception',
         spam: 'Spam',
-        malIntent: "Slechte Intenties",
-        other: "Anders"
+        malIntent: 'Malicious Intent',
+        other: 'Other'
       },
       error: {
-        alreadyOpen: "Je kan maar 1 onopgeloste vlag op een project hebben",
-        alreadyResolved: "Deze vlag is al opgelost"
+        alreadyOpen: 'You can only have 1 unresolved flag on a project',
+        alreadyResolved: 'This flag is already resolved'
       }
     },
     tabs: {
-      docs: "Documentatie",
-      versions: "Versies",
-      discuss: "Discussieer",
-      settings: "Instelling",
-      homepage: "Homepagina",
-      issues: "Problemen",
-      source: "Broncode",
-      support: "Ondersteuning"
+      docs: 'Docs',
+      versions: 'Versions',
+      discuss: 'Discuss',
+      settings: 'Settings',
+      homepage: 'Homepage',
+      issues: 'Issues',
+      source: 'Source',
+      support: 'Support'
     },
     new: {
       step1: {
-        title: "Gebruikersovereenkomst",
-        text: "Een project bevat de documentatie en de downloads van je plugin.<br>Voordat je verder gaat, lees alsjeblieft de <a href=\"#\">Hangar Indieningsrichlijnen.</a>",
-        continue: "Akkoord",
-        back: "Stoppen"
+        title: 'User Agreement',
+        text: 'A project contains your downloads and the documentation for your plugin.<br>Before continuing, please review the <a href="#">Hangar Submission Guidelines.</a>',
+        continue: 'Agree',
+        back: 'Abort'
       },
       step2: {
-        title: "Basisinstellingen",
-        continue: "Verdergaan",
-        back: "Terug",
-        userSelect: "Creëer als...",
-        projectName: "Projectnaam",
-        projectSummary: "Projectsamenvatting",
-        projectCategory: "Projectcategorie"
+        title: 'Basic Settings',
+        continue: 'Continue',
+        back: 'Back',
+        userSelect: 'Create as...',
+        projectName: 'Project name',
+        projectSummary: 'Project Summary',
+        projectCategory: 'Project Category'
       },
       step3: {
-        title: "Extra instellingen",
-        continue: "Verdergaan",
-        back: "Terug",
-        optional: "Optioneel",
-        links: "Koppelingen",
-        homepage: "Homepagina",
-        issues: "Probleemtracker",
-        source: "Broncode",
-        support: "Externe Ondersteuning",
-        license: "Licentie",
+        title: 'Additional Settings',
+        continue: 'Continue',
+        back: 'Back',
+        optional: 'Optional',
+        links: 'Links',
+        homepage: 'Homepage',
+        issues: 'Issue Tracker',
+        source: 'Source Code',
+        support: 'External Support',
+        license: 'License',
         type: 'Type',
-        customName: "Naam",
+        customName: 'Name',
         url: 'URL',
         seo: 'SEO',
-        keywords: "Sleutelwoorden"
+        keywords: 'Keywords'
       },
       step4: {
-        title: "Importeer van Spigot",
-        continue: "Verdergaan",
-        back: "Terug",
-        optional: "Optioneel",
-        convert: "Converteer",
-        saveAsHomePage: "Opslaan als Homepagina",
+        title: 'Import from Spigot',
+        continue: 'Continue',
+        back: 'Back',
+        optional: 'Optional',
+        convert: 'Convert',
+        saveAsHomePage: 'Save as Home Page',
         convertLabels: {
-          bbCode: "Plak je BBCode hier",
-          output: "Markdown Uitvoer"
+          bbCode: 'Paste your BBCode here',
+          output: 'Markdown Output'
         },
-        preview: "Voorvertoning",
-        tutorial: "Hoe je de BBCode krijgt",
+        preview: 'Preview',
+        tutorial: 'How to get the BBCode',
         tutorialInstructions: {
-          line1: "Om de BBCode van je Spigot resource te halen, doe je het volgende:",
-          line2: "1. Ga naar je project en klik op \"Edit Resource\".",
-          line3: "2. Klik op het sleutelsymbol in de beschrijvingseditor.",
-          line4: "3. Kopiëer-plak de inhoud in de bovenste converteertextbox, maak wat veranderingen waar nodig, en klik op opslaan!"
+          line1: 'To get the BBCode of your Spigot project, do the following:',
+          line2: '1. Go to your project and click on "Edit Resource".',
+          line3: '2. Click on the wrench symbol in the description editor.',
+          line4: '3. Copy paste the new contents into the upper converter textbox, do changes to the output if you like, and hit save!'
         }
       },
       step5: {
-        title: "Afwerken",
-        text: "Creëren..."
+        title: 'Finishing',
+        text: 'Creating...'
       },
       error: {
-        create: "Er is een fout opgetreden tijdens het aanmaken van het project",
-        nameExists: "Er bestaat al een project met deze naam",
-        slugExists: "Er bestaat al een project met deze slug",
-        invalidName: "De naam bevat ongeldige tekens",
-        tooLongName: "Projectnaam is te lang",
+        create: 'There was an error creating the project',
+        nameExists: 'A project with this name already exists',
+        slugExists: 'A project with this slug already exists',
+        invalidName: 'This name contains invalid characters',
+        tooLongName: 'Project name is too long',
         tooShortName: 'This name is too short',
-        tooLongDesc: "Projectbeschrijving is te lang",
-        tooManyKeywords: "Project heeft teveel keywords",
-        noCategory: "Project moet een categorie hebben",
-        noDescription: "Project moet een beschrijving hebben"
+        tooLongDesc: 'Project description is too long',
+        tooManyKeywords: 'Project has too many keywords',
+        noCategory: 'Project must have a category',
+        noDescription: 'Project must have a description'
       }
     },
-    sendForApproval: "Sturen voor goedkeuring",
+    sendForApproval: 'Send for approval',
     info: {
-      title: "Informatie",
+      title: 'Information',
       publishDate: 'Published on',
       views: 'Views | View | Views',
       totalDownloads: 'Total downloads | Total download | Total downloads',
       stars: 'Stars | Star | Stars',
       watchers: 'Watchers | Watcher | Watchers'
     },
-    promotedVersions: "Gepromote versies",
+    promotedVersions: 'Promoted Versions',
     license: {
-      link: "Gelicenseerd onder "
+      link: 'Licensed under '
     },
     error: {
-      star: "Kon sterren niet omzetten",
-      watch: "Kon volgen niet omzetten"
+      star: 'Could not toggle starred',
+      watch: 'Could not toggle watched'
     },
     settings: {
-      title: "Instellingen",
-      category: "Categorie",
-      categorySub: "Categoriseer je project in 1 van 10 categories. Je project in de juiste categorie plaatsen maakt het makkelijker voor andere mensen het te vinden.",
-      keywords: "Sleutelwoorden",
-      keywordsSub: "Dit zijn speciale woorden die jouw project moeten laten zien als mensen ernaar zoeken.",
-      homepage: "Homepagina",
-      homepageSub: "Een eigen homepagina voor je project laat het er professioneler, officiëler, een geeft je nog een plek om informatie over je project te krijgen.",
-      issues: "Probleemtracker",
-      issuesSub: "Een probleemtracker toevoegen geeft je gebruikers een makkelijke manier om ondersteuning te krijgen en maakt het makkelijk om bugs bij te houden.",
-      source: "Broncode",
-      sourceSub: "Ondersteun de gemeenschap van ontwikkelaars door je project open source te maken!",
-      support: "Externe ondersteuning",
-      supportSub: "Een externe plaats waar je ondersteuning kan geven. Dit zou een forum, een Discordserver , of iets anders kunnen zijn.",
-      license: "Licentie",
-      licenseSub: "Wat kunnen mensen wel (en niet) doen met jouw project?",
-      forum: "Maak posts op het forum",
-      forumSub: "Zorgt ervoor of dingen zoals een nieuwe update een forumpost maakt.",
-      description: "Beschrijving",
-      descriptionSub: "Een korte beschrijving van je project",
-      icon: "Icoon",
-      iconSub: "Upload het icoon van je project.",
-      iconUpload: "Uploaden",
-      iconReset: "Reset Icoon",
-      apiKey: "API sleutels",
-      apiKeySub: "Genereer een unieke deployment key om build deployment van Gradle aan te zetten",
-      apiKeyGenerate: "Genereer",
-      rename: "Hernoem",
-      renameSub: "Het veranderen van de naam van je project kan ongewenste gevolgen met zich meebrengen. We zetten geen herdirecties op.",
-      delete: "Verwijderen",
-      deleteSub: "Als je je project verwijdert, kan het niet meer hersteld worden.",
-      hardDelete: "Hard verwijderen",
-      hardDeleteSub: "Als je je project verwijdert, kan het niet meer hersteld worden. Dit keer voor het echie...",
-      save: "Wijzigingen opslaan",
-      optional: "(optioneel)",
-      licenseCustom: "Eigennaam",
+      title: 'Settings',
+      category: 'Category',
+      categorySub: 'Categorize your project into one of 10 categories. Appropriately categorizing your project makes it easier for people to find.',
+      keywords: 'Keywords',
+      keywordsSub: 'These are special words that will return your project when people add them to their searches.',
+      homepage: 'Homepage',
+      homepageSub: 'Having a custom homepage for your project helps you look more proper, official, and gives you another place to gather information about your project.',
+      issues: 'Issue tracker',
+      issuesSub: 'Providing an issue tracker helps your users get support more easily and provides you with an easy way to track bugs.',
+      source: 'Source code',
+      sourceSub: 'Support the community of developers by making your project open source!',
+      support: 'External support',
+      supportSub: 'An external place where you can offer support to your users. Could be a forum, a Discord server, or somewhere else.',
+      license: 'License',
+      licenseSub: 'What can people do (and not do) with your project?',
+      forum: 'Create posts on the forums',
+      forumSub: 'Sets if events like a new release should automatically create a post on the forums',
+      description: 'Description',
+      descriptionSub: 'A short description of your project',
+      icon: 'Icon',
+      iconSub: 'Upload an image representative of your project.',
+      iconUpload: 'Upload',
+      iconReset: 'Reset Icon',
+      apiKey: 'API Keys',
+      apiKeySub: 'Generate a unique deployment key to enable build deployment from Gradle',
+      apiKeyGenerate: 'Generate',
+      rename: 'Rename',
+      renameSub: 'Changing your projects name can have undesired consequences. We will not setup any redirects.',
+      delete: 'Delete',
+      deleteSub: 'Once you delete a project, it cannot be recovered.',
+      hardDelete: 'Hard Delete',
+      hardDeleteSub: 'Once you delete a project, it cannot be recovered. For real this time...',
+      save: 'Save changes',
+      optional: '(optional)',
+      licenseCustom: 'Custom Name',
       licenseType: 'Type',
       licenseUrl: 'URL',
       donation: {
-        enable: "Aanzetten",
-        enableSub: "Zet het donatieformulier aan",
-        email: "E-mail",
-        emailSub: "Het e-mailadres van het paypal account dat de donaties moet ontvangen",
-        defaultAmount: "Standaardhoeveelheid",
-        defaultAmountSub: "De vooringestelde standaardhoeveelheid",
-        oneTimeAmounts: "Eenmaalhoeveelheden",
-        oneTimeAmountsSub: "Lijst van de opties die je gebruikers wil geven voor eenmalige donaties. Gebruikers kunnen altijd zelf een hoeveelheid kiezen",
-        monthlyAmounts: "Maandelijkse hoeveelheden",
-        monthlyAmountsSub: "Lijst van de opties die je gebruikers wil geven voor maandelijkse donaties. Gebruikers kunnen altijd zelf een hoeveelheid kiezen"
+        enable: 'Enable',
+        enableSub: 'Enable the donation form for this project',
+        email: 'Email',
+        emailSub: 'The email address of the paypal account, that should receive the donations',
+        defaultAmount: 'Default Amount',
+        defaultAmountSub: 'The preselected default amount',
+        oneTimeAmounts: 'One-Time Amounts',
+        oneTimeAmountsSub: 'List of the options you want to give users for one time donations. Users can always enter custom amounts',
+        monthlyAmounts: 'Monthly Amounts',
+        monthlyAmountsSub: 'List of the options you want to give users for monthly donations. Users can always enter custom amounts'
       },
       error: {
-        invalidFile: "{0} is een ongeldig bestandstype",
-        noFile: "Geen bestand ingediend",
+        invalidFile: '{0} is an invalid file type',
+        noFile: 'No file submitted',
         members: {
-          invalidUser: "{0} is geen geldige gebruiker",
-          alreadyInvited: "{0} is al uitgenodigd voor het project",
-          notMember: "{0} is geen lid van het project, dus kan je hun rol niet aanpassen",
-          invalidRole: "{0} kan niet toegevoegd/verwijderd worden"
+          invalidUser: '{0} is not a valid user',
+          alreadyInvited: '{0} is already invited to the project',
+          notMember: '{0} is not a member of the project, therefore you cannot edit their role',
+          invalidRole: '{0} cannot be added/removed from the project'
         }
       },
       success: {
-        changedIcon: "Succesvol het projecticoon aangepast",
-        resetIcon: "Succesvol het projecticoon gereset",
-        rename: "Succesvol het project hernoemd naar {0}",
-        softDelete: "Je hebt dit project verwijderd",
-        hardDelete: "Je hebt dit project volledig verwijderd"
+        changedIcon: 'Successfully changed the project icon',
+        resetIcon: 'Successfully reset the project icon',
+        rename: 'Successfully renamed the project to {0}',
+        softDelete: 'You have deleted this project',
+        hardDelete: 'You have fully deleted this project'
       },
       tabs: {
-        general: "Algemeen",
-        optional: "Optioneel",
-        management: "Beheer",
-        donation: "Donatie"
+        general: 'General',
+        optional: 'Optional',
+        management: 'Management',
+        donation: 'Donation'
       }
     },
     discuss: {
       login: 'Log in',
-      toReply: "om te reageren op deze discussie",
-      noTopic: "Er is geen discussie voor dit project",
-      send: "Reactie gepost!"
+      toReply: 'to reply to this discussion',
+      noTopic: 'There is no discussion for this project',
+      send: 'Reply posted!'
     }
   },
   page: {
-    plural: "Pagina's",
+    plural: 'Pages',
     new: {
-      title: "Creëer een nieuwe pagina",
+      title: 'Create a new page',
       error: {
-        minLength: "Paginainhoud is te kort",
-        maxLength: "Paginainhoud is te lang",
-        duplicateName: "Er bestaat al een pagina met die naam",
-        invalidName: "Ongeldige naam",
+        minLength: 'Page contents are too short',
+        maxLength: 'Page contents are too long',
+        duplicateName: 'A page with that name already exists',
+        invalidName: 'Invalid name',
         name: {
-          maxLength: "Paginatitel te lang",
-          minLength: "Paginatitel te kort",
-          invalidChars: "Paginatitel bevat ongeldige tekens"
+          maxLength: 'Page name too long',
+          minLength: 'Page name too short',
+          invalidChars: 'Page name contained invalid characters'
         },
-        save: "Kon de pagina niet opslaan"
+        save: 'Unable to save page'
       },
-      name: "Paginatitel",
-      parent: "Ouderpagina (optioneel)"
+      name: 'Page Name',
+      parent: 'Parent Page (optional)'
     },
     delete: {
-      title: "Verwijder pagina?",
-      text: "Weet je zeker dat je de pagina wil verwijderen? Dit kan niet ongedaan gemaakt worden."
+      title: 'Delete page?',
+      text: 'Are you sure you want to delete this page? This cannot be undone.'
     }
   },
   version: {
     new: {
-      title: "Creëer versie...",
-      upload: "Upload Bestand",
-      uploadNew: "Upload een nieuw versie",
-      url: "Voer een URL in",
+      title: 'Create version...',
+      upload: 'Upload File',
+      uploadNew: 'Upload a new Version',
+      url: 'Enter a URL',
       form: {
-        versionString: "Versie",
-        fileName: "Bestandsnaam",
-        fileSize: "Bestandsgrootte",
-        externalUrl: "Externe URL",
-        hangarProject: "Hangarproject",
-        channel: "Kanaal",
-        addChannel: "Voeg kanaal toe",
-        unstable: "Instabiel",
-        recommended: "Aanbevolen",
-        forumPost: "Forumpost",
+        versionString: 'Version',
+        fileName: 'File name',
+        fileSize: 'File size',
+        externalUrl: 'External URL',
+        hangarProject: 'Hangar Project',
+        channel: 'Channel',
+        addChannel: 'Add Channel',
+        unstable: 'Unstable',
+        recommended: 'Recommended',
+        forumPost: 'Forum Post',
         release: {
-          bulletin: "Bulletin vrijgeven",
-          desc: "Wat is er nieuw in deze release?"
+          bulletin: 'Release Bulletin',
+          desc: "What's new in this release?"
         },
-        platforms: "Platformen",
-        dependencies: "Pluginbenodigdheden"
+        platforms: 'Platforms',
+        dependencies: 'Plugin Dependencies'
       },
       error: {
-        metaNotFound: "Kon metadata niet uit het geüploade bestand halen",
-        jarNotFound: "Kon jar-bestand niet openen",
-        fileExtension: "Incorrecte bestandsextensie",
-        unexpected: "Een onverwachte fout trad op",
-        invalidVersionString: "Ongeldige versiestring gevonden",
-        duplicateNameAndPlatform: "Een versie met deze naam en compatibele platforms bestaat al",
-        invalidNumOfPlatforms: "Ongeldig aantal platforms",
-        duplicate: "Een versie met dit bestand bestaat al",
-        noFile: "Kon geüploade bestand niet vinden",
-        mismatchedFileSize: "Bestandsgrootten komen niet overeen",
-        hashMismatch: "Bestandshashes komen niet overen",
-        invalidPlatformVersion: "Ongeldige MC versie voor een platform aangegeven",
-        fileIOError: "Bestand IO Fout",
-        unknown: "Een onbekende fout trad op",
-        incomplete: "Pluginbestand ontbreekt {0}",
-        noDescription: "Moet een beschrijving hebben",
-        invalidPluginDependencyNamespace: "Benoemde pluginbenodigdheid heeft een ongeldige projectnamespace",
-        invalidName: "Ongeldige versie naam",
+        metaNotFound: 'Could not load metadata from uploaded file',
+        jarNotFound: 'Could not open jar file',
+        fileExtension: 'Incorrect file extension',
+        unexpected: 'An unexpected error occurred',
+        invalidVersionString: 'Invalid version string found',
+        duplicateNameAndPlatform: 'A version with this name and compatible platform already exists',
+        invalidNumOfPlatforms: 'Invalid number of platforms',
+        duplicate: 'A version with this file already exists',
+        noFile: 'Could not find uploaded file',
+        mismatchedFileSize: 'File sizes do not match',
+        hashMismatch: 'File hashes do not match',
+        invalidPlatformVersion: 'Invalid MC version for a platform specified',
+        fileIOError: 'File IO Error',
+        unknown: 'An unknown error has occurred',
+        incomplete: 'Plugin file missing {0}',
+        noDescription: 'Must have a description',
+        invalidPluginDependencyNamespace: 'Declared plugin dependency has an invalid project namespace',
+        invalidName: 'Invalid version name',
         channel: {
-          noName: "Moet een kanaalnaam hebben",
-          noColor: "Moet een kanaalkleur hebben"
+          noName: 'Must have a channel name specified',
+          noColor: 'Must have a channel color specified'
         }
       }
     },
     edit: {
-      platformVersions: "Bewerk Platformversies: {0}",
-      pluginDeps: "Bewerk Pluginbenodigdheden: {0}",
+      platformVersions: 'Edit Platform Versions: {0}',
+      pluginDeps: 'Edit Plugin Dependencies: {0}',
       error: {
-        noPlatformVersions: "Moet minstens één geldige platformversie toevoegen",
-        invalidVersionForPlatform: "{0} is een ongeldige versie voor {1}",
-        invalidProjectNamespace: "{0} is geen geldige projectnamespace"
+        noPlatformVersions: 'Must supply at least one valid platform version',
+        invalidVersionForPlatform: '{0} is an invalid version for {1}',
+        invalidProjectNamespace: '{0} is not a valid project namespace'
       }
     },
     page: {
-      subheader: "{0} heeft deze versie uitgebracht op {1}",
-      dependencies: "Benodigdheden",
+      subheader: '{0} released this version on {1}',
+      dependencies: 'Dependencies',
       platform: 'Platform',
-      required: "(vereist)",
-      adminMsg: "{0} keurde deze versie goed op {1}",
-      reviewLogs: "Logboeken bekijken",
-      reviewStart: "Review starten",
-      setRecommended: "Zet als Aanbevolen",
-      setRecommendedTooltip: "Zet deze versie als aanbevolen voor {0} platform",
-      delete: "Verwijder",
-      hardDelete: "Verwijder (voor altijd)",
-      restore: "Herstel",
-      download: "downloaden",
-      downloadExternal: "Download Extern",
-      adminActions: "Administratoracties",
-      recommended: "Aanbevolen versie",
-      partiallyApproved: "Deels goedgekeurd",
-      approved: "Goedgekeurd",
-      userAdminLogs: "Gebruikersadministratie Logs",
-      unsafeWarning: "Deze versie is niet bekeken door ons moderatiepersoneel en kan misschien onveilig zijn om te downloaden.",
-      downloadUrlCopied: "Gekopiëerd!",
+      required: '(required)',
+      adminMsg: '{0} approved this version on {1}',
+      reviewLogs: 'Review logs',
+      reviewStart: 'Start review',
+      setRecommended: 'Set as Recommended',
+      setRecommendedTooltip: 'Set this version as recommended for {0} platform',
+      delete: 'Delete',
+      hardDelete: 'Delete (forever)',
+      restore: 'Restore',
+      download: 'Download',
+      downloadExternal: 'Download External',
+      adminActions: 'Admin actions',
+      recommended: 'Recommended version',
+      partiallyApproved: 'Partially approved',
+      approved: 'Approved',
+      userAdminLogs: 'User Admin Logs',
+      unsafeWarning: 'This version has not been reviewed by our moderation staff and may not be safe for download.',
+      downloadUrlCopied: 'Copied!',
       confirmation: {
-        title: "Waarschuwing - {0} {1} door {2}",
-        alert: "Deze versie is niet bekeken door ons moderatiepersoneel en kan misschien onveilig zijn om te downloaden.",
-        disclaimer: "Disclaimer: We zijn niet aansprakelijk voor enige schade aan je systeem of server als je deze waarschuwing negeert.",
-        agree: "Download op eigen risico",
-        deny: "Ga terug"
+        title: 'Warning - {0} {1} by {2}',
+        alert: 'This version has not been reviewed by our moderation staff yet and may not be safe to use.',
+        disclaimer: 'Disclaimer: We disclaim all responsibility for any harm to your server or system should you choose not to heed this warning.',
+        agree: 'Download it at my own risk',
+        deny: 'Go back'
       }
     },
-    channels: "Kanalen",
-    editChannels: "Bewerk Kanalen",
-    platforms: "Platformen",
+    channels: 'Channels',
+    editChannels: 'Edit Channels',
+    platforms: 'Platforms',
     error: {
-      onlyOnePublic: "Je hebt maar 1 publieke versie over"
+      onlyOnePublic: 'You only have 1 public version left'
     },
     success: {
-      softDelete: "Je hebt deze versie verwijderd",
-      hardDelete: "Je hebt deze versie volledig verwijderd",
-      restore: "Je hebt deze versie hersteld",
-      recommended: "Je hebt deze versie ingesteld als aanbevolen voor {0} platform"
+      softDelete: 'You have deleted this version',
+      hardDelete: 'You have fully deleted this version',
+      restore: 'You have restored this version',
+      recommended: 'You have marked this version as recommended for {0} platform'
     }
   },
   channel: {
     modal: {
-      titleNew: "Voeg een nieuw kanaal toe",
-      titleEdit: "Bewerk kanaal",
-      name: "Kanaalnaam",
-      color: "Kanaalkleur",
-      reviewQueue: "Buiten moderatiereviewrij houden?",
+      titleNew: 'Add a new channel',
+      titleEdit: 'Edit channel',
+      name: 'Channel Name',
+      color: 'Channel Color',
+      reviewQueue: 'Exclude from moderation review queue?',
       error: {
-        invalidName: "Ongeldige kanaalnaam",
-        maxChannels: "Dit project heeft al het maximum aantal kanalen: {0}",
-        duplicateColor: "Dit project heeft al een kanaal met deze kleur",
-        duplicateName: "Dit project heeft al een kanaal met deze naam",
-        tooLongName: "Kanaalnaam is te lang",
-        cannotDelete: "Je kan dit kanaal niet verwijderen"
+        invalidName: 'Invalid channel name',
+        maxChannels: 'This project already has the maximum number of channels: {0}',
+        duplicateColor: 'This project already has a channel with this color',
+        duplicateName: 'This project already has a channel with this name',
+        tooLongName: 'Channel name is too long',
+        cannotDelete: 'You cannot delete this channel'
       }
     },
     manage: {
-      title: "Releasekanalen",
-      subtitle: "Releasekanalen laten de status van de release van een plugin zien. Een project mag 5 releasekanalen hebben.",
-      channelName: "Kanaalnaam",
-      versionCount: "Aantal Versies",
-      reviewed: "Gereviewd",
-      edit: "Bewerk",
-      trash: "In de prullenbak gooien",
-      editButton: "Bewerk",
-      deleteButton: "Verwijder",
-      add: "Voeg kanaal toe"
+      title: 'Release channels',
+      subtitle: 'Release channels represent the state of a plugin release. A project may have up to five release channels.',
+      channelName: 'Channel Name',
+      versionCount: 'Version Count',
+      reviewed: 'Reviewed',
+      edit: 'Edit',
+      trash: 'Trash',
+      editButton: 'Edit',
+      deleteButton: 'Delete',
+      add: 'Add Channel'
     }
   },
   organization: {
     new: {
-      title: "Creëer een nieuwe Organisatie",
-      text: "Organisaties zorgen ervoor dat je groep beter kan samenwerken aan je projecten op Hangar.",
-      name: "Naam Organisatie",
+      title: 'Create a new Organization',
+      text: 'Organizations allow you to group users and provide closer collaboration between them within your projects on Hangar.',
+      name: 'Organization Name',
       error: {
-        duplicateName: "Er bestaat al een organisatie/gebruiker met die naam",
-        invalidName: "Ongeldige organisatienaam",
-        tooManyOrgs: "Je kan een maximum van {0} organisaties maken",
-        notEnabled: "Organisaties zijn niet aan!",
-        jsonError: "Fout tijdens het parsen van de JSON response van HangarAuth",
-        hangarAuthValidationError: "Validatiefout: {0}",
-        unknownError: "Onbekende fout tijdens maken organisatie"
+        duplicateName: 'An organization/user with that name already exists',
+        invalidName: 'Invalid organization name',
+        tooManyOrgs: 'You can only create a maximum of {0} organizations',
+        notEnabled: 'Organizations are not enabled!',
+        jsonError: 'Error parsing the JSON response from HangarAuth',
+        hangarAuthValidationError: 'Validation Error: {0}',
+        unknownError: 'Unknown error while creating organization'
       }
     },
     settings: {
       members: {
-        invalidUser: "{0} is geen geldige gebruiken",
-        alreadyInvited: "{0} is al uitgenodigd.",
-        notMember: "{0} is geen lid van de organisatie dus je kan hun rol niet aanpassen",
-        invalidRole: "{0} kan niet toegevoegd/verwijderd worden."
+        invalidUser: '{0} is not a valid user',
+        alreadyInvited: '{0} is already invited to the organization',
+        notMember: '{0} is not a member of the organization, therefore you cannot edit their role',
+        invalidRole: '{0} cannot be added/removed from the organization'
       }
     }
   },
   form: {
     memberList: {
-      addUser: "Voeg gebruiker toe...",
-      create: "Creëer",
-      editUser: "Bewerk Gebruiker",
-      invitedAs: "(Uigenodigd als {0})"
+      addUser: 'Add User...',
+      create: 'Create',
+      editUser: 'Edit User',
+      invitedAs: '(Invited as {0})'
     }
   },
   notifications: {
-    title: "Notificaties",
-    invites: "Uitnodigingen",
-    invited: "Je bent uitgenodigd voor {0}",
-    inviteAccepted: "Je hebt de uitgenodiging voor {0} geaccepteerd",
-    readAll: "Markeer alle als gelezen",
-    unread: "Ongelezen",
-    read: "Gelezen",
-    all: "Alle",
+    title: 'Notifications',
+    invites: 'Invites',
+    invited: 'You have been invited to join the {0}',
+    inviteAccepted: 'You have accepted an invitation to the {0}',
+    readAll: 'Mark all as read',
+    unread: 'Unread',
+    read: 'Read',
+    all: 'All',
     invite: {
-      all: "Alle",
-      projects: "Projecten",
-      organizations: "Organisaties",
+      all: 'All',
+      projects: 'Projects',
+      organizations: 'Organizations',
       btns: {
-        accept: "Accepteer",
-        decline: "Afwijzen",
-        unaccept: "Onaccepteer"
+        accept: 'Accept',
+        decline: 'Decline',
+        unaccept: 'Unaccept'
       },
       msgs: {
-        accept: "You bent nu lid van {0}",
-        decline: "You hebt het lidmaatschap van {0} afgewezen",
-        unaccept: "You hebt {0} verlaten"
+        accept: 'You have joined {0}',
+        decline: 'You have declined to join {0}',
+        unaccept: 'You have left {0}'
       }
     },
     empty: {
-      unread: "Je hebt geen ongelezen notificaties.",
-      read: "Je hebt geen gelezen notificaties.",
-      all: "Je hebt geen notificaties.",
-      invites: "Je hebt geen uitnodigingen"
+      unread: 'You have no unread notifications.',
+      read: 'You have no read notifications.',
+      all: 'You have no notifications.',
+      invites: 'You have no invites'
     },
     project: {
-      reviewed: "{0} {1} is gereviewd en is goedgekeurd!",
-      reviewedPartial: "{0} {1} is gereviewd en is deels goedgekeurd",
-      newVersion: "Een nieuwe versie is uitgebracht voor {0}: {1}",
-      invite: "Je bent uitgenodigd voor groep {0}  {1}",
-      inviteRescinded: "Je uitnodiging voor groep {0} in project {1} is ingetrokken",
-      removed: "Je bent uit group {0} in project {1} gezet",
-      roleChanged: "Je bent toegevoegd aan groep {0} in project {1}"
+      reviewed: '{0} {1} has been reviewed and is approved',
+      reviewedPartial: '{0} {1} has been reviewed and is partially approved',
+      newVersion: 'A new version has been released for {0}: {1}',
+      invite: 'You have been invited to join the group {0} on the project {1}',
+      inviteRescinded: 'Your invite to you the group {0} in the project {1} has been rescinded',
+      removed: 'You have been removed from the group {0} in the project {1}',
+      roleChanged: 'You have been added to the {0} group in the project {1}'
     },
     organization: {
-      invite: "Je bent uitgenodigd voor groep {0} in organisatie {1}",
-      inviteRescinded: "Je uitnodiging voor {0} in organisatie {1} is ingetrokken",
-      removed: "Je bent uit groep {0} in organisatie {1} gezet",
-      roleChanged: "Je bent toegevoegd aan groep {0} in organisatie {1}"
+      invite: 'You have been invited to join the group {0} in the organization {1}',
+      inviteRescinded: 'Your invite to you the group {0} in the organization {1} has been rescinded',
+      removed: 'You have been removed from the group {0} in the organization {1}',
+      roleChanged: 'You have been added to the {0} group in the organization {1}'
     }
   },
   visibility: {
     notice: {
-      new: "Dit project is nieuw, en zal niet voor anderen zichtbaar zijn totdat er een versie is geüpload. Als je te lang wacht met het uploaden van een versie, zal het project verwijderd worden.",
-      needsChanges: "Dit project vereist veranderingen",
-      needsApproval: "Je hebt het project ingediend voor review!",
-      softDelete: "Project verwijderd door {0}"
+      new: 'This project is new, and will not be shown to others until a version has been uploaded. If a version is not uploaded over a longer time the project will be deleted.',
+      needsChanges: 'This project requires changes',
+      needsApproval: 'You have sent the project for review',
+      softDelete: 'Project deleted by {0}'
     },
     name: {
-      new: "Nieuw",
-      public: "Publiek",
-      needsChanges: "Veranderingen nodig",
-      needsApproval: "Goedkeuring nodig",
-      softDelete: "Zacht verwijderen"
+      new: 'New',
+      public: 'Public',
+      needsChanges: 'Needs Changes',
+      needsApproval: 'Needs Approval',
+      softDelete: 'Soft Delete'
     },
     changes: {
       version: {
-        reviewed: "als gevolg van goedgekeurde beoordelingen"
+        reviewed: 'due to approved reviews'
       }
     },
     modal: {
-      activatorBtn: "Zichtbaarheidsacties",
-      title: "Verander {0}s zichtbaarheid",
-      reason: "Reden voor verandering",
-      success: "Je hebt de zichtbaarheid van {0}gewijzigd naar {1}"
+      activatorBtn: 'Visibility Actions',
+      title: "Change {0}'s visibility",
+      reason: 'Reason for change',
+      success: "You changed the {0}'s visibility to {1}"
     }
   },
   author: {
-    watching: "Volgend",
-    stars: "Sterren",
-    orgs: "Organisaties",
-    viewOnForums: "Bekijk op forum",
-    taglineLabel: "Gebruikerstagline",
-    editTagline: "Bewerk Tagline",
-    memberSince: "Lid sinds {0}",
-    numProjects: "Geen projecten | {0} project | {0} projecten",
-    addTagline: "Voeg een tagline toe",
-    noOrgs: "{0} is geen lid van een organisatie. 😢",
-    noWatching: "{0} is geen enkel project aan het volgen. 😢",
-    noStarred: "{0} heeft geen enkel project gesterd. 😢",
+    watching: 'Watching',
+    stars: 'Stars',
+    orgs: 'Organizations',
+    viewOnForums: 'View on forums ',
+    taglineLabel: 'User Tagline',
+    editTagline: 'Edit Tagline',
+    memberSince: 'A member since {0}',
+    numProjects: 'No projects | {0} project | {0} projects',
+    addTagline: 'Add a tagline',
+    noOrgs: '{0} is not part of any organizations. 😢',
+    noWatching: '{0} is not watching any projects. 😢',
+    noStarred: '{0}  has not starred any projects. 😢',
     tooltips: {
-      settings: "Gebruikersinstellingen",
-      lock: "Account Vergrendelen",
-      unlock: "Account Ontgrendelen",
-      apiKeys: "API sleutels",
-      activity: "Gebruikersactiviteit",
-      admin: "Gebruikersadministrator"
+      settings: 'User Settings',
+      lock: 'Lock Account',
+      unlock: 'Unlock Account',
+      apiKeys: 'API Keys',
+      activity: 'User Activity',
+      admin: 'User Admin'
     },
     lock: {
-      confirmLock: "Account van {0} vergrendelen?",
-      confirmUnlock: "Account van {0} ontgrendelen?",
-      successLock: "Het account van {0} is succesvol vergrendeld",
-      successUnlock: "Het account van {0} is succesvol ontgrendeld"
+      confirmLock: "Lock {0}'s account?",
+      confirmUnlock: "Unlock {0}'s account?",
+      successLock: "Successfully locked {0}'s account",
+      successUnlock: "Successfully unlocked {0}'s account"
     },
     org: {
-      editAvatar: "Bewerk avatar"
+      editAvatar: 'Edit avatar'
     },
     error: {
-      invalidTagline: "Ongeldige tagline",
-      invalidUsername: "Ongeldige gebruikersnaam"
+      invalidTagline: 'Invalid tagline',
+      invalidUsername: 'Invalid username'
     }
   },
   linkout: {
-    title: "Externe Link Waarschuwing",
-    text: "Je hebt op een externe link naar \"{0}\" geklikt. Als dat niet de bedoeling was, ga dan terug. Als dat wel zo was, klik op verder.",
-    abort: "Terug",
-    continue: "Verder"
+    title: 'External Link Warning',
+    text: 'You have clicked on an external link to "{0}". If you did not intend to visit this link, please go back. Otherwise, click continue.',
+    abort: 'Go Back',
+    continue: 'Continue'
   },
   flags: {
-    header: "Vlaggen voor",
-    noFlags: "Geen vlaggen gevonden",
-    resolved: "Ja, door {0} op {1}",
-    notResolved: "Nee"
+    header: 'Flags for',
+    noFlags: 'No flags found',
+    resolved: 'Yes, by {0} on {1}',
+    notResolved: 'No'
   },
   notes: {
-    header: "Notities voor",
-    noNotes: "Geen notities gevonden",
-    addNote: "Notitie toevoegen",
-    notes: "Notities",
-    placeholder: "Notitie toevoegen..."
+    header: 'Notes for',
+    noNotes: 'No notes found',
+    addNote: 'Add note',
+    notes: 'Notes',
+    placeholder: 'Add a note...'
   },
   stats: {
-    title: "Statistieken",
-    plugins: "Plug-ins",
-    reviews: "Beoordelingen",
+    title: 'Stats',
+    plugins: 'Plugins',
+    reviews: 'Reviews',
     uploads: 'Uploads',
-    downloads: "downloads",
-    totalDownloads: "Totale Downloads",
-    unsafeDownloads: "Onveilige Downloads",
-    flags: "Vlaggen",
-    openedFlags: "Geopende Vlaggen",
-    closedFlags: "Gesloten Vlaggen"
+    downloads: 'Downloads',
+    totalDownloads: 'Total Downloads',
+    unsafeDownloads: 'Unsafe Downloads',
+    flags: 'Flags',
+    openedFlags: 'Opened Flags',
+    closedFlags: 'Closed Flags'
   },
   health: {
-    title: "Hangar Health Rapport",
-    noTopicProject: "Ontbrekend discussieonderwerp",
-    erroredJobs: "Gefaalde jobs",
-    jobText: "Job type: {0}, Fout Type: {1}, Gebeurd: {2}",
-    staleProjects: "Oude projectem",
-    notPublicProjects: "Verborgen projecten",
-    noPlatform: "Geen platform gedetecteerd",
-    missingFileProjects: "Ontbrekend Bestand",
-    empty: "Leeg! Alles prima!"
+    title: 'Hangar Health Report',
+    noTopicProject: 'Missing discussion topic',
+    erroredJobs: 'Failed jobs',
+    jobText: 'Job type: {0}, Error Type: {1}, Happened: {2}',
+    staleProjects: 'Stale projects',
+    notPublicProjects: 'Hidden projects',
+    noPlatform: 'No platform detected',
+    missingFileProjects: 'Missing File',
+    empty: 'Empty! All good!'
   },
   reviews: {
-    headline: "{0} bracht deze versie uit op {1}",
-    title: "Logboeken bekijken",
-    projectPage: "Projectpagina",
-    downloadFile: "Download Bestand",
-    startReview: "Review starten",
-    stopReview: "Stop de beoordeling",
-    approve: "Keur goed",
-    approvePartial: "Keur deels goed",
-    notUnderReview: "Deze versie is niet onder review",
-    reviewMessage: "Reviewbericht",
-    addMessage: "Voeg bericht toe",
-    reopenReview: "Heropen Review",
-    undoApproval: "Goedkeuring ongedaan maken",
-    hideClosed: "Alle afgemaakte reviews verbergen",
+    headline: '{0} released this version on {1}',
+    title: 'Review logs',
+    projectPage: 'Project Page',
+    downloadFile: 'Download File',
+    startReview: 'Start Review',
+    stopReview: 'Stop Review',
+    approve: 'Approve',
+    approvePartial: 'Approve Partial',
+    notUnderReview: 'This version is not under review',
+    reviewMessage: 'Review Message',
+    addMessage: 'Add Message',
+    reopenReview: 'Reopen Review',
+    undoApproval: 'Undo Approval',
+    hideClosed: 'Hide all finished reviews',
     error: {
-      noReviewStarted: "Er is geen onafgemaakte review om een bericht aan toe te voegen",
-      notCorrectUser: "Je bent niet de gebruiker die de review is begonnen",
-      cannotReopen: "Kon de review niet openen",
-      onlyOneReview: "Kan niet meer dan 1 review voor deze versie hebben",
-      badUndo: "Kan goedkeuring alleen ongedaan maken na goedkeuring"
+      noReviewStarted: 'There is no unfinished review to add a message to',
+      notCorrectUser: 'You are not the user that started this review',
+      cannotReopen: 'Unable to reopen this review',
+      onlyOneReview: 'Cannot have more than 1 review for a version',
+      badUndo: 'Can only undo approval after an approval'
     },
     presets: {
       message: '{msg}',
-      start: "{name} begon een review",
-      stop: "{name} stopte met een review: {msg}",
-      reopen: "{name} heropende een review",
-      approve: "{name} keurde deze versie goed",
-      approvePartial: "{name} keurde deze versie deels goed",
-      undoApproval: "{name} heeft hun goedkeuring ongedaan gemaakt",
-      reviewTitle: "{name}s Review"
+      start: '{name} started a review',
+      stop: '{name} stopped a review: {msg}',
+      reopen: '{name} reopened a review',
+      approve: '{name} approved this version',
+      approvePartial: '{name} partially approved this version',
+      undoApproval: '{name} has undone their approval',
+      reviewTitle: "{name}'s Review"
     },
     state: {
-      ongoing: "Bezig",
-      stopped: "Gestopt",
-      approved: "Goedgekeurd",
-      partiallyApproved: "Deels Goedgekeurd",
-      lastUpdate: "Laatste Update: {0}"
+      ongoing: 'Ongoing',
+      stopped: 'Stopped',
+      approved: 'Approved',
+      partiallyApproved: 'Partially Approved',
+      lastUpdate: 'Last Update: {0}'
     }
   },
   apiKeys: {
-    title: "API sleutels",
-    createNew: "Creëer nieuwe key",
-    existing: "Bestaande keys",
-    name: "Naam",
-    key: "Sleutel",
-    keyIdentifier: "Key Identificatie",
-    permissions: "Toestemmingen",
-    delete: "Verwijder",
-    deleteKey: "Verwijde Key",
-    createKey: "Creëer key",
-    noKeys: "Er zijn nog geen API keys. Je kan er een creëren aan de rechterkant",
+    title: 'API Keys',
+    createNew: 'Create new key',
+    existing: 'Existing keys',
+    name: 'Name',
+    key: 'Key',
+    keyIdentifier: 'Key Identifier',
+    permissions: 'Permissions',
+    delete: 'Delete',
+    deleteKey: 'Delete Key',
+    createKey: 'Create key',
+    noKeys: 'There are no api keys yet. You can create one on the right side',
     success: {
-      delete: "Je hebt key {0} verwijderd",
-      create: "Je hebt key {0} gecreërd"
+      delete: 'You have deleted the key: {0}',
+      create: 'You have created the key: {0}'
     },
     error: {
-      notEnoughPerms: "Onvoldoende toestemming om de key te maken",
-      duplicateName: "Dubbele keynaam"
+      notEnoughPerms: 'Not enough permissions to create that key',
+      duplicateName: 'Duplicate key name'
     }
   },
   apiDocs: {
     title: 'API Docs'
   },
   platformVersions: {
-    title: "Configureer Platform Versies",
+    title: 'Configure Platform Versions',
     platform: 'Platform',
-    versions: "Versies",
-    addVersion: "Voeg Versie Toe",
-    saveChanges: "Veranderingen Opslaan",
-    success: "Platformversies bijgewerkt"
+    versions: 'Versions',
+    addVersion: 'Add Version',
+    saveChanges: 'Save Changes',
+    success: 'Updated platform versions'
   },
   flagReview: {
-    title: "Vlaggen",
-    noFlags: "Er zijn geen vlaggen om te reviewen.",
-    msgUser: "Stuur gebruiker een bericht",
-    msgProjectOwner: "Stuur eigenaar een bericht",
-    markResolved: "Markeer als opgelost",
-    line1: "{0} meldde {1} o[] {2}",
-    line2: "Reden: {0}",
-    line3: "Opmerking: {0}"
+    title: 'Flags',
+    noFlags: 'There are no flags to review.',
+    msgUser: 'Message user',
+    msgProjectOwner: 'Message owner',
+    markResolved: 'Mark resolved',
+    line1: '{0} reported {1} on {2}',
+    line2: 'Reason: {0}',
+    line3: 'Comment: {0}'
   },
   userActivity: {
-    title: "Activiteit van {0}",
-    reviews: "Beoordelingen",
-    flags: "Vlaggen",
-    reviewApproved: "Review Goedgekeurd",
-    flagResolved: "Vlag Opgelost",
+    title: "{0}'s Activity",
+    reviews: 'Reviews',
+    flags: 'Flags',
+    reviewApproved: 'Review Approved',
+    flagResolved: 'Flag Resolved',
     error: {
-      isOrg: "Kan activiteit voor organisatiegebruikers niet weergeven"
+      isOrg: 'Cannot show activity for organization users'
     }
   },
   userAdmin: {
-    title: "Bewerk gebruiker",
-    organizations: "Organisaties",
-    organization: "Organisatie",
-    projects: "Projecten",
+    title: 'Edit User',
+    organizations: 'Organizations',
+    organization: 'Organization',
+    projects: 'Projects',
     project: 'Project',
-    owner: "Eigenaar",
-    role: "Rol",
-    accepted: "Geaccepteerd",
-    sidebar: "Andere Administratie",
-    hangarAuth: "HangarAuth-profiel",
-    forum: "Forumprofiel"
+    owner: 'Owner',
+    role: 'Role',
+    accepted: 'Accepted',
+    sidebar: 'Other Administration',
+    hangarAuth: 'HangarAuth Profile',
+    forum: 'Forum Profile'
   },
   userActionLog: {
-    title: "Gebruikersactie Log",
-    user: "Gebruiker",
-    address: "IP Adres",
-    time: "Tijd",
-    action: "Actie",
+    title: 'User Action Log',
+    user: 'User',
+    address: 'IP Address',
+    time: 'Time',
+    action: 'Action',
     context: 'Context',
-    oldState: "Oude Staat",
-    newState: "Nieuwe Staat",
-    markdownView: "Markdown-weergave",
-    diffView: "Diff-weergave",
+    oldState: 'Old State',
+    newState: 'New State',
+    markdownView: 'Markdown View',
+    diffView: 'Diff View',
     types: {
-      ProjectVisibilityChanged: "De zichtbaarheid van het project werd veranderd",
-      ProjectRename: "Het project werd hernoemd",
-      ProjectFlagged: "Het project werd gevlagd",
-      ProjectSettingsChanged: "De projectinstellingen zijn veranderd",
-      ProjectIconChanged: "Het projecticoon is veranderd",
-      ProjectFlagResolved: "De vlag was opgelost",
-      ProjectChannelCreated: "Een projectkanaal werd aangemaakt",
-      ProjectChannelEdited: "Een projectkanaal werd bewerkt",
-      ProjectChannelDeleted: "Een projectkanaal werd verwijderd",
-      ProjectInvitesSent: "Projectuitnodigingen waren verzonden",
-      ProjectInviteDeclined: "Een projectuitnodiging werd afgewezen",
-      ProjectInviteUnaccepted: "Een projectuitnodiging werd ingetrokken",
-      ProjectMemberAdded: "Een projectlid werd toegevoegd",
-      ProjectMembersRemoved: "Projectleden waren verwijderd ",
-      ProjectMemberRolesChanged: "De rollen van projectleden werden bijgewerkt",
-      ProjectPageCreated: "Een projectpagina was aangemaakt",
-      ProjectPageDeleted: "Een projectpagina was verwijderd",
-      ProjectPageEdited: "Een projectpagina was bewerkt",
-      VersionVisibilityChanged: "De zichtbaarheidsstatus van de versie is gewijzigd",
-      VersionDeleted: "De versie was verwijderd",
-      VersionCreated: "Een nieuwe versie werd geüpload",
-      VersionDescriptionEdited: "De versiebeschrijving werd veranderd",
-      VersionReviewStateChanged: "De reviewstatus van de versie werd veranderd",
-      VersionPluginDependencyAdded: "Er is een pluginbenodigdheid toegevoegd",
-      VersionPluginDependencyEdited: "Er is een pluginbenodigdheid bijgewerkt",
-      VersionPluginDependencyRemoved: "Er is een pluginbenodigdheid verwijderd",
-      VersionPlatformDependencyAdded: "Er is een platformbenodigdheid toegevoegd",
-      VersionPlatformDependencyRemoved: "Er is een platformbenodigdheid verwijderd",
-      UserTaglineChanged: "De tagline van de gebruiker is veranderd",
-      UserLocked: "Deze gebruiker is vergrendeld",
-      UserUnlocked: "Deze gebruiker is ontgrendeld",
-      UserApikeyCreated: "Een apikey werd aangemaakt",
-      UserApikeyDeleted: "Een apikey werd verwijderd",
-      OrganizationInvitesSent: "Organisatie-uitnodigingen waren verstuurd",
-      OrganizationInviteDeclined: "Een organisatie-uitnodiging werd afgewezen",
-      OrganizationInviteUnaccepted: "Een organisatie-uitnodiging werd ingetrokken",
-      OrganizationMemberAdded: "Een organisatielid werd toegevoegd",
-      OrganizationMembersRemoved: "Organisatieleden werden verwijderd",
-      OrganizationMemberRolesChanged: "De rollen van organisatieleden werden bijgewerkt"
+      ProjectVisibilityChanged: 'The project visibility state was changed',
+      ProjectRename: 'The project was renamed',
+      ProjectFlagged: 'The project got flagged',
+      ProjectSettingsChanged: 'The project settings were changed',
+      ProjectIconChanged: 'The project icon was changed',
+      ProjectFlagResolved: 'The flag was resolved',
+      ProjectChannelCreated: 'A project channel was created',
+      ProjectChannelEdited: 'A project channel was edited',
+      ProjectChannelDeleted: 'A project channel was deleted',
+      ProjectInvitesSent: 'Project invites were sent',
+      ProjectInviteDeclined: 'A project invite was declined',
+      ProjectInviteUnaccepted: 'A project invite was unaccepted',
+      ProjectMemberAdded: 'A project member was added',
+      ProjectMembersRemoved: 'Project members were removed',
+      ProjectMemberRolesChanged: 'Project members had their roles updated',
+      ProjectPageCreated: 'A project page was created',
+      ProjectPageDeleted: 'A project page was deleted',
+      ProjectPageEdited: 'A project page was edited',
+      VersionVisibilityChanged: "The version's visibility state was changed",
+      VersionDeleted: 'The version was deleted',
+      VersionCreated: 'A new version was uploaded',
+      VersionDescriptionEdited: 'The version description was edited',
+      VersionReviewStateChanged: "The version's review state was changed",
+      VersionPluginDependencyAdded: 'A plugin dependency was added',
+      VersionPluginDependencyEdited: 'A plugin dependency was edited',
+      VersionPluginDependencyRemoved: 'A plugin dependency was removed',
+      VersionPlatformDependencyAdded: 'A platform dependency was added',
+      VersionPlatformDependencyRemoved: 'A platform dependency was removed',
+      UserTaglineChanged: 'The user tagline changed',
+      UserLocked: 'This user is locked',
+      UserUnlocked: 'This user is unlocked',
+      UserApikeyCreated: 'An apikey was created',
+      UserApikeyDeleted: 'An apikey was deleted',
+      OrganizationInvitesSent: 'Organization invites were sent',
+      OrganizationInviteDeclined: 'An organization invite was declined',
+      OrganizationInviteUnaccepted: 'An organization invite was unaccepted',
+      OrganizationMemberAdded: 'An organization member was added',
+      OrganizationMembersRemoved: 'Organization members were removed',
+      OrganizationMemberRolesChanged: 'Organization members had their roles updated'
     }
   },
   versionApproval: {
-    title: "Versiegoedkeuringen",
-    inReview: "Wordt beoordeeld",
-    approvalQueue: "Goedkeuringswatchtrij",
-    queuedBy: "In de rij gezet door",
-    status: "status",
+    title: 'Version Approvals',
+    inReview: 'In Review',
+    approvalQueue: 'Approval queue',
+    queuedBy: 'Queued by',
+    status: 'Status',
     project: 'Project',
-    date: "Datum",
-    version: "Versie",
-    started: "Gestart: {0}",
-    ended: "Geëindigd: {0}",
+    date: 'Date',
+    version: 'Version',
+    started: 'Started: {0}',
+    ended: 'Ended: {0}',
     statuses: {
-      ongoing: "{0} bezig",
-      stopped: "{0} gestopt",
-      approved: "{0} goedgekeurd"
+      ongoing: '{0} ongoing',
+      stopped: '{0} stopped',
+      approved: '{0} approved'
     }
   },
   projectApproval: {
-    title: "Projectkeuringen",
-    sendForApproval: "Je hebt het project ingediend voor goedkeuring",
-    noProjects: "Geen projecten",
-    needsApproval: "Goedkeuring Nodig",
-    awaitingChanges: "Afwachten Veranderingen",
-    description: "{0} vroeg om veranderingen op {1}"
+    title: 'Project Approvals',
+    sendForApproval: 'You have sent the project for approval',
+    noProjects: 'No projects',
+    needsApproval: 'Needs Approval',
+    awaitingChanges: 'Awaiting Changes',
+    description: '{0} requested changes on {1}'
   },
   donate: {
-    title: "Doneer aan {}",
-    monthly: "Maandelijks",
-    oneTime: "Eenmalig",
-    selectAmount: "Selecteer een aantal hierboven of kies zelf een hoeveelheid.",
-    legal: "Door te doneren aan {0} ga je akkoord met Y en dat taco's overheerlijk zijn",
-    cta: "Doneer",
-    submit: "Doneer {0}"
+    title: 'Donate to {}',
+    monthly: 'Monthly',
+    oneTime: 'One-Time',
+    selectAmount: 'Select an amount above or enter an amount below',
+    legal: 'By donating to {0} you agree to Y and that tacos are delicious',
+    cta: 'Donate',
+    submit: 'Donate {0}'
   },
   lang: {
-    button: "Verander taal",
-    title: "Verander taal",
-    available: "Beschikbaren talen",
-    hangarAuth: "Dit verandert alleen - als een cookie - de locale van je browser. Klik hier om je taal te veranderen voor alle Paper-diensten"
+    button: 'Switch Language',
+    title: 'Switch Language',
+    available: 'Available Language',
+    hangarAuth: 'This only change the locale for your current browser (as a cookie). Click here to change your lang on paper auth for all paper services'
   },
   validation: {
-    required: "{0} is vereist",
-    maxLength: "Maximum lengte is {0}",
-    minLength: "Minimum lengte is {0}",
-    invalidFormat: "{0} is ongeldig",
-    invalidUrl: "Ongeldig URL-formaat"
+    required: '{0} is required',
+    maxLength: 'Maximum length is {0}',
+    minLength: 'Minimum length is {0}',
+    invalidFormat: '{0} is invalid',
+    invalidUrl: 'Invalid URL format'
   },
   prompts: {
-    confirm: "Begrepen!",
+    confirm: 'Got it!',
     changeAvatar: {
-      title: "Verander je avatar!",
-      message: "Welkom bij je nieuwe organisatie! Begin met het veranderen van de avatar door er op te klikken."
+      title: 'Change your avatar!',
+      message: "Welcome to your new organization! Start by changing it's avatar by clicking on it."
     }
   },
   error: {
-    userLocked: "Je account is vergrendeld.",
-    401: "Je moet ingelogd zijn voor deze actie",
-    403: "Je hebt geen toestemming om dat te doen",
-    404: "404 Niet gevonden",
-    unknown: "Er trad een onbekende fout op"
+    userLocked: 'Your account is locked.',
+    401: 'You must be logged in for this',
+    403: 'You do not have permission to do that',
+    404: '404 Not found',
+    unknown: 'An error occurred'
   }
 };
-export default msgs;
