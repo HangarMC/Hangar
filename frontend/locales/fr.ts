@@ -1,5 +1,10 @@
-import { LocaleMessageObject } from 'vue-i18n';
-const msgs: LocaleMessageObject = {
+export default {
+  meta: {
+    code: 'en',
+    iso: 'en-US',
+    name: 'English',
+    icon: 'Test'
+  },
   general: {
     close: "Fermer",
     submit: "Soumettre",
@@ -11,208 +16,208 @@ const msgs: LocaleMessageObject = {
     create: "Créer",
     delete: "Supprimer",
     or: "Ou",
-    reset: "Réinitialiser",
-    edit: "Éditer",
-    required: "Requis",
-    add: "Ajouter",
-    name: "Nom",
-    link: "Lier",
-    send: "Envoyer",
-    home: "Accueil",
-    message: "Envoyer un message",
-    refresh: "Rafraichir",
-    confirm: "Confirmer",
+    reset: 'Reset',
+    edit: 'Edit',
+    required: 'Required',
+    add: 'Add',
+    name: 'Name',
+    link: 'Link',
+    send: 'Send',
+    home: 'Home',
+    message: 'Message',
+    refresh: 'Refresh',
+    confirm: 'Confirm',
     error: {
-      invalidUrl: "Format d'URL invalide"
+      invalidUrl: 'Invalid URL format'
     }
   },
   hangar: {
     projectSearch: {
-      query: "Rechercher parmi {0} projets, fièrement faits par la communauté...",
-      relevanceSort: "Trier par pertinence",
-      noProjects: "Il n'y a pas de projet. 😢",
-      noProjectsFound: "0 projet trouvé. 😢"
+      query: 'Search in {0} projects, proudly made by the community...',
+      relevanceSort: 'Sort by relevance',
+      noProjects: 'There are no projects. 😢',
+      noProjectsFound: 'Found 0 projects. 😢'
     },
-    subtitle: "Un dépôt de paquets Minecraft",
-    sponsoredBy: "Sponsorisé par"
+    subtitle: 'A Minecraft package repository',
+    sponsoredBy: 'Sponsored by'
   },
   pages: {
-    staffTitle: "Personnel",
-    authorsTitle: "Auteurs",
+    staffTitle: 'Staff',
+    authorsTitle: 'Authors',
     headers: {
-      username: "Nom d'utilisateur",
-      roles: "Rôles",
-      joined: "Rejoint",
-      projects: "Projets"
+      username: 'Username',
+      roles: 'Roles',
+      joined: 'Joined',
+      projects: 'Projects'
     }
   },
   nav: {
-    login: "Se connecter",
-    signup: "S'inscrire",
+    login: 'Login',
+    signup: 'Signup',
     user: {
       notifications: 'Notifications',
-      flags: "Alertes",
-      projectApprovals: "Approbations pour le projet",
-      versionApprovals: "Approbations pour la version",
-      stats: "Statistiques",
-      health: "Santé d'Hangar",
-      log: "Journal d'action utilisateur",
-      platformVersions: "Versions de la plateforme",
-      logout: "Se déconnecter",
+      flags: 'Flags',
+      projectApprovals: 'Project approvals',
+      versionApprovals: 'Version approvals',
+      stats: 'Stats',
+      health: 'Hangar Health',
+      log: 'User Action Log',
+      platformVersions: 'Platform Versions',
+      logout: 'Sign out',
       error: {
-        loginFailed: "L'authentication a échoué",
-        invalidUsername: "Nom d'utilisateur invalide",
-        hangarAuth: "Impossible de se connecter à HangarAuth",
-        loginDisabled: "La connexion est temporairement indisponible, veuillez réessayer plus tard",
-        fakeUserEnabled: "Le faux utilisateur est activé. {0} est donc désactivé"
+        loginFailed: 'Authentication Failed',
+        invalidUsername: 'Invalid Username',
+        hangarAuth: "Couldn't connect to HangarAuth",
+        loginDisabled: 'Login is temporarily unavailable, please try again later',
+        fakeUserEnabled: 'Fake user is enabled. {0} is therefore disabled'
       }
     },
-    createNew: "Créer un(e) nouveau/nouvelle...",
+    createNew: 'Create new...',
     new: {
-      project: "Nouveau projet",
-      organization: "Nouvelle organisation"
+      project: 'New Project',
+      organization: 'New Organization'
     },
     hangar: {
-      home: "Page d'accueil",
+      home: 'Homepage',
       forums: 'Forums',
       code: 'Code',
-      docs: "Documentations",
+      docs: 'Docs',
       javadocs: 'JavaDocs',
       hangar: 'Hangar (Plugins)',
-      downloads: "Téléchargements",
-      community: "Communauté",
+      downloads: 'Downloads',
+      community: 'Community',
       auth: 'Authentication Portal'
     }
   },
   project: {
-    stargazers: "Observateurs d'étoiles",
-    noStargazers: "Il n'y a pas encore d'observateurs d'étoiles sur ce projet 😢",
-    watchers: "Observateurs",
-    noWatchers: "Il n'y a pas encore d'observateur sur projet 😢",
-    members: "Membres",
+    stargazers: 'Stargazers',
+    noStargazers: 'There are no stargazers on this project yet 😢',
+    watchers: 'Watchers',
+    noWatchers: 'There are no watchers on this project yet 😢',
+    members: 'Members',
     category: {
-      info: "Catégorie",
-      admin_tools: "Outils d'administration",
-      chat: "Discuter",
-      dev_tools: "Outils de développeur",
-      economy: "Économie",
-      gameplay: "Jouabilité",
-      games: "Jeux",
-      protection: "Protéger",
-      role_playing: "Jeux de rôles",
-      world_management: "Gestion du monde",
-      misc: "Divers",
+      info: 'Category',
+      admin_tools: 'Admin Tools',
+      chat: 'Chat',
+      dev_tools: 'Developer Tools',
+      economy: 'Economy',
+      gameplay: 'Gameplay',
+      games: 'Games',
+      protection: 'Protection',
+      role_playing: 'Role Playing',
+      world_management: 'World Management',
+      misc: 'Miscellaneous',
       undefined: 'ERROR'
     },
     actions: {
-      unwatch: "Ne plus suivre",
-      watch: "Suivre",
-      flag: "Alerter",
-      star: "Etoiler",
-      unstar: "Désétoiler",
-      adminActions: "Actions de l'administrateur",
-      flagHistory: "Historique des alertes ({0})",
-      staffNotes: "Notes du personnel ({0})",
-      userActionLogs: "Journaux d'actions utilisateur",
-      forum: "Forums"
+      unwatch: 'Unwatch',
+      watch: 'Watch',
+      flag: 'Flag',
+      star: 'Star',
+      unstar: 'Unstar',
+      adminActions: 'Admin Actions',
+      flagHistory: 'Flag history ({0})',
+      staffNotes: 'Staff notes ({0})',
+      userActionLogs: 'User Action Logs',
+      forum: 'Forum'
     },
     flag: {
-      flagProject: "Alerte {0} ?",
-      flagSend: "Signalé avec succès, merci d'avoir fait de cette communauté un endroit meilleur !",
-      flagSent: "Alerte soumise pour examen",
+      flagProject: 'Flag {0}?',
+      flagSend: 'Successfully flagged, thanks for making this community a better place!',
+      flagSent: 'Flag submitted for review',
       flags: {
-        inappropriateContent: "Contenu inapproprié",
-        impersonation: "Usurpation d'identité ou tromperie",
-        spam: "Pourriel",
-        malIntent: "Malveillance",
-        other: "Autre"
+        inappropriateContent: 'Inappropriate Content',
+        impersonation: 'Impersonation or Deception',
+        spam: 'Spam',
+        malIntent: 'Malicious Intent',
+        other: 'Other'
       },
       error: {
-        alreadyOpen: "Vous ne pouvez avoir qu'une seule alerte non résolue sur un projet",
-        alreadyResolved: "Cette alerte est déjà résolue"
+        alreadyOpen: 'You can only have 1 unresolved flag on a project',
+        alreadyResolved: 'This flag is already resolved'
       }
     },
     tabs: {
-      docs: "Documentations",
+      docs: 'Docs',
       versions: 'Versions',
-      discuss: "Discussion",
-      settings: "Paramètres",
-      homepage: "Accueil",
-      issues: "Problèmes",
+      discuss: 'Discuss',
+      settings: 'Settings',
+      homepage: 'Homepage',
+      issues: 'Issues',
       source: 'Source',
-      support: "Soutien"
+      support: 'Support'
     },
     new: {
       step1: {
-        title: "Accord de l'utilisateur",
-        text: "Un projet contient vos téléchargements et la documentation pour votre plugin.<br>Avant de continuer ; veuillez consulter les <a href=\"#\">directives de soumission à Hangar.</a>",
-        continue: "Accepter",
-        back: "Annuler"
+        title: 'User Agreement',
+        text: 'A project contains your downloads and the documentation for your plugin.<br>Before continuing, please review the <a href="#">Hangar Submission Guidelines.</a>',
+        continue: 'Agree',
+        back: 'Abort'
       },
       step2: {
-        title: "Paramètres généraux",
-        continue: "Continuer",
-        back: "Retour",
-        userSelect: "Créer comme...",
-        projectName: "Nom du projet",
-        projectSummary: "Résumé du projet",
-        projectCategory: "Catégorie du projet"
+        title: 'Basic Settings',
+        continue: 'Continue',
+        back: 'Back',
+        userSelect: 'Create as...',
+        projectName: 'Project name',
+        projectSummary: 'Project Summary',
+        projectCategory: 'Project Category'
       },
       step3: {
-        title: "Paramètres additionnels",
-        continue: "Continuer",
-        back: "Retour",
-        optional: "Optionnel",
-        links: "Liens",
-        homepage: "Page d'accueil",
-        issues: "Traqueur de problèmes",
-        source: "Code source",
-        support: "Support externe",
-        license: "Licence",
-        type: "Type de texte",
-        customName: "Nom",
+        title: 'Additional Settings',
+        continue: 'Continue',
+        back: 'Back',
+        optional: 'Optional',
+        links: 'Links',
+        homepage: 'Homepage',
+        issues: 'Issue Tracker',
+        source: 'Source Code',
+        support: 'External Support',
+        license: 'License',
+        type: 'Type',
+        customName: 'Name',
         url: 'URL',
         seo: 'SEO',
-        keywords: "Mots-clefs"
+        keywords: 'Keywords'
       },
       step4: {
-        title: "Importer depuis Spigot",
-        continue: "Continuer",
-        back: "Retour",
-        optional: "Optionnel",
-        convert: "Convertir",
-        saveAsHomePage: "Sauvegarder comme page d'accueil",
+        title: 'Import from Spigot',
+        continue: 'Continue',
+        back: 'Back',
+        optional: 'Optional',
+        convert: 'Convert',
+        saveAsHomePage: 'Save as Home Page',
         convertLabels: {
-          bbCode: "Coller votre BBCode ici",
-          output: "Sortie Markdown"
+          bbCode: 'Paste your BBCode here',
+          output: 'Markdown Output'
         },
-        preview: "Aperçu",
-        tutorial: "Comment obtenir le BBCode",
+        preview: 'Preview',
+        tutorial: 'How to get the BBCode',
         tutorialInstructions: {
-          line1: "Pour obtenir le BBCode de votre projet Spigot, suivez les instructions :",
-          line2: "1. Allez sur votre projet et cliquez sur \"Éditer la ressource\".",
-          line3: "2. Cliquez sur le symbole de la clef dans l'éditeur de description.",
-          line4: "3. Copiez-collez le nouveau contenu dans la zone de texte supérieure du convertisseur, modifiez la sortie si vous le souhaitez et cliquez sur Enregistrer !"
+          line1: 'To get the BBCode of your Spigot project, do the following:',
+          line2: '1. Go to your project and click on "Edit Resource".',
+          line3: '2. Click on the wrench symbol in the description editor.',
+          line4: '3. Copy paste the new contents into the upper converter textbox, do changes to the output if you like, and hit save!'
         }
       },
       step5: {
-        title: "Finition",
-        text: "Création..."
+        title: 'Finishing',
+        text: 'Creating...'
       },
       error: {
-        create: "Il y a eu une erreur durant la création du projet",
-        nameExists: "Un projet avec ce nom existe déjà",
-        slugExists: "Un projet avec cette url réduite existe déjà",
-        invalidName: "Ce nom contient des caractères invalides",
-        tooLongName: "Le nom du projet est trop long",
+        create: 'There was an error creating the project',
+        nameExists: 'A project with this name already exists',
+        slugExists: 'A project with this slug already exists',
+        invalidName: 'This name contains invalid characters',
+        tooLongName: 'Project name is too long',
         tooShortName: 'This name is too short',
-        tooLongDesc: "La description du projet est trop longue",
-        tooManyKeywords: "Le nom a trop de mots-clefs",
-        noCategory: "Le projet doit avoir une catégorie",
-        noDescription: "Le projet doit avoir une description"
+        tooLongDesc: 'Project description is too long',
+        tooManyKeywords: 'Project has too many keywords',
+        noCategory: 'Project must have a category',
+        noDescription: 'Project must have a description'
       }
     },
-    sendForApproval: "Envoyer pour approbation",
+    sendForApproval: 'Send for approval',
     info: {
       title: 'Information',
       publishDate: 'Published on',
@@ -221,648 +226,647 @@ const msgs: LocaleMessageObject = {
       stars: 'Stars | Star | Stars',
       watchers: 'Watchers | Watcher | Watchers'
     },
-    promotedVersions: "Versions promues",
+    promotedVersions: 'Promoted Versions',
     license: {
-      link: "Sous license "
+      link: 'Licensed under '
     },
     error: {
-      star: "Echec de l'activation/désactivation des étoiles",
-      watch: "Echec de l'activation/désactivation des observateurs"
+      star: 'Could not toggle starred',
+      watch: 'Could not toggle watched'
     },
     settings: {
-      title: "Paramètres",
-      category: "Catégorie",
-      categorySub: "Catégorisez votre projet dans l'une des 10 catégories. Catégoriser votre projet de manière appropriée permet aux gens de le trouver plus facilement.",
-      keywords: "Mots-clefs",
-      keywordsSub: "Ces mots spéciaux vont retourner votre projet quand les gens les ajouteront à leurs recherches.",
-      homepage: "Page d'accueil",
-      homepageSub: "Avoir une page d'accueil personnalisée pour votre projet vous permet de paraître plus correcr et plus officiel, et vous offre un autre endroit pour regrouper les informations sur votre projet.",
-      issues: "Traqueur de problèmes",
-      issuesSub: "Fournir un traqueur de problèmes aide vos utilisateurs à obtenir un support plus facilement et vous fournit une manière facile de traquer les bugs.",
-      source: "Code source",
-      sourceSub: "Supportez la communauté de développeurs en rendant votre projet open source !",
-      support: "Support externe",
-      supportSub: "Un lieu externe où vous pouvez offrir un support à vos utilisateurs. Cela peut être un forum, un serveur Discord ou autre chose.",
-      license: "Licence",
-      licenseSub: "Qu'est-ce que les gens peuvent (et ne peuvent pas) faire avec votre projet ?",
-      forum: "Publier des messages sur les forums",
-      forumSub: "Définir si des événements comme une nouvelle sortie devrait automatiquement créer un poste sur les forums",
-      description: "Libellé",
-      descriptionSub: "Une petite description de votre projet",
-      icon: "Icône",
-      iconSub: "Téléverser une image représentative de votre projet.",
-      iconUpload: "Téléverser",
-      iconReset: "Réinitialiser l'icône",
-      apiKey: "Clefs API",
-      apiKeySub: "Générer une clef de déploiement unique pour permettre le déploiement de build à partir de Gradle",
-      apiKeyGenerate: "Générer",
-      rename: "Renommer",
-      renameSub: "Changer le nom de vos projets peut avoir des conséquences indésirables. Nous ne mettront en place aucune redirection.",
-      delete: "Supprimer",
-      deleteSub: "Une fois votre projet supprimé, il ne pourra pas être récupéré.",
-      hardDelete: "Supprimer définitivement",
-      hardDeleteSub: "Une fois votre projet supprimé, il ne pourra pas être récupéré. Pour de vrai cette cette fois...",
-      save: "Sauvegarder les changements",
-      optional: "(optionnel)",
-      licenseCustom: "Nom personnalisé",
-      licenseType: "Type de texte",
+      title: 'Settings',
+      category: 'Category',
+      categorySub: 'Categorize your project into one of 10 categories. Appropriately categorizing your project makes it easier for people to find.',
+      keywords: 'Keywords',
+      keywordsSub: 'These are special words that will return your project when people add them to their searches.',
+      homepage: 'Homepage',
+      homepageSub: 'Having a custom homepage for your project helps you look more proper, official, and gives you another place to gather information about your project.',
+      issues: 'Issue tracker',
+      issuesSub: 'Providing an issue tracker helps your users get support more easily and provides you with an easy way to track bugs.',
+      source: 'Source code',
+      sourceSub: 'Support the community of developers by making your project open source!',
+      support: 'External support',
+      supportSub: 'An external place where you can offer support to your users. Could be a forum, a Discord server, or somewhere else.',
+      license: 'License',
+      licenseSub: 'What can people do (and not do) with your project?',
+      forum: 'Create posts on the forums',
+      forumSub: 'Sets if events like a new release should automatically create a post on the forums',
+      description: 'Description',
+      descriptionSub: 'A short description of your project',
+      icon: 'Icon',
+      iconSub: 'Upload an image representative of your project.',
+      iconUpload: 'Upload',
+      iconReset: 'Reset Icon',
+      apiKey: 'API Keys',
+      apiKeySub: 'Generate a unique deployment key to enable build deployment from Gradle',
+      apiKeyGenerate: 'Generate',
+      rename: 'Rename',
+      renameSub: 'Changing your projects name can have undesired consequences. We will not setup any redirects.',
+      delete: 'Delete',
+      deleteSub: 'Once you delete a project, it cannot be recovered.',
+      hardDelete: 'Hard Delete',
+      hardDeleteSub: 'Once you delete a project, it cannot be recovered. For real this time...',
+      save: 'Save changes',
+      optional: '(optional)',
+      licenseCustom: 'Custom Name',
+      licenseType: 'Type',
       licenseUrl: 'URL',
       donation: {
-        enable: "Activer",
-        enableSub: "Activer le formulaire de donations pour ce projet",
-        email: "E-mail",
-        emailSub: "L'adresse e-mail du compte Paypal qui doit recevoir les dons",
-        defaultAmount: "Montant par défaut",
-        defaultAmountSub: "Le montant présélectionné par défaut",
-        oneTimeAmounts: "Montants des dons ponctuels",
-        oneTimeAmountsSub: "Liste des options que vous souhaiteriez offrir aux utilisateurs pour des dons ponctuels. Les utilisateurs peuvent toujours entrer des montants personnalisés",
-        monthlyAmounts: "Montants des dons mensuels",
-        monthlyAmountsSub: "Liste des options que vous souhaiteriez offrir aux utilisateurs pour des dons mensuels. Les utilisateurs peuvent toujours entrer des montants personnalisés"
+        enable: 'Enable',
+        enableSub: 'Enable the donation form for this project',
+        email: 'Email',
+        emailSub: 'The email address of the paypal account, that should receive the donations',
+        defaultAmount: 'Default Amount',
+        defaultAmountSub: 'The preselected default amount',
+        oneTimeAmounts: 'One-Time Amounts',
+        oneTimeAmountsSub: 'List of the options you want to give users for one time donations. Users can always enter custom amounts',
+        monthlyAmounts: 'Monthly Amounts',
+        monthlyAmountsSub: 'List of the options you want to give users for monthly donations. Users can always enter custom amounts'
       },
       error: {
-        invalidFile: "{0} est un type de fichier invalide",
-        noFile: "Aucun fichier soumis",
+        invalidFile: '{0} is an invalid file type',
+        noFile: 'No file submitted',
         members: {
-          invalidUser: "{0} n'est pas un utilisateur valide",
-          alreadyInvited: "{0} est déjà invité dans ce projet",
-          notMember: "{0} n'est pas un(e) membre du projet, donc vous ne pouvez pas éditer son rôle",
-          invalidRole: "{0} n'a pas pu être ajouté/supprimé du projet"
+          invalidUser: '{0} is not a valid user',
+          alreadyInvited: '{0} is already invited to the project',
+          notMember: '{0} is not a member of the project, therefore you cannot edit their role',
+          invalidRole: '{0} cannot be added/removed from the project'
         }
       },
       success: {
-        changedIcon: "Icône du projet changée avec succès",
-        resetIcon: "Icône du projet réinitialisée avec succès",
-        rename: "Projet renommé {0} avec succès",
-        softDelete: "Vous avez supprimé ce projet",
-        hardDelete: "Vous avez complètement supprimé ce projet"
+        changedIcon: 'Successfully changed the project icon',
+        resetIcon: 'Successfully reset the project icon',
+        rename: 'Successfully renamed the project to {0}',
+        softDelete: 'You have deleted this project',
+        hardDelete: 'You have fully deleted this project'
       },
       tabs: {
-        general: "Général",
-        optional: "Optionnel",
-        management: "Gestion",
-        donation: "Faire un don"
+        general: 'General',
+        optional: 'Optional',
+        management: 'Management',
+        donation: 'Donation'
       }
     },
     discuss: {
-      login: "Se connecter",
-      toReply: "pour répondre à cette discussion",
-      noTopic: "Il n'y a aucune discussion pour ce projet",
-      send: "Réponse postée !"
+      login: 'Log in',
+      toReply: 'to reply to this discussion',
+      noTopic: 'There is no discussion for this project',
+      send: 'Reply posted!'
     }
   },
   page: {
     plural: 'Pages',
     new: {
-      title: "Créer une nouvelle page",
+      title: 'Create a new page',
       error: {
-        minLength: "Le contenu de la page est trop court",
-        maxLength: "Le contenu de la page est trop long",
-        duplicateName: "Une page avec ce nom existe déjà",
-        invalidName: "Nom invalide",
+        minLength: 'Page contents are too short',
+        maxLength: 'Page contents are too long',
+        duplicateName: 'A page with that name already exists',
+        invalidName: 'Invalid name',
         name: {
-          maxLength: "Le nom de la page est trop long",
-          minLength: "Nom de page trop court",
-          invalidChars: "Le nom de la page contient des caractères invalides"
+          maxLength: 'Page name too long',
+          minLength: 'Page name too short',
+          invalidChars: 'Page name contained invalid characters'
         },
-        save: "Impossible de sauvegarder la page"
+        save: 'Unable to save page'
       },
-      name: "Nom de la page",
-      parent: "Page d'origine (optionnel)"
+      name: 'Page Name',
+      parent: 'Parent Page (optional)'
     },
     delete: {
-      title: "Supprimer la page ?",
-      text: "Êtes-vous bien sûr(e) de vouloir supprimer cette page ? Cela est irréversible."
+      title: 'Delete page?',
+      text: 'Are you sure you want to delete this page? This cannot be undone.'
     }
   },
   version: {
     new: {
-      title: "Créer une version...",
-      upload: "Téléverser un fichier",
-      uploadNew: "Téléverser une nouvelle version",
-      url: "Entrer une URL",
+      title: 'Create version...',
+      upload: 'Upload File',
+      uploadNew: 'Upload a new Version',
+      url: 'Enter a URL',
       form: {
         versionString: 'Version',
-        fileName: "Nom du fichier",
-        fileSize: "Taille du fichier",
-        externalUrl: "URL externe",
-        hangarProject: "Projet Hangar",
-        channel: "Canal",
-        addChannel: "Ajouter un canal",
-        unstable: "Instable",
-        recommended: "Recommandé",
-        forumPost: "Poste Forum",
+        fileName: 'File name',
+        fileSize: 'File size',
+        externalUrl: 'External URL',
+        hangarProject: 'Hangar Project',
+        channel: 'Channel',
+        addChannel: 'Add Channel',
+        unstable: 'Unstable',
+        recommended: 'Recommended',
+        forumPost: 'Forum Post',
         release: {
-          bulletin: "Bulletin de la version",
-          desc: "Quoi de neuf dans cette version ?"
+          bulletin: 'Release Bulletin',
+          desc: "What's new in this release?"
         },
-        platforms: "Plateformes",
-        dependencies: "Dépendances des plugins"
+        platforms: 'Platforms',
+        dependencies: 'Plugin Dependencies'
       },
       error: {
-        metaNotFound: "Impossible de charger les métadonnées à partir du fichier téléversé",
-        jarNotFound: "Impossible d'ouvrir le fichier jar",
-        fileExtension: "Extension du fichier incorrecte",
-        unexpected: "Une erreur inattendue est survenue",
-        invalidVersionString: "Chaîne de version invalide trouvée",
-        duplicateNameAndPlatform: "Une version avec ce nom compatible avec cette plateforme existe déjà",
-        invalidNumOfPlatforms: "Nombre de plateforme invalide",
-        duplicate: "Une version avec ce fichier existe déjà",
-        noFile: "Impossible de trouver le fichier téléversé",
-        mismatchedFileSize: "Les tailles du fichier ne correspondent pas",
-        hashMismatch: "Les hachages du fichier ne correspondent pas",
-        invalidPlatformVersion: "Version de Minecraft invalide pour la plateforme spécifiée",
-        fileIOError: "Erreur d'E/S du fichier",
-        unknown: "Une erreur inconnue est survenue",
-        incomplete: "Fichier {0} du plugin manquant",
-        noDescription: "Doit contenir une description",
-        invalidPluginDependencyNamespace: "La dépendance du plugin déclarée a un espace de nom invalide",
-        invalidName: "Nom de version invalide",
+        metaNotFound: 'Could not load metadata from uploaded file',
+        jarNotFound: 'Could not open jar file',
+        fileExtension: 'Incorrect file extension',
+        unexpected: 'An unexpected error occurred',
+        invalidVersionString: 'Invalid version string found',
+        duplicateNameAndPlatform: 'A version with this name and compatible platform already exists',
+        invalidNumOfPlatforms: 'Invalid number of platforms',
+        duplicate: 'A version with this file already exists',
+        noFile: 'Could not find uploaded file',
+        mismatchedFileSize: 'File sizes do not match',
+        hashMismatch: 'File hashes do not match',
+        invalidPlatformVersion: 'Invalid MC version for a platform specified',
+        fileIOError: 'File IO Error',
+        unknown: 'An unknown error has occurred',
+        incomplete: 'Plugin file missing {0}',
+        noDescription: 'Must have a description',
+        invalidPluginDependencyNamespace: 'Declared plugin dependency has an invalid project namespace',
+        invalidName: 'Invalid version name',
         channel: {
-          noName: "Doit contenir un nom de canal spécifié",
-          noColor: "Doit contenir une couleur spécifiée pour le canal"
+          noName: 'Must have a channel name specified',
+          noColor: 'Must have a channel color specified'
         }
       }
     },
     edit: {
-      platformVersions: "Éditer les versions de la plateforme : {0}",
-      pluginDeps: "Éditer les dépendances du plugin : {0}",
+      platformVersions: 'Edit Platform Versions: {0}',
+      pluginDeps: 'Edit Plugin Dependencies: {0}',
       error: {
-        noPlatformVersions: "Doit fournir au moins une version de plateforme valide",
-        invalidVersionForPlatform: "{0} est une version invalide pour {1}",
-        invalidProjectNamespace: "{0} n'est pas un espace de noms de projet valide"
+        noPlatformVersions: 'Must supply at least one valid platform version',
+        invalidVersionForPlatform: '{0} is an invalid version for {1}',
+        invalidProjectNamespace: '{0} is not a valid project namespace'
       }
     },
     page: {
-      subheader: "{0} diffusa cette version le {1}",
-      dependencies: "Dépendances",
-      platform: "Plateforme",
-      required: "(requis)",
-      adminMsg: "{0} approuva cette version le {1}",
-      reviewLogs: "Journaux d'examen",
-      reviewStart: "Commencer l'examen",
-      setRecommended: "Définir comme recommandée",
-      setRecommendedTooltip: "Définir cette version comme étant recommandée pour la plateforme {0}",
-      delete: "Supprimer",
-      hardDelete: "Supprimer (pour toujours)",
-      restore: "Restaurer",
-      download: "Télécharger",
-      downloadExternal: "Télécharger (externe)",
-      adminActions: "Actions administrateur",
-      recommended: "Version recommandée",
-      partiallyApproved: "Partiellement approuvé",
-      approved: "Approuvé",
-      userAdminLogs: "Journaux d'administration des utilisateurs",
-      unsafeWarning: "Cette version n'a pas été examinée pour notre personnel de modération et pourrait pas être sûre à utiliser.",
-      downloadUrlCopied: "Copié !",
+      subheader: '{0} released this version on {1}',
+      dependencies: 'Dependencies',
+      platform: 'Platform',
+      required: '(required)',
+      adminMsg: '{0} approved this version on {1}',
+      reviewLogs: 'Review logs',
+      reviewStart: 'Start review',
+      setRecommended: 'Set as Recommended',
+      setRecommendedTooltip: 'Set this version as recommended for {0} platform',
+      delete: 'Delete',
+      hardDelete: 'Delete (forever)',
+      restore: 'Restore',
+      download: 'Download',
+      downloadExternal: 'Download External',
+      adminActions: 'Admin actions',
+      recommended: 'Recommended version',
+      partiallyApproved: 'Partially approved',
+      approved: 'Approved',
+      userAdminLogs: 'User Admin Logs',
+      unsafeWarning: 'This version has not been reviewed by our moderation staff and may not be safe for download.',
+      downloadUrlCopied: 'Copied!',
       confirmation: {
-        title: "Avertissement - {0} {1} par {2}",
-        alert: "Cette version n'a pas encore été examinée pour notre personnel de modération et pourrait pas être sûre à utiliser.",
-        disclaimer: "Avertissement : Nous déclinons toute responsabilité pour tout dommage causé à votre serveur ou système si vous choisissez de ne pas tenir compte de cet avertissement.",
-        agree: "Le télécharger à mes propres risques et périls",
-        deny: "Revenir en arrière"
+        title: 'Warning - {0} {1} by {2}',
+        alert: 'This version has not been reviewed by our moderation staff yet and may not be safe to use.',
+        disclaimer: 'Disclaimer: We disclaim all responsibility for any harm to your server or system should you choose not to heed this warning.',
+        agree: 'Download it at my own risk',
+        deny: 'Go back'
       }
     },
-    channels: "Canaux",
-    editChannels: "Éditer les canaux",
-    platforms: "Plateformes",
+    channels: 'Channels',
+    editChannels: 'Edit Channels',
+    platforms: 'Platforms',
     error: {
-      onlyOnePublic: "Vous n'avez seulement plus qu'une version publique restante"
+      onlyOnePublic: 'You only have 1 public version left'
     },
     success: {
-      softDelete: "Vous avez supprimé cette version",
-      hardDelete: "Vous avez complètement supprimé cette version",
-      restore: "Vous avez restauré cette version",
-      recommended: "Vous avez marqué cette version comme recommandée pour la plateforme {0}"
+      softDelete: 'You have deleted this version',
+      hardDelete: 'You have fully deleted this version',
+      restore: 'You have restored this version',
+      recommended: 'You have marked this version as recommended for {0} platform'
     }
   },
   channel: {
     modal: {
-      titleNew: "Ajouter un nouveau canal",
-      titleEdit: "Éditer le canal",
-      name: "Nom du canal",
-      color: "Couleur du canal",
-      reviewQueue: "Exclure de la file d'attente d'examen de la modération ?",
+      titleNew: 'Add a new channel',
+      titleEdit: 'Edit channel',
+      name: 'Channel Name',
+      color: 'Channel Color',
+      reviewQueue: 'Exclude from moderation review queue?',
       error: {
-        invalidName: "Nom du canal invalide",
-        maxChannels: "Ce projet a déjà le nombre maximum de canaux : {0}",
-        duplicateColor: "Ce projet a déjà un canal avec cette couleur",
-        duplicateName: "Ce projet a déjà un canal avec ce nom",
-        tooLongName: "Le nom du canal est trop long",
-        cannotDelete: "Vous ne pouvez pas supprimer ce canal"
+        invalidName: 'Invalid channel name',
+        maxChannels: 'This project already has the maximum number of channels: {0}',
+        duplicateColor: 'This project already has a channel with this color',
+        duplicateName: 'This project already has a channel with this name',
+        tooLongName: 'Channel name is too long',
+        cannotDelete: 'You cannot delete this channel'
       }
     },
     manage: {
-      title: "Canaux de diffusion",
-      subtitle: "Les canaux de diffusion représentent les niveaux de stabilité des versions d'un plugin... Un projet peut avoir jusqu'à cinq canaux de diffusion.",
-      channelName: "Nom du canal",
-      versionCount: "Numéro de la version",
-      reviewed: "Examiné",
-      edit: "Éditer",
-      trash: "Poubelle",
-      editButton: "Éditer",
-      deleteButton: "Supprimer",
-      add: "Ajouter un canal"
+      title: 'Release channels',
+      subtitle: 'Release channels represent the state of a plugin release. A project may have up to five release channels.',
+      channelName: 'Channel Name',
+      versionCount: 'Version Count',
+      reviewed: 'Reviewed',
+      edit: 'Edit',
+      trash: 'Trash',
+      editButton: 'Edit',
+      deleteButton: 'Delete',
+      add: 'Add Channel'
     }
   },
   organization: {
     new: {
-      title: "Créer une nouvelle organisation",
-      text: "Les organisations vous permettent de regrouper des utilisateurs afin d'établir une collaboration plus étroite entre eux au sein de vos projets sur Hangar.",
-      name: "Nom de l'organisation",
+      title: 'Create a new Organization',
+      text: 'Organizations allow you to group users and provide closer collaboration between them within your projects on Hangar.',
+      name: 'Organization Name',
       error: {
-        duplicateName: "Un(e) utilisateur/organisation avec ce nom existe déjà",
-        invalidName: "Nom d'organisation invalide",
-        tooManyOrgs: "Vous ne pouvez créer au maximum {0} organisations",
-        notEnabled: "Les organisations ne sont pas activées !",
-        jsonError: "Erreur lors de l'analyse de la réponse JSON de HangarAuth",
-        hangarAuthValidationError: "Erreur lors de la validation : {0}",
-        unknownError: "Une erreur inconnue est survenue pendant la création de l'organisation"
+        duplicateName: 'An organization/user with that name already exists',
+        invalidName: 'Invalid organization name',
+        tooManyOrgs: 'You can only create a maximum of {0} organizations',
+        notEnabled: 'Organizations are not enabled!',
+        jsonError: 'Error parsing the JSON response from HangarAuth',
+        hangarAuthValidationError: 'Validation Error: {0}',
+        unknownError: 'Unknown error while creating organization'
       }
     },
     settings: {
       members: {
-        invalidUser: "{0} n'est pas un utilisateur valide",
-        alreadyInvited: "{0} est déjà invité dans l'organisation",
-        notMember: "{0} n'est pas un membre de l'organisation, donc vous ne pouvez pas modifier son rôle",
-        invalidRole: "{0} n'a pas pu être ajouté(e)/supprimé(e) de l'organisation"
+        invalidUser: '{0} is not a valid user',
+        alreadyInvited: '{0} is already invited to the organization',
+        notMember: '{0} is not a member of the organization, therefore you cannot edit their role',
+        invalidRole: '{0} cannot be added/removed from the organization'
       }
     }
   },
   form: {
     memberList: {
-      addUser: "Ajouter un utilisateur...",
-      create: "Créer",
-      editUser: "Éditer un utilisateur",
-      invitedAs: "(Invité en tant que {0})"
+      addUser: 'Add User...',
+      create: 'Create',
+      editUser: 'Edit User',
+      invitedAs: '(Invited as {0})'
     }
   },
   notifications: {
     title: 'Notifications',
-    invites: "Invitations",
-    invited: "Vous avez été invité(e) à rejoindre {0}",
-    inviteAccepted: "Vous avez accepté une invitation de {0}",
-    readAll: "Tout marquer comme lu",
-    unread: "Non lu",
-    read: "Lu",
-    all: "Toutes",
+    invites: 'Invites',
+    invited: 'You have been invited to join the {0}',
+    inviteAccepted: 'You have accepted an invitation to the {0}',
+    readAll: 'Mark all as read',
+    unread: 'Unread',
+    read: 'Read',
+    all: 'All',
     invite: {
-      all: "Toutes",
-      projects: "Projets",
-      organizations: "Organisations",
+      all: 'All',
+      projects: 'Projects',
+      organizations: 'Organizations',
       btns: {
-        accept: "Accepter",
-        decline: "Décliner",
-        unaccept: "Refuser"
+        accept: 'Accept',
+        decline: 'Decline',
+        unaccept: 'Unaccept'
       },
       msgs: {
-        accept: "Vous avez rejoint {0}",
-        decline: "Vous avez décliné l'invitation à rejoindre {0}",
-        unaccept: "Vous avez quitté {0}"
+        accept: 'You have joined {0}',
+        decline: 'You have declined to join {0}',
+        unaccept: 'You have left {0}'
       }
     },
     empty: {
-      unread: "Vous n'avez aucune notification non lue.",
-      read: "Vous n'avez aucune notification à lire.",
-      all: "Vous n'avez aucune notification.",
-      invites: "Vous n'avez aucune invitation."
+      unread: 'You have no unread notifications.',
+      read: 'You have no read notifications.',
+      all: 'You have no notifications.',
+      invites: 'You have no invites'
     },
     project: {
-      reviewed: "{0} {1} a été examiné et approuvé",
-      reviewedPartial: "{0} {1} a été examiné et partiellement approuvé",
-      newVersion: "Une nouvelle version est sortie pour {0}: {1}",
-      invite: "Vous avez été invité à rejoindre le groupe {0} dans le projet {1}",
-      inviteRescinded: "Votre invitation pour le groupe {0} dans le projet {1} a été annulée",
-      removed: "Vous avez été retiré(e) du groupe {0} du projet {1}",
-      roleChanged: "Vous avez été ajouté(e) au groupe {0} du projet {1}"
+      reviewed: '{0} {1} has been reviewed and is approved',
+      reviewedPartial: '{0} {1} has been reviewed and is partially approved',
+      newVersion: 'A new version has been released for {0}: {1}',
+      invite: 'You have been invited to join the group {0} on the project {1}',
+      inviteRescinded: 'Your invite to you the group {0} in the project {1} has been rescinded',
+      removed: 'You have been removed from the group {0} in the project {1}',
+      roleChanged: 'You have been added to the {0} group in the project {1}'
     },
     organization: {
-      invite: "Vous avez été invité(e) à rejoindre le groupe {0} dans l'organisation {1",
-      inviteRescinded: "Votre invitation pour le groupe {0} dans l'organisation {1} a été annulée",
-      removed: "Vous avez été retiré(e) du groupe {0} de l'organisation {1}",
-      roleChanged: "Vous avez été ajouté(e) au groupe {0} dans l'organisation {1}"
+      invite: 'You have been invited to join the group {0} in the organization {1}',
+      inviteRescinded: 'Your invite to you the group {0} in the organization {1} has been rescinded',
+      removed: 'You have been removed from the group {0} in the organization {1}',
+      roleChanged: 'You have been added to the {0} group in the organization {1}'
     }
   },
   visibility: {
     notice: {
-      new: "Ce projet est nouveau et ne sera pas montré aux autres avant qu'une version ne soit téléversée. Si une version n'est pas téléversée après une longue période de temps, le projet sera supprimé.",
-      needsChanges: "Ce projet nécessite des changements",
-      needsApproval: "Vous avez envoyé le projet pour un examen",
-      softDelete: "Projet supprimé par {0}"
+      new: 'This project is new, and will not be shown to others until a version has been uploaded. If a version is not uploaded over a longer time the project will be deleted.',
+      needsChanges: 'This project requires changes',
+      needsApproval: 'You have sent the project for review',
+      softDelete: 'Project deleted by {0}'
     },
     name: {
-      new: "Nouveau",
-      public: "Publique",
-      needsChanges: "Changements requis",
-      needsApproval: "Approbation requise",
-      softDelete: "Suppression douce"
+      new: 'New',
+      public: 'Public',
+      needsChanges: 'Needs Changes',
+      needsApproval: 'Needs Approval',
+      softDelete: 'Soft Delete'
     },
     changes: {
       version: {
-        reviewed: "en raison d'examens approuvés"
+        reviewed: 'due to approved reviews'
       }
     },
     modal: {
-      activatorBtn: "Actions de visibilité",
-      title: "Changer la visibilité de {0}",
-      reason: "Raison du changement",
-      success: "Vous avez changé la visibilité de {0} à {1}"
+      activatorBtn: 'Visibility Actions',
+      title: "Change {0}'s visibility",
+      reason: 'Reason for change',
+      success: "You changed the {0}'s visibility to {1}"
     }
   },
   author: {
-    watching: "Observe",
-    stars: "Etoiles",
-    orgs: "Organisations",
-    viewOnForums: "Voir sur les forums ",
-    taglineLabel: "Slogan utilisateur",
-    editTagline: "Éditer le slogan",
-    memberSince: "Membre depuis {0}",
-    numProjects: "Aucun projet | {0} projet | {0} projets",
-    addTagline: "Ajouter un slogan",
-    noOrgs: "{0} ne fait partie d'aucune organisation. 😢",
-    noWatching: "{0} n'observe aucun projet. 😢",
-    noStarred: "{0} n'a étoilé aucun projet. 😢",
+    watching: 'Watching',
+    stars: 'Stars',
+    orgs: 'Organizations',
+    viewOnForums: 'View on forums ',
+    taglineLabel: 'User Tagline',
+    editTagline: 'Edit Tagline',
+    memberSince: 'A member since {0}',
+    numProjects: 'No projects | {0} project | {0} projects',
+    addTagline: 'Add a tagline',
+    noOrgs: '{0} is not part of any organizations. 😢',
+    noWatching: '{0} is not watching any projects. 😢',
+    noStarred: '{0}  has not starred any projects. 😢',
     tooltips: {
-      settings: "Paramètres utilisateur",
-      lock: "Verrouiller le compte",
-      unlock: "Déverrouiller le compte",
-      apiKeys: "Clefs API",
-      activity: "Activité utilisateur",
-      admin: "Administrateur d'utilisateur"
+      settings: 'User Settings',
+      lock: 'Lock Account',
+      unlock: 'Unlock Account',
+      apiKeys: 'API Keys',
+      activity: 'User Activity',
+      admin: 'User Admin'
     },
     lock: {
-      confirmLock: "Verrouiller le compte de {0} ?",
-      confirmUnlock: "Déverrouiller le compte de {0} ?",
-      successLock: "Le compte {0}a été verrouillé avec succès",
-      successUnlock: "Le compte de {0}a bien été déverrouillé"
+      confirmLock: "Lock {0}'s account?",
+      confirmUnlock: "Unlock {0}'s account?",
+      successLock: "Successfully locked {0}'s account",
+      successUnlock: "Successfully unlocked {0}'s account"
     },
     org: {
-      editAvatar: "Éditer l'avatar"
+      editAvatar: 'Edit avatar'
     },
     error: {
-      invalidTagline: "Slogan invalide",
-      invalidUsername: "Nom d'utilisateur non valide"
+      invalidTagline: 'Invalid tagline',
+      invalidUsername: 'Invalid username'
     }
   },
   linkout: {
-    title: "Avertissement des liens externes",
-    text: "Vous avez cliqué sur un lien externe vers \"{0}\". Si vous ne souhaitiez pas visiter ce lien, veuillez revenir en arrière. Autrement, cliquez pour continuer.",
-    abort: "Revenir en arrière",
-    continue: "Continuer"
+    title: 'External Link Warning',
+    text: 'You have clicked on an external link to "{0}". If you did not intend to visit this link, please go back. Otherwise, click continue.',
+    abort: 'Go Back',
+    continue: 'Continue'
   },
   flags: {
-    header: "Alertes pour",
-    noFlags: "Aucune alerte trouvée",
-    resolved: "Oui, par {0} le {1}",
-    notResolved: "Non"
+    header: 'Flags for',
+    noFlags: 'No flags found',
+    resolved: 'Yes, by {0} on {1}',
+    notResolved: 'No'
   },
   notes: {
-    header: "Notes pour",
-    noNotes: "Aucune note trouvée",
-    addNote: "Ajouter une note",
+    header: 'Notes for',
+    noNotes: 'No notes found',
+    addNote: 'Add note',
     notes: 'Notes',
-    placeholder: "Ajouter une note..."
+    placeholder: 'Add a note...'
   },
   stats: {
-    title: "Statistiques",
+    title: 'Stats',
     plugins: 'Plugins',
-    reviews: "Examens",
-    uploads: "Téléversements",
-    downloads: "Téléchargements",
-    totalDownloads: "Téléchargements totaux",
-    unsafeDownloads: "Téléchargements non sécurisés",
-    flags: "Alertes",
-    openedFlags: "Alertes ouvertes",
-    closedFlags: "Alertes fermées"
+    reviews: 'Reviews',
+    uploads: 'Uploads',
+    downloads: 'Downloads',
+    totalDownloads: 'Total Downloads',
+    unsafeDownloads: 'Unsafe Downloads',
+    flags: 'Flags',
+    openedFlags: 'Opened Flags',
+    closedFlags: 'Closed Flags'
   },
   health: {
-    title: "Rapport de santé d'Hangar",
-    noTopicProject: "Sujet de discussion manquant",
-    erroredJobs: "Travaux échoués",
-    jobText: "Type de travail : {0}, Type d'erreur : {1}, Eu lieu : {2}",
-    staleProjects: "Projets sensationnels",
-    notPublicProjects: "Projets masqués",
-    noPlatform: "Aucune plateforme détectée",
-    missingFileProjects: "Fichier manquant",
-    empty: "Vide ! Tout va bien !"
+    title: 'Hangar Health Report',
+    noTopicProject: 'Missing discussion topic',
+    erroredJobs: 'Failed jobs',
+    jobText: 'Job type: {0}, Error Type: {1}, Happened: {2}',
+    staleProjects: 'Stale projects',
+    notPublicProjects: 'Hidden projects',
+    noPlatform: 'No platform detected',
+    missingFileProjects: 'Missing File',
+    empty: 'Empty! All good!'
   },
   reviews: {
-    headline: "{0} sorti cette version le {1}",
-    title: "Journaux de l'examen",
-    projectPage: "Page du projet",
-    downloadFile: "Télécharger le fichier",
-    startReview: "Commencer un examen",
-    stopReview: "Arrêter un examen",
-    approve: "Approuver",
-    approvePartial: "Approuver partiellement",
-    notUnderReview: "Cette version n'est pas sous examen",
-    reviewMessage: "Examiner le message",
-    addMessage: "Ajouter un message",
-    reopenReview: "Rouvrir l'examen",
-    undoApproval: "Annuler l'approbation",
-    hideClosed: "Masquer tous les examens terminés",
+    headline: '{0} released this version on {1}',
+    title: 'Review logs',
+    projectPage: 'Project Page',
+    downloadFile: 'Download File',
+    startReview: 'Start Review',
+    stopReview: 'Stop Review',
+    approve: 'Approve',
+    approvePartial: 'Approve Partial',
+    notUnderReview: 'This version is not under review',
+    reviewMessage: 'Review Message',
+    addMessage: 'Add Message',
+    reopenReview: 'Reopen Review',
+    undoApproval: 'Undo Approval',
+    hideClosed: 'Hide all finished reviews',
     error: {
-      noReviewStarted: "Il n'y a pas d'examen inachevé pour ajouter un message à",
-      notCorrectUser: "Vous n'êtes pas l'utilisateur qui a commencé cet examen",
-      cannotReopen: "Impossible de rouvrir cet examen",
-      onlyOneReview: "Impossible d'avoir plus d'un examen pour une version",
-      badUndo: "Annuler l'approbation n'est possible qu'après un approbation"
+      noReviewStarted: 'There is no unfinished review to add a message to',
+      notCorrectUser: 'You are not the user that started this review',
+      cannotReopen: 'Unable to reopen this review',
+      onlyOneReview: 'Cannot have more than 1 review for a version',
+      badUndo: 'Can only undo approval after an approval'
     },
     presets: {
       message: '{msg}',
-      start: "{name} commença un examen",
-      stop: "{name} stoppa un examen : {msg}",
-      reopen: "{name} rouvra un examen",
-      approve: "{name} approuva cette version",
-      approvePartial: "{name} approuva partiellement cette version",
-      undoApproval: "{name} a annulé son approbation",
-      reviewTitle: "Examen de {name}"
+      start: '{name} started a review',
+      stop: '{name} stopped a review: {msg}',
+      reopen: '{name} reopened a review',
+      approve: '{name} approved this version',
+      approvePartial: '{name} partially approved this version',
+      undoApproval: '{name} has undone their approval',
+      reviewTitle: "{name}'s Review"
     },
     state: {
-      ongoing: "En cours",
-      stopped: "Stoppé",
-      approved: "Approuvé",
-      partiallyApproved: "Partiellement approuvé",
-      lastUpdate: "Mise à jour la dernière fois : {0}"
+      ongoing: 'Ongoing',
+      stopped: 'Stopped',
+      approved: 'Approved',
+      partiallyApproved: 'Partially Approved',
+      lastUpdate: 'Last Update: {0}'
     }
   },
   apiKeys: {
-    title: "Clefs API",
-    createNew: "Créer une nouvelle clef",
-    existing: "Clefs existantes",
-    name: "Nom",
-    key: "Clef",
-    keyIdentifier: "Identifiant de la clef",
+    title: 'API Keys',
+    createNew: 'Create new key',
+    existing: 'Existing keys',
+    name: 'Name',
+    key: 'Key',
+    keyIdentifier: 'Key Identifier',
     permissions: 'Permissions',
-    delete: "Supprimer",
-    deleteKey: "Supprimer la clef",
-    createKey: "Créer une clef",
-    noKeys: "Il n'y a pas de clefs d'api pour l'instant. Vous pouvez en créer une sur la partie droite",
+    delete: 'Delete',
+    deleteKey: 'Delete Key',
+    createKey: 'Create key',
+    noKeys: 'There are no api keys yet. You can create one on the right side',
     success: {
-      delete: "Vous avez supprimé la clef : {0}",
-      create: "Vous avez créé la clef : {0}"
+      delete: 'You have deleted the key: {0}',
+      create: 'You have created the key: {0}'
     },
     error: {
-      notEnoughPerms: "Pas assez de permissions pour créer cette clef",
-      duplicateName: "Le nom de la clef est en double"
+      notEnoughPerms: 'Not enough permissions to create that key',
+      duplicateName: 'Duplicate key name'
     }
   },
   apiDocs: {
-    title: "Documentations de l'API"
+    title: 'API Docs'
   },
   platformVersions: {
-    title: "Configurer les versions de la platforme",
-    platform: "Plateforme",
+    title: 'Configure Platform Versions',
+    platform: 'Platform',
     versions: 'Versions',
-    addVersion: "Ajouter une version",
-    saveChanges: "Sauvegarder les changements",
-    success: "Versions de la plateforme mise à jour"
+    addVersion: 'Add Version',
+    saveChanges: 'Save Changes',
+    success: 'Updated platform versions'
   },
   flagReview: {
-    title: "Alertes",
-    noFlags: "Il n'y a pas d'alerte à examiner.",
-    msgUser: "Message utilisateur",
-    msgProjectOwner: "Propriétaire du message",
-    markResolved: "Marqué comme étant résolu",
-    line1: "{0} signala {1} le {2}",
-    line2: "Raison : {0}",
-    line3: "Commentaire : {0}"
+    title: 'Flags',
+    noFlags: 'There are no flags to review.',
+    msgUser: 'Message user',
+    msgProjectOwner: 'Message owner',
+    markResolved: 'Mark resolved',
+    line1: '{0} reported {1} on {2}',
+    line2: 'Reason: {0}',
+    line3: 'Comment: {0}'
   },
   userActivity: {
-    title: "Activité de {0}",
-    reviews: "Examens",
-    flags: "Alertes",
-    reviewApproved: "Examen approuvé",
-    flagResolved: "Alertes résolues",
+    title: "{0}'s Activity",
+    reviews: 'Reviews',
+    flags: 'Flags',
+    reviewApproved: 'Review Approved',
+    flagResolved: 'Flag Resolved',
     error: {
-      isOrg: "Impossible d'afficher l'activité pour les utilisateurs de l'organisation"
+      isOrg: 'Cannot show activity for organization users'
     }
   },
   userAdmin: {
-    title: "Modifier l'utilisateur",
-    organizations: "Organisations",
-    organization: "Organisation",
-    projects: "Projets",
-    project: "Projet",
-    owner: "Propriétaire",
-    role: "Rôle",
-    accepted: "Accepté",
-    sidebar: "Autre administration",
-    hangarAuth: "Profil HangarAuth",
-    forum: "Profil du forum"
+    title: 'Edit User',
+    organizations: 'Organizations',
+    organization: 'Organization',
+    projects: 'Projects',
+    project: 'Project',
+    owner: 'Owner',
+    role: 'Role',
+    accepted: 'Accepted',
+    sidebar: 'Other Administration',
+    hangarAuth: 'HangarAuth Profile',
+    forum: 'Forum Profile'
   },
   userActionLog: {
-    title: "Journal des actions de l'utilisateur",
-    user: "Utilisateur",
-    address: "Adresse IP",
-    time: "Temps",
+    title: 'User Action Log',
+    user: 'User',
+    address: 'IP Address',
+    time: 'Time',
     action: 'Action',
-    context: "Contexte",
-    oldState: "Ancien état",
-    newState: "Nouvel état",
-    markdownView: "Vue Markdown",
-    diffView: "Vue Diff",
+    context: 'Context',
+    oldState: 'Old State',
+    newState: 'New State',
+    markdownView: 'Markdown View',
+    diffView: 'Diff View',
     types: {
-      ProjectVisibilityChanged: "La visibilité du projet a été modifiée",
-      ProjectRename: "Le projet a été renommé",
-      ProjectFlagged: "Le projet a été signalé",
-      ProjectSettingsChanged: "Les paramètres du projet ont été changés",
-      ProjectIconChanged: "L'icône du projet a été changée",
-      ProjectFlagResolved: "L'alerte a été résolue",
-      ProjectChannelCreated: "Un canal de projet a été créé",
-      ProjectChannelEdited: "Un canal de projet a été édité",
-      ProjectChannelDeleted: "Un canal de projet a été supprimé",
-      ProjectInvitesSent: "Les invitations au projet ont été envoyées",
-      ProjectInviteDeclined: "Une invitation au projet a été déclinée",
-      ProjectInviteUnaccepted: "Une invitation au projet n'a pas été acceptée",
-      ProjectMemberAdded: "Un membre a été ajouté au projet",
-      ProjectMembersRemoved: "Les membres du projet furent supprimés",
-      ProjectMemberRolesChanged: "Les membres du projet ont vu leurs rôles mis à jour",
-      ProjectPageCreated: "Une page de projet a été créée",
-      ProjectPageDeleted: "Une page de projet a été supprimée",
-      ProjectPageEdited: "Une page de projet a été éditée",
-      VersionVisibilityChanged: "La visibilité de la version a été changée",
-      VersionDeleted: "La version a été supprimée",
-      VersionCreated: "Une nouvelle version a été téléversée",
-      VersionDescriptionEdited: "La description de la version a été modifiée",
-      VersionReviewStateChanged: "Le status de l'examen de la version a changé",
-      VersionPluginDependencyAdded: "Une dépendance du plugin a été ajoutée",
-      VersionPluginDependencyEdited: "Une dépendance du plugin a été éditée",
-      VersionPluginDependencyRemoved: "Une dépendance du plugin a été supprimée",
-      VersionPlatformDependencyAdded: "Une dépendance de plateforme a été ajoutée",
-      VersionPlatformDependencyRemoved: "Une dépendance de plateforme a été supprimée",
-      UserTaglineChanged: "Le slogan de l'utilisateur a changé",
-      UserLocked: "Cet utilisateur est verrouillé",
-      UserUnlocked: "Cet utilisateur est débloqué",
-      UserApikeyCreated: "Une clef api a été créée",
-      UserApikeyDeleted: "Une clef api a été supprimée",
-      OrganizationInvitesSent: "Les invitations de l'organisation ont été envoyées",
-      OrganizationInviteDeclined: "Une invitation de l'organisation a été déclinée",
-      OrganizationInviteUnaccepted: "Une invitation de l'organisation n'a pas été acceptée",
-      OrganizationMemberAdded: "Un membre a été ajouté à l'organisation",
-      OrganizationMembersRemoved: "Les membres de l'organisation ont été retirés",
-      OrganizationMemberRolesChanged: "Les membres de l'organisation ont vu leurs rôles mis à jour"
+      ProjectVisibilityChanged: 'The project visibility state was changed',
+      ProjectRename: 'The project was renamed',
+      ProjectFlagged: 'The project got flagged',
+      ProjectSettingsChanged: 'The project settings were changed',
+      ProjectIconChanged: 'The project icon was changed',
+      ProjectFlagResolved: 'The flag was resolved',
+      ProjectChannelCreated: 'A project channel was created',
+      ProjectChannelEdited: 'A project channel was edited',
+      ProjectChannelDeleted: 'A project channel was deleted',
+      ProjectInvitesSent: 'Project invites were sent',
+      ProjectInviteDeclined: 'A project invite was declined',
+      ProjectInviteUnaccepted: 'A project invite was unaccepted',
+      ProjectMemberAdded: 'A project member was added',
+      ProjectMembersRemoved: 'Project members were removed',
+      ProjectMemberRolesChanged: 'Project members had their roles updated',
+      ProjectPageCreated: 'A project page was created',
+      ProjectPageDeleted: 'A project page was deleted',
+      ProjectPageEdited: 'A project page was edited',
+      VersionVisibilityChanged: "The version's visibility state was changed",
+      VersionDeleted: 'The version was deleted',
+      VersionCreated: 'A new version was uploaded',
+      VersionDescriptionEdited: 'The version description was edited',
+      VersionReviewStateChanged: "The version's review state was changed",
+      VersionPluginDependencyAdded: 'A plugin dependency was added',
+      VersionPluginDependencyEdited: 'A plugin dependency was edited',
+      VersionPluginDependencyRemoved: 'A plugin dependency was removed',
+      VersionPlatformDependencyAdded: 'A platform dependency was added',
+      VersionPlatformDependencyRemoved: 'A platform dependency was removed',
+      UserTaglineChanged: 'The user tagline changed',
+      UserLocked: 'This user is locked',
+      UserUnlocked: 'This user is unlocked',
+      UserApikeyCreated: 'An apikey was created',
+      UserApikeyDeleted: 'An apikey was deleted',
+      OrganizationInvitesSent: 'Organization invites were sent',
+      OrganizationInviteDeclined: 'An organization invite was declined',
+      OrganizationInviteUnaccepted: 'An organization invite was unaccepted',
+      OrganizationMemberAdded: 'An organization member was added',
+      OrganizationMembersRemoved: 'Organization members were removed',
+      OrganizationMemberRolesChanged: 'Organization members had their roles updated'
     }
   },
   versionApproval: {
-    title: "Approbations de versions",
-    inReview: "En cours d'examen",
-    approvalQueue: "File d'attente d'approbation",
-    queuedBy: "Mise en file d'attente par",
-    status: "Statut",
-    project: "Projet",
+    title: 'Version Approvals',
+    inReview: 'In Review',
+    approvalQueue: 'Approval queue',
+    queuedBy: 'Queued by',
+    status: 'Status',
+    project: 'Project',
     date: 'Date',
     version: 'Version',
-    started: "Commencé : {0}",
-    ended: "Terminé : {0}",
+    started: 'Started: {0}',
+    ended: 'Ended: {0}',
     statuses: {
-      ongoing: "{0} en cours",
-      stopped: "{0} stoppé",
-      approved: "{0} approuvé"
+      ongoing: '{0} ongoing',
+      stopped: '{0} stopped',
+      approved: '{0} approved'
     }
   },
   projectApproval: {
-    title: "Approbations de projet",
-    sendForApproval: "Vous avez envoyé le projet pour l'approbation",
-    noProjects: "Aucun projet",
-    needsApproval: "Approbation requise",
-    awaitingChanges: "En attente de changements",
-    description: "{0} a demandé des changements sur {1}"
+    title: 'Project Approvals',
+    sendForApproval: 'You have sent the project for approval',
+    noProjects: 'No projects',
+    needsApproval: 'Needs Approval',
+    awaitingChanges: 'Awaiting Changes',
+    description: '{0} requested changes on {1}'
   },
   donate: {
-    title: "Donner à {}",
-    monthly: "Mensuellement",
-    oneTime: "Ponctuel",
-    selectAmount: "Sélectionner un montant ci-dessus ou entrer un montant ci-dessous",
-    legal: "En donnant à {0} vous agréez à Y et que les saucissons sont délicieux",
-    cta: "Donner",
-    submit: "Donner {0}"
+    title: 'Donate to {}',
+    monthly: 'Monthly',
+    oneTime: 'One-Time',
+    selectAmount: 'Select an amount above or enter an amount below',
+    legal: 'By donating to {0} you agree to Y and that tacos are delicious',
+    cta: 'Donate',
+    submit: 'Donate {0}'
   },
   lang: {
-    button: "Changer de langue",
-    title: "Changer de langue",
-    available: "Langues disponibles",
-    hangarAuth: "Ceci ne change que la langue pour votre navigateur actuel (avec un cookie). Cliquer ici pour changer votre langue sur PaperAuth pour tous les services Paper"
+    button: 'Switch Language',
+    title: 'Switch Language',
+    available: 'Available Language',
+    hangarAuth: 'This only change the locale for your current browser (as a cookie). Click here to change your lang on paper auth for all paper services'
   },
   validation: {
-    required: "{0} est requise",
-    maxLength: "La longueur maximale est de {0}",
-    minLength: "La longueur minimale est de {0}",
-    invalidFormat: "{0} est invalide",
-    invalidUrl: "Format d'URL invalide"
+    required: '{0} is required',
+    maxLength: 'Maximum length is {0}',
+    minLength: 'Minimum length is {0}',
+    invalidFormat: '{0} is invalid',
+    invalidUrl: 'Invalid URL format'
   },
   prompts: {
-    confirm: "Compris !",
+    confirm: 'Got it!',
     changeAvatar: {
-      title: "Changer votre avatar !",
-      message: "Bienvenue dans votre nouvelle organisation ! Commencez par changer son avatar en cliquant dessus."
+      title: 'Change your avatar!',
+      message: "Welcome to your new organization! Start by changing it's avatar by clicking on it."
     }
   },
   error: {
-    userLocked: "Votre compte est verrouillé.",
-    401: "Vous devez être identifié(e) pour ceci",
-    403: "Vous n'avez pas la permission de faire cela",
-    404: "404 Non trouvé",
-    unknown: "Une erreur est survenue"
+    userLocked: 'Your account is locked.',
+    401: 'You must be logged in for this',
+    403: 'You do not have permission to do that',
+    404: '404 Not found',
+    unknown: 'An error occurred'
   }
 };
-export default msgs;
