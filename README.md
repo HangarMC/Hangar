@@ -19,7 +19,7 @@ The project consists out of 4 parts
 There are two different environments that can be developed in, one using a fake user (aka without [HangarAuth]), or with [HangarAuth].
 Most of the time you won't need to run Hangar with [HangarAuth] unless you are working with a feature that requires multiple user interactions.
 
-## Fake User environment (recommended, no [HangarAuth])
+## Fake User environment (recommended, easy, no [HangarAuth])
 
 Fork the project and pull it in your IDE.
 ### Prerequisites
@@ -40,7 +40,7 @@ To get the project running locally you need to follow a few steps:
 * The Spring Boot configuration file that is used by this environment is located at `Hangar/src/main/resources/application.yml`
 * The fake user settings are located in the application.yml file under `fake-user`.
 
-## Hangar Auth
+## Hangar Auth (not recommended, complicated, requires like 6 more docker containers)
 Fork this project and fork/clone [HangarAuth]. Ensure they are sibling directories in your file system.
 ```
 Projects/
@@ -58,13 +58,7 @@ To get both Hangar and HangarAuth running locally:
 1. To start all the docker services move into Hangar's docker folder `cd Hangar/docker` the run `docker-compose up -d`. 
    If you are using IntelliJ, you can also add `Hangar/docker/docker-compose.yml` as a Run Configuration and use that to start up the services.
 2. Move to Hangar's frontend directory `Hangar/frontend`. In that directory run `yarn install` followed by `yarn dev`.
-3. Now you need to create a super user in HangarAuth.
-   1. In `Hangar/docker` run `docker-compose run auth /env/bin/python spongeauth/manage.py createsuperuser`.
-   2. Fill out the prompts. Note that the email service is not setup yet, so it really doesn't matter what email you enter when prompted.
-   3. Navigate to http://localhost:8000 and sign in with the credentials you just entered. Agree to the TOS.
-4. Now that the super user is created, you must create an Api Key so Hangar and HangarAuth can communicate with verification. Click the Admin button on the top right of the page
-   1. Navigate to Api keys under the Api key table name.
-   2. Click `ADD API KEY +` in the top right and add `changeme` as the api key.
+3. Setup the hangar client in hydra (see hangar auth readme)
 5. Navigate to http://localhost:3000 and login. 
 
 
@@ -92,4 +86,4 @@ Most of the frontend is a fork of Ore, licensed under MIT [here](https://github.
 The rest is new code (but created in reference of Ore) and is licensed under the MIT license too.
 
 [Yarn]: https://yarnpkg.com/
-[HangarAuth]: https://github.com/PaperMC/HangarAuth
+[HangarAuth]: https://github.com/HangarMC/HangarAuth
