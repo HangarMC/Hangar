@@ -1,5 +1,10 @@
-import { LocaleMessageObject } from 'vue-i18n';
-const msgs: LocaleMessageObject = {
+export default {
+  meta: {
+    code: 'en',
+    iso: 'en-US',
+    name: 'English',
+    icon: 'Test'
+  },
   general: {
     close: 'Close',
     submit: 'Submit',
@@ -102,7 +107,7 @@ const msgs: LocaleMessageObject = {
       role_playing: 'Role Playing',
       world_management: 'World Management',
       misc: 'Miscellaneous',
-      undefined: 'ERROR',
+      undefined: 'ERROR'
     },
     actions: {
       unwatch: 'Unwatch',
@@ -865,4 +870,3 @@ const msgs: LocaleMessageObject = {
     unknown: 'An error occurred'
   }
 };
-export default msgs;
