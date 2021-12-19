@@ -1,868 +1,872 @@
-import { LocaleMessageObject } from "crwdns1:0crwdne1:0";
-const msgs: LocaleMessageObject = {
+export default {
+  meta: {
+    code: "crwdns2585:0crwdne2585:0",
+    iso: "crwdns2587:0crwdne2587:0",
+    name: "crwdns2589:0crwdne2589:0",
+    icon: "crwdns2591:0crwdne2591:0"
+  },
   general: {
-    close: "crwdns3:0crwdne3:0",
-    submit: "crwdns5:0crwdne5:0",
-    save: "crwdns7:0crwdne7:0",
-    comment: "crwdns9:0crwdne9:0",
-    change: "crwdns11:0crwdne11:0",
-    donate: "crwdns13:0crwdne13:0",
-    continue: "crwdns15:0crwdne15:0",
-    create: "crwdns17:0crwdne17:0",
-    delete: "crwdns19:0crwdne19:0",
-    or: "crwdns21:0crwdne21:0",
-    reset: "crwdns23:0crwdne23:0",
-    edit: "crwdns25:0crwdne25:0",
-    required: "crwdns27:0crwdne27:0",
-    add: "crwdns29:0crwdne29:0",
-    name: "crwdns31:0crwdne31:0",
-    link: "crwdns33:0crwdne33:0",
-    send: "crwdns35:0crwdne35:0",
-    home: "crwdns37:0crwdne37:0",
-    message: "crwdns39:0crwdne39:0",
-    refresh: "crwdns41:0crwdne41:0",
-    confirm: "crwdns43:0crwdne43:0",
+    close: "crwdns2593:0crwdne2593:0",
+    submit: "crwdns2595:0crwdne2595:0",
+    save: "crwdns2597:0crwdne2597:0",
+    comment: "crwdns2599:0crwdne2599:0",
+    change: "crwdns2601:0crwdne2601:0",
+    donate: "crwdns2603:0crwdne2603:0",
+    continue: "crwdns2605:0crwdne2605:0",
+    create: "crwdns2607:0crwdne2607:0",
+    delete: "crwdns2609:0crwdne2609:0",
+    or: "crwdns2611:0crwdne2611:0",
+    reset: "crwdns2613:0crwdne2613:0",
+    edit: "crwdns2615:0crwdne2615:0",
+    required: "crwdns2617:0crwdne2617:0",
+    add: "crwdns2619:0crwdne2619:0",
+    name: "crwdns2621:0crwdne2621:0",
+    link: "crwdns2623:0crwdne2623:0",
+    send: "crwdns2625:0crwdne2625:0",
+    home: "crwdns2627:0crwdne2627:0",
+    message: "crwdns2629:0crwdne2629:0",
+    refresh: "crwdns2631:0crwdne2631:0",
+    confirm: "crwdns2633:0crwdne2633:0",
     error: {
-      invalidUrl: "crwdns45:0crwdne45:0"
+      invalidUrl: "crwdns2635:0crwdne2635:0"
     }
   },
   hangar: {
     projectSearch: {
-      query: "crwdns47:0{0}crwdne47:0",
-      relevanceSort: "crwdns49:0crwdne49:0",
-      noProjects: "crwdns51:0crwdne51:0",
-      noProjectsFound: "crwdns53:0crwdne53:0"
+      query: "crwdns2637:0{0}crwdne2637:0",
+      relevanceSort: "crwdns2639:0crwdne2639:0",
+      noProjects: "crwdns2641:0crwdne2641:0",
+      noProjectsFound: "crwdns2643:0crwdne2643:0"
     },
-    subtitle: "crwdns55:0crwdne55:0",
-    sponsoredBy: "crwdns57:0crwdne57:0"
+    subtitle: "crwdns2645:0crwdne2645:0",
+    sponsoredBy: "crwdns2647:0crwdne2647:0"
   },
   pages: {
-    staffTitle: "crwdns59:0crwdne59:0",
-    authorsTitle: "crwdns61:0crwdne61:0",
+    staffTitle: "crwdns2649:0crwdne2649:0",
+    authorsTitle: "crwdns2651:0crwdne2651:0",
     headers: {
-      username: "crwdns63:0crwdne63:0",
-      roles: "crwdns65:0crwdne65:0",
-      joined: "crwdns67:0crwdne67:0",
-      projects: "crwdns69:0crwdne69:0"
+      username: "crwdns2653:0crwdne2653:0",
+      roles: "crwdns2655:0crwdne2655:0",
+      joined: "crwdns2657:0crwdne2657:0",
+      projects: "crwdns2659:0crwdne2659:0"
     }
   },
   nav: {
-    login: "crwdns71:0crwdne71:0",
-    signup: "crwdns73:0crwdne73:0",
+    login: "crwdns2661:0crwdne2661:0",
+    signup: "crwdns2663:0crwdne2663:0",
     user: {
-      notifications: "crwdns75:0crwdne75:0",
-      flags: "crwdns77:0crwdne77:0",
-      projectApprovals: "crwdns79:0crwdne79:0",
-      versionApprovals: "crwdns81:0crwdne81:0",
-      stats: "crwdns83:0crwdne83:0",
-      health: "crwdns85:0crwdne85:0",
-      log: "crwdns87:0crwdne87:0",
-      platformVersions: "crwdns89:0crwdne89:0",
-      logout: "crwdns91:0crwdne91:0",
+      notifications: "crwdns2665:0crwdne2665:0",
+      flags: "crwdns2667:0crwdne2667:0",
+      projectApprovals: "crwdns2669:0crwdne2669:0",
+      versionApprovals: "crwdns2671:0crwdne2671:0",
+      stats: "crwdns2673:0crwdne2673:0",
+      health: "crwdns2675:0crwdne2675:0",
+      log: "crwdns2677:0crwdne2677:0",
+      platformVersions: "crwdns2679:0crwdne2679:0",
+      logout: "crwdns2681:0crwdne2681:0",
       error: {
-        loginFailed: "crwdns93:0crwdne93:0",
-        invalidUsername: "crwdns95:0crwdne95:0",
-        hangarAuth: "crwdns97:0crwdne97:0",
-        loginDisabled: "crwdns99:0crwdne99:0",
-        fakeUserEnabled: "crwdns101:0{0}crwdne101:0"
+        loginFailed: "crwdns2683:0crwdne2683:0",
+        invalidUsername: "crwdns2685:0crwdne2685:0",
+        hangarAuth: "crwdns2687:0crwdne2687:0",
+        loginDisabled: "crwdns2689:0crwdne2689:0",
+        fakeUserEnabled: "crwdns2691:0{0}crwdne2691:0"
       }
     },
-    createNew: "crwdns103:0crwdne103:0",
+    createNew: "crwdns2693:0crwdne2693:0",
     new: {
-      project: "crwdns105:0crwdne105:0",
-      organization: "crwdns107:0crwdne107:0"
+      project: "crwdns2695:0crwdne2695:0",
+      organization: "crwdns2697:0crwdne2697:0"
     },
     hangar: {
-      home: "crwdns109:0crwdne109:0",
-      forums: "crwdns111:0crwdne111:0",
-      code: "crwdns113:0crwdne113:0",
-      docs: "crwdns115:0crwdne115:0",
-      javadocs: "crwdns117:0crwdne117:0",
-      hangar: "crwdns119:0crwdne119:0",
-      downloads: "crwdns121:0crwdne121:0",
-      community: "crwdns123:0crwdne123:0",
-      auth: "crwdns1293:0crwdne1293:0"
+      home: "crwdns2699:0crwdne2699:0",
+      forums: "crwdns2701:0crwdne2701:0",
+      code: "crwdns2703:0crwdne2703:0",
+      docs: "crwdns2705:0crwdne2705:0",
+      javadocs: "crwdns2707:0crwdne2707:0",
+      hangar: "crwdns2709:0crwdne2709:0",
+      downloads: "crwdns2711:0crwdne2711:0",
+      community: "crwdns2713:0crwdne2713:0",
+      auth: "crwdns2715:0crwdne2715:0"
     }
   },
   project: {
-    stargazers: "crwdns125:0crwdne125:0",
-    noStargazers: "crwdns127:0crwdne127:0",
-    watchers: "crwdns129:0crwdne129:0",
-    noWatchers: "crwdns131:0crwdne131:0",
-    members: "crwdns133:0crwdne133:0",
+    stargazers: "crwdns2717:0crwdne2717:0",
+    noStargazers: "crwdns2719:0crwdne2719:0",
+    watchers: "crwdns2721:0crwdne2721:0",
+    noWatchers: "crwdns2723:0crwdne2723:0",
+    members: "crwdns2725:0crwdne2725:0",
     category: {
-      info: "crwdns1279:0crwdne1279:0",
-      admin_tools: "crwdns137:0crwdne137:0",
-      chat: "crwdns139:0crwdne139:0",
-      dev_tools: "crwdns141:0crwdne141:0",
-      economy: "crwdns143:0crwdne143:0",
-      gameplay: "crwdns145:0crwdne145:0",
-      games: "crwdns147:0crwdne147:0",
-      protection: "crwdns149:0crwdne149:0",
-      role_playing: "crwdns151:0crwdne151:0",
-      world_management: "crwdns153:0crwdne153:0",
-      misc: "crwdns155:0crwdne155:0",
-      undefined: "crwdns1295:0crwdne1295:0"
+      info: "crwdns2727:0crwdne2727:0",
+      admin_tools: "crwdns2729:0crwdne2729:0",
+      chat: "crwdns2731:0crwdne2731:0",
+      dev_tools: "crwdns2733:0crwdne2733:0",
+      economy: "crwdns2735:0crwdne2735:0",
+      gameplay: "crwdns2737:0crwdne2737:0",
+      games: "crwdns2739:0crwdne2739:0",
+      protection: "crwdns2741:0crwdne2741:0",
+      role_playing: "crwdns2743:0crwdne2743:0",
+      world_management: "crwdns2745:0crwdne2745:0",
+      misc: "crwdns2747:0crwdne2747:0",
+      undefined: "crwdns2749:0crwdne2749:0"
     },
     actions: {
-      unwatch: "crwdns157:0crwdne157:0",
-      watch: "crwdns159:0crwdne159:0",
-      flag: "crwdns161:0crwdne161:0",
-      star: "crwdns163:0crwdne163:0",
-      unstar: "crwdns165:0crwdne165:0",
-      adminActions: "crwdns167:0crwdne167:0",
-      flagHistory: "crwdns169:0{0}crwdne169:0",
-      staffNotes: "crwdns171:0{0}crwdne171:0",
-      userActionLogs: "crwdns173:0crwdne173:0",
-      forum: "crwdns175:0crwdne175:0"
+      unwatch: "crwdns2751:0crwdne2751:0",
+      watch: "crwdns2753:0crwdne2753:0",
+      flag: "crwdns2755:0crwdne2755:0",
+      star: "crwdns2757:0crwdne2757:0",
+      unstar: "crwdns2759:0crwdne2759:0",
+      adminActions: "crwdns2761:0crwdne2761:0",
+      flagHistory: "crwdns2763:0{0}crwdne2763:0",
+      staffNotes: "crwdns2765:0{0}crwdne2765:0",
+      userActionLogs: "crwdns2767:0crwdne2767:0",
+      forum: "crwdns2769:0crwdne2769:0"
     },
     flag: {
-      flagProject: "crwdns177:0{0}crwdne177:0",
-      flagSend: "crwdns179:0crwdne179:0",
-      flagSent: "crwdns181:0crwdne181:0",
+      flagProject: "crwdns2771:0{0}crwdne2771:0",
+      flagSend: "crwdns2773:0crwdne2773:0",
+      flagSent: "crwdns2775:0crwdne2775:0",
       flags: {
-        inappropriateContent: "crwdns183:0crwdne183:0",
-        impersonation: "crwdns185:0crwdne185:0",
-        spam: "crwdns187:0crwdne187:0",
-        malIntent: "crwdns189:0crwdne189:0",
-        other: "crwdns191:0crwdne191:0"
+        inappropriateContent: "crwdns2777:0crwdne2777:0",
+        impersonation: "crwdns2779:0crwdne2779:0",
+        spam: "crwdns2781:0crwdne2781:0",
+        malIntent: "crwdns2783:0crwdne2783:0",
+        other: "crwdns2785:0crwdne2785:0"
       },
       error: {
-        alreadyOpen: "crwdns193:0crwdne193:0",
-        alreadyResolved: "crwdns195:0crwdne195:0"
+        alreadyOpen: "crwdns2787:0crwdne2787:0",
+        alreadyResolved: "crwdns2789:0crwdne2789:0"
       }
     },
     tabs: {
-      docs: "crwdns197:0crwdne197:0",
-      versions: "crwdns199:0crwdne199:0",
-      discuss: "crwdns201:0crwdne201:0",
-      settings: "crwdns203:0crwdne203:0",
-      homepage: "crwdns205:0crwdne205:0",
-      issues: "crwdns207:0crwdne207:0",
-      source: "crwdns209:0crwdne209:0",
-      support: "crwdns211:0crwdne211:0"
+      docs: "crwdns2791:0crwdne2791:0",
+      versions: "crwdns2793:0crwdne2793:0",
+      discuss: "crwdns2795:0crwdne2795:0",
+      settings: "crwdns2797:0crwdne2797:0",
+      homepage: "crwdns2799:0crwdne2799:0",
+      issues: "crwdns2801:0crwdne2801:0",
+      source: "crwdns2803:0crwdne2803:0",
+      support: "crwdns2805:0crwdne2805:0"
     },
     new: {
       step1: {
-        title: "crwdns213:0crwdne213:0",
-        text: "crwdns215:0crwdne215:0",
-        continue: "crwdns217:0crwdne217:0",
-        back: "crwdns219:0crwdne219:0"
+        title: "crwdns2807:0crwdne2807:0",
+        text: "crwdns2809:0crwdne2809:0",
+        continue: "crwdns2811:0crwdne2811:0",
+        back: "crwdns2813:0crwdne2813:0"
       },
       step2: {
-        title: "crwdns221:0crwdne221:0",
-        continue: "crwdns223:0crwdne223:0",
-        back: "crwdns225:0crwdne225:0",
-        userSelect: "crwdns227:0crwdne227:0",
-        projectName: "crwdns229:0crwdne229:0",
-        projectSummary: "crwdns231:0crwdne231:0",
-        projectCategory: "crwdns233:0crwdne233:0"
+        title: "crwdns2815:0crwdne2815:0",
+        continue: "crwdns2817:0crwdne2817:0",
+        back: "crwdns2819:0crwdne2819:0",
+        userSelect: "crwdns2821:0crwdne2821:0",
+        projectName: "crwdns2823:0crwdne2823:0",
+        projectSummary: "crwdns2825:0crwdne2825:0",
+        projectCategory: "crwdns2827:0crwdne2827:0"
       },
       step3: {
-        title: "crwdns235:0crwdne235:0",
-        continue: "crwdns237:0crwdne237:0",
-        back: "crwdns239:0crwdne239:0",
-        optional: "crwdns241:0crwdne241:0",
-        links: "crwdns243:0crwdne243:0",
-        homepage: "crwdns245:0crwdne245:0",
-        issues: "crwdns247:0crwdne247:0",
-        source: "crwdns249:0crwdne249:0",
-        support: "crwdns251:0crwdne251:0",
-        license: "crwdns253:0crwdne253:0",
-        type: "crwdns255:0crwdne255:0",
-        customName: "crwdns257:0crwdne257:0",
-        url: "crwdns259:0crwdne259:0",
-        seo: "crwdns261:0crwdne261:0",
-        keywords: "crwdns263:0crwdne263:0"
+        title: "crwdns2829:0crwdne2829:0",
+        continue: "crwdns2831:0crwdne2831:0",
+        back: "crwdns2833:0crwdne2833:0",
+        optional: "crwdns2835:0crwdne2835:0",
+        links: "crwdns2837:0crwdne2837:0",
+        homepage: "crwdns2839:0crwdne2839:0",
+        issues: "crwdns2841:0crwdne2841:0",
+        source: "crwdns2843:0crwdne2843:0",
+        support: "crwdns2845:0crwdne2845:0",
+        license: "crwdns2847:0crwdne2847:0",
+        type: "crwdns2849:0crwdne2849:0",
+        customName: "crwdns2851:0crwdne2851:0",
+        url: "crwdns2853:0crwdne2853:0",
+        seo: "crwdns2855:0crwdne2855:0",
+        keywords: "crwdns2857:0crwdne2857:0"
       },
       step4: {
-        title: "crwdns265:0crwdne265:0",
-        continue: "crwdns267:0crwdne267:0",
-        back: "crwdns269:0crwdne269:0",
-        optional: "crwdns271:0crwdne271:0",
-        convert: "crwdns273:0crwdne273:0",
-        saveAsHomePage: "crwdns275:0crwdne275:0",
+        title: "crwdns2859:0crwdne2859:0",
+        continue: "crwdns2861:0crwdne2861:0",
+        back: "crwdns2863:0crwdne2863:0",
+        optional: "crwdns2865:0crwdne2865:0",
+        convert: "crwdns2867:0crwdne2867:0",
+        saveAsHomePage: "crwdns2869:0crwdne2869:0",
         convertLabels: {
-          bbCode: "crwdns277:0crwdne277:0",
-          output: "crwdns279:0crwdne279:0"
+          bbCode: "crwdns2871:0crwdne2871:0",
+          output: "crwdns2873:0crwdne2873:0"
         },
-        preview: "crwdns281:0crwdne281:0",
-        tutorial: "crwdns283:0crwdne283:0",
+        preview: "crwdns2875:0crwdne2875:0",
+        tutorial: "crwdns2877:0crwdne2877:0",
         tutorialInstructions: {
-          line1: "crwdns285:0crwdne285:0",
-          line2: "crwdns287:0crwdne287:0",
-          line3: "crwdns289:0crwdne289:0",
-          line4: "crwdns291:0crwdne291:0"
+          line1: "crwdns2879:0crwdne2879:0",
+          line2: "crwdns2881:0crwdne2881:0",
+          line3: "crwdns2883:0crwdne2883:0",
+          line4: "crwdns2885:0crwdne2885:0"
         }
       },
       step5: {
-        title: "crwdns293:0crwdne293:0",
-        text: "crwdns295:0crwdne295:0"
+        title: "crwdns2887:0crwdne2887:0",
+        text: "crwdns2889:0crwdne2889:0"
       },
       error: {
-        create: "crwdns297:0crwdne297:0",
-        nameExists: "crwdns299:0crwdne299:0",
-        slugExists: "crwdns301:0crwdne301:0",
-        invalidName: "crwdns303:0crwdne303:0",
-        tooLongName: "crwdns305:0crwdne305:0",
-        tooShortName: "crwdns1291:0crwdne1291:0",
-        tooLongDesc: "crwdns307:0crwdne307:0",
-        tooManyKeywords: "crwdns309:0crwdne309:0",
-        noCategory: "crwdns311:0crwdne311:0",
-        noDescription: "crwdns313:0crwdne313:0"
+        create: "crwdns2891:0crwdne2891:0",
+        nameExists: "crwdns2893:0crwdne2893:0",
+        slugExists: "crwdns2895:0crwdne2895:0",
+        invalidName: "crwdns2897:0crwdne2897:0",
+        tooLongName: "crwdns2899:0crwdne2899:0",
+        tooShortName: "crwdns2901:0crwdne2901:0",
+        tooLongDesc: "crwdns2903:0crwdne2903:0",
+        tooManyKeywords: "crwdns2905:0crwdne2905:0",
+        noCategory: "crwdns2907:0crwdne2907:0",
+        noDescription: "crwdns2909:0crwdne2909:0"
       }
     },
-    sendForApproval: "crwdns315:0crwdne315:0",
+    sendForApproval: "crwdns2911:0crwdne2911:0",
     info: {
-      title: "crwdns317:0crwdne317:0",
-      publishDate: "crwdns1281:0crwdne1281:0",
-      views: "crwdns1283:0crwdne1283:0",
-      totalDownloads: "crwdns1285:0crwdne1285:0",
-      stars: "crwdns1287:0crwdne1287:0",
-      watchers: "crwdns1289:0crwdne1289:0"
+      title: "crwdns2913:0crwdne2913:0",
+      publishDate: "crwdns2915:0crwdne2915:0",
+      views: "crwdns2917:0crwdne2917:0",
+      totalDownloads: "crwdns2919:0crwdne2919:0",
+      stars: "crwdns2921:0crwdne2921:0",
+      watchers: "crwdns2923:0crwdne2923:0"
     },
-    promotedVersions: "crwdns329:0crwdne329:0",
+    promotedVersions: "crwdns2925:0crwdne2925:0",
     license: {
-      link: "crwdns331:0crwdne331:0"
+      link: "crwdns2927:0crwdne2927:0"
     },
     error: {
-      star: "crwdns333:0crwdne333:0",
-      watch: "crwdns335:0crwdne335:0"
+      star: "crwdns2929:0crwdne2929:0",
+      watch: "crwdns2931:0crwdne2931:0"
     },
     settings: {
-      title: "crwdns337:0crwdne337:0",
-      category: "crwdns339:0crwdne339:0",
-      categorySub: "crwdns341:0crwdne341:0",
-      keywords: "crwdns343:0crwdne343:0",
-      keywordsSub: "crwdns345:0crwdne345:0",
-      homepage: "crwdns347:0crwdne347:0",
-      homepageSub: "crwdns349:0crwdne349:0",
-      issues: "crwdns351:0crwdne351:0",
-      issuesSub: "crwdns353:0crwdne353:0",
-      source: "crwdns355:0crwdne355:0",
-      sourceSub: "crwdns357:0crwdne357:0",
-      support: "crwdns359:0crwdne359:0",
-      supportSub: "crwdns361:0crwdne361:0",
-      license: "crwdns363:0crwdne363:0",
-      licenseSub: "crwdns365:0crwdne365:0",
-      forum: "crwdns367:0crwdne367:0",
-      forumSub: "crwdns369:0crwdne369:0",
-      description: "crwdns371:0crwdne371:0",
-      descriptionSub: "crwdns373:0crwdne373:0",
-      icon: "crwdns375:0crwdne375:0",
-      iconSub: "crwdns377:0crwdne377:0",
-      iconUpload: "crwdns379:0crwdne379:0",
-      iconReset: "crwdns381:0crwdne381:0",
-      apiKey: "crwdns383:0crwdne383:0",
-      apiKeySub: "crwdns385:0crwdne385:0",
-      apiKeyGenerate: "crwdns387:0crwdne387:0",
-      rename: "crwdns389:0crwdne389:0",
-      renameSub: "crwdns391:0crwdne391:0",
-      delete: "crwdns393:0crwdne393:0",
-      deleteSub: "crwdns395:0crwdne395:0",
-      hardDelete: "crwdns397:0crwdne397:0",
-      hardDeleteSub: "crwdns399:0crwdne399:0",
-      save: "crwdns401:0crwdne401:0",
-      optional: "crwdns403:0crwdne403:0",
-      licenseCustom: "crwdns405:0crwdne405:0",
-      licenseType: "crwdns407:0crwdne407:0",
-      licenseUrl: "crwdns409:0crwdne409:0",
+      title: "crwdns2933:0crwdne2933:0",
+      category: "crwdns2935:0crwdne2935:0",
+      categorySub: "crwdns2937:0crwdne2937:0",
+      keywords: "crwdns2939:0crwdne2939:0",
+      keywordsSub: "crwdns2941:0crwdne2941:0",
+      homepage: "crwdns2943:0crwdne2943:0",
+      homepageSub: "crwdns2945:0crwdne2945:0",
+      issues: "crwdns2947:0crwdne2947:0",
+      issuesSub: "crwdns2949:0crwdne2949:0",
+      source: "crwdns2951:0crwdne2951:0",
+      sourceSub: "crwdns2953:0crwdne2953:0",
+      support: "crwdns2955:0crwdne2955:0",
+      supportSub: "crwdns2957:0crwdne2957:0",
+      license: "crwdns2959:0crwdne2959:0",
+      licenseSub: "crwdns2961:0crwdne2961:0",
+      forum: "crwdns2963:0crwdne2963:0",
+      forumSub: "crwdns2965:0crwdne2965:0",
+      description: "crwdns2967:0crwdne2967:0",
+      descriptionSub: "crwdns2969:0crwdne2969:0",
+      icon: "crwdns2971:0crwdne2971:0",
+      iconSub: "crwdns2973:0crwdne2973:0",
+      iconUpload: "crwdns2975:0crwdne2975:0",
+      iconReset: "crwdns2977:0crwdne2977:0",
+      apiKey: "crwdns2979:0crwdne2979:0",
+      apiKeySub: "crwdns2981:0crwdne2981:0",
+      apiKeyGenerate: "crwdns2983:0crwdne2983:0",
+      rename: "crwdns2985:0crwdne2985:0",
+      renameSub: "crwdns2987:0crwdne2987:0",
+      delete: "crwdns2989:0crwdne2989:0",
+      deleteSub: "crwdns2991:0crwdne2991:0",
+      hardDelete: "crwdns2993:0crwdne2993:0",
+      hardDeleteSub: "crwdns2995:0crwdne2995:0",
+      save: "crwdns2997:0crwdne2997:0",
+      optional: "crwdns2999:0crwdne2999:0",
+      licenseCustom: "crwdns3001:0crwdne3001:0",
+      licenseType: "crwdns3003:0crwdne3003:0",
+      licenseUrl: "crwdns3005:0crwdne3005:0",
       donation: {
-        enable: "crwdns411:0crwdne411:0",
-        enableSub: "crwdns413:0crwdne413:0",
-        email: "crwdns415:0crwdne415:0",
-        emailSub: "crwdns417:0crwdne417:0",
-        defaultAmount: "crwdns419:0crwdne419:0",
-        defaultAmountSub: "crwdns421:0crwdne421:0",
-        oneTimeAmounts: "crwdns423:0crwdne423:0",
-        oneTimeAmountsSub: "crwdns425:0crwdne425:0",
-        monthlyAmounts: "crwdns427:0crwdne427:0",
-        monthlyAmountsSub: "crwdns429:0crwdne429:0"
+        enable: "crwdns3007:0crwdne3007:0",
+        enableSub: "crwdns3009:0crwdne3009:0",
+        email: "crwdns3011:0crwdne3011:0",
+        emailSub: "crwdns3013:0crwdne3013:0",
+        defaultAmount: "crwdns3015:0crwdne3015:0",
+        defaultAmountSub: "crwdns3017:0crwdne3017:0",
+        oneTimeAmounts: "crwdns3019:0crwdne3019:0",
+        oneTimeAmountsSub: "crwdns3021:0crwdne3021:0",
+        monthlyAmounts: "crwdns3023:0crwdne3023:0",
+        monthlyAmountsSub: "crwdns3025:0crwdne3025:0"
       },
       error: {
-        invalidFile: "crwdns431:0{0}crwdne431:0",
-        noFile: "crwdns433:0crwdne433:0",
+        invalidFile: "crwdns3027:0{0}crwdne3027:0",
+        noFile: "crwdns3029:0crwdne3029:0",
         members: {
-          invalidUser: "crwdns435:0{0}crwdne435:0",
-          alreadyInvited: "crwdns437:0{0}crwdne437:0",
-          notMember: "crwdns439:0{0}crwdne439:0",
-          invalidRole: "crwdns441:0{0}crwdne441:0"
+          invalidUser: "crwdns3031:0{0}crwdne3031:0",
+          alreadyInvited: "crwdns3033:0{0}crwdne3033:0",
+          notMember: "crwdns3035:0{0}crwdne3035:0",
+          invalidRole: "crwdns3037:0{0}crwdne3037:0"
         }
       },
       success: {
-        changedIcon: "crwdns443:0crwdne443:0",
-        resetIcon: "crwdns445:0crwdne445:0",
-        rename: "crwdns447:0{0}crwdne447:0",
-        softDelete: "crwdns449:0crwdne449:0",
-        hardDelete: "crwdns451:0crwdne451:0"
+        changedIcon: "crwdns3039:0crwdne3039:0",
+        resetIcon: "crwdns3041:0crwdne3041:0",
+        rename: "crwdns3043:0{0}crwdne3043:0",
+        softDelete: "crwdns3045:0crwdne3045:0",
+        hardDelete: "crwdns3047:0crwdne3047:0"
       },
       tabs: {
-        general: "crwdns453:0crwdne453:0",
-        optional: "crwdns455:0crwdne455:0",
-        management: "crwdns457:0crwdne457:0",
-        donation: "crwdns459:0crwdne459:0"
+        general: "crwdns3049:0crwdne3049:0",
+        optional: "crwdns3051:0crwdne3051:0",
+        management: "crwdns3053:0crwdne3053:0",
+        donation: "crwdns3055:0crwdne3055:0"
       }
     },
     discuss: {
-      login: "crwdns461:0crwdne461:0",
-      toReply: "crwdns463:0crwdne463:0",
-      noTopic: "crwdns465:0crwdne465:0",
-      send: "crwdns467:0crwdne467:0"
+      login: "crwdns3057:0crwdne3057:0",
+      toReply: "crwdns3059:0crwdne3059:0",
+      noTopic: "crwdns3061:0crwdne3061:0",
+      send: "crwdns3063:0crwdne3063:0"
     }
   },
   page: {
-    plural: "crwdns469:0crwdne469:0",
+    plural: "crwdns3065:0crwdne3065:0",
     new: {
-      title: "crwdns471:0crwdne471:0",
+      title: "crwdns3067:0crwdne3067:0",
       error: {
-        minLength: "crwdns473:0crwdne473:0",
-        maxLength: "crwdns475:0crwdne475:0",
-        duplicateName: "crwdns477:0crwdne477:0",
-        invalidName: "crwdns479:0crwdne479:0",
+        minLength: "crwdns3069:0crwdne3069:0",
+        maxLength: "crwdns3071:0crwdne3071:0",
+        duplicateName: "crwdns3073:0crwdne3073:0",
+        invalidName: "crwdns3075:0crwdne3075:0",
         name: {
-          maxLength: "crwdns481:0crwdne481:0",
-          minLength: "crwdns483:0crwdne483:0",
-          invalidChars: "crwdns485:0crwdne485:0"
+          maxLength: "crwdns3077:0crwdne3077:0",
+          minLength: "crwdns3079:0crwdne3079:0",
+          invalidChars: "crwdns3081:0crwdne3081:0"
         },
-        save: "crwdns487:0crwdne487:0"
+        save: "crwdns3083:0crwdne3083:0"
       },
-      name: "crwdns489:0crwdne489:0",
-      parent: "crwdns491:0crwdne491:0"
+      name: "crwdns3085:0crwdne3085:0",
+      parent: "crwdns3087:0crwdne3087:0"
     },
     delete: {
-      title: "crwdns493:0crwdne493:0",
-      text: "crwdns495:0crwdne495:0"
+      title: "crwdns3089:0crwdne3089:0",
+      text: "crwdns3091:0crwdne3091:0"
     }
   },
   version: {
     new: {
-      title: "crwdns497:0crwdne497:0",
-      upload: "crwdns499:0crwdne499:0",
-      uploadNew: "crwdns501:0crwdne501:0",
-      url: "crwdns503:0crwdne503:0",
+      title: "crwdns3093:0crwdne3093:0",
+      upload: "crwdns3095:0crwdne3095:0",
+      uploadNew: "crwdns3097:0crwdne3097:0",
+      url: "crwdns3099:0crwdne3099:0",
       form: {
-        versionString: "crwdns505:0crwdne505:0",
-        fileName: "crwdns507:0crwdne507:0",
-        fileSize: "crwdns509:0crwdne509:0",
-        externalUrl: "crwdns511:0crwdne511:0",
-        hangarProject: "crwdns513:0crwdne513:0",
-        channel: "crwdns515:0crwdne515:0",
-        addChannel: "crwdns517:0crwdne517:0",
-        unstable: "crwdns519:0crwdne519:0",
-        recommended: "crwdns521:0crwdne521:0",
-        forumPost: "crwdns523:0crwdne523:0",
+        versionString: "crwdns3101:0crwdne3101:0",
+        fileName: "crwdns3103:0crwdne3103:0",
+        fileSize: "crwdns3105:0crwdne3105:0",
+        externalUrl: "crwdns3107:0crwdne3107:0",
+        hangarProject: "crwdns3109:0crwdne3109:0",
+        channel: "crwdns3111:0crwdne3111:0",
+        addChannel: "crwdns3113:0crwdne3113:0",
+        unstable: "crwdns3115:0crwdne3115:0",
+        recommended: "crwdns3117:0crwdne3117:0",
+        forumPost: "crwdns3119:0crwdne3119:0",
         release: {
-          bulletin: "crwdns525:0crwdne525:0",
-          desc: "crwdns527:0crwdne527:0"
+          bulletin: "crwdns3121:0crwdne3121:0",
+          desc: "crwdns3123:0crwdne3123:0"
         },
-        platforms: "crwdns529:0crwdne529:0",
-        dependencies: "crwdns531:0crwdne531:0"
+        platforms: "crwdns3125:0crwdne3125:0",
+        dependencies: "crwdns3127:0crwdne3127:0"
       },
       error: {
-        metaNotFound: "crwdns533:0crwdne533:0",
-        jarNotFound: "crwdns535:0crwdne535:0",
-        fileExtension: "crwdns537:0crwdne537:0",
-        unexpected: "crwdns539:0crwdne539:0",
-        invalidVersionString: "crwdns541:0crwdne541:0",
-        duplicateNameAndPlatform: "crwdns543:0crwdne543:0",
-        invalidNumOfPlatforms: "crwdns545:0crwdne545:0",
-        duplicate: "crwdns547:0crwdne547:0",
-        noFile: "crwdns549:0crwdne549:0",
-        mismatchedFileSize: "crwdns551:0crwdne551:0",
-        hashMismatch: "crwdns553:0crwdne553:0",
-        invalidPlatformVersion: "crwdns555:0crwdne555:0",
-        fileIOError: "crwdns557:0crwdne557:0",
-        unknown: "crwdns559:0crwdne559:0",
-        incomplete: "crwdns561:0{0}crwdne561:0",
-        noDescription: "crwdns563:0crwdne563:0",
-        invalidPluginDependencyNamespace: "crwdns565:0crwdne565:0",
-        invalidName: "crwdns567:0crwdne567:0",
+        metaNotFound: "crwdns3129:0crwdne3129:0",
+        jarNotFound: "crwdns3131:0crwdne3131:0",
+        fileExtension: "crwdns3133:0crwdne3133:0",
+        unexpected: "crwdns3135:0crwdne3135:0",
+        invalidVersionString: "crwdns3137:0crwdne3137:0",
+        duplicateNameAndPlatform: "crwdns3139:0crwdne3139:0",
+        invalidNumOfPlatforms: "crwdns3141:0crwdne3141:0",
+        duplicate: "crwdns3143:0crwdne3143:0",
+        noFile: "crwdns3145:0crwdne3145:0",
+        mismatchedFileSize: "crwdns3147:0crwdne3147:0",
+        hashMismatch: "crwdns3149:0crwdne3149:0",
+        invalidPlatformVersion: "crwdns3151:0crwdne3151:0",
+        fileIOError: "crwdns3153:0crwdne3153:0",
+        unknown: "crwdns3155:0crwdne3155:0",
+        incomplete: "crwdns3157:0{0}crwdne3157:0",
+        noDescription: "crwdns3159:0crwdne3159:0",
+        invalidPluginDependencyNamespace: "crwdns3161:0crwdne3161:0",
+        invalidName: "crwdns3163:0crwdne3163:0",
         channel: {
-          noName: "crwdns569:0crwdne569:0",
-          noColor: "crwdns571:0crwdne571:0"
+          noName: "crwdns3165:0crwdne3165:0",
+          noColor: "crwdns3167:0crwdne3167:0"
         }
       }
     },
     edit: {
-      platformVersions: "crwdns573:0{0}crwdne573:0",
-      pluginDeps: "crwdns575:0{0}crwdne575:0",
+      platformVersions: "crwdns3169:0{0}crwdne3169:0",
+      pluginDeps: "crwdns3171:0{0}crwdne3171:0",
       error: {
-        noPlatformVersions: "crwdns577:0crwdne577:0",
-        invalidVersionForPlatform: "crwdns579:0{0}crwdnd579:0{1}crwdne579:0",
-        invalidProjectNamespace: "crwdns581:0{0}crwdne581:0"
+        noPlatformVersions: "crwdns3173:0crwdne3173:0",
+        invalidVersionForPlatform: "crwdns3175:0{0}crwdnd3175:0{1}crwdne3175:0",
+        invalidProjectNamespace: "crwdns3177:0{0}crwdne3177:0"
       }
     },
     page: {
-      subheader: "crwdns583:0{0}crwdnd583:0{1}crwdne583:0",
-      dependencies: "crwdns585:0crwdne585:0",
-      platform: "crwdns587:0crwdne587:0",
-      required: "crwdns589:0crwdne589:0",
-      adminMsg: "crwdns591:0{0}crwdnd591:0{1}crwdne591:0",
-      reviewLogs: "crwdns593:0crwdne593:0",
-      reviewStart: "crwdns595:0crwdne595:0",
-      setRecommended: "crwdns597:0crwdne597:0",
-      setRecommendedTooltip: "crwdns599:0{0}crwdne599:0",
-      delete: "crwdns601:0crwdne601:0",
-      hardDelete: "crwdns603:0crwdne603:0",
-      restore: "crwdns605:0crwdne605:0",
-      download: "crwdns607:0crwdne607:0",
-      downloadExternal: "crwdns609:0crwdne609:0",
-      adminActions: "crwdns611:0crwdne611:0",
-      recommended: "crwdns613:0crwdne613:0",
-      partiallyApproved: "crwdns615:0crwdne615:0",
-      approved: "crwdns617:0crwdne617:0",
-      userAdminLogs: "crwdns619:0crwdne619:0",
-      unsafeWarning: "crwdns621:0crwdne621:0",
-      downloadUrlCopied: "crwdns623:0crwdne623:0",
+      subheader: "crwdns3179:0{0}crwdnd3179:0{1}crwdne3179:0",
+      dependencies: "crwdns3181:0crwdne3181:0",
+      platform: "crwdns3183:0crwdne3183:0",
+      required: "crwdns3185:0crwdne3185:0",
+      adminMsg: "crwdns3187:0{0}crwdnd3187:0{1}crwdne3187:0",
+      reviewLogs: "crwdns3189:0crwdne3189:0",
+      reviewStart: "crwdns3191:0crwdne3191:0",
+      setRecommended: "crwdns3193:0crwdne3193:0",
+      setRecommendedTooltip: "crwdns3195:0{0}crwdne3195:0",
+      delete: "crwdns3197:0crwdne3197:0",
+      hardDelete: "crwdns3199:0crwdne3199:0",
+      restore: "crwdns3201:0crwdne3201:0",
+      download: "crwdns3203:0crwdne3203:0",
+      downloadExternal: "crwdns3205:0crwdne3205:0",
+      adminActions: "crwdns3207:0crwdne3207:0",
+      recommended: "crwdns3209:0crwdne3209:0",
+      partiallyApproved: "crwdns3211:0crwdne3211:0",
+      approved: "crwdns3213:0crwdne3213:0",
+      userAdminLogs: "crwdns3215:0crwdne3215:0",
+      unsafeWarning: "crwdns3217:0crwdne3217:0",
+      downloadUrlCopied: "crwdns3219:0crwdne3219:0",
       confirmation: {
-        title: "crwdns625:0{0}crwdnd625:0{1}crwdnd625:0{2}crwdne625:0",
-        alert: "crwdns627:0crwdne627:0",
-        disclaimer: "crwdns629:0crwdne629:0",
-        agree: "crwdns631:0crwdne631:0",
-        deny: "crwdns633:0crwdne633:0"
+        title: "crwdns3221:0{0}crwdnd3221:0{1}crwdnd3221:0{2}crwdne3221:0",
+        alert: "crwdns3223:0crwdne3223:0",
+        disclaimer: "crwdns3225:0crwdne3225:0",
+        agree: "crwdns3227:0crwdne3227:0",
+        deny: "crwdns3229:0crwdne3229:0"
       }
     },
-    channels: "crwdns635:0crwdne635:0",
-    editChannels: "crwdns637:0crwdne637:0",
-    platforms: "crwdns639:0crwdne639:0",
+    channels: "crwdns3231:0crwdne3231:0",
+    editChannels: "crwdns3233:0crwdne3233:0",
+    platforms: "crwdns3235:0crwdne3235:0",
     error: {
-      onlyOnePublic: "crwdns641:0crwdne641:0"
+      onlyOnePublic: "crwdns3237:0crwdne3237:0"
     },
     success: {
-      softDelete: "crwdns643:0crwdne643:0",
-      hardDelete: "crwdns645:0crwdne645:0",
-      restore: "crwdns647:0crwdne647:0",
-      recommended: "crwdns649:0{0}crwdne649:0"
+      softDelete: "crwdns3239:0crwdne3239:0",
+      hardDelete: "crwdns3241:0crwdne3241:0",
+      restore: "crwdns3243:0crwdne3243:0",
+      recommended: "crwdns3245:0{0}crwdne3245:0"
     }
   },
   channel: {
     modal: {
-      titleNew: "crwdns651:0crwdne651:0",
-      titleEdit: "crwdns653:0crwdne653:0",
-      name: "crwdns655:0crwdne655:0",
-      color: "crwdns657:0crwdne657:0",
-      reviewQueue: "crwdns659:0crwdne659:0",
+      titleNew: "crwdns3247:0crwdne3247:0",
+      titleEdit: "crwdns3249:0crwdne3249:0",
+      name: "crwdns3251:0crwdne3251:0",
+      color: "crwdns3253:0crwdne3253:0",
+      reviewQueue: "crwdns3255:0crwdne3255:0",
       error: {
-        invalidName: "crwdns661:0crwdne661:0",
-        maxChannels: "crwdns663:0{0}crwdne663:0",
-        duplicateColor: "crwdns665:0crwdne665:0",
-        duplicateName: "crwdns667:0crwdne667:0",
-        tooLongName: "crwdns669:0crwdne669:0",
-        cannotDelete: "crwdns671:0crwdne671:0"
+        invalidName: "crwdns3257:0crwdne3257:0",
+        maxChannels: "crwdns3259:0{0}crwdne3259:0",
+        duplicateColor: "crwdns3261:0crwdne3261:0",
+        duplicateName: "crwdns3263:0crwdne3263:0",
+        tooLongName: "crwdns3265:0crwdne3265:0",
+        cannotDelete: "crwdns3267:0crwdne3267:0"
       }
     },
     manage: {
-      title: "crwdns673:0crwdne673:0",
-      subtitle: "crwdns675:0crwdne675:0",
-      channelName: "crwdns677:0crwdne677:0",
-      versionCount: "crwdns679:0crwdne679:0",
-      reviewed: "crwdns681:0crwdne681:0",
-      edit: "crwdns683:0crwdne683:0",
-      trash: "crwdns685:0crwdne685:0",
-      editButton: "crwdns687:0crwdne687:0",
-      deleteButton: "crwdns689:0crwdne689:0",
-      add: "crwdns691:0crwdne691:0"
+      title: "crwdns3269:0crwdne3269:0",
+      subtitle: "crwdns3271:0crwdne3271:0",
+      channelName: "crwdns3273:0crwdne3273:0",
+      versionCount: "crwdns3275:0crwdne3275:0",
+      reviewed: "crwdns3277:0crwdne3277:0",
+      edit: "crwdns3279:0crwdne3279:0",
+      trash: "crwdns3281:0crwdne3281:0",
+      editButton: "crwdns3283:0crwdne3283:0",
+      deleteButton: "crwdns3285:0crwdne3285:0",
+      add: "crwdns3287:0crwdne3287:0"
     }
   },
   organization: {
     new: {
-      title: "crwdns693:0crwdne693:0",
-      text: "crwdns1277:0crwdne1277:0",
-      name: "crwdns697:0crwdne697:0",
+      title: "crwdns3289:0crwdne3289:0",
+      text: "crwdns3291:0crwdne3291:0",
+      name: "crwdns3293:0crwdne3293:0",
       error: {
-        duplicateName: "crwdns699:0crwdne699:0",
-        invalidName: "crwdns701:0crwdne701:0",
-        tooManyOrgs: "crwdns703:0{0}crwdne703:0",
-        notEnabled: "crwdns705:0crwdne705:0",
-        jsonError: "crwdns707:0crwdne707:0",
-        hangarAuthValidationError: "crwdns709:0{0}crwdne709:0",
-        unknownError: "crwdns711:0crwdne711:0"
+        duplicateName: "crwdns3295:0crwdne3295:0",
+        invalidName: "crwdns3297:0crwdne3297:0",
+        tooManyOrgs: "crwdns3299:0{0}crwdne3299:0",
+        notEnabled: "crwdns3301:0crwdne3301:0",
+        jsonError: "crwdns3303:0crwdne3303:0",
+        hangarAuthValidationError: "crwdns3305:0{0}crwdne3305:0",
+        unknownError: "crwdns3307:0crwdne3307:0"
       }
     },
     settings: {
       members: {
-        invalidUser: "crwdns713:0{0}crwdne713:0",
-        alreadyInvited: "crwdns715:0{0}crwdne715:0",
-        notMember: "crwdns717:0{0}crwdne717:0",
-        invalidRole: "crwdns719:0{0}crwdne719:0"
+        invalidUser: "crwdns3309:0{0}crwdne3309:0",
+        alreadyInvited: "crwdns3311:0{0}crwdne3311:0",
+        notMember: "crwdns3313:0{0}crwdne3313:0",
+        invalidRole: "crwdns3315:0{0}crwdne3315:0"
       }
     }
   },
   form: {
     memberList: {
-      addUser: "crwdns721:0crwdne721:0",
-      create: "crwdns723:0crwdne723:0",
-      editUser: "crwdns725:0crwdne725:0",
-      invitedAs: "crwdns727:0{0}crwdne727:0"
+      addUser: "crwdns3317:0crwdne3317:0",
+      create: "crwdns3319:0crwdne3319:0",
+      editUser: "crwdns3321:0crwdne3321:0",
+      invitedAs: "crwdns3323:0{0}crwdne3323:0"
     }
   },
   notifications: {
-    title: "crwdns729:0crwdne729:0",
-    invites: "crwdns731:0crwdne731:0",
-    invited: "crwdns733:0{0}crwdne733:0",
-    inviteAccepted: "crwdns735:0{0}crwdne735:0",
-    readAll: "crwdns737:0crwdne737:0",
-    unread: "crwdns739:0crwdne739:0",
-    read: "crwdns741:0crwdne741:0",
-    all: "crwdns743:0crwdne743:0",
+    title: "crwdns3325:0crwdne3325:0",
+    invites: "crwdns3327:0crwdne3327:0",
+    invited: "crwdns3329:0{0}crwdne3329:0",
+    inviteAccepted: "crwdns3331:0{0}crwdne3331:0",
+    readAll: "crwdns3333:0crwdne3333:0",
+    unread: "crwdns3335:0crwdne3335:0",
+    read: "crwdns3337:0crwdne3337:0",
+    all: "crwdns3339:0crwdne3339:0",
     invite: {
-      all: "crwdns745:0crwdne745:0",
-      projects: "crwdns747:0crwdne747:0",
-      organizations: "crwdns749:0crwdne749:0",
+      all: "crwdns3341:0crwdne3341:0",
+      projects: "crwdns3343:0crwdne3343:0",
+      organizations: "crwdns3345:0crwdne3345:0",
       btns: {
-        accept: "crwdns751:0crwdne751:0",
-        decline: "crwdns753:0crwdne753:0",
-        unaccept: "crwdns755:0crwdne755:0"
+        accept: "crwdns3347:0crwdne3347:0",
+        decline: "crwdns3349:0crwdne3349:0",
+        unaccept: "crwdns3351:0crwdne3351:0"
       },
       msgs: {
-        accept: "crwdns757:0{0}crwdne757:0",
-        decline: "crwdns759:0{0}crwdne759:0",
-        unaccept: "crwdns761:0{0}crwdne761:0"
+        accept: "crwdns3353:0{0}crwdne3353:0",
+        decline: "crwdns3355:0{0}crwdne3355:0",
+        unaccept: "crwdns3357:0{0}crwdne3357:0"
       }
     },
     empty: {
-      unread: "crwdns763:0crwdne763:0",
-      read: "crwdns765:0crwdne765:0",
-      all: "crwdns767:0crwdne767:0",
-      invites: "crwdns769:0crwdne769:0"
+      unread: "crwdns3359:0crwdne3359:0",
+      read: "crwdns3361:0crwdne3361:0",
+      all: "crwdns3363:0crwdne3363:0",
+      invites: "crwdns3365:0crwdne3365:0"
     },
     project: {
-      reviewed: "crwdns771:0{0}crwdnd771:0{1}crwdne771:0",
-      reviewedPartial: "crwdns773:0{0}crwdnd773:0{1}crwdne773:0",
-      newVersion: "crwdns775:0{0}crwdnd775:0{1}crwdne775:0",
-      invite: "crwdns777:0{0}crwdnd777:0{1}crwdne777:0",
-      inviteRescinded: "crwdns779:0{0}crwdnd779:0{1}crwdne779:0",
-      removed: "crwdns781:0{0}crwdnd781:0{1}crwdne781:0",
-      roleChanged: "crwdns783:0{0}crwdnd783:0{1}crwdne783:0"
+      reviewed: "crwdns3367:0{0}crwdnd3367:0{1}crwdne3367:0",
+      reviewedPartial: "crwdns3369:0{0}crwdnd3369:0{1}crwdne3369:0",
+      newVersion: "crwdns3371:0{0}crwdnd3371:0{1}crwdne3371:0",
+      invite: "crwdns3373:0{0}crwdnd3373:0{1}crwdne3373:0",
+      inviteRescinded: "crwdns3375:0{0}crwdnd3375:0{1}crwdne3375:0",
+      removed: "crwdns3377:0{0}crwdnd3377:0{1}crwdne3377:0",
+      roleChanged: "crwdns3379:0{0}crwdnd3379:0{1}crwdne3379:0"
     },
     organization: {
-      invite: "crwdns785:0{0}crwdnd785:0{1}crwdne785:0",
-      inviteRescinded: "crwdns787:0{0}crwdnd787:0{1}crwdne787:0",
-      removed: "crwdns789:0{0}crwdnd789:0{1}crwdne789:0",
-      roleChanged: "crwdns791:0{0}crwdnd791:0{1}crwdne791:0"
+      invite: "crwdns3381:0{0}crwdnd3381:0{1}crwdne3381:0",
+      inviteRescinded: "crwdns3383:0{0}crwdnd3383:0{1}crwdne3383:0",
+      removed: "crwdns3385:0{0}crwdnd3385:0{1}crwdne3385:0",
+      roleChanged: "crwdns3387:0{0}crwdnd3387:0{1}crwdne3387:0"
     }
   },
   visibility: {
     notice: {
-      new: "crwdns793:0crwdne793:0",
-      needsChanges: "crwdns795:0crwdne795:0",
-      needsApproval: "crwdns797:0crwdne797:0",
-      softDelete: "crwdns799:0{0}crwdne799:0"
+      new: "crwdns3389:0crwdne3389:0",
+      needsChanges: "crwdns3391:0crwdne3391:0",
+      needsApproval: "crwdns3393:0crwdne3393:0",
+      softDelete: "crwdns3395:0{0}crwdne3395:0"
     },
     name: {
-      new: "crwdns801:0crwdne801:0",
-      public: "crwdns803:0crwdne803:0",
-      needsChanges: "crwdns805:0crwdne805:0",
-      needsApproval: "crwdns807:0crwdne807:0",
-      softDelete: "crwdns809:0crwdne809:0"
+      new: "crwdns3397:0crwdne3397:0",
+      public: "crwdns3399:0crwdne3399:0",
+      needsChanges: "crwdns3401:0crwdne3401:0",
+      needsApproval: "crwdns3403:0crwdne3403:0",
+      softDelete: "crwdns3405:0crwdne3405:0"
     },
     changes: {
       version: {
-        reviewed: "crwdns811:0crwdne811:0"
+        reviewed: "crwdns3407:0crwdne3407:0"
       }
     },
     modal: {
-      activatorBtn: "crwdns813:0crwdne813:0",
-      title: "crwdns815:0{0}crwdne815:0",
-      reason: "crwdns817:0crwdne817:0",
-      success: "crwdns819:0{0}crwdnd819:0{1}crwdne819:0"
+      activatorBtn: "crwdns3409:0crwdne3409:0",
+      title: "crwdns3411:0{0}crwdne3411:0",
+      reason: "crwdns3413:0crwdne3413:0",
+      success: "crwdns3415:0{0}crwdnd3415:0{1}crwdne3415:0"
     }
   },
   author: {
-    watching: "crwdns821:0crwdne821:0",
-    stars: "crwdns823:0crwdne823:0",
-    orgs: "crwdns825:0crwdne825:0",
-    viewOnForums: "crwdns827:0crwdne827:0",
-    taglineLabel: "crwdns829:0crwdne829:0",
-    editTagline: "crwdns831:0crwdne831:0",
-    memberSince: "crwdns833:0{0}crwdne833:0",
-    numProjects: "crwdns835:0{0}crwdnd835:0{0}crwdne835:0",
-    addTagline: "crwdns837:0crwdne837:0",
-    noOrgs: "crwdns839:0{0}crwdne839:0",
-    noWatching: "crwdns841:0{0}crwdne841:0",
-    noStarred: "crwdns843:0{0}crwdne843:0",
+    watching: "crwdns3417:0crwdne3417:0",
+    stars: "crwdns3419:0crwdne3419:0",
+    orgs: "crwdns3421:0crwdne3421:0",
+    viewOnForums: "crwdns3423:0crwdne3423:0",
+    taglineLabel: "crwdns3425:0crwdne3425:0",
+    editTagline: "crwdns3427:0crwdne3427:0",
+    memberSince: "crwdns3429:0{0}crwdne3429:0",
+    numProjects: "crwdns3431:0{0}crwdnd3431:0{0}crwdne3431:0",
+    addTagline: "crwdns3433:0crwdne3433:0",
+    noOrgs: "crwdns3435:0{0}crwdne3435:0",
+    noWatching: "crwdns3437:0{0}crwdne3437:0",
+    noStarred: "crwdns3439:0{0}crwdne3439:0",
     tooltips: {
-      settings: "crwdns845:0crwdne845:0",
-      lock: "crwdns847:0crwdne847:0",
-      unlock: "crwdns849:0crwdne849:0",
-      apiKeys: "crwdns851:0crwdne851:0",
-      activity: "crwdns853:0crwdne853:0",
-      admin: "crwdns855:0crwdne855:0"
+      settings: "crwdns3441:0crwdne3441:0",
+      lock: "crwdns3443:0crwdne3443:0",
+      unlock: "crwdns3445:0crwdne3445:0",
+      apiKeys: "crwdns3447:0crwdne3447:0",
+      activity: "crwdns3449:0crwdne3449:0",
+      admin: "crwdns3451:0crwdne3451:0"
     },
     lock: {
-      confirmLock: "crwdns857:0{0}crwdne857:0",
-      confirmUnlock: "crwdns859:0{0}crwdne859:0",
-      successLock: "crwdns861:0{0}crwdne861:0",
-      successUnlock: "crwdns863:0{0}crwdne863:0"
+      confirmLock: "crwdns3453:0{0}crwdne3453:0",
+      confirmUnlock: "crwdns3455:0{0}crwdne3455:0",
+      successLock: "crwdns3457:0{0}crwdne3457:0",
+      successUnlock: "crwdns3459:0{0}crwdne3459:0"
     },
     org: {
-      editAvatar: "crwdns865:0crwdne865:0"
+      editAvatar: "crwdns3461:0crwdne3461:0"
     },
     error: {
-      invalidTagline: "crwdns867:0crwdne867:0",
-      invalidUsername: "crwdns869:0crwdne869:0"
+      invalidTagline: "crwdns3463:0crwdne3463:0",
+      invalidUsername: "crwdns3465:0crwdne3465:0"
     }
   },
   linkout: {
-    title: "crwdns871:0crwdne871:0",
-    text: "crwdns873:0{0}crwdne873:0",
-    abort: "crwdns875:0crwdne875:0",
-    continue: "crwdns877:0crwdne877:0"
+    title: "crwdns3467:0crwdne3467:0",
+    text: "crwdns3469:0{0}crwdne3469:0",
+    abort: "crwdns3471:0crwdne3471:0",
+    continue: "crwdns3473:0crwdne3473:0"
   },
   flags: {
-    header: "crwdns879:0crwdne879:0",
-    noFlags: "crwdns881:0crwdne881:0",
-    resolved: "crwdns883:0{0}crwdnd883:0{1}crwdne883:0",
-    notResolved: "crwdns885:0crwdne885:0"
+    header: "crwdns3475:0crwdne3475:0",
+    noFlags: "crwdns3477:0crwdne3477:0",
+    resolved: "crwdns3479:0{0}crwdnd3479:0{1}crwdne3479:0",
+    notResolved: "crwdns3481:0crwdne3481:0"
   },
   notes: {
-    header: "crwdns887:0crwdne887:0",
-    noNotes: "crwdns889:0crwdne889:0",
-    addNote: "crwdns891:0crwdne891:0",
-    notes: "crwdns893:0crwdne893:0",
-    placeholder: "crwdns895:0crwdne895:0"
+    header: "crwdns3483:0crwdne3483:0",
+    noNotes: "crwdns3485:0crwdne3485:0",
+    addNote: "crwdns3487:0crwdne3487:0",
+    notes: "crwdns3489:0crwdne3489:0",
+    placeholder: "crwdns3491:0crwdne3491:0"
   },
   stats: {
-    title: "crwdns897:0crwdne897:0",
-    plugins: "crwdns899:0crwdne899:0",
-    reviews: "crwdns901:0crwdne901:0",
-    uploads: "crwdns903:0crwdne903:0",
-    downloads: "crwdns905:0crwdne905:0",
-    totalDownloads: "crwdns907:0crwdne907:0",
-    unsafeDownloads: "crwdns909:0crwdne909:0",
-    flags: "crwdns911:0crwdne911:0",
-    openedFlags: "crwdns913:0crwdne913:0",
-    closedFlags: "crwdns915:0crwdne915:0"
+    title: "crwdns3493:0crwdne3493:0",
+    plugins: "crwdns3495:0crwdne3495:0",
+    reviews: "crwdns3497:0crwdne3497:0",
+    uploads: "crwdns3499:0crwdne3499:0",
+    downloads: "crwdns3501:0crwdne3501:0",
+    totalDownloads: "crwdns3503:0crwdne3503:0",
+    unsafeDownloads: "crwdns3505:0crwdne3505:0",
+    flags: "crwdns3507:0crwdne3507:0",
+    openedFlags: "crwdns3509:0crwdne3509:0",
+    closedFlags: "crwdns3511:0crwdne3511:0"
   },
   health: {
-    title: "crwdns917:0crwdne917:0",
-    noTopicProject: "crwdns919:0crwdne919:0",
-    erroredJobs: "crwdns921:0crwdne921:0",
-    jobText: "crwdns923:0{0}crwdnd923:0{1}crwdnd923:0{2}crwdne923:0",
-    staleProjects: "crwdns925:0crwdne925:0",
-    notPublicProjects: "crwdns927:0crwdne927:0",
-    noPlatform: "crwdns929:0crwdne929:0",
-    missingFileProjects: "crwdns931:0crwdne931:0",
-    empty: "crwdns933:0crwdne933:0"
+    title: "crwdns3513:0crwdne3513:0",
+    noTopicProject: "crwdns3515:0crwdne3515:0",
+    erroredJobs: "crwdns3517:0crwdne3517:0",
+    jobText: "crwdns3519:0{0}crwdnd3519:0{1}crwdnd3519:0{2}crwdne3519:0",
+    staleProjects: "crwdns3521:0crwdne3521:0",
+    notPublicProjects: "crwdns3523:0crwdne3523:0",
+    noPlatform: "crwdns3525:0crwdne3525:0",
+    missingFileProjects: "crwdns3527:0crwdne3527:0",
+    empty: "crwdns3529:0crwdne3529:0"
   },
   reviews: {
-    headline: "crwdns935:0{0}crwdnd935:0{1}crwdne935:0",
-    title: "crwdns937:0crwdne937:0",
-    projectPage: "crwdns939:0crwdne939:0",
-    downloadFile: "crwdns941:0crwdne941:0",
-    startReview: "crwdns943:0crwdne943:0",
-    stopReview: "crwdns945:0crwdne945:0",
-    approve: "crwdns947:0crwdne947:0",
-    approvePartial: "crwdns949:0crwdne949:0",
-    notUnderReview: "crwdns951:0crwdne951:0",
-    reviewMessage: "crwdns953:0crwdne953:0",
-    addMessage: "crwdns955:0crwdne955:0",
-    reopenReview: "crwdns957:0crwdne957:0",
-    undoApproval: "crwdns959:0crwdne959:0",
-    hideClosed: "crwdns961:0crwdne961:0",
+    headline: "crwdns3531:0{0}crwdnd3531:0{1}crwdne3531:0",
+    title: "crwdns3533:0crwdne3533:0",
+    projectPage: "crwdns3535:0crwdne3535:0",
+    downloadFile: "crwdns3537:0crwdne3537:0",
+    startReview: "crwdns3539:0crwdne3539:0",
+    stopReview: "crwdns3541:0crwdne3541:0",
+    approve: "crwdns3543:0crwdne3543:0",
+    approvePartial: "crwdns3545:0crwdne3545:0",
+    notUnderReview: "crwdns3547:0crwdne3547:0",
+    reviewMessage: "crwdns3549:0crwdne3549:0",
+    addMessage: "crwdns3551:0crwdne3551:0",
+    reopenReview: "crwdns3553:0crwdne3553:0",
+    undoApproval: "crwdns3555:0crwdne3555:0",
+    hideClosed: "crwdns3557:0crwdne3557:0",
     error: {
-      noReviewStarted: "crwdns963:0crwdne963:0",
-      notCorrectUser: "crwdns965:0crwdne965:0",
-      cannotReopen: "crwdns967:0crwdne967:0",
-      onlyOneReview: "crwdns969:0crwdne969:0",
-      badUndo: "crwdns971:0crwdne971:0"
+      noReviewStarted: "crwdns3559:0crwdne3559:0",
+      notCorrectUser: "crwdns3561:0crwdne3561:0",
+      cannotReopen: "crwdns3563:0crwdne3563:0",
+      onlyOneReview: "crwdns3565:0crwdne3565:0",
+      badUndo: "crwdns3567:0crwdne3567:0"
     },
     presets: {
-      message: "crwdns973:0{msg}crwdne973:0",
-      start: "crwdns975:0{name}crwdne975:0",
-      stop: "crwdns977:0{name}crwdnd977:0{msg}crwdne977:0",
-      reopen: "crwdns979:0{name}crwdne979:0",
-      approve: "crwdns981:0{name}crwdne981:0",
-      approvePartial: "crwdns983:0{name}crwdne983:0",
-      undoApproval: "crwdns985:0{name}crwdne985:0",
-      reviewTitle: "crwdns987:0{name}crwdne987:0"
+      message: "crwdns3569:0{msg}crwdne3569:0",
+      start: "crwdns3571:0{name}crwdne3571:0",
+      stop: "crwdns3573:0{name}crwdnd3573:0{msg}crwdne3573:0",
+      reopen: "crwdns3575:0{name}crwdne3575:0",
+      approve: "crwdns3577:0{name}crwdne3577:0",
+      approvePartial: "crwdns3579:0{name}crwdne3579:0",
+      undoApproval: "crwdns3581:0{name}crwdne3581:0",
+      reviewTitle: "crwdns3583:0{name}crwdne3583:0"
     },
     state: {
-      ongoing: "crwdns989:0crwdne989:0",
-      stopped: "crwdns991:0crwdne991:0",
-      approved: "crwdns993:0crwdne993:0",
-      partiallyApproved: "crwdns995:0crwdne995:0",
-      lastUpdate: "crwdns997:0{0}crwdne997:0"
+      ongoing: "crwdns3585:0crwdne3585:0",
+      stopped: "crwdns3587:0crwdne3587:0",
+      approved: "crwdns3589:0crwdne3589:0",
+      partiallyApproved: "crwdns3591:0crwdne3591:0",
+      lastUpdate: "crwdns3593:0{0}crwdne3593:0"
     }
   },
   apiKeys: {
-    title: "crwdns999:0crwdne999:0",
-    createNew: "crwdns1001:0crwdne1001:0",
-    existing: "crwdns1003:0crwdne1003:0",
-    name: "crwdns1005:0crwdne1005:0",
-    key: "crwdns1007:0crwdne1007:0",
-    keyIdentifier: "crwdns1009:0crwdne1009:0",
-    permissions: "crwdns1011:0crwdne1011:0",
-    delete: "crwdns1013:0crwdne1013:0",
-    deleteKey: "crwdns1015:0crwdne1015:0",
-    createKey: "crwdns1017:0crwdne1017:0",
-    noKeys: "crwdns1019:0crwdne1019:0",
+    title: "crwdns3595:0crwdne3595:0",
+    createNew: "crwdns3597:0crwdne3597:0",
+    existing: "crwdns3599:0crwdne3599:0",
+    name: "crwdns3601:0crwdne3601:0",
+    key: "crwdns3603:0crwdne3603:0",
+    keyIdentifier: "crwdns3605:0crwdne3605:0",
+    permissions: "crwdns3607:0crwdne3607:0",
+    delete: "crwdns3609:0crwdne3609:0",
+    deleteKey: "crwdns3611:0crwdne3611:0",
+    createKey: "crwdns3613:0crwdne3613:0",
+    noKeys: "crwdns3615:0crwdne3615:0",
     success: {
-      delete: "crwdns1021:0{0}crwdne1021:0",
-      create: "crwdns1023:0{0}crwdne1023:0"
+      delete: "crwdns3617:0{0}crwdne3617:0",
+      create: "crwdns3619:0{0}crwdne3619:0"
     },
     error: {
-      notEnoughPerms: "crwdns1025:0crwdne1025:0",
-      duplicateName: "crwdns1027:0crwdne1027:0"
+      notEnoughPerms: "crwdns3621:0crwdne3621:0",
+      duplicateName: "crwdns3623:0crwdne3623:0"
     }
   },
   apiDocs: {
-    title: "crwdns1029:0crwdne1029:0"
+    title: "crwdns3625:0crwdne3625:0"
   },
   platformVersions: {
-    title: "crwdns1031:0crwdne1031:0",
-    platform: "crwdns1033:0crwdne1033:0",
-    versions: "crwdns1035:0crwdne1035:0",
-    addVersion: "crwdns1037:0crwdne1037:0",
-    saveChanges: "crwdns1039:0crwdne1039:0",
-    success: "crwdns1041:0crwdne1041:0"
+    title: "crwdns3627:0crwdne3627:0",
+    platform: "crwdns3629:0crwdne3629:0",
+    versions: "crwdns3631:0crwdne3631:0",
+    addVersion: "crwdns3633:0crwdne3633:0",
+    saveChanges: "crwdns3635:0crwdne3635:0",
+    success: "crwdns3637:0crwdne3637:0"
   },
   flagReview: {
-    title: "crwdns1043:0crwdne1043:0",
-    noFlags: "crwdns1045:0crwdne1045:0",
-    msgUser: "crwdns1047:0crwdne1047:0",
-    msgProjectOwner: "crwdns1049:0crwdne1049:0",
-    markResolved: "crwdns1051:0crwdne1051:0",
-    line1: "crwdns1053:0{0}crwdnd1053:0{1}crwdnd1053:0{2}crwdne1053:0",
-    line2: "crwdns1055:0{0}crwdne1055:0",
-    line3: "crwdns1057:0{0}crwdne1057:0"
+    title: "crwdns3639:0crwdne3639:0",
+    noFlags: "crwdns3641:0crwdne3641:0",
+    msgUser: "crwdns3643:0crwdne3643:0",
+    msgProjectOwner: "crwdns3645:0crwdne3645:0",
+    markResolved: "crwdns3647:0crwdne3647:0",
+    line1: "crwdns3649:0{0}crwdnd3649:0{1}crwdnd3649:0{2}crwdne3649:0",
+    line2: "crwdns3651:0{0}crwdne3651:0",
+    line3: "crwdns3653:0{0}crwdne3653:0"
   },
   userActivity: {
-    title: "crwdns1059:0{0}crwdne1059:0",
-    reviews: "crwdns1061:0crwdne1061:0",
-    flags: "crwdns1063:0crwdne1063:0",
-    reviewApproved: "crwdns1065:0crwdne1065:0",
-    flagResolved: "crwdns1067:0crwdne1067:0",
+    title: "crwdns3655:0{0}crwdne3655:0",
+    reviews: "crwdns3657:0crwdne3657:0",
+    flags: "crwdns3659:0crwdne3659:0",
+    reviewApproved: "crwdns3661:0crwdne3661:0",
+    flagResolved: "crwdns3663:0crwdne3663:0",
     error: {
-      isOrg: "crwdns1069:0crwdne1069:0"
+      isOrg: "crwdns3665:0crwdne3665:0"
     }
   },
   userAdmin: {
-    title: "crwdns1071:0crwdne1071:0",
-    organizations: "crwdns1073:0crwdne1073:0",
-    organization: "crwdns1075:0crwdne1075:0",
-    projects: "crwdns1077:0crwdne1077:0",
-    project: "crwdns1079:0crwdne1079:0",
-    owner: "crwdns1081:0crwdne1081:0",
-    role: "crwdns1083:0crwdne1083:0",
-    accepted: "crwdns1085:0crwdne1085:0",
-    sidebar: "crwdns1087:0crwdne1087:0",
-    hangarAuth: "crwdns1089:0crwdne1089:0",
-    forum: "crwdns1091:0crwdne1091:0"
+    title: "crwdns3667:0crwdne3667:0",
+    organizations: "crwdns3669:0crwdne3669:0",
+    organization: "crwdns3671:0crwdne3671:0",
+    projects: "crwdns3673:0crwdne3673:0",
+    project: "crwdns3675:0crwdne3675:0",
+    owner: "crwdns3677:0crwdne3677:0",
+    role: "crwdns3679:0crwdne3679:0",
+    accepted: "crwdns3681:0crwdne3681:0",
+    sidebar: "crwdns3683:0crwdne3683:0",
+    hangarAuth: "crwdns3685:0crwdne3685:0",
+    forum: "crwdns3687:0crwdne3687:0"
   },
   userActionLog: {
-    title: "crwdns1093:0crwdne1093:0",
-    user: "crwdns1095:0crwdne1095:0",
-    address: "crwdns1097:0crwdne1097:0",
-    time: "crwdns1099:0crwdne1099:0",
-    action: "crwdns1101:0crwdne1101:0",
-    context: "crwdns1103:0crwdne1103:0",
-    oldState: "crwdns1105:0crwdne1105:0",
-    newState: "crwdns1107:0crwdne1107:0",
-    markdownView: "crwdns1109:0crwdne1109:0",
-    diffView: "crwdns1111:0crwdne1111:0",
+    title: "crwdns3689:0crwdne3689:0",
+    user: "crwdns3691:0crwdne3691:0",
+    address: "crwdns3693:0crwdne3693:0",
+    time: "crwdns3695:0crwdne3695:0",
+    action: "crwdns3697:0crwdne3697:0",
+    context: "crwdns3699:0crwdne3699:0",
+    oldState: "crwdns3701:0crwdne3701:0",
+    newState: "crwdns3703:0crwdne3703:0",
+    markdownView: "crwdns3705:0crwdne3705:0",
+    diffView: "crwdns3707:0crwdne3707:0",
     types: {
-      ProjectVisibilityChanged: "crwdns1113:0crwdne1113:0",
-      ProjectRename: "crwdns1115:0crwdne1115:0",
-      ProjectFlagged: "crwdns1117:0crwdne1117:0",
-      ProjectSettingsChanged: "crwdns1119:0crwdne1119:0",
-      ProjectIconChanged: "crwdns1121:0crwdne1121:0",
-      ProjectFlagResolved: "crwdns1123:0crwdne1123:0",
-      ProjectChannelCreated: "crwdns1125:0crwdne1125:0",
-      ProjectChannelEdited: "crwdns1127:0crwdne1127:0",
-      ProjectChannelDeleted: "crwdns1129:0crwdne1129:0",
-      ProjectInvitesSent: "crwdns1131:0crwdne1131:0",
-      ProjectInviteDeclined: "crwdns1133:0crwdne1133:0",
-      ProjectInviteUnaccepted: "crwdns1135:0crwdne1135:0",
-      ProjectMemberAdded: "crwdns1137:0crwdne1137:0",
-      ProjectMembersRemoved: "crwdns1139:0crwdne1139:0",
-      ProjectMemberRolesChanged: "crwdns1141:0crwdne1141:0",
-      ProjectPageCreated: "crwdns1143:0crwdne1143:0",
-      ProjectPageDeleted: "crwdns1145:0crwdne1145:0",
-      ProjectPageEdited: "crwdns1147:0crwdne1147:0",
-      VersionVisibilityChanged: "crwdns1149:0crwdne1149:0",
-      VersionDeleted: "crwdns1151:0crwdne1151:0",
-      VersionCreated: "crwdns1153:0crwdne1153:0",
-      VersionDescriptionEdited: "crwdns1155:0crwdne1155:0",
-      VersionReviewStateChanged: "crwdns1157:0crwdne1157:0",
-      VersionPluginDependencyAdded: "crwdns1159:0crwdne1159:0",
-      VersionPluginDependencyEdited: "crwdns1161:0crwdne1161:0",
-      VersionPluginDependencyRemoved: "crwdns1163:0crwdne1163:0",
-      VersionPlatformDependencyAdded: "crwdns1165:0crwdne1165:0",
-      VersionPlatformDependencyRemoved: "crwdns1167:0crwdne1167:0",
-      UserTaglineChanged: "crwdns1169:0crwdne1169:0",
-      UserLocked: "crwdns1171:0crwdne1171:0",
-      UserUnlocked: "crwdns1173:0crwdne1173:0",
-      UserApikeyCreated: "crwdns1175:0crwdne1175:0",
-      UserApikeyDeleted: "crwdns1177:0crwdne1177:0",
-      OrganizationInvitesSent: "crwdns1179:0crwdne1179:0",
-      OrganizationInviteDeclined: "crwdns1181:0crwdne1181:0",
-      OrganizationInviteUnaccepted: "crwdns1183:0crwdne1183:0",
-      OrganizationMemberAdded: "crwdns1185:0crwdne1185:0",
-      OrganizationMembersRemoved: "crwdns1187:0crwdne1187:0",
-      OrganizationMemberRolesChanged: "crwdns1189:0crwdne1189:0"
+      ProjectVisibilityChanged: "crwdns3709:0crwdne3709:0",
+      ProjectRename: "crwdns3711:0crwdne3711:0",
+      ProjectFlagged: "crwdns3713:0crwdne3713:0",
+      ProjectSettingsChanged: "crwdns3715:0crwdne3715:0",
+      ProjectIconChanged: "crwdns3717:0crwdne3717:0",
+      ProjectFlagResolved: "crwdns3719:0crwdne3719:0",
+      ProjectChannelCreated: "crwdns3721:0crwdne3721:0",
+      ProjectChannelEdited: "crwdns3723:0crwdne3723:0",
+      ProjectChannelDeleted: "crwdns3725:0crwdne3725:0",
+      ProjectInvitesSent: "crwdns3727:0crwdne3727:0",
+      ProjectInviteDeclined: "crwdns3729:0crwdne3729:0",
+      ProjectInviteUnaccepted: "crwdns3731:0crwdne3731:0",
+      ProjectMemberAdded: "crwdns3733:0crwdne3733:0",
+      ProjectMembersRemoved: "crwdns3735:0crwdne3735:0",
+      ProjectMemberRolesChanged: "crwdns3737:0crwdne3737:0",
+      ProjectPageCreated: "crwdns3739:0crwdne3739:0",
+      ProjectPageDeleted: "crwdns3741:0crwdne3741:0",
+      ProjectPageEdited: "crwdns3743:0crwdne3743:0",
+      VersionVisibilityChanged: "crwdns3745:0crwdne3745:0",
+      VersionDeleted: "crwdns3747:0crwdne3747:0",
+      VersionCreated: "crwdns3749:0crwdne3749:0",
+      VersionDescriptionEdited: "crwdns3751:0crwdne3751:0",
+      VersionReviewStateChanged: "crwdns3753:0crwdne3753:0",
+      VersionPluginDependencyAdded: "crwdns3755:0crwdne3755:0",
+      VersionPluginDependencyEdited: "crwdns3757:0crwdne3757:0",
+      VersionPluginDependencyRemoved: "crwdns3759:0crwdne3759:0",
+      VersionPlatformDependencyAdded: "crwdns3761:0crwdne3761:0",
+      VersionPlatformDependencyRemoved: "crwdns3763:0crwdne3763:0",
+      UserTaglineChanged: "crwdns3765:0crwdne3765:0",
+      UserLocked: "crwdns3767:0crwdne3767:0",
+      UserUnlocked: "crwdns3769:0crwdne3769:0",
+      UserApikeyCreated: "crwdns3771:0crwdne3771:0",
+      UserApikeyDeleted: "crwdns3773:0crwdne3773:0",
+      OrganizationInvitesSent: "crwdns3775:0crwdne3775:0",
+      OrganizationInviteDeclined: "crwdns3777:0crwdne3777:0",
+      OrganizationInviteUnaccepted: "crwdns3779:0crwdne3779:0",
+      OrganizationMemberAdded: "crwdns3781:0crwdne3781:0",
+      OrganizationMembersRemoved: "crwdns3783:0crwdne3783:0",
+      OrganizationMemberRolesChanged: "crwdns3785:0crwdne3785:0"
     }
   },
   versionApproval: {
-    title: "crwdns1191:0crwdne1191:0",
-    inReview: "crwdns1193:0crwdne1193:0",
-    approvalQueue: "crwdns1195:0crwdne1195:0",
-    queuedBy: "crwdns1197:0crwdne1197:0",
-    status: "crwdns1199:0crwdne1199:0",
-    project: "crwdns1201:0crwdne1201:0",
-    date: "crwdns1203:0crwdne1203:0",
-    version: "crwdns1205:0crwdne1205:0",
-    started: "crwdns1207:0{0}crwdne1207:0",
-    ended: "crwdns1209:0{0}crwdne1209:0",
+    title: "crwdns3787:0crwdne3787:0",
+    inReview: "crwdns3789:0crwdne3789:0",
+    approvalQueue: "crwdns3791:0crwdne3791:0",
+    queuedBy: "crwdns3793:0crwdne3793:0",
+    status: "crwdns3795:0crwdne3795:0",
+    project: "crwdns3797:0crwdne3797:0",
+    date: "crwdns3799:0crwdne3799:0",
+    version: "crwdns3801:0crwdne3801:0",
+    started: "crwdns3803:0{0}crwdne3803:0",
+    ended: "crwdns3805:0{0}crwdne3805:0",
     statuses: {
-      ongoing: "crwdns1211:0{0}crwdne1211:0",
-      stopped: "crwdns1213:0{0}crwdne1213:0",
-      approved: "crwdns1215:0{0}crwdne1215:0"
+      ongoing: "crwdns3807:0{0}crwdne3807:0",
+      stopped: "crwdns3809:0{0}crwdne3809:0",
+      approved: "crwdns3811:0{0}crwdne3811:0"
     }
   },
   projectApproval: {
-    title: "crwdns1217:0crwdne1217:0",
-    sendForApproval: "crwdns1219:0crwdne1219:0",
-    noProjects: "crwdns1221:0crwdne1221:0",
-    needsApproval: "crwdns1223:0crwdne1223:0",
-    awaitingChanges: "crwdns1225:0crwdne1225:0",
-    description: "crwdns1227:0{0}crwdnd1227:0{1}crwdne1227:0"
+    title: "crwdns3813:0crwdne3813:0",
+    sendForApproval: "crwdns3815:0crwdne3815:0",
+    noProjects: "crwdns3817:0crwdne3817:0",
+    needsApproval: "crwdns3819:0crwdne3819:0",
+    awaitingChanges: "crwdns3821:0crwdne3821:0",
+    description: "crwdns3823:0{0}crwdnd3823:0{1}crwdne3823:0"
   },
   donate: {
-    title: "crwdns1229:0crwdne1229:0",
-    monthly: "crwdns1231:0crwdne1231:0",
-    oneTime: "crwdns1233:0crwdne1233:0",
-    selectAmount: "crwdns1235:0crwdne1235:0",
-    legal: "crwdns1237:0{0}crwdne1237:0",
-    cta: "crwdns1239:0crwdne1239:0",
-    submit: "crwdns1241:0{0}crwdne1241:0"
+    title: "crwdns3825:0crwdne3825:0",
+    monthly: "crwdns3827:0crwdne3827:0",
+    oneTime: "crwdns3829:0crwdne3829:0",
+    selectAmount: "crwdns3831:0crwdne3831:0",
+    legal: "crwdns3833:0{0}crwdne3833:0",
+    cta: "crwdns3835:0crwdne3835:0",
+    submit: "crwdns3837:0{0}crwdne3837:0"
   },
   lang: {
-    button: "crwdns1243:0crwdne1243:0",
-    title: "crwdns1245:0crwdne1245:0",
-    available: "crwdns1247:0crwdne1247:0",
-    hangarAuth: "crwdns1249:0crwdne1249:0"
+    button: "crwdns3839:0crwdne3839:0",
+    title: "crwdns3841:0crwdne3841:0",
+    available: "crwdns3843:0crwdne3843:0",
+    hangarAuth: "crwdns3845:0crwdne3845:0"
   },
   validation: {
-    required: "crwdns1251:0{0}crwdne1251:0",
-    maxLength: "crwdns1253:0{0}crwdne1253:0",
-    minLength: "crwdns1255:0{0}crwdne1255:0",
-    invalidFormat: "crwdns1257:0{0}crwdne1257:0",
-    invalidUrl: "crwdns1259:0crwdne1259:0"
+    required: "crwdns3847:0{0}crwdne3847:0",
+    maxLength: "crwdns3849:0{0}crwdne3849:0",
+    minLength: "crwdns3851:0{0}crwdne3851:0",
+    invalidFormat: "crwdns3853:0{0}crwdne3853:0",
+    invalidUrl: "crwdns3855:0crwdne3855:0"
   },
   prompts: {
-    confirm: "crwdns1261:0crwdne1261:0",
+    confirm: "crwdns3857:0crwdne3857:0",
     changeAvatar: {
-      title: "crwdns1263:0crwdne1263:0",
-      message: "crwdns1265:0crwdne1265:0"
+      title: "crwdns3859:0crwdne3859:0",
+      message: "crwdns3861:0crwdne3861:0"
     }
   },
   error: {
-    userLocked: "crwdns1267:0crwdne1267:0",
-    401: "crwdns1269:0crwdne1269:0",
-    403: "crwdns1271:0crwdne1271:0",
-    404: "crwdns1273:0crwdne1273:0",
-    unknown: "crwdns1275:0crwdne1275:0"
+    userLocked: "crwdns3863:0crwdne3863:0",
+    401: "crwdns3865:0crwdne3865:0",
+    403: "crwdns3867:0crwdne3867:0",
+    404: "crwdns3869:0crwdne3869:0",
+    unknown: "crwdns3871:0crwdne3871:0"
   }
 };
-export default msgs;
