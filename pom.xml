@@ -27,10 +27,10 @@
 
         <!-- dependency management -->
         <jdbi3-bom.version>3.20.1</jdbi3-bom.version>
+        <configurate.version>4.1.1</configurate.version>
 
         <!-- dependencies -->
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
-        <freemarker-java8.version>2.0.0</freemarker-java8.version>
         <flexmark-all.version>0.62.2</flexmark-all.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20210307</org-json.version>
@@ -55,7 +55,7 @@
                 <groupId>org.spongepowered</groupId>
                 <artifactId>configurate-bom</artifactId>
                 <type>pom</type>
-                <version>4.1.1</version>
+                <version>${configurate.version}</version>
                 <scope>import</scope>
             </dependency>
         </dependencies>

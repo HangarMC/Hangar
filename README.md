@@ -55,11 +55,13 @@ Projects/
 * [Yarn]
 ### Setting up
 To get both Hangar and HangarAuth running locally:
-1. To start all the docker services move into Hangar's docker folder `cd Hangar/docker` the run `docker-compose up -d`. 
-   If you are using IntelliJ, you can also add `Hangar/docker/docker-compose.yml` as a Run Configuration and use that to start up the services.
+1. Setup HangarAuth
+   1. See [HangarAuth README](https://github.com/HangarMC/HangarAuth/blob/master/README.md)
+   2. Start HangarAuth's docker services
+   3. Create HangarAuth's hydra client
 2. Move to Hangar's frontend directory `Hangar/frontend`. In that directory run `yarn install` followed by `yarn dev`.
-3. Setup the hangar client in hydra (see hangar auth readme)
-5. Navigate to http://localhost:3000 and login. 
+3. Setup the hangar client in hydra (see [HangarAuth README](https://github.com/HangarMC/HangarAuth/blob/master/README.md))
+4. Navigate to http://localhost:3000 and login.
 
 
 ### Notes
