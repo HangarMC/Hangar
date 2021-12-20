@@ -19,6 +19,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
+import { Announcement as AnnouncementObject } from 'hangar-api';
 import Header from '~/components/layouts/Header.vue';
 import Footer from '~/components/layouts/Footer.vue';
 import Announcement from '~/components/layouts/Announcement.vue';
@@ -36,10 +37,10 @@ import DonationResult from '~/components/donation/DonationResult.vue';
 })
 export default class DefaultLayout extends Vue {
     title = 'Hangar';
-    announcements: Announcement[] = [];
+    announcements: AnnouncementObject[] = [];
 
     async fetch() {
-        this.announcements = await this.$api.requestInternal<Announcement[]>('data/announcements', false).catch<any>(this.$util.handlePageRequestError);
+        this.announcements = await this.$api.requestInternal<AnnouncementObject[]>('data/announcements', false).catch<any>(this.$util.handlePageRequestError);
     }
 }
 </script>

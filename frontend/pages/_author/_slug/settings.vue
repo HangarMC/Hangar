@@ -304,7 +304,7 @@
                                     </v-col>
                                 </v-row>
                             </div>
-                            <v-divider />
+                            <v-divider v-if="$perms.canHardDeleteProject" />
                             <div v-if="$perms.canHardDeleteProject" class="error darken-4">
                                 <!-- TODO striped background to separate from normal delete-->
                                 <h2>{{ $t('project.settings.hardDelete') }}</h2>
@@ -378,7 +378,6 @@
                                         prepend-inner-icon="mdi-file-word-box"
                                     />
                                 </div>
-                                <v-divider />
                             </v-form>
                         </v-tab-item>
                     </v-tabs>
@@ -660,5 +659,6 @@ h2 {
 
 .v-window-item {
     padding-left: 10px;
+    padding-right: 10px;
 }
 </style>

@@ -189,7 +189,7 @@ import { HangarProjectMixin } from '~/components/mixins';
 import { ProjectPermission } from '~/utils/perms';
 import { NamedPermission, Platform } from '~/types/enums';
 import { MarkdownEditor } from '~/components/markdown';
-import ChannelModal from '~/components/modals/ChannelModal.vue';
+import ChannelModal from '~/components/modals/projects/ChannelModal.vue';
 import { RootState } from '~/store';
 import DependencyTable from '~/components/modals/versions/DependencyTable.vue';
 
