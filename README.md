@@ -76,6 +76,16 @@ To get both Hangar and HangarAuth running locally:
 Deployment happens via Docker, checkout the stack in the docker folder. The Spring Boot configuration file used for deployment can be found at
 `docker/deployment/hangar-backend/application.yml`.
 
+## Translations
+
+Hangar uses Crowdin for translations. Instructions on how to sign up for that will follow here.
+
+Getting translations locally (requires crowdin cli, ran in root folder):
+
+`crowdin pull -b master -T <PAT>`
+
+To only download translated strings (to highlight whats missing), add `--skip-untranslated-strings`
+
 ## Contributing
 
 There is a bunch of stuff to do, some of that is noted in the [**Roadmap Project**](https://github.com/PaperMC/Hangar/projects/1). 

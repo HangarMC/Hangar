@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import { NuxtConfig } from '@nuxt/types';
 import colors from 'vuetify/lib/util/colors';
 import { LocaleMessages } from 'vue-i18n';
+import { LocaleObject } from '@nuxtjs/i18n';
 import en from '~/locales/en';
 
 require('events').EventEmitter.defaultMaxListeners = 20;
@@ -15,7 +16,10 @@ const host = process.env.host || 'localhost';
 const nodeEnv = process.env.NODE_ENV;
 const publicPath = process.env.PUBLIC_PATH || '/_nuxt/';
 
-const locales = fs.readdirSync('locales').map((f) => require('./locales/' + f).default as typeof en);
+const locales = fs
+    .readdirSync('locales')
+    .filter((f) => f.endsWith('.ts'))
+    .map((f) => require('./locales/' + f).default as typeof en);
 
 // noinspection JSUnusedGlobalSymbols
 export default {
@@ -162,7 +166,7 @@ export default {
                 iso: msgs.meta.iso,
                 name: msgs.meta.name,
                 icon: msgs.meta.icon,
-            };
+            } as LocaleObject;
         }),
         vueI18n: {
             locale: 'en',
