@@ -69,7 +69,7 @@ export default class ProjectPageList extends HangarProjectMixin {
 
 <style lang="scss" scoped>
 .v-treeview {
-    overflow-x: scroll;
+    overflow-x: auto;
 
     &::v-deep .v-treeview-node__label {
         overflow: visible;

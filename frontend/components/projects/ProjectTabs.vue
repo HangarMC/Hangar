@@ -89,10 +89,6 @@ export default class ProjectTabs extends HangarProjectMixin {
         }
         return tabs;
     }
-
-    get slug(): string {
-        return `/${this.project.namespace.owner}/${this.project.namespace.slug}`;
-    }
 }
 </script>
 

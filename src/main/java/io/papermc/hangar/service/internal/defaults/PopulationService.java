@@ -56,9 +56,9 @@ public class PopulationService {
         }
     }
 
-    private final List<String> paperVersions = List.of("1.8", "1.9", "1.10", "1.11", "1.12", "1.13", "1.14", "1.15", "1.16");
-    private final List<String> waterfallVersions = List.of("1.11", "1.12", "1.13", "1.14", "1.15", "1.16");
-    private final List<String> velocityVersions = List.of("1.0", "1.1");
+    private final List<String> paperVersions = List.of("1.8", "1.9", "1.10", "1.11", "1.12", "1.13", "1.14", "1.15", "1.16", "1.17", "1.18");
+    private final List<String> waterfallVersions = List.of("1.11", "1.12", "1.13", "1.14", "1.15", "1.16", "1.17", "1.18");
+    private final List<String> velocityVersions = List.of("1.0", "1.1", "3.0", "3.1");
 
     private void populatePlatformVersions() {
         Map<Platform, List<String>> platformVersions = platformVersionDAO.getVersions();

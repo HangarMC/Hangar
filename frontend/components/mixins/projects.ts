@@ -10,6 +10,10 @@ import MarkdownEditor from '~/components/markdown/MarkdownEditor.vue';
 export class HangarProjectMixin extends HangarComponent {
     @Prop({ type: Object as PropType<HangarProject>, required: true })
     project!: HangarProject;
+
+    get slug(): string {
+        return `/${this.project.namespace.owner}/${this.project.namespace.slug}`;
+    }
 }
 
 @Component

@@ -27,8 +27,9 @@
                             <v-row v-for="(arr, arrIndex) in swatches" :key="arrIndex" justify="center">
                                 <v-col v-for="(color, n) in arr" :key="n" class="flex-grow-0 flex-shrink-1 pa-2 px-1">
                                     <v-item v-slot="{ active, toggle }" :value="color">
+                                        <!-- !important is needed for color otherwise the bg color overrides it -->
                                         <v-card
-                                            :color="color"
+                                            :color="`${color} !important`"
                                             class="d-flex align-center"
                                             :dark="$util.isDark(color)"
                                             :light="$util.isLight(color)"

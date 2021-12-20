@@ -2,9 +2,6 @@ import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
 import { AxiosError } from 'axios';
 import filesize from 'filesize';
-// TODO fix it complaining about no type declaration file
-// @ts-ignore
-// import { contrastRatio, HexToRGBA, parseHex } from 'vuetify/es5/util/colorUtils'; // TODO remove or fix
 import { HangarApiException, HangarValidationException, MultiHangarApiException } from 'hangar-api';
 import { HangarProject, HangarUser } from 'hangar-internal';
 import { TranslateResult } from 'vue-i18n';
@@ -61,6 +58,39 @@ function collectErrors(exception: HangarApiException | MultiHangarApiException, 
     }
 }
 
+// https://awik.io/determine-color-bright-dark-using-javascript/
+function lightOrDark(color: any): 'light' | 'dark' {
+    // Variables for red, green, blue values
+    let r, g, b;
+
+    // Check the format of the color, HEX or RGB?
+    if (color.match(/^rgb/)) {
+        // If RGB --> store the red, green, blue values in separate variables
+        color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+
+        r = color[1];
+        g = color[2];
+        b = color[3];
+    } else {
+        // If hex --> Convert it to RGB: http://gist.github.com/983661
+        color = +('0x' + color.slice(1).replace(color.length < 5 && /./g, '$&$&'));
+
+        r = color >> 16;
+        g = (color >> 8) & 255;
+        b = color & 255;
+    }
+
+    // HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
+    const hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
+
+    // Using the HSP value, determine whether the color is light or dark
+    if (hsp > 127.5) {
+        return 'light';
+    } else {
+        return 'dark';
+    }
+}
+
 const createUtil = ({ store, error, app: { i18n } }: Context) => {
     class Util {
         dummyUser(): HangarUser {
@@ -86,7 +116,7 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
         }
 
         avatarUrl(name: string): string {
-            return `/avatar/${name}?size=120x120`;
+            return `/avatar/user/${name}`;
         }
 
         projectUrl(owner: string, slug: string): string {
@@ -138,20 +168,12 @@ const createUtil = ({ store, error, app: { i18n } }: Context) => {
             return filesize(input);
         }
 
-        // TODO either fix or remove this
-        // white = HexToRGBA(parseHex('#ffffff'));
-        // black = HexToRGBA(parseHex('#000000'));
-
         isDark(hex: string): boolean {
-            // const rgba = HexToRGBA(parseHex(hex));
-            // return contrastRatio(rgba, this.white) > 2;
-            return hex === null;
+            return lightOrDark(hex) === 'dark';
         }
 
         isLight(hex: string): boolean {
-            // const rgba = HexToRGBA(parseHex(hex));
-            // return contrastRatio(rgba, this.black) > 2;
-            return hex === null;
+            return lightOrDark(hex) === 'light';
         }
 
         /**

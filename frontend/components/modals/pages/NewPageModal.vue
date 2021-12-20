@@ -11,6 +11,7 @@
                 <v-form ref="modalForm" v-model="validForm">
                     <v-text-field
                         v-model.trim="form.name"
+                        autofocus
                         filled
                         :loading="validateLoading"
                         :rules="[
