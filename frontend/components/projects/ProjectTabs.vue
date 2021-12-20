@@ -1,11 +1,11 @@
 <template>
     <v-tabs>
-        <v-tab v-for="tab in tabs" :key="tab.title" :exact="!!tab.exact" :to="tab.external ? '/linkout?remoteUrl=' + tab.link : tab.link" nuxt>
+        <v-tab v-for="tab in tabs" :key="tab.title" :exact-path="!!tab.exact" :to="tab.external ? '/linkout?remoteUrl=' + tab.link : tab.link" nuxt>
             <v-icon left>
                 {{ tab.icon }}
             </v-icon>
             {{ tab.title }}
-            <v-icon v-if="tab.external" small class="mb-1 ml-1" color="primary"> mdi-open-in-new</v-icon>
+            <v-icon v-if="tab.external" small class="mb-1 ml-1" color="primary">mdi-open-in-new</v-icon>
         </v-tab>
     </v-tabs>
 </template>
