@@ -16,6 +16,6 @@ public interface OrganizationLoggable extends Loggable<OrganizationContext>, Org
 
     @Override
     default OrganizationContext createLogContext() {
-        return OrganizationContext.of(getOrganizationId());
+        return OrganizationContext.of(this.getOrganizationId());
     }
 }

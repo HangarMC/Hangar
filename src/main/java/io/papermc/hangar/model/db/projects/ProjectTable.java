@@ -11,6 +11,7 @@ import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.LoggedAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.loggable.Loggable;
+import io.papermc.hangar.model.loggable.ProjectLoggable;
 import io.papermc.hangar.service.internal.UserActionLogService;
 import io.papermc.hangar.util.StringUtils;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
@@ -21,7 +22,7 @@ import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.function.Consumer;
 
-public class ProjectTable extends Table implements Visitable, ModelVisible, ProjectIdentified, Loggable<ProjectContext> {
+public class ProjectTable extends Table implements Visitable, ModelVisible, ProjectIdentified, ProjectLoggable {
 
     private String name;
     private String slug;
@@ -316,21 +317,6 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Proj
     @Override
     public String getUrl() {
         return "/" + this.getOwnerName() + "/" + this.getSlug();
-    }
-
-    @Override
-    public Consumer<LoggedAction<ProjectContext>> getLogInserter(UserActionLogService actionLogger) {
-        return actionLogger::project;
-    }
-
-    @Override
-    public ProjectContext createLogContext() {
-        return null;
-    }
-
-    @Override
-    public void logAction(UserActionLogService actionLogger, LogAction<ProjectContext> logAction, @NotNull String newState, @NotNull String oldState) {
-        actionLogger.project(logAction.create(ProjectContext.of(this.id), newState, oldState));
     }
 
     @Override

@@ -107,7 +107,7 @@ export default {
       role_playing: 'Role Playing',
       world_management: 'World Management',
       misc: 'Miscellaneous',
-      undefined: 'ERROR',
+      undefined: 'ERROR'
     },
     actions: {
       unwatch: 'Unwatch',
@@ -258,9 +258,6 @@ export default {
       iconSub: 'Upload an image representative of your project.',
       iconUpload: 'Upload',
       iconReset: 'Reset Icon',
-      apiKey: 'API Keys',
-      apiKeySub: 'Generate a unique deployment key to enable build deployment from Gradle',
-      apiKeyGenerate: 'Generate',
       rename: 'Rename',
       renameSub: 'Changing your projects name can have undesired consequences. We will not setup any redirects.',
       delete: 'Delete',

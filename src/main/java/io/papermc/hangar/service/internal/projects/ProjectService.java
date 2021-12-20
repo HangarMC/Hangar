@@ -152,7 +152,7 @@ public class ProjectService extends HangarComponent {
         projectsDAO.update(projectTable);
         homeProjectService.refreshHomeProjects();
         // TODO what settings changed
-        actionLogger.project(LogAction.PROJECT_SETTINGS_CHANGED.create(ProjectContext.of(projectTable.getId()), "", ""));
+        projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
     }
 
     public void saveDiscourseData(ProjectTable projectTable, long topicId, long postId) {

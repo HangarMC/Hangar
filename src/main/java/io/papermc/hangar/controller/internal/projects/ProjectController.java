@@ -175,7 +175,7 @@ public class ProjectController extends HangarComponent {
 
     // Can't put visibility required because the browser image requests don't include the JWT needed for authorization
     @Anyone
-    @GetMapping(value = "/project/{author}/{slug}/icon", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    @GetMapping(path = "/project/{author}/{slug}/icon", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     public Object getProjectIcon(@PathVariable String author, @PathVariable String slug) {
         try {
             return imageService.getProjectIcon(author, slug);

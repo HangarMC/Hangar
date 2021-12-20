@@ -31,28 +31,32 @@ public class UserActionLogService extends HangarComponent {
         this.loggedActionsDAO = loggedActionsDAO;
     }
 
+    @Transactional
     public void project(LoggedAction<ProjectContext> action) {
         log(loggedActionsDAO::insertProjectLog, action);
     }
 
+    @Transactional
     public void projectPage(LoggedAction<PageContext> action) {
         log(loggedActionsDAO::insertProjectPageLog, action);
     }
 
+    @Transactional
     public void version(LoggedAction<VersionContext> action) {
         log(loggedActionsDAO::insertVersionLog, action);
     }
 
+    @Transactional
     public void user(LoggedAction<UserContext> action) {
         log(loggedActionsDAO::insertUserLog, action);
     }
 
+    @Transactional
     public void organization(LoggedAction<OrganizationContext> action) {
         log(loggedActionsDAO::insertOrganizationLog, action);
     }
 
-    @Transactional
-    public  <LT extends LoggedActionTable, LC extends LogContext<LT, LC>> void log(Consumer<LT> inserter, LoggedAction<LC> action) {
+    private <LT extends LoggedActionTable, LC extends LogContext<LT, LC>> void log(Consumer<LT> inserter, LoggedAction<LC> action) {
         inserter.accept(action.getContext().createTable(getHangarPrincipal().getUserId(), RequestUtil.getRemoteInetAddress(request), action));
     }
 

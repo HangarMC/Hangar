@@ -48,6 +48,7 @@ export default class DefaultLayout extends Vue {
 <style lang="scss">
 #main {
     padding: 0;
+    min-height: 60vh;
 }
 .v-main {
     padding-bottom: 12px;

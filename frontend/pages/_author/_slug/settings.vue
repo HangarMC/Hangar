@@ -247,22 +247,6 @@
 
                         <v-tab-item id="management">
                             <div>
-                                <h2>{{ $t('project.settings.apiKey') }}</h2>
-                                <v-row>
-                                    <v-col cols="12">
-                                        <p>{{ $t('project.settings.apiKeySub') }}</p>
-                                        <v-text-field v-model.trim="apiKey" dense hide-details filled>
-                                            <template #append-outer>
-                                                <v-btn class="input-append-btn" @click="generateApiKey">
-                                                    {{ $t('project.settings.apiKeyGenerate') }}
-                                                </v-btn>
-                                            </template>
-                                        </v-text-field>
-                                    </v-col>
-                                </v-row>
-                            </div>
-                            <v-divider />
-                            <div>
                                 <h2>{{ $t('project.settings.rename') }}</h2>
                                 <v-row>
                                     <v-col cols="12">
@@ -288,15 +272,15 @@
                             </div>
                             <v-divider />
                             <div v-if="$perms.canDeleteProject">
-                                <h2>{{ $t('project.settings.delete') }}</h2>
                                 <v-row>
                                     <v-col class="flex-shrink-0">
-                                        <p>{{ $t('project.settings.deleteSub') }}</p>
+                                        <h2>{{ $t('project.settings.delete') }}</h2>
+                                        {{ $t('project.settings.deleteSub') }}
                                     </v-col>
                                     <v-col class="flex-grow-0">
                                         <TextareaModal :title="$t('project.settings.delete')" :label="$t('general.comment')" :submit="softDelete">
                                             <template #activator="{ on, attrs }">
-                                                <v-btn color="error" v-bind="attrs" v-on="on">
+                                                <v-btn color="error" class="align-self-end" v-bind="attrs" v-on="on">
                                                     {{ $t('project.settings.delete') }}
                                                 </v-btn>
                                             </template>
@@ -310,12 +294,12 @@
                                 <h2>{{ $t('project.settings.hardDelete') }}</h2>
                                 <v-row>
                                     <v-col cols="12" md="8">
-                                        <p>{{ $t('project.settings.hardDeleteSub') }}</p>
+                                        {{ $t('project.settings.hardDeleteSub') }}
                                     </v-col>
                                     <v-col cols="12" md="4">
                                         <TextareaModal :title="$t('project.settings.hardDelete')" :label="$t('general.comment')" :submit="hardDelete">
                                             <template #activator="{ on, attrs }">
-                                                <v-btn color="error" v-bind="attrs" v-on="on">
+                                                <v-btn color="error" class="align-self-end" v-bind="attrs" v-on="on">
                                                     {{ $t('project.settings.hardDelete') }}
                                                 </v-btn>
                                             </template>
@@ -608,9 +592,6 @@ export default class ProjectManagePage extends HangarProjectMixin {
             });
     }
 
-    // TODO implement
-    generateApiKey() {}
-
     async asyncData({ $api, $util }: Context) {
         const data = await Promise.all([$api.requestInternal('data/projectRoles', false), $api.requestInternal('data/licenses', false)]).catch(
             $util.handlePageRequestError
@@ -658,7 +639,6 @@ h2 {
 }
 
 .v-window-item {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 10px;
 }
 </style>

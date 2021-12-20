@@ -16,6 +16,6 @@ public interface ProjectLoggable extends Loggable<ProjectContext>, ProjectIdenti
 
     @Override
     default ProjectContext createLogContext() {
-        return ProjectContext.of(getProjectId());
+        return ProjectContext.of(this.getProjectId());
     }
 }

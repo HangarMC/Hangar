@@ -21,7 +21,6 @@ public class LogAction<LC extends LogContext<? extends LoggedActionTable, LC>> {
     public static final LogAction<ProjectContext> PROJECT_VISIBILITY_CHANGED = new LogAction<>(PGLoggedAction.PROJECT_VISIBILITY_CHANGED, "Project Visibility Changed");
     public static final LogAction<ProjectContext> PROJECT_RENAMED = new LogAction<>(PGLoggedAction.PROJECT_RENAMED, "Project Renamed");
     public static final LogAction<ProjectContext> PROJECT_FLAGGED = new LogAction<>(PGLoggedAction.PROJECT_FLAGGED, "Project Flagged");
-    // TODO deployment key uses this as well
     public static final LogAction<ProjectContext> PROJECT_SETTINGS_CHANGED = new LogAction<>(PGLoggedAction.PROJECT_SETTINGS_CHANGED, "Project Settings Changed");
     public static final LogAction<ProjectContext> PROJECT_ICON_CHANGED = new LogAction<>(PGLoggedAction.PROJECT_ICON_CHANGED, "Project Icon Changed");
     public static final LogAction<ProjectContext> PROJECT_FLAG_RESOLVED = new LogAction<>(PGLoggedAction.PROJECT_FLAG_RESOLVED, "Project Flag Resolved");
