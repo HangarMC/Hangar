@@ -21,6 +21,10 @@ const locales = fs
     .filter((f) => f.endsWith('.ts'))
     .map((f) => require('./locales/' + f).default as typeof en);
 
+locales.forEach((l) => {
+    console.log('Found locale ' + l.meta.name + ' with example string ' + l.general.close);
+});
+
 // noinspection JSUnusedGlobalSymbols
 export default {
     telemetry: false,
@@ -161,11 +165,12 @@ export default {
         strategy: 'no_prefix',
         defaultLocale: 'en',
         locales: locales.map((msgs) => {
+            // we have to cast here since they might be booleans
             return {
-                code: msgs.meta.code,
-                iso: msgs.meta.iso,
-                name: msgs.meta.name,
-                icon: msgs.meta.icon,
+                code: msgs.meta.code as string,
+                iso: msgs.meta.iso as string,
+                name: msgs.meta.name as string,
+                icon: msgs.meta.icon as string,
             } as LocaleObject;
         }),
         vueI18n: {
@@ -174,7 +179,7 @@ export default {
             messages: locales.reduce((obj, item) => {
                 return {
                     ...obj,
-                    [item.meta.code]: item,
+                    [item.meta.code as string]: item,
                 };
             }, {}) as LocaleMessages,
         },

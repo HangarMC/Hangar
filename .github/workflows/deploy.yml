@@ -66,6 +66,7 @@ jobs:
           download_translations: true
           push_translations: false
           create_pull_request: false
+          skip_untranslated_strings: true
           config: 'crowdin.yml'
           crowdin_branch_name: master
         env:

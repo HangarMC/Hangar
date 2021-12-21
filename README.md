@@ -82,9 +82,7 @@ Hangar uses Crowdin for translations. Instructions on how to sign up for that wi
 
 Getting translations locally (requires crowdin cli, ran in root folder):
 
-`crowdin pull -b master -T <PAT>`
-
-To only download translated strings (to highlight whats missing), add `--skip-untranslated-strings`
+`crowdin pull --skip-untranslated-strings -b master -T <PAT>`
 
 ## Contributing
 
