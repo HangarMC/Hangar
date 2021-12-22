@@ -2,6 +2,7 @@ base_path: .
 base_url: "https://hangar.crowdin.com"
 project_id: 1
 api_token_env: CROWDIN_PERSONAL_TOKEN
+preserve_hierarchy: true
 
 files:
   - source: /frontend/locales/en.ts
