@@ -72,6 +72,9 @@ jobs:
         env:
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
+      - name: Revert changes to english lang
+        run: git checkout -- frontend/locales/en.ts
+
       - name: Build frontend
         env:
           CI: true

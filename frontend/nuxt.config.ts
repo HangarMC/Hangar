@@ -3,7 +3,6 @@ import { NuxtConfig } from '@nuxt/types';
 import colors from 'vuetify/lib/util/colors';
 import { LocaleMessages } from 'vue-i18n';
 import { LocaleObject } from '@nuxtjs/i18n';
-import en from '~/locales/en';
 
 require('events').EventEmitter.defaultMaxListeners = 20;
 require('dotenv').config();
@@ -264,9 +263,9 @@ function setupLocales() {
     const locales = fs
         .readdirSync('locales')
         .filter((f) => f.endsWith('.ts'))
-        .map((f) => require('./locales/' + f).default as typeof en);
+        .map((f) => require('./locales/' + f).default);
 
-    const english = locales.find((l) => l.meta.code === 'en');
+    const english = locales.find((l) => l.meta?.code === 'en');
     if (!english) {
         console.error("didn't find english?!");
     }
