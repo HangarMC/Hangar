@@ -16,14 +16,7 @@ const host = process.env.host || 'localhost';
 const nodeEnv = process.env.NODE_ENV;
 const publicPath = process.env.PUBLIC_PATH || '/_nuxt/';
 
-const locales = fs
-    .readdirSync('locales')
-    .filter((f) => f.endsWith('.ts'))
-    .map((f) => require('./locales/' + f).default as typeof en);
-
-locales.forEach((l) => {
-    console.log('Found locale ' + l.meta.name + ' with example string ' + l.general.close);
-});
+const locales = setupLocales();
 
 // noinspection JSUnusedGlobalSymbols
 export default {
@@ -266,3 +259,32 @@ export default {
         },
     },
 } as NuxtConfig;
+
+function setupLocales() {
+    const locales = fs
+        .readdirSync('locales')
+        .filter((f) => f.endsWith('.ts'))
+        .map((f) => require('./locales/' + f).default as typeof en);
+
+    const english = locales.find((l) => l.meta.code === 'en');
+
+    locales.forEach((l) => {
+        if (process.env.TRANSLATION_MODE !== 'true') {
+            strip(l, english);
+        }
+        console.log('Found locale ' + l.meta.name + ' with example string ' + l.general.close);
+    });
+    return locales;
+}
+
+function strip(other: any, english: any) {
+    for (const k in other) {
+        if (typeof other[k] === 'object' && other[k] !== null) {
+            strip(other[k], english[k]);
+        } else if (Object.prototype.hasOwnProperty.call(other, k)) {
+            if (!other[k]) {
+                other[k] = english[k];
+            }
+        }
+    }
+}

@@ -84,6 +84,8 @@ Getting translations locally (requires crowdin cli, ran in root folder):
 
 `crowdin pull --skip-untranslated-strings -b master -T <PAT>`
 
+You might want to set the env var `TRANSLATION_MODE` to true, in order to get warnings about untranslated strings.
+
 ## Contributing
 
 There is a bunch of stuff to do, some of that is noted in the [**Roadmap Project**](https://github.com/PaperMC/Hangar/projects/1). 
