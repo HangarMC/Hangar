@@ -267,12 +267,15 @@ function setupLocales() {
         .map((f) => require('./locales/' + f).default as typeof en);
 
     const english = locales.find((l) => l.meta.code === 'en');
+    if (!english) {
+        console.error("didn't find english?!");
+    }
 
     locales.forEach((l) => {
-        if (process.env.TRANSLATION_MODE !== 'true') {
+        if (process.env.TRANSLATION_MODE !== 'true' && english) {
             strip(l, english);
         }
-        console.log('Found locale ' + l.meta.name + ' with example string ' + l.general.close);
+        console.log('Found locale ' + l.meta?.name + ' with example string ' + l.general?.close);
     });
     return locales;
 }
