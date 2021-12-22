@@ -15,8 +15,12 @@
                             <v-list-item-icon>
                                 <img
                                     height="24px"
-                                    :alt="'flag ' + locale.icon"
-                                    :src="'https://purecatamphetamine.github.io/country-flag-icons/3x2/' + locale.icon + '.svg'"
+                                    :alt="'flag ' + locale.icon.includes('crwdns') ? 'dummy' : locale.icon"
+                                    :src="
+                                        'https://purecatamphetamine.github.io/country-flag-icons/3x2/' +
+                                        (locale.icon.includes('crwdns') ? 'EU' : locale.icon) +
+                                        '.svg'
+                                    "
                                 />
                             </v-list-item-icon>
                             <v-list-item-content>
