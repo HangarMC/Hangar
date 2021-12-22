@@ -10,13 +10,17 @@
             <v-card-text>
                 <v-list dense>
                     <v-subheader>{{ $t('lang.available') }}</v-subheader>
-                    <v-list-item-group v-model="lang" @change="changeLang">
+                    <v-list-item-group v-model="lang" mandatory @change="changeLang">
                         <v-list-item v-for="locale in availableLocales" :key="locale.code" :value="locale.code">
                             <v-list-item-icon>
-                                {{ locale.icon }}
+                                <img
+                                    height="24px"
+                                    :alt="'flag ' + locale.icon"
+                                    :src="'https://purecatamphetamine.github.io/country-flag-icons/3x2/' + locale.icon + '.svg'"
+                                />
                             </v-list-item-icon>
                             <v-list-item-content>
-                                {{ locale.name }}
+                                {{ locale.name.includes('crwdns') ? 'In-Context Dummy' : locale.name }}
                             </v-list-item-content>
                         </v-list-item>
                     </v-list-item-group>

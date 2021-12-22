@@ -3,7 +3,7 @@ export default {
     code: 'en',
     iso: 'en-US',
     name: 'English',
-    icon: 'Test'
+    icon: 'US'
   },
   general: {
     close: 'Close',
