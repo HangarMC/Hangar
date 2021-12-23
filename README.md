@@ -76,11 +76,13 @@ To get both Hangar and HangarAuth running locally:
 Deployment happens via Docker, checkout the stack in the docker folder. The Spring Boot configuration file used for deployment can be found at
 `docker/deployment/hangar-backend/application.yml`.
 
-## Translations
+## Translations [![Crowdin](https://badges.crowdin.net/e/b13e6a1c05002365ee9031712112bd63/localized.svg)](https://hangar.crowdin.com/hangar)
 
-Hangar uses Crowdin for translations. Instructions on how to sign up for that will follow here.
+Hangar uses Crowdin for translations. The easiest way to help translating is sign up to Crowdin at https://hangar.crowdin.com/hangar, 
+joining the project and just add new translations or comment on or up/downvote existing translations.  
+You can learn more about navigating the Crowdin UI here: https://support.crowdin.com/online-editor/
 
-Getting translations locally (requires crowdin cli, ran in root folder):
+Getting translations locally (mostly for developers, requires crowdin cli, ran in root folder):
 
 `crowdin pull --skip-untranslated-strings -b master -T <PAT>`
 
