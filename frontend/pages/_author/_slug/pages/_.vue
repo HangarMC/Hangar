@@ -38,7 +38,7 @@ export default class VueProjectPage extends DocPageMixin {
         const page = await $api
             .requestInternal<ProjectPage>(`pages/page/${params.author}/${params.slug}/${params.pathMatch}`, false)
             .catch<any>($util.handlePageRequestError);
-        if (page.isHome) {
+        if (page && page.isHome) {
             return redirect(`/${params.author}/${params.slug}`);
         }
         return { page };

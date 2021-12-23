@@ -5,10 +5,12 @@ import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
+import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
+import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,8 +41,9 @@ public interface ProjectsDAO {
     @SqlQuery("SELECT * FROM projects WHERE id = :projectId")
     ProjectTable getById(long projectId);
 
-    @SqlQuery("SELECT * FROM projects WHERE owner_id = :userId")
-    List<ProjectTable> getUserProjects(long userId);
+    @UseStringTemplateEngine
+    @SqlQuery("SELECT * FROM projects WHERE owner_id = :userId <if(!seeHidden)> AND visibility = 0<endif>")
+    List<ProjectTable> getUserProjects(long userId, @Define boolean seeHidden);
 
     @SqlQuery("SELECT * FROM " +
             "     (SELECT CASE " +

@@ -36,6 +36,7 @@ public class ApplicationController extends HangarComponent {
                 .disallow("/invalidate")
                 .disallow("/login")
                 .disallow("/logout")
+                .disallow("/handle-logout")
                 .disallow("/logged-out")
                 .disallow("/refresh")
                 .disallow("/signup")
@@ -61,7 +62,6 @@ public class ApplicationController extends HangarComponent {
                 .disallow("/*/*/versions/*/jar")
                 .disallow("/*/*/versions/*/confirm")
                 .disallow("/*/*/versions/*/*/reviews")
-                // TODO possible versionLog route
                 .endGroup()
                 .sitemap(config.getBaseUrl() + "/sitemap.xml")
                 .build();

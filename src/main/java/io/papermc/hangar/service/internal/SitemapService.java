@@ -60,7 +60,7 @@ public class SitemapService extends HangarComponent {
         generator.defaultChangeFreqWeekly();
 
         // add all projects
-        List<ProjectTable> projects = projectsDAO.getUserProjects(userTable.getId());
+        List<ProjectTable> projects = projectsDAO.getUserProjects(userTable.getId(), false);
         projects.forEach(p -> generator.addPage(userTable.getName() + "/" + p.getSlug()));
 
         // add all versions of said projects
