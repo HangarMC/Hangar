@@ -9,7 +9,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>me.minidigger</groupId>
+    <groupId>io.papermc</groupId>
     <artifactId>hangar</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
@@ -18,7 +18,7 @@
 
     <properties>
         <!-- compiling -->
-        <java.version>11</java.version>
+        <java.version>17</java.version>
 
         <!-- encoding -->
         <encoding>UTF-8</encoding>

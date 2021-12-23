@@ -1,4 +1,4 @@
-FROM node:12-alpine
+FROM node:16-alpine
 
 WORKDIR hangar-frontend
 ENV TERM xterm-256color
