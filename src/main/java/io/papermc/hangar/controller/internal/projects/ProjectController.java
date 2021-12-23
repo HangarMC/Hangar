@@ -70,6 +70,7 @@ public class ProjectController extends HangarComponent {
         this.homeProjectService = homeProjectService;
     }
 
+    @LoggedIn
     @GetMapping("/validateName")
     @ResponseStatus(HttpStatus.OK)
     public void validateProjectName(@RequestParam long userId, @RequestParam String value) {

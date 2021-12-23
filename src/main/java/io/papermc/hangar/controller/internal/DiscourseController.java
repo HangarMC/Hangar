@@ -13,8 +13,13 @@ import java.util.Map;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.model.internal.job.PostDiscourseReplyJob;
+import io.papermc.hangar.security.annotations.LoggedIn;
+import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.service.internal.JobService;
 
+import static io.papermc.hangar.security.annotations.visibility.VisibilityRequired.Type;
+
+@LoggedIn
 @Controller
 @RequestMapping(value = "/api/internal/discourse", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DiscourseController extends HangarComponent {
@@ -27,6 +32,7 @@ public class DiscourseController extends HangarComponent {
 
     @PostMapping("/{projectId}/comment")
     @ResponseBody
+    @VisibilityRequired(type = Type.PROJECT, args = "{#projectId}")
     public String createPost(@PathVariable("projectId") long projectId, @RequestBody Map<String, String> content) {
         if (!config.discourse.isEnabled()) {
             throw new HangarApiException("Discourse is NOT enabled!");

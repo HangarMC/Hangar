@@ -48,6 +48,7 @@ public class ProjectPageController extends HangarComponent {
         this.validationService = validationService;
     }
 
+    @Anyone
     @PostMapping(path = "/render", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> renderMarkdown(@RequestBody @Valid StringContent content) {
         return ResponseEntity.ok(markdownService.render(content.getContent()));
@@ -61,6 +62,7 @@ public class ProjectPageController extends HangarComponent {
         return bbCodeConverter.convertToMarkdown(bbCodeContent.getContent());
     }
 
+    @Anyone
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/checkName")
     public void checkName(@RequestParam long projectId, @RequestParam String name, @RequestParam(required = false) Long parentId) {
