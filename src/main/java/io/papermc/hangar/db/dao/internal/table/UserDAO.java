@@ -22,6 +22,12 @@ public interface UserDAO {
                "VALUES (:id, :now, :fullName, :name, :email, :tagline, :now, :readPrompts, :locked, :language)")
     UserTable insert(@BindBean UserTable user);
 
+    @Timestamped
+    @GetGeneratedKeys
+    @SqlUpdate("INSERT INTO users ( created_at, full_name, name, email, tagline, join_date, read_prompts, locked, language) " +
+               "VALUES (:now, :fullName, :name, :email, :tagline, :now, :readPrompts, :locked, :language)")
+    UserTable create(String name, String email, String fullName, String tagline, String language, List<Integer> readPrompts, boolean locked);
+
     @GetGeneratedKeys
     @SqlUpdate("UPDATE users SET full_name = :fullName, name = :name, email = :email, tagline = :tagline, read_prompts = :readPrompts, locked = :locked, language = :language WHERE id = :id")
     UserTable update(@BindBean UserTable user);
@@ -34,6 +40,9 @@ public interface UserDAO {
     default UserTable getUserTable(@NotNull String name) {
         return _getUserTable(null, name);
     }
+
+    @SqlQuery("SELECT * FROM users WHERE email = :email")
+    UserTable getUserTableByEmail(String email);
 
     @SqlQuery("SELECT u.name" +
             "    FROM users u" +

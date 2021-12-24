@@ -18,15 +18,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.math.BigInteger;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Locale;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
+import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.UserOauthTokenDAO;
 import io.papermc.hangar.db.dao.internal.table.auth.UserSignOnDAO;
+import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.auth.UserOauthTokenTable;
 import io.papermc.hangar.model.db.auth.UserSignOnTable;
-import io.papermc.hangar.model.internal.sso.AuthUser;
 import io.papermc.hangar.model.internal.sso.TokenResponse;
 import io.papermc.hangar.model.internal.sso.Traits;
 import io.papermc.hangar.model.internal.sso.URLWithNonce;
@@ -41,14 +42,16 @@ public class SSOService {
     private final RestTemplate restTemplate;
     private final UserOauthTokenDAO userOauthTokenDAO;
     private final TokenService tokenService;
+    private final UserDAO userDAO;
 
     @Autowired
-    public SSOService(HangarConfig hangarConfig, UserSignOnDAO userSignOnDAO, RestTemplate restTemplate, UserOauthTokenDAO userOauthTokenDAO, TokenService tokenService) {
+    public SSOService(HangarConfig hangarConfig, UserSignOnDAO userSignOnDAO, RestTemplate restTemplate, UserOauthTokenDAO userOauthTokenDAO, TokenService tokenService, UserDAO userDAO) {
         this.hangarConfig = hangarConfig;
         this.userSignOnDAO = userSignOnDAO;
         this.restTemplate = restTemplate;
         this.userOauthTokenDAO = userOauthTokenDAO;
         this.tokenService = tokenService;
+        this.userDAO = userDAO;
     }
 
     private boolean isNonceValid(String nonce) {
@@ -98,29 +101,33 @@ public class SSOService {
         return new BigInteger(130, ThreadLocalRandom.current()).toString(32);
     }
 
-    public AuthUser authenticate(String code, String nonce, String returnUrl) {
+    public UserTable authenticate(String code, String nonce, String returnUrl) {
         String token = redeemCode(code, returnUrl);
         DecodedJWT decoded = JWT.decode(token);
 
         Traits traits = decoded.getClaim("traits").as(Traits.class);
-//        long externalId = Long.parseLong(decoded.get("external_id"));
-//        String avatarUrl = decoded.get("avatar_url");
-        Locale language =  (traits.getLanguage() == null || traits.getLanguage().isBlank()) ? Locale.ENGLISH : Locale.forLanguageTag(traits.getLanguage());
-//        String addGroups = decoded.get("add_groups");
-        AuthUser authUser = new AuthUser(
-                -5,
-                traits.getUsername(),
-                traits.getEmail(),
-                "avatarUrl",
-                language,
-                traits.getName().getFirst() + traits.getName().getLast(),
-                "addGroups"
-        );
+        UserTable userTable = sync(traits);
         if (!isNonceValid(nonce)) {
             return null;
         }
         saveIdToken(token, traits.getUsername());
-        return authUser;
+        return userTable;
+    }
+
+    public UserTable sync(Traits traits) {
+        UserTable user = userDAO.getUserTable(traits.getUsername());
+        if (user == null) {
+            // TODO this breaks, we need to assign a user id here, it doesn't auto increment, maybe we want it to auto increment? also see Org Factory
+            user = userDAO.create(traits.getUsername(), traits.getEmail(), traits.getName().getFirst() + " " + traits.getName().getLast(), "", traits.getLanguage(), List.of(), false);
+        } else {
+            user.setFullName(traits.getName().getFirst() + " " + traits.getName().getLast());
+            user.setName(traits.getUsername());
+            user.setEmail(traits.getEmail());
+            user.setLanguage(traits.getLanguage());
+            userDAO.update(user);
+        }
+
+        return user;
     }
 
     public String redeemCode(String code, String redirect) {
