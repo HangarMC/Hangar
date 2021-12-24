@@ -14,7 +14,6 @@ import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.api.requests.EditMembersForm.Member;
-import io.papermc.hangar.model.internal.sso.AuthUser;
 import io.papermc.hangar.service.internal.perms.members.OrganizationMemberService;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.users.invites.OrganizationInviteService;
@@ -33,6 +32,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,19 +46,15 @@ public class OrganizationFactory extends HangarComponent {
     private final OrganizationMemberService organizationMemberService;
     private final OrganizationInviteService organizationInviteService;
     private final GlobalRoleService globalRoleService;
-    private final ObjectMapper mapper;
-    private final RestTemplate restTemplate;
 
     @Autowired
-    public OrganizationFactory(UserDAO userDAO, OrganizationDAO organizationDAO, OrganizationService organizationService, OrganizationMemberService organizationMemberService, OrganizationInviteService organizationInviteService, GlobalRoleService globalRoleService, ObjectMapper mapper, RestTemplate restTemplate) {
+    public OrganizationFactory(UserDAO userDAO, OrganizationDAO organizationDAO, OrganizationService organizationService, OrganizationMemberService organizationMemberService, OrganizationInviteService organizationInviteService, GlobalRoleService globalRoleService) {
         this.userDAO = userDAO;
         this.organizationDAO = organizationDAO;
         this.organizationService = organizationService;
         this.organizationMemberService = organizationMemberService;
         this.organizationInviteService = organizationInviteService;
         this.globalRoleService = globalRoleService;
-        this.mapper = mapper;
-        this.restTemplate = restTemplate;
     }
 
     public void createOrganization(String name, List<Member<OrganizationRole>> members) {
@@ -70,27 +66,9 @@ public class OrganizationFactory extends HangarComponent {
         }
 
         String dummyEmail = name.replaceAll("[^a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]", "") + '@' + config.org.getDummyEmailDomain();
-        AuthUser authOrganizationUser;
-        if (!config.fakeUser.isEnabled()) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-            // TODO allow creating org users in SSO
-            if (true) throw new RuntimeException("disabled");
-//            map.add("api-key", config.sso.getApiKey());
-            map.add("username", name);
-            map.add("email", dummyEmail);
-            map.add("verified", Boolean.TRUE.toString());
-            map.add("dummy", Boolean.TRUE.toString());
-            authOrganizationUser = createAuthUser(map, headers);
-        } else {
-            authOrganizationUser = new AuthUser(name, dummyEmail);
-            userDAO.insert(new UserTable(authOrganizationUser));
-        }
-
-        // Just a note, the /api/sync_sso creates the org user here, so it will already be created when the above response is returned
-        UserTable userTable = userDAO.getUserTable(authOrganizationUser.getId());
-        OrganizationTable organizationTable = organizationDAO.insert(new OrganizationTable(authOrganizationUser.getId(), name, getHangarPrincipal().getId(), userTable.getId()));
+        // TODO this breaks, we need to assign a user id here, it doesn't auto increment, maybe we want it to auto increment? also see SSO Service
+        UserTable userTable = userDAO.create(name, dummyEmail, "", "", "", List.of(), false);
+        OrganizationTable organizationTable = organizationDAO.insert(new OrganizationTable(userTable.getId(), name, getHangarPrincipal().getId(), userTable.getId()));
         globalRoleService.addRole(GlobalRole.ORGANIZATION.create(null, userTable.getId(), false));
         organizationMemberService.addNewAcceptedByDefaultMember(OrganizationRole.ORGANIZATION_OWNER.create(organizationTable.getId(), getHangarPrincipal().getId(), true));
 
@@ -99,32 +77,6 @@ public class OrganizationFactory extends HangarComponent {
 
         if (!errors.isEmpty()) {
             throw new MultiHangarApiException(errors);
-        }
-    }
-
-    @NotNull
-    private AuthUser createAuthUser(MultiValueMap<String, String> body, HttpHeaders headers) {
-        try {
-            return mapper.treeToValue(restTemplate.postForObject(config.security.api.getUrl() + "/api/users", new HttpEntity<>(body, headers), ObjectNode.class), AuthUser.class);
-        } catch (UnprocessableEntity e) {
-            try {
-                ObjectNode objectNode = mapper.readValue(e.getResponseBodyAsByteArray(), ObjectNode.class);
-                List<HangarApiException> errors = new ArrayList<>();
-                for (JsonNode jsonNode : objectNode.get("error")) {
-                    errors.add(new HangarApiException("organization.new.error.hangarAuthValidationError", jsonNode.asText()));
-                }
-                if (!errors.isEmpty()) {
-                    throw new MultiHangarApiException(errors);
-                }
-            } catch (IOException ignored) {
-                throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "organization.new.error.unknownError");
-            }
-
-            throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "organization.new.error.unknownError");
-        } catch (JsonProcessingException e) {
-            throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "organization.new.error.jsonError");
-        } catch (HttpStatusCodeException e) {
-            throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating accompanying user: " + e.getStatusCode() + " " + e.getStatusText());
         }
     }
 }
