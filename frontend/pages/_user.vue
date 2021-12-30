@@ -139,7 +139,7 @@ export default class UserParentPage extends UserPage {
         const buttons = [] as Button[];
         if (!this.user.isOrganization) {
             if (this.isCurrentUser) {
-                buttons.push({ icon: 'mdi-cog', url: `${process.env.authHost}/accounts/settings`, external: true, name: 'settings' });
+                buttons.push({ icon: 'mdi-cog', url: `${process.env.authHost}/account/settings`, external: true, name: 'settings' });
             }
             if (this.isCurrentUser || this.$perms.canEditAllUserSettings) {
                 buttons.push({ icon: 'mdi-key', url: '/' + this.user.name + '/settings/api-keys', name: 'apiKeys' });
