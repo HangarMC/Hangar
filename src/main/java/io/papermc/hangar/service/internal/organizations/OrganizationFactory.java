@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -66,8 +67,7 @@ public class OrganizationFactory extends HangarComponent {
         }
 
         String dummyEmail = name.replaceAll("[^a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]", "") + '@' + config.org.getDummyEmailDomain();
-        // TODO this breaks, we need to assign a user id here, it doesn't auto increment, maybe we want it to auto increment? also see SSO Service
-        UserTable userTable = userDAO.create(name, dummyEmail, "", "", "", List.of(), false);
+        UserTable userTable = userDAO.create(UUID.randomUUID(),name, dummyEmail, "", "", "", List.of(), false);
         OrganizationTable organizationTable = organizationDAO.insert(new OrganizationTable(userTable.getId(), name, getHangarPrincipal().getId(), userTable.getId()));
         globalRoleService.addRole(GlobalRole.ORGANIZATION.create(null, userTable.getId(), false));
         organizationMemberService.addNewAcceptedByDefaultMember(OrganizationRole.ORGANIZATION_OWNER.create(organizationTable.getId(), getHangarPrincipal().getId(), true));

@@ -3,6 +3,8 @@ package io.papermc.hangar.service.internal.auth;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +21,7 @@ import java.math.BigInteger;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
@@ -36,6 +39,8 @@ import io.papermc.hangar.service.TokenService;
 
 @Service
 public class SSOService {
+
+    private static final Logger log = LoggerFactory.getLogger(SSOService.class);
 
     private final HangarConfig hangarConfig;
     private final UserSignOnDAO userSignOnDAO;
@@ -78,6 +83,10 @@ public class SSOService {
 
     private String idToken(String username) {
         UserOauthTokenTable token = userOauthTokenDAO.getByUsername(username);
+        if (token == null) {
+            log.warn("Can't log-out {} as there is no id token stored!", token);
+            return null;
+        }
         return token.getIdToken();
     }
 
@@ -105,8 +114,13 @@ public class SSOService {
         String token = redeemCode(code, returnUrl);
         DecodedJWT decoded = JWT.decode(token);
 
+        UUID uuid = UUID.fromString(decoded.getSubject());
         Traits traits = decoded.getClaim("traits").as(Traits.class);
-        UserTable userTable = sync(traits);
+        if (traits == null) {
+            log.warn("Can't login {} as there are no traits!", uuid);
+            return null;
+        }
+        UserTable userTable = sync(uuid, traits);
         if (!isNonceValid(nonce)) {
             return null;
         }
@@ -114,11 +128,10 @@ public class SSOService {
         return userTable;
     }
 
-    public UserTable sync(Traits traits) {
+    public UserTable sync(UUID uuid, Traits traits) {
         UserTable user = userDAO.getUserTable(traits.getUsername());
         if (user == null) {
-            // TODO this breaks, we need to assign a user id here, it doesn't auto increment, maybe we want it to auto increment? also see Org Factory
-            user = userDAO.create(traits.getUsername(), traits.getEmail(), traits.getName().getFirst() + " " + traits.getName().getLast(), "", traits.getLanguage(), List.of(), false);
+            user = userDAO.create(uuid, traits.getUsername(), traits.getEmail(), traits.getName().getFirst() + " " + traits.getName().getLast(), "", traits.getLanguage(), List.of(), false);
         } else {
             user.setFullName(traits.getName().getFirst() + " " + traits.getName().getLast());
             user.setName(traits.getUsername());

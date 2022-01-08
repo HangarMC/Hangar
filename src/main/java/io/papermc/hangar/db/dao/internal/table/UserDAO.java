@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 @RegisterConstructorMapper(UserTable.class)
@@ -18,15 +19,15 @@ public interface UserDAO {
 
     @Timestamped
     @GetGeneratedKeys
-    @SqlUpdate("INSERT INTO users (id, created_at, full_name, name, email, tagline, join_date, read_prompts, locked, language) " +
-               "VALUES (:id, :now, :fullName, :name, :email, :tagline, :now, :readPrompts, :locked, :language)")
+    @SqlUpdate("INSERT INTO users (uuid, created_at, full_name, name, email, tagline, join_date, read_prompts, locked, language) " +
+               "VALUES (:uuid, :now, :fullName, :name, :email, :tagline, :now, :readPrompts, :locked, :language)")
     UserTable insert(@BindBean UserTable user);
 
     @Timestamped
     @GetGeneratedKeys
-    @SqlUpdate("INSERT INTO users ( created_at, full_name, name, email, tagline, join_date, read_prompts, locked, language) " +
-               "VALUES (:now, :fullName, :name, :email, :tagline, :now, :readPrompts, :locked, :language)")
-    UserTable create(String name, String email, String fullName, String tagline, String language, List<Integer> readPrompts, boolean locked);
+    @SqlUpdate("INSERT INTO users (uuid, created_at, full_name, name, email, tagline, join_date, read_prompts, locked, language) " +
+               "VALUES (:uuid, :now, :fullName, :name, :email, :tagline, :now, :readPrompts, :locked, :language)")
+    UserTable create(UUID uuid, String name, String email, String fullName, String tagline, String language, List<Integer> readPrompts, boolean locked);
 
     @GetGeneratedKeys
     @SqlUpdate("UPDATE users SET full_name = :fullName, name = :name, email = :email, tagline = :tagline, read_prompts = :readPrompts, locked = :locked, language = :language WHERE id = :id")

@@ -1,7 +1,6 @@
 package io.papermc.hangar.controller;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,11 +97,25 @@ public class LoginController extends HangarComponent {
     public RedirectView logout(@RequestParam(defaultValue = "/logged-out") String returnUrl) {
         if (config.fakeUser.isEnabled()) {
             response.addCookie(new Cookie("url", returnUrl));
-            return new RedirectView("/handle-logout");
+            return new RedirectView("/fake-logout");
         } else {
             response.addCookie(new Cookie("url", returnUrl));
             return redirectToSso(ssoService.getLogoutUrl(config.getBaseUrl() + "/handle-logout", getHangarPrincipal()));
         }
+    }
+
+    @GetMapping(path = "/fake-logout")
+    public RedirectView fakeLogout(@CookieValue(value = "url", defaultValue = "/logged-out") String returnUrl, @CookieValue(name = SecurityConfig.AUTH_NAME_REFRESH_COOKIE, required = false) String refreshToken) {
+        // invalidate refresh token
+        if (refreshToken != null) {
+            tokenService.invalidateToken(refreshToken);
+        }
+        // invalidate session
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return addBaseAndRedirect(returnUrl);
     }
 
     @GetMapping(path = "/handle-logout", params = "state")
@@ -133,14 +146,15 @@ public class LoginController extends HangarComponent {
     }
 
     @PostMapping("/sync")
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
     public void sync(@NotNull @RequestBody SsoSyncData body, @RequestHeader("X-Kratos-Hook-Api-Key") String apiKey) {
         if (!apiKey.equals("hookapikey-changeme")) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
         if (body.state().equals("active")) {
-            logger.debug("Syncing {}", body.traits());
-            ssoService.sync(body.traits());
+            logger.debug("Syncing {}'s new traits: {}", body.id(), body.traits());
+            ssoService.sync(body.id(), body.traits());
         } else {
             logger.debug("Not syncing since its not active! {}", body);
         }
