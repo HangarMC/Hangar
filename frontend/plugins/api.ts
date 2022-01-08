@@ -58,9 +58,15 @@ const createApi = ({ $axios, store, app: { $cookies } }: Context) => {
             });
         }
 
-        requestInternal<T = void>(url: string, authed: boolean = true, method: AxiosRequestConfig['method'] = 'get', data: object = {}): Promise<T> {
+        requestInternal<T = void>(
+            url: string,
+            authed: boolean = true,
+            method: AxiosRequestConfig['method'] = 'get',
+            data: object = {},
+            headers: Record<string, string> = {}
+        ): Promise<T> {
             return this.getToken(authed).then((token) => {
-                return this.requestInternalWithToken<T>(url, token, authed, method, data);
+                return this.requestInternalWithToken<T>(url, token, authed, method, data, headers);
             });
         }
 
@@ -69,7 +75,8 @@ const createApi = ({ $axios, store, app: { $cookies } }: Context) => {
             token: string | null,
             authed: boolean = true,
             method: AxiosRequestConfig['method'] = 'get',
-            data: object = {}
+            data: object = {},
+            headers: Record<string, string> = {}
         ): Promise<T> {
             let tokenPromise: Promise<string | null>;
             if (token && !API.validateToken(token)) {
@@ -94,7 +101,7 @@ const createApi = ({ $axios, store, app: { $cookies } }: Context) => {
                         },
                     });
                 } else {
-                    return this._request(`internal/${url}`, token, method, data);
+                    return this._request(`internal/${url}`, token, method, data, headers);
                 }
             });
         }
@@ -107,8 +114,14 @@ const createApi = ({ $axios, store, app: { $cookies } }: Context) => {
             return decodedToken.exp * 1000 > Date.now() - 10 * 1000; // check against 10 seconds earlier to mitigate tokens expiring mid-request
         }
 
-        private _request<T>(url: string, token: string | null, method: AxiosRequestConfig['method'], data: object): Promise<T> {
-            const headers: Record<string, string> = token ? { Authorization: `HangarAuth ${token}` } : {};
+        private _request<T>(
+            url: string,
+            token: string | null,
+            method: AxiosRequestConfig['method'],
+            data: object,
+            header: Record<string, string> = {}
+        ): Promise<T> {
+            const headers: Record<string, string> = token ? { ...header, Authorization: `HangarAuth ${token}` } : header;
             return new Promise<T>((resolve, reject) => {
                 return $axios
                     .request<T>({

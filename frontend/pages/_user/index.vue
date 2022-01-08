@@ -6,7 +6,30 @@
         <v-col cols="12" md="4">
             <template v-if="!user.isOrganization">
                 <v-card>
-                    <v-card-title>{{ $t('author.orgs') }}</v-card-title>
+                    <v-card-title>
+                        {{ $t('author.orgs') }}
+                        <HangarModal v-if="organizationVisibility" :title="$t('author.editOrgVisibility')" no-form no-submit-button>
+                            <template #activator="{ on, attrs }">
+                                <v-btn icon small color="warning" v-bind="attrs" v-on="on">
+                                    <v-icon small> mdi-pencil </v-icon>
+                                </v-btn>
+                            </template>
+
+                            <span>{{ $t('author.orgVisibilityModal') }}</span>
+
+                            <v-list>
+                                <v-list-item v-for="(hidden, org) in organizationVisibility" :key="org">
+                                    <v-switch
+                                        v-model="organizationVisibility[org]"
+                                        :label="org"
+                                        :loading="orgChangeLoading"
+                                        :disabled="orgChangeLoading"
+                                        @change="changeOrgVisibility(org)"
+                                    ></v-switch>
+                                </v-list-item>
+                            </v-list>
+                        </HangarModal>
+                    </v-card-title>
                     <v-card-text>
                         <v-list dense>
                             <v-list-item v-for="(orgRole, orgName) in organizations" :key="orgName" :to="orgName" nuxt>
@@ -18,6 +41,8 @@
                                 </v-list-item-title>
                                 <v-list-item-subtitle class="text-right">
                                     {{ orgRole.role.title }}
+                                    &nbsp;
+                                    <span v-if="organizationVisibility && organizationVisibility[orgName]"> Hidden </span>
                                 </v-list-item-subtitle>
                             </v-list-item>
                         </v-list>
@@ -71,27 +96,45 @@ import { UserAvatar } from '~/components/users';
 import { ProjectList } from '~/components/projects';
 import { UserPropPage } from '~/components/mixins';
 import MemberList from '~/components/projects/MemberList.vue';
+import HangarModal from '~/components/modals/HangarModal.vue';
+import { AuthState } from '~/store/auth';
 
 @Component({
     components: {
         MemberList,
         UserAvatar,
         ProjectList,
+        HangarModal,
     },
 })
 export default class AuthorPage extends UserPropPage {
     projects!: PaginatedResult<Project>;
     organizations!: { [key: string]: RoleTable };
+    organizationVisibility!: { [key: string]: boolean };
     starred!: PaginatedResult<ProjectCompact>;
     watching!: PaginatedResult<ProjectCompact>;
     orgRoles!: Role[];
+    orgChangeLoading = false;
 
     head() {
         return this.$seo.head(this.user.name, this.user.tagline, this.$route, this.$util.avatarUrl(this.user.name));
     }
 
-    async asyncData({ $api, params, $util }: Context) {
-        const data = await Promise.all([
+    async changeOrgVisibility(org: string) {
+        this.orgChangeLoading = true;
+        await this.$api.requestInternal<{ [key: string]: boolean }>(
+            `organizations/${org}/userOrganizationsVisibility`,
+            true,
+            'POST',
+            this.organizationVisibility[org] as any,
+            { 'Content-Type': 'application/json' }
+        );
+        this.orgChangeLoading = false;
+    }
+
+    async asyncData({ $api, params, $util, store }: Context) {
+        // noinspection ES6MissingAwait
+        const promises: Promise<any>[] = [
             $api.request<PaginatedResult<ProjectCompact>>(`users/${params.user}/starred`, false),
             $api.request<PaginatedResult<ProjectCompact>>(`users/${params.user}/watching`, false),
             $api.request<PaginatedResult<Project>>(`projects`, false, 'get', {
@@ -99,9 +142,13 @@ export default class AuthorPage extends UserPropPage {
             }),
             $api.requestInternal<Role[]>('data/orgRoles', false, 'get'),
             $api.requestInternal<{ [key: string]: RoleTable }>(`organizations/${params.user}/userOrganizations`, false),
-        ]).catch($util.handlePageRequestError);
+        ];
+        if (params.user === (store.state.auth as AuthState).user?.name) {
+            promises.push($api.requestInternal<{ [key: string]: boolean }>(`organizations/${params.user}/userOrganizationsVisibility`, true));
+        }
+        const data = await Promise.all(promises).catch($util.handlePageRequestError);
         if (typeof data === 'undefined') return;
-        return { starred: data[1], watching: data[0], projects: data[2], orgRoles: data[3], organizations: data[4] };
+        return { starred: data[1], watching: data[0], projects: data[2], orgRoles: data[3], organizations: data[4], organizationVisibility: data[5] };
     }
 }
 </script>

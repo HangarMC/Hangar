@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrganizationMemberService extends MemberService<
@@ -29,6 +30,9 @@ public class OrganizationMemberService extends MemberService<
         > {
 
     @Autowired
+    private OrganizationMembersDAO dao;
+
+    @Autowired
     public OrganizationMemberService(OrganizationRoleService roleService, OrganizationMembersDAO organizationMembersDAO, OrganizationNotificationService organizationNotificationService) {
         super(roleService, organizationMembersDAO, organizationNotificationService, OrganizationMemberTable::new, "organization.settings.members.", LogAction.ORGANIZATION_MEMBER_ADDED, LogAction.ORGANIZATION_MEMBERS_REMOVED, LogAction.ORGANIZATION_MEMBER_ROLES_CHANGED);
     }
@@ -36,5 +40,13 @@ public class OrganizationMemberService extends MemberService<
     @Override
     List<OrganizationRole> invalidRolesToChange() {
         return List.of(OrganizationRole.ORGANIZATION_OWNER);
+    }
+
+    public void setMembershipVisibility(long organizationId, long userId, boolean hidden) {
+        dao.setMembershipVisibility(organizationId, userId, hidden);
+    }
+
+    public Map<String, Boolean> getUserOrganizationMembershipVisibility(String user) {
+        return dao.getUserOrganizationMembershipVisibility(user);
     }
 }

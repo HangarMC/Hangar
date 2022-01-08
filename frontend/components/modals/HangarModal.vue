@@ -16,7 +16,13 @@
                     {{ closeLabel || $t('general.close') }}
                 </v-btn>
                 <slot name="other-btns" />
-                <v-btn :color="submitColor" :disabled="(!noForm && !validForm) || submitDisabled" :loading="loading" @click.stop="submit0">
+                <v-btn
+                    v-if="!noSubmitButton"
+                    :color="submitColor"
+                    :disabled="(!noForm && !validForm) || submitDisabled"
+                    :loading="loading"
+                    @click.stop="submit0"
+                >
                     {{ submitLabel || $t('general.submit') }}
                 </v-btn>
             </v-card-actions>
@@ -50,7 +56,7 @@ export default class HangarModal extends HangarFormModal {
     @Prop({ type: String, default: 'success' })
     submitColor!: string;
 
-    @Prop({ type: Function as PropType<() => Promise<void>>, required: true })
+    @Prop({ type: Function as PropType<() => Promise<void>> })
     submit!: () => Promise<void>;
 
     @Prop({ type: Boolean, default: false })
@@ -58,6 +64,9 @@ export default class HangarModal extends HangarFormModal {
 
     @Prop({ type: Boolean, default: false })
     noForm!: boolean;
+
+    @Prop({ type: Boolean, default: false })
+    noSubmitButton!: boolean;
 
     $refs!: {
         modalForm: any;

@@ -577,6 +577,8 @@ export default {
     viewOnForums: 'View on forums ',
     taglineLabel: 'User Tagline',
     editTagline: 'Edit Tagline',
+    editOrgVisibility: 'Edit Organization Visibility',
+    orgVisibilityModal: 'Toggle an organization to hide your membership publicly.',
     memberSince: 'A member since {0}',
     numProjects: 'No projects | {0} project | {0} projects',
     addTagline: 'Add a tagline',
