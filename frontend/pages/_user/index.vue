@@ -133,7 +133,6 @@ export default class AuthorPage extends UserPropPage {
     }
 
     async asyncData({ $api, params, $util, store }: Context) {
-        // noinspection ES6MissingAwait
         const promises: Promise<any>[] = [
             $api.request<PaginatedResult<ProjectCompact>>(`users/${params.user}/starred`, false),
             $api.request<PaginatedResult<ProjectCompact>>(`users/${params.user}/watching`, false),
