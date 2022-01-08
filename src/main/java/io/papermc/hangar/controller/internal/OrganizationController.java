@@ -149,11 +149,9 @@ public class OrganizationController extends HangarComponent {
     @LoggedIn
     @GetMapping(path = "/{user}/userOrganizationsVisibility", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Boolean>> getUserOrganizationMembershipVisibility(@PathVariable String user) {
-        Optional<HangarPrincipal> principal = getOptionalHangarPrincipal();
-        if (principal.isPresent()) {
-            if (principal.get().getName().equals(user) || principal.get().isAllowedGlobal(Permission.SeeHidden)) {
-                return ResponseEntity.ok(memberService.getUserOrganizationMembershipVisibility(user));
-            }
+        HangarPrincipal principal = getHangarPrincipal();
+        if (principal.getName().equals(user) || principal.isAllowedGlobal(Permission.SeeHidden)) {
+            return ResponseEntity.ok(memberService.getUserOrganizationMembershipVisibility(user));
         }
         throw new HangarApiException(HttpStatus.BAD_REQUEST);
     }
