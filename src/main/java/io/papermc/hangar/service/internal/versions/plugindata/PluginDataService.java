@@ -4,6 +4,9 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.FileTypeHandler;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.FileTypeHandler.FileData;
+import io.papermc.hangar.service.internal.versions.plugindata.scanner.JarScanner;
+import io.papermc.hangar.service.internal.versions.plugindata.scanner.ScanResult;
+
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,8 +31,11 @@ public class PluginDataService {
 
     private final Map<String, FileTypeHandler<? extends FileData>> pluginFileTypeHandlers = new HashMap<>();
 
+    private final JarScanner jarScanner;
+
     @Autowired
-    public PluginDataService(List<FileTypeHandler<?>> fileTypeHandlers) {
+    public PluginDataService(List<FileTypeHandler<?>> fileTypeHandlers, JarScanner jarScanner) {
+        this.jarScanner = jarScanner;
         for (FileTypeHandler<?> fileTypeHandler : fileTypeHandlers) {
             this.pluginFileTypeHandlers.put(fileTypeHandler.getFileName(), fileTypeHandler);
         }
@@ -41,15 +47,23 @@ public class PluginDataService {
 
             Map<Platform, FileData> fileDataMap = new EnumMap<>(Platform.class);
 
+            boolean potentiallyMalicous = false;
             JarEntry jarEntry;
             while ((jarEntry = jarInputStream.getNextJarEntry()) != null && fileDataMap.size() < Platform.getValues().length) {
                 FileTypeHandler<?> fileTypeHandler = pluginFileTypeHandlers.get(jarEntry.getName());
-                if (fileTypeHandler != null) {
+                if (fileTypeHandler == null) {
+                    if (jarEntry.getName().endsWith(".class")) {
+                        byte[] bytes = jarInputStream.readAllBytes();
+                        ScanResult scanResult = jarScanner.scan(jarEntry, bytes);
+                        potentiallyMalicous = potentiallyMalicous || scanResult != null && scanResult.foundSomething();
+                    }
+                } else {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(jarInputStream));
                     FileData fileData = fileTypeHandler.getData(reader);
                     fileDataMap.put(fileTypeHandler.getPlatform(), fileData);
                 }
             }
+            System.out.println("potentially malicious " + potentiallyMalicous);
 
             if (fileDataMap.isEmpty() ) {
                 throw new HangarApiException("version.new.error.metaNotFound");

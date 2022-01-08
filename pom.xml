@@ -37,6 +37,7 @@
 
         <apache-commons-lang.version>3.12.0</apache-commons-lang.version>
         <jwt.version>3.17.0</jwt.version>
+        <asm.version>9.1</asm.version>
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -204,6 +205,18 @@
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>${jwt.version}</version>
+        </dependency>
+
+        <!-- asm -->
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>${asm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-util</artifactId>
+            <version>${asm.version}</version>
         </dependency>
 
         <!-- runtime -->

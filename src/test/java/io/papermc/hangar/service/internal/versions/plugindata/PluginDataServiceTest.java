@@ -6,14 +6,23 @@ import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.PaperFileTypeHandler;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.VelocityFileTypeHandler;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.WaterfallFileTypeHandler;
+import io.papermc.hangar.service.internal.versions.plugindata.scanner.JarScanner;
+import io.papermc.hangar.service.internal.versions.plugindata.scanner.checks.OpenConnectionMethodInsnCheck;
+import io.papermc.hangar.service.internal.versions.plugindata.scanner.checks.SetOpMethodInsnCheck;
+import io.papermc.hangar.service.internal.versions.plugindata.scanner.checks.ThreadSleepMethodInsnCheck;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {PluginDataService.class, PaperFileTypeHandler.class, WaterfallFileTypeHandler.class, VelocityFileTypeHandler.class})
+@ContextConfiguration(classes = {PluginDataService.class, PaperFileTypeHandler.class, WaterfallFileTypeHandler.class, VelocityFileTypeHandler.class, JarScanner.class,
+    SetOpMethodInsnCheck.class, ThreadSleepMethodInsnCheck.class, OpenConnectionMethodInsnCheck.class})
 class PluginDataServiceTest {
 
     private static final Path path = Path.of("src/test/resources/io/papermc/hangar/service/internal/versions/plugindata");
@@ -113,5 +123,34 @@ class PluginDataServiceTest {
             classUnderTest.loadMeta(jarPath, -1);
         });
         assertEquals("400 BAD_REQUEST \"" + expectedMsg + "\"", exception.getMessage());
+    }
+
+    //@Test
+    void dum() throws IOException {
+        System.out.println("scan paper.jar");
+        PluginFileData data = classUnderTest.loadMeta(path.resolve("testplugins-paper-1.0.0-SNAPSHOT.jar"), -1).getData();
+        data.validate();
+/*         System.out.println("scan velocity.jar");
+        data = classUnderTest.loadMeta(path.resolve("testplugins-velocity-1.0.0-SNAPSHOT.jar"), -1).getData();
+        data.validate();
+        System.out.println("scan waterfall.jar");
+        data = classUnderTest.loadMeta(path.resolve("testplugins-waterfall-1.0.0-SNAPSHOT.jar"), -1).getData();
+        data.validate(); */
+    }
+
+    //@Test
+    void dummer() throws IOException {
+        Path path = Path.of("C:\\Users\\Martin\\Downloads\\malware\\plugins");
+        Files.list(path).forEach(f -> {
+            System.out.println("scan " + f.getFileName());
+            try {
+                PluginFileData data = classUnderTest.loadMeta(f, -1).getData();
+                data.validate();
+            } catch (HangarApiException e) {
+                System.out.println(e.getMessage());
+            } catch (Exception e) {
+                System.out.println(e.getClass().getName() + " " + e.getMessage());
+            }
+        });
     }
 }
