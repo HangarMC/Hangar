@@ -17,6 +17,7 @@ import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.UserContext;
 import io.papermc.hangar.security.annotations.Anyone;
+import io.papermc.hangar.security.annotations.LoggedIn;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.authentication.HangarPrincipal;
@@ -145,7 +146,7 @@ public class OrganizationController extends HangarComponent {
         return ResponseEntity.ok(organizationService.getUserOrganizationRoles(user, includeHidden));
     }
 
-    @Unlocked
+    @LoggedIn
     @GetMapping(path = "/{user}/userOrganizationsVisibility", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Boolean>> getUserOrganizationMembershipVisibility(@PathVariable String user) {
         Optional<HangarPrincipal> principal = getOptionalHangarPrincipal();
