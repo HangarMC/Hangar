@@ -1,3 +1,0 @@
-DROP INDEX user_project_roles@project_roles_user_id_role_type CASCADE;
-
-DROP INDEX user_organization_roles@organization_roles_user_id_role_type CASCADE;
