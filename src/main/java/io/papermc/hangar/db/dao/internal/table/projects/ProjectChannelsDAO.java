@@ -19,7 +19,7 @@ public interface ProjectChannelsDAO {
 
     @Timestamped
     @GetGeneratedKeys
-    @SqlUpdate("INSERT INTO project_channels (created_at, name, color, project_id, non_reviewed) VALUES (:now, :name, :color, :projectId, :nonReviewed)")
+    @SqlUpdate("INSERT INTO project_channels (created_at, name, color, project_id, non_reviewed, editable) VALUES (:now, :name, :color, :projectId, :nonReviewed, :editable)")
     ProjectChannelTable insert(@BindBean ProjectChannelTable projectChannelTable);
 
     @SqlUpdate("UPDATE project_channels SET name = :name, color = :color, non_reviewed = :nonReviewed WHERE id = :id")

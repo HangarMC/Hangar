@@ -25,14 +25,14 @@
                             <td>
                                 <ChannelModal :project-id="project.id" edit :channel="channel" @create="editChannel">
                                     <template #activator="{ on, attrs }">
-                                        <v-btn small color="warning" v-bind="attrs" v-on="on">
+                                        <v-btn small color="warning" v-bind="attrs" :disabled="!channel.editable" v-on="on">
                                             {{ $t('channel.manage.editButton') }}
                                         </v-btn>
                                     </template>
                                 </ChannelModal>
                             </td>
                             <td v-if="channels.length !== 1">
-                                <v-btn v-if="channel.versionCount === 0" small color="error" @click="deleteChannel(channel)">
+                                <v-btn v-if="channel.versionCount === 0" small color="error" :disabled="!channel.editable" @click="deleteChannel(channel)">
                                     {{ $t('channel.manage.deleteButton') }}
                                 </v-btn>
                             </td>

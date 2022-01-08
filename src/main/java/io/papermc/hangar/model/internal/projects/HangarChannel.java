@@ -10,8 +10,8 @@ public class HangarChannel extends ProjectChannelTable {
 
     private final int versionCount;
 
-    public HangarChannel(OffsetDateTime createdAt, long id, String name, @EnumByOrdinal Color color, long projectId, boolean nonReviewed, int versionCount) {
-        super(createdAt, id, name, color, projectId, nonReviewed);
+    public HangarChannel(OffsetDateTime createdAt, long id, String name, @EnumByOrdinal Color color, long projectId, boolean nonReviewed, int versionCount, boolean editable) {
+        super(createdAt, id, name, color, projectId, nonReviewed, editable);
         this.versionCount = versionCount;
     }
 

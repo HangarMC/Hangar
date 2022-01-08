@@ -208,7 +208,7 @@ public class VersionFactory extends HangarComponent {
         try {
             ProjectChannelTable projectChannelTable = channelService.getProjectChannel(projectId, pendingVersion.getChannelName(), pendingVersion.getChannelColor());
             if (projectChannelTable == null) {
-                projectChannelTable = channelService.createProjectChannel(pendingVersion.getChannelName(), pendingVersion.getChannelColor(), projectId, pendingVersion.isChannelNonReviewed());
+                projectChannelTable = channelService.createProjectChannel(pendingVersion.getChannelName(), pendingVersion.getChannelColor(), projectId, pendingVersion.isChannelNonReviewed(), true);
             }
 
             Long fileSize = null;
