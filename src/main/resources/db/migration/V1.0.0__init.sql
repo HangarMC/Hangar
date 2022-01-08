@@ -96,6 +96,11 @@ CREATE TABLE projects
     license_name varchar(255),
     license_url varchar(255),
     forum_sync boolean DEFAULT TRUE NOT NULL,
+    donation_enabled boolean default false,
+    donation_default_amount int default 5,
+    donation_email varchar(255),
+    donation_onetime_amounts integer[] default ARRAY[]::integer[],
+    donation_monthly_amounts integer[] default ARRAY[]::integer[],
     CONSTRAINT projects_owner_name_name_key
         UNIQUE (owner_name, name),
     CONSTRAINT projects_owner_name_slug_key
@@ -346,7 +351,6 @@ CREATE TABLE user_project_roles
             REFERENCES projects
             ON DELETE CASCADE,
     accepted boolean DEFAULT FALSE NOT NULL,
-    CONSTRAINT project_roles_user_id_role_type UNIQUE (user_id, role_type),
     CONSTRAINT project_roles_user_id_project_id UNIQUE (user_id, project_id)
 );
 
@@ -465,7 +469,6 @@ CREATE TABLE user_organization_roles
             REFERENCES organizations
             ON DELETE CASCADE,
     accepted boolean default false NOT NULL,
-    CONSTRAINT organization_roles_user_id_role_type UNIQUE (user_id, role_type),
     CONSTRAINT organization_roles_user_id_organization_id UNIQUE (user_id, organization_id)
 );
 
@@ -505,8 +508,7 @@ CREATE TABLE project_version_unsafe_downloads
         CONSTRAINT project_version_unsafe_downloads_fkey
             REFERENCES users
             ON DELETE CASCADE,
-    address inet NOT NULL,
-    download_type integer NOT NULL
+    address inet NOT NULL
 );
 
 CREATE TABLE project_version_download_warnings
@@ -515,7 +517,7 @@ CREATE TABLE project_version_download_warnings
         CONSTRAINT project_version_download_warnings_pkey
             PRIMARY KEY,
     created_at timestamp with time zone NOT NULL,
-    expiration timestamp with time zone NOT NULL,
+    expires_at timestamp with time zone NOT NULL,
     token varchar(255) NOT NULL,
     version_id bigint NOT NULL
         CONSTRAINT project_version_download_warnings_version_id_fkey
@@ -529,19 +531,6 @@ CREATE TABLE project_version_download_warnings
             ON DELETE CASCADE,
     CONSTRAINT project_version_download_warnings_address_key
         UNIQUE (address, version_id)
-);
-
-CREATE TABLE project_api_keys
-(
-    id bigserial NOT NULL
-        CONSTRAINT project_api_keys_pkey
-            PRIMARY KEY,
-    created_at timestamp with time zone NOT NULL,
-    project_id bigint NOT NULL
-        CONSTRAINT project_api_keys_project_id_fkey
-            REFERENCES projects
-            ON DELETE CASCADE,
-    value varchar(255) NOT NULL
 );
 
 CREATE TABLE project_version_reviews
@@ -676,26 +665,10 @@ CREATE TABLE api_keys
             UNIQUE,
     token text NOT NULL,
     raw_key_permissions bit(64) NOT NULL,
+    CONSTRAINT api_keys_owner_id_token_identifier
+        UNIQUE (owner_id, token_identifier),
     CONSTRAINT api_keys_owner_id_name_key
         UNIQUE (owner_id, name)
-);
-
-CREATE TABLE api_sessions
-(
-    id bigserial NOT NULL
-        constraint api_sessions_pkey
-            primary key,
-    created_at timestamp with time zone NOT NULL,
-    token varchar(255) NOT NULL,
-    key_id bigint
-        constraint api_sessions_key_id_fkey
-            references api_keys
-            ON DELETE CASCADE,
-    user_id bigint
-        constraint api_sessions_user_id_fkey
-            references users
-            ON DELETE CASCADE,
-    expires timestamp with time zone NOT NULL
 );
 
 CREATE TABLE logged_actions_project
@@ -910,6 +883,15 @@ CREATE TABLE user_refresh_tokens
     device_id uuid NOT NULL CONSTRAINT user_refresh_tokens_device_id_unique UNIQUE
 );
 
+CREATE TABLE user_oauth_token(
+    id bigserial NOT NULL
+        CONSTRAINT user_oauth_token_pkey
+            PRIMARY KEY,
+    created_at timestamp with time zone NOT NULL,
+    username varchar(255),
+    id_token text
+);
+
 CREATE INDEX user_refresh_tokens_token_idx ON user_refresh_tokens (token);
 
 CREATE VIEW project_members_all(id, user_id) AS
@@ -1059,8 +1041,7 @@ FROM organization_members om
               ON om.organization_id = ro.organization_id AND om.user_id = ro.user_id AND ro.accepted
          JOIN roles r ON ro.role_type::text = r.name::text
 GROUP BY om.organization_id, om.user_id;
-
-CREATE VIEW v_logged_actions(id, created_at, user_id, user_name, address, action, context_type, new_state, old_state, p_id, p_slug, p_owner_name, pv_id, pv_version_string, pp_id, pp_name, pp_slug, s_id, s_name) AS
+CREATE VIEW v_logged_actions(id, created_at, user_id, user_name, address, action, context_type, new_state, old_state, p_id, p_slug, p_owner_name, pv_id, pv_version_string, pv_platforms, pp_id, pp_name, pp_slug, s_id, s_name) AS
 SELECT a.id,
        a.created_at,
        a.user_id,
@@ -1075,6 +1056,7 @@ SELECT a.id,
        ou.name                      AS p_owner_name,
        NULL::bigint                 AS pv_id,
        NULL::character varying(255) AS pv_version_string,
+       NULL::bigint[]               AS pv_platforms,
        NULL::bigint                 AS pp_id,
        NULL::character varying(255) AS pp_name,
        NULL::character varying(255) AS pp_slug,
@@ -1099,6 +1081,12 @@ SELECT a.id,
        ou.name                 AS p_owner_name,
        pv.id                   AS pv_id,
        pv.version_string       AS pv_version_string,
+       array(SELECT DISTINCT plv.platform
+             FROM project_version_platform_dependencies pvpd
+                      JOIN platform_versions plv ON pvpd.platform_version_id = plv.id
+             WHERE pv.id = pvpd.version_id
+             ORDER BY plv.platform
+           )                   AS pv_platforms,
        NULL::bigint            AS pp_id,
        NULL::character varying AS pp_name,
        NULL::character varying AS pp_slug,
@@ -1124,6 +1112,7 @@ SELECT a.id,
        ou.name                 AS p_owner_name,
        NULL::bigint            AS pv_id,
        NULL::character varying AS pv_version_string,
+       NULL::bigint[]          AS pv_platforms,
        pp.id                   AS pp_id,
        pp.name                 AS pp_name,
        pp.slug                 AS pp_slug,
@@ -1149,6 +1138,7 @@ SELECT a.id,
        NULL::character varying AS p_owner_name,
        NULL::bigint            AS pv_id,
        NULL::character varying AS pv_version_string,
+       NULL::bigint[]          AS pv_platforms,
        NULL::bigint            AS pp_id,
        NULL::character varying AS pp_name,
        NULL::character varying AS pp_slug,
@@ -1172,6 +1162,7 @@ SELECT a.id,
        NULL::character varying AS p_owner_name,
        NULL::bigint            AS pv_id,
        NULL::character varying AS pv_version_string,
+       NULL::bigint[]          AS pv_platforms,
        NULL::bigint            AS pp_id,
        NULL::character varying AS pp_name,
        NULL::character varying AS pp_slug,
