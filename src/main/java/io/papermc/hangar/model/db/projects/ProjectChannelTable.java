@@ -14,21 +14,24 @@ public class ProjectChannelTable extends Table implements Named {
     private Color color;
     private final long projectId;
     private boolean nonReviewed;
+    private boolean editable;
 
     @JdbiConstructor
-    public ProjectChannelTable(OffsetDateTime createdAt, long id, String name, @EnumByOrdinal Color color, long projectId, boolean nonReviewed) {
+    public ProjectChannelTable(OffsetDateTime createdAt, long id, String name, @EnumByOrdinal Color color, long projectId, boolean nonReviewed, boolean editable) {
         super(createdAt, id);
         this.name = name;
         this.color = color;
         this.projectId = projectId;
         this.nonReviewed = nonReviewed;
+        this.editable = editable;
     }
 
-    public ProjectChannelTable(String name, Color color, long projectId, boolean nonReviewed) {
+    public ProjectChannelTable(String name, Color color, long projectId, boolean nonReviewed, boolean editable) {
         this.name = name;
         this.color = color;
         this.projectId = projectId;
         this.nonReviewed = nonReviewed;
+        this.editable = editable;
     }
 
     @Override
@@ -61,6 +64,14 @@ public class ProjectChannelTable extends Table implements Named {
         this.nonReviewed = nonReviewed;
     }
 
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
     @Override
     public String toString() {
         return "ProjectChannelTable{" +
@@ -68,6 +79,7 @@ public class ProjectChannelTable extends Table implements Named {
                 ", color=" + color +
                 ", projectId=" + projectId +
                 ", nonReviewed=" + nonReviewed +
+               ", editable=" + editable +
                 "} " + super.toString();
     }
 }

@@ -28,6 +28,7 @@ declare module 'hangar-internal' {
     interface ProjectChannel extends Named, Partial<Table> {
         color: string;
         nonReviewed: boolean;
+        editable: boolean;
         temp?: boolean;
         versionCount: number;
     }

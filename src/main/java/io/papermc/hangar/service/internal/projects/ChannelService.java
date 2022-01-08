@@ -63,9 +63,9 @@ public class ChannelService extends HangarComponent {
     }
 
     @Transactional
-    public ProjectChannelTable createProjectChannel(String name, Color color, long projectId, boolean nonReviewed) {
+    public ProjectChannelTable createProjectChannel(String name, Color color, long projectId, boolean nonReviewed, boolean editable) {
         validateChannel(name, color, projectId, nonReviewed, projectChannelsDAO.getProjectChannels(projectId));
-        ProjectChannelTable channelTable = projectChannelsDAO.insert(new ProjectChannelTable(name, color, projectId, nonReviewed));
+        ProjectChannelTable channelTable = projectChannelsDAO.insert(new ProjectChannelTable(name, color, projectId, nonReviewed, editable));
         actionLogger.project(LogAction.PROJECT_CHANNEL_CREATED.create(ProjectContext.of(projectId), formatChannelChange(channelTable), ""));
         return channelTable;
     }
@@ -75,6 +75,9 @@ public class ChannelService extends HangarComponent {
         ProjectChannelTable projectChannelTable = getProjectChannel(channelId);
         if (projectChannelTable == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+        if (!projectChannelTable.isEditable()) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.cannotEdit");
         }
         validateChannel(name, color, projectId, nonReviewed, projectChannelsDAO.getProjectChannels(projectId).stream().filter(ch -> ch.getId() != channelId).collect(Collectors.toList()));
         String old = formatChannelChange(projectChannelTable);
@@ -90,6 +93,9 @@ public class ChannelService extends HangarComponent {
         HangarChannel hangarChannel = hangarProjectsDAO.getHangarChannel(channelId);
         if (hangarChannel == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
+        }
+        if (!hangarChannel.isEditable()) {
+            throw new HangarApiException(HttpStatus.BAD_REQUEST, "channel.modal.error.cannotDelete");
         }
         if (hangarChannel.getVersionCount() != 0 || getProjectChannels(projectId).size() == 1) {
             // Cannot delete channels with versions or if its the last channel

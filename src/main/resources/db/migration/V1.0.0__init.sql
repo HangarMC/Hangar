@@ -201,6 +201,7 @@ CREATE TABLE project_channels
             REFERENCES projects
             ON DELETE CASCADE,
     non_reviewed boolean DEFAULT FALSE NOT NULL,
+    editable boolean DEFAULT FALSE NOT NULL,
     CONSTRAINT channels_project_id_name_key
         UNIQUE (project_id, name),
     CONSTRAINT channels_project_id_color_id_key

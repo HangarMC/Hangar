@@ -71,7 +71,7 @@ public class ChannelController extends HangarComponent {
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_TAGS, args = "{#projectId}")
     @PostMapping(path = "/{projectId}/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void createChannel(@PathVariable long projectId, @Valid @RequestBody ChannelForm channelForm) {
-        channelService.createProjectChannel(channelForm.getName(), channelForm.getColor(), projectId, channelForm.isNonReviewed());
+        channelService.createProjectChannel(channelForm.getName(), channelForm.getColor(), projectId, channelForm.isNonReviewed(), true);
     }
 
     @Unlocked
