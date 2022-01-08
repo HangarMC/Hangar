@@ -8,9 +8,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public class UserTable extends Table implements ProjectOwner {
 
+    private UUID uuid;
     private String fullName;
     private String name;
     private String email;
@@ -21,8 +23,9 @@ public class UserTable extends Table implements ProjectOwner {
     private String language;
 
     @JdbiConstructor
-    public UserTable(OffsetDateTime createdAt, @PropagateNull long id, String fullName, String name, String email, String tagline, OffsetDateTime joinDate, List<Integer> readPrompts, boolean locked, String language) {
+    public UserTable(OffsetDateTime createdAt, @PropagateNull long id, UUID uuid, String fullName, String name, String email, String tagline, OffsetDateTime joinDate, List<Integer> readPrompts, boolean locked, String language) {
         super(createdAt, id);
+        this.uuid = uuid;
         this.fullName = fullName;
         this.name = name;
         this.email = email;
@@ -33,14 +36,23 @@ public class UserTable extends Table implements ProjectOwner {
         this.language = language;
     }
 
-    public UserTable(long id, String fullName, String name, String email, List<Integer> readPrompts, boolean locked, String language) {
+    public UserTable(long id, UUID uuid, String fullName, String name, String email, List<Integer> readPrompts, boolean locked, String language) {
         super(id);
+        this.uuid = uuid;
         this.fullName = fullName;
         this.name = name;
         this.email = email;
         this.readPrompts = readPrompts;
         this.locked = locked;
         this.language = language;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     @JsonIgnore
@@ -120,6 +132,7 @@ public class UserTable extends Table implements ProjectOwner {
     public String toString() {
         return "UserTable{" +
                 "fullName='" + fullName + '\'' +
+                ", uuid='" + uuid + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", tagline='" + tagline + '\'' +

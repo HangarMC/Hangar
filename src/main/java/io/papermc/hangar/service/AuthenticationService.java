@@ -21,6 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 @Service
 public class AuthenticationService extends HangarComponent {
@@ -42,7 +43,8 @@ public class AuthenticationService extends HangarComponent {
         UserTable userTable = userService.getUserTable(userName);
         if (userTable == null) {
             userTable = new UserTable(
-                    config.fakeUser.getId(),
+                    -1, // we can pass -1 here since it's not actually inserted in the DB in the DAO
+                    UUID.randomUUID(),
                     config.fakeUser.getName(),
                     userName,
                     config.fakeUser.getEmail(),

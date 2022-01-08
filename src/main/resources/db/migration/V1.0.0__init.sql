@@ -48,9 +48,12 @@ CREATE TYPE job_state AS ENUM ('not_started', 'started', 'done', 'fatal_failure'
 
 CREATE TABLE users
 (
-    id bigint NOT NULL
+    id bigserial NOT NULL
         CONSTRAINT users_pkey
             PRIMARY KEY,
+    uuid uuid NOT NULL
+        CONSTRAINT users_uuid_key
+            UNIQUE,
     created_at timestamp with time zone NOT NULL,
     full_name varchar(255),
     name varchar(255) NOT NULL
