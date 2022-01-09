@@ -11,6 +11,8 @@ import org.jdbi.v3.core.mapper.RowMapperFactory;
 import org.jdbi.v3.core.mapper.RowMappers;
 
 import java.lang.reflect.Type;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Optional;
 
 public class JoinableRowMapperFactory implements RowMapperFactory {
@@ -32,9 +34,15 @@ public class JoinableRowMapperFactory implements RowMapperFactory {
         RowMapper<? extends ExtendedRoleTable<?, ?>> tableMapper = rowMappers.findFor(extendedRoleTableType).orElseThrow(() -> new NoSuchMapperException("Could not find mapper for " + tableType.getTypeName()));
         RowMapper<UserTable> userTableMapper = rowMappers.findFor(UserTable.class).orElseThrow(() -> new NoSuchMapperException("Could not find mapper for " + UserTable.class.getTypeName()));
 
-
-
-        RowMapper<JoinableMember<?>> mapper = (rs, ctx) -> new JoinableMember<>(tableMapper.map(rs, ctx), userTableMapper.map(rs, ctx));
+        RowMapper<JoinableMember<?>> mapper = (rs, ctx) -> new JoinableMember<>(tableMapper.map(rs, ctx), userTableMapper.map(rs, ctx), getOrFalse(rs, "hidden"));
         return Optional.of(mapper);
+    }
+
+    private boolean getOrFalse(ResultSet rs, String col) {
+        try {
+            return rs.getBoolean(col);
+        } catch (SQLException e) {
+            return false;
+        }
     }
 }

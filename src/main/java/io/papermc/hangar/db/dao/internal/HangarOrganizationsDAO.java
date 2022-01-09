@@ -26,9 +26,11 @@ public interface HangarOrganizationsDAO {
             "       uor.user_id uor_user_id," +
             "       uor.role_type uor_role_type," +
             "       uor.organization_id uor_organization_id," +
-            "       uor.accepted uor_accepted" +
+            "       uor.accepted uor_accepted," +
+            "       om.hidden hidden" +
             "   FROM user_organization_roles uor" +
             "       JOIN users u ON uor.user_id = u.id" +
-            "   WHERE uor.organization_id = :orgId <if(!canSeePending)>AND (uor.accepted IS TRUE OR uor.user_id = :userId)<endif>")
+            "       LEFT JOIN organization_members om ON om.user_id = u.id" +
+            "   WHERE uor.organization_id = :orgId <if(!canSeePending)>AND (uor.accepted IS TRUE OR uor.user_id = :userId) AND (om.hidden IS FALSE OR uor.user_id = :userId)<endif>")
     List<JoinableMember<OrganizationRoleTable>> getOrganizationMembers(long orgId, Long userId, @Define boolean canSeePending);
 }

@@ -53,6 +53,7 @@
                     <span v-if="!member.editing" class="flex-right">
                         <span v-if="member.roleAccepted">{{ member.roleTitle }}</span>
                         <span v-else>{{ $t('form.memberList.invitedAs', [member.roleTitle]) }}</span>
+                        <span v-if="member.hidden">Hidden: {{ member.hidden }}</span>
                     </span>
                     <v-select
                         v-else
@@ -109,6 +110,7 @@
                         </v-autocomplete>
                     </v-list-item>
                 </template>
+                <template v-if="!members || members.length === 0"> {{ $t('project.noPublicMembers') }} </template>
             </v-list>
         </v-card-text>
     </v-card>
@@ -131,6 +133,7 @@ interface EditableMember {
     editing: boolean;
     toDelete: boolean;
     new: boolean;
+    hidden: boolean;
 }
 
 @Component({
@@ -188,6 +191,7 @@ export default class MemberList extends HangarComponent {
             editing: false,
             toDelete: false,
             new: false,
+            hidden: jm.hidden,
         }));
     }
 
@@ -223,6 +227,7 @@ export default class MemberList extends HangarComponent {
             editing: true,
             roleAssignable: true,
             toDelete: false,
+            hidden: false,
         });
         this.selectedUser = null;
     }

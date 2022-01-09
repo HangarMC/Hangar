@@ -60,6 +60,7 @@ declare module 'hangar-internal' {
     interface JoinableMember {
         user: UserTable;
         role: RoleTable;
+        hidden: boolean;
     }
 
     interface Joinable {

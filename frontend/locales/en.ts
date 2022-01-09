@@ -95,6 +95,7 @@ export default {
     watchers: 'Watchers',
     noWatchers: 'There are no watchers on this project yet 😢',
     members: 'Members',
+    noPublicMembers: 'There are no public members.',
     category: {
       info: 'Category',
       admin_tools: 'Admin Tools',
