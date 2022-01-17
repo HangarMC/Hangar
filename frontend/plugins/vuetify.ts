@@ -19,5 +19,5 @@ export default {
             },
         },
     },
-    theme: buildTheme(true, defaultDark, defaultLight),
+    theme: buildTheme(false, defaultDark, defaultLight),
 } as Partial<VuetifyPreset>;

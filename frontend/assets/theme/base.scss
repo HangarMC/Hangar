@@ -7,7 +7,7 @@
 body,
 .v-card,
 .v-sheet.v-list {
-  background-color: #272727 !important;
+  background-color: var(--v-accent-base) !important;
 }
 .v-btn.v-btn--has-bg {
   background-color: #1E1E1E !important;
