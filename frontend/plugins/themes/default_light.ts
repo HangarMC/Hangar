@@ -4,7 +4,7 @@ import { VuetifyThemeVariant } from 'vuetify/types/services/theme';
 export default {
     anchor: colors.blue.lighten3,
     primary: colors.blue.darken2,
-    accent: colors.grey.darken3,
+    accent: '#e5e5e5',
     secondary: colors.amber.darken3,
     info: colors.teal.lighten1,
     warning: colors.amber.base,

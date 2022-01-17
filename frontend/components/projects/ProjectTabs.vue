@@ -97,7 +97,7 @@ export default class ProjectTabs extends HangarProjectMixin {
     margin-top: 12px;
 }
 .v-tabs-bar {
-    background-color: #272727 !important;
+    background-color: var(--v-accent-base) !important;
 
     a:not(.v-tab--active) {
         & .v-icon--left {
