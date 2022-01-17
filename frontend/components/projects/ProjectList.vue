@@ -8,7 +8,15 @@
         <template #default="props">
             <v-hover v-for="project in props.items" :key="project.id" v-slot="{ hover }" style="width: 100%; height: 78px" class="d-block mb-3">
                 <NuxtLink :to="`/${project.namespace.owner}/${project.namespace.slug}`">
-                    <v-sheet :elevation="hover ? 24 : 0" height="100%" width="100%" tile color="accent" class="transition-swing grow-on-hover mb-3">
+                    <v-sheet
+                        :elevation="hover ? 24 : 0"
+                        height="100%"
+                        width="100%"
+                        tile
+                        color="accent"
+                        style="border-radius: 5px !important"
+                        class="transition-swing grow-on-hover mb-3"
+                    >
                         <v-row no-gutters>
                             <div class="flex-shrink-0">
                                 <v-img
