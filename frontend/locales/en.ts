@@ -72,7 +72,7 @@ export default {
         fakeUserEnabled: 'Fake user is enabled. {0} is therefore disabled'
       }
     },
-    createNew: 'Create new...',
+    createNew: 'Create',
     new: {
       project: 'New Project',
       organization: 'New Organization'
