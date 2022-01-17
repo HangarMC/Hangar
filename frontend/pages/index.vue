@@ -20,7 +20,7 @@
                 </v-row>
             </v-col>
 
-            <v-col cols="12" sm="2" md="2">
+            <v-col cols="12" md="2" class="main-sidebar">
                 <br />
                 <HangarSponsor :sponsor="sponsor" />
 
@@ -160,3 +160,12 @@ export default class Home extends HangarComponent {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+@media (min-width: 600px) and (max-width: 959px) {
+    .main-sidebar {
+        flex: 0 0 16.6666666667%;
+        max-width: 30%;
+    }
+}
+</style>
