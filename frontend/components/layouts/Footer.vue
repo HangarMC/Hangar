@@ -4,7 +4,7 @@
             <br />
             <v-row align="center" justify="center">
                 <v-col cols="12" class="d-flex justify-center">
-                    By using this site you're accepting our <a href="https://papermc.io/community-guidelines"> Terms of Service</a>
+                    <p>By using this site you're accepting our <a href="https://papermc.io/community-guidelines">Terms of Service</a></p>
                 </v-col>
             </v-row>
 

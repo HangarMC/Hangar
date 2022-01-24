@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-row>
-            <v-col cols="12" sm="8" md="5" offset-md="3">
+            <v-col cols="12" sm="8" md="5" offset-md="3" class="main-plugin-content">
                 <br />
                 <br />
                 <v-row justify="center" align="center">
@@ -20,7 +20,7 @@
                 </v-row>
             </v-col>
 
-            <v-col cols="12" sm="2" md="2">
+            <v-col cols="12" md="2" class="main-sidebar">
                 <br />
                 <HangarSponsor :sponsor="sponsor" />
 
@@ -160,3 +160,22 @@ export default class Home extends HangarComponent {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+@media (max-width: 746px) {
+    .main-plugin-content {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+@media (min-width: 747px) and (max-width: 840px) {
+    .main-sidebar {
+        max-width: 30%;
+    }
+}
+@media (min-width: 841px) and (max-width: 1370px) {
+    .main-sidebar {
+        max-width: 25%;
+    }
+}
+</style>
