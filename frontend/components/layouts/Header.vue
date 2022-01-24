@@ -19,7 +19,7 @@
             <template #activator="{ on, attrs }">
                 <v-btn v-bind="attrs" color="primary" class="mr-1" v-on="on">
                     {{ $t('nav.createNew') }}
-                    <v-icon right> mdi-chevron-down </v-icon>
+                    <v-icon right> mdi-plus-box-multiple </v-icon>
                 </v-btn>
             </template>
             <Dropdown :controls="newControls" />
