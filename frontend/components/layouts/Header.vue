@@ -1,9 +1,9 @@
 <template>
     <v-app-bar class="navbar" height="65px" elevate-on-scroll fixed>
-        <v-app-bar-nav-icon style="display: none" class="drawer" @click="drawer = true"></v-app-bar-nav-icon>
-        <v-menu style="display: none" bottom offset-y open-on-hover transition="slide-y-transition" close-delay="100">
+        <v-app-bar-nav-icon class="drawer" @click="drawer = true"></v-app-bar-nav-icon>
+        <v-menu bottom offset-y open-on-hover transition="slide-y-transition" close-delay="100">
             <template #activator="{ on, attrs }">
-                <v-btn style="display: none" text x-large class="align-self-center px-1" v-bind="attrs" :ripple="false" v-on="on">
+                <v-btn text x-large class="align-self-center px-1" v-bind="attrs" :ripple="false" v-on="on">
                     <v-icon>mdi-menu</v-icon>
                 </v-btn>
             </template>
