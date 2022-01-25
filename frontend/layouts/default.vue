@@ -103,4 +103,16 @@ export default class DefaultLayout extends Vue {
 .edit-btn i {
     color: white !important;
 }
+
+.v-main {
+    padding-top: 3em !important;
+}
+
+body,
+.v-application,
+*,
+.v-application .text-h6,
+.v-application .text-subtitle-2 {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
+}
 </style>

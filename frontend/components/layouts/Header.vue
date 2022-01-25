@@ -1,40 +1,41 @@
 <template>
-    <v-app-bar height="100px" dense elevation="0" style="background-color: unset !important">
-        <v-menu bottom offset-y open-on-hover transition="slide-y-transition" close-delay="100">
+    <v-app-bar class="navbar" height="65px" elevate-on-scroll fixed>
+        <v-app-bar-nav-icon style="display: none" class="drawer" @click="drawer = true"></v-app-bar-nav-icon>
+        <v-menu style="display: none" bottom offset-y open-on-hover transition="slide-y-transition" close-delay="100">
             <template #activator="{ on, attrs }">
-                <v-btn text x-large class="align-self-center px-1" v-bind="attrs" :ripple="false" v-on="on">
-                    <NuxtLink class="float-left" to="/" exact>
-                        <v-img v-if="!$vuetify.theme.dark" height="60" width="220" src="/images/paper-logo-light.svg" alt="Paper logo" />
-                        <v-img v-else style="filter: none" height="60" width="220" src="https://papermc.io/images/logo-marker.svg" alt="Paper logo" />
-                    </NuxtLink>
-
-                    <v-icon>mdi-chevron-down</v-icon>
+                <v-btn style="display: none" text x-large class="align-self-center px-1" v-bind="attrs" :ripple="false" v-on="on">
+                    <v-icon>mdi-menu</v-icon>
                 </v-btn>
             </template>
             <Dropdown :controls="dropdown" />
         </v-menu>
 
-        <v-spacer />
+        <v-btn text x-large class="align-self-center px-1" style="margin-left: 0" :ripple="false">
+            <NuxtLink class="float-left" to="/" exact>
+                <v-img v-if="!$vuetify.theme.dark" style="margin-left: 0" height="60" width="60" src="/images/hangar-icon-2.svg" alt="Paper logo" />
+                <v-img v-else style="margin-left: 0" height="60" width="60" src="images/hangar-icon-2.svg" alt="Paper logo" />
+            </NuxtLink>
+        </v-btn>
 
-        <div>
-            <v-tooltip v-if="!$vuetify.theme.dark" bottom>
-                <template #activator="{ on }">
-                    <v-btn color="info" class="mr-1" v-on="on" @click="darkMode">
-                        <v-icon>mdi-weather-night</v-icon>
-                    </v-btn>
-                </template>
-                <span>{{ $t('nav.darkModeOn') }}</span>
-            </v-tooltip>
-
-            <v-tooltip v-else bottom>
-                <template #activator="{ on }">
-                    <v-btn color="info" class="mr-1" v-on="on" @click="darkMode">
-                        <v-icon color="yellow">mdi-white-balance-sunny</v-icon>
-                    </v-btn>
-                </template>
-                <span>{{ $t('nav.darkModeOff') }}</span>
-            </v-tooltip>
+        <div class="navbar-links">
+            <NuxtLink class="float-left" to="/" exact>
+                <span>Home</span>
+            </NuxtLink>
+            <NuxtLink class="float-left" to="/" exact>
+                <span>Forums</span>
+            </NuxtLink>
+            <NuxtLink class="float-left" to="/" exact>
+                <span>What's New</span>
+            </NuxtLink>
+            <NuxtLink class="float-left" to="/" exact>
+                <span>Downloads</span>
+            </NuxtLink>
+            <NuxtLink class="float-left" to="/" exact>
+                <span>Discord</span>
+            </NuxtLink>
         </div>
+
+        <v-spacer />
 
         <v-menu v-if="isLoggedIn" bottom offset-y transition="slide-y-transition" open-on-hover>
             <template #activator="{ on, attrs }">
@@ -46,22 +47,44 @@
             <Dropdown :controls="newControls" />
         </v-menu>
 
-        <v-tooltip bottom>
-            <template #activator="{ on }">
-                <v-btn icon to="/authors" nuxt class="mr-1" v-on="on">
-                    <v-icon>mdi-account-group</v-icon>
-                </v-btn>
-            </template>
-            <span>{{ $t('pages.authorsTitle') }}</span>
-        </v-tooltip>
-        <v-tooltip bottom>
-            <template #activator="{ on }">
-                <v-btn icon to="/staff" nuxt class="mr-1" v-on="on">
-                    <v-icon>mdi-account-tie</v-icon>
-                </v-btn>
-            </template>
-            <span>{{ $t('pages.staffTitle') }}</span>
-        </v-tooltip>
+        <div class="hideOnMobile">
+            <div>
+                <v-tooltip v-if="!$vuetify.theme.dark" bottom>
+                    <template #activator="{ on }">
+                        <v-btn class="mr-1 darkModeSwitchButton" v-on="on" @click="darkMode">
+                            <v-icon>mdi-weather-night</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>{{ $t('nav.darkModeOn') }}</span>
+                </v-tooltip>
+
+                <v-tooltip v-else bottom>
+                    <template #activator="{ on }">
+                        <v-btn class="mr-1 darkModeSwitchButton" v-on="on" @click="darkMode">
+                            <v-icon color="yellow">mdi-white-balance-sunny</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>{{ $t('nav.darkModeOff') }}</span>
+                </v-tooltip>
+            </div>
+
+            <v-tooltip bottom>
+                <template #activator="{ on }">
+                    <v-btn icon to="/authors" nuxt class="mr-1" v-on="on">
+                        <v-icon>mdi-account-group</v-icon>
+                    </v-btn>
+                </template>
+                <span>{{ $t('pages.authorsTitle') }}</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+                <template #activator="{ on }">
+                    <v-btn icon to="/staff" nuxt class="mr-1" v-on="on">
+                        <v-icon>mdi-account-tie</v-icon>
+                    </v-btn>
+                </template>
+                <span>{{ $t('pages.staffTitle') }}</span>
+            </v-tooltip>
+        </div>
 
         <v-menu v-if="isLoggedIn" bottom offset-y transition="slide-y-transition" close-delay="100">
             <template #activator="{ on, attrs }">
@@ -284,5 +307,55 @@ export default class Header extends HangarComponent {
 }
 .v-image {
     margin: 20px;
+}
+
+@media (min-width: 816px) {
+    .drawer {
+        display: none;
+    }
+    .hideOnMobile {
+        display: flex;
+        align-items: center;
+    }
+}
+@media (max-width: 815px) {
+    .hideOnMobile {
+        display: none;
+    }
+}
+
+.navbar {
+    display: flex !important;
+    justify-content: center;
+}
+
+.theme--light .navbar {
+    background-color: #fff !important;
+}
+
+.navbar .v-toolbar__content {
+    max-width: 1200px;
+    width: calc(100% - 40px);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.navbar-links a {
+    text-transform: uppercase;
+    padding: 0 16px;
+    font-size: 13px;
+    color: #262626 !important;
+}
+.theme--dark .navbar-links a {
+    color: #fff !important;
+}
+
+.v-btn.v-btn--has-bg.darkModeSwitchButton {
+    background-color: transparent !important;
+    box-shadow: none;
+    padding: 0 4px;
+    min-width: 32px;
 }
 </style>

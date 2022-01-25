@@ -72,7 +72,7 @@ export default {
         fakeUserEnabled: 'Fake user is enabled. {0} is therefore disabled'
       }
     },
-    createNew: 'Create new...',
+    createNew: 'New',
     darkModeOn: 'Turn on Dark Mode',
     darkModeOff: 'Turn off Dark Mode',
     new: {
