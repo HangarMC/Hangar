@@ -3,7 +3,7 @@ import { VuetifyThemeVariant } from 'vuetify/types/services/theme';
 
 export default {
     anchor: colors.blue.base,
-    primary: colors.blue.darken2,
+    primary: '#0080ff',
     accent: '#ffffff',
     secondary: colors.amber.darken3,
     info: '#af00ff',
