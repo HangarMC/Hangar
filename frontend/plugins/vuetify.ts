@@ -19,5 +19,5 @@ export default {
             },
         },
     },
-    theme: buildTheme(true, defaultDark, defaultLight),
+    theme: buildTheme(process.browser && localStorage.getItem('DarkMode') === 'true', defaultDark, defaultLight),
 } as Partial<VuetifyPreset>;

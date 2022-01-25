@@ -1,5 +1,5 @@
 <template>
-    <v-footer dark padless>
+    <v-footer padless>
         <v-container>
             <br />
             <v-row align="center" justify="center">

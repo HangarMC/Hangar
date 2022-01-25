@@ -1,10 +1,18 @@
 <template>
-    <v-app-bar height="100px">
+    <v-app-bar height="100px" dense elevation="0" style="background-color: unset !important">
         <v-menu bottom offset-y open-on-hover transition="slide-y-transition" close-delay="100">
             <template #activator="{ on, attrs }">
                 <v-btn text x-large class="align-self-center px-1" v-bind="attrs" :ripple="false" v-on="on">
                     <NuxtLink class="float-left" to="/" exact>
-                        <v-img height="60" width="220" src="https://papermc.io/images/logo-marker.svg" alt="Paper logo" />
+                        <v-img
+                            v-if="!$vuetify.theme.dark"
+                            style="filter: contrast(100%) invert(100%)"
+                            height="60"
+                            width="220"
+                            src="https://papermc.io/images/logo-marker.svg"
+                            alt="Paper logo"
+                        />
+                        <v-img v-else style="filter: none" height="60" width="220" src="https://papermc.io/images/logo-marker.svg" alt="Paper logo" />
                     </NuxtLink>
 
                     <v-icon>mdi-chevron-down</v-icon>
@@ -14,6 +22,26 @@
         </v-menu>
 
         <v-spacer />
+
+        <div>
+            <v-tooltip v-if="!$vuetify.theme.dark" bottom>
+                <template #activator="{ on }">
+                    <v-btn color="info" class="mr-1" v-on="on" @click="darkMode">
+                        <v-icon>mdi-weather-night</v-icon>
+                    </v-btn>
+                </template>
+                <span>Turn on Dark Mode</span>
+            </v-tooltip>
+
+            <v-tooltip v-else bottom>
+                <template #activator="{ on }">
+                    <v-btn color="info" class="mr-1" v-on="on" @click="darkMode">
+                        <v-icon color="yellow">mdi-white-balance-sunny</v-icon>
+                    </v-btn>
+                </template>
+                <span>Turn off Dark Mode</span>
+            </v-tooltip>
+        </div>
 
         <v-menu v-if="isLoggedIn" bottom offset-y transition="slide-y-transition" open-on-hover>
             <template #activator="{ on, attrs }">
@@ -83,6 +111,20 @@ import UserAvatar from '~/components/users/UserAvatar.vue';
     },
 })
 export default class Header extends HangarComponent {
+    darkMode() {
+        if (process.browser) {
+            if (this.$vuetify.theme.dark) {
+                this.$vuetify.theme.dark = false;
+                if (localStorage.getItem('DarkMode')) {
+                    localStorage.removeItem('DarkMode');
+                }
+            } else if (!this.$vuetify.theme.dark) {
+                this.$vuetify.theme.dark = true;
+                localStorage.setItem('DarkMode', 'true');
+            }
+        }
+    }
+
     get dropdown(): Control[] {
         const controls: Control[] = [];
         controls.push({
