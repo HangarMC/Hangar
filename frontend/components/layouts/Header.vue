@@ -23,7 +23,7 @@
                         <v-icon>mdi-weather-night</v-icon>
                     </v-btn>
                 </template>
-                <span>Turn on Dark Mode</span>
+                <span>{{ $t('nav.darkModeOn') }}</span>
             </v-tooltip>
 
             <v-tooltip v-else bottom>
@@ -32,7 +32,7 @@
                         <v-icon color="yellow">mdi-white-balance-sunny</v-icon>
                     </v-btn>
                 </template>
-                <span>Turn off Dark Mode</span>
+                <span>{{ $t('nav.darkModeOff') }}</span>
             </v-tooltip>
         </div>
 
