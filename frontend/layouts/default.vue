@@ -53,4 +53,46 @@ export default class DefaultLayout extends Vue {
 .v-main {
     padding-bottom: 12px;
 }
+
+.theme--light.v-sheet.v-card:not(.v-sheet--outlined),
+.theme--light.v-sheet.v-list,
+.theme--light.v-application .accent {
+    border-width: 0;
+    border-style: solid;
+    border-top-color: #d3e1f6;
+    border-right-color: #d3e1f6;
+    border-bottom-color: #d3e1f6;
+    border-left-color: #d3e1f6;
+    border-radius: 8px;
+    background-color: #ffffff !important;
+    box-shadow: 0 4px 15px 4px rgb(88 106 153 / 20%) !important;
+}
+.theme--light.v-application,
+.theme--light.v-footer {
+    background: #f6f9ff !important;
+}
+
+@media (min-width: 769px) {
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+}
+* {
+    scrollbar-color: var(--v-primary-base) #f6f9ff;
+    scrollbar-width: thin;
+}
+
+::-webkit-scrollbar-track {
+    background: #f6f9ff;
+}
+.theme--dark::-webkit-scrollbar-track {
+    background: #121212;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--v-primary-base);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #444;
+}
 </style>
