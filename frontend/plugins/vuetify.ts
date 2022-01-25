@@ -9,7 +9,7 @@ let defaultDarkMode = false;
 if (process.browser) {
     if (localStorage.getItem('DarkMode') === 'true') {
         defaultDarkMode = true;
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    } else if (!localStorage.getItem('DarkMode') && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         defaultDarkMode = true;
     }
 }

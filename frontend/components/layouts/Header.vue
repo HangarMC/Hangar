@@ -108,9 +108,7 @@ export default class Header extends HangarComponent {
         if (process.browser) {
             if (this.$vuetify.theme.dark) {
                 this.$vuetify.theme.dark = false;
-                if (localStorage.getItem('DarkMode')) {
-                    localStorage.removeItem('DarkMode');
-                }
+                localStorage.setItem('DarkMode', 'false');
             } else if (!this.$vuetify.theme.dark) {
                 this.$vuetify.theme.dark = true;
                 localStorage.setItem('DarkMode', 'true');
