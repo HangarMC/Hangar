@@ -4,7 +4,7 @@
             <template #activator="{ on, attrs }">
                 <v-btn text x-large class="align-self-center px-1" v-bind="attrs" :ripple="false" v-on="on">
                     <NuxtLink class="float-left" to="/" exact>
-                        <v-img v-if="!$vuetify.theme.dark" height="60" width="220" src="images/paper-logo-light.svg" alt="Paper logo" />
+                        <v-img v-if="!$vuetify.theme.dark" height="60" width="220" src="/images/paper-logo-light.svg" alt="Paper logo" />
                         <v-img v-else style="filter: none" height="60" width="220" src="https://papermc.io/images/logo-marker.svg" alt="Paper logo" />
                     </NuxtLink>
 
