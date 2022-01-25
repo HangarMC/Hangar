@@ -95,4 +95,9 @@ export default class DefaultLayout extends Vue {
 ::-webkit-scrollbar-thumb:hover {
     background: #444;
 }
+
+.theme--light.v-application .white--text {
+    color: black !important;
+    caret-color: black !important;
+}
 </style>
