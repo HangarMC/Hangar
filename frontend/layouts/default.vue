@@ -82,7 +82,7 @@ export default class DefaultLayout extends Vue {
     scrollbar-width: thin;
 }
 
-::-webkit-scrollbar-track {
+.theme--light::-webkit-scrollbar-track {
     background: #f6f9ff;
 }
 .theme--dark::-webkit-scrollbar-track {
