@@ -65,7 +65,7 @@ export default class DefaultLayout extends Vue {
     border-left-color: #d3e1f6;
     border-radius: 8px;
     background-color: #ffffff !important;
-    box-shadow: 0 4px 15px 4px rgb(88 106 153 / 20%) !important;
+    box-shadow: 0 0 10px 1px rgb(88 106 153 / 27%) !important;
 }
 .theme--light.v-application,
 .theme--light.v-footer {
