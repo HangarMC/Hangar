@@ -22,15 +22,15 @@
                 <span>Home</span>
             </NuxtLink>
             <NuxtLink class="float-left" to="/" exact>
-                <span>Forums</span>
+                <span>Your Projects</span>
             </NuxtLink>
             <NuxtLink class="float-left" to="/" exact>
-                <span>What's New</span>
+                <span>Top 10</span>
             </NuxtLink>
             <NuxtLink class="float-left" to="/" exact>
-                <span>Downloads</span>
+                <span>Team</span>
             </NuxtLink>
-            <NuxtLink class="float-left" to="/" exact>
+            <NuxtLink class="float-left" to="https://discord.gg/papermc" exact>
                 <span>Discord</span>
             </NuxtLink>
         </div>
@@ -147,7 +147,7 @@ export default class Header extends HangarComponent {
             title: this.$t('nav.hangar.home'),
         });
         controls.push({
-            link: 'https://papermc.io/forums',
+            link: 'https://forums.papermc.io/',
             icon: 'mdi-comment-multiple',
             title: this.$t('nav.hangar.forums'),
         });
