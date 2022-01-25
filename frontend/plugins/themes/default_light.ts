@@ -6,7 +6,7 @@ export default {
     primary: '#0080ff',
     accent: '#ffffff',
     secondary: colors.amber.darken3,
-    info: '#af00ff',
+    info: '#004ee9',
     warning: colors.amber.base,
     error: colors.deepOrange.accent4,
     success: colors.green.accent3,
