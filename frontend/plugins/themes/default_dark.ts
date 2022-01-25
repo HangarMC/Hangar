@@ -8,7 +8,7 @@ export default {
     box: '#212121',
     accent: '#272727',
     secondary: colors.amber.darken3,
-    info: '#af00ff',
+    info: '#004ee9',
     warning: colors.orange.darken3,
     error: colors.deepOrange.accent4,
     success: colors.lightGreen.darken2,
