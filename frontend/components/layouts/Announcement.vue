@@ -24,5 +24,9 @@ export default class Announcement extends Vue {
     min-height: 43px;
     margin: 0;
     border-radius: 0;
+    top: 65px;
+    position: relative;
+    z-index: 100;
+    min-width: 100%;
 }
 </style>
