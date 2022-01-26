@@ -79,23 +79,11 @@ public class ProjectsApiService extends HangarComponent {
                     orderingFirstHalf = " "; // Just in case and so that the ide doesn't complain
             }
             ordering = orderingFirstHalf + relevance;
-
-            System.out.println("Ordering First Half: " + orderingFirstHalf);
-            System.out.println("Ordering Relevance: " + relevance);
         }
 
         boolean seeHidden = getGlobalPermissions().has(Permission.SeeHidden);
-        System.out.println("See Hidden: " + seeHidden);
-        System.out.println("User ID: " + getHangarUserId());
-        System.out.println("Ordering: " + ordering);
-
-
-        System.out.println("Pagination: " + pagination);
 
         List<Project> projects = projectsApiDAO.getProjects(seeHidden, getHangarUserId(), ordering, pagination);
-        for(Project project : projects){
-            System.out.println("Returned " + project.getName());
-        }
         return new PaginatedResult<>(new Pagination(projectsApiDAO.countProjects(seeHidden, getHangarUserId(), pagination), pagination), projects);
     }
 }

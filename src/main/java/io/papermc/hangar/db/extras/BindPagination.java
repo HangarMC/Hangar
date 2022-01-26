@@ -52,10 +52,6 @@ public @interface BindPagination {
             StringBuilder sb = new StringBuilder();
             pagination.getFilters().forEach(filter -> filter.createSql(sb, q));
             q.define("filters", sb.toString());
-            for(Filter.FilterInstance filterInstance : pagination.getFilters()){
-                System.out.println("FIII: " + filterInstance.toString());
-            }
-            System.out.println("FILTEEER! I added to filters: " + sb.toString());
         }
 
         private void sorters(RequestPagination pagination, SqlStatement<?> q) {
