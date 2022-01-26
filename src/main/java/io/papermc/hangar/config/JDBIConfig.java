@@ -61,7 +61,7 @@ public class JDBIConfig {
         };
         TransactionAwareDataSourceProxy dataSourceProxy = new TransactionAwareDataSourceProxy(dataSource);
         Jdbi jdbi = Jdbi.create(dataSourceProxy);
-        //jdbi.setSqlLogger(myLogger); // for debugging sql statements
+        jdbi.setSqlLogger(myLogger); // for debugging sql statements
         PostgresTypes config = jdbi.getConfig(PostgresTypes.class);
 
         jdbiPlugins.forEach(jdbi::installPlugin);

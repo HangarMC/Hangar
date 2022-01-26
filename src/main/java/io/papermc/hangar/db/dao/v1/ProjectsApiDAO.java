@@ -69,51 +69,52 @@ public interface ProjectsApiDAO {
     Project getProject(String author, String slug, @Define boolean canSeeHidden, @Define @Bind Long requesterId);
 
     @UseStringTemplateEngine
-    @SqlQuery("SELECT DISTINCT (hp.id)," +
-        "       hp.created_at," +
-        "       hp.name," +
-        "       hp.owner_name \"owner\"," +
-        "       hp.slug," +
-        "       hp.promoted_versions," +
-        "       hp.views," +
-        "       hp.downloads," +
-        "       hp.recent_views," +
-        "       hp.recent_downloads," +
-        "       hp.stars," +
-        "       hp.watchers," +
-        "       hp.category," +
-        "       hp.description," +
-        "       hp.last_updated AS dum," + // need to add this so we can use it in order by, special constraint on distinct queries
-        "       COALESCE(hp.last_updated, hp.created_at) AS last_updated," +
-        "       ((EXTRACT(EPOCH FROM COALESCE(hp.last_updated, hp.created_at)) - 1609459200) / 604800) *1 AS last_updated_double," + //We can order with this. That "dum" does not work. It only orders it with this.
-        "       hp.visibility, " +
-        "       exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS starred, " +
-        "       exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS watching, " +
-        "       exists(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :requesterId AND pf.resolved IS FALSE) as flagged," +
-        "       p.homepage," +
-        "       p.issues," +
-        "       p.source," +
-        "       p.support," +
-        "       p.license_name," +
-        "       p.license_url," +
-        "       p.keywords," +
-        "       p.forum_sync," +
-        "       p.topic_id," +
-        "       p.post_id," +
-        "       p.donation_enabled," +
-        "       p.donation_email," +
-        "       p.donation_default_amount," +
-        "       p.donation_onetime_amounts," +
-        "       p.donation_monthly_amounts" +
-        "  FROM home_projects hp" +
-        "         JOIN projects p on hp.id = p.id" +
-        "         LEFT JOIN project_versions pv on p.id = pv.project_id " +
-        "         LEFT JOIN project_version_platform_dependencies pvpd on pv.id = pvpd.version_id " +
-        "         LEFT JOIN platform_versions v on pvpd.platform_version_id = v.id " +
-        "         WHERE true <filters>" + // Not sure how else to get here a single Where
-        "         <if(!seeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif> " +
-        "         ORDER BY <orderBy> " +
-        "         <offsetLimit>")
+    @SqlQuery("""
+        SELECT DISTINCT (hp.id),
+            hp.created_at,
+            hp.name,
+            hp.owner_name "owner",
+            hp.slug,
+            hp.promoted_versions,
+            hp.views,
+            hp.downloads,
+            hp.recent_views,
+            hp.recent_downloads,
+            hp.stars,
+            hp.watchers,
+            hp.category,
+            hp.description,
+            hp.last_updated AS dum, --- need to add this so we can use it in order by, special constraint on distinct queries
+            COALESCE(hp.last_updated, hp.created_at) AS last_updated,
+            ((EXTRACT(EPOCH FROM COALESCE(hp.last_updated, hp.created_at)) - 1609459200) / 604800) *1 AS last_updated_double, --- We can order with this. That "dum" does not work. It only orders it with this.
+            hp.visibility,
+            exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS starred,
+            exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS watching,
+            exists(SELECT * FROM project_flags pf WHERE pf.project_id = p.id AND pf.user_id = :requesterId AND pf.resolved IS FALSE) as flagged,
+            p.homepage,
+            p.issues,
+            p.source,
+            p.support,
+            p.license_name,
+            p.license_url,
+            p.keywords,
+            p.forum_sync,
+            p.topic_id,
+            p.post_id,
+            p.donation_enabled,
+            p.donation_email,
+            p.donation_default_amount,
+            p.donation_onetime_amounts,
+            p.donation_monthly_amounts
+        FROM home_projects hp
+            JOIN projects p on hp.id = p.id
+            LEFT JOIN project_versions pv on p.id = pv.project_id
+            LEFT JOIN project_version_platform_dependencies pvpd on pv.id = pvpd.version_id
+            LEFT JOIN platform_versions v on pvpd.platform_version_id = v.id
+            WHERE true <filters> -- Not sure how else to get here a single Where
+            <if(!seeHidden)> AND (hp.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(hp.project_members) AND hp.visibility != 4)<endif>) <endif>
+            ORDER BY <orderBy>
+            <offsetLimit>""")
     @RegisterColumnMapper(PromotedVersionMapper.class)
     @DefineNamedBindings
     List<Project> getProjects(@Define boolean seeHidden, Long requesterId, @Define String orderBy,
