@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -50,13 +51,17 @@ public class JDBIConfig {
     public Jdbi jdbi(DataSource dataSource, List<JdbiPlugin> jdbiPlugins, List<RowMapper<?>> rowMappers, List<RowMapperFactory> rowMapperFactories, List<ColumnMapper<?>> columnMappers) {
         SqlLogger myLogger = new SqlLogger() {
             @Override
-            public void logAfterExecution(StatementContext context) {
+            public void logException(StatementContext context, SQLException ex) {
                 Logger.getLogger("sql").info("sql: " + context.getRenderedSql());
+            }
+            @Override
+            public void logAfterExecution(StatementContext context) {
+                Logger.getLogger("sql").info("sql ae: " + context.getRenderedSql());
             }
         };
         TransactionAwareDataSourceProxy dataSourceProxy = new TransactionAwareDataSourceProxy(dataSource);
         Jdbi jdbi = Jdbi.create(dataSourceProxy);
-//        jdbi.setSqlLogger(myLogger); // for debugging sql statements
+        jdbi.setSqlLogger(myLogger); // for debugging sql statements
         PostgresTypes config = jdbi.getConfig(PostgresTypes.class);
 
         jdbiPlugins.forEach(jdbi::installPlugin);

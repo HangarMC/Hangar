@@ -1,5 +1,6 @@
 package io.papermc.hangar.db.extras;
 
+import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jdbi.v3.sqlobject.customizer.SqlStatementCustomizerFactory;
@@ -51,6 +52,10 @@ public @interface BindPagination {
             StringBuilder sb = new StringBuilder();
             pagination.getFilters().forEach(filter -> filter.createSql(sb, q));
             q.define("filters", sb.toString());
+            for(Filter.FilterInstance filterInstance : pagination.getFilters()){
+                System.out.println("FIII: " + filterInstance.toString());
+            }
+            System.out.println("FILTEEER! I added to filters: " + sb.toString());
         }
 
         private void sorters(RequestPagination pagination, SqlStatement<?> q) {

@@ -61,7 +61,7 @@ public class ProjectsApiService extends HangarComponent {
             if(query.endsWith(" ")) {
                 relevance = "ts_rank(hp.search_words, websearch_to_tsquery('english', :query)) DESC";
             }
-            relevance = "1"; // TODO broken on cockroach
+            relevance = "ASC"; // TODO broken on cockroach
             String orderingFirstHalf;
             // 1609459200 is the hangar epoch
             // 86400 seconds to days
@@ -71,7 +71,7 @@ public class ProjectsApiService extends HangarComponent {
                 case DOWNLOADS: orderingFirstHalf ="(hp.downloads / 100) * "; break;
                 case VIEWS: orderingFirstHalf ="(hp.views / 200) *"; break;
                 case NEWEST: orderingFirstHalf ="((EXTRACT(EPOCH FROM hp.created_at) - 1609459200) / 86400) *"; break;
-                case UPDATED: orderingFirstHalf ="((EXTRACT(EPOCH FROM hp.last_updated) - 1609459200) / 604800) *"; break;
+                case UPDATED: orderingFirstHalf ="last_updated_double "; break;
                 case ONLY_RELEVANCE: orderingFirstHalf = ""; break;
                 case RECENT_DOWNLOADS : orderingFirstHalf ="hp.recent_views *"; break;
                 case RECENT_VIEWS: orderingFirstHalf ="hp.recent_downloads *"; break;
@@ -79,10 +79,23 @@ public class ProjectsApiService extends HangarComponent {
                     orderingFirstHalf = " "; // Just in case and so that the ide doesn't complain
             }
             ordering = orderingFirstHalf + relevance;
+
+            System.out.println("Ordering First Half: " + orderingFirstHalf);
+            System.out.println("Ordering Relevance: " + relevance);
         }
 
         boolean seeHidden = getGlobalPermissions().has(Permission.SeeHidden);
+        System.out.println("See Hidden: " + seeHidden);
+        System.out.println("User ID: " + getHangarUserId());
+        System.out.println("Ordering: " + ordering);
+
+
+        System.out.println("Pagination: " + pagination);
+
         List<Project> projects = projectsApiDAO.getProjects(seeHidden, getHangarUserId(), ordering, pagination);
+        for(Project project : projects){
+            System.out.println("Returned " + project.getName());
+        }
         return new PaginatedResult<>(new Pagination(projectsApiDAO.countProjects(seeHidden, getHangarUserId(), pagination), pagination), projects);
     }
 }
