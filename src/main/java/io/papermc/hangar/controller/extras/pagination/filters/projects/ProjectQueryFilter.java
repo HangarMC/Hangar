@@ -45,7 +45,6 @@ public class ProjectQueryFilter implements Filter<ProjectQueryFilterInstance> {
             sb.append("('english', :query)").append(")");
             q.bind("query", query.trim());*/
             // TODO broken. Full-text search is not implemented in cockroachdb yet. See: https://go.crdb.dev/issue-v/7821/v21.2. Until it's done, we'll just do simple search
-            System.out.println("OOOO: " + q);
             sb.append(" AND (hp.name ILIKE '%" + query + "%')");
         }
 
