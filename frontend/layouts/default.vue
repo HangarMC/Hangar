@@ -53,4 +53,66 @@ export default class DefaultLayout extends Vue {
 .v-main {
     padding-bottom: 12px;
 }
+
+.theme--light.v-sheet.v-card:not(.v-sheet--outlined),
+.theme--light.v-sheet.v-list,
+.theme--light.v-application .accent {
+    border-width: 0;
+    border-style: solid;
+    border-top-color: #d3e1f6;
+    border-right-color: #d3e1f6;
+    border-bottom-color: #d3e1f6;
+    border-left-color: #d3e1f6;
+    border-radius: 8px;
+    background-color: #ffffff !important;
+    box-shadow: 0 0 10px 1px rgb(88 106 153 / 27%) !important;
+}
+.theme--light.v-application,
+.theme--light.v-footer {
+    background: #f6f9ff !important;
+}
+
+@media (min-width: 769px) {
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+}
+* {
+    scrollbar-color: var(--v-primary-base) #f6f9ff;
+    scrollbar-width: thin;
+}
+
+.theme--light::-webkit-scrollbar-track {
+    background: #f6f9ff;
+}
+.theme--dark::-webkit-scrollbar-track {
+    background: #121212;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--v-primary-base);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #444;
+}
+
+.theme--light.v-application .white--text {
+    color: black !important;
+    caret-color: black !important;
+}
+.edit-btn i {
+    color: white !important;
+}
+
+.v-main {
+    padding-top: 3em !important;
+}
+
+body,
+.v-application,
+*,
+.v-application .text-h6,
+.v-application .text-subtitle-2 {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
+}
 </style>

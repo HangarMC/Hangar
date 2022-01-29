@@ -73,6 +73,8 @@ export default {
       }
     },
     createNew: 'New',
+    darkModeOn: 'Turn on Dark Mode',
+    darkModeOff: 'Turn off Dark Mode',
     new: {
       project: 'New Project',
       organization: 'New Organization'

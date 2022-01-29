@@ -152,7 +152,7 @@ export default class ProjectPage extends HangarComponent {
 
 <style lang="scss">
 div.project-header {
-    background-color: #1d1d1d;
+    background-color: var(--v-accent-base) !important;
     min-height: 125px;
 
     .container {
@@ -183,5 +183,17 @@ div.project-header {
         padding: 0;
         height: 18px;
     }
+}
+.theme--light div.project-header a {
+    color: black;
+}
+.theme--light .v-tabs-bar a:not(.v-tab--active) {
+    color: black !important;
+}
+.theme--light div.project-header a i {
+    color: var(--v-primary-base) !important;
+}
+.theme--light .v-tabs-bar a:not(.v-tab--active) .v-icon--left {
+    color: black !important;
 }
 </style>

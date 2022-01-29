@@ -1,23 +1,44 @@
 <template>
-    <v-app-bar height="100px">
+    <v-app-bar class="navbar" height="65px" elevate-on-scroll fixed>
         <v-menu bottom offset-y open-on-hover transition="slide-y-transition" close-delay="100">
             <template #activator="{ on, attrs }">
-                <v-btn text x-large class="align-self-center px-1" v-bind="attrs" :ripple="false" v-on="on">
-                    <NuxtLink class="float-left" to="/" exact>
-                        <v-img height="60" width="220" src="https://papermc.io/images/logo-marker.svg" alt="Paper logo" />
-                    </NuxtLink>
-
-                    <v-icon>mdi-chevron-down</v-icon>
-                </v-btn>
+                <v-app-bar-nav-icon class="drawer" v-bind="attrs" v-on="on"> </v-app-bar-nav-icon>
             </template>
-            <Dropdown :controls="dropdown" />
+            <Dropdown :controls="dropdown">
+                <p>helloo</p>
+            </Dropdown>
         </v-menu>
+
+        <v-btn text x-large class="align-self-center px-1" style="margin-left: 0" :ripple="false">
+            <NuxtLink class="float-left" to="/" exact>
+                <v-img v-if="!$vuetify.theme.dark" style="margin-left: 0" height="60" width="60" src="/images/hangar-icon-2.svg" alt="Paper logo" />
+                <v-img v-else style="margin-left: 0" height="60" width="60" src="images/hangar-icon-2.svg" alt="Paper logo" />
+            </NuxtLink>
+        </v-btn>
+
+        <div class="navbar-links hideOnMobile">
+            <NuxtLink class="float-left" to="/" exact>
+                <span>Home</span>
+            </NuxtLink>
+            <NuxtLink class="float-left" :to="'/' + currentUser.name" exact>
+                <span>Your Projects</span>
+            </NuxtLink>
+            <NuxtLink class="float-left" to="/" exact>
+                <span>Top 10</span>
+            </NuxtLink>
+            <NuxtLink class="float-left" to="/staff" exact>
+                <span>Team</span>
+            </NuxtLink>
+            <NuxtLink class="float-left" to="https://discord.gg/papermc" exact>
+                <span>Discord</span>
+            </NuxtLink>
+        </div>
 
         <v-spacer />
 
         <v-menu v-if="isLoggedIn" bottom offset-y transition="slide-y-transition" open-on-hover>
             <template #activator="{ on, attrs }">
-                <v-btn v-bind="attrs" color="primary" class="mr-1" v-on="on">
+                <v-btn v-bind="attrs" color="primary" class="mr-1 createNewButton" v-on="on">
                     {{ $t('nav.createNew') }}
                     <v-icon right> mdi-chevron-down </v-icon>
                 </v-btn>
@@ -25,29 +46,50 @@
             <Dropdown :controls="newControls" />
         </v-menu>
 
-        <v-tooltip bottom>
-            <template #activator="{ on }">
-                <v-btn icon to="/authors" nuxt class="mr-1" v-on="on">
-                    <v-icon>mdi-account-group</v-icon>
-                </v-btn>
-            </template>
-            <span>{{ $t('pages.authorsTitle') }}</span>
-        </v-tooltip>
-        <v-tooltip bottom>
-            <template #activator="{ on }">
-                <v-btn icon to="/staff" nuxt class="mr-1" v-on="on">
-                    <v-icon>mdi-account-tie</v-icon>
-                </v-btn>
-            </template>
-            <span>{{ $t('pages.staffTitle') }}</span>
-        </v-tooltip>
+        <div>
+            <v-tooltip v-if="!$vuetify.theme.dark" bottom>
+                <template #activator="{ on }">
+                    <v-btn class="mr-1 darkModeSwitchButton" v-on="on" @click="darkMode">
+                        <v-icon>mdi-weather-night</v-icon>
+                    </v-btn>
+                </template>
+                <span>{{ $t('nav.darkModeOn') }}</span>
+            </v-tooltip>
+
+            <v-tooltip v-else bottom>
+                <template #activator="{ on }">
+                    <v-btn class="mr-1 darkModeSwitchButton" v-on="on" @click="darkMode">
+                        <v-icon color="yellow">mdi-white-balance-sunny</v-icon>
+                    </v-btn>
+                </template>
+                <span>{{ $t('nav.darkModeOff') }}</span>
+            </v-tooltip>
+        </div>
+        <div class="hideOnMobile">
+            <v-tooltip bottom>
+                <template #activator="{ on }">
+                    <v-btn icon to="/authors" nuxt class="mr-1" v-on="on">
+                        <v-icon>mdi-account-group</v-icon>
+                    </v-btn>
+                </template>
+                <span>{{ $t('pages.authorsTitle') }}</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+                <template #activator="{ on }">
+                    <v-btn icon to="/staff" nuxt class="mr-1" v-on="on">
+                        <v-icon>mdi-account-tie</v-icon>
+                    </v-btn>
+                </template>
+                <span>{{ $t('pages.staffTitle') }}</span>
+            </v-tooltip>
+        </div>
 
         <v-menu v-if="isLoggedIn" bottom offset-y transition="slide-y-transition" close-delay="100">
             <template #activator="{ on, attrs }">
-                <v-btn color="info" text class="px-3 text-transform-unset" x-large v-bind="attrs" v-on="on">
-                    {{ currentUser.name }}
+                <v-btn color="info" text class="text-transform-unset iHateVuetify" x-large v-bind="attrs" v-on="on">
+                    <span class="hideOnMobile mr-2">{{ currentUser.name }}</span>
                     <v-badge overlap :content="totalNotificationCount" :value="totalNotificationCount">
-                        <v-avatar size="44" class="ml-2">
+                        <v-avatar size="44">
                             <img
                                 :src="$util.avatarUrl(currentUser.name)"
                                 :alt="currentUser.name"
@@ -83,15 +125,44 @@ import UserAvatar from '~/components/users/UserAvatar.vue';
     },
 })
 export default class Header extends HangarComponent {
+    darkMode() {
+        if (process.browser) {
+            if (this.$vuetify.theme.dark) {
+                this.$vuetify.theme.dark = false;
+                localStorage.setItem('DarkMode', 'false');
+            } else if (!this.$vuetify.theme.dark) {
+                this.$vuetify.theme.dark = true;
+                localStorage.setItem('DarkMode', 'true');
+            }
+        }
+    }
+
     get dropdown(): Control[] {
         const controls: Control[] = [];
+        if (process.browser && window.innerWidth < 816) {
+            controls.push({
+                link: '/authors',
+                icon: 'mdi-account-group',
+                title: this.$t('pages.authorsTitle'),
+            });
+            controls.push({
+                link: '/staff',
+                icon: 'mdi-account-tie',
+                title: this.$t('pages.staffTitle'),
+            });
+            controls.push({
+                link: '',
+                icon: '',
+                title: '',
+            });
+        }
         controls.push({
             link: 'https://papermc.io/',
             icon: 'mdi-home',
             title: this.$t('nav.hangar.home'),
         });
         controls.push({
-            link: 'https://papermc.io/forums',
+            link: 'https://forums.papermc.io/',
             icon: 'mdi-comment-multiple',
             title: this.$t('nav.hangar.forums'),
         });
@@ -251,5 +322,62 @@ export default class Header extends HangarComponent {
 }
 .v-image {
     margin: 20px;
+}
+
+@media (min-width: 816px) {
+    .hideOnMobile {
+        display: flex;
+        align-items: center;
+    }
+}
+@media (max-width: 815px) {
+    .hideOnMobile {
+        display: none;
+    }
+}
+
+.navbar {
+    display: flex !important;
+    justify-content: center;
+    z-index: 200 !important;
+}
+
+.theme--light .navbar {
+    background-color: #fff !important;
+}
+
+.navbar .v-toolbar__content {
+    max-width: 1200px;
+    width: calc(100% - 40px);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.navbar-links a {
+    text-transform: uppercase;
+    padding: 0 16px;
+    font-size: 13px;
+    color: #262626 !important;
+}
+.theme--dark .navbar-links a {
+    color: #fff !important;
+}
+
+.v-btn.v-btn--has-bg.darkModeSwitchButton {
+    background-color: transparent !important;
+    box-shadow: none;
+    padding: 0 4px;
+    min-width: 32px;
+}
+
+.createNewButton {
+    padding: 0 10px !important;
+}
+
+.iHateVuetify {
+    min-width: 0 !important;
+    padding: 0 !important;
 }
 </style>

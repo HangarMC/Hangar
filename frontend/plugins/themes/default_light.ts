@@ -2,11 +2,11 @@ import colors from 'vuetify/es5/util/colors';
 import { VuetifyThemeVariant } from 'vuetify/types/services/theme';
 
 export default {
-    anchor: colors.blue.lighten3,
-    primary: colors.blue.darken2,
-    accent: '#e5e5e5',
+    anchor: colors.blue.base,
+    primary: '#0080ff',
+    accent: '#ffffff',
     secondary: colors.amber.darken3,
-    info: colors.teal.lighten1,
+    info: '#004ee9',
     warning: colors.amber.base,
     error: colors.deepOrange.accent4,
     success: colors.green.accent3,

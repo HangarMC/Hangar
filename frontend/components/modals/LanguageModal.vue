@@ -1,7 +1,7 @@
 <template>
     <v-dialog v-model="dialog" max-width="700">
         <template #activator="{ attrs, on }">
-            <v-btn v-bind="attrs" v-on="on">
+            <v-btn color="info" v-bind="attrs" v-on="on">
                 {{ $t('lang.button') }}
             </v-btn>
         </template>

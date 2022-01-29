@@ -4,6 +4,16 @@ import buildTheme from '~/plugins/themes/base';
 import defaultDark from '~/plugins/themes/default_dark';
 import defaultLight from '~/plugins/themes/default_light';
 
+let defaultDarkMode = false;
+
+if (process.browser) {
+    if (localStorage.getItem('DarkMode') === 'true') {
+        defaultDarkMode = true;
+    } else if (!localStorage.getItem('DarkMode') && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        defaultDarkMode = true;
+    }
+}
+
 export default {
     icons: {
         iconfont: 'mdi',
@@ -19,5 +29,5 @@ export default {
             },
         },
     },
-    theme: buildTheme(true, defaultDark, defaultLight),
+    theme: buildTheme(defaultDarkMode, defaultDark, defaultLight),
 } as Partial<VuetifyPreset>;
