@@ -1,5 +1,6 @@
 package io.papermc.hangar.db.extras;
 
+import io.papermc.hangar.controller.extras.pagination.Filter;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import org.jdbi.v3.core.statement.SqlStatement;
 import org.jdbi.v3.sqlobject.customizer.SqlStatementCustomizerFactory;
