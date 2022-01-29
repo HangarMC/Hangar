@@ -20,7 +20,7 @@
             <NuxtLink class="float-left" to="/" exact>
                 <span>Home</span>
             </NuxtLink>
-            <NuxtLink class="float-left" :to="'/' + currentUser.name" exact>
+            <NuxtLink v-if="isLoggedIn" class="float-left" :to="'/' + currentUser.name" exact>
                 <span>Your Projects</span>
             </NuxtLink>
             <NuxtLink class="float-left" to="/" exact>
