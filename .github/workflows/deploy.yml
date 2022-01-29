@@ -88,6 +88,10 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DOCKER_HOST_SSH_KEY }}
 
+      - name: Cache Docker Layers
+        uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+
       - name: Docker
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
