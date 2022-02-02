@@ -29,9 +29,9 @@
             <NuxtLink class="float-left" to="/staff" exact>
                 <span>Team</span>
             </NuxtLink>
-            <NuxtLink class="float-left" to="https://discord.gg/papermc" exact>
+            <a class="float-left" href="https://discord.gg/papermc">
                 <span>Discord</span>
-            </NuxtLink>
+            </a>
         </div>
 
         <v-spacer />
