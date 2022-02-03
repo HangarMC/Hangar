@@ -289,7 +289,7 @@
                                 </v-row>
                             </div>
                             <v-divider v-if="$perms.canHardDeleteProject" />
-                            <div v-if="$perms.canHardDeleteProject" class="error darken-4">
+                            <div v-if="$perms.canHardDeleteProject" class="error darken-4 hardDelete">
                                 <!-- TODO striped background to separate from normal delete-->
                                 <h2>{{ $t('project.settings.hardDelete') }}</h2>
                                 <v-row>
@@ -640,5 +640,14 @@ h2 {
 
 .v-window-item {
     padding: 10px;
+}
+
+.hardDelete {
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.theme--light .hardDelete {
+    color: white;
 }
 </style>
