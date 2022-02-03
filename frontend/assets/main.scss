@@ -10,6 +10,9 @@
 .platform-logo {
   fill: map-deep-get($material-dark, 'tabs');
 }
+.theme--light .platform-logo {
+    fill: map-deep-get($material-light, 'tabs');
+}
 
 .v-tab--active .platform-logo {
   fill: map-get($blue, 'base')

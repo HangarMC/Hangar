@@ -57,6 +57,7 @@ export default class DefaultLayout extends Vue {
 .theme--light.v-sheet.v-card:not(.v-sheet--outlined),
 .theme--light.v-sheet.v-list,
 .theme--light.v-application .accent {
+    //This adds the box shadow from the PaperMC forums to boxes all over the site
     border-width: 0;
     border-style: solid;
     border-top-color: #d3e1f6;
@@ -67,6 +68,14 @@ export default class DefaultLayout extends Vue {
     background-color: #ffffff !important;
     box-shadow: 0 0 10px 1px rgb(88 106 153 / 27%) !important;
 }
+.theme--light.v-sheet.v-card:not(.v-sheet--outlined) *,
+.theme--light.v-sheet.v-list *,
+.theme--light.v-application .accent * {
+    //This removes the double box shadow of sub-boxes
+    box-shadow: none !important;
+    border: none !important;
+}
+
 .theme--light.v-application,
 .theme--light.v-footer {
     background: #f6f9ff !important;
