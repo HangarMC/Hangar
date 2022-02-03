@@ -4,9 +4,7 @@
             <template #activator="{ on, attrs }">
                 <v-app-bar-nav-icon class="drawer" v-bind="attrs" v-on="on"> </v-app-bar-nav-icon>
             </template>
-            <Dropdown :controls="dropdown">
-                <p>hello</p>
-            </Dropdown>
+            <Dropdown :controls="dropdown" />
         </v-menu>
 
         <v-btn text x-large class="align-self-center px-1" style="margin-left: 0" :ripple="false">
