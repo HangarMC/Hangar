@@ -124,4 +124,9 @@ body,
 .v-application .text-subtitle-2 {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
 }
+
+.theme--light .theme--light.v-input--switch .v-input--switch__thumb {
+    //This makes the switches in light mode more visible
+    color: #5a5a5a;
+}
 </style>
