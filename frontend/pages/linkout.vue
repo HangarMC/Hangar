@@ -32,8 +32,11 @@ export default class LinkoutPage extends HangarComponent {
 </script>
 
 <style lang="scss" scoped>
-.theme--light .linkoutContinueButton {
+.theme--light .v-btn.v-btn--has-bg.linkoutContinueButton {
     background-color: transparent !important;
     color: black !important;
+}
+.theme--light .v-btn.v-btn--has-bg {
+    color: white !important;
 }
 </style>
