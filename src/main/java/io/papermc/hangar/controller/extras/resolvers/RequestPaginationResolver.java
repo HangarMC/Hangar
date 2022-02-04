@@ -9,7 +9,6 @@ import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilt
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSorters;
 import io.papermc.hangar.controller.extras.pagination.annotations.ConfigurePagination;
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.model.api.project.ProjectSortingStrategy;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
