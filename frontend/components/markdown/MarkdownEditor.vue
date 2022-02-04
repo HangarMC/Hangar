@@ -138,6 +138,10 @@ export default class MarkdownEditor extends Vue {
     }
 }
 
+.edit-btn i {
+    color: white !important;
+}
+
 .markdown-editor {
     position: relative;
     min-height: 200px;

@@ -109,9 +109,6 @@ export default class DefaultLayout extends Vue {
     color: black !important;
     caret-color: black !important;
 }
-.edit-btn i {
-    color: white !important;
-}
 
 .v-main {
     padding-top: 3em !important;
