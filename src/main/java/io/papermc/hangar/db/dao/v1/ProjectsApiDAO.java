@@ -87,6 +87,7 @@ public interface ProjectsApiDAO {
             hp.last_updated AS dum, --- need to add this so we can use it in order by, special constraint on distinct queries
             COALESCE(hp.last_updated, hp.created_at) AS last_updated,
             ((EXTRACT(EPOCH FROM COALESCE(hp.last_updated, hp.created_at)) - 1609459200) / 604800) *1 AS last_updated_double, --- We can order with this. That "dum" does not work. It only orders it with this.
+            ((EXTRACT(EPOCH FROM hp.created_at) - 1609459200) / 86400) *1 AS newest_double,
             hp.visibility,
             exists(SELECT * FROM project_stars s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS starred,
             exists(SELECT * FROM project_watchers s WHERE s.project_id = p.id AND s.user_id = :requesterId) AS watching,

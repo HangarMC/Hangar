@@ -26,6 +26,9 @@ public class RequestPagination {
     @JsonIgnore
     @ApiModelProperty(hidden = true)
     private final Map<String, Consumer<StringBuilder>> sorters;
+    @JsonIgnore
+    @ApiModelProperty(hidden = true)
+    private String projectSortBy = "";
 
     /**
      * limit/offset params should be validated before construction
@@ -51,6 +54,14 @@ public class RequestPagination {
 
     public Map<String, Consumer<StringBuilder>> getSorters() {
         return sorters;
+    }
+
+    public final String getProjectSortBy(){
+        return projectSortBy;
+    }
+
+    public void setProjectSortBy(final String projectSortBy){
+        this.projectSortBy = projectSortBy;
     }
 
     @Override

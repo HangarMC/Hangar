@@ -9,6 +9,7 @@ import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilt
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSorters;
 import io.papermc.hangar.controller.extras.pagination.annotations.ConfigurePagination;
 import io.papermc.hangar.exceptions.HangarApiException;
+import io.papermc.hangar.model.api.project.ProjectSortingStrategy;
 import io.papermc.hangar.model.api.requests.RequestPagination;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +81,8 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
         // TODO remove these bellow eventually
         paramNames.remove("relevance");
 
+        paramNames.remove("projectSort");
+
         // remove request params
         for (Parameter param : parameter.getExecutable().getParameters()) {
             paramNames.remove(param.getName());
@@ -100,6 +103,8 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
             }
             pagination.getSorters().put(sorter, sorter.startsWith("-") ? SorterRegistry.getSorter(sortKey).descending() : SorterRegistry.getSorter(sortKey).ascending());
         }
+
+        pagination.setProjectSortBy(webRequest.getParameter("projectSort"));
 
         return pagination;
     }

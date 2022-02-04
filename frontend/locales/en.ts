@@ -91,6 +91,13 @@ export default {
       auth: 'Authentication Portal'
     }
   },
+  filters: {
+    mostStars: 'Most Stars',
+    mostDownloads: 'Most Downloads',
+    mostViews: 'Most Views',
+    newest: 'Newest',
+    recentlyUpdated: 'Recently Updated'
+  },
   project: {
     stargazers: 'Stargazers',
     noStargazers: 'There are no stargazers on this project yet 😢',

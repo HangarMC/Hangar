@@ -24,7 +24,7 @@
                 <br />
                 <HangarSponsor :sponsor="sponsor" />
 
-                <v-select />
+                <v-select v-model="filters.projectSort" :items="projectSort" />
 
                 <v-checkbox :label="$t('hangar.projectSearch.relevanceSort')" />
 
@@ -75,7 +75,7 @@ import { ProjectList } from '~/components/projects';
 import HangarSponsor from '~/components/layouts/Sponsor.vue';
 import { RootState } from '~/store';
 import { HangarComponent } from '~/components/mixins';
-import { Platform, ProjectCategory } from '~/types/enums';
+import { Platform, ProjectCategory, ProjectSort } from '~/types/enums';
 
 @Component({
     components: {
@@ -89,6 +89,7 @@ export default class Home extends HangarComponent {
     sponsor!: Sponsor;
     filters = {
         search: null as string | null,
+        projectSort: [] as ProjectSort[],
         platforms: [] as Platform[],
         categories: [] as ProjectCategory[],
     };
@@ -117,6 +118,16 @@ export default class Home extends HangarComponent {
         return meta;
     }
 
+    get projectSort() {
+        return [
+            { text: this.$t('filters.mostStars'), value: 'mostStars' },
+            { text: this.$t('filters.mostDownloads'), value: 'mostDownloads' },
+            { text: this.$t('filters.mostViews'), value: 'mostViews' },
+            { text: this.$t('filters.newest'), value: 'newest' },
+            { text: this.$t('filters.recentlyUpdated'), value: 'recentlyUpdated' },
+        ];
+    }
+
     mounted() {
         this.$watch('options', this.reloadProjectList, { deep: true });
         this.$watch('filters', this.reloadProjectList, { deep: true });
@@ -141,6 +152,7 @@ export default class Home extends HangarComponent {
             offset: (this.options.page - 1) * this.options.itemsPerPage,
             category: this.filters.categories,
             platform: this.filters.platforms,
+            projectSort: this.filters.projectSort,
         };
         if (this.filters.search != null && this.filters.search.length > 0) {
             requestOptions.q = this.filters.search;

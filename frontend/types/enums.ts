@@ -5,6 +5,14 @@ export enum RoleCategory {
     ORGANIZATION = 'organization',
 }
 
+export enum ProjectSort {
+    MOST_STARS = 'most_stars',
+    MOST_DOWNLOADS = 'most_downloads',
+    MOST_VIEWS = 'most_views',
+    NEWEST = 'newest',
+    RECENTLY_UPDATED = 'recently_updated',
+}
+
 export enum ProjectCategory {
     ADMIN_TOOLS = 'admin_tools',
     CHAT = 'chat',
