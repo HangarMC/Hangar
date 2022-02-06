@@ -4,15 +4,21 @@
             <template #activator="{ on, attrs }">
                 <v-app-bar-nav-icon class="drawer" v-bind="attrs" v-on="on"> </v-app-bar-nav-icon>
             </template>
-            <Dropdown :controls="dropdown">
-                <p>helloo</p>
-            </Dropdown>
+            <Dropdown :controls="dropdown" />
         </v-menu>
 
         <v-btn text x-large class="align-self-center px-1" style="margin-left: 0" :ripple="false">
             <NuxtLink class="float-left" to="/" exact>
-                <v-img v-if="!$vuetify.theme.dark" style="margin-left: 0" height="60" width="60" src="/images/hangar-icon-2.svg" alt="Paper logo" />
-                <v-img v-else style="margin-left: 0" height="60" width="60" src="images/hangar-icon-2.svg" alt="Paper logo" />
+                <v-img
+                    v-if="!$vuetify.theme.dark"
+                    class="site-logo"
+                    style="margin-left: 0"
+                    height="60"
+                    width="60"
+                    src="/images/hangar-icon-2.svg"
+                    alt="Paper logo"
+                />
+                <v-img v-else class="site-logo" style="margin-left: 0" height="60" width="60" src="images/hangar-icon-2.svg" alt="Paper logo" />
             </NuxtLink>
         </v-btn>
 
@@ -29,9 +35,9 @@
             <NuxtLink class="float-left" to="/staff" exact>
                 <span>Team</span>
             </NuxtLink>
-            <NuxtLink class="float-left" to="https://discord.gg/papermc" exact>
+            <a class="float-left" href="https://discord.gg/papermc">
                 <span>Discord</span>
-            </NuxtLink>
+            </a>
         </div>
 
         <v-spacer />
@@ -379,5 +385,29 @@ export default class Header extends HangarComponent {
 .iHateVuetify {
     min-width: 0 !important;
     padding: 0 !important;
+}
+
+.navbar-links a:after {
+    content: '';
+    width: 0;
+    top: 25px;
+    left: 0;
+    height: 4px;
+    border-radius: 8px;
+}
+
+.navbar-links a {
+    position: relative;
+}
+
+.navbar-links a:hover:after {
+    position: absolute;
+    background: #d3e1f6;
+    transition: ease-in width 0.2s;
+    width: 100%;
+}
+
+.site-logo {
+    margin: 0 !important;
 }
 </style>

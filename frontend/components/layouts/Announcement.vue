@@ -22,11 +22,11 @@ export default class Announcement extends Vue {
     flex: 0 0 100%;
     max-width: 100%;
     min-height: 43px;
-    margin: 0;
     border-radius: 0;
     top: 65px;
     position: relative;
     z-index: 100;
     min-width: 100%;
+    margin: 0 0 1.5em;
 }
 </style>
