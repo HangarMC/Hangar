@@ -105,11 +105,6 @@ export default class DefaultLayout extends Vue {
     background: #444;
 }
 
-.theme--light.v-application .white--text {
-    color: black !important;
-    caret-color: black !important;
-}
-
 .v-main {
     padding-top: 3em !important;
 }

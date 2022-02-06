@@ -7,7 +7,7 @@
         <Markdown v-show="!isEditing" :raw="raw" />
         <Markdown v-if="preview" :raw="rawEdited" inner-class="pl-5" />
         <v-btn v-show="!isEditing" class="page-btn edit-btn info" fab absolute icon x-small @click="isEditing = true">
-            <v-icon>mdi-pencil</v-icon>
+            <v-icon color="white">mdi-pencil</v-icon>
         </v-btn>
         <v-btn v-show="isEditing && saveable" class="page-btn save-btn success darken-2" fab absolute icon x-small :loading="loading.save" @click="savePage">
             <v-icon>mdi-content-save</v-icon>
@@ -136,10 +136,6 @@ export default class MarkdownEditor extends Vue {
     &.cancel-btn {
         top: 118px;
     }
-}
-
-.edit-btn i {
-    color: white !important;
 }
 
 .markdown-editor {

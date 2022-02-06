@@ -2,7 +2,7 @@
     <v-dialog v-model="dialog" max-width="500" persistent>
         <template #activator="{ on }">
             <v-btn v-if="pageRoots.length < validations.project.maxPageCount" icon class="primary" :class="activatorClass" v-on="on">
-                <v-icon>mdi-plus</v-icon>
+                <v-icon color="white">mdi-plus</v-icon>
             </v-btn>
         </template>
         <v-card>
