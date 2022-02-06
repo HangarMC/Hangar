@@ -91,7 +91,7 @@ export default {
       auth: 'Authentication Portal'
     }
   },
-  filters: {
+  sorting: {
     mostStars: 'Most Stars',
     mostDownloads: 'Most Downloads',
     mostViews: 'Most Views',
