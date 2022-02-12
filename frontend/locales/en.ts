@@ -91,13 +91,6 @@ export default {
       auth: 'Authentication Portal'
     }
   },
-  sorting: {
-    mostStars: 'Most Stars',
-    mostDownloads: 'Most Downloads',
-    mostViews: 'Most Views',
-    newest: 'Newest',
-    recentlyUpdated: 'Recently Updated'
-  },
   project: {
     stargazers: 'Stargazers',
     noStargazers: 'There are no stargazers on this project yet 😢',
@@ -105,6 +98,13 @@ export default {
     noWatchers: 'There are no watchers on this project yet 😢',
     members: 'Members',
     noPublicMembers: 'There are no public members.',
+    sorting: {
+      mostStars: 'Most Stars',
+      mostDownloads: 'Most Downloads',
+      mostViews: 'Most Views',
+      newest: 'Newest',
+      recentlyUpdated: 'Recently Updated'
+    },
     category: {
       info: 'Category',
       admin_tools: 'Admin Tools',

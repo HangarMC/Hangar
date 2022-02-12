@@ -120,11 +120,11 @@ export default class Home extends HangarComponent {
 
     get projectSort() {
         return [
-            { text: this.$t('sorting.mostStars'), value: 'mostStars' },
-            { text: this.$t('sorting.mostDownloads'), value: 'mostDownloads' },
-            { text: this.$t('sorting.mostViews'), value: 'mostViews' },
-            { text: this.$t('sorting.newest'), value: 'newest' },
-            { text: this.$t('sorting.recentlyUpdated'), value: 'recentlyUpdated' },
+            { text: this.$t('project.sorting.mostStars'), value: 'mostStars' },
+            { text: this.$t('project.sorting.mostDownloads'), value: 'mostDownloads' },
+            { text: this.$t('project.sorting.mostViews'), value: 'mostViews' },
+            { text: this.$t('project.sorting.newest'), value: 'newest' },
+            { text: this.$t('project.sorting.recentlyUpdated'), value: 'recentlyUpdated' },
         ];
     }
 
