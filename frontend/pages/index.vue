@@ -75,7 +75,15 @@ import { ProjectList } from '~/components/projects';
 import HangarSponsor from '~/components/layouts/Sponsor.vue';
 import { RootState } from '~/store';
 import { HangarComponent } from '~/components/mixins';
-import { Platform, ProjectCategory, ProjectSort } from '~/types/enums';
+import { Platform, ProjectCategory } from '~/types/enums';
+
+enum ProjectSort {
+    MOST_STARS = 'most_stars',
+    MOST_DOWNLOADS = 'most_downloads',
+    MOST_VIEWS = 'most_views',
+    NEWEST = 'newest',
+    RECENTLY_UPDATED = 'recently_updated',
+}
 
 @Component({
     components: {
