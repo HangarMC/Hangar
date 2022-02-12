@@ -4,7 +4,7 @@
             <v-card-title>{{ $t('linkout.title') }}</v-card-title>
             <v-card-text v-text="$t('linkout.text', [target])" />
             <v-card-actions>
-                <v-btn @click="$router.back()">
+                <v-btn color="primary" @click="$router.back()">
                     {{ $t('linkout.abort') }}
                 </v-btn>
                 <v-btn :href="target" class="linkoutContinueButton">
@@ -35,8 +35,5 @@ export default class LinkoutPage extends HangarComponent {
 .theme--light .v-btn.v-btn--has-bg.linkoutContinueButton {
     background-color: transparent !important;
     color: black !important;
-}
-.theme--light .v-btn.v-btn--has-bg {
-    color: white !important;
 }
 </style>
