@@ -121,7 +121,7 @@ public class ProjectsApiService extends HangarComponent {
             String orderingFirstHalf;
             // 1609459200 is the hangar epoch
             // 86400 seconds to days
-            // 604800 seconds to weeks
+            // 604800 seconds to weeks.
             switch(sort){
                 case STARS: orderingFirstHalf = "hp.stars * "; relevance="DESC"; break;
                 case DOWNLOADS: orderingFirstHalf ="(hp.downloads / 100) * "; relevance="DESC"; break;
