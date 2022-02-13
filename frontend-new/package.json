@@ -4,9 +4,10 @@
     "node": ">=16"
   },
   "scripts": {
-    "dev": "vite-ssr --port 3333",
+    "dev": "vite-ssr dev --port 3333",
     "dev:spa": "vite --port 3333",
     "build": "cross-env NODE_ENV=production vite-ssr build",
+    "preview": "vite-ssr --port 1337 --open",
     "lint": "eslint --ext \".js,.vue,.ts,.json\" --ignore-path .gitignore --fix .",
     "format": "prettier . --write"
   },
@@ -23,13 +24,13 @@
     "universal-cookie": "^4.0.4",
     "vite-ssr": "^0.15.0",
     "vue": "^3.2.29",
-    "vue-i18n": "^9.1.6",
+    "vue-i18n": "^9.1.9",
     "vue-router": "^4.0.12"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.16.1",
     "@iconify/json": "^2.0.33",
-    "@intlify/vite-plugin-vue-i18n": "^3.2.1",
+    "@intlify/vite-plugin-vue-i18n": "^3.3.0",
     "@types/markdown-it-link-attributes": "^3.0.1",
     "@types/nprogress": "^0.2.0",
     "@types/qs": "^6.9.7",
