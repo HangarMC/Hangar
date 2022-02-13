@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 import Vue from "@vitejs/plugin-vue";
 import Pages from "vite-plugin-pages";
 import Layouts from "vite-plugin-vue-layouts";
-import AutoImport from 'unplugin-auto-import/vite'
+import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import Icons from "unplugin-icons/vite";
 import IconsResolver from "unplugin-icons/resolver";
@@ -12,12 +12,12 @@ import WindiCSS from "vite-plugin-windicss";
 import { VitePWA } from "vite-plugin-pwa";
 import VueI18n from "@intlify/vite-plugin-vue-i18n";
 import Prism from "markdown-it-prism";
-import LinkAttributes from 'markdown-it-link-attributes'
+import LinkAttributes from "markdown-it-link-attributes";
 import viteSSR from "vite-ssr/plugin";
-import EslintPlugin from 'vite-plugin-eslint';
+import EslintPlugin from "vite-plugin-eslint";
 
-const proxyHost = process.env.proxyHost || 'http://localhost:8080';
-const authHost = process.env.authHost || 'http://localhost:3001';
+const proxyHost = process.env.proxyHost || "http://localhost:8080";
+const authHost = process.env.authHost || "http://localhost:3001";
 
 export default defineConfig({
   resolve: {
@@ -48,32 +48,32 @@ export default defineConfig({
         // https://prismjs.com/
         md.use(Prism);
         md.use(LinkAttributes, {
-            pattern: /^https?:\/\//,
-            attrs: {
-                target: '_blank',
-                rel: 'noopener',
-            },
+          pattern: /^https?:\/\//,
+          attrs: {
+            target: "_blank",
+            rel: "noopener",
+          },
         });
       },
     }),
 
     // https://github.com/antfu/unplugin-auto-import
     AutoImport({
-        imports: [
-            'vue',
-            'vue-router',
-            'vue-i18n',
-            '@vueuse/head',
-            '@vueuse/core',
-            'pinia',
-            {
-                'axios': [['default', 'axios'] ],
-            },
-        ],
-        dts: 'src/types/auto-imports.d.ts',
-        eslintrc: {
-            enabled: true,
+      imports: [
+        "vue",
+        "vue-router",
+        "vue-i18n",
+        "@vueuse/head",
+        "@vueuse/core",
+        "pinia",
+        {
+          axios: [["default", "axios"]],
         },
+      ],
+      dts: "src/types/auto-imports.d.ts",
+      eslintrc: {
+        enabled: true,
+      },
     }),
 
     // https://github.com/antfu/vite-plugin-components
@@ -89,15 +89,15 @@ export default defineConfig({
         // https://github.com/antfu/vite-plugin-icons
         IconsResolver({
           componentPrefix: "",
-          // enabledCollections: ['carbon']
+          // enabledCollections: ["carbon"]
         }),
       ],
-      dts: 'src/types/components.d.ts',
+      dts: "src/types/components.d.ts",
     }),
 
     // https://github.com/antfu/vite-plugin-icons
     Icons({
-        autoInstall: true
+      autoInstall: true,
     }),
 
     // https://github.com/antfu/vite-plugin-windicss
@@ -107,6 +107,7 @@ export default defineConfig({
 
     // https://github.com/antfu/vite-plugin-pwa
     VitePWA({
+      includeAssets: ["favicon/*"],
       manifest: {
         name: "Hangar | PaperMC",
         short_name: "Hangar",
@@ -114,17 +115,17 @@ export default defineConfig({
         theme_color: "#ffffff",
         icons: [
           {
-            src: "/pwa-192x192.png",
+            src: "/favicon/android-chrome-192x192.png",
             sizes: "192x192",
             type: "image/png",
           },
           {
-            src: "/pwa-512x512.png",
+            src: "/favicon/android-chrome-512x512.png",
             sizes: "512x512",
             type: "image/png",
           },
           {
-            src: "/pwa-512x512.png",
+            src: "/favicon/android-chrome-512x512.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "any maskable",
@@ -135,39 +136,39 @@ export default defineConfig({
 
     // https://github.com/intlify/vite-plugin-vue-i18n
     VueI18n({
-      include: [path.resolve(__dirname, "src/i18n/translations/**")],
+      include: [path.resolve(__dirname, "src/i18n/locales/*.json")],
     }),
 
     EslintPlugin({
-        fix: true
+      fix: true,
     }),
   ],
 
   optimizeDeps: {
-    include: ['vue', 'vue-router', '@vueuse/core', '@vueuse/head'],
-    exclude: ['vue-demi'],
+    include: ["vue", "vue-router", "@vueuse/core", "@vueuse/head"],
+    exclude: ["vue-demi"],
   },
 
   server: {
-      proxy: {
-          // backend
-          "/api/": proxyHost,
-          "/signup": proxyHost,
-          "/login": proxyHost,
-          "/logout": proxyHost,
-          "/handle-logout": proxyHost,
-          "/refresh": proxyHost,
-          "/invalidate": proxyHost,
-          "/v2/api-docs/": proxyHost,
-          "/robots.txt": proxyHost,
-          "/sitemap.xml": proxyHost,
-          "/global-sitemap.xml": proxyHost,
-          "/*/sitemap.xml": proxyHost,
-          "/statusz": proxyHost,
-          // auth
-          "/avatar": authHost,
-          "/oauth/logout": authHost,
-          "/oauth2": authHost,
-      },
-  }
+    proxy: {
+      // backend
+      "/api/": proxyHost,
+      "/signup": proxyHost,
+      "/login": proxyHost,
+      "/logout": proxyHost,
+      "/handle-logout": proxyHost,
+      "/refresh": proxyHost,
+      "/invalidate": proxyHost,
+      "/v2/api-docs/": proxyHost,
+      "/robots.txt": proxyHost,
+      "/sitemap.xml": proxyHost,
+      "/global-sitemap.xml": proxyHost,
+      "/*/sitemap.xml": proxyHost,
+      "/statusz": proxyHost,
+      // auth
+      "/avatar": authHost,
+      "/oauth/logout": authHost,
+      "/oauth2": authHost,
+    },
+  },
 });

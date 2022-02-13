@@ -1,9 +1,9 @@
 <script setup lang="ts">
-
+const { t } = useI18n();
 </script>
 
 <template>
-    <div>Index Page</div>
+  <div>Index Page {{ t("general.close") }}</div>
 </template>
 
 <route lang="yaml">

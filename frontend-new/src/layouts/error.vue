@@ -1,9 +1,5 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <main>
-    Error
-  </main>
+  <main>Error</main>
 </template>

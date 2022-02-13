@@ -1,87 +1,87 @@
-declare module 'hangar-internal' {
-    import { Model, ProjectNamespace } from 'hangar-api';
-    import { LogContext, Platform, Visibility } from '~/types/enums';
+declare module "hangar-internal" {
+  import type { Model, ProjectNamespace } from "hangar-api";
+  import type { LogContext, Platform, Visibility } from "~/types/enums";
 
-    interface LogProject {
-        id: number;
-        slug: string;
-        owner: string;
-    }
+  interface LogProject {
+    id: number;
+    slug: string;
+    owner: string;
+  }
 
-    interface LogVersion {
-        id: number;
-        versionString: string;
-        platforms: Platform[];
-    }
+  interface LogVersion {
+    id: number;
+    versionString: string;
+    platforms: Platform[];
+  }
 
-    interface LogPage {
-        id: number;
-        name: string;
-        slug: string;
-    }
+  interface LogPage {
+    id: number;
+    name: string;
+    slug: string;
+  }
 
-    interface LogSubject {
-        id: number;
-        name: string;
-    }
+  interface LogSubject {
+    id: number;
+    name: string;
+  }
 
-    interface LoggedActionType {
-        pgLoggedAction: string;
-        name: string;
-        description: string;
-    }
+  interface LoggedActionType {
+    pgLoggedAction: string;
+    name: string;
+    description: string;
+  }
 
-    interface LoggedAction extends Model {
-        userId: number | null;
-        userName: string | null;
-        address: string;
-        action: LoggedActionType;
-        contextType: LogContext;
-        newState: string;
-        oldState: string;
-        project: LogProject | null;
-        version: LogVersion | null;
-        page: LogPage | null;
-        subject: LogSubject | null;
-    }
+  interface LoggedAction extends Model {
+    userId: number | null;
+    userName: string | null;
+    address: string;
+    action: LoggedActionType;
+    contextType: LogContext;
+    newState: string;
+    oldState: string;
+    project: LogProject | null;
+    version: LogVersion | null;
+    page: LogPage | null;
+    subject: LogSubject | null;
+  }
 
-    interface Job extends Model {
-        jobType: string;
-        state: string;
-        lastError: string;
-        lastErrorDescriptor: string;
-        retryAt: string;
-        lastUpdated: string;
-        jobProperties: { [key: string]: string };
-    }
+  interface Job extends Model {
+    jobType: string;
+    state: string;
+    lastError: string;
+    lastErrorDescriptor: string;
+    retryAt: string;
+    lastUpdated: string;
+    jobProperties: Record<string, string>;
+  }
 
-    interface MissingFile {
-        platform: Platform;
-        versionString: string;
-        fileName: string;
-        namespace: ProjectNamespace;
-        name: string;
-    }
+  interface MissingFile {
+    platform: Platform;
+    versionString: string;
+    fileName: string;
+    namespace: ProjectNamespace;
+    name: string;
+  }
 
-    interface UnhealthyProject {
-        namespace: ProjectNamespace;
-        topicId: number | null;
-        postId: number | null;
-        lastUpdated: string;
-        visibility: Visibility;
-    }
+  interface UnhealthyProject {
+    namespace: ProjectNamespace;
+    topicId: number | null;
+    postId: number | null;
+    lastUpdated: string;
+    visibility: Visibility;
+  }
 
-    interface Activity {
-        namespace: ProjectNamespace;
-    }
+  interface Activity {
+    namespace: ProjectNamespace;
+  }
 
-    interface FlagActivity extends Activity {
-        resolvedAt: string;
-    }
+  interface FlagActivity extends Activity {
+    resolvedAt: string;
+  }
 
-    interface ReviewActivity extends Activity {
-        endedAt: string;
-        versionString: string;
-        platforms: Platform[];
-    }
+  interface ReviewActivity extends Activity {
+    endedAt: string;
+    versionString: string;
+    platforms: Platform[];
+  }
 }
