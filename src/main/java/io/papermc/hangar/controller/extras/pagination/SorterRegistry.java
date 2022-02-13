@@ -9,7 +9,17 @@ public enum SorterRegistry implements Sorter {
 
     USER_JOIN_DATE("joinDate", simpleSorter("u.join_date")),
     USER_NAME("username", simpleSorter("username")),
-    USER_PROJECT_COUNT("projectCount", simpleSorter("project_count"));
+    USER_PROJECT_COUNT("projectCount", simpleSorter("project_count")),
+
+    //For Projects
+    VIEWS("views", simpleSorter("views")),
+    STARS("stars", simpleSorter("stars")),
+    DOWNLOADS("downloads", simpleSorter("downloads")),
+    NEWEST("newest", simpleSorter("created_at")),
+    UPDATED("updated", simpleSorter("last_updated"));
+
+
+
 
     private static final Map<String, SorterRegistry> SORTERS = new HashMap<>();
 

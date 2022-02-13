@@ -24,7 +24,7 @@
                 <br />
                 <HangarSponsor :sponsor="sponsor" />
 
-                <v-select v-model="filters.projectSort" :items="projectSort" />
+                <v-select v-model="filters.sort" :items="projectSort" />
 
                 <v-checkbox :label="$t('hangar.projectSearch.relevanceSort')" />
 
@@ -78,11 +78,11 @@ import { HangarComponent } from '~/components/mixins';
 import { Platform, ProjectCategory } from '~/types/enums';
 
 enum ProjectSort {
-    MOST_STARS = 'most_stars',
-    MOST_DOWNLOADS = 'most_downloads',
-    MOST_VIEWS = 'most_views',
+    MOST_STARS = 'stars',
+    MOST_DOWNLOADS = 'downloads',
+    VIEWS = 'views',
     NEWEST = 'newest',
-    RECENTLY_UPDATED = 'recently_updated',
+    RECENTLY_UPDATED = 'updated',
 }
 
 @Component({
@@ -97,9 +97,9 @@ export default class Home extends HangarComponent {
     sponsor!: Sponsor;
     filters = {
         search: null as string | null,
-        projectSort: [] as ProjectSort[],
         platforms: [] as Platform[],
         categories: [] as ProjectCategory[],
+        sort: [] as ProjectSort[],
     };
 
     options = {
@@ -128,11 +128,11 @@ export default class Home extends HangarComponent {
 
     get projectSort() {
         return [
-            { text: this.$t('project.sorting.mostStars'), value: 'mostStars' },
-            { text: this.$t('project.sorting.mostDownloads'), value: 'mostDownloads' },
-            { text: this.$t('project.sorting.mostViews'), value: 'mostViews' },
+            { text: this.$t('project.sorting.mostStars'), value: 'stars' },
+            { text: this.$t('project.sorting.mostDownloads'), value: 'downloads' },
+            { text: this.$t('project.sorting.mostViews'), value: 'views' },
             { text: this.$t('project.sorting.newest'), value: 'newest' },
-            { text: this.$t('project.sorting.recentlyUpdated'), value: 'recentlyUpdated' },
+            { text: this.$t('project.sorting.recentlyUpdated'), value: 'updated' },
         ];
     }
 
@@ -160,7 +160,7 @@ export default class Home extends HangarComponent {
             offset: (this.options.page - 1) * this.options.itemsPerPage,
             category: this.filters.categories,
             platform: this.filters.platforms,
-            projectSort: this.filters.projectSort,
+            sort: this.filters.sort,
         };
         if (this.filters.search != null && this.filters.search.length > 0) {
             requestOptions.q = this.filters.search;

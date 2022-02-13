@@ -1,7 +1,10 @@
 package io.papermc.hangar.service.api;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.controller.extras.pagination.SorterRegistry;
+import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSorters;
 import io.papermc.hangar.db.dao.v1.ProjectsApiDAO;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.Pagination;
 import io.papermc.hangar.model.api.User;
@@ -16,8 +19,14 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ProjectsApiService extends HangarComponent {
@@ -53,10 +62,39 @@ public class ProjectsApiService extends HangarComponent {
         return new PaginatedResult<>(new Pagination(projectsApiDAO.getProjectWatchersCount(author, slug), pagination), watchers);
     }
 
-    public PaginatedResult<Project> getProjects(String query, ProjectSortingStrategy sort, boolean orderWithRelevance, RequestPagination pagination) {
-        String ordering = sort.getSql();
+    public PaginatedResult<Project> getProjects(String query, boolean orderWithRelevance, RequestPagination pagination) {
+        SorterRegistry sorterObject = SorterRegistry.VIEWS; //Views = default sorting mode
 
-        String paginationSortValue = pagination.getProjectSortBy();
+        String sorterName = null;
+        if(pagination.getSorters().size() > 0){
+            sorterName = (String) pagination.getSorters().keySet().toArray()[0];
+        }
+        if(sorterName != null){
+            Set<String> applicableSorters = Arrays.stream(SorterRegistry.values()).map(SorterRegistry::getName).collect(Collectors.toSet());
+            String sortKey = sorterName.startsWith("-") ? sorterName.substring(1) : sorterName;
+            if (applicableSorters.contains(sortKey)) {
+                sorterObject = SorterRegistry.getSorter(sortKey);
+            }
+        }
+
+
+
+        StringBuilder sql = new StringBuilder();
+        sorterObject.descending().accept(sql);
+
+
+        boolean seeHidden = getGlobalPermissions().has(Permission.SeeHidden);
+
+
+        List<Project> projects = projectsApiDAO.getProjects(seeHidden, getHangarUserId(), sql.toString(), pagination);
+        return new PaginatedResult<>(new Pagination(projectsApiDAO.countProjects(seeHidden, getHangarUserId(), pagination), pagination), projects);
+
+
+       /* String ordering = sort.getSql();
+
+        System.out.println("PSS: " + sort.toString());
+
+        String paginationSortValue = "mostStars";
         if(paginationSortValue != null){
             if(paginationSortValue.equalsIgnoreCase("mostStars")) {
                 sort = ProjectSortingStrategy.STARS;
@@ -69,9 +107,11 @@ public class ProjectsApiService extends HangarComponent {
             } else if(paginationSortValue.equalsIgnoreCase("recentlyUpdated")) {
                 sort = ProjectSortingStrategy.UPDATED;
             }
-        }
+        }*/
 
 
+
+/*
         if (orderWithRelevance && query != null && !query.isEmpty()) {
             String relevance = "ts_rank(hp.search_words, websearch_to_tsquery_postfix('english', :query)) DESC";
             if(query.endsWith(" ")) {
@@ -135,9 +175,9 @@ public class ProjectsApiService extends HangarComponent {
 
         boolean seeHidden = getGlobalPermissions().has(Permission.SeeHidden);
 
-        System.out.println("Ordering: " + ordering + " Sort: " + sort + " PSV: " + paginationSortValue);
+        //System.out.println("Ordering: " + ordering + " Sort: " + sort + " PSV: " + paginationSortValue);
 
         List<Project> projects = projectsApiDAO.getProjects(seeHidden, getHangarUserId(), ordering, pagination);
-        return new PaginatedResult<>(new Pagination(projectsApiDAO.countProjects(seeHidden, getHangarUserId(), pagination), pagination), projects);
+        return new PaginatedResult<>(new Pagination(projectsApiDAO.countProjects(seeHidden, getHangarUserId(), pagination), pagination), projects);*/
     }
 }

@@ -80,8 +80,6 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
         // TODO remove these bellow eventually
         paramNames.remove("relevance");
 
-        paramNames.remove("projectSort");
-
         // remove request params
         for (Parameter param : parameter.getExecutable().getParameters()) {
             paramNames.remove(param.getName());
@@ -102,8 +100,6 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
             }
             pagination.getSorters().put(sorter, sorter.startsWith("-") ? SorterRegistry.getSorter(sortKey).descending() : SorterRegistry.getSorter(sortKey).ascending());
         }
-
-        pagination.setProjectSortBy(webRequest.getParameter("projectSort"));
 
         return pagination;
     }
