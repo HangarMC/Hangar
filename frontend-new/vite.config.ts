@@ -88,8 +88,8 @@ export default defineConfig({
       resolvers: [
         // https://github.com/antfu/vite-plugin-icons
         IconsResolver({
-          componentPrefix: "",
-          // enabledCollections: ["carbon"]
+          componentPrefix: "icon",
+            enabledCollections: ["mdi"]
         }),
       ],
       dts: "src/types/components.d.ts",
