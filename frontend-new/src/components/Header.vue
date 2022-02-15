@@ -8,6 +8,14 @@ const announcements = await useInitialState<AnnouncementObject[]>(
     "announcements",
     async () => await useInternalApi<AnnouncementObject[]>("data/announcements", false)
 );
+
+let darkMode = false; // TODO: Make that properly & site-wide
+
+function toggleDarkMode() {
+    console.log('II');
+    console.log(`DM: ${  darkMode}`);
+    darkMode = !darkMode;
+}
 </script>
 
 <template>
@@ -25,13 +33,17 @@ const announcements = await useInitialState<AnnouncementObject[]>(
                 <div class="site-logo mr-4 h-60px">
                     <img alt="Hangar Logo" src="/logo.svg" class="h-60px"/>
                 </div>
-                <nav>
+                <nav class="flex gap-3">
                     <router-link :to="{ name: 'index' }">Home</router-link>
                     <router-link :to="{ name: 'staff' }">Team</router-link>
                 </nav>
             </div>
 
-            <div class="login-buttons">
+            <div class="login-buttons flex gap-2">
+                <button @click="toggleDarkMode">
+                    <icon-mdi-weather-night v-if="darkMode" style="font-size: 1.2em;"></icon-mdi-weather-night>
+                    <icon-mdi-white-balance-sunny v-else style="font-size: 1.2em;"></icon-mdi-white-balance-sunny>
+                </button>
                 <p>login</p>
             </div>
         </div>
@@ -59,7 +71,6 @@ nav a.router-link-active:after {
 }
 
 nav a {
-    margin-right: 1em;
     position: relative;
 }
 
@@ -78,9 +89,6 @@ nav a:not(.router-link-active):hover:after {
     transition: width .2s ease-in;
     width: 80%;
 }
-
-
-
 
 </style>
 
