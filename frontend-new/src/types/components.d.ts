@@ -8,6 +8,8 @@ declare module 'vue' {
     Footer: typeof import('./../components/Footer.vue')['default']
     Header: typeof import('./../components/Header.vue')['default']
     IconMdiMenu: typeof import('~icons/mdi/menu')['default']
+    IconMdiWeatherNight: typeof import('~icons/mdi/weather-night')['default']
+    IconMdiWhiteBalanceSunny: typeof import('~icons/mdi/white-balance-sunny')['default']
   }
 }
 
