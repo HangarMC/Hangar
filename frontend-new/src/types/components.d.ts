@@ -7,7 +7,6 @@ declare module 'vue' {
     Announcement: typeof import('./../components/Announcement.vue')['default']
     Footer: typeof import('./../components/Footer.vue')['default']
     Header: typeof import('./../components/Header.vue')['default']
-    IconMdiAccount: typeof import('~icons/mdi/account')['default']
     IconMdiMenu: typeof import('~icons/mdi/menu')['default']
   }
 }
