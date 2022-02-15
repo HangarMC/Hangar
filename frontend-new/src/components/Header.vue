@@ -16,6 +16,15 @@ function toggleDarkMode() {
     console.log(`DM: ${  darkMode}`);
     darkMode = !darkMode;
 }
+
+function test() {
+    console.log("test");
+}
+
+const navBarLinks = [
+    {link: 'index', label: 'Home'},
+    {link: 'staff', label: 'Team'},
+];
 </script>
 
 <template>
@@ -23,7 +32,7 @@ function toggleDarkMode() {
         <Announcement v-for="(announcement, idx) in announcements" :key="idx" :announcement="announcement" />
     </template>
     <header class="bg-white">
-        <div class="inner-header flex items-center">
+        <div class="inner-header flex items-center max-w-1200px mx-auto justify-between">
             <div class="logo-and-nav flex items-center">
                 <button class="mr-4">
                     <icon-mdi-menu style="font-size: 1.2em;"/>
@@ -34,13 +43,19 @@ function toggleDarkMode() {
                     <img alt="Hangar Logo" src="/logo.svg" class="h-60px"/>
                 </div>
                 <nav class="flex gap-3">
-                    <router-link :to="{ name: 'index' }">Home</router-link>
-                    <router-link :to="{ name: 'staff' }">Team</router-link>
+                    <router-link
+                        v-for='navBarLink in navBarLinks'
+                        :key='navBarLink.label'
+                        :to="{ name: navBarLink.link }"
+                        class="relative after:(content-['hello'] block w-0)"
+                    >
+                        {{ navBarLink.label }}
+                    </router-link>
                 </nav>
             </div>
 
             <div class="login-buttons flex gap-2">
-                <button @click="toggleDarkMode">
+                <button @click="test">
                     <icon-mdi-weather-night v-if="darkMode" style="font-size: 1.2em;"></icon-mdi-weather-night>
                     <icon-mdi-white-balance-sunny v-else style="font-size: 1.2em;"></icon-mdi-white-balance-sunny>
                 </button>
@@ -51,13 +66,6 @@ function toggleDarkMode() {
 </template>
 
 <style lang="css" scoped>
-
-.inner-header {
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-    justify-content: space-between;
-}
 
 nav .router-link-active {
     color: #4080FF;
@@ -70,13 +78,7 @@ nav a.router-link-active:after {
     width: 80%;
 }
 
-nav a {
-    position: relative;
-}
-
 nav a:after {
-    content: "";
-    width: 0;
     top: 30px;
     left: 10%;
     height: 4px;
