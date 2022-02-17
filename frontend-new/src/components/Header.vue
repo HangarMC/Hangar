@@ -47,7 +47,7 @@ const navBarLinks = [
                         v-for='navBarLink in navBarLinks'
                         :key='navBarLink.label'
                         :to="{ name: navBarLink.link }"
-                        class="relative after:(content-['hello'] block w-0)"
+                        class="relative after:content-['_↗'] after:block after:w-0"
                     >
                         {{ navBarLink.label }}
                     </router-link>
@@ -71,26 +71,7 @@ nav .router-link-active {
     color: #4080FF;
     font-weight: 700;
 }
-nav a.router-link-active:after {
-    position: absolute;
-    background: linear-gradient(-270deg, #004ee9 0%, #367aff 100%);
-    transition: width .2s ease-in;
-    width: 80%;
-}
 
-nav a:after {
-    top: 30px;
-    left: 10%;
-    height: 4px;
-    border-radius: 8px;
-}
-
-nav a:not(.router-link-active):hover:after {
-    position: absolute;
-    background: #d3e1f6;
-    transition: width .2s ease-in;
-    width: 80%;
-}
 
 </style>
 
