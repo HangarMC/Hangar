@@ -1,25 +1,21 @@
 <script setup lang="ts">
 import type { Announcement as AnnouncementObject } from "hangar-api";
+import { onMounted } from 'vue'
 import { useInitialState } from "~/composables/useInitialState";
 import { useInternalApi } from "~/composables/useApi";
 
 // not sure if they need to be part of the initial state, since we directly render them, would only save a request on page switch at most, but I guess its a good demonstration
-const announcements = await useInitialState<AnnouncementObject[]>(
+/* const announcements = await useInitialState<AnnouncementObject[]>(
     "announcements",
     async () => await useInternalApi<AnnouncementObject[]>("data/announcements", false)
-);
+); */ // TODO: This breaks click events
 
 let darkMode = false; // TODO: Make that properly & site-wide
 
 function toggleDarkMode() {
-    console.log('II');
-    console.log(`DM: ${  darkMode}`);
     darkMode = !darkMode;
 }
 
-function test() {
-    console.log("test");
-}
 
 const navBarLinks = [
     {link: 'index', label: 'Home'},
@@ -55,7 +51,7 @@ const navBarLinks = [
             </div>
 
             <div class="login-buttons flex gap-2">
-                <button @click="test">
+                <button @click="toggleDarkMode">
                     <icon-mdi-weather-night v-if="darkMode" style="font-size: 1.2em;"></icon-mdi-weather-night>
                     <icon-mdi-white-balance-sunny v-else style="font-size: 1.2em;"></icon-mdi-white-balance-sunny>
                 </button>
