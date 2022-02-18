@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Announcement as AnnouncementObject } from "hangar-api";
-import { onMounted } from 'vue'
+import { onMounted, ref, unref } from 'vue'
 import { useInitialState } from "~/composables/useInitialState";
 import { useInternalApi } from "~/composables/useApi";
 
@@ -10,10 +10,10 @@ import { useInternalApi } from "~/composables/useApi";
     async () => await useInternalApi<AnnouncementObject[]>("data/announcements", false)
 ); */ // TODO: This breaks click events
 
-let darkMode = false; // TODO: Make that properly & site-wide
+const darkMode = ref(false); // TODO: Make that properly & site-wide
 
 function toggleDarkMode() {
-    darkMode = !darkMode;
+    darkMode.value = !unref(darkMode);
 }
 
 
@@ -43,7 +43,7 @@ const navBarLinks = [
                         v-for='navBarLink in navBarLinks'
                         :key='navBarLink.label'
                         :to="{ name: navBarLink.link }"
-                        class="relative after:content-['_↗'] after:block after:w-0"
+                        class="relative after:(absolute content-DEFAULT block w-0 top-30px left-1/10 h-4px rounded-8px)"
                     >
                         {{ navBarLink.label }}
                     </router-link>
@@ -66,6 +66,18 @@ const navBarLinks = [
 nav .router-link-active {
     color: #4080FF;
     font-weight: 700;
+}
+nav a.router-link-active:after {
+    background: linear-gradient(-270deg, #004ee9 0%, #367aff 100%);
+    transition: width .2s ease-in;
+    width: 80%;
+}
+
+
+nav a:not(.router-link-active):hover:after {
+    background: #d3e1f6;
+    transition: width .2s ease-in;
+    width: 80%;
 }
 
 
