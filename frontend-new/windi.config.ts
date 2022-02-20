@@ -34,6 +34,9 @@ export default defineConfig({
           },
         },
       },
+      colors: {
+        headerDark: '#111111',
+      },
     },
   },
 });
