@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Announcement as AnnouncementObject } from "hangar-api";
-import { onMounted, ref, unref } from 'vue'
+import { useThemeStore } from '~/store/theme'
+
 import { useInitialState } from "~/composables/useInitialState";
 import { useInternalApi } from "~/composables/useApi";
 
@@ -10,11 +11,7 @@ import { useInternalApi } from "~/composables/useApi";
     async () => await useInternalApi<AnnouncementObject[]>("data/announcements", false)
 ); */ // TODO: This breaks click events
 
-const darkMode = ref(false); // TODO: Make that properly & site-wide
-
-function toggleDarkMode() {
-    darkMode.value = !unref(darkMode);
-}
+const theme = useThemeStore()
 
 
 const navBarLinks = [
@@ -30,7 +27,7 @@ const navBarLinks = [
     <header class="bg-white">
         <div class="inner-header flex items-center max-w-1200px mx-auto justify-between">
             <div class="logo-and-nav flex items-center">
-                <button class="mr-4">
+                <button class="flex mr-4">
                     <icon-mdi-menu style="font-size: 1.2em;"/>
                 </button>
 
@@ -50,9 +47,9 @@ const navBarLinks = [
                 </nav>
             </div>
 
-            <div class="login-buttons flex gap-2">
-                <button @click="toggleDarkMode">
-                    <icon-mdi-weather-night v-if="darkMode" style="font-size: 1.2em;"></icon-mdi-weather-night>
+            <div class="login-buttons flex gap-2 dark:bg-gray-500">
+                <button @click="theme.toggleDarkMode()">
+                    <icon-mdi-weather-night v-if="theme.darkMode" style="font-size: 1.2em;"></icon-mdi-weather-night>
                     <icon-mdi-white-balance-sunny v-else style="font-size: 1.2em;"></icon-mdi-white-balance-sunny>
                 </button>
                 <p>login</p>
