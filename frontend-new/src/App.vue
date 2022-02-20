@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useHead } from "@vueuse/head";
-import { onMounted } from 'vue'
-import { useSeo } from "~/composables/useSeo";
-import { useThemeStore } from '~/store/theme'
+import {useHead} from "@vueuse/head";
+import {onMounted} from 'vue'
+import {useSeo} from "~/composables/useSeo";
+import {useThemeStore} from '~/store/theme'
 
 
 const title = "Hangar New Test";
@@ -13,52 +13,46 @@ useHead(useSeo(title, description, useRoute(), null));
 const theme = useThemeStore()
 
 onMounted(() => {
-
     if (typeof window !== 'undefined') {
-        if(localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)){
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             theme.enableDarkMode();
-        }else{
+        } else {
             theme.disableDarkMode();
         }
 
 
-        if (theme.darkMode){
+        if (theme.darkMode) {
             document.documentElement.classList.add('dark');
             document.documentElement.classList.remove('light');
-        }else{
+        } else {
             document.documentElement.classList.add('light');
             document.documentElement.classList.remove('dark');
         }
     }
 
-
     theme.$subscribe((mutation, state) => {
         if (typeof window !== 'undefined') {
-            if(state.darkMode){
+            if (state.darkMode) {
                 localStorage.theme = 'dark';
                 document.documentElement.classList.add('dark');
                 document.documentElement.classList.remove('light');
-            }else{
+            } else {
                 localStorage.theme = 'light';
                 document.documentElement.classList.add('light');
                 document.documentElement.classList.remove('dark');
             }
         }
-
-
     })
 
 })
 
 
-
-
 </script>
 
 <template>
-  <router-view v-slot="{ Component, route }">
-    <transition name="slide">
-      <component :is="Component" :key="route" />
-    </transition>
-  </router-view>
+    <router-view v-slot="{ Component, route }">
+        <transition name="slide">
+            <component :is="Component" :key="route"/>
+        </transition>
+    </router-view>
 </template>
