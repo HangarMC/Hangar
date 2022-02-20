@@ -9,5 +9,13 @@ export const useThemeStore = defineStore('theme', () => {
         darkMode.value = !unref(darkMode);
     }
 
-    return { darkMode, toggleDarkMode }
+    function enableDarkMode() {
+        darkMode.value = true;
+    }
+
+    function disableDarkMode() {
+        darkMode.value = false;
+    }
+
+    return { darkMode, toggleDarkMode, enableDarkMode, disableDarkMode }
 })
