@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Announcement as AnnouncementObject } from "hangar-api";
-import { useThemeStore } from '~/store/theme'
+import type {Announcement as AnnouncementObject} from "hangar-api";
+import {useThemeStore} from '~/store/theme'
 
-import { useInitialState } from "~/composables/useInitialState";
-import { useInternalApi } from "~/composables/useApi";
+import {useInitialState} from "~/composables/useInitialState";
+import {useInternalApi} from "~/composables/useApi";
 
 // not sure if they need to be part of the initial state, since we directly render them, would only save a request on page switch at most, but I guess its a good demonstration
 /* const announcements = await useInitialState<AnnouncementObject[]>(
@@ -22,7 +22,7 @@ const navBarLinks = [
 
 <template>
     <template v-if="announcements">
-        <Announcement v-for="(announcement, idx) in announcements" :key="idx" :announcement="announcement" />
+        <Announcement v-for="(announcement, idx) in announcements" :key="idx" :announcement="announcement"/>
     </template>
     <header class="bg-white dark:bg-headerDark">
         <div class="inner-header flex items-center max-w-1200px mx-auto justify-between h-65px w-[calc(100%-40px)]">
@@ -30,7 +30,6 @@ const navBarLinks = [
                 <button class="flex mr-4">
                     <icon-mdi-menu style="font-size: 1.2em;"/>
                 </button>
-
 
                 <div class="site-logo mr-4 h-60px flex items-center">
                     <img alt="Hangar Logo" src="/logo.svg" class="h-50px"/>
@@ -64,19 +63,17 @@ nav .router-link-active {
     color: #4080FF;
     font-weight: 700;
 }
+
 nav a.router-link-active:after {
     background: linear-gradient(-270deg, #004ee9 0%, #367aff 100%);
     transition: width .2s ease-in;
     width: 80%;
 }
 
-
 nav a:not(.router-link-active):hover:after {
     background: #d3e1f6;
     transition: width .2s ease-in;
     width: 80%;
 }
-
-
 </style>
 
