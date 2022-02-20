@@ -2,7 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@antfu/eslint-config': ^0.16.1
-  '@iconify/json': ^2.1.2
+  '@iconify/json': ^2.1.3
   '@intlify/vite-plugin-vue-i18n': ^3.3.0
   '@types/markdown-it-link-attributes': ^3.0.1
   '@types/nprogress': ^0.2.0
@@ -17,11 +17,11 @@ specifiers:
   axios: ^0.26.0
   cross-env: ^7.0.3
   eslint: ^8.9.0
-  eslint-config-prettier: ^8.3.0
+  eslint-config-prettier: ^8.4.0
   eslint-plugin-vue: ^8.4.1
   jwt-decode: ^3.1.2
   markdown-it-link-attributes: ^4.0.0
-  markdown-it-prism: ^2.2.2
+  markdown-it-prism: ^2.2.3
   node-fetch: ^3.2.0
   nprogress: ^0.2.0
   pinia: ^2.0.11
@@ -32,7 +32,7 @@ specifiers:
   typescript: ^4.5.5
   universal-cookie: ^4.0.4
   unplugin-auto-import: ^0.6.0
-  unplugin-icons: ^0.13.1
+  unplugin-icons: ^0.13.2
   unplugin-vue-components: ^0.17.18
   vite: ^2.7.13
   vite-plugin-eslint: ^1.3.0
@@ -64,7 +64,7 @@ dependencies:
 
 devDependencies:
   '@antfu/eslint-config': 0.16.1_eslint@8.9.0+typescript@4.5.5
-  '@iconify/json': 2.1.2
+  '@iconify/json': 2.1.3
   '@intlify/vite-plugin-vue-i18n': 3.3.0_vite@2.7.13+vue-i18n@9.1.9
   '@types/markdown-it-link-attributes': 3.0.1
   '@types/nprogress': 0.2.0
@@ -75,16 +75,16 @@ devDependencies:
   '@vue/server-renderer': 3.2.31_vue@3.2.31
   cross-env: 7.0.3
   eslint: 8.9.0
-  eslint-config-prettier: 8.3.0_eslint@8.9.0
+  eslint-config-prettier: 8.4.0_eslint@8.9.0
   eslint-plugin-vue: 8.4.1_eslint@8.9.0
   markdown-it-link-attributes: 4.0.0
-  markdown-it-prism: 2.2.2
+  markdown-it-prism: 2.2.3
   node-fetch: 3.2.0
   pnpm: 6.31.0
   prettier: 2.5.1
   typescript: 4.5.5
   unplugin-auto-import: 0.6.0_@vueuse+core@7.5.5+vite@2.7.13
-  unplugin-icons: 0.13.1_29e18462d7f43629d5438959ea0c6bea
+  unplugin-icons: 0.13.2_29e18462d7f43629d5438959ea0c6bea
   unplugin-vue-components: 0.17.18_vite@2.7.13+vue@3.2.31
   vite: 2.7.13
   vite-plugin-eslint: 1.3.0_vite@2.7.13
@@ -1424,8 +1424,8 @@ packages:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
 
-  /@iconify/json/2.1.2:
-    resolution: {integrity: sha512-I4JHbMZBAd5ENGyYECUMpTcJMibTKd1ioVCLHDv+TsdSN01OMT4Uq2JLV1tVkolc7QiiomRsSuBBuDinGSgCVg==}
+  /@iconify/json/2.1.3:
+    resolution: {integrity: sha512-5rYrDhffFpygm9TKrPdn7nT3PyZj4ePUGsBCNosQ/8wLbyHbHrzmaStPYrwTMO4xPN3o6vkzdLa24nLiNM6q1w==}
     dependencies:
       '@iconify/types': 1.0.12
       pathe: 0.0.2
@@ -2939,8 +2939,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /eslint-config-prettier/8.3.0_eslint@8.9.0:
-    resolution: {integrity: sha512-BgZuLUSeKzvlL/VUjx/Yb787VQ26RU3gGjA3iiFvdsp/2bMfVIWUVP7tjxtjS0e+HP409cPlPvNkQloz8C91ew==}
+  /eslint-config-prettier/8.4.0_eslint@8.9.0:
+    resolution: {integrity: sha512-CFotdUcMY18nGRo5KGsnNxpznzhkopOcOo0InID+sgQssPrzjvsyKZPvOgymTFeHrFuC3Tzdf2YndhXtULK9Iw==}
     hasBin: true
     peerDependencies:
       eslint: '>=7.0.0'
@@ -4181,11 +4181,11 @@ packages:
     resolution: {integrity: sha512-ssjxSLlLfQBkX6BvAx1rCPrx7ZoK91llQQvS3P7KXvlbnVD34OUkfXwWecN7su/7mrI/HOW0RI5szdJOIqYC3w==}
     dev: true
 
-  /markdown-it-prism/2.2.2:
-    resolution: {integrity: sha512-lsyKocpHdRH8utUv3n0+BaDT1jQqX3wcacbFOkFPncX8C/Te3Wmv+Y8O4GVS7kdlj35fN4U455wzCW41pd93cw==}
+  /markdown-it-prism/2.2.3:
+    resolution: {integrity: sha512-vtiJ1ALGpIg2JPCSv3E8pEwx8Axr9eWu/P4BvCvyXWWM1GEXbr95a7cMuyR4FiEKkZVOXHqqGM6RJoqxra7UGQ==}
     engines: {node: '>=6.0.0'}
     dependencies:
-      prismjs: 1.26.0
+      prismjs: 1.27.0
     dev: true
 
   /markdown-it/12.3.2:
@@ -4590,8 +4590,8 @@ packages:
     resolution: {integrity: sha512-EL9ifuU/F8tEldoCa2sspiiLWysCL54xDbf2gN/ubwdtbuJROqOGopG5kSwunapwaioT+jLUQ/Ky+7jnv62xJA==}
     dev: false
 
-  /prismjs/1.26.0:
-    resolution: {integrity: sha512-HUoH9C5Z3jKkl3UunCyiD5jwk0+Hz0fIgQ2nbwU2Oo/ceuTAQAg+pPVnfdt2TJWRVLcxKh9iuoYDUSc8clb5UQ==}
+  /prismjs/1.27.0:
+    resolution: {integrity: sha512-t13BGPUlFDR7wRB5kQDG4jjl7XeuH6jbJGt11JHPL96qwsEHNX2+68tFXqc1/k+/jALsbSWJKUOT/hcYAZ5LkA==}
     engines: {node: '>=6'}
     dev: true
 
@@ -5293,8 +5293,8 @@ packages:
       - webpack
     dev: true
 
-  /unplugin-icons/0.13.1_29e18462d7f43629d5438959ea0c6bea:
-    resolution: {integrity: sha512-Y7ZOjTUvLdY4qUQNDo4OmkxjCh2coNbcAeWfFW66EZW7cJiBI6vU8j4cBAsyqUEwMdFL3q/kwowCRgD6BAaRyQ==}
+  /unplugin-icons/0.13.2_29e18462d7f43629d5438959ea0c6bea:
+    resolution: {integrity: sha512-Dwfn5DkKrp/BpZV0R/2wgU39j+kjkeuIQ54PmJ9LhXNpNAS+Huf6Fl/PUmUrlWOvMAz0uPo3y/5lQKZUBjBkBQ==}
     peerDependencies:
       '@svgr/core': '>=5.5.0'
       '@vue/compiler-sfc': ^3.0.2
