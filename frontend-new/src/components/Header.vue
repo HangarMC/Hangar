@@ -24,16 +24,16 @@ const navBarLinks = [
     <template v-if="announcements">
         <Announcement v-for="(announcement, idx) in announcements" :key="idx" :announcement="announcement" />
     </template>
-    <header class="bg-white">
-        <div class="inner-header flex items-center max-w-1200px mx-auto justify-between">
+    <header class="bg-white dark:bg-headerDark">
+        <div class="inner-header flex items-center max-w-1200px mx-auto justify-between h-65px w-[calc(100%-40px)]">
             <div class="logo-and-nav flex items-center">
                 <button class="flex mr-4">
                     <icon-mdi-menu style="font-size: 1.2em;"/>
                 </button>
 
 
-                <div class="site-logo mr-4 h-60px">
-                    <img alt="Hangar Logo" src="/logo.svg" class="h-60px"/>
+                <div class="site-logo mr-4 h-60px flex items-center">
+                    <img alt="Hangar Logo" src="/logo.svg" class="h-50px"/>
                 </div>
                 <nav class="flex gap-3">
                     <router-link
@@ -47,8 +47,8 @@ const navBarLinks = [
                 </nav>
             </div>
 
-            <div class="login-buttons flex gap-2 dark:bg-gray-500">
-                <button @click="theme.toggleDarkMode()">
+            <div class="login-buttons flex gap-2 items-center">
+                <button class="flex" @click="theme.toggleDarkMode()">
                     <icon-mdi-weather-night v-if="theme.darkMode" style="font-size: 1.2em;"></icon-mdi-weather-night>
                     <icon-mdi-white-balance-sunny v-else style="font-size: 1.2em;"></icon-mdi-white-balance-sunny>
                 </button>
