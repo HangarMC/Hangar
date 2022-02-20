@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useHead } from "@vueuse/head";
-import {ref} from 'vue';
 import { useSeo } from "~/composables/useSeo";
 import { useThemeStore } from '~/store/theme'
 
@@ -15,7 +14,7 @@ if (typeof window !== 'undefined') {
     theme.darkMode = (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches));
 
 
-    if (unref(theme.darkMode)){
+    if (theme.darkMode){
         document.documentElement.classList.add('dark');
     }else{
         document.documentElement.classList.add('light');
