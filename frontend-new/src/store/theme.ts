@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-import {ref, unref} from 'vue';
+import {Ref, ref, unref} from 'vue';
 
 export const useThemeStore = defineStore('theme', () => {
-    const darkMode = ref(false);
+    const darkMode: Ref<boolean> = ref(false);
 
 
     function toggleDarkMode() {
