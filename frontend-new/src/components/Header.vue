@@ -112,7 +112,7 @@ const loggedIn = false; // TODO
                 </Popover>
 
                 <div class="site-logo mr-4 h-60px flex items-center">
-                    <img alt="Hangar Logo" src="/logo.svg" class="h-50px object-cover"/>
+                    <img alt="Hangar Logo" src="../../public/logo.svg" class="h-50px object-cover"/>
                 </div>
                 <nav class="flex gap-3 invisible md:visible">
                     <router-link
