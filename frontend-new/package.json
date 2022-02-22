@@ -12,6 +12,7 @@
         "format": "prettier . --write"
     },
     "dependencies": {
+        "@headlessui/vue": "^1.5.0",
         "@vueuse/core": "^7.5.5",
         "@vueuse/head": "^0.7.5",
         "@vueuse/integrations": "^7.5.5",
