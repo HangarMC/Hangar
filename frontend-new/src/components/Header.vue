@@ -4,6 +4,7 @@ import {useThemeStore} from '~/store/theme'
 
 import {useInitialState} from "~/composables/useInitialState";
 import {useInternalApi} from "~/composables/useApi";
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 
 // not sure if they need to be part of the initial state, since we directly render them, would only save a request on page switch at most, but I guess its a good demonstration
 /* const announcements = await useInitialState<AnnouncementObject[]>(
@@ -27,12 +28,67 @@ const navBarLinks = [
     <header class="bg-white dark:bg-headerDark">
         <div class="inner-header flex items-center max-w-1200px mx-auto justify-between h-65px w-[calc(100%-40px)]">
             <div class="logo-and-nav flex items-center">
-                <button class="flex mr-4">
-                    <icon-mdi-menu style="font-size: 1.2em;"/>
-                </button>
+                <Popover class="relative">
+                    <PopoverButton v-slot="{ open }" class="flex mr-4">
+                        <icon-mdi-menu
+                            class="transition-transform"
+                            :class="open
+                            ? 'transform rotate-90'
+                            : ''" style="font-size: 1.2em;"/>
+                    </PopoverButton>
+                    <transition
+                        enter-active-class="transition duration-200 ease-out"
+                        enter-from-class="translate-y-1 opacity-0"
+                        enter-to-class="translate-y-0 opacity-100"
+                        leave-active-class="transition duration-150 ease-in"
+                        leave-from-class="translate-y-0 opacity-100"
+                        leave-to-class="translate-y-1 opacity-0"
+                    >
+                        <PopoverPanel class="absolute z-10 w-60 bg-white shadow-md rounded-md top-10 border-solid border-t-4 border-t-blue-400 text-xs">
+                            <div class="flex flex-col">
+                                <a class="p-[12px] flex items-center" href="https://papermc.io/">
+                                    <icon-mdi-home class="mr-3" style="font-size: 1.2em;"/>
+                                    Paper Home
+                                </a>
+                                <a class="p-[12px] flex items-center" href="https://forums.papermc.io/">
+                                    <icon-mdi-forum class="mr-3" style="font-size: 1.2em;"/>
+                                    Forums
+                                </a>
+                                <a class="p-[12px] flex items-center" href="https://github.com/PaperMC">
+                                    <icon-mdi-code-braces class="mr-3" style="font-size: 1.2em;"/>
+                                    Code
+                                </a>
+                                <a class="p-[12px] flex items-center" href="https://paper.readthedocs.io/en/latest/">
+                                    <icon-mdi-book-open class="mr-3" style="font-size: 1.2em;"/>
+                                    Docs
+                                </a>
+                                <a class="p-[12px] flex items-center" href="https://papermc.io/javadocs">
+                                    <icon-mdi-language-java class="mr-3" style="font-size: 1.2em;"/>
+                                    JavaDocs
+                                </a>
+                                <a class="p-[12px] flex items-center" href="/">
+                                    <icon-mdi-puzzle class="mr-3" style="font-size: 1.2em;"/>
+                                    Hangar (Plugins)
+                                </a>
+                                <a class="p-[12px] flex items-center" href="https://papermc.io/downloads">
+                                    <icon-mdi-download-circle class="mr-3" style="font-size: 1.2em;"/>
+                                    Downloads
+                                </a>
+                                <a class="p-[12px] flex items-center" href="https://papermc.io/community">
+                                    <icon-mdi-account-group class="mr-3" style="font-size: 1.2em;"/>
+                                    Community
+                                </a>
+                                <a class="p-[12px] flex items-center" href="https://hangar-auth.benndorf.dev/">
+                                    <icon-mdi-key class="mr-3" style="font-size: 1.2em;"/>
+                                    Authentication Portal
+                                </a>
+                            </div>
+                        </PopoverPanel>
+                    </transition>
+                </Popover>
 
                 <div class="site-logo mr-4 h-60px flex items-center">
-                    <img alt="Hangar Logo" src="/logo.svg" class="h-50px"/>
+                    <img alt="Hangar Logo" src="/logo.svg" class="h-50px object-cover"/>
                 </div>
                 <nav class="flex gap-3">
                     <router-link
