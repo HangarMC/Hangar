@@ -36,6 +36,8 @@ export default defineConfig({
       },
       colors: {
         headerDark: '#111111',
+        paperlightblue: '#ecf2fb',
+        paperblue: '#004ee9'
       },
     },
   },
