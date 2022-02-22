@@ -44,7 +44,7 @@ const navBarLinks = [
                         leave-from-class="translate-y-0 opacity-100"
                         leave-to-class="translate-y-1 opacity-0"
                     >
-                        <PopoverPanel class="absolute z-10 w-60 bg-white shadow-md rounded-bl-md rounded-r-md  top-10 border-solid border-t-4 border-t-blue-400 text-xs">
+                        <PopoverPanel class="absolute z-10 w-60 bg-white shadow-md rounded-bl-md rounded-r-md top-10 border-solid border-t-4 border-t-blue-400 text-xs">
                             <div class="flex flex-col">
                                 <a class="p-[12px] flex items-center" href="https://papermc.io/">
                                     <icon-mdi-home class="mr-3" style="font-size: 1.2em;"/>
@@ -103,7 +103,7 @@ const navBarLinks = [
                         leave-from-class="translate-y-0 opacity-100"
                         leave-to-class="translate-y-1 opacity-0"
                     >
-                        <PopoverPanel class="absolute z-10 w-60 bg-white shadow-md rounded-bl-md rounded-r-md  top-10 border-solid border-t-4 border-t-blue-400 text-xs">
+                        <PopoverPanel class="fixed z-10 w-9/10 h-9/10 bg-white top-1/20 left-1/20 shadow-md rounded-bl-md rounded-r-md border-solid border-t-4 border-t-blue-400 text-xs">
                             <div class="flex flex-col">
                                 <a class="p-[12px] flex items-center" href="https://papermc.io/">
                                     <icon-mdi-home class="mr-3" style="font-size: 1.2em;"/>
