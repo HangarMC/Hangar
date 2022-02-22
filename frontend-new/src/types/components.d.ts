@@ -15,7 +15,6 @@ declare module 'vue' {
     IconMdiHome: typeof import('~icons/mdi/home')['default']
     IconMdiKey: typeof import('~icons/mdi/key')['default']
     IconMdiLanguageJava: typeof import('~icons/mdi/language-java')['default']
-    IconMdiLock: typeof import('~icons/mdi/lock')['default']
     IconMdiMenu: typeof import('~icons/mdi/menu')['default']
     IconMdiPuzzle: typeof import('~icons/mdi/puzzle')['default']
     IconMdiWeatherNight: typeof import('~icons/mdi/weather-night')['default']
