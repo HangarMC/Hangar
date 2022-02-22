@@ -13,6 +13,7 @@ import {useInternalApi} from "~/composables/useApi";
 ); */ // TODO: This breaks click events
 
 const theme = useThemeStore()
+const { t } = useI18n();
 
 
 const navBarLinks = [
@@ -71,39 +72,39 @@ const loggedIn = false; // TODO
                             <div class="grid grid-cols-2">
                                 <a class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/" hover="text-paperblue bg-paperlightblue">
                                     <icon-mdi-home class="mr-3" style="font-size: 1.2em;"/>
-                                    Paper Home
+                                    {{ t("nav.hangar.home") }}
                                 </a>
                                 <a class="flex items-center rounded-md px-6 py-2" href="https://forums.papermc.io/" hover="text-paperblue bg-paperlightblue">
                                     <icon-mdi-forum class="mr-3" style="font-size: 1.2em;"/>
-                                    Forums
+                                    {{ t("nav.hangar.forums") }}
                                 </a>
                                 <a class="flex items-center rounded-md px-6 py-2" href="https://github.com/PaperMC" hover="text-paperblue bg-paperlightblue">
                                     <icon-mdi-code-braces class="mr-3" style="font-size: 1.2em;"/>
-                                    Code
+                                    {{ t("nav.hangar.code") }}
                                 </a>
                                 <a class="flex items-center rounded-md px-6 py-2" href="https://paper.readthedocs.io/en/latest/" hover="text-paperblue bg-paperlightblue">
                                     <icon-mdi-book-open class="mr-3" style="font-size: 1.2em;"/>
-                                    Docs
+                                    {{ t("nav.hangar.docs") }}
                                 </a>
                                 <a class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/javadocs" hover="text-paperblue bg-paperlightblue">
                                     <icon-mdi-language-java class="mr-3" style="font-size: 1.2em;"/>
-                                    JavaDocs
+                                    {{ t("nav.hangar.javadocs") }}
                                 </a>
                                 <a class="flex items-center rounded-md px-6 py-2" href="/" hover="text-paperblue bg-paperlightblue">
                                     <icon-mdi-puzzle class="mr-3" style="font-size: 1.2em;"/>
-                                    Hangar (Plugins)
+                                    {{ t("nav.hangar.hangar") }}
                                 </a>
                                 <a class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/downloads" hover="text-paperblue bg-paperlightblue">
                                     <icon-mdi-download-circle class="mr-3" style="font-size: 1.2em;"/>
-                                    Downloads
+                                    {{ t("nav.hangar.downloads") }}
                                 </a>
                                 <a class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/community" hover="text-paperblue bg-paperlightblue">
                                     <icon-mdi-account-group class="mr-3" style="font-size: 1.2em;"/>
-                                    Community
+                                    {{ t("nav.hangar.community") }}
                                 </a>
                                 <a class="flex items-center rounded-md px-6 py-2" href="https://hangar-auth.benndorf.dev/" hover="text-paperblue bg-paperlightblue">
                                     <icon-mdi-key class="mr-3" style="font-size: 1.2em;"/>
-                                    Authentication Portal
+                                    {{ t("nav.hangar.auth") }}
                                 </a>
                             </div>
                         </PopoverPanel>
