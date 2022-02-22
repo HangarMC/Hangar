@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type {Announcement as AnnouncementObject} from "hangar-api";
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import {useThemeStore} from '~/store/theme'
 
 import {useInitialState} from "~/composables/useInitialState";
 import {useInternalApi} from "~/composables/useApi";
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 
 // not sure if they need to be part of the initial state, since we directly render them, would only save a request on page switch at most, but I guess its a good demonstration
 /* const announcements = await useInitialState<AnnouncementObject[]>(
@@ -44,7 +44,7 @@ const navBarLinks = [
                         leave-from-class="translate-y-0 opacity-100"
                         leave-to-class="translate-y-1 opacity-0"
                     >
-                        <PopoverPanel class="absolute z-10 w-60 bg-white shadow-md rounded-md top-10 border-solid border-t-4 border-t-blue-400 text-xs">
+                        <PopoverPanel class="absolute z-10 w-60 bg-white shadow-md rounded-bl-md rounded-r-md  top-10 border-solid border-t-4 border-t-blue-400 text-xs">
                             <div class="flex flex-col">
                                 <a class="p-[12px] flex items-center" href="https://papermc.io/">
                                     <icon-mdi-home class="mr-3" style="font-size: 1.2em;"/>
