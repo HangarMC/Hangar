@@ -1,7 +1,9 @@
 <template>
-  <main>
+  <main style="min-height: 60vh;">
     <Header />
-    <router-view v-bind="$attrs" />
+      <div style="min-height: 60vh;">
+          <router-view v-bind="$attrs" />
+      </div>
     <Footer />
   </main>
 </template>

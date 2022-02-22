@@ -19,6 +19,8 @@ const navBarLinks = [
     {link: 'index', label: 'Home'},
     {link: 'staff', label: 'Team'},
 ];
+
+const loggedIn = false; // TODO
 </script>
 
 <template>
