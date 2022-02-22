@@ -44,6 +44,22 @@ onMounted(() => {
         }
     })
 
+    // For checking if on mobile or not
+    if(innerWidth <= theme.mobileBreakPoint && !theme.mobile){
+        theme.enableMobile();
+    }else if(innerWidth > theme.mobileBreakPoint && theme.mobile){
+        theme.disableMobile();
+    }
+    addEventListener('resize', () => {
+        if(innerWidth <= theme.mobileBreakPoint && !theme.mobile){
+            theme.enableMobile();
+            console.log(`Mobile: ${  theme.mobile}`)
+        }else if(innerWidth > theme.mobileBreakPoint && theme.mobile){
+            theme.disableMobile();
+            console.log(`Mobile: ${  theme.mobile}`)
+        }
+    })
+
 })
 
 
