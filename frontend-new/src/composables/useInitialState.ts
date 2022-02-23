@@ -2,7 +2,10 @@ import type { Ref } from "vue";
 import { onDeactivated, onMounted, onUnmounted, ref } from "vue";
 import { useContext } from "vite-ssr/vue";
 
-export async function useInitialState<T>(key: string, handler: (type: "server" | "client") => Promise<T>, blocking = false) {
+export async function useInitialState<T>(
+    key: string,
+    handler: (type: "server" | "client") => Promise<T>, blocking = false
+) {
   const { initialState } = useContext();
   const responseValue = ref(initialState[key] || null) as Ref<T | null>;
 
