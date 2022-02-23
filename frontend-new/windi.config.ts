@@ -35,10 +35,19 @@ export default defineConfig({
         },
       },
       colors: {
-        headerDark: '#111111',
-        paperlightblue: '#ecf2fb',
-        paperblue: '#004ee9'
+        backgroundDark90: '#111111',
+        backgroundDark80: '#181a1b',
+        backgroundLight10: '#f8faff',
+        backgroundLight0: '#ffffff',
+        primary100: '#004ee9',
+        primary70: '#aec9ff',
+        primary50: '#ecf2fb'
       },
     },
+  },
+  shortcuts: {
+      'backgroundHeader': 'bg-backgroundLight0 dark:bg-backgroundDark90',
+      'backgroundBody': 'bg-backgroundLight10 dark:bg-backgroundDark80',
+      'colorPrimary': 'text-primary100 dark:text-primary70',
   },
 });

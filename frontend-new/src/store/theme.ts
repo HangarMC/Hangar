@@ -1,12 +1,13 @@
 import { defineStore } from "pinia";
-import { Ref, ref, unref } from "vue";
+import type { Ref} from "vue";
+import { ref, unref } from "vue";
 
 export const useThemeStore = defineStore("theme", () => {
   const darkMode: Ref<boolean> = ref(false);
 
-  const mobile: Ref<boolean> = ref(true); //True cause mobile first!!
+  const mobile: Ref<boolean> = ref(true); // True cause mobile first!!
 
-  const mobileBreakPoint: number = 700;
+  const mobileBreakPoint = 700;
 
 
   function toggleDarkMode() {
