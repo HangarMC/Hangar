@@ -7,10 +7,10 @@ import {useInitialState} from "~/composables/useInitialState";
 import {useInternalApi} from "~/composables/useApi";
 
 // not sure if they need to be part of the initial state, since we directly render them, would only save a request on page switch at most, but I guess its a good demonstration
-/* const announcements = await useInitialState<AnnouncementObject[]>(
+ /* const announcements = await useInitialState<AnnouncementObject[]>(
     "announcements",
     async () => await useInternalApi<AnnouncementObject[]>("data/announcements", false)
-); */ // TODO: This breaks click events
+); */  // TODO: This breaks click events
 
 const theme = useThemeStore()
 const { t } = useI18n();
@@ -28,7 +28,7 @@ const loggedIn = false; // TODO
     <template v-if="announcements">
         <Announcement v-for="(announcement, idx) in announcements" :key="idx" :announcement="announcement"/>
     </template>
-    <header class="bg-white dark:bg-headerDark">
+    <header class="backgroundHeader">
         <div class="inner-header flex items-center max-w-1200px mx-auto justify-between h-65px w-[calc(100%-40px)]">
             <div class="logo-and-nav flex items-center">
                 <Popover class="relative">
@@ -47,13 +47,13 @@ const loggedIn = false; // TODO
                         leave-from-class="translate-y-0 opacity-100"
                         leave-to-class="translate-y-1 opacity-0"
                     >
-                        <PopoverPanel class="fixed md:absolute z-10 w-9/10 md:w-max bg-white top-1/14 md:top-10 left-1/20 shadow1 rounded-md md:rounded-none md:rounded-bl-md md:rounded-r-md border-solid border-t-4 border-t-paperblue text-xs p-[20px]">
-                            <p class="text-base font-semibold text-paperblue mb-4">Hangar</p>
+                        <PopoverPanel class="fixed md:absolute z-10 w-9/10 md:w-max backgroundHeader top-1/14 md:top-10 left-1/20 shadow1 rounded-md md:rounded-none md:rounded-bl-md md:rounded-r-md border-solid border-t-4 border-t-primary100 text-xs p-[20px]">
+                            <p class="text-base font-semibold colorPrimary mb-4">Hangar</p>
                             <div class="grid grid-cols-2">
                                 <router-link
                                     :to="{ name: 'index' }"
                                     class="flex items-center rounded-md px-6 py-2"
-                                    hover="text-paperblue bg-paperlightblue"
+                                    hover="text-primary100 bg-primary50"
                                 >
                                     <icon-mdi-home class="mr-3" style="font-size: 1.2em;"/>
                                     Home
@@ -61,48 +61,48 @@ const loggedIn = false; // TODO
                                 <router-link
                                     :to="{ name: 'staff' }"
                                     class="flex items-center rounded-md px-6 py-2"
-                                    hover="text-paperblue bg-paperlightblue"
+                                    hover="text-primary100 bg-primary50"
                                 >
                                     <icon-mdi-account-group class="mr-3" style="font-size: 1.2em;"/>
                                     Team
                                 </router-link>
                             </div>
 
-                            <p class="text-base font-semibold text-paperblue mb-4 mt-10">More from Paper</p>
+                            <p class="text-base font-semibold colorPrimary mb-4 mt-10">More from Paper</p>
                             <div class="grid grid-cols-2">
-                                <a class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/" hover="text-paperblue bg-paperlightblue">
+                                <a class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/" hover="text-primary100 bg-primary50">
                                     <icon-mdi-home class="mr-3" style="font-size: 1.2em;"/>
                                     {{ t("nav.hangar.home") }}
                                 </a>
-                                <a class="flex items-center rounded-md px-6 py-2" href="https://forums.papermc.io/" hover="text-paperblue bg-paperlightblue">
+                                <a class="flex items-center rounded-md px-6 py-2" href="https://forums.papermc.io/" hover="text-primary100 bg-primary50">
                                     <icon-mdi-forum class="mr-3" style="font-size: 1.2em;"/>
                                     {{ t("nav.hangar.forums") }}
                                 </a>
-                                <a class="flex items-center rounded-md px-6 py-2" href="https://github.com/PaperMC" hover="text-paperblue bg-paperlightblue">
+                                <a class="flex items-center rounded-md px-6 py-2" href="https://github.com/PaperMC" hover="text-primary100 bg-primary50">
                                     <icon-mdi-code-braces class="mr-3" style="font-size: 1.2em;"/>
                                     {{ t("nav.hangar.code") }}
                                 </a>
-                                <a class="flex items-center rounded-md px-6 py-2" href="https://paper.readthedocs.io/en/latest/" hover="text-paperblue bg-paperlightblue">
+                                <a class="flex items-center rounded-md px-6 py-2" href="https://paper.readthedocs.io/en/latest/" hover="text-primary100 bg-primary50">
                                     <icon-mdi-book-open class="mr-3" style="font-size: 1.2em;"/>
                                     {{ t("nav.hangar.docs") }}
                                 </a>
-                                <a class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/javadocs" hover="text-paperblue bg-paperlightblue">
+                                <a class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/javadocs" hover="text-primary100 bg-primary50">
                                     <icon-mdi-language-java class="mr-3" style="font-size: 1.2em;"/>
                                     {{ t("nav.hangar.javadocs") }}
                                 </a>
-                                <a class="flex items-center rounded-md px-6 py-2" href="/" hover="text-paperblue bg-paperlightblue">
+                                <a class="flex items-center rounded-md px-6 py-2" href="/" hover="text-primary100 bg-primary50">
                                     <icon-mdi-puzzle class="mr-3" style="font-size: 1.2em;"/>
                                     {{ t("nav.hangar.hangar") }}
                                 </a>
-                                <a class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/downloads" hover="text-paperblue bg-paperlightblue">
+                                <a class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/downloads" hover="text-primary100 bg-primary50">
                                     <icon-mdi-download-circle class="mr-3" style="font-size: 1.2em;"/>
                                     {{ t("nav.hangar.downloads") }}
                                 </a>
-                                <a class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/community" hover="text-paperblue bg-paperlightblue">
+                                <a class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/community" hover="text-primary100 bg-primary50">
                                     <icon-mdi-account-group class="mr-3" style="font-size: 1.2em;"/>
                                     {{ t("nav.hangar.community") }}
                                 </a>
-                                <a class="flex items-center rounded-md px-6 py-2" href="https://hangar-auth.benndorf.dev/" hover="text-paperblue bg-paperlightblue">
+                                <a class="flex items-center rounded-md px-6 py-2" href="https://hangar-auth.benndorf.dev/" hover="text-primary100 bg-primary50">
                                     <icon-mdi-key class="mr-3" style="font-size: 1.2em;"/>
                                     {{ t("nav.hangar.auth") }}
                                 </a>
