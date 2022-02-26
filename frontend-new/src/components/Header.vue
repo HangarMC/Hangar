@@ -5,19 +5,15 @@ import type {Ref} from 'vue';
 import {useThemeStore} from '~/store/theme'
 import {useAPI} from '~/store/api'
 
-import {useInitialState} from "~/composables/useInitialState";
-import {useInternalApi} from "~/composables/useApi";
-
 
 const theme = useThemeStore()
 const { t } = useI18n();
 
+const api = useAPI();
 
 const empty: AnnouncementObject[] = [];
 const announcements: Ref<AnnouncementObject[]> = ref(empty);
 
-
-const api = useAPI();
 
 api.getAnnouncements()
     .then((value) => {
