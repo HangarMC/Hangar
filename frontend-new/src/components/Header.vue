@@ -144,11 +144,21 @@ const loggedIn = false; // TODO
             </div>
 
             <div class="login-buttons flex gap-2 items-center">
-                <button class="flex" @click="theme.toggleDarkMode()">
+                <button class="flex mr-2" @click="theme.toggleDarkMode()">
                     <icon-mdi-weather-night v-if="theme.darkMode" style="font-size: 1.2em;"></icon-mdi-weather-night>
                     <icon-mdi-white-balance-sunny v-else style="font-size: 1.2em;"></icon-mdi-white-balance-sunny>
                 </button>
-                <p>login</p>
+                <div v-if="!loggedIn" class="flex">
+                    <a class="flex items-center rounded-md px-2 py-2" href="https://hangar-auth.benndorf.dev/account/login" hover="text-primary-100 bg-primary-50">
+                        <icon-mdi-key-outline class="mr-1" style="font-size: 1.2em;"/>
+                        {{ t("nav.login") }}
+                    </a>
+                    <a class="flex items-center rounded-md px-2 py-2" href="https://hangar-auth.benndorf.dev/account/signup/" hover="text-primary-100 bg-primary-50">
+                        <icon-mdi-clipboard-outline class="mr-1" style="font-size: 1.2em;"/>
+                        {{ t("nav.signup") }}
+                    </a>
+                </div>
+
             </div>
         </div>
     </header>
