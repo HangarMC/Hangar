@@ -25,3 +25,7 @@ html {
 .shadow1{
     box-shadow: 0 10px 20px rgb(0 0 0 / 15%), rgb(0 0 0 / 10%) 0 0 0 1px;
 }
+
+.w-fit{
+    width: fit-content;
+}
