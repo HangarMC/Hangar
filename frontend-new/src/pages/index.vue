@@ -8,12 +8,15 @@ const { t } = useI18n();
 
 <template>
   <div class="flex flex-col items-center pt-10">
-      <h2 class="text-3xl font-bold uppercase">Search your favorite plugins</h2>
-      <div class="flex flex-row mt-6 big-box-shadow">
-          <input class="rounded-md  p-3 w-4/5 max-w-800px focus-visible:(border-white) text-black" type="text" placeholder="Search in 1 projects, proudly made by the community...">
-          <div class="sort rounded-md">
+      <h2 class="text-3xl font-bold uppercase">Find your favorite plugins</h2>
+      <div class="flex flex-row mt-6 rounded-md big-box-shadow">
+          <input class="rounded-l-md p-3 w-[80vw] max-w-800px focus-visible:(border-white) text-black" type="text" placeholder="Search in 1 projects, proudly made by the community...">
+          <div class="rounded-r-md w-100px bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white p-2">
               <Menu>
-                  <MenuButton class="bg-white text-black rounded-md p-2">Sort by</MenuButton>
+                  <MenuButton class="rounded-r-md h-1/1 text-left font-semibold flex flex-row items-center gap-2">
+                      <span>Sort by</span>
+                      <icon-mdi-sort-variant class="text-[1.2em] pointer-events-none overflow-hidden"/>
+                  </MenuButton>
                   <transition
                       enter-active-class="transition duration-100 ease-out"
                       enter-from-class="transform scale-95 opacity-0"
@@ -22,19 +25,26 @@ const { t } = useI18n();
                       leave-from-class="transform scale-100 opacity-100"
                       leave-to-class="transform scale-95 opacity-0"
                   >
-                      <MenuItems>
+                      <MenuItems class="absolute flex flex-col bg-white text-black">
                           <MenuItem v-slot="{ active }">
                               <a :class='{ "bg-blue-500": active }' href="/account-settings">
-                                  Account settings
+                                  Popularity
                               </a>
                           </MenuItem>
                           <MenuItem v-slot="{ active }">
                               <a :class='{ "bg-blue-500": active }' href="/account-settings">
-                                  Documentation
+                                  Stars
                               </a>
                           </MenuItem>
-                          <MenuItem disabled>
-                              <span class="opacity-75">Invite a friend (coming soon!)</span>
+                          <MenuItem v-slot="{ active }">
+                              <a :class='{ "bg-blue-500": active }' href="/account-settings">
+                                  Downloads
+                              </a>
+                          </MenuItem>
+                          <MenuItem v-slot="{ active }">
+                              <a :class='{ "bg-blue-500": active }' href="/account-settings">
+                                  Recently Updated
+                              </a>
                           </MenuItem>
                       </MenuItems>
                   </transition>

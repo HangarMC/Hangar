@@ -51,10 +51,10 @@ const loggedIn = false; // TODO
                 <Popover class="relative">
                     <PopoverButton v-slot="{ open }" class="flex mr-4">
                         <icon-mdi-menu
-                            class="transition-transform"
+                            class="transition-transform text-[1.2em]"
                             :class="open
                             ? 'transform rotate-90'
-                            : ''" style="font-size: 1.2em;"/>
+                            : ''"/>
                     </PopoverButton>
                     <transition
                         enter-active-class="transition duration-200 ease-out"
@@ -72,7 +72,7 @@ const loggedIn = false; // TODO
                                     class="flex items-center rounded-md px-6 py-2"
                                     hover="text-primary-100 bg-primary-50"
                                 >
-                                    <icon-mdi-home class="mr-3" style="font-size: 1.2em;"/>
+                                    <icon-mdi-home class="mr-3 text-[1.2em]"/>
                                     Home
                                 </router-link>
                                 <router-link
@@ -80,7 +80,7 @@ const loggedIn = false; // TODO
                                     class="flex items-center rounded-md px-6 py-2"
                                     hover="text-primary-100 bg-primary-50"
                                 >
-                                    <icon-mdi-account-group class="mr-3" style="font-size: 1.2em;"/>
+                                    <icon-mdi-account-group class="mr-3 text-[1.2em]"/>
                                     Team
                                 </router-link>
                             </div>
@@ -88,39 +88,39 @@ const loggedIn = false; // TODO
                             <p class="text-base font-semibold color-primary mb-4 mt-10">More from Paper</p>
                             <div class="grid grid-cols-2">
                                 <a class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/" hover="text-primary-100 bg-primary-50">
-                                    <icon-mdi-home class="mr-3" style="font-size: 1.2em;"/>
+                                    <icon-mdi-home class="mr-3 text-[1.2em]"/>
                                     {{ t("nav.hangar.home") }}
                                 </a>
                                 <a class="flex items-center rounded-md px-6 py-2" href="https://forums.papermc.io/" hover="text-primary-100 bg-primary-50">
-                                    <icon-mdi-forum class="mr-3" style="font-size: 1.2em;"/>
+                                    <icon-mdi-forum class="mr-3 text-[1.2em]"/>
                                     {{ t("nav.hangar.forums") }}
                                 </a>
                                 <a class="flex items-center rounded-md px-6 py-2" href="https://github.com/PaperMC" hover="text-primary-100 bg-primary-50">
-                                    <icon-mdi-code-braces class="mr-3" style="font-size: 1.2em;"/>
+                                    <icon-mdi-code-braces class="mr-3 text-[1.2em]"/>
                                     {{ t("nav.hangar.code") }}
                                 </a>
                                 <a class="flex items-center rounded-md px-6 py-2" href="https://paper.readthedocs.io/en/latest/" hover="text-primary-100 bg-primary-50">
-                                    <icon-mdi-book-open class="mr-3" style="font-size: 1.2em;"/>
+                                    <icon-mdi-book-open class="mr-3 text-[1.2em]"/>
                                     {{ t("nav.hangar.docs") }}
                                 </a>
                                 <a class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/javadocs" hover="text-primary-100 bg-primary-50">
-                                    <icon-mdi-language-java class="mr-3" style="font-size: 1.2em;"/>
+                                    <icon-mdi-language-java class="mr-3 text-[1.2em]"/>
                                     {{ t("nav.hangar.javadocs") }}
                                 </a>
                                 <a class="flex items-center rounded-md px-6 py-2" href="/" hover="text-primary-100 bg-primary-50">
-                                    <icon-mdi-puzzle class="mr-3" style="font-size: 1.2em;"/>
+                                    <icon-mdi-puzzle class="mr-3 text-[1.2em]"/>
                                     {{ t("nav.hangar.hangar") }}
                                 </a>
                                 <a class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/downloads" hover="text-primary-100 bg-primary-50">
-                                    <icon-mdi-download-circle class="mr-3" style="font-size: 1.2em;"/>
+                                    <icon-mdi-download-circle class="mr-3 text-[1.2em]"/>
                                     {{ t("nav.hangar.downloads") }}
                                 </a>
                                 <a class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/community" hover="text-primary-100 bg-primary-50">
-                                    <icon-mdi-account-group class="mr-3" style="font-size: 1.2em;"/>
+                                    <icon-mdi-account-group class="mr-3 text-[1.2em]"/>
                                     {{ t("nav.hangar.community") }}
                                 </a>
                                 <a class="flex items-center rounded-md px-6 py-2" href="https://hangar-auth.benndorf.dev/" hover="text-primary-100 bg-primary-50">
-                                    <icon-mdi-key class="mr-3" style="font-size: 1.2em;"/>
+                                    <icon-mdi-key class="mr-3 text-[1.2em]"/>
                                     {{ t("nav.hangar.auth") }}
                                 </a>
                             </div>
@@ -145,16 +145,16 @@ const loggedIn = false; // TODO
 
             <div class="login-buttons flex gap-2 items-center">
                 <button class="flex mr-2" @click="theme.toggleDarkMode()">
-                    <icon-mdi-weather-night v-if="theme.darkMode" style="font-size: 1.2em;"></icon-mdi-weather-night>
-                    <icon-mdi-white-balance-sunny v-else style="font-size: 1.2em;"></icon-mdi-white-balance-sunny>
+                    <icon-mdi-weather-night v-if="theme.darkMode" class="text-[1.2em]"></icon-mdi-weather-night>
+                    <icon-mdi-white-balance-sunny v-else class="text-[1.2em]"></icon-mdi-white-balance-sunny>
                 </button>
                 <div v-if="!loggedIn" class="flex">
                     <a class="flex items-center rounded-md px-2 py-2" href="https://hangar-auth.benndorf.dev/account/login" hover="text-primary-100 bg-primary-50">
-                        <icon-mdi-key-outline class="mr-1" style="font-size: 1.2em;"/>
+                        <icon-mdi-key-outline class="mr-1 text-[1.2em]"/>
                         {{ t("nav.login") }}
                     </a>
                     <a class="flex items-center rounded-md px-2 py-2" href="https://hangar-auth.benndorf.dev/account/signup/" hover="text-primary-100 bg-primary-50">
-                        <icon-mdi-clipboard-outline class="mr-1" style="font-size: 1.2em;"/>
+                        <icon-mdi-clipboard-outline class="mr-1 text-[1.2em]"/>
                         {{ t("nav.signup") }}
                     </a>
                 </div>
