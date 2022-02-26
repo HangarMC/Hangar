@@ -3,6 +3,7 @@ import type {Announcement as AnnouncementObject} from "hangar-api";
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import type {Ref} from 'vue';
 import {useThemeStore} from '~/store/theme'
+import {useAPI} from '~/store/api'
 
 import {useInitialState} from "~/composables/useInitialState";
 import {useInternalApi} from "~/composables/useApi";
@@ -12,32 +13,28 @@ const theme = useThemeStore()
 const { t } = useI18n();
 
 
-const empty: AnnouncementObject[] | null = [];
-const announcements: Ref<AnnouncementObject[] | null> = ref(empty);
+const empty: AnnouncementObject[] = [];
+const announcements: Ref<AnnouncementObject[]> = ref(empty);
 
-async function loadAnnouncements(){
-    return await useInitialState<AnnouncementObject[]>(
-        "announcements",
-        async () => await useInternalApi<AnnouncementObject[]>("data/announcements", false)
-    );
-}
-loadAnnouncements().then((value) => {
-    const vallue: Ref<AnnouncementObject[] | null> = value;
 
-    if(vallue.value){
-        const firstObject: AnnouncementObject | null = vallue.value[0];
-        if(firstObject){
-            console.log(`Res: ${  firstObject.text}`)
+const api = useAPI();
+
+api.getAnnouncements()
+    .then((value) => {
+        if(value){
+            const firstObject: AnnouncementObject | null = value[0];
+            if(firstObject){
+                console.log(`Res: ${  firstObject.text}`)
+            }else{
+                console.log("Res is undefined")
+            }
         }else{
-            console.log("Res is undefined")
+            console.log("value is null")
         }
-    }else{
-        console.log("vallue is null")
-    }
 
+        announcements.value = value;
+    });
 
-    announcements.value = unref(vallue);
-});
 
 
 const navBarLinks = [
