@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import type { Ref} from "vue";
-import { ref, unref } from "vue";
+import { ref } from "vue";
 
 import type {Announcement as AnnouncementObject} from "hangar-api";
 import {useInternalApi} from '~/composables/useApi';
