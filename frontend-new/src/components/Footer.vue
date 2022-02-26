@@ -3,8 +3,8 @@
 <template>
     <footer class="relative flex items-end mt-10 bg-gradient-to-r from-[#004ee9] to-[#367aff] px-8 pt-20 pb-2 text-[#f8faff] min-h-70">
         <div class="footerContent w-screen">
-            <div class="flex justify-center flex-col md:flex-row justify-center gap-y-6 md:gap-y-0 md:gap-x-6">
-                <div class="md:w-1/3 min-w-1/3 max-w-1/3)">
+            <div class="flex justify-center flex-col md:flex-row justify-center gap-y-6 md:gap-y-0 md:gap-x-6 max-w-1200px m-auto">
+                <div class="md:(w-1/3 min-w-1/3 max-w-1/3)">
                     <p class="text-xl font-bold text-center mb-2">About Hangar</p>
                     <p>Hangar is an NFT plugin repository, hosted in the blockchain. Every plugin is unique and owned just by you. Can you use it on your server? No! You only own the receipt. And that's what makes Hangar so eco-friendly.</p>
                 </div>
@@ -28,11 +28,11 @@
                     </div>
 
                 </div>
-                <div class="md:w-1/3 min-w-1/3 max-w-1/3)">
+                <div class="md:(w-1/3 min-w-1/3 max-w-1/3)">
                     <p class="text-xl font-bold text-center mb-2">More from Paper</p>
                 </div>
             </div>
-            <div class="footerBar flex items-center	justify-around mt-4">
+            <div class="footerBar flex items-center	justify-around mt-4 max-w-1200px m-auto">
                 <p>Copyright © <a href="https://papermc.io/">PaperMC</a> 2016 - 2022</p>
                 <div class="footerBarLinks flex">
                     <router-link
