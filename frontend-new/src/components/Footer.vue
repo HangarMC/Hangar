@@ -13,15 +13,15 @@
                     <div class="flex flex-col items-center gap-y-3">
                         <router-link
                             :to="{ name: 'staff' }"
-                            class="flex items-center justify-center rounded-md px-4 py-2 text-primary-100 bg-primary-50 w-fit"
-                            hover=""
+                            class="flex items-center justify-center rounded-md px-4 py-2 light:text-black background-body w-fit"
+                            hover="text-primary-100"
                         >
                             Open Crypto Wallet
                         </router-link>
                         <router-link
                             :to="{ name: 'staff' }"
-                            class="flex items-center justify-center rounded-md px-4 py-2 text-primary-100 bg-primary-50 w-fit"
-                            hover=""
+                            class="flex items-center justify-center rounded-md px-4 py-2 light:text-black background-body w-fit"
+                            hover="text-primary-100"
                         >
                             Exchange Plugin NFTs
                         </router-link>
