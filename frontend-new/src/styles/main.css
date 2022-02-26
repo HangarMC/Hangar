@@ -29,3 +29,22 @@ html {
 .w-fit{
     width: fit-content;
 }
+
+@media (min-width: 769px) {
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+}
+*{
+    scrollbar-color: #004ee9 #f8faff;
+    scrollbar-width: thin;
+}
+::-webkit-scrollbar-track {
+    background: #f8faff;
+}
+::-webkit-scrollbar-thumb {
+    background: #004ee9;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #111111;
+}
