@@ -3,17 +3,34 @@ import type {Announcement as AnnouncementObject} from "hangar-api";
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import {useThemeStore} from '~/store/theme'
 
-import {useInitialState} from "~/composables/useInitialState";
+import {test, useInitialState} from "~/composables/useInitialState";
 import {useInternalApi} from "~/composables/useApi";
 
-// not sure if they need to be part of the initial state, since we directly render them, would only save a request on page switch at most, but I guess its a good demonstration
-  /* const announcements = await useInitialState<AnnouncementObject[]>(
-    "announcements",
-    async () => await useInternalApi<AnnouncementObject[]>("data/announcements", false)
-);  */ // TODO: This breaks click events
 
 const theme = useThemeStore()
 const { t } = useI18n();
+
+
+const empty: AnnouncementObject[] = [];
+const announcements = ref(empty);
+
+async function loadAnnouncements(){
+    return await useInitialState<AnnouncementObject[]>(
+        "announcements",
+        async () => await useInternalApi<AnnouncementObject[]>("data/announcements", false)
+    );
+}
+loadAnnouncements().then((value) => {
+    if(value){
+        const firstObject: AnnouncementObject | undefined = value[0];
+        if(firstObject){
+            console.log(`Res: ${  firstObject.text}`)
+        }else{
+            console.log("Res is undefined")
+        }
+    }
+    announcements.value = value;
+});
 
 
 const navBarLinks = [
