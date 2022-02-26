@@ -64,7 +64,7 @@ const loggedIn = false; // TODO
                         leave-from-class="translate-y-0 opacity-100"
                         leave-to-class="translate-y-1 opacity-0"
                     >
-                        <PopoverPanel class="fixed md:absolute z-10 w-9/10 md:w-max background-header top-1/14 md:top-10 left-1/20 shadow1 rounded-md md:rounded-none md:rounded-bl-md md:rounded-r-md border-solid border-t-4 border-t-primary-100 text-xs p-[20px]">
+                        <PopoverPanel class="fixed md:absolute z-10 w-9/10 md:w-max background-header top-1/14 md:top-10 left-1/20 shadow1 rounded-md md:rounded-none md:rounded-bl-md md:rounded-r-md border-top-primary text-xs p-[20px]">
                             <p class="text-base font-semibold color-primary mb-4">Hangar</p>
                             <div class="grid grid-cols-2">
                                 <router-link
