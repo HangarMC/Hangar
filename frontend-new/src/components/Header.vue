@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type {Announcement as AnnouncementObject} from "hangar-api";
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
+import type {Ref} from 'vue';
 import {useThemeStore} from '~/store/theme'
 
-import {test, useInitialState} from "~/composables/useInitialState";
+import {useInitialState} from "~/composables/useInitialState";
 import {useInternalApi} from "~/composables/useApi";
 
 
@@ -11,8 +12,8 @@ const theme = useThemeStore()
 const { t } = useI18n();
 
 
-const empty: AnnouncementObject[] = [];
-const announcements = ref(empty);
+const empty: AnnouncementObject[] | null = [];
+const announcements: Ref<AnnouncementObject[] | null> = ref(empty);
 
 async function loadAnnouncements(){
     return await useInitialState<AnnouncementObject[]>(
@@ -21,15 +22,21 @@ async function loadAnnouncements(){
     );
 }
 loadAnnouncements().then((value) => {
-    if(value){
-        const firstObject: AnnouncementObject | undefined = value[0];
+    const vallue: Ref<AnnouncementObject[] | null> = value;
+
+    if(vallue.value){
+        const firstObject: AnnouncementObject | null = vallue.value[0];
         if(firstObject){
             console.log(`Res: ${  firstObject.text}`)
         }else{
             console.log("Res is undefined")
         }
+    }else{
+        console.log("vallue is null")
     }
-    announcements.value = value;
+
+
+    announcements.value = unref(vallue);
 });
 
 

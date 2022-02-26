@@ -2,19 +2,14 @@ import type { Ref } from "vue";
 import { onDeactivated, onMounted, onUnmounted, ref } from "vue";
 import { useContext } from "vite-ssr/vue";
 
-export async function test(
-    key: string
-) {
-
-}
 
 export async function useInitialState<T>(
     key: string,
     handler: (type: "server" | "client") => Promise<T>,
     blocking = false
-) : Promise<T> {
+) : Promise<Ref<T | null>> {
 
-    const { initialState } = useContext();
+  const { initialState } = useContext();
   const responseValue = ref(initialState[key] || null) as Ref<T | null>;
 
   // remove data from initialState when component unmounts or deactivates
