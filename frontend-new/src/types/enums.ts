@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 export enum RoleCategory {
   GLOBAL = "global",
   PROJECT = "project",

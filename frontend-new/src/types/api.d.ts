@@ -26,14 +26,14 @@ declare module "hangar-api" {
   }
 
   interface Announcement {
-    text: String;
-    color: String;
+    text: string;
+    color: string;
   }
 
   interface Sponsor {
-    image: String;
-    name: String;
-    link: String;
+    image: string;
+    name: string;
+    link: string;
   }
 
   interface Visible {

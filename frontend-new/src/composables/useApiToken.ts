@@ -35,11 +35,7 @@ function validateToken(token: string): boolean {
 export function useApiToken(forceFetch = true): Promise<string | null> {
   const store = useAuthStore();
   if (store.token) {
-    if (validateToken(store.token)) {
-      return Promise.resolve(store.token);
-    } else {
-      return refreshToken();
-    }
+    return validateToken(store.token) ? Promise.resolve(store.token) : refreshToken();
   } else if (forceFetch) {
     return refreshToken();
   } else {

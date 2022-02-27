@@ -3,3 +3,6 @@
 /dist/**
 /tests/unit/coverage/**
 **/.temp/**
+pnpm-lock.yaml
+.vscode/**
+.idea/**
