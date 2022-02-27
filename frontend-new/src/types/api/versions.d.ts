@@ -33,7 +33,7 @@ declare module "hangar-api" {
     stats: VersionStats;
     fileInfo: FileInfo;
     externalUrl: string | null;
-    author: String;
+    author: string;
     reviewState: ReviewState;
     tags: Tag[];
     recommended: Platform[];
