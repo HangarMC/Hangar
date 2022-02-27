@@ -8,8 +8,6 @@ import {useInternalApi} from '~/composables/useApi';
 export const useAPI = defineStore("api", () => {
     const announcements: Ref<AnnouncementObject | undefined> = ref();
 
-
-
     async function getAnnouncements(): Promise<AnnouncementObject[]> {
         return await useInternalApi<AnnouncementObject[]>("data/announcements", false)
     }

@@ -2,8 +2,11 @@
 import type {Announcement as AnnouncementObject} from "hangar-api";
 import {Popover, PopoverButton, PopoverPanel} from '@headlessui/vue'
 import type {Ref} from 'vue';
+import { useI18n } from 'vue-i18n';
+import { ref } from 'vue';
 import {useThemeStore} from '~/store/theme'
 import {useAPI} from '~/store/api'
+import Announcement from '~/components/Announcement.vue';
 
 
 const theme = useThemeStore()
