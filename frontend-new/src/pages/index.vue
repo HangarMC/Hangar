@@ -72,7 +72,7 @@ const licenses = [
                       leave-from-class="transform scale-100 opacity-100"
                       leave-to-class="transform scale-95 opacity-0"
                   >
-                      <MenuItems class="absolute flex flex-col background-header shadow1 rounded-md border-top-primary">
+                      <MenuItems class="absolute flex flex-col z-10 background-header shadow1 rounded-md border-top-primary">
                           <MenuItem
                               v-for='sorter in sorters'
                               :key='sorter.id'
