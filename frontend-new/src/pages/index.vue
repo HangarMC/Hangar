@@ -98,10 +98,11 @@ const licenses = [
 
           <div class="versions">
               <h3 class="font-bold">Minecraft versions</h3>
-              <div class="max-h-30 overflow-auto">
-                  <div v-for='version in versions' :key='version.version'>
-                      <input :id='version.version' type="checkbox" :name=version.version>
-                      <label class="ml-2" :for='version.version'>{{version.version}}</label>
+              <div class="max-h-30 overflow-auto flex flex-col gap-2">
+                  <div v-for='version in versions' :key='version.version' class="relative cursor-pointer pl-30px">
+                      {{version.version}}
+                      <input :id='version.version' :name=version.version type="checkbox" class="hidden">
+                      <span class="absolute top-5px left-0 h-15px w-15px rounded-sm bg-gray-200"></span>
                   </div>
               </div>
           </div>
@@ -115,7 +116,8 @@ const licenses = [
                   </div>
               </div>
           </div>
-          <div class="platforms mt-2">
+          <hr>
+          <div class="platforms">
               <h3 class="font-bold">Platforms</h3>
               <div>
                   <div v-for='platform in platforms' :key='platform.id'>
@@ -124,7 +126,8 @@ const licenses = [
                   </div>
               </div>
           </div>
-          <div class="licenses mt-2">
+          <hr>
+          <div class="licenses">
               <h3 class="font-bold">Licenses</h3>
               <div>
                   <div v-for='license in licenses' :key='license.id'>
