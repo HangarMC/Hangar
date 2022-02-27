@@ -4,9 +4,6 @@
 
 declare module 'vue' {
   export interface GlobalComponents {
-    Announcement: typeof import('./../components/Announcement.vue')['default']
-    Footer: typeof import('./../components/Footer.vue')['default']
-    Header: typeof import('./../components/Header.vue')['default']
     IconMdiAccountGroup: typeof import('~icons/mdi/account-group')['default']
     IconMdiBookOpen: typeof import('~icons/mdi/book-open')['default']
     IconMdiClipboardOutline: typeof import('~icons/mdi/clipboard-outline')['default']
