@@ -1,0 +1,8 @@
+[*]
+indent_size = 2
+
+[{*.js, *.ts, *.vue}]
+ij_javascript_use_double_quotes = true
+ij_typescript_use_double_quotes = true
+ij_javascript_enforce_trailing_comma = whenmultiline
+ij_typescript_enforce_trailing_comma = whenmultiline

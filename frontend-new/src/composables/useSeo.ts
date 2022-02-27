@@ -1,5 +1,5 @@
-import type { TranslateResult } from "vue-i18n";
 import type { HeadObject } from "@vueuse/head";
+import type { TranslateResult } from "vue-i18n";
 import type { RouteLocationNormalizedLoaded } from "vue-router";
 
 export function useSeo(
@@ -112,11 +112,7 @@ function generateBreadcrumbs(route: RouteLocationNormalizedLoaded) {
 }
 
 function guessTitle(segment: string): string {
-  if (segment === "/" || segment === "") {
-    return "Hangar";
-  } else {
-    return segment;
-  }
+  return segment === "/" || segment === "" ? "Hangar" : segment;
 }
 
 function baseUrl(): string {
