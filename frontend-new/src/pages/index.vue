@@ -99,41 +99,44 @@ const licenses = [
           <div class="versions">
               <h3 class="font-bold">Minecraft versions</h3>
               <div class="max-h-30 overflow-auto flex flex-col gap-2">
-                  <div v-for='version in versions' :key='version.version' class="relative cursor-pointer pl-30px">
+                  <label v-for='version in versions' :key='version.version' class="group relative cursor-pointer pl-30px customCheckboxContainer">
                       {{version.version}}
                       <input :id='version.version' :name=version.version type="checkbox" class="hidden">
-                      <span class="absolute top-5px left-0 h-15px w-15px rounded-sm bg-gray-200"></span>
-                  </div>
+                      <span class="absolute top-5px left-0 h-15px w-15px rounded-sm bg-white group-hover:(bg-gray-300) after:(absolute hidden content-DEFAULT top-3px left-6px w-5px h-10px border-solid border-r-3px border-b-3px)"/>
+                  </label>
               </div>
           </div>
           <hr>
           <div class="categories">
               <h3 class="font-bold">Categories</h3>
-              <div>
-                  <div v-for='category in categories' :key='category.id'>
-                      <input :id="category.label" type="checkbox" :name="category.label">
-                      <label class="ml-2" :for="category.label">{{category.label}}</label>
-                  </div>
+              <div class="flex flex-col gap-2">
+                  <label v-for='category in categories' :key='category.id' class="group relative cursor-pointer pl-30px customCheckboxContainer">
+                      {{category.label}}
+                      <input type="checkbox" class="hidden">
+                      <span class="absolute top-5px left-0 h-15px w-15px rounded-sm bg-white group-hover:(bg-gray-300) after:(absolute hidden content-DEFAULT top-3px left-6px w-5px h-10px border-solid border-r-3px border-b-3px)"/>
+                  </label>
               </div>
           </div>
           <hr>
           <div class="platforms">
               <h3 class="font-bold">Platforms</h3>
-              <div>
-                  <div v-for='platform in platforms' :key='platform.id'>
-                      <input :id="platform.label" type="checkbox" :name="platform.label">
-                      <label class="ml-2" :for="platform.label">{{platform.label}}</label>
-                  </div>
+              <div class="flex flex-col gap-2">
+                  <label v-for='platform in platforms' :key='platform.id' class="group relative cursor-pointer pl-30px customCheckboxContainer">
+                      {{platform.label}}
+                      <input type="checkbox" class="hidden">
+                      <span class="absolute top-5px left-0 h-15px w-15px rounded-sm bg-white group-hover:(bg-gray-300) after:(absolute hidden content-DEFAULT top-3px left-6px w-5px h-10px border-solid border-r-3px border-b-3px)"/>
+                  </label>
               </div>
           </div>
           <hr>
           <div class="licenses">
               <h3 class="font-bold">Licenses</h3>
-              <div>
-                  <div v-for='license in licenses' :key='license.id'>
-                      <input :id="license.label" type="checkbox" :name="license.label">
-                      <label class="ml-2" :for="license.label">{{license.label}}</label>
-                  </div>
+              <div class="flex flex-col gap-2">
+                  <label v-for='license in licenses' :key='license.id' class="group relative cursor-pointer pl-30px customCheckboxContainer">
+                      {{license.label}}
+                      <input type="checkbox" class="hidden">
+                      <span class="absolute top-5px left-0 h-15px w-15px rounded-sm bg-white group-hover:(bg-gray-300) after:(absolute hidden content-DEFAULT top-3px left-6px w-5px h-10px border-solid border-r-3px border-b-3px)"/>
+                  </label>
               </div>
           </div>
       </div>
@@ -151,5 +154,13 @@ meta:
     box-shadow: 0 0 10px 0 #004ee99e;
 }
 
-
+/*This is needed, because you cannot have more than one parent group in tailwind/windi*/
+.customCheckboxContainer input:checked ~ span{
+    background-color: #000 !important;
+}
+/*The tailwind/windi utility class rotate-45 is BROKEN*/
+.customCheckboxContainer input:checked ~ span:after {
+    display: block;
+    transform: rotate(45deg);
+}
 </style>
