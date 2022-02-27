@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {Menu, MenuButton, MenuItem, MenuItems} from "@headlessui/vue";
+import { useI18n } from 'vue-i18n';
 
 const {t} = useI18n();
 
@@ -165,7 +166,7 @@ const licenses = [
 
 <route lang="yaml">
 meta:
-layout: default
+  layout: default
 </route>
 
 <style lang="css" scoped>

@@ -57,33 +57,10 @@ export default defineConfig({
       },
     }),
 
-    // https://github.com/antfu/unplugin-auto-import
-    AutoImport({
-      imports: [
-        "vue",
-        "vue-router",
-        "vue-i18n",
-        "@vueuse/head",
-        "@vueuse/core",
-        "pinia",
-        {
-          axios: [["default", "axios"]],
-        },
-      ],
-      dts: "src/types/auto-imports.d.ts",
-      eslintrc: {
-        enabled: true,
-      },
-    }),
-
     // https://github.com/antfu/vite-plugin-components
     Components({
-      // allow auto load markdown components under `./src/components/`
-      extensions: ["vue", "md"],
-
-      // allow auto import and register components used in markdown
-      include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
-
+      // we don't want to import components, just icons
+      dirs: ["none"],
       // auto import icons
       resolvers: [
         // https://github.com/antfu/vite-plugin-icons
@@ -92,7 +69,7 @@ export default defineConfig({
             enabledCollections: ["mdi"]
         }),
       ],
-      dts: "src/types/components.d.ts",
+      dts: "src/types/icons.d.ts",
     }),
 
     // https://github.com/antfu/vite-plugin-icons

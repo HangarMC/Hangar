@@ -1,4 +1,5 @@
 import type { HangarUser } from "hangar-internal";
+import { defineStore } from 'pinia';
 
 export const useAuthStore = defineStore("auth", {
   state: () => {
