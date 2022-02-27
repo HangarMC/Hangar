@@ -4,19 +4,60 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 const { t } = useI18n();
 
 const sorters = [
-    {id: 'stars', label: 'Most Stars'},
-    {id: 'downloads', label: 'Most Downloads'},
-    {id: 'views', label: 'Most Views'},
-    {id: 'newest', label: 'Newest'},
-    {id: 'updated', label: 'Recently Updated'},
+    {id: 'stars', label: t("project.sorting.mostStars") },
+    {id: 'downloads', label: t("project.sorting.mostDownloads") },
+    {id: 'views', label: t("project.sorting.mostViews") },
+    {id: 'newest', label: t("project.sorting.newest") },
+    {id: 'updated', label: t("project.sorting.recentlyUpdated") },
+];
+
+const versions = [
+    {version: '1.18.1'},
+    {version: '1.18'},
+    {version: '1.17.1'},
+    {version: '1.17'},
+    {version: '1.16.5'},
+    {version: '1.16.4'},
+    {version: '1.16.3'},
+    {version: '1.16.2'},
+    {version: '1.16.1'},
+    {version: '1.16'},
+];
+
+const categories = [
+    {id: 'admin_tools', label: t("project.category.admin_tools")},
+    {id: 'chat', label: t("project.category.chat")},
+    {id: 'devel_tools', label: t("project.category.dev_tools")},
+    {id: 'economy', label: t("project.category.economy")},
+    {id: 'gameplay', label: t("project.category.gameplay")},
+    {id: 'games', label: t("project.category.games")},
+    {id: 'protection', label: t("project.category.protection")},
+    {id: 'role_playing', label: t("project.category.role_playing")},
+    {id: 'world_management', label: t("project.category.world_management")},
+    {id: 'misc', label: t("project.category.misc")},
+];
+
+const platforms = [
+    {id: 'paper', label: 'Paper'},
+    {id: 'velocity', label: 'Velocity'},
+    {id: 'waterfall', label: 'Waterfall'},
+];
+
+const licenses = [
+    {id: 'gpl-3', label: 'GPL-3'},
+    {id: 'mit', label: 'MIT'},
+    {id: 'apache', label: 'APACHE'},
 ];
 </script>
 
 <template>
   <div class="flex flex-col items-center pt-10">
       <h2 class="text-3xl font-bold uppercase">Find your favorite plugins</h2>
+      <!-- Search Bar & Sorting button -->
       <div class="flex flex-row mt-6 rounded-md big-box-shadow">
+          <!-- Search Bar -->
           <input class="rounded-l-md p-3 w-[80vw] max-w-800px focus-visible:(border-white) text-black" type="text" placeholder="Search in 1 projects, proudly made by the community...">
+          <!-- Sorting Button -->
           <div class="rounded-r-md w-100px bg-gradient-to-r from-[#004ee9] to-[#367aff] p-2">
               <Menu>
                   <MenuButton class="rounded-r-md h-1/1 text-left font-semibold flex flex-row items-center gap-2 text-white">
@@ -48,26 +89,49 @@ const sorters = [
 
   </div>
   <div class="projectsAndSidebar p-4 mt-5 w-screen max-w-1200px flex justify-around m-auto flex-col md:flex-row gap-y-6 md:gap-y-0 md:gap-x-6">
-      <div class="projects md:(w-2/3 min-w-2/3 max-w-2/3) min-h-800px bg-gray-200 rounded-md">
+      <!-- Projects -->
+      <div class="md:(w-2/3 min-w-2/3 max-w-2/3) min-h-800px bg-gray-200 rounded-md">
 
       </div>
-      <div class="sidebar bg-gradient-to-r from-[#004ee9] to-[#367aff] rounded-md min-w-300px min-h-800px p-4 text-white">
+      <!-- Sidebar -->
+      <div class="flex flex-col gap-4 bg-gradient-to-r from-[#004ee9] to-[#367aff] rounded-md min-w-300px min-h-800px p-4 text-white">
 
           <div class="versions">
               <h3 class="font-bold">Minecraft versions</h3>
-              <div>
-                  <input id="1.18.1" type="checkbox" name="1.18.1">
-                  <label for="1.18.1">1.18.1</label>
+              <div class="max-h-30 overflow-auto">
+                  <div v-for='version in versions' :key='version.version'>
+                      <input :id='version.version' type="checkbox" :name=version.version>
+                      <label class="ml-2" :for='version.version'>{{version.version}}</label>
+                  </div>
               </div>
           </div>
+          <hr>
           <div class="categories">
               <h3 class="font-bold">Categories</h3>
+              <div>
+                  <div v-for='category in categories' :key='category.id'>
+                      <input :id="category.label" type="checkbox" :name="category.label">
+                      <label class="ml-2" :for="category.label">{{category.label}}</label>
+                  </div>
+              </div>
           </div>
-          <div class="platforms">
+          <div class="platforms mt-2">
               <h3 class="font-bold">Platforms</h3>
+              <div>
+                  <div v-for='platform in platforms' :key='platform.id'>
+                      <input :id="platform.label" type="checkbox" :name="platform.label">
+                      <label class="ml-2" :for="platform.label">{{platform.label}}</label>
+                  </div>
+              </div>
           </div>
-          <div class="licenses">
+          <div class="licenses mt-2">
               <h3 class="font-bold">Licenses</h3>
+              <div>
+                  <div v-for='license in licenses' :key='license.id'>
+                      <input :id="license.label" type="checkbox" :name="license.label">
+                      <label class="ml-2" :for="license.label">{{license.label}}</label>
+                  </div>
+              </div>
           </div>
       </div>
   </div>
