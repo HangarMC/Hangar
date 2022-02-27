@@ -58,9 +58,9 @@ const licenses = [
           <!-- Search Bar -->
           <input class="rounded-l-md p-3 w-[80vw] max-w-800px focus-visible:(border-white) text-black" type="text" placeholder="Search in 1 projects, proudly made by the community...">
           <!-- Sorting Button -->
-          <div class="rounded-r-md w-100px bg-gradient-to-r from-[#004ee9] to-[#367aff] p-2">
+          <div class="rounded-r-md w-100px bg-gradient-to-r from-[#004ee9] to-[#367aff]">
               <Menu>
-                  <MenuButton class="rounded-r-md h-1/1 text-left font-semibold flex flex-row items-center gap-2 text-white">
+                  <MenuButton class="rounded-r-md h-1/1 text-left font-semibold flex flex-row items-center gap-2 text-white p-2">
                       <span>Sort by</span>
                       <icon-mdi-sort-variant class="text-[1.2em] pointer-events-none overflow-hidden"/>
                   </MenuButton>
