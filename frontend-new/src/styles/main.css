@@ -30,10 +30,8 @@ html {
     width: fit-content;
 }
 
-@media (min-width: 769px) {
-    ::-webkit-scrollbar {
-        width: 10px;
-    }
+::-webkit-scrollbar {
+    width: 10px;
 }
 *{
     scrollbar-color: #004ee9 #f8faff;
