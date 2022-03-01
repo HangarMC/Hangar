@@ -48,7 +48,7 @@ const navBarMenuLinksHangar = [
 ];
 
 const components:any = {};
-navBarMenuLinksHangar.forEach((navBarLink) => { // component represents the component name
+navBarMenuLinksHangar.forEach((navBarLink) => {
     components[navBarLink.label] = defineAsyncComponent(() => // import each component dynamically
         import(`~icons/mdi/${  navBarLink.icon  }`)
     );
