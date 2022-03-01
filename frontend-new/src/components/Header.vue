@@ -136,7 +136,8 @@ const loggedIn = false; // TODO
                         v-for='navBarLink in navBarLinks'
                         :key='navBarLink.label'
                         :to="{ name: navBarLink.link }"
-                        class="relative after:(absolute content-DEFAULT block w-0 top-30px left-1/10 h-4px rounded-8px)"
+                        class="relative"
+                        after="absolute content-DEFAULT block w-0 top-30px left-1/10 h-4px rounded-8px"
                     >
                         {{ navBarLink.label }}
                     </router-link>
