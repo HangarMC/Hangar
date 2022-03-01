@@ -11,6 +11,7 @@ import Announcement from '~/components/Announcement.vue';
 import hangarLogo from '/logo.svg'
 
 
+
 const theme = useThemeStore()
 const {t} = useI18n();
 
@@ -69,7 +70,8 @@ const loggedIn = false; // TODO
                         leave-to-class="translate-y-1 opacity-0"
                     >
                         <PopoverPanel
-                            class="fixed md:absolute z-10 w-9/10 md:w-max background-header top-1/14 md:top-10 left-1/20 shadow1 rounded-md md:rounded-none md:rounded-bl-md md:rounded-r-md border-top-primary text-xs p-[20px]">
+                            class="fixed z-10 w-9/10 background-header top-1/14 left-1/20 shadow1 rounded-md border-top-primary text-xs p-[20px]"
+                            md="absolute w-max top-10 rounded-none rounded-bl-md rounded-r-md">
                             <p class="text-base font-semibold color-primary mb-4">Hangar</p>
                             <div class="grid grid-cols-2">
                                 <router-link
@@ -77,7 +79,6 @@ const loggedIn = false; // TODO
                                     class="flex items-center rounded-md px-6 py-2"
                                     hover="text-primary-100 bg-primary-50"
                                 >
-                                    <icon-mdi-home class="mr-3 text-[1.2em]"/>
                                     Home
                                 </router-link>
                                 <router-link
