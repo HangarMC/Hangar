@@ -2,11 +2,13 @@
 import type {Announcement as AnnouncementObject} from "hangar-api";
 import {Popover, PopoverButton, PopoverPanel} from '@headlessui/vue'
 import type {Ref} from 'vue';
-import { useI18n } from 'vue-i18n';
-import { ref } from 'vue';
+import {useI18n} from 'vue-i18n';
+import {ref} from 'vue';
 import {useThemeStore} from '~/store/theme'
 import {useAPI} from '~/store/api'
 import Announcement from '~/components/Announcement.vue';
+
+import hangarLogo from '/logo.svg'
 
 
 const theme = useThemeStore()
@@ -91,57 +93,57 @@ const loggedIn = false; // TODO
                             <p class="text-base font-semibold color-primary mb-4 mt-10">More from Paper</p>
                             <div class="grid grid-cols-2">
                                 <a
-class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/"
-                                   hover="text-primary-100 bg-primary-50">
+                                    class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/"
+                                    hover="text-primary-100 bg-primary-50">
                                     <icon-mdi-home class="mr-3 text-[1.2em]"/>
                                     {{ t("nav.hangar.home") }}
                                 </a>
                                 <a
-class="flex items-center rounded-md px-6 py-2" href="https://forums.papermc.io/"
-                                   hover="text-primary-100 bg-primary-50">
+                                    class="flex items-center rounded-md px-6 py-2" href="https://forums.papermc.io/"
+                                    hover="text-primary-100 bg-primary-50">
                                     <icon-mdi-forum class="mr-3 text-[1.2em]"/>
                                     {{ t("nav.hangar.forums") }}
                                 </a>
                                 <a
-class="flex items-center rounded-md px-6 py-2" href="https://github.com/PaperMC"
-                                   hover="text-primary-100 bg-primary-50">
+                                    class="flex items-center rounded-md px-6 py-2" href="https://github.com/PaperMC"
+                                    hover="text-primary-100 bg-primary-50">
                                     <icon-mdi-code-braces class="mr-3 text-[1.2em]"/>
                                     {{ t("nav.hangar.code") }}
                                 </a>
                                 <a
-class="flex items-center rounded-md px-6 py-2"
-                                   href="https://paper.readthedocs.io/en/latest/"
-                                   hover="text-primary-100 bg-primary-50">
+                                    class="flex items-center rounded-md px-6 py-2"
+                                    href="https://paper.readthedocs.io/en/latest/"
+                                    hover="text-primary-100 bg-primary-50">
                                     <icon-mdi-book-open class="mr-3 text-[1.2em]"/>
                                     {{ t("nav.hangar.docs") }}
                                 </a>
                                 <a
-class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/javadocs"
-                                   hover="text-primary-100 bg-primary-50">
+                                    class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/javadocs"
+                                    hover="text-primary-100 bg-primary-50">
                                     <icon-mdi-language-java class="mr-3 text-[1.2em]"/>
                                     {{ t("nav.hangar.javadocs") }}
                                 </a>
                                 <a
-class="flex items-center rounded-md px-6 py-2" href="/"
-                                   hover="text-primary-100 bg-primary-50">
+                                    class="flex items-center rounded-md px-6 py-2" href="/"
+                                    hover="text-primary-100 bg-primary-50">
                                     <icon-mdi-puzzle class="mr-3 text-[1.2em]"/>
                                     {{ t("nav.hangar.hangar") }}
                                 </a>
                                 <a
-class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/downloads"
-                                   hover="text-primary-100 bg-primary-50">
+                                    class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/downloads"
+                                    hover="text-primary-100 bg-primary-50">
                                     <icon-mdi-download-circle class="mr-3 text-[1.2em]"/>
                                     {{ t("nav.hangar.downloads") }}
                                 </a>
                                 <a
-class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/community"
-                                   hover="text-primary-100 bg-primary-50">
+                                    class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/community"
+                                    hover="text-primary-100 bg-primary-50">
                                     <icon-mdi-account-group class="mr-3 text-[1.2em]"/>
                                     {{ t("nav.hangar.community") }}
                                 </a>
                                 <a
-class="flex items-center rounded-md px-6 py-2"
-                                   href="https://hangar-auth.benndorf.dev/" hover="text-primary-100 bg-primary-50">
+                                    class="flex items-center rounded-md px-6 py-2"
+                                    href="https://hangar-auth.benndorf.dev/" hover="text-primary-100 bg-primary-50">
                                     <icon-mdi-key class="mr-3 text-[1.2em]"/>
                                     {{ t("nav.hangar.auth") }}
                                 </a>
@@ -151,7 +153,7 @@ class="flex items-center rounded-md px-6 py-2"
                 </Popover>
 
                 <div class="site-logo mr-4 h-60px flex items-center">
-                    <img alt="Hangar Logo" src="../../public/logo.svg" class="h-50px object-cover"/>
+                    <img alt="Hangar Logo" :src="hangarLogo" class="h-50px object-cover"/>
                 </div>
                 <nav class="flex gap-3 invisible md:visible">
                     <router-link
@@ -172,14 +174,14 @@ class="flex items-center rounded-md px-6 py-2"
                 </button>
                 <div v-if="!loggedIn" class="flex">
                     <a
-class="flex items-center rounded-md px-2 py-2"
-                       href="https://hangar-auth.benndorf.dev/account/login" hover="text-primary-100 bg-primary-50">
+                        class="flex items-center rounded-md px-2 py-2"
+                        href="https://hangar-auth.benndorf.dev/account/login" hover="text-primary-100 bg-primary-50">
                         <icon-mdi-key-outline class="mr-1 text-[1.2em]"/>
                         {{ t("nav.login") }}
                     </a>
                     <a
-class="flex items-center rounded-md px-2 py-2"
-                       href="https://hangar-auth.benndorf.dev/account/signup/" hover="text-primary-100 bg-primary-50">
+                        class="flex items-center rounded-md px-2 py-2"
+                        href="https://hangar-auth.benndorf.dev/account/signup/" hover="text-primary-100 bg-primary-50">
                         <icon-mdi-clipboard-outline class="mr-1 text-[1.2em]"/>
                         {{ t("nav.signup") }}
                     </a>
