@@ -3,13 +3,12 @@ import type {Announcement as AnnouncementObject} from "hangar-api";
 import {Popover, PopoverButton, PopoverPanel} from '@headlessui/vue'
 import type {Ref} from 'vue';
 import {useI18n} from 'vue-i18n';
-import {ref} from 'vue';
+import {defineAsyncComponent, ref } from 'vue';
 import {useThemeStore} from '~/store/theme'
 import {useAPI} from '~/store/api'
 import Announcement from '~/components/Announcement.vue';
 
 import hangarLogo from '/logo.svg'
-
 
 
 const theme = useThemeStore()
@@ -43,6 +42,19 @@ const navBarLinks = [
     {link: 'staff', label: 'Team'},
 ];
 
+const navBarMenuLinksHangar = [
+    {link: 'index', label: 'Home', icon: 'home'},
+    {link: 'staff', label: 'Team', icon: 'account-group'},
+];
+
+const components:any = {};
+navBarMenuLinksHangar.forEach((navBarLink) => { // component represents the component name
+    components[navBarLink.label] = defineAsyncComponent(() => // import each component dynamically
+        import(`~icons/mdi/${  navBarLink.icon  }`)
+    );
+});
+
+
 const loggedIn = false; // TODO
 </script>
 
@@ -75,19 +87,14 @@ const loggedIn = false; // TODO
                             <p class="text-base font-semibold color-primary mb-4">Hangar</p>
                             <div class="grid grid-cols-2">
                                 <router-link
-                                    :to="{ name: 'index' }"
+                                    v-for='link in navBarMenuLinksHangar'
+                                    :key='link.label'
+                                    :to="{ name: link.link }"
                                     class="flex items-center rounded-md px-6 py-2"
                                     hover="text-primary-100 bg-primary-50"
                                 >
-                                    Home
-                                </router-link>
-                                <router-link
-                                    :to="{ name: 'staff' }"
-                                    class="flex items-center rounded-md px-6 py-2"
-                                    hover="text-primary-100 bg-primary-50"
-                                >
-                                    <icon-mdi-account-group class="mr-3 text-[1.2em]"/>
-                                    Team
+                                <component :is="components[link.label]"/>
+                                    {{link.label}}
                                 </router-link>
                             </div>
 
