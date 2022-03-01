@@ -22,8 +22,14 @@ html {
     font-weight: 400;
 }
 
+/*Harsh shadow -> Hangar menu / paper forums menu*/
 .shadow1 {
     box-shadow: 0 10px 20px rgb(0 0 0 / 15%), rgb(0 0 0 / 10%) 0 0 0 1px;
+}
+
+/*Softer shadow -> Paper forums sidebar*/
+.shadowSoft {
+    box-shadow: 0 4px 15px 0 rgb(88 106 153 / 20%);
 }
 
 .w-fit {

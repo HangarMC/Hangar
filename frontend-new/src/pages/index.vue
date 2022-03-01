@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {Menu, MenuButton, MenuItem, MenuItems} from "@headlessui/vue";
 import { useI18n } from 'vue-i18n';
+import LabeledCheckbox from '~/components/LabeledCheckbox.vue';
 
 const {t} = useI18n();
 
@@ -103,61 +104,33 @@ const licenses = [
         </div>
         <!-- Sidebar -->
         <div
-            class="flex flex-col gap-4 bg-gradient-to-r from-[#004ee9] to-[#367aff] rounded-md min-w-300px min-h-800px p-4 text-white">
+            class="flex flex-col gap-4 bg-white border-top-primary shadowSoft rounded-md min-w-300px min-h-800px p-4">
 
             <div class="versions">
                 <h3 class="font-bold">Minecraft versions</h3>
                 <div class="max-h-30 overflow-auto flex flex-col gap-2">
-                    <label
-                        v-for='version in versions' :key='version.version'
-                        class="group relative cursor-pointer pl-30px customCheckboxContainer">
-                        {{ version.version }}
-                        <input :id='version.version' :name=version.version type="checkbox" class="hidden">
-                        <span
-                            class="absolute top-5px left-0 h-15px w-15px rounded-sm bg-white group-hover:(bg-gray-300) after:(absolute hidden content-DEFAULT top-3px left-6px w-5px h-10px border-solid border-r-3px border-b-3px)"/>
-                    </label>
+                    <LabeledCheckbox v-for='version in versions' :key='version.version' :label="version.version"/>
                 </div>
             </div>
             <hr>
             <div class="categories">
                 <h3 class="font-bold">Categories</h3>
                 <div class="flex flex-col gap-2">
-                    <label
-                        v-for='category in categories' :key='category.id'
-                        class="group relative cursor-pointer pl-30px customCheckboxContainer">
-                        {{ category.label }}
-                        <input type="checkbox" class="hidden">
-                        <span
-                            class="absolute top-5px left-0 h-15px w-15px rounded-sm bg-white group-hover:(bg-gray-300) after:(absolute hidden content-DEFAULT top-3px left-6px w-5px h-10px border-solid border-r-3px border-b-3px)"/>
-                    </label>
+                    <LabeledCheckbox v-for='category in categories' :key='category.id' :label="category.label"/>
                 </div>
             </div>
             <hr>
             <div class="platforms">
                 <h3 class="font-bold">Platforms</h3>
                 <div class="flex flex-col gap-2">
-                    <label
-                        v-for='platform in platforms' :key='platform.id'
-                        class="group relative cursor-pointer pl-30px customCheckboxContainer">
-                        {{ platform.label }}
-                        <input type="checkbox" class="hidden">
-                        <span
-                            class="absolute top-5px left-0 h-15px w-15px rounded-sm bg-white group-hover:(bg-gray-300) after:(absolute hidden content-DEFAULT top-3px left-6px w-5px h-10px border-solid border-r-3px border-b-3px)"/>
-                    </label>
+                    <LabeledCheckbox v-for='platform in platforms' :key='platform.id' :label="platform.label"/>
                 </div>
             </div>
             <hr>
             <div class="licenses">
                 <h3 class="font-bold">Licenses</h3>
                 <div class="flex flex-col gap-2">
-                    <label
-                        v-for='license in licenses' :key='license.id'
-                        class="group relative cursor-pointer pl-30px customCheckboxContainer">
-                        {{ license.label }}
-                        <input type="checkbox" class="hidden">
-                        <span
-                            class="absolute top-5px left-0 h-15px w-15px rounded-sm bg-white group-hover:(bg-gray-300) after:(absolute hidden content-DEFAULT top-3px left-6px w-5px h-10px border-solid border-r-3px border-b-3px)"/>
-                    </label>
+                    <LabeledCheckbox v-for='license in licenses' :key='license.id' :label="license.label"/>
                 </div>
             </div>
         </div>
@@ -175,14 +148,4 @@ meta:
     box-shadow: 0 0 10px 0 #004ee99e;
 }
 
-/*This is needed, because you cannot have more than one parent group in tailwind/windi*/
-.customCheckboxContainer input:checked ~ span {
-    background-color: #000 !important;
-}
-
-/*The tailwind/windi utility class rotate-45 is BROKEN*/
-.customCheckboxContainer input:checked ~ span:after {
-    display: block;
-    transform: rotate(45deg);
-}
 </style>
