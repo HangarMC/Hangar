@@ -3,13 +3,22 @@ import type {Announcement as AnnouncementObject} from "hangar-api";
 import {Popover, PopoverButton, PopoverPanel} from '@headlessui/vue'
 import type {Ref} from 'vue';
 import {useI18n} from 'vue-i18n';
-import {defineAsyncComponent, ref } from 'vue';
+import { ref } from 'vue';
 import {useThemeStore} from '~/store/theme'
 import {useAPI} from '~/store/api'
 import Announcement from '~/components/Announcement.vue';
 
 import hangarLogo from '/logo.svg'
 
+import IconMdiHome from '~icons/mdi/home'
+import IconMdiAccountGroup from '~icons/mdi/account-group'
+import IconMdiForum from '~icons/mdi/forum'
+import IconMdiCodeBraces from '~icons/mdi/code-braces'
+import IconMdiBookOpen from '~icons/mdi/book-open'
+import IconMdiLanguageJava from '~icons/mdi/language-java'
+import IconMdiPuzzle from '~icons/mdi/puzzle'
+import IconMdiDownloadCircle from '~icons/mdi/download-circle'
+import IconMdiKey from '~icons/mdi/key'
 
 const theme = useThemeStore()
 const {t} = useI18n();
@@ -43,16 +52,22 @@ const navBarLinks = [
 ];
 
 const navBarMenuLinksHangar = [
-    {link: 'index', label: 'Home', icon: 'home'},
-    {link: 'staff', label: 'Team', icon: 'account-group'},
+    {link: 'index', label: 'Home', icon: IconMdiHome},
+    {link: 'staff', label: 'Team', icon: IconMdiAccountGroup},
 ];
 
-const components:any = {};
-navBarMenuLinksHangar.forEach((navBarLink) => {
-    components[navBarLink.label] = defineAsyncComponent(() => // import each component dynamically
-        import(`~icons/mdi/${  navBarLink.icon  }`)
-    );
-});
+const navBarMenuLinksMoreFromPaper = [
+    {link: 'https://papermc.io/', label: t("nav.hangar.home"), icon: IconMdiHome},
+    {link: 'https://forums.papermc.io/', label: t("nav.hangar.forums"), icon: IconMdiForum},
+    {link: 'https://github.com/PaperMC', label: t("nav.hangar.code"), icon: IconMdiCodeBraces },
+    {link: 'https://paper.readthedocs.io/en/latest/', label: t("nav.hangar.docs"), icon: IconMdiBookOpen },
+    {link: 'https://papermc.io/javadocs', label: t("nav.hangar.javadocs"), icon: IconMdiLanguageJava },
+    {link: '/', label: t("nav.hangar.hangar"), icon: IconMdiPuzzle },
+    {link: 'https://papermc.io/downloads', label: t("nav.hangar.downloads"), icon: IconMdiDownloadCircle },
+    {link: 'https://papermc.io/community', label: t("nav.hangar.community"), icon: IconMdiAccountGroup },
+    {link: 'https://hangar-auth.benndorf.dev/', label: t("nav.hangar.auth"), icon: IconMdiKey },
+
+];
 
 
 const loggedIn = false; // TODO
@@ -93,7 +108,7 @@ const loggedIn = false; // TODO
                                     class="flex items-center rounded-md px-6 py-2"
                                     hover="text-primary-100 bg-primary-50"
                                 >
-                                <component :is="components[link.label]"/>
+                                <component :is="link.icon" class="mr-3 text-[1.2em]"/>
                                     {{link.label}}
                                 </router-link>
                             </div>
@@ -101,59 +116,12 @@ const loggedIn = false; // TODO
                             <p class="text-base font-semibold color-primary mb-4 mt-10">More from Paper</p>
                             <div class="grid grid-cols-2">
                                 <a
-                                    class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/"
+                                     v-for='link in navBarMenuLinksMoreFromPaper'
+                                    :key='link.label'
+                                    class="flex items-center rounded-md px-6 py-2" :href="link.link"
                                     hover="text-primary-100 bg-primary-50">
-                                    <icon-mdi-home class="mr-3 text-[1.2em]"/>
-                                    {{ t("nav.hangar.home") }}
-                                </a>
-                                <a
-                                    class="flex items-center rounded-md px-6 py-2" href="https://forums.papermc.io/"
-                                    hover="text-primary-100 bg-primary-50">
-                                    <icon-mdi-forum class="mr-3 text-[1.2em]"/>
-                                    {{ t("nav.hangar.forums") }}
-                                </a>
-                                <a
-                                    class="flex items-center rounded-md px-6 py-2" href="https://github.com/PaperMC"
-                                    hover="text-primary-100 bg-primary-50">
-                                    <icon-mdi-code-braces class="mr-3 text-[1.2em]"/>
-                                    {{ t("nav.hangar.code") }}
-                                </a>
-                                <a
-                                    class="flex items-center rounded-md px-6 py-2"
-                                    href="https://paper.readthedocs.io/en/latest/"
-                                    hover="text-primary-100 bg-primary-50">
-                                    <icon-mdi-book-open class="mr-3 text-[1.2em]"/>
-                                    {{ t("nav.hangar.docs") }}
-                                </a>
-                                <a
-                                    class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/javadocs"
-                                    hover="text-primary-100 bg-primary-50">
-                                    <icon-mdi-language-java class="mr-3 text-[1.2em]"/>
-                                    {{ t("nav.hangar.javadocs") }}
-                                </a>
-                                <a
-                                    class="flex items-center rounded-md px-6 py-2" href="/"
-                                    hover="text-primary-100 bg-primary-50">
-                                    <icon-mdi-puzzle class="mr-3 text-[1.2em]"/>
-                                    {{ t("nav.hangar.hangar") }}
-                                </a>
-                                <a
-                                    class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/downloads"
-                                    hover="text-primary-100 bg-primary-50">
-                                    <icon-mdi-download-circle class="mr-3 text-[1.2em]"/>
-                                    {{ t("nav.hangar.downloads") }}
-                                </a>
-                                <a
-                                    class="flex items-center rounded-md px-6 py-2" href="https://papermc.io/community"
-                                    hover="text-primary-100 bg-primary-50">
-                                    <icon-mdi-account-group class="mr-3 text-[1.2em]"/>
-                                    {{ t("nav.hangar.community") }}
-                                </a>
-                                <a
-                                    class="flex items-center rounded-md px-6 py-2"
-                                    href="https://hangar-auth.benndorf.dev/" hover="text-primary-100 bg-primary-50">
-                                    <icon-mdi-key class="mr-3 text-[1.2em]"/>
-                                    {{ t("nav.hangar.auth") }}
+                                    <component :is="link.icon" class="mr-3 text-[1.2em]"/>
+                                    {{ link.label }}
                                 </a>
                             </div>
                         </PopoverPanel>
