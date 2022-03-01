@@ -35,12 +35,12 @@ html {
 }
 
 * {
-    scrollbar-color: #004ee9 #f8faff;
+    scrollbar-color: #004ee9 #f2f5fb;
     scrollbar-width: thin;
 }
 
 ::-webkit-scrollbar-track {
-    background: #f8faff;
+    background: #f2f5fb;
 }
 
 ::-webkit-scrollbar-thumb {

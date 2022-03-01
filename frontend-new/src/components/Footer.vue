@@ -2,7 +2,7 @@
 
 <template>
     <footer
-        class="relative flex items-end mt-10 bg-gradient-to-r from-[#004ee9] to-[#367aff] px-8 pt-20 pb-2 text-[#f8faff] min-h-70">
+        class="relative flex items-end mt-10 bg-gradient-to-r from-[#004ee9] to-[#367aff] px-8 pt-20 pb-2 text-background-light-10 min-h-70">
         <div class="footerContent w-screen">
             <div
                 class="flex justify-center flex-col md:flex-row justify-center gap-y-6 md:gap-y-0 md:gap-x-6 max-w-1200px m-auto">

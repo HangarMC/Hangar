@@ -37,7 +37,7 @@ export default defineConfig({
       colors: {
         'background-dark-90': '#111111',
         'background-dark-80': '#181a1b',
-        'background-light-10': '#f8faff',
+        'background-light-10': '#f2f5fb',
         'background-light-0': '#ffffff',
         'primary-100': '#004ee9',
         'primary-70': '#aec9ff',
