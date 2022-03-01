@@ -28,8 +28,11 @@ html {
 }
 
 /*Softer shadow -> Paper forums sidebar*/
-.shadowSoft {
+.shadow-soft {
     box-shadow: 0 4px 15px 0 rgb(88 106 153 / 20%);
+}
+.dark .shadow-soft {
+    box-shadow: 0 4px 15px 0 rgb(0 0 0 / 20%);
 }
 
 .w-fit {
@@ -48,11 +51,17 @@ html {
 ::-webkit-scrollbar-track {
     background: #f2f5fb;
 }
+.dark ::-webkit-scrollbar-track {
+    background: #181a1b;
+}
 
 ::-webkit-scrollbar-thumb {
     background: #004ee9;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #111111;
+    background: #181a1b;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: #f2f5fb;
 }

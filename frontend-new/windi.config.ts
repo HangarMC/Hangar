@@ -49,6 +49,6 @@ export default defineConfig({
       'background-header': 'bg-background-light-0 dark:bg-background-dark-90',
       'background-body': 'bg-background-light-10 dark:bg-background-dark-80',
       'color-primary': 'text-primary-100 dark:text-primary-70',
-      'border-top-primary': 'border-solid border-t-4 border-t-primary-100',
+      'border-top-primary': 'border-solid border-t-4 border-t-primary-100'
   },
 });

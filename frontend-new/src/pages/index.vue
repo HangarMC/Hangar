@@ -104,7 +104,7 @@ const licenses = [
         </div>
         <!-- Sidebar -->
         <div
-            class="flex flex-col gap-4 bg-white border-top-primary shadowSoft rounded-md min-w-300px min-h-800px p-4">
+            class="flex flex-col gap-4 bg-white dark:bg-background-dark-90 border-top-primary shadow-soft rounded-md min-w-300px min-h-800px p-4">
 
             <div class="versions">
                 <h3 class="font-bold">Minecraft versions</h3>

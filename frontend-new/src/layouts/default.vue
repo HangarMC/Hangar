@@ -4,9 +4,9 @@ import Footer from '~/components/Footer.vue';
 </script>
 
 <template>
-    <main style="min-height: 60vh;">
+    <main class="min-h-[60vh]">
         <Header/>
-        <div style="min-height: 60vh;">
+        <div class="min-h-[60vh]">
             <router-view v-bind="$attrs"/>
         </div>
         <Footer/>

@@ -10,7 +10,7 @@ const props = defineProps({
         {{ props.label }}
         <input type="checkbox" class="hidden">
         <span
-            class="absolute top-5px left-0 h-15px w-15px rounded-sm bg-gray-300"
+            class="absolute top-5px left-0 h-15px w-15px rounded bg-gray-300"
             after="absolute hidden content-DEFAULT top-1px left-5px border-solid w-6px h-12px border-r-3px border-b-3px border-white"
             group-hover="bg-gray-400"
         />
