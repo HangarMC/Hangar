@@ -4,7 +4,7 @@ import Footer from '~/components/Footer.vue';
 </script>
 
 <template>
-    <main class="min-h-[60vh]">
+    <main>
         <Header/>
         <div class="min-h-[60vh]">
             <router-view v-bind="$attrs"/>
