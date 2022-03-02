@@ -3,7 +3,7 @@ import type {Announcement as AnnouncementObject} from "hangar-api";
 import {Popover, PopoverButton, PopoverPanel} from '@headlessui/vue'
 import type {Ref} from 'vue';
 import {useI18n} from 'vue-i18n';
-import { ref } from 'vue';
+import {ref} from 'vue';
 import {useThemeStore} from '~/store/theme'
 import {useAPI} from '~/store/api'
 import Announcement from '~/components/Announcement.vue';
@@ -59,13 +59,13 @@ const navBarMenuLinksHangar = [
 const navBarMenuLinksMoreFromPaper = [
     {link: 'https://papermc.io/', label: t("nav.hangar.home"), icon: IconMdiHome},
     {link: 'https://forums.papermc.io/', label: t("nav.hangar.forums"), icon: IconMdiForum},
-    {link: 'https://github.com/PaperMC', label: t("nav.hangar.code"), icon: IconMdiCodeBraces },
-    {link: 'https://paper.readthedocs.io/en/latest/', label: t("nav.hangar.docs"), icon: IconMdiBookOpen },
-    {link: 'https://papermc.io/javadocs', label: t("nav.hangar.javadocs"), icon: IconMdiLanguageJava },
-    {link: '/', label: t("nav.hangar.hangar"), icon: IconMdiPuzzle },
-    {link: 'https://papermc.io/downloads', label: t("nav.hangar.downloads"), icon: IconMdiDownloadCircle },
-    {link: 'https://papermc.io/community', label: t("nav.hangar.community"), icon: IconMdiAccountGroup },
-    {link: 'https://hangar-auth.benndorf.dev/', label: t("nav.hangar.auth"), icon: IconMdiKey },
+    {link: 'https://github.com/PaperMC', label: t("nav.hangar.code"), icon: IconMdiCodeBraces},
+    {link: 'https://paper.readthedocs.io/en/latest/', label: t("nav.hangar.docs"), icon: IconMdiBookOpen},
+    {link: 'https://papermc.io/javadocs', label: t("nav.hangar.javadocs"), icon: IconMdiLanguageJava},
+    {link: '/', label: t("nav.hangar.hangar"), icon: IconMdiPuzzle},
+    {link: 'https://papermc.io/downloads', label: t("nav.hangar.downloads"), icon: IconMdiDownloadCircle},
+    {link: 'https://papermc.io/community', label: t("nav.hangar.community"), icon: IconMdiAccountGroup},
+    {link: 'https://hangar-auth.benndorf.dev/', label: t("nav.hangar.auth"), icon: IconMdiKey},
 
 ];
 
@@ -108,15 +108,15 @@ const loggedIn = false; // TODO
                                     class="flex items-center rounded-md px-6 py-2"
                                     hover="text-primary-100 bg-primary-50"
                                 >
-                                <component :is="link.icon" class="mr-3 text-[1.2em]"/>
-                                    {{link.label}}
+                                    <component :is="link.icon" class="mr-3 text-[1.2em]"/>
+                                    {{ link.label }}
                                 </router-link>
                             </div>
 
                             <p class="text-base font-semibold color-primary mb-4 mt-10">More from Paper</p>
                             <div class="grid grid-cols-2">
                                 <a
-                                     v-for='link in navBarMenuLinksMoreFromPaper'
+                                    v-for='link in navBarMenuLinksMoreFromPaper'
                                     :key='link.label'
                                     class="flex items-center rounded-md px-6 py-2" :href="link.link"
                                     hover="text-primary-100 bg-primary-50">

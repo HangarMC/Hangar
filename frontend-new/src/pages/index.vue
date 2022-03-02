@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {Menu, MenuButton, MenuItem, MenuItems} from "@headlessui/vue";
-import { useI18n } from 'vue-i18n';
+import {useI18n} from 'vue-i18n';
 import LabeledCheckbox from '~/components/LabeledCheckbox.vue';
 
 const {t} = useI18n();
@@ -97,18 +97,22 @@ const licenses = [
 
     </div>
     <div
-        class="projectsAndSidebar p-4 mt-5 w-screen max-w-1200px flex justify-around m-auto flex-col md:flex-row gap-y-6 md:gap-y-0 md:gap-x-6">
+        class="p-4 mt-5 w-screen max-w-1200px flex justify-around m-auto flex-col gap-y-6"
+        md="flex-row gap-x-6 gap-y-0 ">
         <!-- Projects -->
-        <div class="md:(w-2/3 min-w-2/3 max-w-2/3) min-h-800px bg-gray-200 rounded-md">
+        <div
+class="min-h-800px bg-gray-200 rounded-md"
+             md="w-2/3 min-w-2/3 max-w-2/3">
 
         </div>
         <!-- Sidebar -->
         <div
-            class="flex flex-col gap-4 bg-white dark:bg-background-dark-90 border-top-primary shadow-soft rounded-md min-w-300px min-h-800px p-4">
+            class="flex flex-col gap-4 bg-white border-top-primary shadow-soft rounded-md min-w-300px min-h-800px p-4"
+            dark="bg-background-dark-90">
 
             <div class="versions">
                 <h3 class="font-bold">Minecraft versions</h3>
-                <div class="max-h-30 overflow-auto flex flex-col gap-2">
+                <div class="flex flex-col gap-2 max-h-30 overflow-auto">
                     <LabeledCheckbox v-for='version in versions' :key='version.version' :label="version.version"/>
                 </div>
             </div>
@@ -138,8 +142,7 @@ const licenses = [
 </template>
 
 <route lang="yaml">
-meta:
-  layout: default
+meta:layout: default
 </route>
 
 <style lang="css" scoped>
