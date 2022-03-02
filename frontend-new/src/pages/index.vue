@@ -5,6 +5,8 @@ import LabeledCheckbox from '~/components/LabeledCheckbox.vue';
 
 const {t} = useI18n();
 
+
+//TODO: versions, categories, platforms and licences should be all loaded from backend eventually (see internal.BackendDataController)
 const sorters = [
     {id: 'stars', label: t("project.sorting.mostStars")},
     {id: 'downloads', label: t("project.sorting.mostDownloads")},
