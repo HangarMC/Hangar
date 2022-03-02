@@ -6,7 +6,7 @@ import LabeledCheckbox from '~/components/LabeledCheckbox.vue';
 const {t} = useI18n();
 
 
-//TODO: versions, categories, platforms and licences should be all loaded from backend eventually (see internal.BackendDataController)
+// TODO: versions, categories, platforms and licences should be all loaded from backend eventually (see internal.BackendDataController)
 const sorters = [
     {id: 'stars', label: t("project.sorting.mostStars")},
     {id: 'downloads', label: t("project.sorting.mostDownloads")},
@@ -100,11 +100,11 @@ const licenses = [
     </div>
     <div
         class="p-4 mt-5 w-screen max-w-1200px flex justify-around m-auto flex-col gap-y-6"
-        md="flex-row gap-x-6 gap-y-0 ">
+        lg="flex-row gap-x-6 gap-y-0 ">
         <!-- Projects -->
         <div
-class="min-h-800px bg-gray-200 rounded-md"
-             md="w-2/3 min-w-2/3 max-w-2/3">
+            class="min-h-800px bg-gray-200 rounded-md"
+            lg="w-2/3 min-w-2/3 max-w-2/3">
 
         </div>
         <!-- Sidebar -->
