@@ -35,20 +35,20 @@ export default defineConfig({
         },
       },
       colors: {
-        "background-dark-90": "#111111",
-        "background-dark-80": "#181a1b",
-        "background-light-10": "#f8faff",
-        "background-light-0": "#ffffff",
-        "primary-100": "#004ee9",
-        "primary-70": "#aec9ff",
-        "primary-50": "#ecf2fb",
+        'background-dark-90': '#111111',
+        'background-dark-80': '#181a1b',
+        'background-light-10': '#f2f5fb',
+        'background-light-0': '#ffffff',
+        'primary-100': '#004ee9',
+        'primary-70': '#aec9ff',
+        'primary-50': '#ecf2fb'
       },
     },
   },
   shortcuts: {
-    "background-header": "bg-background-light-0 dark:bg-background-dark-90",
-    "background-body": "bg-background-light-10 dark:bg-background-dark-80",
-    "color-primary": "text-primary-100 dark:text-primary-70",
-    "border-top-primary": "border-solid border-t-4 border-t-primary-100",
+      'background-header': 'bg-background-light-0 dark:bg-background-dark-90',
+      'background-body': 'bg-background-light-10 dark:bg-background-dark-80',
+      'color-primary': 'text-primary-100 dark:text-primary-70',
+      'border-top-primary': 'border-solid border-t-4 border-t-primary-100'
   },
 });

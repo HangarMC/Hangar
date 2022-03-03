@@ -1,20 +1,19 @@
-import VueI18n from "@intlify/vite-plugin-vue-i18n";
-import Vue from "@vitejs/plugin-vue";
-import LinkAttributes from "markdown-it-link-attributes";
-import Prism from "markdown-it-prism";
-import path from "node:path";
-import IconsResolver from "unplugin-icons/resolver";
-import Icons from "unplugin-icons/vite";
-import Components from "unplugin-vue-components/vite";
+import path from "path";
 import { defineConfig } from "vite";
-import EslintPlugin from "vite-plugin-eslint";
-import Markdown from "vite-plugin-md";
+import Vue from "@vitejs/plugin-vue";
 import Pages from "vite-plugin-pages";
-import { VitePWA } from "vite-plugin-pwa";
 import Layouts from "vite-plugin-vue-layouts";
+import Components from "unplugin-vue-components/vite";
+import Icons from "unplugin-icons/vite";
+import IconsResolver from "unplugin-icons/resolver";
+import Markdown from "vite-plugin-md";
 import WindiCSS from "vite-plugin-windicss";
+import { VitePWA } from "vite-plugin-pwa";
+import VueI18n from "@intlify/vite-plugin-vue-i18n";
+import Prism from "markdown-it-prism";
+import LinkAttributes from "markdown-it-link-attributes";
 import viteSSR from "vite-ssr/plugin";
-import prettier from "./src/plugins/prettier";
+import EslintPlugin from "vite-plugin-eslint";
 
 const proxyHost = process.env.proxyHost || "http://localhost:8080";
 const authHost = process.env.authHost || "http://localhost:3001";
@@ -57,7 +56,7 @@ export default defineConfig({
       },
     }),
 
-    // https://github.com/antfu/unplugin-vue-components
+    // https://github.com/antfu/vite-plugin-components
     Components({
       // we don't want to import components, just icons
       dirs: ["none"],
@@ -66,18 +65,18 @@ export default defineConfig({
         // https://github.com/antfu/vite-plugin-icons
         IconsResolver({
           componentPrefix: "icon",
-          enabledCollections: ["mdi"],
+            enabledCollections: ["mdi"]
         }),
       ],
-      dts: "src/types/generated/icons.d.ts",
+      dts: "src/types/icons.d.ts",
     }),
 
-    // https://github.com/antfu/unplugin-icons
+    // https://github.com/antfu/vite-plugin-icons
     Icons({
       autoInstall: true,
     }),
 
-    // https://github.com/windicss/vite-plugin-windicss
+    // https://github.com/antfu/vite-plugin-windicss
     WindiCSS({
       safelist: "prose prose-sm m-auto",
     }),
@@ -111,7 +110,7 @@ export default defineConfig({
       },
     }),
 
-    // https://github.com/intlify/bundle-tools/tree/main/packages/vite-plugin-vue-i18n
+    // https://github.com/intlify/vite-plugin-vue-i18n
     VueI18n({
       include: [path.resolve(__dirname, "src/i18n/locales/*.json")],
     }),
@@ -119,7 +118,6 @@ export default defineConfig({
     EslintPlugin({
       fix: true,
     }),
-    prettier(),
   ],
 
   optimizeDeps: {
