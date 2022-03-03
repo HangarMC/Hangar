@@ -128,7 +128,8 @@ const licenses = [
 </template>
 
 <route lang="yaml">
-meta:layout: default
+meta:
+  layout: default
 </route>
 
 <style lang="css" scoped>
