@@ -65,7 +65,7 @@ export default defineConfig({
         // https://github.com/antfu/vite-plugin-icons
         IconsResolver({
           componentPrefix: "icon",
-            enabledCollections: ["mdi"]
+          enabledCollections: ["mdi"],
         }),
       ],
       dts: "src/types/icons.d.ts",
