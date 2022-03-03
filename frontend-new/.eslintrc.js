@@ -73,6 +73,12 @@ module.exports = {
     "unicorn/prefer-ternary": "error",
     "unicorn/relative-url-style": "error",
     "unicorn/throw-new-error": "error",
+    "import/no-unresolved": [
+      "error",
+      {
+        ignore: ["^~icons/mdi/.*", ".*\\.svg$"],
+      },
+    ],
   },
   overrides: [
     {
