@@ -1,12 +1,12 @@
-import "windi.css";
-import "./styles/main.css";
-import viteSSR, { ClientOnly } from "vite-ssr";
 import { createHead } from "@vueuse/head";
-import generatedRoutes from "virtual:generated-pages";
-import { setupLayouts } from "virtual:generated-layouts";
 import { createPinia } from "pinia";
+import { setupLayouts } from "virtual:generated-layouts";
+import generatedRoutes from "virtual:generated-pages";
+import viteSSR, { ClientOnly } from "vite-ssr";
+import "windi.css";
 import App from "~/App.vue";
 import { installI18n } from "~/i18n";
+import "./styles/main.css";
 
 const routes = setupLayouts(generatedRoutes);
 

@@ -1,5 +1,3 @@
-declare module "swagger-ui" {
-  import { SwaggerUIBundle } from "swagger-ui-dist";
+declare module "swagger-ui" {}
 
-  export default SwaggerUIBundle;
-}
+export { SwaggerUIBundle as default } from "swagger-ui-dist";

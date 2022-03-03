@@ -1,7 +1,7 @@
-import type { HangarApiException } from "hangar-api";
-import type { AxiosError, AxiosRequestConfig } from "axios";
-import qs from "qs";
 import { useCookies } from "@vueuse/integrations/useCookies";
+import type { AxiosError, AxiosRequestConfig } from "axios";
+import type { HangarApiException } from "hangar-api";
+import qs from "qs";
 import Cookies from "universal-cookie";
 import { useApiToken } from "~/composables/useApiToken";
 import { useAxios } from "~/composables/useAxios";
@@ -75,21 +75,18 @@ export async function useInternalApi<T>(
   headers: Record<string, string> = {}
 ): Promise<T> {
   const token = await useApiToken(authed);
-  if (authed && !token) {
-    // eslint-disable-next-line prefer-promise-reject-errors
-    return Promise.reject({
-      isAxiosError: true,
-      response: {
-        data: {
-          isHangarApiException: true,
-          httpError: {
-            statusCode: 401,
-          },
-          message: "You must be logged in",
-        } as HangarApiException,
-      },
-    });
-  } else {
-    return request(`internal/${url}`, token, method, data, headers);
-  }
+  return authed && !token
+    ? Promise.reject({
+        isAxiosError: true,
+        response: {
+          data: {
+            isHangarApiException: true,
+            httpError: {
+              statusCode: 401,
+            },
+            message: "You must be logged in",
+          } as HangarApiException,
+        },
+      })
+    : request(`internal/${url}`, token, method, data, headers);
 }
