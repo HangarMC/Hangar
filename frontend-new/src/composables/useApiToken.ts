@@ -1,27 +1,27 @@
 import type { JwtPayload } from "jwt-decode";
 import jwtDecode from "jwt-decode";
-import { useCookies } from "@vueuse/integrations";
 import { useAuthStore } from "~/store/auth";
 import { useAxios } from "~/composables/useAxios";
+import { useCookies } from "~/composables/useCookies";
 
-function refreshToken(): Promise<string | null> {
-  return new Promise<string | null>((resolve) => {
-    return useAxios
-      .get<{ token: string; refreshToken: string; cookieName: string; expiresIn: number }>("/refresh")
-      .then((value) => {
-        useAuthStore().$patch({ token: value.data.token });
-        useCookies().set(value.data.cookieName, value.data.refreshToken, {
-          path: "/",
-          expires: new Date(Date.now() + value.data.expiresIn * 1000),
-          sameSite: "strict",
-          secure: process.env.nodeEnv === "production",
-        });
-        resolve(value.data.token);
-      })
-      .catch(() => {
-        resolve(null);
-      });
+async function refreshToken(): Promise<string | null> {
+  const cookie = useCookies().get("HangarAuth_REFRESH");
+  const config = import.meta.env.SSR && cookie ? { headers: { Cookie: "HangarAuth_REFRESH=" + useCookies().get("HangarAuth_REFRESH") } } : {};
+  const value = await useAxios.get<{ token: string; refreshToken: string; cookieName: string; expiresIn: number }>("/refresh", config).catch((e) => {
+    return null;
   });
+  if (value) {
+    useAuthStore().$patch({ token: value.data.token });
+    useCookies().set(value.data.cookieName, value.data.refreshToken, {
+      path: "/",
+      expires: new Date(Date.now() + value.data.expiresIn * 1000),
+      sameSite: "strict",
+      secure: import.meta.env.PROD,
+    });
+    return value.data.token;
+  } else {
+    return null;
+  }
 }
 
 function validateToken(token: string): boolean {
@@ -32,13 +32,13 @@ function validateToken(token: string): boolean {
   return decodedToken.exp * 1000 > Date.now() - 10 * 1000; // check against 10 seconds earlier to mitigate tokens expiring mid-request
 }
 
-export function useApiToken(forceFetch = true): Promise<string | null> {
+export async function useApiToken(forceFetch = true): Promise<string | null> {
   const store = useAuthStore();
   if (store.token) {
-    return validateToken(store.token) ? Promise.resolve(store.token) : refreshToken();
+    return validateToken(store.token) ? store.token : await refreshToken();
   } else if (forceFetch) {
-    return refreshToken();
+    return await refreshToken();
   } else {
-    return Promise.resolve(null);
+    return null;
   }
 }

@@ -1,10 +1,10 @@
-import { useCookies } from "@vueuse/integrations/useCookies";
 import type { AxiosError, AxiosRequestConfig } from "axios";
 import type { HangarApiException } from "hangar-api";
 import qs from "qs";
 import Cookies from "universal-cookie";
 import { useApiToken } from "~/composables/useApiToken";
 import { useAxios } from "~/composables/useAxios";
+import { useCookies } from "~/composables/useCookies";
 
 interface StatCookie {
   // eslint-disable-next-line camelcase
@@ -72,10 +72,11 @@ export async function useInternalApi<T>(
   authed = true,
   method: AxiosRequestConfig["method"] = "get",
   data: object = {},
-  headers: Record<string, string> = {}
+  headers: Record<string, string> = {},
+  token = ""
 ): Promise<T> {
-  const token = await useApiToken(authed);
-  return authed && !token
+  const _token = token || (await useApiToken(authed));
+  return authed && !_token
     ? Promise.reject({
         isAxiosError: true,
         response: {
@@ -88,5 +89,5 @@ export async function useInternalApi<T>(
           } as HangarApiException,
         },
       })
-    : request(`internal/${url}`, token, method, data, headers);
+    : request(`internal/${url}`, _token, method, data, headers);
 }

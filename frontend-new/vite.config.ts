@@ -127,6 +127,9 @@ export default defineConfig({
     exclude: ["vue-demi"],
   },
 
+  envDir: ".env",
+  envPrefix: "HANGAR",
+
   server: {
     proxy: {
       // backend

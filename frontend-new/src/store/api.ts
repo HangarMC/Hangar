@@ -5,7 +5,7 @@ import { ref } from "vue";
 import type { Announcement as AnnouncementObject } from "hangar-api";
 import { useInternalApi } from "~/composables/useApi";
 
-export const useAPI = defineStore("api", () => {
+export const useApiStore = defineStore("api", () => {
   const announcements: Ref<AnnouncementObject | undefined> = ref();
 
   async function getAnnouncements(): Promise<AnnouncementObject[]> {
