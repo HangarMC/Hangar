@@ -5,7 +5,7 @@ import type { Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { ref } from "vue";
 import { useThemeStore } from "~/store/theme";
-import { useAPI } from "~/store/api";
+import { useApiStore } from "~/store/api";
 import Announcement from "~/components/Announcement.vue";
 
 import hangarLogo from "/logo.svg";
@@ -19,29 +19,18 @@ import IconMdiLanguageJava from "~icons/mdi/language-java";
 import IconMdiPuzzle from "~icons/mdi/puzzle";
 import IconMdiDownloadCircle from "~icons/mdi/download-circle";
 import IconMdiKey from "~icons/mdi/key";
+import { useAuthStore } from "~/store/auth";
+import { useAuth } from "~/composables/useAuth";
 
 const theme = useThemeStore();
 const { t } = useI18n();
 
-const api = useAPI();
+const api = useApiStore();
 
 const empty: AnnouncementObject[] = [];
 const announcements: Ref<AnnouncementObject[]> = ref(empty);
 
-api.getAnnouncements().then((value) => {
-  if (value) {
-    const firstObject: AnnouncementObject | null = value[0];
-    if (firstObject) {
-      console.log(`Res: ${firstObject.text}`);
-    } else {
-      console.log("Res is undefined");
-    }
-  } else {
-    console.log("value is null");
-  }
-
-  announcements.value = value;
-});
+api.getAnnouncements().then((value) => (announcements.value = value));
 
 const navBarLinks = [
   { link: "index", label: "Home" },
@@ -65,7 +54,9 @@ const navBarMenuLinksMoreFromPaper = [
   { link: "https://hangar-auth.benndorf.dev/", label: t("nav.hangar.auth"), icon: IconMdiKey },
 ];
 
-const loggedIn = false; // TODO
+const authStore = useAuthStore();
+const auth = useAuth;
+console.log("render with user", authStore.user?.name);
 </script>
 
 <template>
@@ -143,12 +134,13 @@ const loggedIn = false; // TODO
           <icon-mdi-weather-night v-if="theme.darkMode" class="text-[1.2em]"></icon-mdi-weather-night>
           <icon-mdi-white-balance-sunny v-else class="text-[1.2em]"></icon-mdi-white-balance-sunny>
         </button>
-        <div v-if="!loggedIn" class="flex">
-          <a class="flex items-center rounded-md px-2 py-2" href="https://hangar-auth.benndorf.dev/account/login" hover="text-primary-100 bg-primary-50">
+        <div v-if="authStore.user" class="flex">Hello {{ authStore.user.name }}</div>
+        <div v-else class="flex">
+          <a class="flex items-center rounded-md px-2 py-2" :href="auth.loginUrl($route.fullPath)" hover="text-primary-100 bg-primary-50">
             <icon-mdi-key-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.login") }}
           </a>
-          <a class="flex items-center rounded-md px-2 py-2" href="https://hangar-auth.benndorf.dev/account/signup/" hover="text-primary-100 bg-primary-50">
+          <a class="flex items-center rounded-md px-2 py-2" href="/signup" hover="text-primary-100 bg-primary-50">
             <icon-mdi-clipboard-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.signup") }}
           </a>
