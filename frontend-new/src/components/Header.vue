@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import type { Announcement as AnnouncementObject } from "hangar-api";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
-import type { Ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { ref } from "vue";
 import { useThemeStore } from "~/store/theme";
-import { useApiStore } from "~/store/api";
 import Announcement from "~/components/Announcement.vue";
 
 import hangarLogo from "/logo.svg";
@@ -21,16 +17,11 @@ import IconMdiDownloadCircle from "~icons/mdi/download-circle";
 import IconMdiKey from "~icons/mdi/key";
 import { useAuthStore } from "~/store/auth";
 import { useAuth } from "~/composables/useAuth";
+import { useBackendDataStore } from "~/store/backendData";
 
 const theme = useThemeStore();
 const { t } = useI18n();
-
-const api = useApiStore();
-
-const empty: AnnouncementObject[] = [];
-const announcements: Ref<AnnouncementObject[]> = ref(empty);
-
-api.getAnnouncements().then((value) => (announcements.value = value));
+const backendData = useBackendDataStore();
 
 const navBarLinks = [
   { link: "index", label: "Home" },
@@ -60,8 +51,8 @@ console.log("render with user", authStore.user?.name);
 </script>
 
 <template>
-  <template v-if="announcements">
-    <Announcement v-for="(announcement, idx) in announcements" :key="idx" :announcement="announcement" />
+  <template v-if="backendData.announcements">
+    <Announcement v-for="(announcement, idx) in backendData.announcements" :key="idx" :announcement="announcement" />
   </template>
   <header class="background-header">
     <div class="inner-header flex items-center max-w-1200px mx-auto justify-between h-65px w-[calc(100%-40px)]">

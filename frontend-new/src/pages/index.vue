@@ -2,10 +2,18 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
 import LabeledCheckbox from "~/components/LabeledCheckbox.vue";
+import { useBackendDataStore } from "~/store/backendData";
+// TODO fixme
+// eslint-disable-next-line import/no-unresolved
+import { PaginatedResult, Project } from "hangar-api";
+import { useInitialState } from "~/composables/useInitialState";
+import { useApi } from "~/composables/useApi";
+import { Ref, ref } from "vue";
 
 const { t } = useI18n();
 
 // TODO: versions, categories, platforms and licences should be all loaded from backend eventually (see internal.BackendDataController)
+const backendData = useBackendDataStore();
 const sorters = [
   { id: "stars", label: t("project.sorting.mostStars") },
   { id: "downloads", label: t("project.sorting.mostDownloads") },
@@ -27,30 +35,8 @@ const versions = [
   { version: "1.16" },
 ];
 
-const categories = [
-  { id: "admin_tools", label: t("project.category.admin_tools") },
-  { id: "chat", label: t("project.category.chat") },
-  { id: "devel_tools", label: t("project.category.dev_tools") },
-  { id: "economy", label: t("project.category.economy") },
-  { id: "gameplay", label: t("project.category.gameplay") },
-  { id: "games", label: t("project.category.games") },
-  { id: "protection", label: t("project.category.protection") },
-  { id: "role_playing", label: t("project.category.role_playing") },
-  { id: "world_management", label: t("project.category.world_management") },
-  { id: "misc", label: t("project.category.misc") },
-];
-
-const platforms = [
-  { id: "paper", label: "Paper" },
-  { id: "velocity", label: "Velocity" },
-  { id: "waterfall", label: "Waterfall" },
-];
-
-const licenses = [
-  { id: "gpl-3", label: "GPL-3" },
-  { id: "mit", label: "MIT" },
-  { id: "apache", label: "APACHE" },
-];
+const projects: Ref<PaginatedResult<Project> | null> = ref<PaginatedResult<Project> | null>(null);
+useInitialState("projects", async () => useApi<PaginatedResult<Project>>("projects", false, "get", { limit: 25, offset: 0 })).then((p) => (projects.value = p));
 </script>
 
 <template>
@@ -93,7 +79,9 @@ const licenses = [
   </div>
   <div class="p-4 mt-5 w-screen max-w-1200px flex justify-around m-auto flex-col gap-y-6" lg="flex-row gap-x-6 gap-y-0 ">
     <!-- Projects -->
-    <div class="min-h-800px bg-gray-200 rounded-md" lg="w-2/3 min-w-2/3 max-w-2/3"></div>
+    <div class="min-h-800px bg-gray-200 rounded-md" lg="w-2/3 min-w-2/3 max-w-2/3">
+      <div v-for="project in projects ? projects.value : []" :key="project.name">{{ project.name }}</div>
+    </div>
     <!-- Sidebar -->
     <div class="flex flex-col gap-4 bg-white border-top-primary shadow-soft rounded-md min-w-300px min-h-800px p-4" dark="bg-background-dark-90">
       <div class="versions">
@@ -106,21 +94,21 @@ const licenses = [
       <div class="categories">
         <h3 class="font-bold">Categories</h3>
         <div class="flex flex-col gap-2">
-          <LabeledCheckbox v-for="category in categories" :key="category.id" :label="category.label" />
+          <LabeledCheckbox v-for="category in backendData.visibleCategories" :key="category.apiName" :label="category.title" />
         </div>
       </div>
       <hr />
       <div class="platforms">
         <h3 class="font-bold">Platforms</h3>
         <div class="flex flex-col gap-2">
-          <LabeledCheckbox v-for="platform in platforms" :key="platform.id" :label="platform.label" />
+          <LabeledCheckbox v-for="platform in backendData.visiblePlatforms" :key="platform.enumName" :label="platform.name" />
         </div>
       </div>
       <hr />
       <div class="licenses">
         <h3 class="font-bold">Licenses</h3>
         <div class="flex flex-col gap-2">
-          <LabeledCheckbox v-for="license in licenses" :key="license.id" :label="license.label" />
+          <LabeledCheckbox v-for="license in backendData.licenses" :key="license" :label="license" />
         </div>
       </div>
     </div>

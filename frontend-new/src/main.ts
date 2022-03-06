@@ -7,6 +7,7 @@ import "windi.css";
 import App from "~/App.vue";
 import { installI18n } from "~/i18n";
 import "./styles/main.css";
+import { useBackendDataStore } from "~/store/backendData";
 
 const routes = setupLayouts(generatedRoutes);
 
@@ -32,6 +33,8 @@ export default viteSSR(App, options, async (ctx) => {
   // Load language async to avoid bundling all languages
   // TODO would be cool to load user locale here I guess?
   await installI18n(app, "en");
+
+  await useBackendDataStore().initBackendData();
 
   if (import.meta.env.SSR) {
     initialState.pinia = pinia.state.value;
