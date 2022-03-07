@@ -3,8 +3,6 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
 import LabeledCheckbox from "~/components/LabeledCheckbox.vue";
 import { useBackendDataStore } from "~/store/backendData";
-// TODO fixme
-// eslint-disable-next-line import/no-unresolved
 import { PaginatedResult, Project } from "hangar-api";
 import { useInitialState } from "~/composables/useInitialState";
 import { useApi } from "~/composables/useApi";
