@@ -76,7 +76,7 @@ module.exports = {
     "import/no-unresolved": [
       "error",
       {
-        ignore: ["^~icons/mdi/.*", ".*\\.svg$"],
+        ignore: ["^~icons/mdi/.*", ".*\\.svg$", "hangar-internal", "hangar-api"],
       },
     ],
   },
