@@ -4,8 +4,6 @@ import { useContext } from "vite-ssr";
 import { useInternalApi } from "~/composables/useApi";
 import { useAxios } from "~/composables/useAxios";
 import { useApiToken } from "~/composables/useApiToken";
-// TODO wtf
-// eslint-disable-next-line import/no-unresolved
 import { User } from "hangar-api";
 
 class Auth {

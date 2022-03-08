@@ -1,10 +1,9 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-// TODO fix these...
-// eslint-disable-next-line import/no-unresolved
+
 import { IPlatform, IProjectCategory, IPrompt } from "hangar-internal";
 import { NamedPermission, Platform, ProjectCategory, Prompt } from "~/types/enums";
-// eslint-disable-next-line import/no-unresolved
+
 import { Announcement as AnnouncementObject, Announcement, IPermission } from "hangar-api";
 import { useInternalApi } from "~/composables/useApi";
 
