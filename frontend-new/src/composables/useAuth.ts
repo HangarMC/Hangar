@@ -38,7 +38,9 @@ class Auth {
       return await this.invalidate(!import.meta.env.SSR);
     });
     if (user) {
-      useAuthStore().$patch({ user });
+      console.log("Updated user: " + user.name);
+      const authStore = useAuthStore();
+      authStore.setUser(user);
     }
   }
 
