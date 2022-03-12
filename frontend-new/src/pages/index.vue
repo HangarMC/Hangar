@@ -3,18 +3,21 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
 import LabeledCheckbox from "~/components/LabeledCheckbox.vue";
 import { useBackendDataStore } from "~/store/backendData";
-import { useApiStore } from "~/store/api";
+import ProjectList from "~/components/ProjectList.vue";
+import { useProjects } from "~/composables/useApiHelper";
+import { handleRequestError } from "~/composables/useErrorHandling";
+import { useContext } from "vite-ssr/vue";
 
-const { t } = useI18n();
+const i18n = useI18n();
 
 // TODO: versions, categories, platforms and licences should be all loaded from backend eventually (see internal.BackendDataController)
 const backendData = useBackendDataStore();
 const sorters = [
-  { id: "stars", label: t("project.sorting.mostStars") },
-  { id: "downloads", label: t("project.sorting.mostDownloads") },
-  { id: "views", label: t("project.sorting.mostViews") },
-  { id: "newest", label: t("project.sorting.newest") },
-  { id: "updated", label: t("project.sorting.recentlyUpdated") },
+  { id: "stars", label: i18n.t("project.sorting.mostStars") },
+  { id: "downloads", label: i18n.t("project.sorting.mostDownloads") },
+  { id: "views", label: i18n.t("project.sorting.mostViews") },
+  { id: "newest", label: i18n.t("project.sorting.newest") },
+  { id: "updated", label: i18n.t("project.sorting.recentlyUpdated") },
 ];
 
 const versions = [
@@ -30,7 +33,8 @@ const versions = [
   { version: "1.16" },
 ];
 
-const projects = await useApiStore().loadProjects();
+const ctx = useContext();
+const projects = await useProjects().catch((e) => handleRequestError(e, ctx, i18n));
 </script>
 
 <template>
@@ -74,7 +78,7 @@ const projects = await useApiStore().loadProjects();
   <div class="p-4 mt-5 w-screen max-w-1200px flex justify-around m-auto flex-col gap-y-6" lg="flex-row gap-x-6 gap-y-0 ">
     <!-- Projects -->
     <div class="min-h-800px bg-gray-200 rounded-md" lg="w-2/3 min-w-2/3 max-w-2/3">
-      <div v-for="project in projects?.result" :key="project.name">{{ project.name }}</div>
+      <ProjectList :projects="projects" />
     </div>
     <!-- Sidebar -->
     <div class="flex flex-col gap-4 bg-white border-top-primary shadow-soft rounded-md min-w-300px min-h-800px p-4" dark="bg-background-dark-90">
@@ -108,11 +112,6 @@ const projects = await useApiStore().loadProjects();
     </div>
   </div>
 </template>
-
-<route lang="yaml">
-meta:
-  layout: default
-</route>
 
 <style lang="css" scoped>
 .big-box-shadow {

@@ -2,16 +2,16 @@
 import { useContext } from "vite-ssr/vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
-import { useStaff } from "~/composables/useApiHelper";
+import { useAuthors } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 
 const ctx = useContext();
 const i18n = useI18n();
 const { params } = useRoute();
-const staff = await useStaff().catch((e) => handleRequestError(e, ctx, i18n));
+const authors = await useAuthors().catch((e) => handleRequestError(e, ctx, i18n));
 </script>
 
 <template>
-  <h1>Staff</h1>
-  <div>{{ staff }}</div>
+  <h1>Authors</h1>
+  <div>{{ authors }}</div>
 </template>
