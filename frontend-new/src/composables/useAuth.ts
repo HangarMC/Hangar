@@ -4,7 +4,8 @@ import { useContext } from "vite-ssr";
 import { useInternalApi } from "~/composables/useApi";
 import { useAxios } from "~/composables/useAxios";
 import { useApiToken } from "~/composables/useApiToken";
-import { User } from "hangar-api";
+import { authLog } from "~/composables/useLog";
+import { HangarUser } from "hangar-internal";
 
 class Auth {
   loginUrl(redirectUrl: string): string {
@@ -32,19 +33,22 @@ class Auth {
   }
 
   async updateUser(token: string): Promise<void> {
-    const user = await useInternalApi<User>("users/@me", true, "get", {}, {}, token).catch(async (err) => {
+    const user = await useInternalApi<HangarUser>("users/@me", true, "get", {}, {}, token).catch(async (err) => {
       console.log(err);
       console.log("LOGGING OUT ON updateUser");
       return await this.invalidate(!import.meta.env.SSR);
     });
     if (user) {
-      useAuthStore().$patch({ user });
+      authLog("patching " + user.name);
+      useAuthStore().setUser(user);
+      authLog("user is now " + useAuthStore().user?.name);
     }
   }
 
   async refreshUser() {
     const token = await useApiToken(true);
     if (!token) {
+      authLog("Got no token in refreshUser, invalidate!");
       return this.invalidate(!import.meta.env.SSR);
     }
     return useAuthStore().authenticated ? await this.updateUser(token) : await this.processLogin(token);

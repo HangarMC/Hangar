@@ -11,5 +11,5 @@ export const unset = () => {
   _req = null;
   _res = null;
 };
-export const useRequest = () => _req || useContext().request;
-export const useResponse = () => _res || useContext().response;
+export const useRequest = () => _req || useContext()?.request;
+export const useResponse = () => _res || useContext()?.response;

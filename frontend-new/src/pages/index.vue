@@ -65,9 +65,9 @@ useInitialState("projects", async () => useApi<PaginatedResult<Project>>("projec
           >
             <MenuItems class="absolute flex flex-col z-10 background-header shadow1 rounded-md border-top-primary">
               <MenuItem v-for="sorter in sorters" :key="sorter.id" v-slot="{ active }">
-                <a :class="{ 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': active }" class="p-2">
+                <button :class="{ 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': active }" class="p-2 text-left">
                   {{ sorter.label }}
-                </a>
+                </button>
               </MenuItem>
             </MenuItems>
           </transition>

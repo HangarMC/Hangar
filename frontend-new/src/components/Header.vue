@@ -19,6 +19,7 @@ import IconMdiKey from "~icons/mdi/key";
 import { useAuthStore } from "~/store/auth";
 import { useAuth } from "~/composables/useAuth";
 import { useBackendDataStore } from "~/store/backendData";
+import { authLog } from "~/composables/useLog";
 
 const theme = useThemeStore();
 const { t } = useI18n();
@@ -48,7 +49,7 @@ const navBarMenuLinksMoreFromPaper = [
 
 const authStore = useAuthStore();
 const auth = useAuth;
-console.log("render with user", authStore.user?.name);
+authLog("render with user " + authStore.user?.name);
 </script>
 
 <template>
