@@ -28,11 +28,13 @@ const backendData = useBackendDataStore();
 const navBarLinks = [
   { link: "index", label: "Home" },
   { link: "staff", label: "Team" },
+  { link: "authors", label: "Authors" },
 ];
 
 const navBarMenuLinksHangar = [
   { link: "index", label: "Home", icon: IconMdiHome },
   { link: "staff", label: "Team", icon: IconMdiAccountGroup },
+  { link: "authors", label: "Authors", icon: IconMdiAccountGroup },
 ];
 
 const navBarMenuLinksMoreFromPaper = [
