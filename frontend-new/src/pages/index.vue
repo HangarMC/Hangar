@@ -3,10 +3,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
 import LabeledCheckbox from "~/components/LabeledCheckbox.vue";
 import { useBackendDataStore } from "~/store/backendData";
-import { PaginatedResult, Project } from "hangar-api";
-import { useInitialState } from "~/composables/useInitialState";
-import { useApi } from "~/composables/useApi";
-import { Ref, ref } from "vue";
+import { useApiStore } from "~/store/api";
 
 const { t } = useI18n();
 
@@ -33,8 +30,7 @@ const versions = [
   { version: "1.16" },
 ];
 
-const projects: Ref<PaginatedResult<Project> | null> = ref<PaginatedResult<Project> | null>(null);
-useInitialState("projects", async () => useApi<PaginatedResult<Project>>("projects", false, "get", { limit: 25, offset: 0 })).then((p) => (projects.value = p));
+const projects = await useApiStore().loadProjects();
 </script>
 
 <template>
@@ -78,7 +74,7 @@ useInitialState("projects", async () => useApi<PaginatedResult<Project>>("projec
   <div class="p-4 mt-5 w-screen max-w-1200px flex justify-around m-auto flex-col gap-y-6" lg="flex-row gap-x-6 gap-y-0 ">
     <!-- Projects -->
     <div class="min-h-800px bg-gray-200 rounded-md" lg="w-2/3 min-w-2/3 max-w-2/3">
-      <div v-for="project in projects ? projects.value : []" :key="project.name">{{ project.name }}</div>
+      <div v-for="project in projects?.result" :key="project.name">{{ project.name }}</div>
     </div>
     <!-- Sidebar -->
     <div class="flex flex-col gap-4 bg-white border-top-primary shadow-soft rounded-md min-w-300px min-h-800px p-4" dark="bg-background-dark-90">

@@ -8,6 +8,7 @@ import App from "~/App.vue";
 import { installI18n } from "~/i18n";
 import "./styles/main.css";
 import { useBackendDataStore } from "~/store/backendData";
+import devalue from "@nuxt/devalue";
 
 const routes = setupLayouts(generatedRoutes);
 
@@ -16,13 +17,16 @@ const options: Parameters<typeof viteSSR>["1"] = {
   pageProps: {
     passToPage: false,
   },
+  transformState(state) {
+    return import.meta.env.SSR ? devalue(state) : state;
+  },
 };
 
 export default viteSSR(App, options, async (ctx) => {
   // install all modules under `modules/`
   Object.values(import.meta.globEager("./modules/*.ts")).map((i) => i.install?.(ctx));
 
-  const { app, initialState } = ctx;
+  const { app, initialState, initialRoute } = ctx;
 
   app.component(ClientOnly.name, ClientOnly);
 
@@ -34,12 +38,17 @@ export default viteSSR(App, options, async (ctx) => {
   // TODO would be cool to load user locale here I guess?
   await installI18n(app, "en");
 
-  await useBackendDataStore().initBackendData();
+  if (!import.meta.env.SSR) {
+    pinia.state.value = initialState.pinia;
+  }
+
+  // really don't need to do stuff for such meta routes
+  if (!initialRoute.fullPath.startsWith("/@vite")) {
+    await useBackendDataStore().initBackendData();
+  }
 
   if (import.meta.env.SSR) {
     initialState.pinia = pinia.state.value;
-  } else {
-    pinia.state.value = initialState.pinia;
   }
 
   return { head };
