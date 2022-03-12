@@ -5,6 +5,9 @@ import Cookies from "universal-cookie";
 import { useApiToken } from "~/composables/useApiToken";
 import { useAxios } from "~/composables/useAxios";
 import { useCookies } from "~/composables/useCookies";
+import { Ref } from "vue";
+import { fetchLog } from "~/composables/useLog";
+import { isEmpty } from "lodash-es";
 
 interface StatCookie {
   // eslint-disable-next-line camelcase
@@ -63,6 +66,7 @@ export async function useApi<T>(
   data: object = {},
   headers: Record<string, string> = {}
 ): Promise<T> {
+  fetchLog("useApi", url);
   const token = await useApiToken(authed);
   return request(`v1/${url}`, token, method, data, headers);
 }
@@ -75,6 +79,7 @@ export async function useInternalApi<T>(
   headers: Record<string, string> = {},
   token = ""
 ): Promise<T> {
+  fetchLog("useInternalApi", url);
   const _token = token || (await useApiToken(authed));
   return authed && !_token
     ? Promise.reject({
@@ -90,4 +95,12 @@ export async function useInternalApi<T>(
         },
       })
     : request(`internal/${url}`, _token, method, data, headers);
+}
+
+export async function fetchIfNeeded<T>(func: () => Promise<T>, ref: Ref<T>) {
+  if (!isEmpty(ref.value)) {
+    return ref;
+  }
+  ref.value = await func();
+  return ref;
 }
