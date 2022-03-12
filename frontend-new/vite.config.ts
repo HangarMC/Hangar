@@ -85,6 +85,8 @@ export default defineConfig({
     // https://github.com/antfu/vite-plugin-pwa
     VitePWA({
       includeAssets: ["favicon/*"],
+      strategies: "injectManifest",
+      disable: true,
       manifest: {
         name: "Hangar | PaperMC",
         short_name: "Hangar",
@@ -151,5 +153,12 @@ export default defineConfig({
       "/oauth/logout": authHost,
       "/oauth2": authHost,
     },
+  },
+
+  // ssr options aren't part of release types for vite cause its still marked as experimental
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  ssr: {
+    noExternal: ["lodash-es"],
   },
 });

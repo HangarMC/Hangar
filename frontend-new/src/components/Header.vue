@@ -4,7 +4,7 @@ import { useI18n } from "vue-i18n";
 import { useThemeStore } from "~/store/theme";
 import Announcement from "~/components/Announcement.vue";
 
-import hangarLogo from "/logo.svg";
+import hangarLogo from "~/assets/logo.svg";
 
 import IconMdiHome from "~icons/mdi/home";
 import IconMdiAccountGroup from "~icons/mdi/account-group";
