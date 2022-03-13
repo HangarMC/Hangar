@@ -15,5 +15,9 @@ export const useAuthStore = defineStore("auth", () => {
     user.value = newUser;
   }
 
-  return { authenticated, user, token, routePermissions, setUser };
+  function setRoutePerms(routePerms: string | null) {
+    routePermissions.value = routePerms;
+  }
+
+  return { authenticated, user, token, routePermissions, setUser, setRoutePerms };
 });

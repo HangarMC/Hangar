@@ -1,6 +1,7 @@
-import { useApi } from "~/composables/useApi";
+import { useApi, useInternalApi } from "~/composables/useApi";
 import { PaginatedResult, Project, User } from "hangar-api";
 import { useInitialState } from "~/composables/useInitialState";
+import { HangarNotification, Invites } from "hangar-internal";
 
 export async function useProjects(pagination = { limit: 25, offset: 0 }, blocking = true) {
   return await useInitialState("useProjects", () => useApi<PaginatedResult<Project>>("projects", false, "get", pagination), blocking);
@@ -20,4 +21,12 @@ export async function useStaff(blocking = true) {
 
 export async function useAuthors(blocking = true) {
   return await useInitialState("useAuthors", () => useApi<PaginatedResult<User>>("authors", false), blocking);
+}
+
+export async function useInvites(blocking = true) {
+  return await useInitialState("useAuthors", () => useInternalApi<Invites>("invites", false), blocking);
+}
+
+export async function useNotifications(blocking = true) {
+  return await useInitialState("useAuthors", () => useInternalApi<HangarNotification[]>("notifications", false), blocking);
 }
