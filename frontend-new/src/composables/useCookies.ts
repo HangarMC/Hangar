@@ -8,7 +8,7 @@ export const useCookies = () => {
     const res = useResponse();
     const cookies = createCookies(req)();
     cookies.addChangeListener((change) => {
-      if (res.headersSent) {
+      if (!res || res.headersSent) {
         return;
       }
 
