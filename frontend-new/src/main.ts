@@ -11,6 +11,13 @@ import { useBackendDataStore } from "~/store/backendData";
 import devalue from "@nuxt/devalue";
 
 const routes = setupLayouts(generatedRoutes);
+// we need to override the path on the error route to have the patch math
+const errorRoute = routes.find((r) => r.path === "/error");
+if (errorRoute) {
+  errorRoute.path = "/:pathMatch(.*)*";
+} else {
+  console.error("No error route?!");
+}
 
 const options: Parameters<typeof viteSSR>["1"] = {
   routes,

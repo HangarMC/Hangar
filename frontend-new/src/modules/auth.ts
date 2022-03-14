@@ -8,9 +8,10 @@ import { RouteLocationNormalized } from "vue-router";
 import { Context } from "vite-ssr/vue";
 import { useApi } from "~/composables/useApi";
 import { UserPermissions } from "hangar-api";
+import { useErrorRedirect } from "~/composables/useErrorRedirect";
 
-export const install: UserModule = async ({ request, response, router }) => {
-  router.beforeEach(async (to) => {
+export const install: UserModule = async ({ request, response, router, redirect }) => {
+  router.beforeEach(async (to, from, next) => {
     if (to.fullPath.startsWith("/@vite")) {
       // really don't need to do stuff for such meta routes
       return;
@@ -18,7 +19,13 @@ export const install: UserModule = async ({ request, response, router }) => {
 
     await handleLogin(request, response);
     await loadPerms(to);
-    handleRoutePerms(to);
+
+    const result = handleRoutePerms(to);
+    if (result) {
+      next(result);
+    } else {
+      next();
+    }
   });
 };
 
@@ -66,21 +73,67 @@ async function loadPerms(to: RouteLocationNormalized) {
 }
 
 function handleRoutePerms(to: RouteLocationNormalized) {
-  // TODO implement route guards
+  const authStore = useAuthStore();
   routePermLog("navigate to " + String(to.name) + ", meta:", to.meta);
   if (to.meta.requireLoggedIn === true) {
     routePermLog("route requireLoggedIn");
+    const result = checkLogin(authStore, to, 401, "You must be logged in to perform this action");
+    if (result) return result;
   }
+
   if (to.meta.requireNotLoggedIn === true) {
     routePermLog("route requireNotLoggedIn");
+    if (authStore.authenticated) {
+      return {
+        path: "/",
+      };
+    }
   }
+
   if (to.meta.requireCurrentUser === true) {
     routePermLog("route requireCurrentUser");
+    if (!to.params.user) {
+      throw new TypeError("Must have 'user' as a route param to use CurrentUser");
+    }
+    const result = checkLogin(authStore, to, 404);
+    if (result) return result;
+    // TODO implement this
+    // if (!$perms.canEditAllUserSettings) {
+    //   if (to.params.user !== authStore.user?.name) {
+    //     return useErrorRedirect(to, 403);
+    //   }
+    // }
   }
+
   if (to.meta.requireGlobalPerm) {
     routePermLog("route requireGlobalPerm", to.meta.requireGlobalPerm);
+    const result = checkLogin(authStore, to, 403);
+    if (result) return result;
+    // TODO implement this
   }
+
   if (to.meta.requireProjectPerm) {
     routePermLog("route requireProjectPerm", to.meta.requireProjectPerm);
+    if (!to.params.user || !to.params.project) {
+      throw new Error("Can't use this decorator on a route without `author` and `slug` path params");
+    }
+    const result = checkLogin(authStore, to, 404);
+    if (result) return result;
+    if (!authStore.routePermissions) {
+      return useErrorRedirect(to, 404);
+    }
+    // TODO implement this
+    // if (!$util.hasPerms(...(to.meta.requireProjectPerm as string[]))) {
+    //   return useErrorRedirect(to, 404);
+    // }
   }
+  return;
+}
+
+function checkLogin(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized, status: number, msg?: string) {
+  if (!authStore.authenticated) {
+    routePermLog("not logged in!");
+    return useErrorRedirect(to, status, msg);
+  }
+  return;
 }

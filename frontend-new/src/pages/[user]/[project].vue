@@ -4,8 +4,9 @@ import { User } from "hangar-api";
 import { useContext } from "vite-ssr/vue";
 import { useI18n } from "vue-i18n";
 import { useProject } from "~/composables/useApiHelper";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { handleRequestError } from "~/composables/useErrorHandling";
+import { useErrorRedirect } from "~/composables/useErrorRedirect";
 
 defineProps({
   user: {
@@ -16,8 +17,11 @@ defineProps({
 
 const ctx = useContext();
 const i18n = useI18n();
-const { params } = useRoute();
-const project = await useProject(params.user as string, params.project as string).catch((e) => handleRequestError(e, ctx, i18n));
+const route = useRoute();
+const project = await useProject(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e, ctx, i18n));
+if (!project) {
+  useRouter().push(useErrorRedirect(route, 404, "Not found"));
+}
 </script>
 
 <template>
