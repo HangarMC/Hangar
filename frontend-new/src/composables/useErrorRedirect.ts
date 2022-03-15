@@ -1,6 +1,6 @@
-import { RouteLocationNormalized } from "vue-router";
+import { RouteLocationNormalized, RouteLocationRaw } from "vue-router";
 
-export function useErrorRedirect(currentRoute: RouteLocationNormalized, status: number, msg?: string) {
+export function useErrorRedirect(currentRoute: RouteLocationNormalized, status: number, msg?: string): RouteLocationRaw {
   return {
     name: "error",
     params: {
