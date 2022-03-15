@@ -7,7 +7,7 @@ Stuff that needs to be done before I consider this a successful POC
 - [x] i18n
 - [x] api calls
 - [x] seo
-- [x] route perms (needs testing tho)
+- [x] route perms
 - [x] error pages (needs design but what doesnt?)
 - [ ] snackbar
 - [ ] some basic pages
