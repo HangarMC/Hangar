@@ -46,8 +46,6 @@ export const useBackendDataStore = defineStore("backendData", () => {
       await fetchIfNeeded(async () => {
         const categoryResult = await useInternalApi<IProjectCategory[]>("data/categories", false);
         for (const c of categoryResult) {
-          // TODO translate
-          //c.title = useI18n().t("project.category." + c.apiName) as string;
           c.title = "project.category." + c.apiName;
         }
         return convertToMap<ProjectCategory, IProjectCategory>(categoryResult, (value) => value.apiName);

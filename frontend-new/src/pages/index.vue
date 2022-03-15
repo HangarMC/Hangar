@@ -92,7 +92,7 @@ const projects = await useProjects().catch((e) => handleRequestError(e, ctx, i18
       <div class="categories">
         <h3 class="font-bold">Categories</h3>
         <div class="flex flex-col gap-2">
-          <LabeledCheckbox v-for="category in backendData.visibleCategories" :key="category.apiName" :label="category.title" />
+          <LabeledCheckbox v-for="category in backendData.visibleCategories" :key="category.apiName" :label="i18n.t(category.title)" />
         </div>
       </div>
       <hr />

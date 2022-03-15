@@ -47,6 +47,7 @@ export async function installI18n(app: App, locale = "") {
 
     // fallback to no messages
     const i18n = createI18n({
+      legacy: false,
       locale: "en",
       fallbackLocale: DEFAULT_LOCALE,
       datetimeFormats: DATE_FORMATS,
