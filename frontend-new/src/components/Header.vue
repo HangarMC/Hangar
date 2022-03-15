@@ -109,7 +109,9 @@ authLog("render with user " + authStore.user?.name);
         </Popover>
 
         <div class="site-logo mr-4 h-60px flex items-center">
-          <img alt="Hangar Logo" :src="hangarLogo" class="h-50px object-cover" />
+          <router-link to="/">
+            <img alt="Hangar Logo" :src="hangarLogo" class="h-50px object-cover" />
+          </router-link>
         </div>
         <nav class="flex gap-3 invisible md:visible">
           <router-link
