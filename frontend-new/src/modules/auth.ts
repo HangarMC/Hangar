@@ -83,6 +83,7 @@ async function handleRoutePerms(to: RouteLocationNormalized) {
     if (!to.meta[key]) continue;
     const handler = handlers[key];
     const result = await handler(authStore, to);
+    routePermLog("result", result);
     if (result) return result;
   }
 }
