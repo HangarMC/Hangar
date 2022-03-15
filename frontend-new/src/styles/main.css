@@ -1,4 +1,6 @@
 @import "./markdown.css";
+@import "./scrollbar.css";
+@import "./shadows.css";
 
 /* TODO do we need this? */
 #nprogress {
@@ -22,46 +24,6 @@ html {
   font-weight: 400;
 }
 
-/*Harsh shadow -> Hangar menu / paper forums menu*/
-.shadow1 {
-  box-shadow: 0 10px 20px rgb(0 0 0 / 15%), rgb(0 0 0 / 10%) 0 0 0 1px;
-}
-
-/*Softer shadow -> Paper forums sidebar*/
-.shadow-soft {
-  box-shadow: 0 4px 15px 0 rgb(88 106 153 / 20%);
-}
-.dark .shadow-soft {
-  box-shadow: 0 4px 15px 0 rgb(0 0 0 / 20%);
-}
-
 .w-fit {
   width: fit-content;
-}
-
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-* {
-  scrollbar-color: #004ee9 #f2f5fb;
-  scrollbar-width: thin;
-}
-
-::-webkit-scrollbar-track {
-  background: #f2f5fb;
-}
-.dark ::-webkit-scrollbar-track {
-  background: #181a1b;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #004ee9;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #181a1b;
-}
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #f2f5fb;
 }
