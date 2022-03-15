@@ -7,8 +7,8 @@ Stuff that needs to be done before I consider this a successful POC
 - [x] i18n
 - [x] api calls
 - [x] seo
-- [ ] route perms (partly done, project and global perm missing)
-- [x] error pages (status code is already done)
+- [x] route perms (needs testing tho)
+- [x] error pages (needs design but what doesnt?)
 - [ ] snackbar
 - [ ] some basic pages
 - [ ] maybe deployment alongside the existing frontend? (server is working now)
