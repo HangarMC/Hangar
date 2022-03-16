@@ -21,8 +21,8 @@ Stuff that needs to be done before I consider this a successful POC
 All pages need to be check that they
 
 1. fetch all data
-2. provide methods to alter data
-3. implement layout to display all data and click all buttons etc
+2. implement layout to display all data and click all buttons etc
+3. functionality (including posting to server if needed)
 4. have the design done
 5. passed QA by somebody else other than the implementor
 
@@ -30,239 +30,239 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
 
 - api
   - [x] fetch
-  - [ ] post (api auth missing)
   - [x] layout
+  - [ ] functionality (auth is missing)
   - [ ] design
   - [ ] qa
 - authors
-  - [ ] fetch
-  - [ ] post
-  - [ ] layout
+  - [x] fetch
+  - [x] layout
+  - [ ] functionality (sorting is missing)
   - [ ] design
   - [ ] qa
 - error
   - [ ] fetch
-  - [ ] post
   - [ ] layout
+  - [ ] functionality
   - [ ] design
   - [ ] qa
 - index
-  - [ ] fetch
-  - [ ] post
-  - [ ] layout
+  - [x] fetch
+  - [x] layout
+  - [ ] functionality (search, sorting)
   - [ ] design
   - [ ] qa
 - linkout
-  - [ ] fetch
-  - [ ] post
-  - [ ] layout
+  - [x] fetch
+  - [x] layout
+  - [x] functionality
   - [ ] design
   - [ ] qa
 - logged-out
-  - [ ] fetch
-  - [ ] post
+  - [x] fetch (doesn't apply)
   - [ ] layout
+  - [x] functionality (nothing here)
   - [ ] design
   - [ ] qa
 - new
   - [ ] fetch
-  - [ ] post
   - [ ] layout
+  - [ ] functionality
   - [ ] design
   - [ ] qa
 - notifications
   - [ ] fetch
-  - [ ] post
   - [ ] layout
+  - [ ] functionality
   - [ ] design
   - [ ] qa
 - staff
-  - [ ] fetch
-  - [ ] post
-  - [ ] layout
+  - [x] fetch
+  - [x] layout
+  - [ ] functionality (sorting is missing)
   - [ ] design
   - [ ] qa
 - organizations (empty)
   - new
     - [ ] fetch
-    - [ ] post
     - [ ] layout
+    - [ ] functionality
     - [ ] design
     - [ ] qa
 - tools (empty)
   - bbcode
     - [ ] fetch
-    - [ ] post
     - [ ] layout
+    - [ ] functionality
     - [ ] design
     - [ ] qa
 - [user]
   - [ ] fetch
-  - [ ] post
   - [ ] layout
+  - [ ] functionality
   - [ ] design
   - [ ] qa
   * index
     - [ ] fetch
-    - [ ] post
     - [ ] layout
+    - [ ] functionality
     - [ ] design
     - [ ] qa
   * settings (empty)
     - api-keys
       - [ ] fetch
-      - [ ] post
       - [ ] layout
+      - [ ] functionality
       - [ ] design
       - [ ] qa
   * [project]
     - [ ] fetch
-    - [ ] post
     - [ ] layout
+    - [ ] functionality
     - [ ] design
     - [ ] qa
     * channels
       - [ ] fetch
-      - [ ] post
       - [ ] layout
+      - [ ] functionality
       - [ ] design
       - [ ] qa
     * discuss
       - [ ] fetch
-      - [ ] post
       - [ ] layout
+      - [ ] functionality
       - [ ] design
       - [ ] qa
     * flags
       - [ ] fetch
-      - [ ] post
       - [ ] layout
+      - [ ] functionality
       - [ ] design
       - [ ] qa
     * index
       - [ ] fetch
-      - [ ] post
       - [ ] layout
+      - [ ] functionality
       - [ ] design
       - [ ] qa
     * notes
       - [ ] fetch
-      - [ ] post
       - [ ] layout
+      - [ ] functionality
       - [ ] design
       - [ ] qa
     * settings
       - [ ] fetch
-      - [ ] post
       - [ ] layout
+      - [ ] functionality
       - [ ] design
       - [ ] qa
     * stars
       - [ ] fetch
-      - [ ] post
       - [ ] layout
+      - [ ] functionality
       - [ ] design
       - [ ] qa
     * watchers
       - [ ] fetch
-      - [ ] post
       - [ ] layout
+      - [ ] functionality
       - [ ] design
       - [ ] qa
     * pages (empty)
       - [...all]
         - [ ] fetch
-        - [ ] post
         - [ ] layout
+        - [ ] functionality
         - [ ] design
         - [ ] qa
     * versions (empty)
       - index
         - [ ] fetch
-        - [ ] post
         - [ ] layout
+        - [ ] functionality
         - [ ] design
         - [ ] qa
       - new
         - [ ] fetch
-        - [ ] post
         - [ ] layout
+        - [ ] functionality
         - [ ] design
         - [ ] qa
       - [version]
         - [ ] fetch
-        - [ ] post
         - [ ] layout
+        - [ ] functionality
         - [ ] design
         - [ ] qa
         * [platform] (empty)
           - index
             - [ ] fetch
-            - [ ] post
             - [ ] layout
+            - [ ] functionality
             - [ ] design
             - [ ] qa
           - reviews
             - [ ] fetch
-            - [ ] post
             - [ ] layout
+            - [ ] functionality
             - [ ] design
             - [ ] qa
 - admin (empty)
   - flags
     - [ ] fetch
-    - [ ] post
     - [ ] layout
+    - [ ] functionality
     - [ ] design
     - [ ] qa
   - health
     - [ ] fetch
-    - [ ] post
     - [ ] layout
+    - [ ] functionality
     - [ ] design
     - [ ] qa
   - log
     - [ ] fetch
-    - [ ] post
     - [ ] layout
+    - [ ] functionality
     - [ ] design
     - [ ] qa
   - stats
     - [ ] fetch
-    - [ ] post
     - [ ] layout
+    - [ ] functionality
     - [ ] design
     - [ ] qa
   - versions
     - [ ] fetch
-    - [ ] post
     - [ ] layout
+    - [ ] functionality
     - [ ] design
     - [ ] qa
   - activities (empty)
     - [user]
       - [ ] fetch
-      - [ ] post
       - [ ] layout
+      - [ ] functionality
       - [ ] design
       - [ ] qa
   - approval (empty)
     - projects
       - [ ] fetch
-      - [ ] post
       - [ ] layout
+      - [ ] functionality
       - [ ] design
       - [ ] qa
     - versions
       - [ ] fetch
-      - [ ] post
       - [ ] layout
+      - [ ] functionality
       - [ ] design
       - [ ] qa
   - user (empty)
     - [user]
       - [ ] fetch
-      - [ ] post
       - [ ] layout
+      - [ ] functionality
       - [ ] design
       - [ ] qa
