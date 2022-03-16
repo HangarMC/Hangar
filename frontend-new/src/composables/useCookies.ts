@@ -1,4 +1,4 @@
-import { createCookies, useCookies as cookies } from "@vueuse/integrations";
+import { createCookies, useCookies as cookies } from "@vueuse/integrations/useCookies";
 import { useRequest, useResponse } from "~/composables/useResReq";
 import * as cookie from "cookie";
 
