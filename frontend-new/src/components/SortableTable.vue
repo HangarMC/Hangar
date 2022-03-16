@@ -1,0 +1,44 @@
+<script lang="ts" setup>
+import { defineProps, PropType } from "vue";
+import { hasSlotContent } from "~/composables/useSlot";
+
+export interface Header {
+  name: string;
+  title: string;
+  sortable: boolean;
+}
+
+const props = defineProps({
+  headers: {
+    type: Array as PropType<Header[]>,
+    required: true,
+  },
+  items: {
+    type: Array,
+    required: true,
+  },
+});
+// TODO actually implement sorting
+</script>
+
+<template>
+  <table>
+    <thead>
+      <tr>
+        <th v-for="header in headers" :key="header.name">{{ header.title }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="item in items" :key="item">
+        <td v-for="header in headers" :key="header.name">
+          <template v-if="hasSlotContent($slots['item_' + header.name], { item: item })">
+            <slot :name="'item_' + header.name" :item="item"></slot>
+          </template>
+          <template v-else>
+            {{ item[header.name] }}
+          </template>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</template>
