@@ -95,6 +95,7 @@ const handlers: handlersType = {
   requireCurrentUser: requireCurrentUser,
   requireGlobalPerm: requireGlobalPerm,
   requireProjectPerm: requireProjectPerm,
+  require404: require404,
 };
 
 async function requireLoggedIn(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
@@ -152,6 +153,11 @@ async function requireProjectPerm(authStore: ReturnType<typeof useAuthStore>, to
   if (!hasPerms(...toNamedPermission(to.meta.requireProjectPerm as string[]))) {
     return useErrorRedirect(to, 404);
   }
+}
+
+async function require404(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
+  routePermLog("route requireProjectPerm", to.meta.require404);
+  return useErrorRedirect(to, 404);
 }
 
 function checkLogin(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized, status: number, msg?: string) {
