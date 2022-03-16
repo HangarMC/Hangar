@@ -17,84 +17,86 @@ Stuff that needs to be done before I consider this a successful POC
 - [x] investigate why eslint/prettier don't auto fix
 
 ## Big list of pages!
-All pages need to be check that they 
-1) fetch all data
-2) provide methods to alter data
-3) implement layout to display all data and click all buttons etc
-4) have the design done
-5) passed QA by somebody else other than the implementor
+
+All pages need to be check that they
+
+1. fetch all data
+2. provide methods to alter data
+3. implement layout to display all data and click all buttons etc
+4. have the design done
+5. passed QA by somebody else other than the implementor
 
 once QA has passed, the checkboxes can be removed and the page can be ~~striked out~~
 
-* api
+- api
+  - [x] fetch
+  - [ ] post (api auth missing)
+  - [x] layout
+  - [ ] design
+  - [ ] qa
+- authors
   - [ ] fetch
   - [ ] post
   - [ ] layout
   - [ ] design
   - [ ] qa
-* authors
+- error
   - [ ] fetch
   - [ ] post
   - [ ] layout
   - [ ] design
   - [ ] qa
-* error
+- index
   - [ ] fetch
   - [ ] post
   - [ ] layout
   - [ ] design
   - [ ] qa
-* index
+- linkout
   - [ ] fetch
   - [ ] post
   - [ ] layout
   - [ ] design
   - [ ] qa
-* linkout
+- logged-out
   - [ ] fetch
   - [ ] post
   - [ ] layout
   - [ ] design
   - [ ] qa
-* logged-out
+- new
   - [ ] fetch
   - [ ] post
   - [ ] layout
   - [ ] design
   - [ ] qa
-* new
+- notifications
   - [ ] fetch
   - [ ] post
   - [ ] layout
   - [ ] design
   - [ ] qa
-* notifications
+- staff
   - [ ] fetch
   - [ ] post
   - [ ] layout
   - [ ] design
   - [ ] qa
-* staff
-  - [ ] fetch
-  - [ ] post
-  - [ ] layout
-  - [ ] design
-  - [ ] qa
-* organizations (empty)
-  * new
+- organizations (empty)
+  - new
     - [ ] fetch
     - [ ] post
     - [ ] layout
     - [ ] design
     - [ ] qa
-* tools (empty)
-  * bbcode
+- tools (empty)
+  - bbcode
     - [ ] fetch
     - [ ] post
     - [ ] layout
     - [ ] design
     - [ ] qa
-* [user]
+- [user]
   - [ ] fetch
   - [ ] post
   - [ ] layout
@@ -107,7 +109,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
     - [ ] design
     - [ ] qa
   * settings (empty)
-    * api-keys
+    - api-keys
       - [ ] fetch
       - [ ] post
       - [ ] layout
@@ -168,97 +170,97 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
       - [ ] design
       - [ ] qa
     * pages (empty)
-      * [...all]
+      - [...all]
         - [ ] fetch
         - [ ] post
         - [ ] layout
         - [ ] design
         - [ ] qa
     * versions (empty)
-      * index
+      - index
         - [ ] fetch
         - [ ] post
         - [ ] layout
         - [ ] design
         - [ ] qa
-      * new
+      - new
         - [ ] fetch
         - [ ] post
         - [ ] layout
         - [ ] design
         - [ ] qa
-      * [version]
+      - [version]
         - [ ] fetch
         - [ ] post
         - [ ] layout
         - [ ] design
         - [ ] qa
         * [platform] (empty)
-          * index
+          - index
             - [ ] fetch
             - [ ] post
             - [ ] layout
             - [ ] design
             - [ ] qa
-          * reviews
+          - reviews
             - [ ] fetch
             - [ ] post
             - [ ] layout
             - [ ] design
             - [ ] qa
-* admin (empty)
-  * flags
+- admin (empty)
+  - flags
     - [ ] fetch
     - [ ] post
     - [ ] layout
     - [ ] design
     - [ ] qa
-  * health
+  - health
     - [ ] fetch
     - [ ] post
     - [ ] layout
     - [ ] design
     - [ ] qa
-  * log
+  - log
     - [ ] fetch
     - [ ] post
     - [ ] layout
     - [ ] design
     - [ ] qa
-  * stats
+  - stats
     - [ ] fetch
     - [ ] post
     - [ ] layout
     - [ ] design
     - [ ] qa
-  * versions
+  - versions
     - [ ] fetch
     - [ ] post
     - [ ] layout
     - [ ] design
     - [ ] qa
-  * activities (empty)
-    * [user]
+  - activities (empty)
+    - [user]
       - [ ] fetch
       - [ ] post
       - [ ] layout
       - [ ] design
       - [ ] qa
-  * approval (empty)
-    * projects
+  - approval (empty)
+    - projects
       - [ ] fetch
       - [ ] post
       - [ ] layout
       - [ ] design
       - [ ] qa
-    * versions
+    - versions
       - [ ] fetch
       - [ ] post
       - [ ] layout
       - [ ] design
       - [ ] qa
-  * user (empty)
-    * [user]
+  - user (empty)
+    - [user]
       - [ ] fetch
       - [ ] post
       - [ ] layout
