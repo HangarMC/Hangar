@@ -14,6 +14,7 @@ Stuff that needs to be done before I consider this a successful POC
 - [ ] snackbar
 - [ ] maybe deployment alongside the existing frontend? (server is working now)
 - [ ] figure out why vite isn't serving the manifest
+- [ ] cors?
 - [x] investigate why eslint/prettier don't auto fix
 
 ## Big list of pages!
@@ -71,9 +72,9 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
   - [ ] design
   - [ ] qa
 - notifications
-  - [ ] fetch
-  - [ ] layout
-  - [ ] functionality
+  - [x] fetch
+  - [x] layout
+  - [x] functionality (cors error)
   - [ ] design
   - [ ] qa
 - staff

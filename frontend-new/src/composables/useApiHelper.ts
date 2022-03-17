@@ -24,9 +24,9 @@ export async function useAuthors(blocking = true) {
 }
 
 export async function useInvites(blocking = true) {
-  return await useInitialState("useAuthors", () => useInternalApi<Invites>("invites", false), blocking);
+  return await useInitialState("useInvites", () => useInternalApi<Invites>("invites", false), blocking);
 }
 
 export async function useNotifications(blocking = true) {
-  return await useInitialState("useAuthors", () => useInternalApi<HangarNotification[]>("notifications", false), blocking);
+  return await useInitialState("useNotifications", () => useInternalApi<HangarNotification[]>("notifications", false), blocking);
 }
