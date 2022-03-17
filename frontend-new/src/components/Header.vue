@@ -137,10 +137,10 @@ authLog("render with user " + authStore.user?.name);
             <icon-mdi-key-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.login") }}
           </a>
-          <a class="flex items-center rounded-md px-2 py-2" href="/signup" hover="text-primary-100 bg-primary-50">
+          <router-link class="flex items-center rounded-md px-2 py-2" to="/signup" hover="text-primary-100 bg-primary-50">
             <icon-mdi-clipboard-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.signup") }}
-          </a>
+          </router-link>
         </div>
       </div>
     </div>

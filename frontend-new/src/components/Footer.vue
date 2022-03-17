@@ -1,5 +1,3 @@
-<script setup lang="ts"></script>
-
 <template>
   <footer class="relative flex items-end mt-10 bg-gradient-to-r from-[#004ee9] to-[#367aff] px-8 pt-15 pb-2 text-background-light-10 min-h-70">
     <div class="footerContent w-screen">
@@ -48,8 +46,6 @@
       </div>
     </div>
     <div class="footerShape absolute z-1 left-0 right-0 top-0 overflow-hidden pointer-events-none" style="transform: scaleY(-1) scaleX(-1)">
-      <!--- <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 218" preserveAspectRatio="none"><path d="M0 218h1200v-31.3l-40 4.4c-40 4.8-120 13.1-200 0-80-13.6-160-48.6-240-66.7-80-17.8-160-17.8-240-8.8-80 8.6-160 26.9-240 8.8-80-17.7-160-71.1-200-97.7L0 0v218z"></path></svg>
-        -->
       <svg
         class="fill-background-light-10 h-240px min-w-full"
         dark="fill-background-dark-80"

@@ -10,7 +10,6 @@ import { useContext } from "vite-ssr/vue";
 
 const i18n = useI18n();
 
-// TODO: versions, categories, platforms and licences should be all loaded from backend eventually (see internal.BackendDataController)
 const backendData = useBackendDataStore();
 const sorters = [
   { id: "stars", label: i18n.t("project.sorting.mostStars") },
@@ -20,6 +19,7 @@ const sorters = [
   { id: "updated", label: i18n.t("project.sorting.recentlyUpdated") },
 ];
 
+// todo versions need to be extracted from the platforms
 const versions = [
   { version: "1.18.1" },
   { version: "1.18" },
