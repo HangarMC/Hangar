@@ -3,7 +3,4 @@
   <router-view></router-view>
 </template>
 
-<route lang="yaml">
-meta:
-  require404: true
-</route>
+<route lang="yaml"></route>
