@@ -235,9 +235,9 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
     - [ ] design
     - [ ] qa
   - versions
-    - [ ] fetch
-    - [ ] layout
-    - [ ] functionality
+    - [x] fetch
+    - [x] layout
+    - [x] functionality (cors error)
     - [ ] design
     - [ ] qa
   - activities (empty)

@@ -7,7 +7,13 @@ import { useBackendDataStore } from "~/store/backendData";
 import { NamedPermission } from "~/types/enums";
 
 export function toNamedPermission(perms: string[]): NamedPermission[] {
-  return perms.map((p) => NamedPermission[p as keyof typeof NamedPermission]);
+  return perms.map((p) => {
+    const perm = NamedPermission[p as keyof typeof NamedPermission];
+    if (!perm) {
+      console.log("can't find named permission for", p);
+    }
+    return perm;
+  });
 }
 
 export function hasPerms(...namedPermission: NamedPermission[]): boolean {
