@@ -8,7 +8,7 @@
     "dev:spa": "vite --port 3333",
     "build": "cross-env NODE_ENV=production vite-ssr build",
     "preview": "vite-ssr --port 1337 --open",
-    "lint:eslint": "eslint --ext \".js,.vue,.ts,.json,.html\" --ignore-path .gitignore --fix .",
+    "lint:eslint": "eslint --ext \".js,.vue,.ts,.json,.html\" --ignore-path .gitignore --ignore-pattern 'server/**' --fix .",
     "lint:prettier": "prettier -w .",
     "prepare": "cd .. && husky install frontend-new/.husky"
   },
