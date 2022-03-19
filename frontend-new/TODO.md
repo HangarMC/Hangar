@@ -230,9 +230,9 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
     - [ ] design
     - [ ] qa
   - stats
-    - [ ] fetch
-    - [ ] layout
-    - [ ] functionality
+    - [x] fetch
+    - [x] layout
+    - [x] functionality
     - [ ] design
     - [ ] qa
   - versions
