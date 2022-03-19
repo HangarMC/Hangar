@@ -21,6 +21,7 @@
         const setting = localStorage.getItem("color-schema") || "auto";
         if (setting === "dark" || (prefersDark && setting !== "light")) document.documentElement.classList.toggle("dark", true);
       })();
+      window.global = window;
     </script>
     <script type="module" src="/src/main.ts"></script>
   </body>

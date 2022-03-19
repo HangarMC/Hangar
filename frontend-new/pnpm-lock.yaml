@@ -5,6 +5,7 @@ specifiers:
   '@iconify/json': ^2.1.16
   '@intlify/vite-plugin-vue-i18n': ^3.3.1
   '@nuxt/devalue': ^2.0.0
+  '@types/chartist': ^0.11.1
   '@types/debug': ^4.1.7
   '@types/lodash-es': ^4.17.6
   '@types/markdown-it-link-attributes': ^3.0.1
@@ -20,6 +21,8 @@ specifiers:
   '@vueuse/head': ^0.7.5
   '@vueuse/integrations': ^8.0.1
   axios: ^0.26.1
+  chartist: ^0.11.4
+  chartist-plugin-legend: ^0.6.2
   cross-env: ^7.0.3
   debug: ^4.3.3
   eslint: ^8.11.0
@@ -68,6 +71,8 @@ dependencies:
   '@vueuse/head': 0.7.5_vue@3.2.31
   '@vueuse/integrations': 8.0.1_f5bed4466519eeb023b8d59eb53309ba
   axios: 0.26.1_debug@4.3.3
+  chartist: 0.11.4
+  chartist-plugin-legend: 0.6.2
   debug: 4.3.3
   jwt-decode: 3.1.2
   lodash-es: 4.17.21
@@ -85,6 +90,7 @@ dependencies:
 devDependencies:
   '@iconify/json': 2.1.16
   '@intlify/vite-plugin-vue-i18n': 3.3.1_vite@2.7.13+vue-i18n@9.1.9
+  '@types/chartist': 0.11.1
   '@types/debug': 4.1.7
   '@types/lodash-es': 4.17.6
   '@types/markdown-it-link-attributes': 3.0.1
@@ -1631,6 +1637,10 @@ packages:
       string.prototype.matchall: 4.0.6
     dev: true
 
+  /@types/chartist/0.11.1:
+    resolution: {integrity: sha512-85eNd7rF+e5sLnpprgcDdeqARgNvczEXaBfnrkw0292TBCE4KF/2HmOPA6dIblyHUWV4OZ2kuQBH2R12F+VwYg==}
+    dev: true
+
   /@types/cookie/0.3.3:
     resolution: {integrity: sha512-LKVP3cgXBT9RYj+t+9FDKwS5tdI+rPBXaNSkma7hvqy35lc7mAokC2zsqWJH0LaqIt3B962nuYI77hsJoT1gow==}
     dev: false
@@ -2355,6 +2365,15 @@ packages:
     dependencies:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
+
+  /chartist-plugin-legend/0.6.2:
+    resolution: {integrity: sha1-U78ncd3B3CiMirwWwVF4jwt1AkQ=}
+    dev: false
+
+  /chartist/0.11.4:
+    resolution: {integrity: sha512-H4AimxaUD738/u9Mq8t27J4lh6STsLi4BQHt65nOtpLk3xyrBPaLiLMrHw7/WV9CmsjGA02WihjuL5qpSagLYw==}
+    engines: {node: '>=4.6.0'}
+    dev: false
 
   /chokidar/3.5.3:
     resolution: {integrity: sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==}
