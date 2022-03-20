@@ -1,28 +1,17 @@
 import { SUPPORTED_LOCALES } from "./locales";
 
 const DEFAULT_FORMAT = {
-  short: {
-    year: "numeric",
-    month: "short",
+  date: {
     day: "numeric",
-  },
-  medium: {
-    year: "numeric",
     month: "long",
+    year: "numeric",
+  },
+  time: {
     day: "numeric",
+    month: "2-digit",
+    year: "numeric",
     hour: "numeric",
     minute: "numeric",
-  },
-  long: {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    weekday: "long",
-    hour: "numeric",
-    minute: "numeric",
-  },
-  month: {
-    month: "long",
   },
 };
 

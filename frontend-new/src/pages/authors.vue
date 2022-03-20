@@ -5,7 +5,6 @@ import { useRoute } from "vue-router";
 import { useAuthors } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import SortableTable, { Header } from "~/components/SortableTable.vue";
-import { prettyDate } from "~/composables/useDate";
 import PageTitle from "~/components/design/PageTitle.vue";
 
 const ctx = useContext();
@@ -25,6 +24,6 @@ const headers = [
   <SortableTable :headers="headers" :items="authors?.result">
     <!-- todo avatar -->
     <template #item_pic="{ item }">pic {{ item.name }}</template>
-    <template #item_joinDate="{ item }">{{ prettyDate(item?.joinDate) }}</template>
+    <template #item_joinDate="{ item }">{{ i18n.d(item?.joinDate, "date") }}</template>
   </SortableTable>
 </template>
