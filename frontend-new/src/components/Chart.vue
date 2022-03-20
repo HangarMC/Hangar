@@ -16,7 +16,6 @@ onMounted(draw);
 watch(props.data, draw, { deep: true });
 
 function draw() {
-  console.log("draw");
   if (chart) {
     chart.update(props.data, props.options);
   } else {

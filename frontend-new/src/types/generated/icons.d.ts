@@ -5,8 +5,11 @@
 declare module "vue" {
   export interface GlobalComponents {
     IconMdiClipboardOutline: typeof import("~icons/mdi/clipboard-outline")["default"];
+    IconMdiClose: typeof import("~icons/mdi/close")["default"];
+    IconMdiCloseCircle: typeof import("~icons/mdi/close-circle")["default"];
     IconMdiKeyOutline: typeof import("~icons/mdi/key-outline")["default"];
     IconMdiMenu: typeof import("~icons/mdi/menu")["default"];
+    IconMdiOpenInNew: typeof import("~icons/mdi/open-in-new")["default"];
     IconMdiSortVariant: typeof import("~icons/mdi/sort-variant")["default"];
     IconMdiWeatherNight: typeof import("~icons/mdi/weather-night")["default"];
     IconMdiWhiteBalanceSunny: typeof import("~icons/mdi/white-balance-sunny")["default"];

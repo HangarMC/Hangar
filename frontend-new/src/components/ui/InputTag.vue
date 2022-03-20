@@ -27,7 +27,12 @@ function add() {
 
 <template>
   <div>
-    <span v-for="t in tags" :key="t">{{ t }}<button @click="remove(t)">(x)</button></span>
-    <input v-model="tag" type="text" @keydown.enter="add" />
+    <span v-for="t in tags" :key="t" class="bg-gray-200 rounded-4xl px-2 py-1 mx-1" dark="text-black">
+      {{ t }}
+      <!-- todo properly align icon -->
+      <button class="text-gray-400 ml-1" hover="text-gray-500" @click="remove(t)"><icon-mdi-close-circle /></button>
+    </span>
+    <!-- todo style the input -->
+    <input v-model="tag" type="text" dark="text-black" @keydown.enter="add" />
   </div>
 </template>

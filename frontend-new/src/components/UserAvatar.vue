@@ -5,5 +5,8 @@ const props = defineProps<{
 </script>
 
 <template>
-  <span>{{ username }}'s avatar</span>
+  <span
+    >{{ username }}'s<br />
+    avatar</span
+  >
 </template>
