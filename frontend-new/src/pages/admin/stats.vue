@@ -4,7 +4,7 @@ import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { ref, watch } from "vue";
-import { fromISOString, prettyDate, toISODateString } from "~/composables/useDate";
+import { fromISOString, toISODateString } from "~/composables/useDate";
 import { useInternalApi } from "~/composables/useApi";
 import Chart from "~/components/Chart.vue";
 import Chartist, { IChartistSeriesData, ILineChartOptions } from "chartist";
@@ -86,7 +86,7 @@ const options: ILineChartOptions = {
     type: Chartist.FixedScaleAxis,
     divisor: 5,
     labelInterpolationFnc: (value: string | Date) => {
-      return prettyDate(value);
+      return i18n.d(value, "date");
     },
   },
   plugins: [Chartist.plugins.legend()],

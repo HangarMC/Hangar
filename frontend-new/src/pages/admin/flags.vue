@@ -8,7 +8,6 @@ import { ref } from "vue";
 import { Flag } from "hangar-internal";
 import { useInternalApi } from "~/composables/useApi";
 import UserAvatar from "~/components/UserAvatar.vue";
-import { prettyDateTime } from "~/composables/useDate";
 import PageTitle from "~/components/design/PageTitle.vue";
 import Card from "~/components/design/Card.vue";
 import Link from "~/components/design/Link.vue";
@@ -50,13 +49,9 @@ function resolve(flag: Flag) {
       <UserAvatar :username="flag.reportedByName"></UserAvatar>
       <div class="flex flex-col flex-grow">
         <h2>
-          <!-- this is client only, as the date format causes hydration mismatches... -->
-          <!-- I think the proper fix is using vue-i18n for date format -->
-          <ClientOnly
-            >{{
-              i18n.t("flagReview.line1", [flag.reportedByName, `${flag.projectNamespace.owner}/${flag.projectNamespace.slug}`, prettyDateTime(flag.createdAt)])
-            }}
-          </ClientOnly>
+          {{
+            i18n.t("flagReview.line1", [flag.reportedByName, `${flag.projectNamespace.owner}/${flag.projectNamespace.slug}`, i18n.d(flag.createdAt, "time")])
+          }}
           <router-link :to="`/${flag.projectNamespace.owner}/${flag.projectNamespace.slug}`" target="_blank">
             <icon-mdi-open-in-new class="inline ml-1"></icon-mdi-open-in-new>
           </router-link>

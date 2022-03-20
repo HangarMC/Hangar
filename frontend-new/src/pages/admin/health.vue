@@ -4,7 +4,6 @@ import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { useHealthReport } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { prettyDateTime } from "~/composables/useDate";
 import Card from "~/components/design/Card.vue";
 import Link from "~/components/design/Link.vue";
 import PageTitle from "~/components/design/PageTitle.vue";
@@ -37,7 +36,7 @@ const healthReport = await useHealthReport().catch((e) => handleRequestError(e, 
 
       <ul class="max-h-xs overflow-auto">
         <li v-for="job in healthReport.erroredJobs" :key="job.jobType + new Date(job.lastUpdated).toISOString()">
-          {{ i18n.t("health.jobText", [job.jobType, job.lastErrorDescriptor, prettyDateTime(job.lastUpdated)]) }}
+          {{ i18n.t("health.jobText", [job.jobType, job.lastErrorDescriptor, i18n.d(job.lastUpdated, "time")]) }}
         </li>
         <li v-if="!healthReport.erroredJobs || healthReport.erroredJobs.length === 0">
           {{ i18n.t("health.empty") }}
