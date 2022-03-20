@@ -75,7 +75,7 @@ const headers = [
           <img v-else class="inline-img" :src="'data:image/png;base64,' + item.oldState" alt="" />
         </template>
         <template v-else>
-          {{ item.oldState && i18n.te(item.oldState) ? i18n.t(item.oldState) : item.oldState }}
+          <span>{{ item.oldState && i18n.te(item.oldState) ? i18n.t(item.oldState) : item.oldState }}</span>
         </template>
       </template>
       <template #item_newState="{ item }">
@@ -100,7 +100,7 @@ const headers = [
           <img v-else class="inline-img" :src="'data:image/png;base64,' + item.newState" alt="" />
         </template>
         <template v-else>
-          {{ i18n.te(item.newState) ? i18n.t(item.newState) : item.newState }}
+          <span>{{ i18n.te(item.newState) ? i18n.t(item.newState) : item.newState }}</span>
         </template>
       </template>
     </SortableTable>
