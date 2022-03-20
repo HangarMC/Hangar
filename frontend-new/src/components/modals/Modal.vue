@@ -10,12 +10,10 @@ const props = defineProps<{
 const isOpen = ref<boolean>(false);
 
 function open() {
-  console.log("open");
   isOpen.value = true;
 }
 
 function close() {
-  console.log("close");
   isOpen.value = false;
 }
 </script>
