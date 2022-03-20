@@ -2,9 +2,14 @@
 const emit = defineEmits<{
   (e: "click"): void;
 }>();
-const props = defineProps<{
-  small: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    small?: boolean;
+  }>(),
+  {
+    small: false,
+  }
+);
 </script>
 
 <template>

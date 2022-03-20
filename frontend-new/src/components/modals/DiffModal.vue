@@ -20,6 +20,7 @@ const diff = computed(() => {
   return textDiff;
 });
 // copied from DiffMatchPatch, just to change colors...
+// todo we might want to adjust the colors for the different themes
 const prettyDiff = computed(() => {
   const diffs = diff.value;
   const html = [];
