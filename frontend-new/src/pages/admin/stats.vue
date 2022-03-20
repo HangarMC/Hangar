@@ -8,6 +8,9 @@ import { fromISOString, prettyDate, toISODateString } from "~/composables/useDat
 import { useInternalApi } from "~/composables/useApi";
 import Chart from "~/components/Chart.vue";
 import Chartist, { IChartistSeriesData, ILineChartOptions } from "chartist";
+import PageTitle from "~/components/design/PageTitle.vue";
+import Card from "~/components/design/Card.vue";
+import InputDate from "~/components/ui/InputDate.vue";
 
 const ctx = useContext();
 const i18n = useI18n();
@@ -91,6 +94,7 @@ const options: ILineChartOptions = {
 
 watch(startDate, updateDate);
 watch(endDate, updateDate);
+
 async function updateDate() {
   console.log("update", startDate, endDate);
   data = (await useInternalApi<DayStats[]>("admin/stats", true, "get", {
@@ -140,22 +144,27 @@ interface DayStats {
 </script>
 
 <template>
-  <h1>{{ i18n.t("stats.title") }}</h1>
-  <input v-model="startDate" type="date" />
-  <input v-model="endDate" type="date" />
-  <h2>{{ i18n.t("stats.plugins") }}</h2>
-  <client-only>
-    <Chart id="stats" :data="pluginData" :options="options" bar-type="Line" />
-  </client-only>
-  <h2>{{ i18n.t("stats.downloads") }}</h2>
-  <client-only>
-    <Chart id="downloads" :data="downloadData" :options="options" bar-type="Line" />
-  </client-only>
-
-  <h2>{{ i18n.t("stats.flags") }}</h2>
-  <client-only>
-    <Chart id="flags" :data="flagData" :options="options" bar-type="Line" />
-  </client-only>
+  <PageTitle>{{ i18n.t("stats.title") }}</PageTitle>
+  <InputDate v-model="startDate" />
+  <InputDate v-model="endDate" />
+  <Card class="mt-4">
+    <template #header> {{ i18n.t("stats.plugins") }}</template>
+    <client-only>
+      <Chart id="stats" :data="pluginData" :options="options" bar-type="Line" />
+    </client-only>
+  </Card>
+  <Card class="mt-4">
+    <template #header>{{ i18n.t("stats.downloads") }}</template>
+    <client-only>
+      <Chart id="downloads" :data="downloadData" :options="options" bar-type="Line" />
+    </client-only>
+  </Card>
+  <Card class="mt-4">
+    <template #header>{{ i18n.t("stats.flags") }}</template>
+    <client-only>
+      <Chart id="flags" :data="flagData" :options="options" bar-type="Line" />
+    </client-only>
+  </Card>
 </template>
 
 <route lang="yaml">

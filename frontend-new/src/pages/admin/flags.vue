@@ -9,6 +9,10 @@ import { Flag } from "hangar-internal";
 import { useInternalApi } from "~/composables/useApi";
 import UserAvatar from "~/components/UserAvatar.vue";
 import { prettyDateTime } from "~/composables/useDate";
+import PageTitle from "~/components/design/PageTitle.vue";
+import Card from "~/components/design/Card.vue";
+import Link from "~/components/design/Link.vue";
+import Button from "~/components/design/Button.vue";
 
 const ctx = useContext();
 const i18n = useI18n();
@@ -40,25 +44,31 @@ function resolve(flag: Flag) {
 </script>
 
 <template>
-  <h1>{{ i18n.t("flagReview.title") }}</h1>
+  <PageTitle>{{ i18n.t("flagReview.title") }}</PageTitle>
   <template v-if="flags.length > 0">
-    <div v-for="flag in flags" :key="flag.id">
+    <Card v-for="flag in flags" :key="flag.id" class="flex gap-2 items-center">
       <UserAvatar :username="flag.reportedByName"></UserAvatar>
-      <h2>
-        <!-- this is client only, as the date format causes hydration mismatches... -->
-        <!-- I think the proper fix is using vue-i18n for date format -->
-        <ClientOnly>{{
-          i18n.t("flagReview.line1", [flag.reportedByName, `${flag.projectNamespace.owner}/${flag.projectNamespace.slug}`, prettyDateTime(flag.createdAt)])
-        }}</ClientOnly>
-        <router-link :to="`/${flag.projectNamespace.owner}/${flag.projectNamespace.slug}`" target="_blank">open in new </router-link>
-      </h2>
-      <h3>{{ i18n.t("flagReview.line2", [i18n.t(flag.reason)]) }}</h3>
-      <h3>{{ i18n.t("flagReview.line3", [flag.comment]) }}</h3>
-      <a fixHref="$util.forumUrl(flag.reportedByName)">{{ i18n.t("flagReview.msgUser") }}</a>
-      <a fixHref="$util.forumUrl(flag.projectNamespace.owner)">{{ i18n.t("flagReview.msgProjectOwner") }}</a>
+      <div class="flex flex-col flex-grow">
+        <h2>
+          <!-- this is client only, as the date format causes hydration mismatches... -->
+          <!-- I think the proper fix is using vue-i18n for date format -->
+          <ClientOnly
+            >{{
+              i18n.t("flagReview.line1", [flag.reportedByName, `${flag.projectNamespace.owner}/${flag.projectNamespace.slug}`, prettyDateTime(flag.createdAt)])
+            }}
+          </ClientOnly>
+          <router-link :to="`/${flag.projectNamespace.owner}/${flag.projectNamespace.slug}`" target="_blank">
+            <icon-mdi-open-in-new class="inline ml-1"></icon-mdi-open-in-new>
+          </router-link>
+        </h2>
+        <small>{{ i18n.t("flagReview.line2", [i18n.t(flag.reason)]) }}</small>
+        <small>{{ i18n.t("flagReview.line3", [flag.comment]) }}</small>
+      </div>
+      <Link fix-href="$util.forumUrl(flag.reportedByName)">{{ i18n.t("flagReview.msgUser") }}</Link>
+      <Link fix-href="$util.forumUrl(flag.projectNamespace.owner)">{{ i18n.t("flagReview.msgProjectOwner") }}</Link>
       <!-- todo modal for visibility change -->
-      <button :disabled="loading[flag.id]" @click="resolve(flag)">{{ i18n.t("flagReview.markResolved") }}</button>
-    </div>
+      <Button :disabled="loading[flag.id]" @click="resolve(flag)">{{ i18n.t("flagReview.markResolved") }}</Button>
+    </Card>
   </template>
   <div v-else>
     {{ i18n.t("flagReview.noFlags") }}

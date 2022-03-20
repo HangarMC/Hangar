@@ -71,6 +71,14 @@ declare module "hangar-internal" {
     visibility: Visibility;
   }
 
+  interface HealthReport {
+    noTopicProjects: UnhealthyProject[];
+    staleProjects: UnhealthyProject[];
+    nonPublicProjects: UnhealthyProject[];
+    missingFiles: MissingFile[];
+    erroredJobs: Job[];
+  }
+
   interface Activity {
     namespace: ProjectNamespace;
   }

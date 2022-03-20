@@ -40,7 +40,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
   - [x] fetch
   - [x] layout
   - [ ] functionality (sorting is missing)
-  - [ ] design
+  - [x] design
   - [ ] qa
 - error
   - [ ] fetch
@@ -82,7 +82,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
   - [x] fetch
   - [x] layout
   - [ ] functionality (sorting is missing)
-  - [ ] design
+  - [x] design
   - [ ] qa
 - organizations (empty)
   - new
@@ -215,13 +215,13 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
     - [x] fetch
     - [x] layout
     - [x] functionality (cors error)
-    - [ ] design
+    - [x] design
     - [ ] qa
   - health
     - [x] fetch
     - [x] layout
     - [x] functionality
-    - [ ] design
+    - [x] design
     - [ ] qa
   - log
     - [ ] fetch
@@ -233,13 +233,13 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
     - [x] fetch
     - [x] layout
     - [x] functionality
-    - [ ] design
+    - [x] design
     - [ ] qa
   - versions
     - [x] fetch
     - [x] layout
     - [x] functionality (cors error)
-    - [ ] design
+    - [x] design
     - [ ] qa
   - activities (empty)
     - [user]

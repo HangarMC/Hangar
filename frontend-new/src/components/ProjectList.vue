@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { PaginatedResult, Project } from "hangar-api";
 import { PropType } from "vue";
+import Card from "~/components/design/Card.vue";
+import Link from "~/components/design/Link.vue";
 
 const props = defineProps({
   projects: {
@@ -11,11 +13,11 @@ const props = defineProps({
 </script>
 
 <template>
-  <div v-for="project in projects?.result" :key="project.name" bg="white" m="5px" p="5px" class="rounded-md flex">
+  <Card v-for="project in projects?.result" :key="project.name" class="flex mb-2">
     <div>
-      <router-link :to="'/' + project.namespace.owner + '/' + project.namespace.slug">{{ project.name }}</router-link>
+      <Link :to="'/' + project.namespace.owner + '/' + project.namespace.slug">{{ project.name }}</Link>
       by
-      <router-link :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</router-link>
+      <Link :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</Link>
       <br />
       {{ project.description }}
     </div>
@@ -25,5 +27,5 @@ const props = defineProps({
       Downloads: {{ project.stats.downloads }}<br />
       Stars: {{ project.stats.stars }}
     </div>
-  </div>
+  </Card>
 </template>

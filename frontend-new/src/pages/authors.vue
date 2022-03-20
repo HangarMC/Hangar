@@ -6,6 +6,7 @@ import { useAuthors } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import SortableTable, { Header } from "~/components/SortableTable.vue";
 import { prettyDate } from "~/composables/useDate";
+import PageTitle from "~/components/design/PageTitle.vue";
 
 const ctx = useContext();
 const i18n = useI18n();
@@ -20,7 +21,7 @@ const headers = [
 </script>
 
 <template>
-  <h1>Authors</h1>
+  <PageTitle>Authors</PageTitle>
   <SortableTable :headers="headers" :items="authors?.result">
     <!-- todo avatar -->
     <template #item_pic="{ item }">pic {{ item.name }}</template>

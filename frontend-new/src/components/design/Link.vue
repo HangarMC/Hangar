@@ -1,0 +1,16 @@
+<script lang="ts" setup>
+const props = defineProps<{
+  to?: string;
+  href?: string;
+}>();
+const classes = "color-primary font-bold hover:(underline)";
+</script>
+
+<template>
+  <router-link v-if="to" :to="to" :class="classes">
+    <slot></slot>
+  </router-link>
+  <a v-else :href="href" :class="classes">
+    <slot></slot>
+  </a>
+</template>

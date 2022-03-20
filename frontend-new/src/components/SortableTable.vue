@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { defineProps, PropType } from "vue";
 import { hasSlotContent } from "~/composables/useSlot";
+import Table from "~/components/design/Table.vue";
 
 export interface Header {
   name: string;
@@ -22,7 +23,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <table>
+  <Table class="w-full">
     <thead>
       <tr>
         <th v-for="header in headers" :key="header.name">{{ header.title }}</th>
@@ -40,5 +41,5 @@ const props = defineProps({
         </td>
       </tr>
     </tbody>
-  </table>
+  </Table>
 </template>

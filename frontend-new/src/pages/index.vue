@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
-import LabeledCheckbox from "~/components/LabeledCheckbox.vue";
+import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import ProjectList from "~/components/ProjectList.vue";
 import { useProjects } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
+import Card from "~/components/design/Card.vue";
+import Container from "~/components/design/Container.vue";
 
 const i18n = useI18n();
 
@@ -75,43 +77,48 @@ const projects = await useProjects().catch((e) => handleRequestError(e, ctx, i18
       </div>
     </div>
   </div>
-  <div class="p-4 mt-5 w-screen max-w-1200px flex justify-around m-auto flex-col gap-y-6" lg="flex-row gap-x-6 gap-y-0 ">
+  <Container class="mt-5 flex flex-col justify-around gap-y-6" lg="flex-row gap-x-6 gap-y-0 ">
     <!-- Projects -->
     <div class="min-h-800px bg-gray-200 rounded-md" lg="w-2/3 min-w-2/3 max-w-2/3">
       <ProjectList :projects="projects" />
     </div>
     <!-- Sidebar -->
-    <div class="flex flex-col gap-4 bg-white border-top-primary shadow-soft rounded-md min-w-300px min-h-800px p-4" dark="bg-background-dark-90">
+    <Card class="min-w-300px min-h-800px flex flex-col gap-4">
       <div class="versions">
         <h3 class="font-bold">Minecraft versions</h3>
         <div class="flex flex-col gap-2 max-h-30 overflow-auto">
-          <LabeledCheckbox v-for="version in versions" :key="version.version" :label="version.version" />
+          <InputCheckbox v-for="version in versions" :key="version.version" :label="version.version" />
         </div>
       </div>
       <hr />
       <div class="categories">
         <h3 class="font-bold">Categories</h3>
         <div class="flex flex-col gap-2">
-          <LabeledCheckbox v-for="category in backendData.visibleCategories" :key="category.apiName" :label="i18n.t(category.title)" />
+          <InputCheckbox v-for="category in backendData.visibleCategories" :key="category.apiName" :label="i18n.t(category.title)" />
         </div>
       </div>
       <hr />
       <div class="platforms">
         <h3 class="font-bold">Platforms</h3>
         <div class="flex flex-col gap-2">
-          <LabeledCheckbox v-for="platform in backendData.visiblePlatforms" :key="platform.enumName" :label="platform.name" />
+          <InputCheckbox v-for="platform in backendData.visiblePlatforms" :key="platform.enumName" :label="platform.name" />
         </div>
       </div>
       <hr />
       <div class="licenses">
         <h3 class="font-bold">Licenses</h3>
         <div class="flex flex-col gap-2">
-          <LabeledCheckbox v-for="license in backendData.licenses" :key="license" :label="license" />
+          <InputCheckbox v-for="license in backendData.licenses" :key="license" :label="license" />
         </div>
       </div>
-    </div>
-  </div>
+    </Card>
+  </Container>
 </template>
+
+<route lang="yaml">
+meta:
+  layout: wide
+</route>
 
 <style lang="css" scoped>
 .big-box-shadow {
