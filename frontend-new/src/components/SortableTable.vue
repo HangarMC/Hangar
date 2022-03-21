@@ -6,7 +6,7 @@ import Table from "~/components/design/Table.vue";
 export interface Header {
   name: string;
   title: string;
-  sortable: boolean;
+  sortable?: boolean;
 }
 
 const props = defineProps({

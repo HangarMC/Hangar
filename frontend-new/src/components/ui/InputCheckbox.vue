@@ -1,16 +1,23 @@
 <script setup lang="ts">
-const props = defineProps({
-  label: {
-    type: String,
-    required: true,
-  },
+import { computed } from "vue";
+
+const emit = defineEmits<{
+  (e: "update:modelValue", value: boolean): void;
+}>();
+const value = computed({
+  get: () => props.modelValue,
+  set: (v) => emit("update:modelValue", v),
 });
+const props = defineProps<{
+  modelValue: boolean;
+  label?: string;
+}>();
 </script>
 
 <template>
   <label class="group relative cursor-pointer pl-30px customCheckboxContainer">
-    {{ props.label }}
-    <input type="checkbox" class="hidden" />
+    <template v-if="props.label">{{ props.label }}</template>
+    <input v-model="value" type="checkbox" class="hidden" v-bind="$attrs" />
     <span
       class="absolute top-5px left-0 h-15px w-15px rounded bg-gray-300"
       after="absolute hidden content-DEFAULT top-1px left-5px border-solid w-6px h-12px border-r-3px border-b-3px border-white"
