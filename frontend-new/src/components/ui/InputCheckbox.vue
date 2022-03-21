@@ -15,7 +15,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <label class="group relative cursor-pointer pl-30px customCheckboxContainer">
+  <label class="group relative cursor-pointer pl-30px customCheckboxContainer w-max">
     <template v-if="props.label">{{ props.label }}</template>
     <input v-model="value" type="checkbox" class="hidden" v-bind="$attrs" />
     <span

@@ -19,6 +19,7 @@ Stuff that needs to be done before I consider this a successful POC
 - [x] date formatting needs to go thru i18n
 - [x] investigate why eslint/prettier don't auto fix
 - [x] actually implement page transitions (as opposed to popping up below the page)
+- [ ] validation of forms/inputs etc
 
 ## Big list of pages!
 
@@ -114,10 +115,10 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
     - [ ] qa
   * settings (empty)
     - api-keys
-      - [ ] fetch
-      - [ ] layout
-      - [ ] functionality
-      - [ ] design
+      - [x] fetch
+      - [x] layout
+      - [ ] functionality (loading animations, validation)
+      - [x] design
       - [ ] qa
   * [project]
     - [ ] fetch

@@ -15,5 +15,5 @@ const props = defineProps<{
 
 <template>
   <!-- todo make fancy -->
-  <input v-model="date" type="date" />
+  <input v-model="date" type="date" v-bind="$attrs" />
 </template>
