@@ -14,11 +14,11 @@ Stuff that needs to be done before I consider this a successful POC
 - [ ] snackbar
 - [ ] maybe deployment alongside the existing frontend? (server is working now)
 - [ ] figure out why vite isn't serving the manifest
-- [ ] cors?
+- [x] cors?
 - [ ] i18n + ssr, server needs local for both logged in and anon user
 - [x] date formatting needs to go thru i18n
 - [x] investigate why eslint/prettier don't auto fix
-- [ ] actually implement page transitions (as opposed to popping up below the page)
+- [x] actually implement page transitions (as opposed to popping up below the page)
 
 ## Big list of pages!
 
