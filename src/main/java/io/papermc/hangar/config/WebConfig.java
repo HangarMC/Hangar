@@ -29,6 +29,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
@@ -70,7 +71,12 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Override
     protected void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/internal/**").allowedOrigins(hangarConfig.isDev() ? "http://localhost:3000" : hangarConfig.getBaseUrl());
+        CorsRegistration corsRegistration = registry.addMapping("/api/internal/**");
+        if (hangarConfig.isDev()) {
+            corsRegistration.allowedOrigins("http://localhost:3000", "http://localhost:3333");
+        } else {
+            corsRegistration.allowedOrigins(hangarConfig.getBaseUrl());
+        }
     }
 
     @Bean
