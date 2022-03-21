@@ -20,7 +20,7 @@ function childRoute(route = ""): string {
 </script>
 
 <template>
-  <nav class="pt-4 pb-2 flex flex-wrap">
+  <nav class="pt-4 pb-2 flex flex-wrap space-x-4">
     <!-- TODO: vue-i18n -->
     <ProjectNavItem :to="childRoute()">Home</ProjectNavItem>
     <ProjectNavItem :to="childRoute('/versions')">Versions</ProjectNavItem>

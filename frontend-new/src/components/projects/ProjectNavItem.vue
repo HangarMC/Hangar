@@ -16,7 +16,7 @@ const selected = computed(() => {
 });
 
 const clazz = computed(() => {
-  return "p-2 pb-1 mx-2 mb-1 rounded-sm border-b-3 flex items-center " + (selected.value ? "border-[#004ee9] font-semibold" : "border-neutral-400");
+  return "p-2 pb-1 rounded-sm border-b-3 flex items-center " + (selected.value ? "border-[#004ee9] font-semibold" : "border-neutral-400");
 });
 </script>
 
