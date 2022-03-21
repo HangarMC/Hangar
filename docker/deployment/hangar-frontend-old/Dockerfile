@@ -3,10 +3,10 @@ FROM node:16-alpine
 WORKDIR hangar-frontend
 ENV TERM xterm-256color
 
-EXPOSE 1337
+EXPOSE 3000
 ENTRYPOINT ["./entrypoint.sh"]
 
-COPY /docker/deployment/hangar-frontend/entrypoint.sh /hangar-frontend/entrypoint.sh
+COPY /docker/deployment/hangar-frontend-old/entrypoint.sh /hangar-frontend/entrypoint.sh
 RUN chmod +x /hangar-frontend/entrypoint.sh
 
 COPY /frontend/tsconfig.json /hangar-frontend/tsconfig.json
