@@ -9,7 +9,7 @@ const createUtil = (context: Context) => {
         head(title: string | TranslateResult, description: string | TranslateResult | null, route: Route, image: string | null): MetaInfo {
             description = description || 'Plugin repository for Paper plugins and more!';
             const canonical = this.baseUrl() + (route.fullPath.endsWith('/') ? route.fullPath : route.fullPath + '/');
-            image = image || 'https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png';
+            image = image || 'https://docs.papermc.io/img/paper.png';
             image = image.startsWith('http') ? image : this.baseUrl() + image;
             const seo = {
                 title,
