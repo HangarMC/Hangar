@@ -9,10 +9,11 @@ ENTRYPOINT ["./entrypoint.sh"]
 COPY /docker/deployment/hangar-frontend/entrypoint.sh /hangar-frontend/entrypoint.sh
 RUN chmod +x /hangar-frontend/entrypoint.sh
 
-COPY /frontend/tsconfig.json /hangar-frontend/tsconfig.json
-COPY /frontend/static/ /hangar-frontend/static/
-COPY /frontend/nuxt.config.ts /hangar-frontend/nuxt.config.ts
-COPY /frontend/locales/ /hangar-frontend/locales/
-COPY /frontend/package.json /hangar-frontend/package.json
-COPY /frontend/node_modules/ /hangar-frontend/node_modules/
-COPY /frontend/.nuxt/ /hangar-frontend/.nuxt/
+COPY /frontend-new/package.json /hangar-frontend/package.json
+COPY /frontend-new/pnpm-lock.yaml /hangar-frontend/pnpm-lock.yaml
+COPY /frontend-new/dist/ /hangar-frontend/dist/
+COPY /frontend-new/node_modules/ /hangar-frontend/node_modules/
+COPY /frontend-new/server/package.json /hangar-frontend/server/package.json
+COPY /frontend-new/server/pnpm-lock.yaml /hangar-frontend/server/pnpm-lock.yaml
+COPY /frontend-new/server/dist/ /hangar-frontend/server/dist/
+COPY /frontend-new/server/node_modules/ /hangar-frontend/server/node_modules/
