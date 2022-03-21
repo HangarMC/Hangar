@@ -18,7 +18,7 @@ const loading = ref(false);
 async function convertBBCode() {
   loading.value = true;
   output.value = await useInternalApi<string>("pages/convert-bbcode", false, "post", {
-    content: input,
+    content: input.value,
   }).catch<any>((e) => handleRequestError(e, ctx, i18n));
   loading.value = false;
 }
