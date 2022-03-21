@@ -37,10 +37,10 @@ const versions = [
 ];
 
 const filters = ref({
-  versions: {},
-  categories: {},
-  platforms: {},
-  licences: {},
+  versions: [],
+  categories: [],
+  platforms: [],
+  licences: [],
 });
 
 const ctx = useContext();
@@ -95,7 +95,7 @@ const projects = await useProjects().catch((e) => handleRequestError(e, ctx, i18
       <div class="versions">
         <h3 class="font-bold">Minecraft versions</h3>
         <div class="flex flex-col gap-2 max-h-30 overflow-auto">
-          <InputCheckbox v-for="version in versions" :key="version.version" v-model="filters.versions[version.version]" :label="version.version" />
+          <InputCheckbox v-for="version in versions" :key="version.version" v-model="filters.versions" :value="version.version" :label="version.version" />
         </div>
       </div>
       <hr />
@@ -105,7 +105,8 @@ const projects = await useProjects().catch((e) => handleRequestError(e, ctx, i18
           <InputCheckbox
             v-for="category in backendData.visibleCategories"
             :key="category.apiName"
-            v-model="filters.categories[category.apiName]"
+            v-model="filters.categories"
+            :value="category.apiName"
             :label="i18n.t(category.title)"
           />
         </div>
@@ -117,7 +118,8 @@ const projects = await useProjects().catch((e) => handleRequestError(e, ctx, i18
           <InputCheckbox
             v-for="platform in backendData.visiblePlatforms"
             :key="platform.enumName"
-            v-model="filters.platforms[platform.enumName]"
+            v-model="filters.platforms"
+            :value="platform.enumName"
             :label="platform.name"
           />
         </div>
@@ -126,7 +128,7 @@ const projects = await useProjects().catch((e) => handleRequestError(e, ctx, i18
       <div class="licenses">
         <h3 class="font-bold">Licenses</h3>
         <div class="flex flex-col gap-2">
-          <InputCheckbox v-for="license in backendData.licenses" :key="license" v-model="filters.licences[license]" :label="license" />
+          <InputCheckbox v-for="license in backendData.licenses" :key="license" v-model="filters.licences" :value="license" :label="license" />
         </div>
       </div>
     </Card>

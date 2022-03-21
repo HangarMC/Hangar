@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps, PropType } from "vue";
+import { PropType } from "vue";
 import { hasSlotContent } from "~/composables/useSlot";
 import Table from "~/components/design/Table.vue";
 
