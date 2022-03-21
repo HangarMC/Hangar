@@ -55,9 +55,9 @@ authLog("render with user " + authStore.user?.name);
 </script>
 
 <template>
-  <template v-if="backendData.announcements">
+  <div v-if="backendData.announcements">
     <Announcement v-for="(announcement, idx) in backendData.announcements" :key="idx" :announcement="announcement" />
-  </template>
+  </div>
   <header class="background-header">
     <div class="inner-header flex items-center max-w-1200px mx-auto justify-between h-65px w-[calc(100%-40px)]">
       <div class="logo-and-nav flex items-center">
