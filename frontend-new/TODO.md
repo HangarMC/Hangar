@@ -18,6 +18,7 @@ Stuff that needs to be done before I consider this a successful POC
 - [ ] i18n + ssr, server needs local for both logged in and anon user
 - [x] date formatting needs to go thru i18n
 - [x] investigate why eslint/prettier don't auto fix
+- [ ] actually implement page transitions (as opposed to popping up below the page)
 
 ## Big list of pages!
 
@@ -94,9 +95,9 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
     - [ ] qa
 - tools (empty)
   - bbcode
-    - [ ] fetch
-    - [ ] layout
-    - [ ] functionality
+    - [x] fetch
+    - [x] layout
+    - [ ] functionality (pending CORS)
     - [ ] design
     - [ ] qa
 - [user]
