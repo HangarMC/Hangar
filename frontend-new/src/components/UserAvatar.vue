@@ -4,7 +4,7 @@ import { computed } from "vue";
 const props = withDefaults(
   defineProps<{
     username: string;
-    size?: string;
+    size?: "xs" | "sm" | "md" | "lg";
   }>(),
   {
     size: "md",
@@ -21,7 +21,7 @@ const sizeClass = computed(() => {
 </script>
 
 <template>
-  <div :class="'bg-gray-100 dark:bg-gray-900 rounded-lg ' + sizeClass">
+  <div :class="'bg-light-300 dark:bg-dark-500 rounded-lg ' + sizeClass">
     <span
       >{{ username }}'s<br />
       avatar</span

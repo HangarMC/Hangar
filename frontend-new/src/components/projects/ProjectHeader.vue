@@ -3,6 +3,7 @@ import { PropType } from "vue";
 import { Project, User } from "hangar-api";
 import UserAvatar from "~/components/UserAvatar.vue";
 import Button from "~/components/design/Button.vue";
+import Card from "~/components/design/Card.vue";
 
 defineProps({
   user: {
@@ -17,7 +18,7 @@ defineProps({
 </script>
 
 <template>
-  <section class="background-header rounded-lg p-4">
+  <Card>
     <div class="flex">
       <UserAvatar :username="project.namespace.owner"></UserAvatar>
       <div class="flex-grow mx-4">
@@ -32,5 +33,5 @@ defineProps({
         <Button>Download latest</Button>
       </div>
     </div>
-  </section>
+  </Card>
 </template>
