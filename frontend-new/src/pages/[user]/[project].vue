@@ -7,6 +7,7 @@ import { useProject } from "~/composables/useApiHelper";
 import { useRoute, useRouter } from "vue-router";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useErrorRedirect } from "~/composables/useErrorRedirect";
+import ProjectHeader from "~/components/projects/ProjectHeader.vue";
 
 defineProps({
   user: {
@@ -25,6 +26,6 @@ if (!project) {
 </script>
 
 <template>
-  <div>project parent</div>
+  <ProjectHeader :user="user" :project="project"></ProjectHeader>
   <router-view :user="user" :project="project"></router-view>
 </template>
