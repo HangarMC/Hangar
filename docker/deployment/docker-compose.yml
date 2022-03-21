@@ -42,7 +42,7 @@ services:
     stdin_open: true
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.hangar-new.loadbalancer.server.port=3000"
+      - "traefik.http.services.hangar-new.loadbalancer.server.port=1337"
       - "traefik.http.routers.hangar-new.rule=Host(`hangar.benndorf.dev`) || Host(`staging.hangarmc.dev`)"
       - "traefik.http.routers.hangar-new.entrypoints=web-secure"
       - "traefik.http.routers.hangar-new.tls=true"
