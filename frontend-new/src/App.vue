@@ -63,8 +63,6 @@ onMounted(() => {
 
 <template>
   <router-view v-slot="{ Component, route }">
-    <transition name="slide">
-      <component :is="Component" :key="route" />
-    </transition>
+    <component :is="Component" :key="route" />
   </router-view>
 </template>

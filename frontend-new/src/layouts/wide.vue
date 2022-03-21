@@ -7,10 +7,12 @@ import Footer from "~/components/layout/Footer.vue";
   <main>
     <Header />
     <div class="min-h-[60vh]">
-      <Suspense>
-        <router-view v-bind="$attrs" />
-        <template #fallback> Loading...</template>
-      </Suspense>
+      <transition name="slide">
+        <Suspense>
+          <router-view v-bind="$attrs" />
+          <template #fallback> Loading...</template>
+        </Suspense>
+      </transition>
     </div>
     <Footer />
   </main>

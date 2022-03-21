@@ -7,11 +7,13 @@ import Container from "~/components/design/Container.vue";
 <template>
   <main>
     <Header />
-    <Container class="min-h-[60vh]">
-      <Suspense>
-        <router-view v-bind="$attrs" />
-        <template #fallback> Loading...</template>
-      </Suspense>
+    <Container class="min-h-[80vh]">
+      <transition name="slide">
+        <Suspense>
+          <router-view v-bind="$attrs" />
+          <template #fallback> Loading...</template>
+        </Suspense>
+      </transition>
     </Container>
     <Footer />
   </main>
