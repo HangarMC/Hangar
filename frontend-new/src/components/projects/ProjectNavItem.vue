@@ -11,11 +11,12 @@ const props = defineProps<{
 const route = useRoute();
 
 const selected = computed(() => {
-  return route.fullPath == props.to;
+  const routerPath = route.fullPath.endsWith("/") ? route.fullPath.substr(0, route.fullPath.length - 1) : route.fullPath;
+  return routerPath == props.to;
 });
 
 const clazz = computed(() => {
-  return "p-2 pb-1 mx-2 mb-1 rounded-sm border-b-3 flex items-center " + [selected.value ? "border-[#004ee9] font-medium" : "border-neutral-400"];
+  return "p-2 pb-1 mx-2 mb-1 rounded-sm border-b-3 flex items-center " + (selected.value ? "border-[#004ee9] font-semibold" : "border-neutral-400");
 });
 </script>
 
