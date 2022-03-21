@@ -17,13 +17,13 @@ services:
     stdin_open: true
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.hangar-new.loadbalancer.server.port=3000"
-      - "traefik.http.routers.hangar-new.rule=Host(`hangar-old.benndorf.dev`) || Host(`staging-old.hangarmc.dev`)"
-      - "traefik.http.routers.hangar-new.entrypoints=web-secure"
-      - "traefik.http.routers.hangar-new.tls=true"
-      - "traefik.http.routers.hangar-new.tls.certresolver=default"
-      - "traefik.http.routers.hangar-new.tls.domains[0].main=benndorf.dev"
-      - "traefik.http.routers.hangar-new.tls.domains[0].sans=*.benndorf.dev"
+      - "traefik.http.services.hangar-old.loadbalancer.server.port=3000"
+      - "traefik.http.routers.hangar-old.rule=Host(`hangar-old.benndorf.dev`) || Host(`staging-old.hangarmc.dev`)"
+      - "traefik.http.routers.hangar-old.entrypoints=web-secure"
+      - "traefik.http.routers.hangar-old.tls=true"
+      - "traefik.http.routers.hangar-old.tls.certresolver=default"
+      - "traefik.http.routers.hangar-old.tls.domains[0].main=benndorf.dev"
+      - "traefik.http.routers.hangar-old.tls.domains[0].sans=*.benndorf.dev"
     networks:
       - web
   frontend:
