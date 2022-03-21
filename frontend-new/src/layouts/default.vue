@@ -8,12 +8,17 @@ import Container from "~/components/design/Container.vue";
   <main>
     <Header />
     <Container class="min-h-[80vh]">
-      <transition name="slide">
-        <Suspense>
-          <router-view v-bind="$attrs" />
-          <template #fallback> Loading...</template>
-        </Suspense>
-      </transition>
+      <Suspense>
+        <router-view v-slot="{ Component }" v-bind="$attrs">
+          <transition name="slide">
+            <!-- dummy diff to make the transition work on pages where template root has multiple elements -->
+            <div id="#page">
+              <component :is="Component" />
+            </div>
+          </transition>
+        </router-view>
+        <template #fallback> Loading...</template>
+      </Suspense>
     </Container>
     <Footer />
   </main>
