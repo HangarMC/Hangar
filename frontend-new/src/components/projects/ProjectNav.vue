@@ -4,10 +4,12 @@ import { Project } from "hangar-api";
 import { computed } from "vue";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   project: Project;
 }>();
+const i18n = useI18n();
 
 const slug = computed(() => {
   if (props.project) return props.project.namespace.owner + "/" + props.project.name;
@@ -21,14 +23,29 @@ function childRoute(route = ""): string {
 
 <template>
   <nav class="pt-4 pb-2 flex flex-wrap space-x-4">
-    <!-- TODO: vue-i18n -->
-    <ProjectNavItem :to="childRoute()">Home</ProjectNavItem>
-    <ProjectNavItem :to="childRoute('/versions')">Versions</ProjectNavItem>
-    <ProjectNavItem v-if="project.topicId" :to="childRoute('/discuss')">Discuss</ProjectNavItem>
-    <ProjectNavItem v-if="hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" :to="childRoute('/settings')">Settings</ProjectNavItem>
-    <ProjectNavItem v-if="props.project.settings.homepage" :href="props.project.settings.homepage">Website</ProjectNavItem>
-    <ProjectNavItem v-if="props.project.settings.issues" :href="props.project.settings.issues">Issues</ProjectNavItem>
-    <ProjectNavItem v-if="props.project.settings.source" :href="props.project.settings.source">Source</ProjectNavItem>
-    <ProjectNavItem v-if="props.project.settings.support" :href="props.project.settings.support">Support</ProjectNavItem>
+    <ProjectNavItem :to="childRoute()">
+      {{ i18n.t("project.tabs.docs") }}
+    </ProjectNavItem>
+    <ProjectNavItem :to="childRoute('/versions')">
+      {{ i18n.t("project.tabs.versions") }}
+    </ProjectNavItem>
+    <ProjectNavItem v-if="project.topicId" :to="childRoute('/discuss')">
+      {{ i18n.t("project.tabs.discuss") }}
+    </ProjectNavItem>
+    <ProjectNavItem v-if="hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" :to="childRoute('/settings')">
+      {{ i18n.t("project.tabs.settings") }}
+    </ProjectNavItem>
+    <ProjectNavItem v-if="props.project.settings.homepage" :href="props.project.settings.homepage">
+      {{ i18n.t("project.tabs.homepage") }}
+    </ProjectNavItem>
+    <ProjectNavItem v-if="props.project.settings.issues" :href="props.project.settings.issues">
+      {{ i18n.t("project.tabs.issues") }}
+    </ProjectNavItem>
+    <ProjectNavItem v-if="props.project.settings.source" :href="props.project.settings.source">
+      {{ i18n.t("project.tabs.source") }}
+    </ProjectNavItem>
+    <ProjectNavItem v-if="props.project.settings.support" :href="props.project.settings.support">
+      {{ i18n.t("project.tabs.support") }}
+    </ProjectNavItem>
   </nav>
 </template>
