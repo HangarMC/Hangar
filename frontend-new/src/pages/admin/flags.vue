@@ -12,6 +12,7 @@ import PageTitle from "~/components/design/PageTitle.vue";
 import Card from "~/components/design/Card.vue";
 import Link from "~/components/design/Link.vue";
 import Button from "~/components/design/Button.vue";
+import VisibilityChangerModal from "~/components/modals/VisibilityChangerModal.vue";
 
 const ctx = useContext();
 const i18n = useI18n();
@@ -61,7 +62,7 @@ function resolve(flag: Flag) {
       </div>
       <Link fix-href="$util.forumUrl(flag.reportedByName)">{{ i18n.t("flagReview.msgUser") }}</Link>
       <Link fix-href="$util.forumUrl(flag.projectNamespace.owner)">{{ i18n.t("flagReview.msgProjectOwner") }}</Link>
-      <!-- todo modal for visibility change -->
+      <VisibilityChangerModal :prop-visibility="flag.projectVisibility" type="project" :post-url="`projects/visibility/${flag.projectId}`" />
       <Button :disabled="loading[flag.id]" @click="resolve(flag)">{{ i18n.t("flagReview.markResolved") }}</Button>
     </Card>
   </template>

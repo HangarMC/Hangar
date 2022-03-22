@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
-import { IPlatform, IProjectCategory, IPrompt } from "hangar-internal";
+import { IPlatform, IProjectCategory, IPrompt, IVisibility } from "hangar-internal";
 import { NamedPermission, Platform, ProjectCategory, Prompt } from "~/types/enums";
 
 import { Announcement as AnnouncementObject, Announcement, IPermission } from "hangar-api";
@@ -38,6 +38,7 @@ export const useBackendDataStore = defineStore("backendData", () => {
   const validations = ref<Validations | null>(null);
   const prompts = ref<Map<Prompt, IPrompt> | null>(null);
   const announcements = ref<Announcement[]>([]);
+  const visibilities = ref<IVisibility[]>([]);
   const licenses = ref<string[]>([]);
 
   async function initBackendData() {
@@ -74,6 +75,8 @@ export const useBackendDataStore = defineStore("backendData", () => {
       await fetchIfNeeded(async () => await useInternalApi<string[]>("data/licenses", false), licenses);
 
       await fetchIfNeeded(async () => await useInternalApi<AnnouncementObject[]>("data/announcements", false), announcements);
+
+      await fetchIfNeeded(async () => await useInternalApi<IVisibility[]>("data/visibilities", false), visibilities);
     } catch (e) {
       console.error("ERROR FETCHING BACKEND DATA");
       console.error(e);
@@ -91,6 +94,7 @@ export const useBackendDataStore = defineStore("backendData", () => {
     prompts,
     licenses,
     announcements,
+    visibilities,
     initBackendData,
     visibleCategories,
     visiblePlatforms,

@@ -2,14 +2,14 @@
 import { computed } from "vue";
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: boolean | boolean[]): void;
+  (e: "update:modelValue", value?: string): void;
 }>();
 const internalVal = computed({
   get: () => props.modelValue,
   set: (v) => emit("update:modelValue", v),
 });
 const props = defineProps<{
-  modelValue: boolean | boolean[];
+  modelValue?: string;
   label?: string;
 }>();
 </script>
@@ -17,10 +17,10 @@ const props = defineProps<{
 <template>
   <label class="group relative cursor-pointer pl-30px customCheckboxContainer w-max">
     <template v-if="props.label">{{ props.label }}</template>
-    <input v-model="internalVal" type="checkbox" class="hidden" v-bind="$attrs" />
+    <input v-model="internalVal" type="radio" class="hidden" v-bind="$attrs" />
     <span
-      class="absolute top-5px left-0 h-15px w-15px rounded bg-gray-300"
-      after="absolute hidden content-DEFAULT top-1px left-5px border-solid w-6px h-12px border-r-3px border-b-3px border-white"
+      class="absolute top-5px left-0 h-15px w-15px rounded-full bg-gray-300"
+      after="absolute hidden content-DEFAULT top-1px left-5px border-solid w-6px h-12px border-r-3px border-b-3px border-white rounded-full"
       group-hover="bg-gray-400"
     />
   </label>

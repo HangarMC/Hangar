@@ -217,7 +217,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
   - flags
     - [x] fetch
     - [x] layout
-    - [x] functionality (cors error)
+    - [x] functionality
     - [x] design
     - [ ] qa
   - health
@@ -253,10 +253,10 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
       - [ ] qa
   - approval (empty)
     - projects
-      - [ ] fetch
-      - [ ] layout
-      - [ ] functionality
-      - [ ] design
+      - [x] fetch
+      - [x] layout
+      - [x] functionality
+      - [x] design
       - [ ] qa
     - versions
       - [ ] fetch

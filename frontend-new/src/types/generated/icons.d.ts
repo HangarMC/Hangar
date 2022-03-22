@@ -6,7 +6,9 @@ declare module "vue" {
   export interface GlobalComponents {
     IconMdiClipboardOutline: typeof import("~icons/mdi/clipboard-outline")["default"];
     IconMdiCloseCircle: typeof import("~icons/mdi/close-circle")["default"];
+    IconMdiEye: typeof import("~icons/mdi/eye")["default"];
     IconMdiKeyOutline: typeof import("~icons/mdi/key-outline")["default"];
+    IconMdiListStatus: typeof import("~icons/mdi/list-status")["default"];
     IconMdiMenu: typeof import("~icons/mdi/menu")["default"];
     IconMdiOpenInNew: typeof import("~icons/mdi/open-in-new")["default"];
     IconMdiSortVariant: typeof import("~icons/mdi/sort-variant")["default"];
