@@ -16,18 +16,20 @@ const selected = computed(() => {
 });
 
 const clazz = computed(() => {
-  return "p-2 pb-1 rounded-sm border-b-3 flex items-center " + (selected.value ? "border-[#004ee9] font-semibold" : "border-neutral-400");
+  return "py-1 rounded-sm border-b-3 " + (selected.value ? "border-[#004ee9] font-semibold " : "border-neutral-200 dark:border-neutral-700");
 });
 </script>
 
 <template>
-  <router-link v-if="to" :to="to" :class="clazz">
-    <slot></slot>
-  </router-link>
-  <a v-if="href" :href="props.href" :class="clazz" target="_blank">
-    <span class="mx-1">
+  <div class="my-2 mr-5">
+    <router-link v-if="to" :to="to" :class="clazz">
       <slot></slot>
-    </span>
-    <IconMdiOpenInNew class="text-xs" />
-  </a>
+    </router-link>
+    <a v-if="href" :href="props.href" :class="clazz" target="_blank">
+      <span class="mx-1">
+        <slot></slot>
+      </span>
+      <IconMdiOpenInNew class="text-xs" />
+    </a>
+  </div>
 </template>

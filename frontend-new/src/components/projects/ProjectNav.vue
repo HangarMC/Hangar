@@ -22,7 +22,7 @@ function childRoute(route = ""): string {
 </script>
 
 <template>
-  <nav class="pt-4 pb-2 flex flex-wrap space-x-4">
+  <nav class="px-2 py-4 flex flex-wrap">
     <ProjectNavItem :to="childRoute()">
       {{ i18n.t("project.tabs.docs") }}
     </ProjectNavItem>
