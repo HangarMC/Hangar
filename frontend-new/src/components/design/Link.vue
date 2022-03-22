@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  to?: string;
+  to?: string | object;
   href?: string;
 }>();
 const classes = "color-primary font-bold hover:(underline)";
