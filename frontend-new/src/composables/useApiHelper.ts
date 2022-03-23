@@ -15,6 +15,14 @@ export async function useProject(user: string, project: string, blocking = true)
   return await useInitialState("useProject", () => useApi<Project>("projects/" + user + "/" + project, false), blocking);
 }
 
+export async function useStargazers(user: string, project: string, blocking = true) {
+  return await useInitialState("useStargazers", () => useApi<PaginatedResult<User>>(`projects/${user}/${project}/stargazers`, false), blocking);
+}
+
+export async function useWatchers(user: string, project: string, blocking = true) {
+  return await useInitialState("useWatchers", () => useApi<PaginatedResult<User>>(`projects/${user}/${project}/watchers`, false), blocking);
+}
+
 export async function useStaff(blocking = true) {
   return await useInitialState("useStaff", () => useApi<PaginatedResult<User>>("staff", false), blocking);
 }

@@ -163,16 +163,16 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
       - [ ] design
       - [ ] qa
     * stars
-      - [ ] fetch
-      - [ ] layout
-      - [ ] functionality
-      - [ ] design
+      - [x] fetch
+      - [x] layout
+      - [x] functionality
+      - [x] design
       - [ ] qa
     * watchers
-      - [ ] fetch
-      - [ ] layout
-      - [ ] functionality
-      - [ ] design
+      - [x] fetch
+      - [x] layout
+      - [x] functionality
+      - [x] design
       - [ ] qa
     * pages (empty)
       - [...all]
