@@ -159,7 +159,7 @@ public interface ProjectsApiDAO {
         "       u.tagline," +
         "       u.join_date," +
         "       u.locked," +
-        "       array_agg(r.name) roles," +
+        "       array_agg(r.name) AS roles," +
         "       (SELECT count(*)" +
         "           FROM project_members_all pma" +
         "           WHERE pma.user_id = u.id" +
@@ -167,8 +167,8 @@ public interface ProjectsApiDAO {
         "   FROM projects p " +
         "       JOIN project_stars ps ON p.id = ps.project_id " +
         "       JOIN users u ON ps.user_id = u.id " +
-        "       JOIN user_global_roles ugr ON u.id = ugr.user_id" +
-        "       JOIN roles r ON ugr.role_id = r.id" +
+        "       LEFT JOIN user_global_roles ugr ON u.id = ugr.user_id" +
+        "       LEFT JOIN roles r ON ugr.role_id = r.id" +
         "   WHERE p.slug = :slug AND p.owner_name = :author " +
         "   GROUP BY u.id" +
         "   LIMIT :limit OFFSET :offset")
@@ -188,7 +188,7 @@ public interface ProjectsApiDAO {
         "       u.tagline," +
         "       u.join_date," +
         "       u.locked," +
-        "       array_agg(r.name) roles," +
+        "       array_agg(r.name) AS roles," +
         "       (SELECT count(*)" +
         "           FROM project_members_all pma" +
         "           WHERE pma.user_id = u.id" +
@@ -196,8 +196,8 @@ public interface ProjectsApiDAO {
         "   FROM projects p " +
         "       JOIN project_watchers pw ON p.id = pw.project_id " +
         "       JOIN users u ON pw.user_id = u.id " +
-        "       JOIN user_global_roles ugr ON u.id = ugr.user_id" +
-        "       JOIN roles r ON ugr.role_id = r.id" +
+        "       LEFT JOIN user_global_roles ugr ON u.id = ugr.user_id" +
+        "       LEFT JOIN roles r ON ugr.role_id = r.id" +
         "   WHERE p.slug = :slug AND p.owner_name = :author" +
         "   GROUP BY u.id" +
         "   LIMIT :limit OFFSET :offset")
