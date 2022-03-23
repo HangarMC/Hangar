@@ -7,7 +7,7 @@ const { announcement } = toRefs(props);
 </script>
 
 <template>
-  <div :style="'background-color:' + announcement.color" class="mb-2 p-2 text-center">
+  <div :style="'background-color:' + announcement.color" class="p-2 text-center">
     {{ announcement.text }}
   </div>
 </template>
