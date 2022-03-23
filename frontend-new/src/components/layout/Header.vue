@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
+import { Popover, PopoverButton, PopoverPanel, Menu, MenuButton, MenuItems } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
 import { useThemeStore } from "~/store/theme";
 import Announcement from "~/components/Announcement.vue";
+import DropdownButton from "~/components/design/DropdownButton.vue";
+import DropdownItem from "~/components/design/DropdownItem.vue";
 
 import hangarLogo from "~/assets/logo.svg";
 
@@ -55,14 +57,16 @@ authLog("render with user " + authStore.user?.name);
 </script>
 
 <template>
-  <div v-if="backendData.announcements">
-    <Announcement v-for="(announcement, idx) in backendData.announcements" :key="idx" :announcement="announcement" />
-  </div>
   <header class="background-header">
-    <div class="inner-header flex items-center max-w-1200px mx-auto justify-between h-65px w-[calc(100%-40px)]">
-      <div class="logo-and-nav flex items-center">
+    <div v-if="backendData.announcements">
+      <Announcement v-for="(announcement, idx) in backendData.announcements" :key="idx" :announcement="announcement" />
+    </div>
+
+    <nav class="container mx-auto flex justify-between px-4 py-2">
+      <!-- Left side items -->
+      <div class="flex items-center gap-4">
         <Popover class="relative">
-          <PopoverButton v-slot="{ open }" class="flex mr-4">
+          <PopoverButton v-slot="{ open }" class="flex">
             <icon-mdi-menu class="transition-transform text-[1.2em]" :class="open ? 'transform rotate-90' : ''" />
           </PopoverButton>
           <transition
@@ -108,12 +112,13 @@ authLog("render with user " + authStore.user?.name);
           </transition>
         </Popover>
 
-        <div class="site-logo mr-4 h-60px flex items-center">
-          <router-link to="/">
-            <img alt="Hangar Logo" :src="hangarLogo" class="h-50px object-cover" />
-          </router-link>
-        </div>
-        <nav class="flex gap-3 invisible md:visible">
+        <!-- Site logo -->
+        <router-link to="/">
+          <img alt="Hangar Logo" :src="hangarLogo" class="h-8" />
+        </router-link>
+
+        <!-- Desktop links -->
+        <div class="gap-4 hidden sm:flex">
           <router-link
             v-for="navBarLink in navBarLinks"
             :key="navBarLink.label"
@@ -123,27 +128,62 @@ authLog("render with user " + authStore.user?.name);
           >
             {{ navBarLink.label }}
           </router-link>
-        </nav>
+        </div>
       </div>
 
-      <div class="login-buttons flex gap-2 items-center">
-        <button class="flex mr-2" @click="theme.toggleDarkMode()">
+      <!-- Right side items -->
+      <div class="flex items-center gap-2">
+        <div v-if="authStore.user" class="flex items-center">
+          <DropdownButton name="Create">
+            <DropdownItem>Create project</DropdownItem>
+            <DropdownItem>Create organization</DropdownItem>
+          </DropdownButton>
+        </div>
+        <button class="flex rounded-md p-2" hover="text-primary-100 bg-primary-50" @click="theme.toggleDarkMode()">
           <icon-mdi-weather-night v-if="theme.darkMode" class="text-[1.2em]"></icon-mdi-weather-night>
           <icon-mdi-white-balance-sunny v-else class="text-[1.2em]"></icon-mdi-white-balance-sunny>
         </button>
-        <div v-if="authStore.user" class="flex">Hello {{ authStore.user.name }}</div>
-        <div v-else class="flex">
-          <a class="flex items-center rounded-md px-2 py-2" :href="auth.loginUrl($route.fullPath)" hover="text-primary-100 bg-primary-50">
+        <!-- Profile dropdown -->
+        <div v-if="authStore.user">
+          <Menu>
+            <MenuButton>
+              <div class="flex items-center gap-2 rounded-md p-2" hover="text-primary-100 bg-primary-50">
+                {{ authStore.user.name }}
+                <img src="https://docs.papermc.io/img/paper.png" :alt="authStore.user.name" class="h-8" />
+              </div>
+            </MenuButton>
+            <MenuItems
+              class="absolute top-24 flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-100 bg-background-light-0 dark:bg-background-dark-80 shadow-soft"
+            >
+              <DropdownItem>Profile</DropdownItem>
+              <DropdownItem>Notifications</DropdownItem>
+              <hr />
+              <DropdownItem>Flags</DropdownItem>
+              <DropdownItem>Project approvals</DropdownItem>
+              <DropdownItem>Version approvals</DropdownItem>
+              <DropdownItem>Stats</DropdownItem>
+              <DropdownItem>Hangar health</DropdownItem>
+              <DropdownItem>User action log</DropdownItem>
+              <DropdownItem>Platform versions</DropdownItem>
+              <hr />
+              <DropdownItem>Sign out</DropdownItem>
+            </MenuItems>
+          </Menu>
+        </div>
+
+        <!-- Login/register buttons -->
+        <div v-else class="flex gap-2">
+          <a class="flex items-center rounded-md p-2" :href="auth.loginUrl($route.fullPath)" hover="text-primary-100 bg-primary-50">
             <icon-mdi-key-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.login") }}
           </a>
-          <router-link class="flex items-center rounded-md px-2 py-2" to="/signup" hover="text-primary-100 bg-primary-50">
+          <router-link class="flex items-center rounded-md p-2" to="/signup" hover="text-primary-100 bg-primary-50">
             <icon-mdi-clipboard-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.signup") }}
           </router-link>
         </div>
       </div>
-    </div>
+    </nav>
   </header>
 </template>
 
