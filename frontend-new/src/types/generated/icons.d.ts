@@ -11,6 +11,7 @@ declare module "vue" {
     IconMdiListStatus: typeof import("~icons/mdi/list-status")["default"];
     IconMdiMenu: typeof import("~icons/mdi/menu")["default"];
     IconMdiOpenInNew: typeof import("~icons/mdi/open-in-new")["default"];
+    IconMdiPlay: typeof import("~icons/mdi/play")["default"];
     IconMdiSortVariant: typeof import("~icons/mdi/sort-variant")["default"];
     IconMdiWeatherNight: typeof import("~icons/mdi/weather-night")["default"];
     IconMdiWhiteBalanceSunny: typeof import("~icons/mdi/white-balance-sunny")["default"];
