@@ -150,7 +150,7 @@ hangar:
     api:
       url: "http://localhost:8000"
       # avatar-url: "http://localhost:8000/avatar/%s?size=120x120" # only comment in if you run auth locally
-      avatar-url: "https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png"
+      avatar-url: "https://docs.papermc.io/img/paper.png"
       timeout: 10000
     safe-download-hosts:
       - "github.com"

@@ -10,7 +10,7 @@ export function useSeo(
 ): HeadObject {
   description = description || "Plugin repository for Paper plugins and more!";
   const canonical = baseUrl() + (route.fullPath.endsWith("/") ? route.fullPath : `${route.fullPath}/`);
-  image = image || "https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png";
+  image = image || "https://docs.papermc.io/img/paper.png";
   image = image.startsWith("http") ? image : baseUrl() + image;
   const seo = {
     title,

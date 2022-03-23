@@ -41,7 +41,7 @@ const navBarMenuLinksMoreFromPaper = [
   { link: "https://papermc.io/", label: t("nav.hangar.home"), icon: IconMdiHome },
   { link: "https://forums.papermc.io/", label: t("nav.hangar.forums"), icon: IconMdiForum },
   { link: "https://github.com/PaperMC", label: t("nav.hangar.code"), icon: IconMdiCodeBraces },
-  { link: "https://paper.readthedocs.io/en/latest/", label: t("nav.hangar.docs"), icon: IconMdiBookOpen },
+  { link: "https://docs.papermc.io/", label: t("nav.hangar.docs"), icon: IconMdiBookOpen },
   { link: "https://papermc.io/javadocs", label: t("nav.hangar.javadocs"), icon: IconMdiLanguageJava },
   { link: "/", label: t("nav.hangar.hangar"), icon: IconMdiPuzzle },
   { link: "https://papermc.io/downloads", label: t("nav.hangar.downloads"), icon: IconMdiDownloadCircle },

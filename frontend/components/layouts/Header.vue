@@ -99,7 +99,7 @@
                             <img
                                 :src="$util.avatarUrl(currentUser.name)"
                                 :alt="currentUser.name"
-                                @error="$event.target.src = 'https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png'"
+                                @error="$event.target.src = 'https://docs.papermc.io/img/paper.png'"
                             />
                         </v-avatar>
                     </v-badge>
@@ -178,7 +178,7 @@ export default class Header extends HangarComponent {
             title: this.$t('nav.hangar.code'),
         });
         controls.push({
-            link: 'https://paper.readthedocs.io',
+            link: 'https://docs.papermc.io/',
             icon: 'mdi-book',
             title: this.$t('nav.hangar.docs'),
         });

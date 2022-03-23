@@ -32,7 +32,7 @@ export default class UserAvatar extends Vue {
 
     get src(): string {
         if (this.errored) {
-            return 'https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png';
+            return 'https://docs.papermc.io/img/paper.png';
         } else if (this.imgSrc) {
             return this.imgSrc;
         } else if (this.avatarUrl) {

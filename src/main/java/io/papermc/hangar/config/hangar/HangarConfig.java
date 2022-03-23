@@ -18,7 +18,7 @@ import java.util.List;
 @ComponentScan("io.papermc.hangar")
 public class HangarConfig {
 
-    private String logo = "https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png";
+    private String logo = "https://docs.papermc.io/img/paper.png";
     private String service = "Hangar";
     private List<Sponsor> sponsors;
 
