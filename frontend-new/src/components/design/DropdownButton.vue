@@ -15,7 +15,7 @@ const props = withDefaults(
 
 <template>
   <Menu v-slot="{ open }">
-    <MenuButton class="px-4 py-2 rounded bg-primary-100 text-white font-semibold inline-flex items-center">
+    <MenuButton class="p-2 rounded bg-primary-100 text-white font-semibold inline-flex items-center" hover="bg-primary-50 text-primary-100">
       <span class="mx-1">{{ props.name }}</span>
       <IconMdiMenuUp v-if="open" class="text-lg"></IconMdiMenuUp>
       <IconMdiMenuDown v-else class="text-lg"></IconMdiMenuDown>
