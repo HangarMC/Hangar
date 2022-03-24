@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed, PropType } from "vue";
-import { Project } from "hangar-api";
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { forumUrl } from "~/composables/useUrlHelper";
 import Card from "~/components/design/Card.vue";
@@ -9,13 +8,11 @@ import DropdownButton from "~/components/design/DropdownButton.vue";
 import DropdownItem from "~/components/design/DropdownItem.vue";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
+import { HangarProject } from "hangar-internal";
 
-const props = defineProps({
-  project: {
-    type: Object as PropType<Project>,
-    required: true,
-  },
-});
+const props = defineProps<{
+  project: HangarProject;
+}>();
 const i18n = useI18n();
 const slug = computed(() => props.project.namespace.owner + "/" + props.project.name);
 </script>
@@ -64,10 +61,10 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
     <template #footer>
       <DropdownButton v-if="hasPerms(NamedPermission.IS_STAFF)" :name="i18n.t('project.actions.adminActions')">
         <DropdownItem :to="`/${slug}/flags`">
-          {{ i18n.t("project.actions.flagHistory" /* , [project.info.flagCount] */) }}
+          {{ i18n.t("project.actions.flagHistory", [project.info.flagCount]) }}
         </DropdownItem>
         <DropdownItem :to="`/${slug}/notes`">
-          {{ i18n.t("project.actions.staffNotes" /* , [project.info.noteCount] */) }}
+          {{ i18n.t("project.actions.staffNotes", [project.info.noteCount]) }}
         </DropdownItem>
         <DropdownItem :to="`/admin/log/?projectFilter=/${slug}`">
           {{ i18n.t("project.actions.userActionLogs") }}

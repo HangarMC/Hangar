@@ -20,10 +20,10 @@ const imageUrl = computed(() => {
     <div class="flex">
       <UserAvatar :username="project.namespace.owner" :to="'/' + project.namespace.owner + '/' + project.name" :img-src="imageUrl"></UserAvatar>
       <div class="flex-grow mx-4">
-        <p class="text-2xl">
+        <p class="text-2xl pb-1">
           <router-link :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</router-link>
           <span class="text-gray-500 dark:text-gray-400"> / </span>
-          <span class="text-medium">{{ project.name }}</span>
+          <span class="font-semibold">{{ project.name }}</span>
         </p>
         <p>{{ project.description }}</p>
       </div>
