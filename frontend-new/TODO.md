@@ -102,11 +102,11 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
     - [x] functionality
     - [ ] design (ugly text area)
     - [ ] qa
-- [user]
-  - [ ] fetch
-  - [ ] layout
-  - [ ] functionality
-  - [ ] design
+- [user] (was filled in old but kinda empty in new)
+  - [x] fetch
+  - [x] layout
+  - [x] functionality
+  - [x] design
   - [ ] qa
   * index
     - [ ] fetch
@@ -122,10 +122,10 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
       - [x] design
       - [ ] qa
   * [project]
-    - [ ] fetch
-    - [ ] layout
-    - [ ] functionality
-    - [ ] design
+    - [x] fetch
+    - [x] layout
+    - [x] functionality
+    - [ ] design (nav might need some work)
     - [ ] qa
     * channels
       - [x] fetch
