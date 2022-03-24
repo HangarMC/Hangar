@@ -77,6 +77,8 @@ export const useBackendDataStore = defineStore("backendData", () => {
       await fetchIfNeeded(async () => await useInternalApi<AnnouncementObject[]>("data/announcements", false), announcements);
 
       await fetchIfNeeded(async () => await useInternalApi<IVisibility[]>("data/visibilities", false), visibilities);
+
+      await fetchIfNeeded(async () => await useInternalApi("data/validations", false), validations);
     } catch (e) {
       console.error("ERROR FETCHING BACKEND DATA");
       console.error(e);

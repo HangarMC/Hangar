@@ -128,10 +128,10 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
     - [ ] design
     - [ ] qa
     * channels
-      - [ ] fetch
-      - [ ] layout
-      - [ ] functionality
-      - [ ] design
+      - [x] fetch
+      - [x] layout
+      - [ ] functionality (modal is missing)
+      - [x] design
       - [ ] qa
     * discuss
       - [ ] fetch
@@ -155,7 +155,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
       - [x] fetch
       - [x] layout
       - [x] functionality
-      - [x] design 
+      - [x] design
       - [ ] qa
     * settings
       - [ ] fetch

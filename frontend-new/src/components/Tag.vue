@@ -3,10 +3,10 @@ import { Tag } from "hangar-api";
 import { computed } from "vue";
 
 const props = defineProps<{
-  name: string;
-  data: string;
-  color: { foreground?: string; background: string };
-  tag: Tag;
+  name?: string;
+  data?: string;
+  color?: { foreground?: string; background: string };
+  tag?: Tag;
   shortForm?: boolean;
 }>();
 

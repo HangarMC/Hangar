@@ -1,7 +1,7 @@
 import { useApi, useInternalApi } from "~/composables/useApi";
 import { PaginatedResult, Project, User } from "hangar-api";
 import { useInitialState } from "~/composables/useInitialState";
-import { Flag, HangarNotification, HangarProject, HealthReport, Invites, LoggedAction, Note, ReviewQueueEntry } from "hangar-internal";
+import { Flag, HangarNotification, HangarProject, HealthReport, Invites, LoggedAction, Note, ProjectChannel, ReviewQueueEntry } from "hangar-internal";
 
 export async function useProjects(pagination = { limit: 25, offset: 0 }, blocking = true) {
   return useInitialState("useProjects", () => useApi<PaginatedResult<Project>>("projects", false, "get", pagination), blocking);
@@ -49,6 +49,10 @@ export async function useProjectFlags(projectId: number, blocking = true) {
 
 export async function useProjectNotes(projectId: number, blocking = true) {
   return useInitialState("useProjectNotes", () => useInternalApi<Note[]>("projects/notes/" + projectId, false), blocking);
+}
+
+export async function useProjectChannels(user: string, project: string, blocking = true) {
+  return useInitialState("useProjectChannels", () => useInternalApi<ProjectChannel[]>(`channels/${user}/${project}`, false), blocking);
 }
 
 export async function useHealthReport(blocking = true) {
