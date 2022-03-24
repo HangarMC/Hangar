@@ -135,8 +135,8 @@ authLog("render with user " + authStore.user?.name);
       <div class="flex items-center gap-2">
         <div v-if="authStore.user" class="flex items-center">
           <DropdownButton name="Create">
-            <DropdownItem>Create project</DropdownItem>
-            <DropdownItem>Create organization</DropdownItem>
+            <DropdownItem>{{ t("nav.new.project") }}</DropdownItem>
+            <DropdownItem>{{ t("nav.new.organization") }}</DropdownItem>
           </DropdownButton>
         </div>
         <button class="flex rounded-md p-2" hover="text-primary-100 bg-primary-50" @click="theme.toggleDarkMode()">
@@ -155,18 +155,18 @@ authLog("render with user " + authStore.user?.name);
             <MenuItems
               class="absolute top-24 flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-100 bg-background-light-0 dark:bg-background-dark-80 shadow-soft"
             >
-              <DropdownItem>Profile</DropdownItem>
-              <DropdownItem>Notifications</DropdownItem>
+              <DropdownItem>{{ t("nav.user.profile") }}</DropdownItem>
+              <DropdownItem>{{ t("nav.user.notifications") }}</DropdownItem>
               <hr />
-              <DropdownItem>Flags</DropdownItem>
-              <DropdownItem>Project approvals</DropdownItem>
-              <DropdownItem>Version approvals</DropdownItem>
-              <DropdownItem>Stats</DropdownItem>
-              <DropdownItem>Hangar health</DropdownItem>
-              <DropdownItem>User action log</DropdownItem>
-              <DropdownItem>Platform versions</DropdownItem>
+              <DropdownItem>{{ t("nav.user.flags") }}</DropdownItem>
+              <DropdownItem>{{ t("nav.user.projectApprovals") }}</DropdownItem>
+              <DropdownItem>{{ t("nav.user.versionApprovals") }}</DropdownItem>
+              <DropdownItem>{{ t("nav.user.stats") }}</DropdownItem>
+              <DropdownItem>{{ t("nav.user.health") }}</DropdownItem>
+              <DropdownItem>{{ t("nav.user.log") }}</DropdownItem>
+              <DropdownItem>{{ t("nav.user.platformVersions") }}</DropdownItem>
               <hr />
-              <DropdownItem>Sign out</DropdownItem>
+              <DropdownItem>{{ t("nav.user.logout") }}</DropdownItem>
             </MenuItems>
           </Menu>
         </div>
