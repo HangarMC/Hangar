@@ -55,6 +55,7 @@
     "login": "Login",
     "signup": "Signup",
     "user": {
+      "profile": "Profile",
       "notifications": "Notifications",
       "flags": "Flags",
       "projectApprovals": "Project approvals",
