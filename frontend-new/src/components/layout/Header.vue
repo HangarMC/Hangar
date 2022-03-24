@@ -166,7 +166,7 @@ authLog("render with user " + authStore.user?.name);
               <DropdownItem>{{ t("nav.user.log") }}</DropdownItem>
               <DropdownItem>{{ t("nav.user.platformVersions") }}</DropdownItem>
               <hr />
-              <DropdownItem>{{ t("nav.user.logout") }}</DropdownItem>
+              <DropdownItem @click="auth.logout()">{{ t("nav.user.logout") }}</DropdownItem>
             </MenuItems>
           </Menu>
         </div>

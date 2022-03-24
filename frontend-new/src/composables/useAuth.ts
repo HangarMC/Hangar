@@ -17,6 +17,11 @@ class Auth {
     return await this.updateUser(token);
   }
 
+  async logout() {
+    const token = await useApiToken(true);
+    location.replace(`/logout?returnUrl=${import.meta.env.HANGAR_PUBLIC_HOST}/logged-out&t=${token}`);
+  }
+
   async invalidate(shouldRedirect = true) {
     useAuthStore().$patch({
       user: null,
