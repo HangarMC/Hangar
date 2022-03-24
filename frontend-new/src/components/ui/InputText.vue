@@ -18,6 +18,6 @@ const props = defineProps<{
   <!-- todo make fancy -->
   <label>
     <template v-if="label">{{ label }}</template>
-    <input v-model="value" type="text" class="ml-2" v-bind="$attrs" />
+    <input v-model="value" type="text" :class="'w-full' + (label ? ' ml-2' : '')" v-bind="$attrs" />
   </label>
 </template>

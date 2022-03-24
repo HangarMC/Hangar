@@ -10,11 +10,10 @@ const ctx = useContext();
 const i18n = useI18n();
 const user = await useUser(useRoute().params.user as string).catch((e) => handleRequestError(e, ctx, i18n));
 if (!user) {
-  useRouter().push(useErrorRedirect(useRoute(), 404, "Not found"));
+  await useRouter().push(useErrorRedirect(useRoute(), 404, "Not found"));
 }
 </script>
 
 <template>
-  <div>user parent</div>
-  <router-view :user="user"></router-view>
+  <router-view v-if="user" :user="user"></router-view>
 </template>

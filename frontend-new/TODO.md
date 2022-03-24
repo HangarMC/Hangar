@@ -99,8 +99,8 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
   - bbcode
     - [x] fetch
     - [x] layout
-    - [ ] functionality (pending CORS)
-    - [ ] design
+    - [x] functionality
+    - [ ] design (ugly text area)
     - [ ] qa
 - [user]
   - [ ] fetch
@@ -140,10 +140,10 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
       - [ ] design
       - [ ] qa
     * flags
-      - [ ] fetch
-      - [ ] layout
-      - [ ] functionality
-      - [ ] design
+      - [x] fetch
+      - [x] layout
+      - [x] functionality
+      - [x] design
       - [ ] qa
     * index
       - [ ] fetch
@@ -152,10 +152,10 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
       - [ ] design
       - [ ] qa
     * notes
-      - [ ] fetch
-      - [ ] layout
-      - [ ] functionality
-      - [ ] design
+      - [x] fetch
+      - [x] layout
+      - [x] functionality
+      - [x] design 
       - [ ] qa
     * settings
       - [ ] fetch
@@ -242,7 +242,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
   - versions
     - [x] fetch
     - [x] layout
-    - [x] functionality (cors error)
+    - [x] functionality
     - [x] design
     - [ ] qa
   - activities (empty)

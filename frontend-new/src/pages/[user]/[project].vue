@@ -22,12 +22,12 @@ const i18n = useI18n();
 const route = useRoute();
 const project = await useProject(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e, ctx, i18n));
 if (!project) {
-  useRouter().push(useErrorRedirect(route, 404, "Not found"));
+  await useRouter().push(useErrorRedirect(route, 404, "Not found"));
 }
 </script>
 
 <template>
-  <div>
+  <div v-if="project">
     <ProjectHeader :project="project"></ProjectHeader>
     <ProjectNav :project="project"></ProjectNav>
     <router-view :user="user" :project="project"></router-view>

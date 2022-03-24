@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import ProjectNavItem from "~/components/projects/ProjectNavItem.vue";
-import { Project } from "hangar-api";
 import { computed } from "vue";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
 import { useI18n } from "vue-i18n";
+import { HangarProject } from "hangar-internal";
 
 const props = defineProps<{
-  project: Project;
+  project: HangarProject;
 }>();
 const i18n = useI18n();
 

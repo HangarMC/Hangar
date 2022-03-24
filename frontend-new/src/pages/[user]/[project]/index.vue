@@ -1,20 +1,14 @@
 <script lang="ts" setup>
-import { PropType } from "vue";
 import { Project, User } from "hangar-api";
 import Card from "~/components/design/Card.vue";
 import { useI18n } from "vue-i18n";
 import ProjectInfo from "~/components/projects/ProjectInfo.vue";
+import { HangarProject } from "hangar-internal";
 
-defineProps({
-  user: {
-    type: Object as PropType<User>,
-    required: true,
-  },
-  project: {
-    type: Object as PropType<Project>,
-    required: true,
-  },
-});
+const props = defineProps<{
+  user: User;
+  project: HangarProject;
+}>();
 const i18n = useI18n();
 </script>
 

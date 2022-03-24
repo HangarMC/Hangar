@@ -1,7 +1,7 @@
 import { useApi, useInternalApi } from "~/composables/useApi";
 import { PaginatedResult, Project, User } from "hangar-api";
 import { useInitialState } from "~/composables/useInitialState";
-import { Flag, HangarNotification, HealthReport, Invites, LoggedAction, ReviewQueueEntry } from "hangar-internal";
+import { Flag, HangarNotification, HangarProject, HealthReport, Invites, LoggedAction, Note, ReviewQueueEntry } from "hangar-internal";
 
 export async function useProjects(pagination = { limit: 25, offset: 0 }, blocking = true) {
   return useInitialState("useProjects", () => useApi<PaginatedResult<Project>>("projects", false, "get", pagination), blocking);
@@ -12,7 +12,7 @@ export async function useUser(user: string, blocking = true) {
 }
 
 export async function useProject(user: string, project: string, blocking = true) {
-  return useInitialState("useProject", () => useApi<Project>("projects/" + user + "/" + project, false), blocking);
+  return useInitialState("useProject", () => useInternalApi<HangarProject>("projects/project/" + user + "/" + project, false), blocking);
 }
 
 export async function useStargazers(user: string, project: string, blocking = true) {
@@ -41,6 +41,14 @@ export async function useNotifications(blocking = true) {
 
 export async function useFlags(blocking = true) {
   return useInitialState("useFlags", () => useInternalApi<Flag[]>("flags/", false), blocking);
+}
+
+export async function useProjectFlags(projectId: number, blocking = true) {
+  return useInitialState("useProjectFlags", () => useInternalApi<Flag[]>("flags/" + projectId, false), blocking);
+}
+
+export async function useProjectNotes(projectId: number, blocking = true) {
+  return useInitialState("useProjectNotes", () => useInternalApi<Note[]>("projects/notes/" + projectId, false), blocking);
 }
 
 export async function useHealthReport(blocking = true) {

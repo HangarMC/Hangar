@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import { computed, PropType } from "vue";
-import { Project } from "hangar-api";
+import { computed } from "vue";
 import UserAvatar from "~/components/UserAvatar.vue";
 import Button from "~/components/design/Button.vue";
 import Card from "~/components/design/Card.vue";
 import { projectIconUrl } from "~/composables/useUrlHelper";
+import { HangarProject } from "hangar-internal";
 
-const props = defineProps({
-  project: {
-    type: Object as PropType<Project>,
-    required: true,
-  },
-});
+const props = defineProps<{
+  project: HangarProject;
+}>();
 
 const imageUrl = computed(() => {
   return projectIconUrl(props.project.namespace.owner, props.project.name);
