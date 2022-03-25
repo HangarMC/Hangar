@@ -33,7 +33,7 @@
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
         <flexmark-all.version>0.62.2</flexmark-all.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
-        <org-json.version>20210307</org-json.version>
+        <org-json.version>20220320</org-json.version>
 
         <apache-commons-lang.version>3.12.0</apache-commons-lang.version>
         <jwt.version>3.17.0</jwt.version>
