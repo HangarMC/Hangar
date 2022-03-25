@@ -4,7 +4,7 @@ import { computed, ref } from "vue";
 import { IPlatform, IProjectCategory, IPrompt, IVisibility } from "hangar-internal";
 import { NamedPermission, Platform, ProjectCategory, Prompt } from "~/types/enums";
 
-import { Announcement as AnnouncementObject, Announcement, IPermission } from "hangar-api";
+import { Announcement as AnnouncementObject, Announcement, IPermission, Role } from "hangar-api";
 import { fetchIfNeeded, useInternalApi } from "~/composables/useApi";
 
 interface Validation {
@@ -40,6 +40,7 @@ export const useBackendDataStore = defineStore("backendData", () => {
   const announcements = ref<Announcement[]>([]);
   const visibilities = ref<IVisibility[]>([]);
   const licenses = ref<string[]>([]);
+  const orgRoles = ref<Role[]>([]);
 
   async function initBackendData() {
     try {
@@ -79,6 +80,8 @@ export const useBackendDataStore = defineStore("backendData", () => {
       await fetchIfNeeded(async () => await useInternalApi<IVisibility[]>("data/visibilities", false), visibilities);
 
       await fetchIfNeeded(async () => await useInternalApi("data/validations", false), validations);
+
+      await fetchIfNeeded(async () => await useInternalApi("data/orgRoles", false), validations);
     } catch (e) {
       console.error("ERROR FETCHING BACKEND DATA");
       console.error(e);
@@ -97,6 +100,7 @@ export const useBackendDataStore = defineStore("backendData", () => {
     licenses,
     announcements,
     visibilities,
+    orgRoles,
     initBackendData,
     visibleCategories,
     visiblePlatforms,

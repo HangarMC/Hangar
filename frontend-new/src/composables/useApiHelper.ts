@@ -1,7 +1,18 @@
 import { useApi, useInternalApi } from "~/composables/useApi";
-import { PaginatedResult, Project, User } from "hangar-api";
+import { PaginatedResult, Project, ProjectCompact, Role, User } from "hangar-api";
 import { useInitialState } from "~/composables/useInitialState";
-import { Flag, HangarNotification, HangarProject, HealthReport, Invites, LoggedAction, Note, ProjectChannel, ReviewQueueEntry } from "hangar-internal";
+import {
+  Flag,
+  HangarNotification,
+  HangarProject,
+  HealthReport,
+  Invites,
+  LoggedAction,
+  Note,
+  ProjectChannel,
+  ReviewQueueEntry,
+  RoleTable,
+} from "hangar-internal";
 
 export async function useProjects(pagination = { limit: 25, offset: 0 }, blocking = true) {
   return useInitialState("useProjects", () => useApi<PaginatedResult<Project>>("projects", false, "get", pagination), blocking);
@@ -67,6 +78,38 @@ export async function useVersionApprovals(blocking = true) {
   return useInitialState(
     "useVersionApprovals",
     () => useInternalApi<{ underReview: ReviewQueueEntry[]; notStarted: ReviewQueueEntry[] }>("admin/approval/versions", false),
+    blocking
+  );
+}
+
+export async function useOrgVisibility(user: string, blocking = true) {
+  return useInitialState(
+    "useOrgVisibility",
+    () => useInternalApi<{ [key: string]: boolean }>(`organizations/${user}/userOrganizationsVisibility`, true),
+    blocking
+  );
+}
+
+export async function useUserData(user: string, blocking = true) {
+  return useInitialState(
+    "useUserData",
+    async () => {
+      // noinspection ES6MissingAwait
+      const data = await Promise.all([
+        useApi<PaginatedResult<ProjectCompact>>(`users/${user}/starred`, false),
+        useApi<PaginatedResult<ProjectCompact>>(`users/${user}/watching`, false),
+        useApi<PaginatedResult<Project>>(`projects`, false, "get", {
+          owner: user,
+        }),
+        useInternalApi<{ [key: string]: RoleTable }>(`organizations/${user}/userOrganizations`, false),
+      ] as Promise<any>[]);
+      return {
+        starred: data[0] as PaginatedResult<ProjectCompact>,
+        watching: data[1] as PaginatedResult<ProjectCompact>,
+        projects: data[2] as PaginatedResult<Project>,
+        organizations: data[3] as { [key: string]: RoleTable },
+      };
+    },
     blocking
   );
 }
