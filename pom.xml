@@ -26,7 +26,7 @@
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 
         <!-- dependency management -->
-        <jdbi3-bom.version>3.20.1</jdbi3-bom.version>
+        <jdbi3-bom.version>3.28.0</jdbi3-bom.version>
         <configurate.version>4.1.1</configurate.version>
 
         <!-- dependencies -->
