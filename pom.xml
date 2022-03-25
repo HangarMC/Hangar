@@ -36,7 +36,7 @@
         <org-json.version>20210307</org-json.version>
 
         <apache-commons-lang.version>3.12.0</apache-commons-lang.version>
-        <jwt.version>3.17.0</jwt.version>
+        <jwt.version>3.19.0</jwt.version>
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
