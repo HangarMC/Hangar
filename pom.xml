@@ -31,7 +31,7 @@
 
         <!-- dependencies -->
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
-        <flexmark-all.version>0.62.2</flexmark-all.version>
+        <flexmark-all.version>0.64.0</flexmark-all.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20210307</org-json.version>
 
