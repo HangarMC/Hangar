@@ -27,7 +27,7 @@
 
         <!-- dependency management -->
         <jdbi3-bom.version>3.20.1</jdbi3-bom.version>
-        <configurate.version>4.1.1</configurate.version>
+        <configurate.version>4.1.2</configurate.version>
 
         <!-- dependencies -->
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
