@@ -7,7 +7,7 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 20
   - package-ecosystem: "npm"
-    directory: "/frontend/"
+    directory: "/frontend-new/"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 20
