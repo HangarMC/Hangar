@@ -34,6 +34,7 @@ public abstract class HangarComponent {
     @Autowired
     protected HangarConfig config;
 
+    @Lazy // UserActionLogService is a HangarComponent too...
     @Autowired
     protected UserActionLogService actionLogger;
 

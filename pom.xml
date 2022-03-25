@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.2</version>
+        <version>2.6.5</version>
         <relativePath/>
     </parent>
 
@@ -26,20 +26,20 @@
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 
         <!-- dependency management -->
-        <jdbi3-bom.version>3.20.1</jdbi3-bom.version>
-        <configurate.version>4.1.1</configurate.version>
+        <jdbi3-bom.version>3.28.0</jdbi3-bom.version>
+        <configurate.version>4.1.2</configurate.version>
 
         <!-- dependencies -->
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
-        <flexmark-all.version>0.62.2</flexmark-all.version>
+        <flexmark-all.version>0.64.0</flexmark-all.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
-        <org-json.version>20210307</org-json.version>
+        <org-json.version>20220320</org-json.version>
 
         <apache-commons-lang.version>3.12.0</apache-commons-lang.version>
-        <jwt.version>3.17.0</jwt.version>
+        <jwt.version>3.19.0</jwt.version>
 
         <!-- plugins -->
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
     </properties>
 
     <dependencyManagement>
