@@ -17,7 +17,6 @@ import Container from "~/components/design/Container.vue";
             </div>
           </transition>
         </router-view>
-        <template #fallback> Loading...</template>
       </Suspense>
     </Container>
     <Footer />

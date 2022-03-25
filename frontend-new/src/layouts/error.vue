@@ -10,7 +10,6 @@
             </div>
           </transition>
         </router-view>
-        <template #fallback> Loading...</template>
       </Suspense>
     </div>
   </main>

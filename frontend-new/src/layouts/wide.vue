@@ -16,7 +16,6 @@ import Footer from "~/components/layout/Footer.vue";
             </div>
           </transition>
         </router-view>
-        <template #fallback> Loading...</template>
       </Suspense>
     </div>
     <Footer />
