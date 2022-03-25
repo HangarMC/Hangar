@@ -10,6 +10,7 @@ COPY /docker/deployment/hangar-frontend/entrypoint.sh /hangar-frontend/entrypoin
 RUN chmod +x /hangar-frontend/entrypoint.sh
 
 COPY /frontend-new/package.json /hangar-frontend/package.json
+COPY /frontend-new/proxy.config.ts /hangar-frontend/proxy.config.ts
 COPY /frontend-new/pnpm-lock.yaml /hangar-frontend/pnpm-lock.yaml
 COPY /frontend-new/dist/ /hangar-frontend/dist/
 COPY /frontend-new/node_modules/ /hangar-frontend/node_modules/

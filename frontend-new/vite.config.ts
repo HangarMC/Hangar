@@ -15,9 +15,10 @@ import Layouts from "vite-plugin-vue-layouts";
 import WindiCSS from "vite-plugin-windicss";
 import viteSSR from "vite-ssr/plugin";
 import prettier from "./src/plugins/prettier";
-
-const proxyHost = process.env.proxyHost || "http://localhost:8080";
-const authHost = process.env.authHost || "http://localhost:3001";
+// seriously? just shit up, lol
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { default as proxyConfig } from "./proxy.config";
 
 export default defineConfig({
   resolve: {
@@ -133,26 +134,7 @@ export default defineConfig({
   envPrefix: "HANGAR",
 
   server: {
-    proxy: {
-      // backend
-      "/api/": proxyHost,
-      "/signup": proxyHost,
-      "/login": proxyHost,
-      "/logout": proxyHost,
-      "/handle-logout": proxyHost,
-      "/refresh": proxyHost,
-      "/invalidate": proxyHost,
-      "/v2/api-docs/": proxyHost,
-      "/robots.txt": proxyHost,
-      "/sitemap.xml": proxyHost,
-      "/global-sitemap.xml": proxyHost,
-      "/*/sitemap.xml": proxyHost,
-      "/statusz": proxyHost,
-      // auth
-      "/avatar": authHost,
-      "/oauth/logout": authHost,
-      "/oauth2": authHost,
-    },
+    proxy: proxyConfig.default,
   },
 
   // ssr options aren't part of release types for vite cause its still marked as experimental

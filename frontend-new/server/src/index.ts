@@ -1,6 +1,7 @@
 import path from "path";
 import express, { Request, Response } from "express";
 import compression from "compression";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 const dist = `../../dist`;
 
@@ -16,6 +17,10 @@ const manifest = require(`${dist}/client/ssr-manifest.json`);
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { default: renderPage } = require(`${dist}/server`);
 
+// vite config
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const proxyConfig = require(`${dist}/../proxy.config.ts`).default;
+
 const server = express();
 
 // gzip is cool
@@ -24,6 +29,11 @@ server.use(compression());
 // Serve every static asset route
 for (const asset of ssr.assets || []) {
   server.use("/" + asset, express.static(path.join(__dirname, `${dist}/client/` + asset)));
+}
+
+// proxy
+for (const proxy of Object.keys(proxyConfig)) {
+  server.use(createProxyMiddleware(proxy, {target: proxyConfig[proxy] }))
 }
 
 // main
