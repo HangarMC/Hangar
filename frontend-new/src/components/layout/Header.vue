@@ -22,6 +22,9 @@ import { useAuthStore } from "~/store/auth";
 import { useAuth } from "~/composables/useAuth";
 import { useBackendDataStore } from "~/store/backendData";
 import { authLog } from "~/composables/useLog";
+import { Meta } from "~/main";
+import { useRequest } from "~/composables/useResReq";
+import { useContext } from "vite-ssr/vue";
 
 const theme = useThemeStore();
 const { t } = useI18n();

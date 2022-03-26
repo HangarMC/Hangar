@@ -6,6 +6,7 @@ import { useAxios } from "~/composables/useAxios";
 import { useApiToken } from "~/composables/useApiToken";
 import { authLog } from "~/composables/useLog";
 import { HangarUser } from "hangar-internal";
+import { useRequest } from "~/composables/useResReq";
 
 class Auth {
   loginUrl(redirectUrl: string): string {
@@ -13,7 +14,7 @@ class Auth {
   }
 
   async processLogin(token: string): Promise<void> {
-    useAuthStore().$patch({ authenticated: true });
+    useAuthStore(this.usePiniaIfPresent()).$patch({ authenticated: true });
     return await this.updateUser(token);
   }
 
@@ -23,7 +24,7 @@ class Auth {
   }
 
   async invalidate(shouldRedirect = true) {
-    useAuthStore().$patch({
+    useAuthStore(this.usePiniaIfPresent()).$patch({
       user: null,
       token: null,
       authenticated: false,
@@ -41,12 +42,12 @@ class Auth {
     const user = await useInternalApi<HangarUser>("users/@me", true, "get", {}, {}, token).catch(async (err) => {
       console.log(err);
       console.log("LOGGING OUT ON updateUser");
-      return await this.invalidate(!import.meta.env.SSR);
+      return this.invalidate(!import.meta.env.SSR);
     });
     if (user) {
       authLog("patching " + user.name);
-      useAuthStore().setUser(user);
-      authLog("user is now " + useAuthStore().user?.name);
+      useAuthStore(this.usePiniaIfPresent()).setUser(user);
+      authLog("user is now " + useAuthStore(this.usePiniaIfPresent()).user?.name);
     }
   }
 
@@ -56,7 +57,11 @@ class Auth {
       authLog("Got no token in refreshUser, invalidate!");
       return this.invalidate(!import.meta.env.SSR);
     }
-    return useAuthStore().authenticated ? await this.updateUser(token) : await this.processLogin(token);
+    return useAuthStore(this.usePiniaIfPresent()).authenticated ? this.updateUser(token) : this.processLogin(token);
+  }
+
+  usePiniaIfPresent() {
+    return useRequest()?.pinia;
   }
 }
 

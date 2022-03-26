@@ -34,6 +34,7 @@ export const install: UserModule = async ({ request, response, router, redirect 
 };
 
 async function handleLogin(request: Context["request"], response: Context["response"]) {
+  authLog("set request");
   set(request, response);
   if (useCookies().get("HangarAuth_REFRESH")) {
     authLog("Got refresh cookie, calling refresh...");
@@ -43,6 +44,7 @@ async function handleLogin(request: Context["request"], response: Context["respo
     await useAuth.refreshUser();
   }
   unset();
+  authLog("unset request");
 }
 
 async function loadPerms(to: RouteLocationNormalized) {

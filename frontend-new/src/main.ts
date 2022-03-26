@@ -33,7 +33,7 @@ export default viteSSR(App, options, async (ctx) => {
   // install all modules under `modules/`
   Object.values(import.meta.globEager("./modules/*.ts")).map((i) => i.install?.(ctx));
 
-  const { app, initialState, initialRoute } = ctx;
+  const { app, initialState, initialRoute, request } = ctx;
 
   app.component(ClientOnly.name, ClientOnly);
 
@@ -56,6 +56,8 @@ export default viteSSR(App, options, async (ctx) => {
 
   if (import.meta.env.SSR) {
     initialState.pinia = pinia.state.value;
+    request.ctx = ctx;
+    request.pinia = pinia;
   }
 
   return { head };

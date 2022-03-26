@@ -177,10 +177,10 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
       - [ ] qa
     * pages (empty)
       - [...all]
-        - [ ] fetch
-        - [ ] layout
-        - [ ] functionality
-        - [ ] design
+        - [x] fetch
+        - [x] layout
+        - [ ] functionality (page editing, page creation, page deleting)
+        - [x] design
         - [ ] qa
     * versions (empty)
       - index
