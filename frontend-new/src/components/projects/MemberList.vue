@@ -7,6 +7,7 @@ import UserAvatar from "~/components/UserAvatar.vue";
 import Link from "~/components/design/Link.vue";
 import DropdownButton from "~/components/design/DropdownButton.vue";
 import DropdownItem from "~/components/design/DropdownItem.vue";
+import { avatarUrl } from "~/composables/useUrlHelper";
 
 const props = defineProps<{
   project: HangarProject;
@@ -26,7 +27,7 @@ const editing = ref(props.forceEdit);
         :key="member.user.name"
         class="p-2 w-full border border-neutral-100 dark:border-neutral-800 rounded inline-flex flex-row space-x-4"
       >
-        <UserAvatar :username="member.user.name" size="sm" />
+        <UserAvatar :username="member.user.name" :avatar-url="avatarUrl(member.user.name)" size="sm" />
         <div class="flex-grow">
           <p class="font-semibold">
             <Link :to="'/' + member.user.name">{{ member.user.name }}</Link>
@@ -34,6 +35,7 @@ const editing = ref(props.forceEdit);
           <p>{{ member.role.role.title }}</p>
         </div>
         <DropdownButton v-if="editing">
+          <!-- todo change role -->
           <DropdownItem @click="alert('OK!')">Change role</DropdownItem>
         </DropdownButton>
       </div>
