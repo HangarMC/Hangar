@@ -8,13 +8,11 @@ import MemberList from "~/components/projects/MemberList.vue";
 import MarkdownEditor from "~/components/MarkdownEditor.vue";
 import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
-import { usePage } from "~/composables/useApiHelper";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useContext } from "vite-ssr/vue";
-import { handleRequestError } from "~/composables/useErrorHandling";
-import { ref } from "vue";
 import Markdown from "~/components/Markdown.vue";
 import ProjectPageList from "~/components/projects/ProjectPageList.vue";
+import { useProjectPage } from "~/composables/useProjectPage";
 
 const props = defineProps<{
   user: User;
@@ -23,12 +21,8 @@ const props = defineProps<{
 const i18n = useI18n();
 const route = useRoute();
 const context = useContext();
-const page = await usePage(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e, context, i18n));
-const editingPage = ref(false);
-
-function savePage() {
-  // TODO mixin?
-}
+const router = useRouter();
+const { editingPage, open, savePage, page } = await useProjectPage(route, router, context, i18n, props.project);
 </script>
 
 <template>
@@ -52,7 +46,7 @@ function savePage() {
         <template #header>{{ i18n.t("project.promotedVersions") }}</template>
         <template #default>Promoted versions go here</template>
       </Card>
-      <ProjectPageList :project="project" />
+      <ProjectPageList :project="project" :open="open" />
       <MemberList :project="project" />
     </section>
   </div>

@@ -16,6 +16,7 @@ declare module "vue" {
     IconMdiKeyOutline: typeof import("~icons/mdi/key-outline")["default"];
     IconMdiListStatus: typeof import("~icons/mdi/list-status")["default"];
     IconMdiMenu: typeof import("~icons/mdi/menu")["default"];
+    IconMdiMenuDown: typeof import("~icons/mdi/menu-down")["default"];
     IconMdiOpenInNew: typeof import("~icons/mdi/open-in-new")["default"];
     IconMdiPencil: typeof import("~icons/mdi/pencil")["default"];
     IconMdiPlay: typeof import("~icons/mdi/play")["default"];

@@ -11,6 +11,7 @@ import { useRoute } from "vue-router";
 
 const props = defineProps<{
   project: HangarProject;
+  open: string[];
 }>();
 
 const i18n = useI18n();
@@ -24,7 +25,7 @@ const route = useRoute();
       {{ i18n.t("page.plural") }}
     </template>
 
-    <TreeView :items="project.pages" item-key="slug">
+    <TreeView :items="project.pages" item-key="slug" :open="open">
       <template #item="{ item }">
         <Link v-if="item.home" :to="`/${route.params.user}/${route.params.project}`" exact><IconMdiHome /> {{ item.name }}</Link>
         <Link v-else :to="`/${route.params.user}/${route.params.project}/pages/${item.slug}`" exact> {{ item.name }}</Link>
