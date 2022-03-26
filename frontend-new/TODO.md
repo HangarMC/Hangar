@@ -184,10 +184,10 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
         - [ ] qa
     * versions (empty)
       - index
-        - [ ] fetch
-        - [ ] layout
-        - [ ] functionality
-        - [ ] design
+        - [x] fetch
+        - [x] layout
+        - [ ] functionality (channel editing, pagination)
+        - [ ] design (don't like the version li yet)
         - [ ] qa
       - new
         - [ ] fetch

@@ -4,12 +4,16 @@
 
 declare module "vue" {
   export interface GlobalComponents {
+    IconMdiAccountArrowRight: typeof import("~icons/mdi/account-arrow-right")["default"];
+    IconMdiCalendar: typeof import("~icons/mdi/calendar")["default"];
     IconMdiCheckboxBlankCircleOutline: typeof import("~icons/mdi/checkbox-blank-circle-outline")["default"];
     IconMdiCheckCircle: typeof import("~icons/mdi/check-circle")["default"];
     IconMdiClipboardOutline: typeof import("~icons/mdi/clipboard-outline")["default"];
     IconMdiCloseCircle: typeof import("~icons/mdi/close-circle")["default"];
     IconMdiDelete: typeof import("~icons/mdi/delete")["default"];
+    IconMdiDownload: typeof import("~icons/mdi/download")["default"];
     IconMdiEye: typeof import("~icons/mdi/eye")["default"];
+    IconMdiFile: typeof import("~icons/mdi/file")["default"];
     IconMdiFileFind: typeof import("~icons/mdi/file-find")["default"];
     IconMdiFormatListNumbered: typeof import("~icons/mdi/format-list-numbered")["default"];
     IconMdiHome: typeof import("~icons/mdi/home")["default"];

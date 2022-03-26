@@ -1,5 +1,5 @@
 import { useApi, useInternalApi } from "~/composables/useApi";
-import { PaginatedResult, Project, ProjectCompact, User } from "hangar-api";
+import { PaginatedResult, Project, ProjectCompact, User, Version } from "hangar-api";
 import { useInitialState } from "~/composables/useInitialState";
 import {
   Flag,
@@ -65,6 +65,10 @@ export async function useProjectNotes(projectId: number, blocking = true) {
 
 export async function useProjectChannels(user: string, project: string, blocking = true) {
   return useInitialState("useProjectChannels", () => useInternalApi<ProjectChannel[]>(`channels/${user}/${project}`, false), blocking);
+}
+
+export async function useProjectVersions(user: string, project: string, blocking = true) {
+  return useInitialState("useProjectVersions", () => useApi<PaginatedResult<Version>>(`projects/${user}/${project}/versions`, false), blocking);
 }
 
 export async function usePage(user: string, project: string, path?: string, blocking = true) {
