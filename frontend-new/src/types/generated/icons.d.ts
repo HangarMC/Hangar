@@ -12,6 +12,7 @@ declare module "vue" {
     IconMdiEye: typeof import("~icons/mdi/eye")["default"];
     IconMdiFileFind: typeof import("~icons/mdi/file-find")["default"];
     IconMdiFormatListNumbered: typeof import("~icons/mdi/format-list-numbered")["default"];
+    IconMdiHome: typeof import("~icons/mdi/home")["default"];
     IconMdiKeyOutline: typeof import("~icons/mdi/key-outline")["default"];
     IconMdiListStatus: typeof import("~icons/mdi/list-status")["default"];
     IconMdiMenu: typeof import("~icons/mdi/menu")["default"];

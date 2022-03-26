@@ -51,7 +51,7 @@ async function submit(closeModal: () => void): Promise<void> {
       <Button class="mt-2 ml-2" @click="submit(on.click)">{{ i18n.t("general.submit") }}</Button>
     </template>
     <template #activator="{ on }">
-      <Button v-bind="$attrs" color="warning" class="mr-1" v-on="on">
+      <Button v-bind="$attrs" class="mr-1" v-on="on">
         <IconMdiEye />
         {{ i18n.t("visibility.modal.activatorBtn") }}
       </Button>

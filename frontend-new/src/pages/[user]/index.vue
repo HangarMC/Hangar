@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { User } from "hangar-api";
-import ProjectList from "~/components/ProjectList.vue";
+import ProjectList from "~/components/projects/ProjectList.vue";
 import Card from "~/components/design/Card.vue";
 import { useI18n } from "vue-i18n";
 import { avatarUrl } from "~/composables/useUrlHelper";

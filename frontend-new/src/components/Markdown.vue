@@ -81,13 +81,14 @@ function setupAdmonition() {
 </script>
 
 <template>
-  <div class="rounded">
+  <div class="markdown rounded p-4">
     <!-- eslint-disable-next-line vue/no-v-html -->
-    <div v-if="!loading" v-html="renderedMarkdown" />
+    <div v-if="!loading" v-bind="$attrs" v-html="renderedMarkdown" />
     <div v-else>Loading...</div>
   </div>
 </template>
 
-<style>
+<style lang="scss">
 @import "/src/assets/css/admonition.css";
+@import "/src/assets/css/markdown.scss";
 </style>

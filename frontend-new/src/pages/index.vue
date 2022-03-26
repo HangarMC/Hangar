@@ -3,7 +3,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import { useBackendDataStore } from "~/store/backendData";
-import ProjectList from "~/components/ProjectList.vue";
+import ProjectList from "~/components/projects/ProjectList.vue";
 import { useProjects } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
