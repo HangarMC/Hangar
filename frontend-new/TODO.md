@@ -196,14 +196,14 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
         - [ ] design
         - [ ] qa
       - [version]
-        - [ ] fetch
-        - [ ] layout
-        - [ ] functionality
+        - [x] fetch
+        - [ ] layout (do we wanna do tabs again?)
+        - [x] functionality
         - [ ] design
         - [ ] qa
         * [platform] (empty)
           - index
-            - [ ] fetch
+            - [x] fetch
             - [ ] layout
             - [ ] functionality
             - [ ] design

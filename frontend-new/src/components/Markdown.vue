@@ -21,7 +21,9 @@ async function fetch() {
     content: props.raw,
   }).catch<any>((e) => handleRequestError(e, ctx, i18n));
   loading.value = false;
-  await nextTick(setupAdmonition);
+  if (!import.meta.env.SSR) {
+    await nextTick(setupAdmonition);
+  }
 }
 await fetch();
 

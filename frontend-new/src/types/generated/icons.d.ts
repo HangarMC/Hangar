@@ -8,9 +8,11 @@ declare module "vue" {
     IconMdiCalendar: typeof import("~icons/mdi/calendar")["default"];
     IconMdiCheckboxBlankCircleOutline: typeof import("~icons/mdi/checkbox-blank-circle-outline")["default"];
     IconMdiCheckCircle: typeof import("~icons/mdi/check-circle")["default"];
+    IconMdiCheckCircleOutline: typeof import("~icons/mdi/check-circle-outline")["default"];
     IconMdiClipboardOutline: typeof import("~icons/mdi/clipboard-outline")["default"];
     IconMdiCloseCircle: typeof import("~icons/mdi/close-circle")["default"];
     IconMdiDelete: typeof import("~icons/mdi/delete")["default"];
+    IconMdiDiamondStone: typeof import("~icons/mdi/diamond-stone")["default"];
     IconMdiDownload: typeof import("~icons/mdi/download")["default"];
     IconMdiEye: typeof import("~icons/mdi/eye")["default"];
     IconMdiFile: typeof import("~icons/mdi/file")["default"];

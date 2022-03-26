@@ -5,6 +5,7 @@ import {
   Flag,
   HangarNotification,
   HangarProject,
+  HangarVersion,
   HealthReport,
   Invites,
   LoggedAction,
@@ -69,6 +70,14 @@ export async function useProjectChannels(user: string, project: string, blocking
 
 export async function useProjectVersions(user: string, project: string, blocking = true) {
   return useInitialState("useProjectVersions", () => useApi<PaginatedResult<Version>>(`projects/${user}/${project}/versions`, false), blocking);
+}
+
+export async function useProjectVersionsInternal(user: string, project: string, version: string, blocking = true) {
+  return useInitialState(
+    "useProjectVersions",
+    () => useInternalApi<HangarVersion[]>(`versions/version/${user}/${project}/versions/${version}`, false),
+    blocking
+  );
 }
 
 export async function usePage(user: string, project: string, path?: string, blocking = true) {
