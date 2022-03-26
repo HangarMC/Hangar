@@ -20,7 +20,7 @@ const props = withDefaults(
       <IconMdiMenuUp v-if="open" class="text-lg"></IconMdiMenuUp>
       <IconMdiMenuDown v-else class="text-lg"></IconMdiMenuDown>
     </MenuButton>
-    <MenuItems class="absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-100 bg-background-light-0 dark:bg-background-dark-80 shadow-soft">
+    <MenuItems class="absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-100 bg-background-light-0 dark:bg-background-dark-80 drop-shadow-xl">
       <slot></slot>
     </MenuItems>
   </Menu>

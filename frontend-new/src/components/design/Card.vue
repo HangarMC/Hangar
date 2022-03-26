@@ -7,7 +7,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div :class="'bg-white border-top-primary shadow-soft rounded-md p-4 overflow-auto ' + (props.class || '')" dark="bg-background-dark-90">
+  <div :class="'bg-white border-top-primary drop-shadow-xl rounded-md p-4 overflow-auto ' + (props.class || '')" dark="bg-background-dark-90">
     <div v-if="hasSlotContent($slots.header)" class="text-xl font-bold mb-2">
       <slot name="header"></slot>
     </div>

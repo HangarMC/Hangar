@@ -78,7 +78,7 @@ authLog("render with user " + authStore.user?.name);
             leave-to-class="translate-y-1 opacity-0"
           >
             <PopoverPanel
-              class="fixed z-10 w-9/10 background-header top-1/14 left-1/20 shadow1 rounded-md border-top-primary text-xs p-[20px]"
+              class="fixed z-10 w-9/10 background-header top-1/14 left-1/20 drop-shadow-md rounded-md border-top-primary text-xs p-[20px]"
               md="absolute w-max top-10 rounded-none rounded-bl-md rounded-r-md"
             >
               <p class="text-base font-semibold color-primary mb-4">Hangar</p>
@@ -153,7 +153,7 @@ authLog("render with user " + authStore.user?.name);
               </div>
             </MenuButton>
             <MenuItems
-              class="absolute top-24 flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-100 bg-background-light-0 dark:bg-background-dark-80 shadow-soft"
+              class="absolute top-24 flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-100 bg-background-light-0 dark:bg-background-dark-80 drop-shadow-xl"
             >
               <DropdownItem>{{ t("nav.user.profile") }}</DropdownItem>
               <DropdownItem>{{ t("nav.user.notifications") }}</DropdownItem>

@@ -73,7 +73,7 @@ const projects = await useProjects().catch((e) => handleRequestError(e, ctx, i18
             leave-from-class="transform scale-100 opacity-100"
             leave-to-class="transform scale-95 opacity-0"
           >
-            <MenuItems class="absolute flex flex-col z-10 background-header shadow1 rounded-md border-top-primary">
+            <MenuItems class="absolute flex flex-col z-10 background-header drop-shadow-md rounded-md border-top-primary">
               <MenuItem v-for="sorter in sorters" :key="sorter.id" v-slot="{ active }">
                 <button :class="{ 'bg-gradient-to-r from-[#004ee9] to-[#367aff] text-white': active }" class="p-2 text-left">
                   {{ sorter.label }}
