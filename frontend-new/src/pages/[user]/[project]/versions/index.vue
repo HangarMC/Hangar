@@ -6,6 +6,7 @@ import { NamedPermission, Platform } from "~/types/enums";
 import Card from "~/components/design/Card.vue";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import Tag from "~/components/Tag.vue";
+import Button from "~/components/design/Button.vue";
 import { PaginatedResult, Tag as ApiTag, Version } from "hangar-api";
 import { computed, reactive, watch } from "vue";
 import { useBackendDataStore } from "~/store/backendData";
@@ -165,14 +166,16 @@ function getNonChannelTags(version: Version): ApiTag[] {
     <section class="basis-full md:basis-3/12 flex-grow">
       <div class="flex flex-wrap space-y-4">
         <div v-if="hasPerms(NamedPermission.CREATE_VERSION)" class="basis-full flex-grow">
-          <Link to="versions/new">{{ i18n.t("version.new.uploadNew") }}</Link>
+          <router-link :to="route.path + '/new'">
+            <Button>{{ i18n.t("version.new.uploadNew") }}</Button>
+          </router-link>
         </div>
 
         <Card class="basis-6/12 md:basis-full flex-grow">
           <template #header>
+            <InputCheckbox v-model="filter.allChecked.channels" class="flex-right" @change="checkAllChannels" />
             {{ i18n.t("version.channels") }}
             <!-- todo channel editing -->
-            <InputCheckbox v-model="filter.allChecked.channels" class="flex-right" @change="checkAllChannels" />
           </template>
 
           <ul>
@@ -185,8 +188,8 @@ function getNonChannelTags(version: Version): ApiTag[] {
 
         <Card class="basis-6/12 md:basis-full flex-grow">
           <template #header>
-            {{ i18n.t("version.platforms") }}
             <InputCheckbox v-model="filter.allChecked.platforms" class="flex-right" @change="checkAllPlatforms" />
+            {{ i18n.t("version.platforms") }}
           </template>
 
           <ul>
