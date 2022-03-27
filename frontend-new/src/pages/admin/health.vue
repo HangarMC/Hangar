@@ -7,11 +7,15 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import Card from "~/components/design/Card.vue";
 import Link from "~/components/design/Link.vue";
 import PageTitle from "~/components/design/PageTitle.vue";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
 
 const ctx = useContext();
 const i18n = useI18n();
-const { params } = useRoute();
+const route = useRoute();
 const healthReport = await useHealthReport().catch((e) => handleRequestError(e, ctx, i18n));
+
+useHead(useSeo(i18n.t("health.title"), null, route, null));
 </script>
 
 <template>

@@ -12,6 +12,8 @@ import { RoleTable } from "hangar-internal";
 import { computed } from "vue";
 import SortableTable, { Header } from "~/components/SortableTable.vue";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
 
 const i18n = useI18n();
 const route = useRoute();
@@ -45,6 +47,8 @@ const orgList = computed(() => {
       })
     : [];
 });
+
+useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.constructor, null, route, null));
 </script>
 
 <template>

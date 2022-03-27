@@ -12,6 +12,8 @@ import { useOrgVisibility, useUserData } from "~/composables/useApiHelper";
 import { useBackendDataStore } from "~/store/backendData";
 import { useAuthStore } from "~/store/auth";
 import { useRoute } from "vue-router";
+import { useSeo } from "~/composables/useSeo";
+import { useHead } from "@vueuse/head";
 
 const props = defineProps<{
   user: User;
@@ -26,6 +28,8 @@ if (props.user.name === useAuthStore().user?.name) {
   organizationVisibility = await useOrgVisibility(props.user.name);
 }
 const orgRoles = useBackendDataStore().orgRoles;
+
+useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.name)));
 </script>
 
 <template>

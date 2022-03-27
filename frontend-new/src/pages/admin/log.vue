@@ -11,10 +11,12 @@ import Link from "~/components/design/Link.vue";
 import MarkdownModal from "~/components/modals/MarkdownModal.vue";
 import DiffModal from "~/components/modals/DiffModal.vue";
 import Button from "~/components/design/Button.vue";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
 
 const ctx = useContext();
 const i18n = useI18n();
-const { params } = useRoute();
+const route = useRoute();
 const loggedActions = await useActionLogs().catch((e) => handleRequestError(e, ctx, i18n));
 
 const headers = [
@@ -27,6 +29,8 @@ const headers = [
   { title: i18n.t("userActionLog.newState"), name: "newState", sortable: false },
 ] as Header[];
 // TODO add support for loading more
+
+useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
 </script>
 
 <template>

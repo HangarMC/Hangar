@@ -1,14 +1,6 @@
 <script setup lang="ts">
-import { useHead } from "@vueuse/head";
 import { onMounted } from "vue";
-import { useRoute } from "vue-router";
-import { useSeo } from "~/composables/useSeo";
 import { useThemeStore } from "~/store/theme";
-
-const title = "Hangar New Test";
-const description = "IDK WTF am doing";
-
-useHead(useSeo(title, description, useRoute(), null));
 
 const theme = useThemeStore();
 

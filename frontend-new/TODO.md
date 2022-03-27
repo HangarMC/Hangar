@@ -12,7 +12,7 @@ Stuff that needs to be done before I consider this a successful POC
 - [x] route perms
 - [x] error pages (needs design but what doesnt?)
 - [ ] snackbar/success notifications/whatever
-- [ ] maybe deployment alongside the existing frontend? (server is working now)
+- [x] maybe deployment alongside the existing frontend?
 - [ ] figure out why vite isn't serving the manifest
 - [x] cors?
 - [ ] i18n + ssr, server needs local for both logged in and anon user
@@ -20,7 +20,7 @@ Stuff that needs to be done before I consider this a successful POC
 - [x] investigate why eslint/prettier don't auto fix
 - [x] actually implement page transitions (as opposed to popping up below the page)
 - [ ] validation of forms/inputs etc
-- [ ] add header calls to all pages
+- [x] add header calls to all pages
 
 ## Big list of pages!
 
@@ -47,9 +47,9 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
   - [x] design
   - [ ] qa
 - error
-  - [ ] fetch
-  - [ ] layout
-  - [ ] functionality
+  - [x] fetch
+  - [x] layout
+  - [x] functionality
   - [ ] design
   - [ ] qa
 - index

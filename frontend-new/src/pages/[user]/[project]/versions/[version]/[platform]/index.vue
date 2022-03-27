@@ -18,6 +18,9 @@ import MarkdownEditor from "~/components/MarkdownEditor.vue";
 import Markdown from "~/components/Markdown.vue";
 import Card from "~/components/design/Card.vue";
 import Link from "~/components/design/Link.vue";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
+import { projectIconUrl } from "~/composables/useUrlHelper";
 
 const route = useRoute();
 const i18n = useI18n();
@@ -47,6 +50,15 @@ const approvalTooltip = computed<string>(() =>
 const platformTag = computed<Tag | null>(() => projectVersion.value?.tags.find((t) => t.name === platform.value?.name) || null);
 const requiresConfirmation = computed<boolean>(() => projectVersion.value?.externalUrl !== null || projectVersion.value?.reviewState !== ReviewState.REVIEWED);
 const editingPage = ref(false);
+
+useHead(
+  useSeo(
+    props.project.name + " " + projectVersion.value?.name,
+    props.project.description,
+    route,
+    projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)
+  )
+);
 
 async function savePage(content: string) {
   try {

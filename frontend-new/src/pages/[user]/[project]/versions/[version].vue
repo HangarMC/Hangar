@@ -7,6 +7,9 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import { HangarProject, HangarVersion } from "hangar-internal";
 import { Platform } from "~/types/enums";
 import { useErrorRedirect } from "~/composables/useErrorRedirect";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
+import { projectIconUrl } from "~/composables/useUrlHelper";
 
 const ctx = useContext();
 const i18n = useI18n();
@@ -39,10 +42,17 @@ if (!route.params.platform) {
   if (path.endsWith("/")) {
     path = path.substring(0, path.length - 1);
   }
-  console.log("reeeeee 16");
   await useRouter().push({ path: `${path}/${versionMap.keys().next().value.toLowerCase()}` });
-  console.log("reeeeee 17");
 }
+
+useHead(
+  useSeo(
+    (props.project.name + " " + route.params.version) as string,
+    props.project.description,
+    route,
+    projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)
+  )
+);
 </script>
 
 <template>

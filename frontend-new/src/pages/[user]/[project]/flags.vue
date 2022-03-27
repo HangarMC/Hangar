@@ -9,6 +9,10 @@ import { useContext } from "vite-ssr/vue";
 import { useProjectFlags } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { HangarProject } from "hangar-internal";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
+import { projectIconUrl } from "~/composables/useUrlHelper";
+import { useRoute } from "vue-router";
 
 const props = defineProps<{
   user: User;
@@ -16,6 +20,7 @@ const props = defineProps<{
 }>();
 const i18n = useI18n();
 const ctx = useContext();
+const route = useRoute();
 const flags = await useProjectFlags(props.project.id).catch((e) => handleRequestError(e, ctx, i18n));
 
 const headers = [
@@ -25,6 +30,8 @@ const headers = [
   { title: "When", name: "createdAt" },
   { title: "Resolved", name: "resolved" },
 ] as Header[];
+
+useHead(useSeo("Flags | " + props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)));
 </script>
 
 <template>

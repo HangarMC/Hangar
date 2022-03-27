@@ -13,10 +13,12 @@ import Card from "~/components/design/Card.vue";
 import Link from "~/components/design/Link.vue";
 import Button from "~/components/design/Button.vue";
 import VisibilityChangerModal from "~/components/modals/VisibilityChangerModal.vue";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
 
 const ctx = useContext();
 const i18n = useI18n();
-const { params } = useRoute();
+const route = useRoute();
 const flags = await useFlags().catch((e) => handleRequestError(e, ctx, i18n));
 const loading = ref<{ [key: number]: boolean }>({});
 if (flags && flags.value) {
@@ -24,6 +26,8 @@ if (flags && flags.value) {
     loading.value[flag.id] = false;
   }
 }
+
+useHead(useSeo(i18n.t("flagReview.title"), null, route, null));
 
 function resolve(flag: Flag) {
   loading.value[flag.id] = true;

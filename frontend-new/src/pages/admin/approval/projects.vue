@@ -6,12 +6,18 @@ import { useContext } from "vite-ssr/vue";
 import { useI18n } from "vue-i18n";
 import Card from "~/components/design/Card.vue";
 import AdminProjectList from "~/components/projects/AdminProjectList.vue";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
+import { useRoute } from "vue-router";
 
 const ctx = useContext();
 const i18n = useI18n();
+const route = useRoute();
 const data = await useInternalApi<{ needsApproval: ProjectApproval[]; waitingProjects: ProjectApproval[] }>("admin/approval/projects").catch((e) =>
   handleRequestError(e, ctx, i18n)
 );
+
+useHead(useSeo(i18n.t("projectApproval.title"), null, route, null));
 </script>
 
 <template>

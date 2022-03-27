@@ -15,6 +15,10 @@ import Tag from "~/components/Tag.vue";
 import Button from "~/components/design/Button.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import ChannelModal from "~/components/modals/ChannelModal.vue";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
+import { projectIconUrl } from "~/composables/useUrlHelper";
+import { useRoute } from "vue-router";
 
 const props = defineProps<{
   user: User;
@@ -22,8 +26,13 @@ const props = defineProps<{
 }>();
 const i18n = useI18n();
 const ctx = useContext();
+const route = useRoute();
 const channels = await useProjectChannels(props.project.namespace.owner, props.project.namespace.slug).catch((e) => handleRequestError(e, ctx, i18n));
 const validations = useBackendDataStore().validations;
+
+useHead(
+  useSeo("Channels | " + props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug))
+);
 
 async function refreshChannels() {
   const newChannels = await useInternalApi<ProjectChannel[]>(`channels/${props.project.namespace.owner}/${props.project.namespace.slug}`, false).catch((e) =>

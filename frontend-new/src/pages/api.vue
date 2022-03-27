@@ -1,12 +1,19 @@
 <script lang="ts" setup>
 import { onMounted } from "vue";
 import { SwaggerConfigs, SwaggerUIBundle } from "swagger-ui-dist";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
+import { useI18n } from "vue-i18n";
+import { useRoute } from "vue-router";
 
 declare global {
   interface Window {
     ui: SwaggerUIBundle;
   }
 }
+
+const i18n = useI18n();
+const route = useRoute();
 
 onMounted(() => {
   window.ui = SwaggerUIBundle({
@@ -31,6 +38,8 @@ onMounted(() => {
     },
   } as SwaggerConfigs);
 });
+
+useHead(useSeo(i18n.t("apiDocs.title"), null, route, null));
 </script>
 
 <template>

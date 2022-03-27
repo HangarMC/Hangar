@@ -13,6 +13,10 @@ import { ref } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import InputText from "~/components/ui/InputText.vue";
 import Button from "~/components/design/Button.vue";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
+import { projectIconUrl } from "~/composables/useUrlHelper";
+import { useRoute } from "vue-router";
 
 const props = defineProps<{
   user: User;
@@ -20,6 +24,7 @@ const props = defineProps<{
 }>();
 const i18n = useI18n();
 const ctx = useContext();
+const route = useRoute();
 const notes = await useProjectNotes(props.project.id).catch((e) => handleRequestError(e, ctx, i18n));
 const text = ref("");
 const loading = ref(false);
@@ -29,6 +34,8 @@ const headers = [
   { title: "User", name: "userName", width: "10%" },
   { title: "Message", name: "message", width: "80%" },
 ] as Header[];
+
+useHead(useSeo("Notes | " + props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)));
 
 async function addNote() {
   if (!text.value) {

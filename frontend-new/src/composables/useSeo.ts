@@ -3,8 +3,8 @@ import type { TranslateResult } from "vue-i18n";
 import type { RouteLocationNormalizedLoaded } from "vue-router";
 
 export function useSeo(
-  title: string | TranslateResult,
-  description: string | TranslateResult | null,
+  title: string | TranslateResult | null | undefined,
+  description: string | TranslateResult | null | undefined,
   route: RouteLocationNormalizedLoaded,
   image: string | null
 ): HeadObject {
@@ -12,6 +12,7 @@ export function useSeo(
   const canonical = baseUrl() + (route.fullPath.endsWith("/") ? route.fullPath : `${route.fullPath}/`);
   image = image || "https://docs.papermc.io/img/paper.png";
   image = image.startsWith("http") ? image : baseUrl() + image;
+  title = title ? title + " | Hangar" : "Hangar";
   const seo = {
     title,
     link: [{ rel: "canonical", href: canonical }],
@@ -35,14 +36,12 @@ export function useSeo(
         property: "og:title",
         name: "og:title",
         hid: "og:title",
-        template: (chunk: string) => (chunk ? `${chunk} | Hangar` : "Hangar"),
         content: title,
       },
       {
         property: "twitter:title",
         name: "twitter:title",
         hid: "twitter:title",
-        template: (chunk: string) => (chunk ? `${chunk} | Hangar` : "Hangar"),
         content: title,
       },
       {
@@ -116,6 +115,5 @@ function guessTitle(segment: string): string {
 }
 
 function baseUrl(): string {
-  // todo get this from somewhere
-  return "https://hangar.benndorf.dev";
+  return import.meta.env.BASE_URL;
 }

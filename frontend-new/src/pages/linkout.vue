@@ -1,7 +1,12 @@
 <script lang="ts" setup>
 import { useRoute } from "vue-router";
+import { useSeo } from "~/composables/useSeo";
+import { useHead } from "@vueuse/head";
 
-const target = useRoute().query.remoteUrl;
+const route = useRoute();
+const target = route.query.remoteUrl;
+
+useHead(useSeo("Linkout", null, route, null));
 </script>
 <template>
   <div>

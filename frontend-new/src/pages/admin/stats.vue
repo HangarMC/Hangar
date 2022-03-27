@@ -11,10 +11,12 @@ import Chartist, { IChartistSeriesData, ILineChartOptions } from "chartist";
 import PageTitle from "~/components/design/PageTitle.vue";
 import Card from "~/components/design/Card.vue";
 import InputDate from "~/components/ui/InputDate.vue";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
 
 const ctx = useContext();
 const i18n = useI18n();
-const { params } = useRoute();
+const route = useRoute();
 
 const now = new Date();
 const oneMonthBefore = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
@@ -91,6 +93,8 @@ const options: ILineChartOptions = {
   },
   plugins: [Chartist.plugins.legend()],
 };
+
+useHead(useSeo(i18n.t("stats.title"), null, route, null));
 
 watch(startDate, updateDate);
 watch(endDate, updateDate);

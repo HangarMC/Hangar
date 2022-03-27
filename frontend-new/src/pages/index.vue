@@ -9,9 +9,14 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
 import Card from "~/components/design/Card.vue";
 import Container from "~/components/design/Container.vue";
-import { ref } from "vue";
+import { isRef, ref } from "vue";
+import { useSeo } from "~/composables/useSeo";
+import { useHead } from "@vueuse/head";
+import { useRoute } from "vue-router";
 
 const i18n = useI18n();
+const route = useRoute();
+const ctx = useContext();
 
 const backendData = useBackendDataStore();
 const sorters = [
@@ -43,8 +48,29 @@ const filters = ref({
   licences: [],
 });
 
-const ctx = useContext();
 const projects = await useProjects().catch((e) => handleRequestError(e, ctx, i18n));
+
+const meta = useSeo("Linkout", null, route, null);
+const script = {
+  type: "application/ld+json",
+  json: {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    url: import.meta.env.BASE_URL,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: import.meta.env.BASE_URL + "/?q={search_term_string}", // todo fix once search actually works
+      "query-input": "required name=search_term_string",
+    },
+  },
+};
+if (isRef(meta.script)) {
+  meta.script.value.push(script);
+} else {
+  meta.script = meta.script || [];
+  meta.script.push(script);
+}
+useHead(meta);
 </script>
 
 <template>

@@ -9,6 +9,9 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import { useErrorRedirect } from "~/composables/useErrorRedirect";
 import ProjectHeader from "~/components/projects/ProjectHeader.vue";
 import ProjectNav from "~/components/projects/ProjectNav.vue";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
+import { projectIconUrl } from "~/composables/useUrlHelper";
 
 defineProps({
   user: {
@@ -21,8 +24,10 @@ const ctx = useContext();
 const i18n = useI18n();
 const route = useRoute();
 const project = await useProject(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e, ctx, i18n));
-if (!project) {
+if (!project || !project.value) {
   await useRouter().push(useErrorRedirect(route, 404, "Not found"));
+} else {
+  useHead(useSeo(project.value.name, project.value.description, route, projectIconUrl(project.value.namespace.owner, project.value.namespace.slug)));
 }
 </script>
 

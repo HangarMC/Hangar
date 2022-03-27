@@ -12,15 +12,19 @@ import Button from "~/components/design/Button.vue";
 import PageTitle from "~/components/design/PageTitle.vue";
 import Card from "~/components/design/Card.vue";
 import Table from "~/components/design/Table.vue";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
 
 const ctx = useContext();
 const i18n = useI18n();
-const { params } = useRoute();
+const route = useRoute();
 
 const platformMap = useBackendDataStore().platforms;
 const originalPlatforms = platformMap ? [...platformMap.values()] : [];
 const platforms = ref(cloneDeep(originalPlatforms));
 const loading = ref<boolean>(false);
+
+useHead(useSeo(i18n.t("platformVersions.title"), null, route, null));
 
 async function save() {
   loading.value = true;

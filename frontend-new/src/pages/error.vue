@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { useRoute } from "vue-router";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
 
 const route = useRoute();
+useHead(useSeo((route.params.status || 404) + " " + (route.params.msg || "Not found"), null, route, null));
 </script>
 
 <template>

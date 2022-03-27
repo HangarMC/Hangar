@@ -6,10 +6,12 @@ import { useAuthors } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import SortableTable, { Header } from "~/components/SortableTable.vue";
 import PageTitle from "~/components/design/PageTitle.vue";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
 
 const ctx = useContext();
 const i18n = useI18n();
-const { params } = useRoute();
+const route = useRoute();
 const authors = await useAuthors().catch((e) => handleRequestError(e, ctx, i18n));
 const headers = [
   { name: "pic", title: "", sortable: false },
@@ -17,6 +19,8 @@ const headers = [
   { name: "joinDate", title: "Joined", sortable: true },
   { name: "projectCount", title: "Projects", sortable: true },
 ] as Header[];
+
+useHead(useSeo(i18n.t("pages.authorsTitle"), null, route, null));
 </script>
 
 <template>

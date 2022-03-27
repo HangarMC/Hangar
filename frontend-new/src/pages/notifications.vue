@@ -8,10 +8,12 @@ import { HangarNotification, Invite, Invites } from "hangar-internal";
 import { computed, ref, Ref } from "vue";
 import { useApi, useInternalApi } from "~/composables/useApi";
 import Vue from "@vitejs/plugin-vue";
+import { useSeo } from "~/composables/useSeo";
+import { useHead } from "@vueuse/head";
 
 const ctx = useContext();
 const i18n = useI18n();
-const { params } = useRoute();
+const route = useRoute();
 
 const notifications = (await useNotifications().catch((e) => handleRequestError(e, ctx, i18n))) as Ref<HangarNotification[]>;
 const invites = (await useInvites().catch((e) => handleRequestError(e, ctx, i18n))) as Ref<Invites>;
@@ -54,6 +56,8 @@ const filteredNotifications = computed(() => {
       return notifications.value;
   }
 });
+
+useHead(useSeo("Notifications", null, route, null));
 
 function markAllAsRead() {
   for (const notification of notifications.value.filter((n) => !n.read)) {

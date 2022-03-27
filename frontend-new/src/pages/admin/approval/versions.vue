@@ -8,12 +8,15 @@ import { useVersionApprovals } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { ref } from "vue";
 import Card from "~/components/design/Card.vue";
-import Button from "~/components/design/Button.vue";
 import Link from "~/components/design/Link.vue";
 import Tag from "~/components/Tag.vue";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
+import { useRoute } from "vue-router";
 
 const i18n = useI18n();
 const ctx = useContext();
+const route = useRoute();
 const data = await useVersionApprovals().catch((e) => handleRequestError(e, ctx, i18n));
 const underReviewExpanded = ref([]);
 
@@ -38,6 +41,8 @@ const notStartedHeaders: Header[] = [
   { title: i18n.t("versionApproval.queuedBy") as string, name: "queuedBy", sortable: true },
   { title: "", name: "startBtn", sortable: false },
 ];
+
+useHead(useSeo(i18n.t("versionApproval.title"), null, route, null));
 
 function getRouteParams(entry: ReviewQueueEntry) {
   return {

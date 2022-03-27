@@ -16,6 +16,9 @@ import { useRoute } from "vue-router";
 import { useApi } from "~/composables/useApi";
 import { HangarProject } from "hangar-internal";
 import filesize from "filesize";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
+import { projectIconUrl } from "~/composables/useUrlHelper";
 
 const i18n = useI18n();
 const ctx = useContext();
@@ -50,6 +53,10 @@ if (channels) {
   filter.channels.push(...(channels.value?.map((c) => c.name) || []));
   filter.platforms.push(...platforms.value.map((p) => p.enumName));
 }
+
+useHead(
+  useSeo("Versions | " + props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug))
+);
 
 watch(
   filter,

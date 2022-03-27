@@ -8,7 +8,9 @@ import { useContext } from "vite-ssr/vue";
 import PageTitle from "~/components/design/PageTitle.vue";
 import { useBackendDataStore } from "~/store/backendData";
 import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { useSeo } from "~/composables/useSeo";
+import { useHead } from "@vueuse/head";
 
 interface NewProjectForm extends ProjectSettingsForm {
   ownerId: ProjectOwner["userId"];
@@ -20,6 +22,7 @@ const ctx = useContext();
 const i18n = useI18n();
 const store = useBackendDataStore();
 const router = useRouter();
+const route = useRoute();
 const visibleCategories = store.visibleCategories;
 
 let projectOwners!: ProjectOwner[];
@@ -44,6 +47,8 @@ const converter = {
   markdown: "",
   loading: false,
 };
+
+useHead(useSeo("New Project", null, route, null));
 
 function convertBBCode() {
   converter.loading = true;

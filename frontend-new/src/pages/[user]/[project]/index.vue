@@ -13,6 +13,9 @@ import { useContext } from "vite-ssr/vue";
 import Markdown from "~/components/Markdown.vue";
 import ProjectPageList from "~/components/projects/ProjectPageList.vue";
 import { useProjectPage } from "~/composables/useProjectPage";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
+import { projectIconUrl } from "~/composables/useUrlHelper";
 
 const props = defineProps<{
   user: User;
@@ -23,6 +26,8 @@ const route = useRoute();
 const context = useContext();
 const router = useRouter();
 const { editingPage, open, savePage, page } = await useProjectPage(route, router, context, i18n, props.project);
+
+useHead(useSeo(props.project.name, props.project.description, route, projectIconUrl(props.project.namespace.owner, props.project.namespace.slug)));
 </script>
 
 <template>

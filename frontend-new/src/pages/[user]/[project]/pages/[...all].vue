@@ -11,6 +11,8 @@ import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
 import Card from "~/components/design/Card.vue";
 import { useProjectPage } from "~/composables/useProjectPage";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
 
 const props = defineProps<{
   user: User;
@@ -23,6 +25,9 @@ const route = useRoute();
 const router = useRouter();
 
 const { editingPage, open, savePage, deletePage, page } = await useProjectPage(route, router, ctx, i18n, props.project);
+if (page) {
+  useHead(useSeo(page.value?.name, props.project.description, route, null));
+}
 </script>
 
 <template>

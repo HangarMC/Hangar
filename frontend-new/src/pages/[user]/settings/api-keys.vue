@@ -6,7 +6,7 @@ import Button from "~/components/design/Button.vue";
 import { ref, watch } from "vue";
 import { useContext } from "vite-ssr/vue";
 import { useInternalApi } from "~/composables/useApi";
-import { ApiKey, HangarApiException, IPermission } from "hangar-api";
+import { ApiKey, HangarApiException, IPermission, User } from "hangar-api";
 import { useRoute } from "vue-router";
 import { AxiosError } from "axios";
 import { handleRequestError } from "~/composables/useErrorHandling";
@@ -14,10 +14,17 @@ import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import Table from "~/components/design/Table.vue";
 import Alert from "~/components/design/Alert.vue";
 import Card from "~/components/design/Card.vue";
+import { useSeo } from "~/composables/useSeo";
+import { avatarUrl } from "~/composables/useUrlHelper";
+import { useHead } from "@vueuse/head";
 
 const ctx = useContext();
 const i18n = useI18n();
 const route = useRoute();
+
+const props = defineProps<{
+  user: User;
+}>();
 
 const apiKeys = ref(await useInternalApi<ApiKey[]>("api-keys/existing-keys/" + route.params.user));
 const possiblePerms = await useInternalApi<IPermission[]>("api-keys/possible-perms/" + route.params.user);
@@ -27,7 +34,9 @@ const name = ref("");
 const loading = ref(false);
 const selectedPerms = ref([]);
 const validateLoading = ref(false);
-const nameErrorMessages = ref([]);
+const nameErrorMessages = ref<string[]>([]);
+
+useHead(useSeo(i18n.t("apiKeys.title") + " | " + props.user.name, null, route, avatarUrl(props.user.name)));
 
 watch(name, async (val: string) => {
   if (!val) return;

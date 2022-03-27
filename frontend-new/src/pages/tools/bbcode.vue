@@ -7,13 +7,19 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
 import { useI18n } from "vue-i18n";
 import PageTitle from "~/components/design/PageTitle.vue";
+import { useHead } from "@vueuse/head";
+import { useSeo } from "~/composables/useSeo";
+import { useRoute } from "vue-router";
 
 const ctx = useContext();
 const i18n = useI18n();
+const route = useRoute();
 
 const input = ref("");
 const output = ref("");
 const loading = ref(false);
+
+useHead(useSeo("BBCode Converter", null, route, null));
 
 async function convertBBCode() {
   loading.value = true;
