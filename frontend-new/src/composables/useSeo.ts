@@ -66,11 +66,11 @@ export function useSeo(
     script: [
       {
         type: "application/ld+json",
-        json: {
+        children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           itemListElement: generateBreadcrumbs(route),
-        },
+        }),
       },
     ] as any[],
   } as HeadObject;
@@ -115,5 +115,5 @@ function guessTitle(segment: string): string {
 }
 
 function baseUrl(): string {
-  return import.meta.env.BASE_URL;
+  return import.meta.env.HANGAR_PUBLIC_HOST;
 }

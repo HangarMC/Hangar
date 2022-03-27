@@ -50,19 +50,19 @@ const filters = ref({
 
 const projects = await useProjects().catch((e) => handleRequestError(e, ctx, i18n));
 
-const meta = useSeo("Linkout", null, route, null);
+const meta = useSeo("Home", null, route, null);
 const script = {
   type: "application/ld+json",
-  json: {
+  children: JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebSite",
-    url: import.meta.env.BASE_URL,
+    url: import.meta.env.HANGAR_PUBLIC_HOST,
     potentialAction: {
       "@type": "SearchAction",
-      target: import.meta.env.BASE_URL + "/?q={search_term_string}", // todo fix once search actually works
+      target: import.meta.env.HANGAR_PUBLIC_HOST + "/?q={search_term_string}", // todo fix once search actually works
       "query-input": "required name=search_term_string",
     },
-  },
+  }),
 };
 if (isRef(meta.script)) {
   meta.script.value.push(script);
