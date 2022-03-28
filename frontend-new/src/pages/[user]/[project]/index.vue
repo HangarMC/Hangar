@@ -52,7 +52,7 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
         <template #default>Promoted versions go here</template>
       </Card>
       <ProjectPageList :project="project" :open="open" />
-      <MemberList :project="project" />
+      <MemberList :model-value="project.members" />
     </section>
   </div>
 </template>

@@ -10,6 +10,7 @@ import {
   Invites,
   LoggedAction,
   Note,
+  Organization,
   ProjectChannel,
   ProjectPage,
   ReviewQueueEntry,
@@ -22,6 +23,10 @@ export async function useProjects(pagination = { limit: 25, offset: 0 }, blockin
 
 export async function useUser(user: string, blocking = true) {
   return useInitialState("useUser", () => useApi<User>("users/" + user, false), blocking);
+}
+
+export async function useOrganization(user: string, blocking = true) {
+  return useInitialState("useOrganization", () => useInternalApi<Organization>(`organizations/org/${user}`, false), blocking);
 }
 
 export async function useProject(user: string, project: string, blocking = true) {

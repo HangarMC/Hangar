@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useUser } from "~/composables/useApiHelper";
+import { useOrganization, useUser } from "~/composables/useApiHelper";
 import { useRoute, useRouter } from "vue-router";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
@@ -8,15 +8,18 @@ import { useErrorRedirect } from "~/composables/useErrorRedirect";
 
 const ctx = useContext();
 const i18n = useI18n();
-const user = await useUser(useRoute().params.user as string).catch((e) => handleRequestError(e, ctx, i18n));
-if (!user) {
-  // TODO check if user is an org here
+const route = useRoute();
+const user = await useUser(route.params.user as string).catch((e) => handleRequestError(e, ctx, i18n));
+let organization = null;
+if (!user || !user.value) {
   await useRouter().push(useErrorRedirect(useRoute(), 404, "Not found"));
+} else if (user.value?.isOrganization) {
+  organization = (await useOrganization(route.params.user as string).catch) > ((e) => handleRequestError(e, ctx, i18n));
 }
 </script>
 
 <template>
   <router-view v-if="user" v-slot="{ Component }">
-    <component :is="Component" :user="user" :dum="user" />
+    <component :is="Component" :user="user" :organization="organization" />
   </router-view>
 </template>

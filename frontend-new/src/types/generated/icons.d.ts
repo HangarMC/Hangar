@@ -6,10 +6,12 @@ declare module "vue" {
   export interface GlobalComponents {
     IconMdiAccountArrowRight: typeof import("~icons/mdi/account-arrow-right")["default"];
     IconMdiCalendar: typeof import("~icons/mdi/calendar")["default"];
+    IconMdiCheck: typeof import("~icons/mdi/check")["default"];
     IconMdiCheckboxBlankCircleOutline: typeof import("~icons/mdi/checkbox-blank-circle-outline")["default"];
     IconMdiCheckCircle: typeof import("~icons/mdi/check-circle")["default"];
     IconMdiCheckCircleOutline: typeof import("~icons/mdi/check-circle-outline")["default"];
     IconMdiClipboardOutline: typeof import("~icons/mdi/clipboard-outline")["default"];
+    IconMdiClose: typeof import("~icons/mdi/close")["default"];
     IconMdiCloseCircle: typeof import("~icons/mdi/close-circle")["default"];
     IconMdiDelete: typeof import("~icons/mdi/delete")["default"];
     IconMdiDiamondStone: typeof import("~icons/mdi/diamond-stone")["default"];
@@ -28,6 +30,7 @@ declare module "vue" {
     IconMdiPlay: typeof import("~icons/mdi/play")["default"];
     IconMdiPlus: typeof import("~icons/mdi/plus")["default"];
     IconMdiSortVariant: typeof import("~icons/mdi/sort-variant")["default"];
+    IconMdiStar: typeof import("~icons/mdi/star")["default"];
     IconMdiTag: typeof import("~icons/mdi/tag")["default"];
     IconMdiWeatherNight: typeof import("~icons/mdi/weather-night")["default"];
     IconMdiWhiteBalanceSunny: typeof import("~icons/mdi/white-balance-sunny")["default"];

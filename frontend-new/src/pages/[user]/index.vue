@@ -14,9 +14,12 @@ import { useAuthStore } from "~/store/auth";
 import { useRoute } from "vue-router";
 import { useSeo } from "~/composables/useSeo";
 import { useHead } from "@vueuse/head";
+import { Organization } from "hangar-internal";
+import UserHeader from "~/components/UserHeader.vue";
 
 const props = defineProps<{
   user: User;
+  organization: Organization;
 }>();
 const i18n = useI18n();
 const ctx = useContext();
@@ -33,7 +36,7 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
 </script>
 
 <template>
-  <!-- todo user header -->
+  <UserHeader :user="user" :organization="organization" />
   <div class="flex gap-4">
     <div class="flex-basis-full md:flex-basis-8/12 flex-grow">
       <ProjectList :projects="projects"></ProjectList>
@@ -48,7 +51,7 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
 
           <ul>
             <li v-for="(orgRole, orgName) in organizations" :key="orgName">
-              <router-link :to="orgName" class="flex">
+              <router-link :to="'/' + orgName" class="flex">
                 <UserAvatar :username="orgName" :avatar-url="avatarUrl(orgName)" size="xs" />
                 &nbsp;
                 {{ orgName }}
@@ -97,7 +100,7 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
           </ul>
         </Card>
       </template>
-      <MemberList v-else :members="organization.members" :roles="orgRoles" :org="true" />
+      <MemberList v-else :model-value="organization.members" :roles="orgRoles" :org="true" />
     </div>
   </div>
 </template>

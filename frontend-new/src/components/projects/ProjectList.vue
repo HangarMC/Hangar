@@ -5,6 +5,9 @@ import Card from "~/components/design/Card.vue";
 import Link from "~/components/design/Link.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
 import { projectIconUrl } from "~/composables/useUrlHelper";
+import { useI18n } from "vue-i18n";
+
+const i18n = useI18n();
 
 const props = defineProps({
   projects: {
@@ -32,10 +35,11 @@ const props = defineProps({
       {{ project.description }}
     </div>
     <div class="flex-grow"></div>
-    <div class="flex">
-      Views: {{ project.stats.views }}<br />
-      Downloads: {{ project.stats.downloads }}<br />
-      Stars: {{ project.stats.stars }}
+    <div class="flex flex-col">
+      <span :title="i18n.t('project.info.views', project.stats.views)"><IconMdiEye /> {{ project.stats.views }}</span>
+      <span :title="i18n.t('project.info.totalDownloads', project.stats.downloads)"><IconMdiDownload /> {{ project.stats.downloads }}</span>
+      <span :title="i18n.t('project.info.stars', project.stats.stars)"><IconMdiStar /> {{ project.stats.stars }}</span>
     </div>
   </Card>
+  <div v-if="projects?.result.length === 0">{{ i18n.t("hangar.projectSearch.noProjects") }}</div>
 </template>
