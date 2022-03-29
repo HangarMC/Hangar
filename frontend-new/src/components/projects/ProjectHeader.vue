@@ -16,7 +16,7 @@ const imageUrl = computed(() => {
 </script>
 
 <template>
-  <Card>
+  <Card accent>
     <div class="flex">
       <UserAvatar :username="project.namespace.owner" :to="'/' + project.namespace.owner + '/' + project.name" :img-src="imageUrl"></UserAvatar>
       <div class="flex-grow mx-4">

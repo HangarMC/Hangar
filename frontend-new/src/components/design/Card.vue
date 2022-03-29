@@ -1,13 +1,33 @@
 <script lang="ts" setup>
 import { hasSlotContent } from "~/composables/useSlot";
+import { computed } from "vue";
 
-const props = defineProps<{
-  class?: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    accent?: boolean;
+  }>(),
+  {
+    accent: false,
+  }
+);
+
+const clazz = computed(() => {
+  return {
+    "bg-white": true,
+    "dark:bg-background-dark-90": true,
+    border: true,
+    "dark:border-neutral-800": true,
+    "!border-top-primary": props.accent,
+    "shadow-xl": true,
+    "rounded-md": true,
+    "p-4": true,
+    "overflow-auto": true,
+  };
+});
 </script>
 
 <template>
-  <div :class="'bg-white border-top-primary drop-shadow-xl rounded-md p-4 overflow-auto ' + (props.class || '')" dark="bg-background-dark-90">
+  <div :class="clazz">
     <div v-if="hasSlotContent($slots.header)" class="text-xl font-bold mb-2">
       <slot name="header"></slot>
     </div>
