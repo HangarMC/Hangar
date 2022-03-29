@@ -83,7 +83,7 @@ function setupAdmonition() {
 </script>
 
 <template>
-  <div class="markdown rounded p-4">
+  <div class="prose max-w-full rounded p-4">
     <!-- eslint-disable-next-line vue/no-v-html -->
     <div v-if="!loading" v-bind="$attrs" v-html="renderedMarkdown" />
     <div v-else>Loading...</div>

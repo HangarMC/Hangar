@@ -13,6 +13,7 @@ export default defineConfig({
           css: {
             maxWidth: "65ch",
             color: "inherit",
+            lineHeight: "1.6em",
             a: {
               color: "inherit",
               opacity: 0.75,
@@ -26,11 +27,32 @@ export default defineConfig({
             b: { color: "inherit" },
             strong: { color: "inherit" },
             em: { color: "inherit" },
-            h1: { color: "inherit" },
-            h2: { color: "inherit" },
-            h3: { color: "inherit" },
-            h4: { color: "inherit" },
+            h1: {
+              color: "inherit",
+              fontWeight: "600",
+              marginBottom: "0.6em",
+            },
+            h2: {
+              color: "inherit",
+              fontWeight: "600",
+              marginTop: "inherit",
+              marginBottom: "0.6em",
+            },
+            h3: {
+              color: "inherit",
+              marginTop: "inherit",
+              marginBottom: "0.6em",
+            },
+            h4: {
+              color: "inherit",
+              marginTop: "inherit",
+              marginBottom: "0.6em",
+            },
             code: { color: "inherit" },
+            li: {
+              marginTop: "0.2em",
+              marginBottom: "0.2em",
+            },
           },
         },
       },
