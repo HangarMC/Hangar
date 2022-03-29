@@ -6,6 +6,7 @@ import { useAuthors } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import SortableTable, { Header } from "~/components/SortableTable.vue";
 import PageTitle from "~/components/design/PageTitle.vue";
+import UserAvatar from "~/components/UserAvatar.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 
@@ -26,8 +27,7 @@ useHead(useSeo(i18n.t("pages.authorsTitle"), null, route, null));
 <template>
   <PageTitle>Authors</PageTitle>
   <SortableTable :headers="headers" :items="authors?.result">
-    <!-- todo avatar -->
-    <template #item_pic="{ item }">pic {{ item.name }}</template>
+    <template #item_pic="{ item }"><UserAvatar :username="item.name" size="xs"></UserAvatar></template>
     <template #item_joinDate="{ item }">{{ i18n.d(item?.joinDate, "date") }}</template>
   </SortableTable>
 </template>

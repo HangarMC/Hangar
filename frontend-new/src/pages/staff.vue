@@ -8,6 +8,7 @@ import SortableTable, { Header } from "~/components/SortableTable.vue";
 import PageTitle from "~/components/design/PageTitle.vue";
 import { useSeo } from "~/composables/useSeo";
 import { useHead } from "@vueuse/head";
+import UserAvatar from "~/components/UserAvatar.vue";
 
 const ctx = useContext();
 const i18n = useI18n();
@@ -25,8 +26,7 @@ useHead(useSeo(i18n.t("pages.staffTitle"), null, route, null));
 <template>
   <PageTitle>Staff</PageTitle>
   <SortableTable :headers="headers" :items="staff?.result">
-    <!-- todo avatar -->
-    <template #item_pic="{ item }">pic {{ item.name }}</template>
+    <template #item_pic="{ item }"><UserAvatar :username="item.name" size="xs"></UserAvatar></template>
     <template #item_joinDate="{ item }">{{ i18n.d(item.joinDate, "date") }}</template>
   </SortableTable>
 </template>

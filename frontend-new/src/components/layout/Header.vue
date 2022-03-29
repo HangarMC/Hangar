@@ -136,8 +136,8 @@ authLog("render with user " + authStore.user?.name);
       <div class="flex items-center gap-2">
         <div v-if="authStore.user" class="flex items-center">
           <DropdownButton name="Create">
-            <DropdownItem>{{ t("nav.new.project") }}</DropdownItem>
-            <DropdownItem>{{ t("nav.new.organization") }}</DropdownItem>
+            <DropdownItem to="/new">{{ t("nav.new.project") }}</DropdownItem>
+            <DropdownItem to="/organizations/new">{{ t("nav.new.organization") }}</DropdownItem>
           </DropdownButton>
         </div>
         <button class="flex rounded-md p-2" hover="text-primary-100 bg-primary-50" @click="theme.toggleDarkMode()">

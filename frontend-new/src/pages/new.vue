@@ -65,7 +65,6 @@ function convertBBCode() {
 }
 
 function createProject() {
-  console.log(form);
   projectCreationErrors.value = [];
   useInternalApi<string>("projects/create", true, "post", form)
     .then((url) => {

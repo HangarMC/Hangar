@@ -117,7 +117,7 @@ useHead(meta);
       <ProjectList :projects="projects" />
     </div>
     <!-- Sidebar -->
-    <Card class="min-w-300px min-h-800px flex flex-col gap-4">
+    <Card accent class="min-w-300px min-h-800px flex flex-col gap-4">
       <div class="versions">
         <h3 class="font-bold">Minecraft versions</h3>
         <div class="flex flex-col gap-2 max-h-30 overflow-auto">
