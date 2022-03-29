@@ -36,9 +36,15 @@ const props = defineProps({
     </div>
     <div class="flex-grow"></div>
     <div class="flex flex-col">
-      <span :title="i18n.t('project.info.views', project.stats.views)"><IconMdiEye /> {{ project.stats.views }}</span>
-      <span :title="i18n.t('project.info.totalDownloads', project.stats.downloads)"><IconMdiDownload /> {{ project.stats.downloads }}</span>
-      <span :title="i18n.t('project.info.stars', project.stats.stars)"><IconMdiStar /> {{ project.stats.stars }}</span>
+      <span class="inline-flex items-center"
+        ><IconMdiEye class="mx-1" /> {{ project.stats.views }} {{ i18n.t("project.info.views", project.stats.views) }}</span
+      >
+      <span class="inline-flex items-center"
+        ><IconMdiDownload class="mx-1" /> {{ project.stats.downloads }} {{ i18n.t("project.info.totalDownloads", project.stats.downloads) }}</span
+      >
+      <span class="inline-flex items-center"
+        ><IconMdiStar class="mx-1" /> {{ project.stats.stars }} {{ i18n.t("project.info.stars", project.stats.stars) }}</span
+      >
     </div>
   </Card>
   <div v-if="projects?.result.length === 0">{{ i18n.t("hangar.projectSearch.noProjects") }}</div>

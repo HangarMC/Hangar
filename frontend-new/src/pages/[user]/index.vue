@@ -38,12 +38,12 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
 <template>
   <UserHeader :user="user" :organization="organization" />
   <div class="flex gap-4">
-    <div class="flex-basis-full md:flex-basis-8/12 flex-grow">
+    <div class="flex-basis-full md:basis-8/12 flex-grow">
       <ProjectList :projects="projects"></ProjectList>
     </div>
-    <div class="flex-basis-full md:flex-basis-4/12 flex-grow">
+    <div class="flex-basis-full md:basis-4/12 flex-grow">
       <template v-if="!user.isOrganization">
-        <Card class="mb-4">
+        <Card class="mb-4" accent>
           <template #header>
             {{ i18n.t("author.orgs") }}
             <!-- todo org visibility modal -->
@@ -68,7 +68,7 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
           </span>
         </Card>
 
-        <Card class="mb-4">
+        <Card class="mb-4" accent>
           <template #header>{{ i18n.t("author.stars") }}</template>
 
           <ul>
@@ -84,7 +84,7 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
           </ul>
         </Card>
 
-        <Card>
+        <Card accent>
           <template #header>{{ i18n.t("author.watching") }}</template>
 
           <ul>
