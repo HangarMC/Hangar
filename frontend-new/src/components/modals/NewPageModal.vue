@@ -50,7 +50,7 @@ function createPage() {
       <Button class="mt-2 ml-2" @click="createPage">{{ i18n.t("general.create") }}</Button>
     </template>
     <template #activator="{ on }">
-      <Button v-bind="$attrs" class="mr-1 h-[32px]" small v-on="on">
+      <Button v-bind="$attrs" class="mr-1 h-[32px]" size="small" v-on="on">
         <IconMdiPlus />
       </Button>
     </template>

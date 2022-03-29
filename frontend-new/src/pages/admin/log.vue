@@ -68,7 +68,7 @@ useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
         <template v-if="item.contextType === 'PAGE' && item.oldState">
           <MarkdownModal :markdown="item.oldState" :title="i18n.t('userActionLog.markdownView')">
             <template #activator="{ on }">
-              <Button :small="true" v-on="on">
+              <Button size="small" v-on="on">
                 {{ i18n.t("userActionLog.markdownView") }}
               </Button>
             </template>
@@ -86,14 +86,14 @@ useHead(useSeo(i18n.t("userActionLog.title"), null, route, null));
         <template v-if="item.contextType === 'PAGE'">
           <MarkdownModal :markdown="item.newState" :title="i18n.t('userActionLog.markdownView')">
             <template #activator="{ on }">
-              <Button :small="true" v-on="on">
+              <Button size="small" v-on="on">
                 {{ i18n.t("userActionLog.markdownView") }}
               </Button>
             </template>
           </MarkdownModal>
           <DiffModal :left="item.oldState" :right="item.newState" :title="i18n.t('userActionLog.diffView')">
             <template #activator="{ on }">
-              <Button :small="true" class="ml-2" v-on="on">
+              <Button size="small" class="ml-2" v-on="on">
                 {{ i18n.t("userActionLog.diffView") }}
               </Button>
             </template>

@@ -34,12 +34,16 @@ const dirty = ref<boolean>(false);
 <template>
   <Card :class="props.class">
     <template #header>
-      {{ i18n.t("project.members") }}
-      <Button v-if="!editing && hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" class="mr-2" @click="editing = true"
-        ><IconMdiPencil :title="i18n.t('general.edit')"
-      /></Button>
-      <Button v-else-if="!dirty" class="mr-2" @click="editing = false"><IconMdiClose /></Button>
-      <Button v-if="editing && !disableSaveButton" :disabled="!dirty" @click="save"><IconMdiCheck /> {{ i18n.t("general.save") }}</Button>
+      <div class="inline-flex w-full flex-cols space-between">
+        <span class="flex-grow">{{ i18n.t("project.members") }}</span>
+        <Button v-if="!editing && hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" class="mr-1 inline-flex" size="medium" @click="editing = true"
+          ><IconMdiPencil class="text-xs" :title="i18n.t('general.edit')"
+        /></Button>
+        <Button v-else-if="!dirty" class="mr-1 inline-flex" @click="editing = false"><IconMdiClose /></Button>
+        <Button v-if="editing && !disableSaveButton" :disabled="!dirty" class="inline-flex items-center" @click="save"
+          ><IconMdiCheck /> <span class="text-sm">{{ i18n.t("general.save") }}</span></Button
+        >
+      </div>
     </template>
 
     <template #default>
@@ -55,7 +59,7 @@ const dirty = ref<boolean>(false);
           </p>
           <p>{{ member.role.role.title }}</p>
         </div>
-        <DropdownButton v-if="editing">
+        <DropdownButton v-if="editing" name="">
           <!-- todo change role -->
           <DropdownItem @click="alert('OK!')">Change role</DropdownItem>
         </DropdownButton>
