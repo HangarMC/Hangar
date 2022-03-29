@@ -21,8 +21,10 @@ const route = useRoute();
 <template>
   <Card>
     <template #header>
-      <NewPageModal v-if="hasPerms(NamedPermission.EDIT_PAGE)" :pages="project.pages" :project-id="project.id" activator-class="mr-2" />
-      {{ i18n.t("page.plural") }}
+      <div class="inline-flex w-full flex-cols space-between">
+        <span class="flex-grow">{{ i18n.t("page.plural") }}</span>
+        <NewPageModal v-if="hasPerms(NamedPermission.EDIT_PAGE)" :pages="project.pages" :project-id="project.id" activator-class="mr-2" />
+      </div>
     </template>
 
     <TreeView :items="project.pages" item-key="slug" :open="open">
