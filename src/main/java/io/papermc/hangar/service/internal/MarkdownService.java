@@ -10,6 +10,7 @@ import com.vladsch.flexmark.ext.footnotes.FootnoteExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
 import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
 import com.vladsch.flexmark.ext.gitlab.GitLabExtension;
+import com.vladsch.flexmark.ext.resizable.image.ResizableImageExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.typographic.TypographicExtension;
 import com.vladsch.flexmark.ext.wikilink.WikiLinkExtension;
@@ -70,7 +71,8 @@ public class MarkdownService {
                                 FootnoteExtension.create(),
                                 AdmonitionExtension.create(),
                                 GitLabExtension.create(),
-                                YouTubeLinkExtension.create()
+                                YouTubeLinkExtension.create(),
+                                ResizableImageExtension.create()
                         )
                 );
 
