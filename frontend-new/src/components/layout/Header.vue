@@ -22,9 +22,7 @@ import { useAuthStore } from "~/store/auth";
 import { useAuth } from "~/composables/useAuth";
 import { useBackendDataStore } from "~/store/backendData";
 import { authLog } from "~/composables/useLog";
-import { Meta } from "~/main";
-import { useRequest } from "~/composables/useResReq";
-import { useContext } from "vite-ssr/vue";
+import UserAvatar from "~/components/UserAvatar.vue";
 
 const theme = useThemeStore();
 const { t } = useI18n();
@@ -151,23 +149,23 @@ authLog("render with user " + authStore.user?.name);
           <Menu>
             <MenuButton>
               <div class="flex items-center gap-2 rounded-md p-2" hover="text-primary-100 bg-primary-50">
+                <UserAvatar :username="name" size="xs"></UserAvatar>
                 {{ authStore.user.name }}
-                <img src="https://docs.papermc.io/img/paper.png" :alt="authStore.user.name" class="h-8" />
               </div>
             </MenuButton>
             <MenuItems
               class="absolute top-24 flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-100 bg-background-light-0 dark:bg-background-dark-80 drop-shadow-xl"
             >
-              <DropdownItem>{{ t("nav.user.profile") }}</DropdownItem>
-              <DropdownItem>{{ t("nav.user.notifications") }}</DropdownItem>
+              <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
+              <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
               <hr />
-              <DropdownItem>{{ t("nav.user.flags") }}</DropdownItem>
-              <DropdownItem>{{ t("nav.user.projectApprovals") }}</DropdownItem>
-              <DropdownItem>{{ t("nav.user.versionApprovals") }}</DropdownItem>
-              <DropdownItem>{{ t("nav.user.stats") }}</DropdownItem>
-              <DropdownItem>{{ t("nav.user.health") }}</DropdownItem>
-              <DropdownItem>{{ t("nav.user.log") }}</DropdownItem>
-              <DropdownItem>{{ t("nav.user.platformVersions") }}</DropdownItem>
+              <DropdownItem to="/admin/flags">{{ t("nav.user.flags") }}</DropdownItem>
+              <DropdownItem to="/admin/approval/projects">{{ t("nav.user.projectApprovals") }}</DropdownItem>
+              <DropdownItem to="/admin/approval/versions">{{ t("nav.user.versionApprovals") }}</DropdownItem>
+              <DropdownItem to="/admin/stats">{{ t("nav.user.stats") }}</DropdownItem>
+              <DropdownItem to="/admin/health">{{ t("nav.user.health") }}</DropdownItem>
+              <DropdownItem to="/admin/log">{{ t("nav.user.log") }}</DropdownItem>
+              <DropdownItem to="/admin/versions">{{ t("nav.user.platformVersions") }}</DropdownItem>
               <hr />
               <DropdownItem @click="auth.logout()">{{ t("nav.user.logout") }}</DropdownItem>
             </MenuItems>
