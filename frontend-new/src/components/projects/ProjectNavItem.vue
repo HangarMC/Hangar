@@ -16,12 +16,12 @@ const selected = computed(() => {
 });
 
 const clazz = computed(() => {
-  return "py-1 rounded-sm border-b-3 " + (selected.value ? "border-[#004ee9] font-semibold " : "border-neutral-200 dark:border-neutral-700");
+  return "px-2 py-1 inline-flex items-center " + (selected.value ? "border-b-2 border-[#004ee9] font-semibold " : "");
 });
 </script>
 
 <template>
-  <div class="my-2 mr-5">
+  <div class="mb-[-2px] mr-1">
     <router-link v-if="to" :to="to" :class="clazz">
       <slot></slot>
     </router-link>
