@@ -30,9 +30,10 @@ class Auth {
       authenticated: false,
     });
     await useAxios.get("/invalidate").catch(() => console.log("invalidate failed"));
-    useCookies().remove("HangarAuth_REFRESH", {
-      path: "/",
-    });
+    if (!import.meta.env.SSR) {
+      useCookies().remove("HangarAuth_REFRESH", { path: "/" });
+      authLog("Invalidate refresh cookie");
+    }
     if (shouldRedirect) {
       useContext().redirect("/logged-out");
     }
@@ -55,7 +56,7 @@ class Auth {
     const token = await useApiToken(true);
     if (!token) {
       authLog("Got no token in refreshUser, invalidate!");
-      return this.invalidate(!import.meta.env.SSR);
+      return this.invalidate(false);
     }
     return useAuthStore(this.usePiniaIfPresent()).authenticated ? this.updateUser(token) : this.processLogin(token);
   }
