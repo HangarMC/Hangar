@@ -5,6 +5,11 @@ import UserAvatar from "~/components/UserAvatar.vue";
 import { avatarUrl, forumUserUrl } from "~/composables/useUrlHelper";
 import { useI18n } from "vue-i18n";
 import Card from "~/components/design/Card.vue";
+import TaglineModal from "~/components/modals/TaglineModal.vue";
+import { computed } from "vue";
+import { NamedPermission } from "~/types/enums";
+import { hasPerms } from "~/composables/usePerm";
+import { useAuthStore } from "~/store/auth";
 
 const props = defineProps<{
   user: User;
@@ -12,6 +17,15 @@ const props = defineProps<{
 }>();
 
 const i18n = useI18n();
+const authStore = useAuthStore();
+
+const isCurrentUser = computed(() => {
+  return authStore.user && authStore.user.name === props.user.name;
+});
+
+const canEditCurrentUser = computed(() => {
+  return hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS) || isCurrentUser || hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS);
+});
 </script>
 
 <template>
@@ -32,8 +46,8 @@ const i18n = useI18n();
 
         <div>
           <span v-if="user.tagline">{{ user.tagline }}</span>
-          <span v-else-if="canEditCurrentUser">{{ $t("author.addTagline") }}</span>
-          <!-- todo tag line change modal -->
+          <span v-else-if="canEditCurrentUser">{{ i18n.t("author.addTagline") }}</span>
+          <TaglineModal :tagline="user.tagline" :action="`${user.isOrganization ? 'organizations/org' : 'users'}/${user.name}/settings/tagline`" />
           <!-- todo user log modal -->
         </div>
       </div>
