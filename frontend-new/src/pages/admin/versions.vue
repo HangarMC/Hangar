@@ -14,10 +14,12 @@ import Card from "~/components/design/Card.vue";
 import Table from "~/components/design/Table.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
+import { useNotificationStore } from "~/store/notification";
 
 const ctx = useContext();
 const i18n = useI18n();
 const route = useRoute();
+const notifcation = useNotificationStore();
 
 const platformMap = useBackendDataStore().platforms;
 const originalPlatforms = platformMap ? [...platformMap.values()] : [];
@@ -34,9 +36,8 @@ async function save() {
   }
   const result = await useInternalApi("admin/platformVersions", true, "post", data).catch((e) => handleRequestError(e, ctx, i18n));
   if (result) {
-    // TODO success notification
-    // this.$util.success(i18n.t('platformVersions.success'));
-    // this.$nuxt.refresh();
+    notifcation.success(i18n.t("platformVersions.success"));
+    // this.$nuxt.refresh(); // TODO refresh
   } else {
     loading.value = false;
   }

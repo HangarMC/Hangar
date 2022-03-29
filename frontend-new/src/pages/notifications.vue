@@ -6,14 +6,15 @@ import { useInvites, useNotifications } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { HangarNotification, Invite, Invites } from "hangar-internal";
 import { computed, ref, Ref } from "vue";
-import { useApi, useInternalApi } from "~/composables/useApi";
-import Vue from "@vitejs/plugin-vue";
+import { useInternalApi } from "~/composables/useApi";
 import { useSeo } from "~/composables/useSeo";
 import { useHead } from "@vueuse/head";
+import { useNotificationStore } from "~/store/notification";
 
 const ctx = useContext();
 const i18n = useI18n();
 const route = useRoute();
+const notificationStore = useNotificationStore();
 
 const notifications = (await useNotifications().catch((e) => handleRequestError(e, ctx, i18n))) as Ref<HangarNotification[]>;
 const invites = (await useInvites().catch((e) => handleRequestError(e, ctx, i18n))) as Ref<Invites>;
@@ -84,7 +85,7 @@ async function updateInvite(invite: Invite, status: "accept" | "decline" | "unac
   } else {
     delete invites.value[invite.type][invites.value[invite.type].indexOf(invite)];
   }
-  // this.$util.success(this.$t(`notifications.invite.msgs.${status}`, [invite.name])); // TODO success notification
+  notificationStore.success(i18n.t(`notifications.invite.msgs.${status}`, [invite.name]));
 }
 </script>
 

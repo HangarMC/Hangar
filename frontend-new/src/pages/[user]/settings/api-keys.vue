@@ -17,10 +17,12 @@ import Card from "~/components/design/Card.vue";
 import { useSeo } from "~/composables/useSeo";
 import { avatarUrl } from "~/composables/useUrlHelper";
 import { useHead } from "@vueuse/head";
+import { useNotificationStore } from "~/store/notification";
 
 const ctx = useContext();
 const i18n = useI18n();
 const route = useRoute();
+const notification = useNotificationStore();
 
 const props = defineProps<{
   user: User;
@@ -66,8 +68,7 @@ async function create() {
       permissions: selectedPerms.value,
       createdAt: new Date().toISOString(),
     });
-    // TODO success notification
-    // this.$util.success(i18n.$t('apiKeys.success.create', [name.value]));
+    notification.success(i18n.t("apiKeys.success.create", [name.value]));
   }
   loading.value = true;
 }
@@ -78,8 +79,7 @@ async function deleteKey(key: ApiKey) {
     content: key.name,
   }).catch((err) => handleRequestError(err, ctx, i18n));
   apiKeys.value = apiKeys.value.filter((k) => k.name !== key.name);
-  // TODO success notification
-  // this.$util.success(i18n.t('apiKeys.success.delete', [key.name]));
+  notification.success(i18n.t("apiKeys.success.delete", [key.name]));
   loading.value = true;
 }
 </script>

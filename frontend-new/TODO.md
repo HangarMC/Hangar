@@ -11,7 +11,7 @@ Stuff that needs to be done before I consider this a successful POC
 - [x] seo
 - [x] route perms
 - [x] error pages (needs design but what doesnt?)
-- [ ] snackbar/success notifications/whatever
+- [x] snackbar/success notifications/whatever
 - [x] maybe deployment alongside the existing frontend?
 - [ ] figure out why vite isn't serving the manifest
 - [x] cors?
@@ -20,6 +20,7 @@ Stuff that needs to be done before I consider this a successful POC
 - [x] investigate why eslint/prettier don't auto fix
 - [x] actually implement page transitions (as opposed to popping up below the page)
 - [ ] validation of forms/inputs etc
+- [ ] check that we have loading states everywhere, on like buttons and whatever
 - [x] add header calls to all pages
 
 ## Big list of pages!

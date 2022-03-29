@@ -1,7 +1,8 @@
 import { AxiosError } from "axios";
-import { HangarApiException, HangarValidationException } from "hangar-api";
+import { HangarApiException, HangarValidationException, MultiHangarApiException } from "hangar-api";
 import { Composer, VueMessageType } from "vue-i18n";
 import { Context } from "vite-ssr/vue";
+import { useNotificationStore } from "~/store/notification";
 
 export function handleRequestError(
   err: AxiosError,
@@ -13,42 +14,26 @@ export function handleRequestError(
     _handleRequestError(err, writeResponse, i18n);
     return;
   }
+  const notfication = useNotificationStore();
   if (!err.isAxiosError) {
     // everything should be an AxiosError
     console.log(err);
   } else if (err.response) {
-    // TODO snackbar
-    // if (err.response.data.isHangarApiException) {
-    //   for (const errorMsg of collectErrors(err.response.data, i18n)) {
-    //     store.dispatch('snackbar/SHOW_NOTIF', {
-    //       message: msg ? `${i18n.t(msg)}: ${errorMsg}` : errorMsg,
-    //       color: 'error',
-    //       timeout: 3000,
-    //     } as NotifPayload);
-    //   }
-    // } else if (err.response.data.isHangarValidationException) {
-    //   const data: HangarValidationException = err.response.data;
-    //   for (const fieldError of data.fieldErrors) {
-    //     store.dispatch('snackbar/SHOW_NOTIF', {
-    //       message: fieldError.errorMsg,
-    //       color: 'error',
-    //       timeout: 3000,
-    //     } as NotifPayload);
-    //   }
-    //   if (msg) {
-    //     store.dispatch('snackbar/SHOW_NOTIF', {
-    //       message: t(msg),
-    //       color: 'error',
-    //       timeout: 3000,
-    //     } as NotifPayload);
-    //   }
-    // } else {
-    //   store.dispatch('snackbar/SHOW_NOTIF', {
-    //     message: msg ? `${t(msg)}: ${err.response.statusText}` : err.response.statusText,
-    //     color: 'error',
-    //     timeout: 2000,
-    //   } as NotifPayload);
-    // }
+    if (err.response.data.isHangarApiException) {
+      for (const errorMsg of collectErrors(err.response.data, i18n)) {
+        notfication.error(msg ? `${i18n.t(msg)}: ${errorMsg}` : errorMsg);
+      }
+    } else if (err.response.data.isHangarValidationException) {
+      const data: HangarValidationException = err.response.data;
+      for (const fieldError of data.fieldErrors) {
+        notfication.error(fieldError.errorMsg);
+      }
+      if (msg) {
+        notfication.error(i18n.t(msg));
+      }
+    } else {
+      notfication.error(msg ? `${i18n.t(msg)}: ${err.response.statusText}` : err.response.statusText);
+    }
     console.log("request error", err.response);
   } else {
     console.log(err);
@@ -89,14 +74,14 @@ function _handleRequestError(err: AxiosError, writeResponse: Context["writeRespo
   }
 }
 
-// function collectErrors(exception: HangarApiException | MultiHangarApiException, i18n: Context["app"]["i18n"]): TranslateResult[] {
-//   if (!exception.isMultiException) {
-//     return [i18n.te(exception.message) ? i18n.t(exception.message, [exception.messageArgs]) : exception.message];
-//   } else {
-//     const res: TranslateResult[] = [];
-//     for (const ex of exception.exceptions) {
-//       res.push(i18n.te(ex.message) ? i18n.t(ex.message, ex.messageArgs) : ex.message);
-//     }
-//     return res;
-//   }
-// }
+function collectErrors(exception: HangarApiException | MultiHangarApiException, i18n: Context["app"]["i18n"]): string[] {
+  if (!exception.isMultiException) {
+    return [i18n.te(exception.message) ? i18n.t(exception.message, [exception.messageArgs]) : exception.message];
+  } else {
+    const res: string[] = [];
+    for (const ex of exception.exceptions) {
+      res.push(i18n.te(ex.message) ? i18n.t(ex.message, ex.messageArgs) : ex.message);
+    }
+    return res;
+  }
+}

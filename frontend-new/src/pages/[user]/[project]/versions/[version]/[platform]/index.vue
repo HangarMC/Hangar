@@ -21,12 +21,14 @@ import Link from "~/components/design/Link.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
+import { useNotificationStore } from "~/store/notification";
 
 const route = useRoute();
 const i18n = useI18n();
 const ctx = useContext();
 const router = useRouter();
 const backendData = useBackendDataStore();
+const notification = useNotificationStore();
 
 const props = defineProps<{
   versions: Map<Platform, HangarVersion>;
@@ -79,8 +81,8 @@ async function setRecommended() {
   //this.loading.recommend = true;
   try {
     await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/${platform.value?.enumName}/recommend`, true, "post");
-    // this.$util.success(this.$t('version.success.recommended', [this.platform.name]));  // TODO
-    // this.$nuxt.refresh();
+    notification.success(i18n.t("version.success.recommended", [platform.value?.name]));
+    // this.$nuxt.refresh(); // TODO
   } catch (e) {
     handleRequestError(e, ctx, i18n);
   }
@@ -92,7 +94,7 @@ async function deleteVersion(comment: string) {
     await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/delete`, true, "post", {
       content: comment,
     });
-    // this.$util.success(this.$t('version.success.softDelete'));
+    notification.success(i18n.t("version.success.softDelete"));
     // this.$nuxt.refresh();  // TODO
   } catch (e) {
     handleRequestError(e, ctx, i18n);
@@ -104,7 +106,7 @@ async function hardDeleteVersion(comment: string) {
     await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/hardDelete`, true, "post", {
       content: comment,
     });
-    // this.$util.success(i18n.t('version.success.hardDelete'));  // TODO
+    notification.success(i18n.t("version.success.hardDelete"));
     await router.push({
       name: "user-project-versions",
       params: {
@@ -119,7 +121,7 @@ async function hardDeleteVersion(comment: string) {
 async function restoreVersion() {
   try {
     await useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/restore`, true, "post");
-    // this.$util.success(i18n.t('version.success.restore'));
+    notification.success(i18n.t("version.success.restore"));
     // this.$nuxt.refresh(); // TODO
   } catch (e) {
     handleRequestError(e, ctx, i18n);

@@ -10,6 +10,7 @@ import InputTextarea from "~/components/ui/InputTextarea.vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
+import { useNotificationStore } from "~/store/notification";
 
 const props = defineProps<{
   type: "project" | "version";
@@ -20,6 +21,7 @@ const props = defineProps<{
 const i18n = useI18n();
 const ctx = useContext();
 const backendData = useBackendDataStore();
+const notification = useNotificationStore();
 
 const visibility = ref<Visibility>();
 const reason = ref<string>("");
@@ -33,9 +35,9 @@ async function submit(closeModal: () => void): Promise<void> {
     comment: currentIVis.value?.showModal ? reason.value : null,
   }).catch((e) => handleRequestError(e, ctx, i18n));
   reason.value = "";
-  // TODO success notification
-  // this.$util.success(i18n.t("visibility.modal.success", [this.type, i18n.t(currentIVis.value?.title)]));
-  // this.$nuxt.refresh();
+  if (currentIVis.value) {
+    notification.success(i18n.t("visibility.modal.success", [props.type, i18n.t(currentIVis.value?.title)]));
+  }
   closeModal();
 }
 </script>

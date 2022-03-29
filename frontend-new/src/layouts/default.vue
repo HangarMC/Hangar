@@ -2,6 +2,7 @@
 import Header from "~/components/layout/Header.vue";
 import Footer from "~/components/layout/Footer.vue";
 import Container from "~/components/design/Container.vue";
+import Notifications from "~/components/Notifications.vue";
 </script>
 
 <template>
@@ -19,6 +20,7 @@ import Container from "~/components/design/Container.vue";
         </router-view>
       </Suspense>
     </Container>
+    <Notifications />
     <Footer />
   </main>
 </template>
