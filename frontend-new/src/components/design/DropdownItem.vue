@@ -27,6 +27,21 @@ const type = computed(() => {
     return "p";
   }
 });
+
+// we can't pass href as undefined, else links aren't middle clickable, so we gotta use this computed...
+const attrs = computed(() => {
+  if (props.to) {
+    return {
+      to: props.to,
+    };
+  } else if (props.href) {
+    return {
+      href: props.href,
+    };
+  } else {
+    return {};
+  }
+});
 </script>
 
 <template>
@@ -37,8 +52,7 @@ const type = computed(() => {
         'px-4 py-2 font-semibold hover:(bg-background-light-10 dark:bg-background-dark-90) ' +
         (disabled ? 'cursor-not-allowed text-opacity-50' : 'cursor-pointer')
       "
-      :href="href"
-      :to="to"
+      v-bind="attrs"
     >
       <slot></slot>
     </component>
