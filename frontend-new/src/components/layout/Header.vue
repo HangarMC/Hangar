@@ -149,7 +149,7 @@ authLog("render with user " + authStore.user?.name);
           <Menu>
             <MenuButton>
               <div class="flex items-center gap-2 rounded-md p-2" hover="text-primary-100 bg-primary-50">
-                <UserAvatar :username="name" size="xs"></UserAvatar>
+                <UserAvatar :username="authStore.user.name" size="xs" :background="false"></UserAvatar>
                 {{ authStore.user.name }}
               </div>
             </MenuButton>

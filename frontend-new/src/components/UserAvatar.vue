@@ -8,12 +8,14 @@ const props = withDefaults(
     imgSrc?: string;
     to?: string;
     size?: "xs" | "sm" | "md" | "lg" | "xl";
+    background?: boolean;
   }>(),
   {
     avatarUrl: undefined,
     imgSrc: undefined,
     size: "lg",
     to: "",
+    background: true,
   }
 );
 
@@ -26,6 +28,10 @@ const sizeClass = computed(() => {
   else if (props.size == "lg") return "w-100px h-100px";
 
   return "w-200px h-200px";
+});
+
+const backgroundClass = computed(() => {
+  return props.background ? "bg-light-300 dark:bg-dark-500 " : "";
 });
 
 const src = computed(() => {
@@ -52,7 +58,7 @@ const url = computed(() => {
 </script>
 
 <template>
-  <div :class="'bg-light-300 dark:bg-dark-500 rounded-lg ' + sizeClass">
+  <div :class="'rounded-lg ' + backgroundClass + sizeClass">
     <router-link :to="url">
       <img class="rounded-lg w-full h-full" :title="username" :src="src" :alt="username" @error="errored = true" />
     </router-link>
