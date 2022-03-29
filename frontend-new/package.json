@@ -41,7 +41,8 @@
     "vite-ssr": "^0.15.0",
     "vue": "^3.2.31",
     "vue-i18n": "^9.1.9",
-    "vue-router": "^4.0.14"
+    "vue-router": "^4.0.14",
+    "vue3-popper": "link:@types\\vue3-popper"
   },
   "devDependencies": {
     "@iconify/json": "^2.1.20",

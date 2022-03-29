@@ -6,10 +6,17 @@ import { avatarUrl, forumUserUrl } from "~/composables/useUrlHelper";
 import { useI18n } from "vue-i18n";
 import Card from "~/components/design/Card.vue";
 import TaglineModal from "~/components/modals/TaglineModal.vue";
-import { computed } from "vue";
+import { computed, FunctionalComponent } from "vue";
 import { NamedPermission } from "~/types/enums";
 import { hasPerms } from "~/composables/usePerm";
 import { useAuthStore } from "~/store/auth";
+import Button from "~/components/design/Button.vue";
+import Tooltip from "~/components/design/Tooltip.vue";
+import IconMdiWrench from "~icons/mdi/wrench";
+import IconMdiCog from "~icons/mdi/cog";
+import IconMdiKey from "~icons/mdi/key";
+import IconMdiCalendar from "~icons/mdi/calendar";
+import Link from "~/components/design/Link.vue";
 
 const props = defineProps<{
   user: User;
@@ -25,6 +32,36 @@ const isCurrentUser = computed(() => {
 
 const canEditCurrentUser = computed(() => {
   return hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS) || isCurrentUser || hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS);
+});
+
+interface UserButton {
+  icon: FunctionalComponent;
+  action?: () => void;
+  attr: {
+    to?: string;
+    href?: string;
+  };
+  name: string;
+}
+
+const buttons = computed<UserButton[]>(() => {
+  const list = [] as UserButton[];
+  if (!props.user.isOrganization) {
+    if (isCurrentUser.value) {
+      list.push({ icon: IconMdiCog, attr: { href: `${import.meta.env.HANGAR_AUTH_HOST}/account/settings` }, name: "settings" });
+    }
+    if (isCurrentUser.value || hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS)) {
+      list.push({ icon: IconMdiKey, attr: { to: "/" + props.user.name + "/settings/api-keys" }, name: "apiKeys" });
+    }
+  }
+  if ((hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS) || hasPerms(NamedPermission.REVIEWER)) && !props.user.isOrganization) {
+    list.push({ icon: IconMdiCalendar, attr: { to: `/admin/activities/${props.user.name}` }, name: "activity" });
+  }
+  if (hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS)) {
+    list.push({ icon: IconMdiWrench, attr: { to: "/admin/user/" + props.user.name }, name: "admin" });
+  }
+
+  return list;
 });
 </script>
 
@@ -48,8 +85,15 @@ const canEditCurrentUser = computed(() => {
           <span v-if="user.tagline">{{ user.tagline }}</span>
           <span v-else-if="canEditCurrentUser">{{ i18n.t("author.addTagline") }}</span>
           <TaglineModal :tagline="user.tagline" :action="`${user.isOrganization ? 'organizations/org' : 'users'}/${user.name}/settings/tagline`" />
-          <!-- todo user log modal -->
         </div>
+
+        <Tooltip v-for="btn in buttons" :key="btn.name" :content="i18n.t(`author.tooltips.${btn.name}`)">
+          <Link v-bind="btn.attr">
+            <Button size="small"><component :is="btn.icon" /></Button>
+          </Link>
+        </Tooltip>
+
+        <!-- todo lock user modal -->
       </div>
 
       <div class="flex-grow" />
