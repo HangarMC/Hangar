@@ -45,7 +45,7 @@ async function save() {
       <Button size="medium" class="mt-2 ml-2" @click="save">{{ i18n.t("general.change") }}</Button>
     </template>
     <template #activator="{ on }">
-      <Button size="small" class="ml-2" v-on="on">
+      <Button size="small" class="ml-2 inline-flex" v-on="on">
         <IconMdiPencil />
       </Button>
     </template>

@@ -89,7 +89,7 @@ const buttons = computed<UserButton[]>(() => {
 
         <Tooltip v-for="btn in buttons" :key="btn.name" :content="i18n.t(`author.tooltips.${btn.name}`)">
           <Link v-bind="btn.attr">
-            <Button size="small"><component :is="btn.icon" /></Button>
+            <Button size="small" class="mr-1 mt-1 inline-flex"><component :is="btn.icon" /></Button>
           </Link>
         </Tooltip>
 
