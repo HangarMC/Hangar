@@ -9,7 +9,6 @@ import java.util.Map;
 
 import static java.util.List.of;
 
-@Deprecated(forRemoval = true)
 public enum Routes {
 
     SHOW_PROJECT_VISIBILITY("showProjectVisibility", Paths.SHOW_PROJECT_VISIBILITY, of(), of()),

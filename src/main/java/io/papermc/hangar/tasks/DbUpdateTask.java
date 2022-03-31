@@ -1,8 +1,7 @@
 package io.papermc.hangar.tasks;
 
-import io.papermc.hangar.service.internal.admin.StatService;
-import io.papermc.hangar.service.internal.projects.HomeProjectService;
-
+import io.papermc.hangar.service.StatsService;
+import io.papermc.hangar.service.project.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -10,23 +9,23 @@ import org.springframework.stereotype.Component;
 @Component
 public class DbUpdateTask {
 
-    private final HomeProjectService homeProjectService;
-    private final StatService statService;
+    private final ProjectService projectService;
+    private final StatsService statsService;
 
     @Autowired
-    public DbUpdateTask(HomeProjectService projectService, StatService statService) {
-        this.homeProjectService = projectService;
-        this.statService = statService;
+    public DbUpdateTask(ProjectService projectService, StatsService statsService) {
+        this.projectService = projectService;
+        this.statsService = statsService;
     }
 
     @Scheduled(fixedRateString = "#{@hangarConfig.homepage.updateInterval.toMillis()}")
     public void refreshHomePage() {
-        homeProjectService.refreshHomeProjects();
+        projectService.refreshHomePage();
     }
 
-    @Scheduled(fixedRateString = "#{@hangarConfig.homepage.updateInterval.toMillis()}", initialDelay = 1000)
+    @Scheduled(fixedRateString = "#{@hangarConfig.homepage.updateInterval.toMillis()}")
     public void updateStats() {
-        statService.processProjectViews();
-        statService.processVersionDownloads();
+        statsService.processProjectViews();
+        statsService.processVersionDownloads();
     }
 }

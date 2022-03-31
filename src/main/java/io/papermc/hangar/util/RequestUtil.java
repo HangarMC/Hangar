@@ -2,10 +2,14 @@ package io.papermc.hangar.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class RequestUtil {
 
@@ -26,5 +30,9 @@ public class RequestUtil {
         } catch (UnknownHostException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    public static Map<String, String> getPathParams(HttpServletRequest request) {
+        return Optional.ofNullable((Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)).orElse(new HashMap<>());
     }
 }

@@ -21,7 +21,6 @@ node
 *.iws
 *.iml
 *.ipr
-.run
 
 ### NetBeans ###
 /nbproject/private/
@@ -33,4 +32,3 @@ build/
 
 ### VS Code ###
 .vscode/
-

@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://hangar_db:5432/hangar
+    username: hangar
+    password: hangar
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+    date-format: com.fasterxml.jackson.databind.util.StdDateFormat
+
+fake-user:
+  enabled: false
+
+hangar:
+  debug: true
+  use-webpack: false
+  auth-url: "https://hangar-auth.minidigger.me"
+  base-url: "https://hangar.minidigger.me"
+  plugin-upload-dir: "/hangar/uploads"
+
+  announcements:
+    -
+      text: "This is a staging server for testing purposes. Data could be deleted at any time. Please use our production server at (TODO: prod url, lol) for uploading your plugins!"
+      color: "#ff544b"
+    -
+      text: "This is an announcement. It's cool"
+      color: "green"
+
+  sso:
+    secret: "changeme"
+    api-key: "changeme"
+
+  security:
+    api:
+      url: "https://hangar-auth.minidigger.me"
+      avatar-url: "https://hangar-auth.minidigger.me/avatar/%s?size=120x120"
+
+  projects:
+    name-regex: "^[a-zA-Z0-9-_]{3,}$"

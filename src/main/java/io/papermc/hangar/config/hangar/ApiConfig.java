@@ -28,6 +28,7 @@ public class ApiConfig {
         private Duration publicExpiration = Duration.ofHours(3);
         @DurationUnit(ChronoUnit.DAYS)
         private Duration expiration = Duration.ofDays(14);
+        private String checkInterval = "5m";
 
 
         public Duration getPublicExpiration() {
@@ -44,6 +45,14 @@ public class ApiConfig {
 
         public void setExpiration(Duration expiration) {
             this.expiration = expiration;
+        }
+
+        public String getCheckInterval() {
+            return checkInterval;
+        }
+
+        public void setCheckInterval(String checkInterval) {
+            this.checkInterval = checkInterval;
         }
     }
 }

@@ -1,0 +1,117 @@
+version: '3.7'
+
+services:
+  app:
+    image: registry.gitlab.com/minidigger/hangar2/app:latest
+    build:
+      context: ..
+      dockerfile: docker/hangar/Dockerfile
+    ports:
+    - "8080:8080"
+    volumes:
+    - ../:/app
+    - uploads:/uploads
+    working_dir: /app
+    depends_on:
+      - 'db'
+      - 'auth'
+      - 'mail'
+    stdin_open: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.hangarnew.loadbalancer.server.port=8080"
+      - "traefik.http.routers.hangarnew.rule=Host(`hangar-new.minidigger.me`)"
+      - "traefik.http.routers.hangarnew.entrypoints=web-secure"
+      - "traefik.http.routers.hangarnew.tls=true"
+      - "traefik.http.routers.hangarnew.tls.options=default"
+      - "traefik.http.routers.hangarnew.tls.certresolver=default"
+      - "traefik.http.routers.hangarnew.tls.domains[0].main=minidigger.me"
+      - "traefik.http.routers.hangarnew.tls.domains[0].sans=*.minidigger.me"
+    networks:
+      - web
+    user: appuser
+    command: './mvnw spring-boot:run -Dspring-boot.run.arguments=--spring.config.location="./docker/hangar/application.yml"'
+  db:
+    image: registry.gitlab.com/minidigger/hangar2/db:latest
+    build: ./db
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: hangarauth
+      POSTGRES_DB: hangar
+      POSTGRES_USER: hangar
+      POSTGRES_PASSWORD: hangar
+    ports:
+      - "2345:5432" # pls dont abuse open port :/
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - web
+    labels:
+      - "traefik.enable=false"
+  mail:
+    image: mailhog/mailhog:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.hangar-mail.loadbalancer.server.port=8025"
+      - "traefik.http.routers.hangar-mail.middlewares=basicauth@file"
+      - "traefik.http.routers.hangar-mail.rule=Host(`hangar-mail-new.minidigger.me`)"
+      - "traefik.http.routers.hangar-mail.entrypoints=web-secure"
+      - "traefik.http.routers.hangar-mail.tls=true"
+      - "traefik.http.routers.hangar-mail.tls.options=default"
+      - "traefik.http.routers.hangar-mail.tls.certresolver=default"
+      - "traefik.http.routers.hangar-mail.tls.domains[0].main=minidigger.me"
+      - "traefik.http.routers.hangar-mail.tls.domains[0].sans=*.minidigger.me"
+    networks:
+      - web
+  auth:
+    image: registry.gitlab.com/minidigger/hangarauth
+    build:
+      context: ../../HangarAuth
+      dockerfile: Dockerfile
+    ports:
+    - "8000:8000"
+    depends_on:
+      - "db"
+      - "redis"
+      - "mail"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.hangar-auth.loadbalancer.server.port=8000"
+      - "traefik.http.routers.hangar-auth.rule=Host(`hangar-auth-new.minidigger.me`)"
+      - "traefik.http.routers.hangar-auth.entrypoints=web-secure"
+      - "traefik.http.routers.hangar-auth.tls=true"
+      - "traefik.http.routers.hangar-auth.tls.options=default"
+      - "traefik.http.routers.hangar-auth.tls.certresolver=default"
+      - "traefik.http.routers.hangar-auth.tls.domains[0].main=minidigger.me"
+      - "traefik.http.routers.hangar-auth.tls.domains[0].sans=*.minidigger.me"
+    environment:
+      PYTHONUNBUFFERED: 1
+      SECRET_KEY: "TzNc3RTpfVn1xxNV90PPGEfs7SZhy5"
+      EMAIL_HOST: "mail"
+      EMAIL_PORT: "1025"
+      EMAIL_SSL: "false"
+      EMAIL_TLS: "false"
+      EMAIL_HOST_USER: "dum"
+      EMAIL_HOST_PASSWORD: "dum"
+      DB_NAME: "hangarauth"
+      DB_USER: "hangar"
+      DB_PASSWORD: "hangar"
+      DB_HOST: "db"
+      REDIS_HOST: "redis"
+      SSO_ENDPOINT_hangar: "{ 'sync_sso_endpoint': ('http://app:8080/api/sync_sso'), 'sso_secret': 'changeme', 'api_key': 'changeme' }"
+      DEBUG: "true"
+      DJANGO_SETTINGS_MODULE: "spongeauth.settings.prod"
+    networks:
+      - web
+  redis:
+    image: redis:6.0.6
+    networks:
+      - web
+
+networks:
+  web:
+    name: traefik-overlay
+    external: true
+
+volumes:
+  db_data:
+  uploads:

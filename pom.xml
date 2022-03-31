@@ -5,11 +5,11 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.5</version>
+        <version>2.4.1</version>
         <relativePath/>
     </parent>
 
-    <groupId>io.papermc</groupId>
+    <groupId>me.minidigger</groupId>
     <artifactId>hangar</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
@@ -18,7 +18,7 @@
 
     <properties>
         <!-- compiling -->
-        <java.version>17</java.version>
+        <java.version>11</java.version>
 
         <!-- encoding -->
         <encoding>UTF-8</encoding>
@@ -26,20 +26,19 @@
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 
         <!-- dependency management -->
-        <jdbi3-bom.version>3.28.0</jdbi3-bom.version>
-        <configurate.version>4.1.2</configurate.version>
+        <jdbi3-bom.version>3.18.0</jdbi3-bom.version>
 
         <!-- dependencies -->
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
-        <flexmark-all.version>0.64.0</flexmark-all.version>
+        <freemarker-java8.version>2.0.0</freemarker-java8.version>
+        <flexmark-all.version>0.62.2</flexmark-all.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
-        <org-json.version>20220320</org-json.version>
 
-        <apache-commons-lang.version>3.12.0</apache-commons-lang.version>
-        <jwt.version>3.19.0</jwt.version>
+        <apache-commons-lang.version>3.11</apache-commons-lang.version>
 
         <!-- plugins -->
-        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
+        <frontend-maven-plugin.version>1.11.0</frontend-maven-plugin.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -49,13 +48,6 @@
                 <artifactId>jdbi3-bom</artifactId>
                 <type>pom</type>
                 <version>${jdbi3-bom.version}</version>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.spongepowered</groupId>
-                <artifactId>configurate-bom</artifactId>
-                <type>pom</type>
-                <version>${configurate.version}</version>
                 <scope>import</scope>
             </dependency>
         </dependencies>
@@ -96,31 +88,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${apache-commons-lang.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>${org-json.version}</version>
-        </dependency>
-
-        <!-- configurate -->
-        <dependency>
-            <groupId>org.spongepowered</groupId>
-            <artifactId>configurate-jackson</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.spongepowered</groupId>
-            <artifactId>configurate-yaml</artifactId>
         </dependency>
 
         <!--SpringFox dependencies -->
@@ -149,6 +121,18 @@
             <artifactId>snakeyaml</artifactId>
         </dependency>
 
+        <!-- template engine -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+        </dependency>
+        <!-- java 8 objects in freemarker -->
+        <dependency>
+            <groupId>no.api.freemarker</groupId>
+            <artifactId>freemarker-java8</artifactId>
+            <version>${freemarker-java8.version}</version>
+        </dependency>
+
         <!-- jdbi -->
         <dependency>
             <groupId>org.jdbi</groupId>
@@ -164,7 +148,7 @@
         </dependency>
         <dependency>
             <groupId>org.jdbi</groupId>
-            <artifactId>jdbi3-spring5</artifactId>
+            <artifactId>jdbi3-spring4</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jdbi</groupId>
@@ -173,11 +157,6 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.impossibl.pgjdbc-ng</groupId>
-            <artifactId>pgjdbc-ng</artifactId>
-            <version>0.8.9</version>
         </dependency>
 
         <!-- flyway -->
@@ -193,17 +172,10 @@
             <version>${flexmark-all.version}</version>
         </dependency>
 
-        <!-- sitemap -->
         <dependency>
             <groupId>cz.jiripinkas</groupId>
             <artifactId>jsitemapgenerator</artifactId>
             <version>${jsitemapgenerator.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>${jwt.version}</version>
         </dependency>
 
         <!-- runtime -->
@@ -271,6 +243,47 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>${frontend-maven-plugin.version}</version>
+
+                <configuration>
+                    <workingDirectory>src/main/frontend</workingDirectory>
+                    <nodeVersion>v12.18.4</nodeVersion> <!-- latest LTS -->
+                    <yarnVersion>v1.22.5</yarnVersion> <!-- latest stable -->
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>install node and yarn</id>
+                        <goals>
+                            <goal>install-node-and-yarn</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                    </execution>
+                    <execution>
+                        <id>yarn install</id>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                        <phase>generate-resources</phase>
+                    </execution>
+                    <execution>
+                        <id>yarn build</id>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run build</arguments>
+                        </configuration>
+                        <phase>generate-resources</phase>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>

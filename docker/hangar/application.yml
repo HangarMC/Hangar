@@ -1,0 +1,114 @@
+server:
+  port: 8080
+
+spring:
+  freemarker:
+    request-context-attribute: rc
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://db:5432/hangar
+    username: hangar
+    password: hangar
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 11MB
+  devtools:
+    restart:
+      additional-exclude: work/**
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+    date-format: com.fasterxml.jackson.databind.util.StdDateFormat
+
+fake-user:
+  enabled: false
+  id: -2
+  name: paper
+  username: paper
+  email: paper@papermc.io
+
+hangar:
+  debug: true
+  debug-level: 3
+  log-timings: false
+  auth-url: "http://localhost:8000"
+  base-url: "http://localhost:8080"
+  plugin-upload-dir: "/uploads"
+  use-webpack: true
+
+  sponsors:
+    - name: Beer
+      image: images/sponsors/beer.jpg
+      link: https://minidigger.me
+    - name: MiniDigger
+      image: images/sponsors/minidigger.png
+      link: https://minidigger.me
+
+  homepage:
+    update-interval: 10m
+
+  channels:
+    max-name-len: 15
+    name-regex: "^[a-zA-Z0-9]+$"
+    color-default: 7
+    name-default: "Release"
+
+  pages:
+    home:
+      name: "Home"
+      message: "Welcome to your new project!"
+    min-len: 15
+    max-len: 32000
+    page:
+      max-len: 75000
+
+  projects:
+    max-name-len: 25
+    max-pages: 50
+    max-channels: 5
+    init-load: 25
+    init-version-load: 10
+    max-desc-len: 120
+    file-validate: true
+    stale-age: 28d
+    check-interval: 1h
+    draft-expire: 1d
+    user-grid-page-size: 30
+    max-keywords: 5
+    unsafe-download-max-age: 10
+    name-regex: "^[a-zA-Z0-9-_]{3,}$"
+
+  users:
+    stars-per-page: 5
+    max-tagline-len: 100
+    author-page-size: 25
+    project-page-size: 5
+
+
+  sso:
+    enabled: true
+    # relative to auth-url
+    login-url: "/sso/"
+    signup-url: "/sso/signup/"
+    verify-url: "/sso/sudo/"
+    logout-url: "/accounts/logout/"
+    avatar-url: "/avatar/%s?size=120x120"
+    secret: "changeme"
+    api-key: "changeme"
+    timeout: "2s"
+    reset: "10m"
+
+  security:
+    secure: false
+    unsafe-download-max-age: 600000
+    api:
+      url: "http://auth:8000"
+      avatar-url: "http://localhost:8000/avatar/%s?size=120x120" # only comment in if you run auth locally
+#      avatar-url: "https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png"
+      key: changeme
+      timeout: 10000
+      breaker:
+        max-failures: 5
+        timeout: 10s
+        reset: 5m

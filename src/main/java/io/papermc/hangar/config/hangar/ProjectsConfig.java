@@ -1,11 +1,9 @@
 package io.papermc.hangar.config.hangar;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.convert.DurationUnit;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -15,13 +13,9 @@ public class ProjectsConfig {
 
     private String nameRegex = "^[a-zA-Z0-9-_]{3,}$";
     private String versionNameRegex = "^[a-zA-Z0-9-_.]+$";
-    private String pageNameRegex = "^[a-zA-Z0-9-_.]+$";
     private Pattern namePattern = Pattern.compile(this.nameRegex);
     private Pattern versionNamePattern = Pattern.compile(this.versionNameRegex);
-    private Pattern pageNamePattern = Pattern.compile(this.versionNameRegex);
     private int maxNameLen = 25;
-    private int maxVersionNameLen = 25;
-    private int maxPageNameLen = 25;
     private int maxPages = 50;
     private int maxChannels = 5;
     private int initLoad = 25;
@@ -29,12 +23,10 @@ public class ProjectsConfig {
     private int maxDescLen = 120;
     private int maxKeywords = 5;
     private boolean fileValidate = true;
-    @DurationUnit(ChronoUnit.DAYS)
     private Duration staleAge = Duration.ofDays(28);
     private String checkInterval = "1h";
     private String draftExpire = "1d";
     private int userGridPageSize = 30;
-    @DurationUnit(ChronoUnit.MINUTES)
     private Duration unsafeDownloadMaxAge = Duration.ofMinutes(10);
 
     public String getNameRegex() {
@@ -47,10 +39,6 @@ public class ProjectsConfig {
 
     public Predicate<String> getVersionNameMatcher() {
         return versionNamePattern.asMatchPredicate();
-    }
-
-    public Predicate<String> getPageNameMatcher() {
-        return pageNamePattern.asMatchPredicate();
     }
 
     public void setNameRegex(String nameRegex) {
@@ -67,36 +55,12 @@ public class ProjectsConfig {
         this.versionNamePattern = Pattern.compile(versionNameRegex);
     }
 
-    public String getPageNameRegex() {
-        return pageNameRegex;
-    }
-
-    public void setPageNameRegex(String pageNameRegex) {
-        this.pageNameRegex = pageNameRegex;
-    }
-
     public int getMaxNameLen() {
         return maxNameLen;
     }
 
     public void setMaxNameLen(int maxNameLen) {
         this.maxNameLen = maxNameLen;
-    }
-
-    public int getMaxVersionNameLen() {
-        return maxVersionNameLen;
-    }
-
-    public void setMaxVersionNameLen(int maxVersionNameLen) {
-        this.maxVersionNameLen = maxVersionNameLen;
-    }
-
-    public int getMaxPageNameLen() {
-        return maxPageNameLen;
-    }
-
-    public void setMaxPageNameLen(int maxPageNameLen) {
-        this.maxPageNameLen = maxPageNameLen;
     }
 
     public int getMaxPages() {

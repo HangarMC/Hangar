@@ -5,16 +5,16 @@ server:
   port: 8080
 
 spring:
+  freemarker:
+    request-context-attribute: rc
   ############
   # DataBase #
   ############
-  sql:
-    init:
-      platform: postgres
   datasource:
-    url: jdbc:postgresql://localhost:26257/postgres
-    username: root
-    password:
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/hangar
+    username: hangar
+    password: hangar
   security:
     filter:
       order: 1000
@@ -30,56 +30,41 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS: false
     date-format: com.fasterxml.jackson.databind.util.StdDateFormat
 
-  ###############
-  # Email Stuff #
-  ###############
-#  mail:
-#    host: smtp.gmail.com
-#    username: username
-#    password: password
-#    properties:
-#      mail.transport.protocol: smtp
-#      mail.smtp.port: 587
-#      mail.smtp.auth: true
-#      mail.smtp.starttls.enable: true
-
 #############
 # Fake User #
 #############
 fake-user:
   enabled: true
+  id: -2
   name: paper
   username: paper
   email: paper@papermc.io
-#  id: -3
-#  name: paper2
-#  username: paper2
-#  email: paper2@papermc.io
+
 
 hangar:
-  dev: true
-  base-url: "http://localhost:3000"
+  debug: true
+  debug-level: 3
+  log-timings: false
+  auth-url: "http://localhost:8000"
+  base-url: "http://localhost:8080"
+  use-webpack: true
   ga-code: "UA-38006759-9"
-
-  licenses:
-    - "MIT"
-    - "Apache 2.0"
-    - "GPL"
-    - "LPGL"
-    - "(custom)"
 
   announcements:
       -
         text: "This is a staging server for testing purposes. Data could be deleted at any time. Please use our production server at (TODO: prod url, lol) for uploading your plugins!"
         color: "#ff544b"
+      -
+        text: "This is an announcement. It's cool"
+        color: "green"
 
   sponsors:
     - name: Beer
-      image: /images/sponsors/beer.jpg
-      link: https://benndorf.dev
+      image: images/sponsors/beer.jpg
+      link: https://minidigger.me
     - name: MiniDigger
-      image: /images/sponsors/minidigger.png
-      link: https://benndorf.dev
+      image: images/sponsors/minidigger.png
+      link: https://minidigger.me
 
   homepage:
     update-interval: 10m
@@ -87,7 +72,7 @@ hangar:
   channels:
     max-name-len: 15
     name-regex: "^[a-zA-Z0-9]+$"
-    color-default: cyan
+    color-default: 7
     name-default: "Release"
 
   pages:
@@ -95,10 +80,9 @@ hangar:
       name: "Home"
       message: "Welcome to your new project!"
     min-len: 15
-    max-len: 75000
-    name-regex: "^[a-zA-Z0-9-_ ]+$"
-    max-name-len: 25
-    min-name-len: 3
+    max-len: 32000
+    page:
+      max-len: 75000
 
   projects:
     max-name-len: 25
@@ -116,68 +100,39 @@ hangar:
     unsafe-download-max-age: 10
     name-regex: "^[a-zA-Z0-9-_]{3,}$"
 
-  orgs:
-    create-limit: 5
-    dummy-email-domain: "org.papermc.io"
-    enabled: true
-
   users:
+    stars-per-page: 5
     max-tagline-len: 100
-    staff-roles:
-      - Hangar_Admin
-      - Hangar_Mod
-      - Hangar_Dev
+    author-page-size: 25
+    project-page-size: 5
 
 
   sso:
     enabled: true
-    oauth-url: "http://localhost:3000" # proxied to 4444
-    login-url: "/oauth2/auth"
-    token-url: "/oauth2/token"
-    logout-url: "/oauth2/sessions/logout"
-    client-id: "my-client"
-
-    auth-url: "http://localhost:3001"
-    signup-url: "/account/signup/"
+    # relative to auth-url
+    login-url: "/sso/"
+    signup-url: "/sso/signup/"
+    verify-url: "/sso/sudo/"
+    logout-url: "/accounts/logout/"
+    avatar-url: "/avatar/%s?size=120x120"
+    secret: "changeme"
+    api-key: "changeme"
+    timeout: "2s"
+    reset: "10m"
 
   security:
     secure: false
     unsafe-download-max-age: 600000
-    token-issuer: "Hangar"
-    token-secret: "secret!"
-    token-expiry: 300 # seconds
-    refresh-token-expiry: 30 # days
     api:
       url: "http://localhost:8000"
       # avatar-url: "http://localhost:8000/avatar/%s?size=120x120" # only comment in if you run auth locally
-      avatar-url: "https://docs.papermc.io/img/paper.png"
+      avatar-url: "https://paper.readthedocs.io/en/latest/_images/papermc_logomark_500.png"
+      key: changeme
       timeout: 10000
+      breaker:
+        max-failures: 5
+        timeout: 10s
+        reset: 5m
     safe-download-hosts:
       - "github.com"
-      - "youtu.be"
 
-  discourse:
-    enabled: false
-    url: "http://localhost:80/"
-    admin-user: "admin"
-    api-key: "3ed9d28a4d225963d0485e095b6ba9dce8852eedbcc2cd8d5f2ef4638160949f"
-    category: 5 # hangar category
-
-  jobs:
-    check-interval: 30s
-    unknown-error-timeout: 15m
-    status-error-timeout: 5m
-    not-available-timeout: 2m
-    max-concurrent-jobs: 32
-
-#################
-# Debug Logging #
-#################
-logging:
-  level:
-    root: INFO
-    org.springframework: INFO
-    org.springframework.context.support.PostProcessorRegistrationDelegate: WARN
-    io.papermc.hangar.service.internal.JobService: DEBUG
-    io.papermc.hangar.config.WebConfig.LoggingInterceptor: DEBUG
-#    org.postgresql: TRACE

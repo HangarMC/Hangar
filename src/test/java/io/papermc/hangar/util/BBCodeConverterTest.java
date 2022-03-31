@@ -1,5 +1,6 @@
 package io.papermc.hangar.util;
 
+import io.papermc.hangar.controller.util.BBCodeConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -7,7 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-class BBCodeConverterTest {
+public class BBCodeConverterTest {
 
     private static final Path PATH = Path.of("src/test/resources/io/papermc/hangar/utils");
     private final BBCodeConverter converter = new BBCodeConverter();
@@ -58,18 +59,6 @@ class BBCodeConverterTest {
     void testAttachment() {
         String result = converter.convertToMarkdown("[attach]100[/attach]");
         Assertions.assertEquals("![https://www.spigotmc.org/attachments/100](https://www.spigotmc.org/attachments/100)", result);
-    }
-
-    @Test
-    void testMedia() {
-        String result = converter.convertToMarkdown("[MEDIA=youtube]dQw4w9WgXcQ[/MEDIA]");
-        Assertions.assertEquals("@[YouTube](https://youtu.be/dQw4w9WgXcQ)", result);
-    }
-
-    @Test
-    void testMediaUnsupportedPlatform() {
-        String result = converter.convertToMarkdown("[MEDIA=vimeo]163721649[/MEDIA]");
-        Assertions.assertEquals("[MEDIA=vimeo]163721649[/MEDIA]", result);
     }
 
     @Test

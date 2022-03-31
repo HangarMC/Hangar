@@ -1,19 +1,16 @@
 version: '3.7'
 
 services:
-  cockroach:
-    image: cockroachdb/cockroach:latest-v21.2
+  db:
+    build: ./db
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: hangarauth
+      POSTGRES_DB: hangar
+      POSTGRES_USER: hangar
+      POSTGRES_PASSWORD: 'hangar'
     ports:
-      - "26257:26257"
-      - "26000:8080"
+      - "5432:5432"
     volumes:
-      - cockroach_data:/cockroach/cockroach-data
-    command:
-      - "start-single-node"
-      - "--insecure"
+      - db_data:/var/lib/postgresql/data
 volumes:
-  cockroach_data:
-
-networks:
-  default:
-    name: hangar-network
+  db_data:

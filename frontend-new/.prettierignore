@@ -1,9 +1,0 @@
-/node_modules/**
-/.cache/**
-/dist/**
-/tests/unit/coverage/**
-**/.temp/**
-pnpm-lock.yaml
-.vscode/**
-.idea/**
-server/**

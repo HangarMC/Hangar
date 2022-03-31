@@ -1,0 +1,57 @@
+variables:
+  # Use the OverlayFS driver for improved performance.
+  DOCKER_DRIVER: overlay
+  # This will supress any download for dependencies and plugins or upload messages which would clutter the console log.
+  # `showDateTime` will show the passed time in milliseconds. You need to specify `--batch-mode` to make this work.
+  MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
+  # As of Maven 3.3.0 instead of this you may define these options in `.mvn/maven.config` so the same config is used
+  # when running from the command line.
+  # `installAtEnd` and `deployAtEnd` are only effective with recent version of the corresponding plugins.
+  MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
+
+stages:
+  - build
+  - deploy
+
+cache:
+  paths:
+    - .m2/repository/
+    - src/main/frontend/node
+    - src/main/frontend/node_modules
+    - target/
+
+build:
+  image: maven:3-jdk-14
+  stage: build
+  script:
+    - 'mvn $MAVEN_CLI_OPTS clean package'
+  artifacts:
+    paths:
+      - target/hangar-*.jar
+
+deploy:
+  stage: deploy
+  image: docker:latest
+  variables:
+    SERVICE_NAME: hangar
+  services:
+    - docker:dind
+  before_script:
+    - mkdir -pv /home/docker
+    - echo $DOCKER_CA_PEM >> /home/docker/ca.pem.base64
+    - echo $DOCKER_CERT >> /home/docker/cert.pem.base64
+    - echo $DOCKER_KEY >> /home/docker/key.pem.base64
+    - base64 -d /home/docker/ca.pem.base64 >> /home/docker/ca.pem
+    - base64 -d /home/docker/cert.pem.base64 >> /home/docker/cert.pem
+    - base64 -d /home/docker/key.pem.base64 >> /home/docker/key.pem
+    - alias secure-docker="docker -H tcp://glados.minidigger.me:4243 --tlsverify --tlscacert=/home/docker/ca.pem --tlscert=/home/docker/cert.pem --tlskey=/home/docker/key.pem"
+  script:
+      - apk add --no-cache docker-compose
+      - cd docker/deployment
+      - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+      - docker-compose build
+      - docker-compose push
+      - secure-docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+      - secure-docker stack deploy --with-registry-auth --compose-file=docker-compose.yml ${SERVICE_NAME}
+  only:
+    - master

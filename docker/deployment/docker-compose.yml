@@ -1,86 +1,42 @@
 version: '3.7'
 
 services:
-  frontend_old:
-    image: "ghcr.io/papermc/hangar_frontend_old"
+  app:
+    image: registry.gitlab.com/minidigger/hangar2/app:latest
     build:
       context: ../..
-      dockerfile: docker/deployment/hangar-frontend-old/Dockerfile
-    depends_on:
-      - 'backend'
-    environment:
-      # keep these in sync with gh-action!
-      proxyHost: "http://hangar_new_backend:8080"
-      authHost: "https://hangar-auth.benndorf.dev"
-      host: "0.0.0.0"
-      PUBLIC_HOST: "https://hangar-old.benndorf.dev"
-    stdin_open: true
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.hangar-old.loadbalancer.server.port=3000"
-      - "traefik.http.routers.hangar-old.rule=Host(`hangar-old.benndorf.dev`) || Host(`staging-old.hangarmc.dev`)"
-      - "traefik.http.routers.hangar-old.entrypoints=web-secure"
-      - "traefik.http.routers.hangar-old.tls=true"
-      - "traefik.http.routers.hangar-old.tls.certresolver=default"
-      - "traefik.http.routers.hangar-old.tls.domains[0].main=benndorf.dev"
-      - "traefik.http.routers.hangar-old.tls.domains[0].sans=*.benndorf.dev"
-    networks:
-      - web
-  frontend:
-    image: "ghcr.io/papermc/hangar_frontend"
-    build:
-      context: ../..
-      dockerfile: docker/deployment/hangar-frontend/Dockerfile
-    depends_on:
-      - 'backend'
-    environment:
-      # keep these in sync with gh-action!
-      proxyHost: "http://hangar_new_backend:8080"
-      authHost: "https://hangar-auth.benndorf.dev"
-      host: "0.0.0.0"
-      PUBLIC_HOST: "https://hangar.benndorf.dev"
-    stdin_open: true
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.hangar-new.loadbalancer.server.port=1337"
-      - "traefik.http.routers.hangar-new.rule=Host(`hangar.benndorf.dev`) || Host(`staging.hangarmc.dev`)"
-      - "traefik.http.routers.hangar-new.entrypoints=web-secure"
-      - "traefik.http.routers.hangar-new.tls=true"
-      - "traefik.http.routers.hangar-new.tls.certresolver=default"
-      - "traefik.http.routers.hangar-new.tls.domains[0].main=benndorf.dev"
-      - "traefik.http.routers.hangar-new.tls.domains[0].sans=*.benndorf.dev"
-    networks:
-      - web
-  backend:
-    image: "ghcr.io/papermc/hangar_backend"
-    build:
-      context: ../..
-      dockerfile: docker/deployment/hangar-backend/Dockerfile
-    environment:
-      POSTGRES_USER: "${POSTGRES_USER}"
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-      SSO_CLIENT_ID: "${SSO_CLIENT_ID}"
-      TOKEN_SECRET: "${TOKEN_SECRET}"
+      dockerfile: docker/deployment/hangar/Dockerfile
     depends_on:
       - 'db'
+      - 'auth'
       - 'mail'
     stdin_open: true
     labels:
-      - "traefik.enable=false"
+      - "traefik.enable=true"
+      - "traefik.http.services.hangar.loadbalancer.server.port=8080"
+      - "traefik.http.routers.hangar.rule=Host(`hangar.minidigger.me`)"
+      - "traefik.http.routers.hangar.entrypoints=web-secure"
+      - "traefik.http.routers.hangar.tls=true"
+      - "traefik.http.routers.hangar.tls.options=default"
+      - "traefik.http.routers.hangar.tls.certresolver=default"
+      - "traefik.http.routers.hangar.tls.domains[0].main=minidigger.me"
+      - "traefik.http.routers.hangar.tls.domains[0].sans=*.minidigger.me"
     volumes:
       - hangar_data:/hangar/uploads
     networks:
       - web
   db:
-    image: cockroachdb/cockroach:latest-v21.2
+    image: registry.gitlab.com/minidigger/hangar2/db:latest
+    build: ./db
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: hangarauth
+      POSTGRES_DB: hangar
+      POSTGRES_USER: hangar
+      POSTGRES_PASSWORD: 'hangar'
     ports:
-      - "26257:26257"
-      - "26000:8080"
+      - "2345:5432" # pls dont abuse open port :/
     volumes:
-      - cockroach_data:/cockroach/cockroach-data
-    command:
-      - "start-single-node"
-      - "--insecure"
+      - db_data:/var/lib/postgresql/data
     networks:
       - web
     labels:
@@ -89,14 +45,51 @@ services:
     image: mailhog/mailhog:latest
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.hangar-new-mail.loadbalancer.server.port=8025"
-      - "traefik.http.routers.hangar-new-mail.middlewares=basicauth@file"
-      - "traefik.http.routers.hangar-new-mail.rule=Host(`hangar-new-mail.minidigger.me`) || Host(`hangar-mail.benndorf.dev`)"
-      - "traefik.http.routers.hangar-new-mail.entrypoints=web-secure"
-      - "traefik.http.routers.hangar-new-mail.tls=true"
-      - "traefik.http.routers.hangar-new-mail.tls.certresolver=default"
-      - "traefik.http.routers.hangar-new-mail.tls.domains[0].main=minidigger.me"
-      - "traefik.http.routers.hangar-new-mail.tls.domains[0].sans=*.minidigger.me"
+      - "traefik.http.services.hangar-mail.loadbalancer.server.port=8025"
+      - "traefik.http.routers.hangar-mail.middlewares=basicauth@file"
+      - "traefik.http.routers.hangar-mail.rule=Host(`hangar-mail.minidigger.me`)"
+      - "traefik.http.routers.hangar-mail.entrypoints=web-secure"
+      - "traefik.http.routers.hangar-mail.tls=true"
+      - "traefik.http.routers.hangar-mail.tls.options=default"
+      - "traefik.http.routers.hangar-mail.tls.certresolver=default"
+      - "traefik.http.routers.hangar-mail.tls.domains[0].main=minidigger.me"
+      - "traefik.http.routers.hangar-mail.tls.domains[0].sans=*.minidigger.me"
+    networks:
+      - web
+  auth:
+    image: registry.gitlab.com/minidigger/hangarauth
+    depends_on:
+      - 'db'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.hangar-auth.loadbalancer.server.port=8000"
+      - "traefik.http.routers.hangar-auth.rule=Host(`hangar-auth.minidigger.me`)"
+      - "traefik.http.routers.hangar-auth.entrypoints=web-secure"
+      - "traefik.http.routers.hangar-auth.tls=true"
+      - "traefik.http.routers.hangar-auth.tls.options=default"
+      - "traefik.http.routers.hangar-auth.tls.certresolver=default"
+      - "traefik.http.routers.hangar-auth.tls.domains[0].main=minidigger.me"
+      - "traefik.http.routers.hangar-auth.tls.domains[0].sans=*.minidigger.me"
+    environment:
+      SECRET_KEY: "TzNc3RTpfVn1xxNV90PPGEfs7SZhy5"
+      EMAIL_HOST: "mail"
+      EMAIL_PORT: "1025"
+      EMAIL_SSL: "false"
+      EMAIL_TLS: "false"
+      EMAIL_HOST_USER: "dum"
+      EMAIL_HOST_PASSWORD: "dum"
+      DB_NAME: "hangarauth"
+      DB_USER: "hangar"
+      DB_PASSWORD: "hangar"
+      DB_HOST: "hangar_db"
+      REDIS_HOST: "hangar_redis"
+      SSO_ENDPOINT_ore: "{ 'sync_sso_endpoint': ('http://hangar_app:9000/api/sync_sso'), 'sso_secret': 'changeme', 'api_key': 'changeme' }"
+      DEBUG: "true" # for reasons I don't understand, auth only runs with debug right now. don't question it, unless you want to fix it
+      DJANGO_SETTINGS_MODULE: "spongeauth.settings.prod"
+    networks:
+      - web
+  redis:
+    image: redis:6.0.6
     networks:
       - web
 
@@ -106,5 +99,5 @@ networks:
     external: true
 
 volumes:
-  cockroach_data:
+  db_data:
   hangar_data:

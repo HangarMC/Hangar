@@ -6,18 +6,22 @@ import java.util.Objects;
 
 public class JobState extends PGobject {
 
-    public static final JobState NOT_STARTED = new JobState("not_started");
-    public static final JobState STARTED = new JobState("started");
-    public static final JobState DONE = new JobState("done");
-    public static final JobState FATAL_FAILURE = new JobState("fatal_failure");
 
-    public JobState() {
-        //
-    }
+    private String value;
 
     public JobState(String value) {
         setType("job_state");
         this.value = value;
+    }
+
+    @Override
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    @Override
+    public String getValue() {
+        return this.value;
     }
 
     @Override

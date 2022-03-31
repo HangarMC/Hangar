@@ -1,0 +1,21 @@
+.btn-default {
+  //border-color: rgb(204, 204, 204) white rgb(204, 204, 204) rgb(204, 204, 204);
+  border-style: solid;
+  border-width: 1px;
+  border-image: none 100% / 1 / 0 stretch;
+
+  color: $sponge-grey;
+  background-color: white;
+  border-color: #cccccc;
+}
+
+.btn-default:hover {
+  color: $sponge-grey;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+  text-decoration: none;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}

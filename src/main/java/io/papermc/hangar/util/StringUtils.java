@@ -1,29 +1,19 @@
 package io.papermc.hangar.util;
 
-import io.papermc.hangar.config.hangar.HangarConfig;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class StringUtils {
 
-    private StringUtils() {
-    }
-
-    private static HangarConfig hangarConfig;
-
-    static {
-        // doesn't work in unit test: but we can ignore that
-        try {
-            hangarConfig = StaticContextAccessor.getBean(HangarConfig.class);
-        } catch (IllegalStateException ex) {
-            hangarConfig = null;
-        }
-    }
+    private StringUtils() { }
 
     /**
      * Returns a URL readable string from the specified string.
@@ -47,12 +37,36 @@ public class StringUtils {
 
     /**
      * Returns a version number split into an ordered list of numbers
-     *
      * @param str version string to check (e.g. 2.3.1) MUST BE ALL NUMBERS
      * @return the list of integers in ltr order
      */
     public static List<Integer> splitVersionNumber(String str) {
         return Arrays.stream(str.split("\\.")).map(Integer::parseInt).collect(Collectors.toList());
+    }
+
+    /**
+     * Takes a nullable input and returns itself or if blank, null
+     * @param input input string
+     * @return itself or null
+     */
+    public static String stringOrNull(@Nullable String input) {
+        if (input == null || input.isBlank()) return null;
+        return input;
+    }
+
+    @NotNull
+    public static Collection<String> parseKeywords(@Nullable String input) {
+        return input == null ? Set.of() : Set.of(input.split("\\s+"));
+    }
+
+    public static <T extends Throwable> long getVersionId(@NotNull String versionString, T error) throws T {
+        int index = versionString.lastIndexOf('.');
+        try {
+            return Long.parseLong(versionString.substring(index + 1));
+        } catch (NumberFormatException ex) {
+            throw error;
+        }
+
     }
 
     private static final Pattern LAST_WHOLE_VERSION = Pattern.compile("((?<=,\\s)|^)[0-9.]{2,}(?=-[0-9.]+$)");
@@ -61,7 +75,6 @@ public class StringUtils {
 
     /**
      * Format a list of version numbers (will do sorting)
-     *
      * @param versionNumbers version numbers
      * @return formatted string
      */
@@ -69,14 +82,14 @@ public class StringUtils {
         versionNumbers.sort((version1, version2) -> {
             int vnum1 = 0, vnum2 = 0;
 
-            for (int i = 0, j = 0; (i < version1.length() || j < version2.length()); ) {
+            for (int i = 0, j = 0; (i < version1.length() || j < version2.length());) {
 
                 while (i < version1.length() && version1.charAt(i) != '.') {
                     vnum1 = vnum1 * 10 + (version1.charAt(i) - '0');
                     i++;
                 }
 
-                while (j < version2.length() && version2.charAt(j) != '.') {
+                while(j < version2.length() && version2.charAt(j) != '.') {
                     vnum2 = vnum2 * 10 + (version2.charAt(j) - '0');
                     j++;
                 }
@@ -116,6 +129,7 @@ public class StringUtils {
                         return verString + ", " + version;
                     }
                 } else {
+                    // TODO maybe not?
                     return verString + ", " + version;
                 }
             } else if (comma.find()) {
@@ -127,29 +141,12 @@ public class StringUtils {
                         return verString + ", " + version;
                     }
                 } else {
+                    // TODO maybe not?
                     return verString + ", " + version;
                 }
             } else {
                 throw new IllegalArgumentException("bad formatting: " + version);
             }
         });
-    }
-
-    public static String parsePythonNullable(String input) {
-        return input.equals("None") ? null : input;
-    }
-
-    public static boolean isAnyEqualIgnoreCase(@NotNull String lhs, String @NotNull ... rhs) {
-        if (rhs.length == 0) {
-            return false;
-        }
-
-        for (String string : rhs) {
-            if (lhs.equalsIgnoreCase(string)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

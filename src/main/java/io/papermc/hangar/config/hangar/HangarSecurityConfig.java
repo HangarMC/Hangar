@@ -1,17 +1,15 @@
 package io.papermc.hangar.config.hangar;
 
-import io.papermc.hangar.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.boot.convert.DurationUnit;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
+
+import io.papermc.hangar.util.Routes;
 
 @Component
 @ConfigurationProperties(prefix = "hangar.security")
@@ -20,12 +18,6 @@ public class HangarSecurityConfig {
     private boolean secure = false;
     private long unsafeDownloadMaxAge = 600000;
     private List<String> safeDownloadHosts = List.of();
-    private String tokenIssuer;
-    private String tokenSecret;
-    @DurationUnit(ChronoUnit.SECONDS)
-    private Duration tokenExpiry;
-    @DurationUnit(ChronoUnit.DAYS)
-    private Duration refreshTokenExpiry;
     @NestedConfigurationProperty
     public SecurityApiConfig api;
 
@@ -40,7 +32,48 @@ public class HangarSecurityConfig {
 
         private String url = "http://localhost:8000";
         private String avatarUrl = "http://localhost:8000/avatar/%s?size=120x120";
+        private String key = "changeme";
         private long timeout = 10000;
+        @NestedConfigurationProperty
+        public SecurityApiConfig.ApiBreakerConfig breaker;
+
+        @Autowired
+        public SecurityApiConfig(SecurityApiConfig.ApiBreakerConfig breaker) {
+            this.breaker = breaker;
+        }
+
+        @Component
+        @ConfigurationProperties(prefix = "hangar.security.api.breaker")
+        public static class ApiBreakerConfig {
+
+            private int maxFailures = 5;
+            private String timeout = "10s";
+            private String reset = "5m";
+
+            public int getMaxFailures() {
+                return maxFailures;
+            }
+
+            public void setMaxFailures(int maxFailures) {
+                this.maxFailures = maxFailures;
+            }
+
+            public String getTimeout() {
+                return timeout;
+            }
+
+            public void setTimeout(String timeout) {
+                this.timeout = timeout;
+            }
+
+            public String getReset() {
+                return reset;
+            }
+
+            public void setReset(String reset) {
+                this.reset = reset;
+            }
+        }
 
         public String getUrl() {
             return url;
@@ -58,6 +91,14 @@ public class HangarSecurityConfig {
             this.avatarUrl = avatarUrl;
         }
 
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
         public long getTimeout() {
             return timeout;
         }
@@ -65,38 +106,14 @@ public class HangarSecurityConfig {
         public void setTimeout(long timeout) {
             this.timeout = timeout;
         }
-    }
 
-    public Duration getTokenExpiry() {
-        return tokenExpiry;
-    }
+        public SecurityApiConfig.ApiBreakerConfig getBreaker() {
+            return breaker;
+        }
 
-    public void setTokenExpiry(Duration tokenExpiry) {
-        this.tokenExpiry = tokenExpiry;
-    }
-
-    public Duration getRefreshTokenExpiry() {
-        return refreshTokenExpiry;
-    }
-
-    public void setRefreshTokenExpiry(Duration refreshTokenExpiry) {
-        this.refreshTokenExpiry = refreshTokenExpiry;
-    }
-
-    public String getTokenIssuer() {
-        return tokenIssuer;
-    }
-
-    public void setTokenIssuer(String tokenIssuer) {
-        this.tokenIssuer = tokenIssuer;
-    }
-
-    public String getTokenSecret() {
-        return tokenSecret;
-    }
-
-    public void setTokenSecret(String tokenSecret) {
-        this.tokenSecret = tokenSecret;
+        public void setBreaker(SecurityApiConfig.ApiBreakerConfig breaker) {
+            this.breaker = breaker;
+        }
     }
 
     public boolean isSecure() {

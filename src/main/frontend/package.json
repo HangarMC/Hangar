@@ -1,0 +1,72 @@
+{
+  "name": "hangar",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "lintfix": "vue-cli-service lint --fix",
+    "webpackdebug": "vue-cli-service inspect > webpack.json"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "1.2.32",
+    "@fortawesome/free-brands-svg-icons": "5.15.1",
+    "@fortawesome/free-regular-svg-icons": "5.15.1",
+    "@fortawesome/free-solid-svg-icons": "5.15.1",
+    "axios": "0.21.0",
+    "bootstrap": "4.5.3",
+    "chart.js": "2.9.4",
+    "clipboard": "2.0.6",
+    "core-js": "3.8.1",
+    "diff-match-patch": "1.0.5",
+    "filesize": "6.1.0",
+    "highlight.js": "10.4.1",
+    "jquery": "3.5.1",
+    "lodash": "4.17.20",
+    "lodash-es": "4.17.15",
+    "moment": "2.29.1",
+    "popper.js": "1.16.1",
+    "qs": "6.9.4",
+    "query-string": "6.13.7",
+    "swagger-ui": "3.38.0",
+    "vue": "3.0.4",
+    "vue-i18n": "9.0.0-beta.14",
+    "webpack-jquery-ui": "2.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "4.5.9",
+    "@vue/cli-plugin-eslint": "4.5.7",
+    "@vue/cli-service": "4.5.9",
+    "@vue/compiler-sfc": "3.0.4",
+    "@vue/eslint-config-prettier": "6.0.0",
+    "babel-eslint": "10.1.0",
+    "eslint": "7.15.0",
+    "eslint-plugin-prettier": "3.1.4",
+    "eslint-plugin-vue": "7.4.0",
+    "husky": "4.3.6",
+    "lint-staged": "10.5.3",
+    "mini-css-extract-plugin": "1.2.1",
+    "prettier": "2.2.1",
+    "sass": "1.30.0",
+    "sass-loader": "10.1.0",
+    "stats-webpack-plugin": "0.7.0",
+    "vue-cli-plugin-webpack-bundle-analyzer": "4.0.0",
+    "vue-template-compiler": "2.6.12",
+    "webpack-cli": "3.3.12"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,jsx,vue}": [
+      "vue-cli-service lint",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lintfix"
+    }
+  }
+}
