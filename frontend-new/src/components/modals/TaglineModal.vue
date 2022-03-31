@@ -9,6 +9,7 @@ import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
 import { useRouter } from "vue-router";
+import { useBackendDataStore } from "~/store/backendData";
 
 const props = defineProps<{
   tagline: string;
@@ -21,6 +22,7 @@ const ctx = useContext();
 const router = useRouter();
 const i18n = useI18n();
 const notification = useNotificationStore();
+const backendData = useBackendDataStore();
 
 async function save() {
   try {
@@ -37,8 +39,7 @@ async function save() {
 <template>
   <Modal :title="i18n.t('author.editTagline')">
     <template #default="{ on }">
-      <!-- todo count exiting chars -->
-      <InputText v-model.trim="newTagline" :label="i18n.t('author.taglineLabel')" counter :maxlength="100" />
+      <InputText v-model.trim="newTagline" :label="i18n.t('author.taglineLabel')" counter :maxlength="backendData.validations.userTagline.max" />
 
       <Button size="medium" class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
       <Button size="medium" class="mt-2 ml-2" @click="newTagline = tagline">{{ i18n.t("general.reset") }}</Button>
