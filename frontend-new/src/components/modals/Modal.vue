@@ -24,8 +24,7 @@ function close() {
       <div class="flex items-center justify-center min-h-screen">
         <DialogOverlay class="fixed inset-0 bg-black opacity-30" />
 
-        <!-- todo better dark style for modals -->
-        <div class="relative max-w-sm mx-auto bg-white rounded p-4" dark="bg-gray-500">
+        <div class="relative max-w-sm mx-auto bg-white rounded p-4" dark="bg-background-dark-80">
           <h2 class="font-bold text-xl mb-2">{{ props.title }}</h2>
           <slot :on="{ click: close }"></slot>
         </div>

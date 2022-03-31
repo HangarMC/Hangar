@@ -11,13 +11,14 @@ const internalVal = computed({
 const props = defineProps<{
   modelValue: boolean | boolean[];
   label?: string;
+  disabled?: boolean;
 }>();
 </script>
 
 <template>
-  <label class="group relative cursor-pointer pl-30px customCheckboxContainer w-max">
+  <label class="group relative pl-30px customCheckboxContainer w-max" :cursor="disabled ? 'auto' : 'pointer'">
     <template v-if="props.label">{{ props.label }}</template>
-    <input v-model="internalVal" type="checkbox" class="hidden" v-bind="$attrs" />
+    <input v-model="internalVal" type="checkbox" class="hidden" v-bind="$attrs" :disabled="disabled" />
     <span
       class="absolute top-5px left-0 h-15px w-15px rounded bg-gray-300"
       after="absolute hidden content-DEFAULT top-1px left-5px border-solid w-6px h-12px border-r-3px border-b-3px border-white"

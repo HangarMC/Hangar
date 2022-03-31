@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { PropType } from "vue";
 import { hasSlotContent } from "~/composables/useSlot";
 import Table from "~/components/design/Table.vue";
+import Button from "~/components/design/Button.vue";
+import { ref } from "vue";
 
 export interface Header {
   name: string;
@@ -10,16 +11,13 @@ export interface Header {
   width?: string;
 }
 
-const props = defineProps({
-  headers: {
-    type: Array as PropType<Header[]>,
-    required: true,
-  },
-  items: {
-    type: Array,
-    required: true,
-  },
-});
+const props = defineProps<{
+  headers: Header[];
+  items: any[];
+  expandable?: boolean;
+}>();
+
+const expanded = ref<Record<number, boolean>>({});
 // TODO actually implement sorting
 </script>
 
@@ -33,16 +31,22 @@ const props = defineProps({
       </tr>
     </thead>
     <tbody>
-      <tr v-for="item in items" :key="item">
-        <td v-for="header in headers" :key="header.name" :style="header.width ? 'width: ' + header.width : ''">
-          <template v-if="hasSlotContent($slots['item_' + header.name], { item: item })">
-            <slot :name="'item_' + header.name" :item="item"></slot>
-          </template>
-          <template v-else>
-            {{ item[header.name] }}
-          </template>
-        </td>
-      </tr>
+      <template v-for="(item, idx) in items" :key="idx">
+        <tr>
+          <td v-for="header in headers" :key="header.name" :style="header.width ? 'width: ' + header.width : ''" @click="expanded[idx] = !expanded[idx]">
+            <template v-if="hasSlotContent($slots['item_' + header.name], { item: item })">
+              <slot :name="'item_' + header.name" :item="item"></slot>
+            </template>
+            <template v-else>
+              {{ item[header.name] }}
+            </template>
+          </td>
+        </tr>
+
+        <tr v-if="expanded[idx]" class="!border-dashed">
+          <slot name="expanded-item" :item="item" :headers="headers"></slot>
+        </tr>
+      </template>
       <tr v-if="!items || items.length === 0">
         <td :colspan="headers.length">
           <slot name="empty"></slot>

@@ -6,6 +6,10 @@ export function avatarUrl(name: string) {
   return `/avatar/user/${name}`;
 }
 
+export function authUrl(user: string) {
+  return import.meta.env.HANGAR_AUTH_HOST + "/" + user;
+}
+
 export function forumUrl(topicId: number) {
   return `https://forums.papermc.io/threads/` + topicId;
 }

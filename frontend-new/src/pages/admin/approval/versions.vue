@@ -123,7 +123,7 @@ function getCount(entry: ReviewQueueEntry, ..._actions: ReviewAction[]) {
   <Card class="mt-4">
     <template #header>{{ i18n.t("versionApproval.inReview") }}</template>
 
-    <SortableTable :headers="underReviewHeaders" :items="data?.underReview">
+    <SortableTable :headers="underReviewHeaders" :items="data?.underReview" expandable>
       <template #item_project="{ item }">
         <Link :to="`/${item.namespace.owner}/${item.namespace.slug}`">
           {{ `${item.namespace.owner}/${item.namespace.slug}` }}
@@ -158,16 +158,17 @@ function getCount(entry: ReviewQueueEntry, ..._actions: ReviewAction[]) {
           {{ i18n.t("version.page.reviewLogs") }}
         </Link>
       </template>
-      <!-- todo item expansion -->
       <template #expanded-item="{ item, headers }">
         <td :colspan="headers.length">
           <ul>
-            <li v-for="entry in item.reviews" :key="entry.reviewerName" class="review-list-entry">
-              <span class="reviewer-name status-colored" :class="{ ongoing: isOngoing(entry), stopped: isStopped(entry), approved: isApproved(entry) }">{{
-                entry.reviewerName
-              }}</span>
-              <span class="review-started">{{ i18n.t("versionApproval.started", [i18n.d(entry.reviewStarted, "time")]) }}</span>
-              <span v-if="entry.reviewEnded" class="review-ended status-colored" :class="{ stopped: isStopped(entry), approved: isApproved(entry) }">{{
+            <li v-for="entry in item.reviews" :key="entry.reviewerName" class="ml-4">
+              <span
+                class="font-bold mr-2"
+                :class="{ 'text-yellow-400': isOngoing(entry), 'text-red-400': isStopped(entry), 'text-green-400': isApproved(entry) }"
+                >{{ entry.reviewerName }}</span
+              >
+              <span>{{ i18n.t("versionApproval.started", [i18n.d(entry.reviewStarted, "time")]) }}</span>
+              <span v-if="entry.reviewEnded" class="ml-4" :class="{ 'text-red-400': isStopped(entry), 'text-green-400': isApproved(entry) }">{{
                 i18n.t("versionApproval.ended", [i18n.d(entry.reviewEnded, "time")])
               }}</span>
             </li>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useContext } from "vite-ssr/vue";
 import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { computed, ref } from "vue";
 import { useBackendDataStore } from "~/store/backendData";
@@ -19,6 +19,7 @@ import { useNotificationStore } from "~/store/notification";
 const ctx = useContext();
 const i18n = useI18n();
 const route = useRoute();
+const router = useRouter();
 const notifcation = useNotificationStore();
 
 const platformMap = useBackendDataStore().platforms;
@@ -37,7 +38,7 @@ async function save() {
   const result = await useInternalApi("admin/platformVersions", true, "post", data).catch((e) => handleRequestError(e, ctx, i18n));
   if (result) {
     notifcation.success(i18n.t("platformVersions.success"));
-    // this.$nuxt.refresh(); // TODO refresh
+    router.go(0);
   } else {
     loading.value = false;
   }

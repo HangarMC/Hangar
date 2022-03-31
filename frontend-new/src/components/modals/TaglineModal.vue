@@ -38,7 +38,7 @@ async function save() {
   <Modal :title="i18n.t('author.editTagline')">
     <template #default="{ on }">
       <!-- todo count exiting chars -->
-      <InputText v-model.trim="newTagline" :label="i18n.t('author.taglineLabel')" />
+      <InputText v-model.trim="newTagline" :label="i18n.t('author.taglineLabel')" counter :maxlength="100" />
 
       <Button size="medium" class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
       <Button size="medium" class="mt-2 ml-2" @click="newTagline = tagline">{{ i18n.t("general.reset") }}</Button>

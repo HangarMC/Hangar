@@ -48,10 +48,11 @@ public interface OrganizationRolesDAO extends IRolesDAO<OrganizationRoleTable> {
     OrganizationRoleTable getTable(@BindBean OrganizationRoleTable table);
 
     @KeyColumn("name")
-    @SqlQuery("SELECT o.name, uor.*" +
+    @SqlQuery("SELECT o.name, uor.*, ow.id as ownerId, ow.name AS ownerName" +
             "   FROM user_organization_roles uor" +
             "       JOIN organizations o ON o.id = uor.organization_id" +
             "       JOIN users u ON uor.user_id = u.id" +
+            "       JOIN users ow ON o.owner_id = ow.id" +
             "   WHERE u.name = :user AND uor.accepted IS TRUE")
     Map<String, OrganizationRoleTable> getUserOrganizationRoles(String user, Long userId);
 }

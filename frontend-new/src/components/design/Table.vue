@@ -17,9 +17,11 @@
 
   tbody {
     tr {
-      border-top: thin solid #e1e1e1;
+      border-top-width: thin;
+      border-top-style: solid;
+      border-top-color: #e1e1e1;
       .dark & {
-        border-top: thin solid #656565;
+        border-top-color: #656565;
       }
     }
   }

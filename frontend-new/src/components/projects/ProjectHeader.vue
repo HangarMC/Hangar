@@ -28,7 +28,7 @@ const imageUrl = computed(() => {
         <p>{{ project.description }}</p>
       </div>
       <div>
-        <Button>Download latest</Button>
+        <Button size="large">Download latest</Button>
       </div>
     </div>
   </Card>

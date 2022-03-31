@@ -22,6 +22,8 @@ import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import { useNotificationStore } from "~/store/notification";
+import DropdownButton from "~/components/design/DropdownButton.vue";
+import DropdownItem from "~/components/design/DropdownItem.vue";
 
 const route = useRoute();
 const i18n = useI18n();
@@ -33,6 +35,7 @@ const notification = useNotificationStore();
 const props = defineProps<{
   versions: Map<Platform, HangarVersion>;
   project: HangarProject;
+  versionPlatforms: Set<Platform>;
 }>();
 
 const p: Platform = (route.params.platform as string).toUpperCase() as Platform;
@@ -132,7 +135,12 @@ async function restoreVersion() {
 <template>
   <div class="flex">
     <div>
-      <h1>{{ projectVersion.name }}</h1>
+      <h1 class="text-3xl">
+        {{ projectVersion.name }}
+        <DropdownButton v-if="versionPlatforms.size > 1" class="text-2xl inline" :name="platform?.name">
+          <DropdownItem v-for="plat in versionPlatforms" :key="plat" :to="plat.toLowerCase()">{{ backendData.platforms?.get(plat)?.name }}</DropdownItem>
+        </DropdownButton>
+      </h1>
       <TagComponent :tag="channel" :short-form="true" />
       <h2>{{ i18n.t("version.page.subheader", [projectVersion.author, i18n.d(projectVersion.createdAt, "date")]) }}</h2>
     </div>

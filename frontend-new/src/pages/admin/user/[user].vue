@@ -8,12 +8,13 @@ import { PaginatedResult, Project } from "hangar-api";
 import { useRoute } from "vue-router";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
-import { RoleTable } from "hangar-internal";
+import { OrganizationRoleTable } from "hangar-internal";
 import { computed } from "vue";
 import SortableTable, { Header } from "~/components/SortableTable.vue";
 import InputCheckbox from "~/components/ui/InputCheckbox.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
+import { authUrl, forumUserUrl } from "~/composables/useUrlHelper";
 
 const i18n = useI18n();
 const route = useRoute();
@@ -22,7 +23,7 @@ const ctx = useContext();
 const projects = await useApi<PaginatedResult<Project>>("projects", false, "get", {
   owner: route.params.user,
 }).catch((e) => handleRequestError(e, ctx, i18n));
-const orgs = await useInternalApi<{ [key: string]: RoleTable }>(`organizations/${route.params.user}/userOrganizations`, false).catch((e) =>
+const orgs = await useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${route.params.user}/userOrganizations`, false).catch((e) =>
   handleRequestError(e, ctx, i18n)
 );
 
@@ -48,7 +49,10 @@ const orgList = computed(() => {
     : [];
 });
 
-useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.constructor, null, route, null));
+const _forumUserUrl = computed(() => forumUserUrl(route.params.user as string));
+const _authUrl = computed(() => authUrl(route.params.user as string));
+
+useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.user, null, route, null));
 </script>
 
 <template>
@@ -69,9 +73,8 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.constructor, null,
           </Link>
         </template>
         <template #item_owner="{ item }">
-          <!-- todo owner -->
-          <Link :to="'/' + item.name.owner">
-            {{ item.name.owner }}
+          <Link :to="'/' + orgs[item.name].ownerName">
+            {{ orgs[item.name].ownerName }}
           </Link>
         </template>
         <template #item_role="{ item }">
@@ -97,8 +100,8 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.constructor, null,
           </Link>
         </template>
         <template #item_role="{ item }">
-          <!-- todo role -->
-          Role {{ item.name }}
+          <!-- todo add role -->
+          &lt;{{ item.name }}'s role&gt;
         </template>
         <template #item_accepted="{ item }">
           <InputCheckbox :model-value="item.visibility === 'public'" :disabled="true" />
@@ -109,12 +112,11 @@ useHead(useSeo(i18n.t("userAdmin.title") + " " + route.params.constructor, null,
       <template #header>{{ i18n.t("userAdmin.sidebar") }}</template>
 
       <ul>
-        <!-- todo links -->
         <li>
-          <Link href="">{{ i18n.t("userAdmin.hangarAuth") }}</Link>
+          <Link :href="_authUrl">{{ i18n.t("userAdmin.hangarAuth") }}</Link>
         </li>
         <li>
-          <Link href="">{{ i18n.t("userAdmin.forum") }}</Link>
+          <Link :href="_forumUserUrl">{{ i18n.t("userAdmin.forum") }}</Link>
         </li>
       </ul>
     </Card>

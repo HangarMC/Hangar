@@ -57,6 +57,15 @@ declare module "hangar-internal" {
     role: Role;
   }
 
+  interface OrganizationRoleTable extends RoleTable {
+    accepted: boolean;
+    principalId: number;
+    userId: number;
+    role: Role;
+    ownerName: string;
+    ownerId: number;
+  }
+
   interface JoinableMember {
     user: UserTable;
     role: RoleTable;

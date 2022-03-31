@@ -10,6 +10,7 @@ import { useErrorRedirect } from "~/composables/useErrorRedirect";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { projectIconUrl } from "~/composables/useUrlHelper";
+import Link from "~/components/design/Link.vue";
 
 const ctx = useContext();
 const i18n = useI18n();
@@ -56,7 +57,5 @@ useHead(
 </script>
 
 <template>
-  <!-- todo tabs? -->
-  <h1>version {{ route.params.version }}, platforms {{ versionPlatforms }}</h1>
-  <router-view :project="project" :versions="versionMap"></router-view>
+  <router-view :project="project" :versions="versionMap" :version-platforms="versionPlatforms"></router-view>
 </template>
