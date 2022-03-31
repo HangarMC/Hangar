@@ -37,7 +37,7 @@ async function handleLogin(request: Context["request"], response: Context["respo
   authLog("set request");
   set(request, response);
   if (useCookies().get("HangarAuth_REFRESH")) {
-    authLog("Got refresh cookie, calling refresh...");
+    authLog("Got refresh cookie, calling refresh...", useCookies().get("HangarAuth_REFRESH"));
     await useAuth.refreshUser();
   } else if (useAuthStore().authenticated) {
     authLog("Logged in on the backend, calling refresh...");
