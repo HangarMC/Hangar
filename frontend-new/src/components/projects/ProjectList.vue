@@ -6,6 +6,7 @@ import Link from "~/components/design/Link.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
 import { projectIconUrl } from "~/composables/useUrlHelper";
 import { useI18n } from "vue-i18n";
+import Tooltip from "~/components/design/Tooltip.vue";
 
 const i18n = useI18n();
 
@@ -18,7 +19,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <Card v-for="project in projects?.result" :key="project.name" class="flex mb-2 space-x-4">
+  <Card v-for="project in projects?.result" :key="project.name" class="flex mb-1 space-x-4">
     <div>
       <UserAvatar
         :username="project.namespace.owner"
@@ -27,24 +28,26 @@ const props = defineProps({
         size="md"
       />
     </div>
-    <div>
-      <Link :to="'/' + project.namespace.owner + '/' + project.namespace.slug">{{ project.name }}</Link>
-      by
-      <Link :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</Link>
-      <br />
-      {{ project.description }}
+    <div class="overflow-clip">
+      <p>
+        <Link :to="'/' + project.namespace.owner + '/' + project.namespace.slug">{{ project.name }}</Link>
+        by
+        <Link :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</Link>
+      </p>
+      <p>{{ project.description }}</p>
     </div>
     <div class="flex-grow"></div>
-    <div class="flex flex-col">
+    <div class="<sm:hidden flex flex-col flex-shrink-0">
       <span class="inline-flex items-center"
-        ><IconMdiEye class="mx-1" /> {{ project.stats.views }} {{ i18n.t("project.info.views", project.stats.views) }}</span
+        ><IconMdiStar class="mx-1" /> {{ project.stats.stars }} {{ i18n.t("project.info.stars", project.stats.stars) }}</span
       >
       <span class="inline-flex items-center"
         ><IconMdiDownload class="mx-1" /> {{ project.stats.downloads }} {{ i18n.t("project.info.totalDownloads", project.stats.downloads) }}</span
       >
-      <span class="inline-flex items-center"
-        ><IconMdiStar class="mx-1" /> {{ project.stats.stars }} {{ i18n.t("project.info.stars", project.stats.stars) }}</span
-      >
+      <Tooltip :content="i18n.t('project.info.lastUpdatedTooltip', [i18n.d(project.lastUpdated, 'date')])">
+        <!-- todo: Different format for Today/Yesterday/Monday at (e.g. "Today at 10:00"), else the date -->
+        <span class="inline-flex items-center"><IconMdiCalendar class="mx-1" />{{ i18n.d(project.lastUpdated) }}</span>
+      </Tooltip>
     </div>
   </Card>
   <div v-if="projects?.result.length === 0">{{ i18n.t("hangar.projectSearch.noProjects") }}</div>

@@ -61,11 +61,11 @@ declare module "hangar-api" {
     namespace: ProjectNamespace;
     stats: ProjectStats;
     category: ProjectCategory;
+    lastUpdated: Date;
   }
 
   interface Project extends ProjectCompact {
     description: string;
-    lastUpdated: Date;
     userActions: UserActions;
     settings: ProjectSettings;
     postId: number;

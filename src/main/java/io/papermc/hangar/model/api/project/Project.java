@@ -13,7 +13,6 @@ import java.util.List;
 public class Project extends ProjectCompact {
 
     private final String description;
-    private final OffsetDateTime lastUpdated;
     private final UserActions userActions;
     private final ProjectSettings settings;
     private final Long topicId;
@@ -22,9 +21,8 @@ public class Project extends ProjectCompact {
 
     @JdbiConstructor
     public Project(OffsetDateTime createdAt, String name, @Nested ProjectNamespace namespace, @Nested ProjectStats stats, @EnumByOrdinal Category category, String description, OffsetDateTime lastUpdated, @EnumByOrdinal Visibility visibility, @Nested UserActions userActions, @Nested ProjectSettings settings, Long topicId, Long postId, List<PromotedVersion> promotedVersions) {
-        super(createdAt, name, namespace, stats, category, visibility);
+        super(createdAt, name, namespace, stats, category, lastUpdated, visibility);
         this.description = description;
-        this.lastUpdated = lastUpdated;
         this.userActions = userActions;
         this.settings = settings;
         this.topicId = topicId;
@@ -33,9 +31,8 @@ public class Project extends ProjectCompact {
     }
 
     public Project(Project other) {
-        super(other.createdAt, other.name, other.namespace, other.stats, other.category, other.visibility);
+        super(other.createdAt, other.name, other.namespace, other.stats, other.category, other.lastUpdated, other.visibility);
         this.description = other.description;
-        this.lastUpdated = other.lastUpdated;
         this.userActions = other.userActions;
         this.settings = other.settings;
         this.topicId = other.topicId;
@@ -45,10 +42,6 @@ public class Project extends ProjectCompact {
 
     public String getDescription() {
         return description;
-    }
-
-    public OffsetDateTime getLastUpdated() {
-        return lastUpdated;
     }
 
     public UserActions getUserActions() {

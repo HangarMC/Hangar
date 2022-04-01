@@ -29,6 +29,7 @@ public interface UsersApiDAO {
             " hp.stars," +
             " hp.watchers," +
             " hp.category," +
+            " coalesce(hp.last_updated, p.created_at) AS last_updated," +
             " hp.visibility" +
             " FROM users u " +
             "     JOIN project_stars ps ON u.id = ps.user_id" +
@@ -64,6 +65,7 @@ public interface UsersApiDAO {
             " hp.stars," +
             " hp.watchers," +
             " hp.category," +
+            " coalesce(hp.last_updated, p.created_at) AS last_updated," +
             " hp.visibility" +
             " FROM users u " +
             "     JOIN project_watchers pw ON u.id = pw.user_id" +

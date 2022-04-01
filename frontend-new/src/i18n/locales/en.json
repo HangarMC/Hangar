@@ -236,7 +236,8 @@
       "views": "Views | View | Views",
       "totalDownloads": "Downloads | Download | Downloads",
       "stars": "Stars | Star | Stars",
-      "watchers": "Watchers | Watcher | Watchers"
+      "watchers": "Watchers | Watcher | Watchers",
+      "lastUpdatedTooltip": "Last updated at {0}"
     },
     "promotedVersions": "Promoted Versions",
     "license": {
