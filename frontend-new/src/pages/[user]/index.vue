@@ -38,10 +38,10 @@ useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.
 <template>
   <UserHeader :user="user" :organization="organization" />
   <div class="flex gap-4">
-    <div class="flex-basis-full md:basis-8/12 flex-grow">
+    <div class="flex-basis-full flex-grow md:max-w-2/3 md:min-w-1/3">
       <ProjectList :projects="projects"></ProjectList>
     </div>
-    <div class="flex-basis-full md:basis-4/12 flex-grow">
+    <div class="flex-basis-full flex-grow md:max-w-1/3 md:min-w-1/3">
       <template v-if="!user.isOrganization">
         <Card class="mb-4" accent>
           <template #header>
