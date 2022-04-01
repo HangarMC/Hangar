@@ -20,7 +20,7 @@ class Auth {
 
   async logout() {
     const token = await useApiToken(true);
-    location.replace(`/logout?returnUrl=${import.meta.env.HANGAR_PUBLIC_HOST}/logged-out&t=${token}`);
+    location.replace(`/logout?returnUrl=${import.meta.env.HANGAR_PUBLIC_HOST}?loggedOut&t=${token}`);
   }
 
   async invalidate(shouldRedirect = true) {

@@ -5,6 +5,7 @@ import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
+import { useAuthStore } from "~/store/auth";
 
 declare global {
   interface Window {
@@ -14,6 +15,7 @@ declare global {
 
 const i18n = useI18n();
 const route = useRoute();
+const authStore = useAuthStore();
 
 onMounted(() => {
   window.ui = SwaggerUIBundle({
@@ -25,11 +27,7 @@ onMounted(() => {
     layout: "BaseLayout",
     requestInterceptor: (req) => {
       if (!req.loadSpec) {
-        // TODO api auth
-        // const promise = this.$api.getSession().then((session) => {
-        //     req.headers.authorization = 'HangarApi session="' + session + '"';
-        //     return req;
-        // });
+        req.headers.authorization = "HangarAuth " + authStore.token;
         if (req.url.startsWith("http://localhost:8080")) {
           req.url = req.url.replace("http://localhost:8080", "http://localhost:3333");
         }
@@ -43,7 +41,7 @@ useHead(useSeo(i18n.t("apiDocs.title"), null, route, null));
 </script>
 
 <template>
-  <div class="bg-gray-200 rounded-md my-auto mx-2" lg="w-2/3 min-w-2/3 max-w-2/3">
+  <div class="bg-gray-100 dark:(bg-gray-200) rounded-md my-auto mx-2 py-1" lg="w-2/3 min-w-2/3 max-w-2/3">
     <div id="swagger-ui" />
   </div>
 </template>

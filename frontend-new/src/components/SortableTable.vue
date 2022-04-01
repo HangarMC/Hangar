@@ -43,7 +43,7 @@ const expanded = ref<Record<number, boolean>>({});
           </td>
         </tr>
 
-        <tr v-if="expanded[idx]" class="!border-dashed">
+        <tr v-if="expandable && expanded[idx]" class="!border-dashed">
           <slot name="expanded-item" :item="item" :headers="headers"></slot>
         </tr>
       </template>

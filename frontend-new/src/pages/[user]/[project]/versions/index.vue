@@ -118,47 +118,49 @@ function getNonChannelTags(version: Version): ApiTag[] {
     <section class="basis-full md:basis-9/12 flex-grow">
       <!-- todo pagination -->
       <ul>
-        <li v-for="version in versions.result" :key="version.name" class="rounded bg-gray-200 p-2 mb-4">
-          <router-link :to="`/${project.namespace.owner}/${project.namespace.slug}/versions/${version.name}`">
-            <div class="flex flex-wrap">
-              <div class="basis-4/12 md:basis-3/12 lg:basis-2/12">
-                <div class="flex flex-wrap">
-                  <span class="basis-full">{{ version.name }}</span>
-                  <span class="basis-full"><Tag :tag="getChannelTag(version)" /></span>
+        <li v-for="version in versions.result" :key="version.name" class="mb-4">
+          <Card>
+            <router-link :to="`/${project.namespace.owner}/${project.namespace.slug}/versions/${version.name}`">
+              <div class="flex flex-wrap">
+                <div class="basis-4/12 md:basis-3/12 lg:basis-3/12">
+                  <div class="flex flex-wrap">
+                    <span class="basis-full text-xl">{{ version.name }}</span>
+                    <span class="basis-full"><Tag :tag="getChannelTag(version)" /></span>
+                  </div>
+                </div>
+                <div class="basis-4/12 md:basis-3/12 lg:basis-3/12">
+                  <Tag v-for="(tag, index) in getNonChannelTags(version)" :key="index" :tag="tag" />
+                </div>
+                <div class="basis-2/12 md:basis-4/12 lg:basis-3/12">
+                  <div class="flex flex-wrap">
+                    <span class="basis-full inline-flex items-center">
+                      <IconMdiCalendar class="mr-1" />
+                      {{ i18n.d(version.createdAt, "date") }}
+                    </span>
+                    <span class="basis-full inline-flex items-center">
+                      <IconMdiFile class="mr-1" />
+                      <template v-if="version.fileInfo.sizeBytes">
+                        {{ filesize(version.fileInfo.sizeBytes) }}
+                      </template>
+                      <template v-else> (external) </template>
+                    </span>
+                  </div>
+                </div>
+                <div class="basis-2/12 md:basis-2/12 lg:basis-3/12">
+                  <div class="flex flex-wrap">
+                    <span class="basis-full inline-flex items-center">
+                      <IconMdiAccountArrowRight class="mr-1" />
+                      <Link :to="'/' + version.author">{{ version.author }}</Link>
+                    </span>
+                    <span class="basis-full inline-flex items-center">
+                      <IconMdiDownload class="mr-1" />
+                      {{ version.stats.downloads }}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <div class="basis-4/12 md:basis-3/12 lg:basis-4/12">
-                <Tag v-for="(tag, index) in getNonChannelTags(version)" :key="index" :tag="tag" />
-              </div>
-              <div class="basis-2/12 md:basis-4/12 lg:basis-3/12">
-                <div class="flex flex-wrap">
-                  <span class="basis-full">
-                    <IconMdiCalendar />
-                    {{ i18n.d(version.createdAt, "date") }}
-                  </span>
-                  <span class="basis-full">
-                    <IconMdiFile />
-                    <template v-if="version.fileInfo.sizeBytes">
-                      {{ filesize(version.fileInfo.sizeBytes) }}
-                    </template>
-                    <template v-else> (external) </template>
-                  </span>
-                </div>
-              </div>
-              <div class="basis-2/12 md:basis-2/12 lg:basis-3/12">
-                <div class="flex flex-wrap">
-                  <span class="basis-full">
-                    <IconMdiAccountArrowRight />
-                    <Link :to="'/' + version.author">{{ version.author }}</Link>
-                  </span>
-                  <span class="basis-full">
-                    <IconMdiDownload />
-                    {{ version.stats.downloads }}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </router-link>
+            </router-link>
+          </Card>
         </li>
       </ul>
     </section>

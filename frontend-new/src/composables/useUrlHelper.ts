@@ -18,3 +18,7 @@ export function forumUserUrl(name: number | string) {
   // TODO fixme?
   return `https://forums.papermc.io/members/` + name;
 }
+
+export function linkout(url: string) {
+  return "/linkout?remoteUrl=" + url;
+}

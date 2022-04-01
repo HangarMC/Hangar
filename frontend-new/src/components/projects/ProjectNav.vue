@@ -5,6 +5,7 @@ import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
 import { useI18n } from "vue-i18n";
 import { HangarProject } from "hangar-internal";
+import { avatarUrl, linkout } from "~/composables/useUrlHelper";
 
 const props = defineProps<{
   project: HangarProject;
@@ -35,16 +36,16 @@ function childRoute(route = ""): string {
     <ProjectNavItem v-if="hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS)" :to="childRoute('/settings')">
       {{ i18n.t("project.tabs.settings") }}
     </ProjectNavItem>
-    <ProjectNavItem v-if="props.project.settings.homepage" :href="props.project.settings.homepage">
+    <ProjectNavItem v-if="props.project.settings.homepage" :href="linkout(props.project.settings.homepage)">
       {{ i18n.t("project.tabs.homepage") }}
     </ProjectNavItem>
-    <ProjectNavItem v-if="props.project.settings.issues" :href="props.project.settings.issues">
+    <ProjectNavItem v-if="props.project.settings.issues" :href="linkout(props.project.settings.issues)">
       {{ i18n.t("project.tabs.issues") }}
     </ProjectNavItem>
-    <ProjectNavItem v-if="props.project.settings.source" :href="props.project.settings.source">
+    <ProjectNavItem v-if="props.project.settings.source" :href="linkout(props.project.settings.source)">
       {{ i18n.t("project.tabs.source") }}
     </ProjectNavItem>
-    <ProjectNavItem v-if="props.project.settings.support" :href="props.project.settings.support">
+    <ProjectNavItem v-if="props.project.settings.support" :href="linkout(props.project.settings.support)">
       {{ i18n.t("project.tabs.support") }}
     </ProjectNavItem>
   </nav>

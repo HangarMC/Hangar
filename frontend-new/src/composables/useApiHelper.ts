@@ -17,8 +17,8 @@ import {
   RoleTable,
 } from "hangar-internal";
 
-export async function useProjects(pagination = { limit: 25, offset: 0 }, blocking = true) {
-  return useInitialState("useProjects", () => useApi<PaginatedResult<Project>>("projects", false, "get", pagination), blocking);
+export async function useProjects(params: Record<string, any> = { limit: 25, offset: 0 }, blocking = true) {
+  return useInitialState("useProjects", () => useApi<PaginatedResult<Project>>("projects", false, "get", params), blocking);
 }
 
 export async function useUser(user: string, blocking = true) {

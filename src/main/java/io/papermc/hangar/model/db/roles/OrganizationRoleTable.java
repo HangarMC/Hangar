@@ -1,11 +1,11 @@
 package io.papermc.hangar.model.db.roles;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.jdbi.v3.core.annotation.Unmappable;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
+import org.springframework.lang.Nullable;
 
 import java.time.OffsetDateTime;
 
@@ -20,10 +20,10 @@ public class OrganizationRoleTable extends ExtendedRoleTable<OrganizationRole, O
     private final String ownerName;
 
     @JdbiConstructor
-    public OrganizationRoleTable(OffsetDateTime createdAt, long id, long userId, @ColumnName("role_type") OrganizationRole role, boolean accepted, long organizationId, long ownerId, String ownerName) {
+    public OrganizationRoleTable(OffsetDateTime createdAt, long id, long userId, @ColumnName("role_type") OrganizationRole role, boolean accepted, long organizationId, @Nullable Long ownerId, @Nullable String ownerName) {
         super(createdAt, id, userId, role, accepted);
         this.organizationId = organizationId;
-        this.ownerId = ownerId;
+        this.ownerId = ownerId == null ? -1 : ownerId;
         this.ownerName = ownerName;
     }
 

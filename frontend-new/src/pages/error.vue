@@ -7,6 +7,7 @@ const route = useRoute();
 useHead(useSeo((route.params.status || 404) + " " + (route.params.msg || "Not found"), null, route, null));
 </script>
 
+<!-- todo make error page pretty -->
 <template>
   <h1>Error: {{ route.params.status || 404 }}</h1>
   <h2>{{ route.params.msg || "Not found" }}</h2>

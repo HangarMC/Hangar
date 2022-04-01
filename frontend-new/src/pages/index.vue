@@ -9,13 +9,17 @@ import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
 import Card from "~/components/design/Card.vue";
 import Container from "~/components/design/Container.vue";
-import { isRef, ref } from "vue";
+import { computed, isRef, ref, watch } from "vue";
 import { useSeo } from "~/composables/useSeo";
 import { useHead } from "@vueuse/head";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { useApi } from "~/composables/useApi";
+import { PaginatedResult, Project } from "hangar-api";
+import Alert from "~/components/design/Alert.vue";
 
 const i18n = useI18n();
 const route = useRoute();
+const router = useRouter();
 const ctx = useContext();
 
 const backendData = useBackendDataStore();
@@ -48,7 +52,33 @@ const filters = ref({
   licences: [],
 });
 
-const projects = await useProjects().catch((e) => handleRequestError(e, ctx, i18n));
+const query = ref<string>((route.query.q as string) || "");
+const loggedOut = ref<boolean>("loggedOut" in route.query);
+const projects = ref<PaginatedResult<Project> | null>();
+
+const requestParams = computed(() => {
+  // TODO add filters for licence and version
+  // TODO implement sorting, see https://github.com/HangarMC/Hangar/pull/597
+  const params: Record<string, any> = { limit: 25, offset: 0, category: filters.value.categories, platform: filters.value.platforms };
+  if (query.value && query.value) {
+    params.q = query.value;
+  }
+  return params;
+});
+const p = await useProjects(requestParams.value).catch((e) => handleRequestError(e, ctx, i18n));
+if (p && p.value) {
+  projects.value = p.value;
+}
+
+watch(filters, async () => updateProjects(), { deep: true });
+watch(query, async () => {
+  await updateProjects();
+  await router.replace({ query: { q: query.value } });
+});
+
+async function updateProjects() {
+  projects.value = await useApi<PaginatedResult<Project>>("projects", false, "get", requestParams.value);
+}
 
 const meta = useSeo("Home", null, route, null);
 const script = {
@@ -59,7 +89,7 @@ const script = {
     url: import.meta.env.HANGAR_PUBLIC_HOST,
     potentialAction: {
       "@type": "SearchAction",
-      target: import.meta.env.HANGAR_PUBLIC_HOST + "/?q={search_term_string}", // todo fix once search actually works
+      target: import.meta.env.HANGAR_PUBLIC_HOST + "/?q={search_term_string}",
       "query-input": "required name=search_term_string",
     },
   }),
@@ -73,13 +103,16 @@ if (isRef(meta.script)) {
 useHead(meta);
 </script>
 
+<!-- todo i18n -->
 <template>
   <div class="flex flex-col items-center pt-10">
+    <Alert v-if="loggedOut" class="mb-4 -mt-4">You have been logged out!</Alert>
     <h2 class="text-3xl font-bold uppercase">Find your favorite plugins</h2>
     <!-- Search Bar & Sorting button -->
     <div class="flex flex-row mt-6 rounded-md big-box-shadow">
       <!-- Search Bar -->
       <input
+        v-model="query"
         class="rounded-l-md p-3 w-[80vw] max-w-800px focus-visible:(border-white) text-black"
         type="text"
         placeholder="Search in 1 projects, proudly made by the community..."
@@ -113,7 +146,7 @@ useHead(meta);
   </div>
   <Container class="mt-5 flex flex-col justify-around gap-y-6" lg="flex-row gap-x-6 gap-y-0 ">
     <!-- Projects -->
-    <div class="min-h-800px bg-gray-200 rounded-md" lg="w-2/3 min-w-2/3 max-w-2/3">
+    <div class="min-h-800px" lg="w-2/3 min-w-2/3 max-w-2/3">
       <ProjectList :projects="projects" />
     </div>
     <!-- Sidebar -->

@@ -2,16 +2,26 @@
 import { useRoute } from "vue-router";
 import { useSeo } from "~/composables/useSeo";
 import { useHead } from "@vueuse/head";
+import Card from "~/components/design/Card.vue";
+import { useI18n } from "vue-i18n";
+import Button from "~/components/design/Button.vue";
+import Link from "~/components/design/Link.vue";
 
 const route = useRoute();
-const target = route.query.remoteUrl;
+const remoteUrl = route.query.remoteUrl;
+const i18n = useI18n();
 
-useHead(useSeo("Linkout", null, route, null));
+useHead(useSeo(i18n.t("linkout.title"), null, route, null));
 </script>
 <template>
-  <div>
-    Hur dur danger ahead!<br />
-    <a class="cursor-pointer" @click="$router.back()">Back to safety</a><br />
-    <a :href="target" target="_self" rel="noopener noreferrer">Go ahead</a>
-  </div>
+  <Card>
+    <template #header>
+      <h1>{{ i18n.t("linkout.title") }}</h1>
+    </template>
+    {{ i18n.t("linkout.text", [remoteUrl]) }}
+    <template #footer>
+      <Button size="medium" @click="$router.back()">{{ i18n.t("linkout.abort") }}</Button>
+      <Link class="ml-4" :href="remoteUrl" target="_self" rel="noopener noreferrer">{{ i18n.t("linkout.continue") }}</Link>
+    </template>
+  </Card>
 </template>

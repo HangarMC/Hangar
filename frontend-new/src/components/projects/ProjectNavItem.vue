@@ -15,6 +15,7 @@ const selected = computed(() => {
   return routerPath == props.to;
 });
 
+// TODO hover effect
 const clazz = computed(() => {
   return "px-2 py-1 inline-flex items-center " + (selected.value ? "border-b-2 border-[#004ee9] font-semibold " : "");
 });

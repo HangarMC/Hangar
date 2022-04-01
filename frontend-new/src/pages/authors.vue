@@ -9,6 +9,7 @@ import PageTitle from "~/components/design/PageTitle.vue";
 import UserAvatar from "~/components/UserAvatar.vue";
 import { useHead } from "@vueuse/head";
 import { useSeo } from "~/composables/useSeo";
+import Link from "~/components/design/Link.vue";
 
 const ctx = useContext();
 const i18n = useI18n();
@@ -29,5 +30,8 @@ useHead(useSeo(i18n.t("pages.authorsTitle"), null, route, null));
   <SortableTable :headers="headers" :items="authors?.result">
     <template #item_pic="{ item }"><UserAvatar :username="item.name" size="xs"></UserAvatar></template>
     <template #item_joinDate="{ item }">{{ i18n.d(item?.joinDate, "date") }}</template>
+    <template #item_name="{ item }">
+      <Link :to="'/' + item.name">{{ item.name }}</Link>
+    </template>
   </SortableTable>
 </template>

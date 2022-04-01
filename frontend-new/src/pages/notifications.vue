@@ -5,11 +5,16 @@ import { useRoute, useRouter } from "vue-router";
 import { useInvites, useNotifications } from "~/composables/useApiHelper";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { HangarNotification, Invite, Invites } from "hangar-internal";
-import { computed, ref, Ref } from "vue";
+import { computed, ref, Ref, watch } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import { useSeo } from "~/composables/useSeo";
 import { useHead } from "@vueuse/head";
 import { useNotificationStore } from "~/store/notification";
+import Card from "~/components/design/Card.vue";
+import Button from "~/components/design/Button.vue";
+import DropdownButton from "~/components/design/DropdownButton.vue";
+import DropdownItem from "~/components/design/DropdownItem.vue";
+import InputSelect from "~/components/ui/InputSelect.vue";
 
 const ctx = useContext();
 const i18n = useI18n();
@@ -90,44 +95,45 @@ async function updateInvite(invite: Invite, status: "accept" | "decline" | "unac
 </script>
 
 <template>
-  <div class="flex">
-    <div>
-      <h1>Notifications</h1>
-      <select v-model="filters.notification">
-        <option v-for="filter in notificationFilter" :key="filter.value" :value="filter.value">{{ filter.text }}</option>
-      </select>
-      <button v-if="filteredNotifications && filters && filters.notification === 'unread'" @click="markAllAsRead">
-        {{ i18n.t("notifications.readAll") }}
-      </button>
-      <div v-for="notification in filteredNotifications" :key="notification.id">
-        Type: {{ notification.type }}<br />
-        Message: {{ i18n.t(notification.message[0], notification.message.slice(1)) }}<br />
-        <button @click="markNotificationRead(notification)">Mark read</button>
+  <div class="flex gap-4">
+    <Card class="basis-full md:basis-6/12" accent>
+      <template #header>
+        <h1>{{ i18n.t("notifications.title") }}</h1>
+      </template>
+      <div class="flex mb-4">
+        <InputSelect v-model="filters.notification" :values="notificationFilter" class="mb-4" />
+        <Button v-if="filteredNotifications.length && filters && filters.notification === 'unread'" class="ml-4" size="medium" @click="markAllAsRead">
+          {{ i18n.t("notifications.readAll") }}
+        </Button>
       </div>
-      <div v-if="!filteredNotifications.length">
+      <Card v-for="notification in filteredNotifications" :key="notification.id" :class="'text-' + notification.type + ' flex'">
+        {{ i18n.t(notification.message[0], notification.message.slice(1)) }}
+        <Button v-if="!notification.read" class="inline-flex items-center" @click="markNotificationRead(notification)"><IconMdiCheck /></Button>
+      </Card>
+      <div v-if="!filteredNotifications.length" class="text-red-500 text-lg mt-4">
         {{ i18n.t(`notifications.empty.${filters.notification}`) }}
       </div>
-    </div>
-    <div>
-      <h1>Invites</h1>
-      <select v-model="filters.invite">
-        <option v-for="filter in inviteFilter" :key="filter.value" :value="filter.value">{{ filter.text }}</option>
-      </select>
-      <div v-for="(invite, index) in filteredInvites" :key="index">
+    </Card>
+    <Card class="basis-full md:basis-6/12" accent>
+      <template #header>
+        <h1>{{ i18n.t("notifications.invites") }}</h1>
+      </template>
+      <InputSelect v-model="filters.invite" :values="inviteFilter" class="mb-4" />
+      <Card v-for="(invite, index) in filteredInvites" :key="index">
         {{ i18n.t(!invite.accepted ? "notifications.invited" : "notifications.inviteAccepted", [invite.type]) }}:
         <router-link :to="invite.url" exact>{{ invite.name }}</router-link>
         <template v-if="invite.accepted">
-          <button @click="updateInvite(invite, 'unaccept')">{{ i18n.t("notifications.invite.btns.unaccept") }}</button>
+          <Button @click="updateInvite(invite, 'unaccept')">{{ i18n.t("notifications.invite.btns.unaccept") }}</Button>
         </template>
         <template v-else>
-          <button @click="updateInvite(invite, 'accept')">{{ i18n.t("notifications.invite.btns.accept") }}</button>
-          <button @click="updateInvite(invite, 'decline')">{{ i18n.t("notifications.invite.btns.decline") }}</button>
+          <Button class="mr-2" @click="updateInvite(invite, 'accept')">{{ i18n.t("notifications.invite.btns.accept") }}</Button>
+          <Button @click="updateInvite(invite, 'decline')">{{ i18n.t("notifications.invite.btns.decline") }}</Button>
         </template>
-      </div>
-      <div v-if="!filteredInvites.length">
+      </Card>
+      <div v-if="!filteredInvites.length" class="text-red-500 text-lg mt-4">
         {{ i18n.t("notifications.empty.invites") }}
       </div>
-    </div>
+    </Card>
   </div>
 </template>
 

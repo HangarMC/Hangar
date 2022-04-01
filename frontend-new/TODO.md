@@ -38,8 +38,8 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
 - api
   - [x] fetch
   - [x] layout
-  - [ ] functionality (auth is missing)
-  - [ ] design
+  - [x] functionality
+  - [x] design
   - [ ] qa
 - authors
   - [x] fetch
@@ -56,20 +56,14 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
 - index
   - [x] fetch
   - [x] layout
-  - [ ] functionality (search, sorting)
-  - [ ] design
+  - [ ] functionality (sorting, licence and version filter)
+  - [x] design
   - [ ] qa
 - linkout
   - [x] fetch
   - [x] layout
   - [x] functionality
-  - [ ] design
-  - [ ] qa
-- logged-out
-  - [x] fetch (doesn't apply)
-  - [ ] layout
-  - [x] functionality (nothing here)
-  - [ ] design
+  - [x] design
   - [ ] qa
 - new
   - [ ] fetch
@@ -80,8 +74,8 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
 - notifications
   - [x] fetch
   - [x] layout
-  - [x] functionality (cors error)
-  - [ ] design
+  - [x] functionality
+  - [x] design
   - [ ] qa
 - staff
   - [x] fetch
