@@ -4,6 +4,7 @@ import typography from "windicss/plugin/typography";
 
 export default defineConfig({
   darkMode: "class",
+  safelist: "order-last",
   attributify: true,
   plugins: [typography()],
   theme: {

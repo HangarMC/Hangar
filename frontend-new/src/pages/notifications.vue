@@ -91,6 +91,7 @@ async function updateInvite(invite: Invite, status: "accept" | "decline" | "unac
     delete invites.value[invite.type][invites.value[invite.type].indexOf(invite)];
   }
   notificationStore.success(i18n.t(`notifications.invite.msgs.${status}`, [invite.name]));
+  await useRouter().go(0);
 }
 </script>
 

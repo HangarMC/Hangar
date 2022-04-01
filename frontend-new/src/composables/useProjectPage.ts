@@ -15,7 +15,9 @@ export async function useProjectPage(
   i18n: Composer<unknown, unknown, unknown, VueMessageType>,
   project: HangarProject
 ) {
-  const page = await usePage(route.params.user as string, route.params.project as string).catch((e) => handleRequestError(e, ctx, i18n));
+  const page = await usePage(route.params.user as string, route.params.project as string, route.params.all as string).catch((e) =>
+    handleRequestError(e, ctx, i18n)
+  );
   if (!page) {
     await useRouter().push(useErrorRedirect(useRoute(), 404, "Not found"));
   }

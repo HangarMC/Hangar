@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { nextTick, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useContext } from "vite-ssr/vue";
@@ -11,7 +11,8 @@ const props = defineProps<{
   raw: string;
 }>();
 
-watch(props, fetch, { deep: true });
+const dum = computed(() => props);
+watch(dum, fetch, { deep: true });
 
 const renderedMarkdown = ref<string>("");
 const loading = ref<boolean>(true);
@@ -83,7 +84,7 @@ function setupAdmonition() {
 </script>
 
 <template>
-  <div class="prose max-w-full rounded p-4">
+  <div class="prose max-w-full rounded p-4 markdown">
     <!-- eslint-disable-next-line vue/no-v-html -->
     <div v-if="!loading" v-bind="$attrs" v-html="renderedMarkdown" />
     <div v-else>Loading...</div>

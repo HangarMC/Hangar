@@ -141,10 +141,10 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
       - [x] design
       - [ ] qa
     * index
-      - [ ] fetch
-      - [ ] layout
-      - [ ] functionality
-      - [ ] design
+      - [x] fetch
+      - [x] layout
+      - [ ] functionality (promoted versions)
+      - [x] design
       - [ ] qa
     * notes
       - [x] fetch
@@ -174,7 +174,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
       - [...all]
         - [x] fetch
         - [x] layout
-        - [ ] functionality (page editing, page creation, page deleting)
+        - [ ] functionality (page editing, page deleting)
         - [x] design
         - [ ] qa
     * versions (empty)

@@ -49,6 +49,7 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
       <ProjectInfo :project="project"></ProjectInfo>
       <Card>
         <template #header>{{ i18n.t("project.promotedVersions") }}</template>
+        <!-- todo promoted versions go here -->
         <template #default>Promoted versions go here</template>
       </Card>
       <ProjectPageList :project="project" :open="open" />

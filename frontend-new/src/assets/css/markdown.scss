@@ -1,8 +1,4 @@
 .markdown {
-  //padding: 10px 20px 20px 20px;
-  overflow: hidden;
-  max-width: 100%;
-
   table tr > th {
     padding: 5px;
   }
@@ -17,7 +13,7 @@
   h4,
   h5,
   h6 {
-    font-weight: bold;
+    display: flex;
   }
 
   img {
@@ -52,35 +48,10 @@
   .headeranchor {
     visibility: hidden;
     text-decoration: none;
-    padding-top: 68px; // So links to header's show up below the toolbar
   }
 
   .headeranchor:hover {
     visibility: visible;
-  }
-
-  h1,
-  h2,
-  h3 {
-    .headeranchor {
-      margin-left: -18px;
-
-      .v-icon {
-        font-size: 16px;
-      }
-    }
-  }
-
-  h4,
-  h5,
-  h6 {
-    .headeranchor {
-      margin-left: -12px;
-
-      .v-icon {
-        font-size: 12px;
-      }
-    }
   }
 
   h1:hover,
@@ -98,9 +69,5 @@
     p {
       display: inline-block;
     }
-  }
-
-  p:last-child {
-    margin-bottom: 0;
   }
 }

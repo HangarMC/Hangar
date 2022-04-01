@@ -2,7 +2,7 @@
 import { computed } from "vue";
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: object | string | boolean | number): void;
+  (e: "update:modelValue", value: object | string | boolean | number | null): void;
 }>();
 const internalVal = computed({
   get: () => props.modelValue,
@@ -15,15 +15,19 @@ export interface Option {
 }
 
 const props = defineProps<{
-  modelValue: object | string | boolean | number;
+  modelValue: object | string | boolean | number | null;
   values: Option[];
   disabled?: boolean;
+  label?: string;
 }>();
 </script>
 
 <!-- todo make fancy -->
 <template>
-  <select v-model="internalVal" :disabled="disabled">
-    <option v-for="val in values" :key="val.value" :value="val.value">{{ val.text }}</option>
-  </select>
+  <label>
+    <template v-if="label">{{ label }}</template>
+    <select v-model="internalVal" :disabled="disabled">
+      <option v-for="val in values" :key="val.value" :value="val.value">{{ val.text }}</option>
+    </select>
+  </label>
 </template>
