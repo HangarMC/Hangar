@@ -4,7 +4,7 @@ This is the repository for Hangar, a plugin repository used for Paper plugins an
 
 Hangar is loosely based off of [Ore](https://github.com/SpongePowered/Ore), created by the Sponge project, 
 but rebuilt from the ground up using the Spring Boot Framework in Java for the backend and nuxt (and vuetify) for the frontend (which is partially server rendered).
-We would like the thank all Ore contributors. Without them, this project would never have been possible.
+We would like to thank all Ore contributors. Without them, this project would never have been possible.
 
 There may or may not be a staging instance running at https://hangar.benndorf.dev
 It may or may not allow you to log in, please don't create too much of a mess so that I don't always need to nuke the DB when I want to use it.
@@ -14,7 +14,7 @@ The project consists out of 4 parts
 * Frontend (written in Vue vite-ssr via [vitesse](https://github.com/antfu/vitesse))
 * Backend (Spring Boot)
 * Database (PostgreSQL)
-* User Management ([HangarAuth]) (optional). *see below*
+* User Management ([HangarAuth]; optional, see below)
 
 There are two different environments that can be developed in, one using a fake user (aka without [HangarAuth]), or with [HangarAuth].
 Most of the time you won't need to run Hangar with [HangarAuth] unless you are working with a feature that requires multiple user interactions.
@@ -28,9 +28,9 @@ Fork the project and pull it in your IDE.
 * Java 17 or higher.
 * [Yarn]
 ### Setting up
-To get the project running locally you need to follow a few steps:
-1. To get the dummy database up and running move to the docker folder `cd docker` then run `docker-compose -f dev-db.yml up -d` (`-d` as an optional parameter to run the containers in the background).
-   Alternatively if you are using IntelliJ you can press the green arrow in the `docker/dev-db.yml` file.
+To get the project running locally, you need to follow a few steps:
+1. To get the dummy database up and running, move to the docker folder `cd docker` then run `docker-compose -f dev-db.yml up -d` (`-d` as an optional parameter to run the containers in the background).
+   Alternatively, if you are using IntelliJ you can press the green arrow in the `docker/dev-db.yml` file.
 2. Run the Spring Boot application. You can do it in the CLI with `mvn spring-boot:run` or if you're using IntelliJ, it's included in the run configurations.
 3. Move to the `frontend` directory: `cd ../frontend`. In that directory, run `pnpm install`. This will install all the needed Node modules.
 5. After the installation, run `pnpm run dev` in the frontend directory to initiate the build and launch. Changes you do to the frontend will be reloaded automatically.
@@ -59,7 +59,7 @@ To get both Hangar and HangarAuth running locally:
    1. See [HangarAuth README](https://github.com/HangarMC/HangarAuth/blob/master/README.md)
    2. Start HangarAuth's docker services
    3. Create HangarAuth's hydra client
-2. Move to Hangar's frontend directory `Hangar/frontend`. In that directory run `pnpm install` followed by `pnpm run dev`.
+2. Move to Hangar's frontend directory `Hangar/frontend`. In that directory, run `pnpm install` followed by `pnpm run dev`.
 3. Set up the hangar client in hydra (see [HangarAuth README](https://github.com/HangarMC/HangarAuth/blob/master/README.md))
 4. Navigate to http://localhost:3000 and login.
 

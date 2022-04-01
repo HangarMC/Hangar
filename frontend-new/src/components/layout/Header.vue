@@ -54,6 +54,7 @@ const navBarMenuLinksMoreFromPaper = [
 
 const authStore = useAuthStore();
 const auth = useAuth;
+const authHost = import.meta.env.HANGAR_AUTH_HOST;
 authLog("render with user " + authStore.user?.name);
 </script>
 
@@ -158,6 +159,7 @@ authLog("render with user " + authStore.user?.name);
             >
               <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
               <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
+              <DropdownItem :href="authHost + '/account/settings'">{{ t("nav.user.settings") }}</DropdownItem>
               <hr />
               <DropdownItem to="/admin/flags">{{ t("nav.user.flags") }}</DropdownItem>
               <DropdownItem to="/admin/approval/projects">{{ t("nav.user.projectApprovals") }}</DropdownItem>
