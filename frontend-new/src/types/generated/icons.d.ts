@@ -4,6 +4,7 @@
 
 declare module "vue" {
   export interface GlobalComponents {
+    IconMdiAccountArrowRight: typeof import("~icons/mdi/account-arrow-right")["default"];
     IconMdiBell: typeof import("~icons/mdi/bell")["default"];
     IconMdiBellOutline: typeof import("~icons/mdi/bell-outline")["default"];
     IconMdiCalendar: typeof import("~icons/mdi/calendar")["default"];
@@ -18,6 +19,7 @@ declare module "vue" {
     IconMdiDownload: typeof import("~icons/mdi/download")["default"];
     IconMdiEye: typeof import("~icons/mdi/eye")["default"];
     IconMdiEyeOff: typeof import("~icons/mdi/eye-off")["default"];
+    IconMdiFile: typeof import("~icons/mdi/file")["default"];
     IconMdiHome: typeof import("~icons/mdi/home")["default"];
     IconMdiKeyOutline: typeof import("~icons/mdi/key-outline")["default"];
     IconMdiListStatus: typeof import("~icons/mdi/list-status")["default"];

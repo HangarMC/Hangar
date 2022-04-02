@@ -25,6 +25,7 @@ import { useContext } from "vite-ssr/vue";
 import { useNotificationStore } from "~/store/notification";
 import InputTag from "~/components/ui/InputTag.vue";
 import TextAreaModal from "~/components/modals/TextAreaModal.vue";
+import ProjectSettingsSection from "~/components/projects/ProjectSettingsSection.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -194,7 +195,7 @@ useHead(
 </script>
 
 <template>
-  <div class="flex gap-4">
+  <div class="flex gap-4 flex-col md:flex-row">
     <Card class="basis-full md:basis-9/12">
       <template #header>
         <div class="flex justify-between">
@@ -217,39 +218,33 @@ useHead(
       <!-- setting icons -->
       <Tabs v-model="selectedTab" :tabs="tabs">
         <template #general>
-          <div>
-            <h2 class="text-lg">{{ i18n.t("project.settings.category") }}</h2>
-            <p>{{ i18n.t("project.settings.categorySub") }}</p>
+          <ProjectSettingsSection title="project.settings.category" description="project.settings.categorySub">
             <InputSelect v-model="form.category" :values="categories" />
-          </div>
-          <hr class="my-1" />
-          <div>
-            <h2 class="text-lg">{{ i18n.t("project.settings.description") }}</h2>
-            <p>{{ i18n.t("project.settings.descriptionSub") }}</p>
+          </ProjectSettingsSection>
+          <ProjectSettingsSection title="project.settings.description" description="project.settings.descriptionSub">
             <InputText v-model="form.description" counter :maxlength="backendData.validations?.project?.desc?.max" />
-          </div>
-          <hr class="my-1" />
-          <div>
-            <h2 class="text-lg">{{ i18n.t("project.settings.forum") }}</h2>
+          </ProjectSettingsSection>
+          <ProjectSettingsSection title="project.settings.forum">
             <InputCheckbox v-model="form.settings.forumSync" :label="i18n.t('project.settings.forumSub')" />
-          </div>
-          <hr class="my-1" />
-          <div>
-            <h2 class="text-lg">{{ i18n.t("project.settings.icon") }}</h2>
-            <div class="flex">
-              <div>
+          </ProjectSettingsSection>
+          <ProjectSettingsSection>
+            <div class="grid grid-cols-3 grid-rows-[1fr,1fr,min-content] gap-2 w-full">
+              <div class="col-span-2 row-span-1">
+                <h2 class="text-lg font-semibold">{{ i18n.t("project.settings.icon") }}</h2>
                 <p>{{ i18n.t("project.settings.iconSub") }}</p>
-                <InputFile v-model="projectIcon" accept="image/png, image/jpeg" show-size @change="onFileChange" />
-                <Button :disabled="!projectIcon || loading.uploadIcon" @click="uploadIcon">
-                  <IconMdiUpload />
-                  {{ i18n.t("project.settings.iconUpload") }}
-                </Button>
-                <Button :disabled="loading.resetIcon" @click="resetIcon">
-                  <IconMdiUpload />
-                  {{ i18n.t("project.settings.iconReset") }}
-                </Button>
               </div>
-              <div>
+              <div class="col-span-2">
+                <InputFile v-model="projectIcon" accept="image/png, image/jpeg" show-size @change="onFileChange" />
+              </div>
+              <Button :disabled="!projectIcon || loading.uploadIcon" @click="uploadIcon">
+                <IconMdiUpload />
+                {{ i18n.t("project.settings.iconUpload") }}
+              </Button>
+              <Button :disabled="loading.resetIcon" @click="resetIcon">
+                <IconMdiUpload />
+                {{ i18n.t("project.settings.iconReset") }}
+              </Button>
+              <div class="col-span-1 col-start-3 row-start-1 row-span-3">
                 <img
                   id="project-icon-preview"
                   width="150"
@@ -259,59 +254,30 @@ useHead(
                 />
               </div>
             </div>
-          </div>
+          </ProjectSettingsSection>
         </template>
         <template #optional>
-          <div>
-            <h2 class="text-lg">
-              {{ i18n.t("project.settings.keywords") }}&nbsp;<small>{{ i18n.t("project.settings.optional") }}</small>
-            </h2>
-            <p>{{ i18n.t("project.settings.keywordsSub") }}</p>
+          <ProjectSettingsSection title="project.settings.keywords" description="project.settings.keywordsSub" optional>
             <InputTag
               v-model="form.settings.keywords"
               counter
               :maxlength="backendData.validations.project.keywords.max"
               :label="i18n.t('project.new.step3.keywords')"
             />
-          </div>
-          <hr class="my-1" />
-          <div>
-            <h2 class="text-lg">
-              {{ i18n.t("project.settings.homepage") }}&nbsp;<small>{{ i18n.t("project.settings.optional") }}</small>
-            </h2>
-            <p>{{ i18n.t("project.settings.homepageSub") }}</p>
+          </ProjectSettingsSection>
+          <ProjectSettingsSection title="project.settings.homepage" description="project.settings.homepageSub" optional>
             <InputText v-model.trim="form.settings.homepage" :label="i18n.t('project.new.step3.homepage')"></InputText>
-          </div>
-          <hr class="my-1" />
-          <div>
-            <h2 class="text-lg">
-              {{ i18n.t("project.settings.issues") }}&nbsp;<small>{{ i18n.t("project.settings.optional") }}</small>
-            </h2>
-            <p>{{ i18n.t("project.settings.issuesSub") }}</p>
+          </ProjectSettingsSection>
+          <ProjectSettingsSection title="project.settings.issues" description="project.settings.issuesSub" optional>
             <InputText v-model.trim="form.settings.issues" :label="i18n.t('project.new.step3.issues')" />
-          </div>
-          <hr class="my-1" />
-          <div>
-            <h2 class="text-lg">
-              {{ i18n.t("project.settings.source") }}&nbsp;<small>{{ i18n.t("project.settings.optional") }}</small>
-            </h2>
-            <p>{{ i18n.t("project.settings.sourceSub") }}</p>
+          </ProjectSettingsSection>
+          <ProjectSettingsSection title="project.settings.source" description="project.settings.sourceSub" optional>
             <InputText v-model.trim="form.settings.source" :label="i18n.t('project.new.step3.source')" />
-          </div>
-          <hr class="my-1" />
-          <div>
-            <h2 class="text-lg">
-              {{ i18n.t("project.settings.support") }}&nbsp;<small>{{ i18n.t("project.settings.optional") }}</small>
-            </h2>
-            <p>{{ i18n.t("project.settings.supportSub") }}</p>
+          </ProjectSettingsSection>
+          <ProjectSettingsSection title="project.settings.support" description="project.settings.supportSub" optional>
             <InputText v-model.trim="form.settings.support" :label="i18n.t('project.new.step3.support')" />
-          </div>
-          <hr class="my-1" />
-          <div>
-            <h2 class="text-lg">
-              {{ i18n.t("project.settings.license") }}&nbsp;<small>{{ i18n.t("project.settings.optional") }}</small>
-            </h2>
-            <p>{{ i18n.t("project.settings.licenseSub") }}</p>
+          </ProjectSettingsSection>
+          <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub" optional>
             <div class="flex">
               <div class="basis-full" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
                 <InputSelect v-model="form.settings.license.type" :values="licenses" :label="i18n.t('project.settings.licenseType')" />
@@ -323,12 +289,10 @@ useHead(
                 <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.settings.licenseUrl')" />
               </div>
             </div>
-          </div>
+          </ProjectSettingsSection>
         </template>
         <template #management>
-          <div>
-            <h2 class="text-lg">{{ i18n.t("project.settings.rename") }}</h2>
-            <p>{{ i18n.t("project.settings.renameSub") }}</p>
+          <ProjectSettingsSection title="project.settings.rename" description="project.settings.renameSub">
             <div class="flex">
               <InputText v-model.trim="newName" :error-messages="nameErrors" />
               <Button :disabled="!newName || loading.rename || nameErrors.length > 0" class="ml-2" @click="rename">
@@ -336,70 +300,48 @@ useHead(
                 {{ i18n.t("project.settings.rename") }}
               </Button>
             </div>
-          </div>
-          <hr class="my-1" />
-          <div v-if="hasPerms(NamedPermission.DELETE_PROJECT)">
-            <div class="flex">
-              <div class="flex-shrink">
-                <h2 class="text-lg">{{ i18n.t("project.settings.delete") }}</h2>
-                <p>{{ i18n.t("project.settings.deleteSub") }}</p>
-              </div>
-              <div class="flex-grow">
-                <TextAreaModal :title="i18n.t('project.settings.delete')" :label="i18n.t('general.comment')" :submit="softDelete">
-                  <template #activator="{ on }">
-                    <Button v-on="on">{{ i18n.t("project.settings.delete") }}</Button>
-                  </template>
-                </TextAreaModal>
-              </div>
-            </div>
-          </div>
-          <hr v-if="hasPerms(NamedPermission.HARD_DELETE_PROJECT)" class="my-1" />
-          <div v-if="hasPerms(NamedPermission.HARD_DELETE_PROJECT)" class="bg-red-500 p-4">
-            <div class="flex">
-              <div class="flex-shrink">
-                <h2 class="text-lg">{{ i18n.t("project.settings.hardDelete") }}</h2>
-                <p>{{ i18n.t("project.settings.hardDeleteSub") }}</p>
-              </div>
-              <div class="flex-grow">
-                <TextAreaModal :title="i18n.t('project.settings.hardDelete')" :label="i18n.t('general.comment')" :submit="hardDelete">
-                  <template #activator="{ on }">
-                    <Button v-on="on">{{ i18n.t("project.settings.hardDelete") }}</Button>
-                  </template>
-                </TextAreaModal>
-              </div>
-            </div>
-          </div>
+          </ProjectSettingsSection>
+          <ProjectSettingsSection
+            v-if="hasPerms(NamedPermission.DELETE_PROJECT)"
+            title="project.settings.delete"
+            description="project.settings.deleteSub"
+            class="bg-red-200 dark:(bg-red-900 text-white) rounded-md p-4"
+          >
+            <TextAreaModal :title="i18n.t('project.settings.delete')" :label="i18n.t('general.comment')" :submit="softDelete">
+              <template #activator="{ on }">
+                <Button v-on="on">{{ i18n.t("project.settings.delete") }}</Button>
+              </template>
+            </TextAreaModal>
+          </ProjectSettingsSection>
+          <ProjectSettingsSection
+            v-if="hasPerms(NamedPermission.HARD_DELETE_PROJECT)"
+            title="project.settings.hardDelete"
+            description="project.settings.hardDeleteSub"
+            class="bg-red-200 dark:(bg-red-900 text-white) rounded-md p-4"
+          >
+            <TextAreaModal :title="i18n.t('project.settings.hardDelete')" :label="i18n.t('general.comment')" :submit="hardDelete">
+              <template #activator="{ on }">
+                <Button v-on="on">{{ i18n.t("project.settings.hardDelete") }}</Button>
+              </template>
+            </TextAreaModal>
+          </ProjectSettingsSection>
         </template>
         <template #donation>
-          <div>
-            <h2 class="text-lg">{{ i18n.t("project.settings.donation.enable") }}</h2>
-            <p>{{ i18n.t("project.settings.donation.enableSub") }}</p>
+          <ProjectSettingsSection title="project.settings.donation.enable" description="project.settings.donation.enableSub">
             <InputCheckbox v-model="form.settings.donation.enable" />
-          </div>
-          <hr class="my-1" />
-          <div>
-            <h2 class="text-lg">{{ i18n.t("project.settings.donation.email") }}</h2>
-            <p>{{ i18n.t("project.settings.donation.emailSub") }}</p>
+          </ProjectSettingsSection>
+          <ProjectSettingsSection title="project.settings.donation.email" description="project.settings.donation.emailSub">
             <InputText v-model="form.settings.donation.email" />
-          </div>
-          <hr class="my-1" />
-          <div>
-            <h2 class="text-lg">{{ i18n.t("project.settings.donation.defaultAmount") }}</h2>
-            <p>{{ i18n.t("project.settings.donation.defaultAmountSub") }}</p>
+          </ProjectSettingsSection>
+          <ProjectSettingsSection title="project.settings.donation.defaultAmount" description="project.settings.donation.defaultAmountSub">
             <InputText v-model.number="form.settings.donation.defaultAmount" type="number" />
-          </div>
-          <hr class="my-1" />
-          <div>
-            <h2 class="text-lg">{{ i18n.t("project.settings.donation.oneTimeAmounts") }}</h2>
-            <p>{{ i18n.t("project.settings.donation.oneTimeAmountsSub") }}</p>
+          </ProjectSettingsSection>
+          <ProjectSettingsSection title="project.settings.donation.oneTimeAmounts" description="project.settings.donation.oneTimeAmountsSub">
             <InputTag v-model="form.settings.donation.oneTimeAmounts" />
-          </div>
-          <hr class="my-1" />
-          <div>
-            <h2 class="text-lg">{{ i18n.t("project.settings.donation.monthlyAmounts") }}</h2>
-            <p>{{ i18n.t("project.settings.donation.monthlyAmountsSub") }}</p>
+          </ProjectSettingsSection>
+          <ProjectSettingsSection title="project.settings.donation.monthlyAmounts" description="project.settings.donation.monthlyAmountsSub">
             <InputTag v-model="form.settings.donation.monthlyAmounts" />
-          </div>
+          </ProjectSettingsSection>
         </template>
       </Tabs>
     </Card>

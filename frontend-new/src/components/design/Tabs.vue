@@ -22,11 +22,13 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="flex gap-2">
-    <div>
-      <ul>
+  <div class="flex flex-col <md:space-y-2 md:(flex-row space-x-2)">
+    <div class="min-w-12ch">
+      <ul class="flex flex-row <md:space-x-2 md:(flex-col space-y-2)">
         <li v-for="tab in tabs" :key="tab.value">
-          <Link :href="'#' + tab.value" @click.prevent="internalValue = tab.value">{{ tab.header }}</Link>
+          <Link :class="internalValue == tab.value ? 'underline' : '!font-semibold'" :href="'#' + tab.value" @click.prevent="internalValue = tab.value">
+            {{ tab.header }}
+          </Link>
         </li>
       </ul>
     </div>
