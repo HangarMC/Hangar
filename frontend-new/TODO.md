@@ -153,10 +153,10 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
       - [x] design
       - [ ] qa
     * settings
-      - [ ] fetch
-      - [ ] layout
-      - [ ] functionality
-      - [ ] design
+      - [x] fetch
+      - [x] layout
+      - [x] functionality
+      - [ ] design (needs styling the tabs)
       - [ ] qa
     * stars
       - [x] fetch
@@ -192,9 +192,9 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
         - [ ] qa
       - [version]
         - [x] fetch
-        - [ ] layout (do we wanna do tabs again?)
+        - [x] layout
         - [x] functionality
-        - [ ] design
+        - [x] design
         - [ ] qa
         * [platform] (empty)
           - index
@@ -257,7 +257,7 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
     - versions
       - [x] fetch
       - [x] layout
-      - [ ] functionality (expansion missing)
+      - [x] functionality
       - [x] design
       - [ ] qa
   - user (empty)

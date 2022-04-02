@@ -2,7 +2,7 @@
 import { computed } from "vue";
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: object | string | boolean | number | null): void;
+  (e: "update:modelValue", value: object | string | boolean | number | null | undefined): void;
 }>();
 const internalVal = computed({
   get: () => props.modelValue,
@@ -15,7 +15,7 @@ export interface Option {
 }
 
 const props = defineProps<{
-  modelValue: object | string | boolean | number | null;
+  modelValue: object | string | boolean | number | null | undefined;
   values: Option[];
   disabled?: boolean;
   label?: string;

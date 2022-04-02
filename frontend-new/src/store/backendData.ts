@@ -73,15 +73,15 @@ export const useBackendDataStore = defineStore("backendData", () => {
         return convertToMap<Prompt, IPrompt>(promptsResult, (value) => value.name);
       }, prompts);
 
-      await fetchIfNeeded(async () => await useInternalApi<string[]>("data/licenses", false), licenses);
+      await fetchIfNeeded(async () => useInternalApi<string[]>("data/licenses", false), licenses);
 
-      await fetchIfNeeded(async () => await useInternalApi<AnnouncementObject[]>("data/announcements", false), announcements);
+      await fetchIfNeeded(async () => useInternalApi<AnnouncementObject[]>("data/announcements", false), announcements);
 
-      await fetchIfNeeded(async () => await useInternalApi<IVisibility[]>("data/visibilities", false), visibilities);
+      await fetchIfNeeded(async () => useInternalApi<IVisibility[]>("data/visibilities", false), visibilities);
 
-      await fetchIfNeeded(async () => await useInternalApi("data/validations", false), validations);
+      await fetchIfNeeded(async () => useInternalApi("data/validations", false), validations);
 
-      await fetchIfNeeded(async () => await useInternalApi("data/orgRoles", false), validations);
+      await fetchIfNeeded(async () => useInternalApi("data/orgRoles", false), orgRoles);
     } catch (e) {
       console.error("ERROR FETCHING BACKEND DATA");
       console.error(e);
