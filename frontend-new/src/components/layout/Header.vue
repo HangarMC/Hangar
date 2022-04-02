@@ -22,6 +22,8 @@ import { useAuthStore } from "~/store/auth";
 import { useAuth } from "~/composables/useAuth";
 import { useBackendDataStore } from "~/store/backendData";
 import { authLog } from "~/composables/useLog";
+import { hasPerms } from "~/composables/usePerm";
+import { NamedPermission } from "~/types/enums";
 import UserAvatar from "~/components/UserAvatar.vue";
 
 const theme = useThemeStore();
@@ -161,13 +163,13 @@ authLog("render with user " + authStore.user?.name);
               <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
               <DropdownItem :href="authHost + '/account/settings'">{{ t("nav.user.settings") }}</DropdownItem>
               <hr />
-              <DropdownItem to="/admin/flags">{{ t("nav.user.flags") }}</DropdownItem>
-              <DropdownItem to="/admin/approval/projects">{{ t("nav.user.projectApprovals") }}</DropdownItem>
-              <DropdownItem to="/admin/approval/versions">{{ t("nav.user.versionApprovals") }}</DropdownItem>
-              <DropdownItem to="/admin/stats">{{ t("nav.user.stats") }}</DropdownItem>
-              <DropdownItem to="/admin/health">{{ t("nav.user.health") }}</DropdownItem>
-              <DropdownItem to="/admin/log">{{ t("nav.user.log") }}</DropdownItem>
-              <DropdownItem to="/admin/versions">{{ t("nav.user.platformVersions") }}</DropdownItem>
+              <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/flags">{{ t("nav.user.flags") }}</DropdownItem>
+              <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/approval/projects">{{ t("nav.user.projectApprovals") }}</DropdownItem>
+              <DropdownItem v-if="hasPerms(NamedPermission.REVIEWER)" to="/admin/approval/versions">{{ t("nav.user.versionApprovals") }}</DropdownItem>
+              <DropdownItem v-if="hasPerms(NamedPermission.VIEW_STATS)" to="/admin/stats">{{ t("nav.user.stats") }}</DropdownItem>
+              <DropdownItem v-if="hasPerms(NamedPermission.VIEW_HEALTH)" to="/admin/health">{{ t("nav.user.health") }}</DropdownItem>
+              <DropdownItem v-if="hasPerms(NamedPermission.VIEW_LOGS)" to="/admin/log">{{ t("nav.user.log") }}</DropdownItem>
+              <DropdownItem v-if="hasPerms(NamedPermission.MANUAL_VALUE_CHANGES)" to="/admin/versions">{{ t("nav.user.platformVersions") }}</DropdownItem>
               <hr />
               <DropdownItem @click="auth.logout()">{{ t("nav.user.logout") }}</DropdownItem>
             </MenuItems>
