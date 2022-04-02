@@ -4,28 +4,23 @@
 
 declare module "vue" {
   export interface GlobalComponents {
+    IconMdiBell: typeof import("~icons/mdi/bell")["default"];
+    IconMdiBellOutline: typeof import("~icons/mdi/bell-outline")["default"];
     IconMdiCalendar: typeof import("~icons/mdi/calendar")["default"];
     IconMdiCheck: typeof import("~icons/mdi/check")["default"];
-    IconMdiCheckCircleOutline: typeof import("~icons/mdi/check-circle-outline")["default"];
     IconMdiClipboardOutline: typeof import("~icons/mdi/clipboard-outline")["default"];
     IconMdiClose: typeof import("~icons/mdi/close")["default"];
-    IconMdiCloseCircle: typeof import("~icons/mdi/close-circle")["default"];
-    IconMdiDiamondStone: typeof import("~icons/mdi/diamond-stone")["default"];
     IconMdiDownload: typeof import("~icons/mdi/download")["default"];
-    IconMdiEye: typeof import("~icons/mdi/eye")["default"];
     IconMdiHome: typeof import("~icons/mdi/home")["default"];
     IconMdiKeyOutline: typeof import("~icons/mdi/key-outline")["default"];
-    IconMdiListStatus: typeof import("~icons/mdi/list-status")["default"];
     IconMdiMenu: typeof import("~icons/mdi/menu")["default"];
     IconMdiMenuDown: typeof import("~icons/mdi/menu-down")["default"];
     IconMdiOpenInNew: typeof import("~icons/mdi/open-in-new")["default"];
     IconMdiPencil: typeof import("~icons/mdi/pencil")["default"];
-    IconMdiPlay: typeof import("~icons/mdi/play")["default"];
     IconMdiPlus: typeof import("~icons/mdi/plus")["default"];
-    IconMdiRenameBox: typeof import("~icons/mdi/rename-box")["default"];
     IconMdiSortVariant: typeof import("~icons/mdi/sort-variant")["default"];
     IconMdiStar: typeof import("~icons/mdi/star")["default"];
-    IconMdiUpload: typeof import("~icons/mdi/upload")["default"];
+    IconMdiStarOutline: typeof import("~icons/mdi/star-outline")["default"];
     IconMdiWeatherNight: typeof import("~icons/mdi/weather-night")["default"];
     IconMdiWhiteBalanceSunny: typeof import("~icons/mdi/white-balance-sunny")["default"];
   }

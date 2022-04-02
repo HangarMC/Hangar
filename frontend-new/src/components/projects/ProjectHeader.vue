@@ -28,7 +28,7 @@ const imageUrl = computed(() => {
 const starred = ref(props.project.userActions.starred);
 const watching = ref(props.project.userActions.watching);
 
-// TODO: use a permission check? idk which one to use
+// I TODO: use a permission check? idk which one to use
 const canStarOrWatch = computed(() => !user || user.name === props.project.namespace.owner);
 
 function toggleState(stateType: keyof UserActions, route: string, i18nName: string = route) {
@@ -50,17 +50,28 @@ function toggleWatch() {
 
 <template>
   <Card accent>
-    <div class="flex">
-      <UserAvatar :username="project.namespace.owner" :to="'/' + project.namespace.owner + '/' + project.name" :img-src="imageUrl"></UserAvatar>
-      <div class="flex-grow mx-4">
-        <p class="text-2xl pb-1">
-          <router-link :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</router-link>
+    <div class="flex <sm:flex-col">
+      <UserAvatar
+        class="flex-shrink-0 mr-4 <sm:hidden"
+        :username="project.namespace.owner"
+        :to="'/' + project.namespace.owner + '/' + project.name"
+        :img-src="imageUrl"
+      />
+      <div class="flex-grow sm:mr-4 <sm:mb-4">
+        <p class="text-2xl <sm:text-lg pb-1 inline-flex space-x-1.2 items-center">
+          <UserAvatar
+            class="!w-8 !h-8 sm:hidden"
+            :username="project.namespace.owner"
+            :to="'/' + project.namespace.owner + '/' + project.name"
+            :img-src="imageUrl"
+          />
+          <router-link class="!sm:ml-0" :to="'/' + project.namespace.owner">{{ project.namespace.owner }}</router-link>
           <span class="text-gray-500 dark:text-gray-400"> / </span>
           <span class="font-semibold">{{ project.name }}</span>
         </p>
         <p>{{ project.description }}</p>
       </div>
-      <div class="flex flex-col items-end justify-between">
+      <div class="flex sm:flex-col space-y-2 items-end justify-between sm:justify-around">
         <Button size="large">Download latest</Button>
         <div class="flex">
           <Tooltip>
@@ -77,6 +88,8 @@ function toggleWatch() {
               </span>
             </Button>
           </Tooltip>
+          <!-- Tooltips mess with normal margins so this is a workaround -->
+          <div class="px-1"></div>
           <Tooltip>
             <template #content>
               <span v-if="canStarOrWatch">{{ i18n.t("project.info.watchers", 0) }}</span>
