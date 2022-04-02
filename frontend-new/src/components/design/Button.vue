@@ -8,10 +8,12 @@ const props = withDefaults(
   defineProps<{
     disabled?: boolean;
     size?: "small" | "medium" | "large";
+    type?: "primary" | "gray";
   }>(),
   {
     disabled: false,
     size: "small",
+    type: "primary",
   }
 );
 const paddingClass = computed(() => {
@@ -32,9 +34,7 @@ const paddingClass = computed(() => {
 
 <template>
   <button
-    :class="
-      'rounded-md text-white font-semibold h-min inline-flex items-center ' + paddingClass + (disabled ? ' bg-gray-500 cursor-not-allowed' : ' bg-primary-100')
-    "
+    :class="'rounded-md text-white font-semibold h-min inline-flex items-center ' + paddingClass + ' button-' + type"
     :hover="disabled ? '' : 'bg-primary-50 text-primary-100'"
     :disabled="disabled"
     v-bind="$attrs"

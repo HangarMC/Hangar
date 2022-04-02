@@ -21,7 +21,7 @@ const i18n = useI18n();
     <template #default="{ on }">
       <!-- todo implement channel modal -->
 
-      <Button class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
+      <Button type="gray" class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
     </template>
     <template #activator="{ on }">
       <slot name="activator" :on="on"></slot>

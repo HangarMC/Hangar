@@ -4,7 +4,7 @@ import typography from "windicss/plugin/typography";
 
 export default defineConfig({
   darkMode: "class",
-  safelist: "order-last",
+  safelist: "order-last button-primary button-gray",
   attributify: true,
   plugins: [typography()],
   theme: {
@@ -73,5 +73,7 @@ export default defineConfig({
     "background-body": "bg-background-light-10 dark:bg-background-dark-80",
     "color-primary": "text-primary-100 dark:text-primary-70",
     "border-top-primary": "border-solid border-t-4 border-t-primary-100",
+    "button-gray": "bg-zinc-500 dark:bg-slate-700 disabled:(bg-gray-300 text-neutral-500 cursor-not-allowed)",
+    "button-primary": "bg-primary-100 disabled:(bg-gray-300 text-neutral-500 cursor-not-allowed)",
   },
 });

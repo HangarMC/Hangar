@@ -14,8 +14,8 @@ const i18n = useI18n();
   <Modal :title="i18n.t('page.delete.title')">
     <template #default="{ on }">
       <p>{{ i18n.t("page.delete.text") }}</p>
-      <Button class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
       <Button class="mt-2 ml-2" @click="emit('delete')">{{ i18n.t("general.delete") }}</Button>
+      <Button type="gray" class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
     </template>
     <template #activator="{ on }">
       <slot name="activator" :on="on"></slot>

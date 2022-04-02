@@ -49,8 +49,8 @@ async function submit(closeModal: () => void): Promise<void> {
 
       <InputTextarea v-if="showTextarea" v-model.trim="reason" rows="2" :label="i18n.t('visibility.modal.reason')" />
 
-      <Button class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
       <Button class="mt-2 ml-2" @click="submit(on.click)">{{ i18n.t("general.submit") }}</Button>
+      <Button type="gray" class="mt-2" v-on="on">{{ i18n.t("general.close") }}</Button>
     </template>
     <template #activator="{ on }">
       <Button v-bind="$attrs" class="mr-1" v-on="on">
