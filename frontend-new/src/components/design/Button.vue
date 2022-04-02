@@ -32,8 +32,8 @@ const paddingClass = computed(() => {
 
 <template>
   <button
-    :class="'rounded-md text-white h-min ' + paddingClass + (disabled ? ' bg-gray-500' : ' bg-gradient-to-r from-[#004ee9] to-[#367aff]')"
-    :hover="disabled ? '' : 'text-shadow-xl from-[#004ee9] to-[#6699ff]'"
+    :class="'rounded-md text-white font-semibold h-min ' + paddingClass + (disabled ? ' bg-gray-500 cursor-not-allowed' : ' bg-primary-100')"
+    :hover="disabled ? '' : 'bg-primary-50 text-primary-100'"
     :disabled="disabled"
     v-bind="$attrs"
     @click="$emit('click')"
