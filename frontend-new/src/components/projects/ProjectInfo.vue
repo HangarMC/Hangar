@@ -73,6 +73,7 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
           {{ i18n.t("project.actions.forum") }}
         </DropdownItem>
       </DropdownButton>
+      <!-- todo donation modal -->
     </template>
   </Card>
 </template>

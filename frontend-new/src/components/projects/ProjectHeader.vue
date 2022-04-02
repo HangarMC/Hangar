@@ -80,12 +80,10 @@ function toggleWatch() {
               <span v-else-if="starred">{{ i18n.t("project.actions.unstar") }}</span>
               <span v-else>{{ i18n.t("project.actions.star") }}</span>
             </template>
-            <Button size="small" class="pb-0" :disabled="canStarOrWatch" @click="toggleStar">
-              <span class="inline-flex items-center mx-1">
-                <IconMdiStar v-if="starred" />
-                <IconMdiStarOutline v-else />
-                <span class="ml-2">{{ project.stats.stars }}</span>
-              </span>
+            <Button size="small" :disabled="canStarOrWatch" @click="toggleStar">
+              <IconMdiStar v-if="starred" />
+              <IconMdiStarOutline v-else />
+              <span class="ml-2">{{ project.stats.stars }}</span>
             </Button>
           </Tooltip>
           <!-- Tooltips mess with normal margins so this is a workaround -->
@@ -96,12 +94,10 @@ function toggleWatch() {
               <span v-else-if="starred">{{ i18n.t("project.actions.unwatch") }}</span>
               <span v-else>{{ i18n.t("project.actions.watch") }}</span>
             </template>
-            <Button size="small" class="pb-0" :disabled="canStarOrWatch" @click="toggleWatch">
-              <span class="inline-flex items-center mx-1">
-                <IconMdiBell v-if="watching" />
-                <IconMdiBellOutline v-else />
-                <span class="ml-2">{{ project.stats.watchers }}</span>
-              </span>
+            <Button size="small" :disabled="canStarOrWatch" @click="toggleWatch">
+              <IconMdiBell v-if="watching" />
+              <IconMdiBellOutline v-else />
+              <span class="ml-2">{{ project.stats.watchers }}</span>
             </Button>
           </Tooltip>
         </div>

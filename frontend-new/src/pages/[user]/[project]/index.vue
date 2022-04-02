@@ -39,7 +39,9 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
           ref="editor"
           v-model:editing="editingPage"
           :raw="page.contents"
-          :deletable="page.deletable"
+          :deletable="false"
+          :saveable="true"
+          :cancellable="true"
           @save="savePage"
         />
         <Markdown v-else :raw="page.contents" />

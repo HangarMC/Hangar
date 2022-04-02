@@ -206,7 +206,7 @@ useHead(
               :prop-visibility="project.visibility"
               :post-url="`projects/visibility/${project.id}`"
             ></VisibilityChangerModal>
-            <Button class="inline-flex items-center ml-2" @click="save">
+            <Button class="ml-2" @click="save">
               <IconMdiCheck />
               {{ i18n.t("project.settings.save") }}
             </Button>
@@ -331,7 +331,7 @@ useHead(
             <p>{{ i18n.t("project.settings.renameSub") }}</p>
             <div class="flex">
               <InputText v-model.trim="newName" :error-messages="nameErrors" />
-              <Button :disabled="!newName || loading.rename || nameErrors.length > 0" class="inline-flex items-center ml-2" @click="rename">
+              <Button :disabled="!newName || loading.rename || nameErrors.length > 0" class="ml-2" @click="rename">
                 <IconMdiRenameBox class="mr-2" />
                 {{ i18n.t("project.settings.rename") }}
               </Button>

@@ -48,8 +48,9 @@ export async function useProjectPage(
     await useInternalApi(`pages/save/${project.id}/${page.value?.id}`, true, "post", {
       content,
     }).catch((e) => handleRequestError(e, ctx, i18n, "page.new.error.save"));
-    // todo page saving
-    //page.value?.contents = content;
+    if (page.value) {
+      page.value.contents = content;
+    }
     editingPage.value = false;
   }
 

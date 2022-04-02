@@ -32,7 +32,9 @@ const paddingClass = computed(() => {
 
 <template>
   <button
-    :class="'rounded-md text-white font-semibold h-min ' + paddingClass + (disabled ? ' bg-gray-500 cursor-not-allowed' : ' bg-primary-100')"
+    :class="
+      'rounded-md text-white font-semibold h-min inline-flex items-center ' + paddingClass + (disabled ? ' bg-gray-500 cursor-not-allowed' : ' bg-primary-100')
+    "
     :hover="disabled ? '' : 'bg-primary-50 text-primary-100'"
     :disabled="disabled"
     v-bind="$attrs"

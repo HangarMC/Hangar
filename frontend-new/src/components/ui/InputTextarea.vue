@@ -16,8 +16,8 @@ const props = defineProps<{
 
 <template>
   <!-- todo make fancy -->
-  <label class="block">
+  <label class="flex">
     <span v-if="label" class="block">{{ label }}</span>
-    <textarea v-model="value" class="ml-2" v-bind="$attrs" />
+    <textarea v-model="value" class="ml-2 flex-grow flex-shrink" v-bind="$attrs" />
   </label>
 </template>

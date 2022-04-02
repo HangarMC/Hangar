@@ -69,7 +69,7 @@ async function create() {
 
       <MemberList v-model="members" class="mt-2"></MemberList>
 
-      <Button class="mt-2 inline-flex items-center" @click="create">
+      <Button class="mt-2" @click="create">
         <IconMdiCheck class="float-left" />
         {{ i18n.t("form.memberList.create") }}
       </Button>

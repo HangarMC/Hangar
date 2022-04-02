@@ -184,6 +184,8 @@ async function restoreVersion() {
         v-model:editing="editingPage"
         :raw="projectVersion.description"
         :deletable="false"
+        :cancellable="true"
+        :saveable="true"
         @save="savePage"
       />
       <Markdown v-else :raw="projectVersion.description" />

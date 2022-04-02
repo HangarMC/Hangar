@@ -40,6 +40,8 @@ if (page) {
           v-model:editing="editingPage"
           :raw="page.contents"
           :deletable="page.deletable"
+          :saveable="true"
+          :cancellable="true"
           @save="savePage"
           @delete="deletePage"
         />

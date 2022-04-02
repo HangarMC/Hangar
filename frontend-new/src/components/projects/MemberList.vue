@@ -40,7 +40,7 @@ const dirty = ref<boolean>(false);
           ><IconMdiPencil class="text-xs" :title="i18n.t('general.edit')"
         /></Button>
         <Button v-else-if="!dirty" class="mr-1 inline-flex" @click="editing = false"><IconMdiClose /></Button>
-        <Button v-if="editing && !disableSaveButton" :disabled="!dirty" class="inline-flex items-center" @click="save"
+        <Button v-if="editing && !disableSaveButton" :disabled="!dirty" @click="save"
           ><IconMdiCheck /> <span class="text-sm">{{ i18n.t("general.save") }}</span></Button
         >
       </div>
