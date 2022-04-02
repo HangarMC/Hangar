@@ -9,9 +9,9 @@ export { DEFAULT_LOCALE, SUPPORTED_LOCALES, SUPPORTED_LANGUAGES, extractLocaleFr
 const messageImports = import.meta.glob("./locales/*.json");
 
 function importLocale(locale: string) {
-  const [, importLocale] = Object.entries(messageImports).find(([key]) => key.includes(`/${locale}.`)) || [];
+  const [, importLoc] = Object.entries(messageImports).find(([key]) => key.includes(`/${locale}.`)) || [];
 
-  return importLocale && importLocale();
+  return importLoc && importLoc();
 }
 
 export async function loadAsyncLanguage(i18n: any, locale = DEFAULT_LOCALE) {
@@ -29,6 +29,7 @@ export async function loadAsyncLanguage(i18n: any, locale = DEFAULT_LOCALE) {
 export async function installI18n(app: App, locale = "") {
   locale = SUPPORTED_LOCALES.includes(locale) ? locale : DEFAULT_LOCALE;
   try {
+    const defaultMessages = await importLocale(DEFAULT_LOCALE);
     const messages = await importLocale(locale);
 
     const i18n = createI18n({
@@ -37,6 +38,7 @@ export async function installI18n(app: App, locale = "") {
       fallbackLocale: DEFAULT_LOCALE,
       messages: {
         [locale]: messages?.default || messages,
+        [DEFAULT_LOCALE]: defaultMessages?.default || defaultMessages,
       },
       datetimeFormats: DATE_FORMATS,
     });

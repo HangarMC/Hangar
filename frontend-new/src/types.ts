@@ -1,6 +1,6 @@
 import type { Context } from "vite-ssr/vue";
 import type { App } from "vue";
-import type { RouteRecord, Router } from "vue-router";
+import type { Router, RouteRecord } from "vue-router";
 
 export type UserModule = (
   ctx: Context & {

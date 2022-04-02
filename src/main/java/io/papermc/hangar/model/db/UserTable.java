@@ -21,9 +21,10 @@ public class UserTable extends Table implements ProjectOwner {
     private List<Integer> readPrompts;
     private boolean locked;
     private String language;
+    private String theme;
 
     @JdbiConstructor
-    public UserTable(OffsetDateTime createdAt, @PropagateNull long id, UUID uuid, String fullName, String name, String email, String tagline, OffsetDateTime joinDate, List<Integer> readPrompts, boolean locked, String language) {
+    public UserTable(OffsetDateTime createdAt, @PropagateNull long id, UUID uuid, String fullName, String name, String email, String tagline, OffsetDateTime joinDate, List<Integer> readPrompts, boolean locked, String language, String theme) {
         super(createdAt, id);
         this.uuid = uuid;
         this.fullName = fullName;
@@ -34,9 +35,10 @@ public class UserTable extends Table implements ProjectOwner {
         this.readPrompts = readPrompts;
         this.locked = locked;
         this.language = language;
+        this.theme = theme;
     }
 
-    public UserTable(long id, UUID uuid, String fullName, String name, String email, List<Integer> readPrompts, boolean locked, String language) {
+    public UserTable(long id, UUID uuid, String fullName, String name, String email, List<Integer> readPrompts, boolean locked, String language, String theme) {
         super(id);
         this.uuid = uuid;
         this.fullName = fullName;
@@ -45,6 +47,7 @@ public class UserTable extends Table implements ProjectOwner {
         this.readPrompts = readPrompts;
         this.locked = locked;
         this.language = language;
+        this.theme = theme;
     }
 
     public UUID getUuid() {
@@ -123,6 +126,14 @@ public class UserTable extends Table implements ProjectOwner {
         this.language = language;
     }
 
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
+    }
+
     @Override
     public long getUserId() {
         return id;
@@ -140,6 +151,7 @@ public class UserTable extends Table implements ProjectOwner {
                 ", readPrompts=" + readPrompts +
                 ", locked=" + locked +
                 ", language='" + language + '\'' +
+                ", theme='" + theme + '\'' +
                 "} " + super.toString();
     }
 }

@@ -19,18 +19,18 @@ public interface UserDAO {
 
     @Timestamped
     @GetGeneratedKeys
-    @SqlUpdate("INSERT INTO users (uuid, created_at, full_name, name, email, tagline, join_date, read_prompts, locked, language) " +
-               "VALUES (:uuid, :now, :fullName, :name, :email, :tagline, :now, :readPrompts, :locked, :language)")
+    @SqlUpdate("INSERT INTO users (uuid, created_at, full_name, name, email, tagline, join_date, read_prompts, locked, language, theme) " +
+               "VALUES (:uuid, :now, :fullName, :name, :email, :tagline, :now, :readPrompts, :locked, :language, :theme)")
     UserTable insert(@BindBean UserTable user);
 
     @Timestamped
     @GetGeneratedKeys
-    @SqlUpdate("INSERT INTO users (uuid, created_at, full_name, name, email, tagline, join_date, read_prompts, locked, language) " +
-               "VALUES (:uuid, :now, :fullName, :name, :email, :tagline, :now, :readPrompts, :locked, :language)")
-    UserTable create(UUID uuid, String name, String email, String fullName, String tagline, String language, List<Integer> readPrompts, boolean locked);
+    @SqlUpdate("INSERT INTO users (uuid, created_at, full_name, name, email, tagline, join_date, read_prompts, locked, language, theme) " +
+               "VALUES (:uuid, :now, :fullName, :name, :email, :tagline, :now, :readPrompts, :locked, :language, :theme)")
+    UserTable create(UUID uuid, String name, String email, String fullName, String tagline, String language, List<Integer> readPrompts, boolean locked, String theme);
 
     @GetGeneratedKeys
-    @SqlUpdate("UPDATE users SET full_name = :fullName, name = :name, email = :email, tagline = :tagline, read_prompts = :readPrompts, locked = :locked, language = :language WHERE id = :id")
+    @SqlUpdate("UPDATE users SET full_name = :fullName, name = :name, email = :email, tagline = :tagline, read_prompts = :readPrompts, locked = :locked, language = :language, theme = :theme WHERE id = :id")
     UserTable update(@BindBean UserTable user);
 
     @SqlQuery("SELECT * FROM users WHERE id = :id OR lower(name) = lower(:name)")

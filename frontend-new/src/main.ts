@@ -9,6 +9,7 @@ import { installI18n } from "~/i18n";
 import "./styles/main.css";
 import { useBackendDataStore } from "~/store/backendData";
 import devalue from "@nuxt/devalue";
+import { settingsLog } from "~/composables/useLog";
 
 const routes = setupLayouts(generatedRoutes);
 // we need to override the path on the error route to have the patch math
@@ -30,9 +31,6 @@ const options: Parameters<typeof viteSSR>["1"] = {
 };
 
 export default viteSSR(App, options, async (ctx) => {
-  // install all modules under `modules/`
-  Object.values(import.meta.globEager("./modules/*.ts")).map((i) => i.install?.(ctx));
-
   const { app, initialState, initialRoute, request } = ctx;
 
   app.component(ClientOnly.name, ClientOnly);
@@ -41,13 +39,18 @@ export default viteSSR(App, options, async (ctx) => {
   const pinia = createPinia();
   app.use(pinia).use(head);
 
-  // Load language async to avoid bundling all languages
-  // TODO would be cool to load user locale here I guess?
-  await installI18n(app, "en");
+  // install all modules under `modules/`
+  for (const module of Object.values(import.meta.globEager("./modules/*.ts"))) {
+    await module.install?.(ctx);
+  }
 
   if (!import.meta.env.SSR) {
     pinia.state.value = initialState.pinia;
   }
+
+  settingsLog("Load locale " + pinia.state.value.settings.locale);
+  // Load default language async to avoid bundling all languages
+  await installI18n(app, pinia.state.value.settings.locale);
 
   // really don't need to do stuff for such meta routes
   if (!initialRoute.fullPath.startsWith("/@vite")) {

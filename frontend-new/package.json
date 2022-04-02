@@ -24,6 +24,7 @@
     "@vueuse/core": "^8.2.0",
     "@vueuse/head": "^0.7.5",
     "@vueuse/integrations": "^8.2.0",
+    "accept-language-parser": "^1.5.0",
     "axios": "^0.26.1",
     "chartist": "^0.11.4",
     "chartist-plugin-legend": "^0.6.2",
@@ -42,14 +43,16 @@
     "vue": "^3.2.31",
     "vue-i18n": "^9.1.9",
     "vue-router": "^4.0.14",
-    "vue3-popper": "link:@types\\vue3-popper"
+    "vue3-popper": "^1.4.2"
   },
   "devDependencies": {
     "@iconify/json": "^2.1.20",
     "@intlify/vite-plugin-vue-i18n": "^3.3.1",
+    "@types/accept-language-parser": "^1.5.3",
     "@types/chartist": "^0.11.1",
     "@types/debug": "^4.1.7",
     "@types/diff-match-patch": "^1.0.32",
+    "@types/locale": "^0.1.1",
     "@types/lodash-es": "^4.17.6",
     "@types/markdown-it-link-attributes": "^3.0.1",
     "@types/nprogress": "^0.2.0",

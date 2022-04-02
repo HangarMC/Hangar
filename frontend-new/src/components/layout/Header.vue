@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Popover, PopoverButton, PopoverPanel, Menu, MenuButton, MenuItems } from "@headlessui/vue";
 import { useI18n } from "vue-i18n";
-import { useThemeStore } from "~/store/theme";
+import { useSettingsStore } from "~/store/settings";
 import Announcement from "~/components/Announcement.vue";
 import DropdownButton from "~/components/design/DropdownButton.vue";
 import DropdownItem from "~/components/design/DropdownItem.vue";
@@ -26,7 +26,7 @@ import { hasPerms } from "~/composables/usePerm";
 import { NamedPermission } from "~/types/enums";
 import UserAvatar from "~/components/UserAvatar.vue";
 
-const theme = useThemeStore();
+const settings = useSettingsStore();
 const { t } = useI18n();
 const backendData = useBackendDataStore();
 
@@ -143,8 +143,8 @@ authLog("render with user " + authStore.user?.name);
             <DropdownItem to="/organizations/new">{{ t("nav.new.organization") }}</DropdownItem>
           </DropdownButton>
         </div>
-        <button class="flex rounded-md p-2" hover="text-primary-100 bg-primary-50" @click="theme.toggleDarkMode()">
-          <icon-mdi-weather-night v-if="theme.darkMode" class="text-[1.2em]"></icon-mdi-weather-night>
+        <button class="flex rounded-md p-2" hover="text-primary-100 bg-primary-50" @click="settings.toggleDarkMode()">
+          <icon-mdi-weather-night v-if="settings.darkMode" class="text-[1.2em]"></icon-mdi-weather-night>
           <icon-mdi-white-balance-sunny v-else class="text-[1.2em]"></icon-mdi-white-balance-sunny>
         </button>
         <!-- Profile dropdown -->

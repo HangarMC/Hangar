@@ -10,6 +10,7 @@ public class Traits {
     private String github;
     private String minecraft;
     private String language;
+    private String theme;
     private Name name;
 
     public String getEmail() {
@@ -68,6 +69,14 @@ public class Traits {
         this.language = language;
     }
 
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
+    }
+
     @Override
     public String toString() {
         return "Traits{" +
@@ -77,6 +86,8 @@ public class Traits {
                ", github='" + github + '\'' +
                ", minecraft='" + minecraft + '\'' +
                ", name=" + name +
+               ", language=" + language +
+               ", theme=" + theme +
                '}';
     }
 
@@ -85,12 +96,12 @@ public class Traits {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Traits traits = (Traits) o;
-        return Objects.equals(email, traits.email) && Objects.equals(username, traits.username) && Objects.equals(discord, traits.discord) && Objects.equals(github, traits.github) && Objects.equals(minecraft, traits.minecraft) && Objects.equals(name, traits.name);
+        return Objects.equals(email, traits.email) && Objects.equals(username, traits.username) && Objects.equals(discord, traits.discord) && Objects.equals(github, traits.github) && Objects.equals(minecraft, traits.minecraft) && Objects.equals(name, traits.name) && Objects.equals(theme, traits.theme) && Objects.equals(language, traits.language);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, username, discord, github, minecraft, name);
+        return Objects.hash(email, username, discord, github, minecraft, name, language, theme);
     }
 
     public static class Name {

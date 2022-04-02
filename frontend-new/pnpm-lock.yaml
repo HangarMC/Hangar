@@ -5,9 +5,11 @@ specifiers:
   '@iconify/json': ^2.1.20
   '@intlify/vite-plugin-vue-i18n': ^3.3.1
   '@nuxt/devalue': ^2.0.0
+  '@types/accept-language-parser': ^1.5.3
   '@types/chartist': ^0.11.1
   '@types/debug': ^4.1.7
   '@types/diff-match-patch': ^1.0.32
+  '@types/locale': ^0.1.1
   '@types/lodash-es': ^4.17.6
   '@types/markdown-it-link-attributes': ^3.0.1
   '@types/nprogress': ^0.2.0
@@ -21,6 +23,7 @@ specifiers:
   '@vueuse/core': ^8.2.0
   '@vueuse/head': ^0.7.5
   '@vueuse/integrations': ^8.2.0
+  accept-language-parser: ^1.5.0
   axios: ^0.26.1
   chartist: ^0.11.4
   chartist-plugin-legend: ^0.6.2
@@ -63,7 +66,7 @@ specifiers:
   vue: ^3.2.31
   vue-i18n: ^9.1.9
   vue-router: ^4.0.14
-  vue3-popper: link:@types\vue3-popper
+  vue3-popper: ^1.4.2
 
 dependencies:
   '@headlessui/vue': 1.5.0_vue@3.2.31
@@ -71,6 +74,7 @@ dependencies:
   '@vueuse/core': 8.2.0_vue@3.2.31
   '@vueuse/head': 0.7.5_vue@3.2.31
   '@vueuse/integrations': 8.2.0_f5bed4466519eeb023b8d59eb53309ba
+  accept-language-parser: 1.5.0
   axios: 0.26.1_debug@4.3.4
   chartist: 0.11.4
   chartist-plugin-legend: 0.6.2
@@ -94,9 +98,11 @@ dependencies:
 devDependencies:
   '@iconify/json': 2.1.20
   '@intlify/vite-plugin-vue-i18n': 3.3.1_vite@2.7.13+vue-i18n@9.1.9
+  '@types/accept-language-parser': 1.5.3
   '@types/chartist': 0.11.1
   '@types/debug': 4.1.7
   '@types/diff-match-patch': 1.0.32
+  '@types/locale': 0.1.1
   '@types/lodash-es': 4.17.6
   '@types/markdown-it-link-attributes': 3.0.1
   '@types/nprogress': 0.2.0
@@ -1399,8 +1405,8 @@ packages:
       vue-i18n:
         optional: true
     dependencies:
-      '@intlify/message-compiler': 9.2.0-beta.33
-      '@intlify/shared': 9.2.0-beta.33
+      '@intlify/message-compiler': 9.2.0-beta.34
+      '@intlify/shared': 9.2.0-beta.34
       jsonc-eslint-parser: 1.4.1
       source-map: 0.6.1
       vue-i18n: 9.1.9_vue@3.2.31
@@ -1435,11 +1441,11 @@ packages:
       source-map: 0.6.1
     dev: false
 
-  /@intlify/message-compiler/9.2.0-beta.33:
-    resolution: {integrity: sha512-+SICjFlnHSbRLZT+sNdBvOAQfcNX+fESyMmgPxC8HHWu4GLN2CoVQS4ACXb3QBZDKLVJBFhFGMnl+UXyJrno6g==}
+  /@intlify/message-compiler/9.2.0-beta.34:
+    resolution: {integrity: sha512-l7JjkXJBW2l6cFZqPvI6oWU6QZn/i70agU6QB02W1O+6quFCFNpsiPswgYyQrmfHt4F4qYhLJUMZltIW/cqcbw==}
     engines: {node: '>= 12'}
     dependencies:
-      '@intlify/shared': 9.2.0-beta.33
+      '@intlify/shared': 9.2.0-beta.34
       source-map: 0.6.1
     dev: true
 
@@ -1462,8 +1468,8 @@ packages:
     engines: {node: '>= 10'}
     dev: false
 
-  /@intlify/shared/9.2.0-beta.33:
-    resolution: {integrity: sha512-HldlkV66vMt1vQsuUz4zjQ202C5KW6aHeIQhx7RxBO11i3E8V84dp5MG9epr9GZXVsrCAR56Ekj0HaTqksIRJA==}
+  /@intlify/shared/9.2.0-beta.34:
+    resolution: {integrity: sha512-hbUKcVbTOkLVpnlSeZE1OPgEI7FpvhuZF/gb84xECTjXEImIa3u0fIcJKUUffv3dlAx8fMOE5xKgDzngidm0tw==}
     engines: {node: '>= 12'}
     dev: true
 
@@ -1481,7 +1487,7 @@ packages:
         optional: true
     dependencies:
       '@intlify/bundle-utils': 2.2.1_vue-i18n@9.1.9
-      '@intlify/shared': 9.2.0-beta.33
+      '@intlify/shared': 9.2.0-beta.34
       '@rollup/pluginutils': 4.2.0
       debug: 4.3.4
       fast-glob: 3.2.11
@@ -1637,6 +1643,10 @@ packages:
       string.prototype.matchall: 4.0.7
     dev: true
 
+  /@types/accept-language-parser/1.5.3:
+    resolution: {integrity: sha512-S8oM29O6nnRC3/+rwYV7GBYIIgNIZ52PCxqBG7OuItq9oATnYWy8FfeLKwvq5F7pIYjeeBSCI7y+l+Z9UEQpVQ==}
+    dev: true
+
   /@types/chartist/0.11.1:
     resolution: {integrity: sha512-85eNd7rF+e5sLnpprgcDdeqARgNvczEXaBfnrkw0292TBCE4KF/2HmOPA6dIblyHUWV4OZ2kuQBH2R12F+VwYg==}
     dev: true
@@ -1668,6 +1678,10 @@ packages:
 
   /@types/linkify-it/3.0.2:
     resolution: {integrity: sha512-HZQYqbiFVWufzCwexrvh694SOim8z2d+xJl5UNamcvQFejLY/2YUtzXHYi3cHdI7PMlS8ejH2slRAOJQ32aNbA==}
+    dev: true
+
+  /@types/locale/0.1.1:
+    resolution: {integrity: sha512-BgFL2Ik6SnDPM2RQOwMH0HiBKiooVHNSc4KM+yoS39g1KGIyhYOK9Xvckwhu11m6lc3dK/vLnE/Suy8XGJ2jmw==}
     dev: true
 
   /@types/lodash-es/4.17.6:
@@ -2078,6 +2092,10 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /accept-language-parser/1.5.0:
+    resolution: {integrity: sha1-iHfFQECo3LWeCgfZwf3kIpgzR5E=}
+    dev: false
 
   /acorn-jsx/5.3.2_acorn@7.4.1:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}

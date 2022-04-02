@@ -131,12 +131,13 @@ public class SSOService {
     public UserTable sync(UUID uuid, Traits traits) {
         UserTable user = userDAO.getUserTable(traits.getUsername());
         if (user == null) {
-            user = userDAO.create(uuid, traits.getUsername(), traits.getEmail(), traits.getName().getFirst() + " " + traits.getName().getLast(), "", traits.getLanguage(), List.of(), false);
+            user = userDAO.create(uuid, traits.getUsername(), traits.getEmail(), traits.getName().getFirst() + " " + traits.getName().getLast(), "", traits.getLanguage(), List.of(), false, traits.getTheme());
         } else {
             user.setFullName(traits.getName().getFirst() + " " + traits.getName().getLast());
             user.setName(traits.getUsername());
             user.setEmail(traits.getEmail());
             user.setLanguage(traits.getLanguage());
+            user.setTheme(traits.getTheme());
             userDAO.update(user);
         }
 

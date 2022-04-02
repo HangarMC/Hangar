@@ -30,6 +30,7 @@ public interface UsersDAO {
             "       u.read_prompts," +
             "       u.locked," +
             "       u.language," +
+            "       u.theme," +
             "       exists(SELECT 1 FROM organizations o WHERE u.id = o.user_id) AS is_organization" +
             "   FROM users u" +
             "   WHERE u.name = :name" +
@@ -55,6 +56,7 @@ public interface UsersDAO {
             "       u.read_prompts," +
             "       u.locked," +
             "       u.language," +
+            "       u.theme," +
             "       exists(SELECT 1 FROM organizations o WHERE u.id = o.user_id) AS is_organization" +
             "   FROM users u" +
             "   WHERE u.name ILIKE '%' || :query || '%' " +

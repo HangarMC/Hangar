@@ -50,7 +50,8 @@ public class AuthenticationService extends HangarComponent {
                     config.fakeUser.getEmail(),
                     List.of(),
                     false,
-                    Locale.ENGLISH.toLanguageTag()
+                    Locale.ENGLISH.toLanguageTag(),
+                    "white"
             );
 
             userTable = userService.insertUser(userTable);

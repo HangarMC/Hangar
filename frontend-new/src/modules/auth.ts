@@ -13,6 +13,7 @@ import { hasPerms, toNamedPermission } from "~/composables/usePerm";
 import { NamedPermission, PermissionType } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
 import { useI18n } from "vue-i18n";
+import { useSettingsStore } from "~/store/settings";
 
 export const install: UserModule = async ({ request, response, router, redirect }) => {
   router.beforeEach(async (to, from, next) => {
@@ -21,7 +22,6 @@ export const install: UserModule = async ({ request, response, router, redirect 
       return;
     }
 
-    await handleLogin(request, response);
     await loadPerms(to);
 
     const result = await handleRoutePerms(to);
@@ -31,6 +31,12 @@ export const install: UserModule = async ({ request, response, router, redirect 
       next();
     }
   });
+  if (request?.url.includes("/@vite")) {
+    // really don't need to do stuff for such meta routes
+    return;
+  }
+  await handleLogin(request, response);
+  await useSettingsStore().loadSettingsServer(request, response);
 };
 
 async function handleLogin(request: Context["request"], response: Context["response"]) {
