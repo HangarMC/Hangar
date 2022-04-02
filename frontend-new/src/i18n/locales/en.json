@@ -27,6 +27,8 @@
     "message": "Message",
     "refresh": "Refresh",
     "confirm": "Confirm",
+    "today": "Today",
+    "yesterday": "Yesterday",
     "error": {
       "invalidUrl": "Invalid URL format"
     }
@@ -237,7 +239,7 @@
       "totalDownloads": "Downloads | Download | Downloads",
       "stars": "Stars | Star | Stars",
       "watchers": "Watchers | Watcher | Watchers",
-      "lastUpdatedTooltip": "Last updated at {0}"
+      "lastUpdatedTooltip": "Last updated {0}"
     },
     "promotedVersions": "Promoted Versions",
     "license": {

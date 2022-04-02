@@ -45,7 +45,7 @@ useHead(useSeo(props.project.name, props.project.description, route, projectIcon
         <Markdown v-else :raw="page.contents" />
       </Card>
     </section>
-    <section class="basis-full md:basis-3/12 flex-grow space-y-4">
+    <section class="basis-full md:basis-3/12 space-y-4 min-w-280px">
       <ProjectInfo :project="project"></ProjectInfo>
       <Card>
         <template #header>{{ i18n.t("project.promotedVersions") }}</template>

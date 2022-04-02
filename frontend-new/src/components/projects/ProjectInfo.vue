@@ -29,7 +29,7 @@ const slug = computed(() => props.project.namespace.owner + "/" + props.project.
           </tr>
           <tr>
             <th class="text-left">{{ i18n.t("project.info.publishDate") }}</th>
-            <td class="text-right">{{ i18n.d(project.createdAt) }}</td>
+            <td class="text-right">{{ i18n.d(project.createdAt, "date") }}</td>
           </tr>
           <tr>
             <th class="text-left">{{ i18n.t("project.info.views", 0) }}</th>

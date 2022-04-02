@@ -13,6 +13,22 @@ const DEFAULT_FORMAT = {
     hour: "numeric",
     minute: "numeric",
   },
+  datetime: {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  },
+  shortweektime: {
+    weekday: "short",
+    hour: "numeric",
+    minute: "numeric",
+  },
+  clock: {
+    hour: "numeric",
+    minute: "numeric",
+  },
 };
 
 export const DATE_FORMATS = Object.freeze({

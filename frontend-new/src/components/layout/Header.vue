@@ -164,7 +164,9 @@ authLog("render with user " + authStore.user?.name);
               <DropdownItem :href="authHost + '/account/settings'">{{ t("nav.user.settings") }}</DropdownItem>
               <hr />
               <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/flags">{{ t("nav.user.flags") }}</DropdownItem>
-              <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/approval/projects">{{ t("nav.user.projectApprovals") }}</DropdownItem>
+              <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/approval/projects">{{
+                t("nav.user.projectApprovals")
+              }}</DropdownItem>
               <DropdownItem v-if="hasPerms(NamedPermission.REVIEWER)" to="/admin/approval/versions">{{ t("nav.user.versionApprovals") }}</DropdownItem>
               <DropdownItem v-if="hasPerms(NamedPermission.VIEW_STATS)" to="/admin/stats">{{ t("nav.user.stats") }}</DropdownItem>
               <DropdownItem v-if="hasPerms(NamedPermission.VIEW_HEALTH)" to="/admin/health">{{ t("nav.user.health") }}</DropdownItem>
