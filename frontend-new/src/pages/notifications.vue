@@ -96,7 +96,7 @@ async function updateInvite(invite: Invite, status: "accept" | "decline" | "unac
 </script>
 
 <template>
-  <div class="flex gap-4">
+  <div class="flex gap-4 flex-col md:flex-row">
     <Card class="basis-full md:basis-6/12" accent>
       <template #header>
         <h1>{{ i18n.t("notifications.title") }}</h1>

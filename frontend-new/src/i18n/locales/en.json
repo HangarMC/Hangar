@@ -61,6 +61,7 @@
       "notifications": "Notifications",
       "flags": "Flags",
       "settings": "Account settings",
+      "apiKeys": "API keys",
       "projectApprovals": "Project approvals",
       "versionApprovals": "Version approvals",
       "stats": "Stats",

@@ -157,10 +157,11 @@ authLog("render with user " + authStore.user?.name);
               </div>
             </MenuButton>
             <MenuItems
-              class="absolute top-24 flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-100 bg-background-light-0 dark:bg-background-dark-80 drop-shadow-xl"
+              class="absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-100 bg-background-light-0 dark:bg-background-dark-80 drop-shadow-xl"
             >
               <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
               <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
+              <DropdownItem :href="'/' + authStore.user.name + '/settings/api-keys'">{{ t("nav.user.apiKeys") }}</DropdownItem>
               <DropdownItem :href="authHost + '/account/settings'">{{ t("nav.user.settings") }}</DropdownItem>
               <hr />
               <DropdownItem v-if="hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS)" to="/admin/flags">{{ t("nav.user.flags") }}</DropdownItem>
