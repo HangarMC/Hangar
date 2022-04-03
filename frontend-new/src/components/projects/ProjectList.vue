@@ -22,8 +22,8 @@ function lastUpdated(date: Date): string {
   const today: Date = new Date();
   const todayTime = today.getTime();
   const dateTime = date.getTime();
-  const todayDays = Math.round(todayTime / (1000 * 60 * 60 * 24));
-  const dateDays = Math.round(dateTime / (1000 * 60 * 60 * 24));
+  const todayDays = Math.floor(todayTime / (1000 * 60 * 60 * 24));
+  const dateDays = Math.floor(dateTime / (1000 * 60 * 60 * 24));
   if (todayDays === dateDays) {
     return i18n.t("general.today") + " " + i18n.d(date, "clock");
   } else if (todayDays === dateDays + 1) {
