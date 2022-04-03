@@ -103,25 +103,24 @@ if (isRef(meta.script)) {
 useHead(meta);
 </script>
 
-<!-- todo i18n -->
 <template>
   <div class="flex flex-col items-center pt-10">
     <Alert v-if="loggedOut" class="mb-4 -mt-4">You have been logged out!</Alert>
-    <h2 class="text-3xl font-bold uppercase">Find your favorite plugins</h2>
+    <h2 class="text-3xl font-bold uppercase text-center">{{ i18n.t("hangar.projectSearch.title") }}</h2>
     <!-- Search Bar & Sorting button -->
     <div class="flex flex-row mt-6 rounded-md big-box-shadow">
       <!-- Search Bar -->
       <input
         v-model="query"
-        class="rounded-l-md p-3 w-[80vw] max-w-800px focus-visible:(border-white) text-black"
+        class="rounded-l-md p-3 md:w-[80vw] max-w-800px focus-visible:(border-white) text-black"
         type="text"
-        placeholder="Search in 1 projects, proudly made by the community..."
+        :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
       />
       <!-- Sorting Button -->
       <div class="rounded-r-md w-100px bg-gradient-to-r from-[#004ee9] to-[#367aff]">
         <Menu>
           <MenuButton class="rounded-r-md h-1/1 text-left font-semibold flex flex-row items-center gap-2 text-white p-2">
-            <span>Sort by</span>
+            <span>{{ i18n.t("hangar.projectSearch.sortBy") }}</span>
             <icon-mdi-sort-variant class="text-[1.2em] pointer-events-none overflow-hidden" />
           </MenuButton>
           <transition

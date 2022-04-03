@@ -35,10 +35,12 @@
   },
   "hangar": {
     "projectSearch": {
-      "query": "Search in {0} projects, proudly made by the community...",
+      "query": "Search in {0} projects...",
+      "sortBy": "Sort by",
       "relevanceSort": "Sort by relevance",
       "noProjects": "There are no projects. 😢",
-      "noProjectsFound": "Found 0 projects. 😢"
+      "noProjectsFound": "Found 0 projects. 😢",
+      "title": "Find your favorite plugins"
     },
     "subtitle": "A Minecraft package repository",
     "sponsoredBy": "Sponsored by"
