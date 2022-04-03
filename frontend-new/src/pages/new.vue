@@ -35,9 +35,10 @@ const router = useRouter();
 const route = useRoute();
 const settings = useSettingsStore();
 const visibleCategories = store.visibleCategories;
+const licenses = store.licenses;
 
-let projectOwners!: ProjectOwner[];
-let licenses!: string[];
+// TODO move to useApi
+const projectOwners = await useInternalApi<ProjectOwner[]>("projects/possibleOwners");
 const error = ref("");
 const projectCreationErrors: Ref<string[]> = ref([]);
 const form: NewProjectForm = {
@@ -50,7 +51,6 @@ const form: NewProjectForm = {
 } as NewProjectForm;
 const projectName = ref(form.name);
 
-await asyncData();
 form.ownerId = projectOwners[0].userId;
 
 const converter = {
@@ -133,17 +133,6 @@ watch(projectName, (newName) => {
       error.value = i18n.t(e.response?.data.message);
     });
 });
-
-async function asyncData() {
-  const data = await Promise.all([useInternalApi("projects/possibleOwners"), useInternalApi("data/licenses", false)]).catch((e) => {
-    handleRequestError(e, ctx, i18n);
-  });
-  if (typeof data === "undefined") {
-    return;
-  }
-  projectOwners = data[0] as ProjectOwner[];
-  licenses = data[1] as string[];
-}
 </script>
 
 <!-- todo: rules, icon -->

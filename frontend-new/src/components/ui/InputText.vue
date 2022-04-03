@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed } from "vue";
+import { FloatingLabel, inputClasses } from "~/composables/useInputHelper";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value?: string): void;
@@ -15,13 +16,17 @@ const props = defineProps<{
   counter?: boolean;
   maxlength?: number;
 }>();
+
+// TODO proper validation
+const error = computed<boolean>(() => {
+  return props.errorMessages ? props.errorMessages.length > 0 : false;
+});
 </script>
 
 <template>
-  <!-- todo make fancy -->
-  <label>
-    <template v-if="label">{{ label }}</template>
-    <input v-model="value" type="text" :class="'w-full' + (label ? ' ml-2' : '')" v-bind="$attrs" :maxlength="maxlength" />
+  <label class="relative flex" :class="{ filled: modelValue, error: error }">
+    <input v-model="value" type="text" :class="inputClasses" v-bind="$attrs" :maxlength="maxlength" />
+    <floating-label :label="label" />
     <span v-if="counter && maxlength">{{ value?.length || 0 }}/{{ maxlength }}</span>
     <span v-else-if="counter">{{ value?.length || 0 }}</span>
   </label>
