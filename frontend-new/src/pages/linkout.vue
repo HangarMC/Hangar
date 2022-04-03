@@ -20,8 +20,8 @@ useHead(useSeo(i18n.t("linkout.title"), null, route, null));
     </template>
     {{ i18n.t("linkout.text", [remoteUrl]) }}
     <template #footer>
-      <Button size="medium" @click="$router.back()">{{ i18n.t("linkout.abort") }}</Button>
-      <Link class="ml-4" :href="remoteUrl" target="_self" rel="noopener noreferrer">{{ i18n.t("linkout.continue") }}</Link>
+      <Link :href="remoteUrl" target="_self" rel="noopener noreferrer">{{ i18n.t("linkout.continue") }}</Link>
+      <Button type="gray" size="medium" class="ml-4" @click="$router.back()">{{ i18n.t("linkout.abort") }}</Button>
     </template>
   </Card>
 </template>
