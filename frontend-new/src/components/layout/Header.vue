@@ -17,6 +17,7 @@ import IconMdiLanguageJava from "~icons/mdi/language-java";
 import IconMdiPuzzle from "~icons/mdi/puzzle";
 import IconMdiDownloadCircle from "~icons/mdi/download-circle";
 import IconMdiKey from "~icons/mdi/key";
+import IconMdiFileCodumentAlert from "~icons/mdi/file-document-alert";
 
 import { useAuthStore } from "~/store/auth";
 import { useAuth } from "~/composables/useAuth";
@@ -32,14 +33,15 @@ const backendData = useBackendDataStore();
 
 const navBarLinks = [
   { link: "index", label: "Home" },
-  { link: "staff", label: "Team" },
   { link: "authors", label: "Authors" },
+  { link: "staff", label: "Team" },
 ];
 
 const navBarMenuLinksHangar = [
   { link: "index", label: "Home", icon: IconMdiHome },
-  { link: "staff", label: "Team", icon: IconMdiAccountGroup },
+  { link: "guidelines", label: "Resource Guidelines", icon: IconMdiFileCodumentAlert },
   { link: "authors", label: "Authors", icon: IconMdiAccountGroup },
+  { link: "staff", label: "Team", icon: IconMdiAccountGroup },
 ];
 
 const navBarMenuLinksMoreFromPaper = [

@@ -46,6 +46,7 @@
     "sponsoredBy": "Sponsored by"
   },
   "pages": {
+    "guidelinesTitle": "Resource Guidelines",
     "staffTitle": "Staff",
     "authorsTitle": "Authors",
     "headers": {
@@ -97,6 +98,9 @@
       "community": "Community",
       "auth": "Authentication Portal"
     }
+  },
+  "guidelines": {
+    "title": "Resource Guidelines"
   },
   "project": {
     "stargazers": "Stargazers",
