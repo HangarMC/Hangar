@@ -4,7 +4,7 @@ import typography from "windicss/plugin/typography";
 
 export default defineConfig({
   darkMode: "class",
-  safelist: "order-last button-primary button-gray",
+  safelist: "order-last button-primary button-gray button-red",
   attributify: true,
   plugins: [typography()],
   theme: {
@@ -58,22 +58,35 @@ export default defineConfig({
         },
       },
       colors: {
+        primary: {
+          0: "#E6EDFD", // old primary-50
+          50: "#CCDCFB",
+          100: "#99B8F6", // old primary-70
+          200: "#6695F2",
+          300: "#3371ED",
+          400: "#004EE9", // old primary-100
+          500: "#003EBA",
+          600: "#002F8C",
+          700: "#001F5D",
+          800: "#00102F",
+          900: "#000817",
+        },
         "background-dark-90": "#111111",
         "background-dark-80": "#181a1b",
         "background-light-10": "#f8faff",
         "background-light-0": "#ffffff",
-        "primary-100": "#004ee9",
-        "primary-70": "#aec9ff",
-        "primary-50": "#ecf2fb",
       },
     },
   },
   shortcuts: {
     "background-header": "bg-background-light-0 dark:bg-background-dark-90",
     "background-body": "bg-background-light-10 dark:bg-background-dark-80",
-    "color-primary": "text-primary-100 dark:text-primary-70",
-    "border-top-primary": "border-solid border-t-4 border-t-primary-100",
-    "button-gray": "bg-zinc-500 dark:bg-slate-700 disabled:(bg-gray-300 text-neutral-500 cursor-not-allowed)",
-    "button-primary": "bg-primary-100 disabled:(bg-gray-300 text-neutral-500 cursor-not-allowed)",
+    "color-primary": "text-primary-400 dark:text-primary-100",
+    "border-top-primary": "border-solid border-t-4 border-t-primary-400",
+    "button-primary": "bg-primary-400 disabled:(bg-primary-100 dark:(bg-primary-800 text-neutral-500) cursor-not-allowed) enabled:hover:bg-primary-300",
+    "button-red":
+      "bg-red-500 dark:bg-red-600 disabled:(bg-red-300 dark:(bg-red-900 text-neutral-400) cursor-not-allowed) enabled:hover:(bg-red-400 dark:bg-red-500)",
+    "button-gray":
+      "bg-zinc-500 dark:bg-slate-700 disabled:(bg-zinc-300 text-neutral-500 dark:bg-zinc-800 cursor-not-allowed) enabled:hover:(bg-zinc-400 dark:bg-slate-600)",
   },
 });

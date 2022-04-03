@@ -92,7 +92,7 @@ authLog("render with user " + authStore.user?.name);
                   :key="link.label"
                   :to="{ name: link.link }"
                   class="flex items-center rounded-md px-6 py-2"
-                  hover="text-primary-100 bg-primary-50"
+                  hover="text-primary-400 bg-primary-0"
                 >
                   <component :is="link.icon" class="mr-3 text-[1.2em]" />
                   {{ link.label }}
@@ -106,7 +106,7 @@ authLog("render with user " + authStore.user?.name);
                   :key="link.label"
                   class="flex items-center rounded-md px-6 py-2"
                   :href="link.link"
-                  hover="text-primary-100 bg-primary-50"
+                  hover="text-primary-400 bg-primary-0"
                 >
                   <component :is="link.icon" class="mr-3 text-[1.2em]" />
                   {{ link.label }}
@@ -143,7 +143,7 @@ authLog("render with user " + authStore.user?.name);
             <DropdownItem to="/organizations/new">{{ t("nav.new.organization") }}</DropdownItem>
           </DropdownButton>
         </div>
-        <button class="flex rounded-md p-2" hover="text-primary-100 bg-primary-50" @click="settings.toggleDarkMode()">
+        <button class="flex rounded-md p-2" hover="text-primary-400 bg-primary-0" @click="settings.toggleDarkMode()">
           <icon-mdi-weather-night v-if="settings.darkMode" class="text-[1.2em]"></icon-mdi-weather-night>
           <icon-mdi-white-balance-sunny v-else class="text-[1.2em]"></icon-mdi-white-balance-sunny>
         </button>
@@ -151,13 +151,13 @@ authLog("render with user " + authStore.user?.name);
         <div v-if="authStore.user">
           <Menu>
             <MenuButton>
-              <div class="flex items-center gap-2 rounded-md p-2" hover="text-primary-100 bg-primary-50">
+              <div class="flex items-center gap-2 rounded-md p-2" hover="text-primary-400 bg-primary-0">
                 <UserAvatar :username="authStore.user.name" size="xs" :background="false"></UserAvatar>
                 {{ authStore.user.name }}
               </div>
             </MenuButton>
             <MenuItems
-              class="absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-100 bg-background-light-0 dark:bg-background-dark-80 drop-shadow-xl"
+              class="absolute flex flex-col mt-1 z-10 py-1 rounded border-t-2 border-primary-400 bg-background-light-0 dark:bg-background-dark-80 drop-shadow-xl"
             >
               <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
               <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
@@ -181,11 +181,11 @@ authLog("render with user " + authStore.user?.name);
 
         <!-- Login/register buttons -->
         <div v-else class="flex gap-2">
-          <a class="flex items-center rounded-md p-2" :href="auth.loginUrl($route.fullPath)" hover="text-primary-100 bg-primary-50">
+          <a class="flex items-center rounded-md p-2" :href="auth.loginUrl($route.fullPath)" hover="text-primary-400 bg-primary-0">
             <icon-mdi-key-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.login") }}
           </a>
-          <router-link class="flex items-center rounded-md p-2" to="/signup" hover="text-primary-100 bg-primary-50">
+          <router-link class="flex items-center rounded-md p-2" to="/signup" hover="text-primary-400 bg-primary-0">
             <icon-mdi-clipboard-outline class="mr-1 text-[1.2em]" />
             {{ t("nav.signup") }}
           </router-link>
