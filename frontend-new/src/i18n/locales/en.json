@@ -196,7 +196,7 @@
       },
       "step4": {
         "title": "Import from Spigot",
-        "continue": "Continue",
+        "continue": "Create",
         "back": "Back",
         "optional": "Optional",
         "convert": "Convert",

@@ -10,7 +10,7 @@ const internalValue = computed({
   set: (value) => emit("update:modelValue", value),
 });
 
-interface Tab {
+export interface Tab {
   value: string;
   header: string;
 }

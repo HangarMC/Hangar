@@ -10,9 +10,11 @@ declare module "vue" {
     IconMdiCalendar: typeof import("~icons/mdi/calendar")["default"];
     IconMdiCheck: typeof import("~icons/mdi/check")["default"];
     IconMdiCheckCircleOutline: typeof import("~icons/mdi/check-circle-outline")["default"];
+    IconMdiChevronDoubleDown: typeof import("~icons/mdi/chevron-double-down")["default"];
     IconMdiClipboardOutline: typeof import("~icons/mdi/clipboard-outline")["default"];
     IconMdiClose: typeof import("~icons/mdi/close")["default"];
     IconMdiCloseCircle: typeof import("~icons/mdi/close-circle")["default"];
+    IconMdiCloudSearch: typeof import("~icons/mdi/cloud-search")["default"];
     IconMdiContentSave: typeof import("~icons/mdi/content-save")["default"];
     IconMdiDelete: typeof import("~icons/mdi/delete")["default"];
     IconMdiDiamondStone: typeof import("~icons/mdi/diamond-stone")["default"];
@@ -22,6 +24,8 @@ declare module "vue" {
     IconMdiFile: typeof import("~icons/mdi/file")["default"];
     IconMdiHome: typeof import("~icons/mdi/home")["default"];
     IconMdiKeyOutline: typeof import("~icons/mdi/key-outline")["default"];
+    IconMdiLicense: typeof import("~icons/mdi/license")["default"];
+    IconMdiLink: typeof import("~icons/mdi/link")["default"];
     IconMdiListStatus: typeof import("~icons/mdi/list-status")["default"];
     IconMdiMenu: typeof import("~icons/mdi/menu")["default"];
     IconMdiMenuDown: typeof import("~icons/mdi/menu-down")["default"];

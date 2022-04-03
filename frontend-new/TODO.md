@@ -66,8 +66,8 @@ once QA has passed, the checkboxes can be removed and the page can be ~~striked 
   - [x] design
   - [ ] qa
 - new
-  - [ ] fetch
-  - [ ] layout
+  - [x] fetch
+  - [x] layout
   - [ ] functionality
   - [ ] design
   - [ ] qa

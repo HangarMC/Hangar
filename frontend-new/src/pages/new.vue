@@ -2,7 +2,7 @@
 import { ProjectOwner, ProjectSettingsForm } from "hangar-internal";
 import { ProjectCategory } from "~/types/enums";
 import { handleRequestError } from "~/composables/useErrorHandling";
-import { Ref, ref, watch } from "vue";
+import { computed, Ref, ref, watch } from "vue";
 import { useInternalApi } from "~/composables/useApi";
 import { useContext } from "vite-ssr/vue";
 import PageTitle from "~/components/design/PageTitle.vue";
@@ -11,6 +11,16 @@ import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { useSeo } from "~/composables/useSeo";
 import { useHead } from "@vueuse/head";
+import Steps, { Step } from "~/components/design/Steps.vue";
+import Card from "~/components/design/Card.vue";
+import { useSettingsStore } from "~/store/settings";
+import InputSelect from "~/components/ui/InputSelect.vue";
+import InputText from "~/components/ui/InputText.vue";
+import InputTag from "~/components/ui/InputTag.vue";
+import Tabs, { Tab } from "~/components/design/Tabs.vue";
+import Button from "~/components/design/Button.vue";
+import Markdown from "~/components/Markdown.vue";
+import InputTextarea from "~/components/ui/InputTextarea.vue";
 
 interface NewProjectForm extends ProjectSettingsForm {
   ownerId: ProjectOwner["userId"];
@@ -23,6 +33,7 @@ const i18n = useI18n();
 const store = useBackendDataStore();
 const router = useRouter();
 const route = useRoute();
+const settings = useSettingsStore();
 const visibleCategories = store.visibleCategories;
 
 let projectOwners!: ProjectOwner[];
@@ -47,6 +58,26 @@ const converter = {
   markdown: "",
   loading: false,
 };
+
+const isCustomLicense = computed(() => form.settings.license.type === "(custom)");
+
+const selectedStep = ref("tos");
+const steps: Step[] = [
+  { value: "tos", header: i18n.t("project.new.step1.title") },
+  { value: "basic", header: i18n.t("project.new.step2.title") },
+  { value: "additional", header: i18n.t("project.new.step3.title") },
+  { value: "import", header: i18n.t("project.new.step4.title") },
+  // TODO buttons need to be disabled here
+  { value: "finishing", header: i18n.t("project.new.step5.title") },
+];
+
+const selectBBCodeTab = ref("convert");
+const bbCodeTabs: Tab[] = [
+  { value: "convert", header: i18n.t("project.new.step4.convert") },
+  // TODO tab needs to be disabled if no markdown was entered
+  { value: "preview", header: i18n.t("project.new.step4.preview") },
+  { value: "tutorial", header: i18n.t("project.new.step4.tutorial") },
+];
 
 useHead(useSeo("New Project", null, route, null));
 
@@ -96,10 +127,9 @@ watch(projectName, (newName) => {
       form.name = newName;
     })
     .catch((e) => {
-      //TODO
-      /*if (!err.response?.data.isHangarApiException) {
-        return handleRequestError(err, ctx, i18n);
-      }*/
+      if (!e.response?.data.isHangarApiException) {
+        return handleRequestError(e, ctx, i18n);
+      }
       error.value = i18n.t(e.response?.data.message);
     });
 });
@@ -116,45 +146,109 @@ async function asyncData() {
 }
 </script>
 
-<!-- todo: rules, icon, and labels on selects (aside from actual design)-->
+<!-- todo: rules, icon -->
 <template>
-  <PageTitle>New Project</PageTitle>
-  <input v-model="projectName" class="p-4" placeholder="Project name" />
-  <br />
-  {{ error }}
-  <br />
-  <select v-model="form.ownerId" class="p-4">
-    <option v-for="owner in projectOwners" :key="owner.userId" :value="owner.userId">
-      {{ owner.name }}
-    </option>
-  </select>
-  <select v-model="form.settings.license" class="p-4">
-    <option v-for="license in licenses" :key="license">
-      {{ license }}
-    </option>
-  </select>
-
-  <br />
-  <h1 class="p-4">Description</h1>
-  <textarea v-model="form.description" class="p-8"></textarea>
-
-  <br />
-  <h1 class="p-4">Page Conent</h1>
-  <textarea v-model="form.pageContent" class="p-8"></textarea>
-
-  <br />
-  <select v-model="form.category" class="p-4">
-    <option v-for="category in visibleCategories" :key="category.apiName" :value="category.apiName">
-      {{ category.title }}
-    </option>
-  </select>
-
-  <br />
-  <button class="p-4" @click="createProject">Create</button>
-  <br />
-  <template v-if="projectCreationErrors.length !== 0">{{ projectCreationErrors }}</template>
-
-  <!-- todo: custom license, license url, issues, keywords, homepage, markdown converter/page content -->
+  <Steps v-model="selectedStep" :steps="steps" button-lang-key="project.new.step">
+    <template #tos>
+      <!-- eslint-disable-next-line vue/no-v-html -->
+      <p v-html="i18n.t('project.new.step1.text')" />
+    </template>
+    <template #basic>
+      <div class="flex flex-wrap">
+        <div class="basis-full md:basis-6/12">
+          <InputSelect v-model="form.ownerId" :values="projectOwners" :label="i18n.t('project.new.step2.userSelect')" />
+        </div>
+        <div class="basis-full md:basis-6/12">
+          <InputText v-model.trim="form.name" :error-messages="nameErrors" :label="i18n.t('project.new.step2.projectName')" />
+        </div>
+        <div class="basis-full md:basis-8/12"><InputText v-model.trim="form.description" :label="i18n.t('project.new.step2.projectSummary')" /></div>
+        <div class="basis-full md:basis-4/12">
+          <InputSelect v-model="form.category" :values="visibleCategories" :label="i18n.t('project.new.step2.projectCategory')" />
+        </div>
+      </div>
+    </template>
+    <template #additional>
+      <div class="text-lg">
+        <IconMdiLink />
+        {{ i18n.t("project.new.step3.links") }}
+        <hr />
+      </div>
+      <div class="flex flex-wrap">
+        <div class="basis-full"><InputText v-model.trim="form.settings.homepage" :label="i18n.t('project.new.step3.homepage')" /></div>
+        <div class="basis-full"><InputText v-model.trim="form.settings.issues" :label="i18n.t('project.new.step3.issues')" /></div>
+        <div class="basis-full"><InputText v-model.trim="form.settings.source" :label="i18n.t('project.new.step3.source')" /></div>
+        <div class="basis-full"><InputText v-model.trim="form.settings.support" :label="i18n.t('project.new.step3.support')" /></div>
+      </div>
+      <div class="text-lg">
+        <IconMdiLicense />
+        {{ i18n.t("project.new.step3.license") }}
+        <hr />
+      </div>
+      <div class="flex flex-wrap">
+        <div class="basis-full" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
+          <InputSelect v-model="form.settings.license.type" :values="licenses" :label="i18n.t('project.new.step3.type')" />
+        </div>
+        <div v-if="isCustomLicense" class="basis-full md:basis-8/12">
+          <InputText v-model.trim="form.settings.license.name" :label="i18n.t('project.new.step3.customName')" />
+        </div>
+        <div class="basis-full" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
+          <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.new.step3.url')" />
+        </div>
+      </div>
+      <div class="text-lg">
+        <IconMdiCloudSearch />
+        {{ i18n.t("project.new.step3.seo") }}
+        <hr />
+      </div>
+      <div class="flex">
+        <InputTag v-model="form.settings.keywords" :label="i18n.t('project.new.step3.keywords')" />
+      </div>
+    </template>
+    <template #import>
+      <Tabs v-model="selectBBCodeTab" :tabs="bbCodeTabs">
+        <template #convert>
+          <InputTextarea v-model="converter.bbCode" :rows="6" :label="i18n.t('project.new.step4.convertLabels.bbCode')" />
+          <div>
+            <Button :disabled="converter.loading" @click="convertBBCode">
+              <IconMdiChevronDoubleDown />
+              {{ i18n.t("project.new.step4.convert") }}
+              <IconMdiChevronDoubleDown />
+            </Button>
+          </div>
+          <InputTextarea v-model="converter.markdown" :rows="6" :label="i18n.t('project.new.step4.convertLabels.output')" />
+        </template>
+        <template #preview>
+          <Button block color="primary" class="my-2" :disabled="form.pageContent === converter.markdown" @click="saveAsHomePage">
+            <IconMdiContentSave />
+            {{ i18n.t("project.new.step4.saveAsHomePage") }}
+          </Button>
+          <Markdown :raw="converter.markdown" />
+        </template>
+        <template #tutorial>
+          {{ i18n.t("project.new.step4.tutorialInstructions.line1") }}<br />
+          {{ i18n.t("project.new.step4.tutorialInstructions.line2") }}<br />
+          <img src="https://i.imgur.com/8CyLMf3.png" alt="Edit Project" /><br />
+          {{ i18n.t("project.new.step4.tutorialInstructions.line3") }}<br />
+          <img src="https://i.imgur.com/FLVIuQK.png" width="425" height="198" alt="Show BBCode" /><br />
+          {{ i18n.t("project.new.step4.tutorialInstructions.line4") }}<br />
+        </template>
+      </Tabs>
+    </template>
+    <template #finishing>
+      <!-- todo loader -->
+      <!--<v-progress-circular v-if="projectLoading" indeterminate color="red" size="50" />-->
+      <span v-if="projectLoading">Loading....</span>
+      <div v-if="!projectError" class="text-h5 mt-2">
+        {{ i18n.t("project.new.step5.text") }}
+      </div>
+      <template v-else>
+        <div class="text-lg mt-2">
+          {{ i18n.t("project.new.error.create") }}
+        </div>
+        <Button @click="retry"> Retry </Button>
+      </template>
+    </template>
+  </Steps>
 </template>
 
 <route lang="yaml">
