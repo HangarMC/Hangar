@@ -10,13 +10,6 @@ import { computed, FunctionalComponent } from "vue";
 import { NamedPermission } from "~/types/enums";
 import { hasPerms } from "~/composables/usePerm";
 import { useAuthStore } from "~/store/auth";
-import Button from "~/components/design/Button.vue";
-import Tooltip from "~/components/design/Tooltip.vue";
-import IconMdiWrench from "~icons/mdi/wrench";
-import IconMdiCog from "~icons/mdi/cog";
-import IconMdiKey from "~icons/mdi/key";
-import IconMdiCalendar from "~icons/mdi/calendar";
-import Link from "~/components/design/Link.vue";
 
 const props = defineProps<{
   user: User;
@@ -32,36 +25,6 @@ const isCurrentUser = computed<boolean>(() => {
 
 const canEditCurrentUser = computed<boolean>(() => {
   return hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS) || isCurrentUser.value || hasPerms(NamedPermission.EDIT_SUBJECT_SETTINGS);
-});
-
-interface UserButton {
-  icon: FunctionalComponent;
-  action?: () => void;
-  attr: {
-    to?: string;
-    href?: string;
-  };
-  name: string;
-}
-
-const buttons = computed<UserButton[]>(() => {
-  const list = [] as UserButton[];
-  if (!props.user.isOrganization) {
-    if (isCurrentUser.value) {
-      list.push({ icon: IconMdiCog, attr: { href: `${import.meta.env.HANGAR_AUTH_HOST}/account/settings` }, name: "settings" });
-    }
-    if (isCurrentUser.value || hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS)) {
-      list.push({ icon: IconMdiKey, attr: { to: "/" + props.user.name + "/settings/api-keys" }, name: "apiKeys" });
-    }
-  }
-  if ((hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS) || hasPerms(NamedPermission.REVIEWER)) && !props.user.isOrganization) {
-    list.push({ icon: IconMdiCalendar, attr: { to: `/admin/activities/${props.user.name}` }, name: "activity" });
-  }
-  if (hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS)) {
-    list.push({ icon: IconMdiWrench, attr: { to: "/admin/user/" + props.user.name }, name: "admin" });
-  }
-
-  return list;
 });
 </script>
 
@@ -91,21 +54,19 @@ const buttons = computed<UserButton[]>(() => {
           />
         </div>
 
-        <Tooltip v-for="btn in buttons" :key="btn.name" :content="i18n.t(`author.tooltips.${btn.name}`)">
-          <Link v-bind="btn.attr">
-            <Button size="small" class="mr-1 mt-1 inline-flex"><component :is="btn.icon" /></Button>
-          </Link>
-        </Tooltip>
-
         <!-- todo lock user modal -->
       </div>
-
       <div class="flex-grow" />
-      <div class="flex flex-col space-y-1 items-end flex-shrink-0">
+      <div class="<md:hidden flex flex-col space-y-1 items-end flex-shrink-0">
         <span>{{ i18n.t("author.memberSince", [i18n.d(user.joinDate, "date")]) }}</span>
         <span>{{ i18n.t("author.numProjects", [user.projectCount], user.projectCount) }}</span>
         <span v-for="role in user.roles" :key="role.roleId" :style="{ backgroundColor: role.color }" class="rounded p-1 w-max items-end">{{ role.title }}</span>
       </div>
+    </div>
+    <div class="md:hidden flex flex-col space-y-1 items-end flex-shrink-0">
+      <span>{{ i18n.t("author.memberSince", [i18n.d(user.joinDate, "date")]) }}</span>
+      <span>{{ i18n.t("author.numProjects", [user.projectCount], user.projectCount) }}</span>
+      <span v-for="role in user.roles" :key="role.roleId" :style="{ backgroundColor: role.color }" class="rounded p-1 w-max items-end">{{ role.title }}</span>
     </div>
   </Card>
   <hr class="border-gray-400 dark:border-gray-500 my-4 mb-4" />

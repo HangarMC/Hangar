@@ -16,6 +16,14 @@ import { useSeo } from "~/composables/useSeo";
 import { useHead } from "@vueuse/head";
 import { Organization } from "hangar-internal";
 import UserHeader from "~/components/UserHeader.vue";
+import { computed, FunctionalComponent } from "vue";
+import { hasPerms } from "~/composables/usePerm";
+import { NamedPermission } from "~/types/enums";
+import Button from "~/components/design/Button.vue";
+import Tooltip from "~/components/design/Tooltip.vue";
+import IconMdiWrench from "~icons/mdi/wrench";
+import IconMdiKey from "~icons/mdi/key";
+import IconMdiCalendar from "~icons/mdi/calendar";
 
 const props = defineProps<{
   user: User;
@@ -32,16 +40,53 @@ if (props.user.name === useAuthStore().user?.name) {
 }
 const orgRoles = useBackendDataStore().orgRoles;
 
+interface UserButton {
+  icon: FunctionalComponent;
+  action?: () => void;
+  attr: {
+    to?: string;
+    href?: string;
+  };
+  name: string;
+}
+
+const buttons = computed<UserButton[]>(() => {
+  const list = [] as UserButton[];
+  if (!props.user.isOrganization) {
+    if (hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS)) {
+      list.push({ icon: IconMdiKey, attr: { to: "/" + props.user.name + "/settings/api-keys" }, name: "apiKeys" });
+    }
+  }
+  if ((hasPerms(NamedPermission.MOD_NOTES_AND_FLAGS) || hasPerms(NamedPermission.REVIEWER)) && !props.user.isOrganization) {
+    list.push({ icon: IconMdiCalendar, attr: { to: `/admin/activities/${props.user.name}` }, name: "activity" });
+  }
+  if (hasPerms(NamedPermission.EDIT_ALL_USER_SETTINGS)) {
+    list.push({ icon: IconMdiWrench, attr: { to: "/admin/user/" + props.user.name }, name: "admin" });
+  }
+
+  return list;
+});
+
 useHead(useSeo(props.user.name, props.user.tagline, route, avatarUrl(props.user.name)));
 </script>
 
 <template>
   <UserHeader :user="user" :organization="organization" />
-  <div class="flex gap-4">
+  <div class="flex gap-4 flex-basis-full flex-col md:flex-row">
     <div class="flex-basis-full flex-grow md:max-w-2/3 md:min-w-1/3">
       <ProjectList :projects="projects"></ProjectList>
     </div>
     <div class="flex-basis-full flex-grow md:max-w-1/3 md:min-w-1/3">
+      <Card v-if="buttons.length !== 0" class="mb-4 border-solid border-top-4 border-top-red-500 dark:border-top-red-500">
+        <template #header> Admin actions </template>
+
+        <Tooltip v-for="btn in buttons" :key="btn.name" :content="i18n.t(`author.tooltips.${btn.name}`)">
+          <Link v-bind="btn.attr">
+            <Button size="small" class="mr-1 inline-flex"><component :is="btn.icon" /></Button>
+          </Link>
+        </Tooltip>
+      </Card>
+
       <template v-if="!user.isOrganization">
         <Card class="mb-4" accent>
           <template #header>
